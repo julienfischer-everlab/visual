@@ -11965,6 +11965,12 @@
           </select>
         </div>
         </div>
+        <!-- the Health profile ("add a Health Profile card to the Overview"): its card's section, and the profile's demo states ("include examples of the not-started, in-progress and completed states"); Saved, what was last done in it here -->
+        <div class="tkGroup" data-pages="ov" data-sec="prof">
+        <div class="tkSub">Health profile</div>
+        <div class="tkRow"><span class="lbl">State</span><select id="stHpSt" class="tkSegSel" aria-label="The Health profile's state"><option value="live" selected>Saved</option><option value="none">Not started</option><option value="one">1 of 3</option><option value="two">2 of 3</option><option value="all">Completed</option></select></div>
+        <div class="tkRow"><span class="lbl">Open</span><span class="tkPreCtl"><button class="tkBtn" type="button" id="stHpOpen">Health profile</button></span></div>
+        </div>
         <!-- the Overview's Action plan: one list, or split by kind under two chips, Tasks and Appointments ("tweak: split actions per group; off: current; on: new with tab chips") -->
         <div class="tkGroup" data-pages="ov" data-sec="plan">
         <div class="tkSub">Action plan</div>
@@ -15368,25 +15374,10 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
           if (left > 0) qMore = moreBtn(left, function (b) { qaOpen(L, b); }, function () { return L.answers.slice(o.mb).map(ansRow); }, 'arEvMore');
           groups.push(['Questionnaire', h('div', { class: 'arLfGroup arEvAns' }, L.answers.slice(0, o.mb).map(ansRow), qMore), src.filter(qn)]);
         }
-        if (bmc) {   /* Biomarkers: Carousel, no pills ("for carousel version remove tab"): the carousel and its sources, then the questions under a rule with their count, all in the one card */
-          return h('div', { class: 'arLfEv arLfEv2 arAnimRise arD12' },
-            h('div', { class: 'arLfSec arSrcSec' },   /* V2: no Behind this insight heading ("remove Behind this insight") */
-              h('div', { class: 'arLfCard arEvCard arEvNoTab' }, groups.slice(0, 1).map(function (g) { return h('div', { class: 'arEvPane' }, g[1], srcs(g[2])); }))));   /* the biomarkers alone: no questions section ("for the carousel version remove the Question section") */
-        }
-        var tabs = [], panes = [];
-        groups.forEach(function (g, i) {
-          var id = 'arEv' + uid + '-' + (++evSeq);
-          tabs.push(h('button', { type: 'button', class: 'arEvTab', role: 'tab', id: id + 't', 'aria-controls': id, 'aria-selected': i ? 'false' : 'true', tabindex: i ? '-1' : '0', text: g[0] }));
-          panes.push(h('div', { class: 'arEvPane', role: 'tabpanel', id: id, 'aria-labelledby': id + 't', hidden: i > 0 }, g[1], srcs(g[2])));
-        });
-        var pick = function (k, focus) { tabs.forEach(function (t, i) { t.setAttribute('aria-selected', String(i === k)); t.tabIndex = i === k ? 0 : -1; panes[i].hidden = i !== k; }); if (focus) tabs[k].focus(); };
-        tabs.forEach(function (t, i) {
-          on(t, 'click', function () { pick(i); });
-          on(t, 'keydown', function (e) { var d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0; if (!d) return; e.preventDefault(); pick((i + d + tabs.length) % tabs.length, true); });   // the arrows from pill to pill
-        });
-        return h('div', { class: 'arLfEv arLfEv2 arAnimRise arD12' },
-          h('div', { class: 'arLfSec arSrcSec' },   /* V2: the card alone, no heading */
-            h('div', { class: 'arLfCard arEvCard' }, h('div', { class: 'arEvTabs', role: 'tablist', 'aria-label': 'Behind this insight' }, tabs), panes)));
+        /* no pills, static or carousel ("for carousel version remove tab"; then "remove tab" on the static list too): one card, the biomarkers and their sources (an answers-only insight, its questions), no questions section ("remove the Question section") */
+        return groups.length ? h('div', { class: 'arLfEv arLfEv2 arAnimRise arD12' },
+          h('div', { class: 'arLfSec arSrcSec' },   /* V2: no Behind this insight heading ("remove Behind this insight") */
+            h('div', { class: 'arLfCard arEvCard arEvNoTab' }, h('div', { class: 'arEvPane' }, groups[0][1], srcs(groups[0][2]))))) : null;
       };
       var card = o.ev === 'v2' ? evV2() : h('div', { class: 'arLfEv arAnimRise arD12' },
           /* its sources on a folder card, the debrief's highlight card ("this style without imagery right side, keep hairline"): From your data on the tab, Behind this insight inside, a square bullet a source; the Hairline report file at its foot, right, running past it and cut there */
@@ -15661,6 +15652,581 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
 })();
 
 </script>
+<!-- the Health profile: one home and three areas in the Async report's sheet, the questionnaire's parts (window.HealthProfile) -->
+<style>
+/* ---------- Health profile ("create a Health Profile experience using the same navigation framework as the Async experience and the same visual and interaction system as the Questionnaire"):
+   the Async report's sheet (its tokens, head, progress bars, footer button, push between pages) wearing the questionnaire's parts from the Redbook boards (option cards, form fields, hero number, unit stepper, answer summary);
+   one home of three areas, a dotted circle a third lit per area done; reached from the Overview's card and My account's row, the same answers and progress behind both (window.HealthProfile) ---------- */
+.aqWrap.hpWrap { display: none; }
+.aqWrap.hpWrap.hpOpen { display: block; position: fixed; left: 0; right: 0; top: var(--barH, 45px); bottom: 0; z-index: 70; pointer-events: auto; }
+body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile */
+.arSheet.hpSheet { --hpSide: 20px; }
+.aqWrap:is(.aqBpXS, .aqBpS) .arSheet.hpSheet { --hpSide: 16px; }
+.arSheet.hpSheet .arHead { padding-left: var(--hpSide); padding-right: var(--hpSide); }
+.arSheet.hpSheet.hpAtHome .arBack, .arSheet.hpSheet.hpAtHome .arNavT { visibility: hidden; }
+.arSheet.hpSheet.hpAtHome .arStepWrap { visibility: hidden; }
+.arSheet.hpSheet .hpView { position: relative; flex: 1; min-height: 0; overflow: hidden; }
+.arSheet.hpSheet .hpScr { position: absolute; inset: 0; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; padding: 24px var(--hpSide) 32px; background: var(--ar-paper); display: flex; flex-direction: column; }
+.arSheet.hpSheet .arFoot { padding-left: var(--hpSide); padding-right: var(--hpSide); gap: 4px; }
+.arSheet.hpSheet .arBtnPrimary:disabled { background: oklch(var(--ar-ink) / .06); color: oklch(var(--ar-ink) / .3); cursor: default; }
+.arSheet.hpSheet .hpSec { appearance: none; height: 48px; margin: 0; padding: 0 16px; border: 0; border-radius: 16px; background: none; font: inherit; font-family: var(--ar-font); font-size: 16px; line-height: 18px; font-weight: 570; color: oklch(var(--ar-ink)); cursor: pointer; }
+.arSheet.hpSheet .hpSec:hover { background: oklch(var(--ar-ink) / .04); }
+.arSheet.hpSheet :is(.hpSec, .hpOpt, .hpTile, .hpArea, .hpEdit, .hpRowB, .hpStepB, .hpIn):focus-visible { outline: 2px solid var(--ar-blue-fg); outline-offset: 2px; }
+/* type: the questionnaire's ("question titles, descriptions and supporting information") */
+.arSheet.hpSheet .hpEy { font-family: var(--ar-font-mono); font-size: 12px; line-height: 16px; font-weight: 570; letter-spacing: 1px; text-transform: uppercase; color: oklch(var(--ar-ink) / .5); }
+.arSheet.hpSheet .hpH { margin: 0; font-family: var(--ar-font); font-size: 28px; line-height: 32px; font-weight: 570; letter-spacing: -.2px; text-wrap: balance; color: oklch(var(--ar-ink)); }
+.aqWrap:is(.aqBpXS, .aqBpS) .arSheet.hpSheet .hpH { font-size: 26px; line-height: 30px; }
+.arSheet.hpSheet .hpD { margin: 0; font-size: 16px; line-height: 22px; color: oklch(var(--ar-ink) / .64); text-wrap: pretty; }
+.arSheet.hpSheet .hpQ { display: flex; flex-direction: column; gap: 8px; margin-bottom: 28px; }
+.arSheet.hpSheet .hpQ.hpC { align-items: center; text-align: center; }
+/* the dotted circle: rings of dots, a third lit per area done, clockwise from twelve */
+.arSheet.hpSheet .hpDots, .hpDots { display: block; flex: none; color: oklch(var(--ar-ink, 0% 0 0)); }
+.hpDots circle { fill: currentColor; opacity: .14; transition: opacity .32s ease; }
+.hpDots circle.on { opacity: 1; }
+.hpDots circle.or { fill: #ff7a1a; opacity: .9; }
+.hpDots.hpRadar circle { transition: none; }
+.hpDots .hpMark { fill: #ff7a1a; opacity: 0; }
+.hpDots .hpMark.on { animation: hpBlink 2.4s ease both; }
+@keyframes hpBlink { 0% { opacity: 0; } 8% { opacity: 1; } 16% { opacity: .2; } 24% { opacity: 1; } 70% { opacity: 1; } 100% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .hpDots circle { transition: none; } .hpDots .hpMark.on { animation: none; opacity: 1; } }
+/* home */
+.arSheet.hpSheet .hpHome { display: flex; flex-direction: column; align-items: center; text-align: center; }
+.arSheet.hpSheet .hpHome .hpDots { width: 132px; height: 132px; }
+.arSheet.hpSheet .hpProgL { margin-top: 14px; font-size: 13px; line-height: 16px; font-weight: 500; color: oklch(var(--ar-ink) / .56); font-variant-numeric: tabular-nums; }
+.arSheet.hpSheet .hpHome .hpQ { margin: 28px 0 0; align-items: center; }
+.arSheet.hpSheet .hpHome .hpD { max-width: 34ch; }
+.arSheet.hpSheet .hpAreas { display: flex; flex-direction: column; gap: 8px; width: 100%; margin-top: 32px; text-align: left; }
+.arSheet.hpSheet .hpArea { appearance: none; display: grid; grid-template-columns: 32px minmax(0, 1fr) auto; align-items: center; gap: 14px; width: 100%; margin: 0; padding: 16px; border: 0; border-radius: 16px; background: var(--ar-card-bg); color: oklch(var(--ar-ink)); font: inherit; font-family: var(--ar-font); text-align: left; cursor: pointer; transition: background .2s ease; }
+.arSheet.hpSheet .hpArea:hover { background: oklch(var(--ar-ink) / .08); }
+.arSheet.hpSheet .hpNum { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px oklch(var(--ar-ink) / .18); font-size: 14px; line-height: 1; font-weight: 570; font-variant-numeric: tabular-nums; }
+.arSheet.hpSheet .hpArea.hpProg .hpNum { box-shadow: inset 0 0 0 1.5px oklch(var(--ar-ink)); }
+.arSheet.hpSheet .hpArea.hpDone .hpNum { background: oklch(var(--ar-ink)); color: var(--ar-paper); box-shadow: none; }
+.arSheet.hpSheet .hpAreaT { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.arSheet.hpSheet .hpAreaT b { font-size: 16px; line-height: 20px; font-weight: 570; }
+.arSheet.hpSheet .hpAreaT > span { font-size: 14px; line-height: 18px; color: oklch(var(--ar-ink) / .56); }
+.arSheet.hpSheet .hpPend { display: flex; align-items: center; gap: 6px; margin-top: 4px; font-size: 13px; line-height: 16px; color: oklch(var(--ar-ink) / .72); }
+.arSheet.hpSheet .hpPend i { flex: none; width: 6px; height: 6px; background: #ff7a1a; animation: hpPulse 1.6s ease-in-out infinite; }
+.arSheet.hpSheet .hpPend.hpOk i { background: var(--ar-opt-bg); border-radius: 50%; animation: none; }
+@keyframes hpPulse { 0%, 100% { opacity: 1; } 50% { opacity: .25; } }
+@media (prefers-reduced-motion: reduce) { .arSheet.hpSheet .hpPend i { animation: none; } }
+/* status: the report's badges (Not started neutral, In progress the suboptimal yellow, Completed the optimal green) */
+.hpSt { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 9999px; font-size: 12px; line-height: 16px; font-weight: 500; white-space: nowrap; }
+.arSheet .hpSt.hpStNot { background: var(--ar-badge-bg); color: oklch(var(--ar-ink) / .72); }
+.arSheet .hpSt.hpStProg { background: var(--ar-sub-bg2); color: var(--ar-sub-fg); }
+.arSheet .hpSt.hpStDone { background: var(--ar-opt-bg2); color: var(--ar-opt-fg); }
+/* option cards: single and multi select (unselected grey, selected outlined in ink) */
+.arSheet.hpSheet .hpOpts { display: flex; flex-direction: column; gap: 8px; }
+.arSheet.hpSheet .hpOpt { appearance: none; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 2px; width: 100%; min-height: 56px; margin: 0; padding: 14px 16px; border: 0; border-radius: 14px; background: var(--ar-card-bg); box-shadow: inset 0 0 0 1.5px transparent; color: oklch(var(--ar-ink)); font: inherit; font-family: var(--ar-font); text-align: left; cursor: pointer; transition: box-shadow .18s ease, background .18s ease; }
+.arSheet.hpSheet .hpOpt:hover { background: oklch(var(--ar-ink) / .07); }
+.arSheet.hpSheet .hpOpt[aria-checked="true"] { box-shadow: inset 0 0 0 1.5px oklch(var(--ar-ink)); }
+.arSheet.hpSheet .hpOpt b { font-size: 16px; line-height: 20px; font-weight: 500; }
+.arSheet.hpSheet .hpOpt span { font-size: 13px; line-height: 17px; color: oklch(var(--ar-ink) / .56); }
+/* the wearables' tiles, two across */
+.arSheet.hpSheet .hpGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.arSheet.hpSheet .hpTile { appearance: none; position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 12px; min-height: 108px; margin: 0; padding: 14px; border: 0; border-radius: 14px; background: var(--ar-card-bg); box-shadow: inset 0 0 0 1.5px transparent; color: oklch(var(--ar-ink)); font: inherit; font-family: var(--ar-font); text-align: left; cursor: pointer; transition: box-shadow .18s ease, background .18s ease; }
+.arSheet.hpSheet .hpTile:hover { background: oklch(var(--ar-ink) / .07); }
+.arSheet.hpSheet .hpTile[aria-checked="true"] { box-shadow: inset 0 0 0 1.5px oklch(var(--ar-ink)); }
+.arSheet.hpSheet .hpTileI { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 10px; background: oklch(var(--ar-ink) / .06); color: oklch(var(--ar-ink) / .8); }
+.arSheet.hpSheet .hpTileT b { display: block; font-size: 15px; line-height: 19px; font-weight: 570; }
+.arSheet.hpSheet .hpTileT span { display: block; font-size: 13px; line-height: 17px; color: oklch(var(--ar-ink) / .56); }
+.arSheet.hpSheet .hpTileK { position: absolute; top: 12px; right: 12px; display: none; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; background: oklch(var(--ar-ink)); color: var(--ar-paper); }
+.arSheet.hpSheet .hpTile[aria-checked="true"] .hpTileK { display: flex; }
+.arSheet.hpSheet .hpTile.hpMore { justify-content: flex-end; }
+/* form fields: label, input, helper or error ("Message") */
+.arSheet.hpSheet .hpFields { display: flex; flex-direction: column; gap: 20px; }
+.arSheet.hpSheet .hpF { display: flex; flex-direction: column; gap: 6px; }
+.arSheet.hpSheet .hpF > label { font-size: 14px; line-height: 18px; font-weight: 500; color: oklch(var(--ar-ink)); }
+.arSheet.hpSheet .hpHelp { font-size: 13px; line-height: 17px; color: oklch(var(--ar-ink) / .56); }
+.arSheet.hpSheet .hpErr { display: flex; align-items: center; gap: 6px; font-size: 13px; line-height: 17px; color: var(--ar-out-fg); }
+.arSheet.hpSheet .hpErr[hidden] { display: none; }
+.arSheet.hpSheet .hpIn { box-sizing: border-box; width: 100%; height: 48px; margin: 0; padding: 0 14px; border: 0; border-radius: 12px; background: transparent; box-shadow: inset 0 0 0 1px oklch(var(--ar-ink) / .16); color: oklch(var(--ar-ink)); font: inherit; font-family: var(--ar-font); font-size: 16px; line-height: 20px; outline: none; transition: box-shadow .16s ease; }
+.arSheet.hpSheet textarea.hpIn { height: auto; min-height: 96px; padding: 12px 14px; resize: vertical; }
+.arSheet.hpSheet .hpIn::placeholder { color: oklch(var(--ar-ink) / .36); }
+.arSheet.hpSheet .hpIn:hover { box-shadow: inset 0 0 0 1px oklch(var(--ar-ink) / .32); }
+.arSheet.hpSheet .hpIn:focus { box-shadow: inset 0 0 0 1.5px oklch(var(--ar-ink)); }
+.arSheet.hpSheet .hpF.hpBad .hpIn { box-shadow: inset 0 0 0 1.5px var(--ar-out-fg); }
+.arSheet.hpSheet .hpSel { position: relative; }
+.arSheet.hpSheet .hpSel select.hpIn { appearance: none; -webkit-appearance: none; padding-right: 40px; cursor: pointer; }
+.arSheet.hpSheet .hpSel.hpFlag select.hpIn { padding-left: 46px; }
+.arSheet.hpSheet .hpSel > svg { position: absolute; right: 14px; top: 16px; pointer-events: none; color: oklch(var(--ar-ink) / .56); }
+.arSheet.hpSheet .hpFlagI { position: absolute; left: 12px; top: 12px; display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; background: oklch(var(--ar-ink) / .1); font-family: var(--ar-font-mono); font-size: 9px; line-height: 1; font-weight: 570; letter-spacing: .3px; color: oklch(var(--ar-ink) / .8); pointer-events: none; }
+.arSheet.hpSheet .hpSel select.hpIn option { color: #141413; background: #fff; }
+/* the hero number and the unit stepper, centred */
+.arSheet.hpSheet .hpHero { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.arSheet.hpSheet .hpHeroIn { width: 4ch; max-width: 100%; margin: 0; padding: 0; border: 0; background: transparent; color: oklch(var(--ar-ink)); font: inherit; font-family: var(--ar-font); font-size: 56px; line-height: 64px; font-weight: 570; letter-spacing: -1px; text-align: center; font-variant-numeric: tabular-nums; caret-color: oklch(var(--ar-ink)); outline: none; }
+.arSheet.hpSheet .hpHeroIn::placeholder { color: oklch(var(--ar-ink) / .2); }
+.arSheet.hpSheet .hpHero .hpErr { justify-content: center; }
+.arSheet.hpSheet .hpStep { display: flex; align-items: center; justify-content: center; gap: 22px; }
+.arSheet.hpSheet .hpStepB { appearance: none; display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; margin: 0; padding: 0; border: 0; border-radius: 50%; background: oklch(var(--ar-ink) / .06); color: oklch(var(--ar-ink)); cursor: pointer; }
+.arSheet.hpSheet .hpStepB:disabled { color: oklch(var(--ar-ink) / .24); cursor: default; }
+.arSheet.hpSheet .hpStepV { min-width: 2ch; font-size: 56px; line-height: 64px; font-weight: 570; text-align: center; font-variant-numeric: tabular-nums; }
+.arSheet.hpSheet .hpStepH { margin-top: 10px; font-size: 13px; line-height: 17px; color: oklch(var(--ar-ink) / .5); text-align: center; }
+/* intro: the circle, its core warming outward; centred title */
+.arSheet.hpSheet .hpIntro { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px; padding-bottom: 40px; text-align: center; }
+.arSheet.hpSheet .hpIntro .hpDots { width: 156px; height: 156px; }
+.arSheet.hpSheet .hpIntro .hpQ { margin: 0; align-items: center; }
+/* the search: its radar and its label; the card of two rows */
+.arSheet.hpSheet .hpSearch { display: flex; flex-direction: column; align-items: center; gap: 16px; margin: 4px 0 28px; }
+.arSheet.hpSheet .hpSearch .hpDots { width: 168px; height: 168px; }
+.arSheet.hpSheet .hpCard { display: flex; flex-direction: column; border-radius: 16px; background: var(--ar-card-bg); }
+.arSheet.hpSheet .hpRow { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 14px; padding: 16px; }
+.arSheet.hpSheet .hpRow + .hpRow { box-shadow: inset 0 1px 0 oklch(var(--ar-ink) / .08); }
+.arSheet.hpSheet .hpRow b { display: block; font-size: 15px; line-height: 19px; font-weight: 570; }
+.arSheet.hpSheet .hpRow span { display: block; margin-top: 2px; font-size: 13px; line-height: 17px; color: oklch(var(--ar-ink) / .56); }
+.arSheet.hpSheet .hpRowB { appearance: none; display: inline-flex; align-items: center; gap: 6px; height: 36px; margin: 0; padding: 0 14px; border: 0; border-radius: 9999px; background: oklch(var(--ar-ink)); color: var(--ar-paper); font: inherit; font-family: var(--ar-font); font-size: 14px; line-height: 18px; font-weight: 570; cursor: pointer; white-space: nowrap; }
+.arSheet.hpSheet .hpRowB[aria-pressed="true"] { background: oklch(var(--ar-ink) / .08); color: oklch(var(--ar-ink)); }
+/* the answer summary: a row a question, Edit on its right */
+.arSheet.hpSheet .hpSum { display: flex; flex-direction: column; margin-top: 4px; }
+.arSheet.hpSheet .hpSumR { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 16px; padding: 14px 0; box-shadow: inset 0 -1px 0 oklch(var(--ar-ink) / .08); }
+.arSheet.hpSheet .hpSumR span { display: block; font-size: 13px; line-height: 17px; color: oklch(var(--ar-ink) / .56); }
+.arSheet.hpSheet .hpSumR b { display: block; margin-top: 2px; font-size: 16px; line-height: 21px; font-weight: 400; color: oklch(var(--ar-ink)); overflow-wrap: anywhere; }
+.arSheet.hpSheet .hpEdit { appearance: none; margin: 0; padding: 6px 0; border: 0; background: none; color: oklch(var(--ar-ink)); font: inherit; font-family: var(--ar-font); font-size: 14px; line-height: 18px; font-weight: 500; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.arSheet.hpSheet .hpSumH { margin: 28px 0 0; }
+.arSheet.hpSheet .hpNote { margin-top: 12px; font-size: 13px; line-height: 17px; color: oklch(var(--ar-ink) / .56); }
+/* the Overview's card and My account's row */
+.hpOvCard { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 24px; margin: 50px 0 0; padding: 24px 28px; border-radius: 20px; background: #1b1b19; color: #f2e5e0; cursor: pointer; }
+body.light .hpOvCard { background: #fdfaf3; color: #2e1f1a; }
+.hpOvCard .hpDots { width: 88px; height: 88px; color: inherit; } .hpOvCard .hpDots circle:not(.on) { opacity: .2; }
+.hpOvCard .hpOvT { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.hpOvCard .hpOvT h3 { margin: 0; font-size: 18px; line-height: 22px; font-weight: 500; letter-spacing: -.1px; }
+.hpOvCard .hpOvT p { margin: 0; font-size: 14px; line-height: 20px; color: #8b8b86; }
+body.light .hpOvCard .hpOvT p { color: #7d6b58; }
+.hpOvCard .hpOvS { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin-top: 6px; }
+.hpOvCard .hpOvS .hpSt { background: rgba(255, 255, 255, .08); color: #c9c9c4; }
+.hpOvCard .hpOvS .hpSt.hpStProg { background: rgba(240, 210, 120, .14); color: #f0d78c; }
+.hpOvCard .hpOvS .hpSt.hpStDone { background: rgba(120, 210, 150, .14); color: #9fe0b4; }
+body.light .hpOvCard .hpOvS .hpSt { background: rgba(46, 31, 26, .07); color: #5e4a3c; }
+body.light .hpOvCard .hpOvS .hpSt.hpStProg { background: #f7ecc8; color: #7a5b0e; }
+body.light .hpOvCard .hpOvS .hpSt.hpStDone { background: #dcf1e2; color: #276b3d; }
+.hpOvCard .hpOvA { display: flex; gap: 4px 14px; flex-wrap: wrap; }
+.hpOvCard .hpOvA span { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; line-height: 18px; color: #8b8b86; }
+.hpOvCard .hpOvA span i { width: 14px; height: 14px; border-radius: 50%; box-shadow: inset 0 0 0 1.2px currentColor; display: inline-flex; align-items: center; justify-content: center; }
+.hpOvCard .hpOvA span.d { color: inherit; } .hpOvCard .hpOvA span.d i { background: currentColor; box-shadow: none; }
+.hpOvCard .hpOvA span.d i svg { color: #1b1b19; } body.light .hpOvCard .hpOvA span.d i svg { color: #fdfaf3; }
+body.light .hpOvCard .hpOvA span { color: #7d6b58; } body.light .hpOvCard .hpOvA span.d { color: #2e1f1a; }
+.hpOvBtn { flex: none; height: 44px; padding: 0 20px; border: 0; border-radius: 999px; background: #f4f4f2; color: #141413; font: inherit; font-size: 15px; font-weight: 500; white-space: nowrap; cursor: pointer; transition: opacity .16s ease; }
+.hpOvBtn:hover { opacity: .88; }
+body.light .hpOvBtn { background: #2e1f1a; color: #fdfaf3; }
+.hpOvCard:focus-visible, .hpOvBtn:focus-visible { outline: 2px solid #4b7bec; outline-offset: 2px; }
+body[data-bp="xs"] #dOver .hpOvCard { grid-template-columns: minmax(0, 1fr) auto; gap: 16px 14px; margin-top: 38px; padding: 20px; border-radius: 22px; }
+body[data-bp="xs"] #dOver .hpOvCard .hpDots { grid-column: 2; grid-row: 1; width: 64px; height: 64px; align-self: start; }
+body[data-bp="xs"] #dOver .hpOvCard .hpOvT { grid-column: 1; grid-row: 1; }
+body[data-bp="xs"] #dOver .hpOvCard .hpOvBtn { grid-column: 1 / -1; width: 100%; }
+.acPrI .hpDots { width: 22px; height: 22px; color: inherit; }
+</style>
+<script>
+/*
+ * Health profile: one home and three areas, each its own flow, in the Async report's sheet.
+ *   window.HealthProfile.mount(host, { theme, name, onClose })   the sheet in host; returns { el, home(), area(k), destroy() }
+ *   window.HealthProfile.store                                  the answers and progress, shared by every mount and entry point:
+ *       .get() the state, .summary() { n, st: { wear, past, you }, cta }, .preset(k) a demo state ('none', 'one', 'two', 'all'), .reset()
+ *   window.HealthProfile.dots(opts)                             the dotted circle: { el, set(fraction, animate) }
+ * Saved in this browser (localStorage 'everlab.hp') and in memory; 'everlab:hp' on document after every change.
+ * No network: an upload only notes the file's name, a connection is the prototype's.
+ */
+(function () {
+  'use strict';
+  var SVGNS = 'http://www.w3.org/2000/svg', KEY = 'everlab.hp';
+  var reduced = function () { return !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches); };
+  function h(tag, a) {
+    var el = document.createElement(tag);
+    if (a) Object.keys(a).forEach(function (k) { var v = a[k]; if (v == null || v === false) return;
+      if (k === 'class') el.className = v; else if (k === 'text') el.textContent = v; else if (k === 'on') Object.keys(v).forEach(function (e) { el.addEventListener(e, v[e]); }); else if (k === 'value') el.value = v; else el.setAttribute(k, v === true ? '' : v); });
+    for (var i = 2; i < arguments.length; i++) add(el, arguments[i]);
+    return el;
+  }
+  function add(el, c) { if (c == null || c === false) return; if (Array.isArray(c)) { c.forEach(function (x) { add(el, x); }); return; } el.appendChild(typeof c === 'string' ? document.createTextNode(c) : c); }
+  function s(tag, a) { var el = document.createElementNS(SVGNS, tag); if (a) Object.keys(a).forEach(function (k) { el.setAttribute(k, a[k]); }); for (var i = 2; i < arguments.length; i++) add(el, arguments[i]); return el; }
+  function ic(w, d, sw) { return s('svg', { width: w, height: w, viewBox: '0 0 16 16', fill: 'none', stroke: 'currentColor', 'stroke-width': sw || 1.6, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'aria-hidden': 'true' }, [].concat(d).map(function (p) { return s('path', { d: p }); })); }
+  function ic24(d) { return s('svg', { width: 20, height: 20, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', 'stroke-width': 1.6, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'aria-hidden': 'true' }, [].concat(d).map(function (p) { return s('path', { d: p }); })); }
+  var P = { back: 'M10 3.5 5.5 8l4.5 4.5', close: 'M3.5 3.5l9 9M12.5 3.5l-9 9', check: 'm3.8 8.3 2.6 2.6 5.8-6', chev: 'm4 6 4 4 4-4', plus: 'M8 3.5v9M3.5 8h9', minus: 'M3.5 8h9', err: ['M8 1.8a6.2 6.2 0 1 1 0 12.4A6.2 6.2 0 0 1 8 1.8Z', 'M8 5v3.4', 'M8 10.8v.1'] };
+  var DI = {   // the devices' kinds, 24 square
+    phone: ['M8 2.5h8a1.5 1.5 0 0 1 1.5 1.5v16a1.5 1.5 0 0 1-1.5 1.5H8A1.5 1.5 0 0 1 6.5 20V4A1.5 1.5 0 0 1 8 2.5Z', 'M10.5 18.5h3'],
+    watch: ['M8.5 6.5h7a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-7a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2Z', 'M9 6.5 9.6 3h4.8l.6 3.5M9 17.5l.6 3.5h4.8l.6-3.5', 'M12 10v2.2l1.4 1'],
+    ring: ['M12 20.5a7 7 0 1 0 0-14 7 7 0 0 0 0 14Z', 'M12 17.5a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z', 'M9.5 6.9 10.5 3.5h3l1 3.4'],
+    scale: ['M5.5 3.5h13a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2v-13a2 2 0 0 1 2-2Z', 'M8.5 10a3.5 3.5 0 0 1 7 0', 'M12 10l1.3-1.6'],
+    strap: ['M7.5 9.5h9a1.5 1.5 0 0 1 1.5 1.5v2a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 6 13v-2a1.5 1.5 0 0 1 1.5-1.5Z', 'M3 12h3M18 12h3'],
+    sensor: ['M12 18.5a6.5 6.5 0 1 0 0-13 6.5 6.5 0 0 0 0 13Z', 'M12 14.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z'],
+    more: ['M6 12h.01M12 12h.01M18 12h.01'],
+    bell: ['M6.5 10a5.5 5.5 0 0 1 11 0c0 4 1.5 5.5 1.5 5.5H5S6.5 14 6.5 10Z', 'M10 19a2 2 0 0 0 4 0'],
+    up: ['M12 15V4.5M7.5 9 12 4.5 16.5 9', 'M4.5 15v3a1.5 1.5 0 0 0 1.5 1.5h12a1.5 1.5 0 0 0 1.5-1.5v-3']
+  };
+
+  /* ---------- the dotted circle ---------- */
+  // rings of dots 9 apart, as many to a ring as its round holds; each dot its angle (0 at twelve, clockwise, 0..1): a fraction lights those under it
+  function dots(opts) {
+    opts = opts || {};
+    var svg = s('svg', { viewBox: '0 0 200 200', class: 'hpDots' + (opts.cls ? ' ' + opts.cls : ''), 'aria-hidden': 'true' }), list = [];
+    var put = function (x, y, a, r, k) { var c = s('circle', { cx: x.toFixed(2), cy: y.toFixed(2), r: (3 - k * .07).toFixed(2) }); svg.appendChild(c); list.push({ c: c, a: a, r: r }); };
+    put(100, 100, 0, 0, 0);
+    for (var k = 1; k <= 10; k++) {
+      var r = k * 9, n = Math.round(2 * Math.PI * r / 9), off = k % 2 ? .5 : 0;
+      for (var j = 0; j < n; j++) { var a = (j + off) / n, t = a * 2 * Math.PI; put(100 + r * Math.sin(t), 100 - r * Math.cos(t), a, r, k); }
+    }
+    var cur = 0;
+    var api = {
+      el: svg, list: list,
+      set: function (f, anim) {   // f: 0..1, the share lit; anim: the change swept clockwise over 700ms
+        var lo = Math.min(cur, f), hi = Math.max(cur, f), up = f > cur;
+        list.forEach(function (d) {
+          var on = f > 0 && (d.a < f - 1e-6 || (d.r === 0 && f > 0));
+          var was = d.c.classList.contains('on');
+          d.c.style.transitionDelay = anim && !reduced() && on !== was && hi > lo ? Math.round(((up ? d.a - lo : hi - d.a) / (hi - lo)) * 700) + 'ms' : '0ms';
+          d.c.classList.toggle('on', on);
+        });
+        cur = f;
+      },
+      core: function (to, anim) {   // the warm core of an introduction: the dots inside radius `to` orange, ring by ring outward
+        list.forEach(function (d) { var on = d.r <= to; d.c.style.transitionDelay = anim && !reduced() ? Math.round(d.r / 9 * 110) + 'ms' : '0ms'; d.c.classList.toggle('or', on); });
+      }
+    };
+    return api;
+  }
+  // the search: a lit sector sweeping round, an orange square on a dot now and then
+  function radar(api, alive) {
+    var svg = api.el; svg.classList.add('hpRadar');
+    var mk = s('rect', { class: 'hpMark', width: 7, height: 7 }); svg.appendChild(mk);
+    var t0 = performance.now(), last = -1, W = 1.4;
+    if (reduced()) { api.set(1 / 3, false); return; }
+    var frame = function (now) {
+      if (!alive()) return;
+      var th = ((now - t0) / 2800) % 1 * 2 * Math.PI;
+      api.list.forEach(function (d) { var dt = (th - d.a * 2 * Math.PI + 4 * Math.PI) % (2 * Math.PI); d.c.style.opacity = d.r === 0 ? '1' : dt < W ? (.14 + .86 * Math.pow(1 - dt / W, 1.4)).toFixed(3) : '.14'; });
+      var slot = Math.floor((now - t0) / 2800);
+      if (slot !== last) { last = slot; var d = api.list[8 + Math.floor(Math.random() * (api.list.length - 8))], b = d.c.getAttribute('cx'), c = d.c.getAttribute('cy');
+        mk.setAttribute('x', (+b - 3.5).toFixed(1)); mk.setAttribute('y', (+c - 3.5).toFixed(1)); mk.classList.remove('on'); void mk.getBBox; requestAnimationFrame(function () { mk.classList.add('on'); }); }
+      requestAnimationFrame(frame);
+    };
+    requestAnimationFrame(frame);
+  }
+
+  /* ---------- the store ---------- */
+  var AREAS = [
+    { k: 'wear', t: 'Connect your wearable', s: 'About 1 minute', steps: ['pick', 'allow', 'done'] },
+    { k: 'past', t: 'Find your past results', s: 'We do this for you', steps: ['intro', 'q', 'medicare', 'search'] },
+    { k: 'you', t: 'Tell us about you', s: 'About 5 minutes', steps: ['intro', 'age', 'about', 'smoke', 'alcohol', 'medical', 'family', 'review'] }
+  ];
+  var AREA = {}; AREAS.forEach(function (a, i) { a.i = i; AREA[a.k] = a; });
+  var SYNC_MS = 40000, SEARCH_MS = 60000;   // a sync, a search: how long they run in the background before they are done
+  function blank() { return { v: 1, a: { wear: { st: 'not', i: 0, ans: {} }, past: { st: 'not', i: 0, ans: {} }, you: { st: 'not', i: 0, ans: {} } }, pend: {}, notif: false, files: [] }; }
+  var S = blank();
+  try { var raw = JSON.parse(localStorage.getItem(KEY) || 'null'); if (raw && raw.v === 1 && raw.a) { S = blank(); AREAS.forEach(function (a) { if (raw.a[a.k]) S.a[a.k] = raw.a[a.k]; }); S.pend = raw.pend || {}; S.notif = !!raw.notif; S.files = raw.files || []; } } catch (e) {}
+  function save(quiet) { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} if (!quiet) document.dispatchEvent(new CustomEvent('everlab:hp', { detail: summary() })); }
+  function pending(k) {   // a background process the area started: null, or { done, label }
+    var p = S.pend[k]; if (!p) return null;
+    var ms = k === 'wear' ? SYNC_MS : SEARCH_MS, done = p.done || Date.now() - p.at > ms;
+    if (k === 'wear') return { done: done, label: done ? 'Synced: your last 90 days are in' : 'Syncing your last 90 days' };
+    return { done: done, label: done ? '4 past results found' : 'Searching labs across Australia' };
+  }
+  function summary() {
+    var st = {}, n = 0; AREAS.forEach(function (a) { st[a.k] = S.a[a.k].st; if (st[a.k] === 'done') n++; });
+    var any = AREAS.some(function (a) { return st[a.k] !== 'not'; });
+    return { n: n, st: st, state: n === 3 ? 'done' : any ? 'prog' : 'not', cta: n === 3 ? 'View health profile' : any ? 'Continue health profile' : 'Complete health profile' };
+  }
+  var DEMO = {
+    wear: { dev: ['oura'], data: ['sleep', 'heart', 'activity', 'workouts'] },
+    past: { blood: 'yes', mc: '2953 12345 1', irn: '1' },
+    you: { age: '42', country: 'AU', eth: '', goals: 'Sleep better and keep my cholesterol in check', occ: 'Product designer', smoke: 'no', alc: 2, med: ['meta'], fam: ['card', 'canc'] }
+  };
+  function preset(k) {   // the demo states: not started, one of three, two of three, completed
+    S = blank();
+    var copy = function (o) { return JSON.parse(JSON.stringify(o)); };
+    if (k === 'one' || k === 'two' || k === 'all') { S.a.wear = { st: 'done', i: 2, ans: copy(DEMO.wear) }; S.pend.wear = { at: Date.now() - SYNC_MS - 1, done: true }; }
+    if (k === 'two' || k === 'all') { S.a.past = { st: 'done', i: 3, ans: copy(DEMO.past) }; S.pend.past = k === 'all' ? { at: Date.now() - SEARCH_MS - 1, done: true } : { at: Date.now() }; }
+    if (k === 'one' || k === 'two') { var y = copy(DEMO.you); delete y.smoke; delete y.alc; delete y.med; delete y.fam; S.a.you = { st: 'prog', i: 3, ans: y }; }
+    if (k === 'all') S.a.you = { st: 'done', i: 7, ans: copy(DEMO.you) };
+    save();
+  }
+
+  /* ---------- the questionnaire's content ---------- */
+  var DEV = [['apple', 'Apple Health', 'iPhone, Apple Watch', 'phone'], ['garmin', 'Garmin', 'Watch', 'watch'], ['oura', 'Oura', 'Ring', 'ring'], ['hc', 'Health Connect', 'Android', 'phone'], ['fitbit', 'Fitbit', 'Watch, tracker', 'watch'], ['withings', 'Withings', 'Scale, watch', 'scale']];
+  var DEV2 = [['whoop', 'Whoop', 'Strap', 'strap'], ['polar', 'Polar', 'Watch', 'watch'], ['coros', 'Coros', 'Watch', 'watch'], ['samsung', 'Samsung Health', 'Galaxy Watch', 'watch'], ['ultra', 'Ultrahuman', 'Ring', 'ring'], ['dexcom', 'Dexcom', 'Glucose monitor', 'sensor']];
+  var DATA = [['sleep', 'Sleep', 'Stages, duration and regularity'], ['heart', 'Heart rate & HRV', 'Resting heart rate and variability'], ['activity', 'Activity & steps', 'Steps, active minutes and energy'], ['workouts', 'Workouts', 'Type, duration and intensity'], ['body', 'Body measurements', 'Weight and body fat']];
+  var BLOOD = [['yes', 'Yes'], ['no', 'No'], ['dk', 'I don’t know']];
+  var SMOKE = [['no', 'No'], ['yes', 'Yes'], ['na', 'Prefer not to say']];
+  var MED = [['canc', 'Cancer', 'Any type, including skin cancer'], ['meta', 'Metabolic conditions', 'Blood sugar issues, obesity-related conditions'], ['card', 'Heart and blood vessels', 'High blood pressure, heart disease, stroke'], ['bone', 'Bone & joint conditions', 'Osteoporosis, arthritis, fractures'], ['horm', 'Hormonal conditions', 'Thyroid disorders, hormonal imbalances, PCOS'], ['none', 'None of these', '']];
+  var FAM = [['card', 'Cardiac events', 'Heart attack or stroke before 60'], ['meta', 'Metabolic conditions', 'Type 2 diabetes, high cholesterol'], ['canc', 'Cancer', 'Bowel, breast, prostate or another'], ['bone', 'Bone & joint conditions', 'Osteoporosis, hip fracture'], ['horm', 'Hormonal conditions', 'Thyroid disorders, early menopause'], ['none', 'None that I know of', '']];
+  var COUNTRY = [['AU', 'Australia'], ['NZ', 'New Zealand'], ['GB', 'United Kingdom'], ['IE', 'Ireland'], ['US', 'United States'], ['CA', 'Canada'], ['IN', 'India'], ['CN', 'China'], ['PH', 'Philippines'], ['VN', 'Vietnam'], ['ZA', 'South Africa'], ['XX', 'Somewhere else']];
+  var name = function (L, k) { var x = L.filter(function (r) { return r[0] === k; })[0]; return x ? x[1] : ''; };
+  var names = function (L, ks) { return (ks || []).map(function (k) { return name(L, k); }).filter(Boolean).join(', '); };
+
+  /* ---------- the sheet ---------- */
+  function mount(host, opts) {
+    opts = opts || {};
+    var alive = true, A = null, I = 0, ret = null, shown = null, tick = 0;   // A: the area open (null: the home); I: its step; ret: the summary to return to after an Edit
+    var backBtn = h('button', { type: 'button', class: 'arIconBtn arBack', 'aria-label': 'Back' }, ic(18, P.back, 1.8));
+    var closeBtn = h('button', { type: 'button', class: 'arIconBtn arClose', 'aria-label': 'Close' }, ic(16, P.close, 1.8));
+    var navT = h('span', { class: 'arNavTt' }), navS = h('span', { class: 'arNavTs' });
+    var stepsEl = h('div', { class: 'arSteps', role: 'progressbar', 'aria-valuemin': '1' }), fill = h('div', { class: 'arStepsFill', 'aria-hidden': 'true' });
+    var head = h('div', { class: 'arHead' }, h('div', { class: 'arHeadRow' }, backBtn, h('div', { class: 'arHeadLabel arNavT' }, navT, navS), closeBtn), h('div', { class: 'arStepWrap' }, stepsEl));
+    var view = h('div', { class: 'hpView' });
+    var cta = h('button', { type: 'button', class: 'arBtn arBtnPrimary arBtnLg' }, h('span', { class: 'arBtnLabel' })), sec = h('button', { type: 'button', class: 'hpSec', hidden: true });
+    var foot = h('div', { class: 'arFoot' }, cta, sec);
+    var root = h('div', { class: 'arSheet hpSheet' + (opts.theme === 'dark' ? ' arDark' : '') }, h('div', { class: 'arStage', style: 'display:flex;flex-direction:column;height:100%;min-height:0;' }, head, view, foot));
+    host.appendChild(root);
+    var onCta = null, onSec = null;
+    cta.addEventListener('click', function () { if (onCta && !cta.disabled) onCta(); });
+    sec.addEventListener('click', function () { if (onSec) onSec(); });
+    backBtn.addEventListener('click', back);
+    closeBtn.addEventListener('click', function () { if (A) home(-1); else if (opts.onClose) opts.onClose(); });
+    root.addEventListener('keydown', function (e) { if (e.key === 'Enter' && e.target.matches && e.target.matches('input.hpIn, input.hpHeroIn') && onCta && !cta.disabled) { e.preventDefault(); onCta(); } });
+    var bars = function (n, k) {   // the area's bars, the async report's: k of n lit
+      if (stepsEl.childElementCount - 1 !== n) { stepsEl.textContent = ''; fill = h('div', { class: 'arStepsFill', 'aria-hidden': 'true' }); for (var i = 0; i < n; i++) { stepsEl.appendChild(h('div', { class: 'arStepsBar arStepsBase' })); fill.appendChild(h('div', { class: 'arStepsBar' })); } stepsEl.appendChild(fill); }
+      stepsEl.setAttribute('aria-valuemax', String(n)); stepsEl.setAttribute('aria-valuenow', String(k)); stepsEl.setAttribute('aria-valuetext', 'Step ' + k + ' of ' + n);
+      var px = k * 4 + (k < n - 1 ? 2 : 0); fill.style.clipPath = 'inset(0 calc(100% - (' + k + ' * ((100% - ' + ((n - 1) * 4) + 'px) / ' + n + ') + ' + px + 'px)) 0 0)';
+    };
+    var foot2 = function (label, ok, fn, sl, sfn) { cta.firstChild.textContent = label; cta.disabled = !ok; onCta = fn; sec.hidden = !sl; sec.textContent = sl || ''; onSec = sfn || null; };
+    // a page in: pushed from the right going on, from the left coming back (the report's push: 440ms, the old a third aside and dimmed)
+    function show(build, dir) {
+      var scr = h('div', { class: 'hpScr' }), old = shown; tick++;
+      build(scr); view.appendChild(scr); shown = scr;
+      if (old) {
+        if (!dir || reduced() || !scr.animate) { old.remove(); }
+        else {
+          var f = dir > 0, P2 = { duration: 440, easing: 'cubic-bezier(.32, .72, 0, 1)' };
+          scr.style.zIndex = f ? '2' : '1'; old.style.zIndex = f ? '1' : '2'; old.setAttribute('inert', ''); old.setAttribute('aria-hidden', 'true');
+          scr.animate([{ transform: 'translateX(' + (f ? '100%' : '-30%') + ')' }, { transform: 'none' }], P2);
+          var out = old.animate([{ transform: 'none', opacity: 1 }, { transform: 'translateX(' + (f ? '-30%' : '100%') + ')', opacity: f ? .5 : 1 }], P2);
+          var done = function () { old.remove(); scr.style.zIndex = ''; }; out.onfinish = done; out.oncancel = done;
+        }
+      }
+      return scr;
+    }
+    var live = function (t) { return function () { return alive && tick === t; }; };
+
+    /* the home: the circle, the greeting, the three areas */
+    function home(dir) {
+      A = null; ret = null; root.classList.add('hpAtHome'); navT.textContent = ''; navS.textContent = '';
+      var sm = summary(), first = !shown;
+      show(function (scr) {
+        var dd = dots(); dd.set(sm.n / 3, false);
+        var prev = opts._lastN; opts._lastN = sm.n;
+        if (prev != null && prev !== sm.n) { dd.set(prev / 3, false); setTimeout(function () { dd.set(sm.n / 3, true); }, dir ? 420 : 60); }   // an area just done: its third lights, swept, as the page settles
+        scr.appendChild(h('div', { class: 'hpHome' },
+          dd.el,
+          h('div', { class: 'hpProgL', role: 'status', text: sm.n + ' of 3 completed' }),
+          h('div', { class: 'hpQ' }, h('span', { class: 'hpEy', text: 'Getting started' }), h('h2', { class: 'hpH', text: 'Let’s get to know you, ' + (opts.name || 'Sam') }),
+            h('p', { class: 'hpD', text: 'Everything you share shapes your insights, your care plan and what Eva knows about you.' })),
+          h('div', { class: 'hpAreas' }, AREAS.map(function (a, i) {
+            var st = S.a[a.k].st, p = pending(a.k);
+            var stx = st === 'done' ? 'Completed' : st === 'prog' ? 'In progress' : 'Not started';
+            return h('button', { type: 'button', class: 'hpArea' + (st === 'done' ? ' hpDone' : st === 'prog' ? ' hpProg' : ''), 'aria-label': a.t + ', ' + stx + (p ? ', ' + p.label : ''), on: { click: function () { area(a.k, 1); } } },
+              h('span', { class: 'hpNum', 'aria-hidden': 'true' }, st === 'done' ? ic(16, P.check, 2) : String(i + 1)),
+              h('span', { class: 'hpAreaT' }, h('b', { text: a.t }), h('span', { text: a.s }), p ? h('span', { class: 'hpPend' + (p.done ? ' hpOk' : ''), 'data-pend': a.k }, h('i'), p.label) : null),
+              h('span', { class: 'hpSt ' + (st === 'done' ? 'hpStDone' : st === 'prog' ? 'hpStProg' : 'hpStNot'), text: stx }));
+          }))));
+      }, first ? 0 : dir);
+      var next = AREAS.filter(function (a) { return S.a[a.k].st === 'prog'; })[0] || AREAS.filter(function (a) { return S.a[a.k].st === 'not'; })[0];
+      foot2(sm.n === 3 ? 'Done' : sm.state === 'not' ? 'Let’s begin' : 'Continue', true, function () { if (next) area(next.k, 1); else if (opts.onClose) opts.onClose(); });
+    }
+
+    /* an area: where it was left (its summary once it is done), or a given step */
+    function area(k, dir, i) {
+      var a = AREA[k], st = S.a[k];
+      A = k; root.classList.remove('hpAtHome');
+      I = i != null ? i : st.st === 'done' ? a.steps.length - 1 : Math.min(st.i || 0, a.steps.length - 1);
+      step(dir);
+    }
+    function back() { if (!A) return; if (ret != null) { var r = ret; ret = null; I = r; step(-1); return; } if (I === 0) { home(-1); return; } I--; keep(); step(-1); }
+    function keep() { var st = S.a[A]; if (st.st !== 'done') st.i = I; save(); }
+    function fwd() {   // the next step, or the area done: back to the home
+      var a = AREA[A], st = S.a[A];
+      if (ret != null) { var r = ret; ret = null; I = r; keep(); step(1); return; }
+      if (st.st === 'not') st.st = 'prog';
+      if (I >= a.steps.length - 1) { st.st = 'done'; st.i = I; save(); home(-1); return; }
+      I++; keep(); step(1);
+    }
+    function step(dir) {
+      var a = AREA[A], id = a.steps[I], ans = S.a[A].ans;
+      navT.textContent = a.t; navS.textContent = (I + 1) + ' of ' + a.steps.length; bars(a.steps.length, I + 1);
+      var scr = show(function (scr) { (BUILD[A + '.' + id] || function () {})(scr, ans); }, dir);
+      var f = scr.querySelector('[data-focus]'); if (f && !('ontouchstart' in window)) setTimeout(function () { try { f.focus({ preventScroll: true }); } catch (e) {} }, dir ? 460 : 0);
+    }
+
+    /* parts */
+    var q = function (ey, t, d, c) { return h('div', { class: 'hpQ' + (c ? ' hpC' : '') }, ey ? h('span', { class: 'hpEy', text: ey }) : null, h('h2', { class: 'hpH', text: t }), d ? h('p', { class: 'hpD', text: d }) : null); };
+    var err = function (t) { return h('span', { class: 'hpErr', role: 'alert', hidden: !t }, ic(14, P.err, 1.5), h('span', { text: t || '' })); };
+    var setErr = function (f, t) { var e = f.querySelector('.hpErr'); f.classList.toggle('hpBad', !!t); if (e) { e.hidden = !t; e.lastChild.textContent = t || ''; } };
+    function choice(L, get, set, multi, onChange) {   // option cards: one, or as many as wanted ('none' alone)
+      var box = h('div', { class: 'hpOpts', role: multi ? 'group' : 'radiogroup' });
+      var paint = function () { [].forEach.call(box.children, function (b) { var v = b.dataset.v, cur = get(); b.setAttribute('aria-checked', String(multi ? (cur || []).indexOf(v) >= 0 : cur === v)); }); };
+      L.forEach(function (o) {
+        box.appendChild(h('button', { type: 'button', class: 'hpOpt', role: multi ? 'checkbox' : 'radio', 'data-v': o[0], on: { click: function () {
+          if (multi) { var cur = (get() || []).slice(), at = cur.indexOf(o[0]); if (at >= 0) cur.splice(at, 1); else if (o[0] === 'none') cur = ['none']; else { cur = cur.filter(function (x) { return x !== 'none'; }); cur.push(o[0]); } set(cur); }
+          else set(o[0]);
+          save(true); paint(); if (onChange) onChange(); } } }, h('b', { text: o[1] }), o[2] ? h('span', { text: o[2] }) : null));
+      });
+      paint(); return box;
+    }
+    function field(o) {   // a form field: its label, its input (text, area or select), its helper or error
+      var id = 'hpF' + Math.random().toString(36).slice(2, 8), inp;
+      if (o.kind === 'select') {
+        inp = h('select', { class: 'hpIn', id: id }, o.opts.map(function (x) { return h('option', { value: x[0], text: x[1] }); })); inp.value = o.value || o.opts[0][0];
+      } else if (o.kind === 'area') inp = h('textarea', { class: 'hpIn', id: id, placeholder: o.ph || '', rows: '3' });
+      else inp = h('input', { class: 'hpIn', id: id, type: 'text', placeholder: o.ph || '', inputmode: o.mode || null, autocomplete: 'off', maxlength: o.max || null });
+      if (o.kind !== 'select') inp.value = o.value || '';
+      var flag = o.flag ? h('span', { class: 'hpFlagI', 'aria-hidden': 'true', text: inp.value === 'XX' ? '•' : inp.value }) : null;
+      var wrapI = o.kind === 'select' ? h('div', { class: 'hpSel' + (o.flag ? ' hpFlag' : '') }, flag, inp, ic(16, P.chev, 1.6)) : inp;
+      var hl = o.help ? h('span', { class: 'hpHelp', id: id + 'h', text: o.help }) : null;
+      var f = h('div', { class: 'hpF' }, h('label', { for: id, text: o.label }), o.help && o.kind === 'area' ? hl : null, wrapI, o.help && o.kind !== 'area' ? hl : null, err(''));
+      if (hl) inp.setAttribute('aria-describedby', id + 'h');
+      inp.addEventListener(o.kind === 'select' ? 'change' : 'input', function () { if (flag) flag.textContent = inp.value === 'XX' ? '•' : inp.value; if (o.set) o.set(inp.value); save(true); if (f.classList.contains('hpBad')) setErr(f, ''); });
+      f._in = inp; return f;
+    }
+    var row = function (t, d, b) { return h('div', { class: 'hpRow' }, h('div', null, h('b', { text: t }), h('span', { text: d })), b); };
+    var sumRow = function (q2, a2, go) { return h('div', { class: 'hpSumR' }, h('div', null, h('span', { text: q2 }), h('b', { text: a2 || '—' })), go ? h('button', { type: 'button', class: 'hpEdit', 'aria-label': 'Edit ' + q2, text: 'Edit', on: { click: go } }) : null); };
+    var editTo = function (j) { return function () { ret = I; I = j; step(-1); }; };
+    function intro(scr, t, d) {
+      var dd = dots(); scr.appendChild(h('div', { class: 'hpIntro' }, dd.el, q('', t, d, true)));
+      dd.core(0, false); setTimeout(function () { dd.core(12, true); }, 200); setTimeout(function () { dd.core(32, true); }, 1200);   // its core warms outward ("dots blinking" in the reference's two frames)
+      foot2('Next', true, fwd);
+    }
+
+    /* each step: its page, then its footer */
+    var BUILD = {
+      'wear.pick': function (scr, ans) {
+        ans.dev = ans.dev || [];
+        var grid = h('div', { class: 'hpGrid', role: 'group', 'aria-label': 'Wearables' }), more = !!ans.more;
+        var tile = function (d) {
+          return h('button', { type: 'button', class: 'hpTile', role: 'checkbox', 'aria-checked': String(ans.dev.indexOf(d[0]) >= 0), on: { click: function (e) {
+            var b = e.currentTarget, at = ans.dev.indexOf(d[0]); if (at >= 0) ans.dev.splice(at, 1); else ans.dev.push(d[0]); b.setAttribute('aria-checked', String(at < 0)); delete ans.none; save(true); ok(); } } },
+            h('span', { class: 'hpTileI' }, ic24(DI[d[3]])), h('span', { class: 'hpTileT' }, h('b', { text: d[1] }), h('span', { text: d[2] })), h('span', { class: 'hpTileK', 'aria-hidden': 'true' }, ic(12, P.check, 2.2)));
+        };
+        var paint = function () { grid.textContent = ''; DEV.concat(more ? DEV2 : []).forEach(function (d) { grid.appendChild(tile(d)); });
+          if (!more) grid.appendChild(h('button', { type: 'button', class: 'hpTile hpMore', on: { click: function () { more = true; ans.more = true; save(true); paint(); } } }, h('span', { class: 'hpTileI' }, ic24(DI.more)), h('span', { class: 'hpTileT' }, h('b', { text: 'See all' }), h('span', { text: '30+ devices' })))); };
+        paint();
+        scr.appendChild(q('Getting started', 'We’ll bring in your last 90 days of sleep and activity.', ''));
+        scr.appendChild(grid);
+        var ok = function () { foot2('Continue', ans.dev.length > 0, fwd, 'I don’t have one', function () { ans.dev = []; ans.none = true; var st = S.a.wear; st.st = 'done'; st.i = 2; delete S.pend.wear; save(); home(-1); }); };
+        ok();
+      },
+      'wear.allow': function (scr, ans) {
+        if (!ans.data) ans.data = DATA.filter(function (d) { return d[0] !== 'body' || ans.dev.indexOf('withings') >= 0; }).map(function (d) { return d[0]; });
+        var nm = names(DEV.concat(DEV2), ans.dev);
+        scr.appendChild(q('', 'Choose what we bring in', 'From ' + (nm || 'your wearable') + '. You can change this any time.'));
+        var ok = function () { foot2(ans.dev.length > 1 ? 'Connect' : 'Connect ' + (nm || ''), (ans.data || []).length > 0, function () { S.pend.wear = { at: Date.now() }; fwd(); }); };
+        scr.appendChild(choice(DATA, function () { return ans.data; }, function (v) { ans.data = v.filter(function (x) { return x !== 'none'; }); }, true, ok));
+        ok();
+      },
+      'wear.done': function (scr, ans) {
+        var nm = names(DEV.concat(DEV2), ans.dev), p = pending('wear');
+        if (ans.none) { scr.appendChild(q('', 'No wearable for now', 'Connect one any time and we’ll bring in your last 90 days.')); foot2('Done', true, fwd, 'Connect a wearable', function () { delete ans.none; I = 0; S.a.wear.st = 'prog'; keep(); step(-1); }); return; }
+        var dd = dots(); dd.set(1, false);
+        scr.appendChild(q('', (nm || 'Your wearable') + (ans.dev.length > 1 ? ' are' : ' is') + ' connected', 'We’re bringing in your last 90 days. It runs in the background, so you can keep going.'));
+        if (p) scr.appendChild(h('div', { class: 'hpCard' }, row(p.done ? 'Synced' : 'Syncing', p.label, h('span', { class: 'hpSt ' + (p.done ? 'hpStDone' : 'hpStProg'), text: p.done ? 'Done' : 'In progress' }))));
+        scr.appendChild(h('h3', { class: 'hpEy hpSumH', text: 'Your answers' }));
+        scr.appendChild(h('div', { class: 'hpSum' }, sumRow('Wearables', nm, editTo(0)), sumRow('What we bring in', names(DATA, ans.data), editTo(1))));
+        foot2('Done', true, fwd);
+      },
+      'past.intro': function (scr) { intro(scr, 'Now, let’s map your test history', 'This shows us what we know and what we still need to look at.'); },
+      'past.q': function (scr, ans) {
+        scr.appendChild(q('', 'Have you had a blood test in the past 3 years?', 'We’re looking for a standard Medicare-covered blood test in Australia.'));
+        var ok = function () { foot2('Next', !!ans.blood, fwd); };
+        scr.appendChild(choice(BLOOD, function () { return ans.blood; }, function (v) { ans.blood = v; }, false, ok)); ok();
+      },
+      'past.medicare': function (scr, ans) {
+        scr.appendChild(q('', 'Confirm your Medicare details', 'We use them to find your results with pathology labs across Australia.'));
+        var mc = field({ label: 'Medicare card number', ph: '0000 00000 0', mode: 'numeric', max: 14, value: ans.mc, help: 'The 10 digits on the front of your card', set: function (v) { ans.mc = v; } });
+        var irn = field({ label: 'Your number on the card', kind: 'select', opts: [['', 'Select']].concat([1, 2, 3, 4, 5, 6, 7, 8, 9].map(function (n) { return [String(n), String(n)]; })), value: ans.irn || '', help: 'The number next to your name', set: function (v) { ans.irn = v; } });
+        mc._in.setAttribute('data-focus', '');
+        mc._in.addEventListener('input', function () { var d = mc._in.value.replace(/\D/g, '').slice(0, 10), t = d.slice(0, 4) + (d.length > 4 ? ' ' + d.slice(4, 9) : '') + (d.length > 9 ? ' ' + d.slice(9) : ''); if (t !== mc._in.value) mc._in.value = t; ans.mc = t; });
+        scr.appendChild(h('div', { class: 'hpFields' }, mc, irn));
+        scr.appendChild(h('p', { class: 'hpNote', text: 'We only use your details to find your results. Nothing is shared.' }));
+        foot2('Start searching', true, function () {
+          var d = (ans.mc || '').replace(/\D/g, ''), bad = false;
+          if (d.length !== 10 || !/^[2-6]/.test(d)) { setErr(mc, 'Enter the 10 digits on your Medicare card'); bad = true; }
+          if (!ans.irn) { setErr(irn, 'Choose the number next to your name'); bad = true; }
+          if (bad) return; if (!S.pend.past) S.pend.past = { at: Date.now() }; fwd(); });
+      },
+      'past.search': function (scr, ans) {
+        if (!S.pend.past) S.pend.past = { at: Date.now() };
+        var p = pending('past'), dd = dots(), lab = h('span', { class: 'hpEy', role: 'status', text: p.done ? '4 past results found' : 'Searching labs across Australia' });
+        scr.appendChild(q('', p.done ? 'We found your past results' : 'We’ve started looking for your past results', 'We check pathology labs across Australia under your name and Medicare number. It runs in the background, so you can keep going.'));
+        scr.appendChild(h('div', { class: 'hpSearch' }, dd.el, lab));
+        if (p.done) dd.set(1, false); else radar(dd, live(tick));   // this page's tick (show() counted it before building)
+        var nb = h('button', { type: 'button', class: 'hpRowB', 'aria-pressed': String(!!S.notif), on: { click: function () { S.notif = !S.notif; nb.setAttribute('aria-pressed', String(S.notif)); nb.textContent = ''; add(nb, S.notif ? [ic(14, P.check, 2), 'On'] : 'Turn on'); save(true); } } }, S.notif ? [ic(14, P.check, 2), 'On'] : 'Turn on');
+        var fileI = h('input', { type: 'file', accept: '.pdf,image/*', multiple: true, hidden: true });
+        var upD = h('span', { text: S.files.length ? S.files.length + (S.files.length === 1 ? ' report added' : ' reports added') : 'Upload a PDF or a photo' });
+        fileI.addEventListener('change', function () { [].forEach.call(fileI.files || [], function (f) { S.files.push(String(f.name).slice(0, 80)); }); fileI.value = ''; upD.textContent = S.files.length + (S.files.length === 1 ? ' report added' : ' reports added'); save(true); });
+        scr.appendChild(h('div', { class: 'hpCard' },
+          row('Tell me when they’re ready', 'Turns on notifications for results and reminders', nb),
+          h('div', { class: 'hpRow' }, h('div', null, h('b', { text: 'Have a report from somewhere else?' }), upD), h('button', { type: 'button', class: 'hpRowB', on: { click: function () { fileI.click(); } } }, 'Upload'), fileI)));
+        scr.appendChild(h('h3', { class: 'hpEy hpSumH', text: 'Your answers' }));
+        var d = (ans.mc || '').replace(/\D/g, '');
+        scr.appendChild(h('div', { class: 'hpSum' }, sumRow('Blood test in the past 3 years', name(BLOOD, ans.blood), editTo(1)), sumRow('Medicare card', d ? '•••• ••••• ' + d.slice(-1) + (ans.irn ? ' · number ' + ans.irn : '') : '', editTo(2))));
+        foot2(S.a.past.st === 'done' ? 'Done' : 'Continue', true, fwd);
+      },
+      'you.intro': function (scr) { intro(scr, 'First, the essentials', 'A few questions about you, your habits and your family’s health. About 5 minutes.'); },
+      'you.age': function (scr, ans) {
+        var e = err(''), inp = h('input', { class: 'hpHeroIn', type: 'text', inputmode: 'numeric', maxlength: '3', placeholder: '0', 'aria-label': 'Your age in years', 'data-focus': '', value: ans.age || '' });
+        var box = h('div', { class: 'hpHero' }, inp, e);
+        scr.appendChild(q('', 'How old are you?', '', true)); scr.appendChild(box);
+        var ok = function () { foot2('Continue', !!ans.age, function () { var n = +ans.age; if (!(n >= 18 && n <= 110)) { setErr(box, 'Enter an age between 18 and 110'); return; } fwd(); }); };
+        inp.addEventListener('input', function () { var v = inp.value.replace(/\D/g, '').slice(0, 3); if (v !== inp.value) inp.value = v; ans.age = v; save(true); setErr(box, ''); ok(); });
+        ok();
+      },
+      'you.about': function (scr, ans) {
+        if (!ans.country) ans.country = 'AU';
+        var c = field({ label: 'Country of birth', kind: 'select', flag: true, opts: COUNTRY, value: ans.country, set: function (v) { ans.country = v; } });
+        var e = field({ label: 'Ethnicity', ph: 'E.g. Southeast Asian, Caucasian etc.', value: ans.eth, set: function (v) { ans.eth = v; } });
+        var g = field({ label: 'Health goals and concerns', kind: 'area', ph: 'Type your goals and concerns', help: 'Aspects of your health that you’d like to work on with Everlab.', value: ans.goals, set: function (v) { ans.goals = v; } });
+        var o = field({ label: 'Occupation', ph: 'Type your occupation', value: ans.occ, set: function (v) { ans.occ = v; } });
+        scr.appendChild(q('', 'Tell us more about you', ''));
+        scr.appendChild(h('div', { class: 'hpFields' }, c, e, g, o));
+        foot2('Continue', true, function () { if (!(ans.occ || '').trim()) { setErr(o, 'Add your occupation, or what you do day to day'); o._in.focus(); return; } fwd(); });
+      },
+      'you.smoke': function (scr, ans) {
+        scr.appendChild(q('', 'Do you smoke?', ''));
+        var ok = function () { foot2('Continue', !!ans.smoke, fwd); };
+        scr.appendChild(choice(SMOKE, function () { return ans.smoke; }, function (v) { ans.smoke = v; }, false, ok)); ok();
+      },
+      'you.alcohol': function (scr, ans) {
+        if (ans.alc == null) ans.alc = 0;
+        var v = h('span', { class: 'hpStepV', role: 'status', 'aria-label': ans.alc + ' times a week', text: String(ans.alc) });
+        var set = function (n) { ans.alc = Math.max(0, Math.min(30, n)); v.textContent = String(ans.alc); v.setAttribute('aria-label', ans.alc + ' times a week'); mi.disabled = ans.alc <= 0; pl.disabled = ans.alc >= 30; save(true); };
+        var mi = h('button', { type: 'button', class: 'hpStepB', 'aria-label': 'One less', on: { click: function () { set(ans.alc - 1); } } }, ic(18, P.minus, 1.8));
+        var pl = h('button', { type: 'button', class: 'hpStepB', 'aria-label': 'One more', on: { click: function () { set(ans.alc + 1); } } }, ic(18, P.plus, 1.8));
+        scr.appendChild(q('', 'How many times per week do you drink alcohol?', '', true));
+        scr.appendChild(h('div', null, h('div', { class: 'hpStep' }, mi, v, pl), h('div', { class: 'hpStepH', text: 'Select your average consumption' })));
+        set(ans.alc); foot2('Continue', true, fwd);
+      },
+      'you.medical': function (scr, ans) {
+        scr.appendChild(q('', 'Have you had any medical issues in the past?', 'Select as many as you want'));
+        var ok = function () { foot2('Continue', (ans.med || []).length > 0, fwd); };
+        scr.appendChild(choice(MED, function () { return ans.med; }, function (v) { ans.med = v; }, true, ok)); ok();
+      },
+      'you.family': function (scr, ans) {
+        scr.appendChild(q('', 'Do you have a family history of any of the following?', 'Your parents, brothers or sisters. Select as many as apply.'));
+        var ok = function () { foot2('Continue', (ans.fam || []).length > 0, fwd); };
+        scr.appendChild(choice(FAM, function () { return ans.fam; }, function (v) { ans.fam = v; }, true, ok)); ok();
+      },
+      'you.review': function (scr, ans) {
+        scr.appendChild(q('', 'Review your answers', 'Tap Edit to change anything. You can come back to these any time.'));
+        scr.appendChild(h('div', { class: 'hpSum' },
+          sumRow('Age', ans.age, editTo(1)), sumRow('Country of birth', name(COUNTRY, ans.country), editTo(2)), sumRow('Ethnicity', ans.eth, editTo(2)), sumRow('Health goals and concerns', ans.goals, editTo(2)), sumRow('Occupation', ans.occ, editTo(2)),
+          sumRow('Smoking', name(SMOKE, ans.smoke), editTo(3)), sumRow('Alcohol', ans.alc != null ? ans.alc + (ans.alc === 1 ? ' time' : ' times') + ' a week' : '', editTo(4)),
+          sumRow('Past medical issues', names(MED, ans.med), editTo(5)), sumRow('Family history', names(FAM, ans.fam), editTo(6))));
+        foot2(S.a.you.st === 'done' ? 'Done' : 'Save answers', true, fwd);
+      }
+    };
+
+    // the home's background lines, kept current while it shows
+    var pt = setInterval(function () { if (!alive) return; if (A) return; root.querySelectorAll('[data-pend]').forEach(function (el) { var p = pending(el.dataset.pend); if (!p) return; el.classList.toggle('hpOk', p.done); el.lastChild.textContent = p.label; }); }, 3000);
+    home(0);
+    return {
+      el: root,
+      home: function () { home(0); },
+      area: function (k) { if (AREA[k]) area(k, 0); },
+      where: function () { return { a: A, i: I }; },
+      theme: function (t) { root.classList.toggle('arDark', t === 'dark'); },
+      destroy: function () { alive = false; clearInterval(pt); if (root.parentNode) root.parentNode.removeChild(root); }
+    };
+  }
+
+  window.HealthProfile = { mount: mount, dots: dots, store: { get: function () { return S; }, summary: summary, preset: preset, reset: function () { preset('none'); }, pending: pending, areas: AREAS } };
+})();
+</script>
+
 <script>
 /* ---- Biomarker detail ("create the bottom sheet biomarker detail (click on biomarker item); use it also for the insight page"):
  *   BioDetail.body(m, { dark })              the detail itself, for a sheet that already has a frame (the Async report's)
@@ -22646,6 +23212,7 @@ hairline({
       const tg = document.createElement('optgroup'); tg.label = 'Timeline';   // "a new page ... called Timeline"
       const to = document.createElement('option'); to.value = 'tl'; to.textContent = 'Timeline'; tg.appendChild(to);
       versionSel.appendChild(tg);
+      { const hg = document.createElement('optgroup'); hg.label = 'Health profile'; const ho = document.createElement('option'); ho.value = 'hp'; ho.textContent = 'Health profile'; hg.appendChild(ho); versionSel.appendChild(hg); }   // the Overview with its Health profile open (#health-profile)
       return;
     }
     if (g === ARC_GROUP && ARCHIVED.length){
@@ -22676,6 +23243,7 @@ hairline({
     if (v === 'home'){ if (window._home) window._home.show(); return; }
     if (window._home) window._home.hide();
     if (v === 'tl'){ setMode(9); resize(); if (window._tl) window._tl.open(); return; }
+    if (v === 'hp'){ setMode(9); resize(); if (window._hp){ window._hp.open(); versionSel.value = 'hp'; } try { history.replaceState(null, '', '#health-profile'); } catch (e){} return; }   // the Health profile, over the Overview
     if (v === 'aptD' || v === 'aptM'){ setMode(v === 'aptD' ? 9 : 6); resize(); if (window._apt) (v === 'aptD' ? window._apt.openDesk : window._apt.openMob)(); return; }
     if (v === 'tskD'){ setMode(9); resize(); if (window._svc) window._svc.openDesk('wkq', 'active', { at: 0 }); return; }   // Task detail: the weekly questionnaire first
     if (v === 'svcD' || v === 'svcM'){ setMode(v === 'svcD' ? 9 : 6); resize(); if (window._svc) (v === 'svcD' ? window._svc.openDesk : window._svc.openMob)(); return; }
@@ -29849,6 +30417,62 @@ hairline({
     });
   }
 
+  /* ---- Health profile ("create a Health Profile experience"): the sheet over the Overview, from XS to L as the Async report's Full modal is (its frame, its device status bar, its breakpoints), opened from
+     the Overview's card, My account's row and the menu, every one the same home and the same saved answers (window.HealthProfile.store); closed by its X on the home, or by another page ---- */
+  (function hpPage(){
+    const HP = window.HealthProfile; if (!HP) return;
+    const store = HP.store;
+    let wrap = null, frame = null, inst = null, shutT = 0;
+    const opt = id => { const el = document.getElementById(id); return el ? el.value : ''; };
+    const dark = () => opt('themeSel') === 'dark';
+    const nameOf = () => { const n = document.querySelector('#dOver .dvH1 span'); return (n && n.textContent.trim()) || 'Sam'; };   // the member the Overview greets
+    const bpNow = () => { const f = document.body.dataset.bp, w = innerWidth; return f || (w >= 1440 ? 'l' : w >= 992 ? 'm' : w >= 600 ? 's' : 'xs'); };
+    const fit = () => { if (!wrap) return; const b = bpNow(); ['xs', 's', 'm', 'l'].forEach(k => wrap.classList.toggle('aqBp' + k.toUpperCase(), k === b)); wrap.classList.toggle('aqDev', document.body.dataset.bp === 's' || (document.body.dataset.bp === 'xs' && !document.documentElement.classList.contains('bpAuto'))); };
+    const build = () => {
+      wrap = document.createElement('div'); wrap.className = 'aqWrap aqDesk aqFull hpWrap'; wrap.setAttribute('role', 'dialog'); wrap.setAttribute('aria-modal', 'true'); wrap.setAttribute('aria-label', 'Health profile');
+      wrap.innerHTML = '<div class="aqDim"></div><div class="aqFrame"></div><div class="aqStat" aria-hidden="true"></div>';
+      document.body.appendChild(wrap); frame = wrap.querySelector('.aqFrame');
+      const st = document.querySelector('#bpFrame .bpStatus'); if (st) wrap.querySelector('.aqStat').innerHTML = st.innerHTML;
+      addEventListener('resize', fit); const bp = document.getElementById('stBp'); if (bp) bp.addEventListener('change', () => setTimeout(fit, 60));
+    };
+    const paint = () => { if (!inst) return; inst.theme(dark() ? 'dark' : 'light'); wrap.classList.toggle('aqInk', !dark()); frame.style.background = getComputedStyle(inst.el).backgroundColor; };
+    const open = o => { o = o || {}; if (!wrap) build(); clearTimeout(shutT); fit();
+      if (inst) inst.destroy(); frame.textContent = '';
+      inst = HP.mount(frame, { theme: dark() ? 'dark' : 'light', name: nameOf(), onClose: close }); paint();
+      if (o.area) inst.area(o.area);
+      wrap.classList.remove('on', 'shut'); wrap.classList.add('hpOpen'); document.body.classList.add('hpOn');
+      requestAnimationFrame(() => requestAnimationFrame(() => wrap.classList.add('on')));
+      inst.el.setAttribute('tabindex', '-1'); inst.el.style.outline = 'none'; setTimeout(() => { if (inst && wrap.classList.contains('on')) try { inst.el.focus({ preventScroll: true }); } catch (e){} }, 540); };   // focus into the sheet itself (no ring drawn on a button)
+    const close = now => { if (!wrap || !wrap.classList.contains('hpOpen')) return; wrap.classList.remove('on'); wrap.classList.add('shut'); document.body.classList.remove('hpOn');
+      const end = () => { wrap.classList.remove('hpOpen', 'shut'); if (inst){ inst.destroy(); inst = null; } frame.textContent = ''; };
+      if (now === true) end(); else shutT = setTimeout(end, 520); };
+    document.addEventListener('keydown', e => { if (e.key !== 'Escape' || !wrap || !wrap.classList.contains('on')) return; if (document.querySelector('.tkPanel[open], .tkMenu:not([hidden])') && e.target.closest && e.target.closest('.topbar')) return; const x = wrap.querySelector('.arClose'); if (x){ e.preventDefault(); x.click(); } });
+    document.addEventListener('everlab:mode', () => close(true));
+    { const t = document.getElementById('themeSel'); if (t) t.addEventListener('change', () => setTimeout(paint, 30)); }
+    // the Overview's card: the dotted circle (a third lit an area done), the name and the line, the status and the three areas, the button its state's ("Complete / Continue / View health profile")
+    const AR = [['wear', 'Wearable'], ['past', 'Past results'], ['you', 'About you']];
+    let lastN = null, ring = null;
+    const card = () => { const over = document.getElementById('dOver'), plan = over && over.querySelector(':scope > .dvSecPlan'); if (!plan) return null;
+      let c = over.querySelector(':scope > .hpOvCard'); if (!c){ c = document.createElement('div'); c.className = 'hpOvCard'; plan.before(c);
+        c.addEventListener('click', e => { if (e.target.closest('.hpOvBtn') || !e.target.closest('button')) open(); }); } return c; };
+    const ck = '<svg width="9" height="9" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3.8 8.3 2.6 2.6 5.8-6"/></svg>';
+    const paintCard = () => { const c = card(); if (!c) return; const sm = store.summary();
+      const stx = sm.state === 'done' ? 'Completed' : sm.state === 'prog' ? 'In progress' : 'Not started', cls = sm.state === 'done' ? 'hpStDone' : sm.state === 'prog' ? 'hpStProg' : 'hpStNot';
+      c.innerHTML = '<div class="hpOvT"><h3>Health profile</h3><p>Help us understand your health, lifestyle and family history.</p><div class="hpOvS"><span class="hpSt ' + cls + '">' + stx + '</span><span class="hpOvA">' +
+        AR.map(([k, l]) => '<span class="' + (sm.st[k] === 'done' ? 'd' : '') + '"><i>' + (sm.st[k] === 'done' ? ck : '') + '</i>' + l + '</span>').join('') + '</span></div></div><button class="hpOvBtn" type="button">' + sm.cta + '</button>';
+      ring = HP.dots(); c.prepend(ring.el); ring.el.setAttribute('role', 'img'); ring.el.removeAttribute('aria-hidden'); ring.el.setAttribute('aria-label', sm.n + ' of 3 completed');
+      if (lastN != null && lastN !== sm.n){ ring.set(lastN / 3, false); const r = ring; setTimeout(() => r.set(sm.n / 3, true), 600); } else ring.set(sm.n / 3, false);   // a new area done: its third swept in once the sheet is down
+      lastN = sm.n; };
+    document.addEventListener('everlab:hp', () => { paintCard(); const t = document.getElementById('stHpSt'); if (t && !hpSetting) t.value = 'live'; });
+    // the demo states (Tweaks -> Health profile): not started, one or two of three, completed; Saved is whatever was last done here
+    let hpSetting = false;
+    { const t = document.getElementById('stHpSt'); if (t) t.addEventListener('change', () => { if (t.value === 'live') return; hpSetting = true; store.preset(t.value); hpSetting = false; if (inst && wrap.classList.contains('on')) open(); }); }
+    paintCard();
+    document.addEventListener('everlab:mode', () => setTimeout(paintCard, 60));
+    { const b = document.getElementById('stHpOpen'); if (b) b.addEventListener('click', () => { if (typeof version !== 'undefined' && version !== 9){ setMode(9); resize(); } open(); }); }   // Tweaks -> Health profile -> Open
+    window._hp = { open, close, paint: paintCard };
+  })();
+
   // ---- V4's third tab: the findings ------------------------------------
   // Readings and documents are what the clinic produced; this is what they
   // mean. One card per finding, each naming the readings it was drawn from --
@@ -36207,7 +36831,11 @@ hairline({
       '<div class="acFoot"><span class="acUpd"><i></i>Last updated ' + esc(HI.lastUpdated) + '</span><div class="acFootA"><button type="button" class="acCancel" data-foot="cancel">Cancel</button><button type="button" class="acSave" data-foot="save">Save changes</button></div></div>';
     const rowsOf = rows => rows.map(([ic, t, v, act]) => '<div class="acPr"><span class="acPrI">' + I[ic] + '</span><div><b>' + t + '</b>' + (v ? '<span>' + esc(v) + '</span>' : '') + '</div><button type="button" class="acEdit" data-pedit="' + (act || '') + '">Edit</button></div>').join('');
     const profile = () => '<div class="acPrG">' + eb('PERSONAL INFORMATION', 'acEbP') + rowsOf([['user', 'Profile', 'Georgia Smith'], ['siren', 'Emergency contact', 'Vanessa Smith – +61 3 345 653'], ['pin', 'Billing address', '10 Monckton Road, Bundoora, VIC 3083'], ['pinHome', 'Mailing address', '122 Palmer St, Sydney, NSW 2000']]) + '</div>' +
-      '<div class="acPrG">' + eb('HEALTH INFORMATION', 'acEbP') + rowsOf([['folder', 'Background', 'Asian, Student, from Australia', 'lifestyle'], ['decl', 'Health declaration', '', 'conditions']]) + '</div>';
+      '<div class="acPrG">' + eb('HEALTH INFORMATION', 'acEbP') + hpRow() + rowsOf([['folder', 'Background', 'Asian, Student, from Australia', 'lifestyle'], ['decl', 'Health declaration', '', 'conditions']]) + '</div>';
+    /* the Health profile, first under Health information ("add a clearly labelled Health Profile item within My Profile"): its circle, its status, and its action, the Overview card's in short (the same profile behind both) */
+    const hpRow = () => { const HPm = window.HealthProfile; if (!HPm) return ''; const sm = HPm.store.summary(), act = sm.state === 'done' ? 'View' : sm.state === 'prog' ? 'Continue' : 'Complete';
+      const dot = '<svg class="hpDots" viewBox="0 0 24 24" aria-hidden="true">' + [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map(i => { const a = i / 12, on = a < sm.n / 3 - 1e-6; return '<circle cx="' + (12 + 8.5 * Math.sin(a * 6.2832)).toFixed(2) + '" cy="' + (12 - 8.5 * Math.cos(a * 6.2832)).toFixed(2) + '" r="1.5"' + (on ? ' class="on"' : '') + '/>'; }).join('') + [0, 1, 2, 3, 4, 5].map(i => { const a = (i + .5) / 6, on = a < sm.n / 3 - 1e-6; return '<circle cx="' + (12 + 4.2 * Math.sin(a * 6.2832)).toFixed(2) + '" cy="' + (12 - 4.2 * Math.cos(a * 6.2832)).toFixed(2) + '" r="1.4"' + (on ? ' class="on"' : '') + '/>'; }).join('') + '<circle cx="12" cy="12" r="1.4"' + (sm.n ? ' class="on"' : '') + '/></svg>';
+      return '<div class="acPr acPrHp"><span class="acPrI">' + dot + '</span><div><b>Health profile</b><span>' + (sm.state === 'done' ? 'Completed' : sm.state === 'prog' ? 'In progress · ' + sm.n + ' of 3 completed' : 'Not started · wearable, past results, about you') + '</span></div><button type="button" class="acEdit" data-hp="open" aria-label="' + act + ' health profile">' + act + '</button></div>'; };
     const settings = () => '<div class="acPrG">' + eb('PREFERENCES', 'acEbP') + rowsOf([['bell', 'Notifications', 'Email and push'], ['gear', 'Units', 'Metric (kg, cm)'], ['user', 'Language', 'English (Australia)']]) + '</div><div class="acPrG">' + eb('SECURITY', 'acEbP') + rowsOf([['decl', 'Password', 'Last changed 3 months ago'], ['siren', 'Two-factor authentication', 'Off']]) + '</div>';
     const purchases = () => '<div class="acPrG">' + eb('YOUR PLAN', 'acEbP') + rowsOf([['decl', 'Baseline plan', 'Paid 12 Aug 2026 · $299']]) + '</div><div class="acPrG">' + eb('RECEIPTS', 'acEbP') + rowsOf([['doc', 'Baseline plan receipt', 'PDF · 12 Aug 2026']]) + '</div>';
     const TABS = [['profile', 'Profile'], ['health', 'Health profile', ATT.length], ['settings', 'Settings'], ['purchases', 'Purchases']];
@@ -36241,6 +36869,7 @@ hairline({
       if (t.dataset.prev){ const d = HI.documents[+t.dataset.prev]; toast((d ? d.name : 'The document') + ' opens in a preview.'); return; }
       if (t.dataset.foot === 'save'){ HI.lastUpdated = 'just now'; Object.values(HI.screening).forEach(r => { delete r.ed; }); SAVED = clone(HI); paintBody(); toast('Your health information is saved.'); return; }
       if (t.dataset.foot === 'cancel'){ HI = clone(SAVED); paintBody(); toast('Changes discarded.'); return; }
+      if (t.dataset.hp){ if (window._hp) window._hp.open(); return; }   // the Health profile, the Overview card's own
       if (t.classList.contains('acEdit')){ const to = t.dataset.pedit; if (to){ TAB = 'health'; SEC = to; paint('.acBody .acSh h2'); host.scrollTop = 0; return; } toast('Editing opens a form here.'); } });
     host.addEventListener('change', e => { const t = e.target;
       if (t.matches('input[type="month"][data-date]')){ const v = t.value; if (!v) return; const [y, m] = v.split('-'); HI.screening[t.dataset.date] = Object.assign({}, HI.screening[t.dataset.date], { date: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][parseInt(m, 10) - 1] + ' ' + y, ed: false }); touched(); paintBody('[data-edit="' + t.dataset.date + '"]'); return; }
@@ -36274,6 +36903,7 @@ hairline({
     if (nv) nv.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); nv.click(); } });   // a key opens it too
     document.querySelectorAll('.dash .side .nv:not(.nvAcc)').forEach(x => x.addEventListener('click', close, true));   // the nav's other pages
     window._acc = { open, close };
+    document.addEventListener('everlab:hp', () => { if (document.body.classList.contains('accOn') && TAB === 'profile') paint(); });   // the Health profile row follows the profile, wherever it was answered
   })();
   // a segmented tab in place of a select ("put a segmented tab instead of a select"): the select stays, hidden, as the value and its change event
   document.querySelectorAll('select.tkSegSel').forEach(sel => {
@@ -36330,11 +36960,11 @@ hairline({
       ins: ['Insights', '.ovInsCard, .ovsecIns, .ovcar, .ovcdots'], prof: ['Health profile', '.ovsecProf, .ovProf'], plan: ['Action plan', '.ovsecPlan, .ovplan, .ovtl'], later: ['Later card', '.ovsecAvail, .ovDef'] };
     const host = () => { const c = document.querySelector('#phone2 .ovcar'); return c && c.parentElement; };
     const inp = document.getElementById('stOvOrder'), list = document.getElementById('tkOvOrd'), offI = document.getElementById('stOvOff');
-    const DSEC = { svc: '.ovSvc, .dvTop > div:not(.ovhero):not(.ovBk)', hero: '.ovhero', row2: '.ovrow2', ins: '.dvSecIns, .dvRail, .railNav, .dvDots', prof: '.ovsecProf, .ovProf, .dvSecProf, .dvProf', plan: '.dvSecPlan, .dvPlanChips, .dvPlanGrid, .dvPlanList, .dvPlanTl', later: '.dvSecAvail, .dvDef' };   // the same sections on the Overview itself (desk to XS)
+    const DSEC = { svc: '.ovSvc, .dvTop > div:not(.ovhero):not(.ovBk)', hero: '.ovhero', row2: '.ovrow2', ins: '.dvSecIns, .dvRail, .railNav, .dvDots', prof: '.ovsecProf, .ovProf, .dvSecProf, .dvProf, .hpOvCard', plan: '.dvSecPlan, .dvPlanChips, .dvPlanGrid, .dvPlanList, .dvPlanTl', later: '.dvSecAvail, .dvDef' };   // the same sections on the Overview itself (desk to XS)
     const offs = () => new Set((offI && offI.value || '').split(',').filter(Boolean));
     // the order on the Overview itself ("changing the order must change also on the screen"): its sections moved as units in the list's order; on the desk Services and Next step share one row (.dvTop), placed where the first of the two stands, Next step left and Services right as ever
     const applyD = () => { const pl = document.querySelector('#dOver .dvSecPlan'); if (!pl) return; const m = pl.parentElement, top = m.querySelector(':scope > .dvTop'), inCol = !!(top && top.querySelector('.ovSvc')), q = sl => [...m.querySelectorAll(':scope > :is(' + sl + ')')];
-      const U = { svc: inCol ? [top] : q('.ovSvc'), hero: top ? [top] : [], ins: q('.dvSecIns, .dvRail, .railNav, .dvDots'), plan: q('.dvSecPlan, .dvPlanChips, .dvPlanGrid, .dvPlanList, .dvPlanTl'), later: q('.dvSecAvail, .dvDef') }, o = order(), seen = new Set(), seq = [];
+      const U = { svc: inCol ? [top] : q('.ovSvc'), hero: top ? [top] : [], ins: q('.dvSecIns, .dvRail, .railNav, .dvDots'), prof: q('.hpOvCard'), plan: q('.dvSecPlan, .dvPlanChips, .dvPlanGrid, .dvPlanList, .dvPlanTl'), later: q('.dvSecAvail, .dvDef') }, o = order(), seen = new Set(), seq = [];
       o.forEach(k => (U[k] || []).forEach(el => { if (el && !seen.has(el)){ seen.add(el); seq.push(el); } }));
       const first = [...m.children].find(el => seen.has(el)); if (first){ const mk = document.createComment('ord'); m.insertBefore(mk, first); seq.forEach(el => m.insertBefore(el, mk)); mk.remove(); }
       if (top){ const hero = top.querySelector(':scope > .ovhero'); top.classList.remove('svcFirst'); if (hero) top.prepend(hero); } };   /* on the desk the pair keeps its arrangement, Next step at the left, Services at the right: the row moves as one */
@@ -36577,6 +37207,8 @@ hairline({
       put('themeSel', 'dark'); put('stBp', 'xs'); put('versionSel', '26'); }
     else if ((location.hash === '#ar2' || location.hash === '#arp2') && versionSel){ const put = (id, v) => { const el = document.getElementById(id); if (el && [...el.options].some(o => o.value === v) && el.value !== v){ el.value = v; el.dispatchEvent(new Event('change', { bubbles: true })); } }; put('themeSel', 'dark'); put('stBp', 'xs');
       if (location.hash === '#ar2') put('stArPre', 'v2'); else put('stArPer', 'p2'); put('versionSel', '26'); }
+    else if (location.hash === '#health-profile' && versionSel){ const put = (id, v) => { const el = document.getElementById(id); if (el && [...el.options].some(o => o.value === v) && el.value !== v){ el.value = v; el.dispatchEvent(new Event('change', { bubbles: true })); } };
+      put('themeSel', 'dark'); put('stBp', 'xs'); versionSel.value = 'hp'; versionSel.dispatchEvent(new Event('change', { bubbles: true })); }   // the Health profile over the Overview, in the Async report's default dress (Dark, the XS phone)
     // the viewport saved from the bar: the prototype opens on it, over any page's own default (the XS of the first page); Save keeps the one showing, a dot on it while they differ
     { const bs = document.getElementById('stBp'), sb = document.getElementById('tkBpSave'), KEY = 'everlab.bp'; let kept = null; try { kept = localStorage.getItem(KEY); } catch (e){}
       if (bs && kept && [...bs.options].some(o => o.value === kept) && bs.value !== kept){ bs.value = kept; bs.dispatchEvent(new Event('change', { bubbles: true })); }
