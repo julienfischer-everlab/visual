@@ -5609,7 +5609,7 @@
   .aqWrap.shut .aqAgain{display:inline-flex;}
   @media (prefers-reduced-motion: reduce){ .aqFrame, .aqDim{transition:none;} }
   /* Full modal (Tweaks -> Async report -> Variation, the desktop; the default), after the design system's Full modal, "Type: Full (edge to edge modal), content only": the surface edge to edge under the bar, square, rising the same way, in the debrief's own paper; the content in a column 560 wide in its middle -- the back and close at the column's corners, the step titles centred, the button the column's width at its foot ("async desktop full modal following this system") */
-  #stArVarRow[hidden], #stArSrcRow[hidden], #stArAssRow[hidden]{display:none !important;}
+  #stArVarRow[hidden], #stArSrcRow[hidden], #stArAssRow[hidden], #stArSphRow[hidden]{display:none !important;}
   .aqWrap.aqDesk.aqFull .aqFrame{left:0;width:100%;height:100%;border-radius:0;box-shadow:none;transform:translateY(104%);}
   .aqWrap.aqDesk.aqFull.on .aqFrame{transform:none;} .aqWrap.aqDesk.aqFull.shut .aqFrame{transform:translateY(104%);}
   .aqWrap.aqFull .aqFrame > .arSheet.arSheet.arSheet.arSheet{max-width:560px;margin:0 auto;}
@@ -12146,6 +12146,8 @@
         <!-- the screen introducing the insights: none, the list after the welcome ("create a 2nd screen that intros all slides in card list items"), or Full bg, which is the welcome itself: the title word by word over the picture, then the card of what is covered ("the full bg should replace the intro, not an additional screen after that intro"); the Welcome and Header visual rows away while it is on -->
         <div class="tkRow"><span class="lbl">Intro screen</span><select id="stArList" class="tkSegSel" aria-label="The screen introducing the insights"><option value="ht">Halftone</option><option value="on" selected>Split bg</option><option value="reveal">Full bg</option><option value="sphere">Sphere</option><option value="orbit">Sphere hero</option></select></div>
         <!-- the reassurance under the reveal's card (Full bg, Sphere, Halftone), shown or not ("add tweak: Rest assured mention, ON OFF") -->
+        <!-- the sphere's drawing (Sphere and Sphere hero): its particles, or a dither of the ball ("try instead of sphere particles a dither sphere pattern, normal and hero; add variations") -->
+        <div class="tkRow" id="stArSphRow"><span class="lbl">Sphere</span><select id="stArSph" class="tkSegSel" aria-label="How the sphere is drawn"><option value="particles" selected>Particles</option><option value="bayer">Bayer</option><option value="dots">Dots</option><option value="diffuse">Diffuse</option></select></div>
         <div class="tkRow" id="stArAssRow"><span class="lbl">Rest assured</span><select id="stArAss" class="tkSegSel" aria-label="The reassurance under the intro's card"><option value="on" selected>On</option><option value="off">Off</option></select></div>
         </div>
         <div class="tkGroup" data-pages="lp">
@@ -14377,7 +14379,7 @@
 @keyframes arRvBlink { 0%, 55% { opacity: 1; } 56%, 100% { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .arSheet .arRvCur { animation: none; } }
 .arSheet .arRvWel .arRv.arOrb { min-height: 100%; }
-.arSheet.arSheet.arOrbit.arIsWelcome .arFoot { align-items: center; } .arSheet.arSheet.arOrbit.arIsWelcome .arFoot > .arBtnLg { width: auto; max-width: none; padding: 0 36px; border-radius: 9999px; }   /* Sphere hero: See my results, fully rounded, hugging its words, centred ("See my results; full rounded hug") */
+.arSheet.arSheet.arPill.arIsWelcome .arFoot { align-items: center; } .arSheet.arSheet.arPill.arIsWelcome .arFoot > .arBtnLg { width: auto; max-width: none; padding: 0 36px; border-radius: 9999px; }   /* Sphere hero and Sphere: See my results, fully rounded, hugging its words, centred ("See my results; full rounded hug"; "same here") */
 .arSheet .arOrbChips { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 16px; padding-bottom: 0; animation: arRvWord .8s var(--ar-ease) both; }   /* the doctor and the date, centred under the title */   /* Sphere hero: the page's height, its reassurance at the foot */
 .arSheet .arOrbLab { position: absolute; left: 0; top: 0; width: 0; height: 0; pointer-events: none; will-change: transform, opacity; } .arSheet:not(.arIsWelcome) .arOrbLab { display: none; }   /* Sphere hero: a label at its point of the ball, following it */
 .arSheet .arOrbBox { opacity: 0; transition: opacity .35s ease; } .arSheet .arOrbBox.arOrbOn { opacity: 1; } .arSheet .arOrbBox.arOrbGone { opacity: 0; filter: blur(3px); transition: opacity .42s ease, filter .42s ease; }
@@ -14936,7 +14938,8 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       cards: opts.cards === 'outline' ? 'outline' : 'fill',   // Behind this insight's cards filled (default, "Filled should be the default style") or outlined
       mb: opts.mb === 2 ? 2 : 3,   // the biomarkers shown before See N more (default 3), the next one partly shown
       src: opts.src === 'out' ? 'out' : 'in',
-      assure: opts.assure !== false,   // the reveal welcome's reassurance under its card (Rest assured: On, the default)   // V2's sources: bullets in the card (default), or outside it, Records and Questionnaire as two pill buttons opening their sheets
+      assure: opts.assure !== false,
+      sph: ['bayer', 'dots', 'diffuse'].indexOf(opts.sph) >= 0 ? opts.sph : 'particles',   // the Sphere and Sphere hero's ball: its particles (default), or a dither (Bayer, Dots, Diffuse)   // the reveal welcome's reassurance under its card (Rest assured: On, the default)   // V2's sources: bullets in the card (default), or outside it, Records and Questionnaire as two pill buttons opening their sheets
       srcVis: opts.srcVis === 'image' ? 'image' : 'hairline',   // From your data's visual: the Hairline report file (default) or the Overview's report render
       ev: opts.ev === 'v2' ? 'v2' : 'v1',   // Behind this insight: From your data's card and a card each (V1), or one card grouped by pill (Async report V2)
       more: opts.more === 'fold' ? 'fold' : 'sheet',   // See N more: the bottom sheet with them all (default), or the rest opened in place
@@ -14977,7 +14980,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
     var REVEAL = LIST && o.intro === 'reveal', RVW = o.welcome === 'reveal';   // the reveal as the 2nd screen, or as the welcome
     var sphL = o.welcome === 'sphere' || o.welcome === 'orbit' ? sphereLayer(o.welcome === 'orbit') : o.welcome === 'halftone' ? ditherLayer() : null; if (sphL) stage.insertBefore(sphL.el, head);   // the Sphere welcome's ground and its turning ball; the Halftone's creme and its dithered picture
     if (REVEAL || RVW || !sphL) stage.insertBefore(h('div', { class: 'arRvBg', 'aria-hidden': 'true' }, h('img', { src: o.hero, alt: '', decoding: 'async', draggable: 'false' })), head);   // the picture also for the last page, unless the Sphere or Halftone ground is its own   // the full-bg intro's picture, under the head, the flow and the foot
-    var root = h('div', { class: 'arSheet' + (o.theme === 'dark' ? ' arDark' : '') + (o.welcome === 'halftone' ? ' arHtw' : '') + (o.welcome === 'orbit' ? ' arOrbit' : '') + (o.bar === 'grad' ? ' arBarGrad' : '') + (o.foot === 'grad' ? ' arFootGrad' : '') + (o.blur ? '' : ' arNoBlur') + (o.cards === 'fill' ? ' arCardsFill' : '') + (o.wvis === 'halftone' && ['reveal', 'sphere'].indexOf(o.welcome) < 0 ? ' arHtOn' : ''), 'data-ar-mount': uid }, stage);
+    var root = h('div', { class: 'arSheet' + (o.theme === 'dark' ? ' arDark' : '') + (o.welcome === 'halftone' ? ' arHtw' : '') + (o.welcome === 'orbit' ? ' arOrbit' : '') + (o.welcome === 'orbit' || o.welcome === 'sphere' ? ' arPill' : '') + (o.bar === 'grad' ? ' arBarGrad' : '') + (o.foot === 'grad' ? ' arFootGrad' : '') + (o.blur ? '' : ' arNoBlur') + (o.cards === 'fill' ? ' arCardsFill' : '') + (o.wvis === 'halftone' && ['reveal', 'sphere'].indexOf(o.welcome) < 0 ? ' arHtOn' : ''), 'data-ar-mount': uid }, stage);
     /* The sticky gradient, one rule for both fixed groups ("solid bg until 70% of the last section; after that a gradient, ending 40px bleeding past the last section"):
        the bar's last section is the pinned anchors when they are pinned, else the progress; the footer's, read from its foot, is its button.
        --ar-gs: where the solid ends, --ar-ge: where the gradient ends, both from the group's own edge; an optional blur in ten bands under it */
@@ -15105,6 +15108,40 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       var T0 = new Float32Array(NS), G = new Uint8Array(NS), RR = new Float32Array(NS), O = new Float32Array(NS * 3);
       for (i = 0; i < NS; i++) { G[i] = i % 5; T0[i] = rnd() * 6.2832; RR[i] = .8 + .2 * Math.sqrt(rnd()); var g = (rnd() + rnd() + rnd() - 1.5) * .16, o = unit(); O[i * 3] = o[0] * g; O[i * 3 + 1] = o[1] * g; O[i * 3 + 2] = o[2] * g; A[i] = .3 + .4 * rnd(); }   /* diffused ("less condensed areas, diffuse more"): fewer on the currents (7000 of 18000, was 11000), spread three times as wide either side, deeper, and fainter */   // a current's point: where on its loop, how deep, how far off it
       var blobs = []; for (j = 0; j < 6; j++) { var b0 = unit(); blobs.push([b0[0], b0[1], b0[2], .28 + rnd() * .3]); }
+      /* the Sphere tweak ("try instead of sphere particles, a dither sphere pattern, normal and hero, as variations"): Particles, or the ball drawn as a dither from the same geometry (its turn, its tilt, its place):
+         lit from the upper left, a rim at its edge, its face weathered by nine soft patches that turn with it; Bayer (an ordered 8x8 dither in 3px squares, as the Report visuals), Dots (a halftone screen,
+         a dot every 6px sized by its tone) or Diffuse (Atkinson error diffusion in 3px squares, its grain shifting as it turns); on or off over the ground (not a disc filled in two colours), in the particles' brick, the lights in the ink, the patches in their blue */
+      var DS = ['bayer', 'dots', 'diffuse'].indexOf(opts.sph) >= 0 ? opts.sph : 'particles';   // from the mount's opts: a local o (a unit vector) shadows the report's options in here
+      var DB = []; for (j = 0; j < 9; j++) { var c0 = unit(); DB.push([c0[0], c0[1], c0[2], .16 + rnd() * .28, (rnd() < .5 ? -1 : 1) * (.32 + rnd() * .38)]); }
+      var LN = Math.hypot(-.42, .55, .72), LX = -.42 / LN, LY = .55 / LN, LZ = .72 / LN;
+      var pack = function (c) { return ((255 << 24) | (c[2] << 16) | (c[1] << 8) | c[0]) >>> 0; };
+      var ditherInto = function (b32, PW, PH, dpr, R, cx, cy, ca, sa, ct, st, w, hh, dk, KO) {
+        var cell = DS === 'dots' ? 6 : 3, cols = Math.ceil(w / cell), rows = Math.ceil(hh / cell);
+        var i0 = Math.max(0, Math.floor((cx - R) / cell)), i1 = Math.min(cols - 1, Math.ceil((cx + R) / cell)), j0 = Math.max(0, Math.floor((cy - R) / cell)), j1 = Math.min(rows - 1, Math.ceil((cy + R) / cell));
+        if (i1 < i0 || j1 < j0) return;
+        var HI = pack(dk ? [238, 232, 226] : [40, 36, 33]), LO = pack(dk ? [214, 112, 58] : [196, 92, 40]), MD = pack(dk ? [150, 160, 204] : [92, 104, 156]), nW = i1 - i0 + 1, E = DS === 'diffuse' ? new Float32Array((nW + 4) * (j1 - j0 + 4)) : null, EW = nW + 4;
+        var cp = cell * dpr, sq = Math.max(1, Math.round(cp) - (dpr > 1.5 ? 1 : 0));
+        for (var jj = j0; jj <= j1; jj++) for (var ii = i0; ii <= i1; ii++) {
+          var px = (ii + .5) * cell, py = (jj + .5) * cell, nx = (px - cx) / R, ny = -(py - cy) / R, r2 = nx * nx + ny * ny; if (r2 >= 1) continue;
+          var nz = Math.sqrt(1 - r2), Yv = ny * ct + nz * st, z1 = -ny * st + nz * ct, Xv = nx * ca - z1 * sa, Zv = nx * sa + z1 * ca, t = .5;   // the point of the ball under this cell, turned back to the ball's own frame
+          for (var bi = 0; bi < 9; bi++) { var B = DB[bi]; t += B[4] * Math.exp(-(1 - (Xv * B[0] + Yv * B[1] + Zv * B[2])) / B[3]); }
+          t = t < 0 ? 0 : t > 1 ? 1 : t;
+          var Lt = nx * LX + ny * LY + nz * LZ; if (Lt < 0) Lt = 0;
+          var v = Math.pow(Lt, 1.4) * (.35 + .65 * t) * .66 + .14 * Math.pow(1 - nz, 3); if (v > 1) v = 1;   /* a 1-bit ball: its lit side in squares, its shadow side thinning to the ground, its rim kept; light enough to read over */
+          for (var kq = 0; kq < KO.length; kq++) { var K0 = KO[kq], kdx = Math.max(K0[0] - px, 0, px - K0[2]), kdy = Math.max(K0[1] - py, 0, py - K0[3]), kd = Math.sqrt(kdx * kdx + kdy * kdy) - 4; if (kd < 14) v *= 1 - K0[4] * (1 - Math.max(0, kd) / 14); }   // clear under the words over it (the hero's labels, the note), feathered over 14px, as much as they show
+          var col = v > .5 ? HI : t > .78 ? MD : LO,   /* the particles' three inks: the brick most, the lights in the ink, the patches in the blue */ X0 = Math.round(ii * cp), Y0 = Math.round(jj * cp), yy, xx;
+          if (DS === 'dots') {
+            var rr = .5 * cp * Math.sqrt(v) * 1.08; if (rr < .45) continue; var ccx = X0 + cp / 2, ccy = Y0 + cp / 2, r2c = rr * rr;
+            for (yy = Math.floor(ccy - rr); yy <= Math.ceil(ccy + rr); yy++) { if (yy < 0 || yy >= PH) continue; for (xx = Math.floor(ccx - rr); xx <= Math.ceil(ccx + rr); xx++) { if (xx < 0 || xx >= PW) continue; var dx = xx + .5 - ccx, dy = yy + .5 - ccy; if (dx * dx + dy * dy <= r2c) b32[yy * PW + xx] = col; } }
+            continue;
+          }
+          var on;
+          if (DS === 'bayer') on = v > (BAYER8[jj & 7][ii & 7] + .5) / 64;
+          else { var ei = (jj - j0 + 1) * EW + (ii - i0 + 2), e = v + E[ei]; on = e > .5; var q = (e - (on ? 1 : 0)) / 8; E[ei + 1] += q; E[ei + 2] += q; E[ei + EW - 1] += q; E[ei + EW] += q; E[ei + EW + 1] += q; E[ei + 2 * EW] += q; }   // Atkinson: six neighbours an eighth each
+          if (!on) continue;
+          for (yy = Y0; yy < Y0 + sq; yy++) { if (yy < 0 || yy >= PH) continue; for (xx = X0; xx < X0 + sq; xx++) { if (xx >= 0 && xx < PW) b32[yy * PW + xx] = col; } }
+        }
+      };
       for (i = NS; i < N + M; i++) {
         var amb = i >= N, uu = rnd(), r = amb ? 1.04 + rnd() * .42 : (i % 20) < SH ? .93 + .07 * uu : Math.cbrt(uu) * .93, d0 = unit(), px = d0[0], py = d0[1], pz = d0[2];
         P[i * 3] = px * r; P[i * 3 + 1] = py * r; P[i * 3 + 2] = pz * r;
@@ -15129,15 +15166,20 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         var w = cv.clientWidth, hh = cv.clientHeight; if (!w || !hh) return;
         var dpr = Math.min(2, window.devicePixelRatio || 1); if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(hh * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(hh * dpr); }
         x.setTransform(dpr, 0, 0, dpr, 0, 0); x.clearRect(0, 0, w, hh);
-        flow((now - t0) / 1000);
+        if (DS === 'particles') flow((now - t0) / 1000);
         var R = Math.min(Math.max(w * .62, hh * .32), hh * .42) * .96, cx = w / 2, cy = hh - R * .1 + 40,   /* .8 of the 1.2x and 40 lower ("push down the sphere by 40px; reduce sphere by .8x"), then 32 back up twice ("push up sphere by 32px", "push up visual by 32px") */ a = (now - t0) / 360000 * 6.2832 + nudAt(now),   /* a turn every 360 s (was 180, "2x slower") */   /* the ball 1.2x ("scale up 1.2x, should cover more of the bottom of the screen") */ ca = Math.cos(a), sa = Math.sin(a), tl = .38, ct = Math.cos(tl), st = Math.sin(tl);
         if (anchor && anchor.isConnected && root.classList.contains('arIsWelcome')) { var ab = anchor.getBoundingClientRect(), cb = cv.getBoundingClientRect(); if (ab.height) { R = Math.min(Math.max(w * .62, hh * .32), hh * .42) * 1.4; cy = ab.bottom - cb.top + 48 + 64 + 64 + R * .95; } }   /* then 64 lower again ("push down visual by 64px"): its shell 176 under the title, under the doctor and date chips */   /* Sphere hero ("make the sphere larger and position it directly below the H1 with a 48px gap"; then "push down by 64px"): its shell's top 112 under the title */
         var ink = dark() ? INK.d : INK.l, lift = dark() ? 2.4 : 2.7, sx, sy, zz;   // brought up to the engine's own presence: the ball reads as a body, not a dusting
         var proj = function (q) { var X = P[q * 3], Y = P[q * 3 + 1], Z = P[q * 3 + 2], x1 = X * ca + Z * sa, z1 = -X * sa + Z * ca, y1 = Y * ct - z1 * st; zz = Y * st + z1 * ct; sx = cx + x1 * R; sy = cy - y1 * R; };
         lastF = { R: R, cx: cx, cy: cy, a: a, ct: ct, st: st, w: w, hh: hh, top: anchor && anchor.isConnected ? cy - R * .95 : null };   // this frame's ball, for a label's point to be chosen and followed
         var PW = cv.width, PH = cv.height, px8 = null;
-        if (big) { if (!pimg || pimg.width !== PW || pimg.height !== PH) pimg = x.createImageData(PW, PH); px8 = pimg.data; px8.fill(0); }
-        for (var c = 0; c < 3; c++) {
+        if (big || DS !== 'particles') { if (!pimg || pimg.width !== PW || pimg.height !== PH) pimg = x.createImageData(PW, PH); px8 = pimg.data; px8.fill(0); }
+        if (DS !== 'particles') { var KO = [], cvb = cv.getBoundingClientRect();   /* the words over the ball: each line of the note and of a label, a label's square, with how much they show */
+          [].forEach.call(root.querySelectorAll('.arIsWelcome .arRvNote, .arIsWelcome .arOrbTx, .arIsWelcome .arOrbSq'), function (e) { var op = 1; for (var q = e; q && q !== root && op > .02; q = q.parentElement) op *= +getComputedStyle(q).opacity; if (op <= .02) return;
+            var rs; if (e.firstChild) { var rg = document.createRange(); rg.selectNodeContents(e); rs = rg.getClientRects(); } else rs = [e.getBoundingClientRect()];
+            [].forEach.call(rs, function (r) { if (r.width) KO.push([r.left - cvb.left, r.top - cvb.top, r.right - cvb.left, r.bottom - cvb.top, op]); }); });
+          ditherInto(new Uint32Array(px8.buffer), PW, PH, dpr, R, cx, cy, ca, sa, ct, st, w, hh, dark(), KO); }
+        for (var c = 0; DS === 'particles' && c < 3; c++) {
           x.fillStyle = 'rgb(' + ink[c] + ')';
           var ix = IDX[c], rgb = ink[c].split(',').map(Number), CR = rgb[0], CG = rgb[1], CB = rgb[2];
           for (var n = 0; n < ix.length; n++) {
@@ -15164,7 +15206,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         }
       };
       var lastDraw = 0;
-      var loop = function (now) { raf = 0; if (!alive || !root.classList.contains('arIsSphere') || el.offsetParent === null) return; if (!big || now - lastDraw > 30 || !lastDraw){ draw(now); lastDraw = now; } if (!reducedMotion()) raf = requestAnimationFrame(loop); };   // the hero's 64,000 points drawn at 30 a second: its motion is slow, the page keeps its 60
+      var loop = function (now) { raf = 0; if (!alive || !root.classList.contains('arIsSphere') || el.offsetParent === null) return; if ((!big && DS === 'particles') || now - lastDraw > 30 || !lastDraw){ draw(now); lastDraw = now; } if (!reducedMotion()) raf = requestAnimationFrame(loop); };   // the hero's 64,000 points drawn at 30 a second: its motion is slow, the page keeps its 60
       return { el: el, run: function () { if (raf) return; if (!t0) t0 = performance.now(); lastMark = performance.now() - 1500; raf = requestAnimationFrame(loop); },
         anchor: function (e) { anchor = e || null; },
         /* a shell point for a label: one the coming turn (d) brings to the front and into the box b ({ l, r, t, b }, the canvas's px), from the side that was turned away: { k, x, y } where it will be, or -1 when none (no frame drawn yet) */
@@ -15490,7 +15532,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         }
         return h('div', { class: 'arLfEv arLfEv2 arAnimRise arD12' },
           h('div', { class: 'arLfSec arSrcSec' },   /* V2, sources in the card: no Behind this insight heading ("remove Behind this insight"); outside it, the heading back with the buttons */
-            out ? h('div', { class: 'arSrcHd' }, h('span', { class: 'arLfH', text: 'Behind this insight' }), btns) : null,
+            out ? h('div', { class: 'arSrcHd' }, h('span', { class: 'arLfH', text: L.markers.length ? nMb(L.markers.length) : 'Behind this insight' }), btns) : null,   // its eyebrow the count, X biomarkers ("eyebrow to mention X biomarkers")
             h('div', { class: 'arLfCard arEvCard arEvNoTab' + (out ? ' arEvOut' : '') }, h('div', { class: 'arEvPane' }, groups[0][1], out ? null : srcs(groups[0][2])))));
       };
       var card = o.ev === 'v2' ? evV2() : h('div', { class: 'arLfEv arAnimRise arD12' },
@@ -15723,8 +15765,8 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       var old = body.firstChild, d = pushDir; pushDir = 0;
       if (!old || !d || reducedMotion() || !old.animate) return null;
       var sc = [].slice.call(old.querySelectorAll('*')).filter(function (e) { return e.scrollTop > 0; }).map(function (e) { return [e, e.scrollTop]; });
-      var cg = null;   // the Sphere hero's pill (See my results): a copy where it stood, to leave with its page
-      if (root.classList.contains('arOrbit') && root.classList.contains('arIsWelcome')) { var cr = cta.getBoundingClientRect(), sr = stage.getBoundingClientRect(); cg = cta.cloneNode(true); cg.removeAttribute('id'); cg.setAttribute('aria-hidden', 'true'); cg.tabIndex = -1;
+      var cg = null;   // the Sphere hero's and the Sphere's pill (See my results): a copy where it stood, to leave with its page
+      if (root.classList.contains('arPill') && root.classList.contains('arIsWelcome')) { var cr = cta.getBoundingClientRect(), sr = stage.getBoundingClientRect(); cg = cta.cloneNode(true); cg.removeAttribute('id'); cg.setAttribute('aria-hidden', 'true'); cg.tabIndex = -1;
         cg.style.cssText = 'position:absolute;margin:0;left:' + (cr.left - sr.left) + 'px;top:' + (cr.top - sr.top) + 'px;width:' + cr.width + 'px;height:' + cr.height + 'px;border-radius:9999px;padding:0 36px;z-index:4;pointer-events:none;'; }
       return { el: old, d: d, t: body.offsetTop, l: body.offsetLeft, w: body.offsetWidth, h: body.offsetHeight, pad: getComputedStyle(body).padding, y: body.scrollTop, sc: sc, pic: root.classList.contains('arIsIntro'), sph: root.classList.contains('arIsSphere'), cg: cg };
     }
@@ -15772,7 +15814,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       backBtn.hidden = step === 0;
       stepWrap.hidden = welcome || end;
       steps.set(step);
-      ctaLabel.textContent = welcome ? (o.welcome === 'orbit' ? 'See my results' : 'See results') : step === NEXT ? 'Done' : 'Next';   // the welcome's ("Start --> See results")
+      ctaLabel.textContent = welcome ? (o.welcome === 'orbit' || o.welcome === 'sphere' ? 'See my results' : 'See results') : step === NEXT ? 'Done' : 'Next';   // the welcome's ("Start --> See results")
       if (sphL && (welcome || end)) sphL.run();
       if (gone && gone.el.parentNode === body) body.removeChild(gone.el);
       body.textContent = '';
@@ -30537,7 +30579,7 @@ hairline({
     let per = '';
     const mount = keep => { const w = keep && inst && inst.where ? inst.where() : null, was = per; per = opt('stArPer') === 'p2' ? 'p2' : 'p1';   // a tweak changed: back on the same screen after ("don't reload the experience from the beginning")
       if (inst) inst.destroy(); frame.textContent = '';
-      inst = window.AsyncReport.mount(frame, { ev: opt('stArEv') === 'v2' ? 'v2' : 'v1', persona: per, more: opt('stArMore') === 'fold' ? 'fold' : 'sheet', bm: opt('stArBm') === 'carousel' ? 'carousel' : 'static', src: opt('stArSrc') === 'out' ? 'out' : 'in', assure: opt('stArAss') !== 'off', list: opt('stArList') === 'on', wvis: 'photo',   /* Intro screen: Split bg, the welcome's picture with the list after; Halftone, Full bg and Sphere, the welcome itself as the reveal (Halftone on creme, its picture dithered as the Report visuals do) */ theme: opt('themeSel') === 'dark' ? 'dark' : 'light', bar: opt('stArBar') === 'grad' ? 'grad' : 'solid', foot: opt('stArFoot') === 'grad' ? 'grad' : 'solid', welcome: opt('stArList') === 'reveal' ? 'reveal' : opt('stArList') === 'sphere' ? 'sphere' : opt('stArList') === 'orbit' ? 'orbit' : opt('stArList') === 'ht' ? 'halftone' : opt('stArWel') === 'includes' ? 'includes' : 'cards', tabs: opt('stArTab') || 'pills', cards: opt('stArCard') === 'outline' ? 'outline' : 'fill', mb: opt('stArMb') === '2' ? 2 : 3, srcVis: opt('stArSrcVis') === 'image' ? 'image' : 'hairline', onClose: () => { if (inst) inst.reset(); } });
+      inst = window.AsyncReport.mount(frame, { ev: opt('stArEv') === 'v2' ? 'v2' : 'v1', persona: per, more: opt('stArMore') === 'fold' ? 'fold' : 'sheet', bm: opt('stArBm') === 'carousel' ? 'carousel' : 'static', src: opt('stArSrc') === 'out' ? 'out' : 'in', assure: opt('stArAss') !== 'off', sph: opt('stArSph') || 'particles', list: opt('stArList') === 'on', wvis: 'photo',   /* Intro screen: Split bg, the welcome's picture with the list after; Halftone, Full bg and Sphere, the welcome itself as the reveal (Halftone on creme, its picture dithered as the Report visuals do) */ theme: opt('themeSel') === 'dark' ? 'dark' : 'light', bar: opt('stArBar') === 'grad' ? 'grad' : 'solid', foot: opt('stArFoot') === 'grad' ? 'grad' : 'solid', welcome: opt('stArList') === 'reveal' ? 'reveal' : opt('stArList') === 'sphere' ? 'sphere' : opt('stArList') === 'orbit' ? 'orbit' : opt('stArList') === 'ht' ? 'halftone' : opt('stArWel') === 'includes' ? 'includes' : 'cards', tabs: opt('stArTab') || 'pills', cards: opt('stArCard') === 'outline' ? 'outline' : 'fill', mb: opt('stArMb') === '2' ? 2 : 3, srcVis: opt('stArSrcVis') === 'image' ? 'image' : 'hairline', onClose: () => { if (inst) inst.reset(); } });
       wrap.classList.toggle('aqInk', !!(inst && inst.el && !inst.el.classList.contains('arDark')));
       if (inst && inst.el) frame.style.background = getComputedStyle(inst.el).backgroundColor;   // the frame in the debrief's own paper, for the full screen's margins
       if (w && inst && inst.at) inst.at(w, was === per); };   // its scroll too, when it is the same member's
@@ -30552,12 +30594,13 @@ hairline({
     const vr = () => { const r = document.getElementById('stArVarRow'); if (r) r.hidden = version === 27; };   // the variation is the desktop's; the phone has one dress
     vr(); document.addEventListener('everlab:mode', () => { vr(); if (version === 26 && arD) arD.reset(); if (version === 27 && arM) arM.reset(); });
     { const v = document.getElementById('stArVar'); if (v) v.addEventListener('change', () => { if (arD) arD.vary(); }); }
+    { const l = document.getElementById('stArList'), r = document.getElementById('stArSphRow'); const sh = () => { if (r && l) r.hidden = ['sphere', 'orbit'].indexOf(l.value) < 0; }; if (l){ l.addEventListener('change', sh); sh(); setInterval(sh, 600); } }   // Sphere: the Sphere and Sphere hero's
     { const l = document.getElementById('stArList'), r = document.getElementById('stArAssRow'); const sh = () => { if (r && l) r.hidden = ['reveal', 'sphere', 'ht', 'orbit'].indexOf(l.value) < 0; }; if (l){ l.addEventListener('change', sh); sh(); setInterval(sh, 600); } }   // Rest assured is the reveal intros' (Full bg, Sphere, Halftone)
     { const e = document.getElementById('stArEv'), r = document.getElementById('stArSrcRow'); const sh = () => { if (r && e) r.hidden = e.value !== 'v2'; }; if (e){ e.addEventListener('change', sh); sh(); setInterval(sh, 600); } }   // Sources is One card's (V2)
     { const l = document.getElementById('stArList'), rows = ['stArWelRow', 'stArWelVisRow'].map(id => document.getElementById(id)).filter(Boolean);   // Full bg is the welcome: its own rows away while it is on
       const hide = () => rows.forEach(r => { r.hidden = !!l && (l.value === 'reveal' || l.value === 'sphere'); }); if (l){ l.addEventListener('change', hide); hide(); setInterval(hide, 600); } }
     /* the presets, V1 and V2 ("V1 and V2 should be presets that I can save"): each every design tweak of the report; V1's own the page's defaults, V2's the same with one card for the evidence. Picking one sets its tweaks (one remount); Save keeps the current tweaks in it, Reset its own back; the one picked and what was saved kept in this browser. Save marked while the tweaks differ from the preset */
-    { const KEYS = ['stArVar', 'stArEv', 'stArSrc', 'stArAss', 'stArBm', 'stArMore', 'stArBar', 'stArFoot', 'stArTab', 'stArMb', 'stArSrcVis', 'stArCard', 'stArWel', 'stArWelVis', 'stArList'], STORE = 'everlab.arPresets';
+    { const KEYS = ['stArVar', 'stArEv', 'stArSrc', 'stArAss', 'stArSph', 'stArBm', 'stArMore', 'stArBar', 'stArFoot', 'stArTab', 'stArMb', 'stArSrcVis', 'stArCard', 'stArWel', 'stArWelVis', 'stArList'], STORE = 'everlab.arPresets';
       const el = id => document.getElementById(id), pre = el('stArPre'), sv = el('stArPreSave'), rs = el('stArPreReset');
       const now = () => { const o = {}; KEYS.forEach(k => { if (el(k)) o[k] = el(k).value; }); return o; };
       if (pre && sv && rs){
@@ -30576,7 +30619,7 @@ hairline({
         if (store.cur && OWN[store.cur] && pre.value !== store.cur) pre.value = store.cur;
         apply(pre.value); }   // the one last picked, with what was saved in it
     }
-    ['themeSel', 'stArBar', 'stArFoot', 'stArWel', 'stArTab', 'stArCard', 'stArMb', 'stArSrcVis', 'stArPer', 'stArEv', 'stArSrc', 'stArAss', 'stArList', 'stArMore', 'stArWelVis', 'stArBm'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('change', () => { if (arD) arD.remount(); if (arM) arM.remount(); }); });
+    ['themeSel', 'stArBar', 'stArFoot', 'stArWel', 'stArTab', 'stArCard', 'stArMb', 'stArSrcVis', 'stArPer', 'stArEv', 'stArSrc', 'stArAss', 'stArSph', 'stArList', 'stArMore', 'stArWelVis', 'stArBm'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('change', () => { if (arD) arD.remount(); if (arM) arM.remount(); }); });
   }
   {
     const prD = pastResults(document.body, true);
