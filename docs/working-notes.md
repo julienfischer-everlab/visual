@@ -15012,3 +15012,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Orange square bullets** ("orange square"): What we'll cover's bullets on the Full bg and Sphere welcomes are the sphere's orange marks (#ff7a1a), in both modes.
 - **Bullets white on the picture** ("square white when orange img"): the orange squares only on the Sphere; on the Full bg's orange picture the bullets are white again.
 - **The carousel's status a badge** ("use badge"): each biomarker slide's status is the rows' own badge (Out of range / Suboptimal / Optimal on its tint), not coloured capitals.
+- **Full bg / Sphere: the sides 16 in** ("container padding -16px"): the reveal's side padding 16 less, the card 24 from the screen's edges on the phone (was 40).
