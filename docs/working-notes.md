@@ -15393,3 +15393,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - One open at a time: another "+" swaps it; the same "+", a click outside or Escape closes it.
 - The groups stay in the Tweaks list too, for dragging the sections' order.
 - The Health profile's demo arrows sit at least 52 under the card's top, clear of its "+".
+- The "+" buttons now sit **32 off the screen** ("detach the plus from the viewport by 32px"). The demo arrows line up under them.
+- **The panel opens outside the screen, on its right** ("the tweak should be outside the viewport on the right side"), beside its "+", up to 380 wide. Only when there's no room either side does it go over the screen.
+- **The screen steps aside while a panel is open** ("the viewport moves to the left to leave free space for the tweak cards on the right"). The screen's centre (`--vwC`, which the dock also uses) is set so the "+" and the panel fit at its right, but never closer than half its width to the window's edge.
+  - It slides over .45s (frame, page, report wrap, dim) and slides back on close. Swapping between panels keeps it where it is.
+  - Only with a forced breakpoint (a framed screen); in Auto there's nothing to move.
