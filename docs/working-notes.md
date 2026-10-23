@@ -15436,3 +15436,17 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Desk: 480 wide with 28 corners, centred, rising 24px as it fades in.
   - In both, the sphere's lower half shows at the top edge.
 - **Default page: the Overview** ("default screen from now"). Opening the link with no page in it lands on the Overview, in Dark mode, in the XS phone (was the Async report). #home still opens the gallery; a page's link opens that page.
+
+## The Health profile on its own (dist/health-profile.html)
+
+- "Create an independent artifact that only includes the Health profile flow; all changes on this artifact should impact the other."
+- **How it stays in step**: `tools/build-hp.js` makes it from `index.html` on every build (`tools/build.js` calls it at the end). It takes, by content rather than line numbers:
+  - the report sheet's `<style>` (the `--ar-` tokens),
+  - the Health profile's `<style>` (`.arSheet.hpSheet`),
+  - the Health profile's `<script>` (`window.HealthProfile`).
+  So any change to the flow in the prototype is in the next build of both. **Every publish now republishes both artifacts.**
+- **The page**:
+  - The sheet full screen from its intro (on a wide screen a column up to 1040 with rounded corners, the desk rail inside), in the viewer's theme.
+  - A small **Demo** menu: theme (Dark/Light), state (Step 1 … Done, with the dropped-off states) and Start over. On a phone it's a pill under the sheet's button, opening upward; on a wide screen a round button in the gutter.
+  - X at the intro just stays on the intro (there's no page under it). Escape behaves as in the prototype.
+- No fonts or images are embedded (system fonts, as the prototype). It's about 240 KB, unminified.

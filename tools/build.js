@@ -98,4 +98,5 @@ src = src.replace(/assets\/[A-Za-z0-9_\-./]+?\.(webp|png|jpe?g|gif|svg|mp4|mp3|m
   console.log('css   ' + kb(cssIn) + ' -> ' + kb(cssOut));
   console.log('js    ' + kb(jsIn) + ' -> ' + kb(jsOut));
   console.log('total ' + kb(src.length) + ' -> ' + kb(out.length) + '  (dist/index.html)');
+  require('./build-hp.js');   // the Health profile on its own page, from the same source: every build makes both
 })().catch(e => { console.error(e); process.exit(1); });
