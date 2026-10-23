@@ -5596,6 +5596,11 @@
   body.asyncM #phone2 .mscroll{filter:saturate(.7) brightness(.5);}
   body.asyncRep .dvWrap, body.asyncRep .dash, body.asyncM #phone2 .mscroll{pointer-events:none;}
   .aqWrap{display:none;}
+  /* the step navigator beside the phone: a pill a step, the current one filled */
+  .aqNav{position:fixed;z-index:80;display:none;flex-direction:column;align-items:flex-start;gap:10px;} .aqNav.on{display:flex;}
+  .aqNavB{appearance:none;-webkit-appearance:none;border:0;margin:0;height:40px;padding:0 16px;border-radius:999px;font:inherit;font-size:15px;line-height:40px;white-space:nowrap;cursor:pointer;background:rgba(255,255,255,.08);color:rgba(255,255,255,.72);transition:background-color .2s ease,color .2s ease;}
+  .aqNavB:hover{background:rgba(255,255,255,.14);color:#fff;} .aqNavB.on{background:#fff;color:#111;} .aqNavB:focus-visible{outline:2px solid currentColor;outline-offset:2px;}
+  .aqNav.lt .aqNavB{background:rgba(0,0,0,.07);color:rgba(0,0,0,.68);} .aqNav.lt .aqNavB:hover{background:rgba(0,0,0,.12);color:#000;} .aqNav.lt .aqNavB.on{background:#000;color:#fff;}
   body.asyncD .aqWrap.aqDesk{display:block;position:fixed;left:0;right:0;top:var(--barH,45px);bottom:0;z-index:40;pointer-events:auto;}
   body:is(.asyncD, .asyncM) .topbar{z-index:61;}   /* the bar, and its Tweaks panel, over the report, the desk's (40) and the phone's (60) ("tweak should go above screen") */
   body.asyncM #phone2 .aqWrap.aqPhone{display:block;position:absolute;inset:0;z-index:60;pointer-events:auto;border-radius:inherit;overflow:hidden;}
@@ -5609,7 +5614,7 @@
   .aqWrap.shut .aqAgain{display:inline-flex;}
   @media (prefers-reduced-motion: reduce){ .aqFrame, .aqDim{transition:none;} }
   /* Full modal (Tweaks -> Async report -> Variation, the desktop; the default), after the design system's Full modal, "Type: Full (edge to edge modal), content only": the surface edge to edge under the bar, square, rising the same way, in the debrief's own paper; the content in a column 560 wide in its middle -- the back and close at the column's corners, the step titles centred, the button the column's width at its foot ("async desktop full modal following this system") */
-  #stArVarRow[hidden], #stArSrcRow[hidden], #stArAssRow[hidden], #stArLbgRow[hidden], #stArCdnRow[hidden], #stArSvisRow[hidden], #stArAmtRow[hidden]{display:none !important;}
+  #stArVarRow[hidden], #stArSrcRow[hidden], #stArAssRow[hidden], #stArLbgRow[hidden], #stArMhlRow[hidden], #stArCdnRow[hidden], #stArAmtRow[hidden]{display:none !important;}
   .aqWrap.aqDesk.aqFull .aqFrame{left:0;width:100%;height:100%;border-radius:0;box-shadow:none;transform:translateY(104%);}
   .aqWrap.aqDesk.aqFull.on .aqFrame{transform:none;} .aqWrap.aqDesk.aqFull.shut .aqFrame{transform:translateY(104%);}
   .aqWrap.aqFull .aqFrame > .arSheet.arSheet.arSheet.arSheet{max-width:560px;margin:0 auto;}
@@ -12146,13 +12151,13 @@
         <!-- the welcome's header: the picture with the title on it, or Halftone, the title over a one-bit dithered visual with a mono date tag ("try a tweak on the top header intro with this style of visual", the MRI debrief's) -->
         <!-- the Header visual is the Intro screen's Halftone now ("Halftone / List renamed Split bg / Full bg / Sphere") -->
         <!-- the screen introducing the insights: Split bg, the welcome with its picture (its list of insights after it removed: "remove this step and delete"), or Full bg, which is the welcome itself: the title word by word over the picture, then the card of what is covered ("the full bg should replace the intro, not an additional screen after that intro"); the Welcome and Header visual rows away while it is on -->
-        <div class="tkRow"><span class="lbl">Intro screen</span><select id="stArList" class="tkSegSel" aria-label="The screen introducing the insights"><option value="ht">Halftone</option><option value="on" selected>Split bg</option><option value="reveal">Full bg</option><option value="sphere">Sphere</option><option value="orbit">Sphere hero</option></select></div>
+        <div class="tkRow"><span class="lbl">Intro screen</span><select id="stArList" aria-label="The screen introducing the insights"><option value="ht">Halftone</option><option value="on" selected>Split bg</option><option value="reveal">Full bg</option><option value="sphere">Sphere</option><option value="orbit">Sphere hero</option><option value="stream">Blood stream</option></select></div>   <!-- a select ("put a select instead of a segmented tab"); Blood stream one of its options ("the bloodstream should be part of the intro screen tweak"): the Sphere hero's layout on the stream -->
         <!-- the reassurance under the reveal's card (Full bg, Sphere, Halftone), shown or not ("add tweak: Rest assured mention, ON OFF") -->
         <div class="tkRow" id="stArAssRow"><span class="lbl">Rest assured</span><select id="stArAss" class="tkSegSel" aria-label="The reassurance under the intro's card"><option value="on" selected>On</option><option value="off">Off</option></select></div>
         <!-- the Sphere hero's labels: on the dust, or on a black badge, square and words, 4 round them, sharp ("a variant for the label: badge yes or no") -->
-        <!-- the Sphere and Sphere hero's visual: the particle ball, or the same particles as blood running through a vessel ("tweak the sphere / blood stream visual") -->
-        <div class="tkRow" id="stArSvisRow"><span class="lbl">Visual</span><select id="stArSvis" class="tkSegSel" aria-label="The sphere intros' visual"><option value="sphere" selected>Sphere</option><option value="stream">Blood stream</option></select></div>
         <div class="tkRow" id="stArLbgRow"><span class="lbl">Label badge</span><select id="stArLbg" class="tkSegSel" aria-label="The Sphere hero's labels on a badge"><option value="off" selected>No</option><option value="on">Yes</option></select></div>
+        <!-- Marker highlight (Sphere hero, Blood stream): the particles round the active marker whole, the rest at half ("a boolean marker highlight") -->
+        <div class="tkRow" id="stArMhlRow"><span class="lbl">Marker highlight</span><select id="stArMhl" class="tkSegSel" aria-label="Highlight the particles round the active marker"><option value="off" selected>Off</option><option value="on">On</option></select></div>
         <!-- the Sphere hero's particles: how much they gather into streaks and clumps, 0 (diffuse) to 100 ("condense less; can I have a controller with a level to adjust?") -->
         <div class="tkRow" id="stArCdnRow"><span class="lbl">Condense</span><span class="tkSlide"><input type="range" id="stArCdn" min="0" max="100" step="5" value="40" aria-label="How condensed the Sphere hero's particles are"><i class="tkVal" id="stArCdnV">40</i></span></div>
         <!-- the particles' amount, 0 to 100, 50 by default (a quarter to 1.75 times the points) ("create also a tweak: amount of particles, 0 to 100, in addition to condense") -->
@@ -15213,6 +15218,9 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       var enter = function (now) { if (reducedMotion()) return; ENT_N = N; ESC = new Float32Array(ENT_N * 3); EDL = new Float32Array(ENT_N);
         for (var q = 0; q < ENT_N; q++) { var o0 = unit(), m1 = .5 + 1.2 * rnd(); ESC[q * 3] = o0[0] * m1; ESC[q * 3 + 1] = o0[1] * m1; ESC[q * 3 + 2] = o0[2] * m1; EDL[q] = rnd() * .38; }
         ent = { t0: now, dur: 2000 }; };   // (its fade drawn into its points' alpha, the first 1.1 s)
+      /* Marker highlight ("a boolean marker highlight: on, only the particles around the active marker appear; all the others at 50%"): full within 80px of the active marker's point, 50% past 170, eased between;
+         a new focus crossfades from the last over .6 s, so the light moves with the marker coming in */
+      var FOC = opts.mhl === true, foc = [null, null, 0], hlB = function (x0, y0, p) { var dx = x0 - p[0], dy = y0 - p[1], d = Math.sqrt(dx * dx + dy * dy); return d < 80 ? 1 : d > 170 ? .5 : 1 - .5 * (d - 80) / 90; };
       var raf = 0, t0 = 0, lastDraw = 0, anchor = null, anc = null, lastF = null, trk = [], pimg = null, fly = null, dark = function () { return root.classList.contains('arDark'); };
       /* the flow's clock S: real seconds, plus the surges ("when a new orange marker becomes active the whole flow briefly accelerates towards it ... smoothly speeds up, reveals it, gradually slows back down"):
          each a run E flow-seconds ahead over D ms, eased so its speed rises from the cruise and settles back to it with no jolt (smootherstep, its time front-loaded: quick to gather, long to settle); the camera and the flow both run on it, so it reads as travelling forward */
@@ -15233,6 +15241,8 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         var T = (now - t0) / 1000, S = sAt(now), G = geo(now), c = cam(S, T, CAM); G.T = T; G.now = now; lastF = G;
         var eK = -1, fo = 1; if (ent) { eK = Math.min(1, (now - ent.t0) / ent.dur); fo = 1 - Math.pow(1 - Math.min(1, (now - ent.t0) / 1100), 2); G.cy += 40 * Math.pow(1 - eK, 3); if (eK >= 1) { ent = null; ESC = EDL = null; eK = -1; fo = 1; } }   // the entrance: 40 lower at first, fading in
         for (var j = 0; j < NT; j++) cl(c.cu + UMIN + j * DU, TB, j * 9);   // the vessel's middle along the window, once a frame
+        var hA = null, hB = null, hw = 1; if (FOC && foc[1] != null) { hB = see(mpos(foc[1], S, c), c, G); if (foc[0] != null) hA = see(mpos(foc[0], S, c), c, G); hw = Math.min(1, (now - foc[2]) / 600); }   // the highlight's points this frame
+        var hlAt = function (x0, y0) { var v = hlB(x0, y0, hB); return hA && hw < 1 ? hlB(x0, y0, hA) * (1 - hw) + v * hw : v; };   // full alpha near the active marker, half beyond, a 600ms hand-over
         var PW = cv.width, PH = cv.height; if (!pimg || pimg.width !== PW || pimg.height !== PH) pimg = x.createImageData(PW, PH); var px8 = pimg.data; px8.fill(0);
         var cols = (dark() ? INK.d : INK.l).map(function (s0) { return s0.split(',').map(Number); }), lift = dark() ? 2.4 : 2.7, dv = (VF - VC) * S;
         for (var q = 0; q < N; q++) {
@@ -15241,7 +15251,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
           if (eK >= 0) { var e = (eK - EDL[q]) / .62; e = e <= 0 ? 0 : e >= 1 ? 1 : 1 - Math.pow(1 - e, 3); var s0 = 1 - e; X += ESC[q * 3] * s0; Y += ESC[q * 3 + 1] * s0; Z += ESC[q * 3 + 2] * s0; pe = .2 + .8 * e; }   // drawn in from its scattered start
           var dx = X - c.px, dy = Y - c.py, dz = Z - c.pz, zc = dx * c.fx + dy * c.fy + dz * c.fz; if (zc < .5) continue;
           var sx = G.cx + G.F * (dx * c.rx + dy * c.ry + dz * c.rz) / zc, sy = G.cy - G.F * (dx * c.vx + dy * c.vy + dz * c.vz) / zc; if (sx < -4 || sx > w + 4 || sy < -4 || sy > hh + 4) continue;
-          var al = A[q] * lift * Math.min(1, (zc - .5) / 1.6) * Math.max(.08, Math.min(1, 1.3 - zc / 12)) * pe * fo; if (al > 1) al = 1; if (al < .02) continue;   // fading in very near, out far off
+          var al = A[q] * lift * Math.min(1, (zc - .5) / 1.6) * Math.max(.08, Math.min(1, 1.3 - zc / 12)) * pe * fo * (hB ? hlAt(sx, sy) : 1); if (al > 1) al = 1; if (al < .02) continue;   // fading in very near, out far off
           var sz = G.F * .00625 / zc; sz = sz < .3 ? .3 : sz > 2.1 ? 2.1 : sz;   /* nearer larger, at half the size before ("2x finer"): about 1.2px near the camera's side of the vessel, .6 at its far side */ if (sz * dpr < 1) al *= sz * dpr;   // under a device pixel: its share of one
           var s2 = Math.max(1, Math.round(sz * dpr)), X0 = (sx * dpr - s2 / 2 + .5) | 0, Y0 = (sy * dpr - s2 / 2 + .5) | 0, col = cols[K[q]];
           for (var yy = 0; yy < s2; yy++) { var Yp = Y0 + yy; if (Yp < 0 || Yp >= PH) continue;
@@ -15261,6 +15271,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
           if (d > 0 && !raf) raf = requestAnimationFrame(loop); },
         track: function (k, cb, slot) { var i2 = slot | 0; if (k === -1 && slot == null){ trk = []; return; } trk[i2] = k >= 0 && cb ? { k: k, cb: cb } : null; },
         marks: function () { var out = []; for (var m = 0; m < MKN; m++) out.push(m); return out; },
+        focus: function (k) { if (FOC && k !== foc[1]) foc = [foc[1], k, performance.now()]; },   // the orange point the highlight is on
         projIn: function (k, dt, E, D) { if (!lastF) return null; var ms = lastF.now + dt, S = sAt(ms) + (E ? (D ? E * ease5(1 - Math.pow(1 - Math.min(1, dt / D), 1.6)) : E) : 0), c = cam(S, (ms - t0) / 1000, {}); return see(mpos(k, S, c), c, lastF); },   // an orange point where it will be in dt ms (E: a surge of E flow-seconds done by then): [x, y, how much it shows]
         surge: function (E, D) { var now = performance.now(); if (srg) { var k = Math.min(1, Math.max(0, (now - srg.t0) / srg.D)); sAcc += srg.E * ease5(1 - Math.pow(1 - k, 1.6)); } srg = { t0: now, D: D, E: E }; },   // the flow run E flow-seconds ahead over D ms
         frame: function () { return lastF; },
@@ -15307,6 +15318,9 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       var enter = function (now) { if (reducedMotion()) return; ENT_N = N + M; ESC = new Float32Array(ENT_N * 3); EDL = new Float32Array(ENT_N);
         for (var q = 0; q < ENT_N; q++) { var o0 = unit(), m0 = .4 + .8 * rnd(), m1 = .3 + .5 * rnd(); ESC[q * 3] = P[q * 3] * m0 + o0[0] * m1; ESC[q * 3 + 1] = P[q * 3 + 1] * m0 + o0[1] * m1; ESC[q * 3 + 2] = P[q * 3 + 2] * m0 + o0[2] * m1; EDL[q] = rnd() * .38; }
         ent = { t0: now, dur: 2000 }; };   // (its fade drawn into its points' alpha, the first 1.1 s)
+      /* Marker highlight ("a boolean marker highlight: on, only the particles around the active marker appear; all the others at 50%"): full within 80px of the active marker's point, 50% past 170, eased between;
+         a new focus crossfades from the last over .6 s, so the light moves with the marker coming in */
+      var FOC = opts.mhl === true, foc = [null, null, 0], hlB = function (x0, y0, p) { var dx = x0 - p[0], dy = y0 - p[1], d = Math.sqrt(dx * dx + dy * dy); return d < 80 ? 1 : d > 170 ? .5 : 1 - .5 * (d - 80) / 90; };
       var raf = 0, t0 = 0, dark = function () { return root.classList.contains('arDark'); };
       var anc = null, fly = null;   /* anc: the hero's ball as it last stood under its title; fly: leaving with its page (d 1) or coming back to it (d -1): the ball moves with the page's content, its distance, delay and pace, its particles still moving, as it fades ("if we click on the CTA, everything moves up, and the visual goes up as well and scales") */
       var draw = function (now) {
@@ -15327,6 +15341,8 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         var ink = dark() ? INK.d : INK.l, lift = dark() ? 2.4 : 2.7, sx, sy, zz;   // brought up to the engine's own presence: the ball reads as a body, not a dusting
         var proj = function (q) { var X = P[q * 3], Y = P[q * 3 + 1], Z = P[q * 3 + 2]; if (eK >= 0) { var e = (eK - EDL[q]) / .62; e = e <= 0 ? 0 : e >= 1 ? 1 : 1 - Math.pow(1 - e, 3); var s0 = 1 - e; X += ESC[q * 3] * s0; Y += ESC[q * 3 + 1] * s0; Z += ESC[q * 3 + 2] * s0; pe = .2 + .8 * e; } var x1 = X * ca + Z * sa, z1 = -X * sa + Z * ca, y1 = Y * ct - z1 * st; zz = Y * st + z1 * ct; sx = cx + (x1 * cr - y1 * sr) * R; sy = cy - (x1 * sr + y1 * cr) * R; };
         lastF = { T: (now - t0) / 1000, R: R, cx: cx, cy: cy, a: a, ct: ct, st: st, cr: cr, sr: sr, w: w, hh: hh, top: anchor && anchor.isConnected ? cy - R * .95 : null };   // this frame's ball, for a label's point to be chosen and followed
+        var hA = null, hB = null, hw = 1; if (FOC && foc[1] != null) { proj(foc[1]); hB = [sx, sy]; if (foc[0] != null) { proj(foc[0]); hA = [sx, sy]; } hw = Math.min(1, (now - foc[2]) / 600); }   // the highlight's points this frame
+        var hlAt = function (x0, y0) { var v = hlB(x0, y0, hB); return hA && hw < 1 ? hlB(x0, y0, hA) * (1 - hw) + v * hw : v; };   // full alpha near the active marker, half beyond, a 600ms hand-over
         var PW = cv.width, PH = cv.height, px8 = null;
         if (big) { if (!pimg || pimg.width !== PW || pimg.height !== PH) pimg = x.createImageData(PW, PH); px8 = pimg.data; px8.fill(0); }
         for (var c = 0; c < 3; c++) {
@@ -15334,7 +15350,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
           var ix = IDX[c], rgb = ink[c].split(',').map(Number), CR = rgb[0], CG = rgb[1], CB = rgb[2];
           for (var n = 0; n < ix.length; n++) {
             var q = ix[n]; proj(q); if (sy < -4 || sy > hh + 4 || sx < -4 || sx > w + 4) continue;
-            var dp = (zz + 1) / 2, al = Math.min(1, A[q] * (.22 + .78 * dp) * lift) * (eK >= 0 ? pe * fo : 1); if (al < .02) continue;
+            var dp = (zz + 1) / 2, al = Math.min(1, A[q] * (.22 + .78 * dp) * lift) * (eK >= 0 ? pe * fo : 1) * (hB ? hlAt(sx, sy) : 1); if (al < .02) continue;
             var sz = .7 + .5 * dp;
             if (!px8) { x.globalAlpha = al; x.fillRect(sx - sz / 2, sy - sz / 2, sz, sz); continue; }
             /* the hero's: straight into the pixels, a 1 or 2 device-pixel square, laid over what is there (64,000 fillRects a frame were the cost) */
@@ -15371,6 +15387,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
             if (avoid.some(function (a) { return Math.hypot(a.x - p1[0], a.y - p1[1]) < minD; })) continue; return { k: q, x: p1[0], y: p1[1] }; }
           return null; },
         projAfter: function (k, d) { return lastF ? projAt(k, lastF.a + d, lastF) : null; },
+        focus: function (k) { if (FOC && k !== foc[1]) foc = [foc[1], k, performance.now()]; },   // the point the highlight is on
         projFut: function (k, d, dt) {   // a point where it will be dt ms on, once a turn of d (the last done) has played: the spin, its tilt and its roll as they will be then
           if (!lastF) return null; var T = lastF.T + dt / 1000, A = T / 360 * 6.2832 + nud.to + d, tl = .38 + .086 * Math.sin(T * 1000 / 6000), rz = .062 * Math.sin(T * 1000 / 8000 + 1.3);
           return projAt(k, A, { R: lastF.R, cx: lastF.cx, cy: lastF.cy, ct: Math.cos(tl), st: Math.sin(tl), cr: Math.cos(rz), sr: Math.sin(rz) }); },
@@ -15904,7 +15921,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         else { var t1 = Math.round(SD * .72), t2 = t1 + 200 + 26 * TY + 2600;   // as it opens, and still once the longest words are written and read
           for (var pass = 0; pass < 2 && !cand.length; pass++) for (E = 3; E <= 10 && !cand.length; E += .5) sl.forEach(function (L, i) { if (i !== sAct && (pass || !ins(sphL.projIn(i, 0))) && ins(sphL.projIn(i, t1, E, SD)) && ins(sphL.projIn(i, t2, E, SD))) cand.push(i); }); }   // first one now out of view, else any
         if (!cand.length) { later(sNext, 400); return; }   // none in reach yet: in a moment
-        var P0 = sAct >= 0 ? sl[sAct] : null; sPrev = sAct; var ai = sAct = cand[Math.floor(Math.random() * cand.length)], txt = items[nextItem()];
+        var P0 = sAct >= 0 ? sl[sAct] : null; sPrev = sAct; var ai = sAct = cand[Math.floor(Math.random() * cand.length)], txt = items[nextItem()]; if (sphL.focus) sphL.focus(ai);
         if (RM || !sphL.surge) { if (P0) closeLab(P0); openLab(sl[ai], txt, 0, function (hold) { later(sNext, hold); }); return; }
         sphL.surge(E - .5, SD);
         if (P0) later(function () { closeLab(P0); }, 500);   // the last label folds .5 s into the surge
@@ -15924,8 +15941,8 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         var ni = -1, pk = near(bag.slice()); if (pk) { ni = pk[0]; d = pk[1]; bag.splice(bag.indexOf(ni), 1); }
         if (ni < 0) { pk = near(labs.map(function (x, i) { return i; })); if (pk) { ni = pk[0]; d = pk[1]; } }   // any but the last
         if (ni < 0) { for (var j = 0; j < bag.length; j++) if (bag[j] !== act) { ni = bag.splice(j, 1)[0]; break; } d = RM ? 0 : TURN;   // none comes round there: the next one moved to a clump's point that will
-          var pq = sphL.pickIn(d, land(d), land(d) + readMs(ni), in1); if (pq >= 0) { var LM = labs[ni], nM = ni; LM.el.style.opacity = '0'; later(function () { pin(LM, nM, { k: pq }); }, 260); } }
-        var P0 = act >= 0 ? labs[act] : null; act = ni; var L = labs[act], txt = items[act];
+          var pq = sphL.pickIn(d, land(d), land(d) + readMs(ni), in1); if (pq >= 0) { var LM = labs[ni], nM = ni; LM.el.style.opacity = '0'; later(function () { pin(LM, nM, { k: pq }); if (sphL.focus && act === nM) sphL.focus(pq); }, 260); } }
+        var P0 = act >= 0 ? labs[act] : null; act = ni; var L = labs[act], txt = items[act]; if (sphL.focus) sphL.focus(L.k);   // the highlight onto the one coming in
         var tdur = TDUR * Math.min(1.6, Math.max(1, d / (40 * Math.PI / 180))); if (!RM && d) sphL.turn(d, tdur);   // a longer way round, a little longer
         if (P0) later(function () { closeLab(P0); }, RM || !d ? 0 : 500);   // the last label folds .5 s into the turn, as it starts to go ("make it disappear .5 s after it starts to go away")
         later(function () { openLab(L, txt, 200, function (hold) { later(next, hold); }); }, RM || !d ? 0 : Math.round(tdur * .9));   /* the last label rides the turn whole, then fades as the new one opens where it has landed, once the turn has all but stopped ("keep the inactive badge visible during the rotation, then it disappears") */
@@ -16070,13 +16087,14 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
     return {
       el: root,
       go: go,
+      steps: function () { return { n: NEWI.length, rest: REST, next: NEXT, at: step }; },   // for the step navigator beside the phone
       reset: function () { go(0, true); },
       /* where it stands, and back there in a new mount ("when I change a tweak don't reload the experience from the beginning, stay on the current screen"): the step by what it is (the list, the nth insight...), so the list on or off still lands on the same screen; its scroll kept when the screen is the same, and its entrance not played again */
       where: function () { return { t: step === 0 ? 'w' : step <= NEWI.length ? 'i' + (step - 1) : step === REST ? 'r' : 'n', y: body.scrollTop }; },
       at: function (w, keepY) {
         if (!w || !alive) return;
         var t = w.t, i = t.charAt(0) === 'i' ? Math.min(NEWI.length - 1, +t.slice(1) || 0) : 0;
-        still = true; go(t === 'w' ? 0 : t === 'l' ? 1 : t === 'r' ? REST : t === 'n' ? NEXT : 1 + i, true);   // ('l', the list a remount from an older page was on: the first insight) still = false;
+        still = true; go(t === 'w' ? 0 : t === 'l' ? 1 : t === 'r' ? REST : t === 'n' ? NEXT : 1 + i, true); still = false;   /* ('l', the list a remount from an older page was on: the first insight) */
         try { root.getAnimations({ subtree: true }).forEach(function (a) { var e = a.effect && a.effect.getComputedTiming && a.effect.getComputedTiming(); if (e && isFinite(e.endTime)) a.finish(); }); } catch (e) {}
         if (keepY && t !== 'l') body.scrollTop = w.y;
       },
@@ -30809,28 +30827,45 @@ hairline({
     let per = '';
     const mount = keep => { const w = keep && inst && inst.where ? inst.where() : null, was = per; per = opt('stArPer') === 'p2' ? 'p2' : 'p1';   // a tweak changed: back on the same screen after ("don't reload the experience from the beginning")
       if (inst) inst.destroy(); frame.textContent = '';
-      inst = window.AsyncReport.mount(frame, { ev: opt('stArEv') === 'v2' ? 'v2' : 'v1', persona: per, more: opt('stArMore') === 'fold' ? 'fold' : 'sheet', bm: opt('stArBm') === 'carousel' ? 'carousel' : 'static', mean: opt('stArMean') === 'text' ? 'text' : 'card', src: opt('stArSrc') === 'out' ? 'out' : 'in', assure: opt('stArAss') !== 'off', lbg: opt('stArLbg') === 'on', svis: opt('stArSvis') === 'stream' ? 'stream' : 'sphere', cdn: opt('stArCdn') === '' ? .4 : +opt('stArCdn') / 100, amt: opt('stArAmt') === '' ? .5 : +opt('stArAmt') / 100, wvis: 'photo',   /* Intro screen: Split bg, the welcome's picture (no list after it now); Halftone, Full bg and Sphere, the welcome itself as the reveal (Halftone on creme, its picture dithered as the Report visuals do) */ theme: opt('themeSel') === 'dark' ? 'dark' : 'light', bar: opt('stArBar') === 'grad' ? 'grad' : 'solid', foot: opt('stArFoot') === 'grad' ? 'grad' : 'solid', welcome: opt('stArList') === 'reveal' ? 'reveal' : opt('stArList') === 'sphere' ? 'sphere' : opt('stArList') === 'orbit' ? 'orbit' : opt('stArList') === 'ht' ? 'halftone' : opt('stArWel') === 'includes' ? 'includes' : 'cards', tabs: opt('stArTab') || 'pills', cards: opt('stArCard') === 'outline' ? 'outline' : 'fill', mb: opt('stArMb') === '2' ? 2 : 3, srcVis: opt('stArSrcVis') === 'image' ? 'image' : 'hairline', onClose: () => { if (inst) inst.reset(); } });
+      inst = window.AsyncReport.mount(frame, { ev: opt('stArEv') === 'v2' ? 'v2' : 'v1', persona: per, more: opt('stArMore') === 'fold' ? 'fold' : 'sheet', bm: opt('stArBm') === 'carousel' ? 'carousel' : 'static', mean: opt('stArMean') === 'text' ? 'text' : 'card', src: opt('stArSrc') === 'out' ? 'out' : 'in', assure: opt('stArAss') !== 'off', lbg: opt('stArLbg') === 'on', svis: opt('stArList') === 'stream' ? 'stream' : 'sphere', mhl: opt('stArMhl') === 'on', cdn: opt('stArCdn') === '' ? .4 : +opt('stArCdn') / 100, amt: opt('stArAmt') === '' ? .5 : +opt('stArAmt') / 100, wvis: 'photo',   /* Intro screen: Split bg, the welcome's picture (no list after it now); Halftone, Full bg and Sphere, the welcome itself as the reveal (Halftone on creme, its picture dithered as the Report visuals do) */ theme: opt('themeSel') === 'dark' ? 'dark' : 'light', bar: opt('stArBar') === 'grad' ? 'grad' : 'solid', foot: opt('stArFoot') === 'grad' ? 'grad' : 'solid', welcome: opt('stArList') === 'reveal' ? 'reveal' : opt('stArList') === 'sphere' ? 'sphere' : opt('stArList') === 'orbit' || opt('stArList') === 'stream' ? 'orbit' : opt('stArList') === 'ht' ? 'halftone' : opt('stArWel') === 'includes' ? 'includes' : 'cards', tabs: opt('stArTab') || 'pills', cards: opt('stArCard') === 'outline' ? 'outline' : 'fill', mb: opt('stArMb') === '2' ? 2 : 3, srcVis: opt('stArSrcVis') === 'image' ? 'image' : 'hairline', onClose: () => { if (inst) inst.reset(); } });
       wrap.classList.toggle('aqInk', !!(inst && inst.el && !inst.el.classList.contains('arDark')));
       if (inst && inst.el) frame.style.background = getComputedStyle(inst.el).backgroundColor;   // the frame in the debrief's own paper, for the full screen's margins
       if (w && inst && inst.at) inst.at(w, was === per); };   // its scroll too, when it is the same member's
     const vary = () => { if (desk) wrap.classList.toggle('aqFull', opt('stArVar') === 'full'); fit(); };
     const raise = () => { wrap.classList.remove('on', 'shut'); requestAnimationFrame(() => requestAnimationFrame(() => wrap.classList.add('on'))); };
     wrap.querySelector('.aqAgain').addEventListener('click', () => { if (inst) inst.reset(); raise(); });
-    vary(); mount(); raise();
-    return { reset: () => { if (inst) inst.reset(); raise(); }, remount: () => { mount(true); }, vary: () => { vary(); raise(); } };   // a tweak: remounted where it was, the sheet not risen again
+    /* a floating step navigator beside the phone ("add this floating navigation on the right side of the async interface so I can switch quickly"): Welcome, each insight, Everything else, Next steps;
+       the one shown filled; a click goes there with the page's own transition. Fixed 40 right of the frame, 72 under its top; shown only while this report is, with room for it */
+    const nav = document.createElement('nav'); nav.className = 'aqNav'; nav.setAttribute('aria-label', 'Debrief steps'); document.body.appendChild(nav);
+    let navKey = '';
+    const navTick = () => {
+      const r = frame.getBoundingClientRect(), s = inst && inst.steps ? inst.steps() : null, show = !!s && wrap.getClientRects().length > 0 && wrap.classList.contains('on') && r.width > 0 && r.right + 40 + 170 < innerWidth;
+      nav.classList.toggle('on', show); if (!show) return;
+      nav.classList.toggle('lt', document.body.classList.contains('light'));
+      nav.style.left = Math.round(r.right + 40) + 'px'; nav.style.top = Math.round(r.top + 72) + 'px';
+      const key = s.n + ':' + s.rest + ':' + s.next;
+      if (key !== navKey) { navKey = key; nav.textContent = '';
+        [['Welcome', 0]].concat(Array.from({ length: s.n }, (x, i) => ['Insight ' + (i + 1), i + 1]), [['Everything else', s.rest], ['Next steps', s.next]]).forEach(([t, n]) => {
+          const b = document.createElement('button'); b.type = 'button'; b.className = 'aqNavB'; b.textContent = t; b.dataset.n = n;
+          b.addEventListener('click', () => { if (inst && inst.steps && inst.steps().at !== n) inst.go(n); navTick(); }); nav.appendChild(b); }); }
+      [...nav.children].forEach(b => { const on = +b.dataset.n === s.at; b.classList.toggle('on', on); if (on) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current'); });
+    };
+    setInterval(navTick, 250); addEventListener('resize', navTick);
+    vary(); mount(); raise(); navTick();
+    return { reset: () => { if (inst) inst.reset(); raise(); }, remount: () => { mount(true); navTick(); }, vary: () => { vary(); raise(); } };   // a tweak: remounted where it was, the sheet not risen again
   }
   {
     const arD = asyncReport(document.body, true), arM = asyncReport(document.getElementById('phone2'), false);
     const vr = () => { const r = document.getElementById('stArVarRow'); if (r) r.hidden = version === 27; };   // the variation is the desktop's; the phone has one dress
     vr(); document.addEventListener('everlab:mode', () => { vr(); if (version === 26 && arD) arD.reset(); if (version === 27 && arM) arM.reset(); });
     { const v = document.getElementById('stArVar'); if (v) v.addEventListener('change', () => { if (arD) arD.vary(); }); }
-    { const l = document.getElementById('stArList'), r = document.getElementById('stArLbgRow'), r2 = document.getElementById('stArCdnRow'), cv = document.getElementById('stArCdn'), cvv = document.getElementById('stArCdnV'); const sh = () => { if (r && l) r.hidden = l.value !== 'orbit'; const two = l && ['sphere', 'orbit'].indexOf(l.value) >= 0; if (r2) r2.hidden = !two; ['stArSvisRow', 'stArAmtRow'].forEach(id => { const rr = document.getElementById(id); if (rr) rr.hidden = !two; }); }; [['stArCdn', 'stArCdnV'], ['stArAmt', 'stArAmtV']].forEach(([a, b]) => { const e = document.getElementById(a), t = document.getElementById(b); if (!e || !t) return; const sync = () => { t.textContent = e.value; }; e.addEventListener('input', sync); e.addEventListener('change', sync); sync(); requestAnimationFrame(() => requestAnimationFrame(sync)); });   /* each slider's number its own value, however it was set: dragged, a preset, the remembered tweaks (a preset set it silently, so it read 40 and 50 over 85) */ if (l){ l.addEventListener('change', sh); sh(); setInterval(sh, 600); } }   // Label badge: the Sphere hero's alone
-    { const l = document.getElementById('stArList'), r = document.getElementById('stArAssRow'); const sh = () => { if (r && l) r.hidden = ['reveal', 'sphere', 'ht', 'orbit'].indexOf(l.value) < 0; }; if (l){ l.addEventListener('change', sh); sh(); setInterval(sh, 600); } }   // Rest assured is the reveal intros' (Full bg, Sphere, Halftone)
+    { const l = document.getElementById('stArList'), r = document.getElementById('stArLbgRow'), r2 = document.getElementById('stArCdnRow'), cv = document.getElementById('stArCdn'), cvv = document.getElementById('stArCdnV'); const sh = () => { if (r && l) r.hidden = ['orbit', 'stream'].indexOf(l.value) < 0; { const rm = document.getElementById('stArMhlRow'); if (rm && l) rm.hidden = ['orbit', 'stream'].indexOf(l.value) < 0; } const two = l && ['sphere', 'orbit', 'stream'].indexOf(l.value) >= 0; if (r2) r2.hidden = !two; ['stArAmtRow'].forEach(id => { const rr = document.getElementById(id); if (rr) rr.hidden = !two; }); }; [['stArCdn', 'stArCdnV'], ['stArAmt', 'stArAmtV']].forEach(([a, b]) => { const e = document.getElementById(a), t = document.getElementById(b); if (!e || !t) return; const sync = () => { t.textContent = e.value; }; e.addEventListener('input', sync); e.addEventListener('change', sync); sync(); requestAnimationFrame(() => requestAnimationFrame(sync)); });   /* each slider's number its own value, however it was set: dragged, a preset, the remembered tweaks (a preset set it silently, so it read 40 and 50 over 85) */ if (l){ l.addEventListener('change', sh); sh(); setInterval(sh, 600); } }   // Label badge: the Sphere hero's alone
+    { const l = document.getElementById('stArList'), r = document.getElementById('stArAssRow'); const sh = () => { if (r && l) r.hidden = ['reveal', 'sphere', 'ht', 'orbit', 'stream'].indexOf(l.value) < 0; }; if (l){ l.addEventListener('change', sh); sh(); setInterval(sh, 600); } }   // Rest assured is the reveal intros' (Full bg, Sphere, Halftone)
     { const e = document.getElementById('stArEv'), r = document.getElementById('stArSrcRow'); const sh = () => { if (r && e) r.hidden = e.value !== 'v2'; }; if (e){ e.addEventListener('change', sh); sh(); setInterval(sh, 600); } }   // Sources is One card's (V2)
     { const l = document.getElementById('stArList'), rows = ['stArWelRow', 'stArWelVisRow'].map(id => document.getElementById(id)).filter(Boolean);   // Full bg is the welcome: its own rows away while it is on
       const hide = () => rows.forEach(r => { r.hidden = !!l && (l.value === 'reveal' || l.value === 'sphere'); }); if (l){ l.addEventListener('change', hide); hide(); setInterval(hide, 600); } }
     /* the presets, V1 and V2 ("V1 and V2 should be presets that I can save"): each every design tweak of the report; V1's own the page's defaults, V2's the same with one card for the evidence. Picking one sets its tweaks (one remount); Save keeps the current tweaks in it, Reset its own back; the one picked and what was saved kept in this browser. Save marked while the tweaks differ from the preset */
-    { const KEYS = ['stArVar', 'stArEv', 'stArSrc', 'stArAss', 'stArLbg', 'stArCdn', 'stArAmt', 'stArSvis', 'stArMean', 'stArBm', 'stArMore', 'stArBar', 'stArFoot', 'stArTab', 'stArMb', 'stArSrcVis', 'stArCard', 'stArWel', 'stArWelVis', 'stArList'], STORE = 'everlab.arPresets';
+    { const KEYS = ['stArVar', 'stArEv', 'stArSrc', 'stArAss', 'stArLbg', 'stArMhl', 'stArCdn', 'stArAmt', 'stArMean', 'stArBm', 'stArMore', 'stArBar', 'stArFoot', 'stArTab', 'stArMb', 'stArSrcVis', 'stArCard', 'stArWel', 'stArWelVis', 'stArList'], STORE = 'everlab.arPresets';
       const el = id => document.getElementById(id), pre = el('stArPre'), sv = el('stArPreSave'), rs = el('stArPreReset');
       const now = () => { const o = {}; KEYS.forEach(k => { if (el(k)) o[k] = el(k).value; }); return o; };
       if (pre && sv && rs){
@@ -30849,7 +30884,7 @@ hairline({
         if (store.cur && OWN[store.cur] && pre.value !== store.cur) pre.value = store.cur;
         apply(pre.value); }   // the one last picked, with what was saved in it
     }
-    ['themeSel', 'stArBar', 'stArFoot', 'stArWel', 'stArTab', 'stArCard', 'stArMb', 'stArSrcVis', 'stArPer', 'stArEv', 'stArSrc', 'stArAss', 'stArLbg', 'stArCdn', 'stArAmt', 'stArSvis', 'stArMean', 'stArList', 'stArMore', 'stArWelVis', 'stArBm'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('change', () => { if (arD) arD.remount(); if (arM) arM.remount(); }); });
+    ['themeSel', 'stArBar', 'stArFoot', 'stArWel', 'stArTab', 'stArCard', 'stArMb', 'stArSrcVis', 'stArPer', 'stArEv', 'stArSrc', 'stArAss', 'stArLbg', 'stArMhl', 'stArCdn', 'stArAmt', 'stArMean', 'stArList', 'stArMore', 'stArWelVis', 'stArBm'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('change', () => { if (arD) arD.remount(); if (arM) arM.remount(); }); });
   }
   {
     const prD = pastResults(document.body, true);

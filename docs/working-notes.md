@@ -15187,3 +15187,16 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - "For full modal, use normal body colour": in Dark, a full-height bottom sheet (an area's biomarkers, a biomarker's detail, the X biomarkers list, the questionnaire...) now has the page's own background (oklch 16.84%), not the lighter 21% grey; sheets that fit their content keep the grey. Light was already the page's colour.
 - "Remove this step and delete" (Your insights, the list of every insight as a card after the welcome on Split bg): deleted, with its code (buildList), the full-bg version of that 2nd screen it could be (buildReveal), their options (list, intro) and their styles. The welcome now goes straight to the first insight: one step fewer (the progress 7 bars). Split bg stays as the welcome with its picture. A remount from a page that was on the list lands on the first insight.
 - Tweaks: Condense and Amount showed 40 and 50 while their thumbs sat at a saved ~85: a preset set the sliders silently and their numbers only followed dragging. Each number now follows its slider however it is set (dragged, a preset, the remembered tweaks).
+- "Add this floating navigation on the right side of the async interface so I can switch quickly": a step navigator fixed 40px right of the phone, 72 under its top: Welcome, Insight 1 to 5 (the persona's count), Everything else, Next steps (the end); the current step filled (white on Dark, black on Light), the rest translucent pills; a click goes there with the page's own transition. Shown only while the Async report is, and only with room beside the phone (hidden on narrow windows and the full-screen version). The report now tells its steps (steps()).
+- Fix: since the list step's removal, a tweak's remount left the report in its "still" mode (a comment swallowed the statement that ends it), so later pages wrote out at once instead of animating; restored.
+
+### Async report: Blood stream joins the Intro screen select; Visual row gone
+- Intro screen (`stArList`) is a plain dropdown now, not segmented tabs, and has a `Blood stream` option. The separate Visual (Sphere / Blood stream) row is removed: markup, hidden rule, presets KEYS, remount list.
+- The wrapper maps `stream` to `welcome: 'orbit'` with `svis: 'stream'`; Label badge, Condense, Amount and Rest assured rows show for it as for Sphere hero.
+- The step navigator now tests `wrap.getClientRects()` (offsetParent is null for the fixed desk wrapper). It shows whenever there is room right of the frame (frame right + 210px under the window width).
+
+### Async report: Marker highlight tweak
+- `stArMhl` (Off / On), shown for Sphere hero and Blood stream (the plain Sphere has no markers). Passed as `mhl`.
+- On: particles within 80px of the active marker keep full alpha, fading to 50% by 170px and beyond. When the active marker changes, the lit area hands over from the old point to the new one over 600ms.
+- Each layer's `focus(k)` takes the active point. Sphere hero calls it as each label opens and when a label is re-pinned; Blood stream calls it on each new active marker.
+- Measured total canvas alpha, on vs off: Sphere hero -39%, Blood stream -22% (the stream's particles crowd round its marker).
