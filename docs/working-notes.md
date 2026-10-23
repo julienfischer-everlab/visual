@@ -15291,3 +15291,22 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - **Floating**: **Neutral** (default, "floating particles should be neutral, not orange"; the empty particles' ink, peak 55%) / Orange (the earlier orange and white, peak 70%) / Off.
 - **Overview card bar**: the next step's half increment shows only when the member left part-way through it ("the half increment should only occur when the user drops off in the middle of the flow"), i.e. that step is `prog` (at least one of its screens passed). Not begun: the next third empty.
 - **Intro**: the sphere now overlaps the top nav by 32px (was 16; "the content bleeds 32px above the top nav"). The Step 1 line breaks after "By the end," ("About 12 minutes. By the end, / Dr Lee knows you before you meet."), via a newline and `white-space: pre-line` on the intro's line.
+
+## Health profile: intro rows, stage transition, demo arrows
+
+- **Rows**:
+  - Done: green check (the report's optimal green, `--ar-opt-bg`, white tick), on the desk rail too. Sub reads "Completed".
+  - Edit: a 36px round ghost with a pen icon.
+  - Begun, not finished: dashed ring and number in full ink, sub "To finalise", no In progress badge.
+  - Not reached: the whole card at 60%.
+  - Counter-to-text gap 18 (+4), card gap 6 (-2), list 40 under the line (+8).
+- **Intro**:
+  - The title is set as the Async intro's (32/32, 570, -.01em).
+  - The sphere is back to 16 over the bar ("push down content by 16px").
+  - The booking's main CTA reads "Book".
+- **Intro to stage, up** ("move up the content when going to the next step, similar to the Async report's intro to insight page"):
+  - The old page rises 72 and fades over 380ms; the new one comes up from a third below as it fades in (660ms, after 300).
+  - Then the bar's back, title and steps fade in; on the desk, the rail fades in with the page.
+  - Back from a stage's first screen, the other way. A stage finished goes on, up, to the intro.
+  - The old page is held where it stood as the bar comes or goes.
+- **Demo arrows** only when the Overview's card is really on top (`elementFromPoint`), or the profile sheet is open. They no longer show over the Async report ("why do I have this on Async? remove that").
