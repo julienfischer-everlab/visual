@@ -15513,3 +15513,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Reduced motion: the profile at once.
 - **Halo:** the profile intro's halo fades in in place once the page has landed (1.2 s from 0.7 s), then breathes as before. This applies every time the intro shows.
 - **Tweaks → Primary card → First-time user** is now a **Trigger** button instead of Yes / No. It shows the welcome from its first frame; it no longer appears by itself when the Overview opens. Welcome → Replay does the same.
+
+## Welcome: status lines roll vertically; CTA 128px from the bottom
+
+- Each status line (its orange square and words together) now has its own element and rolls on a drum: the next turns up into place from below (`translateY(100%) rotateX(-80deg)` to rest, 0.72 s on `cubic-bezier(.45,0,.2,1)`, from a 2px blur), while the last turns away over the top (to `translateY(-100%) rotateX(80deg)`, fading from 0.12 s). Perspective is 640px and the axis sits 10px behind the line. The new line's words type in as it comes round (from 0.14 s), and the cursor moves on to it. There is no gap between lines now; each holds 0.76 s. The last line still dissolves into the blur as the dot swells.
+- On a full-height sheet (phone and tablet, either format) and in the full modal on the desk, "Get started" sits 128px from the bottom ("128px from the bottom"), with the title alone in the middle above it. The desk's centred modal keeps it under the title.

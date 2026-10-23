@@ -1230,12 +1230,14 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
 @keyframes hpWelEmb { 0% { color: var(--warm); text-shadow: 0 0 12px var(--halo); } 100% { color: oklch(var(--ar-ink)); text-shadow: 0 0 0 rgba(232, 140, 60, 0); } }
 .arSheet.hpWel .hpWelCtaR { display: flex; justify-content: center; width: 100%; }
 .arSheet.hpWel .hpWelStage { position: relative; width: 100%; height: calc(var(--hpWelLh) * 2); }   /* two rows' room, fixed: nothing round it moves as the titles are written */   /* the title, and the loader's line over its middle: the block centred, so that middle holds still as the rows open */
-.arSheet.hpWel .hpWelLd { position: absolute; left: 0; right: 0; top: auto; bottom: calc((var(--hpWelLh) - 18px) / 2); height: 18px; display: flex; align-items: center; justify-content: center; gap: 10px; font-family: var(--ar-font-mono); font-size: 12px; line-height: 18px; letter-spacing: .06em; text-transform: uppercase; color: oklch(var(--ar-ink)); white-space: nowrap; opacity: 0; transition: opacity .28s ease, transform .28s ease, filter .28s ease; pointer-events: none; }   /* the async report intro's typed lines: mono capitals, an orange square before */
-.arSheet.hpWel .hpWelLd.hpWelLdOn { opacity: 1; } .arSheet.hpWel .hpWelLd.hpWelLdOut { opacity: 0; transform: translateY(-6px); filter: blur(4px); }   /* a line lifted away, blurring, as the next comes */
-.arSheet.hpWel .hpWelLd.hpWelLdEnd { opacity: 0; transform: scale(.97); filter: blur(7px); transition-duration: .5s; }   /* the last dissolving as the dot swells, the title's letters coming out of the same blur where it was */
+.arSheet.hpWel .hpWelLd { position: absolute; left: 0; right: 0; bottom: calc((var(--hpWelLh) - 18px) / 2); height: 18px; perspective: 640px; font-family: var(--ar-font-mono); font-size: 12px; line-height: 18px; letter-spacing: .06em; text-transform: uppercase; color: oklch(var(--ar-ink)); white-space: nowrap; pointer-events: none; transition: opacity .5s ease, transform .5s ease, filter .5s ease; }   /* the async report intro's typed lines: mono capitals, an orange square before; on the title's bottom line */
+.arSheet.hpWel .hpWelLn { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 10px; transform-origin: 50% 50% -10px; backface-visibility: hidden; opacity: 0; filter: blur(2px); transform: translateY(100%) rotateX(-80deg); transition: transform .72s cubic-bezier(.45, 0, .2, 1), opacity .5s ease, filter .6s ease; }   /* below, turned away under the drum */
+.arSheet.hpWel .hpWelLn.hpWelLnIn { opacity: 1; filter: none; transform: none; } .arSheet.hpWel .hpWelLn.hpWelLnAway { opacity: 0; filter: blur(2px); transform: translateY(-100%) rotateX(80deg); transition: transform .72s cubic-bezier(.45, 0, .2, 1), opacity .45s ease .12s, filter .5s ease .1s; }   /* round to the front; then on over the top */
+.arSheet.hpWel .hpWelLd.hpWelLdEnd { opacity: 0; transform: scale(.97); filter: blur(7px); }   /* the last dissolving as the dot swells, the title's letters coming out of the same blur where it was */
 .arSheet.hpWel .hpWelSq { flex: none; width: 6px; height: 6px; background: #ff7a1a; }
 .arSheet.hpWel .hpWelLdW { position: relative; } .arSheet.hpWel .hpWelLdG { visibility: hidden; } .arSheet.hpWel .hpWelLdT { position: absolute; left: 0; top: 0; }   /* the words held unseen for the line's room; the typing over them */
 .arSheet.hpWel .hpWelLd .arRvCur { margin-left: 1px; }
+.aqWrap:is(.aqBpXS, .aqBpS) .arSheet.hpWel .hpWelCtaR, .aqWrap.hpWelF .arSheet.hpWel .hpWelCtaR { position: absolute; left: 0; right: 0; bottom: 128px; }   /* on a full-height sheet, 128 off the bottom ("128px from the bottom"); the title alone in the middle above it. The desk's modal keeps it under the title */
 .arSheet.hpWel .hpWelCta { width: auto; max-width: 100%; padding: 0 32px; opacity: 0; visibility: hidden; transform: translateY(18px); transition: opacity .9s cubic-bezier(.22, .61, .24, 1), transform .9s cubic-bezier(.22, .61, .24, 1), visibility .9s; }   /* its row there from the start: it only fades in, rising */
 .arSheet.hpWel:is(.hpWelCtaIn, .hpWelCalm) .hpWelCta { opacity: 1; visibility: visible; transform: none; }
 .arSheet.hpWel.hpWelCalm .hpWelC { opacity: 1; top: 0; filter: none; } .arSheet.hpWel.hpWelCalm .hpWelQ1 { display: none; }
@@ -2000,9 +2002,8 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
     var T2 = title(['This is the first step', 'of your health journey.'], OUT1 + 600, 'hpWelQ2'), BY = T2.by, SAY = (NM ? 'Welcome to Everlab, ' + NM + '.' : 'Welcome to Everlab.') + ' This is the first step of your health journey.';
     T1.el.style.setProperty('--out', OUT1 + 'ms'); T1.el.setAttribute('aria-hidden', 'true'); T2.el.setAttribute('aria-label', 'This is the first step of your health journey.');
     /* the loader ("feels like we're creating their personal health profile"): short status lines in the middle, where the title will be, typed in the async report intro's mono capitals behind its orange square, a block cursor running ahead; each line keeps its room from the start (its words held, unseen, under the typing) so it does not shift as it writes; held, then lifted away blurring as the next comes */
-    var MSG = ['Creating your health profile', 'Preparing your three steps', 'Personalising it for ' + (opts.name || 'you')], TYC = 30, HOLD = 620, OUT = 280;
-    var ldG = h('span', { class: 'hpWelLdG' }), ldT = h('span', { class: 'hpWelLdT' }), ldC = h('span', { class: 'arRvCur' });
-    var ld = h('div', { class: 'hpWelLd', 'aria-hidden': 'true' }, h('i', { class: 'hpWelSq' }), h('span', { class: 'hpWelLdW' }, ldG, ldT));
+    var MSG = ['Creating your health profile', 'Preparing your three steps', 'Personalising it for ' + (opts.name || 'you')], TYC = 30, HOLD = 760;
+    var ldC = h('span', { class: 'arRvCur' }), ld = h('div', { class: 'hpWelLd', 'aria-hidden': 'true' }), line = null;   // the lines' stage; the cursor moves on to each new line
     var sph = h('div', { class: 'hpWelSph', 'aria-hidden': 'true' }, sp.el);
     var root = h('div', { class: 'arSheet hpSheet hpWel' + (opts.theme === 'dark' ? ' arDark' : '') + (calm ? ' hpWelCalm' : ''), role: 'document', 'aria-label': SAY },
       sph, closeBtn, h('div', { class: 'hpWelBody' }, h('div', { class: 'hpWelStage' }, T1.el, T2.el, ld), h('div', { class: 'hpWelCtaR' }, cta)));   // the button in the content, under the title, hugging its words ("hug content CTA, in the content not in the footer")
@@ -2011,12 +2012,15 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
     cta.addEventListener('click', function () { if (opts.onStart) opts.onStart(); });
     /* one motion, once the sheet is up: the dot drawn in near the top (0.15 s), rippling; the status lines typed one after another under it; on the last, held, the title's first row starts to open (hpWelGo), the dot swells as the line dissolves in a blur (0.3 s on), and bursts into the ball at the top edge, its upper half past it (0.82 s on); as the ball forms the title is written where the lines were (1 s on), the button half a second after its last letter begins, fading in as it rises 18px (0.9 s) in the row kept for it */
     var tm = [], later = function (f, ms) { tm.push(setTimeout(f, ms)); };
+    /* each message its own line, square and words together, turning up into place from below as the last turns away above, a drum's roll ("the bullet point should rotate vertically, smoother"), its words typed as it comes round */
     var type = function (i) {
-      var txt = MSG[i], k = 0; ldG.textContent = txt; ldT.textContent = ''; ldT.appendChild(document.createTextNode('')); ldT.appendChild(ldC); ld.classList.remove('hpWelLdOut'); ld.classList.add('hpWelLdOn');
-      var tick = function () { ldT.firstChild.nodeValue = txt.slice(0, ++k); if (k < txt.length) { later(tick, TYC); return; }
-        if (i < MSG.length - 1) later(function () { ld.classList.add('hpWelLdOut'); later(function () { type(i + 1); }, OUT); }, HOLD);
+      var txt = MSG[i], k = 0, tn = document.createTextNode(''), ln = h('div', { class: 'hpWelLn' }, h('i', { class: 'hpWelSq' }), h('span', { class: 'hpWelLdW' }, h('span', { class: 'hpWelLdG', text: txt }), h('span', { class: 'hpWelLdT' }, tn, ldC)));
+      if (line) { var o = line; o.classList.remove('hpWelLnIn'); o.classList.add('hpWelLnAway'); later(function () { o.remove(); }, 800); }
+      ld.appendChild(ln); line = ln; void ln.offsetWidth; ln.classList.add('hpWelLnIn');
+      var tick = function () { tn.nodeValue = txt.slice(0, ++k); if (k < txt.length) { later(tick, TYC); return; }
+        if (i < MSG.length - 1) later(function () { type(i + 1); }, HOLD);
         else later(function () { root.classList.add('hpWelGo'); later(function () { sp.burst(520); ld.classList.add('hpWelLdEnd'); }, 300); later(function () { root.classList.add('hpWelCtaIn'); }, BY + 500); }, HOLD - 300); };
-      later(tick, TYC);
+      later(tick, 140);
     };
     var go = function () {
       if (!root.isConnected) return;
