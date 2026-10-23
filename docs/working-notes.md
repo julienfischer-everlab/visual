@@ -15518,3 +15518,22 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 
 - Each status line (its orange square and words together) now has its own element and rolls on a drum: the next turns up into place from below (`translateY(100%) rotateX(-80deg)` to rest, 0.72 s on `cubic-bezier(.45,0,.2,1)`, from a 2px blur), while the last turns away over the top (to `translateY(-100%) rotateX(80deg)`, fading from 0.12 s). Perspective is 640px and the axis sits 10px behind the line. The new line's words type in as it comes round (from 0.14 s), and the cursor moves on to it. There is no gap between lines now; each holds 0.76 s. The last line still dissolves into the blur as the dot swells.
 - On a full-height sheet (phone and tablet, either format) and in the full modal on the desk, "Get started" sits 128px from the bottom ("128px from the bottom"), with the title alone in the middle above it. The desk's centred modal keeps it under the title.
+
+## Welcome: pixel to dot at 35%, contract and burst, sphere formed where the profile shows it; Full modal by default
+
+- **The opening:**
+  - The screen starts blank.
+  - At 0.52 s a single pixel appears, horizontally centred and 35% down the screen. Over 0.8 s it grows smoothly (eased out) into an 8px dot.
+  - While the status lines roll, the dot breathes between 8 and 12px (every 2.8 s). The lines begin at 1.5 s.
+  - The ripples are gone: the spec asks only for the breathing.
+  - The dot is the sphere's neutral ink: warm white in dark, near-black in light, so it shows on the light sheet.
+- **When the last line is done, these overlap:**
+  - The title is written (from 1 s), its rows opening beneath it.
+  - The dot is drawn in to a 1.4px point, its glow gathering (0.45 s, from 0.3 s).
+  - The point bursts (0.75 s). As the sphere forms it rises from the dot to its place (1.25 s, `cubic-bezier(.45,0,.2,1)`).
+- **Where the sphere forms:** at the health-profile page's sphere position and size (the 132px box, drawn 1.6×).
+  - The profile's sphere centre is always 112px below the full modal's content top: 170 on the phone, 156 on the tablet, 128 on the desk. The welcome uses that, less how far its sheet stands below the full frame, and never less than 100 (the desk's small modal).
+  - Measured by layout (`offsetTop`), since the frame may still be sliding in.
+  - On Get started the sphere is already where the profile's is: checked to the pixel on the phone in both formats and on the desk in the full modal. The carry only moves it in the desk's small modal.
+- **Tweaks → Welcome → Format** now defaults to Full modal.
+- `sphere()` seed/burst: `seed(at, oy)` shows the pixel, which grows and breathes; `burst(sw)` draws it in over `sw` ms, then the ball is flung out from it. `dot()` takes a glow strength.
