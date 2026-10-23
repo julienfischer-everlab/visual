@@ -15495,3 +15495,21 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Full modal uses the profile's full frame (`aqFull`, plus `hpWelF` on the wrap): the whole screen on the phone, and the centred column on the desk.
   - On the phone, the sphere's line is the bottom of the status bar (`--ar-head-top`): the sphere is clipped there, its lower half showing under it. The dot sits 24px below that line, and the close button sits under the status bar.
 - Reduced motion: no loader, the final state at once.
+
+## Welcome: two written titles, Get started hands off to the profile, Trigger
+
+- **Titles, 4px larger** (32/36 on the desk, 30/34 on the phone), written in turn after the loader:
+  1. "Welcome to Everlab, {name}" (the member's name, Julien in the prototype), on two rows.
+  2. Held 0.9 s after it settles, then it dissolves upward (0.5 s).
+  3. "This is the first step / of your health journey." is written in its place.
+  4. The CTA comes half a second after the last letter begins.
+  - Letters are 61 ms apart (the earlier pace), with the same blur and ember.
+  - Each title is held by its foot in a fixed two-row box: the row being written stays on one line and the rows above move up ("the H1 should move up every row written"). The loader's line sits on that same bottom line.
+- **Get started → profile full modal, in place:**
+  - The profile mounts under the welcome in the same frame. The frame opens from the sheet (or the desk's modal) to the whole screen with a clip-path FLIP (0.62 s).
+  - The welcome's words, button and close rise 72px and fade (0.38 s), as from the profile's intro to a step.
+  - The profile's page comes up from a third of the screen below as it fades in (0.66 s from 0.3 s); its button rises in after it and its bar fades in.
+  - The sphere is lifted out of the welcome and carried to the profile's own sphere at the top, shrinking to its size (0.9 s). It turns in step with it (the profile's sphere takes the welcome's start time via `sphT0`), then hands over in a 0.3 s crossfade.
+  - Reduced motion: the profile at once.
+- **Halo:** the profile intro's halo fades in in place once the page has landed (1.2 s from 0.7 s), then breathes as before. This applies every time the intro shows.
+- **Tweaks → Primary card → First-time user** is now a **Trigger** button instead of Yes / No. It shows the welcome from its first frame; it no longer appears by itself when the Overview opens. Welcome → Replay does the same.
