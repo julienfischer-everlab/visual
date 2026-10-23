@@ -15603,3 +15603,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - the halo, which came in last, fades first.
 - **The sphere on Get started** now moves up and scales down together, in one 0.9 s move as the screens change ("the scale down should occur while the screen transitions, not at the end"). Back reverses the same move.
 - **Profile halo:** its centre is 64px higher ("move up the halo by 64px"), the same size.
+
+## First title: a 0.5 s pause
+
+- "Welcome to Everlab, Julien" now holds 0.5 s once its last letter has settled, then dissolves (0.4 s) and the second title begins 0.3 s after ("pause 0.5 sec"). On a run: last letter settled at 3.43 s, the title starting to go at ~4.0 s.
