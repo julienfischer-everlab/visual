@@ -15411,3 +15411,18 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The areas away from it are now at 40% ("inactive areas opacity 40%"; was 20%), easing from full within 80px to 40% by 170px.
 - In a section's **floating panel**, no switch to hide the section and no handle to reorder ("remove the option to hide the entire section when it's floating; also no option to reorder"). Dragging its header does nothing there. Both stay in the main Tweaks list.
 - Fixed: a `//` comment put mid-line in a one-line handler had commented out the rest of it and broken the build (now `/* */`).
+
+## Program card in the doctor's voice; the Primary card tweak
+
+- **Program card** after the onboarding consult, in the narrative of the "Your doctor" card ("use this style of narrative for the plan card after the onboarding consult"), on the Telehealth tile's ground in place of the brown:
+  - Your plan, then Dr Steven Lu (photo, Longevity GP, Everlab), then "I've built your plan around your results and what matters to you, Julien."
+  - A "From your consult · Yesterday" note, then a row: Your personalised health program, 6 services · ready to review.
+  - "Usually replies within a day" (green dot), then Review my plan (primary, to the Action plan) and Message.
+- **Primary card** (Tweaks): the Health profile and Next step groups are one group now ("Type: $299 purchased: Health profile, Plan to purchase; Next step: Dexa, etc.").
+  - **Type**: $299 purchased / Next step.
+  - **$299 purchased** shows Card (Health profile / Plan to purchase) and First-time user.
+    - Health profile adds its State stepper (the seven states, Step 1 to Done), Empty dots, Floating and Open.
+    - Plan to purchase completes the profile and shows the Program card.
+  - **Next step** puts the profile's card away and shows the hero (DEXA scan to start), with its Booked object, Hero action, Hero background and Hero image rows.
+  - Finishing the profile sets Card to Plan to purchase. The old $299 member row is hidden (kept at Yes for the order logic). One floating "+" for the group, at whichever card is primary. Its switch hides both cards.
+- Fixed: re-sorting the Tweaks list no longer pulls a group out of an open floating panel.

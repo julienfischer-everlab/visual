@@ -11955,19 +11955,11 @@
           </select>
         </div>
         <!-- $299 member: yes, the Health profile card the primary card, first on the Overview; no, another the primary (Next step), the Health profile after the insights ("if yes, the primary card is Health profile; if no, the primary card is another card") -->
-        <div class="tkRow">
+        <div class="tkRow" hidden>   <!-- now the Primary card's Type ($299 purchased / Next step); kept, set to Yes, for the order and the sections' logic -->
           <span class="lbl">$299 member</span>
           <select id="stHpMem" class="tkSegSel" aria-label="A $299 member: the Health profile card first">
             <option value="yes" selected>Yes</option>
             <option value="no">No</option>
-          </select>
-        </div>
-        <!-- a $299 member's first visit: yes, the welcome over the Overview, what comes and what is next ("first-time user: yes/no; if yes, a modal that explains what comes and what is next") -->
-        <div class="tkRow" id="stHpFirstRow">
-          <span class="lbl">First-time user</span>
-          <select id="stHpFirst" class="tkSegSel" aria-label="A $299 member's first visit: the welcome">
-            <option value="yes">Yes</option>
-            <option value="no" selected>No</option>
           </select>
         </div>
         <!-- the phone's sections in the order they are dragged to ("add a drag section system so I can manage the order of sections in mobile") -->
@@ -11993,64 +11985,28 @@
         </div>
         </div>
         <!-- the Health profile ("add a Health Profile card to the Overview"): its card's section, and the profile's demo states ("include examples of the not-started, in-progress and completed states"); Saved, what was last done in it here -->
-        <div class="tkGroup" data-pages="ov" data-sec="prof">
-        <div class="tkSub">Health profile</div>
-        <div class="tkRow"><span class="lbl">State</span><select id="stHpSt" aria-label="The Health profile's step"><option value="none" selected>Step 1</option><option value="none_d">Step 1.5 (dropped off)</option><option value="one">Step 2</option><option value="one_d">Step 2.5 (dropped off)</option><option value="two">Step 3</option><option value="two_d">Step 3.5 (dropped off)</option><option value="all">Done</option><option value="plan">Program</option><option value="after">Dexa next</option></select></div>
+        <!-- the Primary card, the Overview's first card: its Type, a $299 member's card (Health profile, or Plan to purchase) or Next step (the hero and its action) ("this part of Primary card: Type: $299 purchased: Health profile, Plan to purchase; Next step: Dexa, etc.") -->
+        <div class="tkGroup" data-pages="ov" data-sec="primary">
+        <div class="tkSub">Primary card</div>
+        <div class="tkRow"><span class="lbl">Type</span><select id="stPcType" class="tkSegSel" aria-label="The Overview's primary card"><option value="member" selected>$299 purchased</option><option value="next">Next step</option></select></div>
+        <div class="pcPart" data-pc="member">
+        <div class="tkRow"><span class="lbl">Card</span><select id="stPcMem" class="tkSegSel" aria-label="A $299 member's primary card"><option value="hp" selected>Health profile</option><option value="plan">Plan to purchase</option></select></div>
+        <!-- a $299 member's first visit: yes, the welcome over the Overview, what comes and what is next ("first-time user: yes/no; if yes, a modal that explains what comes and what is next") -->
+        <div class="tkRow" id="stHpFirstRow">
+          <span class="lbl">First-time user</span>
+          <select id="stHpFirst" class="tkSegSel" aria-label="A $299 member's first visit: the welcome">
+            <option value="yes">Yes</option>
+            <option value="no" selected>No</option>
+          </select>
+        </div>
+        </div>
+        <div class="pcPart" data-pc="hp">
+        <div class="tkRow"><span class="lbl">State</span><select id="stHpSt" aria-label="The Health profile's step"><option value="none" selected>Step 1</option><option value="none_d">Step 1.5 (dropped off)</option><option value="one">Step 2</option><option value="one_d">Step 2.5 (dropped off)</option><option value="two">Step 3</option><option value="two_d">Step 3.5 (dropped off)</option><option value="all">Done</option></select></div>
         <div class="tkRow"><span class="lbl">Empty dots</span><select id="stHpDim" class="tkSegSel" aria-label="The sphere's empty particles, how visible"><option value="1">Base</option><option value="1.2" selected>+20%</option><option value="1.5">+50%</option><option value="2">+100%</option></select></div>
         <div class="tkRow"><span class="lbl">Floating</span><select id="stHpFeed" class="tkSegSel" aria-label="The particles drawn into the sphere: their colour"><option value="neutral" selected>Neutral</option><option value="orange">Orange</option><option value="off">Off</option></select></div>
         <div class="tkRow"><span class="lbl">Open</span><span class="tkPreCtl"><button class="tkBtn" type="button" id="stHpOpen">Health profile</button></span></div>
         </div>
-        <!-- the Overview's Action plan: one list, or split by kind under two chips, Tasks and Appointments ("tweak: split actions per group; off: current; on: new with tab chips") -->
-        <div class="tkGroup" data-pages="ov" data-sec="plan">
-        <div class="tkSub">Action plan</div>
-        <!-- V1 the cards; V2 My journey summarised: the next milestone and its to-dos, the milestones after it ("create an Action plan tweak: V1 this one, V2 reflect a summarised way of the timeline v2 My journey") -->
-        <div class="tkRow">
-          <span class="lbl">Version</span>
-          <select id="stPlanV" class="tkSegSel" aria-label="How the Action plan is drawn">
-            <option value="v1" selected>V1</option>
-            <option value="v2">V2</option>
-          </select>
-        </div>
-        <!-- V2's next milestone: its header beside its actions, or over them ("add tweak for stacked content") -->
-        <div class="tkRow" id="stPlanStackRow" hidden>
-          <span class="lbl">Content</span>
-          <select id="stPlanStack" class="tkSegSel" aria-label="The next milestone's header beside its actions, or over them">
-            <option value="side" selected>Side by side</option>
-            <option value="stack">Stacked</option>
-          </select>
-        </div>
-        <div class="tkRow">
-          <span class="lbl">Split actions per group</span>
-          <select id="stPlanSplit" aria-label="Split the Action plan into Tasks and Appointments">
-            <option value="on">On</option>
-            <option value="off" selected>Off</option>
-          </select>
-        </div>
-        </div>
-        <!-- the services-on-hold card's own tweaks, grouped ("create a group Later card: Visual type, Hairline or Img stacked; Alignment, Centered or Left") -->
-        <div class="tkGroup" data-pages="ov" data-sec="later">
-        <div class="tkSub">Later card</div>
-        <!-- its visual: the Hairline page's Folder drawn live, or the three stacked pictures ("tweak, visual hairline OR these imgs") -->
-        <div class="tkRow">
-          <span class="lbl">Visual type</span>
-          <select id="stDefVis" class="tkSegSel" aria-label="The Later card's visual">
-            <option value="folder">Hairline</option>
-            <option value="folderO">Hairline orange</option>   <!-- the same folder on a solid orange square, no outline ("tweak hairline with active folder solid orange bg, no outline") -->
-            <option value="img" selected>Img stacked</option>
-          </select>
-        </div>
-        <!-- stacked on the phone and XS: centred, or all down the left edge ("tweak position TOP centered OR left") -->
-        <div class="tkRow">
-          <span class="lbl">Alignment</span>
-          <select id="stDefAl" class="tkSegSel" aria-label="The Later card's alignment">
-            <option value="c" selected>Centered</option>
-            <option value="l">Left</option>
-          </select>
-        </div>
-        </div>
-        <!-- the hero card's own tweaks, grouped ("this into a group: Hero task") -->
-        <div class="tkGroup" data-pages="ov" data-sec="hero">
-        <div class="tkSub">Next step</div>   <!-- the hero card and the booked list under it, one section ("Hero task" and "Next step" merged) -->
+        <div class="pcPart" data-pc="next" hidden>
         <div class="tkRow">
           <span class="lbl">Booked object</span>
           <select id="stBkObj" aria-label="The booked appointments under the Next step card">
@@ -12114,6 +12070,55 @@
           <select id="stHeroImg" class="tkSegSel" aria-label="Where the hero card's picture goes">
             <option value="cover" selected>Cover</option>
             <option value="thumb">Top right</option>
+          </select>
+        </div>
+        </div>
+        </div>
+        <!-- the Overview's Action plan: one list, or split by kind under two chips, Tasks and Appointments ("tweak: split actions per group; off: current; on: new with tab chips") -->
+        <div class="tkGroup" data-pages="ov" data-sec="plan">
+        <div class="tkSub">Action plan</div>
+        <!-- V1 the cards; V2 My journey summarised: the next milestone and its to-dos, the milestones after it ("create an Action plan tweak: V1 this one, V2 reflect a summarised way of the timeline v2 My journey") -->
+        <div class="tkRow">
+          <span class="lbl">Version</span>
+          <select id="stPlanV" class="tkSegSel" aria-label="How the Action plan is drawn">
+            <option value="v1" selected>V1</option>
+            <option value="v2">V2</option>
+          </select>
+        </div>
+        <!-- V2's next milestone: its header beside its actions, or over them ("add tweak for stacked content") -->
+        <div class="tkRow" id="stPlanStackRow" hidden>
+          <span class="lbl">Content</span>
+          <select id="stPlanStack" class="tkSegSel" aria-label="The next milestone's header beside its actions, or over them">
+            <option value="side" selected>Side by side</option>
+            <option value="stack">Stacked</option>
+          </select>
+        </div>
+        <div class="tkRow">
+          <span class="lbl">Split actions per group</span>
+          <select id="stPlanSplit" aria-label="Split the Action plan into Tasks and Appointments">
+            <option value="on">On</option>
+            <option value="off" selected>Off</option>
+          </select>
+        </div>
+        </div>
+        <!-- the services-on-hold card's own tweaks, grouped ("create a group Later card: Visual type, Hairline or Img stacked; Alignment, Centered or Left") -->
+        <div class="tkGroup" data-pages="ov" data-sec="later">
+        <div class="tkSub">Later card</div>
+        <!-- its visual: the Hairline page's Folder drawn live, or the three stacked pictures ("tweak, visual hairline OR these imgs") -->
+        <div class="tkRow">
+          <span class="lbl">Visual type</span>
+          <select id="stDefVis" class="tkSegSel" aria-label="The Later card's visual">
+            <option value="folder">Hairline</option>
+            <option value="folderO">Hairline orange</option>   <!-- the same folder on a solid orange square, no outline ("tweak hairline with active folder solid orange bg, no outline") -->
+            <option value="img" selected>Img stacked</option>
+          </select>
+        </div>
+        <!-- stacked on the phone and XS: centred, or all down the left edge ("tweak position TOP centered OR left") -->
+        <div class="tkRow">
+          <span class="lbl">Alignment</span>
+          <select id="stDefAl" class="tkSegSel" aria-label="The Later card's alignment">
+            <option value="c" selected>Centered</option>
+            <option value="l">Left</option>
           </select>
         </div>
         </div>
@@ -16446,15 +16451,23 @@ body.light .hpOvCard h3, body.light .hpOvCard .ovBookWhen { color: #2e1f1a; } bo
 .hpOvBtn { flex: none; height: 44px; padding: 0 24px; border: 0; border-radius: 999px; background: #fff; color: #111; font: inherit; font-size: 15px; font-weight: 500; white-space: nowrap; cursor: pointer; transition: opacity .16s ease; }   /* Book's */
 .hpOvBtn.hpOvFull { flex: 1 1 100%; width: 100%; }
 /* the Program card in the profile's place: the plan's brown in either theme, light type on it */
-.hpOvCard.hpOvPlan, body.light .hpOvCard.hpOvPlan { min-height: 0; background: #45201a; color: #fff; }
-.hpOvPlan .hpPlTag { align-self: flex-start; padding: 4px 10px; border-radius: 8px; background: rgba(255, 255, 255, .14); font-size: 13px; line-height: 18px; font-weight: 500; color: #fff; }
-.hpOvPlan .hpPlPics { position: absolute; top: 20px; right: 20px; display: flex; }
-.hpOvPlan .hpPlPics img { display: block; width: 44px; height: 52px; object-fit: cover; border-radius: 12px; box-shadow: 0 0 0 3px #45201a; } .hpOvPlan .hpPlPics img + img { margin-left: -12px; }
-.hpOvCard.hpOvPlan h3, body.light .hpOvCard.hpOvPlan h3 { max-width: calc(100% - 128px); margin: 14px 0 0; font-size: 20px; line-height: 24px; color: #fff; } .hpOvPlan h3 span { display: block; color: rgba(255, 255, 255, .56); }
-.hpOvPlan .hpPlD { margin: 8px 0 0; font-size: 14px; line-height: 20px; color: rgba(255, 255, 255, .6); }
-.hpOvPlan .hpPlList { display: flex; flex-direction: column; gap: 4px; margin: 16px 0 0; padding: 0; list-style: none; }
-.hpOvPlan .hpPlList li { padding: 12px 14px; border-radius: 12px; background: rgba(255, 255, 255, .07); font-size: 15px; line-height: 20px; color: #fff; } .hpOvPlan .hpPlList li.more { color: rgba(255, 255, 255, .64); }
-.hpOvPlan .hpPlBtn { height: 52px; margin: 16px 0 0; border: 0; border-radius: 16px; background: rgba(255, 255, 255, .08); color: #fff; font: inherit; font-size: 16px; font-weight: 500; cursor: pointer; transition: background .16s ease; } .hpOvPlan .hpPlBtn:hover { background: rgba(255, 255, 255, .13); } .hpOvPlan .hpPlBtn:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }   /* not begun: the button the card's width */
+.hpOvCard.hpOvPlan { min-height: 0; background: rgba(255, 255, 255, .04); color: #ececec; } body.light .hpOvCard.hpOvPlan { background: rgba(46, 31, 26, .06); color: #2e1f1a; }   /* the Telehealth tile's ground, as the profile's card */
+.hpOvPlan .hpPlEy { font-size: 12px; line-height: 18px; text-transform: uppercase; color: #8b8b86; } body.light .hpOvPlan .hpPlEy { color: #7d6b58; }
+.hpOvPlan .hpPlDr { display: flex; align-items: center; gap: 16px; margin: 16px 0 0; } .hpOvPlan .hpPlDr img { flex: none; width: 56px; height: 56px; border-radius: 50%; object-fit: cover; }
+.hpOvPlan .hpPlDr b { display: block; font-size: 18px; line-height: 24px; font-weight: 500; } .hpOvPlan .hpPlDr span { display: block; font-size: 14px; line-height: 20px; color: #8b8b86; } body.light .hpOvPlan .hpPlDr span { color: #7d6b58; }
+.hpOvPlan .hpPlQ { margin: 16px 0 0; font-size: 17px; line-height: 24px; font-weight: 400; text-wrap: pretty; }
+.hpOvPlan .hpPlNote { margin: 16px 0 0; padding: 14px 16px; border-radius: 14px; background: rgba(255, 255, 255, .05); } body.light .hpOvPlan .hpPlNote { background: rgba(46, 31, 26, .05); }
+.hpOvPlan .hpPlNote > div { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; } .hpOvPlan .hpPlNote b { font-size: 14px; line-height: 20px; font-weight: 500; } .hpOvPlan .hpPlNote span { font-size: 12px; line-height: 18px; color: #8b8b86; }
+.hpOvPlan .hpPlNote p { margin: 6px 0 0; font-size: 14px; line-height: 20px; color: rgba(255, 255, 255, .72); } body.light .hpOvPlan .hpPlNote p { color: rgba(46, 31, 26, .72); }
+.hpOvPlan .hpPlRow { display: flex; align-items: center; gap: 12px; margin: 8px 0 0; padding: 12px 14px; border-radius: 14px; background: rgba(255, 255, 255, .05); } body.light .hpOvPlan .hpPlRow { background: rgba(46, 31, 26, .05); }
+.hpOvPlan .hpPlIc { flex: none; display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(255, 255, 255, .07); } body.light .hpOvPlan .hpPlIc { background: rgba(46, 31, 26, .07); }
+.hpOvPlan .hpPlRow > div { flex: 1 1 auto; min-width: 0; } .hpOvPlan .hpPlRow b { display: block; font-size: 15px; line-height: 20px; font-weight: 500; } .hpOvPlan .hpPlRow > div span { display: block; font-size: 13px; line-height: 18px; color: #8b8b86; } .hpOvPlan .hpPlCh { flex: none; color: #8b8b86; }
+.hpOvPlan .hpPlSt { display: flex; align-items: center; gap: 8px; margin: 16px 0 0; font-size: 13px; line-height: 18px; color: #8b8b86; } .hpOvPlan .hpPlSt i { width: 7px; height: 7px; border-radius: 50%; background: #5fbf6a; }
+.hpOvPlan .hpPlBtns { display: flex; gap: 8px; margin: 12px 0 0; }
+.hpOvPlan .hpPlBtn { height: 44px; padding: 0 22px; border: 0; border-radius: 999px; font: inherit; font-size: 15px; font-weight: 500; cursor: pointer; transition: opacity .16s ease, background .16s ease; }
+.hpOvPlan .hpPlGo { background: #fff; color: #111; } .hpOvPlan .hpPlGo:hover { opacity: .88; } body.light .hpOvPlan .hpPlGo { background: #2e1f1a; color: #fdfaf3; }
+.hpOvPlan .hpPlMsg { background: rgba(255, 255, 255, .08); color: inherit; } .hpOvPlan .hpPlMsg:hover { background: rgba(255, 255, 255, .13); } body.light .hpOvPlan .hpPlMsg { background: rgba(46, 31, 26, .08); }
+.hpOvPlan .hpPlBtn:focus-visible { outline: 2px solid #4b7bec; outline-offset: 2px; }
 .hpOvBtn:hover { opacity: .88; } .hpOvBtn:active { transform: scale(.97); }
 body.light .hpOvBtn { background: #2e1f1a; color: #fdfaf3; }
 .hpOvCard:focus-visible, .hpOvBtn:focus-visible { outline: 2px solid #4b7bec; outline-offset: 2px; }
@@ -31319,7 +31332,7 @@ hairline({
       inst.el.setAttribute('tabindex', '-1'); inst.el.style.outline = 'none'; setTimeout(() => { if (inst && wrap.classList.contains('on')) try { inst.el.focus({ preventScroll: true }); } catch (e){} }, 540); };   // focus into the sheet itself (no ring drawn on a button)
     const close = now => { if (!wrap || !wrap.classList.contains('hpOpen')) return; wrap.classList.remove('on'); wrap.classList.add('shut'); document.body.classList.remove('hpOn');
       const end = () => { wrap.classList.remove('hpOpen', 'shut'); if (inst){ inst.destroy(); inst = null; } frame.textContent = ''; };
-      if (openN != null && openN < 3 && store.summary().n === 3 && !gone){ openN = null; setPlan(true); const t = document.getElementById('stHpSt'); if (t) t.value = stepOf(); }   /* the profile finished in this sitting: back on the Overview, the Program card in its place ("after the health profile is completed, when the user comes back to the Overview, a new card replaces it, highlighting a membership") */
+      if (openN != null && openN < 3 && store.summary().n === 3 && !gone){ openN = null; const cm = document.getElementById('stPcMem'); if (cm){ cm.value = 'plan'; cm.dispatchEvent(new Event('change', { bubbles: true })); } else setPlan(true); }   /* the profile finished in this sitting: back on the Overview, the Program card in its place ("after the health profile is completed, when the user comes back to the Overview, a new card replaces it, highlighting a membership") */
       setTimeout(() => paintCard(true), 40);   // back on the Overview: its card fills to where the member now is
       if (now === true) end(); else shutT = setTimeout(end, 520); };
     document.addEventListener('keydown', e => { if (e.key !== 'Escape' || !wrap || !wrap.classList.contains('on')) return; if (document.querySelector('.tkPanel[open], .tkMenu:not([hidden])') && e.target.closest && e.target.closest('.topbar')) return; const x = wrap.querySelector('.arClose'); if (x){ e.preventDefault(); x.click(); } });
@@ -31330,16 +31343,21 @@ hairline({
     let lastN = null, ring = null;
     const card = () => { const over = document.getElementById('dOver'), plan = over && over.querySelector(':scope > .dvSecPlan'); if (!plan) return null;
       let c = over.querySelector(':scope > .hpOvCard'); if (!c){ c = document.createElement('div'); c.className = 'hpOvCard'; plan.before(c);
-        c.addEventListener('click', e => { if (c.classList.contains('hpOvPlan')){ const p = document.querySelector('#dOver .dvSecPlan'); if (p) p.scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }   // the Program: to the plan's services below
+        c.addEventListener('click', e => { if (c.classList.contains('hpOvPlan')){ if (e.target.closest('.hpPlMsg')) return; const p = document.querySelector('#dOver .dvSecPlan'); if (p) p.scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }   // the Program: to the plan's services below
           { const sm = store.summary(), nx = ['wear', 'past', 'you'].find(k => sm.st[k] !== 'done'); open(nx && sm.state !== 'not' ? { area: nx } : {}); } }); } return c; };   /* the whole card does what its button does ("the whole card should be clickable") */   /* its button straight into the step ("should go to the flow direct"), back from its first screen to the intro; not begun, Get started opens the intro ("should go to the Health intro"); the card itself, the intro; done, View the intro */
     const ck = '<svg width="9" height="9" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3.8 8.3 2.6 2.6 5.8-6"/></svg>';
     let shownN = null;
-    /* the Program card (Sarah's personalised health program, "same content but more concise"): Next step, the member's program, the doctor's services in one plan (two, then how many more), Review my plan; the plan's brown, in either theme */
+    /* the Program card, after the onboarding consult, in the doctor's voice ("use this style of narrative for the plan card after the onboarding consult", the Your doctor card): the doctor, a line of theirs,
+       the note from the consult, the plan as a row (its services, how many), how soon they reply, Review my plan and Message */
     const PLAN = ['Dexa Scan', 'Whole Body MRI &amp; CT Chest', 'Pathology Test', 'Physical Assessment', 'Nutrition Review', 'Onboarding Consult'];
     const paintPlan = c => { c.classList.add('hpOvPlan'); ring = null;
-      c.innerHTML = '<span class="hpPlTag">Next step</span><span class="hpPlPics" aria-hidden="true">' + ['assets/overview/plan-consult.webp', 'assets/overview/plan-dexa.webp', 'assets/overview/plan-nutrition.webp'].map(u => '<img src="' + u + '" alt="" width="88" height="104" decoding="async">').join('') + '</span>'
-        + '<h3>' + nameOf() + '\u2019s <span>Personalised Health Program</span></h3><p class="hpPlD">Recommended by your Everlab doctor.</p>'
-        + '<ul class="hpPlList">' + PLAN.slice(0, 2).map(t => '<li>' + t + '</li>').join('') + '<li class="more">+ ' + (PLAN.length - 2) + ' more</li></ul><button class="hpPlBtn" type="button">Review my plan</button>'; };
+      c.innerHTML = '<span class="hpPlEy">Your plan</span>'
+        + '<div class="hpPlDr"><img src="assets/overview/avatar-steven.webp" alt="" width="88" height="88" decoding="async"><div><b>Dr Steven Lu</b><span>Longevity GP, Everlab</span></div></div>'
+        + '<p class="hpPlQ">\u201cI\u2019ve built your plan around your results and what matters to you, ' + nameOf() + '.\u201d</p>'
+        + '<div class="hpPlNote"><div><b>From your consult</b><span>Yesterday</span></div><p>We\u2019ll start with a DEXA scan and a whole body MRI, then look at nutrition together. Everything is booked from your plan.</p></div>'
+        + '<div class="hpPlRow"><span class="hpPlIc" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 4h7M5.5 8h7M5.5 12h7M2.8 4h.01M2.8 8h.01M2.8 12h.01"/></svg></span><div><b>Your personalised health program</b><span>' + PLAN.length + ' services \u00b7 ready to review</span></div><svg class="hpPlCh" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3 5 5-5 5"/></svg></div>'
+        + '<p class="hpPlSt"><i aria-hidden="true"></i>Usually replies within a day</p>'
+        + '<div class="hpPlBtns"><button class="hpPlBtn hpPlGo" type="button">Review my plan</button><button class="hpPlBtn hpPlMsg" type="button">Message</button></div>'; };
     const paintCard = back => { const c = card(); if (!c) return; if (plan){ paintPlan(c); return; } c.classList.remove('hpOvPlan'); const sm = store.summary();
       const stx = sm.state === 'done' ? 'Completed' : sm.state === 'prog' ? 'In progress' : 'Not started', cls = sm.state === 'done' ? 'hpStDone' : sm.state === 'prog' ? 'hpStProg' : 'hpStNot';
       const nx = ['wear', 'past', 'you'].filter(k => sm.st[k] !== 'done')[0], NXT = { wear: ['Start your health journey', 'Our promise and your details', 'Get started'], past: ['Book your consultation', 'It takes only 1 minute', 'Book'], you: ['Tell us more about you', 'It will help us to customise your journey before your call', 'Complete profile'] }, cur = NXT[nx];   /* each step its title, the stage under it, its button ("the title should always be: Start your health journey, Get started; Book your consultation, Book; Tell us more about you, Complete profile") */
@@ -31359,23 +31377,32 @@ hairline({
       const hs = document.getElementById('stHero'); if (hs){ if (v){ heroKept = hs.value; hs.value = 'dexa'; } else if (heroKept != null){ hs.value = heroKept; heroKept = null; } hs.dispatchEvent(new Event('change', { bubbles: true })); }
       document.dispatchEvent(new Event('everlab:hpgone')); };
     /* the demo's states in order ("on the step nav, also the dropped-off states: Step 1.5, 2.5, 3.5"): each step, then the same left part-way; Done; the Program card; Dexa next */
-    const SK = ['none', 'none_d', 'one', 'one_d', 'two', 'two_d', 'all', 'plan', 'after'];
-    const stateIx = () => { if (gone) return 8; if (plan) return 7; const sm = store.summary(); if (sm.n === 3) return 6; const nx = ['wear', 'past', 'you'].find(k => sm.st[k] !== 'done'); return sm.n * 2 + (sm.st[nx] === 'prog' ? 1 : 0); };
+    const SK = ['none', 'none_d', 'one', 'one_d', 'two', 'two_d', 'all'];   // Program and Dexa next: the Primary card's Card (Plan to purchase) and Type (Next step) now
+    const stateIx = () => { const sm = store.summary(); if (sm.n === 3) return 6; const nx = ['wear', 'past', 'you'].find(k => sm.st[k] !== 'done'); return sm.n * 2 + (sm.st[nx] === 'prog' ? 1 : 0); };
     const stepOf = () => SK[stateIx()];   // the State tweak at the step the member is on ("three states, one a step"; Done the end; Dexa next, the card put away)
     document.addEventListener('everlab:hp', () => { paintCard(); const t = document.getElementById('stHpSt'); if (t && !hpSetting) t.value = stepOf(); });
     { const t = document.getElementById('stHpSt'); if (t) t.value = stepOf(); }
     /* a $299 member's first visit (Tweaks: First-time user): the welcome over the Overview, when switched on and each time the Overview opens with it on; Get started into the profile's intro */
     { const f = document.getElementById('stHpFirst'), m = document.getElementById('stHpMem'), row = document.getElementById('stHpFirstRow');
       const onOv = () => { const o = document.getElementById('dOver'); return !!(o && o.offsetParent); };
-      const show = () => { if (opt('stHpMem') === 'yes' && opt('stHpFirst') === 'yes' && onOv() && !(wrap && wrap.classList.contains('hpOpen'))) open({ welcome: true }); };
-      const sh = () => { if (row) row.hidden = opt('stHpMem') !== 'yes'; }; sh();
+      const show = () => { if (opt('stHpMem') === 'yes' && opt('stPcType') !== 'next' && opt('stHpFirst') === 'yes' && onOv() && !(wrap && wrap.classList.contains('hpOpen'))) open({ welcome: true }); };
+      const sh = () => {}; sh();   // its row in the Primary card's $299 part now
       if (f) f.addEventListener('change', () => { if (f.value === 'yes') setTimeout(show, 120); else if (inst && inst.welcome) close(); });
       if (m) m.addEventListener('change', sh);
       document.addEventListener('everlab:mode', () => setTimeout(show, 500)); }
     { const lk = () => HP.look && HP.look({ dim: opt('stHpDim'), feed: opt('stHpFeed') }); lk(); ['stHpDim', 'stHpFeed'].forEach(id => { const t = document.getElementById(id); if (t) t.addEventListener('change', lk); }); }   // the sphere's look (Tweaks -> Health profile), on every sphere at once
     // the demo states (Tweaks -> Health profile): not started, one or two of three, completed; Saved is whatever was last done here
     let hpSetting = false;
-    { const t = document.getElementById('stHpSt'); if (t) t.addEventListener('change', () => { if (t.value === 'live') return; const af = t.value === 'after', pl = t.value === 'plan'; hpSetting = true; store.preset(af || pl ? 'all' : t.value); hpSetting = false; setGone(af); setPlan(pl); t.value = stepOf(); if (inst && wrap.classList.contains('on')) open(); }); }
+    /* the Primary card (Tweaks): Type, a $299 member's card or Next step; a member's Card, Health profile or Plan to purchase. Next step puts the profile's card away and brings the hero (DEXA scan to start, its Hero action after);
+       Plan to purchase the profile done and the Program card in its place. Each part's rows shown with its choice */
+    { const ty = document.getElementById('stPcType'), cm = document.getElementById('stPcMem'), parts = [...document.querySelectorAll('.pcPart')];
+      const sync = () => { const t = ty ? ty.value : 'member', c = cm ? cm.value : 'hp'; parts.forEach(p => { const k = p.dataset.pc; p.hidden = k === 'member' ? t !== 'member' : k === 'hp' ? !(t === 'member' && c === 'hp') : t !== 'next'; }); };
+      const apply = () => { const t = ty ? ty.value : 'member', c = cm ? cm.value : 'hp';
+        if (t === 'next'){ setPlan(false); setGone(true); }
+        else { setGone(false); if (c === 'plan' && store.summary().n < 3){ hpSetting = true; store.preset('all'); hpSetting = false; } setPlan(c === 'plan'); }
+        const st = document.getElementById('stHpSt'); if (st) st.value = stepOf(); sync(); };
+      if (ty) ty.addEventListener('change', apply); if (cm) cm.addEventListener('change', apply); sync(); }
+    { const t = document.getElementById('stHpSt'); if (t) t.addEventListener('change', () => { if (t.value === 'live') return; hpSetting = true; store.preset(t.value); hpSetting = false; t.value = stepOf(); if (inst && wrap.classList.contains('on')) open(); }); }
     /* the demo's steps, in the Health profile's tweak ("steps --> states inside the card tweak"; the floating arrows beside the screen retired): the State row a stepper, previous and next either side of its list, a step on or back through every state;
        the sphere fills with it (particles flowing in going on), the sheet, if up, back on its intro to show it */
     { const KS = SK;
@@ -31384,9 +31411,9 @@ hairline({
       const pv = arrow(-1, 'Previous state'), nx = arrow(1, 'Next state');
       if (t && row){ const box = document.createElement('span'); box.className = 'tkStep'; t.before(box); box.append(pv, t, nx); }
       const at = stateIx;
-      const go = d => { const n = at(), to = Math.max(0, Math.min(8, n + d)); if (to === n) return; hpSetting = true; store.preset(to >= 6 ? 'all' : KS[to]); hpSetting = false; setGone(to === 8); setPlan(to === 7); const t = document.getElementById('stHpSt'); if (t) t.value = KS[to]; if (inst && wrap.classList.contains('on')) inst.home(); tick(); };
+      const go = d => { const n = at(), to = Math.max(0, Math.min(6, n + d)); if (to === n) return; hpSetting = true; store.preset(KS[to]); hpSetting = false; const t = document.getElementById('stHpSt'); if (t) t.value = KS[to]; if (inst && wrap.classList.contains('on')) inst.home(); tick(); };
       nx.addEventListener('click', () => go(1)); pv.addEventListener('click', () => go(-1));
-      const tick = () => { const k = at(); nx.disabled = k >= 8; pv.disabled = k <= 0; };
+      const tick = () => { const k = at(); nx.disabled = k >= 6; pv.disabled = k <= 0; };
       if (t) t.addEventListener('change', () => setTimeout(tick, 0)); document.addEventListener('everlab:hp', tick); setInterval(tick, 400); tick(); }
     paintCard();
     document.addEventListener('everlab:mode', () => setTimeout(paintCard, 60));
@@ -31399,7 +31426,7 @@ hairline({
      a click opens that group in a panel beside it: the group itself borrowed from the Tweaks list (its controls as they are, wired), put back on close. One open: another + swaps; the same +, a click outside or Escape closes */
   (function secTweaks(){
     const bar = document.querySelector('.topbar'); if (!bar) return;
-    const SECS = { hero: '.ovhero', svc: '.ovSvc', prof: '.hpOvCard', ins: '.dvSecIns', plan: '.dvSecPlan', later: '.dvSecAvail, .dvDef' };
+    const SECS = { primary: '.hpOvCard', svc: '.ovSvc', ins: '.dvSecIns', plan: '.dvSecPlan', later: '.dvSecAvail, .dvDef' };   // the Primary card's +: at the profile's card, or the hero when Next step
     const groups = () => [...document.querySelectorAll('.tkGroup[data-sec]')].filter(g => SECS[g.dataset.sec]);
     const host = document.createElement('div'); host.className = 'tkFl'; bar.appendChild(host);   // in the bar: the Tweaks list's own styles reach the borrowed group
     const panel = document.createElement('div'); panel.className = 'tkPanel tkFlPanel'; panel.setAttribute('role', 'dialog'); panel.hidden = true; host.appendChild(panel);
@@ -31428,7 +31455,7 @@ hairline({
       const edge = fr ? fr.right : (orr ? orr.right : innerWidth), x = Math.min(edge + 32, room - 48);   // 32 off the screen ("detach the plus from the viewport by 32px")
       const spots = [];
       groups().forEach(g => { const k = g.dataset.sec; const b = plus[k] || (plus[k] = btn(k)); b.setAttribute('aria-label', 'Tweaks: ' + nameOf(g));
-        let el = null; if (live) el = [...over.querySelectorAll(k === 'prof' && window._hpGone ? '.ovhero' : SECS[k])]   /* Dexa next: the profile's card gone, its + at the card in its place, to step back */
+        let el = null; if (live) el = [...over.querySelectorAll(k === 'primary' && window._hpGone ? '.ovhero' : SECS[k])]   /* Next step: the hero the primary card, the + at it */
           .find(e => !e.classList.contains('ovOff') && e.getClientRects().length && e.getBoundingClientRect().height > 0);
         let ok = !!el, y = 0; if (el){ const r = el.getBoundingClientRect(); y = Math.max(top, Math.min(bot, r.top)); ok = r.bottom > top + 16 && r.top < bot + 28;
           if (ok){ const hit = document.elementFromPoint(Math.min(innerWidth - 1, Math.max(0, r.left + 12)), Math.min(innerHeight - 1, Math.max(0, Math.max(r.top, top) + 12))); ok = !!(hit && over.contains(hit)); } }   // the section itself in view, not under another page
@@ -37931,7 +37958,7 @@ hairline({
       ins: ['Insights', '.ovInsCard, .ovsecIns, .ovcar, .ovcdots'], prof: ['Health profile', '.ovsecProf, .ovProf'], plan: ['Action plan', '.ovsecPlan, .ovplan, .ovtl'], later: ['Later card', '.ovsecAvail, .ovDef'] };
     const host = () => { const c = document.querySelector('#phone2 .ovcar'); return c && c.parentElement; };
     const inp = document.getElementById('stOvOrder'), list = document.getElementById('tkOvOrd'), offI = document.getElementById('stOvOff');
-    const DSEC = { svc: '.ovSvc, .dvTop > div:not(.ovhero):not(.ovBk)', hero: '.ovhero', row2: '.ovrow2', ins: '.dvSecIns, .dvRail, .railNav, .dvDots', prof: '.ovsecProf, .ovProf, .dvSecProf, .dvProf, .hpOvCard', plan: '.dvSecPlan, .dvPlanChips, .dvPlanGrid, .dvPlanList, .dvPlanTl', later: '.dvSecAvail, .dvDef' };   // the same sections on the Overview itself (desk to XS)
+    const DSEC = { primary: '.hpOvCard, .ovhero', svc: '.ovSvc, .dvTop > div:not(.ovhero):not(.ovBk)', hero: '.ovhero', row2: '.ovrow2', ins: '.dvSecIns, .dvRail, .railNav, .dvDots', prof: '.ovsecProf, .ovProf, .dvSecProf, .dvProf, .hpOvCard', plan: '.dvSecPlan, .dvPlanChips, .dvPlanGrid, .dvPlanList, .dvPlanTl', later: '.dvSecAvail, .dvDef' };   // the same sections on the Overview itself (desk to XS)
     const offs = () => new Set((offI && offI.value || '').split(',').filter(Boolean));
     // the order on the Overview itself ("changing the order must change also on the screen"): its sections moved as units in the list's order; on the desk Services and Next step share one row (.dvTop), placed where the first of the two stands, Next step left and Services right as ever
     const applyD = () => { const pl = document.querySelector('#dOver .dvSecPlan'); if (!pl) return; const m = pl.parentElement, top = m.querySelector(':scope > .dvTop'), inCol = !!(top && top.querySelector('.ovSvc')), q = sl => [...m.querySelectorAll(':scope > :is(' + sl + ')')];
@@ -37941,7 +37968,7 @@ hairline({
       if (top){ const hero = top.querySelector(':scope > .ovhero'); top.classList.remove('svcFirst'); if (hero) top.prepend(hero); } };   /* on the desk the pair keeps its arrangement, Next step at the left, Services at the right: the row moves as one */
     window._ovOrder = () => { applyD(); hideOff(); if (window._bkPlace) window._bkPlace(); };
     // the section cards in Tweaks: in the page's order, each its handle, its name and its switch; dragged by the title, the page follows
-    const secG = () => [...document.querySelectorAll('.tkGroup[data-sec]')];
+    const secG = () => [...document.querySelectorAll('.tkGroup[data-sec]')].filter(g => !g.closest('.tkFlPanel'));   // one borrowed by a floating panel left where it is until it goes back
     const secHead = () => secG().forEach(g => { const h = g.querySelector(':scope > .tkSub'); if (!h) return; if (!h.classList.contains('tkSecH')){ const t = h.textContent.trim(); h.classList.add('tkSecH'); h.innerHTML = GR + '<span class="nm">' + t + '</span><button type="button" class="tgl" role="switch" aria-label="Show ' + t + '"><i></i></button>'; } const on = !offs().has(g.dataset.sec); h.querySelector('.tgl').setAttribute('aria-checked', String(on)); g.classList.toggle('secOff', !on); });
     const arrangeG = () => { const gs = secG(); if (!gs.length) return; const mk = document.createComment('sec'); gs[0].before(mk); order().map(k => gs.find(g => g.dataset.sec === k)).filter(Boolean).forEach(g => mk.parentNode.insertBefore(g, mk)); mk.remove(); };
    // after the Services row moves between the row and the flow (a breakpoint, the header's version)
