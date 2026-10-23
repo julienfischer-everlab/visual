@@ -15270,3 +15270,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Demo: a tap in a form fills its empty answers from the demo member's and draws it again ("when I click whatever field, simulate all of the fields completed"): the promise's checks, your details, Medicare and contact, the health background, the booking's day and time, About you. Single-answer questions are left to the tap.
 - A stage's bars: the step on is the last bar lit, whole; no 2px start of the next.
 - The Overview card, done: the consult at its foot, Your consult over its date and time, where the progress bar was ("put your consult on the left side instead of the increment"); no line under the title.
+- The card's progress bar: the step on half filled ("fill half of the first increment"), the steps done whole: step 1 half of the first, step 2 one and a half, step 3 two and a half.
