@@ -15239,3 +15239,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Version menu: two groups, Main pages (Insights, Insights (archives), Overview, Service detail, Appointment (OLD), Timeline, Health profile, Async report) and, last, OrganAge concept (the six concepts, Organ Age teaser video, Organ Age landing page); no one-page subgroups.
 - XS services: each 88 tall (16 more), its visual 20 (12 less).
 - Intro screen Save: each intro screen keeps its own Rest assured, Label badge, Marker highlight, Condense and Amount; picked again, they come back before the report mounts (everlab.arIntroPre). V1 / V2 presets still set their own.
+- $299 member Yes also hides Next step ("it's one or another"): the Health profile the one primary card. Its own section switch is left as it was.
+- The Overview card's sphere 32 bigger: 96 on the phone, 120 on the desk.

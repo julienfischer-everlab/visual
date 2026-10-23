@@ -16298,7 +16298,7 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
 /* the Overview's card and My account's row */
 .hpOvCard { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 24px; margin: 50px 0 0; padding: 24px 28px; border-radius: 20px; background: #1b1b19; color: #f2e5e0; cursor: pointer; }
 body.light .hpOvCard { background: #fdfaf3; color: #2e1f1a; }
-.hpOvCard .hpDots { width: 88px; height: 88px; color: inherit; } .hpDots.hpSph { position: static; inset: auto; }   /* the sphere's canvas in the card's flow, not the page's full-screen canvas rule */ .hpOvCard .hpDots circle:not(.on) { opacity: .2; }
+.hpOvCard .hpDots { width: 120px; height: 120px; color: inherit; }   /* 32 bigger, as on the phone */ .hpDots.hpSph { position: static; inset: auto; }   /* the sphere's canvas in the card's flow, not the page's full-screen canvas rule */ .hpOvCard .hpDots circle:not(.on) { opacity: .2; }
 .hpOvCard .hpOvT { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 .hpOvCard .hpOvT h3 { margin: 0; font-size: 18px; line-height: 22px; font-weight: 500; letter-spacing: -.1px; }
 .hpOvCard .hpOvT p { margin: 0; font-size: 14px; line-height: 20px; color: #8b8b86; }
@@ -16321,7 +16321,7 @@ body.light .hpOvCard .hpOvA span { color: #7d6b58; } body.light .hpOvCard .hpOvA
 body.light .hpOvBtn { background: #2e1f1a; color: #fdfaf3; }
 .hpOvCard:focus-visible, .hpOvBtn:focus-visible { outline: 2px solid #4b7bec; outline-offset: 2px; }
 body[data-bp="xs"] #dOver .hpOvCard { grid-template-columns: minmax(0, 1fr) auto; gap: 16px 14px; margin-top: 38px; padding: 20px; border-radius: 22px; }
-body[data-bp="xs"] #dOver .hpOvCard .hpDots { grid-column: 2; grid-row: 1; width: 64px; height: 64px; align-self: start; }
+body[data-bp="xs"] #dOver .hpOvCard .hpDots { grid-column: 2; grid-row: 1; width: 96px; height: 96px; align-self: start; }   /* 32 bigger ("put the visual 32px bigger") */
 body[data-bp="xs"] #dOver .hpOvCard .hpOvT { grid-column: 1; grid-row: 1; }
 body[data-bp="xs"] #dOver .hpOvCard .hpOvBtn { grid-column: 1 / -1; width: 100%; }
 .acPrI .hpDots { width: 22px; height: 22px; color: inherit; }
@@ -37536,7 +37536,7 @@ hairline({
     const arrangeG = () => { const gs = secG(); if (!gs.length) return; const mk = document.createComment('sec'); gs[0].before(mk); order().map(k => gs.find(g => g.dataset.sec === k)).filter(Boolean).forEach(g => mk.parentNode.insertBefore(g, mk)); mk.remove(); };
    // after the Services row moves between the row and the flow (a breakpoint, the header's version)
     const dvVis = k => { const over = document.getElementById('dOver'); if (!over || !DSEC[k]) return false; return [...over.querySelectorAll(DSEC[k])].some(el => !el.classList.contains('ovOff') && getComputedStyle(el).display !== 'none'); };   // shown on the Overview itself
-    const hideOff = () => { const o = offs(); document.querySelectorAll('.ovOff').forEach(el => el.classList.remove('ovOff')); o.forEach(k => { const h = host(); if (h && SEC[k]) h.querySelectorAll(':scope > :is(' + SEC[k][1] + ')').forEach(el => el.classList.add('ovOff')); if (DSEC[k]) document.querySelectorAll('#dOver :is(' + DSEC[k] + ')').forEach(el => el.classList.add('ovOff')); }); };   // a section switched off: gone, on the phone and on the Overview
+    const hideOff = () => { const o = offs(); { const mem = document.getElementById('stHpMem'); if (mem && mem.value === 'yes') o.add('hero'); }   /* a $299 member: the Health profile the one primary card, Next step gone ("it's one or another"); its own switch untouched */ document.querySelectorAll('.ovOff').forEach(el => el.classList.remove('ovOff')); o.forEach(k => { const h = host(); if (h && SEC[k]) h.querySelectorAll(':scope > :is(' + SEC[k][1] + ')').forEach(el => el.classList.add('ovOff')); if (DSEC[k]) document.querySelectorAll('#dOver :is(' + DSEC[k] + ')').forEach(el => el.classList.add('ovOff')); }); };   // a section switched off: gone, on the phone and on the Overview
     const GR = '<svg class="gr" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><circle cx="4" cy="3" r="1"/><circle cx="8" cy="3" r="1"/><circle cx="4" cy="6" r="1"/><circle cx="8" cy="6" r="1"/><circle cx="4" cy="9" r="1"/><circle cx="8" cy="9" r="1"/></svg>';
     const order = () => { const o = (inp.value || '').split(',').filter(k => SEC[k]); Object.keys(SEC).forEach(k => { if (!o.includes(k)) o.push(k); });
       const mem = document.getElementById('stHpMem'); if (mem){ o.splice(o.indexOf('prof'), 1); if (mem.value === 'yes') o.unshift('prof'); else { const j = o.indexOf('ins'); o.splice(j >= 0 ? j + 1 : o.length, 0, 'prof'); } }   /* $299 member: the Health profile first, the primary card; not one: after the insights, Next step the primary */
