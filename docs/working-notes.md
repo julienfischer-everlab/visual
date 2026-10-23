@@ -15241,3 +15241,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Intro screen Save: each intro screen keeps its own Rest assured, Label badge, Marker highlight, Condense and Amount; picked again, they come back before the report mounts (everlab.arIntroPre). V1 / V2 presets still set their own.
 - $299 member Yes also hides Next step ("it's one or another"): the Health profile the one primary card. Its own section switch is left as it was.
 - The Overview card's sphere 32 bigger: 96 on the phone, 120 on the desk.
+- The Overview's Health profile card takes Next step's layout ("same layout; remove the image; sphere top right; Health profile instead of Next step"): the eyebrow Health profile, the moment's title (Three steps before your consult. / Next, book your consult. / Next, tell us about you. / You're all set for your consult.), at its foot where it stands (Three steps · About 9 minutes; Progress · n of 3 done; Your consult) and the button at its right; the sphere absolute at its top right (96 phone, 120 desk). Its ground the insight cards' (#fff 6%; light the paper).
+- Async report: V2 the default preset (the one last picked still comes back).
+- Everything else: numbers 24px ("reduce font by 8px"). The line under the title split into two eyebrows, X biomarkers' size (18): "61 markers" over the distribution card, "Across 13 areas" over the areas.
+- Tweaks > General > Member, under Persona, for reference: #2 Stephanie Bazzano and her ID (the ID selects whole); #1 "Sample report, no member record". The tweak panel only, not the report.
+- Marker highlight: the rest at 20% (was 50%).

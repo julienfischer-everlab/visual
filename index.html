@@ -131,6 +131,7 @@
   .topbar .tkRow:hover{background:#1c1c20;}
   .topbar .tkRow .lbl{color:#e4e4e7;white-space:nowrap;}
   .topbar .tkRow .tkBuild{margin-left:auto;font-size:10.5px;color:#8b8b90;white-space:nowrap;font-variant-numeric:tabular-nums;}
+  .topbar .tkRow .tkPerRef{display:flex;flex-direction:column;align-items:flex-end;gap:2px;white-space:normal;text-align:right;user-select:text;-webkit-user-select:text;} .topbar .tkRow .tkPerRef b{font-weight:500;color:#c9c9cc;} .topbar .tkRow .tkPerRef code{font-family:var(--ar-font-mono, ui-monospace, monospace);font-size:10px;user-select:all;-webkit-user-select:all;}   /* the persona's member, name over ID, the ID selected whole on a click */
   /* a slider row carries its own reading, so a value can be taken off the bar
      and written into a design system rather than guessed from a thumb position */
   .topbar .tkSlide{display:flex;align-items:center;gap:10px;}
@@ -12123,10 +12124,12 @@
         <div class="tkGroup" data-pages="ar">
         <div class="tkSub">General</div>   <!-- the report's own ("async report renamed General"), first, over Intro -->
         <!-- V1 and V2 as presets ("V1 and V2 should be presets that I can save"): each holds every design tweak of the report, here and in Intro (not the Mode, not the Persona); picking one sets them, Save keeps the current ones in it, Reset gives it back its own. Kept in this browser -->
-        <div class="tkRow tkPreRow"><span class="lbl">Preset</span><span class="tkPreCtl"><select id="stArPre" class="tkSegSel" aria-label="The report's preset"><option value="v1" selected>V1</option><option value="v2">V2</option></select><button class="tkBtn tkPreBtn" id="stArPreSave" type="button" title="Keep the current tweaks in this preset">Save</button><button class="tkBtn tkPreBtn" id="stArPreReset" type="button" title="Give this preset back its own tweaks">Reset</button></span></div>
+        <div class="tkRow tkPreRow"><span class="lbl">Preset</span><span class="tkPreCtl"><select id="stArPre" class="tkSegSel" aria-label="The report's preset"><option value="v1">V1</option><option value="v2" selected>V2</option></select><button class="tkBtn tkPreBtn" id="stArPreSave" type="button" title="Keep the current tweaks in this preset">Save</button><button class="tkBtn tkPreBtn" id="stArPreReset" type="button" title="Give this preset back its own tweaks">Reset</button></span></div>
         <!-- no Variation ("remove variation; full modal should be the one"): the desktop debrief is always the full modal -->
         <!-- whose report: Persona #1, or Persona #2, another member's results ("create a duplicate of the Async to create a different persona"); a tweak only, the menu the one Async report ("Persona 1 and 2 must be a tweak inside the page") -->
         <div class="tkRow"><span class="lbl">Persona</span><select id="stArPer" class="tkSegSel" aria-label="Whose report"><option value="p1" selected>#1</option><option value="p2">#2</option></select></div>
+        <!-- whose report it is, for reference ("put the name of the user and the ID below the persona, just as a reference") -->
+        <div class="tkRow tkBuildRow tkPerRow"><span class="lbl">Member</span><span class="tkBuild tkPerRef" id="stArPerRef">Sample report, no member record</span></div>
         </div>
         <!-- the report's opening, its own card ("group Intro screen and Welcome: add this inside this Intro group"): the welcome, its header, then the screen introducing the insights -->
         <div class="tkGroup" data-pages="ar">
@@ -14371,10 +14374,11 @@
 .arSheet .arRsCol { display: flex; flex-direction: column; align-items: center; min-width: 0; text-align: center; }
 .arSheet .arRsBarW { display: flex; align-items: flex-end; justify-content: center; width: 100%; height: 150px; }
 .arSheet .arRsBar { display: block; width: 64px; max-width: 100%; border-radius: 18px 18px 0 0;   /* 12 rounder ("+12px") */ transform-origin: 50% 100%; }
-.arSheet .arRsNum { display: inline-flex; margin-top: 16px; font-size: 32px;   /* 32 ("reduce the hero number: 32px") */ line-height: 1; font-weight: 500; letter-spacing: -.02em; font-variant-numeric: tabular-nums; color: oklch(var(--ar-ink)); }
+.arSheet .arRsNum { display: inline-flex; margin-top: 16px; font-size: 24px;   /* 24 ("reduce the hero number: 32px", then "reduce font by 8px") */ line-height: 1; font-weight: 500; letter-spacing: -.02em; font-variant-numeric: tabular-nums; color: oklch(var(--ar-ink)); }
 .arSheet .arRsDig { display: inline-block; height: 1em; overflow: hidden; } .arSheet .arRsStrip { display: flex; flex-direction: column; } .arSheet .arRsStrip > span { display: block; height: 1em; line-height: 1em; }
 .arSheet .arRsLbl { margin-top: 2px; white-space: nowrap; font-size: 14px; line-height: 20px;   /* 4 closer under its number ("reduce the line height below 45 by 4px"); one line each, Out of range too */ color: oklch(var(--ar-ink) / .64); }
-.arSheet .arRsAreas { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }   /* cards 8 apart, no dividers */
+.arSheet .arRsAreas { display: flex; flex-direction: column; gap: 8px; }
+.arSheet .arRsPart { display: flex; flex-direction: column; gap: 12px; margin-top: 12px; } .arSheet .arRsPart > .arLfH.arRsEy { margin: 0; font-size: 18px; line-height: 22px; text-align: left; }   /* each part its eyebrow over it, X biomarkers' size */   /* cards 8 apart, no dividers */
 .arSheet .arRsArea { appearance: none; display: flex; align-items: center; gap: 12px; width: 100%; min-height: 56px; margin: 0; padding: 14px 16px; border: 0; border-radius: 16px; background: var(--ar-card-bg); transition: background-color .15s ease, box-shadow .15s ease;   /* each area a card you tap ("a ghost card so you can click on it; no divider between them"): the grey cards' fill (#000 4%, dark #fff 6%), outlined with Cards style: Outlined */ color: oklch(var(--ar-ink)); font: inherit; text-align: left; cursor: pointer; }
 @media (hover: hover) { .arSheet .arRsArea:hover { background: oklch(var(--ar-ink) / .08); } } .arSheet .arRsArea:active { background: oklch(var(--ar-ink) / .1); } .arSheet:not(.arCardsFill) .arRsArea { background: transparent; box-shadow: inset 0 0 0 1px oklch(var(--ar-ink) / .1); } .arSheet .arRsArea:focus-visible { outline: 2px solid oklch(var(--ar-ink)); outline-offset: 2px; }
 .arSheet .arRsDots3 + .arRsCount { margin-left: -8px; }
@@ -15252,7 +15256,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         ent = { t0: now, dur: 2000 }; };   // (its fade drawn into its points' alpha, the first 1.1 s)
       /* Marker highlight ("a boolean marker highlight: on, only the particles around the active marker appear; all the others at 50%"): full within 80px of the active marker's point, 50% past 170, eased between;
          a new focus crossfades from the last over .6 s, so the light moves with the marker coming in */
-      var FOC = opts.mhl === true, foc = [null, null, 0], hlB = function (x0, y0, p) { var dx = x0 - p[0], dy = y0 - p[1], d = Math.sqrt(dx * dx + dy * dy); return d < 80 ? 1 : d > 170 ? .5 : 1 - .5 * (d - 80) / 90; };
+      var FOC = opts.mhl === true, foc = [null, null, 0], hlB = function (x0, y0, p) { var dx = x0 - p[0], dy = y0 - p[1], d = Math.sqrt(dx * dx + dy * dy); return d < 80 ? 1 : d > 170 ? .2 : 1 - .8 * (d - 80) / 90; };   /* the rest at 20% ("reduce the opacity to 20% for the inactive area"; was 50%) */
       var raf = 0, t0 = 0, lastDraw = 0, anchor = null, anc = null, lastF = null, trk = [], pimg = null, fly = null, dark = function () { return root.classList.contains('arDark'); };
       /* the flow's clock S: real seconds, plus the surges ("when a new orange marker becomes active the whole flow briefly accelerates towards it ... smoothly speeds up, reveals it, gradually slows back down"):
          each a run E flow-seconds ahead over D ms, eased so its speed rises from the cruise and settles back to it with no jolt (smootherstep, its time front-loaded: quick to gather, long to settle); the camera and the flow both run on it, so it reads as travelling forward */
@@ -15352,7 +15356,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         ent = { t0: now, dur: 2000 }; };   // (its fade drawn into its points' alpha, the first 1.1 s)
       /* Marker highlight ("a boolean marker highlight: on, only the particles around the active marker appear; all the others at 50%"): full within 80px of the active marker's point, 50% past 170, eased between;
          a new focus crossfades from the last over .6 s, so the light moves with the marker coming in */
-      var FOC = opts.mhl === true, foc = [null, null, 0], hlB = function (x0, y0, p) { var dx = x0 - p[0], dy = y0 - p[1], d = Math.sqrt(dx * dx + dy * dy); return d < 80 ? 1 : d > 170 ? .5 : 1 - .5 * (d - 80) / 90; };
+      var FOC = opts.mhl === true, foc = [null, null, 0], hlB = function (x0, y0, p) { var dx = x0 - p[0], dy = y0 - p[1], d = Math.sqrt(dx * dx + dy * dy); return d < 80 ? 1 : d > 170 ? .2 : 1 - .8 * (d - 80) / 90; };   /* the rest at 20% ("reduce the opacity to 20% for the inactive area"; was 50%) */
       var raf = 0, t0 = 0, dark = function () { return root.classList.contains('arDark'); };
       var anc = null, fly = null;   /* anc: the hero's ball as it last stood under its title; fly: leaving with its page (d 1) or coming back to it (d -1): the ball moves with the page's content, its distance, delay and pace, its particles still moving, as it fades ("if we click on the CTA, everything moves up, and the visual goes up as well and scales") */
       var draw = function (now) {
@@ -15832,7 +15836,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         var pos = bar === 'hi' ? [.14 + j, .5 + j / 2, .84 - j / 2][k] : bar === 'lo' ? [.84 - j, .5 - j / 2, .16 + j / 2][k] : [.46 + j, .28 + j / 2, .9 - j / 2][k];
         return { name: nm, value: v[1 + k] || v[1] || v[2] || v[3] || '\u2014', date: REPORT.date, status: ST3[k][0], bar: bar, pos: pos }; };
       var tot = PANELS.reduce(function (t, p) { return [t[0] + p.n[0], t[1] + p.n[1], t[2] + p.n[2]]; }, [0, 0, 0]), all = tot[0] + tot[1] + tot[2], top = Math.max.apply(null, tot) || 1;
-      var calm = still || reducedMotion(), T0 = calm ? 260 : Math.round((enTitle(REST_H[0]) + EN_GAP) * 1000), BH = 150;   // T0: once the title is written and its line faded in, the chart's line drawn as its card fades in
+      var calm = still || reducedMotion(), T0 = calm ? 260 : Math.round(enTitle(REST_H[0]) * 1000), BH = 150;   // T0: once the title is written and its line faded in, the chart's line drawn as its card fades in
       /* a number that rolls up to its value, an odometer: each digit a strip of figures turning to its own, the ones most (two turns), the tens once */
       var roll = function (v, at) {
         var sv = String(v), el = h('span', { class: 'arRsNum', 'aria-hidden': 'true' });
@@ -15866,9 +15870,12 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         });
         return row;
       });
-      var rTitle = h('h2', { class: 'arH700', 'aria-label': REST_H[0].replace(/\n/g, ' ') }, REST_H[0].split('\n').map(function (t, i) { return [i ? h('br') : null, t]; })), rLede = h('div', { class: 'arLede', text: all + ' markers across ' + PANELS.length + ' areas.' });
-      var rHead = h('div', { class: 'arIntroBlock arAnimRise arRsHead' }, rTitle, rLede), rCard = h('div', { class: 'arRsCard' }, chart);   // centred ("centred title and sub"); the chart in a card of its own, the biomarker card's ("biomarkers distribution in a secondary card, same style as the biomarker card")
-      return enter(h('div', { class: 'arStack arGap20' }, rHead, rCard, h('div', { class: 'arRsAreas' + (o.areas === 'list' ? ' arRsAsList' : o.areas === 'grid' ? ' arRsAsGrid' : '') }, areas)), rHead, rTitle, [rLede, rCard]);   // the title written, then its line, then the card as its chart starts; the areas rising after, as they did
+      var rTitle = h('h2', { class: 'arH700', 'aria-label': REST_H[0].replace(/\n/g, ' ') }, REST_H[0].split('\n').map(function (t, i) { return [i ? h('br') : null, t]; }));
+      var rHead = h('div', { class: 'arIntroBlock arAnimRise arRsHead' }, rTitle);   // centred ("centred title and sub")
+      /* the line under the title split into two eyebrows ("61 markers: eyebrow, distribution card; across 13 areas: eyebrow, list areas"): each over its own part, as X biomarkers over the evidence */
+      var rDist = h('div', { class: 'arRsPart' }, h('h3', { class: 'arLfH arRsEy', text: all + ' markers' }), h('div', { class: 'arRsCard' }, chart));   // the chart in a card of its own, the biomarker card's ("biomarkers distribution in a secondary card, same style as the biomarker card")
+      var rList = h('div', { class: 'arRsPart' }, h('h3', { class: 'arLfH arRsEy', text: 'Across ' + PANELS.length + ' areas' }), h('div', { class: 'arRsAreas' + (o.areas === 'list' ? ' arRsAsList' : o.areas === 'grid' ? ' arRsAsGrid' : '') }, areas));
+      return enter(h('div', { class: 'arStack arGap20' }, rHead, rDist, rList), rHead, rTitle, [rDist, rList]);   // the title written, then the distribution as its chart starts, then the areas' eyebrow, the areas rising after, as they did
     }
 
     /* ----- step 1, Full bg ("tweak intro screen with a full bg where the title, centred, appears word by word with a fade in / blur effect moving a bit from bottom to top; then reveal a card below with the summary bullet points of what will be covered"):
@@ -16296,34 +16303,17 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
 .arSheet.hpSheet .hpSumH { margin: 28px 0 0; }
 .arSheet.hpSheet .hpNote { margin-top: 12px; font-size: 13px; line-height: 17px; color: oklch(var(--ar-ink) / .56); }
 /* the Overview's card and My account's row */
-.hpOvCard { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 24px; margin: 50px 0 0; padding: 24px 28px; border-radius: 20px; background: #1b1b19; color: #f2e5e0; cursor: pointer; }
+.hpOvCard { position: relative; display: flex; flex-direction: column; min-height: 218px; margin: 50px 0 0; padding: 20px; border-radius: 22px; background: rgba(255, 255, 255, .06); color: #ececec; cursor: pointer; }   /* the insight cards' ground, #fff 6% (light: the paper, as theirs) ("the same background as the insights cards") */   /* the Next step card's layout, its picture gone, the sphere at its top right ("keep the same layout as Next step; remove the image; sphere top right; Health profile instead of Next step") */
 body.light .hpOvCard { background: #fdfaf3; color: #2e1f1a; }
-.hpOvCard .hpDots { width: 120px; height: 120px; color: inherit; }   /* 32 bigger, as on the phone */ .hpDots.hpSph { position: static; inset: auto; }   /* the sphere's canvas in the card's flow, not the page's full-screen canvas rule */ .hpOvCard .hpDots circle:not(.on) { opacity: .2; }
-.hpOvCard .hpOvT { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
-.hpOvCard .hpOvT h3 { margin: 0; font-size: 18px; line-height: 22px; font-weight: 500; letter-spacing: -.1px; }
-.hpOvCard .hpOvT p { margin: 0; font-size: 14px; line-height: 20px; color: #8b8b86; }
-body.light .hpOvCard .hpOvT p { color: #7d6b58; }
-.hpOvCard .hpOvS { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin-top: 6px; }
-.hpOvCard .hpOvS .hpSt { background: rgba(255, 255, 255, .08); color: #c9c9c4; }
-.hpOvCard .hpOvS .hpSt.hpStProg { background: rgba(240, 210, 120, .14); color: #f0d78c; }
-.hpOvCard .hpOvS .hpSt.hpStDone { background: rgba(120, 210, 150, .14); color: #9fe0b4; }
-body.light .hpOvCard .hpOvS .hpSt { background: rgba(46, 31, 26, .07); color: #5e4a3c; }
-body.light .hpOvCard .hpOvS .hpSt.hpStProg { background: #f7ecc8; color: #7a5b0e; }
-body.light .hpOvCard .hpOvS .hpSt.hpStDone { background: #dcf1e2; color: #276b3d; }
-.hpOvCard .hpOvA { display: flex; gap: 4px 14px; flex-wrap: wrap; }
-.hpOvCard .hpOvA span { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; line-height: 18px; color: #8b8b86; }
-.hpOvCard .hpOvA span i { width: 14px; height: 14px; border-radius: 50%; box-shadow: inset 0 0 0 1.2px currentColor; display: inline-flex; align-items: center; justify-content: center; }
-.hpOvCard .hpOvA span.d { color: inherit; } .hpOvCard .hpOvA span.d i { background: currentColor; box-shadow: none; }
-.hpOvCard .hpOvA span.d i svg { color: #1b1b19; } body.light .hpOvCard .hpOvA span.d i svg { color: #fdfaf3; }
-body.light .hpOvCard .hpOvA span { color: #7d6b58; } body.light .hpOvCard .hpOvA span.d { color: #2e1f1a; }
-.hpOvBtn { flex: none; height: 44px; padding: 0 20px; border: 0; border-radius: 999px; background: #f4f4f2; color: #141413; font: inherit; font-size: 15px; font-weight: 500; white-space: nowrap; cursor: pointer; transition: opacity .16s ease; }
-.hpOvBtn:hover { opacity: .88; }
+.hpOvCard .hpDots { width: 120px; height: 120px; color: inherit; } .hpDots.hpSph { position: static; inset: auto; }   /* the sphere's canvas out of the page's full-screen canvas rule */ .hpOvCard .hpDots.hpSph { position: absolute; top: 20px; right: 20px; }
+.hpOvCard .hpOvEy { display: flex; align-items: center; min-height: 20px; margin: 0 0 2px; font-size: 12px; line-height: 18px; text-transform: uppercase; color: #8b8b86; }   /* the eyebrow, Next step's */
+.hpOvCard h3 { max-width: calc(100% - 136px); margin: 10px 0 0; font-size: 18px; line-height: 1.3; font-weight: 500; letter-spacing: -.1px; color: #f4f4f4; text-wrap: balance; }
+body.light .hpOvCard h3, body.light .hpOvCard .ovBookWhen { color: #2e1f1a; } body.light .hpOvCard .hpOvEy, body.light .hpOvCard .ovBookWhen span { color: #7d6b58; }
+.hpOvBtn { flex: none; height: 44px; padding: 0 24px; border: 0; border-radius: 999px; background: #fff; color: #111; font: inherit; font-size: 15px; font-weight: 500; white-space: nowrap; cursor: pointer; transition: opacity .16s ease; }   /* Book's */
+.hpOvBtn:hover { opacity: .88; } .hpOvBtn:active { transform: scale(.97); }
 body.light .hpOvBtn { background: #2e1f1a; color: #fdfaf3; }
 .hpOvCard:focus-visible, .hpOvBtn:focus-visible { outline: 2px solid #4b7bec; outline-offset: 2px; }
-body[data-bp="xs"] #dOver .hpOvCard { grid-template-columns: minmax(0, 1fr) auto; gap: 16px 14px; margin-top: 38px; padding: 20px; border-radius: 22px; }
-body[data-bp="xs"] #dOver .hpOvCard .hpDots { grid-column: 2; grid-row: 1; width: 96px; height: 96px; align-self: start; }   /* 32 bigger ("put the visual 32px bigger") */
-body[data-bp="xs"] #dOver .hpOvCard .hpOvT { grid-column: 1; grid-row: 1; }
-body[data-bp="xs"] #dOver .hpOvCard .hpOvBtn { grid-column: 1 / -1; width: 100%; }
+body[data-bp="xs"] #dOver .hpOvCard { margin-top: 38px; } body[data-bp="xs"] #dOver .hpOvCard .hpDots { width: 96px; height: 96px; } body[data-bp="xs"] #dOver .hpOvCard h3 { max-width: calc(100% - 108px); }   /* the phone: the sphere 96 ("32px bigger") */
 .acPrI .hpDots { width: 22px; height: 22px; color: inherit; }
 </style>
 <script>
@@ -30957,6 +30947,10 @@ hairline({
         if (store.cur && OWN[store.cur] && pre.value !== store.cur) pre.value = store.cur;
         apply(pre.value); }   // the one last picked, with what was saved in it
     }
+    // the persona's member under it, for reference: #2 the member whose report it is, #1 sample data
+    { const sel = document.getElementById('stArPer'), out = document.getElementById('stArPerRef'), WHO = { p2: ['Stephanie Bazzano', '02253849-503c-4566-a4bb-f104bba109d7'] };
+      const paint = () => { if (!out || !sel) return; const w = WHO[sel.value]; out.textContent = ''; if (!w){ out.textContent = 'Sample report, no member record'; return; } const b = document.createElement('b'), c = document.createElement('code'); b.textContent = w[0]; c.textContent = w[1]; out.append(b, c); };
+      if (sel){ sel.addEventListener('change', paint); paint(); requestAnimationFrame(paint); } }
     /* each Intro screen its own settings ("a save action for each intro screen select; be able to save each select preset"): Save keeps Rest assured, Label badge, Marker highlight, Condense and Amount for the one picked;
        picking it again puts them back, before the report mounts with it. Only when picked here (a V1 / V2 preset sets its own). Kept in this browser */
     { const IK = ['stArAss', 'stArLbg', 'stArMhl', 'stArCdn', 'stArAmt'], ISTORE = 'everlab.arIntroPre', l = document.getElementById('stArList'), b = document.getElementById('stArListSave');
@@ -31019,8 +31013,9 @@ hairline({
     const ck = '<svg width="9" height="9" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3.8 8.3 2.6 2.6 5.8-6"/></svg>';
     const paintCard = () => { const c = card(); if (!c) return; const sm = store.summary();
       const stx = sm.state === 'done' ? 'Completed' : sm.state === 'prog' ? 'In progress' : 'Not started', cls = sm.state === 'done' ? 'hpStDone' : sm.state === 'prog' ? 'hpStProg' : 'hpStNot';
-      c.innerHTML = '<div class="hpOvT"><h3>Health profile</h3><p>' + (sm.n === 3 ? 'You\u2019re all set. Dr Lee has what they need for Thursday.' : 'Three steps before your consult. About 9 minutes.') + '</p><div class="hpOvS"><span class="hpSt ' + cls + '">' + stx + '</span><span class="hpOvA">' +
-        AR.map(([k, l]) => '<span class="' + (sm.st[k] === 'done' ? 'd' : '') + '"><i>' + (sm.st[k] === 'done' ? ck : '') + '</i>' + l + '</span>').join('') + '</span></div></div><button class="hpOvBtn" type="button">' + sm.cta + '</button>';
+      const nx = ['wear', 'past', 'you'].filter(k => sm.st[k] !== 'done')[0], NXT = { wear: 'Next, our promise and your details.', past: 'Next, book your consult.', you: 'Next, tell us about you.' };
+      const ttl = sm.state === 'done' ? 'You\u2019re all set for your consult.' : sm.state === 'not' ? 'Three steps before your consult.' : NXT[nx], foot = sm.state === 'done' ? ['Your consult', sm.bk || 'Booked'] : sm.state === 'not' ? ['Three steps', 'About 9 minutes'] : ['Progress', sm.n + ' of 3 done'];
+      c.innerHTML = '<span class="hpOvEy">Health profile</span><h3>' + ttl + '</h3><div class="ovBookFoot"><div class="ovBookWhen"><b>' + foot[0] + '</b><span>' + foot[1] + '</span></div><button class="hpOvBtn" type="button">' + (sm.state === 'done' ? 'View' : sm.cta) + '</button></div>';   /* Next step's layout: its eyebrow Health profile, the moment's title, at its foot where it stands and the way on ("keep the same layout as Next step") */
       ring = HP.sphere ? HP.sphere() : HP.dots(); c.prepend(ring.el);   /* the report's sphere, filled a third a step done ("on the right side, the same sphere as the report") */ ring.el.setAttribute('role', 'img'); ring.el.removeAttribute('aria-hidden'); ring.el.setAttribute('aria-label', sm.n + ' of 3 completed');
       if (lastN != null && lastN !== sm.n){ ring.set(lastN / 3, false); const r = ring; setTimeout(() => r.set(sm.n / 3, true), 600); } else ring.set(sm.n / 3, false);   // a new area done: its third swept in once the sheet is down
       lastN = sm.n; };
