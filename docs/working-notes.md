@@ -15381,3 +15381,15 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The OrganAge light's soft falloff in the brand orange: a 230px circle centred 64px in from the right and 40px down.
   - It sits under the content, clipped to the card's corners (`isolation: isolate`, `::before` at z -1).
   - Opacity runs .7 → 1 → .7 over 4s. Still with reduced motion. Not on the Program card.
+
+## Section tweaks, floating beside the screen
+
+- "All tweaks related to a section floating on the right side, anchored to the section vertically as I scroll; not all open: a plus, its tweaks on a click; only one open at a time."
+- **The "+" buttons**: each Overview section with a Tweaks group (Next step, Services, Health profile, Insights, Action plan, Later card) gets one.
+  - Position: 16 right of the screen (the device frame, or the page's right edge on the desk, inside the dock), level with its section's top, following it as the page scrolls. It's held within the screen's height and nudged under the one above when two sections sit close.
+  - Hidden when the section is out of view, switched off, or under another page (the Health profile sheet, the Async report).
+- **The panel**: a click opens that section's group beside its "+" (left of it if there's no room), 360 wide.
+  - It's the group itself, borrowed from the Tweaks list: its controls stay wired, including its on/off switch. It goes back on close.
+  - One open at a time: another "+" swaps it; the same "+", a click outside or Escape closes it.
+- The groups stay in the Tweaks list too, for dragging the sections' order.
+- The Health profile's demo arrows sit at least 52 under the card's top, clear of its "+".
