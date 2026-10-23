@@ -13,7 +13,7 @@ the light theme; a Motion tweak turns it into one plain scroll.
 | Captured from version | 2026-09-15, "Signature tweak gone, Content Light/Heavy" |
 | Captured on | 2026-09-15 |
 | Sharing at capture | Shared with organization |
-| Size | 400 KB, single file (the photograph, the logo and the ellipse are embedded) |
+| Size | 430 KB, single file (the photograph, the logo and the ellipse are embedded) |
 
 This is the only gift page kept. Earlier versions (a ribbon-tied card; a warm
 two-scene reveal; the one-card "01" layout; the three-way Version select; the
@@ -24,7 +24,7 @@ repo's git history.
 ## Tweaks
 
 A fixed, edge-to-edge bar 44px tall runs along the very top in near-black,
-with a mono label, nine plain native selects, a colour swatch and two number fields. Each changes the page in
+with a mono label, eight plain native selects, a colour swatch and two number fields. Each changes the page in
 place; nothing reloads. On phones the labels hide and the controls share
 the bar evenly.
 
@@ -230,7 +230,7 @@ visible bar and a 28px fade at either end once it can scroll; the button never
 moves, and neither does the circle at the top right, which sits on the card
 itself outside the scrolling part so it is always whole (it fades in and out
 with the card's content all the same). With the default text the card scrolls a little at 900px tall; with the
-Heavy tweak it scrolls a lot. Phones keep the flowing fold instead. The
+Content tweak on Heavy it scrolls a lot. Phones keep the flowing fold instead. The
 wordmark sits top centre, the footer line "Page secured by Everlab" bottom
 centre. On phones the timeline labels may wrap and in dynamic motion **Claim
 my gift** floats at the foot of the screen.
@@ -249,7 +249,7 @@ Every parameter is optional and falls back to the example gift in the page.
 | `includes` | What's included, pipe-separated (`a\|b\|c`), six items |
 | `claim` | Activation URL for the button (http or https only) |
 | `image` | The photograph behind fold 2 (http or https only) |
-| `device`, `theme`, `motion`, `sig`, `card`, `hero`, `next`, `heavy`, `panel`, `alpha`, `blur`, `msg` | The tweaks, as above |
+| `device`, `theme`, `motion`, `card`, `hero`, `next`, `content` (or the older `heavy`), `panel`, `alpha`, `blur`, `msg` | The tweaks, as above |
 
 All text is inserted as plain text, never as HTML.
 
