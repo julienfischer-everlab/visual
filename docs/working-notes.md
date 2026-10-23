@@ -15246,3 +15246,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Everything else: numbers 24px ("reduce font by 8px"). The line under the title split into two eyebrows, X biomarkers' size (18): "61 markers" over the distribution card, "Across 13 areas" over the areas.
 - Tweaks > General > Member, under Persona, for reference: #2 Stephanie Bazzano and her ID (the ID selects whole); #1 "Sample report, no member record". The tweak panel only, not the report.
 - Marker highlight: the rest at 20% (was 50%).
+- Sphere hero / Blood stream: the active marker's square white (the ink: black on a light page), the others orange.
+- The Health profile sphere's fill has a free edge ("more free style, less linear"): each point its own place on the edge, a slow swell over the ball and a scatter, turning with it; a third of the ball by area a step. In the sheet it takes the sheet's theme. The intro's hero is the same sphere now (132), the dotted circle gone from it.
+- The Overview card's title is the step it is on ("match the title to the current step"): Our promise and your details / Book your onboarding consult / Tell us about you, its foot Step n of 3 and its time, its button Let's begin / Choose a time / Continue; done, You're all set for your consult. Step 1 is About 6 minutes, 12 in all.
+- Tweaks > Health profile > State: Step 1, Step 2, Step 3, Done (was Saved / Not started / 1 of 3 / 2 of 3 / Completed); it shows the step the saved progress is on. The step on is the first not done, in order, on the card and the intro alike.
+- XS services: 64 tall (88 less 24).
