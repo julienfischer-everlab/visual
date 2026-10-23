@@ -15336,3 +15336,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **State: Dexa next** (Tweaks → Health profile → State, and a fifth stop on the demo arrows after Done): "when this card is no longer on the Overview, the Dexa card takes over". The profile is complete and its card is gone. The Next step card is back where it stood, as the primary card, showing the DEXA scan ("Get your health baseline. Book your DEXA Scan."). The Hero tweak is set to DEXA scan while this state lasts and put back after. The arrows anchor to that card.
 - Overview card: left part-way through step one, the button reads **Continue**.
 - In-progress ring: the dashes at 24% ink, the number full.
+- Overview card: left part-way through step three, the button reads **Continue** as well (step two keeps Book). Done: "You're all set for your onboarding consultation with Dr Steven Lu."
