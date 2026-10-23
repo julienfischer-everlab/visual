@@ -15621,3 +15621,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Reproduced with real mouse presses: with the Welcome "+" card open, a press on Back counted as a click outside the card. The card shut, the screen slid back to the centre (`shiftOff`), and the Back button moved about 110px under the pointer before the click landed, so nothing happened ("the back still doesn't work"). The same slide also ran under Get started when the card was open.
 - The card's outside-click no longer counts the Back. With the Welcome card open, it doesn't count presses in the welcome or the profile either: the card stays while they play and nothing slides under them. Cards for the Overview's sections still shut on a click elsewhere.
 - Checked with real presses: Overview card shuts on a screen click; Welcome card open → Get started → profile (card still open, screen still); Back → the welcome, reversed.
+
+## Motes all round the sphere
+
+- The motes drawn in to every sphere now start from anywhere round it, a full turn, instead of only its upper left and right ("floating particles a bit everywhere around, not only at the top"). Their count, speed, path and fading are as before.
