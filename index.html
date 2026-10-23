@@ -12075,6 +12075,11 @@
         </div>
         </div>
         <!-- the Overview's Action plan: one list, or split by kind under two chips, Tasks and Appointments ("tweak: split actions per group; off: current; on: new with tab chips") -->
+        <!-- the welcome, a $299 member's first visit, played again from its first frame ("create a tweak to replay the screen, so plus icon and tweak module"); its + beside the sheet while the sheet is up. data-fl, not data-sec: no section on the Overview to order or switch off -->
+        <div class="tkGroup" data-pages="ov" data-fl="wel">
+        <div class="tkSub">Welcome</div>
+        <div class="tkRow"><span class="lbl">Intro</span><span class="tkPreCtl"><button class="tkBtn" type="button" id="stHpWelRp">Replay</button></span></div>
+        </div>
         <div class="tkGroup" data-pages="ov" data-sec="plan">
         <div class="tkSub">Action plan</div>
         <!-- V1 the cards; V2 My journey summarised: the next milestone and its to-dos, the milestones after it ("create an Action plan tweak: V1 this one, V2 reflect a summarised way of the timeline v2 My journey") -->
@@ -17119,7 +17124,7 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
     var calm = reduced();
     var sp = sphere({ cls: 'hpWelS', burst: !calm }); sp.set(0, false);
     var closeBtn = h('button', { type: 'button', class: 'arIconBtn arClose hpWelX', 'aria-label': 'Close' }, ic(16, P.close, 1.8));
-    var cta = h('button', { type: 'button', class: 'arBtn arBtnPrimary arBtnLg hpWelCta' }, h('span', { class: 'arBtnLabel', text: 'Let’s discover your health' }));
+    var cta = h('button', { type: 'button', class: 'arBtn arBtnPrimary arBtnLg hpWelCta' }, h('span', { class: 'arBtnLabel', text: 'Get started' }));   // ("CTA: Get started")
     /* the title, written the way the gift page writes its message ("make this title appear in the same way ... keep the exact pacing of the title"; no subtitle): letter by letter from 1.82 s, the last beginning by 4.76 s, each easing up and sharpening out of a blur over 1.64 s, orange for as long as it is out of focus; across the last line quicker and cooler, its last word 1.15 s at 70%; each line a row opening from nothing over 1.5 s, from 0.9 s before its first letter, so the block grows from the middle */
     var LN = ['Welcome to Everlab.', 'This is the first step', 'of your journey.'], AT = 1820, BY = 4760, CH = 1640, LW = 1150, LE = .7;
     var cnt = LN.join('').replace(/\s+/g, '').length, stg = (BY - AT) / (cnt - 1), lastN = LN[LN.length - 1].replace(/\s+/g, '').length, lastS = cnt - lastN, lastW = LN[LN.length - 1].split(' ').pop().length, n = 0;
@@ -31434,7 +31439,8 @@ hairline({
       const sh = () => {}; sh();   // its row in the Primary card's $299 part now
       if (f) f.addEventListener('change', () => { if (f.value === 'yes') setTimeout(show, 120); else if (inst && inst.welcome) close(); });
       if (m) m.addEventListener('change', sh);
-      document.addEventListener('everlab:mode', () => setTimeout(show, 500)); }
+      document.addEventListener('everlab:mode', () => setTimeout(show, 500));
+      { const rp = document.getElementById('stHpWelRp'); if (rp) rp.addEventListener('click', () => open({ welcome: true })); } }   // Tweaks -> Welcome -> Replay: the welcome from its first frame, in place if it is up
     { const lk = () => HP.look && HP.look({ dim: opt('stHpDim'), feed: opt('stHpFeed') }); lk(); ['stHpDim', 'stHpFeed'].forEach(id => { const t = document.getElementById(id); if (t) t.addEventListener('change', lk); }); }   // the sphere's look (Tweaks -> Health profile), on every sphere at once
     // the demo states (Tweaks -> Health profile): not started, one or two of three, completed; Saved is whatever was last done here
     let hpSetting = false;
@@ -31468,12 +31474,13 @@ hairline({
      a click opens that group in a panel beside it: the group itself borrowed from the Tweaks list (its controls as they are, wired), put back on close. One open: another + swaps; the same +, a click outside or Escape closes */
   (function secTweaks(){
     const bar = document.querySelector('.topbar'); if (!bar) return;
-    const SECS = { primary: '.hpOvCard', svc: '.ovSvc', ins: '.dvSecIns', plan: '.dvSecPlan', later: '.dvSecAvail, .dvDef' };   // the Primary card's +: at the profile's card, or the hero when Next step
-    const groups = () => [...document.querySelectorAll('.tkGroup[data-sec]')].filter(g => SECS[g.dataset.sec]);
+    const SECS = { primary: '.hpOvCard', svc: '.ovSvc', ins: '.dvSecIns', plan: '.dvSecPlan', later: '.dvSecAvail, .dvDef', wel: '.hpWel' };   // the Primary card's +: at the profile's card, or the hero when Next step; the welcome's: at its sheet, while it is up
+    const kOf = g => g.dataset.sec || g.dataset.fl;   // a section's group, or one for something over the screen (data-fl)
+    const groups = () => [...document.querySelectorAll('.tkGroup[data-sec], .tkGroup[data-fl]')].filter(g => SECS[kOf(g)]);
     const host = document.createElement('div'); host.className = 'tkFl'; bar.appendChild(host);   // in the bar: the Tweaks list's own styles reach the borrowed group
     const panel = document.createElement('div'); panel.className = 'tkPanel tkFlPanel'; panel.setAttribute('role', 'dialog'); panel.hidden = true; host.appendChild(panel);
     const plus = {}; let openK = null, home = null;
-    const nameOf = g => { const t = g.querySelector('.tkSecH .nm, .tkSub'); return t ? t.textContent.trim() : g.dataset.sec; };
+    const nameOf = g => { const t = g.querySelector('.tkSecH .nm, .tkSub'); return t ? t.textContent.trim() : kOf(g); };
     /* the screen steps left while a panel is open, room at its right for it ("when a plus tweak is opened, the viewport moves to the left to leave free space for the tweak cards on the right"): its centre (--vwC, the dock's too) set so the + and the panel fit beside it, never past its own half-width from the edge; back on close; a slide either way */
     const follow = () => { const de = document.documentElement, t0 = performance.now(); de.classList.add('tkFlMove'); const f = () => { tick(); if (performance.now() - t0 < 520) requestAnimationFrame(f); else de.classList.remove('tkFlMove'); }; requestAnimationFrame(f); };
     const shiftOn = () => { const de = document.documentElement, dock = de.classList.contains('tkDocked') ? 380 : 0, bw = parseFloat(getComputedStyle(document.body).getPropertyValue('--bpW')) || 0; if (!bw || !document.body.dataset.bp) return;
@@ -31481,7 +31488,7 @@ hairline({
     const shiftOff = () => { const de = document.documentElement; if (de.style.getPropertyValue('--vwC')){ de.style.removeProperty('--vwC'); follow(); } };
     const shut = keep => { if (!openK) return; const g = panel.firstElementChild; if (keep !== true) shiftOff(); if (g && home){ if (home.next && home.next.parentNode === home.parent) home.parent.insertBefore(g, home.next); else home.parent.appendChild(g); }
       if (plus[openK]){ plus[openK].classList.remove('on'); plus[openK].setAttribute('aria-expanded', 'false'); } openK = null; home = null; panel.hidden = true; panel.textContent = ''; };
-    const show = k => { if (openK === k){ shut(); return; } shut(true); const g = groups().find(x => x.dataset.sec === k); if (!g){ shiftOff(); return; } shiftOn();
+    const show = k => { if (openK === k){ shut(); return; } shut(true); const g = groups().find(x => kOf(x) === k); if (!g){ shiftOff(); return; } shiftOn();
       home = { parent: g.parentNode, next: g.nextSibling }; panel.appendChild(g); panel.setAttribute('aria-label', 'Tweaks: ' + nameOf(g)); panel.hidden = false; openK = k;
       plus[k].classList.add('on'); plus[k].setAttribute('aria-expanded', 'true'); tick(); };
     const btn = k => { const b = document.createElement('button'); b.type = 'button'; b.className = 'tkFlPlus'; b.setAttribute('aria-expanded', 'false');
@@ -31496,7 +31503,9 @@ hairline({
       const top = Math.max(fr ? fr.top : (orr ? orr.top : 0), (bar.getBoundingClientRect().bottom || 0)) + 8, bot = Math.min(fr ? fr.bottom : innerHeight, innerHeight) - 44;
       const edge = fr ? fr.right : (orr ? orr.right : innerWidth), x = Math.min(edge + 32, room - 48);   // 32 off the screen ("detach the plus from the viewport by 32px")
       const spots = [];
-      groups().forEach(g => { const k = g.dataset.sec; const b = plus[k] || (plus[k] = btn(k)); b.setAttribute('aria-label', 'Tweaks: ' + nameOf(g));
+      groups().forEach(g => { const k = kOf(g); const b = plus[k] || (plus[k] = btn(k)); b.setAttribute('aria-label', 'Tweaks: ' + nameOf(g));
+        if (k === 'wel'){ const el = document.querySelector('.hpWrap.hpOpen:not(.shut) .hpWel'), r = el && el.getBoundingClientRect();   /* the welcome's: beside its sheet, at its top, while it is up */
+          if (r && r.height && r.bottom > top + 16 && r.top < bot + 28) spots.push({ k, b, y: Math.max(top, Math.min(bot, r.top)) }); else { b.classList.remove('vis'); if (openK === k) shut(); } return; }
         let el = null; if (live) el = [...over.querySelectorAll(k === 'primary' && window._hpGone ? '.ovhero' : SECS[k])]   /* Next step: the hero the primary card, the + at it */
           .find(e => !e.classList.contains('ovOff') && e.getClientRects().length && e.getBoundingClientRect().height > 0);
         let ok = !!el, y = 0; if (el){ const r = el.getBoundingClientRect(); y = Math.max(top, Math.min(bot, r.top)); ok = r.bottom > top + 16 && r.top < bot + 28;

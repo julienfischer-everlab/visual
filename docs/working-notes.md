@@ -15465,3 +15465,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - As the title writes under the sphere, it pushes the sphere up (1.5 to 4.4 s). The two rise together until the title reaches its place, then the sphere carries on until its centre sits on the sheet's top edge, its upper half past it.
 - The CTA sits in the content under the title, hugging its words, not in a footer. Its row is there from the start; it fades in rising 18px over 0.9 s, half a second after the last letter begins (5.26 s), as the gift page's button does.
 - Desk modal: at least 460 tall, so the sphere can sit alone in its middle before the title arrives. Reduced motion: the final state at once.
+
+## Welcome: Replay tweak with its own floating +, CTA "Get started"
+
+- Tweaks has a new **Welcome** card with one row, Intro: **Replay**. It plays the welcome again from its first frame: the dot, the burst, the written title, the button. If the welcome is already up it restarts in place; otherwise it opens it.
+- While the welcome is up, its own floating **+** sits 32px right of the screen, level with the top of the sheet, like the section tweaks' pluses. It opens the Welcome card beside the screen, and the screen steps left to make room. The section pluses stay hidden while the sheet is over the Overview. The + goes away when the welcome closes.
+- The card uses `data-fl="wel"`, not `data-sec`, so it has no section switch or drag handle and is left out of the Overview's section order. In the Tweaks list it sits after the section cards. `secTweaks` reads a group's key from `data-sec` or `data-fl`.
+- The welcome's button reads **Get started**.
