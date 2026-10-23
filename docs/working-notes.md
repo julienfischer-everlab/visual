@@ -15615,3 +15615,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **The burst:** faster (1.15 s, was 1.7) and eased in and out: each point leaves very softly, goes quickly through the middle and settles softly (an ease-in-out quint), staggered over 25%; the spray past the shell is the same.
 - **Motes round the formed ball:** 30 (was 16), and a little clearer (0.8, neutral 0.7). This applies to every sphere.
 - **Profile halo:** 32px lower than last time (its centre 32 above where it first was) and more orange: half as strong again at every stop ("the arrow" read as the halo).
+
+## Back: the click fell beside it
+
+- Reproduced with real mouse presses: with the Welcome "+" card open, a press on Back counted as a click outside the card. The card shut, the screen slid back to the centre (`shiftOff`), and the Back button moved about 110px under the pointer before the click landed, so nothing happened ("the back still doesn't work"). The same slide also ran under Get started when the card was open.
+- The card's outside-click no longer counts the Back. With the Welcome card open, it doesn't count presses in the welcome or the profile either: the card stays while they play and nothing slides under them. Cards for the Overview's sections still shut on a click elsewhere.
+- Checked with real presses: Overview card shuts on a screen click; Welcome card open → Get started → profile (card still open, screen still); Back → the welcome, reversed.
