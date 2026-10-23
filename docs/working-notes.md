@@ -15321,3 +15321,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Overview card, step 3**: subtitle "It will help us to customise your journey before your call".
 - A page's children never shrink (`.hpScr > * { flex-shrink: 0 }`): the review's video tile had been squashed once the page grew taller than the screen.
 - Booked row on the intro: "Onboarding consultation call", sub "Booked Thu 29 Oct, 10:00am".
+- Overview card, not begun at all (not even left part-way): no progress bar, the main CTA (Get started) the card's full width ("if the journey has not started yet, use fill full for the main CTA"). Begun: the bar and the button at its right, as before.
