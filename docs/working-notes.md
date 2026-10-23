@@ -15371,3 +15371,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Overview card's progress**: done and half-done increments in the ink (white on dark, #2e1f1a on light), no longer orange ("just use white").
 - Overview card: the **whole card is clickable** and does what its button does ("the whole card should be clickable"): straight into the step, the intro when not begun or done; the Program card scrolls to the plan.
 - Its ground is the Telehealth tile's ("the background should be the same as the telehealth"): `.ovSvcChip`'s white at 4% on dark, ink at 6% on light, 8% / 9% on hover. The Program card keeps its brown.
+- **The welcome is now a normal bottom sheet** ("the first page should be a bottom sheet, not a full page"). The wrap takes `.hpBs` in place of `.aqFull`, so the frame is its content's height, about 350 at XS, with 28 corners.
+  - The sphere sits centred on the sheet's top edge, so only its lower half shows.
+  - "Welcome to Everlab." writes in word by word (from .55s). At 2.7s it leaves, and "This is the first step of your journey." with "A few minutes now, and your doctor knows you before you meet." comes up in its place (3.1s).
+  - **Let's discover your health** arrives at 3.5s. It takes the sheet down, then brings the profile's intro up as the full modal.
+  - X closes. With reduced motion, the second words and the button show at once.
+  - The membership card and the What's next list are gone. The demo arrows hide while it's up.
