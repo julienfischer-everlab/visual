@@ -15353,3 +15353,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The order is Step 1, 1.5, 2, 2.5, 3, 3.5, Done, Program, Dexa next.
   - The arrows' label shows "Step 1.5 / Dropped off" on two lines.
   - The State tweak is now a dropdown; nine is too many for segments.
+- **The search page is back at the end of Tell us about you** ("need this at the end of step 3 before coming back to the health profile home"). The flow there runs Review your answers [Save answers], then "We've started looking for your past results" [Continue], then up to the intro.
+  - It's skipped when the member said no to the records search (Anshul's journey map), as before.
+  - Its two rows now carry icon tiles (a bell, an upload), and their Turn on / Upload buttons are secondary (ink at 8%), leaving Continue the one primary.
+  - This undoes "the success screen replaces the last screen" for this page.

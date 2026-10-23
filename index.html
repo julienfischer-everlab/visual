@@ -16298,6 +16298,8 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
 .arSheet.hpSheet .hpCard { display: flex; flex-direction: column; border-radius: 16px; background: var(--ar-card-bg); }
 .arSheet.hpSheet .hpRow { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 14px; padding: 16px; }
 .arSheet.hpSheet .hpRow + .hpRow { box-shadow: inset 0 1px 0 oklch(var(--ar-ink) / .08); }
+.arSheet.hpSheet .hpRow.hpRowIc { grid-template-columns: 44px minmax(0, 1fr) auto; } .arSheet.hpSheet .hpRowI { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 12px; background: oklch(var(--ar-ink) / .06); color: oklch(var(--ar-ink)); }   /* the search page's rows: a bell, an upload, each on a tile (Anshul's map) */
+.arSheet.hpSheet .hpRowB.hpRowG { background: oklch(var(--ar-ink) / .08); color: oklch(var(--ar-ink)); }   /* their buttons secondary, the page's Continue the one primary */
 .arSheet.hpSheet .hpRow b { display: block; font-size: 15px; line-height: 19px; font-weight: 570; }
 .arSheet.hpSheet .hpRow span { display: block; margin-top: 2px; font-size: 13px; line-height: 17px; color: oklch(var(--ar-ink) / .56); }
 .arSheet.hpSheet .hpRowB { appearance: none; display: inline-flex; align-items: center; gap: 6px; height: 36px; margin: 0; padding: 0 14px; border: 0; border-radius: 9999px; background: oklch(var(--ar-ink)); color: var(--ar-paper); font: inherit; font-family: var(--ar-font); font-size: 14px; line-height: 18px; font-weight: 570; cursor: pointer; white-space: nowrap; }
@@ -16509,7 +16511,7 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; }   /* 16 less under the
   try { var raw = JSON.parse(localStorage.getItem(KEY) || 'null'); if (raw && raw.v === 2 && raw.a) { S = blank(); AREAS.forEach(function (a) { if (raw.a[a.k]) S.a[a.k] = raw.a[a.k]; }); S.pend = raw.pend || {}; S.notif = !!raw.notif; S.files = raw.files || []; } } catch (e) {}   // an earlier version's progress (its steps were others) starts again
   function save(quiet) { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} if (!quiet) document.dispatchEvent(new CustomEvent('everlab:hp', { detail: summary() })); }
   function searching() { var w = S.a.wear.ans; return w.find !== false && w.mc === 'yes'; }   // the past results search: opted in, and a Medicare card to run it on
-  function stepsOf(k) { return AREA[k].steps.filter(function (id) { return id !== 'search'; }); }   /* a stage's steps; the search's page no longer the flow's last: the intro, complete, is the success step after Review ("need a final success step"; the spec's "same driver, all three ticked, orb full; replaces the last screen"). The search still starts at the Medicare card and the intro's line says so */
+  function stepsOf(k) { return AREA[k].steps.filter(function (id) { return id !== 'search' || searching(); }); }   /* a stage's steps; the search's page at the end of Tell us about you, after Review, before the intro ("need this at the end of step 3 before coming back to the health profile home"; Anshul's journey map: skipped if they said no to the records search) */
   function pending(k) {   // a background process: null, or { done, label }
     var p = S.pend[k]; if (!p) return null;
     var done = p.done || Date.now() - p.at > SEARCH_MS;
@@ -16765,7 +16767,7 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; }   /* 16 less under the
     var two = function (x, y, cls) { return h('div', { class: 'hpTwo' + (cls ? ' ' + cls : '') }, x, y); };
     var lbl = function (t, kid) { return h('div', { class: 'hpF' }, h('span', { class: 'hpLbl', text: t }), kid, err('')); };
     var link = function (t) { return h('a', { class: 'hpLink', href: '#', on: { click: function (e) { e.preventDefault(); } } }, t); };
-    var row = function (t, d, b) { return h('div', { class: 'hpRow' }, h('div', null, h('b', { text: t }), h('span', { text: d })), b); };
+    var row = function (t, d, b, icon) { return h('div', { class: 'hpRow' + (icon ? ' hpRowIc' : '') }, icon ? h('i', { class: 'hpRowI', 'aria-hidden': 'true' }, ic(16, icon, 1.5)) : null, h('div', null, h('b', { text: t }), h('span', { text: d })), b); };   // icon: a tile at its left (the search page's rows, as Anshul's map)
     var sumRow = function (q2, a2, go) { return h('div', { class: 'hpSumR' }, h('div', null, h('span', { text: q2 }), h('b', { text: a2 || '—' })), go ? h('button', { type: 'button', class: 'hpEdit', 'aria-label': 'Edit ' + q2, text: 'Edit', on: { click: go } }) : null); };
     var editTo = function (j) { return function () { ret = I; I = j; step(-1); }; };
     function intro(scr, t, d) {
@@ -16901,7 +16903,7 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; }   /* 16 less under the
         scr.appendChild(h('div', { class: 'hpSum' },
           sumRow('Sleep', name(SLEEP, ans.sleep), editTo(0)), sumRow('Country of birth', name(COUNTRY, ans.country), editTo(1)), sumRow('Ethnicity', ans.eth, editTo(1)), sumRow('Health goals and concerns', ans.goals, editTo(1)), sumRow('Occupation', ans.occ, editTo(1)),
           sumRow('Smoking', name(SMOKE, ans.smoke), editTo(2)), sumRow('Alcohol', ans.alc != null ? ans.alc + (ans.alc === 1 ? ' time' : ' times') + ' a week' : '', editTo(3))));
-        foot2(S.a.you.st === 'done' ? 'Done' : 'Save answers', true, fwd);
+        foot2(S.a.you.st === 'done' && !searching() ? 'Done' : 'Save answers', true, fwd);
       },
       'you.search': function (scr) {
         if (!S.pend.search) S.pend.search = { at: Date.now() };
@@ -16909,13 +16911,13 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; }   /* 16 less under the
         scr.appendChild(q('', p.done ? 'We found your past results' : 'We’ve started looking for your past results', 'We check pathology labs across Australia under your name and Medicare number. It runs in the background, so you can keep going.'));
         scr.appendChild(h('div', { class: 'hpSearch' }, dd.el, lab));
         if (p.done) dd.set(1, false); else radar(dd, live(tick));   // this page's tick (show() counted it before building)
-        var nb = h('button', { type: 'button', class: 'hpRowB', 'aria-pressed': String(!!S.notif), on: { click: function () { S.notif = !S.notif; nb.setAttribute('aria-pressed', String(S.notif)); nb.textContent = ''; add(nb, S.notif ? [ic(14, P.check, 2), 'On'] : 'Turn on'); save(true); } } }, S.notif ? [ic(14, P.check, 2), 'On'] : 'Turn on');
+        var nb = h('button', { type: 'button', class: 'hpRowB hpRowG', 'aria-pressed': String(!!S.notif), on: { click: function () { S.notif = !S.notif; nb.setAttribute('aria-pressed', String(S.notif)); nb.textContent = ''; add(nb, S.notif ? [ic(14, P.check, 2), 'On'] : 'Turn on'); save(true); } } }, S.notif ? [ic(14, P.check, 2), 'On'] : 'Turn on');
         var fileI = h('input', { type: 'file', accept: '.pdf,image/*', multiple: true, hidden: true });
         var upD = h('span', { text: S.files.length ? S.files.length + (S.files.length === 1 ? ' report added' : ' reports added') : 'Upload a PDF or a photo' });
         fileI.addEventListener('change', function () { [].forEach.call(fileI.files || [], function (f) { S.files.push(String(f.name).slice(0, 80)); }); fileI.value = ''; upD.textContent = S.files.length + (S.files.length === 1 ? ' report added' : ' reports added'); save(true); });
         scr.appendChild(h('div', { class: 'hpCard' },
-          row('Tell me when they’re ready', 'Turns on notifications for results and reminders', nb),
-          h('div', { class: 'hpRow' }, h('div', null, h('b', { text: 'Have a report from somewhere else?' }), upD), h('button', { type: 'button', class: 'hpRowB', on: { click: function () { fileI.click(); } } }, 'Upload'), fileI)));
+          row('Tell me when they’re ready', 'Turns on notifications for results and reminders', nb, ['M4.5 11.5V7.5a3.5 3.5 0 0 1 7 0v4l1 1.5h-9l1-1.5Z', 'M6.8 14a1.3 1.3 0 0 0 2.4 0']),
+          h('div', { class: 'hpRow hpRowIc' }, h('i', { class: 'hpRowI', 'aria-hidden': 'true' }, ic(16, ['M8 10.5V2.5', 'm5 5.5 3-3 3 3', 'M3 10v2.5A1.5 1.5 0 0 0 4.5 14h7a1.5 1.5 0 0 0 1.5-1.5V10'], 1.5)), h('div', null, h('b', { text: 'Have a report from somewhere else?' }), upD), h('button', { type: 'button', class: 'hpRowB hpRowG', on: { click: function () { fileI.click(); } } }, 'Upload'), fileI)));
         foot2(S.a.you.st === 'done' ? 'Done' : 'Continue', true, fwd);
       }
     };
