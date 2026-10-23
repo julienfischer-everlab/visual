@@ -15426,3 +15426,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - **Next step** puts the profile's card away and shows the hero (DEXA scan to start), with its Booked object, Hero action, Hero background and Hero image rows.
   - Finishing the profile sets Card to Plan to purchase. The old $299 member row is hidden (kept at Yes for the order logic). One floating "+" for the group, at whichever card is primary. Its switch hides both cards.
 - Fixed: re-sorting the Tweaks list no longer pulls a group out of an open floating panel.
+- **Primary card**: no Card row. Plan to purchase is the State after Done ("plan to purchase should be after step done, so remove the Card tweak"), so the stepper runs Step 1 … Done, Plan to purchase. Finishing the profile sets State to Plan to purchase. With Type $299 purchased, its rows (First-time user, State, Empty dots, Floating, Open) all show.

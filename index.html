@@ -11990,7 +11990,6 @@
         <div class="tkSub">Primary card</div>
         <div class="tkRow"><span class="lbl">Type</span><select id="stPcType" class="tkSegSel" aria-label="The Overview's primary card"><option value="member" selected>$299 purchased</option><option value="next">Next step</option></select></div>
         <div class="pcPart" data-pc="member">
-        <div class="tkRow"><span class="lbl">Card</span><select id="stPcMem" class="tkSegSel" aria-label="A $299 member's primary card"><option value="hp" selected>Health profile</option><option value="plan">Plan to purchase</option></select></div>
         <!-- a $299 member's first visit: yes, the welcome over the Overview, what comes and what is next ("first-time user: yes/no; if yes, a modal that explains what comes and what is next") -->
         <div class="tkRow" id="stHpFirstRow">
           <span class="lbl">First-time user</span>
@@ -12001,7 +12000,7 @@
         </div>
         </div>
         <div class="pcPart" data-pc="hp">
-        <div class="tkRow"><span class="lbl">State</span><select id="stHpSt" aria-label="The Health profile's step"><option value="none" selected>Step 1</option><option value="none_d">Step 1.5 (dropped off)</option><option value="one">Step 2</option><option value="one_d">Step 2.5 (dropped off)</option><option value="two">Step 3</option><option value="two_d">Step 3.5 (dropped off)</option><option value="all">Done</option></select></div>
+        <div class="tkRow"><span class="lbl">State</span><select id="stHpSt" aria-label="The Health profile's step"><option value="none" selected>Step 1</option><option value="none_d">Step 1.5 (dropped off)</option><option value="one">Step 2</option><option value="one_d">Step 2.5 (dropped off)</option><option value="two">Step 3</option><option value="two_d">Step 3.5 (dropped off)</option><option value="all">Done</option><option value="plan">Plan to purchase</option></select></div>
         <div class="tkRow"><span class="lbl">Empty dots</span><select id="stHpDim" class="tkSegSel" aria-label="The sphere's empty particles, how visible"><option value="1">Base</option><option value="1.2" selected>+20%</option><option value="1.5">+50%</option><option value="2">+100%</option></select></div>
         <div class="tkRow"><span class="lbl">Floating</span><select id="stHpFeed" class="tkSegSel" aria-label="The particles drawn into the sphere: their colour"><option value="neutral" selected>Neutral</option><option value="orange">Orange</option><option value="off">Off</option></select></div>
         <div class="tkRow"><span class="lbl">Open</span><span class="tkPreCtl"><button class="tkBtn" type="button" id="stHpOpen">Health profile</button></span></div>
@@ -31332,7 +31331,7 @@ hairline({
       inst.el.setAttribute('tabindex', '-1'); inst.el.style.outline = 'none'; setTimeout(() => { if (inst && wrap.classList.contains('on')) try { inst.el.focus({ preventScroll: true }); } catch (e){} }, 540); };   // focus into the sheet itself (no ring drawn on a button)
     const close = now => { if (!wrap || !wrap.classList.contains('hpOpen')) return; wrap.classList.remove('on'); wrap.classList.add('shut'); document.body.classList.remove('hpOn');
       const end = () => { wrap.classList.remove('hpOpen', 'shut'); if (inst){ inst.destroy(); inst = null; } frame.textContent = ''; };
-      if (openN != null && openN < 3 && store.summary().n === 3 && !gone){ openN = null; const cm = document.getElementById('stPcMem'); if (cm){ cm.value = 'plan'; cm.dispatchEvent(new Event('change', { bubbles: true })); } else setPlan(true); }   /* the profile finished in this sitting: back on the Overview, the Program card in its place ("after the health profile is completed, when the user comes back to the Overview, a new card replaces it, highlighting a membership") */
+      if (openN != null && openN < 3 && store.summary().n === 3 && !gone){ openN = null; setPlan(true); const st = document.getElementById('stHpSt'); if (st) st.value = 'plan'; }   /* the profile finished in this sitting: back on the Overview, the Program card in its place ("after the health profile is completed, when the user comes back to the Overview, a new card replaces it, highlighting a membership") */
       setTimeout(() => paintCard(true), 40);   // back on the Overview: its card fills to where the member now is
       if (now === true) end(); else shutT = setTimeout(end, 520); };
     document.addEventListener('keydown', e => { if (e.key !== 'Escape' || !wrap || !wrap.classList.contains('on')) return; if (document.querySelector('.tkPanel[open], .tkMenu:not([hidden])') && e.target.closest && e.target.closest('.topbar')) return; const x = wrap.querySelector('.arClose'); if (x){ e.preventDefault(); x.click(); } });
@@ -31377,8 +31376,8 @@ hairline({
       const hs = document.getElementById('stHero'); if (hs){ if (v){ heroKept = hs.value; hs.value = 'dexa'; } else if (heroKept != null){ hs.value = heroKept; heroKept = null; } hs.dispatchEvent(new Event('change', { bubbles: true })); }
       document.dispatchEvent(new Event('everlab:hpgone')); };
     /* the demo's states in order ("on the step nav, also the dropped-off states: Step 1.5, 2.5, 3.5"): each step, then the same left part-way; Done; the Program card; Dexa next */
-    const SK = ['none', 'none_d', 'one', 'one_d', 'two', 'two_d', 'all'];   // Program and Dexa next: the Primary card's Card (Plan to purchase) and Type (Next step) now
-    const stateIx = () => { const sm = store.summary(); if (sm.n === 3) return 6; const nx = ['wear', 'past', 'you'].find(k => sm.st[k] !== 'done'); return sm.n * 2 + (sm.st[nx] === 'prog' ? 1 : 0); };
+    const SK = ['none', 'none_d', 'one', 'one_d', 'two', 'two_d', 'all', 'plan'];   // Plan to purchase after Done ("plan to purchase should be after step done, so remove the Card tweak"); Dexa next: the Primary card's Type (Next step)
+    const stateIx = () => { if (plan) return 7; const sm = store.summary(); if (sm.n === 3) return 6; const nx = ['wear', 'past', 'you'].find(k => sm.st[k] !== 'done'); return sm.n * 2 + (sm.st[nx] === 'prog' ? 1 : 0); };
     const stepOf = () => SK[stateIx()];   // the State tweak at the step the member is on ("three states, one a step"; Done the end; Dexa next, the card put away)
     document.addEventListener('everlab:hp', () => { paintCard(); const t = document.getElementById('stHpSt'); if (t && !hpSetting) t.value = stepOf(); });
     { const t = document.getElementById('stHpSt'); if (t) t.value = stepOf(); }
@@ -31393,16 +31392,13 @@ hairline({
     { const lk = () => HP.look && HP.look({ dim: opt('stHpDim'), feed: opt('stHpFeed') }); lk(); ['stHpDim', 'stHpFeed'].forEach(id => { const t = document.getElementById(id); if (t) t.addEventListener('change', lk); }); }   // the sphere's look (Tweaks -> Health profile), on every sphere at once
     // the demo states (Tweaks -> Health profile): not started, one or two of three, completed; Saved is whatever was last done here
     let hpSetting = false;
-    /* the Primary card (Tweaks): Type, a $299 member's card or Next step; a member's Card, Health profile or Plan to purchase. Next step puts the profile's card away and brings the hero (DEXA scan to start, its Hero action after);
-       Plan to purchase the profile done and the Program card in its place. Each part's rows shown with its choice */
-    { const ty = document.getElementById('stPcType'), cm = document.getElementById('stPcMem'), parts = [...document.querySelectorAll('.pcPart')];
-      const sync = () => { const t = ty ? ty.value : 'member', c = cm ? cm.value : 'hp'; parts.forEach(p => { const k = p.dataset.pc; p.hidden = k === 'member' ? t !== 'member' : k === 'hp' ? !(t === 'member' && c === 'hp') : t !== 'next'; }); };
-      const apply = () => { const t = ty ? ty.value : 'member', c = cm ? cm.value : 'hp';
-        if (t === 'next'){ setPlan(false); setGone(true); }
-        else { setGone(false); if (c === 'plan' && store.summary().n < 3){ hpSetting = true; store.preset('all'); hpSetting = false; } setPlan(c === 'plan'); }
+    /* the Primary card (Tweaks): Type, a $299 member's card (the Health profile through its states, Plan to purchase after Done) or Next step (the profile's card put away, the hero in its place: DEXA scan to start, its Hero action after). Each part's rows shown with its Type */
+    { const ty = document.getElementById('stPcType'), parts = [...document.querySelectorAll('.pcPart')];
+      const sync = () => { const t = ty ? ty.value : 'member'; parts.forEach(p => { p.hidden = p.dataset.pc === 'next' ? t !== 'next' : t !== 'member'; }); };
+      const apply = () => { const t = ty ? ty.value : 'member'; if (t === 'next'){ setPlan(false); setGone(true); } else setGone(false);
         const st = document.getElementById('stHpSt'); if (st) st.value = stepOf(); sync(); };
-      if (ty) ty.addEventListener('change', apply); if (cm) cm.addEventListener('change', apply); sync(); }
-    { const t = document.getElementById('stHpSt'); if (t) t.addEventListener('change', () => { if (t.value === 'live') return; hpSetting = true; store.preset(t.value); hpSetting = false; t.value = stepOf(); if (inst && wrap.classList.contains('on')) open(); }); }
+      if (ty) ty.addEventListener('change', apply); sync(); }
+    { const t = document.getElementById('stHpSt'); if (t) t.addEventListener('change', () => { if (t.value === 'live') return; const pl = t.value === 'plan'; hpSetting = true; store.preset(pl ? 'all' : t.value); hpSetting = false; setPlan(pl); t.value = stepOf(); if (inst && wrap.classList.contains('on')) open(); }); }
     /* the demo's steps, in the Health profile's tweak ("steps --> states inside the card tweak"; the floating arrows beside the screen retired): the State row a stepper, previous and next either side of its list, a step on or back through every state;
        the sphere fills with it (particles flowing in going on), the sheet, if up, back on its intro to show it */
     { const KS = SK;
@@ -31411,9 +31407,9 @@ hairline({
       const pv = arrow(-1, 'Previous state'), nx = arrow(1, 'Next state');
       if (t && row){ const box = document.createElement('span'); box.className = 'tkStep'; t.before(box); box.append(pv, t, nx); }
       const at = stateIx;
-      const go = d => { const n = at(), to = Math.max(0, Math.min(6, n + d)); if (to === n) return; hpSetting = true; store.preset(KS[to]); hpSetting = false; const t = document.getElementById('stHpSt'); if (t) t.value = KS[to]; if (inst && wrap.classList.contains('on')) inst.home(); tick(); };
+      const go = d => { const n = at(), to = Math.max(0, Math.min(7, n + d)); if (to === n) return; hpSetting = true; store.preset(to === 7 ? 'all' : KS[to]); hpSetting = false; setPlan(to === 7); const t = document.getElementById('stHpSt'); if (t) t.value = KS[to]; if (inst && wrap.classList.contains('on')) inst.home(); tick(); };
       nx.addEventListener('click', () => go(1)); pv.addEventListener('click', () => go(-1));
-      const tick = () => { const k = at(); nx.disabled = k >= 6; pv.disabled = k <= 0; };
+      const tick = () => { const k = at(); nx.disabled = k >= 7; pv.disabled = k <= 0; };
       if (t) t.addEventListener('change', () => setTimeout(tick, 0)); document.addEventListener('everlab:hp', tick); setInterval(tick, 400); tick(); }
     paintCard();
     document.addEventListener('everlab:mode', () => setTimeout(paintCard, 60));
