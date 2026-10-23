@@ -16235,8 +16235,8 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
 /* home */
 .arSheet.hpSheet .hpHome { position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; }
 .arSheet.hpSheet.hpAtHome .hpScr { isolation: isolate; }
-.arSheet.hpSheet.hpAtHome .hpScr::before { content: ""; position: absolute; left: 0; top: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none;   /* the card's halo on the intro, from its sphere at the top over the upper 35% of the screen (40% of its page, the page short of the button's foot) ("halo on top centered", then "the halo should cover 35% of the surface; too much at the moment"); the card's soft orange at its (halved) strength, breathing with it */
-  background: radial-gradient(ellipse 72% 35% at 50% 5%, rgb(255 122 26 / .1) 0%, rgb(255 122 26 / .085) 14%, rgb(255 122 26 / .06) 28%, rgb(255 122 26 / .04) 42%, rgb(255 122 26 / .0225) 56%, rgb(255 122 26 / .011) 69%, rgb(255 122 26 / .004) 81%, rgb(255 122 26 / 0) 100%);
+.arSheet.hpSheet.hpAtHome .hpScr::before { content: ""; position: absolute; left: 0; top: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none;   /* the card's halo on the intro, from its sphere at the top over the upper 35% of the screen (40% of its page, the page short of the button's foot), its centre 64 higher ("move up the halo by 64px") ("halo on top centered", then "the halo should cover 35% of the surface; too much at the moment"); the card's soft orange at its (halved) strength, breathing with it */
+  background: radial-gradient(ellipse 72% 35% at 50% calc(5% - 64px), rgb(255 122 26 / .1) 0%, rgb(255 122 26 / .085) 14%, rgb(255 122 26 / .06) 28%, rgb(255 122 26 / .04) 42%, rgb(255 122 26 / .0225) 56%, rgb(255 122 26 / .011) 69%, rgb(255 122 26 / .004) 81%, rgb(255 122 26 / 0) 100%);
   opacity: .7; animation: hpHaloIn 1.2s ease .7s both, hpHalo 4s ease-in-out 1.9s infinite; }   /* faded in once the page has landed, in place, then breathing ("halo should appear smoothly when landing on the health profile page") */
 @keyframes hpHaloIn { from { opacity: 0; } to { opacity: .7; } }
 @media (prefers-reduced-motion: reduce) { .arSheet.hpSheet.hpAtHome .hpScr::before { animation: none; } }
@@ -17050,7 +17050,7 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
       J[q] = .06 * (rnd() - .5);   /* a little scatter at the fill's edge, each point its own */
     }
     var INK = { d: ['214,112,58', '150,160,204', '238,232,226'], l: ['196,92,40', '92,104,156', '46,40,36'] }, BASE = { d: '242,229,224', l: '46,31,26' };
-    var lv = { from: 0, to: 0, t0: 0, dur: 1 }, t0 = opts.t0 || performance.now(), raf = 0, calm = reduced(), inflow = null, bs = opts.burst ? { a: Infinity, t0: Infinity, dur: 1100, oy: 0, sw: 520 } : null;   // bs: the burst, held till seed() and burst() are called; inflow: the particles flying in as a step is done
+    var lv = { from: 0, to: 0, t0: 0, dur: 1 }, t0 = opts.t0 || performance.now(), raf = 0, calm = reduced(), inflow = null, bs = opts.burst ? { a: Infinity, t0: Infinity, dur: 1700, oy: 0, sw: 520 } : null;   // bs: the burst, held till seed() and burst() are called; inflow: the particles flying in as a step is done
     var levelAt = function (now) { var k = Math.min(1, Math.max(0, (now - lv.t0) / lv.dur)), e = 1 - Math.pow(1 - k, 3); return lv.from + (lv.to - lv.from) * e; };
     /* always a few motes out round the top, left and right, drawn slowly in ("like the sphere is always fed by these particles"): each 8-13 s from up to 1.6 radii out to just inside the shell, turning a little, fading in, then out as it passes the shell; a new one where it began. None with reduced motion */
     var feed = function (m, now, first) { var th = .3 + Math.random() * .8; m.th = Math.random() < .5 ? th : Math.PI - th; m.r0 = 1.18 + Math.random() * .42; m.rot = (Math.random() - .5) * .5; m.dur = 8000 + Math.random() * 5000; m.t0 = now - (first ? Math.random() * m.dur : 0); m.c = Math.random() < .7 ? 0 : 2; m.z = .9 + Math.random() * .7; m.wb = Math.random() * 6.2832; return m; };
@@ -17058,6 +17058,8 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
     /* round the waiting dot, motes drawn slowly in to it ("particles floating around while the dot is breathing, attracted to the centre"): each 2.6-5.2 s from 34-96 px out, turning a little as it comes, fading in, then out as it reaches the dot; a new one where it began. As the dot draws in to its point, all of them with it */
     var seedM = function (m, now, first) { m.th = Math.random() * 6.2832; m.r0 = 34 + Math.random() * 62; m.rot = (Math.random() - .5) * 1.2; m.dur = 2600 + Math.random() * 2600; m.t0 = now - (first ? Math.random() * m.dur : 0); m.z = .8 + Math.random() * .8; m.wb = Math.random() * 6.2832; return m; };
     var SEEDM = []; for (var f2 = 0; f2 < 28; f2++) SEEDM.push(seedM({}, performance.now(), true));
+    /* as the ball forms, a spray of motes going on past its shell and fading there ("instead of the explosion, particles going outside the sphere"): each from the point out to 1.08-1.6 radii, a little after the ball's own begin */
+    var SPRAY = []; for (var f3 = 0; f3 < 54; f3++) SPRAY.push({ a: Math.random() * 6.2832, f: 1.08 + Math.random() * .52, d: Math.random() * .3, z: .8 + Math.random() * .7, c: Math.random() < .8 ? -1 : Math.random() < .7 ? 0 : 2 });
     var dot = function (px, py, r, a, rgb, ga) { if (a <= .01 || r <= .05) return; ga = ga == null ? .28 : ga; if (ga > 0) { var g = x.createRadialGradient(px, py, 0, px, py, r * 5); g.addColorStop(0, 'rgba(' + rgb + ',' + (ga * a).toFixed(3) + ')'); g.addColorStop(1, 'rgba(' + rgb + ',0)'); x.fillStyle = g; x.fillRect(px - r * 5, py - r * 5, r * 10, r * 10); } x.fillStyle = 'rgba(' + rgb + ',' + a.toFixed(3) + ')'; x.beginPath(); x.arc(px, py, r, 0, 6.2832); x.fill(); };   /* a point of light, its glow round it ga strong */
     var draw = function (now) {
       var w0 = cv.clientWidth, h0 = cv.clientHeight; if (!w0 || !h0) return false;
@@ -17075,9 +17077,10 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
             var e = Math.pow(k, 1.6), r = (m.r0 * (1 - e) + 3 * e) * (1 - .9 * ce), th = m.th + m.rot * e + .04 * Math.sin(now / 900 + m.wb), aa = Math.min(1, k / .25) * Math.min(1, (r - 2) / 10) * .6 * mf * (1 - ce * ce);
             if (aa <= .01) return; x.fillStyle = 'rgba(' + base + ',' + aa.toFixed(3) + ')'; x.fillRect(ox + Math.cos(th) * r - m.z / 2, oy - Math.sin(th) * r - m.z / 2, m.z, m.z); });
           dot(ox, oy, dr * (1 - ce) + 1.4 * ce, Math.min(1, .35 + dg / 400), base, 0); return true; }   /* no halo round it ("remove the halo around the dot") */
-        bk = Math.min(1, (now - bs.t0) / bs.dur); fe = Math.min(1, Math.max(0, (now - bs.t0 - bs.dur * .6) / 900)); if (fe >= 1) bs = null;
-        if (bk < .25) dot(ox, oy, 1.4 + bk * 16, 1 - bk / .25, base, 0);   /* the point flashing out as it goes */
-        if (bk < .55) { var rk2 = bk / .55, re = 1 - Math.pow(1 - rk2, 3); x.strokeStyle = 'rgba(' + base + ',' + (.24 * (1 - rk2)).toFixed(3) + ')'; x.lineWidth = 1; x.beginPath(); x.arc(ox, oy + (cy - oy) * re, R * 1.08 * re, 0, 6.2832); x.stroke(); }
+        bk = Math.min(1, (now - bs.t0) / bs.dur); fe = Math.min(1, Math.max(0, (now - bs.t0 - bs.dur * .55) / 900)); if (fe >= 1) bs = null;
+        if (bk < .14) dot(ox, oy, 1.4, 1 - bk / .14, base, 0);   /* the point fading as the motes leave it, no flash */
+        if (!calm) SPRAY.forEach(function (m) { var k = Math.min(1, Math.max(0, (bk - m.d) / .62)); if (k <= 0 || k >= 1) return; var e = 1 - Math.pow(1 - k, 3), r = m.f * R * e, aa = Math.min(1, k * 5) * Math.pow(1 - k, 1.3) * .75;
+          x.fillStyle = 'rgba(' + (m.c < 0 ? base : ink[m.c]) + ',' + aa.toFixed(3) + ')'; x.fillRect(ox + Math.cos(m.a) * r - m.z / 2, oy - Math.sin(m.a) * r - m.z / 2, m.z, m.z); });
       }
       var a = calm ? .6 : (now - t0) / 48000 * 6.2832, tl = .38 + (calm ? 0 : .07 * Math.sin((now - t0) / 6000)), ct = Math.cos(tl), st = Math.sin(tl), ca = Math.cos(a), sa = Math.sin(a);
       var L = levelAt(now), Lx = L < 1 / 3 ? -.12 + L * 1.47 : L < 2 / 3 ? .37 + (L - 1 / 3) * .78 : .63 + (L - 2 / 3) * 1.47, B = [];   /* a third of the ball by area a step (the edge at .37 and .63 of its height), none at 0, all at 1 */   /* the fill: none at 0, every point at 1, the edge between ragged and turning with the ball */
@@ -17086,7 +17089,7 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
         var X = P[q * 3], Y = P[q * 3 + 1], Z = P[q * 3 + 2], x1 = X * ca + Z * sa, z1 = -X * sa + Z * ca, y1 = Y * ct - z1 * st, zz = Y * st + z1 * ct, sx = cx + x1 * R, sy = cy - y1 * R, dp = (zz + 1) / 2;
         var u = (cy + R - sy) / (2 * R), xn = (sx - cx) / R, wv = calm ? 0 : .045 * Math.sin(xn * 5.5 + now / 1600) + .022 * Math.sin(xn * 11 - now / 2300);   /* filled from the foot up, its surface a very slow wave ("some kind of very slow wave on the bottom, so it feels like we fill the sphere") */
         var on = L >= .999 || (L > .001 && u < Lx + wv + J[q]), al = on ? .3 + .7 * dp : .07 + .2 * dp, c = on ? (K[q] ? 2 : 0) : 3;   // u: 0 at the foot, 1 at the top; filled orange and white ("the filled particles orange and white")
-        if (bk < 1) { var bq = Math.min(1, Math.max(0, (bk - (q * .618034 % 1) * .28) / .72)); if (bq <= 0) continue; var ps = 1 + 2.2 * Math.pow(bq - 1, 3) + 1.2 * Math.pow(bq - 1, 2); sx = ox + (sx - ox) * ps; sy = oy + (sy - oy) * ps; al *= Math.min(1, bq * 4); }   /* in the burst: from the dot out to its place */
+        if (bk < 1) { var bq = Math.min(1, Math.max(0, (bk - (q * .618034 % 1) * .35) / .65)); if (bq <= 0) continue; var ps = 1 - Math.pow(1 - bq, 3); sx = ox + (sx - ox) * ps; sy = oy + (sy - oy) * ps; al *= Math.min(1, bq * 2.5); }   /* as it forms: each point flowing out from the dot to its place, eased, no further ("the explosion seems too much") */
         B[c * 4 + Math.min(3, Math.floor(al * 4))].push(sx, sy, .7 + .7 * dp);
       }
       for (var b = 0; b < 16; b++) { var L2 = B[b]; if (!L2.length) continue; var c2 = b >> 2; x.fillStyle = 'rgba(' + (c2 < 3 ? ink[c2] : base) + ',' + Math.min(1, ((b & 3) + .5) / 4 * (c2 === 3 ? +LOOK.dim || 1 : 1)).toFixed(3) + ')';   /* the empty ones at the tweak's strength */
@@ -31441,12 +31444,12 @@ hairline({
       requestAnimationFrame(() => { frame.style.transition = ''; });
       const outK = [{ transform: 'none', opacity: 1 }, { transform: 'translateY(-48px)', opacity: 0, offset: .7 }, { transform: 'translateY(-72px)', opacity: 0 }];
       [wel.el.querySelector('.hpWelBody'), wel.el.querySelector('.hpWelX')].forEach(el => { if (el) el.animate(outK, { duration: 380, easing: 'cubic-bezier(.4, 0, .9, .6)', fill: 'forwards' }); });
-      /* one sphere ("important that the sphere from both screens is the same; at the moment there is a jumping problem"): the welcome's own put in the profile's place, the profile's given up, so nothing hands over; from where it stood (32 lower, 10% larger) pushed up to the place ("pushed up a bit to reach the sphere of the health profile screen", 0.58 s), then easing down to the profile's size as it lands ("scale down when landing", to 1.05 s) */
+      /* one sphere ("important that the sphere from both screens is the same; at the moment there is a jumping problem"): the welcome's own put in the profile's place, the profile's given up, so nothing hands over; from where it stood (32 lower, 10% larger) pushed up to the place and down to the profile's size together, as the screens change ("pushed up a bit to reach the sphere of the health profile screen"; "the scale down should occur while the screen transitions, not at the end"), 0.9 s */
       if (hs){ const sr = hs.getBoundingClientRect(), k0 = cr.width / (sr.width || cr.width);
         hs.parentNode.replaceChild(cv, hs); cv.className = hs.className; ['position', 'left', 'top', 'width', 'height', 'margin'].forEach(p => cv.style.removeProperty(p));
         if (wel.sphere) wel.sphere.set(store.summary().n / 3, false);
         const nr = cv.getBoundingClientRect(), dx = cr.left + cr.width / 2 - (nr.left + nr.width / 2), dy = cr.top + cr.height / 2 - (nr.top + nr.height / 2), s0 = (1.6 * k0).toFixed(3);
-        cv.animate([{ transform: 'translate(' + dx.toFixed(1) + 'px, ' + dy.toFixed(1) + 'px) scale(' + s0 + ')', easing: 'cubic-bezier(.45, 0, .2, 1)' }, { transform: 'translate(0px, 0px) scale(' + s0 + ')', offset: .55, easing: 'cubic-bezier(.45, 0, .2, 1)' }, { transform: 'translate(0px, 0px) scale(1.6)' }], { duration: 1050 }); }
+        cv.animate([{ transform: 'translate(' + dx.toFixed(1) + 'px, ' + dy.toFixed(1) + 'px) scale(' + s0 + ')' }, { transform: 'translate(0px, 0px) scale(1.6)' }], { duration: 900, easing: 'cubic-bezier(.45, 0, .2, 1)' }); }
       const rise = [{ transform: 'translateY(' + Math.max(160, Math.round(((view && view.clientHeight) || 600) * .34)) + 'px)', opacity: 0 }, { transform: 'none', opacity: 1 }];
       hp.el.querySelectorAll('.hpHome > :not(canvas)').forEach(el => el.animate(rise, { duration: 660, delay: 300, easing: 'cubic-bezier(.16, 1, .3, 1)', fill: 'backwards' }));   // the page's words and steps come up; the sphere goes its own way
       const ft = hp.el.querySelector('.arFoot'), hd = hp.el.querySelector('.arHead'), rl = hp.el.querySelector('.hpRail');
@@ -31455,9 +31458,8 @@ hairline({
       setTimeout(() => wel.destroy(), 1000);
       hp.el.setAttribute('tabindex', '-1'); hp.el.style.outline = 'none'; setTimeout(() => { if (inst === hp) try { hp.el.focus({ preventScroll: true }); } catch (e){} }, 700);
     };
-    /* back to the welcome from the profile it led to (Tweaks: Welcome -> Back to intro, "if we land from the intro on the health profile, a tweak to transition back to the intro"): Get started played backwards. The welcome mounted over the profile in its last state
-       (the second title and the button), where its sheet will stand; the profile's page going down and fading (0.38 s) as the welcome's words come down from above (0.66 s, from 0.3 s); the same sphere taken back into the welcome, growing to its 110% where it is,
-       then dropping the 32 to its place (1.05 s); in the bottom-sheet format, the frame drawn in from the whole screen to the sheet (0.62 s, from 0.2 s). Then the welcome is the sheet again */
+    /* back to the welcome from the profile it led to (the Back under the Welcome's +, "if we land from the intro on the health profile, a tweak to transition back to the intro"): Get started exactly reversed. The welcome mounted over the profile in its last state
+       (the second title and the button), where its sheet will stand, the same sphere taken back into it; then every move of Get started played backwards, in reverse order over the same 1.06 s. Then the welcome is the sheet again */
     const backOk = () => !!(fromIntro && inst && !inst.welcome && inst.el.classList.contains('hpAtHome') && wrap && wrap.classList.contains('on') && inst.el.querySelector('.hpHome canvas.hpSph'));
     const back2intro = () => {
       if (!backOk()) return; const hp = inst, cv = hp.el.querySelector('.hpHome canvas.hpSph');
@@ -31472,21 +31474,25 @@ hairline({
       Object.assign(wel.el.style, { position: 'absolute', left: (f0.left - f1.left) + 'px', top: (f0.top - f1.top) + 'px', width: f0.width + 'px', height: f0.height + 'px', margin: '0', maxWidth: 'none', zIndex: '3', background: 'transparent', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' });
       if (sheet) wel.el.style.setProperty('--ar-head-top', '16px');   // the sheet's own, not the full modal's
       wel.place();
-      const nr = cv.getBoundingClientRect(), k = 1.1, dx = (cr.left + cr.width / 2 - (nr.left + nr.width / 2)) / k, dy = (cr.top + cr.height / 2 - (nr.top + nr.height / 2)) / k, s0 = (1.6 * cr.width / (nr.width || cr.width)).toFixed(3);   // in the welcome's ball, itself at 110%
-      cv.animate([{ transform: 'translate(' + dx.toFixed(1) + 'px, ' + dy.toFixed(1) + 'px) scale(' + s0 + ')', easing: 'cubic-bezier(.45, 0, .2, 1)' }, { transform: 'translate(' + dx.toFixed(1) + 'px, ' + dy.toFixed(1) + 'px) scale(1.6)', offset: .45, easing: 'cubic-bezier(.45, 0, .2, 1)' }, { transform: 'translate(0px, 0px) scale(1.6)' }], { duration: 1050 });
-      const scr = hp.el.querySelector('.hpScr'), view = hp.el.querySelector('.hpView'), rise = Math.max(160, Math.round(((view && view.clientHeight) || 600) * .34));
-      if (scr) scr.animate([{ transform: 'none', opacity: 1 }, { transform: 'translateY(48px)', opacity: 0, offset: .7 }, { transform: 'translateY(72px)', opacity: 0 }], { duration: 380, easing: 'cubic-bezier(.4, 0, .9, .6)', fill: 'forwards' });
-      hp.el.querySelectorAll('.arHead, .arFoot, .hpRail').forEach(el => el.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 260, easing: 'ease', fill: 'forwards' }));
-      [wel.el.querySelector('.hpWelBody'), wel.el.querySelector('.hpWelX')].forEach(el => { if (el) el.animate([{ transform: 'translateY(' + -rise + 'px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 660, delay: 300, easing: 'cubic-bezier(.16, 1, .3, 1)', fill: 'backwards' }); });
-      const clip = sheet ? frame.animate([{ clipPath: 'inset(0px 0px 0px 0px round 0px)' }, { clipPath: 'inset(' + (f0.top - f1.top) + 'px ' + (f1.right - f0.right) + 'px ' + (f1.bottom - f0.bottom) + 'px ' + (f0.left - f1.left) + 'px round ' + rd + ')' }], { duration: 620, delay: 200, easing: 'cubic-bezier(.32, .72, 0, 1)', fill: 'forwards' }) : null;
+      /* each of Get started's own moves, with its own duration and easing, played backwards (direction reverse) and mirrored in time over the whole (1.06 s): what went last comes first ("Back should reverse the transition") */
+      const T = 1060, rv = (el, kf, o) => el && el.animate(kf, Object.assign({}, o, { direction: 'reverse', delay: T - (o.delay || 0) - o.duration, fill: 'both' }));
+      const nr = cv.getBoundingClientRect(), k = 1.1, dx = ((cr.left + cr.width / 2) - (nr.left + nr.width / 2)) / k, dy = ((cr.top + cr.height / 2) - (nr.top + nr.height / 2)) / k, hpS = (1.6 * cr.width / (nr.width || cr.width)).toFixed(3), at = 'translate(' + dx.toFixed(1) + 'px, ' + dy.toFixed(1) + 'px) ';   // the sphere in the welcome's ball (itself at 110%): its place in the profile, there
+      rv(cv, [{ transform: 'translate(0px, 0px) scale(1.6)' }, { transform: at + 'scale(' + hpS + ')' }], { duration: 900, easing: 'cubic-bezier(.45, 0, .2, 1)' });
+      const view = hp.el.querySelector('.hpView'), rise = Math.max(160, Math.round(((view && view.clientHeight) || 600) * .34)), scr = hp.el.querySelector('.hpScr');
+      hp.el.querySelectorAll('.hpHome > :not(canvas)').forEach(el => rv(el, [{ transform: 'translateY(' + rise + 'px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 660, delay: 300, easing: 'cubic-bezier(.16, 1, .3, 1)' }));
+      rv(hp.el.querySelector('.arFoot'), [{ transform: 'translateY(24px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 600, delay: 460, easing: 'cubic-bezier(.16, 1, .3, 1)' });
+      [hp.el.querySelector('.arHead'), hp.el.querySelector('.hpRail')].forEach(el => rv(el, [{ opacity: 0 }, { opacity: 1 }], { duration: 320, delay: 620, easing: 'ease' }));
+      if (scr && scr.animate) try { scr.animate([{ opacity: .7 }, { opacity: 0 }], { duration: 400, easing: 'ease', fill: 'forwards', pseudoElement: '::before' }); } catch (e){}   // its halo, which came in last, goes first
+      [wel.el.querySelector('.hpWelBody'), wel.el.querySelector('.hpWelX')].forEach(el => rv(el, [{ transform: 'none', opacity: 1 }, { transform: 'translateY(-48px)', opacity: 0, offset: .7 }, { transform: 'translateY(-72px)', opacity: 0 }], { duration: 380, easing: 'cubic-bezier(.4, 0, .9, .6)' }));
+      const clip = sheet ? rv(frame, [{ clipPath: 'inset(' + (f0.top - f1.top) + 'px ' + (f1.right - f0.right) + 'px ' + (f1.bottom - f0.bottom) + 'px ' + (f0.left - f1.left) + 'px round ' + rd + ')' }, { clipPath: 'inset(0px 0px 0px 0px round 0px)' }], { duration: 620, easing: 'cubic-bezier(.32, .72, 0, 1)' }) : null;
       requestAnimationFrame(() => { frame.style.transition = ''; });
       fromIntro = false; inst = wel; carried = null;
-      setTimeout(() => {   // the welcome the sheet (or the full modal) again; the profile gone
+      setTimeout(() => {   // the welcome the sheet (or the full modal) again; the profile gone; its own moves let go
         if (inst !== wel) return; frame.style.transition = 'none';
         if (sheet){ wrap.classList.add('hpBs'); wrap.classList.remove('aqFull'); } else wrap.classList.add('hpWelF');
         ['position', 'left', 'top', 'width', 'height', 'margin', 'max-width', 'z-index', 'background', 'display', 'flex-direction', 'align-items', 'text-align', '--ar-head-top'].forEach(p => wel.el.style.removeProperty(p));
-        if (clip) clip.cancel(); hp.destroy(); paint(); wel.place(); requestAnimationFrame(() => { frame.style.transition = ''; });
-      }, 1150);
+        if (clip) clip.cancel(); hp.destroy(); [cv, wel.el.querySelector('.hpWelBody'), wel.el.querySelector('.hpWelX')].forEach(el => el && el.getAnimations().forEach(an => an.cancel())); paint(); wel.place(); requestAnimationFrame(() => { frame.style.transition = ''; });
+      }, 1100);
     };
     window._hpBack = { ok: backOk, go: back2intro };
     const close = now => { if (!wrap || !wrap.classList.contains('hpOpen')) return; fromIntro = false; wrap.classList.remove('on'); wrap.classList.add('shut'); document.body.classList.remove('hpOn');

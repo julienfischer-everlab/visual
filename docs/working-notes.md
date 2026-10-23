@@ -15590,3 +15590,16 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 ## Back to the intro: a floating Back under the +
 
 - The "Back to intro" row is gone from the Welcome card. On the profile reached from the welcome there is now a **Back** button under the Welcome "+" ("just a Back CTA below the plus"): 44px below it, the same left edge, in the "+"'s look (a 36px pill, chevron and "Back"). It plays Get started backwards at once. It shows only while that profile is up at its intro, and goes once the welcome is back.
+
+## Burst softened; Back an exact reverse; scale with the move; halo up 64
+
+- **Burst** ("the explosion seems too much"):
+  - The point no longer flashes and there is no ring. It just fades as the motes leave it.
+  - Each point of the ball flows out from the dot to its place, eased out with no overshoot (1.7 s, staggered over 35%).
+  - A spray of 54 motes goes on past the shell, to 1.08–1.6 radii, and fades there ("particles going outside the sphere"); a fifth of them are in the fill's orange and white.
+- **Back** is Get started exactly reversed:
+  - each of its moves (the frame's clip, the welcome's words and close, the sphere, the profile's words and steps, its button, its bar) is played with the same keyframes, duration and easing, `direction: reverse`;
+  - each delay is mirrored over the whole 1.06 s, so what went last comes first;
+  - the halo, which came in last, fades first.
+- **The sphere on Get started** now moves up and scales down together, in one 0.9 s move as the screens change ("the scale down should occur while the screen transitions, not at the end"). Back reverses the same move.
+- **Profile halo:** its centre is 64px higher ("move up the halo by 64px"), the same size.
