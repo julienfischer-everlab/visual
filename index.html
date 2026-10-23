@@ -9308,7 +9308,7 @@
   :is(#phone2, body[data-bp="xs"] #dOver) .ovDefTx{display:block;} :is(#phone2, body[data-bp="xs"] #dOver) .ovDefTx .ovDefCta{margin-top:12px;}   /* 8 less above the link ("remove the gap by 8px") */   /* 20 under the words ("+8px margin top CTA", then "cta margin top -4px"); 36 tall ("CTA smaller 36px height") */   /* XS: under the words ("below sub title on XS, gap 16px"), centred or left with them */
   html.defL :is(#phone2, body[data-bp="xs"] #dOver) .ovDefRow{flex-direction:row;align-items:center;gap:0;text-align:left;} html.defL :is(#phone2, body[data-bp="xs"] #dOver) .ovDefRow{padding:32px;}   /* 32 every side ("card padding when left aligned 32px") */   /* 32 between the visual and the words ("+16 px gap") */   /* Later card -> Alignment Left: the visual on the left, the words beside it ("content on the left when left aligned"), 16 less above and below ("when left align reduce padding by 16px") */ html.defL :is(#phone2, body[data-bp="xs"] #dOver) .ovDefTx{flex:1 1 auto;}
   /* the Overview at XS: every card 20 inside, all four sides ("make all card 20px padding on the overview XS") -- the services, Next step, Explore, Plan ahead; the booked card is 20 already, its 2 Columns and Tab forms set with it */
-  html body[data-bp="xs"] #dOver .ovSvcChip, html body[data-bp="xs"] #dOver .ovhero.ovBook, html body[data-bp="xs"] #dOver .ovcard{padding:20px;} html body[data-bp="xs"] #dOver .ovDefRow{padding:20px !important;}   /* Plan ahead in every dress (pictures or Hairline, centred or left): past their own 44 / 12-24-12-12 */
+  html body[data-bp="xs"] #dOver .ovSvcChip, html body[data-bp="xs"] #dOver .ovhero.ovBook, html body[data-bp="xs"] #dOver .ovcard{padding:20px;} html body[data-bp="xs"] #dOver .ovSvcChip{height:88px;} html body[data-bp="xs"] #dOver .ovSvcVis{width:20px;height:20px;}   /* XS: each service 16 taller, 88 ("increase the height by 16px"), its visual 12 smaller, 20 ("reduce the visual by 12px") */ html body[data-bp="xs"] #dOver .ovDefRow{padding:20px !important;}   /* Plan ahead in every dress (pictures or Hairline, centred or left): past their own 44 / 12-24-12-12 */
   html.defL body[data-bp="xs"] #dOver .ovDefRow.ovDefHlOn.ovDefHlOn{gap:20px;}   /* Left with the Hairline: 20 between the drawing and the words ("-16px gap", from 32; "8px gap"; then "+12px gap horizontal") */
   html.defL :is(#phone2, body[data-bp="xs"] #dOver) .ovDefRow.ovDefHlOn .ovDefHl{width:96px;height:96px;aspect-ratio:auto;margin:0;} html.defL :is(#phone2, body[data-bp="xs"] #dOver) .ovDefRow.ovDefHlOn{padding:12px 24px 12px 12px;gap:32px;}   /* Left with the Hairline: flush left, top and bottom, as the desk's */ html.defL :is(#phone2, body[data-bp="xs"] #dOver) .ovDefRow.ovDefHlOn .ovDefHl svg{position:absolute;left:var(--sqL, 0px);top:var(--sqT, 0px);width:var(--sqW, 100%);height:var(--sqH, 100%);}   /* the drawing 80 tall, its own air trimmed all round: its left on the padding's edge, the words 32 after it */
   .ovDefTx{flex:1 1 auto;min-width:0;} .ovDefTx b{display:block;font-size:15px;font-weight:500;line-height:1.3;color:#f4f4f4;}
@@ -11940,12 +11940,20 @@
             <option value="tiles" selected>3 columns</option>
           </select>
         </div>
-        <!-- Health profile: its own section, or the first card of the Insights carousel at 70% ("a version where the health profile card is part of the insights") -->
-        <div class="tkRow">
+        <!-- Health profile: its own section, or the first card of the Insights carousel at 70% ("a version where the health profile card is part of the insights"); retired for $299 member ("replace that by $299 member, yes / no"): its own section -->
+        <div class="tkRow tkGone">
           <span class="lbl">Health profile card</span>
           <select id="stProfIn" class="tkSegSel" aria-label="Where Health profile goes">
             <option value="sec" selected>Dedicated section</option>
             <option value="ins">Insights carousel</option>
+          </select>
+        </div>
+        <!-- $299 member: yes, the Health profile card the primary card, first on the Overview; no, another the primary (Next step), the Health profile after the insights ("if yes, the primary card is Health profile; if no, the primary card is another card") -->
+        <div class="tkRow">
+          <span class="lbl">$299 member</span>
+          <select id="stHpMem" class="tkSegSel" aria-label="A $299 member: the Health profile card first">
+            <option value="yes" selected>Yes</option>
+            <option value="no">No</option>
           </select>
         </div>
         <!-- the phone's sections in the order they are dragged to ("add a drag section system so I can manage the order of sections in mobile") -->
@@ -12127,7 +12135,7 @@
         <!-- the welcome's header: the picture with the title on it, or Halftone, the title over a one-bit dithered visual with a mono date tag ("try a tweak on the top header intro with this style of visual", the MRI debrief's) -->
         <!-- the Header visual is the Intro screen's Halftone now ("Halftone / List renamed Split bg / Full bg / Sphere") -->
         <!-- the screen introducing the insights: Split bg, the welcome with its picture (its list of insights after it removed: "remove this step and delete"), or Full bg, which is the welcome itself: the title word by word over the picture, then the card of what is covered ("the full bg should replace the intro, not an additional screen after that intro"); the Welcome and Header visual rows away while it is on -->
-        <div class="tkRow"><span class="lbl">Intro screen</span><select id="stArList" aria-label="The screen introducing the insights"><option value="ht">Halftone</option><option value="on" selected>Split bg</option><option value="reveal">Full bg</option><option value="sphere">Sphere</option><option value="orbit">Sphere hero</option><option value="stream">Blood stream</option></select></div>   <!-- a select ("put a select instead of a segmented tab"); Blood stream one of its options ("the bloodstream should be part of the intro screen tweak"): the Sphere hero's layout on the stream -->
+        <div class="tkRow tkPreRow"><span class="lbl">Intro screen</span><span class="tkPreCtl"><select id="stArList" aria-label="The screen introducing the insights"><option value="ht">Halftone</option><option value="on" selected>Split bg</option><option value="reveal">Full bg</option><option value="sphere">Sphere</option><option value="orbit">Sphere hero</option><option value="stream">Blood stream</option></select><button class="tkBtn tkPreBtn" id="stArListSave" type="button" title="Keep this intro screen's settings: picked again, they come back">Save</button></span></div>   <!-- its Save ("a save action for each intro screen select: save each select's preset"): Rest assured, Label badge, Marker highlight, Condense and Amount kept for the one picked --><!-- a select ("put a select instead of a segmented tab"); Blood stream one of its options ("the bloodstream should be part of the intro screen tweak"): the Sphere hero's layout on the stream -->
         <!-- the reassurance under the reveal's card (Full bg, Sphere, Halftone), shown or not ("add tweak: Rest assured mention, ON OFF") -->
         <div class="tkRow" id="stArAssRow"><span class="lbl">Rest assured</span><select id="stArAss" class="tkSegSel" aria-label="The reassurance under the intro's card"><option value="on" selected>On</option><option value="off">Off</option></select></div>
         <!-- the Sphere hero's labels: on the dust, or on a black badge, square and words, 4 round them, sharp ("a variant for the label: badge yes or no") -->
@@ -16195,6 +16203,7 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
 /* home */
 .arSheet.hpSheet .hpHome { display: flex; flex-direction: column; align-items: center; text-align: center; }
 .arSheet.hpSheet .hpHome .hpDots { width: 132px; height: 132px; }
+.arSheet.hpSheet .hpChip { display: inline-flex; align-items: center; gap: 6px; align-self: center; margin: 0 0 16px; padding: 6px 12px; border-radius: 9999px; background: var(--ar-card-bg); font-size: 13px; line-height: 18px; color: oklch(var(--ar-ink)); } .arSheet.hpSheet .hpChip svg { flex: none; }   /* the last step's news over the orb ("Profile saved. Nice work", "Booked · Thu 23 Oct") */
 .arSheet.hpSheet .hpProgL { margin-top: 14px; font-size: 13px; line-height: 16px; font-weight: 500; color: oklch(var(--ar-ink) / .56); font-variant-numeric: tabular-nums; }
 .arSheet.hpSheet .hpHome .hpQ { margin: 28px 0 0; align-items: center; }
 .arSheet.hpSheet .hpHome .hpD { max-width: 34ch; }
@@ -16289,7 +16298,7 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
 /* the Overview's card and My account's row */
 .hpOvCard { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 24px; margin: 50px 0 0; padding: 24px 28px; border-radius: 20px; background: #1b1b19; color: #f2e5e0; cursor: pointer; }
 body.light .hpOvCard { background: #fdfaf3; color: #2e1f1a; }
-.hpOvCard .hpDots { width: 88px; height: 88px; color: inherit; } .hpOvCard .hpDots circle:not(.on) { opacity: .2; }
+.hpOvCard .hpDots { width: 88px; height: 88px; color: inherit; } .hpDots.hpSph { position: static; inset: auto; }   /* the sphere's canvas in the card's flow, not the page's full-screen canvas rule */ .hpOvCard .hpDots circle:not(.on) { opacity: .2; }
 .hpOvCard .hpOvT { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 .hpOvCard .hpOvT h3 { margin: 0; font-size: 18px; line-height: 22px; font-weight: 500; letter-spacing: -.1px; }
 .hpOvCard .hpOvT p { margin: 0; font-size: 14px; line-height: 20px; color: #8b8b86; }
@@ -16405,8 +16414,8 @@ body[data-bp="xs"] #dOver .hpOvCard .hpOvBtn { grid-column: 1 / -1; width: 100%;
 
   /* ---------- the store ---------- */
   var AREAS = [
-    { k: 'wear', t: 'Connect your wearable', s: 'About 1 minute', steps: ['pick', 'allow', 'done'] },
-    { k: 'past', t: 'Find your past results', s: 'We do this for you', steps: ['intro', 'q', 'medicare', 'search'] },
+    { k: 'wear', t: 'Our promise and your details', s: 'About 3 minutes', steps: ['pick', 'allow', 'done'] },   /* the three stages in the journey driver's words ("align the copy"): the flows behind them still the earlier ones */
+    { k: 'past', t: 'Book your onboarding consult', s: 'About 1 minute', done: 'Thu 23 Oct, 10:00am', steps: ['intro', 'q', 'medicare', 'search'] },
     { k: 'you', t: 'Tell us about you', s: 'About 5 minutes', steps: ['intro', 'age', 'about', 'smoke', 'alcohol', 'medical', 'family', 'review'] }
   ];
   var AREA = {}; AREAS.forEach(function (a, i) { a.i = i; AREA[a.k] = a; });
@@ -16424,7 +16433,7 @@ body[data-bp="xs"] #dOver .hpOvCard .hpOvBtn { grid-column: 1 / -1; width: 100%;
   function summary() {
     var st = {}, n = 0; AREAS.forEach(function (a) { st[a.k] = S.a[a.k].st; if (st[a.k] === 'done') n++; });
     var any = AREAS.some(function (a) { return st[a.k] !== 'not'; });
-    return { n: n, st: st, state: n === 3 ? 'done' : any ? 'prog' : 'not', cta: n === 3 ? 'View health profile' : any ? 'Continue health profile' : 'Complete health profile' };
+    return { n: n, st: st, state: n === 3 ? 'done' : any ? 'prog' : 'not', cta: n === 3 ? 'View health profile' : any ? 'Continue' : 'Let\u2019s begin' };
   }
   var DEMO = {
     wear: { dev: ['oura'], data: ['sleep', 'heart', 'activity', 'workouts'] },
@@ -16503,24 +16512,34 @@ body[data-bp="xs"] #dOver .hpOvCard .hpOvBtn { grid-column: 1 / -1; width: 100%;
       var sm = summary(), first = !shown;
       show(function (scr) {
         var dd = dots(); dd.set(sm.n / 3, false);
+        var nm = opts.name || 'Sam', nx = AREAS.filter(function (a) { return S.a[a.k].st === 'prog'; })[0] || AREAS.filter(function (a) { return S.a[a.k].st === 'not'; })[0], bk = S.a.past.st === 'done';
+        /* the words of each moment (the journey driver's screens, "align the copy"): before any, the three steps; after one, the next; booked, the consult's; all three, done. [eyebrow, title, line, button] */
+        var CP = sm.n === 3 ? ['Health profile complete', 'You\u2019re all set, ' + nm, 'Dr Lee has what they need for Thursday. We\u2019ll let you know when your past results come in.', 'Go to overview']
+          : !sm.n ? ['Getting started', 'Three steps before your consult, ' + nm, 'About 9 minutes. By the end, Dr Lee knows you before you meet.', sm.state === 'not' ? 'Let\u2019s begin' : 'Continue']
+          : nx.k === 'past' ? [sm.n + ' of 3 done', 'Next, book your consult', 'A 1-on-1 video consult with a longevity-focused doctor. It\u2019s where your plan starts.', 'Choose a time']
+          : nx.k === 'you' && bk ? [sm.n + ' of 3 done', 'Booked. Now let\u2019s get to know you', 'Dr Lee reads this before Thursday, so your time together goes on what matters.', 'Let\u2019s begin']
+          : nx.k === 'you' ? [sm.n + ' of 3 done', 'Next, tell us about you', 'A few questions about you, your habits and your family\u2019s health. About 5 minutes.', 'Continue']
+          : [sm.n + ' of 3 done', 'Next, our promise and your details', 'A quick agreement, then the details we need to care for you in Australia. About 3 minutes.', 'Continue'];
+        var chip = sm.n && sm.n < 3 && nx.k === 'you' && bk ? 'Booked \u00b7 Thu 23 Oct, 10:00am with Dr Lee' : sm.n === 1 && S.a.wear.st === 'done' ? 'Profile saved. Nice work, ' + nm + '.' : null;   /* the last step's news over the orb, as the driver's handovers */
+        opts._cta = CP[3];
         var prev = opts._lastN; opts._lastN = sm.n;
         if (prev != null && prev !== sm.n) { dd.set(prev / 3, false); setTimeout(function () { dd.set(sm.n / 3, true); }, dir ? 420 : 60); }   // an area just done: its third lights, swept, as the page settles
         scr.appendChild(h('div', { class: 'hpHome' },
+          chip ? h('span', { class: 'hpChip', role: 'status' }, ic(14, P.check, 2.2), chip) : null,
           dd.el,
-          h('div', { class: 'hpProgL', role: 'status', text: sm.n + ' of 3 completed' }),
-          h('div', { class: 'hpQ' }, h('span', { class: 'hpEy', text: 'Getting started' }), h('h2', { class: 'hpH', text: 'Let’s get to know you, ' + (opts.name || 'Sam') }),
-            h('p', { class: 'hpD', text: 'Everything you share shapes your insights, your care plan and what Eva knows about you.' })),
+          h('div', { class: 'hpQ' }, h('span', { class: 'hpEy', role: 'status', text: CP[0] }), h('h2', { class: 'hpH', text: CP[1] }),
+            h('p', { class: 'hpD', text: CP[2] })),
           h('div', { class: 'hpAreas' }, AREAS.map(function (a, i) {
             var st = S.a[a.k].st, p = pending(a.k);
             var stx = st === 'done' ? 'Completed' : st === 'prog' ? 'In progress' : 'Not started';
             return h('button', { type: 'button', class: 'hpArea' + (st === 'done' ? ' hpDone' : st === 'prog' ? ' hpProg' : ''), 'aria-label': a.t + ', ' + stx + (p ? ', ' + p.label : ''), on: { click: function () { area(a.k, 1); } } },
               h('span', { class: 'hpNum', 'aria-hidden': 'true' }, st === 'done' ? ic(16, P.check, 2) : String(i + 1)),
-              h('span', { class: 'hpAreaT' }, h('b', { text: a.t }), h('span', { text: a.s }), p ? h('span', { class: 'hpPend' + (p.done ? ' hpOk' : ''), 'data-pend': a.k }, h('i'), p.label) : null),
+              h('span', { class: 'hpAreaT' }, h('b', { text: a.t }), h('span', { text: st === 'done' ? a.done || 'Done' : a.s })),   /* done: Done, or the consult's time; the background processes' lines not here ("align the copy") */
               h('span', { class: 'hpSt ' + (st === 'done' ? 'hpStDone' : st === 'prog' ? 'hpStProg' : 'hpStNot'), text: stx }));
           }))));
       }, first ? 0 : dir);
       var next = AREAS.filter(function (a) { return S.a[a.k].st === 'prog'; })[0] || AREAS.filter(function (a) { return S.a[a.k].st === 'not'; })[0];
-      foot2(sm.n === 3 ? 'Done' : sm.state === 'not' ? 'Let’s begin' : 'Continue', true, function () { if (next) area(next.k, 1); else if (opts.onClose) opts.onClose(); });
+      foot2(opts._cta || (sm.n === 3 ? 'Go to overview' : 'Continue'), true, function () { if (next) area(next.k, 1); else if (opts.onClose) opts.onClose(); });
     }
 
     /* an area: where it was left (its summary once it is done), or a given step */
@@ -16726,7 +16745,55 @@ body[data-bp="xs"] #dOver .hpOvCard .hpOvBtn { grid-column: 1 / -1; width: 100%;
     };
   }
 
-  window.HealthProfile = { mount: mount, dots: dots, store: { get: function () { return S; }, summary: summary, preset: preset, reset: function () { preset('none'); }, pending: pending, areas: AREAS } };
+  /* ---------- the sphere ("on the right side the sphere, the same sphere as the report; filled based on what you complete of the three steps") ----------
+     the report's particle ball, small: points on its shell and through its body, its three inks (brick-orange most, a cool grey, an off-white), each nearer brighter, turning left to right a little tilted;
+     filled from its foot up to the share done (a third a step), the line a gentle swell, the rest in the card's own ink, faint; a new share rising over 1.2 s. Still with reduced motion */
+  function sphere(opts) {
+    opts = opts || {};
+    var cv = document.createElement('canvas'); cv.className = 'hpDots hpSph' + (opts.cls ? ' ' + opts.cls : ''); cv.setAttribute('aria-hidden', 'true');
+    var x = cv.getContext('2d'), N = 1100, P = new Float32Array(N * 3), K = new Uint8Array(N), seed = 11;
+    var rnd = function () { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; };
+    for (var q = 0; q < N; q++) {
+      var t = rnd() * 6.2832, ph = Math.acos(rnd() * 2 - 1), r = q < N * .45 ? 1 : Math.cbrt(rnd()) * .96, k = rnd();
+      P[q * 3] = Math.sin(ph) * Math.cos(t) * r; P[q * 3 + 1] = Math.cos(ph) * r; P[q * 3 + 2] = Math.sin(ph) * Math.sin(t) * r; K[q] = k < .68 ? 0 : k < .88 ? 1 : 2;
+    }
+    var INK = { d: ['214,112,58', '150,160,204', '238,232,226'], l: ['196,92,40', '92,104,156', '46,40,36'] }, BASE = { d: '242,229,224', l: '46,31,26' };
+    var lv = { from: 0, to: 0, t0: 0, dur: 1 }, t0 = performance.now(), raf = 0, calm = reduced();
+    var levelAt = function (now) { var k = Math.min(1, Math.max(0, (now - lv.t0) / lv.dur)), e = 1 - Math.pow(1 - k, 3); return lv.from + (lv.to - lv.from) * e; };
+    var draw = function (now) {
+      var w = cv.clientWidth, hh = cv.clientHeight; if (!w || !hh) return false;
+      var dpr = Math.min(2, window.devicePixelRatio || 1); if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(hh * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(hh * dpr); }
+      x.setTransform(dpr, 0, 0, dpr, 0, 0); x.clearRect(0, 0, w, hh);
+      var lt = document.body.classList.contains('light'), ink = lt ? INK.l : INK.d, base = lt ? BASE.l : BASE.d, R = Math.min(w, hh) / 2 * .92, cx = w / 2, cy = hh / 2;
+      var a = calm ? .6 : (now - t0) / 48000 * 6.2832, tl = .38 + (calm ? 0 : .07 * Math.sin((now - t0) / 6000)), ct = Math.cos(tl), st = Math.sin(tl), ca = Math.cos(a), sa = Math.sin(a);
+      var L = levelAt(now), Ly = cy + R - L * 2 * R, B = [];   /* the fill line: at the foot with none done, over the top with all three */
+      for (var i = 0; i < 16; i++) B.push([]);
+      for (var q = 0; q < N; q++) {
+        var X = P[q * 3], Y = P[q * 3 + 1], Z = P[q * 3 + 2], x1 = X * ca + Z * sa, z1 = -X * sa + Z * ca, y1 = Y * ct - z1 * st, zz = Y * st + z1 * ct, sx = cx + x1 * R, sy = cy - y1 * R, dp = (zz + 1) / 2;
+        var on = L >= .999 || (L > .001 && sy > Ly + (calm ? 0 : 1.4 * Math.sin(sx * .14 + now / 650))), al = on ? .3 + .7 * dp : .07 + .2 * dp, c = on ? K[q] : 3;
+        B[c * 4 + Math.min(3, Math.floor(al * 4))].push(sx, sy, .7 + .7 * dp);
+      }
+      for (var b = 0; b < 16; b++) { var L2 = B[b]; if (!L2.length) continue; var c2 = b >> 2; x.fillStyle = 'rgba(' + (c2 < 3 ? ink[c2] : base) + ',' + (((b & 3) + .5) / 4).toFixed(3) + ')';
+        for (var j = 0; j < L2.length; j += 3) x.fillRect(L2[j] - L2[j + 2] / 2, L2[j + 1] - L2[j + 2] / 2, L2[j + 2], L2[j + 2]); }
+      return true;
+    };
+    var tick = function (now) { raf = 0; if (!cv.isConnected) return; var shown = draw(now);
+      if (calm && now - lv.t0 > lv.dur) return;   /* still: drawn once a change */
+      if (!shown) { setTimeout(function () { if (!raf) raf = requestAnimationFrame(tick); }, 500); return; }   /* hidden (another page): look again in a while */
+      raf = requestAnimationFrame(tick); };
+    var api = {
+      el: cv,
+      set: function (f, anim) {   // f: 0..1, the share done; anim: rising to it over 1.2 s
+        var now = performance.now(); f = Math.max(0, Math.min(1, f));
+        lv = anim && !calm ? { from: levelAt(now), to: f, t0: now, dur: 1200 } : { from: f, to: f, t0: now, dur: 1 };
+        if (!raf) raf = requestAnimationFrame(tick);
+      },
+      core: function () {}
+    };
+    return api;
+  }
+
+  window.HealthProfile = { mount: mount, dots: dots, sphere: sphere, store: { get: function () { return S; }, summary: summary, preset: preset, reset: function () { preset('none'); }, pending: pending, areas: AREAS } };
 })();
 </script>
 
@@ -23672,60 +23739,26 @@ hairline({
   { const o = document.createElement('option'); o.value = 'rv'; o.textContent = 'Report visuals'; versionSel.appendChild(o); }
   { const o = document.createElement('option'); o.value = 'doc'; o.textContent = 'Documentation'; versionSel.appendChild(o); }   // the components, documented: the Progress timeline first   // the report cards, a page of their own   // the halftone tool, a page of its own   // the Hairline illustrations, a page of their own beside Home
   { const o = document.createElement('option'); o.value = 'home'; o.textContent = 'Home'; versionSel.appendChild(o); }   // the mosaic of every page
-  const MODE_GROUPS = ['Concept', 'Insights', 'Overview page',
-                       'Async report', 'Video', 'Landing page'];   // Results received is in Insights now, its Results received tweak (#m24 / #m25 still open it)
-  MODE_GROUPS.forEach(g => {
-    const inGroup = MODES.map((v, i) => [v, i])
-      .filter(([v, i]) => v.group === g && !isArchived(i) && !((g === 'Overview page' || g === 'Async report' || g === 'Insights') && v.name === 'Mobile'));   // Insights' phone too: the one page, responsive   /* no Overview > Mobile in the menu ("Mobile --> kill"); the phone mode stays, the appointment's Mobile opens it. No Async report > Mobile either ("remove Mobile"): XS on the desktop is the phone; #m27 still opens it */
-    inGroup.sort((a, b) => (a[0].sort || 0) - (b[0].sort || 0));
-    if (!inGroup.length) return;
-    const og = document.createElement('optgroup');
-    og.label = ({ Concept: 'OrganAge concept' })[g] || g;   // the group's shown name; the key stays ('title OrganAge concept')
-    inGroup.forEach(([v, i]) => {
-      const o = document.createElement('option');
-      o.value = String(i);
-      o.textContent = g === 'Overview page' && v.name === 'Desktop' ? 'Overview' : g === 'Async report' && v.name === 'Desktop' ? 'Async report' : g === 'Insights' && v.name === 'Desktop' ? 'Insights' : v.name;   /* "rename Desktop --> Insights" */   /* the page's name, not the shell's ("Desktop --> Overview"; "rename Desktop by Async report") */
-      og.appendChild(o);
-    });
-    if (g === 'Insights') [[20, 'Insights'], [24, 'Results received'], [25, 'Results received']].forEach(([i, t]) => { const o = document.createElement('option'); o.value = String(i); o.textContent = t; o.hidden = true; og.appendChild(o); });   // its phone and its Results received pages: named in the select while showing, not offered in it   // its Results received pages, reached from its tweak: named in the select while showing, not offered in it
-    // Mobile (viewport): the mobile design filling the browser's viewport with
-    // no drawn phone around it, for testing on an actual phone. An entry, not
-    // a mode -- it is Mobile (m20) wearing the `fullscr` flag the /phone path
-    // sets -- so the class chain and every `version === 20` stay one thing.
-    // Picked from the bar, the bar stays (it is how you get back); opened by
-    // its hash, #m20v, the bar is gone and the design has the whole screen.
-    // (The entry itself is gone from the menu -- "remove mobile viewport as I
-    // have it on desktop": Desktop is responsive, and a narrow window IS the
-    // mobile viewport. The value still works from a hash (#m20v) and the
-    // /phone path, which is where a real phone reaches it.)
-    // the archive sits at the foot of the group it belongs to, after the
-    // designs that superseded it
-    // the service detail page is two entries of its own ("put service detail
-    // in a new group"): it is not a mode but a page over the Overview's, so
-    // each entry opens its Overview and the page over it
-    if (g === 'Overview page'){
-      versionSel.appendChild(og);
-      const sg = document.createElement('optgroup'); sg.label = 'Service detail';
-      [['svcD', 'Service detail']].forEach(   /* the page's name, as the Overview's ("rename Service detail") */   /* no Mobile: XS on the desktop view is the phone ("remove mobile because we can manage XS on desktop view") */([v, t]) => { const o = document.createElement('option'); o.value = v; o.textContent = t; sg.appendChild(o); });
-      versionSel.appendChild(sg);
-      /* no Task detail of its own: the tasks are in Service detail's picker, a group, Standalone tasks ("merge that into the dropdown of services inside the service detail desktop") */
-      const ag = document.createElement('optgroup'); ag.label = 'Appointment (OLD)';   // "add the appointment page"; then "Appointment --> Appointment (OLD)"
-      [['aptD', 'Appointment']].forEach(   /* "Desktop --> Appointment", "remove Mobile": XS on the desktop is the phone; the phone's own appointment still opens from its Overview */([v, t]) => { const o = document.createElement('option'); o.value = v; o.textContent = t; ag.appendChild(o); });
-      versionSel.appendChild(ag);
-      const tg = document.createElement('optgroup'); tg.label = 'Timeline';   // "a new page ... called Timeline"
-      const to = document.createElement('option'); to.value = 'tl'; to.textContent = 'Timeline'; tg.appendChild(to);
-      versionSel.appendChild(tg);
-      { const hg = document.createElement('optgroup'); hg.label = 'Health profile'; const ho = document.createElement('option'); ho.value = 'hp'; ho.textContent = 'Health profile'; hg.appendChild(ho); versionSel.appendChild(hg); }   // the Overview with its Health profile open (#health-profile)
-      return;
-    }
-    if (g === ARC_GROUP && ARCHIVED.length){
-      const o = document.createElement('option');
-      o.value = ARCHIVE_VAL;
-      o.textContent = 'Insights (archives)';   // ("rename this page: Insights (archives)")
-      og.appendChild(o);
-    }
-    versionSel.appendChild(og);
-  });
+  /* two groups ("group all of that by main pages; remove all the subgroups: the page's name is in its name"): Main pages, each page an entry of its own, then the OrganAge concept at the very end, the teaser video and the landing page with it
+     ("the organ age concept at the very end of this list"; "keep these two pages inside the OrganAge concept group"). Still an allow-list: a mode whose group is not read here is built, routable by its hash and missing from the menu */
+  const modesOf = g => MODES.map((v, i) => [v, i])
+    .filter(([v, i]) => v.group === g && !isArchived(i) && !((g === 'Overview page' || g === 'Async report' || g === 'Insights') && v.name === 'Mobile'))   /* no phones of their own: XS on the desktop is the phone; #m20, #m6, #m27 still open them */
+    .sort((a, b) => (a[0].sort || 0) - (b[0].sort || 0));
+  const addTo = (og, v, t, hid) => { const o = document.createElement('option'); o.value = String(v); o.textContent = t; if (hid) o.hidden = true; og.appendChild(o); };
+  { const mg = document.createElement('optgroup'); mg.label = 'Main pages';
+    modesOf('Insights').forEach(([v, i]) => addTo(mg, i, v.name === 'Desktop' ? 'Insights' : v.name));
+    [[20, 'Insights'], [24, 'Results received'], [25, 'Results received']].forEach(([i, t]) => addTo(mg, i, t, true));   // its phone and its Results received pages: named in the select while showing, not offered in it
+    if (ARCHIVED.length) addTo(mg, ARCHIVE_VAL, 'Insights (archives)');   // the archive after the design that superseded it
+    modesOf('Overview page').forEach(([v, i]) => addTo(mg, i, v.name === 'Desktop' ? 'Overview' : v.name));
+    addTo(mg, 'svcD', 'Service detail');   // a page over the Overview's, opening its Overview and the page over it
+    addTo(mg, 'aptD', 'Appointment (OLD)');
+    addTo(mg, 'tl', 'Timeline');
+    addTo(mg, 'hp', 'Health profile');   // the Overview with its Health profile open (#health-profile)
+    modesOf('Async report').forEach(([v, i]) => addTo(mg, i, v.name === 'Desktop' ? 'Async report' : v.name));
+    versionSel.appendChild(mg); }
+  { const cg = document.createElement('optgroup'); cg.label = 'OrganAge concept';
+    ['Concept', 'Video', 'Landing page'].forEach(g => modesOf(g).forEach(([v, i]) => addTo(cg, i, v.name)));
+    versionSel.appendChild(cg); }
   // the opening mode is never an archived one, but the pair is set the way
   // setMode sets it so there is one rule for it rather than two
   if (isArchived(version)){ versionSel.value = ARCHIVE_VAL; arcSel.value = String(version); }
@@ -30924,6 +30957,13 @@ hairline({
         if (store.cur && OWN[store.cur] && pre.value !== store.cur) pre.value = store.cur;
         apply(pre.value); }   // the one last picked, with what was saved in it
     }
+    /* each Intro screen its own settings ("a save action for each intro screen select; be able to save each select preset"): Save keeps Rest assured, Label badge, Marker highlight, Condense and Amount for the one picked;
+       picking it again puts them back, before the report mounts with it. Only when picked here (a V1 / V2 preset sets its own). Kept in this browser */
+    { const IK = ['stArAss', 'stArLbg', 'stArMhl', 'stArCdn', 'stArAmt'], ISTORE = 'everlab.arIntroPre', l = document.getElementById('stArList'), b = document.getElementById('stArListSave');
+      if (l && b){ let st = {}; try { st = JSON.parse(localStorage.getItem(ISTORE) || '{}') || {}; } catch (e){ st = {}; }
+        const put = () => { const v = st[l.value]; if (!v) return; IK.forEach(k => { const e = document.getElementById(k); if (!e || v[k] == null) return; e.value = v[k]; if (!e.options){ const t = document.getElementById(k + 'V'); if (t) t.textContent = v[k]; } }); };
+        document.addEventListener('change', e => { if (e.target === l) put(); }, true);   // on the way down, before the select's own listeners remount the report
+        b.addEventListener('click', () => { const v = {}; IK.forEach(k => { const e = document.getElementById(k); if (e) v[k] = e.value; }); st[l.value] = v; try { localStorage.setItem(ISTORE, JSON.stringify(st)); } catch (e){} b.textContent = 'Saved'; setTimeout(() => { b.textContent = 'Save'; }, 1200); }); } }
     ['themeSel', 'stArBar', 'stArFoot', 'stArWel', 'stArTab', 'stArCard', 'stArMb', 'stArSrcVis', 'stArPer', 'stArEv', 'stArSrc', 'stArAss', 'stArLbg', 'stArMhl', 'stArCdn', 'stArAmt', 'stArMean', 'stArList', 'stArMore', 'stArWelVis', 'stArBm', 'stArAreas'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('change', () => { if (arD) arD.remount(); if (arM) arM.remount(); }); });
   }
   {
@@ -30971,7 +31011,7 @@ hairline({
     document.addEventListener('everlab:mode', () => close(true));
     { const t = document.getElementById('themeSel'); if (t) t.addEventListener('change', () => setTimeout(paint, 30)); }
     // the Overview's card: the dotted circle (a third lit an area done), the name and the line, the status and the three areas, the button its state's ("Complete / Continue / View health profile")
-    const AR = [['wear', 'Wearable'], ['past', 'Past results'], ['you', 'About you']];
+    const AR = [['wear', 'Your details'], ['past', 'Consult'], ['you', 'About you']];   // the three stages, short ("align the copy")
     let lastN = null, ring = null;
     const card = () => { const over = document.getElementById('dOver'), plan = over && over.querySelector(':scope > .dvSecPlan'); if (!plan) return null;
       let c = over.querySelector(':scope > .hpOvCard'); if (!c){ c = document.createElement('div'); c.className = 'hpOvCard'; plan.before(c);
@@ -30979,9 +31019,9 @@ hairline({
     const ck = '<svg width="9" height="9" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3.8 8.3 2.6 2.6 5.8-6"/></svg>';
     const paintCard = () => { const c = card(); if (!c) return; const sm = store.summary();
       const stx = sm.state === 'done' ? 'Completed' : sm.state === 'prog' ? 'In progress' : 'Not started', cls = sm.state === 'done' ? 'hpStDone' : sm.state === 'prog' ? 'hpStProg' : 'hpStNot';
-      c.innerHTML = '<div class="hpOvT"><h3>Health profile</h3><p>Help us understand your health, lifestyle and family history.</p><div class="hpOvS"><span class="hpSt ' + cls + '">' + stx + '</span><span class="hpOvA">' +
+      c.innerHTML = '<div class="hpOvT"><h3>Health profile</h3><p>' + (sm.n === 3 ? 'You\u2019re all set. Dr Lee has what they need for Thursday.' : 'Three steps before your consult. About 9 minutes.') + '</p><div class="hpOvS"><span class="hpSt ' + cls + '">' + stx + '</span><span class="hpOvA">' +
         AR.map(([k, l]) => '<span class="' + (sm.st[k] === 'done' ? 'd' : '') + '"><i>' + (sm.st[k] === 'done' ? ck : '') + '</i>' + l + '</span>').join('') + '</span></div></div><button class="hpOvBtn" type="button">' + sm.cta + '</button>';
-      ring = HP.dots(); c.prepend(ring.el); ring.el.setAttribute('role', 'img'); ring.el.removeAttribute('aria-hidden'); ring.el.setAttribute('aria-label', sm.n + ' of 3 completed');
+      ring = HP.sphere ? HP.sphere() : HP.dots(); c.prepend(ring.el);   /* the report's sphere, filled a third a step done ("on the right side, the same sphere as the report") */ ring.el.setAttribute('role', 'img'); ring.el.removeAttribute('aria-hidden'); ring.el.setAttribute('aria-label', sm.n + ' of 3 completed');
       if (lastN != null && lastN !== sm.n){ ring.set(lastN / 3, false); const r = ring; setTimeout(() => r.set(sm.n / 3, true), 600); } else ring.set(sm.n / 3, false);   // a new area done: its third swept in once the sheet is down
       lastN = sm.n; };
     document.addEventListener('everlab:hp', () => { paintCard(); const t = document.getElementById('stHpSt'); if (t && !hpSetting) t.value = 'live'; });
@@ -37356,7 +37396,7 @@ hairline({
     /* the Health profile, first under Health information ("add a clearly labelled Health Profile item within My Profile"): its circle, its status, and its action, the Overview card's in short (the same profile behind both) */
     const hpRow = () => { const HPm = window.HealthProfile; if (!HPm) return ''; const sm = HPm.store.summary(), act = sm.state === 'done' ? 'View' : sm.state === 'prog' ? 'Continue' : 'Complete';
       const dot = '<svg class="hpDots" viewBox="0 0 24 24" aria-hidden="true">' + [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map(i => { const a = i / 12, on = a < sm.n / 3 - 1e-6; return '<circle cx="' + (12 + 8.5 * Math.sin(a * 6.2832)).toFixed(2) + '" cy="' + (12 - 8.5 * Math.cos(a * 6.2832)).toFixed(2) + '" r="1.5"' + (on ? ' class="on"' : '') + '/>'; }).join('') + [0, 1, 2, 3, 4, 5].map(i => { const a = (i + .5) / 6, on = a < sm.n / 3 - 1e-6; return '<circle cx="' + (12 + 4.2 * Math.sin(a * 6.2832)).toFixed(2) + '" cy="' + (12 - 4.2 * Math.cos(a * 6.2832)).toFixed(2) + '" r="1.4"' + (on ? ' class="on"' : '') + '/>'; }).join('') + '<circle cx="12" cy="12" r="1.4"' + (sm.n ? ' class="on"' : '') + '/></svg>';
-      return '<div class="acPr acPrHp"><span class="acPrI">' + dot + '</span><div><b>Health profile</b><span>' + (sm.state === 'done' ? 'Completed' : sm.state === 'prog' ? 'In progress · ' + sm.n + ' of 3 completed' : 'Not started · wearable, past results, about you') + '</span></div><button type="button" class="acEdit" data-hp="open" aria-label="' + act + ' health profile">' + act + '</button></div>'; };
+      return '<div class="acPr acPrHp"><span class="acPrI">' + dot + '</span><div><b>Health profile</b><span>' + (sm.state === 'done' ? 'Completed' : sm.state === 'prog' ? 'In progress · ' + sm.n + ' of 3 completed' : 'Not started · your details, consult, about you') + '</span></div><button type="button" class="acEdit" data-hp="open" aria-label="' + act + ' health profile">' + act + '</button></div>'; };
     const settings = () => '<div class="acPrG">' + eb('PREFERENCES', 'acEbP') + rowsOf([['bell', 'Notifications', 'Email and push'], ['gear', 'Units', 'Metric (kg, cm)'], ['user', 'Language', 'English (Australia)']]) + '</div><div class="acPrG">' + eb('SECURITY', 'acEbP') + rowsOf([['decl', 'Password', 'Last changed 3 months ago'], ['siren', 'Two-factor authentication', 'Off']]) + '</div>';
     const purchases = () => '<div class="acPrG">' + eb('YOUR PLAN', 'acEbP') + rowsOf([['decl', 'Baseline plan', 'Paid 12 Aug 2026 · $299']]) + '</div><div class="acPrG">' + eb('RECEIPTS', 'acEbP') + rowsOf([['doc', 'Baseline plan receipt', 'PDF · 12 Aug 2026']]) + '</div>';
     const TABS = [['profile', 'Profile'], ['health', 'Health profile', ATT.length], ['settings', 'Settings'], ['purchases', 'Purchases']];
@@ -37498,12 +37538,15 @@ hairline({
     const dvVis = k => { const over = document.getElementById('dOver'); if (!over || !DSEC[k]) return false; return [...over.querySelectorAll(DSEC[k])].some(el => !el.classList.contains('ovOff') && getComputedStyle(el).display !== 'none'); };   // shown on the Overview itself
     const hideOff = () => { const o = offs(); document.querySelectorAll('.ovOff').forEach(el => el.classList.remove('ovOff')); o.forEach(k => { const h = host(); if (h && SEC[k]) h.querySelectorAll(':scope > :is(' + SEC[k][1] + ')').forEach(el => el.classList.add('ovOff')); if (DSEC[k]) document.querySelectorAll('#dOver :is(' + DSEC[k] + ')').forEach(el => el.classList.add('ovOff')); }); };   // a section switched off: gone, on the phone and on the Overview
     const GR = '<svg class="gr" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><circle cx="4" cy="3" r="1"/><circle cx="8" cy="3" r="1"/><circle cx="4" cy="6" r="1"/><circle cx="8" cy="6" r="1"/><circle cx="4" cy="9" r="1"/><circle cx="8" cy="9" r="1"/></svg>';
-    const order = () => { const o = (inp.value || '').split(',').filter(k => SEC[k]); Object.keys(SEC).forEach(k => { if (!o.includes(k)) o.push(k); }); return o; };
+    const order = () => { const o = (inp.value || '').split(',').filter(k => SEC[k]); Object.keys(SEC).forEach(k => { if (!o.includes(k)) o.push(k); });
+      const mem = document.getElementById('stHpMem'); if (mem){ o.splice(o.indexOf('prof'), 1); if (mem.value === 'yes') o.unshift('prof'); else { const j = o.indexOf('ins'); o.splice(j >= 0 ? j + 1 : o.length, 0, 'prof'); } }   /* $299 member: the Health profile first, the primary card; not one: after the insights, Next step the primary */
+      return o; };
     const apply = () => { const h = host(); if (!h) return; order().forEach(k => h.querySelectorAll(':scope > :is(' + SEC[k][1] + ')').forEach(el => h.appendChild(el))); };
     const draw = () => { const h = host(), o = offs(); list.innerHTML = order().map(k => { const els = h ? [...h.querySelectorAll(':scope > :is(' + SEC[k][1] + ')')] : [], on = !o.has(k), vis = !on || (document.getElementById('dOver') ? dvVis(k) : els.some(el => el.offsetHeight > 0 || getComputedStyle(el).display !== 'none'));
       return '<li data-k="' + k + '" class="' + (on ? '' : 'sw0') + (vis ? '' : ' off') + '">' + GR + '<span class="nm">' + SEC[k][0] + '</span>' + (vis ? '' : '<span class="hid">hidden</span>') + '<button type="button" class="tgl" role="switch" aria-checked="' + on + '" aria-label="Show ' + SEC[k][0] + '"><i></i></button></li>'; }).join(''); };   /* each a switch: on, shown; off, gone ("put a toggle on off for all items") */
     if (inp && list){
       inp.addEventListener('change', () => { apply(); applyD(); hideOff(); draw(); arrangeG(); secHead(); if (window._bkPlace) window._bkPlace(); });
+      { const mem = document.getElementById('stHpMem'); if (mem) mem.addEventListener('change', () => inp.dispatchEvent(new Event('change'))); }   // $299 member: the order again, the Health profile where it now belongs
       if (offI) offI.addEventListener('change', () => { hideOff(); draw(); secHead(); if (window._bkPlace) window._bkPlace(); });
       document.addEventListener('click', e => { const sw = e.target.closest('.tkSecH .tgl'); if (!sw || !offI) return; e.preventDefault(); const k = sw.closest('.tkGroup').dataset.sec, o = offs(); if (o.has(k)) o.delete(k); else o.add(k); offI.value = [...o].join(','); offI.dispatchEvent(new Event('change', { bubbles: true })); });   // a card's switch: its section on or off
       let gd = null;
@@ -37544,8 +37587,8 @@ hairline({
       el.dispatchEvent(new Event(el.type === 'range' ? 'input' : 'change', { bubbles: true }));
       const g = el.nextElementSibling; if (g && g.classList.contains('tgl')) g.setAttribute('aria-checked', String(el.value === 'on')); };
     let saved = null; try { saved = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e){}
-    const OLDORD = 'svc,hub,hero,row2,ins,prof,plan';   // a save holding the old default (Services first), its order untouched: the new default, Next step first
-    if (saved && saved.stOvOrder === OLDORD) saved.stOvOrder = DEF.stOvOrder;
+    const OLDORD = ['svc,hub,hero,row2,ins,prof,plan'];   // a save holding the old default (Services first), its order untouched: the new default, Next step first
+    if (saved && OLDORD.includes(saved.stOvOrder)) saved.stOvOrder = DEF.stOvOrder;
     if (saved) Object.keys(DEF).forEach(id => put(id, saved[id]));
     /* every control in the two tweak panels, saved and put back together ("all tweaks need a Save"): their values as the page loaded are the defaults Reset goes back to */
     const KEY2 = 'everlab:tkAll', ctl = () => [...document.querySelectorAll('.topbar .tkPanel :is(select, input)[id]')].filter(el => el.id !== 'versionSel' && !el.classList.contains('inkHex'));
@@ -37553,7 +37596,7 @@ hairline({
     const DEF2 = {}; ctl().forEach(el => { DEF2[el.id] = valOf(el); }); Object.assign(DEF2, DEF);
     const put2 = (id, v) => { const el = document.getElementById(id); if (!el || v == null) return; if (el.type === 'checkbox'){ if (String(el.checked) === v) return; el.checked = v === 'true'; el.dispatchEvent(new Event('change', { bubbles: true })); return; } put(id, v); };
     let saved2 = null; try { saved2 = JSON.parse(localStorage.getItem(KEY2) || 'null'); } catch (e){}
-    if (saved2 && saved2.stOvOrder === OLDORD) saved2.stOvOrder = DEF.stOvOrder;
+    if (saved2 && OLDORD.includes(saved2.stOvOrder)) saved2.stOvOrder = DEF.stOvOrder;
     if (saved2) requestAnimationFrame(() => Object.keys(saved2).forEach(id => put2(id, saved2[id])));
     document.querySelectorAll('.stTkSave').forEach(b => b.addEventListener('click', () => {
       const v = {}; Object.keys(DEF).forEach(id => { const el = document.getElementById(id); if (el) v[id] = el.value; });
