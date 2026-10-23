@@ -15270,7 +15270,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         ent = { t0: now, dur: 2000 }; };   // (its fade drawn into its points' alpha, the first 1.1 s)
       /* Marker highlight ("a boolean marker highlight: on, only the particles around the active marker appear; all the others at 50%"): full within 80px of the active marker's point, 50% past 170, eased between;
          a new focus crossfades from the last over .6 s, so the light moves with the marker coming in */
-      var FOC = opts.mhl === true, foc = [null, null, 0], hlB = function (x0, y0, p) { var dx = x0 - p[0], dy = y0 - p[1], d = Math.sqrt(dx * dx + dy * dy); return d < 80 ? 1 : d > 170 ? .2 : 1 - .8 * (d - 80) / 90; };   /* the rest at 20% ("reduce the opacity to 20% for the inactive area"; was 50%) */
+      var FOC = opts.mhl === true, foc = [null, null, 0], hlB = function (x0, y0, p) { var dx = x0 - p[0], dy = y0 - p[1], d = Math.sqrt(dx * dx + dy * dy); return d < 80 ? 1 : d > 170 ? .4 : 1 - .6 * (d - 80) / 90; };   /* the rest at 40% ("inactive areas opacity 40%"; was 20%, before that 50%) */
       var raf = 0, t0 = 0, lastDraw = 0, anchor = null, anc = null, lastF = null, trk = [], pimg = null, fly = null, dark = function () { return root.classList.contains('arDark'); };
       /* the flow's clock S: real seconds, plus the surges ("when a new orange marker becomes active the whole flow briefly accelerates towards it ... smoothly speeds up, reveals it, gradually slows back down"):
          each a run E flow-seconds ahead over D ms, eased so its speed rises from the cruise and settles back to it with no jolt (smootherstep, its time front-loaded: quick to gather, long to settle); the camera and the flow both run on it, so it reads as travelling forward */
@@ -15370,7 +15370,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         ent = { t0: now, dur: 2000 }; };   // (its fade drawn into its points' alpha, the first 1.1 s)
       /* Marker highlight ("a boolean marker highlight: on, only the particles around the active marker appear; all the others at 50%"): full within 80px of the active marker's point, 50% past 170, eased between;
          a new focus crossfades from the last over .6 s, so the light moves with the marker coming in */
-      var FOC = opts.mhl === true, foc = [null, null, 0], hlB = function (x0, y0, p) { var dx = x0 - p[0], dy = y0 - p[1], d = Math.sqrt(dx * dx + dy * dy); return d < 80 ? 1 : d > 170 ? .2 : 1 - .8 * (d - 80) / 90; };   /* the rest at 20% ("reduce the opacity to 20% for the inactive area"; was 50%) */
+      var FOC = opts.mhl === true, foc = [null, null, 0], hlB = function (x0, y0, p) { var dx = x0 - p[0], dy = y0 - p[1], d = Math.sqrt(dx * dx + dy * dy); return d < 80 ? 1 : d > 170 ? .4 : 1 - .6 * (d - 80) / 90; };   /* the rest at 40% ("inactive areas opacity 40%"; was 20%, before that 50%) */
       var raf = 0, t0 = 0, dark = function () { return root.classList.contains('arDark'); };
       var anc = null, fly = null;   /* anc: the hero's ball as it last stood under its title; fly: leaving with its page (d 1) or coming back to it (d -1): the ball moves with the page's content, its distance, delay and pace, its particles still moving, as it fades ("if we click on the CTA, everything moves up, and the visual goes up as well and scales") */
       var draw = function (now) {
@@ -15960,6 +15960,10 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         later(next, RM ? 0 : labs.length * 110 + 400);
       };
       var refill = function () { bag = labs.map(function (l, i) { return i; }).filter(function (i) { return i !== act; }); for (var i = bag.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = bag[i]; bag[i] = bag[j]; bag[j] = t; } };   // a shuffled bag: every one before any again, never the same twice running
+      /* the highlight onto a marker once its words are half written ("the highlight should occur only when the active marker is written by 50%"): its point asked for (want) as it is chosen, given to the sphere when the typing passes half */
+      var fW = null, fHalf = false;
+      var giveF = function () { if (fW != null && sphL && sphL.focus) sphL.focus(fW); fW = null; };
+      var want = function (key) { fW = key; fHalf = false; if (RM) giveF(); };
       var openLab = function (L, txt, wait, done) {   // a label opened: its words measured as they will end, its badge from round its square, then written out after wait; done(hold) once written
         L.tx.textContent = '';
         L.tx.style.maxWidth = ''; L.tx.appendChild(document.createTextNode(txt)); L.tx.appendChild(h('span', { class: 'arRvCur', 'aria-hidden': 'true' }));   /* its lines measured as they will end, cursor and all, and the box held to the longest: the badge hugs its words, and the words break as they will from the first letter */
@@ -15967,9 +15971,9 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         L.gd.style.transition = 'none'; fitGd(L); void L.box.offsetWidth; L.gd.style.transition = '';   // its badge from round its square
         L.box.classList.remove('arOrbDot'); L.el.classList.add('arOrbTop');   // over every other square ("active always above everything")
         later(function () {
-          if (RM) { L.tx.textContent = txt; fitGd(L); done(4200); return; }
+          if (RM) { L.tx.textContent = txt; fitGd(L); fHalf = true; giveF(); done(4200); return; }
           var cr = h('span', { class: 'arRvCur', 'aria-hidden': 'true' }), tn = document.createTextNode(''), k = 0; L.tx.appendChild(tn); L.tx.appendChild(cr);
-          var tick = function () { tn.nodeValue = txt.slice(0, ++k); if (k >= txt.length && cr.parentNode) cr.parentNode.removeChild(cr); fitGd(L); if (k < txt.length) later(tick, TY); else done(Math.max(2600, txt.length * 70)); };   // held long enough to read; the cursor gone once the words are all written ("remove blinking square once the label is fully written")
+          var tick = function () { tn.nodeValue = txt.slice(0, ++k); if (!fHalf && k >= Math.ceil(txt.length / 2)) { fHalf = true; giveF(); } if (k >= txt.length && cr.parentNode) cr.parentNode.removeChild(cr); fitGd(L); if (k < txt.length) later(tick, TY); else done(Math.max(2600, txt.length * 70)); };   // held long enough to read; the cursor gone once the words are all written ("remove blinking square once the label is fully written")
           tick();
         }, RM ? 0 : wait);
       };
@@ -15992,7 +15996,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         else { var t1 = Math.round(SD * .72), t2 = t1 + 200 + 26 * TY + 2600;   // as it opens, and still once the longest words are written and read
           for (var pass = 0; pass < 2 && !cand.length; pass++) for (E = 3; E <= 10 && !cand.length; E += .5) sl.forEach(function (L, i) { if (i !== sAct && (pass || !ins(sphL.projIn(i, 0))) && ins(sphL.projIn(i, t1, E, SD)) && ins(sphL.projIn(i, t2, E, SD))) cand.push(i); }); }   // first one now out of view, else any
         if (!cand.length) { later(sNext, 400); return; }   // none in reach yet: in a moment
-        var P0 = sAct >= 0 ? sl[sAct] : null; sPrev = sAct; var ai = sAct = cand[Math.floor(Math.random() * cand.length)], txt = items[nextItem()]; if (sphL.focus) sphL.focus(ai);
+        var P0 = sAct >= 0 ? sl[sAct] : null; sPrev = sAct; var ai = sAct = cand[Math.floor(Math.random() * cand.length)], txt = items[nextItem()]; want(ai);
         if (RM || !sphL.surge) { if (P0) closeLab(P0); openLab(sl[ai], txt, 0, function (hold) { later(sNext, hold); }); return; }
         sphL.surge(E - .5, SD);
         if (P0) later(function () { closeLab(P0); }, 500);   // the last label folds .5 s into the surge
@@ -16012,8 +16016,8 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         var ni = -1, pk = near(bag.slice()); if (pk) { ni = pk[0]; d = pk[1]; bag.splice(bag.indexOf(ni), 1); }
         if (ni < 0) { pk = near(labs.map(function (x, i) { return i; })); if (pk) { ni = pk[0]; d = pk[1]; } }   // any but the last
         if (ni < 0) { for (var j = 0; j < bag.length; j++) if (bag[j] !== act) { ni = bag.splice(j, 1)[0]; break; } d = RM ? 0 : TURN;   // none comes round there: the next one moved to a clump's point that will
-          var pq = sphL.pickIn(d, land(d), land(d) + readMs(ni), in1); if (pq >= 0) { var LM = labs[ni], nM = ni; LM.el.style.opacity = '0'; later(function () { pin(LM, nM, { k: pq }); if (sphL.focus && act === nM) sphL.focus(pq); }, 260); } }
-        var P0 = act >= 0 ? labs[act] : null; act = ni; var L = labs[act], txt = items[act]; if (sphL.focus) sphL.focus(L.k);   // the highlight onto the one coming in
+          var pq = sphL.pickIn(d, land(d), land(d) + readMs(ni), in1); if (pq >= 0) { var LM = labs[ni], nM = ni; LM.el.style.opacity = '0'; later(function () { pin(LM, nM, { k: pq }); if (act === nM) want(pq); }, 260); } }
+        var P0 = act >= 0 ? labs[act] : null; act = ni; var L = labs[act], txt = items[act]; want(L.k);   // the highlight onto the one coming in, once it is half written
         var tdur = TDUR * Math.min(1.6, Math.max(1, d / (40 * Math.PI / 180))); if (!RM && d) sphL.turn(d, tdur);   // a longer way round, a little longer
         if (P0) later(function () { closeLab(P0); }, RM || !d ? 0 : 500);   // the last label folds .5 s into the turn, as it starts to go ("make it disappear .5 s after it starts to go away")
         later(function () { openLab(L, txt, 200, function (hold) { later(next, hold); }); }, RM || !d ? 0 : Math.round(tdur * .9));   /* the last label rides the turn whole, then fades as the new one opens where it has landed, once the turn has all but stopped ("keep the inactive badge visible during the rotation, then it disappears") */
@@ -16223,7 +16227,11 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
 @keyframes hpBlink { 0% { opacity: 0; } 8% { opacity: 1; } 16% { opacity: .2; } 24% { opacity: 1; } 70% { opacity: 1; } 100% { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .hpDots circle { transition: none; } .hpDots .hpMark.on { animation: none; opacity: 1; } }
 /* home */
-.arSheet.hpSheet .hpHome { display: flex; flex-direction: column; align-items: center; text-align: center; }
+.arSheet.hpSheet .hpHome { position: relative; isolation: isolate; display: flex; flex-direction: column; align-items: center; text-align: center; }
+.arSheet.hpSheet .hpHome::before { content: ""; position: absolute; left: 50%; top: 66px; z-index: -1; width: 560px; height: 560px; transform: translate(-50%, -50%); pointer-events: none;   /* the card's halo on the intro, centred on its sphere at the top ("halo on top centered"); the same soft orange at the card's (halved) strength, breathing with it */
+  background: radial-gradient(closest-side, rgb(255 122 26 / .1) 0%, rgb(255 122 26 / .085) 14%, rgb(255 122 26 / .06) 28%, rgb(255 122 26 / .04) 42%, rgb(255 122 26 / .0225) 56%, rgb(255 122 26 / .011) 69%, rgb(255 122 26 / .004) 81%, rgb(255 122 26 / 0) 100%);
+  opacity: .7; animation: hpHalo 4s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .arSheet.hpSheet .hpHome::before { animation: none; } }
 .arSheet.hpSheet .hpHome .hpDots { width: 132px; height: 132px; }
 .arSheet.hpSheet .hpProgL { margin-top: 14px; font-size: 13px; line-height: 16px; font-weight: 500; color: oklch(var(--ar-ink) / .56); font-variant-numeric: tabular-nums; }
 .arSheet.hpSheet .hpHome .hpQ { margin: 28px 0 0; align-items: center; }
@@ -16413,7 +16421,9 @@ html.tkFlMove :is(body[data-bp] .dash, body[data-bp] .dash .side, body[data-bp] 
 .tkFlPlus { position: fixed; z-index: 74; display: none; align-items: center; justify-content: center; width: 36px; height: 36px; padding: 0; border: 1px solid #2a2a2e; border-radius: 50%; background: #131316; color: #e4e4e7; cursor: pointer; box-shadow: 0 6px 18px rgba(0, 0, 0, .35); transition: background .15s ease, transform .2s ease; }   /* a section's tweaks, beside the screen */
 .tkFlPlus.vis { display: flex; } .tkFlPlus:hover { background: #1d1d21; } .tkFlPlus.on { background: #fafafa; color: #111; border-color: #fafafa; } .tkFlPlus.on svg { transform: rotate(45deg); } .tkFlPlus svg { transition: transform .2s ease; } .tkFlPlus:focus-visible { outline: 2px solid #4b7bec; outline-offset: 2px; }
 .topbar .tkPanel.tkFlPanel { position: fixed; z-index: 76; width: 380px; max-height: min(70vh, 560px); box-shadow: 0 18px 50px rgba(0, 0, 0, .5); } .topbar .tkPanel.tkFlPanel[hidden] { display: none; }   /* the open section's group, borrowed from the Tweaks list */
-.hpSim.lt .hpSimB { background: rgba(0, 0, 0, .07); color: #111; } .hpSim.lt .hpSimB:hover { background: rgba(0, 0, 0, .12); } .hpSim.lt .hpSimL { color: rgba(0, 0, 0, .56); }
+.hpSim.lt .hpSimB { background: rgba(0, 0, 0, .07); color: #111; }
+.topbar .tkStep { display: inline-flex; align-items: center; gap: 6px; min-width: 0; }   /* the State row: previous, the list, next */
+.topbar .tkStepB { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; padding: 0; border: 0; border-radius: 50%; background: rgba(255, 255, 255, .08); color: #e4e4e7; cursor: pointer; } .topbar .tkStepB:hover:not(:disabled) { background: rgba(255, 255, 255, .14); } .topbar .tkStepB:disabled { opacity: .35; cursor: default; } .topbar .tkStepB:focus-visible { outline: 2px solid #4b7bec; outline-offset: 2px; } .hpSim.lt .hpSimB:hover { background: rgba(0, 0, 0, .12); } .hpSim.lt .hpSimL { color: rgba(0, 0, 0, .56); }
 .hpOvCard { position: relative; display: flex; flex-direction: column; min-height: 218px; margin: 34px 0 0; padding: 20px; border-radius: 22px; background: rgba(255, 255, 255, .06); color: #ececec; cursor: pointer; }   /* the insight cards' ground, #fff 6% (light: the paper, as theirs) ("the same background as the insights cards") */   /* the Next step card's layout, its picture gone, the sphere at its top right ("keep the same layout as Next step; remove the image; sphere top right; Health profile instead of Next step") */
 body.light .hpOvCard { background: #fdfaf3; color: #2e1f1a; }
 .hpOvCard:not(.hpOvPlan) { isolation: isolate; background: rgba(255, 255, 255, .04); transition: background .16s ease; }
@@ -31365,26 +31375,18 @@ hairline({
     // the demo states (Tweaks -> Health profile): not started, one or two of three, completed; Saved is whatever was last done here
     let hpSetting = false;
     { const t = document.getElementById('stHpSt'); if (t) t.addEventListener('change', () => { if (t.value === 'live') return; const af = t.value === 'after', pl = t.value === 'plan'; hpSetting = true; store.preset(af || pl ? 'all' : t.value); hpSetting = false; setGone(af); setPlan(pl); t.value = stepOf(); if (inst && wrap.classList.contains('on')) open(); }); }
-    /* the demo's arrows ("a floating arrow next / previous so I can simulate the completion of every step; outside the viewport, next to the Overview's card as well"): beside the frame, at the card on the Overview or at the sphere in the sheet,
-       a step on or back; the sphere fills with it (particles flowing in going on), the sheet back on its intro to show it */
-    { const KS = SK, LB = ['Step 1', 'Step 1.5\nDropped off', 'Step 2', 'Step 2.5\nDropped off', 'Step 3', 'Step 3.5\nDropped off', 'Done', 'Program', 'Dexa next'];
-      const sim = document.createElement('div'); sim.className = 'hpSim'; sim.setAttribute('role', 'group'); sim.setAttribute('aria-label', 'Simulate the Health profile');
-      const arrow = (d, lab) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'hpSimB'; b.setAttribute('aria-label', lab); b.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + (d > 0 ? 'm6 3 5 5-5 5' : 'M10 3 5 8l5 5') + '"/></svg>'; return b; };
-      const nx = arrow(1, 'Next step'), pv = arrow(-1, 'Previous step'), lb = document.createElement('span'); lb.className = 'hpSimL'; lb.setAttribute('aria-live', 'polite');
-      sim.append(nx, lb, pv); document.body.appendChild(sim);
+    /* the demo's steps, in the Health profile's tweak ("steps --> states inside the card tweak"; the floating arrows beside the screen retired): the State row a stepper, previous and next either side of its list, a step on or back through every state;
+       the sphere fills with it (particles flowing in going on), the sheet, if up, back on its intro to show it */
+    { const KS = SK;
+      const t = document.getElementById('stHpSt'), row = t && t.closest('.tkRow');
+      const arrow = (d, lab) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'tkStepB'; b.setAttribute('aria-label', lab); b.innerHTML = '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + (d > 0 ? 'm6 3 5 5-5 5' : 'M10 3 5 8l5 5') + '"/></svg>'; return b; };
+      const pv = arrow(-1, 'Previous state'), nx = arrow(1, 'Next state');
+      if (t && row){ const box = document.createElement('span'); box.className = 'tkStep'; t.before(box); box.append(pv, t, nx); }
       const at = stateIx;
       const go = d => { const n = at(), to = Math.max(0, Math.min(8, n + d)); if (to === n) return; hpSetting = true; store.preset(to >= 6 ? 'all' : KS[to]); hpSetting = false; setGone(to === 8); setPlan(to === 7); const t = document.getElementById('stHpSt'); if (t) t.value = KS[to]; if (inst && wrap.classList.contains('on')) inst.home(); tick(); };
       nx.addEventListener('click', () => go(1)); pv.addEventListener('click', () => go(-1));
-      const tick = () => { const n = store.summary().n, sheet = wrap && wrap.classList.contains('hpOpen') && inst && !inst.welcome, fe = document.getElementById('bpFrame'), fr = fe && getComputedStyle(fe).display !== 'none' ? fe.getBoundingClientRect() : null;
-        const card = document.querySelector(gone ? '#dOver .ovhero' : '#dOver .hpOvCard'), an = sheet ? inst.el.querySelector('.hpScr:last-child canvas.hpSph') || inst.el : card && card.offsetParent && !card.classList.contains('ovOff') ? card : null;
-        const r = an && an.getBoundingClientRect(), right = sheet && !fr ? inst.el.getBoundingClientRect().right : fr ? fr.right : r ? r.right : 0, room = innerWidth - (document.documentElement.classList.contains('tkDocked') ? 380 : 0);
-        const top = !sheet && r && r.height ? document.elementFromPoint(Math.min(innerWidth - 1, Math.max(0, r.left + r.width / 2)), Math.min(innerHeight - 1, Math.max(0, r.top + Math.min(r.height / 2, 40)))) : null;   /* the card itself in view, not under another page (the Async report over the Overview: "why do I have this on Async? remove that") */
-        const show = !!(r && r.height && r.bottom > 60 && r.top < innerHeight - 60 && right + 24 + 44 < room && (sheet || (top && card.contains(top))));
-        sim.classList.toggle('on', show); if (!show) return;
-        sim.classList.toggle('lt', document.body.classList.contains('light') && !sheet || sheet && !inst.el.classList.contains('arDark'));
-        sim.style.left = Math.round(right + 28) + 'px'; sim.style.top = Math.round(Math.max(r.top + r.height / 2 - 66, sheet ? -1e4 : r.top + 52)) + 'px';   // on the Overview, clear of the section's + at the card's top
-        const k = at(); lb.textContent = LB[k]; nx.disabled = k >= 8; pv.disabled = k <= 0; };
-      setInterval(tick, 250); addEventListener('resize', tick); }
+      const tick = () => { const k = at(); nx.disabled = k >= 8; pv.disabled = k <= 0; };
+      if (t) t.addEventListener('change', () => setTimeout(tick, 0)); document.addEventListener('everlab:hp', tick); setInterval(tick, 400); tick(); }
     paintCard();
     document.addEventListener('everlab:mode', () => setTimeout(paintCard, 60));
     { const b = document.getElementById('stHpOpen'); if (b) b.addEventListener('click', () => { if (typeof version !== 'undefined' && version !== 9){ setMode(9); resize(); } open(); }); }   // Tweaks -> Health profile -> Open
@@ -31425,7 +31427,8 @@ hairline({
       const edge = fr ? fr.right : (orr ? orr.right : innerWidth), x = Math.min(edge + 32, room - 48);   // 32 off the screen ("detach the plus from the viewport by 32px")
       const spots = [];
       groups().forEach(g => { const k = g.dataset.sec; const b = plus[k] || (plus[k] = btn(k)); b.setAttribute('aria-label', 'Tweaks: ' + nameOf(g));
-        let el = null; if (live) el = [...over.querySelectorAll(SECS[k])].find(e => !e.classList.contains('ovOff') && e.getClientRects().length && e.getBoundingClientRect().height > 0);
+        let el = null; if (live) el = [...over.querySelectorAll(k === 'prof' && window._hpGone ? '.ovhero' : SECS[k])]   /* Dexa next: the profile's card gone, its + at the card in its place, to step back */
+          .find(e => !e.classList.contains('ovOff') && e.getClientRects().length && e.getBoundingClientRect().height > 0);
         let ok = !!el, y = 0; if (el){ const r = el.getBoundingClientRect(); y = Math.max(top, Math.min(bot, r.top)); ok = r.bottom > top + 16 && r.top < bot + 28;
           if (ok){ const hit = document.elementFromPoint(Math.min(innerWidth - 1, Math.max(0, r.left + 12)), Math.min(innerHeight - 1, Math.max(0, Math.max(r.top, top) + 12))); ok = !!(hit && over.contains(hit)); } }   // the section itself in view, not under another page
         if (ok) spots.push({ k, b, y }); else { b.classList.remove('vis'); if (openK === k) shut(); } });

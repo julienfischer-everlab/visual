@@ -15400,3 +15400,12 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Only with a forced breakpoint (a framed screen); in Auto there's nothing to move.
 - Async report, Tweaks → General → Member: Persona #1 now names its member too, **Annette Harb**, 521b2f83-61b8-4988-94d7-7ded1e211074. Like Persona #2, as a reference only, not in the report.
 - Overview card halo at half its strength ("less prominent by 50%"): each stop of the orange at half its alpha; the breathing unchanged.
+
+## Intro halo, steps in the card's tweak, marker highlight timing
+
+- **The halo on the profile's intro**, centred at the top on its sphere ("halo on top centered"). It's the card's soft orange at the card's halved strength, 560 across, breathing with it, under the content.
+- **Steps moved into the Health profile's tweak** ("steps --> states inside the card tweak"). The floating arrows beside the screen are gone. The State row is now a stepper: previous and next either side of its list, stepping through all nine states (dimmed at the ends).
+  - In Dexa next, the profile's "+" anchors to the DEXA card in its place, so you can step back from there.
+- **Async report, Marker highlight**:
+  - The highlight moves onto a marker only once its words are half written ("the highlight should occur only when the active marker is written by 50%"). The point is asked for as the marker is chosen and given to the sphere as the typing passes half; until then the last one stays lit. Immediate with reduced motion.
+  - The areas away from it are now at 40% ("inactive areas opacity 40%"; was 20%), easing from full within 80px to 40% by 170px.
