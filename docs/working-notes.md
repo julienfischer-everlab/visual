@@ -15456,3 +15456,12 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - M 992 and L 1440: unframed, the desk layout with the rail.
   - Auto: the window (a column up to 1040 on a wide one).
   - It starts on XS where the phone fits (a phone itself starts on Auto), and the last pick is remembered. The Demo button sits 28 right of the device when there's room, else the pill under the sheet's button.
+
+## Health profile welcome: dot to sphere, written title, hugging CTA
+
+- The first-time welcome now opens on a single dot in the middle of the sheet. It is drawn in at 0.15 s, breathes, and at 0.65 s bursts into the sphere (1.1 s: each point flung out a little after the one before, slightly past its place and back, a faint ring going out ahead). The feeding motes join once the ball has formed. `sphere({ burst: true })` holds the ball until `burst(at, lead)` is called; every other sphere is unchanged.
+- The title is written the way the gift page (Unwrap gift-FINAL) writes its message, with its exact pacing: letters from 1.82 s, the last beginning by 4.76 s, each easing up and sharpening out of a 7px blur over 1.64 s on `cubic-bezier(.45,0,.2,1)`, orange while out of focus (`#D98B4A` light, `#F5842E` dark, fading over 70% of the time). Across the last line the letters get quicker and cooler, the last word 1.15 s at 70%. Each line is a row opening from nothing over 1.5 s, from 0.9 s before its first letter, so the block grows from the middle.
+- One title on three lines, no subtitle: "Welcome to Everlab. / This is the first step / of your journey." The earlier swap from the first words to the second, and the line under them, are gone.
+- As the title writes under the sphere, it pushes the sphere up (1.5 to 4.4 s). The two rise together until the title reaches its place, then the sphere carries on until its centre sits on the sheet's top edge, its upper half past it.
+- The CTA sits in the content under the title, hugging its words, not in a footer. Its row is there from the start; it fades in rising 18px over 0.9 s, half a second after the last letter begins (5.26 s), as the gift page's button does.
+- Desk modal: at least 460 tall, so the sphere can sit alone in its middle before the title arrives. Reduced motion: the final state at once.
