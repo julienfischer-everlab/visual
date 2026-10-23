@@ -16528,7 +16528,7 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 38px; } body[data-bp="xs"] #dO
     var bars = function (n, k) {   // the area's bars, the async report's: k of n lit
       if (stepsEl.childElementCount - 1 !== n) { stepsEl.textContent = ''; fill = h('div', { class: 'arStepsFill', 'aria-hidden': 'true' }); for (var i = 0; i < n; i++) { stepsEl.appendChild(h('div', { class: 'arStepsBar arStepsBase' })); fill.appendChild(h('div', { class: 'arStepsBar' })); } stepsEl.appendChild(fill); }
       stepsEl.setAttribute('aria-valuemax', String(n)); stepsEl.setAttribute('aria-valuenow', String(k)); stepsEl.setAttribute('aria-valuetext', 'Step ' + k + ' of ' + n);
-      var px = k * 4 + (k < n - 1 ? 2 : 0); fill.style.clipPath = 'inset(0 calc(100% - (' + k + ' * ((100% - ' + ((n - 1) * 4) + 'px) / ' + n + ') + ' + px + 'px)) 0 0)';
+      var px = Math.max(0, k - 1) * 4;   /* the current step the last bar lit, whole; no start of the next ("remove the small field on the third step") */ fill.style.clipPath = 'inset(0 calc(100% - (' + k + ' * ((100% - ' + ((n - 1) * 4) + 'px) / ' + n + ') + ' + px + 'px)) 0 0)';
     };
     var foot2 = function (label, ok, fn, sl, sfn) { cta.firstChild.textContent = label; cta.disabled = !ok; onCta = fn; sec.hidden = !sl; sec.textContent = sl || ''; onSec = sfn || null; };
     // a page in: pushed from the right going on, from the left coming back (the report's push: 440ms, the old a third aside and dimmed)
@@ -16819,6 +16819,17 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 38px; } body[data-bp="xs"] #dO
       }
     };
 
+    /* the demo: a tap in a form fills it ("when I click whatever field, simulate all the fields completed so I can continue"): its empty answers from the demo member's, the page drawn again with them; once filled, the fields edit as usual */
+    var FILL = { 'wear.promise': ['tc', 'find'], 'wear.details': ['first', 'last', 'sex', 'dob', 'state'], 'wear.medicare': ['mc', 'mcn', 'irn', 'exp', 'addr', 'ecn', 'ecr', 'ecp'], 'wear.health': ['med', 'fam'], 'past.time': ['day', 'time', 'tz'], 'you.about': ['country', 'goals', 'occ'] };
+    var empty = function (v) { return v == null || v === '' || v === false && false || (Array.isArray(v) && !v.length); };
+    root.addEventListener('pointerdown', function (e) {
+      if (!A || !e.target.closest('.hpScr :is(.hpIn, .hpSel, .hpOpt, .hpChk, .hpDay, .hpSlot)')) return;
+      var id = A + '.' + stepsOf(A)[I], keys = FILL[id], ans = S.a[A].ans, src = DEMO[A]; if (!keys) return;
+      var miss = keys.filter(function (k) { return k === 'tc' ? !ans.tc : empty(ans[k]); }); if (!miss.length) return;
+      miss.forEach(function (k) { ans[k] = JSON.parse(JSON.stringify(src[k])); });
+      if (id === 'wear.details' && opts.name) ans.first = opts.name;
+      e.preventDefault(); save(true); step(0);
+    }, true);
     // the home's background lines, kept current while it shows
     var pt = setInterval(function () { if (!alive) return; if (A) return; root.querySelectorAll('[data-pend]').forEach(function (el) { var p = pending(el.dataset.pend); if (!p) return; el.classList.toggle('hpOk', p.done); el.lastChild.textContent = p.label; }); }, 3000);
     home(0);
