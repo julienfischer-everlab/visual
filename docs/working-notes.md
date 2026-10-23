@@ -15399,3 +15399,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - It slides over .45s (frame, page, report wrap, dim) and slides back on close. Swapping between panels keeps it where it is.
   - Only with a forced breakpoint (a framed screen); in Auto there's nothing to move.
 - Async report, Tweaks → General → Member: Persona #1 now names its member too, **Annette Harb**, 521b2f83-61b8-4988-94d7-7ded1e211074. Like Persona #2, as a reference only, not in the report.
+- Overview card halo at half its strength ("less prominent by 50%"): each stop of the orange at half its alpha; the breathing unchanged.
