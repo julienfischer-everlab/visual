@@ -15409,3 +15409,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Async report, Marker highlight**:
   - The highlight moves onto a marker only once its words are half written ("the highlight should occur only when the active marker is written by 50%"). The point is asked for as the marker is chosen and given to the sphere as the typing passes half; until then the last one stays lit. Immediate with reduced motion.
   - The areas away from it are now at 40% ("inactive areas opacity 40%"; was 20%), easing from full within 80px to 40% by 170px.
+- In a section's **floating panel**, no switch to hide the section and no handle to reorder ("remove the option to hide the entire section when it's floating; also no option to reorder"). Dragging its header does nothing there. Both stay in the main Tweaks list.
+- Fixed: a `//` comment put mid-line in a one-line handler had commented out the rest of it and broken the build (now `/* */`).

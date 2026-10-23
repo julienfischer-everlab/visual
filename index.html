@@ -127,6 +127,7 @@
   .topbar .tkGroup .tkRow{padding:5px 10px;}
   .topbar .tkGroup .tkSub{padding:7px 10px 3px;font-size:9.5px;font-weight:400;letter-spacing:.08em;color:#8b8b90;}
   .topbar .tkGroup > .tkSub.tkSecH{display:flex;align-items:center;gap:8px;padding:8px 10px 4px;cursor:grab;user-select:none;-webkit-user-select:none;touch-action:none;} .tkSecH .gr{flex:none;width:12px;height:12px;color:#8b8b86;} .tkSecH .nm{flex:1 1 auto;min-width:0;} .tkSecH .tgl{flex:none;cursor:pointer;} .tkGroup.secOff > .tkSecH .nm{opacity:.5;} .tkGroup.secOff > :not(.tkSub){display:none !important;}   /* a section switched off: its options go with it ("general rule: if section off, hide the options belonging to the group") */ .tkGroup.tkDrag{position:relative;z-index:3;box-shadow:0 10px 28px rgba(0,0,0,.45);} .tkGroup.tkDrag > .tkSecH{cursor:grabbing;}   /* a section card: its handle, its name, its switch; dragged, it lifts */
+  .topbar .tkFlPanel .tkSecH .tgl, .topbar .tkFlPanel .tkSecH .gr{display:none;} .topbar .tkFlPanel .tkGroup > .tkSub.tkSecH{cursor:default;}   /* floating beside the screen: the section's tweaks only, no switch to hide it, no handle to reorder ("remove the option to hide the entire section when it's floating; also no option to reorder") */
   .topbar .tkPanel > .tkSub:first-child{padding-top:4px;}
   .topbar .tkRow{
     display:flex;align-items:center;justify-content:space-between;gap:28px;
@@ -37960,7 +37961,7 @@ hairline({
       if (offI) offI.addEventListener('change', () => { hideOff(); draw(); secHead(); if (window._bkPlace) window._bkPlace(); });
       document.addEventListener('click', e => { const sw = e.target.closest('.tkSecH .tgl'); if (!sw || !offI) return; e.preventDefault(); const k = sw.closest('.tkGroup').dataset.sec, o = offs(); if (o.has(k)) o.delete(k); else o.add(k); offI.value = [...o].join(','); offI.dispatchEvent(new Event('change', { bubbles: true })); });   // a card's switch: its section on or off
       let gd = null;
-      document.addEventListener('pointerdown', e => { const h = e.target.closest('.tkSecH'); if (!h || e.target.closest('.tgl')) return; const g = h.closest('.tkGroup'); e.preventDefault(); try { h.setPointerCapture(e.pointerId); } catch (x){} gd = { g, y0: e.clientY }; g.classList.add('tkDrag'); });
+      document.addEventListener('pointerdown', e => { const h = e.target.closest('.tkSecH'); if (!h || e.target.closest('.tgl') || h.closest('.tkFlPanel')) return;   /* in a floating panel: no reordering */ const g = h.closest('.tkGroup'); e.preventDefault(); try { h.setPointerCapture(e.pointerId); } catch (x){} gd = { g, y0: e.clientY }; g.classList.add('tkDrag'); });
       document.addEventListener('pointermove', e => { if (!gd) return; const g = gd.g, nx = g.nextElementSibling, pv = g.previousElementSibling; let dy = e.clientY - gd.y0;
         const mv = f => { g.style.transform = ''; const t0 = g.getBoundingClientRect().top; f(); gd.y0 += g.getBoundingClientRect().top - t0; dy = e.clientY - gd.y0; };
         if (nx && nx.dataset && nx.dataset.sec && dy > nx.offsetHeight / 2) mv(() => nx.after(g)); else if (pv && pv.dataset && pv.dataset.sec && dy < -pv.offsetHeight / 2) mv(() => pv.before(g));
