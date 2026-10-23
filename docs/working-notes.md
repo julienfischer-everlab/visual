@@ -15435,3 +15435,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Phone: the sheet runs from under the status bar (64 down in the device) to the bottom. The words sit in its middle, the button at its foot.
   - Desk: 480 wide with 28 corners, centred, rising 24px as it fades in.
   - In both, the sphere's lower half shows at the top edge.
+- **Default page: the Overview** ("default screen from now"). Opening the link with no page in it lands on the Overview, in Dark mode, in the XS phone (was the Async report). #home still opens the gallery; a page's link opens that page.
