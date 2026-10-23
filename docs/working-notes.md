@@ -15544,3 +15544,16 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - These restores now run only after the bar's **Refresh**. It sets a one-shot `everlab:refresh` mark before reloading, and the page spends the mark as it sets itself up. Any other open lands on the Overview ("Overview as default view").
 - Checked: opening the Timeline and then reopening the page in the same tab → Overview. Timeline, then Refresh → back on the Timeline.
 - A link that names a page (`#documentation`, `#ar2`, `#health-profile`...) still opens that page.
+
+## Welcome: the dot where the sphere forms, motes drawn in, status lines under the sphere, new last title
+
+- **The dot** now starts and bursts exactly where the profile shows its sphere (the sphere's centre: 170 on the phone's full modal). It no longer appears 35% down, and the ball no longer rises; it forms where the dot was. Checked to the pixel against the profile's sphere.
+- **No halo** round the dot, at any stage (the flash as it bursts included).
+- **Motes:** while it breathes, 28 motes float round it and are drawn slowly in to it ("particles floating around ... attracted to the centre"):
+  - each one takes 2.6–5.2 s, starting 34–96px out;
+  - it turns a little and fades in on the way, then fades as it reaches the dot, and a new one starts where it began;
+  - they come in once the dot is up;
+  - as the dot draws in to its point, they collapse in with it and fade.
+- **Status lines** sit 64px under the sphere's area (its 132px box), no longer on the title's line. Their roll is tighter: they travel 55% of the line (was 100%) on a 6px drum, so the passing lines sit close together ("less gap between rows on the bullets").
+- **Last title:** "It all starts with / a consultation / with your doctor." Two rows don't fit the phone (427px of text in 361px), so it takes three. The title box takes the longer title's rows, and the first title keeps to its foot.
+- **Get started** sits 96px from the bottom on the phone, the tablet and the full modal ("96 from bottom").
