@@ -11986,7 +11986,7 @@
         <!-- the Health profile ("add a Health Profile card to the Overview"): its card's section, and the profile's demo states ("include examples of the not-started, in-progress and completed states"); Saved, what was last done in it here -->
         <div class="tkGroup" data-pages="ov" data-sec="prof">
         <div class="tkSub">Health profile</div>
-        <div class="tkRow"><span class="lbl">State</span><select id="stHpSt" class="tkSegSel" aria-label="The Health profile's step"><option value="none" selected>Step 1</option><option value="one">Step 2</option><option value="two">Step 3</option><option value="all">Done</option></select></div>
+        <div class="tkRow"><span class="lbl">State</span><select id="stHpSt" class="tkSegSel" aria-label="The Health profile's step"><option value="none" selected>Step 1</option><option value="one">Step 2</option><option value="two">Step 3</option><option value="all">Done</option><option value="after">Dexa next</option></select></div>
         <div class="tkRow"><span class="lbl">Empty dots</span><select id="stHpDim" class="tkSegSel" aria-label="The sphere's empty particles, how visible"><option value="1">Base</option><option value="1.2" selected>+20%</option><option value="1.5">+50%</option><option value="2">+100%</option></select></div>
         <div class="tkRow"><span class="lbl">Floating</span><select id="stHpFeed" class="tkSegSel" aria-label="The particles drawn into the sphere: their colour"><option value="neutral" selected>Neutral</option><option value="orange">Orange</option><option value="off">Off</option></select></div>
         <div class="tkRow"><span class="lbl">Open</span><span class="tkPreCtl"><button class="tkBtn" type="button" id="stHpOpen">Health profile</button></span></div>
@@ -16227,7 +16227,7 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
 .arSheet.hpSheet .hpNum { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px oklch(var(--ar-ink) / .18); font-size: 14px; line-height: 1; font-weight: 570; font-variant-numeric: tabular-nums; }
 .arSheet.hpSheet .hpArea.hpProg .hpNum { box-shadow: inset 0 0 0 1.5px oklch(var(--ar-ink)); }
 .arSheet.hpSheet .hpArea.hpDone .hpNum { background: var(--ar-opt-bg); color: #fff; box-shadow: none; }
-.arSheet.hpSheet .hpArea.hpProg .hpNum { box-sizing: border-box; border: 1.5px dashed oklch(var(--ar-ink)); box-shadow: none; opacity: 1; color: oklch(var(--ar-ink)); }   /* begun, not finished: a dashed ring and its number in full ink ("if in progress and not finalised, dashed outline white and number white") */   /* done: a green check ("green check if completed"; the report's optimal green) */
+.arSheet.hpSheet .hpArea.hpProg .hpNum { box-sizing: border-box; border: 1.5px dashed oklch(var(--ar-ink) / .24); box-shadow: none; opacity: 1; color: oklch(var(--ar-ink)); }   /* begun, not finished: a dashed ring and its number in full ink ("if in progress and not finalised, dashed outline white and number white") */   /* done: a green check ("green check if completed"; the report's optimal green) */
 .arSheet.hpSheet .hpAreaT { display: flex; flex-direction: column; gap: 4px; min-width: 0; }   /* +2 ("gap +2px") */
 .arSheet.hpSheet .hpAreaT b { font-size: 16px; line-height: 20px; font-weight: 570; }
 .arSheet.hpSheet .hpAreaT > span { font-size: 14px; line-height: 18px; color: oklch(var(--ar-ink) / .56); }
@@ -16358,7 +16358,20 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
 .arSheet.hpSheet .hpDay.hpDayOpen { appearance: none; background: var(--ar-card-bg); color: oklch(var(--ar-ink)); font-weight: 500; cursor: pointer; } .arSheet.hpSheet .hpDay.hpDayOpen:hover { background: oklch(var(--ar-ink) / .1); } .arSheet.hpSheet .hpDay.hpDayOn { background: oklch(var(--ar-ink)); color: var(--ar-paper); } .arSheet.hpSheet .hpDay.hpDayToday { box-shadow: inset 0 -2px 0 -0px transparent; text-decoration: underline; text-underline-offset: 4px; }
 .arSheet.hpSheet .hpSlots { display: flex; flex-direction: column; gap: 18px; } .arSheet.hpSheet .hpSlotG { display: flex; flex-direction: column; gap: 8px; } .arSheet.hpSheet .hpSlotR { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
 .arSheet.hpSheet .hpSlot { appearance: none; height: 44px; margin: 0; padding: 0; border: 0; border-radius: 12px; background: transparent; box-shadow: inset 0 0 0 1px oklch(var(--ar-ink) / .16); color: oklch(var(--ar-ink)); font: inherit; font-family: var(--ar-font); font-size: 14px; font-variant-numeric: tabular-nums; cursor: pointer; } .arSheet.hpSheet .hpSlot:hover { box-shadow: inset 0 0 0 1px oklch(var(--ar-ink) / .32); } .arSheet.hpSheet .hpSlot[aria-pressed="true"] { box-shadow: inset 0 0 0 1.5px oklch(var(--ar-ink)); font-weight: 500; }
-.arSheet.hpSheet .hpScr > * { flex-shrink: 0; }   /* a page taller than the screen scrolls; nothing in it squashed (the review's video tile was) */
+.arSheet.hpSheet .hpScr > * { flex-shrink: 0; }
+/* the card just done, as the intro comes up after its stage (the page in by ~.95s): a glow across it, its number giving way to the green and a tick popping in, then its line and its pen; the next card waking from 60% */
+.arSheet.hpSheet .hpArea.hpJust { animation: hpJustRow 1.1s ease .95s backwards; }
+@keyframes hpJustRow { 0% { background: var(--ar-card-bg); } 35% { background: oklch(var(--ar-ink) / .12); } 100% { background: var(--ar-card-bg); } }
+.arSheet.hpSheet .hpArea.hpJust .hpNum { position: relative; animation: hpJustNum .4s ease .95s backwards; }
+@keyframes hpJustNum { from { background: transparent; box-shadow: inset 0 0 0 1.5px oklch(var(--ar-ink) / .18); } }
+.arSheet.hpSheet .hpArea.hpJust .hpNum > svg { animation: hpPop .5s cubic-bezier(.34, 1.56, .64, 1) 1.1s backwards; }
+.arSheet.hpSheet .hpNumWas { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: oklch(var(--ar-ink)); animation: hpGoOut .25s ease .95s forwards; }
+@keyframes hpGoOut { to { opacity: 0; transform: scale(.6); } }
+.arSheet.hpSheet .hpArea.hpJust :is(.hpAreaT > span, .hpAreaEd) { animation: hpFadeIn .4s ease 1.2s backwards; }
+@keyframes hpFadeIn { from { opacity: 0; } }
+.arSheet.hpSheet .hpArea.hpWake { animation: hpWake .5s ease 1.45s backwards; }
+@keyframes hpWake { from { opacity: .6; } }
+@media (prefers-reduced-motion: reduce) { .arSheet.hpSheet :is(.hpArea.hpJust, .hpArea.hpJust .hpNum, .hpArea.hpJust .hpNum > svg, .hpArea.hpJust .hpAreaT > span, .hpArea.hpJust .hpAreaEd, .hpArea.hpWake) { animation: none; } .arSheet.hpSheet .hpNumWas { display: none; } }   /* a page taller than the screen scrolls; nothing in it squashed (the review's video tile was) */
 .arSheet.hpSheet .hpDoneB { display: flex; align-items: center; justify-content: center; align-self: center; width: 72px; height: 72px; margin: 4px 0 20px; border-radius: 50%; background: var(--ar-opt-bg); color: #fff; animation: hpPop .52s cubic-bezier(.34, 1.56, .64, 1) .32s backwards; }   /* the booking's success: the report's green, a tick, popping in as the page lands */
 @keyframes hpPop { from { opacity: 0; transform: scale(.6); } }
 @media (prefers-reduced-motion: reduce) { .arSheet.hpSheet .hpDoneB { animation: none; } }
@@ -16613,7 +16626,7 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 38px; } body[data-bp="xs"] #dO
 
     /* the home: the circle, the greeting, the three areas */
     function home(dir) {
-      if (A && dir) vFrom = freeze(); var vt = !!vFrom;   // from a stage: down (back) or up (a stage done), see show
+      if (A && dir) vFrom = freeze(); var vt = !!vFrom, jd = justDone; justDone = null;   // from a stage: down (back) or up (a stage done), see show; jd: the card to animate
       A = null; ret = null; succ = null; root.classList.add('hpAtHome'); navT.textContent = ''; navS.textContent = '';
       var sm = summary(), first = !shown;
       show(function (scr) {
@@ -16638,8 +16651,8 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 38px; } body[data-bp="xs"] #dO
             var st = S.a[a.k].st, p = pending(a.k);
             var stx = st === 'done' ? 'Completed' : st === 'prog' ? 'In progress' : 'Not started';
             var dn = st === 'done', nxt = !dn && nx && nx.k === a.k;   // nxt: the step the member is on, the active card   /* only a step done opens, to edit it from its start ("clickable only on the completed step; I need to see Edit on step 1 to come back and edit"); the others are the way ahead, the button below */
-            return h(dn ? 'button' : 'div', dn ? { type: 'button', class: 'hpArea hpDone', 'aria-label': 'Edit ' + (a.k === 'past' ? 'your booking' : a.t), on: { click: function () { area(a.k, 1, 0); } } } : { class: 'hpArea hpStill' + (st === 'prog' ? ' hpProg' : '') + (nxt ? ' hpNext' : ''), 'aria-label': a.t + ', ' + stx },
-              h('span', { class: 'hpNum', 'aria-hidden': 'true' }, st === 'done' ? ic(16, P.check, 2) : String(i + 1)),
+            return h(dn ? 'button' : 'div', dn ? { type: 'button', class: 'hpArea hpDone' + (jd === a.k ? ' hpJust' : ''), 'aria-label': 'Edit ' + (a.k === 'past' ? 'your booking' : a.t), on: { click: function () { area(a.k, 1, 0); } } } : { class: 'hpArea hpStill' + (st === 'prog' ? ' hpProg' : '') + (nxt ? ' hpNext' + (jd ? ' hpWake' : '') : ''), 'aria-label': a.t + ', ' + stx },
+              h('span', { class: 'hpNum', 'aria-hidden': 'true' }, st === 'done' ? ic(16, P.check, 2) : String(i + 1), jd === a.k && dn ? h('span', { class: 'hpNumWas', text: String(i + 1) }) : null),   /* just done: its number there first, giving way to the tick */
               h('span', { class: 'hpAreaT' }, h('b', { text: dn && a.k === 'past' ? 'Onboarding consultation call' : a.t }), h('span', { text: st === 'done' ? (a.k === 'past' && b ? 'Booked ' + b.label : 'Completed') : st === 'prog' ? 'To finalise' : a.s })),   /* booked: "Onboarding consultation call", "Booked <date>" */   /* begun and left: To finalise ("sub: to finalise") */   /* done: Done, or the consult's time; the background processes' lines not here ("align the copy"); booked, the booking's own name ("if booked: Onboarding consultation booked") */
               dn ? h('span', { class: 'hpAreaEd', 'aria-hidden': 'true' }, ic(16, P.pen, 1.6)) : null);   /* begun: no In progress badge, the dashed number and To finalise say it */   /* no Not started: the title on one line ("remove Not started so the title can fit") */
           }))));
@@ -16658,10 +16671,8 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 38px; } body[data-bp="xs"] #dO
       var L = stepsOf(k); I = i != null ? i : st.st === 'done' ? L.length - 1 : Math.min(st.i || 0, L.length - 1);
       step(dir);
     }
-    /* on from a stage done: the next not done; none, up to the intro complete, the success step */
-    function goOn() { succ = null; var nx2 = AREAS.filter(function (b) { return S.a[b.k].st !== 'done'; })[0]; if (nx2) area(nx2.k, 1); else home(1); }
-    /* the booking's success page, after Book: a green tick, You're booked, the appointment; Continue goes on, back returns to the review */
-    var succ = null;
+    /* the booking's success page, after Book: a green tick, You're booked, the appointment; Continue up to the intro (its card animating), back returns to the review */
+    var succ = null, justDone = null;   // justDone: the stage just finished, its card animated once on the intro
     function bookedPage() {
       succ = true; var b = booked(); stageBars(AREA.past.i, 1); paintRail();
       show(function (scr) {
@@ -16669,7 +16680,7 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 38px; } body[data-bp="xs"] #dO
         scr.appendChild(q('', 'You\u2019re booked', 'Your onboarding consult with Dr Lee is confirmed.', true));
         scr.appendChild(h('div', { class: 'hpSum' }, sumRow('Date & time', b ? b.range : ''), sumRow('Doctor', 'Dr Lee'), sumRow('Location', 'Video call')));
       }, 1);
-      foot2('Continue', true, goOn);
+      foot2('Continue', true, function () { justDone = 'past'; succ = null; home(1); });
     }
     function back() { if (!A) return; if (succ) { succ = null; step(-1); return; } if (ret != null) { var r = ret; ret = null; I = r; step(-1); return; } if (I === 0) { home(-1); return; } I--; keep(); step(-1); }
     function keep() { var st = S.a[A]; if (st.st !== 'done') st.i = I; save(); }
@@ -16679,7 +16690,7 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 38px; } body[data-bp="xs"] #dO
       if (st.st === 'not') st.st = 'prog';
       if (I >= stepsOf(A).length - 1) { st.st = 'done'; st.i = I; save();
         if (A === 'past') { bookedPage(); return; }   // booked: its success first ("success state screen is missing here")
-        goOn(); return; }   /* a stage done: straight on into the next not done, pushed as a step ("no need to come back to the main screen when a step is completed, just continue the flow"); the last, up to the intro complete, the success step */
+        justDone = A; home(1); return; }   /* back to the intro after each stage, the card just done animating ("between each step go back to the main health screen and animate the card just completed, a sense of process") */   /* a stage done: straight on into the next not done, pushed as a step ("no need to come back to the main screen when a step is completed, just continue the flow"); the last, up to the intro complete, the success step */
       I++; keep(); step(1);
     }
     function step(dir) {
@@ -31242,36 +31253,42 @@ hairline({
       const bar = '<span class="hpOvBar" role="progressbar" aria-valuemin="0" aria-valuemax="3" aria-valuenow="' + sm.n + '" aria-label="' + sm.n + ' of 3 steps done">' + [0, 1, 2].map(i => '<i class="' + (i < sm.n ? 'on' : i === sm.n && sm.st[nx] === 'prog' ? 'half' : '') + '"></i>').join('') + '</span>';   /* a progress bar, a third a step, the done ones orange ("I just need a progress bar"); the next half only when left part-way through it ("the half increment only when the user drops off in the middle of the flow") */
       const fresh = sm.state === 'not';   /* not begun at all (not even left part-way): no bar, the button across the card ("if the journey has not started yet, use fill full for the main CTA") */
       const left = sm.state === 'done' ? '<div class="ovBookWhen"><b>Your consult</b><span>' + (sm.bk || 'Booked') + '</span></div>' : fresh ? '' : bar;   /* done: the consult at the foot, where the progress was ("put your consult on the left side instead of the increment") */
-      c.innerHTML = '<span class="hpOvEy">Health profile</span><h3>' + ttl + '</h3>' + (sub ? '<p class="hpOvSub">' + sub + '</p>' : '') + '<div class="ovBookFoot">' + left + '<button class="hpOvBtn' + (fresh ? ' hpOvFull' : '') + '" type="button">' + (sm.state === 'done' ? 'View' : cur[2]) + '</button></div>';   /* Next step's layout: its eyebrow Health profile, the step's title and its stage, at its foot the progress and the way on */
+      c.innerHTML = '<span class="hpOvEy">Health profile</span><h3>' + ttl + '</h3>' + (sub ? '<p class="hpOvSub">' + sub + '</p>' : '') + '<div class="ovBookFoot">' + left + '<button class="hpOvBtn' + (fresh ? ' hpOvFull' : '') + '" type="button">' + (sm.state === 'done' ? 'View' : nx === 'wear' && sm.st.wear === 'prog' ? 'Continue' : cur[2]) + '</button></div>';   /* Next step's layout: its eyebrow Health profile, the step's title and its stage, at its foot the progress and the way on */
       ring = HP.sphere ? HP.sphere() : HP.dots(); c.prepend(ring.el);   /* the report's sphere, filled a third a step done ("on the right side, the same sphere as the report") */ ring.el.setAttribute('role', 'img'); ring.el.removeAttribute('aria-hidden'); ring.el.setAttribute('aria-label', sm.n + ' of 3 completed');
       const hid = document.body.classList.contains('hpOn');   /* the sheet over it: the card keeps what was last seen, and fills as you come back ("the moment we complete a step and come back to this overview, the sphere fills a little more") */
       if (!hid && shownN != null && shownN !== sm.n){ ring.set(shownN / 3, false); const r = ring; setTimeout(() => r.set(sm.n / 3, true), back ? 520 : 600); } else ring.set((hid && shownN != null ? shownN : sm.n) / 3, false);
       if (!hid) shownN = sm.n; lastN = sm.n; };
-    const stepOf = () => ['none', 'one', 'two', 'all'][store.summary().n];   // the State tweak at the step the member is on ("three states, one a step"; Done the end)
+    /* after Done, one more ("when this card is no longer on the Overview, the Dexa card takes over"): the profile complete and its card put away, the Next step card back in its place showing the DEXA scan (the Hero tweak at DEXA scan while it lasts, what it was put back after) */
+    let gone = false, heroKept = null;
+    const setGone = v => { if (gone === v) return; gone = v; window._hpGone = v;
+      const hs = document.getElementById('stHero'); if (hs){ if (v){ heroKept = hs.value; hs.value = 'dexa'; } else if (heroKept != null){ hs.value = heroKept; heroKept = null; } hs.dispatchEvent(new Event('change', { bubbles: true })); }
+      document.dispatchEvent(new Event('everlab:hpgone')); };
+    const stepOf = () => gone ? 'after' : ['none', 'one', 'two', 'all'][store.summary().n];   // the State tweak at the step the member is on ("three states, one a step"; Done the end; Dexa next, the card put away)
     document.addEventListener('everlab:hp', () => { paintCard(); const t = document.getElementById('stHpSt'); if (t && !hpSetting) t.value = stepOf(); });
     { const t = document.getElementById('stHpSt'); if (t) t.value = stepOf(); }
     { const lk = () => HP.look && HP.look({ dim: opt('stHpDim'), feed: opt('stHpFeed') }); lk(); ['stHpDim', 'stHpFeed'].forEach(id => { const t = document.getElementById(id); if (t) t.addEventListener('change', lk); }); }   // the sphere's look (Tweaks -> Health profile), on every sphere at once
     // the demo states (Tweaks -> Health profile): not started, one or two of three, completed; Saved is whatever was last done here
     let hpSetting = false;
-    { const t = document.getElementById('stHpSt'); if (t) t.addEventListener('change', () => { if (t.value === 'live') return; hpSetting = true; store.preset(t.value); hpSetting = false; if (inst && wrap.classList.contains('on')) open(); }); }
+    { const t = document.getElementById('stHpSt'); if (t) t.addEventListener('change', () => { if (t.value === 'live') return; const af = t.value === 'after'; hpSetting = true; store.preset(af ? 'all' : t.value); hpSetting = false; setGone(af); t.value = stepOf(); if (inst && wrap.classList.contains('on')) open(); }); }
     /* the demo's arrows ("a floating arrow next / previous so I can simulate the completion of every step; outside the viewport, next to the Overview's card as well"): beside the frame, at the card on the Overview or at the sphere in the sheet,
        a step on or back; the sphere fills with it (particles flowing in going on), the sheet back on its intro to show it */
-    { const KS = ['none', 'one', 'two', 'all'], LB = ['Step 1', 'Step 2', 'Step 3', 'Done'];
+    { const KS = ['none', 'one', 'two', 'all', 'after'], LB = ['Step 1', 'Step 2', 'Step 3', 'Done', 'Dexa next'];
       const sim = document.createElement('div'); sim.className = 'hpSim'; sim.setAttribute('role', 'group'); sim.setAttribute('aria-label', 'Simulate the Health profile');
       const arrow = (d, lab) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'hpSimB'; b.setAttribute('aria-label', lab); b.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + (d > 0 ? 'm6 3 5 5-5 5' : 'M10 3 5 8l5 5') + '"/></svg>'; return b; };
       const nx = arrow(1, 'Next step'), pv = arrow(-1, 'Previous step'), lb = document.createElement('span'); lb.className = 'hpSimL'; lb.setAttribute('aria-live', 'polite');
       sim.append(nx, lb, pv); document.body.appendChild(sim);
-      const go = d => { const n = store.summary().n, to = Math.max(0, Math.min(3, n + d)); if (to === n) return; hpSetting = true; store.preset(KS[to]); hpSetting = false; const t = document.getElementById('stHpSt'); if (t) t.value = KS[to]; if (inst && wrap.classList.contains('on')) inst.home(); tick(); };
+      const at = () => gone ? 4 : store.summary().n;
+      const go = d => { const n = at(), to = Math.max(0, Math.min(4, n + d)); if (to === n) return; hpSetting = true; store.preset(to === 4 ? 'all' : KS[to]); hpSetting = false; setGone(to === 4); const t = document.getElementById('stHpSt'); if (t) t.value = KS[to]; if (inst && wrap.classList.contains('on')) inst.home(); tick(); };
       nx.addEventListener('click', () => go(1)); pv.addEventListener('click', () => go(-1));
       const tick = () => { const n = store.summary().n, sheet = wrap && wrap.classList.contains('hpOpen') && inst, fe = document.getElementById('bpFrame'), fr = fe && getComputedStyle(fe).display !== 'none' ? fe.getBoundingClientRect() : null;
-        const card = document.querySelector('#dOver .hpOvCard'), an = sheet ? inst.el.querySelector('.hpScr:last-child canvas.hpSph') || inst.el : card && card.offsetParent && !card.classList.contains('ovOff') ? card : null;
+        const card = document.querySelector(gone ? '#dOver .ovhero' : '#dOver .hpOvCard'), an = sheet ? inst.el.querySelector('.hpScr:last-child canvas.hpSph') || inst.el : card && card.offsetParent && !card.classList.contains('ovOff') ? card : null;
         const r = an && an.getBoundingClientRect(), right = sheet && !fr ? inst.el.getBoundingClientRect().right : fr ? fr.right : r ? r.right : 0, room = innerWidth - (document.documentElement.classList.contains('tkDocked') ? 380 : 0);
         const top = !sheet && r && r.height ? document.elementFromPoint(Math.min(innerWidth - 1, Math.max(0, r.left + r.width / 2)), Math.min(innerHeight - 1, Math.max(0, r.top + Math.min(r.height / 2, 40)))) : null;   /* the card itself in view, not under another page (the Async report over the Overview: "why do I have this on Async? remove that") */
         const show = !!(r && r.height && r.bottom > 60 && r.top < innerHeight - 60 && right + 24 + 44 < room && (sheet || (top && card.contains(top))));
         sim.classList.toggle('on', show); if (!show) return;
         sim.classList.toggle('lt', document.body.classList.contains('light') && !sheet || sheet && !inst.el.classList.contains('arDark'));
         sim.style.left = Math.round(right + 24) + 'px'; sim.style.top = Math.round(r.top + r.height / 2 - 66) + 'px';
-        lb.textContent = LB[n]; nx.disabled = n >= 3; pv.disabled = n <= 0; };
+        const k = gone ? 4 : n; lb.textContent = LB[k]; nx.disabled = k >= 4; pv.disabled = k <= 0; };
       setInterval(tick, 250); addEventListener('resize', tick); }
     paintCard();
     document.addEventListener('everlab:mode', () => setTimeout(paintCard, 60));
@@ -37782,10 +37799,10 @@ hairline({
     const arrangeG = () => { const gs = secG(); if (!gs.length) return; const mk = document.createComment('sec'); gs[0].before(mk); order().map(k => gs.find(g => g.dataset.sec === k)).filter(Boolean).forEach(g => mk.parentNode.insertBefore(g, mk)); mk.remove(); };
    // after the Services row moves between the row and the flow (a breakpoint, the header's version)
     const dvVis = k => { const over = document.getElementById('dOver'); if (!over || !DSEC[k]) return false; return [...over.querySelectorAll(DSEC[k])].some(el => !el.classList.contains('ovOff') && getComputedStyle(el).display !== 'none'); };   // shown on the Overview itself
-    const hideOff = () => { const o = offs(); { const mem = document.getElementById('stHpMem'); if (mem && mem.value === 'yes') o.add('hero'); }   /* a $299 member: the Health profile the one primary card, Next step gone ("it's one or another"); its own switch untouched */ document.querySelectorAll('.ovOff').forEach(el => el.classList.remove('ovOff')); o.forEach(k => { const h = host(); if (h && SEC[k]) h.querySelectorAll(':scope > :is(' + SEC[k][1] + ')').forEach(el => el.classList.add('ovOff')); if (DSEC[k]) document.querySelectorAll('#dOver :is(' + DSEC[k] + ')').forEach(el => el.classList.add('ovOff')); }); };   // a section switched off: gone, on the phone and on the Overview
+    const hideOff = () => { const o = offs(); { const mem = document.getElementById('stHpMem'); if (mem && mem.value === 'yes' && !window._hpGone) o.add('hero'); if (window._hpGone) o.add('prof'); }   /* the profile done and put away (State: Dexa next): its card gone, Next step back as the primary card ("one more state, when this card is no longer on the overview, the Dexa card takes over") */   /* a $299 member: the Health profile the one primary card, Next step gone ("it's one or another"); its own switch untouched */ document.querySelectorAll('.ovOff').forEach(el => el.classList.remove('ovOff')); o.forEach(k => { const h = host(); if (h && SEC[k]) h.querySelectorAll(':scope > :is(' + SEC[k][1] + ')').forEach(el => el.classList.add('ovOff')); if (DSEC[k]) document.querySelectorAll('#dOver :is(' + DSEC[k] + ')').forEach(el => el.classList.add('ovOff')); }); };   // a section switched off: gone, on the phone and on the Overview
     const GR = '<svg class="gr" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><circle cx="4" cy="3" r="1"/><circle cx="8" cy="3" r="1"/><circle cx="4" cy="6" r="1"/><circle cx="8" cy="6" r="1"/><circle cx="4" cy="9" r="1"/><circle cx="8" cy="9" r="1"/></svg>';
     const order = () => { const o = (inp.value || '').split(',').filter(k => SEC[k]); Object.keys(SEC).forEach(k => { if (!o.includes(k)) o.push(k); });
-      const mem = document.getElementById('stHpMem'); if (mem){ o.splice(o.indexOf('prof'), 1); if (mem.value === 'yes') o.unshift('prof'); else { const j = o.indexOf('ins'); o.splice(j >= 0 ? j + 1 : o.length, 0, 'prof'); } }   /* $299 member: the Health profile first, the primary card; not one: after the insights, Next step the primary */
+      const mem = document.getElementById('stHpMem'); if (mem){ o.splice(o.indexOf('prof'), 1); if (mem.value === 'yes' && !window._hpGone) o.unshift('prof'); else { const j = o.indexOf('ins'); o.splice(j >= 0 ? j + 1 : o.length, 0, 'prof'); } }   /* $299 member: the Health profile first, the primary card; not one: after the insights, Next step the primary */
       return o; };
     const apply = () => { const h = host(); if (!h) return; order().forEach(k => h.querySelectorAll(':scope > :is(' + SEC[k][1] + ')').forEach(el => h.appendChild(el))); };
     const draw = () => { const h = host(), o = offs(); list.innerHTML = order().map(k => { const els = h ? [...h.querySelectorAll(':scope > :is(' + SEC[k][1] + ')')] : [], on = !o.has(k), vis = !on || (document.getElementById('dOver') ? dvVis(k) : els.some(el => el.offsetHeight > 0 || getComputedStyle(el).display !== 'none'));
@@ -37793,6 +37810,7 @@ hairline({
     if (inp && list){
       inp.addEventListener('change', () => { apply(); applyD(); hideOff(); draw(); arrangeG(); secHead(); if (window._bkPlace) window._bkPlace(); });
       { const mem = document.getElementById('stHpMem'); if (mem) mem.addEventListener('change', () => inp.dispatchEvent(new Event('change'))); }   // $299 member: the order again, the Health profile where it now belongs
+      document.addEventListener('everlab:hpgone', () => inp.dispatchEvent(new Event('change')));   // the profile put away or back: the order and what shows again
       if (offI) offI.addEventListener('change', () => { hideOff(); draw(); secHead(); if (window._bkPlace) window._bkPlace(); });
       document.addEventListener('click', e => { const sw = e.target.closest('.tkSecH .tgl'); if (!sw || !offI) return; e.preventDefault(); const k = sw.closest('.tkGroup').dataset.sec, o = offs(); if (o.has(k)) o.delete(k); else o.add(k); offI.value = [...o].join(','); offI.dispatchEvent(new Event('change', { bubbles: true })); });   // a card's switch: its section on or off
       let gd = null;

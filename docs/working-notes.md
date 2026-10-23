@@ -15324,3 +15324,15 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Overview card, not begun at all (not even left part-way): no progress bar, the main CTA (Get started) the card's full width ("if the journey has not started yet, use fill full for the main CTA"). Begun: the bar and the button at its right, as before.
 - A stage counts as begun once opened, so leaving from its first screen fills the card's next increment half ("if the user dropped off during a current step, fill half the increment"). It also shows on the intro as "To finalise" with the dashed ring.
 - Overview card: 16 more between the title/subtitle and the sphere ("+16px gap"). Desk title clears 152, subtitle 164; XS both 136.
+
+## Health profile: back to the intro after each step, the card animating; Dexa next
+
+- **After each stage, back to the intro** ("between each step go back to the main health screen and animate the card just completed, a sense of process"). This replaces "continue the flow". The intro comes up from below, then the card just done animates:
+  - at about .95s a glow crosses it, and its number gives way to the green as the tick pops in;
+  - at 1.2s its line (Completed, or Booked <date>) and its pen fade in;
+  - at 1.45s the next card wakes from 60% to full.
+  - The booking keeps its You're booked page; its Continue goes up to the intro. The last stage lands on the intro complete, the success step.
+  - None of this runs with reduced motion.
+- **State: Dexa next** (Tweaks → Health profile → State, and a fifth stop on the demo arrows after Done): "when this card is no longer on the Overview, the Dexa card takes over". The profile is complete and its card is gone. The Next step card is back where it stood, as the primary card, showing the DEXA scan ("Get your health baseline. Book your DEXA Scan."). The Hero tweak is set to DEXA scan while this state lasts and put back after. The arrows anchor to that card.
+- Overview card: left part-way through step one, the button reads **Continue**.
+- In-progress ring: the dashes at 24% ink, the number full.
