@@ -15357,3 +15357,15 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - It's skipped when the member said no to the records search (Anshul's journey map), as before.
   - Its two rows now carry icon tiles (a bell, an upload), and their Turn on / Upload buttons are secondary (ink at 8%), leaving Continue the one primary.
   - This undoes "the success screen replaces the last screen" for this page.
+
+## Welcome for a $299 member's first visit; card bar in white
+
+- **First-time user** (Tweaks → General, under $299 member, shown only when that's Yes; default No): "if yes, a modal that explains what comes and what is next", after Sam's welcome.
+  - Sheet: the Health profile's full sheet, X at the top right, Get started at the foot.
+  - Membership card: brown gradient with a dot field stronger to the right, Everlab's mark (the logo's glyph), "Julien / Moreau".
+  - Text: "Welcome to Everlab, / Julien" (name muted), "You've just taken the first step towards knowing your health properly. We're glad you're here."
+  - What's next, three rows: Complete your health profile (three short steps, about 12 minutes), Meet your doctor (Dr Steven Lu), Get your personalised plan.
+  - Get started swaps in place to the profile's intro. X closes.
+  - Shown when switched to Yes, and each time the Overview opens with it on.
+  - Entrance: the card rises, the words follow; none with reduced motion.
+- **Overview card's progress**: done and half-done increments in the ink (white on dark, #2e1f1a on light), no longer orange ("just use white").
