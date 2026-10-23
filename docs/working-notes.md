@@ -15437,7 +15437,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - In both, the sphere's lower half shows at the top edge.
 - **Default page: the Overview** ("default screen from now"). Opening the link with no page in it lands on the Overview, in Dark mode, in the XS phone (was the Async report). #home still opens the gallery; a page's link opens that page.
 
-## The Health profile on its own (dist/health-profile.html)
+## The Health profile on its own (dist/health-profile.html, https://claude.ai/artifact/27KVVvtwN5n6VRit7JSrUZ)
 
 - "Create an independent artifact that only includes the Health profile flow; all changes on this artifact should impact the other."
 - **How it stays in step**: `tools/build-hp.js` makes it from `index.html` on every build (`tools/build.js` calls it at the end). It takes, by content rather than line numbers:
