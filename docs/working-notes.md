@@ -15340,3 +15340,16 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Overview card: step 2's subtitle is "It takes only 1 minute". Its button goes **straight into the step** (Book, Complete profile, Continue; "should go to the flow direct"), and back from that step's first screen is the intro. Not begun, **Get started opens the intro** ("should go to the Health intro"). The card itself and View (done) open the intro.
 - Overview card, done: "You're all set for your consult with Dr Steven Lu." (shorter).
 - Overview card: 16 less under "Welcome back" (XS 22, desk 34).
+
+## Health profile: Program card, dropped-off demo states
+
+- **Program card** ("after the health profile is completed, when the user comes back to the Overview, a new card replaces the health profile card, highlighting a membership; same content as Sarah's program card but more concise"):
+  - Content: Next step tag, the three plan thumbnails at the top right, "Julien's / Personalised Health Program", "Recommended by your Everlab doctor.", two of the plan's services (Dexa Scan, Whole Body MRI & CT Chest) and "+ 4 more", then Review my plan. Review my plan scrolls to the Action plan.
+  - Look: the plan's brown (#45201a) in either theme.
+  - When it shows: on its own, once the profile is finished in that sitting and the member is back on the Overview. Also as State "Program", between Done and Dexa next.
+  - The thumbnails' paths are written out in full: the build only carries files whose paths it can read in the source.
+- **Dropped-off states** on the demo arrows and in the State tweak ("Step 1.5, 2.5, 3.5 (dropped off)"):
+  - Each is the step opened and left (`preset('<k>_d')` marks the next stage begun).
+  - The order is Step 1, 1.5, 2, 2.5, 3, 3.5, Done, Program, Dexa next.
+  - The arrows' label shows "Step 1.5 / Dropped off" on two lines.
+  - The State tweak is now a dropdown; nine is too many for segments.
