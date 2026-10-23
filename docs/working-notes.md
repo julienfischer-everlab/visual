@@ -15607,3 +15607,11 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 ## First title: a 0.5 s pause
 
 - "Welcome to Everlab, Julien" now holds 0.5 s once its last letter has settled, then dissolves (0.4 s) and the second title begins 0.3 s after ("pause 0.5 sec"). On a run: last letter settled at 3.43 s, the title starting to go at ~4.0 s.
+
+## Back fixed on the desk's modal; the blink; burst pace; more motes; halo
+
+- **Back:** in the bottom-sheet format on the desk, the modal is as tall as what it holds. Its rect was measured with the profile still inside it, so the welcome stood in the wrong place and the sphere jumped about 220px at the very end. The welcome is now mounted first and the sheet measured with it alone. Checked on M, L and XS, in both formats: it plays as Get started reversed and ends where it settles.
+- **The blink on Get started:** the carried sphere was given the profile's fill at a stroke as it left the welcome (from empty to a third, two thirds... when the profile's state isn't "not started"). It now keeps its own fill and the profile's comes in with its usual flow once it has landed (0.9 s). The canvas was sampled every frame through Get started and Back: never blank, never faded.
+- **The burst:** faster (1.15 s, was 1.7) and eased in and out: each point leaves very softly, goes quickly through the middle and settles softly (an ease-in-out quint), staggered over 25%; the spray past the shell is the same.
+- **Motes round the formed ball:** 30 (was 16), and a little clearer (0.8, neutral 0.7). This applies to every sphere.
+- **Profile halo:** 32px lower than last time (its centre 32 above where it first was) and more orange: half as strong again at every stop ("the arrow" read as the halo).
