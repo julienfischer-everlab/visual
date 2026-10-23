@@ -15311,3 +15311,12 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The old page is held where it stood as the bar comes or goes.
 - **Demo arrows** only when the Overview's card is really on top (`elementFromPoint`), or the profile sheet is open. They no longer show over the Async report ("why do I have this on Async? remove that").
 - Booked, step 3 next: the intro's main CTA reads "Continue" (was "Let's begin").
+
+## Health profile: a flow that runs on, booking success, outlined Change
+
+- **Finishing a step goes straight on** to the next one not done ("no need to come back to the main screen when a step is completed, just continue the flow"), pushed like any other screen. After the last, the intro comes up showing the complete state: all ticked, the orb full, "You're all set", Go to overview. That's the final success step ("need a final success step"). The past-results search screen is out of the flow (the spec's success screen "replaces the last screen"); the search still starts at the Medicare card, and the success line mentions it.
+- **Booking success** ("success state screen is missing here"): after Book, a page with a green tick that pops in, "You're booked", "Your onboarding consult with Dr Lee is confirmed." and the date, doctor and place. Continue goes on into Tell us about you; Back returns to the review.
+- **Change / Edit in the summaries**: full-rounded outlined buttons (1px ink at 14%, 8x16) instead of underlined links.
+- **Intro rows**: the step the member is on is the active card, at full strength with its number in full ink ("first card must be the active card"); the later ones stay at 60%.
+- **Overview card, step 3**: subtitle "It will help us to customise your journey before your call".
+- A page's children never shrink (`.hpScr > * { flex-shrink: 0 }`): the review's video tile had been squashed once the page grew taller than the screen.
