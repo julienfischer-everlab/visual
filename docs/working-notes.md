@@ -15572,3 +15572,17 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **The jump:** the profile page set its header height (`--hpHeadH`) only when its ResizeObserver first reported, a frame after mounting, so its layout shifted under the sphere by about 60px. `mount()` now sets it, and `hpWide`, at once.
   - Tracked frame by frame: the sphere now rises 299→267 and shrinks 232→211 on the phone, 206→174 on the desk. The largest step between frames is 12–18px, the motion itself.
 - **Floating tweaks:** opening a floating "+" panel now closes the Tweaks column docked at the right ("tweak floating auto-closes the fixed tweak right column"), so the room at the right is the floating card's.
+
+## Welcome ⇄ profile: back to the intro; halo to 35%; bullets and titles tuned
+
+- **Tweaks → Welcome → Health profile: Back to intro.** The row shows only on the profile reached from the welcome, at its intro; the Welcome "+" stays beside the profile then. It plays Get started backwards:
+  - the welcome is mounted over the profile in its last state (the second title and the button, `welcome({ settled: true })`), where its sheet will stand;
+  - the profile's page goes down 72 and fades (0.38 s) as the welcome's words come down from above (0.66 s, from 0.3 s);
+  - the same sphere canvas is taken back into the welcome's ball: it grows to its 110% where it is, then drops the 32 to its place (1.05 s);
+  - in the bottom-sheet format, the frame is drawn in from the whole screen to the sheet (clip-path, 0.62 s from 0.2 s);
+  - then the welcome is the sheet (or the full modal) again, and Get started goes forward as before. Round trips checked in both formats; the sphere moves at most 10–17px between frames.
+- `welcome()` takes `settled` (its last state at once: no loader, the second title and button shown; reduced motion uses the same state) and `sphere` (one handed to it). Its sphere placement is now a `place()` it exposes. It also runs for the settled and reduced-motion states, which before kept the sphere at a default 128px.
+- **Profile halo:** now covers the top 35% of the screen (the page is 87% of the screen, so 40% of the page; `ellipse 72% 35% at 50% 5%`). It was over 60% ("too much at the moment").
+- **Status lines:** 13px (was 12); 12px between the square and the words (was 10); the square 1px up.
+- **Titles:** 4px smaller: 34 on 38 on the phone, 36 on 40 on the desk.
+- **Between the two titles:** the first now goes as its last letter settles (1 s after it begins, no hold) and dissolves in 0.4 s; the second starts 0.3 s after ("faster between the portions of the H1").
