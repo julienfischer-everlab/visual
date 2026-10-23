@@ -15428,3 +15428,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Fixed: re-sorting the Tweaks list no longer pulls a group out of an open floating panel.
 - **Primary card**: no Card row. Plan to purchase is the State after Done ("plan to purchase should be after step done, so remove the Card tweak"), so the stepper runs Step 1 … Done, Plan to purchase. Finishing the profile sets State to Plan to purchase. With Type $299 purchased, its rows (First-time user, State, Empty dots, Floating, Open) all show.
 - Overview card at XS: 16 to the card under it ("16px gap"); the desk keeps its 8.
+- The **Primary card** group sits in the Tweaks list where its card stands on the screen ("positioned at the right order based on the screen order"): the profile's place, or the hero's when Next step. It now comes first, before Services, Insights, Action plan and Later card, matching the screen.
