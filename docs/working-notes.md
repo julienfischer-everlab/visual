@@ -15450,3 +15450,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - A small **Demo** menu: theme (Dark/Light), state (Step 1 … Done, with the dropped-off states) and Start over. On a phone it's a pill under the sheet's button, opening upward; on a wide screen a round button in the gutter.
   - X at the intro just stays on the intro (there's no page under it). Escape behaves as in the prototype.
 - No fonts or images are embedded (system fonts, as the prototype). It's about 240 KB, unminified.
+- **Standalone: the Viewport, as the prototype's** ("I need the XS breakpoint tweak here, same as the other artifact"): Demo → Viewport, Auto / XS / S / M / L.
+  - XS: the reference phone, 393 wide, 56 corners, the black bezel in its steel rim. Its status bar (time, island, signal) is taken from the prototype's own `#bpFrame` markup at build time and drawn over the sheet, white on dark and black on light. The sheet's bar sits 58 down, as in the prototype's device.
+  - S: the tablet, 600 wide, 28 corners, a wider bezel, its small status strip, bar 44 down.
+  - M 992 and L 1440: unframed, the desk layout with the rail.
+  - Auto: the window (a column up to 1040 on a wide one).
+  - It starts on XS where the phone fits (a phone itself starts on Auto), and the last pick is remembered. The Demo button sits 28 right of the device when there's room, else the pill under the sheet's button.
