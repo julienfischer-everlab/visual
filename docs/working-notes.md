@@ -15310,3 +15310,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Back from a stage's first screen, the other way. A stage finished goes on, up, to the intro.
   - The old page is held where it stood as the bar comes or goes.
 - **Demo arrows** only when the Overview's card is really on top (`elementFromPoint`), or the profile sheet is open. They no longer show over the Async report ("why do I have this on Async? remove that").
+- Booked, step 3 next: the intro's main CTA reads "Continue" (was "Let's begin").
