@@ -15271,3 +15271,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - A stage's bars: the step on is the last bar lit, whole; no 2px start of the next.
 - The Overview card, done: the consult at its foot, Your consult over its date and time, where the progress bar was ("put your consult on the left side instead of the increment"); no line under the title.
 - The card's progress bar: the step on half filled ("fill half of the first increment"), the steps done whole: step 1 half of the first, step 2 one and a half, step 3 two and a half.
+- Tweaks docks as a right column, 380 wide, the full height under the bar, the screen centred in what is left of the window ("when I select Tweaks, a right column so we always see the screen on the left"): the frames and wrappers centred on 50vw read --vwC, the dock's centre while it is open; a click on the page leaves it open (the Tweaks button or Escape closes it); the step navigator's room counts it. Every page.
+- The intro's steps: no Not started badge (the titles on one line); the number of a step not done at half.
+- Demo arrows ("a floating arrow next / previous to simulate the completion of every step"): beside the frame, at the Overview's Health profile card, or at the sphere in the sheet; next above, the step (Step 1 / 2 / 3 / Done), previous below. A step on fills the sphere (particles flowing in); in the sheet its intro is drawn again to show it.
+- Fix: the intro's words read the booked day before it was set ("Dr Lee has what they need for undefined").
+- A stage's header: three bars, the three stages, the one on filling as its steps go (stage 1: a quarter a page); no "1 of 4" under its name.

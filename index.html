@@ -94,6 +94,10 @@
   }
   .topbar .tkMenu summary::-webkit-details-marker{display:none;}
   .topbar .tkMenu summary:hover,.topbar .tkMenu[open] summary{border-color:#3f3f46;}
+  /* Tweaks open: a column docked at the right, the screen centred in what is left of the window, so the page is always seen beside it ("when I select Tweaks, can this be a right column so we always see the screen on the left") */
+  html.tkDocked{--tkDockW:380px;--vwC:calc((100vw - var(--tkDockW)) / 2);}
+  html.tkDocked .topbar #tkMenu > .tkPanel{top:var(--tkTop, 57px) !important;left:auto !important;right:0 !important;width:var(--tkDockW);height:calc(100vh - var(--tkTop, 57px));max-height:none;box-sizing:border-box;border-radius:0;border-width:0 0 0 1px;padding:8px 8px 0;}
+  html.tkDocked body:not([data-bp]) .dash{right:var(--tkDockW);}
   .topbar .tkMenu summary:focus-visible{border-color:#71717a;}
   .topbar .tkPanel{
     position:fixed;z-index:30;min-width:232px;padding:6px;
@@ -3052,7 +3056,7 @@
   /* a forced breakpoint frames this page as it frames the shell ("make the
      breakpoint working on this page"): the page at the floor's width,
      centred, a hairline round it; its widths in --lpW rather than vw */
-  body[data-bp] .lp{left:calc(50vw - var(--bpW) / 2);right:auto;width:var(--bpW);box-shadow:0 0 0 1px rgba(255,255,255,.08);--lpW:var(--bpW);}   /* .lp on the front: .lpEnd's own rule sets display later in the file */
+  body[data-bp] .lp{left:calc(var(--vwC, 50vw) - var(--bpW) / 2);right:auto;width:var(--bpW);box-shadow:0 0 0 1px rgba(255,255,255,.08);--lpW:var(--bpW);}   /* .lp on the front: .lpEnd's own rule sets display later in the file */
   /* ---- The header: page-high, black, the copy white at the left, the age
      card at the right. The stage below pins once it has scrolled past. */
   .lpHead{position:relative;z-index:2;min-height:100%;height:100%;   /* the page's own height (under the bar), not the window's: the page does not scroll */display:flex;flex-direction:column;background:#121212;color:#f4f4f4;overflow:hidden;}   /* black, then "bg hero #121212" */
@@ -5569,7 +5573,7 @@
      free where it is the only absolutely positioned thing on the surface. */
   .nrCard.done{opacity:0;transform:translateY(8px);pointer-events:none;}
   .dash .nrCard.done{transform:translate(-50%, 8px);}
-  html:not(.bpAuto) body.newRep:is([data-bp="xs"], [data-bp="s"]) .dash .nrCard{left:50vw;width:calc(var(--bpW, 393px) - 32px);bottom:calc(var(--bpBot, 48px) + 100px);}   /* in the XS / S frame, over its dock, not out under the device */   /* centred as it goes, not jumping right by half its width */
+  html:not(.bpAuto) body.newRep:is([data-bp="xs"], [data-bp="s"]) .dash .nrCard{left:var(--vwC, 50vw);width:calc(var(--bpW, 393px) - 32px);bottom:calc(var(--bpBot, 48px) + 100px);}   /* in the XS / S frame, over its dock, not out under the device */   /* centred as it goes, not jumping right by half its width */
   /* From this page: a toast, so it arrives -- up from under the page and in, a beat after the page */
   body.newRep #phone .nrCard:not(.done){animation:nrIn .5s cubic-bezier(.2,.8,.2,1) .3s both;} body.newRep .dash .nrCard:not(.done){animation:nrInD .5s cubic-bezier(.2,.8,.2,1) .3s both;}
   @keyframes nrIn{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:none;}} @keyframes nrInD{from{opacity:0;transform:translate(-50%, 18px);}to{opacity:1;transform:translate(-50%, 0);}}
@@ -5621,7 +5625,7 @@
   .aqWrap.aqFull .aqFrame > .arSheet.arSheet.arSheet.arSheet{max-width:560px;margin:0 auto;}
   .aqWrap.aqFull .arSheet .arH700{text-align:center;font-size:28px;line-height:calc(1.2em - 4px);text-wrap:balance;}   /* 4 less ("reduce line height by 4px"): 30 */ .aqWrap.aqFull .arSheet .arLfHead{align-items:center;text-align:center;}   /* the lifestyle insight's date under its centred title */
   /* the viewport's breakpoint (the Full modal board: XS, S, M, L). A forced breakpoint frames the report as it frames the page: centred at its floor's width, and at XS and S in the device, under its status bar */
-  body[data-bp] .aqWrap.aqDesk{left:calc(50vw - var(--bpW) / 2);right:auto;width:var(--bpW);}
+  body[data-bp] .aqWrap.aqDesk{left:calc(var(--vwC, 50vw) - var(--bpW) / 2);right:auto;width:var(--bpW);}
   body[data-bp="xs"] .aqWrap.aqDesk, body[data-bp="s"] .aqWrap.aqDesk{top:var(--bpTop, calc(var(--barH,57px) + 48px));bottom:var(--bpBot, 48px);overflow:hidden;}
   body[data-bp="xs"] .aqWrap.aqDesk{border-radius:56px;} body[data-bp="s"] .aqWrap.aqDesk{border-radius:28px;}
   html:not(.bpAuto) body[data-bp="xs"] .aqWrap.aqDesk{top:var(--bpTop, calc(var(--barH,57px) + 48px));border-radius:56px;}   /* from the device's top, its status bar drawn on the report, transparent over the picture as on the phone ("home transparent"; was under the device's own dark strip) */   /* framed XS: under the strip's band, as the page (48 + 47) */
@@ -8725,8 +8729,8 @@
      as a browser that wide would show it; at S and XS the sidebar folds
      away and the card takes the frame's width, as a shell that narrow
      would. The sidebar's width is a variable so the card's cap follows. */
-  body[data-bp] .dash{left:calc(50vw - var(--bpW) / 2);right:auto;width:var(--bpW);box-sizing:border-box;box-shadow:0 0 0 1px rgba(255,255,255,.08);}   /* border-box: the sidebar's padding is inside the frame's width */
-  body[data-bp] .dash .side{left:calc(50vw - var(--bpW) / 2);}
+  body[data-bp] .dash{left:calc(var(--vwC, 50vw) - var(--bpW) / 2);right:auto;width:var(--bpW);box-sizing:border-box;box-shadow:0 0 0 1px rgba(255,255,255,.08);}   /* border-box: the sidebar's padding is inside the frame's width */
+  body[data-bp] .dash .side{left:calc(var(--vwC, 50vw) - var(--bpW) / 2);}
   body[data-bp="s"] .dash .side, body[data-bp="xs"] .dash .side{display:none;}
   body[data-bp="s"] .dash, body[data-bp="xs"] .dash{padding-left:0;--sideW:0px;--dMainLeft:0px !important;}
   body[data-bp="s"] #dOver, body[data-bp="xs"] #dOver, body[data-bp="s"] #dSvc, body[data-bp="xs"] #dSvc, body[data-bp="s"] #dTl, body[data-bp="xs"] #dTl, body[data-bp="s"] #dApt, body[data-bp="xs"] #dApt, body[data-bp="s"] #dAcc, body[data-bp="xs"] #dAcc{left:0;top:0;border-radius:0;max-width:none;scrollbar-width:none;}   /* in a device the page is the screen: no 16 band above, no 16 gutter at the right, no card corners, no scrollbar ("remove unnecessary padding on tablet S") */
@@ -8761,7 +8765,7 @@
   body[data-bp="xs"] .dash, body[data-bp="xs"] .lp{border-radius:56px;box-shadow:none;}
   body[data-bp="s"] .dash, body[data-bp="s"] .lp{border-radius:28px;box-shadow:none;}
   #bpFrame{display:none;}
-  body[data-bp="xs"] #bpFrame, body[data-bp="s"] #bpFrame{display:block;position:fixed;z-index:3;pointer-events:none;left:calc(50vw - var(--bpW) / 2);width:var(--bpW);top:var(--bpTop, calc(var(--barH,57px) + 48px));bottom:var(--bpBot, 48px);box-sizing:border-box;}
+  body[data-bp="xs"] #bpFrame, body[data-bp="s"] #bpFrame{display:block;position:fixed;z-index:3;pointer-events:none;left:calc(var(--vwC, 50vw) - var(--bpW) / 2);width:var(--bpW);top:var(--bpTop, calc(var(--barH,57px) + 48px));bottom:var(--bpBot, 48px);box-sizing:border-box;}
   body[data-bp="xs"] #bpFrame{border-radius:56px;box-shadow:0 0 0 5px #000, 0 0 0 11px #3b3b40, 0 0 0 12px rgba(255,255,255,.14), 0 30px 90px rgba(0,0,0,.45);}   /* the phone shell's: a black bezel in a steel rim */
   body[data-bp="s"] #bpFrame{border-radius:28px;box-shadow:0 0 0 9px #000, 0 0 0 16px #3b3b40, 0 0 0 17px rgba(255,255,255,.14), 0 30px 90px rgba(0,0,0,.45);}   /* the tablet's: a wider bezel, squarer corners */
   #bpFrame .bpStatus{position:absolute;left:0;right:0;top:0;display:flex;align-items:center;justify-content:space-between;padding:18px 34px 4px;color:#fff;}
@@ -8811,7 +8815,7 @@
   /* XS: the ask field as the phone's -- no send arrow at its right; a tap raises the drawn keyboard and a blanket over the page under the bar, a tap on it lets go ("on click should trigger the keyboard and overlay blanket the screen; no arrow CTA icon on the right side") */
   body[data-bp="xs"] #dOver .ovTop .ovChatGo{display:none;} body[data-bp="xs"] #dOver .ovTop .ovChatBox{padding-right:16px;}
   body[data-bp="xs"] #dOver .ovTop :is(.ovChatBox input, .ovPh){font-size:14px;line-height:20px;}   /* the caret and the rotating line on one baseline, 14 as the phone's (the line was 16, the typing 15) */
-  #dOver .ovDimD{display:none;} body[data-bp="xs"] #dOver .ovDimD{display:block;position:fixed;left:calc(50vw - var(--bpW) / 2);width:var(--bpW);top:var(--bpTop, calc(var(--barH,57px) + 48px));bottom:var(--bpBot, 48px);z-index:4;border-radius:56px;background:rgba(0,0,0,.57);opacity:0;pointer-events:none;transition:opacity .28s ease;}
+  #dOver .ovDimD{display:none;} body[data-bp="xs"] #dOver .ovDimD{display:block;position:fixed;left:calc(var(--vwC, 50vw) - var(--bpW) / 2);width:var(--bpW);top:var(--bpTop, calc(var(--barH,57px) + 48px));bottom:var(--bpBot, 48px);z-index:4;border-radius:56px;background:rgba(0,0,0,.57);opacity:0;pointer-events:none;transition:opacity .28s ease;}
   html.bpAuto body[data-bp="xs"] #dOver .ovDimD{left:0;width:auto;right:0;top:var(--barH,57px);bottom:0;border-radius:0;}
   body[data-bp="xs"].ovKbd #dOver .ovDimD{opacity:1;pointer-events:auto;}
   body[data-bp="xs"].ovKbd #dOver .ovTop .ovInbox{width:0;margin-right:-10px;opacity:0;pointer-events:none;}   /* the field live, as the phone's: the inbox folds away, the field grows */
@@ -16216,7 +16220,7 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
 .arSheet.hpSheet .hpHome .hpD { max-width: 34ch; }
 .arSheet.hpSheet .hpAreas { display: flex; flex-direction: column; gap: 8px; width: 100%; margin-top: 32px; text-align: left; }
 .arSheet.hpSheet .hpArea { appearance: none; display: grid; grid-template-columns: 32px minmax(0, 1fr) auto; align-items: center; gap: 14px; width: 100%; margin: 0; padding: 16px; border: 0; border-radius: 16px; background: var(--ar-card-bg); color: oklch(var(--ar-ink)); font: inherit; font-family: var(--ar-font); text-align: left; cursor: pointer; transition: background .2s ease; }
-.arSheet.hpSheet button.hpArea:hover { background: oklch(var(--ar-ink) / .08); } .arSheet.hpSheet .hpArea.hpStill { cursor: default; }   /* a step done opens to edit it; the rest do not */
+.arSheet.hpSheet button.hpArea:hover { background: oklch(var(--ar-ink) / .08); } .arSheet.hpSheet .hpArea.hpStill { cursor: default; } .arSheet.hpSheet .hpArea.hpStill .hpNum { opacity: .5; }   /* a step not done: its number at half ("reduce the number's colour by 50%") */   /* a step done opens to edit it; the rest do not */
 .arSheet.hpSheet .hpAreaEd { font-size: 14px; line-height: 18px; font-weight: 500; color: oklch(var(--ar-ink)); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
 .arSheet.hpSheet .hpNum { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px oklch(var(--ar-ink) / .18); font-size: 14px; line-height: 1; font-weight: 570; font-variant-numeric: tabular-nums; }
 .arSheet.hpSheet .hpArea.hpProg .hpNum { box-shadow: inset 0 0 0 1.5px oklch(var(--ar-ink)); }
@@ -16346,6 +16350,10 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
 .arSheet.hpSheet .hpInfo { display: flex; align-items: flex-start; gap: 10px; margin-top: 20px; padding: 12px 14px; border-radius: 12px; background: var(--ar-card-bg); font-size: 14px; line-height: 20px; color: oklch(var(--ar-ink)); } .arSheet.hpSheet .hpInfo svg { flex: none; margin-top: 2px; color: oklch(var(--ar-ink) / .56); }
 .arSheet.hpSheet :is(.hpChk, .hpDay, .hpSlot, .hpRailH, .hpCalB):focus-visible { outline: 2px solid var(--ar-blue-fg); outline-offset: 2px; }
 /* the Overview's card and My account's row */
+.hpSim { position: fixed; z-index: 75; display: none; flex-direction: column; align-items: center; gap: 6px; } .hpSim.on { display: flex; }   /* the demo's arrows beside the frame: next above, the step, previous below */
+.hpSimB { appearance: none; display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; margin: 0; padding: 0; border: 0; border-radius: 50%; background: rgba(255, 255, 255, .1); color: #fff; cursor: pointer; transition: background-color .15s ease; } .hpSimB:hover { background: rgba(255, 255, 255, .18); } .hpSimB:disabled { opacity: .3; cursor: default; } .hpSimB:focus-visible { outline: 2px solid #4b7bec; outline-offset: 2px; }
+.hpSimL { min-width: 44px; font-size: 12px; line-height: 16px; font-weight: 500; text-align: center; color: rgba(255, 255, 255, .64); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.hpSim.lt .hpSimB { background: rgba(0, 0, 0, .07); color: #111; } .hpSim.lt .hpSimB:hover { background: rgba(0, 0, 0, .12); } .hpSim.lt .hpSimL { color: rgba(0, 0, 0, .56); }
 .hpOvCard { position: relative; display: flex; flex-direction: column; min-height: 218px; margin: 50px 0 0; padding: 20px; border-radius: 22px; background: rgba(255, 255, 255, .06); color: #ececec; cursor: pointer; }   /* the insight cards' ground, #fff 6% (light: the paper, as theirs) ("the same background as the insights cards") */   /* the Next step card's layout, its picture gone, the sphere at its top right ("keep the same layout as Next step; remove the image; sphere top right; Health profile instead of Next step") */
 body.light .hpOvCard { background: #fdfaf3; color: #2e1f1a; }
 .hpOvCard .hpDots { width: 132px; height: 132px; color: inherit; }   /* 12 bigger */ .hpDots.hpSph { position: static; inset: auto; }   /* the sphere's canvas out of the page's full-screen canvas rule */ .hpOvCard .hpDots.hpSph { position: absolute; top: 20px; right: 20px; }
@@ -16530,6 +16538,11 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 38px; } body[data-bp="xs"] #dO
       stepsEl.setAttribute('aria-valuemax', String(n)); stepsEl.setAttribute('aria-valuenow', String(k)); stepsEl.setAttribute('aria-valuetext', 'Step ' + k + ' of ' + n);
       var px = Math.max(0, k - 1) * 4;   /* the current step the last bar lit, whole; no start of the next ("remove the small field on the third step") */ fill.style.clipPath = 'inset(0 calc(100% - (' + k + ' * ((100% - ' + ((n - 1) * 4) + 'px) / ' + n + ') + ' + px + 'px)) 0 0)';
     };
+    var stageBars = function (k, frac) {   // the stages done whole, the one on (k) filled by frac of its steps
+      bars(3, k + 1); var f = Math.max(0, Math.min(1, frac));
+      fill.style.clipPath = 'inset(0 calc(100% - (' + (k + f).toFixed(4) + ' * ((100% - 8px) / 3) + ' + (k * 4) + 'px)) 0 0)';
+      stepsEl.setAttribute('aria-valuetext', AREAS[k].t + ', ' + Math.round(f * 100) + '% done');
+    };
     var foot2 = function (label, ok, fn, sl, sfn) { cta.firstChild.textContent = label; cta.disabled = !ok; onCta = fn; sec.hidden = !sl; sec.textContent = sl || ''; onSec = sfn || null; };
     // a page in: pushed from the right going on, from the left coming back (the report's push: 440ms, the old a third aside and dimmed)
     function show(build, dir) {
@@ -16556,6 +16569,7 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 38px; } body[data-bp="xs"] #dO
       show(function (scr) {
         var dd = sphere({ cls: 'hpHomeSph' }); dd.set(sm.n / 3, false);   /* the Overview card's sphere, filling a third a step ("replicate the sphere system in the hero of this page") */
         var nm = opts.name || 'Sam', nx = AREAS.filter(function (a) { return S.a[a.k].st !== 'done'; })[0], bk = S.a.past.st === 'done';   // the step it is on: the first not done, in order
+        var b = booked(), wd = b ? b.wd : 'your consult';   // the booked day, for the words below
         /* the words of each moment (the journey driver's screens, "align the copy"): before any, the three steps; after one, the next; booked, the consult's; all three, done. [eyebrow, title, line, button] */
         var CP = sm.n === 3 ? ['Health profile complete', 'You\u2019re all set, ' + nm, 'Dr Lee has what they need for ' + wd + '.' + (searching() ? ' We\u2019ll let you know when your past results come in.' : ''), 'Go to overview']
           : !sm.n ? ['Getting started', 'Three steps before your consult, ' + nm, 'About 12 minutes. By the end, Dr Lee knows you before you meet.', sm.state === 'not' ? 'Let\u2019s begin' : 'Continue']
@@ -16563,7 +16577,6 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 38px; } body[data-bp="xs"] #dO
           : nx.k === 'you' && bk ? [sm.n + ' of 3 done', 'Booked. Now let\u2019s get to know you', 'Dr Lee reads this before ' + wd + ', so your time together goes on what matters.', 'Let\u2019s begin']
           : nx.k === 'you' ? [sm.n + ' of 3 done', 'Next, tell us about you', 'A few questions about you, your habits and your family\u2019s health. About 5 minutes.', 'Continue']
           : [sm.n + ' of 3 done', 'Next, our promise and your details', 'A quick agreement, then the details we need to care for you in Australia. About 6 minutes.', 'Continue'];
-        var b = booked(), wd = b ? b.wd : 'your consult';
         var chip = sm.n && sm.n < 3 && nx.k === 'you' && bk && b ? 'Booked \u00b7 ' + b.label + ' with Dr Lee' : sm.n === 1 && S.a.wear.st === 'done' ? 'Profile saved. Nice work, ' + nm + '.' : null;   /* the last step's news over the orb, as the driver's handovers */
         opts._cta = CP[3];
         var prev = opts._lastN; opts._lastN = sm.n;
@@ -16580,7 +16593,7 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 38px; } body[data-bp="xs"] #dO
             return h(dn ? 'button' : 'div', dn ? { type: 'button', class: 'hpArea hpDone', 'aria-label': 'Edit ' + a.t, on: { click: function () { area(a.k, 1, 0); } } } : { class: 'hpArea hpStill' + (st === 'prog' ? ' hpProg' : ''), 'aria-label': a.t + ', ' + stx },
               h('span', { class: 'hpNum', 'aria-hidden': 'true' }, st === 'done' ? ic(16, P.check, 2) : String(i + 1)),
               h('span', { class: 'hpAreaT' }, h('b', { text: a.t }), h('span', { text: st === 'done' ? (a.k === 'past' && b ? b.label : 'Done') : a.s })),   /* done: Done, or the consult's time; the background processes' lines not here ("align the copy") */
-              dn ? h('span', { class: 'hpAreaEd', 'aria-hidden': 'true', text: 'Edit' }) : h('span', { class: 'hpSt ' + (st === 'prog' ? 'hpStProg' : 'hpStNot'), text: stx }));
+              dn ? h('span', { class: 'hpAreaEd', 'aria-hidden': 'true', text: 'Edit' }) : st === 'prog' ? h('span', { class: 'hpSt hpStProg', text: stx }) : null);   /* no Not started: the title on one line ("remove Not started so the title can fit") */
           }))));
       }, first ? 0 : dir);
       var next = AREAS.filter(function (a) { return S.a[a.k].st !== 'done'; })[0];
@@ -16606,7 +16619,7 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 38px; } body[data-bp="xs"] #dO
     }
     function step(dir) {
       var a = AREA[A], L = stepsOf(A), id = L[I], ans = S.a[A].ans;
-      navT.textContent = a.t; navS.textContent = (I + 1) + ' of ' + L.length; bars(L.length, I + 1); paintRail();
+      navT.textContent = a.t; navS.textContent = ''; stageBars(a.i, (I + 1) / L.length); paintRail();   /* three bars, the three stages, the one on filling as its steps go ("only three increments, each filled inside by the progression"); no "1 of 4" ("we don't need the subtitle") */
       var scr = show(function (scr) { (BUILD[A + '.' + id] || function () {})(scr, ans); }, dir);
       var f = scr.querySelector('[data-focus]'); if (f && !('ontouchstart' in window)) setTimeout(function () { try { f.focus({ preventScroll: true }); } catch (e) {} }, dir ? 460 : 0);
     }
@@ -31034,7 +31047,7 @@ hairline({
     const nav = document.createElement('nav'); nav.className = 'aqNav'; nav.setAttribute('aria-label', 'Debrief steps'); document.body.appendChild(nav);
     let navKey = '';
     const navTick = () => {
-      const r = frame.getBoundingClientRect(), s = inst && inst.steps ? inst.steps() : null, show = !!s && wrap.getClientRects().length > 0 && wrap.classList.contains('on') && r.width > 0 && r.right + 40 + 170 < innerWidth;
+      const r = frame.getBoundingClientRect(), s = inst && inst.steps ? inst.steps() : null, show = !!s && wrap.getClientRects().length > 0 && wrap.classList.contains('on') && r.width > 0 && r.right + 40 + 170 < innerWidth - (document.documentElement.classList.contains('tkDocked') ? 380 : 0);
       nav.classList.toggle('on', show); if (!show) return;
       nav.classList.toggle('lt', document.body.classList.contains('light'));
       nav.style.left = Math.round(r.right + 40) + 'px'; nav.style.top = Math.round(r.top + 72) + 'px';
@@ -31160,6 +31173,24 @@ hairline({
     // the demo states (Tweaks -> Health profile): not started, one or two of three, completed; Saved is whatever was last done here
     let hpSetting = false;
     { const t = document.getElementById('stHpSt'); if (t) t.addEventListener('change', () => { if (t.value === 'live') return; hpSetting = true; store.preset(t.value); hpSetting = false; if (inst && wrap.classList.contains('on')) open(); }); }
+    /* the demo's arrows ("a floating arrow next / previous so I can simulate the completion of every step; outside the viewport, next to the Overview's card as well"): beside the frame, at the card on the Overview or at the sphere in the sheet,
+       a step on or back; the sphere fills with it (particles flowing in going on), the sheet back on its intro to show it */
+    { const KS = ['none', 'one', 'two', 'all'], LB = ['Step 1', 'Step 2', 'Step 3', 'Done'];
+      const sim = document.createElement('div'); sim.className = 'hpSim'; sim.setAttribute('role', 'group'); sim.setAttribute('aria-label', 'Simulate the Health profile');
+      const arrow = (d, lab) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'hpSimB'; b.setAttribute('aria-label', lab); b.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + (d > 0 ? 'm6 3 5 5-5 5' : 'M10 3 5 8l5 5') + '"/></svg>'; return b; };
+      const nx = arrow(1, 'Next step'), pv = arrow(-1, 'Previous step'), lb = document.createElement('span'); lb.className = 'hpSimL'; lb.setAttribute('aria-live', 'polite');
+      sim.append(nx, lb, pv); document.body.appendChild(sim);
+      const go = d => { const n = store.summary().n, to = Math.max(0, Math.min(3, n + d)); if (to === n) return; hpSetting = true; store.preset(KS[to]); hpSetting = false; const t = document.getElementById('stHpSt'); if (t) t.value = KS[to]; if (inst && wrap.classList.contains('on')) inst.home(); tick(); };
+      nx.addEventListener('click', () => go(1)); pv.addEventListener('click', () => go(-1));
+      const tick = () => { const n = store.summary().n, sheet = wrap && wrap.classList.contains('hpOpen') && inst, fe = document.getElementById('bpFrame'), fr = fe && getComputedStyle(fe).display !== 'none' ? fe.getBoundingClientRect() : null;
+        const card = document.querySelector('#dOver .hpOvCard'), an = sheet ? inst.el.querySelector('.hpScr:last-child canvas.hpSph') || inst.el : card && card.offsetParent && !card.classList.contains('ovOff') ? card : null;
+        const r = an && an.getBoundingClientRect(), right = sheet && !fr ? inst.el.getBoundingClientRect().right : fr ? fr.right : r ? r.right : 0, room = innerWidth - (document.documentElement.classList.contains('tkDocked') ? 380 : 0);
+        const show = !!(r && r.height && r.bottom > 60 && r.top < innerHeight - 60 && right + 24 + 44 < room);
+        sim.classList.toggle('on', show); if (!show) return;
+        sim.classList.toggle('lt', document.body.classList.contains('light') && !sheet || sheet && !inst.el.classList.contains('arDark'));
+        sim.style.left = Math.round(right + 24) + 'px'; sim.style.top = Math.round(r.top + r.height / 2 - 66) + 'px';
+        lb.textContent = LB[n]; nx.disabled = n >= 3; pv.disabled = n <= 0; };
+      setInterval(tick, 250); addEventListener('resize', tick); }
     paintCard();
     document.addEventListener('everlab:mode', () => setTimeout(paintCard, 60));
     { const b = document.getElementById('stHpOpen'); if (b) b.addEventListener('click', () => { if (typeof version !== 'undefined' && version !== 9){ setMode(9); resize(); } open(); }); }   // Tweaks -> Health profile -> Open
@@ -35591,7 +35622,8 @@ hairline({
   // Opening one closes the others, since two fixed panels under one bar would
   // overlap.
   {
-    const menus = [].slice.call(document.querySelectorAll('.topbar .tkMenu'));
+    const menus = [].slice.call(document.querySelectorAll('.topbar .tkMenu')), tk = document.getElementById('tkMenu');
+    const dock = on => { const de = document.documentElement; de.classList.toggle('tkDocked', on); if (on) de.style.setProperty('--tkTop', Math.round(document.querySelector('.topbar').getBoundingClientRect().bottom) + 'px'); requestAnimationFrame(() => dispatchEvent(new Event('resize'))); };   // Tweaks docks at the right, the page re-centred beside it
     const place = menu => {
       const panel = menu.querySelector('.tkPanel');
       const s = menu.querySelector('summary').getBoundingClientRect();
@@ -35603,10 +35635,10 @@ hairline({
     };
     const closeAll = except => menus.forEach(m => { if (m !== except) m.open = false; });
     menus.forEach(menu => {
-      menu.addEventListener('toggle', () => { if (menu.open){ closeAll(menu); place(menu); } });
+      menu.addEventListener('toggle', () => { if (menu.open){ closeAll(menu); if (menu === tk) dock(true); else place(menu); } else if (menu === tk) dock(false); });
     });
     addEventListener('pointerdown', e => {
-      menus.forEach(m => { if (m.open && !m.contains(e.target)) m.open = false; });
+      menus.forEach(m => { if (m.open && m !== tk && !m.contains(e.target)) m.open = false; });   // the docked Tweaks stays open while the page is used beside it
     });
     addEventListener('keydown', e => { if (e.key === 'Escape') closeAll(null); });
     const bar = document.querySelector('.topbar');
