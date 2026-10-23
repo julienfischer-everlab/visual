@@ -12145,7 +12145,7 @@
         <!-- no Welcome tweak ("remove"): the welcome's Cards always -->
         <!-- the welcome's header: the picture with the title on it, or Halftone, the title over a one-bit dithered visual with a mono date tag ("try a tweak on the top header intro with this style of visual", the MRI debrief's) -->
         <!-- the Header visual is the Intro screen's Halftone now ("Halftone / List renamed Split bg / Full bg / Sphere") -->
-        <!-- the screen introducing the insights: none, the list after the welcome ("create a 2nd screen that intros all slides in card list items"), or Full bg, which is the welcome itself: the title word by word over the picture, then the card of what is covered ("the full bg should replace the intro, not an additional screen after that intro"); the Welcome and Header visual rows away while it is on -->
+        <!-- the screen introducing the insights: Split bg, the welcome with its picture (its list of insights after it removed: "remove this step and delete"), or Full bg, which is the welcome itself: the title word by word over the picture, then the card of what is covered ("the full bg should replace the intro, not an additional screen after that intro"); the Welcome and Header visual rows away while it is on -->
         <div class="tkRow"><span class="lbl">Intro screen</span><select id="stArList" class="tkSegSel" aria-label="The screen introducing the insights"><option value="ht">Halftone</option><option value="on" selected>Split bg</option><option value="reveal">Full bg</option><option value="sphere">Sphere</option><option value="orbit">Sphere hero</option></select></div>
         <!-- the reassurance under the reveal's card (Full bg, Sphere, Halftone), shown or not ("add tweak: Rest assured mention, ON OFF") -->
         <div class="tkRow" id="stArAssRow"><span class="lbl">Rest assured</span><select id="stArAss" class="tkSegSel" aria-label="The reassurance under the intro's card"><option value="on" selected>On</option><option value="off">Off</option></select></div>
@@ -14454,11 +14454,6 @@
 .arSheet .arRvBy, .arSheet .arRvBy .arRvByTx .arRvDate { color: oklch(var(--ar-ink)); } .arSheet .arRvBy { gap: 16px; } .arSheet .arRvBy .arChipAv { width: 38px; height: 38px; }   /* the reviewer in the ink, white on the picture ("white font"); the avatar 16 bigger (22 -> 38), 16 from the words (8 + 8, "gap +8px") */
 /* Your insights, the 2nd screen: a row each, its number in a ring, its name, its counts at its right in the biomarker rows' pills; filled or outlined with the Cards style; nothing to press */
 .arSheet .arIl { display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; list-style: none; }
-.arSheet .arIlItem { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 14px 16px; border-radius: calc(var(--ar-radius-card) + 4px); background: transparent; box-shadow: inset 0 0 0 1px oklch(var(--ar-ink) / .1); color: oklch(var(--ar-ink)); }
-.arSheet.arCardsFill .arIlItem { background: oklch(0% 0 0 / .04); box-shadow: none; } .arSheet.arDark.arCardsFill .arIlItem { background: oklch(100% 0 0 / .04); }
-.arSheet .arIlNum { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; box-shadow: inset 0 0 0 1px oklch(var(--ar-ink) / .16); font-family: var(--ar-font); font-size: 13px; line-height: 16px; font-weight: 500; font-variant-numeric: tabular-nums; color: oklch(var(--ar-ink) / .72); }
-.arSheet .arIlT { min-width: 0; font-family: var(--ar-font); font-size: 16px; line-height: 20px; font-weight: 500; text-wrap: pretty; }
-.arSheet .arIlPills { display: flex; gap: 4px; } .arSheet .arIlPill { justify-content: center; min-width: 24px; padding: 0 7px; font-weight: 500; font-variant-numeric: tabular-nums; }
 @media (prefers-reduced-motion: reduce) { .arSheet .arQaDim, .arSheet .arQaPanel { transition: none; } }
 .arSheet .arLfQA { display: flex; flex-direction: column; gap: 4px; }
 .arSheet .arLfQ { font-family: var(--ar-font); font-size: 14px; line-height: 18px; font-weight: 400; color: oklch(var(--ar-ink) / .6); }
@@ -14582,9 +14577,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
  *     persona: 'p1' | 'p2',            // default 'p1': whose report, Persona #1 or Persona #2 (each its welcome, insights and everything else)
  *     more: 'sheet' | 'fold',          // default 'sheet': See N more opens the bottom sheet, or the rest in place (Collapse)
  *     bm: 'static' | 'carousel',       // default 'static': the biomarkers as a list, or a carousel of slides (the Overview's insight card, a sparkline each)
- *     list: true | false,              // default true: the 2nd screen, every insight as a card
  *     wvis: 'photo' | 'halftone',      // default 'photo': the welcome's header, the picture with its title on it, or the title over a one-bit dithered visual and a mono date tag
- *     intro: 'list' | 'reveal',        // default 'list': that screen as the list, or the full-bg reveal (title word by word, then a card of bullets)
  *     hero: 'assets/async/hero.webp',
  *     avatar: 'assets/overview/avatar-dr.webp',   // the report's doctor (WEL.dr)
  *     onClose: function () {}          // Close (X) and the final "Done"
@@ -15017,15 +15010,13 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       more: opts.more === 'fold' ? 'fold' : 'sheet',   // See N more: the bottom sheet with them all (default), or the rest opened in place
       mean: opts.mean === 'text' ? 'text' : 'card',   // What this means for you: the Key takeaway card (default), or plain text with Copy by the heading
       bm: opts.bm === 'carousel' ? 'carousel' : 'static',   // Behind this insight's biomarkers: the list (default), or a carousel, a slide each, the Overview's insight card
-      list: opts.list !== false,   // the 2nd screen: every insight as a card, before the first (default on)
-      intro: opts.intro === 'reveal' ? 'reveal' : 'list',
       wvis: opts.wvis === 'halftone' ? 'halftone' : 'photo',   // the welcome's header: the picture with the title on it (default), or Halftone, the title over a one-bit dithered visual with its date tag (the MRI debrief's style)   // that screen as the list (default), or the full-bg reveal: its title word by word over the picture, then a card of what is covered
       hero: typeof opts.hero === 'string' && opts.hero ? opts.hero : 'assets/async/hero.webp',
       avatar: typeof opts.avatar === 'string' && opts.avatar ? opts.avatar : WEL.av,
       onClose: typeof opts.onClose === 'function' ? opts.onClose : null
     };
     var uid = ++mountSeq, evSeq = 0, still = false;   // still: a remount back on its screen, its typing written at once
-    var LIST = o.list ? 1 : 0, REST = NEWI.length + 1 + LIST, NEXT = REST + 1, STEP_COUNT = NEXT + 1;   // the welcome, the insights' list, the insights, everything else, that's your debrief (9; 8 with no list)
+    var REST = NEWI.length + 1, NEXT = REST + 1, STEP_COUNT = NEXT + 1;   // the welcome, the insights, everything else, that's your debrief (8) (the insights' list removed: "remove this step and delete")
     var step = 0;
     var alive = true;
     var timers = [], figs = [];   // figs: the Hairline figures drawn on the step, let go with it
@@ -15050,9 +15041,9 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
     var cta = h('button', { type: 'button', class: 'arBtn arBtnPrimary arBtnLg' }, ctaLabel);
     var foot = h('div', { class: 'arFoot' }, cta, (o.welcome === 'sphere' || o.welcome === 'orbit') && o.assure ? h('p', { class: 'arFootNote', text: WEL.assureS || WEL.assure }) : null);   // the Sphere's and Sphere hero's reassurance, short, under the button, on the welcome
     var stage = h('div', { class: 'arStage' }, head, body, foot);   // the page, pushed back under a sheet
-    var REVEAL = LIST && o.intro === 'reveal', RVW = o.welcome === 'reveal';   // the reveal as the 2nd screen, or as the welcome
+    var RVW = o.welcome === 'reveal';   // the reveal as the welcome
     var sphL = o.welcome === 'sphere' || o.welcome === 'orbit' ? (opts.svis === 'stream' ? streamLayer : sphereLayer)(o.welcome === 'orbit') : o.welcome === 'halftone' ? ditherLayer() : null; if (sphL) stage.insertBefore(sphL.el, head);   // the Sphere welcome's ground and its turning ball; the Halftone's creme and its dithered picture
-    if (REVEAL || RVW || !sphL) stage.insertBefore(h('div', { class: 'arRvBg', 'aria-hidden': 'true' }, h('img', { src: o.hero, alt: '', decoding: 'async', draggable: 'false' })), head);   // the picture also for the last page, unless the Sphere or Halftone ground is its own   // the full-bg intro's picture, under the head, the flow and the foot
+    if (RVW || !sphL) stage.insertBefore(h('div', { class: 'arRvBg', 'aria-hidden': 'true' }, h('img', { src: o.hero, alt: '', decoding: 'async', draggable: 'false' })), head);   // the picture also for the last page, unless the Sphere or Halftone ground is its own   // the full-bg intro's picture, under the head, the flow and the foot
     var root = h('div', { class: 'arSheet' + (o.theme === 'dark' ? ' arDark' : '') + (o.welcome === 'halftone' ? ' arHtw' : '') + (o.welcome === 'orbit' ? ' arOrbit' + (o.lbg ? ' arOrbBdg' : '') : '') + (o.welcome === 'orbit' || o.welcome === 'sphere' || o.welcome === 'halftone' ? ' arPill' : '') + (o.bar === 'grad' ? ' arBarGrad' : '') + (o.foot === 'grad' ? ' arFootGrad' : '') + (o.blur ? '' : ' arNoBlur') + (o.cards === 'fill' ? ' arCardsFill' : '') + (o.wvis === 'halftone' && ['reveal', 'sphere'].indexOf(o.welcome) < 0 ? ' arHtOn' : ''), 'data-ar-mount': uid }, stage);
     /* The sticky gradient, one rule for both fixed groups ("solid bg until 70% of the last section; after that a gradient, ending 40px bleeding past the last section"):
        the bar's last section is the pinned anchors when they are pinned, else the progress; the footer's, read from its foot, is its button.
@@ -15813,29 +15804,6 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         h('div', { class: 'arRsAreas' }, areas));
     }
 
-    /* ----- step 1: the insights, each a card ("create a 2nd screen that intros all slides in card list items"): its number, its name in short, and at its right its markers' standing, a count in each status's pill, the biomarker rows' colours ("more concise, marker on right side; use marker colour system same as biomarker item");
-       then Everything else. A list to read, not a way in: no card goes to its step ("no shortcut should be possible from there") ----- */
-    function buildList() {
-      var count = function (ms) { return ['Optimal', 'Suboptimal', 'Out of range'].map(function (st) { return ms.filter(function (m) { return m.status === st; }).length; }); };
-      var pills = function (c) {
-        return h('span', { class: 'arIlPills', role: 'img', 'aria-label': c[0] + ' optimal, ' + c[1] + ' suboptimal, ' + c[2] + ' out of range' },
-          ['arLfOpt', 'arLfSub', 'arLfOut'].map(function (k, i) { return c[i] ? h('span', { class: 'arLfPill arIlPill ' + k, text: String(c[i]) }) : null; }));
-      };
-      var row = function (k, name, c, i) {
-        return h('li', { class: 'arIlItem arAnimRise', style: { 'animation-delay': (.1 + i * .05).toFixed(2) + 's' } },
-          h('span', { class: 'arIlNum', 'aria-hidden': 'true', text: String(k) }), h('span', { class: 'arIlT', text: name }), pills(c));
-      };
-      var rest = PANELS.reduce(function (t, p) { var c = p.markers ? count(p.markers) : p.n; return [t[0] + c[0], t[1] + c[1], t[2] + c[2]]; }, [0, 0, 0]);
-      var n = NEWI.length, W = ['No', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
-      return h('div', { class: 'arStack arGap20' },
-        h('div', { class: 'arIntroBlock arAnimRise' },
-          h('h2', { class: 'arH700', text: 'Your insights' }),
-          h('div', { class: 'arLede', text: (W[n] || n) + ' insight' + (n === 1 ? '' : 's') + ' from your results, then everything else we checked.' })),
-        h('ul', { class: 'arIl' },
-          NEWI.map(function (L, i) { return row(i + 1, L.short || L.headline, count(L.markers), i); }),
-          row(n + 1, 'Everything else', rest, n)));
-    }
-
     /* ----- step 1, Full bg ("tweak intro screen with a full bg where the title, centred, appears word by word with a fade in / blur effect moving a bit from bottom to top; then reveal a card below with the summary bullet points of what will be covered"):
        the picture over the whole screen; the title alone in its middle, a word at a time; then the card opening under it, the title rising to make room, its bullets one after the other ----- */
     function revealOf(text, kids, badge, after, sub) {   // the title word by word (a line break where the text has one), then the card opening under it, its rows coming in turn (kids(at) gets when the card is in); badge: a tag over the title; sub: a line under it
@@ -15868,10 +15836,6 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
     function typedFor(tc) {   // when the typing is done, from the card's arrival: for what comes after it
       var n = NEWI.map(function (L) { return (L.short || L.headline).length; }).concat(['Everything else we checked'.length]);
       return tc + .35 + (n.reduce(function (a, b) { return a + b; }, 0) * TY_C + (n.length - 1) * TY_L) / 1000;
-    }
-    function buildReveal() {
-      var n = NEWI.length, W = ['No', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
-      return revealOf((W[n] || String(n)) + ' things we found in your results', covered);
     }
     /* Sphere hero ("create an alternative sphere hero version of the results introduction"): the badge and the title as the reveal's, then the sphere, larger, 48 under the title; no card, no reviewer.
        Over the sphere's cap, one message at a time: every bullet of What we'll cover, in a shuffled order, all of them before any comes again, typed in the bullets' mono capitals behind their block cursor after
@@ -16011,8 +15975,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
 
     function build(st) {
       if (st === 0) return buildWelcome();
-      if (LIST && st === 1) return REVEAL ? buildReveal() : buildList();
-      if (st >= 1 + LIST && st <= NEWI.length + LIST) return buildLife(NEWI[st - 1 - LIST]);
+      if (st >= 1 && st <= NEWI.length) return buildLife(NEWI[st - 1]);
       if (st === REST) return buildRest();
       return buildNext();
     }
@@ -16075,7 +16038,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       spy = null; if (chipRO) chipRO.disconnect(); root.classList.remove('arChipsStuck', 'arScrolled'); if (fitG) later(fitG, 0);
       var welcome = step === 0, end = step === NEXT;   // end: That's your debrief, in the Full bg layout ("go with a Full bg layout; no progress nav at the top"), on the welcome's ground (the Sphere's or the Halftone's, else the picture)
       var wasSph = root.classList.contains('arIsSphere');
-      root.classList.toggle('arIsWelcome', welcome); root.classList.toggle('arIsIntro', (REVEAL && step === 1) || (RVW && welcome) || (end && !sphL)); root.classList.toggle('arIsSphere', !!sphL && (welcome || end)); root.classList.toggle('arIsEnd', end);
+      root.classList.toggle('arIsWelcome', welcome); root.classList.toggle('arIsIntro', (RVW && welcome) || (end && !sphL)); root.classList.toggle('arIsSphere', !!sphL && (welcome || end)); root.classList.toggle('arIsEnd', end);
       root.setAttribute('data-ar-step', String(step));
       backBtn.hidden = step === 0;
       stepWrap.hidden = welcome || end;
@@ -16109,13 +16072,13 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       go: go,
       reset: function () { go(0, true); },
       /* where it stands, and back there in a new mount ("when I change a tweak don't reload the experience from the beginning, stay on the current screen"): the step by what it is (the list, the nth insight...), so the list on or off still lands on the same screen; its scroll kept when the screen is the same, and its entrance not played again */
-      where: function () { return { t: step === 0 ? 'w' : LIST && step === 1 ? 'l' : step <= NEWI.length + LIST ? 'i' + (step - 1 - LIST) : step === REST ? 'r' : 'n', y: body.scrollTop }; },
+      where: function () { return { t: step === 0 ? 'w' : step <= NEWI.length ? 'i' + (step - 1) : step === REST ? 'r' : 'n', y: body.scrollTop }; },
       at: function (w, keepY) {
         if (!w || !alive) return;
         var t = w.t, i = t.charAt(0) === 'i' ? Math.min(NEWI.length - 1, +t.slice(1) || 0) : 0;
-        still = true; go(t === 'w' ? 0 : t === 'l' ? 1 : t === 'r' ? REST : t === 'n' ? NEXT : 1 + LIST + i, true); still = false;
+        still = true; go(t === 'w' ? 0 : t === 'l' ? 1 : t === 'r' ? REST : t === 'n' ? NEXT : 1 + i, true);   // ('l', the list a remount from an older page was on: the first insight) still = false;
         try { root.getAnimations({ subtree: true }).forEach(function (a) { var e = a.effect && a.effect.getComputedTiming && a.effect.getComputedTiming(); if (e && isFinite(e.endTime)) a.finish(); }); } catch (e) {}
-        if (keepY && !(t === 'l' && !LIST)) body.scrollTop = w.y;
+        if (keepY && t !== 'l') body.scrollTop = w.y;
       },
       destroy: function () {
         if (!alive) return;
@@ -30846,7 +30809,7 @@ hairline({
     let per = '';
     const mount = keep => { const w = keep && inst && inst.where ? inst.where() : null, was = per; per = opt('stArPer') === 'p2' ? 'p2' : 'p1';   // a tweak changed: back on the same screen after ("don't reload the experience from the beginning")
       if (inst) inst.destroy(); frame.textContent = '';
-      inst = window.AsyncReport.mount(frame, { ev: opt('stArEv') === 'v2' ? 'v2' : 'v1', persona: per, more: opt('stArMore') === 'fold' ? 'fold' : 'sheet', bm: opt('stArBm') === 'carousel' ? 'carousel' : 'static', mean: opt('stArMean') === 'text' ? 'text' : 'card', src: opt('stArSrc') === 'out' ? 'out' : 'in', assure: opt('stArAss') !== 'off', lbg: opt('stArLbg') === 'on', svis: opt('stArSvis') === 'stream' ? 'stream' : 'sphere', cdn: opt('stArCdn') === '' ? .4 : +opt('stArCdn') / 100, amt: opt('stArAmt') === '' ? .5 : +opt('stArAmt') / 100, list: opt('stArList') === 'on', wvis: 'photo',   /* Intro screen: Split bg, the welcome's picture with the list after; Halftone, Full bg and Sphere, the welcome itself as the reveal (Halftone on creme, its picture dithered as the Report visuals do) */ theme: opt('themeSel') === 'dark' ? 'dark' : 'light', bar: opt('stArBar') === 'grad' ? 'grad' : 'solid', foot: opt('stArFoot') === 'grad' ? 'grad' : 'solid', welcome: opt('stArList') === 'reveal' ? 'reveal' : opt('stArList') === 'sphere' ? 'sphere' : opt('stArList') === 'orbit' ? 'orbit' : opt('stArList') === 'ht' ? 'halftone' : opt('stArWel') === 'includes' ? 'includes' : 'cards', tabs: opt('stArTab') || 'pills', cards: opt('stArCard') === 'outline' ? 'outline' : 'fill', mb: opt('stArMb') === '2' ? 2 : 3, srcVis: opt('stArSrcVis') === 'image' ? 'image' : 'hairline', onClose: () => { if (inst) inst.reset(); } });
+      inst = window.AsyncReport.mount(frame, { ev: opt('stArEv') === 'v2' ? 'v2' : 'v1', persona: per, more: opt('stArMore') === 'fold' ? 'fold' : 'sheet', bm: opt('stArBm') === 'carousel' ? 'carousel' : 'static', mean: opt('stArMean') === 'text' ? 'text' : 'card', src: opt('stArSrc') === 'out' ? 'out' : 'in', assure: opt('stArAss') !== 'off', lbg: opt('stArLbg') === 'on', svis: opt('stArSvis') === 'stream' ? 'stream' : 'sphere', cdn: opt('stArCdn') === '' ? .4 : +opt('stArCdn') / 100, amt: opt('stArAmt') === '' ? .5 : +opt('stArAmt') / 100, wvis: 'photo',   /* Intro screen: Split bg, the welcome's picture (no list after it now); Halftone, Full bg and Sphere, the welcome itself as the reveal (Halftone on creme, its picture dithered as the Report visuals do) */ theme: opt('themeSel') === 'dark' ? 'dark' : 'light', bar: opt('stArBar') === 'grad' ? 'grad' : 'solid', foot: opt('stArFoot') === 'grad' ? 'grad' : 'solid', welcome: opt('stArList') === 'reveal' ? 'reveal' : opt('stArList') === 'sphere' ? 'sphere' : opt('stArList') === 'orbit' ? 'orbit' : opt('stArList') === 'ht' ? 'halftone' : opt('stArWel') === 'includes' ? 'includes' : 'cards', tabs: opt('stArTab') || 'pills', cards: opt('stArCard') === 'outline' ? 'outline' : 'fill', mb: opt('stArMb') === '2' ? 2 : 3, srcVis: opt('stArSrcVis') === 'image' ? 'image' : 'hairline', onClose: () => { if (inst) inst.reset(); } });
       wrap.classList.toggle('aqInk', !!(inst && inst.el && !inst.el.classList.contains('arDark')));
       if (inst && inst.el) frame.style.background = getComputedStyle(inst.el).backgroundColor;   // the frame in the debrief's own paper, for the full screen's margins
       if (w && inst && inst.at) inst.at(w, was === per); };   // its scroll too, when it is the same member's
