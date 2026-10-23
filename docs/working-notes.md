@@ -15398,3 +15398,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **The screen steps aside while a panel is open** ("the viewport moves to the left to leave free space for the tweak cards on the right"). The screen's centre (`--vwC`, which the dock also uses) is set so the "+" and the panel fit at its right, but never closer than half its width to the window's edge.
   - It slides over .45s (frame, page, report wrap, dim) and slides back on close. Swapping between panels keeps it where it is.
   - Only with a forced breakpoint (a framed screen); in Auto there's nothing to move.
+- Async report, Tweaks → General → Member: Persona #1 now names its member too, **Annette Harb**, 521b2f83-61b8-4988-94d7-7ded1e211074. Like Persona #2, as a reference only, not in the report.
