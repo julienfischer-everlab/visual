@@ -15537,3 +15537,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - On Get started the sphere is already where the profile's is: checked to the pixel on the phone in both formats and on the desk in the full modal. The carry only moves it in the desk's small modal.
 - **Tweaks → Welcome → Format** now defaults to Full modal.
 - `sphere()` seed/burst: `seed(at, oy)` shows the pixel, which grows and breathes; `burst(sw)` draws it in over `sw` ms, then the ball is flung out from it. `dot()` takes a glow strength.
+
+## The Overview on every open
+
+- With no hash the prototype already opened on the Overview (Dark, XS). But two session restores could put the last page back on top in the same browser tab: the service page (`everlab:svc`) and the Timeline (`everlab:tl`). A fresh open of the artifact keeps the tab's session storage, so it could land on the Timeline or a service page.
+- These restores now run only after the bar's **Refresh**. It sets a one-shot `everlab:refresh` mark before reloading, and the page spends the mark as it sets itself up. Any other open lands on the Overview ("Overview as default view").
+- Checked: opening the Timeline and then reopening the page in the same tab → Overview. Timeline, then Refresh → back on the Timeline.
+- A link that names a page (`#documentation`, `#ar2`, `#health-profile`...) still opens that page.

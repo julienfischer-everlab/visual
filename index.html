@@ -35421,10 +35421,11 @@ hairline({
       render(); };   // render() ends in filter() and fillPlan() (the booked card with it)
     addEventListener('everlab:persona', e => setPersona(e.detail === 'steven' ? 'solo' : 'member'));
     window._tl = { open, close, laterOf, setLater, tab: toTab, persona: setPersona };
-    { let sv = null; try { sv = JSON.parse(sessionStorage.getItem('everlab:svc') || 'null'); } catch (e){}
+    /* only through the bar's Refresh (its one-shot mark): a fresh open of the prototype is the Overview ("Overview as default view"), whatever was last shown in this tab */
+    { let sv = null; try { if (sessionStorage.getItem('everlab:refresh') === '1') sv = JSON.parse(sessionStorage.getItem('everlab:svc') || 'null'); } catch (e){}
       if (sv && location.hash) setTimeout(() => { if (document.body.classList.contains('m9') && !document.body.classList.contains('homeOn') && window._svc) window._svc.openDesk(sv[0], sv[1]); }, 0); }   // a reload on the service page comes back to it
     // a reload while the Timeline was showing comes back to it (the Overview's hash, #m9, is the page under it)
-    { let back = false; try { back = sessionStorage.getItem('everlab:tl') === '1'; } catch (e){}
+    { let back = false; try { back = sessionStorage.getItem('everlab:refresh') === '1' && sessionStorage.getItem('everlab:tl') === '1'; } catch (e){}
       if (back) setTimeout(() => { if (document.body.classList.contains('m9') && !document.body.classList.contains('homeOn')) open(); }, 0); }
   })();
   // ...and the desk's, from its bar's disc: the same card as a centred modal
@@ -35993,7 +35994,8 @@ hairline({
   // reveals play from the top. The version travels in the hash, so the reload
   // comes back to the page being looked at rather than to the first one.
   document.getElementById('tkReload')
-    .addEventListener('click', () => location.reload());
+    .addEventListener('click', () => { try { sessionStorage.setItem('everlab:refresh', '1'); } catch (e){} location.reload(); });   // marked: the reload comes back to the service page or the Timeline it was on
+  try { sessionStorage.removeItem('everlab:refresh'); } catch (e){}   // the mark read (above, as the page set itself up) and spent
   // The tweaks dropdown. The panel is fixed, so it is placed under its button
   // each time it opens (the bar can have scrolled); it closes on a click
   // anywhere outside it, on Escape, and when the bar scrolls out from under it.
