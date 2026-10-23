@@ -15369,3 +15369,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Shown when switched to Yes, and each time the Overview opens with it on.
   - Entrance: the card rises, the words follow; none with reduced motion.
 - **Overview card's progress**: done and half-done increments in the ink (white on dark, #2e1f1a on light), no longer orange ("just use white").
+- Overview card: the **whole card is clickable** and does what its button does ("the whole card should be clickable"): straight into the step, the intro when not begun or done; the Program card scrolls to the plan.
+- Its ground is the Telehealth tile's ("the background should be the same as the telehealth"): `.ovSvcChip`'s white at 4% on dark, ink at 6% on light, 8% / 9% on hover. The Program card keeps its brown.
