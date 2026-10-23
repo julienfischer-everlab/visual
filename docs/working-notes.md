@@ -15200,3 +15200,19 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - On: particles within 80px of the active marker keep full alpha, fading to 50% by 170px and beyond. When the active marker changes, the lit area hands over from the old point to the new one over 600ms.
 - Each layer's `focus(k)` takes the active point. Sphere hero calls it as each label opens and when a label is re-pinned; Blood stream calls it on each new active marker.
 - Measured total canvas alpha, on vs off: Sphere hero -39%, Blood stream -22% (the stream's particles crowd round its marker).
+
+### Async report: Persona #2 rebuilt from a shared report
+- Persona #2 is now the report in the shared screens: Dr Joshua Martin, 15 October 2026, five insights in their order: pelvic protein (CA125), inherited cholesterol (Lp(a)), low iron reserves, thyroid and inflammation settled, vitamin D low. Headlines, What we noticed and What this means for you are verbatim; markers, values, dates, range bars and statuses as on the screens.
+- Not on the screens, so filled to fit: each marker's earlier readings (trend points, shaped to its sparkline and the narrative), the markers inside each Everything else area (its counts exact, the names each area's usual markers, those behind the insights left out), and the welcome's count (89: 77 in Everything else plus the 12 from this draw behind the insights).
+- Everything else reads "77 markers across 15 areas": the screens' header says 81 but their fifteen counts add to 77, and the prototype computes it from the counts.
+- Its sources are the blood tests the screens name; it has no questionnaire answers. The member's name and ID are not written into the prototype.
+- MKV gained readings for the new areas' markers, and a reading for each status a shared marker now takes.
+
+### Async report: See sources sheet; secondary text 56%; headline padding
+- Sources: Outside card is one link, See sources, right of the X biomarkers heading (the Records and Questionnaire pills removed). It opens the full bottom sheet, Sources, with a segmented tab pinned at its top: Record (each report, its kind over its name) and Questionnaire (each question over its answer). A tab with nothing says so. It opens on Record unless only answers exist; arrow keys switch tabs.
+- Secondary text at ink 56% (white on dark, black on light): paragraphs, ledes, the V2 lede, .arInk60, questions over answers.
+- The insight's headline has 24px of padding at its right.
+
+### Async report tweaks regrouped; Variation removed
+- Order: Intro (on top), Async report (Preset and Persona only), Insight (Evidence, Sources, Biomarkers, Meaning, See more, Fixed bar, Footer, Tab style, Max biomarkers, Data visual, Cards style).
+- Variation (Full modal / Modal) is gone: the desktop debrief is always the full modal. It is out of the presets' KEYS too.
