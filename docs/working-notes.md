@@ -15227,3 +15227,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Tweaks: General (was Async report: Preset, Persona) first, then Intro, then Insight.
 - Version menu: Archives is "Insights (archives)", Organ Age "Organ Age landing page", Teaser video "Organ Age teaser video".
 - Checked "full modal on the body colour": every full sheet (Sources, See N more, the biomarker detail) and the desk's full modal measure the page's own colour in dark, light and Colour (dark rgb 15,15,15 both). Only content-height sheets keep the lighter grey in dark.
+
+### Everything else: areas as cards, and an Areas tweak
+- Each area is a card you tap ("a ghost card so you can click on it; no divider"): the grey cards' fill (#000 4%, dark #fff 6%), 16 round, 14/16 inside, 8 apart, a hover and pressed tone; outlined when Cards style is Outlined. The dots sit 4 from the counter; every counter 32 wide.
+- Tweak Everything else > Areas: List (rows with dividers, as before), Grid (two tiles a row, the name at the top, the dots and count at the foot, right), Stacked (the cards, default). In the presets' keys.
