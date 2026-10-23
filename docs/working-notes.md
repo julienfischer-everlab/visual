@@ -15283,3 +15283,11 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Step-done particles come from the sphere** ("should come from the sphere, not from outside"): each of the 150 starts at a point in the ball's still-empty top, faint in the card's ink, and falls curving into the band filling, taking orange or white over the first half of its fall.
 - **The sphere is always fed** ("some floating particles outside, top right, top left, attracted to the sphere, slow but constant"): 16 motes out at 1.2-1.6 radii, above the horizon on either side, each drawn in over 8-13 s to just inside the shell, turning a little, fading in and out; a new one where it started. On the Overview card and the sheet's home. Off with reduced motion.
 - **Home trims**: no news chip over the sphere ("Booked · …", "Profile saved…"), no eyebrow ("N of 3 done"); step rows 20px padding (+4); title-to-line gap 4px (+2); Edit a ghost pill (ink 8%, 12% on the row's hover) instead of an underlined link; booked, the row reads "Onboarding consultation booked" over its time; "Dr Lee reads this before your call" (not the weekday).
+
+## Health profile: sphere look tweaks, half step only on drop-off, intro bleed
+
+- **Tweaks → Health profile** gains two rows, applied live to every sphere (Overview card and the profile's intro):
+  - **Empty dots**: Base / **+20%** (default, "make the inactive particles more visible by 20%") / +50% / +100%. Multiplies the opacity the empty particles are drawn at.
+  - **Floating**: **Neutral** (default, "floating particles should be neutral, not orange"; the empty particles' ink, peak 55%) / Orange (the earlier orange and white, peak 70%) / Off.
+- **Overview card bar**: the next step's half increment shows only when the member left part-way through it ("the half increment should only occur when the user drops off in the middle of the flow"), i.e. that step is `prog` (at least one of its screens passed). Not begun: the next third empty.
+- **Intro**: the sphere now overlaps the top nav by 32px (was 16; "the content bleeds 32px above the top nav"). The Step 1 line breaks after "By the end," ("About 12 minutes. By the end, / Dr Lee knows you before you meet."), via a newline and `white-space: pre-line` on the intro's line.
