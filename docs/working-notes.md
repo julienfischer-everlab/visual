@@ -15322,3 +15322,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - A page's children never shrink (`.hpScr > * { flex-shrink: 0 }`): the review's video tile had been squashed once the page grew taller than the screen.
 - Booked row on the intro: "Onboarding consultation call", sub "Booked Thu 29 Oct, 10:00am".
 - Overview card, not begun at all (not even left part-way): no progress bar, the main CTA (Get started) the card's full width ("if the journey has not started yet, use fill full for the main CTA"). Begun: the bar and the button at its right, as before.
+- A stage counts as begun once opened, so leaving from its first screen fills the card's next increment half ("if the user dropped off during a current step, fill half the increment"). It also shows on the intro as "To finalise" with the dashed ring.
+- Overview card: 16 more between the title/subtitle and the sphere ("+16px gap"). Desk title clears 152, subtitle 164; XS both 136.
