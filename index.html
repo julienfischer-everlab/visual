@@ -12074,7 +12074,6 @@
         <div class="tkSub">Welcome</div>
         <div class="tkRow"><span class="lbl">Format</span><select id="stHpWelFmt" class="tkSegSel" aria-label="The welcome's format"><option value="full" selected>Full modal</option><option value="sheet">Bottom sheet full</option></select></div>   <!-- ("tweak format: full modal, bottom sheet full (current)") -->
         <div class="tkRow"><span class="lbl">Intro</span><span class="tkPreCtl"><button class="tkBtn" type="button" id="stHpWelRp">Replay</button></span></div>
-        <div class="tkRow" id="stHpWelBackRow" hidden><span class="lbl">Health profile</span><span class="tkPreCtl"><button class="tkBtn" type="button" id="stHpWelBack">Back to intro</button></span></div>   <!-- only on the profile reached from the welcome ("a tweak to transition back to the intro") -->
         </div>
         <div class="tkGroup" data-pages="ov" data-sec="plan">
         <div class="tkSub">Action plan</div>
@@ -16449,6 +16448,7 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
 .hpSimL { min-width: 44px; font-size: 12px; line-height: 16px; font-weight: 500; text-align: center; color: rgba(255, 255, 255, .64); white-space: pre; font-variant-numeric: tabular-nums; }
 html.tkFlMove :is(body[data-bp] .dash, body[data-bp] .dash .side, body[data-bp] #bpFrame, body[data-bp] .aqWrap.aqDesk, body[data-bp] #dOver .ovDimD, body[data-bp] .lp) { transition: left .45s cubic-bezier(.2, .8, .2, 1); }   /* the screen sliding aside for a section's panel, and back */
 .tkFlPlus { position: fixed; z-index: 74; display: none; align-items: center; justify-content: center; width: 36px; height: 36px; padding: 0; border: 1px solid #2a2a2e; border-radius: 50%; background: #131316; color: #e4e4e7; cursor: pointer; box-shadow: 0 6px 18px rgba(0, 0, 0, .35); transition: background .15s ease, transform .2s ease; }   /* a section's tweaks, beside the screen */
+.tkFlBack { position: fixed; z-index: 74; display: none; align-items: center; gap: 6px; height: 36px; padding: 0 14px 0 10px; border: 1px solid #2a2a2e; border-radius: 18px; background: #131316; color: #e4e4e7; font: 500 13px/1 system-ui, -apple-system, 'Segoe UI', sans-serif; cursor: pointer; box-shadow: 0 6px 18px rgba(0, 0, 0, .35); transition: background .15s ease; } .tkFlBack.vis { display: flex; } .tkFlBack:hover { background: #1d1d21; } .tkFlBack:focus-visible { outline: 2px solid #4b7bec; outline-offset: 2px; }   /* Back to the intro, under the Welcome's +, the + its look */
 .tkFlPlus.vis { display: flex; } .tkFlPlus:hover { background: #1d1d21; } .tkFlPlus.on { background: #fafafa; color: #111; border-color: #fafafa; } .tkFlPlus.on svg { transform: rotate(45deg); } .tkFlPlus svg { transition: transform .2s ease; } .tkFlPlus:focus-visible { outline: 2px solid #4b7bec; outline-offset: 2px; }
 .topbar .tkPanel.tkFlPanel { position: fixed; z-index: 76; width: 380px; max-height: min(70vh, 560px); box-shadow: 0 18px 50px rgba(0, 0, 0, .5); } .topbar .tkPanel.tkFlPanel[hidden] { display: none; }   /* the open section's group, borrowed from the Tweaks list */
 .hpSim.lt .hpSimB { background: rgba(0, 0, 0, .07); color: #111; }
@@ -31543,8 +31543,7 @@ hairline({
     { const t = document.getElementById('stHpSt'); if (t) t.value = stepOf(); }
     /* a $299 member's first visit (Tweaks: First-time user -> Trigger; Welcome -> Replay): the welcome over the Overview, from its first frame, in place if it is up; Get started into the profile (start) */
     { ['stHpFirstGo', 'stHpWelRp'].forEach(id => { const b = document.getElementById(id); if (b) b.addEventListener('click', () => open({ welcome: true })); });
-      const fm = document.getElementById('stHpWelFmt'); if (fm) fm.addEventListener('change', () => { if (inst && inst.welcome) open({ welcome: true }); });
-      const bk = document.getElementById('stHpWelBack'); if (bk) bk.addEventListener('click', () => window._hpBack && window._hpBack.go()); }   // a new format: the welcome up again in it
+      const fm = document.getElementById('stHpWelFmt'); if (fm) fm.addEventListener('change', () => { if (inst && inst.welcome) open({ welcome: true }); }); }   // a new format: the welcome up again in it
     { const lk = () => HP.look && HP.look({ dim: opt('stHpDim'), feed: opt('stHpFeed') }); lk(); ['stHpDim', 'stHpFeed'].forEach(id => { const t = document.getElementById(id); if (t) t.addEventListener('change', lk); }); }   // the sphere's look (Tweaks -> Health profile), on every sphere at once
     // the demo states (Tweaks -> Health profile): not started, one or two of three, completed; Saved is whatever was last done here
     let hpSetting = false;
@@ -31584,6 +31583,10 @@ hairline({
     const host = document.createElement('div'); host.className = 'tkFl'; bar.appendChild(host);   // in the bar: the Tweaks list's own styles reach the borrowed group
     const panel = document.createElement('div'); panel.className = 'tkPanel tkFlPanel'; panel.setAttribute('role', 'dialog'); panel.hidden = true; host.appendChild(panel);
     const plus = {}; let openK = null, home = null;
+    /* on the profile reached from the welcome, a Back under the Welcome's + ("just a Back CTA below the plus"): Get started played backwards, at once */
+    const backB = document.createElement('button'); backB.type = 'button'; backB.className = 'tkFlBack'; backB.setAttribute('aria-label', 'Back to the intro');
+    backB.innerHTML = '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3.5 5.5 8l4.5 4.5"/></svg><span>Back</span>';
+    backB.addEventListener('click', e => { e.stopPropagation(); if (window._hpBack) window._hpBack.go(); }); host.appendChild(backB);
     const nameOf = g => { const t = g.querySelector('.tkSecH .nm, .tkSub'); return t ? t.textContent.trim() : kOf(g); };
     /* the screen steps left while a panel is open, room at its right for it ("when a plus tweak is opened, the viewport moves to the left to leave free space for the tweak cards on the right"): its centre (--vwC, the dock's too) set so the + and the panel fit beside it, never past its own half-width from the edge; back on close; a slide either way */
     const follow = () => { const de = document.documentElement, t0 = performance.now(); de.classList.add('tkFlMove'); const f = () => { tick(); if (performance.now() - t0 < 520) requestAnimationFrame(f); else de.classList.remove('tkFlMove'); }; requestAnimationFrame(f); };
@@ -31611,7 +31614,6 @@ hairline({
       const spots = [];
       groups().forEach(g => { const k = kOf(g); const b = plus[k] || (plus[k] = btn(k)); b.setAttribute('aria-label', 'Tweaks: ' + nameOf(g));
         if (k === 'wel'){ const bo = !!(window._hpBack && window._hpBack.ok()), el = document.querySelector('.hpWrap.hpOpen:not(.shut) .hpWel') || (bo ? document.querySelector('.hpWrap.hpOpen:not(.shut) .hpSheet') : null), r = el && el.getBoundingClientRect();   /* the welcome's: beside its sheet, at its top, while it is up; and beside the profile it led to, with the way back */
-          { const row = document.getElementById('stHpWelBackRow'); if (row && row.hidden === bo) row.hidden = !bo; }
           if (r && r.height && r.bottom > top + 16 && r.top < bot + 28) spots.push({ k, b, y: Math.max(top, Math.min(bot, r.top)) }); else { b.classList.remove('vis'); if (openK === k) shut(); } return; }
         let el = null; if (live) el = [...over.querySelectorAll(k === 'primary' && window._hpGone ? '.ovhero' : SECS[k])]   /* Next step: the hero the primary card, the + at it */
           .find(e => !e.classList.contains('ovOff') && e.getClientRects().length && e.getBoundingClientRect().height > 0);
@@ -31619,6 +31621,8 @@ hairline({
           if (ok){ const hit = document.elementFromPoint(Math.min(innerWidth - 1, Math.max(0, r.left + 12)), Math.min(innerHeight - 1, Math.max(0, Math.max(r.top, top) + 12))); ok = !!(hit && over.contains(hit)); } }   // the section itself in view, not under another page
         if (ok) spots.push({ k, b, y }); else { b.classList.remove('vis'); if (openK === k) shut(); } });
       spots.sort((a, b) => a.y - b.y).forEach((s, i, a) => { if (i && s.y < a[i - 1].y + 44) s.y = a[i - 1].y + 44; s.b.style.left = Math.round(x) + 'px'; s.b.style.top = Math.round(s.y) + 'px'; s.b.classList.add('vis'); });   // a section close under another: its + just below the one above
+      { const pw = plus.wel, on = !!(pw && pw.classList.contains('vis') && window._hpBack && window._hpBack.ok() && !document.querySelector('.hpWrap .hpWel'));   // its Back under it, while the profile it led to is up
+        backB.classList.toggle('vis', on); if (on){ backB.style.left = pw.style.left; backB.style.top = (parseFloat(pw.style.top) + 44) + 'px'; } }
       if (openK && plus[openK] && plus[openK].classList.contains('vis')){ const br = plus[openK].getBoundingClientRect(), h = panel.offsetHeight || 200;
         /* outside the screen, at its right ("the tweak should be outside the viewport on the right side"): beside its +, as wide as the room there allows (360 down to 260); short of that, left of the screen; only failing both, over it */
         let l = br.right + 12, w = Math.min(380, room - 8 - l);

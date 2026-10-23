@@ -15586,3 +15586,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Status lines:** 13px (was 12); 12px between the square and the words (was 10); the square 1px up.
 - **Titles:** 4px smaller: 34 on 38 on the phone, 36 on 40 on the desk.
 - **Between the two titles:** the first now goes as its last letter settles (1 s after it begins, no hold) and dissolves in 0.4 s; the second starts 0.3 s after ("faster between the portions of the H1").
+
+## Back to the intro: a floating Back under the +
+
+- The "Back to intro" row is gone from the Welcome card. On the profile reached from the welcome there is now a **Back** button under the Welcome "+" ("just a Back CTA below the plus"): 44px below it, the same left edge, in the "+"'s look (a 36px pill, chevron and "Back"). It plays Get started backwards at once. It shows only while that profile is up at its intro, and goes once the welcome is back.
