@@ -15431,3 +15431,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - The **Primary card** group sits in the Tweaks list where its card stands on the screen ("positioned at the right order based on the screen order"): the profile's place, or the hero's when Next step. It now comes first, before Services, Insights, Action plan and Later card, matching the screen.
 - **Floating panel**: one card ("just use a single card, no double card, when tweak floating"). The borrowed group drops its own card ground and top margin, so the panel is the only card; in the Tweaks list it keeps its card.
 - Intro halo now **covers the top 60% of the screen** ("halo covers 60% of the top"). It is drawn on the intro page itself, an ellipse 85% wide and 62% tall centred on the sphere (14% down), with the same soft orange and breathing, under the content.
+- **The welcome**: a full bottom sheet on the phone and tablet, a centred modal on the desk ("first time user: full bottom sheet; desktop: modal").
+  - Phone: the sheet runs from under the status bar (64 down in the device) to the bottom. The words sit in its middle, the button at its foot.
+  - Desk: 480 wide with 28 corners, centred, rising 24px as it fades in.
+  - In both, the sphere's lower half shows at the top edge.
