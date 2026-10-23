@@ -15645,3 +15645,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Reproduced** (on the published page itself, served locally, with real presses): in a narrow window (620px), the Welcome card can't fit beside the screen, so it opens over the screen and covers its "+" and the Back. A press on Back fell on the card's Format buttons and nothing happened.
 - **The fix:** the card now opens below the Back whenever they would overlap, and the Back sits above the cards (z 77).
 - **Checked with real presses:** 620 and 1200 wide, with the card open or not, and Back pressed 150, 300 or 400 ms into Get started. Each run ends on the welcome with its title and button, one sheet and one sphere, and Get started goes forward again.
+
+## Back to the intro: no jump on the first frame
+
+- The recording ("that's the problem") showed the profile's words and steps jumping up about 100px on the frame Back was pressed, then going down. The sphere's canvas sits in the profile's page as a block (132px tall); taking it into the welcome's ball emptied its room, so everything under it rose by that much at once.
+- A placeholder of the same box (`.hpSphPh`, the canvas's own classes) now takes its place before it moves. The profile's title stays at 338 on the frame of the click, then goes down and fades (338 → 410), with the device frame, phone, desk, and bottom-sheet format all checked.
+- The earlier probe had missed it: it began sampling after the click, so the jump looked like the starting point.
+- The way back is otherwise unchanged: the profile down 72 and fading (0.38 s), the intro's words coming down from above (0.66 s, from 0.3 s), the same sphere easing to its place. Round trip (Back, then Get started again) checked: one sphere, no errors.
