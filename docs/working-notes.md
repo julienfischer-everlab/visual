@@ -15557,3 +15557,18 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Status lines** sit 64px under the sphere's area (its 132px box), no longer on the title's line. Their roll is tighter: they travel 55% of the line (was 100%) on a 6px drum, so the passing lines sit close together ("less gap between rows on the bullets").
 - **Last title:** "It all starts with / a consultation / with your doctor." Two rows don't fit the phone (427px of text in 361px), so it takes three. The title box takes the longer title's rows, and the first title keeps to its foot.
 - **Get started** sits 96px from the bottom on the phone, the tablet and the full modal ("96 from bottom").
+
+## Welcome: one sphere for both screens; its place and the title's; floating tweaks close the docked column
+
+- **On the welcome, the sphere** sits 32px lower than the profile's (202 on the phone's full modal, the profile's 170) and is 10% larger (the ball's holder scaled 1.1, so the dot and motes with it). It never sits higher than 132 in the desk's small modal.
+- **Status lines and the title** both start 64px under the sphere's area (its 132 box at 110%, so 73 from its centre: the centre + 137).
+  - Each title takes its own rows' room from there. Its rows are held at its foot: the row being written stays on one line and those above rise, and the whole title ends 64px under the sphere.
+  - The titles are 8px larger: 38 on 42 on the phone, 40 on 44 on the desk.
+- **The button** sits 96px from the bottom on the phone, the tablet and the full modal, and 40px in the desk's small modal (now at least 560 tall to hold it all).
+- **One sphere ("important that the sphere from both screens is the same"):**
+  - On Get started, the welcome's own sphere (canvas and all) is put into the profile's sphere slot, and the profile's is given up, so nothing hands over and nothing crossfades.
+  - It is pushed up the 32px to the profile's place (0.58 s), then eases down to the profile's size as it lands (to 1.05 s): one transform animation on the canvas, from the welcome's centre and 1.76 scale to `scale(1.6)`.
+  - The page's words and steps come up from below on their own; the halo fades in once the page has landed.
+- **The jump:** the profile page set its header height (`--hpHeadH`) only when its ResizeObserver first reported, a frame after mounting, so its layout shifted under the sphere by about 60px. `mount()` now sets it, and `hpWide`, at once.
+  - Tracked frame by frame: the sphere now rises 299→267 and shrinks 232→211 on the phone, 206→174 on the desk. The largest step between frames is 12–18px, the motion itself.
+- **Floating tweaks:** opening a floating "+" panel now closes the Tweaks column docked at the right ("tweak floating auto-closes the fixed tweak right column"), so the room at the right is the floating card's.
