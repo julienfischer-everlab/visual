@@ -16412,7 +16412,14 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
 .hpSim.lt .hpSimB { background: rgba(0, 0, 0, .07); color: #111; } .hpSim.lt .hpSimB:hover { background: rgba(0, 0, 0, .12); } .hpSim.lt .hpSimL { color: rgba(0, 0, 0, .56); }
 .hpOvCard { position: relative; display: flex; flex-direction: column; min-height: 218px; margin: 34px 0 0; padding: 20px; border-radius: 22px; background: rgba(255, 255, 255, .06); color: #ececec; cursor: pointer; }   /* the insight cards' ground, #fff 6% (light: the paper, as theirs) ("the same background as the insights cards") */   /* the Next step card's layout, its picture gone, the sphere at its top right ("keep the same layout as Next step; remove the image; sphere top right; Health profile instead of Next step") */
 body.light .hpOvCard { background: #fdfaf3; color: #2e1f1a; }
-.hpOvCard:not(.hpOvPlan) { background: rgba(255, 255, 255, .04); transition: background .16s ease; } .hpOvCard:not(.hpOvPlan):hover { background: rgba(255, 255, 255, .08); }   /* the Telehealth tile's ground and its hover (.ovSvcChip: "the background should be the same as the telehealth") */
+.hpOvCard:not(.hpOvPlan) { isolation: isolate; background: rgba(255, 255, 255, .04); transition: background .16s ease; }
+/* an orange halo at its top right, breathing ("the halo orange as on the OrganAge, top right of the health profile card; it breathes, +30% opacity every 2 seconds in and out"): the OrganAge light's soft falloff, in the brand orange, under the content, inside the card's corners */
+.hpOvCard:not(.hpOvPlan)::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none;
+  background: radial-gradient(circle 230px at calc(100% - 64px) 40px, rgb(255 122 26 / .2) 0%, rgb(255 122 26 / .17) 14%, rgb(255 122 26 / .12) 28%, rgb(255 122 26 / .08) 42%, rgb(255 122 26 / .045) 56%, rgb(255 122 26 / .022) 69%, rgb(255 122 26 / .008) 81%, rgb(255 122 26 / 0) 100%);
+  opacity: .7; animation: hpHalo 4s ease-in-out infinite; }
+body.light .hpOvCard:not(.hpOvPlan)::before { filter: saturate(1.1); }
+@keyframes hpHalo { 50% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .hpOvCard::before { animation: none; } } .hpOvCard:not(.hpOvPlan):hover { background: rgba(255, 255, 255, .08); }   /* the Telehealth tile's ground and its hover (.ovSvcChip: "the background should be the same as the telehealth") */
 body.light .hpOvCard:not(.hpOvPlan) { background: rgba(46, 31, 26, .06); } body.light .hpOvCard:not(.hpOvPlan):hover { background: rgba(46, 31, 26, .09); }
 .hpOvCard .hpDots { width: 132px; height: 132px; color: inherit; }   /* 12 bigger */ .hpDots.hpSph { position: static; inset: auto; }   /* the sphere's canvas out of the page's full-screen canvas rule */ .hpOvCard .hpDots.hpSph { position: absolute; top: 20px; right: 20px; }
 .hpOvCard .hpOvEy { display: flex; align-items: center; min-height: 20px; margin: 0 0 2px; font-size: 12px; line-height: 18px; text-transform: uppercase; color: #8b8b86; }   /* the eyebrow, Next step's */

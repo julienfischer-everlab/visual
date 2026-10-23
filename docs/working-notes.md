@@ -15377,3 +15377,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - **Let's discover your health** arrives at 3.5s. It takes the sheet down, then brings the profile's intro up as the full modal.
   - X closes. With reduced motion, the second words and the button show at once.
   - The membership card and the What's next list are gone. The demo arrows hide while it's up.
+- Overview card: an **orange halo at its top right that breathes** ("the halo orange as on the OrganAge, top right of the health profile card; it breathes, +30% opacity every 2 seconds in and out").
+  - The OrganAge light's soft falloff in the brand orange: a 230px circle centred 64px in from the right and 40px down.
+  - It sits under the content, clipped to the card's corners (`isolation: isolate`, `::before` at z -1).
+  - Opacity runs .7 → 1 → .7 over 4s. Still with reduced motion. Not on the Program card.
