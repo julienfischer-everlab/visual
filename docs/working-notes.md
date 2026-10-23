@@ -15625,3 +15625,17 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 ## Motes all round the sphere
 
 - The motes drawn in to every sphere now start from anywhere round it, a full turn, instead of only its upper left and right ("floating particles a bit everywhere around, not only at the top"). Their count, speed, path and fading are as before.
+
+## The blink and the clipping: the welcome's paper fading on its own
+
+- **Found on video**, not in the canvas: the welcome sheet carries the sheet's own `transition: background-color .4s`. Making it see-through for the hand-off therefore faded its paper out over 0.4 s.
+  - **Going forward**, the sphere was already under it in the profile, so it vanished for 4–5 frames and came back: the blink. The profile's page, rising underneath, also stayed hidden and popped in at the end.
+  - **Going back**, the welcome mounted over the profile hid the profile's page and halo straight away and showed them again: the clipping.
+- **The fix:** the welcome is made see-through at once, `transition: none` alongside the transparent background, in both directions. After Back, it gets its paper back at once and its own transition again.
+- **Back now goes down** ("this should transition down, and the intro content should appear from top to down"), as the profile goes back from a step to its intro:
+  - the profile's page (halo with it), its button and bar go down 72 and fade (0.38 s, accelerating);
+  - the welcome's words and button come down from a third of the screen above (0.66 s from 0.3 s, easing out);
+  - the sphere drops to its place and grows to its 110% in step (0.9 s);
+  - in the bottom-sheet format, the frame is drawn in to the sheet (0.62 s from 0.2 s).
+  - This replaces the time-reversed playback, whose reversed easing kept both pages nearly still and then snapped them away at the end.
+- **Checked:** the sphere's screen position and size every frame (no jump, nothing scrolling or overflowing beside it); 25 fps video of Get started and Back (the sphere visible throughout); and frozen frames at 0–1050 ms in both directions.

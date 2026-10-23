@@ -31436,8 +31436,8 @@ hairline({
       const r0 = wel.el.getBoundingClientRect(), f0 = frame.getBoundingClientRect(), cr = cv.getBoundingClientRect(), fs = getComputedStyle(frame), rd = [fs.borderTopLeftRadius, fs.borderTopRightRadius, fs.borderBottomRightRadius, fs.borderBottomLeftRadius].join(' '), ht = getComputedStyle(wel.el).getPropertyValue('--ar-head-top');
       frame.style.transition = 'none'; wrap.classList.remove('hpBs', 'hpWelF'); wrap.classList.add('aqFull');
       const f1 = frame.getBoundingClientRect();
-      Object.assign(wel.el.style, { position: 'absolute', left: (r0.left - f1.left) + 'px', top: (r0.top - f1.top) + 'px', width: r0.width + 'px', height: r0.height + 'px', margin: '0', maxWidth: 'none', zIndex: '3', background: 'transparent', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', pointerEvents: 'none', overflow: 'visible' });
-      wel.el.style.setProperty('--ar-head-top', ht);   // the welcome held where it stood, over the profile, as it goes
+      Object.assign(wel.el.style, { position: 'absolute', left: (r0.left - f1.left) + 'px', top: (r0.top - f1.top) + 'px', width: r0.width + 'px', height: r0.height + 'px', margin: '0', maxWidth: 'none', zIndex: '3', transition: 'none', background: 'transparent', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', pointerEvents: 'none', overflow: 'visible' });
+      wel.el.style.setProperty('--ar-head-top', ht);   // the welcome held where it stood, over the profile, as it goes; see-through at once (the sheet's own 0.4 s background transition left its paper over the sphere and the profile for a moment: the blink)
       const hp = HP.mount(frame, { theme: dark() ? 'dark' : 'light', name: nameOf(), onClose: close, sphT0: wel.sphT0 }); inst = hp; paint();
       const hs = hp.el.querySelector('.hpHomeSph'), view = hp.el.querySelector('.hpView');
       frame.animate([{ clipPath: 'inset(' + (f0.top - f1.top) + 'px ' + (f1.right - f0.right) + 'px ' + (f1.bottom - f0.bottom) + 'px ' + (f0.left - f1.left) + 'px round ' + rd + ')' }, { clipPath: 'inset(0px 0px 0px 0px round 0px)' }], { duration: 620, easing: 'cubic-bezier(.32, .72, 0, 1)' });
@@ -31458,8 +31458,8 @@ hairline({
       setTimeout(() => wel.destroy(), 1000);
       hp.el.setAttribute('tabindex', '-1'); hp.el.style.outline = 'none'; setTimeout(() => { if (inst === hp) try { hp.el.focus({ preventScroll: true }); } catch (e){} }, 700);
     };
-    /* back to the welcome from the profile it led to (the Back under the Welcome's +, "if we land from the intro on the health profile, a tweak to transition back to the intro"): Get started exactly reversed. The welcome mounted over the profile in its last state
-       (the second title and the button), where its sheet will stand, the same sphere taken back into it; then every move of Get started played backwards, in reverse order over the same 1.06 s. Then the welcome is the sheet again */
+    /* back to the welcome from the profile it led to (the Back under the Welcome's +, "if we land from the intro on the health profile, a tweak to transition back to the intro"): the welcome mounted over the profile in its last state (the second title and the button),
+       where its sheet will stand, the same sphere taken back into it; the profile going down and away, the welcome's words coming down from above, as the profile goes back from a step to its intro. Then the welcome is the sheet again */
     const backOk = () => !!(fromIntro && inst && !inst.welcome && inst.el.classList.contains('hpAtHome') && wrap && wrap.classList.contains('on') && inst.el.querySelector('.hpHome canvas.hpSph'));
     const back2intro = () => {
       if (!backOk()) return; const hp = inst, cv = hp.el.querySelector('.hpHome canvas.hpSph');
@@ -31471,26 +31471,23 @@ hairline({
       cv.className = 'hpDots hpSph hpWelS';
       const wel = HP.welcome(frame, { theme: dark() ? 'dark' : 'light', name: nameOf(), onClose: close, onStart: () => start(), settled: true, sphere: sp0 });
       if (sheet){ hp.el.style.display = 'none'; wrap.classList.add('hpBs'); wrap.classList.remove('aqFull'); f0 = frame.getBoundingClientRect(); const fs = getComputedStyle(frame); rd = [fs.borderTopLeftRadius, fs.borderTopRightRadius, fs.borderBottomRightRadius, fs.borderBottomLeftRadius].join(' '); wrap.classList.remove('hpBs'); wrap.classList.add('aqFull'); hp.el.style.display = ''; }   // where the sheet will stand, measured with the welcome alone in it (the desk's modal is as tall as what it holds): its classes on and off again, nothing drawn between
-      Object.assign(wel.el.style, { position: 'absolute', left: (f0.left - f1.left) + 'px', top: (f0.top - f1.top) + 'px', width: f0.width + 'px', height: f0.height + 'px', margin: '0', maxWidth: 'none', zIndex: '3', background: 'transparent', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' });
+      Object.assign(wel.el.style, { position: 'absolute', left: (f0.left - f1.left) + 'px', top: (f0.top - f1.top) + 'px', width: f0.width + 'px', height: f0.height + 'px', margin: '0', maxWidth: 'none', zIndex: '3', transition: 'none', background: 'transparent', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' });
       if (sheet) wel.el.style.setProperty('--ar-head-top', '16px');   // the sheet's own, not the full modal's
       wel.place();
-      /* each of Get started's own moves, with its own duration and easing, played backwards (direction reverse) and mirrored in time over the whole (1.06 s): what went last comes first ("Back should reverse the transition") */
-      const T = 1060, rv = (el, kf, o) => el && el.animate(kf, Object.assign({}, o, { direction: 'reverse', delay: T - (o.delay || 0) - o.duration, fill: 'both' }));
-      const nr = cv.getBoundingClientRect(), k = 1.1, dx = ((cr.left + cr.width / 2) - (nr.left + nr.width / 2)) / k, dy = ((cr.top + cr.height / 2) - (nr.top + nr.height / 2)) / k, hpS = (1.6 * cr.width / (nr.width || cr.width)).toFixed(3), at = 'translate(' + dx.toFixed(1) + 'px, ' + dy.toFixed(1) + 'px) ';   // the sphere in the welcome's ball (itself at 110%): its place in the profile, there
-      rv(cv, [{ transform: 'translate(0px, 0px) scale(1.6)' }, { transform: at + 'scale(' + hpS + ')' }], { duration: 900, easing: 'cubic-bezier(.45, 0, .2, 1)' });
-      const view = hp.el.querySelector('.hpView'), rise = Math.max(160, Math.round(((view && view.clientHeight) || 600) * .34)), scr = hp.el.querySelector('.hpScr');
-      hp.el.querySelectorAll('.hpHome > :not(canvas)').forEach(el => rv(el, [{ transform: 'translateY(' + rise + 'px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 660, delay: 300, easing: 'cubic-bezier(.16, 1, .3, 1)' }));
-      rv(hp.el.querySelector('.arFoot'), [{ transform: 'translateY(24px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 600, delay: 460, easing: 'cubic-bezier(.16, 1, .3, 1)' });
-      [hp.el.querySelector('.arHead'), hp.el.querySelector('.hpRail')].forEach(el => rv(el, [{ opacity: 0 }, { opacity: 1 }], { duration: 320, delay: 620, easing: 'ease' }));
-      if (scr && scr.animate) try { scr.animate([{ opacity: .7 }, { opacity: 0 }], { duration: 400, easing: 'ease', fill: 'forwards', pseudoElement: '::before' }); } catch (e){}   // its halo, which came in last, goes first
-      [wel.el.querySelector('.hpWelBody'), wel.el.querySelector('.hpWelX')].forEach(el => rv(el, [{ transform: 'none', opacity: 1 }, { transform: 'translateY(-48px)', opacity: 0, offset: .7 }, { transform: 'translateY(-72px)', opacity: 0 }], { duration: 380, easing: 'cubic-bezier(.4, 0, .9, .6)' }));
-      const clip = sheet ? rv(frame, [{ clipPath: 'inset(' + (f0.top - f1.top) + 'px ' + (f1.right - f0.right) + 'px ' + (f1.bottom - f0.bottom) + 'px ' + (f0.left - f1.left) + 'px round ' + rd + ')' }, { clipPath: 'inset(0px 0px 0px 0px round 0px)' }], { duration: 620, easing: 'cubic-bezier(.32, .72, 0, 1)' }) : null;
+      /* the way back, as the profile goes back from a step to its intro ("this should transition down, and the intro content should appear from top to down"): the profile's page, its button and bar go down 72 and fade (0.38 s), its halo with it;
+         the welcome's words and button come down from a third of the screen above as they fade in (0.66 s, from 0.3 s); the sphere goes down to its place and up to its 110% in step with them (0.9 s); in the bottom-sheet format, the frame drawn in to the sheet (0.62 s, from 0.2 s) */
+      const nr = cv.getBoundingClientRect(), k = 1.1, dx = ((cr.left + cr.width / 2) - (nr.left + nr.width / 2)) / k, dy = ((cr.top + cr.height / 2) - (nr.top + nr.height / 2)) / k, hpS = (1.6 * cr.width / (nr.width || cr.width)).toFixed(3);   // in the welcome's ball (itself at 110%): where it stands now, in the profile
+      cv.animate([{ transform: 'translate(' + dx.toFixed(1) + 'px, ' + dy.toFixed(1) + 'px) scale(' + hpS + ')' }, { transform: 'translate(0px, 0px) scale(1.6)' }], { duration: 900, easing: 'cubic-bezier(.45, 0, .2, 1)', fill: 'backwards' });
+      const view = hp.el.querySelector('.hpView'), rise = Math.max(160, Math.round(((view && view.clientHeight) || 600) * .34)), downK = [{ transform: 'none', opacity: 1 }, { transform: 'translateY(48px)', opacity: 0, offset: .7 }, { transform: 'translateY(72px)', opacity: 0 }];
+      [hp.el.querySelector('.hpScr'), hp.el.querySelector('.arFoot'), hp.el.querySelector('.arHead'), hp.el.querySelector('.hpRail')].forEach(el => { if (el) el.animate(downK, { duration: 380, easing: 'cubic-bezier(.4, 0, .9, .6)', fill: 'forwards' }); });   // down and away, the halo in its page
+      [wel.el.querySelector('.hpWelBody'), wel.el.querySelector('.hpWelX')].forEach(el => { if (el) el.animate([{ transform: 'translateY(' + -rise + 'px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 660, delay: 300, easing: 'cubic-bezier(.16, 1, .3, 1)', fill: 'backwards' }); });   // from above, down into place
+      const clip = sheet ? frame.animate([{ clipPath: 'inset(0px 0px 0px 0px round 0px)' }, { clipPath: 'inset(' + (f0.top - f1.top) + 'px ' + (f1.right - f0.right) + 'px ' + (f1.bottom - f0.bottom) + 'px ' + (f0.left - f1.left) + 'px round ' + rd + ')' }], { duration: 620, delay: 200, easing: 'cubic-bezier(.32, .72, 0, 1)', fill: 'forwards' }) : null;
       requestAnimationFrame(() => { frame.style.transition = ''; });
       fromIntro = false; inst = wel; carried = null;
       setTimeout(() => {   // the welcome the sheet (or the full modal) again; the profile gone; its own moves let go
         if (inst !== wel) return; frame.style.transition = 'none';
         if (sheet){ wrap.classList.add('hpBs'); wrap.classList.remove('aqFull'); } else wrap.classList.add('hpWelF');
-        ['position', 'left', 'top', 'width', 'height', 'margin', 'max-width', 'z-index', 'background', 'display', 'flex-direction', 'align-items', 'text-align', '--ar-head-top'].forEach(p => wel.el.style.removeProperty(p));
+        ['position', 'left', 'top', 'width', 'height', 'margin', 'max-width', 'z-index', 'background', 'display', 'flex-direction', 'align-items', 'text-align', '--ar-head-top'].forEach(p => wel.el.style.removeProperty(p)); void wel.el.offsetWidth; wel.el.style.removeProperty('transition');   // its paper back at once, then its own transition again
         if (clip) clip.cancel(); hp.destroy(); [cv, wel.el.querySelector('.hpWelBody'), wel.el.querySelector('.hpWelX')].forEach(el => el && el.getAnimations().forEach(an => an.cancel())); paint(); wel.place(); requestAnimationFrame(() => { frame.style.transition = ''; });
       }, 1100);
     };
