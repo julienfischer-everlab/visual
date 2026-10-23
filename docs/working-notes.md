@@ -15216,3 +15216,14 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 ### Async report tweaks regrouped; Variation removed
 - Order: Intro (on top), Async report (Preset and Persona only), Insight (Evidence, Sources, Biomarkers, Meaning, See more, Fixed bar, Footer, Tab style, Max biomarkers, Data visual, Cards style).
 - Variation (Full modal / Modal) is gone: the desktop debrief is always the full modal. It is out of the presets' KEYS too.
+
+### Async report: entrance, six bars, sources notes, chart card, stacking, tweaks, menu names
+- Entrance ("write the title, then the rest section by section with a fade"): each insight's headline word by word, each word rising out of a blur (the Full bg's arRvW, .07s apart), then every part under it fading in turn (.16s apart) from just before the last word lands: the lede, the tabs, the evidence, What we noticed, What this means for you, Any question?, Was this useful?. Everything else writes its title too, then its line and the chart's card, its chart starting then, the areas rising after. The fade has its own keyframes (arEnFade): the page push finishes the page's arRise / arFadeUp / arFade at once, which had cut it. At once on a tweak's remount and with reduced motion.
+- Progress: one bar per insight and one for Everything else (6), none for the welcome or the end; each step fills its own bar (Insight 1 the first, Everything else all six). It filled one bar ahead.
+- Step navigator under the Tweaks panel (z 50: over the report's 40, under the bar's 61).
+- Sources sheet: each tab opens with a note on the card grey, an info mark and a line: Record "These are the test results and records this insight is based on.", Questionnaire "These are the questions you answered that supported this insight."
+- Everything else's chart card: 32 padding, 32 radius; numbers 32px; each label 4 closer under its number, on one line; bars 18 round at the top (12 more); the columns 24 in from each side, the bars closer. Area dots 8px, 2 over each other; no chevron on the area rows.
+- The card behind a sheet: its content fades out and its dark-mode wash fades in with the push (.4s), no longer a step after it lands.
+- Tweaks: General (was Async report: Preset, Persona) first, then Intro, then Insight.
+- Version menu: Archives is "Insights (archives)", Organ Age "Organ Age landing page", Teaser video "Organ Age teaser video".
+- Checked "full modal on the body colour": every full sheet (Sources, See N more, the biomarker detail) and the desk's full modal measure the page's own colour in dark, light and Colour (dark rgb 15,15,15 both). Only content-height sheets keep the lighter grey in dark.

@@ -5597,12 +5597,12 @@
   body.asyncRep .dvWrap, body.asyncRep .dash, body.asyncM #phone2 .mscroll{pointer-events:none;}
   .aqWrap{display:none;}
   /* the step navigator beside the phone: a pill a step, the current one filled */
-  .aqNav{position:fixed;z-index:80;display:none;flex-direction:column;align-items:flex-start;gap:10px;} .aqNav.on{display:flex;}
+  .aqNav{position:fixed;z-index:50;display:none;flex-direction:column;align-items:flex-start;gap:10px;} .aqNav.on{display:flex;}
   .aqNavB{appearance:none;-webkit-appearance:none;border:0;margin:0;height:40px;padding:0 16px;border-radius:999px;font:inherit;font-size:15px;line-height:40px;white-space:nowrap;cursor:pointer;background:rgba(255,255,255,.08);color:rgba(255,255,255,.72);transition:background-color .2s ease,color .2s ease;}
   .aqNavB:hover{background:rgba(255,255,255,.14);color:#fff;} .aqNavB.on{background:#fff;color:#111;} .aqNavB:focus-visible{outline:2px solid currentColor;outline-offset:2px;}
   .aqNav.lt .aqNavB{background:rgba(0,0,0,.07);color:rgba(0,0,0,.68);} .aqNav.lt .aqNavB:hover{background:rgba(0,0,0,.12);color:#000;} .aqNav.lt .aqNavB.on{background:#000;color:#fff;}
   body.asyncD .aqWrap.aqDesk{display:block;position:fixed;left:0;right:0;top:var(--barH,45px);bottom:0;z-index:40;pointer-events:auto;}
-  body:is(.asyncD, .asyncM) .topbar{z-index:61;}   /* the bar, and its Tweaks panel, over the report, the desk's (40) and the phone's (60) ("tweak should go above screen") */
+  body:is(.asyncD, .asyncM) .topbar{z-index:61;}   /* the step navigator (50) under it too ("the tweaks should always be above everything") */   /* the bar, and its Tweaks panel, over the report, the desk's (40) and the phone's (60) ("tweak should go above screen") */
   body.asyncM #phone2 .aqWrap.aqPhone{display:block;position:absolute;inset:0;z-index:60;pointer-events:auto;border-radius:inherit;overflow:hidden;}
   .aqDim{position:absolute;inset:0;background:rgba(0,0,0,.45);opacity:0;transition:opacity .35s ease;}
   .aqWrap.on .aqDim{opacity:1;}
@@ -12112,6 +12112,14 @@
           </select>
         </div>
         </div>
+        <div class="tkGroup" data-pages="ar">
+        <div class="tkSub">General</div>   <!-- the report's own ("async report renamed General"), first, over Intro -->
+        <!-- V1 and V2 as presets ("V1 and V2 should be presets that I can save"): each holds every design tweak of the report, here and in Intro (not the Mode, not the Persona); picking one sets them, Save keeps the current ones in it, Reset gives it back its own. Kept in this browser -->
+        <div class="tkRow tkPreRow"><span class="lbl">Preset</span><span class="tkPreCtl"><select id="stArPre" class="tkSegSel" aria-label="The report's preset"><option value="v1" selected>V1</option><option value="v2">V2</option></select><button class="tkBtn tkPreBtn" id="stArPreSave" type="button" title="Keep the current tweaks in this preset">Save</button><button class="tkBtn tkPreBtn" id="stArPreReset" type="button" title="Give this preset back its own tweaks">Reset</button></span></div>
+        <!-- no Variation ("remove variation; full modal should be the one"): the desktop debrief is always the full modal -->
+        <!-- whose report: Persona #1, or Persona #2, another member's results ("create a duplicate of the Async to create a different persona"); a tweak only, the menu the one Async report ("Persona 1 and 2 must be a tweak inside the page") -->
+        <div class="tkRow"><span class="lbl">Persona</span><select id="stArPer" class="tkSegSel" aria-label="Whose report"><option value="p1" selected>#1</option><option value="p2">#2</option></select></div>
+        </div>
         <!-- the report's opening, its own card ("group Intro screen and Welcome: add this inside this Intro group"): the welcome, its header, then the screen introducing the insights -->
         <div class="tkGroup" data-pages="ar">
         <div class="tkSub">Intro</div>
@@ -12130,14 +12138,6 @@
         <div class="tkRow" id="stArCdnRow"><span class="lbl">Condense</span><span class="tkSlide"><input type="range" id="stArCdn" min="0" max="100" step="5" value="40" aria-label="How condensed the Sphere hero's particles are"><i class="tkVal" id="stArCdnV">40</i></span></div>
         <!-- the particles' amount, 0 to 100, 50 by default (a quarter to 1.75 times the points) ("create also a tweak: amount of particles, 0 to 100, in addition to condense") -->
         <div class="tkRow" id="stArAmtRow"><span class="lbl">Amount</span><span class="tkSlide"><input type="range" id="stArAmt" min="0" max="100" step="5" value="50" aria-label="How many particles"><i class="tkVal" id="stArAmtV">50</i></span></div>
-        </div>
-        <div class="tkGroup" data-pages="ar">
-        <div class="tkSub">Async report</div>
-        <!-- V1 and V2 as presets ("V1 and V2 should be presets that I can save"): each holds every design tweak of the report, here and in Intro (not the Mode, not the Persona); picking one sets them, Save keeps the current ones in it, Reset gives it back its own. Kept in this browser -->
-        <div class="tkRow tkPreRow"><span class="lbl">Preset</span><span class="tkPreCtl"><select id="stArPre" class="tkSegSel" aria-label="The report's preset"><option value="v1" selected>V1</option><option value="v2">V2</option></select><button class="tkBtn tkPreBtn" id="stArPreSave" type="button" title="Keep the current tweaks in this preset">Save</button><button class="tkBtn tkPreBtn" id="stArPreReset" type="button" title="Give this preset back its own tweaks">Reset</button></span></div>
-        <!-- no Variation ("remove variation; full modal should be the one"): the desktop debrief is always the full modal -->
-        <!-- whose report: Persona #1, or Persona #2, another member's results ("create a duplicate of the Async to create a different persona"); a tweak only, the menu the one Async report ("Persona 1 and 2 must be a tweak inside the page") -->
-        <div class="tkRow"><span class="lbl">Persona</span><select id="stArPer" class="tkSegSel" aria-label="Whose report"><option value="p1" selected>#1</option><option value="p2">#2</option></select></div>
         </div>
         <!-- an insight's page, its own card ("put all of that into a group Insight"): its evidence, its sections and their chrome -->
         <div class="tkGroup" data-pages="ar">
@@ -13896,6 +13896,7 @@
 @keyframes arFadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
 @keyframes arHeroZoom { from { transform: scale(1.12); } to { transform: none; } }
 @keyframes arFade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes arEnFade { from { opacity: 0; } to { opacity: 1; } }   /* the page's entrance, its parts after the title: its own name, so the push (which finishes the page's own rises) leaves it running */
 .arSheet .arAnimRise { animation: arRise .5s var(--ar-ease) both; }
 .arSheet .arAnimRise6 { animation: arRise .6s var(--ar-ease) both; }
 .arSheet .arAnimUp { animation: arFadeUp .5s var(--ar-ease) both; }
@@ -14275,8 +14276,8 @@
 .arSheet .arQa:not(.arQb) .arQaPanel { height: calc(100% - var(--ar-qa-top, 16px) - 16px); }   /* 16 of the card behind showing ("overlap card by 16px") */   /* the sheet 12 under the page behind, so the page always shows over it, a card ("should always overlap, see the prev screen behind a card") */
 .arSheet.arStk1 .arStage { transform: translateY(var(--ar-qa-top, 16px)) scale(.92); border-radius: 35px 35px 0 0; overflow: hidden; opacity: .8; }   /* the card behind at 80% ("opacity card behind 50%", then "opacity card stacked 80%") */
 .arSheet .arStage { transition: transform .4s var(--ar-ease), border-radius .4s var(--ar-ease), opacity .4s ease; }
-.arSheet .arStage > *, .arSheet .arQaPanel > * { transition: opacity 0s; } .arSheet.arStk1 .arStage > *, .arSheet.arStk2 .arQa.arOn:not(.arQb) .arQaPanel > * { opacity: 0; transition: opacity .12s linear .4s; }   /* the content goes only once the push is done, and is back the moment the sheet starts down ("hide the content only at the end of the transition": it blinked while drawn back) */   /* the card behind holds nothing: its words and pictures gone, only its tone ("card below should always have no content inside") */
-.arSheet .arStage::after { content: ""; position: absolute; inset: 0; z-index: 9; border-radius: inherit; box-shadow: inset 0 0 0 1px oklch(100% 0 0 / 0); pointer-events: none; transition: box-shadow .4s ease; } .arSheet.arDark.arStk1 .arStage::after { background: oklch(100% 0 0 / .07); transition: box-shadow .4s ease, background-color .12s linear .4s; }   /* its lift with its emptying, at the end, not over the content as the push starts */   /* no edge line ("no border on the card stacked") */   /* lifted to a sheet's tone, as a stacked sheet reads ("should be like this", the detail opened from the list) */   /* on the dark page, the card behind outlined, so it reads on the black ("still can't see the overlap card modal effect") */
+.arSheet .arStage > *, .arSheet .arQaPanel > * { transition: opacity 0s; } .arSheet.arStk1 .arStage > *, .arSheet.arStk2 .arQa.arOn:not(.arQb) .arQaPanel > * { opacity: 0; transition: opacity .3s ease .1s; }   /* fading with the push, out by its end: nothing changes once it has landed ("the opacity just clips at the very end of the transition to something stronger") */   /* the content goes only once the push is done, and is back the moment the sheet starts down ("hide the content only at the end of the transition": it blinked while drawn back) */   /* the card behind holds nothing: its words and pictures gone, only its tone ("card below should always have no content inside") */
+.arSheet .arStage::after { content: ""; position: absolute; inset: 0; z-index: 9; border-radius: inherit; box-shadow: inset 0 0 0 1px oklch(100% 0 0 / 0); pointer-events: none; transition: box-shadow .4s ease; } .arSheet.arDark.arStk1 .arStage::after { background: oklch(100% 0 0 / .07); transition: box-shadow .4s ease, background-color .4s ease; }   /* its lift with the push, not a step at its end */   /* its lift with its emptying, at the end, not over the content as the push starts */   /* no edge line ("no border on the card stacked") */   /* lifted to a sheet's tone, as a stacked sheet reads ("should be like this", the detail opened from the list) */   /* on the dark page, the card behind outlined, so it reads on the black ("still can't see the overlap card modal effect") */
 .arSheet.arStk2 .arStage { transform: translateY(var(--ar-qa-top, 16px)) scale(.92); opacity: 0; }   /* one level of stacking only: under a stacked sheet the page is gone, the first sheet its card ("should have always 1 level of stacking") */
 .arSheet .arQa .arQaPanel { transform-origin: 50% 0; }
 .arSheet.arStk2 .arQa.arOn:not(.arQb) .arQaPanel { transform: translateY(-16px) scale(.92); opacity: .8; border-radius: 35px 35px 0 0; }   /* 32 once drawn back */ .arSheet .arQa .arQaPanel { transition: transform .4s var(--ar-ease), opacity .4s ease; }   /* the sheet under a stacked one: a card behind, at half */   /* the first sheet, drawn back under the second */
@@ -14305,7 +14306,8 @@
 @media (hover: hover) { .arSheet .arSrcBtn:hover { background: oklch(var(--ar-ink) / .06); box-shadow: inset 0 0 0 1px oklch(var(--ar-ink) / .32); } }
 .arSheet .arSrcLink { appearance: none; -webkit-appearance: none; flex: none; margin: 0 0 0 auto; padding: 4px 0; border: 0; background: none; color: oklch(var(--ar-ink)); font-family: var(--ar-font); font-size: 14px; line-height: 20px; font-weight: 500; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; text-decoration-color: oklch(var(--ar-ink) / .32); cursor: pointer; transition: text-decoration-color .15s ease; }   /* See sources: a link, its underline quiet until hovered */
 @media (hover: hover) { .arSheet .arSrcLink:hover { text-decoration-color: oklch(var(--ar-ink)); } } .arSheet .arSrcLink:focus-visible { outline: 2px solid var(--ar-blue-fg); outline-offset: 2px; border-radius: 4px; }
-.arSheet .arSrcSeg { position: sticky; top: 0; z-index: 2; padding: 4px 0 8px; background: var(--ar-paper); } .arSheet .arSrcPane { display: flex; flex-direction: column; } .arSheet .arSrcNone { padding: 16px 0; }   /* the sheet's tabs pinned at its top as its list scrolls under them */
+.arSheet .arSrcSeg { position: sticky; top: 0; z-index: 2; padding: 4px 0 8px; background: var(--ar-paper); } .arSheet .arSrcPane { display: flex; flex-direction: column; } .arSheet .arSrcNone { padding: 16px 0; }
+.arSheet .arSrcInfo { display: flex; align-items: flex-start; gap: 10px; margin: 8px 0 4px; padding: 12px 14px; border-radius: 12px; background: var(--ar-card-bg); font-family: var(--ar-font); font-size: 14px; line-height: 20px; color: oklch(var(--ar-ink)); text-wrap: pretty; } .arSheet .arSrcInfo .arIco { flex: none; margin-top: 2px; color: oklch(var(--ar-ink) / .56); } .arSheet .arSrcInfo + .arQaRow { border-top: 0; }   /* the tab's note: an info mark and a line on the card grey, over its rows */   /* the sheet's tabs pinned at its top as its list scrolls under them */
 .arSheet .arSrcBtn:active { background: oklch(var(--ar-ink) / .1); } .arSheet .arSrcBtn:focus-visible { outline: 2px solid var(--ar-blue-fg); outline-offset: 2px; }   /* 8 more above the card, 12 less inside its top ("+8px margin top above card; reduce top padding by 12px") */
 .arSheet .arEvNoTab > .arEvPane + .arEvPane { margin-top: 20px; padding-top: 20px; border-top: 1px solid oklch(var(--ar-ink) / .08); animation: none; } .arSheet .arEvNoTab > .arEvPane { animation: none; } .arSheet .arEvNoTab .arEvGh { margin: 0 4px; }   /* Carousel, no pills: the questions under the biomarkers' sources, a rule between, their count as the heading */
 .arSheet .arLfEv .arEvPane > .arEvAns { gap: 12px; padding-top: 12px; }   /* the questions as the biomarkers' rows sit: 12 under the pills, a rule between */
@@ -14349,16 +14351,16 @@
 .arSheet .arSphBg { position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; opacity: 0; transition: opacity .64s ease; background: var(--ar-sph-bg); } .arSheet.arIsSphere .arSphBg { opacity: 1; }
 /* Everything else: three bars, a range each, from a line; under each its number rolling up and its name, centred; then the areas, a count each */
 .arSheet .arRsHead { text-align: center; align-items: center; } .arSheet.arSheet.arSheet .arRsHead.arRsHead.arRsHead > * { width: 100%; text-align: center; }   /* over the phone frame's left-aligned headings */ .arSheet .arRsHead .arH700 { text-wrap: balance; }
-.arSheet .arRsCard { padding: 20px 20px 24px; border-radius: calc(var(--ar-radius-card) + 4px); background: oklch(0% 0 0 / .04); } .arSheet.arDark .arRsCard { background: oklch(100% 0 0 / .04); } .arSheet:not(.arCardsFill) .arRsCard { background: transparent; box-shadow: inset 0 0 0 1px oklch(var(--ar-ink) / .1); }   /* the biomarker card: #fff 4% on the dark (#000 on the light), or outlined when the cards are */
-.arSheet .arRsDots3 { flex: none; display: inline-flex; align-items: center; } .arSheet .arRsDots3 i { display: block; width: 6px; height: 6px; border-radius: 50%; box-shadow: 0 0 0 1.5px var(--ar-paper); } .arSheet .arRsDots3 i + i { margin-left: -2px; }
-.arSheet .arRsChart { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 12px; padding-top: 12px; }
+.arSheet .arRsCard { padding: 32px; border-radius: 32px;   /* 32 round, 32 inside ("rounded 32px; padding 32px") */ background: oklch(0% 0 0 / .04); } .arSheet.arDark .arRsCard { background: oklch(100% 0 0 / .04); } .arSheet:not(.arCardsFill) .arRsCard { background: transparent; box-shadow: inset 0 0 0 1px oklch(var(--ar-ink) / .1); }   /* the biomarker card: #fff 4% on the dark (#000 on the light), or outlined when the cards are */
+.arSheet .arRsDots3 { flex: none; display: inline-flex; align-items: center; } .arSheet .arRsDots3 i { display: block; width: 8px; height: 8px;   /* 8, 2 over each other ("the dot should be 8px and overlap by only 2px") */ border-radius: 50%; box-shadow: 0 0 0 1.5px var(--ar-paper); } .arSheet .arRsDots3 i + i { margin-left: -2px; }
+.arSheet .arRsChart { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 12px; padding: 12px 24px 0; }   /* the columns 24 in from each side, the bars 16 closer ("reduce the gap between the bars by 16px"); the line still the card's width */
 .arSheet .arRsBase { position: absolute; left: 0; right: 0; top: calc(12px + 150px); height: 1px; background: oklch(var(--ar-ink) / .18); transform-origin: 50% 50%; }
 .arSheet .arRsCol { display: flex; flex-direction: column; align-items: center; min-width: 0; text-align: center; }
 .arSheet .arRsBarW { display: flex; align-items: flex-end; justify-content: center; width: 100%; height: 150px; }
-.arSheet .arRsBar { display: block; width: 64px; max-width: 100%; border-radius: 6px 6px 0 0; transform-origin: 50% 100%; }
-.arSheet .arRsNum { display: inline-flex; margin-top: 16px; font-size: 40px; line-height: 1; font-weight: 500; letter-spacing: -.02em; font-variant-numeric: tabular-nums; color: oklch(var(--ar-ink)); }
+.arSheet .arRsBar { display: block; width: 64px; max-width: 100%; border-radius: 18px 18px 0 0;   /* 12 rounder ("+12px") */ transform-origin: 50% 100%; }
+.arSheet .arRsNum { display: inline-flex; margin-top: 16px; font-size: 32px;   /* 32 ("reduce the hero number: 32px") */ line-height: 1; font-weight: 500; letter-spacing: -.02em; font-variant-numeric: tabular-nums; color: oklch(var(--ar-ink)); }
 .arSheet .arRsDig { display: inline-block; height: 1em; overflow: hidden; } .arSheet .arRsStrip { display: flex; flex-direction: column; } .arSheet .arRsStrip > span { display: block; height: 1em; line-height: 1em; }
-.arSheet .arRsLbl { margin-top: 6px; font-size: 14px; line-height: 20px; color: oklch(var(--ar-ink) / .64); }
+.arSheet .arRsLbl { margin-top: 2px; white-space: nowrap; font-size: 14px; line-height: 20px;   /* 4 closer under its number ("reduce the line height below 45 by 4px"); one line each, Out of range too */ color: oklch(var(--ar-ink) / .64); }
 .arSheet .arRsAreas { display: flex; flex-direction: column; margin-top: 12px; }
 .arSheet .arRsArea { appearance: none; display: flex; align-items: center; gap: 12px; width: 100%; min-height: 56px; margin: 0; padding: 12px 0; border: 0; border-top: 1px solid oklch(var(--ar-ink) / .08); background: none; color: oklch(var(--ar-ink)); font: inherit; text-align: left; cursor: pointer; }
 .arSheet .arRsArea:last-child { border-bottom: 1px solid oklch(var(--ar-ink) / .08); } .arSheet .arRsArea:focus-visible { outline: 2px solid oklch(var(--ar-ink)); outline-offset: 2px; }
@@ -14984,9 +14986,10 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
     return {
       el: el,
       set: function (i) {   // i: the step after the welcome, 1 to n, its bar and those before it filled
+        i = Math.max(1, Math.min(n, i));
         el.setAttribute('aria-valuenow', String(i));
         el.setAttribute('aria-valuetext', 'Step ' + i + ' of ' + n);
-        var f = Math.min(n, i + 1), px = (f - 1) * 4;   /* the current step fills the next bar whole, not a 2px start of it ("current step should fill the next step"); the last page shown (the end has no progress) fills them all */
+        var f = i, px = (f - 1) * 4;   /* the current step's own bar filled whole ("current step should fill the next step": no 2px start of it), Insight 1 the first, Everything else the last */
         fill.style.clipPath = 'inset(0 calc(100% - (' + f + ' * ((100% - ' + ((n - 1) * 4) + 'px) / ' + n + ') + ' + px + 'px)) 0 0)';
       }
     };
@@ -15037,7 +15040,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
     /* chrome: header, step indicator, body, footer CTA */
     var backBtn = h('button', { type: 'button', class: 'arIconBtn arBack', 'aria-label': 'Back' }, strokeIcon(18, 18, 1.8, [P.back]));
     var closeBtn = h('button', { type: 'button', class: 'arIconBtn arClose', 'aria-label': 'Close' }, strokeIcon(16, 16, 1.8, [P.close]));
-    var steps = stepIndicator(STEP_COUNT - 1);   // a bar for each step after the welcome (8; 7 with no list)
+    var steps = stepIndicator(REST);   // a bar for each insight and one for Everything else, none for the welcome or the end ("the bars should represent all the insights plus everything else; exclude the welcome and the next step")
     var stepWrap = h('div', { class: 'arStepWrap' }, steps.el);
     var head = h('div', { class: 'arHead' },
       h('div', { class: 'arHeadRow' }, backBtn, h('div', { class: 'arHeadLabel arNavT' }, h('span', { class: 'arNavTt', text: REPORT.name }), h('span', { class: 'arNavTs', text: REPORT.date })), closeBtn),
@@ -15120,14 +15123,15 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
     var REC_K = { blood: 'Blood test', tests: 'Test results', scan: 'Scan' };
     function srcOpen(recs, ans, from) {   // Sources: the full sheet, a segmented tab pinned at its top, Record (the reports behind the insight, each its kind over its name) and Questionnaire (each question over its answer); one with none, a line saying so
       var row = function (q, a) { return h('div', { class: 'arQaRow' }, h('span', { class: 'arLfQ', text: q }), h('span', { class: 'arLfA', text: a })); };
-      var T = [['Record', recs.map(function (r) { return row(REC_K[r[0]] || 'Record', r[1]); }), 'No records behind this insight.'],
-        ['Questionnaire', ans.map(function (r) { return row(r.q, r.a); }), 'No questionnaire answers behind this insight.']];
+      var T = [['Record', recs.map(function (r) { return row(REC_K[r[0]] || 'Record', r[1]); }), 'No records behind this insight.', 'These are the test results and records this insight is based on.'],
+        ['Questionnaire', ans.map(function (r) { return row(r.q, r.a); }), 'No questionnaire answers behind this insight.', 'These are the questions you answered that supported this insight.']];   /* each tab's note over its list, saying what it holds ("we need some kind of alert: this is all of the questions you answered that supported this insight") */
+      var note = function (t) { return h('div', { class: 'arSrcInfo', role: 'note' }, strokeIcon(16, 20, 1.6, ['M10 3a7 7 0 1 0 0 14a7 7 0 1 0 0-14Z', 'M10 9.2v4.3', 'M10 6.6v.1']), h('span', { text: t })); };
       var pane = h('div', { class: 'arSrcPane', role: 'tabpanel' }), tabs = T.map(function (t) { return h('button', { type: 'button', class: 'arLfChip', role: 'tab', text: t[0] }); });
       var track = h('div', { class: 'arLfTrack', role: 'tablist', 'aria-label': 'Sources' }, h('i', { class: 'arLfInd', 'aria-hidden': 'true' }), tabs), at = 0;
       track.style.setProperty('--n', String(T.length));
       var pick = function (k) { at = k; track.style.setProperty('--k', String(k));   // the tile slides under the one picked, as the insight's Segmented tabs
         tabs.forEach(function (b, i) { b.setAttribute('aria-selected', String(i === k)); b.setAttribute('aria-current', String(i === k)); b.tabIndex = i === k ? 0 : -1; });
-        pane.textContent = ''; add(pane, T[k][1].length ? T[k][1] : [h('p', { class: 'arPara arSrcNone', text: T[k][2] })]); };
+        pane.textContent = ''; add(pane, T[k][1].length ? [note(T[k][3])].concat(T[k][1]) : [h('p', { class: 'arPara arSrcNone', text: T[k][2] })]); };
       tabs.forEach(function (b, i) { on(b, 'click', function () { pick(i); }); });
       on(track, 'keydown', function (e) { if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return; e.preventDefault(); pick((at + 1) % T.length); tabs[at].focus(); });
       pick(recs.length || !ans.length ? 0 : 1);
@@ -15739,7 +15743,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       var hl = h('div', { class: 'arLfHead arAnimRise' }, h('h2', { class: 'arH700', text: L.headline }), lede);   // its date in the top nav
       var use = h('div', { class: 'arLfUse arAnimRise arD32' }, h('span', { class: 'arT200r arInk60', text: 'Was this useful?' }), h('div', { class: 'arLfThumbs' }, up, down));
       var ask = h('div', { class: 'arLfSec arAnimRise arD32' }, h('span', { class: 'arLfH', text: 'Any question?' }), h('p', { class: 'arPara', text: 'You\u2019ll be able to get assistance at the end of this Debrief.' }));   /* after What this means for you ("add a section at the end: Any question? You'll be able to get assistance at the end of this Debrief"); not one of the anchors */
-      if (o.tabs === 'off') return h('div', { class: 'arStack arLfStack' }, hl, secs.map(function (x) { return x[1]; }), ask, use);   // No tab: the three one under the other
+      if (o.tabs === 'off') return enter(h('div', { class: 'arStack arLfStack' }, hl, secs.map(function (x) { return x[1]; }), ask, use), hl, hl.firstChild);   // No tab: the three one under the other
       /* Tab sections on: a row of chips under the headline, each an anchor into the one vertical flow, every section shown; the chip of the section in view the active one ("chips just an anchor to a vertical flow; all content visible in the vertical flow") */
       var chips = secs.map(function (x, i) {
         return h('button', { type: 'button', class: 'arLfChip', 'aria-current': i ? 'false' : 'true', text: x[0] });
@@ -15762,7 +15766,28 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         on(c, 'click', function () { mark(i); cancel(lock); lock = later(function () { lock = 0; }, 700);
           body.scrollTo({ top: Math.max(0, topOf(secs[i][1]) - over() - clear()), behavior: reducedMotion() ? 'auto' : 'smooth' }); });   // to its section, its title clear of the pinned anchors
       });
-      return h('div', { class: 'arStack arLfStack arLfChipped' }, hl, bar, secs.map(function (x) { return x[1]; }), ask, use);   // the anchors after the headline ("tab should be after the h1")
+      return enter(h('div', { class: 'arStack arLfStack arLfChipped' }, hl, bar, secs.map(function (x) { return x[1]; }), ask, use), hl, hl.firstChild);   // the anchors after the headline ("tab should be after the h1")
+    }
+
+    /* a page's entrance ("we need an entrance for all of the screen content: write the title, then the rest appears section by section with a fade"): the title word by word, each rising out of a blur as the Full bg's,
+       then each part under it fading in, one after another, from just before the last word lands. At once on a tweak's remount (still) and with reduced motion */
+    var EN_T0 = .18, EN_DW = .07, EN_GAP = .16;   // s: the first word, each next word after it, each next part after the one before
+    function enTitle(t) { return EN_T0 + (Math.max(1, String(t).split(/\s+/).filter(Boolean).length) - 1) * EN_DW + .45; }   // when the parts under the title start
+    function enter(stack, hd, title, only) {   // hd: the title's block (its own rise off; its other children parts too); only: the parts, if not every child of the stack in turn
+      if (still || reducedMotion()) return stack;
+      var t = enTitle(title.textContent), wi = 0;
+      if (!title.getAttribute('aria-label')) title.setAttribute('aria-label', title.textContent);
+      [].slice.call(title.childNodes).forEach(function (n) {   // each word its span, the line breaks kept
+        if (n.nodeType !== 3) return;
+        var f = document.createDocumentFragment();
+        n.nodeValue.split(/(\s+)/).forEach(function (w) { if (!w) return; f.appendChild(/^\s+$/.test(w) ? document.createTextNode(w) : h('span', { class: 'arRvW', 'aria-hidden': 'true', style: { 'animation-delay': (EN_T0 + (wi++) * EN_DW).toFixed(2) + 's' }, text: w })); });
+        title.replaceChild(f, n);
+      });
+      hd.style.animation = 'none';
+      var parts = only || [];
+      if (!only) [].forEach.call(stack.children, function (c) { if (c === hd) [].forEach.call(hd.children, function (k) { if (k !== title) parts.push(k); }); else parts.push(c); });
+      parts.forEach(function (x, i) { x.style.animation = 'arEnFade .55s var(--ar-ease) ' + (t + i * EN_GAP).toFixed(2) + 's both'; });
+      return stack;
     }
 
     /* ----- step 6: Everything else ("three vertical bars for the three ranges of all the biomarkers, a rolling number under each, animated: a line first, then the bars go up, then the numbers roll up; text centred;
@@ -15790,7 +15815,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         var pos = bar === 'hi' ? [.14 + j, .5 + j / 2, .84 - j / 2][k] : bar === 'lo' ? [.84 - j, .5 - j / 2, .16 + j / 2][k] : [.46 + j, .28 + j / 2, .9 - j / 2][k];
         return { name: nm, value: v[1 + k] || v[1] || v[2] || v[3] || '\u2014', date: REPORT.date, status: ST3[k][0], bar: bar, pos: pos }; };
       var tot = PANELS.reduce(function (t, p) { return [t[0] + p.n[0], t[1] + p.n[1], t[2] + p.n[2]]; }, [0, 0, 0]), all = tot[0] + tot[1] + tot[2], top = Math.max.apply(null, tot) || 1;
-      var calm = still || reducedMotion(), T0 = 260, BH = 150;   // T0: once the page has faded in
+      var calm = still || reducedMotion(), T0 = calm ? 260 : Math.round((enTitle(REST_H[0]) + EN_GAP) * 1000), BH = 150;   // T0: once the title is written and its line faded in, the chart's line drawn as its card fades in
       /* a number that rolls up to its value, an odometer: each digit a strip of figures turning to its own, the ones most (two turns), the tens once */
       var roll = function (v, at) {
         var sv = String(v), el = h('span', { class: 'arRsNum', 'aria-hidden': 'true' });
@@ -15816,7 +15841,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       /* the areas, each its count in a badge; its sheet: its markers, out of range first, each its status */
       var areas = PANELS.map(function (p, i) {
         var n = p.n[0] + p.n[1] + p.n[2], row = h('button', { type: 'button', class: 'arRsArea' + (calm ? '' : ' arAnimRise'), style: calm ? {} : { 'animation-delay': ((T0 + 1300) / 1000 + i * .04).toFixed(2) + 's' }, 'aria-haspopup': 'dialog', 'aria-expanded': 'false', 'aria-label': p.name + ', ' + nMb(n) },
-          h('span', { class: 'arRsAreaN', text: p.name }), h('span', { class: 'arRsDots3', 'aria-hidden': 'true' }, [0, 1, 2].filter(function (k) { return p.n[k]; }).map(function (k) { return h('i', { style: { background: ST3[k][1] } }); })), h('span', { class: 'arRsCount', 'aria-hidden': 'true', text: String(n) }),   /* by its count, a dot for each status it has, overlapping ("overlapped dots green yellow red, based on what is present in each group, next to each counter, 6px") */ h('span', { class: 'arChev', 'aria-hidden': 'true' }, chevIcon()));
+          h('span', { class: 'arRsAreaN', text: p.name }), h('span', { class: 'arRsDots3', 'aria-hidden': 'true' }, [0, 1, 2].filter(function (k) { return p.n[k]; }).map(function (k) { return h('i', { style: { background: ST3[k][1] } }); })), h('span', { class: 'arRsCount', 'aria-hidden': 'true', text: String(n) }));   /* by its count, a dot for each status it has, overlapping ("overlapped dots green yellow red, based on what is present in each group, next to each counter"); no chevron ("remove the arrow on the right side") */
         on(row, 'click', function () {
           var ms = (p.m || ['', '', '']).map(function (x) { return x ? x.split('|') : []; }), rows = [];
           [2, 1, 0].forEach(function (k) { ms[k].forEach(function (nm) { rows.push(mbRow(mkOf(nm, k))); }); });   // out of range first, each the biomarker row, opening its detail
@@ -15824,12 +15849,9 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         });
         return row;
       });
-      return h('div', { class: 'arStack arGap20' },
-        h('div', { class: 'arIntroBlock arAnimRise arRsHead' },   // centred ("centred title and sub")
-          h('h2', { class: 'arH700', 'aria-label': REST_H[0].replace(/\n/g, ' ') }, REST_H[0].split('\n').map(function (t, i) { return [i ? h('br') : null, t]; })),
-          h('div', { class: 'arLede', text: all + ' markers across ' + PANELS.length + ' areas.' })),
-        h('div', { class: 'arRsCard' }, chart),   // in a card of its own, the biomarker card's ("biomarkers distribution in a secondary card, same style as the biomarker card")
-        h('div', { class: 'arRsAreas' }, areas));
+      var rTitle = h('h2', { class: 'arH700', 'aria-label': REST_H[0].replace(/\n/g, ' ') }, REST_H[0].split('\n').map(function (t, i) { return [i ? h('br') : null, t]; })), rLede = h('div', { class: 'arLede', text: all + ' markers across ' + PANELS.length + ' areas.' });
+      var rHead = h('div', { class: 'arIntroBlock arAnimRise arRsHead' }, rTitle, rLede), rCard = h('div', { class: 'arRsCard' }, chart);   // centred ("centred title and sub"); the chart in a card of its own, the biomarker card's ("biomarkers distribution in a secondary card, same style as the biomarker card")
+      return enter(h('div', { class: 'arStack arGap20' }, rHead, rCard, h('div', { class: 'arRsAreas' }, areas)), rHead, rTitle, [rLede, rCard]);   // the title written, then its line, then the card as its chart starts; the areas rising after, as they did
     }
 
     /* ----- step 1, Full bg ("tweak intro screen with a full bg where the title, centred, appears word by word with a fade in / blur effect moving a bit from bottom to top; then reveal a card below with the summary bullet points of what will be covered"):
@@ -19945,12 +19967,12 @@ hairline({
     // in the product's own system, with the script and notes for the motion
     // designer who polishes it in After Effects. A page, so it can be linked
     // (#m22) and sit in the menu; built on first view like the instrument.
-    { name: 'Teaser video', dur: 850, ease: 0, group: 'Video' },
+    { name: 'Organ Age teaser video', dur: 850, ease: 0, group: 'Video' },   // ("rename: Organ Age teaser video")
     // The teaser opened out into a page you scroll. One stage, one particle
     // system, nine scenes on a single timeline -- the dot becomes the universe,
     // the universe becomes an organ, the organ becomes the product. Built on
     // first view like the storyboard and the instrument (#m23).
-    { name: 'Organ Age', dur: 850, ease: 0, group: 'Landing page' },
+    { name: 'Organ Age landing page', dur: 850, ease: 0, group: 'Landing page' },   // ("rename: Organ Age landing page")
     // What a reader meets the first time their history has been pulled in: a
     // modal on the desk, a bottom sheet on the phone, each over the Overview
     // page it would actually appear on, and each a page of its own so it can be
@@ -23690,7 +23712,7 @@ hairline({
     if (g === ARC_GROUP && ARCHIVED.length){
       const o = document.createElement('option');
       o.value = ARCHIVE_VAL;
-      o.textContent = 'Archives';
+      o.textContent = 'Insights (archives)';   // ("rename this page: Insights (archives)")
       og.appendChild(o);
     }
     versionSel.appendChild(og);
