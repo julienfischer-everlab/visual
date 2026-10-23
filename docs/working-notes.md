@@ -15639,3 +15639,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - in the bottom-sheet format, the frame is drawn in to the sheet (0.62 s from 0.2 s).
   - This replaces the time-reversed playback, whose reversed easing kept both pages nearly still and then snapped them away at the end.
 - **Checked:** the sphere's screen position and size every frame (no jump, nothing scrolling or overflowing beside it); 25 fps video of Get started and Back (the sphere visible throughout); and frozen frames at 0–1050 ms in both directions.
+
+## Back: the card covered it in a narrow window
+
+- **Reproduced** (on the published page itself, served locally, with real presses): in a narrow window (620px), the Welcome card can't fit beside the screen, so it opens over the screen and covers its "+" and the Back. A press on Back fell on the card's Format buttons and nothing happened.
+- **The fix:** the card now opens below the Back whenever they would overlap, and the Back sits above the cards (z 77).
+- **Checked with real presses:** 620 and 1200 wide, with the card open or not, and Back pressed 150, 300 or 400 ms into Get started. Each run ends on the welcome with its title and button, one sheet and one sphere, and Get started goes forward again.
