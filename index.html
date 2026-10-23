@@ -12078,6 +12078,7 @@
         <!-- the welcome, a $299 member's first visit, played again from its first frame ("create a tweak to replay the screen, so plus icon and tweak module"); its + beside the sheet while the sheet is up. data-fl, not data-sec: no section on the Overview to order or switch off -->
         <div class="tkGroup" data-pages="ov" data-fl="wel">
         <div class="tkSub">Welcome</div>
+        <div class="tkRow"><span class="lbl">Format</span><select id="stHpWelFmt" class="tkSegSel" aria-label="The welcome's format"><option value="full">Full modal</option><option value="sheet" selected>Bottom sheet full</option></select></div>   <!-- ("tweak format: full modal, bottom sheet full (current)") -->
         <div class="tkRow"><span class="lbl">Intro</span><span class="tkPreCtl"><button class="tkBtn" type="button" id="stHpWelRp">Replay</button></span></div>
         </div>
         <div class="tkGroup" data-pages="ov" data-sec="plan">
@@ -16389,7 +16390,8 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
 .arSheet.hpSheet .hpSlots { display: flex; flex-direction: column; gap: 18px; } .arSheet.hpSheet .hpSlotG { display: flex; flex-direction: column; gap: 8px; } .arSheet.hpSheet .hpSlotR { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
 .arSheet.hpSheet .hpSlot { appearance: none; height: 44px; margin: 0; padding: 0; border: 0; border-radius: 12px; background: transparent; box-shadow: inset 0 0 0 1px oklch(var(--ar-ink) / .16); color: oklch(var(--ar-ink)); font: inherit; font-family: var(--ar-font); font-size: 14px; font-variant-numeric: tabular-nums; cursor: pointer; } .arSheet.hpSheet .hpSlot:hover { box-shadow: inset 0 0 0 1px oklch(var(--ar-ink) / .32); } .arSheet.hpSheet .hpSlot[aria-pressed="true"] { box-shadow: inset 0 0 0 1.5px oklch(var(--ar-ink)); font-weight: 500; }
 .arSheet.hpSheet .hpScr > * { flex-shrink: 0; }
-/* the welcome, a bottom sheet (.hpBs on the wrap): a dot in its middle flung out into the sphere, the title written under it pushing it up till its centre is on the top edge, its lower half showing; the CTA under the title once it is written */
+/* the welcome, a full bottom sheet (.hpBs on the wrap) or a full modal (.aqFull.hpWelF): a dot near its top, rippling, while status lines are typed in its middle; then the dot bursts into the sphere, centred on the top edge, its lower half showing, and the title is written where the lines were; the CTA under it once it is written */
+.aqWrap.hpWelF .aqFrame > .arSheet.arSheet.arSheet.arSheet.hpWel { display: flex; flex-direction: column; align-items: center; background: var(--ar-paper); text-align: center; overflow: hidden; }   /* the full modal: the frame's whole height (the column's width on the desk) */
 .aqWrap.hpBs .aqFrame { height: auto; max-height: calc(100% - 24px); border-radius: 28px 28px 0 0; }
 .aqWrap.hpBs .aqFrame > .arSheet.arSheet.arSheet.arSheet.hpWel { position: relative; inset: auto; top: auto; height: auto; max-height: none; max-width: none; margin: 0; border-radius: 0; display: flex; flex-direction: column; align-items: center; background: var(--ar-paper); text-align: center; overflow: hidden; }
 /* the phone and tablet: a full bottom sheet; the desk: a modal, centred ("first time user: full bottom sheet; desktop: modal"). The sphere's lower half at the top edge of either */
@@ -16399,12 +16401,12 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
 .aqWrap.hpBs.on:is(.aqBpM, .aqBpL) .aqFrame { opacity: 1; transform: translate(-50%, -50%); }
 .aqWrap.hpBs.shut:is(.aqBpM, .aqBpL) .aqFrame { opacity: 0; transform: translate(-50%, calc(-50% + 24px)); }
 .aqWrap.hpBs:is(.aqBpM, .aqBpL) .aqFrame > .arSheet.arSheet.arSheet.arSheet.hpWel { min-height: 460px; }   /* the desk's modal tall enough for the ball alone in its middle, then the title under it */
-.arSheet.hpWel .hpWelSph { position: absolute; left: 0; top: 0; width: 100%; height: 0; pointer-events: none; }   /* a line across the sheet's top edge, moved down to start: the ball's centre on it */
+.arSheet.hpWel .hpWelSph { position: absolute; left: 0; right: 0; top: var(--hpWelLine, 0px); bottom: 0; overflow: hidden; pointer-events: none; }   /* from the line the ball's centre is on, clipped there: the sheet's top edge; in the full modal on the phone, the foot of the status bar, so the ball's lower half shows under it */ .aqWrap.aqDev.hpWelF .arSheet.hpWel { --hpWelLine: var(--ar-head-top); }
 .arSheet.hpWel .hpWelSph canvas.hpSph { position: absolute; left: 50%; top: 0; width: 200px; height: 200px; margin: -100px 0 0 -100px; }   /* its centre on the line: at rest, the sheet's edge, the lower half in */
-.arSheet.hpWel .hpWelX { position: absolute; top: 16px; right: 16px; z-index: 2; }
+.arSheet.hpWel .hpWelX { position: absolute; top: var(--ar-head-top, 16px); right: 16px; z-index: 2; }   /* under the status bar in the full modal */
 .arSheet.hpWel .hpWelBody { position: relative; z-index: 1; flex: 1 1 auto; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px; width: 100%; max-width: 440px; padding: 120px var(--hpSide) 48px; box-sizing: border-box; }   /* the title and the button together in the middle, under the ball's half */
 .arSheet.hpWel .hpH.hpWelQ { display: block; --hpEmber: #D98B4A; } .arSheet.arDark.hpWel .hpH.hpWelQ { --hpEmber: #F5842E; }   /* the gift page's ember, light and dark */
-.arSheet.hpWel .hpWelL { display: grid; grid-template-rows: 1fr; } .arSheet.hpWel .hpWelLi { min-height: 0; } .arSheet.hpWel .hpWelWd { white-space: nowrap; }
+.arSheet.hpWel .hpWelL { display: grid; grid-template-rows: 0fr; } .arSheet.hpWel.hpWelCalm .hpWelL { grid-template-rows: 1fr; }   /* each row shut till the title's turn */ .arSheet.hpWel .hpWelLi { min-height: 0; } .arSheet.hpWel .hpWelWd { white-space: nowrap; }
 .arSheet.hpWel .hpWelC { position: relative; display: inline; opacity: 0; top: 3px; filter: blur(7px); --warm: color-mix(in srgb, var(--hpEmber) var(--e, 100%), oklch(var(--ar-ink))); --halo: color-mix(in srgb, rgba(240, 130, 50, .55) var(--e, 100%), transparent); }
 .arSheet.hpWel.hpWelGo .hpWelL { animation: hpWelLine 1.5s cubic-bezier(.25, .1, .25, 1) var(--ld, 0ms) both; }
 .arSheet.hpWel.hpWelGo .hpWelC { animation: hpWelRes var(--dur, 1640ms) cubic-bezier(.45, 0, .2, 1) var(--d) both, hpWelEmb calc(var(--dur, 1640ms) * .7) cubic-bezier(.3, 0, .5, 1) var(--d) both; }
@@ -16412,6 +16414,13 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
 @keyframes hpWelRes { 0% { opacity: 0; top: 3px; filter: blur(7px); } 35% { opacity: .7; top: 1.5px; filter: blur(4px); } 70% { opacity: .95; top: .4px; filter: blur(1.2px); } 100% { opacity: 1; top: 0; filter: blur(0); } }
 @keyframes hpWelEmb { 0% { color: var(--warm); text-shadow: 0 0 12px var(--halo); } 100% { color: oklch(var(--ar-ink)); text-shadow: 0 0 0 rgba(232, 140, 60, 0); } }
 .arSheet.hpWel .hpWelCtaR { display: flex; justify-content: center; width: 100%; }
+.arSheet.hpWel .hpWelStage { position: relative; width: 100%; }   /* the title, and the loader's line over its middle: the block centred, so that middle holds still as the rows open */
+.arSheet.hpWel .hpWelLd { position: absolute; left: 0; right: 0; top: 50%; height: 18px; margin-top: -9px; display: flex; align-items: center; justify-content: center; gap: 10px; font-family: var(--ar-font-mono); font-size: 12px; line-height: 18px; letter-spacing: .06em; text-transform: uppercase; color: oklch(var(--ar-ink)); white-space: nowrap; opacity: 0; transition: opacity .28s ease, transform .28s ease, filter .28s ease; pointer-events: none; }   /* the async report intro's typed lines: mono capitals, an orange square before */
+.arSheet.hpWel .hpWelLd.hpWelLdOn { opacity: 1; } .arSheet.hpWel .hpWelLd.hpWelLdOut { opacity: 0; transform: translateY(-6px); filter: blur(4px); }   /* a line lifted away, blurring, as the next comes */
+.arSheet.hpWel .hpWelLd.hpWelLdEnd { opacity: 0; transform: scale(.97); filter: blur(7px); transition-duration: .5s; }   /* the last dissolving as the dot swells, the title's letters coming out of the same blur where it was */
+.arSheet.hpWel .hpWelSq { flex: none; width: 6px; height: 6px; background: #ff7a1a; }
+.arSheet.hpWel .hpWelLdW { position: relative; } .arSheet.hpWel .hpWelLdG { visibility: hidden; } .arSheet.hpWel .hpWelLdT { position: absolute; left: 0; top: 0; }   /* the words held unseen for the line's room; the typing over them */
+.arSheet.hpWel .hpWelLd .arRvCur { margin-left: 1px; }
 .arSheet.hpWel .hpWelCta { width: auto; max-width: 100%; padding: 0 32px; opacity: 0; visibility: hidden; transform: translateY(18px); transition: opacity .9s cubic-bezier(.22, .61, .24, 1), transform .9s cubic-bezier(.22, .61, .24, 1), visibility .9s; }   /* its row there from the start: it only fades in, rising */
 .arSheet.hpWel:is(.hpWelCtaIn, .hpWelCalm) .hpWelCta { opacity: 1; visibility: visible; transform: none; }
 .arSheet.hpWel.hpWelCalm .hpWelC { opacity: 1; top: 0; filter: none; }   /* reduced motion: the ball at its place, the title and the button there at once */
@@ -17041,7 +17050,7 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
       J[q] = .06 * (rnd() - .5);   /* a little scatter at the fill's edge, each point its own */
     }
     var INK = { d: ['214,112,58', '150,160,204', '238,232,226'], l: ['196,92,40', '92,104,156', '46,40,36'] }, BASE = { d: '242,229,224', l: '46,31,26' };
-    var lv = { from: 0, to: 0, t0: 0, dur: 1 }, t0 = performance.now(), raf = 0, calm = reduced(), inflow = null, bs = opts.burst ? { a: Infinity, t0: Infinity, dur: 1100 } : null;   // bs: the burst, held till burst() is called; inflow: the particles flying in as a step is done
+    var lv = { from: 0, to: 0, t0: 0, dur: 1 }, t0 = performance.now(), raf = 0, calm = reduced(), inflow = null, bs = opts.burst ? { a: Infinity, t0: Infinity, dur: 1100, oy: 0, sw: 520 } : null;   // bs: the burst, held till seed() and burst() are called; inflow: the particles flying in as a step is done
     var levelAt = function (now) { var k = Math.min(1, Math.max(0, (now - lv.t0) / lv.dur)), e = 1 - Math.pow(1 - k, 3); return lv.from + (lv.to - lv.from) * e; };
     /* always a few motes out round the top, left and right, drawn slowly in ("like the sphere is always fed by these particles"): each 8-13 s from up to 1.6 radii out to just inside the shell, turning a little, fading in, then out as it passes the shell; a new one where it began. None with reduced motion */
     var feed = function (m, now, first) { var th = .3 + Math.random() * .8; m.th = Math.random() < .5 ? th : Math.PI - th; m.r0 = 1.18 + Math.random() * .42; m.rot = (Math.random() - .5) * .5; m.dur = 8000 + Math.random() * 5000; m.t0 = now - (first ? Math.random() * m.dur : 0); m.c = Math.random() < .7 ? 0 : 2; m.z = .9 + Math.random() * .7; m.wb = Math.random() * 6.2832; return m; };
@@ -17052,13 +17061,18 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
       var w = w0 * SC, hh = h0 * SC, dpr = Math.min(2, window.devicePixelRatio || 1); if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(hh * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(hh * dpr); }
       x.setTransform(dpr, 0, 0, dpr, 0, 0); x.clearRect(0, 0, w, hh);
       var sh = cv.closest('.hpSheet'), lt = sh ? !sh.classList.contains('arDark') : document.body.classList.contains('light'), ink = lt ? INK.l : INK.d, base = lt ? BASE.l : BASE.d,   /* in the sheet, the sheet's theme; on the Overview, the page's */ R = Math.min(w0, h0) / 2 * .92, cx = w / 2, cy = hh / 2;
-      var bk = 1, fe = 1;   /* the burst ("a dot that explodes to a sphere"): nothing, then a dot drawn in and breathing, then the ball flung out from it, each point a little after the one before, a touch past its place and back, a faint ring going out ahead; the motes round it only once it has formed */
+      var bk = 1, fe = 1, ox = cx, oy = cy;   /* the burst ("a dot that explodes to a sphere"): nothing, then a dot drawn in and breathing where it was seeded, a ripple out of it every 1.5 s while it waits ("a dot at the top, integrated into the ripple effect"), each beat with it; told to go, it swells (eased in), then the ball is flung out from it, each point a little after the one before, a touch past its place and back, a faint ring going out ahead and settling round the ball; the motes round it only once it has formed */
       if (bs) {
         if (now < bs.a) return true;
-        if (now < bs.t0) { var dk = Math.min(1, (now - bs.a) / 380); dot(cx, cy, 3.4 * (1 + 2.2 * Math.pow(dk - 1, 3) + 1.2 * Math.pow(dk - 1, 2)) * (1 + .1 * Math.sin((now - bs.a) / 140)), 1, base); return true; }
+        oy = cy + bs.oy;
+        var sw0 = bs.t0 - bs.sw, sk = now > sw0 ? Math.min(1, (now - sw0) / bs.sw) : 0, swr = 1 + 1.5 * sk * sk * sk, last = -1e9;
+        for (var rt = bs.a + 300 + Math.max(0, Math.floor((now - bs.a - 2300) / 1500)) * 1500; rt < Math.min(now, sw0); rt += 1500) {   /* the ripples: each out to 80 px over 2 s, fading; none set off once the swell begins, those under way running out */
+          last = rt; var rk = (now - rt) / 2000; if (rk >= 1) continue;
+          x.strokeStyle = 'rgba(' + base + ',' + (.34 * Math.pow(1 - rk, 1.6) * Math.min(1, (now - bs.a) / 380)).toFixed(3) + ')'; x.lineWidth = 1; x.beginPath(); x.arc(ox, oy, 4 + 76 * (1 - Math.pow(1 - rk, 3)), 0, 6.2832); x.stroke(); }
+        if (now < bs.t0) { var dk = Math.min(1, (now - bs.a) / 380); dot(ox, oy, 3.4 * (1 + 2.2 * Math.pow(dk - 1, 3) + 1.2 * Math.pow(dk - 1, 2)) * (1 + .08 * Math.sin((now - bs.a) / 160)) * (1 + .35 * Math.exp(-(now - last) / 220)) * swr, 1, base); return true; }
         bk = Math.min(1, (now - bs.t0) / bs.dur); fe = Math.min(1, Math.max(0, (now - bs.t0 - bs.dur * .6) / 900)); if (fe >= 1) bs = null;
-        if (bk < .2) dot(cx, cy, 3.4 * (1 + bk * 8), 1 - bk / .2, base);
-        if (bk < .55) { var rk = bk / .55; x.strokeStyle = 'rgba(' + base + ',' + (.32 * (1 - rk)).toFixed(3) + ')'; x.lineWidth = 1; x.beginPath(); x.arc(cx, cy, R * 1.08 * (1 - Math.pow(1 - rk, 3)), 0, 6.2832); x.stroke(); }
+        if (bk < .2) dot(ox, oy, 3.4 * 2.5 * (1 + bk * 6), 1 - bk / .2, base);
+        if (bk < .55) { var rk2 = bk / .55, re = 1 - Math.pow(1 - rk2, 3); x.strokeStyle = 'rgba(' + base + ',' + (.32 * (1 - rk2)).toFixed(3) + ')'; x.lineWidth = 1; x.beginPath(); x.arc(ox, oy + (cy - oy) * re, R * 1.08 * re, 0, 6.2832); x.stroke(); }
       }
       var a = calm ? .6 : (now - t0) / 48000 * 6.2832, tl = .38 + (calm ? 0 : .07 * Math.sin((now - t0) / 6000)), ct = Math.cos(tl), st = Math.sin(tl), ca = Math.cos(a), sa = Math.sin(a);
       var L = levelAt(now), Lx = L < 1 / 3 ? -.12 + L * 1.47 : L < 2 / 3 ? .37 + (L - 1 / 3) * .78 : .63 + (L - 2 / 3) * 1.47, B = [];   /* a third of the ball by area a step (the edge at .37 and .63 of its height), none at 0, all at 1 */   /* the fill: none at 0, every point at 1, the edge between ragged and turning with the ball */
@@ -17067,7 +17081,7 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
         var X = P[q * 3], Y = P[q * 3 + 1], Z = P[q * 3 + 2], x1 = X * ca + Z * sa, z1 = -X * sa + Z * ca, y1 = Y * ct - z1 * st, zz = Y * st + z1 * ct, sx = cx + x1 * R, sy = cy - y1 * R, dp = (zz + 1) / 2;
         var u = (cy + R - sy) / (2 * R), xn = (sx - cx) / R, wv = calm ? 0 : .045 * Math.sin(xn * 5.5 + now / 1600) + .022 * Math.sin(xn * 11 - now / 2300);   /* filled from the foot up, its surface a very slow wave ("some kind of very slow wave on the bottom, so it feels like we fill the sphere") */
         var on = L >= .999 || (L > .001 && u < Lx + wv + J[q]), al = on ? .3 + .7 * dp : .07 + .2 * dp, c = on ? (K[q] ? 2 : 0) : 3;   // u: 0 at the foot, 1 at the top; filled orange and white ("the filled particles orange and white")
-        if (bk < 1) { var pk = Math.min(1, Math.max(0, (bk - (q * .618034 % 1) * .28) / .72)); if (pk <= 0) continue; var ps = 1 + 2.2 * Math.pow(pk - 1, 3) + 1.2 * Math.pow(pk - 1, 2); sx = cx + (sx - cx) * ps; sy = cy + (sy - cy) * ps; al *= Math.min(1, pk * 4); }   /* in the burst: from the dot out to its place */
+        if (bk < 1) { var bq = Math.min(1, Math.max(0, (bk - (q * .618034 % 1) * .28) / .72)); if (bq <= 0) continue; var ps = 1 + 2.2 * Math.pow(bq - 1, 3) + 1.2 * Math.pow(bq - 1, 2); sx = ox + (sx - ox) * ps; sy = oy + (sy - oy) * ps; al *= Math.min(1, bq * 4); }   /* in the burst: from the dot out to its place */
         B[c * 4 + Math.min(3, Math.floor(al * 4))].push(sx, sy, .7 + .7 * dp);
       }
       for (var b = 0; b < 16; b++) { var L2 = B[b]; if (!L2.length) continue; var c2 = b >> 2; x.fillStyle = 'rgba(' + (c2 < 3 ? ink[c2] : base) + ',' + Math.min(1, ((b & 3) + .5) / 4 * (c2 === 3 ? +LOOK.dim || 1 : 1)).toFixed(3) + ')';   /* the empty ones at the tweak's strength */
@@ -17112,7 +17126,8 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
         lv = anim && !calm ? { from: cur, to: f, t0: now + (f > cur ? 350 : 0), dur: f > cur ? 1500 : 1200 } : { from: f, to: f, t0: now, dur: 1 };
         if (!raf) raf = requestAnimationFrame(tick);
       },
-      burst: function (at, lead) { var now = performance.now(); bs = { a: now + (at || 0), t0: now + (at || 0) + (lead || 500), dur: 1100 }; if (!raf) raf = requestAnimationFrame(tick); },   // made with { burst: true }: the dot drawn in after at ms, flung out into the ball lead ms later
+      seed: function (at, oy) { if (!bs) return; bs.a = performance.now() + (at || 0); bs.t0 = Infinity; bs.oy = oy || 0; if (!raf) raf = requestAnimationFrame(tick); },   // made with { burst: true }: the dot drawn in after at ms, oy px below the ball's centre, rippling till burst()
+      burst: function (sw) { if (!bs) return; var now = performance.now(); if (!isFinite(bs.a)) bs.a = now; bs.sw = sw || 520; bs.t0 = now + bs.sw; if (!raf) raf = requestAnimationFrame(tick); },   // it swells over sw ms, then the ball is flung out from it
       core: function () {}
     };
     return api;
@@ -17125,8 +17140,8 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
     var sp = sphere({ cls: 'hpWelS', burst: !calm }); sp.set(0, false);
     var closeBtn = h('button', { type: 'button', class: 'arIconBtn arClose hpWelX', 'aria-label': 'Close' }, ic(16, P.close, 1.8));
     var cta = h('button', { type: 'button', class: 'arBtn arBtnPrimary arBtnLg hpWelCta' }, h('span', { class: 'arBtnLabel', text: 'Get started' }));   // ("CTA: Get started")
-    /* the title, written the way the gift page writes its message ("make this title appear in the same way ... keep the exact pacing of the title"; no subtitle): letter by letter from 1.82 s, the last beginning by 4.76 s, each easing up and sharpening out of a blur over 1.64 s, orange for as long as it is out of focus; across the last line quicker and cooler, its last word 1.15 s at 70%; each line a row opening from nothing over 1.5 s, from 0.9 s before its first letter, so the block grows from the middle */
-    var LN = ['Welcome to Everlab.', 'This is the first step', 'of your journey.'], AT = 1820, BY = 4760, CH = 1640, LW = 1150, LE = .7;
+    /* the title, written the way the gift page writes its message ("make this title appear in the same way ... keep the exact pacing of the title"; no subtitle): letter by letter, the last beginning 2.94 s after the first, each easing up and sharpening out of a blur over 1.64 s, orange for as long as it is out of focus; across the last line quicker and cooler, its last word 1.15 s at 70%; each line a row opening from nothing over 1.5 s, from 0.9 s before its first letter, so the block grows from the middle. Times from the moment the loader hands over (hpWelGo) */
+    var LN = ['Welcome to Everlab.', 'This is the first step', 'of your journey.'], AT = 1000, BY = AT + 2940, CH = 1640, LW = 1150, LE = .7;
     var cnt = LN.join('').replace(/\s+/g, '').length, stg = (BY - AT) / (cnt - 1), lastN = LN[LN.length - 1].replace(/\s+/g, '').length, lastS = cnt - lastN, lastW = LN[LN.length - 1].split(' ').pop().length, n = 0;
     var ttl = h('h2', { class: 'hpH hpWelQ', 'aria-label': LN.join(' ') }, LN.map(function (ln) {
       var row = h('span', { class: 'hpWelL', 'aria-hidden': 'true', style: '--ld:' + Math.max(0, Math.round(AT + n * stg - 900)) + 'ms' });
@@ -17138,27 +17153,32 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
       })));
       return row;
     }));
+    /* the loader ("feels like we're creating their personal health profile"): short status lines in the middle, where the title will be, typed in the async report intro's mono capitals behind its orange square, a block cursor running ahead; each line keeps its room from the start (its words held, unseen, under the typing) so it does not shift as it writes; held, then lifted away blurring as the next comes */
+    var MSG = ['Creating your health profile', 'Preparing your three steps', 'Personalising it for ' + (opts.name || 'you')], TYC = 30, HOLD = 620, OUT = 280;
+    var ldG = h('span', { class: 'hpWelLdG' }), ldT = h('span', { class: 'hpWelLdT' }), ldC = h('span', { class: 'arRvCur' });
+    var ld = h('div', { class: 'hpWelLd', 'aria-hidden': 'true' }, h('i', { class: 'hpWelSq' }), h('span', { class: 'hpWelLdW' }, ldG, ldT));
     var sph = h('div', { class: 'hpWelSph', 'aria-hidden': 'true' }, sp.el);
     var root = h('div', { class: 'arSheet hpSheet hpWel' + (opts.theme === 'dark' ? ' arDark' : '') + (calm ? ' hpWelCalm' : ''), role: 'document', 'aria-label': LN.join(' ') },
-      sph, closeBtn, h('div', { class: 'hpWelBody' }, ttl, h('div', { class: 'hpWelCtaR' }, cta)));   // the button in the content, under the title, hugging its words ("hug content CTA, in the content not in the footer")
+      sph, closeBtn, h('div', { class: 'hpWelBody' }, h('div', { class: 'hpWelStage' }, ttl, ld), h('div', { class: 'hpWelCtaR' }, cta)));   // the button in the content, under the title, hugging its words ("hug content CTA, in the content not in the footer")
     host.appendChild(root);
     closeBtn.addEventListener('click', function () { if (opts.onClose) opts.onClose(); });
     cta.addEventListener('click', function () { if (opts.onStart) opts.onStart(); });
-    /* the opening, once the sheet is laid out: in its middle a dot, flung out into the ball (0.15 to 1.75 s); then the title, written under it, pushes it up, the two rising together till the title is in its place, the ball on to the sheet's top edge, its upper half past it ("then the title writes below that push up the sphere to bleed 50% on the top of the modal"), 1.5 to 4.4 s; the button half a second after the last letter begins, fading in as it rises 18px (0.9 s) in the row kept for it */
-    var tries = 0, go = function () {
+    /* one motion, once the sheet is up: the dot drawn in near the top (0.15 s), rippling; the status lines typed one after another under it; on the last, held, the title's first row starts to open (hpWelGo), the dot swells as the line dissolves in a blur (0.3 s on), and bursts into the ball at the top edge, its upper half past it (0.82 s on); as the ball forms the title is written where the lines were (1 s on), the button half a second after its last letter begins, fading in as it rises 18px (0.9 s) in the row kept for it */
+    var tm = [], later = function (f, ms) { tm.push(setTimeout(f, ms)); };
+    var type = function (i) {
+      var txt = MSG[i], k = 0; ldG.textContent = txt; ldT.textContent = ''; ldT.appendChild(document.createTextNode('')); ldT.appendChild(ldC); ld.classList.remove('hpWelLdOut'); ld.classList.add('hpWelLdOn');
+      var tick = function () { ldT.firstChild.nodeValue = txt.slice(0, ++k); if (k < txt.length) { later(tick, TYC); return; }
+        if (i < MSG.length - 1) later(function () { ld.classList.add('hpWelLdOut'); later(function () { type(i + 1); }, OUT); }, HOLD);
+        else later(function () { root.classList.add('hpWelGo'); later(function () { sp.burst(520); ld.classList.add('hpWelLdEnd'); }, 300); later(function () { root.classList.add('hpWelCtaIn'); }, BY + 500); }, HOLD - 300); };
+      later(tick, TYC);
+    };
+    var go = function () {
       if (!root.isConnected) return;
-      var H = root.clientHeight, R = sp.el.clientWidth / 2 * .92, G = 24, tt = ttl.getBoundingClientRect().top - root.getBoundingClientRect().top;
-      if ((!H || !R) && tries++ < 20) { requestAnimationFrame(go); return; }
-      var cA = H / 2, T0 = 1500, T1 = 4400, ks = [], kt = [];
-      for (var j = 0; j <= 28; j++) { var k = j / 28, e = k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2, c = cA * (1 - e), off = (T0 + (T1 - T0) * k) / T1;
-        ks.push({ transform: 'translateY(' + c.toFixed(1) + 'px)', offset: off }); kt.push({ transform: 'translateY(' + Math.max(0, c + R + G - tt).toFixed(1) + 'px)', offset: off }); }   /* the title kept just under the ball till it reaches its own place */
-      ks.unshift({ transform: ks[0].transform, offset: 0 }); kt.unshift({ transform: kt[0].transform, offset: 0 });
-      root.classList.add('hpWelGo'); sp.burst(150, 500);
-      if (sph.animate) { sph.animate(ks, { duration: T1, fill: 'backwards' }); ttl.animate(kt, { duration: T1, fill: 'backwards' }); }
-      setTimeout(function () { root.classList.add('hpWelCtaIn'); }, BY + 500);
+      sp.seed(150, (parseFloat(getComputedStyle(root).getPropertyValue('--ar-head-top')) || 16) + 24 - sph.offsetTop);   // 24 under the top of the sheet's content (40 in the sheet), from the ball's line
+      later(function () { type(0); }, 650);
     };
     if (!calm) requestAnimationFrame(function () { requestAnimationFrame(go); });
-    return { el: root, welcome: true, theme: function (t) { root.classList.toggle('arDark', t === 'dark'); }, home: function () {}, area: function () {}, destroy: function () { if (root.parentNode) root.parentNode.removeChild(root); } };
+    return { el: root, welcome: true, theme: function (t) { root.classList.toggle('arDark', t === 'dark'); }, home: function () {}, area: function () {}, destroy: function () { tm.forEach(clearTimeout); tm = []; if (root.parentNode) root.parentNode.removeChild(root); } };
   }
 
   window.HealthProfile = { mount: mount, welcome: welcome, dots: dots, sphere: sphere, look: look, store: { get: function () { return S; }, summary: summary, preset: preset, reset: function () { preset('none'); }, pending: pending, areas: AREAS } };
@@ -31372,7 +31392,8 @@ hairline({
     const open = o => { o = o || {}; if (!wrap) build(); clearTimeout(shutT); fit(); openN = store.summary().n;
       const up = wrap.classList.contains('on') && wrap.classList.contains('hpOpen');   // already up (the welcome's Get started): the content swapped in place
       if (inst) inst.destroy(); frame.textContent = '';
-      wrap.classList.toggle('hpBs', !!o.welcome); wrap.classList.toggle('aqFull', !o.welcome);   // the welcome a normal bottom sheet; the profile the full modal
+      const wf = !!o.welcome && opt('stHpWelFmt') === 'full';   // Tweaks -> Welcome -> Format: the welcome a full bottom sheet, or the full modal as the profile's
+      wrap.classList.toggle('hpBs', !!o.welcome && !wf); wrap.classList.toggle('aqFull', !o.welcome || wf); wrap.classList.toggle('hpWelF', wf);   // the welcome a full bottom sheet; the profile the full modal
       inst = o.welcome && HP.welcome ? HP.welcome(frame, { theme: dark() ? 'dark' : 'light', name: nameOf(), onClose: close, onStart: () => { close(); setTimeout(() => open(), 560); } })
         : HP.mount(frame, { theme: dark() ? 'dark' : 'light', name: nameOf(), onClose: close }); paint();
       if (o.area) inst.area(o.area);
@@ -31440,7 +31461,8 @@ hairline({
       if (f) f.addEventListener('change', () => { if (f.value === 'yes') setTimeout(show, 120); else if (inst && inst.welcome) close(); });
       if (m) m.addEventListener('change', sh);
       document.addEventListener('everlab:mode', () => setTimeout(show, 500));
-      { const rp = document.getElementById('stHpWelRp'); if (rp) rp.addEventListener('click', () => open({ welcome: true })); } }   // Tweaks -> Welcome -> Replay: the welcome from its first frame, in place if it is up
+      { const rp = document.getElementById('stHpWelRp'); if (rp) rp.addEventListener('click', () => open({ welcome: true })); }
+      { const fm = document.getElementById('stHpWelFmt'); if (fm) fm.addEventListener('change', () => { if (inst && inst.welcome) open({ welcome: true }); }); } }   // a new format: the welcome up again in it, from its first frame   // Tweaks -> Welcome -> Replay: the welcome from its first frame, in place if it is up
     { const lk = () => HP.look && HP.look({ dim: opt('stHpDim'), feed: opt('stHpFeed') }); lk(); ['stHpDim', 'stHpFeed'].forEach(id => { const t = document.getElementById(id); if (t) t.addEventListener('change', lk); }); }   // the sphere's look (Tweaks -> Health profile), on every sphere at once
     // the demo states (Tweaks -> Health profile): not started, one or two of three, completed; Saved is whatever was last done here
     let hpSetting = false;

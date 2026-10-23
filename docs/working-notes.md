@@ -15472,3 +15472,26 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - While the welcome is up, its own floating **+** sits 32px right of the screen, level with the top of the sheet, like the section tweaks' pluses. It opens the Welcome card beside the screen, and the screen steps left to make room. The section pluses stay hidden while the sheet is over the Overview. The + goes away when the welcome closes.
 - The card uses `data-fl="wel"`, not `data-sec`, so it has no section switch or drag handle and is left out of the Overview's section order. In the Tweaks list it sits after the section cards. `secTweaks` reads a group's key from `data-sec` or `data-fl`.
 - The welcome's button reads **Get started**.
+
+## Welcome: a loader before the burst, and a Format tweak
+
+- The first-time welcome now opens on a loader that reads as the profile being made:
+  - **The dot:** drawn in at 0.15 s, 24px under the top of the sheet's content (40px into the sheet), breathing. It sends out a ripple every 1.5 s (each out to 80px over 2 s, fading), with a small beat as each one leaves it.
+  - **The status lines:** typed one after another in the middle of the sheet, where the title will be, in the async report intro's style: mono capitals, an orange square before them, the block cursor running ahead.
+    - The lines read "Creating your health profile", "Preparing your three steps", "Personalising it for {name}".
+    - 30 ms a letter. Each line keeps its room from the start, so it doesn't shift as it types. It holds 0.62 s, then lifts away blurring as the next one fades in.
+  - **The hand-over** (times from the end of the last line's hold, minus 0.3 s):
+    - At 0, the title's first row starts to open.
+    - At 0.3 s, the last line dissolves into a 7px blur and the dot swells, eased in, with no new ripples.
+    - At 0.82 s, the dot bursts into the sphere at the top edge. A ring goes out from the dot and settles round the sphere.
+    - At 1 s, the title starts writing where the status lines were, with the gift page's pacing unchanged (the last letter begins 2.94 s after the first).
+    - The CTA comes half a second after the last letter begins.
+  - The title block is centred with the CTA row, so the middle of the title area holds still as its rows open. The status line sits in that middle, and the title's first line arrives in exactly that spot.
+- **Sphere API:**
+  - `sphere({ burst: true })` holds the ball.
+  - `seed(at, oy)` draws the rippling dot `oy` px below the ball's centre.
+  - `burst(sw)` swells it over `sw` ms, then flings the ball out from wherever the dot sits.
+- **Tweaks → Welcome → Format:** Full modal, or Bottom sheet full (the default, as before). Changing it while the welcome is up replays it in the new format.
+  - Full modal uses the profile's full frame (`aqFull`, plus `hpWelF` on the wrap): the whole screen on the phone, and the centred column on the desk.
+  - On the phone, the sphere's line is the bottom of the status bar (`--ar-head-top`): the sphere is clipped there, its lower half showing under it. The dot sits 24px below that line, and the close button sits under the status bar.
+- Reduced motion: no loader, the final state at once.
