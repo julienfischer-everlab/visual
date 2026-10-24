@@ -15974,3 +15974,12 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - "The particles around the card stay on the next screen too much; they need to disappear directly."
   - `start()` now adds `hpW2PtOff` to the welcome first thing, before the profile is built (which held the screen a moment). The canvas is at opacity 0 with no transition, on the first frame after the press (measured 0 at 45 ms).
   - Back to the intro takes the class off, and the specks fade back in as they came.
+
+## Welcome V2: opening words before the light
+
+- "Title before the reveal bg: A big step forward, Julien. / You're joining millions of people committed to taking control of their health."
+  - After the last loading line, the lines go and **"A big step forward, Julien."** (30 px; 26 on the phone) with its line (15 px, 62% ink) rises in out of a blur above the breathing dot (`.hpW2Lead`, its foot 40 px over the middle).
+  - It holds about 3 s, then rises away (`hpW2LeadOut`) as the dot opens into the light. The rest follows as before: the card, "Welcome to / Everlab", "Your health journey / starts here.", the buttons.
+  - Without a name it reads "A big step forward."
+  - The sheet's label now begins with the two sentences.
+  - It is not shown when the welcome is shown already settled.
