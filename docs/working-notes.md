@@ -15983,3 +15983,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Without a name it reads "A big step forward."
   - The sheet's label now begins with the two sentences.
   - It is not shown when the welcome is shown already settled.
+
+## Welcome V2: the day as eyebrow; new titles
+
+- "Eyebrow: 24 October 2026. The day you took control of your health. Rotate: Your commitment to your future."
+  - Over the titles sits the day itself (`toLocaleDateString('en-GB')`, the card's small mono capitals, 70% of the titles' ink). It comes in with the first title and stays through the second.
+  - The first title is "The day you took / control of / your health." (three rows, to fit the phone at 34 px). It rotates to "Your commitment / to your future.". They were "Welcome to / Everlab" and "Your health journey / starts here.".
+  - The desk's modal is 780 tall for V2 (720 before), so the eyebrow clears its top (59 px). The sheet's label reads them all.
