@@ -15990,3 +15990,11 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Over the titles sits the day itself (`toLocaleDateString('en-GB')`, the card's small mono capitals, 70% of the titles' ink). It comes in with the first title and stays through the second.
   - The first title is "The day you took / control of / your health." (three rows, to fit the phone at 34 px). It rotates to "Your commitment / to your future.". They were "Welcome to / Everlab" and "Your health journey / starts here.".
   - The desk's modal is 780 tall for V2 (720 before), so the eyebrow clears its top (59 px). The sheet's label reads them all.
+
+## Welcome V2: grain over the light
+
+- "Add texture / noise on the bg, grain, some options in tweaks"
+  - A layer of grey noise (an SVG `feTurbulence` tile, its contrast raised) sits over the warm picture, inside the light. It moves, scales and fades with it, and it lies over the card's glass too. It is blended with `overlay`, so it darkens and lightens the light without greying it.
+  - Tweaks → First-time user:
+    - **Grain**: Off, Fine (default: a small tile, fine specks), Film (larger specks that shift a few times a second, as film does; still under reduced motion), Coarse (big, soft specks).
+    - **Grain amount**: 0–100%, default 35. It is hidden when the grain is off.
