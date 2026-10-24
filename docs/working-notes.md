@@ -15848,3 +15848,14 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Glass blur, 0–30 px, default 10.
   - Glass tint, 0–40%, default 15; the whole sheen scales with it, and light mode is capped at 95%.
   - Glass light (the backdrop's brightness), 80–150%, default 112.
+
+## Welcome V2: membership → card presets (with Save); one-shot opening
+
+- "The membership shouldn't impact the background; it should be based on the card." The background is now the one warm picture for every membership. The blue and violet pictures (`card-glow-diag.webp`, `card-glow-prot.webp`, no longer used and removed from the repo) are gone, and with them their title ink, ember, motes' light and status-bar ink.
+- Card presets (Tweaks → First-time user):
+  - Membership picks a preset. A **Card preset** row has **Save** (keeps what the rows hold for that membership, in `localStorage` `everlab:w2CardPre`) and **Reset** (puts its default back).
+  - A preset holds the card style and each style's settings (fill opacity/blur, glass blur/tint/light, solid background/text/border), the texture (pattern, strength, spacing, motion) and the halo.
+  - Defaults: Baseline is glass with dots. Diagnostics is a graphite solid (#1c1b1a / #efe9e2) with rings. Protocol is a stone solid (#e6e0d7 / #1f1a16) with halftone.
+  - The membership's preset loads at start, after saved Tweaks are restored, and whenever Membership changes.
+- The group is reordered: the screen first (Intro, Version, Opening, Layout, Mask, Blanket, Flip on tap), then Membership, Card preset and every card row under it (Card and its rows, Texture and its rows, Halo), then V1's rows.
+- Full screen opening "faster, smoother, in one shot": one continuous spread from the dot past the screen's corners in 1.15 s, cubic-bezier(.5, 0, .2, 1). It was a swell to 44 px and then the spread over 1.9 s. The ink gives way between 12% and 40% of it. The light ink comes at 420 ms, the card at 850 ms and the title's cue at 250 ms (1.1 s with Title below).
