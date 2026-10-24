@@ -15872,3 +15872,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - With each status line its opacity steps up a third, to 20%, 40% and then 60% (`--hpW2PreA`, 1.3 s ease).
   - The opening then brings the whole picture up over it, the Full screen spread or Card shape's rise.
   - Once settled (2.2 s after the card is ready) the layer fades out, so nothing lingers when Get started fades the background. It is hidden when the welcome is shown already settled.
+
+## Welcome V2: Loading light and Background sliders
+
+- "I need the opacity controller; it's too much at the moment." There are two sliders in First-time user, under Layout:
+  - **Loading light** (0–100%, default 30, was a fixed 60): the top glow's strength at the last loading line. It steps up a third per line (`--hpW2PreA` × `--hpW2PreM`).
+  - **Background** (20–100%, default 100): the opacity of the warm picture once it has opened (`--hpW2BgA` on `.hpW2Bg > .hpW2Img`).
+- Both change live.
