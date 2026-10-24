@@ -15961,3 +15961,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 
 - "Max width card 320px, keep ratio": the card is at most 320 wide, its height following the credit-card ratio (320 × 202, 1.586:1) on the phone and in the desk's modal (was 325 and 400). The blanket's hole follows it.
 - "I meant reduce saturation by 20%": Saturation defaults to 80% (was 120).
+
+## The light moves with the step
+
+- "The bg should move up and down when Get started takes it to the next step, and back."
+  - Get started: the light goes up and away with the words, translateY 0 to −36% (about 300 px on the phone) while it fades, in 0.76 s (cubic-bezier(.5, 0, .2, 1)).
+  - Back to the intro: it comes back down from there into place, fading in (0.76 s, after 80 ms).
+  - It was a plain fade both ways.
