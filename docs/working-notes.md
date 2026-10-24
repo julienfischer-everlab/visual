@@ -15998,3 +15998,25 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Tweaks → First-time user:
     - **Grain**: Off, Fine (default: a small tile, fine specks), Film (larger specks that shift a few times a second, as film does; still under reduced motion), Coarse (big, soft specks).
     - **Grain amount**: 0–100%, default 35. It is hidden when the grain is off.
+
+## Welcome V2: sign the card; QR; dark specks; halo light; the desk's modal 620
+
+- "On Get started flip the card and force the user to sign the card"
+  - Get started now turns the card over. On its back, the details give way to a signature panel styled like a real card's: faintly hatched, an × at the head of its line, and "Authorised signature · not valid unless signed" under it.
+  - The title becomes "Make it yours. / Sign your card.", written like the others.
+  - **Continue** stays disabled until the card is signed. That means strokes at least the panel's height long, not a tap. **Back** turns the card over again and brings back Get started and Do it later.
+  - Signing works with a finger, a pen (it reads the pressure) or a mouse. The line gets thinner the faster it moves, and is smoothed through the points. **Clear** sits in the panel's corner. Once signed, the label reads "Signed 24 October 2026".
+  - From the keyboard, Get started moves focus to the panel, and Enter signs with the member's name, typed in a script face.
+  - The signature stays while the page is open. Coming back from the profile, it is on the card's back, smaller, over the details. A new welcome starts unsigned.
+  - Tweaks → **Sign on start** (On by default). Off goes straight on as before.
+- "Add QR code back of the card"
+  - A real QR code sits at the back's bottom right: "Everlab member EVL 2953 1201", level M, 29 modules, in the card's ink. The details sit beside it, and it gives way to the panel while signing.
+  - The encoder is written in (byte mode, versions 1–3, up to 42 bytes, Reed–Solomon, the mask the standard's penalties pick). OpenCV decodes it from the card itself and at every version.
+- "Add some black particles that are going inside the card"
+  - Dark specks come from a ring round the card. They are drawn in faster and faster, each to its own spot inside, and dissolve as they cross the edge. They sit on their own layer over the card.
+  - Tweaks → **Dark particles** (36 at 100%, 0–300%). They go at once with Get started, like the warm ones.
+- "Halo: a controller to have a light halo, with opacity"
+  - The light round the border is back as an option: the beam's run, wider and blurred, spilling past the edge.
+  - Tweaks → **Halo light** (On) and **Light opacity** (40%). Both are shown only with the halo on, and both are kept in each membership's card preset.
+- "Reduce height of desktop card by 160px" and "more padding bottom on modal desktop +32px"
+  - The desk's modal is 620 tall (780 before). On the desk, the titles sit 48 over the card (104 on the phone), and the buttons are 48 off the modal's foot (16 before).
