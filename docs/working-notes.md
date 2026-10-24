@@ -15839,3 +15839,12 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Card style: Outlined / Filled / Glass / **Solid**. Solid is an opaque card. Its two colours come from Tweaks, Background (`stHpW2Bg`, default #1a1816) and Text (`stHpW2Fg`, default #f3ede6), each a swatch with a hex field that follow each other. The rows show with Solid only.
 - Text colours every word on both faces, the logo, the badge, and the texture (drawn in the solid's ink). The name and age keep the set-in edge, at 88%.
 - The card's look stays code: the background picture is the image you gave, over a CSS gradient fallback. Everything on the card is CSS, SVG (the logo) and canvas (the texture): the card itself, its glass and solid faces, the halo, the motes.
+
+## Welcome card: credit-card ratio, Solid border toggle, Glass controls
+
+- Ratio ("like a credit card format"): ISO/IEC 7810 ID-1, 85.60 × 53.98 mm, so 1.586:1. That is 325 × 205 on the phone and 400 × 252 on the desk. `--hpW2Up` (Title below) follows it.
+- Solid → Border (On / Off, Off by default): with Off, the solid card has no edge at all ("it feels like there's still a border"). The moving light is the Halo and keeps its own toggle.
+- Glass sliders, shown with Glass:
+  - Glass blur, 0–30 px, default 10.
+  - Glass tint, 0–40%, default 15; the whole sheen scales with it, and light mode is capped at 95%.
+  - Glass light (the backdrop's brightness), 80–150%, default 112.
