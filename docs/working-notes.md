@@ -15956,3 +15956,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 ## Background saturation
 
 - "Apply saturation 20% on the bg": **Saturation** (0–200%, default 120, read as +20%) sets `filter: saturate()` on the light, the picture or the code, and the loading light with it.
+
+## Card at most 320 wide; saturation 20% less
+
+- "Max width card 320px, keep ratio": the card is at most 320 wide, its height following the credit-card ratio (320 × 202, 1.586:1) on the phone and in the desk's modal (was 325 and 400). The blanket's hole follows it.
+- "I meant reduce saturation by 20%": Saturation defaults to 80% (was 120).
