@@ -1280,6 +1280,8 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
 /* one light whatever the membership ("the membership shouldn't impact the background, it should be based on the card": the blue and violet pictures retired); each membership its own card preset instead (Tweaks -> First-time user -> Membership, Card preset). The motes' and the halo's warm light: */
 .arSheet.hpWel.hpWelV2 { --hpW2Bm: 255, 206, 160; } .arSheet.hpWel.hpWelV2:not(.arDark) { --hpW2Bm: 226, 128, 48; }
 .arSheet.hpWel .hpW2Card { position: absolute; left: 0; top: 0; width: var(--hpW2W, 325px); height: var(--hpW2H, 205px); translate: -50% -50%; border-radius: 24px; color: oklch(var(--ar-ink)); text-align: left; opacity: 0; scale: .96; perspective: 900px; transition: opacity 1s ease, scale 1.2s cubic-bezier(.2, .8, .2, 1), color .9s ease; }   /* an outline, nothing in it but its words, in the screen's ink */
+/* Full screen: the card comes in rising, 32 px up into its place, as the light opens ("when the background appears, the card should move up a little, like an animation"); Card shape's card is the dot itself, already in its place */
+.arSheet.hpWel:not(.hpW2OpC) .hpW2Card { translate: -50% calc(-50% + 32px); transition: opacity 1s ease, scale 1.2s cubic-bezier(.2, .8, .2, 1), translate 1.3s cubic-bezier(.16, .84, .24, 1), color .9s ease; } .arSheet.hpWel:not(.hpW2OpC).hpW2Ready .hpW2Card { translate: -50% -50%; } .arSheet.hpWel.hpWelCalm .hpW2Card { transition: none; }
 /* two faces on one plate ("an option: when you tap the card, the card flips and you can see some main info about the patient"; Tweaks -> Welcome -> Flip on tap): the front its name and tier; the back the member's number, date of birth, member since and doctor; turned about its upright axis (0.8 s), tapped again to turn back */
 .arSheet.hpWel .hpW2In { position: absolute; inset: 0; transform-style: preserve-3d; transition: rotate .8s cubic-bezier(.45, 0, .2, 1); } .arSheet.hpWel .hpW2Card.hpW2Flip .hpW2In { rotate: y 180deg; }
 .arSheet.hpWel :is(.hpW2Fa, .hpW2Bk) { position: absolute; inset: 0; border-radius: 24px; box-shadow: inset 0 0 0 .5px oklch(var(--ar-ink) / .45); backface-visibility: hidden; -webkit-backface-visibility: hidden; transition: box-shadow .9s ease; } .arSheet.hpWel .hpW2Bk { rotate: y 180deg; }
@@ -2336,6 +2338,7 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
       } else { done(); fl2.style.opacity = '0'; }
       later(function () { root.classList.add('hpW2Lit'); if (mt2) mt2.start(); }, 420);   // the dark ink, as the light reaches the words; the motes coming in
       later(function () { root.classList.add('hpW2Ready'); if (tx2) tx2.start(); }, 850);   // the card's outline and its words, as the light finishes spreading
+      later(function () { root.classList.add('hpWelCtaIn'); }, 1450);   // the footer after the card ("then the footer should come after the card"), not after the titles
       later(goT, root.classList.contains('hpW2LoB') ? 1100 : 250);   // the title written while the light is still spreading ("the title should appear within the transition to the gradient; the delay is way too long": was 2.7 s); Title below, once the card is on its way up out of the middle
     };
     var open2 = function () {
@@ -2352,6 +2355,7 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
         rm2.animate([{ opacity: 0 }, { opacity: 0, offset: .16 }, { opacity: 1, offset: .32 }, { opacity: 1, offset: .8 }, { opacity: 0 }], { duration: D, fill: 'forwards' });   // drawn as the ink thins, landing on the card's outline and handing over to it
       } else { c2.style.clipPath = 'none'; fl2.style.opacity = '0'; }
       later(function () { root.classList.add('hpW2Ready'); if (tx2) tx2.start(); }, 900);   // its words
+      later(function () { root.classList.add('hpWelCtaIn'); }, 1500);   // the footer after the card
       later(function () { root.classList.add('hpW2Rise', 'hpW2Lit'); if (mt2) mt2.start(); }, 1000);   // the coloured light rising from the foot; the motes coming in
       later(goT, root.classList.contains('hpW2LoB') ? 1500 : 900);   // the title written as the light rises (was 2.6 s); Title below, once the card is on its way up
     };

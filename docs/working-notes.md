@@ -15888,3 +15888,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 ## Halo opacity
 
 - "An opacity on the halo, when on": a **Halo opacity** slider (0–100%, default 50, the strength it had), shown while Halo is on. It sets `--hpW2HaA` on the halo's beam, and it is part of each membership's card preset (saved with it).
+
+## Welcome V2: the card rises in, the footer after it
+
+- "When the background appears, the card should move up a little bit, like an animation; then the footer should come after the card."
+  - Full screen opening: the card comes in 32 px low and rises into its place as it fades in (translate 1.3 s, cubic-bezier(.16, .84, .24, 1), from the card's moment at 850 ms). Card shape's card is the dot itself, already in its place, so it does not move.
+  - The footer (Get started, Do it later) now comes 600 ms after the card (1.45 s Full screen, 1.5 s Card shape), rising 18 px as it fades in. It no longer waits for both titles to be written.
