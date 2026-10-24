@@ -15832,3 +15832,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - "Treat it as a separate group in the tweaks and put all of the welcome's tweaks in it." The Welcome group (`data-fl="wel"`, which keeps its + beside the welcome sheet) is now titled **First-time user**. Its first row is **Intro → Trigger** (`stHpFirstGo`), moved out of the Primary card group (whose member-only part held only this row). The welcome's tweaks follow: Version, Membership, Opening, Layout, Texture, Card and the rest.
 - The old Intro → Replay row (`stHpWelRp`) did the same as Trigger and is removed.
 - `arrangeG` keeps the group directly under the Primary card group wherever the sections are dragged.
+
+## Welcome card: Large only; Solid style with its own colours
+
+- "Remove the card size, keep the last one": the Card size row is gone and the card is Large (60 px wider than the base width), 325 × 196 on the phone.
+- Card style: Outlined / Filled / Glass / **Solid**. Solid is an opaque card. Its two colours come from Tweaks, Background (`stHpW2Bg`, default #1a1816) and Text (`stHpW2Fg`, default #f3ede6), each a swatch with a hex field that follow each other. The rows show with Solid only.
+- Text colours every word on both faces, the logo, the badge, and the texture (drawn in the solid's ink). The name and age keep the set-in edge, at 88%.
+- The card's look stays code: the background picture is the image you gave, over a CSS gradient fallback. Everything on the card is CSS, SVG (the logo) and canvas (the texture): the card itself, its glass and solid faces, the halo, the motes.
