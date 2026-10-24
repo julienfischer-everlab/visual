@@ -15943,3 +15943,12 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The Everlab mark is drawn half again the card's height (150%), bleeding off its bottom right (right −15%, bottom −34%), under the words, the face clipping it. It is the mark's SVG as a mask (data URI) on a filled element.
   - The fill is tone on tone, a lacquer: on a solid card its own colour a shade into its ink, lighter at the top, deeper at the foot. A white glint sweeps across it every 7 s, standing still with reduced motion.
   - On glass and the other styles it is drawn in the card's ink at 10%.
+
+## Light palettes, scale, a longer light, Filled's text colour, particles
+
+- "I don't want 3 colours, I want you to propose a few options." Code's three colour pickers are replaced by a **Palette** of five, each a chip of its glow (the one in use ringed, its name beside them): **Sunrise** (the picture's own: #ffd99d / #e9983e / #6d2305), **Ember** (deeper, redder), **Honey** (golden), **Copper** (muted), **Dusk** (rose to plum). Their state is a hidden select, kept with the Tweaks. Spread stays.
+- "Need a controller to scale the bg": **Scale** (60–200%, default 100) sizes the light, the picture or the code, from its top (`scale` on `.hpW2Img`, the loading light with it).
+- "The bg should go a bit more below the card": the picture's box is now 76% of the screen tall (was 64), the picture its same size (`background-size` 109.5%; light mode 176.8%). Its light carries on fading for about 120 px under the card (to 648 of 853 on the phone; it ended at the card's foot). The code's glow is kept where it was in the taller box.
+- "On card Filled I also need a foreground controller": the card's **Text** colour row shows with Filled as well as Solid and colours its words, logo, badge and texture.
+- The palette chips' ring was flattened by the panel's own button reset; it is now forced.
+- "A controller to add more dense particles around the card": **Particles** (0–400%, default 100) sets how many warm specks float in to the card: 64 at 100%, live (`w2Motes().count`).
