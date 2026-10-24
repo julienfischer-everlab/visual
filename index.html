@@ -5639,6 +5639,7 @@
   .aqWrap.aqBpS .aqStat .isl{display:none;}
   .aqStat svg{fill:currentColor;} .aqStat svg rect[fill="none"]{fill:none;stroke:currentColor;}
   .aqWrap.aqDev.aqInk:is(.aqFull, .aqPhone).on .aqStat{color:#141413;}   /* dark on the light paper; white over the dim */
+  .aqWrap.aqDev:is(.aqFull, .aqPhone).on:has(.arSheet.hpWel.hpW2Lit) .aqStat{color:#2a1006;transition:color .4s ease;}   /* the welcome V2's picture up: the status bar in its dark ink, either theme */
   .aqWrap.aqDev.aqInk:is(.aqFull, .aqPhone).on:has(.arSheet.arIsWelcome) .aqStat, .aqWrap.aqDev.aqInk:is(.aqFull, .aqPhone).on:has(.arSheet.arIsIntro) .aqStat{color:#fff;} .aqWrap.aqDev.aqInk:is(.aqFull, .aqPhone).on:has(.arSheet.arIsWelcome.arHtOn) .aqStat, .aqWrap.aqDev.aqInk:is(.aqFull, .aqPhone).on:has(.arSheet.arIsWelcome.arIsSphere) .aqStat{color:#141413;}   /* the Halftone welcome on the paper: dark again */ .aqWrap.aqDev.aqInk:is(.aqFull, .aqPhone).on:has(.arSheet.arStk1) .aqStat{color:#fff;}   /* a sheet up: the page drawn back on black, the status bar white */   /* white on the welcome's picture (the hero again) */
   /* the phone and the full modal: edge to edge */
   .aqWrap.aqPhone .aqFrame{left:0;top:0;width:100%;height:100%;border-radius:0;box-shadow:none;}
@@ -16427,25 +16428,25 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
 .arSheet.hpWel .hpWcB :is(.hpWcNm, .hpWcTr) { position: absolute; bottom: 18px; display: flex; flex-direction: column; gap: 6px; font-family: var(--ar-font); line-height: 1; } .arSheet.hpWel .hpWcB .hpWcNm { left: 20px; align-items: flex-start; } .arSheet.hpWel .hpWcB .hpWcTr { right: 20px; align-items: flex-end; text-align: right; }
 .arSheet.hpWel .hpWcB :is(.hpWcNm, .hpWcTr) b { font-size: 26px; font-weight: 500; letter-spacing: -.02em; } .arSheet.hpWel .hpWcB :is(.hpWcNm, .hpWcTr) span { font-size: 15px; font-weight: 500; } .arSheet.hpWel .hpWcB .hpWcTr span { font-weight: 400; opacity: .72; }   /* first name over last; the tier over its label ("Marc / Hermann", "$299 / per year") */
 .aqWrap.hpBs:is(.aqBpM, .aqBpL) .aqFrame > .arSheet.arSheet.arSheet.arSheet.hpWel.hpWelCardOn { min-height: 640px; }
-/* V2 ("for the intro, a different setup, totally V2: the dot centred on the screen; the bullet points just rotating below the dot, without the orange square; the dot, instead of exploding into particles, explodes and increases, becomes the membership card; 64px padding each side"; "the card background, this background image"):
-   one element is the dot and the card: the card itself, clipped to a circle at its middle (4 to 6 px, breathing), its face covered by the ink; on the last line it swells (a third of a second) and opens out to its whole self (1.15 s), the ink giving way to its face, a warm bloom going out behind it;
-   its words in, then it goes up to where the sphere was (1 s) and the titles are written under it; the card stays as the page's picture */
+/* V2 ("for the intro, a different setup, totally V2: the dot centred on the screen; the bullet points just rotating below the dot, without the orange square; the dot, instead of exploding into particles, explodes and increases, becomes the membership card; 64px padding each side";
+   "the card without a background; the entire screen takes the background when the card appears; the card just an outline skeleton; no dots inside"): the dot is a window onto the screen's new ground, the given picture, clipped to a circle in the middle (4 to 6 px, breathing),
+   covered by the ink; on the last line it swells (a quarter of the way) and bursts open to the whole screen (1.3 s), the ink giving way; the card, an outline holding its words, comes in where the dot was; then it goes up to where the sphere was (1 s) and the titles are written under it,
+   in a dark ink on the light of the picture; the button light on its dark */
 @property --hpDR { syntax: '<length>'; inherits: false; initial-value: 0px; }
-.arSheet.hpWel .hpW2 { position: absolute; left: 50%; top: 50%; width: 0; height: 0; transition: top 1s cubic-bezier(.45, 0, .2, 1); } .arSheet.hpWel.hpW2Up .hpW2 { top: var(--hpW2Hy, 50%); } .arSheet.hpWel.hpWelCalm .hpW2 { transition: none; }
-.arSheet.hpWel .hpW2Card { position: absolute; left: 0; top: 0; width: var(--hpW2W, 265px); aspect-ratio: 1.77; translate: -50% -50%; border-radius: 16px; overflow: hidden; --hpDR: 0px; clip-path: inset(calc(50% - var(--hpDR)) round var(--hpDR)); }
-.arSheet.hpWel.hpW2On .hpW2Card { animation: hpW2Dot .8s cubic-bezier(.2, .8, .2, 1) forwards; } .arSheet.hpWel.hpW2On.hpW2Br .hpW2Card { animation: hpW2Br 2.8s ease-in-out infinite; }   /* a pixel grown to an 8 px dot; breathing 8 to 12 */
+.arSheet.hpWel .hpW2Bg { position: absolute; inset: 0; --hpDR: 0px; clip-path: circle(var(--hpDR) at 50% 50%); background: url("assets/welcome/card-glow.webp") top center / 100% 128% no-repeat, linear-gradient(180deg, #ffd99d 0%, #fdd08a 24%, #f7b763 41%, #e9983e 50%, #ba5a10 61%, #6d2305 78%, #1b0703 98%, #010001 128%); }   /* the given picture over the whole screen, a little taller than it, so its light reaches the title */
+.arSheet.hpWel.hpW2On .hpW2Bg { animation: hpW2Dot .8s cubic-bezier(.2, .8, .2, 1) forwards; } .arSheet.hpWel.hpW2On.hpW2Br .hpW2Bg { animation: hpW2Br 2.8s ease-in-out infinite; }   /* a pixel grown to an 8 px dot; breathing 8 to 12 */
 @keyframes hpW2Dot { from { --hpDR: .5px; } to { --hpDR: 4px; } } @keyframes hpW2Br { 0%, 100% { --hpDR: 4px; } 50% { --hpDR: 6px; } }
-.arSheet.hpWel.hpWelCalm .hpW2Card { clip-path: inset(0 round 16px); } .arSheet.hpWel.hpWelCalm .hpW2Fl { opacity: 0; }
-.arSheet.hpWel .hpW2Fl { position: absolute; inset: 0; background: oklch(var(--ar-ink)); }   /* the dot's ink, over the card's face till it opens */
-.arSheet.hpWel .hpW2Face { position: absolute; inset: 0; color: #fff6ee; text-align: left; background: url("assets/welcome/card-glow.webp") center / 100% 100% no-repeat, linear-gradient(180deg, #ffd99d 0%, #fcc97d 26%, #e9983e 39%, #ba5a10 48%, #6d2305 61%, #1b0703 77%, #010001 100%); }   /* the given picture, the whole of it, its light at the top, its dark at the foot */
-.arSheet.hpWel .hpW2Face canvas.hpWcDots { position: absolute; inset: 0; width: 100%; height: 100%; }
-.arSheet.hpWel .hpW2Sh { position: absolute; inset: -10% -40%; background: linear-gradient(105deg, rgba(255, 244, 232, 0) 40%, rgba(255, 244, 232, .26) 49%, rgba(255, 244, 232, .06) 53%, rgba(255, 244, 232, 0) 60%); translate: -70% 0; pointer-events: none; } .arSheet.hpWel.hpW2Ready .hpW2Sh { animation: hpWcSheen 5.2s cubic-bezier(.45, 0, .2, 1) .4s infinite; }
+.arSheet.hpWel .hpW2Fl { position: absolute; inset: 0; background: oklch(var(--ar-ink)); }   /* the dot's ink, over the picture till it bursts */
+.arSheet.hpWel.hpWelCalm .hpW2Bg { clip-path: none; } .arSheet.hpWel.hpWelCalm .hpW2Fl { opacity: 0; }
+.arSheet.hpWel.hpW2Lit { --ar-ink: 20% .05 45; --ar-fg: oklch(20% .05 45); --ar-btn-bg: #fff6ee; --ar-btn-fg: #1a0a04; --ar-btn-bg-hover: #ffffff; --ar-btn-bg-active: #f1e6dc; }   /* on the picture: a dark ink for the words and the close; the button light, on its dark */
+.arSheet.hpWel .hpW2 { position: absolute; left: 50%; top: 50%; width: 0; height: 0; transition: top 1s cubic-bezier(.45, 0, .2, 1); } .arSheet.hpWel.hpW2Up .hpW2 { top: var(--hpW2Hy, 50%); } .arSheet.hpWel.hpWelCalm .hpW2 { transition: none; }
+.arSheet.hpWel .hpW2Card { position: absolute; left: 0; top: 0; width: var(--hpW2W, 265px); aspect-ratio: 1.77; translate: -50% -50%; border-radius: 16px; box-shadow: inset 0 0 0 1px rgba(42, 16, 6, .5); color: #2a1006; text-align: left; opacity: 0; scale: .96; transition: opacity .7s ease, scale .9s cubic-bezier(.2, .8, .2, 1); }   /* an outline, nothing in it but its words */
+.arSheet.hpWel.hpW2Ready .hpW2Card { opacity: 1; scale: 1; }
 .arSheet.hpWel .hpW2C { opacity: 0; filter: blur(4px); transition: opacity .6s ease, filter .6s ease; } .arSheet.hpWel.hpW2Ready .hpW2C { opacity: 1; filter: none; } .arSheet.hpWel .hpW2Nm.hpW2C { transition-delay: .12s; } .arSheet.hpWel .hpW2Tr.hpW2C { transition-delay: .18s; }
-.arSheet.hpWel .hpW2Mk { position: absolute; left: 16px; top: 14px; width: 15px; height: 17px; color: #3a1607; }
-.arSheet.hpWel .hpW2Tag { position: absolute; right: 14px; top: 13px; padding: 4px 8px 3px; border: 1px solid rgba(58, 22, 7, .75); border-radius: 999px; font-family: var(--ar-font-mono); font-size: 9px; line-height: 1; letter-spacing: .16em; text-transform: uppercase; color: #3a1607; }   /* on its light: the dark ink */
+.arSheet.hpWel .hpW2Mk { position: absolute; left: 16px; top: 14px; width: 15px; height: 17px; color: #2a1006; }
+.arSheet.hpWel .hpW2Tag { position: absolute; right: 14px; top: 13px; padding: 4px 8px 3px; border: 1px solid rgba(42, 16, 6, .6); border-radius: 999px; font-family: var(--ar-font-mono); font-size: 9px; line-height: 1; letter-spacing: .16em; text-transform: uppercase; }
 .arSheet.hpWel :is(.hpW2Nm, .hpW2Tr) { position: absolute; bottom: 14px; display: flex; flex-direction: column; gap: 4px; font-family: var(--ar-font); line-height: 1; } .arSheet.hpWel .hpW2Nm { left: 16px; align-items: flex-start; } .arSheet.hpWel .hpW2Tr { right: 16px; align-items: flex-end; text-align: right; }
-.arSheet.hpWel :is(.hpW2Nm, .hpW2Tr) b { font-size: 19px; font-weight: 500; letter-spacing: -.02em; } .arSheet.hpWel :is(.hpW2Nm, .hpW2Tr) span { font-size: 11.5px; font-weight: 500; } .arSheet.hpWel .hpW2Tr span { font-weight: 400; opacity: .72; }   /* on its dark: the light */
-.arSheet.hpWel .hpW2Bl { position: absolute; left: 0; top: 0; width: 280px; height: 280px; translate: -50% -50%; border-radius: 50%; background: radial-gradient(closest-side, rgba(255, 226, 170, .9), rgba(250, 168, 80, .42) 42%, rgba(236, 120, 40, 0) 100%); opacity: 0; pointer-events: none; }   /* the bloom behind it as it opens */
+.arSheet.hpWel :is(.hpW2Nm, .hpW2Tr) b { font-size: 19px; font-weight: 500; letter-spacing: -.02em; } .arSheet.hpWel :is(.hpW2Nm, .hpW2Tr) span { font-size: 11.5px; font-weight: 500; } .arSheet.hpWel .hpW2Tr span { font-weight: 400; opacity: .7; }
 .arSheet.hpWel.hpWelV2 .hpWelLd { top: calc(50% + 26px); }   /* the lines under the dot */
 .arSheet.hpWel .hpWelStream { position: absolute; left: 0; width: 100%; top: 0; height: 0; opacity: 0; transition: opacity .8s ease; } .arSheet.hpWel .hpWelStream.hpWsOn { opacity: 1; transition: opacity 1.4s ease .15s; }   /* the stream behind the card: coming in as it turns over (1.4 s), going with it (0.8 s) */   /* the desk's modal tall enough for the card under the title */
 .arSheet.hpWel .hpWelX { position: absolute; top: var(--ar-head-top, 16px); right: 16px; z-index: 2; }   /* under the status bar in the full modal */
@@ -16468,7 +16469,11 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
 .arSheet.hpWel .hpWelSq { flex: none; width: 6px; height: 6px; background: #ff7a1a; transform: translateY(-1px); }   /* 12px mono, 12 after the square, the square 1 up ("bullet +1px font, gap +2px, square 1px up") */
 .arSheet.hpWel .hpWelLdW { position: relative; } .arSheet.hpWel .hpWelLdG { visibility: hidden; } .arSheet.hpWel .hpWelLdT { position: absolute; left: 0; top: 0; }   /* the words held unseen for the line's room; the typing over them */
 .arSheet.hpWel .hpWelLd .arRvCur { margin-left: 3px; }   /* 2 more before the cursor ("+2px gap before the cursor square") */
-.arSheet.hpWel .hpWelCtaR { position: absolute; left: 0; right: 0; bottom: 40px; } .aqWrap:is(.aqBpXS, .aqBpS) .arSheet.hpWel .hpWelCtaR, .aqWrap.hpWelF .arSheet.hpWel .hpWelCtaR { bottom: 96px; }   /* on a full-height sheet, 96 off the bottom ("96 from bottom"); the title alone in the middle above it. The desk's modal keeps it under the title */
+.arSheet.hpWel .hpWelCtaR { position: absolute; left: 0; right: 0; bottom: 16px; flex-direction: column; align-items: center; gap: 8px; } .aqWrap:is(.aqBpXS, .aqBpS) .arSheet.hpWel .hpWelCtaR, .aqWrap.hpWelF .arSheet.hpWel .hpWelCtaR { bottom: 48px; }   /* Get started still 96 off the bottom, Do it later (40) under it */
+.arSheet.hpWel .hpWelLater { height: 40px; padding: 0 20px; border-radius: 9999px; background: transparent; color: oklch(var(--ar-ink) / .72); font-size: 15px; line-height: 18px; font-weight: 500; opacity: 0; visibility: hidden; transform: translateY(18px); transition: opacity .9s cubic-bezier(.22, .61, .24, 1) .12s, transform .9s cubic-bezier(.22, .61, .24, 1) .12s, visibility .9s .12s, color .3s ease; }   /* tertiary: words only, after the button */
+@media (hover: hover) { .arSheet.hpWel .hpWelLater:hover { color: oklch(var(--ar-ink)); } }
+.arSheet.hpWel:is(.hpWelCtaIn, .hpWelCalm) .hpWelLater { opacity: 1; visibility: visible; transform: none; }
+.arSheet.hpWel.hpW2Lit .hpWelLater { color: rgba(255, 246, 238, .78); } @media (hover: hover) { .arSheet.hpWel.hpW2Lit .hpWelLater:hover { color: #fff6ee; } }   /* V2: on the picture's dark, light   /* on a full-height sheet, 96 off the bottom ("96 from bottom"); the title alone in the middle above it. The desk's modal keeps it under the title */
 .arSheet.hpWel .hpWelCta { width: auto; max-width: 100%; padding: 0 32px; opacity: 0; visibility: hidden; transform: translateY(18px); transition: opacity .9s cubic-bezier(.22, .61, .24, 1), transform .9s cubic-bezier(.22, .61, .24, 1), visibility .9s; }   /* its row there from the start: it only fades in, rising */
 .arSheet.hpWel:is(.hpWelCtaIn, .hpWelCalm) .hpWelCta { opacity: 1; visibility: visible; transform: none; }
 .arSheet.hpWel.hpWelCalm .hpWelC { opacity: 1; top: 0; filter: none; } .arSheet.hpWel.hpWelCalm .hpWelQ1 { display: none; }
@@ -17279,8 +17284,8 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
     var calm = reduced() || !!opts.settled;   // its last state at once: reduced motion, or come back to from the profile (settled)
     var V2 = opts.v === 'v2', CARD = !V2 && !calm && opts.card !== 'off', LOGO = !V2 && opts.logo !== 'off' && !reduced(), STRM = CARD && opts.stream !== 'off';   // V2: the dot in the middle, growing into the card (Tweaks -> Welcome -> Version)   // the membership card in the loader (Tweaks -> Welcome -> Card); the logo at the sphere's place (-> Sphere); the blood stream behind the card (-> Stream)
     var sp = opts.sphere || sphere({ cls: 'hpWelS', burst: !calm && !V2 }); if (!opts.sphere) sp.set(0, false);   // the sphere given (the profile's, carried back) or its own
-    var closeBtn = h('button', { type: 'button', class: 'arIconBtn arClose hpWelX', 'aria-label': 'Close' }, ic(16, P.close, 1.8));
     var cta = h('button', { type: 'button', class: 'arBtn arBtnPrimary arBtnLg hpWelCta' }, h('span', { class: 'arBtnLabel', text: 'Get started' }));   // ("CTA: Get started")
+    var later2 = h('button', { type: 'button', class: 'arBtn hpWelLater' }, h('span', { class: 'arBtnLabel', text: 'Do it later' }));   // no close icon on it; a quiet way out under the button instead ("remove the dismiss icon; just a call to action; Do it later as a tertiary button")
     /* two titles, one after the other ("Welcome to Everlab, {name}; disappear; This is the first step of your health journey; CTA appear"), each written the way the gift page writes its message: letter by letter, 61 ms apart (the gift's pace), each easing up and sharpening out of a blur over 1.64 s, orange for as long as it is out of focus; across the last line quicker and cooler, its last word 1.15 s at 70%. Each line a row opening from nothing over 1.5 s, from 0.9 s before its first letter, the block held by its foot so the row being written stays on one line and those above move up ("the H1 should move up every row written"). The first, settled and held, dissolves upward; the second is written in its place. Times from the moment the loader hands over (hpWelGo) */
     var STG = 61, CH = 1640, LW = 1150, LE = .7, NM = opts.name || '';
     var title = function (LNS, at, cls) {
@@ -17312,17 +17317,17 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
       card = h('div', { class: 'hpWelCard' }, h('div', { class: 'hpWcIn' }, h('div', { class: 'hpWcF' }, ld),
         h('div', { class: 'hpWcB' }, wc, h('i', { class: 'hpWcSh' }), mark('hpWcMk', 19, 21), h('span', { class: 'hpWcTag', text: 'Member' }),
           h('div', { class: 'hpWcNm' }, h('b', { text: NM || 'Member' }), opts.last ? h('span', { text: opts.last }) : null), h('div', { class: 'hpWcTr' }, h('b', { text: opts.tier || 'Baseline' }), h('span', { text: 'Tier' }))))); }   // the status lines typed in its outline (its front); the card on its back
-    var w2 = null, c2 = null, bl2 = null, fl2 = null, wv2 = null;
-    if (V2) { var wc2 = h('canvas', { class: 'hpWcDots', 'aria-hidden': 'true' }); wv2 = cardDots(wc2); fl2 = h('i', { class: 'hpW2Fl' }); bl2 = h('i', { class: 'hpW2Bl' });
-      c2 = h('div', { class: 'hpW2Card' }, h('div', { class: 'hpW2Face' }, wc2, h('i', { class: 'hpW2Sh' }), mark('hpW2Mk hpW2C', 15, 17), h('span', { class: 'hpW2Tag hpW2C', text: 'Member' }),
-        h('div', { class: 'hpW2Nm hpW2C' }, h('b', { text: NM || 'Member' }), opts.last ? h('span', { text: opts.last }) : null), h('div', { class: 'hpW2Tr hpW2C' }, h('b', { text: opts.tier || 'Baseline' }), h('span', { text: 'Tier' }))), fl2);
-      w2 = h('div', { class: 'hpW2' }, bl2, c2); }   // the dot and the card, one element; the bloom behind it
-    var ball = h('div', { class: 'hpWelBall' }, flip), sph = h('div', { class: 'hpWelSph', 'aria-hidden': 'true' }, V2 ? w2 : ball, stc, card || ld);   // the ball at the profile's own place; the status lines (or the card holding them) under it
+    var w2 = null, c2 = null, bg2 = null, fl2 = null;
+    if (V2) { fl2 = h('i', { class: 'hpW2Fl' }); bg2 = h('div', { class: 'hpW2Bg' }, fl2);   // the screen's new ground, the dot its window
+      c2 = h('div', { class: 'hpW2Card' }, mark('hpW2Mk hpW2C', 15, 17), h('span', { class: 'hpW2Tag hpW2C', text: 'Member' }),
+        h('div', { class: 'hpW2Nm hpW2C' }, h('b', { text: NM || 'Member' }), opts.last ? h('span', { text: opts.last }) : null), h('div', { class: 'hpW2Tr hpW2C' }, h('b', { text: opts.tier || 'Baseline' }), h('span', { text: 'Tier' })));
+      w2 = h('div', { class: 'hpW2' }, c2); }   // the card: an outline and its words
+    var ball = h('div', { class: 'hpWelBall' }, flip), sph = h('div', { class: 'hpWelSph', 'aria-hidden': 'true' }, V2 ? [bg2, w2] : ball, stc, card || ld);   // the ball at the profile's own place; the status lines (or the card holding them) under it
     if (CARD || V2) SAY += ' Your membership card: ' + (NM ? NM + ' ' : '') + (opts.last || '') + ', member, ' + (opts.tier || 'Baseline') + ' tier.';
     var root = h('div', { class: 'arSheet hpSheet hpWel' + (opts.theme === 'dark' ? ' arDark' : '') + (calm ? ' hpWelCalm' : '') + (CARD ? ' hpWelCardOn' : '') + (V2 ? ' hpWelV2' : ''), role: 'document', 'aria-label': SAY },
-      sph, closeBtn, h('div', { class: 'hpWelBody' }, h('div', { class: 'hpWelStage', style: 'height:calc(var(--hpWelLh) * ' + Math.max(T1.rows, T2.rows) + ')' }, T1.el, T2.el), h('div', { class: 'hpWelCtaR' }, cta)));   // the button in the content, under the title, hugging its words ("hug content CTA, in the content not in the footer")
+      sph, h('div', { class: 'hpWelBody' }, h('div', { class: 'hpWelStage', style: 'height:calc(var(--hpWelLh) * ' + Math.max(T1.rows, T2.rows) + ')' }, T1.el, T2.el), h('div', { class: 'hpWelCtaR' }, cta, later2)));   // the button in the content, under the title, hugging its words ("hug content CTA, in the content not in the footer")
     host.appendChild(root);
-    closeBtn.addEventListener('click', function () { if (opts.onClose) opts.onClose(); });
+    later2.addEventListener('click', function () { if (opts.onClose) opts.onClose(); });
     cta.addEventListener('click', function () { if (opts.onStart) opts.onStart(); });
     /* one motion, once the sheet is up: the dot drawn in near the top (0.15 s), rippling; the status lines typed one after another under it; on the last, held, the title's first row starts to open (hpWelGo), the dot swells as the line dissolves in a blur (0.3 s on), and bursts into the ball at the top edge, its upper half past it (0.82 s on); as the ball forms the title is written where the lines were (1 s on), the button half a second after its last letter begins, fading in as it rises 18px (0.9 s) in the row kept for it */
     var tm = [], later = function (f, ms) { tm.push(setTimeout(f, ms)); };
@@ -17337,15 +17342,16 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
         else if (CARD) later(function () { card.classList.add('hpWcFlip'); wv.start(); if (st) { band(); st.start(); stc.classList.add('hpWsOn'); } later(goT, 1650); }, HOLD);   /* the last line held, then the outline turned over to the card (1.15 s); half a second on, the title */
         else later(goT, HOLD - 300); };   /* together: the title written (1 s on), the dot drawn in to a point (0.3 s on), bursting where it is (0.75 s on) */
     var open2 = function () {
-      ld.classList.add('hpWelLdEnd'); var r0 = parseFloat(getComputedStyle(c2).getPropertyValue('--hpDR')) || 4, c0 = 'inset(calc(50% - ' + r0.toFixed(2) + 'px) round ' + r0.toFixed(2) + 'px)';
-      c2.style.clipPath = c0; root.classList.remove('hpW2On', 'hpW2Br');   // held at the size it breathed to
-      if (c2.animate) {
-        c2.animate([{ clipPath: c0, easing: 'cubic-bezier(.3, 0, .2, 1)' }, { clipPath: 'inset(calc(50% - 16px) round 16px)', offset: .26, easing: 'cubic-bezier(.65, 0, .2, 1)' }, { clipPath: 'inset(0px round 16px)' }], { duration: 1150, fill: 'forwards' });   // a swell, then out to its whole self
-        fl2.animate([{ opacity: 1 }, { opacity: 1, offset: .22 }, { opacity: 0, offset: .74 }, { opacity: 0 }], { duration: 1150, fill: 'forwards' });   // the ink giving way to its face
-        bl2.animate([{ opacity: 0, transform: 'scale(.06)' }, { opacity: .95, transform: 'scale(.42)', offset: .24 }, { opacity: 0, transform: 'scale(1.6)' }], { duration: 1300, easing: 'cubic-bezier(.2, .7, .3, 1)', fill: 'forwards' });
-      } else { c2.style.clipPath = 'inset(0 round 16px)'; fl2.style.opacity = '0'; }
-      later(function () { root.classList.add('hpW2Ready'); wv2.start(); }, 820);   // its words, its dots, its gloss
-      later(function () { root.classList.add('hpW2Up'); later(goT, 350); }, 2300);   // up to the sphere's place; the title under it
+      ld.classList.add('hpWelLdEnd'); var r0 = parseFloat(getComputedStyle(bg2).getPropertyValue('--hpDR')) || 4, R = Math.ceil(Math.hypot(root.clientWidth / 2, root.clientHeight / 2)) + 8, c0 = 'circle(' + r0.toFixed(2) + 'px at 50% 50%)';
+      bg2.style.clipPath = c0; root.classList.remove('hpW2On', 'hpW2Br');   // held at the size it breathed to
+      if (bg2.animate) {
+        var an = bg2.animate([{ clipPath: c0, easing: 'cubic-bezier(.3, 0, .2, 1)' }, { clipPath: 'circle(16px at 50% 50%)', offset: .24, easing: 'cubic-bezier(.55, 0, .15, 1)' }, { clipPath: 'circle(' + R + 'px at 50% 50%)' }], { duration: 1300, fill: 'forwards' });   // a swell, then open to the whole screen
+        an.onfinish = function () { bg2.style.clipPath = 'none'; an.cancel(); };   // then no clip at all, whatever the screen's size
+        fl2.animate([{ opacity: 1 }, { opacity: 1, offset: .22 }, { opacity: 0, offset: .62 }, { opacity: 0 }], { duration: 1300, fill: 'forwards' });   // the ink giving way to the picture
+      } else { bg2.style.clipPath = 'none'; fl2.style.opacity = '0'; }
+      later(function () { root.classList.add('hpW2Lit'); }, 420);   // the dark ink, as the light reaches the words
+      later(function () { root.classList.add('hpW2Ready'); }, 700);   // the card's outline and its words, where the dot was
+      later(function () { root.classList.add('hpW2Up'); later(goT, 350); }, 2400);   // up to the sphere's place; the title under it
     };
     var goT = function () {
       root.classList.add('hpWelGo'); later(function () { if (!V2) sp.burst(450); ld.classList.add('hpWelLdEnd'); if (LOGO) later(turn, 2000); }, 300);   // the ball formed, then over to the logo
@@ -17368,8 +17374,8 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
       if (CARD) later(function () { card.classList.add('hpWcOn'); }, 1050);   // its outline in, just before the first line
       later(function () { type(0); }, 1500);
     };
-    if (!calm) requestAnimationFrame(function () { requestAnimationFrame(go); }); else { place(); requestAnimationFrame(place); if (LOGO) later(turn, 2600); if (V2) { root.classList.add('hpW2Up', 'hpW2Ready'); if (!reduced()) wv2.start(); } }   // come back to: the sphere, then over to the logo
-    return { el: root, welcome: true, v2: V2, card2: w2, sphere: V2 ? null : sp, sphT0: V2 ? null : sp.t0, place: place, flip: flip, logo: logo, hold: function () { held = true; }, theme: function (t) { root.classList.toggle('arDark', t === 'dark'); }, home: function () {}, area: function () {}, destroy: function () { tm.forEach(clearTimeout); tm = []; held = true; if (wv) wv.stop(); if (st) st.stop(); if (wv2) wv2.stop(); if (root.parentNode) root.parentNode.removeChild(root); } };
+    if (!calm) requestAnimationFrame(function () { requestAnimationFrame(go); }); else { place(); requestAnimationFrame(place); if (LOGO) later(turn, 2600); if (V2) root.classList.add('hpW2Up', 'hpW2Ready', 'hpW2Lit'); }   // come back to: the sphere, then over to the logo
+    return { el: root, welcome: true, v2: V2, card2: w2, bg2: bg2, sphere: V2 ? null : sp, sphT0: V2 ? null : sp.t0, place: place, flip: flip, logo: logo, hold: function () { held = true; }, theme: function (t) { root.classList.toggle('arDark', t === 'dark'); }, home: function () {}, area: function () {}, destroy: function () { tm.forEach(clearTimeout); tm = []; held = true; if (wv) wv.stop(); if (st) st.stop(); if (root.parentNode) root.parentNode.removeChild(root); } };
   }
 
   window.HealthProfile = { mount: mount, welcome: welcome, dots: dots, sphere: sphere, look: look, store: { get: function () { return S; }, summary: summary, preset: preset, reset: function () { preset('none'); }, pending: pending, areas: AREAS } };
@@ -31617,6 +31623,7 @@ hairline({
       [wel.el.querySelector('.hpWelBody'), wel.el.querySelector('.hpWelX'), wel.card2].forEach(el => { if (el) el.animate(outK, { duration: 380, easing: 'cubic-bezier(.4, 0, .9, .6)', fill: 'forwards' }); });
       /* one sphere ("important that the sphere from both screens is the same; at the moment there is a jumping problem"): the welcome's own put in the profile's place, the profile's given up, so nothing hands over; from where it stood (32 lower, 10% larger) pushed up to the place and down to the profile's size together, as the screens change ("pushed up a bit to reach the sphere of the health profile screen"; "the scale down should occur while the screen transitions, not at the end"), 0.9 s */
       if (hs && v2) hs.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 700, delay: 300, easing: 'ease', fill: 'backwards' });   // V2: the profile's sphere fading in with its page
+      if (v2 && wel.bg2) wel.bg2.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 560, easing: 'ease', fill: 'forwards' });   // V2: its picture fading off the screen as the profile comes up
       if (hs && cv){ const sr = hs.getBoundingClientRect(), k0 = cr.width / (sr.width || cr.width);
         hs.parentNode.replaceChild(cv, hs); cv.className = hs.className; ['position', 'left', 'top', 'width', 'height', 'margin'].forEach(p => cv.style.removeProperty(p));
         { const lv = store.summary().n / 3; if (wel.sphere && lv > 0) setTimeout(() => wel.sphere.set(lv, true), 900); }   // the profile's fill coming in once it has landed, not switched on as it leaves the welcome (that was the blink)
@@ -31654,7 +31661,8 @@ hairline({
       if (!v2) cv.animate([{ transform: 'translate(' + dx.toFixed(1) + 'px, ' + dy.toFixed(1) + 'px) scale(' + hpS + ')' }, { transform: 'translate(0px, 0px) scale(1.6)' }], { duration: 900, easing: 'cubic-bezier(.45, 0, .2, 1)', fill: 'backwards' });
       const view = hp.el.querySelector('.hpView'), rise = Math.max(160, Math.round(((view && view.clientHeight) || 600) * .34)), downK = [{ transform: 'none', opacity: 1 }, { transform: 'translateY(48px)', opacity: 0, offset: .7 }, { transform: 'translateY(72px)', opacity: 0 }];
       [hp.el.querySelector('.hpScr'), hp.el.querySelector('.arFoot'), hp.el.querySelector('.arHead'), hp.el.querySelector('.hpRail')].forEach(el => { if (el) el.animate(downK, { duration: 380, easing: 'cubic-bezier(.4, 0, .9, .6)', fill: 'forwards' }); });   // down and away, the halo in its page
-      [wel.el.querySelector('.hpWelBody'), wel.el.querySelector('.hpWelX'), wel.card2].forEach(el => { if (el) el.animate([{ transform: 'translateY(' + -rise + 'px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 660, delay: 300, easing: 'cubic-bezier(.16, 1, .3, 1)', fill: 'backwards' }); });   // from above, down into place
+      [wel.el.querySelector('.hpWelBody'), wel.el.querySelector('.hpWelX'), wel.card2].forEach(el => { if (el) el.animate([{ transform: 'translateY(' + -rise + 'px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 660, delay: 300, easing: 'cubic-bezier(.16, 1, .3, 1)', fill: 'backwards' }); });
+      if (wel.bg2) wel.bg2.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 600, delay: 120, easing: 'ease', fill: 'backwards' });   // V2: its picture back over the screen   // from above, down into place
       const clip = sheet ? frame.animate([{ clipPath: 'inset(0px 0px 0px 0px round 0px)' }, { clipPath: 'inset(' + (f0.top - f1.top) + 'px ' + (f1.right - f0.right) + 'px ' + (f1.bottom - f0.bottom) + 'px ' + (f0.left - f1.left) + 'px round ' + rd + ')' }], { duration: 620, delay: 200, easing: 'cubic-bezier(.32, .72, 0, 1)', fill: 'forwards' }) : null;
       requestAnimationFrame(() => { frame.style.transition = ''; });
       fromIntro = false; inst = wel; carried = null;
@@ -31662,7 +31670,7 @@ hairline({
         if (inst !== wel) return; frame.style.transition = 'none';
         if (sheet){ wrap.classList.add('hpBs'); wrap.classList.remove('aqFull'); } else wrap.classList.add('hpWelF');
         ['position', 'left', 'top', 'width', 'height', 'margin', 'max-width', 'z-index', 'background', 'display', 'flex-direction', 'align-items', 'text-align', '--ar-head-top'].forEach(p => wel.el.style.removeProperty(p)); void wel.el.offsetWidth; wel.el.style.removeProperty('transition');   // its paper back at once, then its own transition again
-        if (clip) clip.cancel(); hp.destroy(); [cv, wel.el.querySelector('.hpWelBody'), wel.el.querySelector('.hpWelX'), wel.card2].forEach(el => el && el.getAnimations().forEach(an => an.cancel())); paint(); wel.place(); requestAnimationFrame(() => { frame.style.transition = ''; });
+        if (clip) clip.cancel(); hp.destroy(); [cv, wel.el.querySelector('.hpWelBody'), wel.el.querySelector('.hpWelX'), wel.card2, wel.bg2].forEach(el => el && el.getAnimations().forEach(an => an.cancel())); paint(); wel.place(); requestAnimationFrame(() => { frame.style.transition = ''; });
       }, 1100);
     };
     window._hpBack = { ok: backOk, go: back2intro };
@@ -31671,7 +31679,7 @@ hairline({
       if (openN != null && openN < 3 && store.summary().n === 3 && !gone){ openN = null; setPlan(true); const st = document.getElementById('stHpSt'); if (st) st.value = 'plan'; }   /* the profile finished in this sitting: back on the Overview, the Program card in its place ("after the health profile is completed, when the user comes back to the Overview, a new card replaces it, highlighting a membership") */
       setTimeout(() => paintCard(true), 40);   // back on the Overview: its card fills to where the member now is
       if (now === true) end(); else shutT = setTimeout(end, 520); };
-    document.addEventListener('keydown', e => { if (e.key !== 'Escape' || !wrap || !wrap.classList.contains('on')) return; if (document.querySelector('.tkPanel[open], .tkMenu:not([hidden])') && e.target.closest && e.target.closest('.topbar')) return; const x = wrap.querySelector('.arClose'); if (x){ e.preventDefault(); x.click(); } });
+    document.addEventListener('keydown', e => { if (e.key !== 'Escape' || !wrap || !wrap.classList.contains('on')) return; if (document.querySelector('.tkPanel[open], .tkMenu:not([hidden])') && e.target.closest && e.target.closest('.topbar')) return; const x = wrap.querySelector('.arClose, .hpWelLater'); if (x){ e.preventDefault(); x.click(); } });   // the welcome has no close: Escape is its Do it later
     document.addEventListener('everlab:mode', () => close(true));
     { const t = document.getElementById('themeSel'); if (t) t.addEventListener('change', () => setTimeout(paint, 30)); }
     // the Overview's card: the dotted circle (a third lit an area done), the name and the line, the status and the three areas, the button its state's ("Complete / Continue / View health profile")
