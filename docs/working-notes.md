@@ -15902,3 +15902,13 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Save shows the unsaved dot (`.tkPreBtn[data-dirty]`, as the report's presets) while the card rows differ from what the picked membership keeps. The dot clears on Save, on Reset and when a membership is picked.
   - The top bar's Save now also keeps the current membership's card, so a reload brings back exactly what was saved there.
   - The buttons are hidden with V1, which has no card presets.
+
+## Welcome V2: the dot's pull, the lines at the foot, a burst; name and age closer
+
+- "The rotating lines should be at the bottom of the screen; the dot in the middle with particles attracting inside, floating around; the more I progress, the more particles; at some point the dot becomes small and explodes."
+  - The status lines sit at the foot of the screen, 132 px off the bottom (92 in the desk's modal), where the buttons will come. They were under the dot.
+  - `w2Att`, a canvas over the dark: specks (white, a third of them the warm light) come in from round the dot, 70 px out to 40% of the screen. They drift in turning (pull 110 + 8800/d px/s², drag), fade in, dim as they near the dot and are swallowed there.
+  - The rate steps up with each line: 8, 16, then 28 a second.
+  - At the end the dot is drawn in to a point (`--hpDR` to 1.2 px, 420 ms, ease-in). Then it bursts: the opening (Full screen spread or Card shape morph) starts and the specks are flung out (260–780 px/s), fading over 0.9 s.
+  - None of this runs with reduced motion, and it stops with the welcome.
+- The name and the age are 4 px closer (6 px; were 10).
