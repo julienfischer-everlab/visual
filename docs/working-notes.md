@@ -15652,3 +15652,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - A placeholder of the same box (`.hpSphPh`, the canvas's own classes) now takes its place before it moves. The profile's title stays at 338 on the frame of the click, then goes down and fades (338 → 410), with the device frame, phone, desk, and bottom-sheet format all checked.
 - The earlier probe had missed it: it began sampling after the click, so the jump looked like the starting point.
 - The way back is otherwise unchanged: the profile down 72 and fading (0.38 s), the intro's words coming down from above (0.66 s, from 0.3 s), the same sphere easing to its place. Round trip (Back, then Get started again) checked: one sphere, no errors.
+
+## Welcome loader: 12px lines, 2 more before the cursor
+
+- The status lines ("Creating your health profile", ...) 12px, from 13 ("smaller font by 1px"); the square still 12 before the words and 1 up.
+- The block cursor 3 after the last letter, from 1 ("+2px gap before the cursor square"). Measured in the running page: font 12px, gap 3.00, square to words 12.
