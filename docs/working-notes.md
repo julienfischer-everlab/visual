@@ -15817,3 +15817,12 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - "This glow look is too white; it should be a little more warm, even if not filled; the dot a bit less visible, it feels inactive." The empty part's ramp is now a warm champagne (118,98,84 → 236,212,186) instead of the cool silver (to 246,246,250). The cool blue tint among the empty is now a soft rose, and the peach tint is kept. Light mode is warmed the same way.
 - The empty points are drawn at .72 of their strength (was .95), so the filled orange reads clearly once a step is done.
 - This applies to every sphere using the Glow look: the Overview card, the profile's page and the welcome.
+
+## Welcome V2: title within the light, the card's words set in, a shorter card, Glass
+
+- The title now arrives during the transition ("the delay is way too long"). T1 writes 450 ms after its cue in V2 (was 1000). The cue comes 350 ms into the Full screen opening (was 2.7 s), 900 ms into Card shape (was 2.6 s), and at 1.5 s with Title below, once the card is gliding up out of the middle. The first letter is now visible about 1.1 s after the dot opens (Full screen), 1.6 s (Card shape) and 2.2 s (Title below).
+- The name and age are set into the card ("an incrustation, embedded, less white, blending a little"): ink at 80%, with a fine dark edge above and a light one below (inverted on light).
+- The card is 12 px less tall ("reduce the height": half the earlier +24), so 265 × 162 on Small.
+- Glass card style (Tweaks → Welcome → Card: Outlined / Filled / Glass; Glass the default). Filled's 32 px frosting left a dark band under the card's top edge ("a shadow on the top of the card").
+  - Glass is a clear pane: a 10 px blur with saturate 170% and brightness 1.12, a 155° sheen brightest top left, a lit 1 px rim along the top, a .5 px edge and a faint inner light.
+  - In light mode it is a whiter pane with a soft shadow.
