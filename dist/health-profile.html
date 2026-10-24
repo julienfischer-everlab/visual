@@ -1245,7 +1245,7 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
    "the card without a background; the entire screen takes the background when the card appears; the card just an outline skeleton; no dots inside"): the dot is a window onto the given picture, clipped to a circle in the middle (4 to 6 px, breathing),
    covered by the ink; on the last line it swells (a quarter of the way) and bursts open to the whole screen (1.3 s), the ink giving way, the picture over the top half, fading into the screen's own ground; the card, an outline holding its words in the screen's ink, comes in where the dot was;
    it stays there; the titles are written above it, on the picture's light, in its dark ink; the buttons at the foot ("Title / Card / CTA group") */
-@property --hpDR { syntax: '<length>'; inherits: false; initial-value: 0px; }
+@property --hpDR { syntax: '<length>'; inherits: false; initial-value: 0px; } @property --hpW2R { syntax: '<length>'; inherits: false; initial-value: 0px; }
 .arSheet.hpWel .hpW2Bg { position: absolute; inset: 0; --hpDR: 0px; clip-path: circle(var(--hpDR) at 50% 50%); }
 .arSheet.hpWel .hpW2Img { position: absolute; left: 0; right: 0; top: 0; height: 64%; background: url("assets/welcome/card-glow.webp") top center / 100% 130% no-repeat, linear-gradient(180deg, #ffd99d 0%, #fcc97d 26%, #e9983e 39%, #ba5a10 48%, #6d2305 61%, #1b0703 77%, #010001 100%) top center / 100% 130% no-repeat;
   -webkit-mask: linear-gradient(180deg, #000 58%, transparent 100%); mask: linear-gradient(180deg, #000 58%, transparent 100%); }
@@ -1254,6 +1254,7 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
 @keyframes hpW2Dot { from { --hpDR: .5px; } to { --hpDR: 4px; } } @keyframes hpW2Br { 0%, 100% { --hpDR: 4px; } 50% { --hpDR: 6px; } }
 .arSheet.hpWel .hpW2Fl { position: absolute; inset: 0; background: oklch(var(--ar-ink)); }   /* the dot's ink, over the picture till it bursts */
 .arSheet.hpWel.hpWelCalm .hpW2Bg { clip-path: none; } .arSheet.hpWel.hpWelCalm .hpW2Fl { opacity: 0; }
+.arSheet.hpWel .hpW2Bg.hpW2Open { clip-path: none; --hpW2R: 10px; -webkit-mask: radial-gradient(circle at 50% 50%, #000 calc(var(--hpW2R) * .5), transparent var(--hpW2R)); mask: radial-gradient(circle at 50% 50%, #000 calc(var(--hpW2R) * .5), transparent var(--hpW2R)); }   /* opening: a soft-edged light spreading from the dot, its edge half its radius wide ("the opening is weird and not smooth": it was a hard circle) */
 /* the title and the buttons on the screen's own ground, in its own ink; the status bar dark while the picture is up (hpW2Lit, on the wrap) */
 .arSheet.hpWel .hpW2Pt { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 1.4s ease .2s; } .arSheet.hpWel.hpW2Lit .hpW2Pt { opacity: 1; }   /* the motes, over the picture, under the card */
 .arSheet.hpWel .hpW2 { position: absolute; left: 50%; top: 50%; width: 0; height: 0; }   /* the card stays where the dot was, in the middle ("Title / Card / CTA group") */
@@ -1266,30 +1267,31 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
 .arSheet.hpWel.hpWelV2.hpW2T-prot .hpW2Img { background-image: url("assets/welcome/card-glow-prot.webp"), linear-gradient(180deg, #f7c4ff 0%, #ecadff 38%, #ae62f6 50%, #6b37b7 61%, #201448 77%, #010001 100%); }
 .arSheet.hpWel.hpWelV2.hpW2Lit.hpW2T-diag .hpWelStage { --ar-ink: 22% .07 260; --hpEmber: #3f7fe8; } .arSheet.hpWel.hpWelV2.hpW2Lit.hpW2T-prot .hpWelStage { --ar-ink: 22% .08 305; --hpEmber: #a45ef0; }
 .arSheet.hpWel.hpWelV2.hpW2T-diag { --hpW2Bm: 178, 212, 255; } .arSheet.hpWel.hpWelV2.hpW2T-diag:not(.arDark) { --hpW2Bm: 64, 128, 232; } .arSheet.hpWel.hpWelV2.hpW2T-prot { --hpW2Bm: 228, 196, 255; } .arSheet.hpWel.hpWelV2.hpW2T-prot:not(.arDark) { --hpW2Bm: 156, 92, 228; }
-.arSheet.hpWel .hpW2Card { position: absolute; left: 0; top: 0; width: var(--hpW2W, 265px); aspect-ratio: 1.77; translate: -50% -50%; border-radius: 16px; color: oklch(var(--ar-ink)); text-align: left; opacity: 0; scale: .96; perspective: 900px; transition: opacity .7s ease, scale .9s cubic-bezier(.2, .8, .2, 1), color .9s ease; }   /* an outline, nothing in it but its words, in the screen's ink */
+.arSheet.hpWel .hpW2Card { position: absolute; left: 0; top: 0; width: var(--hpW2W, 265px); aspect-ratio: 1.77; translate: -50% -50%; border-radius: 24px; color: oklch(var(--ar-ink)); text-align: left; opacity: 0; scale: .96; perspective: 900px; transition: opacity 1s ease, scale 1.2s cubic-bezier(.2, .8, .2, 1), color .9s ease; }   /* an outline, nothing in it but its words, in the screen's ink */
 /* two faces on one plate ("an option: when you tap the card, the card flips and you can see some main info about the patient"; Tweaks -> Welcome -> Flip on tap): the front its name and tier; the back the member's number, date of birth, member since and doctor; turned about its upright axis (0.8 s), tapped again to turn back */
 .arSheet.hpWel .hpW2In { position: absolute; inset: 0; transform-style: preserve-3d; transition: rotate .8s cubic-bezier(.45, 0, .2, 1); } .arSheet.hpWel .hpW2Card.hpW2Flip .hpW2In { rotate: y 180deg; }
-.arSheet.hpWel :is(.hpW2Fa, .hpW2Bk) { position: absolute; inset: 0; border-radius: 16px; box-shadow: inset 0 0 0 .5px oklch(var(--ar-ink) / .45); backface-visibility: hidden; -webkit-backface-visibility: hidden; transition: box-shadow .9s ease; } .arSheet.hpWel .hpW2Bk { rotate: y 180deg; }
+.arSheet.hpWel :is(.hpW2Fa, .hpW2Bk) { position: absolute; inset: 0; border-radius: 24px; box-shadow: inset 0 0 0 .5px oklch(var(--ar-ink) / .45); backface-visibility: hidden; -webkit-backface-visibility: hidden; transition: box-shadow .9s ease; } .arSheet.hpWel .hpW2Bk { rotate: y 180deg; }
 .arSheet.hpWel.hpW2Tap.hpW2Ready .hpW2Card { pointer-events: auto; cursor: pointer; -webkit-tap-highlight-color: transparent; } .arSheet.hpWel.hpWelV2 .hpWelBody { pointer-events: none; } .arSheet.hpWel.hpWelV2 .hpWelCtaR { pointer-events: auto; }   /* the card under the words' layer, reached through it */
-.arSheet.hpWel .hpW2Bk .hpW2BkH { position: absolute; left: 16px; right: 14px; top: 14px; display: flex; align-items: center; justify-content: space-between; font-family: var(--ar-font-mono); font-size: 9px; line-height: 1; letter-spacing: .14em; text-transform: uppercase; opacity: .7; } .arSheet.hpWel .hpW2Bk .hpW2BkH svg { width: 13px; height: 15px; opacity: 1; }
-.arSheet.hpWel .hpW2Bk dl { position: absolute; left: 16px; right: 16px; bottom: 14px; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px 12px; font-family: var(--ar-font); }
+.arSheet.hpWel .hpW2Bk .hpW2BkH { position: absolute; left: 24px; right: 22px; top: 22px; display: flex; align-items: center; justify-content: space-between; font-family: var(--ar-font-mono); font-size: 9px; line-height: 1; letter-spacing: .14em; text-transform: uppercase; opacity: .7; } .arSheet.hpWel .hpW2Bk .hpW2BkH svg { width: 13px; height: 15px; opacity: 1; }
+.arSheet.hpWel .hpW2Bk dl { position: absolute; left: 24px; right: 24px; bottom: 22px; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px 12px; font-family: var(--ar-font); }
 .arSheet.hpWel .hpW2Bk dl div { min-width: 0; } .arSheet.hpWel .hpW2Bk dt { margin: 0 0 3px; font-family: var(--ar-font-mono); font-size: 8.5px; line-height: 1; letter-spacing: .12em; text-transform: uppercase; opacity: .62; } .arSheet.hpWel .hpW2Bk dd { margin: 0; font-size: 12.5px; line-height: 1.15; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-variant-numeric: tabular-nums; }
 
 .arSheet.hpWel.hpW2Ready .hpW2Card { opacity: 1; scale: 1; }
 .arSheet.hpWel.hpW2Fill :is(.hpW2Fa, .hpW2Bk) { background: rgba(255, 255, 255, .04); -webkit-backdrop-filter: blur(32px); backdrop-filter: blur(32px); box-shadow: none; }   /* Filled: #fff at 4% over a 32 px blur of what is behind, no outline ("Card: Outlined / Filled (bg #fff 4%, blur 32px)"; "if the card is filled, no outline then") */
 /* the halo ("a halo following the border of the card, shiny style: on / off"): a light running round its edge (4.5 s a turn), a hairline of it sharp and the same blurred into a glow, in the membership's light */
 @property --hpW2A { syntax: '<angle>'; inherits: true; initial-value: 0deg; }
-.arSheet.hpWel :is(.hpW2Beam, .hpW2Glow > i) { position: absolute; inset: 0; border-radius: 16px; padding: 1.5px; pointer-events: none; background: conic-gradient(from var(--hpW2A), rgba(var(--hpW2Bm), 0) 0deg, rgba(var(--hpW2Bm), 0) 220deg, rgba(var(--hpW2Bm), .9) 318deg, rgba(255, 255, 255, .95) 338deg, rgba(var(--hpW2Bm), 0) 360deg);
+.arSheet.hpWel :is(.hpW2Beam, .hpW2Glow > i) { position: absolute; inset: 0; border-radius: 24px; padding: 1.5px; pointer-events: none; background: conic-gradient(from var(--hpW2A), rgba(var(--hpW2Bm), 0) 0deg, rgba(var(--hpW2Bm), 0) 220deg, rgba(var(--hpW2Bm), .9) 318deg, rgba(255, 255, 255, .95) 338deg, rgba(var(--hpW2Bm), 0) 360deg);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); mask-composite: exclude; }
 .arSheet.hpWel .hpW2Glow { position: absolute; inset: 0; filter: blur(8px); opacity: 1; pointer-events: none; } .arSheet.hpWel .hpW2Glow > i { padding: 4px; }
 .arSheet.hpWel:not(.hpW2Halo) :is(.hpW2Beam, .hpW2Glow) { display: none; }
-.arSheet.hpWel.hpW2Halo.hpW2Ready .hpW2Card { animation: hpW2Spin 4.5s linear infinite; } @keyframes hpW2Spin { to { --hpW2A: 360deg; } }
+.arSheet.hpWel.hpW2Halo.hpW2Ready .hpW2Card { animation: hpW2Spin 9s linear infinite; }   /* 9 s a turn ("halo 2x slower"; was 4.5) */ @keyframes hpW2Spin { to { --hpW2A: 360deg; } }
 @media (prefers-reduced-motion: reduce) { .arSheet.hpWel.hpW2Halo .hpW2Card { animation: none; --hpW2A: 300deg; } }
 .arSheet.hpWel .hpW2C { opacity: 0; filter: blur(4px); transition: opacity .6s ease, filter .6s ease; } .arSheet.hpWel.hpW2Ready .hpW2C { opacity: 1; filter: none; } .arSheet.hpWel .hpW2Nm.hpW2C { transition-delay: .12s; } .arSheet.hpWel .hpW2Tr.hpW2C { transition-delay: .18s; }
-.arSheet.hpWel .hpW2Mk { position: absolute; left: 16px; top: 14px; width: 15px; height: 17px; }
-.arSheet.hpWel .hpW2Tag { position: absolute; right: 14px; top: 13px; padding: 4px 8px 3px; border: 1px solid color-mix(in srgb, currentColor 60%, transparent); border-radius: 999px; font-family: var(--ar-font-mono); font-size: 9px; line-height: 1; letter-spacing: .16em; text-transform: uppercase; }
-.arSheet.hpWel :is(.hpW2Nm, .hpW2Tr) { position: absolute; bottom: 14px; display: flex; flex-direction: column; gap: 4px; font-family: var(--ar-font); line-height: 1; } .arSheet.hpWel .hpW2Nm { left: 16px; align-items: flex-start; } .arSheet.hpWel .hpW2Tr { right: 16px; align-items: flex-end; text-align: right; }
-.arSheet.hpWel :is(.hpW2Nm, .hpW2Tr) b { font-size: 19px; font-weight: 500; letter-spacing: -.02em; } .arSheet.hpWel :is(.hpW2Nm, .hpW2Tr) span { font-size: 11.5px; font-weight: 500; } .arSheet.hpWel .hpW2Tr span { font-weight: 400; opacity: .7; }
+.arSheet.hpWel .hpW2MkW { position: absolute; left: 24px; top: 22px; width: 16px; height: 18px; perspective: 120px; } .arSheet.hpWel .hpW2Mk { display: block; width: 16px; height: 18px; animation: hpW2Logo 4s cubic-bezier(.45, 0, .2, 1) infinite; }   /* +8 in ("+8 padding") */
+@keyframes hpW2Logo { 0%, 78% { transform: rotateY(0deg); } 100% { transform: rotateY(360deg); } }   /* a turn every 4 s, the last 0.9 s of each ("logo that spins every 4 sec") */ @media (prefers-reduced-motion: reduce) { .arSheet.hpWel .hpW2Mk { animation: none; } }
+.arSheet.hpWel .hpW2Tag { position: absolute; right: 22px; top: 20px; padding: 8px 12px 7px; border: 1px solid color-mix(in srgb, currentColor 60%, transparent); border-radius: 999px; font-family: var(--ar-font-mono); font-size: 9px; line-height: 1; letter-spacing: .16em; text-transform: uppercase; }
+.arSheet.hpWel :is(.hpW2Nm, .hpW2Tr) { position: absolute; bottom: 22px; display: flex; flex-direction: column; gap: 4px; font-family: var(--ar-font); line-height: 1; } .arSheet.hpWel .hpW2Nm { left: 24px; max-width: calc(100% - 136px); align-items: flex-start; } .arSheet.hpWel .hpW2Tr { right: 24px; align-items: flex-end; text-align: right; }   /* +8 in */
+.arSheet.hpWel .hpW2Nm b { font-size: 22px; line-height: 1.08; font-weight: 500; letter-spacing: -.02em; text-wrap: balance; } .arSheet.hpWel .hpW2Tr span { font-size: 12.5px; font-weight: 400; opacity: .72; white-space: nowrap; }   /* the name bigger (22, was 19), on two rows if the card is narrow; the age at the right */
 .arSheet.hpWel.hpWelV2 .hpWelLd { top: calc(50% + 26px); }   /* the lines under the dot */
 .arSheet.hpWel .hpWelStream { position: absolute; left: 0; width: 100%; top: 0; height: 0; opacity: 0; transition: opacity .8s ease; } .arSheet.hpWel .hpWelStream.hpWsOn { opacity: 1; transition: opacity 1.4s ease .15s; }   /* the stream behind the card: coming in as it turns over (1.4 s), going with it (0.8 s) */   /* the desk's modal tall enough for the card under the title */
 .arSheet.hpWel .hpWelX { position: absolute; top: var(--ar-head-top, 16px); right: 16px; z-index: 2; }   /* under the status bar in the full modal */
@@ -1352,6 +1354,7 @@ html.tkFlMove :is(body[data-bp] .dash, body[data-bp] .dash .side, body[data-bp] 
 .hpSim.lt .hpSimB { background: rgba(0, 0, 0, .07); color: #111; }
 .topbar .tkStep { display: inline-flex; align-items: center; gap: 6px; min-width: 0; }   /* the State row: previous, the list, next */
 .topbar .tkStepB { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; padding: 0; border: 0; border-radius: 50%; background: rgba(255, 255, 255, .08); color: #e4e4e7; cursor: pointer; } .topbar .tkStepB:hover:not(:disabled) { background: rgba(255, 255, 255, .14); } .topbar .tkStepB:disabled { opacity: .35; cursor: default; } .topbar .tkStepB:focus-visible { outline: 2px solid #4b7bec; outline-offset: 2px; } .hpSim.lt .hpSimB:hover { background: rgba(0, 0, 0, .12); } .hpSim.lt .hpSimL { color: rgba(0, 0, 0, .56); }
+#dOver .ovhero.hpRep { display: none !important; } #dOver .dvTop > .hpOvCard { margin: 0; }   /* the profile's card in Next step's place: Next step put away; the card the row's height, no margin of its own */
 .hpOvCard { position: relative; display: flex; flex-direction: column; min-height: 218px; margin: 34px 0 0; padding: 20px; border-radius: 22px; background: rgba(255, 255, 255, .06); color: #ececec; cursor: pointer; }   /* the insight cards' ground, #fff 6% (light: the paper, as theirs) ("the same background as the insights cards") */   /* the Next step card's layout, its picture gone, the sphere at its top right ("keep the same layout as Next step; remove the image; sphere top right; Health profile instead of Next step") */
 body.light .hpOvCard { background: #fdfaf3; color: #2e1f1a; }
 .hpOvCard:not(.hpOvPlan) { isolation: isolate; background: rgba(255, 255, 255, .04); transition: background .16s ease; }
@@ -1536,7 +1539,7 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
     return { n: n, st: st, state: n === 3 ? 'done' : any ? 'prog' : 'not', cta: n === 3 ? 'View health profile' : any ? 'Continue' : 'Let’s begin', bk: b ? b.label : null, wd: b ? b.wd : null };
   }
   var DEMO = {
-    wear: { tc: true, find: true, first: 'Julien', last: 'Moreau', mid: '', sex: 'm', dob: '14/03/1984', state: 'NSW', mc: 'yes', mcn: '2953 12345 1', irn: '1', exp: '08/29', addr: '12 Bayview Street, Bondi NSW 2026', ecn: 'Claire Moreau', ecr: 'partner', ecp: '+61 412 345 678', med: ['none'], fam: ['card', 'meta'] },
+    wear: { tc: true, find: true, first: 'Julien', last: 'Fischer', mid: '', sex: 'm', dob: '14/03/1984', state: 'NSW', mc: 'yes', mcn: '2953 12345 1', irn: '1', exp: '08/29', addr: '12 Bayview Street, Bondi NSW 2026', ecn: 'Claire Fischer', ecr: 'partner', ecp: '+61 412 345 678', med: ['none'], fam: ['card', 'meta'] },
     past: { day: 29, time: '10:00am', tz: 'syd' },
     you: { sleep: '6', country: 'AU', eth: '', goals: 'Sleep better and keep my cholesterol in check', occ: 'Product designer', smoke: 'no', alc: 2 }
   };
@@ -2216,17 +2219,17 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
     if (V2) { mtc = h('canvas', { class: 'hpW2Pt', 'aria-hidden': 'true' }); if (!reduced()) mt2 = w2Motes(mtc); fl2 = h('i', { class: 'hpW2Fl' }); bg2 = h('div', { class: 'hpW2Bg' }, h('i', { class: 'hpW2Img' }), fl2);   // the picture over the top half, the dot its window
       var halo = function () { return [h('i', { class: 'hpW2Glow' }, h('i')), h('i', { class: 'hpW2Beam' })]; }, info = opts.info || {};
       c2 = h('div', { class: 'hpW2Card' }, h('div', { class: 'hpW2In' },
-        h('div', { class: 'hpW2Fa' }, halo(), mark('hpW2Mk hpW2C', 15, 17), h('span', { class: 'hpW2Tag hpW2C', text: 'Member' }),
-          h('div', { class: 'hpW2Nm hpW2C' }, h('b', { text: NM || 'Member' }), opts.last ? h('span', { text: opts.last }) : null), h('div', { class: 'hpW2Tr hpW2C' }, h('b', { text: opts.tier || 'Baseline' }), h('span', { text: 'Tier' }))),
+        h('div', { class: 'hpW2Fa' }, halo(), h('span', { class: 'hpW2MkW hpW2C' }, mark('hpW2Mk', 16, 18)), h('span', { class: 'hpW2Tag hpW2C', text: (opts.tier || 'Baseline') + ' plan' }),
+          h('div', { class: 'hpW2Nm hpW2C' }, h('b', { text: [NM, opts.last].filter(Boolean).join(' ') || 'Member' })), info.age ? h('div', { class: 'hpW2Tr hpW2C' }, h('span', { text: info.age + ' years old' })) : null),   /* the logo at the top left, turning every 4 s; the plan at the top right; the name, bigger and whole; their age at the right ("bigger: Julien Fischer; right side: 42 years old; top right: Baseline plan, badge +4px padding; left top: logo that spins every 4 s") */
         h('div', { class: 'hpW2Bk' }, halo(), h('div', { class: 'hpW2BkH' }, h('span', { text: 'Member details' }), mark(null, 13, 15)),
           h('dl', null, [['Member no.', info.no], ['Date of birth', info.dob], ['Member since', info.since], ['Your doctor', info.dr]].map(function (r) { return h('div', null, h('dt', { text: r[0] }), h('dd', { text: r[1] || '—' })); })))));   // the front; the back, the member's details
       c2.addEventListener('click', function () { if (root.classList.contains('hpW2Tap') && root.classList.contains('hpW2Ready')) c2.classList.toggle('hpW2Flip'); });
       w2 = h('div', { class: 'hpW2' }, c2); }
     var sz2 = opts.size || 's';
     var look2 = function (o) { if (!V2) return; if ((o.size || 's') !== sz2) { sz2 = o.size || 's'; if (root.isConnected) place(); } ['base', 'diag', 'prot'].forEach(function (k) { root.classList.toggle('hpW2T-' + k, k === (o.tierK || 'base')); }); root.classList.toggle('hpW2Fill', o.cs === 'filled'); root.classList.toggle('hpW2Halo', o.halo !== 'off'); root.classList.toggle('hpW2Tap', o.tap !== 'off'); if (o.tap === 'off') c2.classList.remove('hpW2Flip');
-      if (o.tier) { var tb = c2.querySelector('.hpW2Tr b'); if (tb) tb.textContent = o.tier; } };   // the membership's light, the card's style and its halo, changed in place (Tweaks -> Welcome)   // the card: an outline and its words
+      if (o.tier) { var tb = c2.querySelector('.hpW2Tag'); if (tb) tb.textContent = o.tier + ' plan'; } };   // the membership's light, the card's style and its halo, changed in place (Tweaks -> Welcome)   // the card: an outline and its words
     var ball = h('div', { class: 'hpWelBall' }, flip), sph = h('div', { class: 'hpWelSph', 'aria-hidden': 'true' }, V2 ? [bg2, mtc, w2] : ball, stc, card || ld);   // the ball at the profile's own place; the status lines (or the card holding them) under it
-    if (CARD || V2) SAY += ' Your membership card: ' + (NM ? NM + ' ' : '') + (opts.last || '') + ', member, ' + (opts.tier || 'Baseline') + ' tier.';
+    if (CARD || V2) SAY += ' Your membership card: ' + (NM ? NM + ' ' : '') + (opts.last || '') + ', ' + (opts.tier || 'Baseline') + ' plan.';
     var root = h('div', { class: 'arSheet hpSheet hpWel' + (opts.theme === 'dark' ? ' arDark' : '') + (calm ? ' hpWelCalm' : '') + (CARD ? ' hpWelCardOn' : '') + (V2 ? ' hpWelV2' : ''), role: 'document', 'aria-label': SAY },
       sph, h('div', { class: 'hpWelBody' }, h('div', { class: 'hpWelStage', style: 'height:calc(var(--hpWelLh) * ' + Math.max(T1.rows, T2.rows) + ')' }, T1.el, T2.el), h('div', { class: 'hpWelCtaR' }, cta, later2)));   // the button in the content, under the title, hugging its words ("hug content CTA, in the content not in the footer")
     host.appendChild(root);
@@ -2246,16 +2249,17 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
         else if (CARD) later(function () { card.classList.add('hpWcFlip'); wv.start(); if (st) { band(); st.start(); stc.classList.add('hpWsOn'); } later(goT, 1650); }, HOLD);   /* the last line held, then the outline turned over to the card (1.15 s); half a second on, the title */
         else later(goT, HOLD - 300); };   /* together: the title written (1 s on), the dot drawn in to a point (0.3 s on), bursting where it is (0.75 s on) */
     var open2 = function () {
-      ld.classList.add('hpWelLdEnd'); var r0 = parseFloat(getComputedStyle(bg2).getPropertyValue('--hpDR')) || 4, R = Math.ceil(Math.hypot(root.clientWidth / 2, root.clientHeight / 2)) + 8, c0 = 'circle(' + r0.toFixed(2) + 'px at 50% 50%)';
-      bg2.style.clipPath = c0; root.classList.remove('hpW2On', 'hpW2Br');   // held at the size it breathed to
+      ld.classList.add('hpWelLdEnd'); var r0 = parseFloat(getComputedStyle(bg2).getPropertyValue('--hpDR')) || 4, R = Math.ceil(Math.hypot(root.clientWidth / 2, root.clientHeight / 2) * 2.1);
+      root.classList.remove('hpW2On', 'hpW2Br'); bg2.style.setProperty('--hpW2R', (r0 * 2).toFixed(2) + 'px'); bg2.classList.add('hpW2Open');   // the dot as it was, its edge now soft
+      var done = function () { bg2.classList.remove('hpW2Open'); bg2.style.clipPath = 'none'; bg2.style.removeProperty('--hpW2R'); };
       if (bg2.animate) {
-        var an = bg2.animate([{ clipPath: c0, easing: 'cubic-bezier(.3, 0, .2, 1)' }, { clipPath: 'circle(16px at 50% 50%)', offset: .24, easing: 'cubic-bezier(.55, 0, .15, 1)' }, { clipPath: 'circle(' + R + 'px at 50% 50%)' }], { duration: 1300, fill: 'forwards' });   // a swell, then open to the whole screen
-        an.onfinish = function () { bg2.style.clipPath = 'none'; an.cancel(); };   // then no clip at all, whatever the screen's size
-        fl2.animate([{ opacity: 1 }, { opacity: 1, offset: .22 }, { opacity: 0, offset: .62 }, { opacity: 0 }], { duration: 1300, fill: 'forwards' });   // the ink giving way to the picture
-      } else { bg2.style.clipPath = 'none'; fl2.style.opacity = '0'; }
-      later(function () { root.classList.add('hpW2Lit'); if (mt2) mt2.start(); }, 420);   // the dark ink, as the light reaches the words; the motes coming in
-      later(function () { root.classList.add('hpW2Ready'); }, 700);   // the card's outline and its words, where the dot was
-      later(goT, 1900);   // held a moment, then the title written above it
+        var an = bg2.animate([{ '--hpW2R': (r0 * 2).toFixed(2) + 'px', easing: 'cubic-bezier(.3, 0, .3, 1)' }, { '--hpW2R': '44px', offset: .2, easing: 'cubic-bezier(.45, 0, .15, 1)' }, { '--hpW2R': R + 'px' }], { duration: 1900, fill: 'forwards' });   // a swell, then the light spreading softly out past the screen's corners
+        an.onfinish = function () { done(); an.cancel(); };   // then no mask at all, whatever the screen's size
+        fl2.animate([{ opacity: 1 }, { opacity: 1, offset: .16 }, { opacity: 0, offset: .36 }, { opacity: 0 }], { duration: 1900, fill: 'forwards' });   // the ink giving way to the picture early in the spread, so it does not wash the dark below with grey
+      } else { done(); fl2.style.opacity = '0'; }
+      later(function () { root.classList.add('hpW2Lit'); if (mt2) mt2.start(); }, 650);   // the dark ink, as the light reaches the words; the motes coming in
+      later(function () { root.classList.add('hpW2Ready'); }, 1350);   // the card's outline and its words, once the light has spread
+      later(goT, 2700);   // held a moment, then the title written above it
     };
     var goT = function () {
       root.classList.add('hpWelGo'); later(function () { if (!V2) sp.burst(450); ld.classList.add('hpWelLdEnd'); if (LOGO) later(turn, 2000); }, 300);   // the ball formed, then over to the logo
@@ -2270,7 +2274,7 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
       var w = root.closest('.aqWrap'), ht = w && w.classList.contains('aqDev') ? (w.classList.contains('aqBpS') ? 44 : 58) : 16;   // the profile's full modal's content top: under the status bar in the device
       var off = (root.parentNode ? root.parentNode.offsetTop : 0) + root.offsetTop,   /* by layout, not as drawn: the frame may still be sliding in */ sy = Math.max(132, Math.round(ht + 144 - off));   // 32 under the profile's ("sphere 32px down compared to the health profile screen")
       root.style.setProperty('--hpWelSphY', sy + 'px'); band();
-      if (V2) { var cb = sz2 === 'l' ? 24 : sz2 === 'm' ? 16 : 0, cw = Math.max(180, Math.min(root.clientWidth - 128, 340)) + cb; root.style.setProperty('--hpW2W', Math.round(cw) + 'px'); root.style.setProperty('--hpW2H', Math.round(cw / 1.77) + 'px'); }   /* the card 64 in from either side (340 at most); Medium 16 wider, Large 24, its height with it ("card size: this one Small; Medium +16px; Large +24px") */
+      if (V2) { var cb = sz2 === 'l' ? 44 : sz2 === 'm' ? 16 : 0, cw = Math.max(180, Math.min(root.clientWidth - 128, 340)) + cb; root.style.setProperty('--hpW2W', Math.round(cw) + 'px'); root.style.setProperty('--hpW2H', Math.round(cw / 1.77) + 'px'); }   /* the card 64 in from either side (340 at most); Medium 16 wider, Large 44 (24, then "card large +20px"), its height with it ("card size: this one Small; Medium +16px; Large +24px") */
     };
     var go = function () {
       if (!root.isConnected) return;
