@@ -5639,7 +5639,7 @@
   .aqWrap.aqBpS .aqStat .isl{display:none;}
   .aqStat svg{fill:currentColor;} .aqStat svg rect[fill="none"]{fill:none;stroke:currentColor;}
   .aqWrap.aqDev.aqInk:is(.aqFull, .aqPhone).on .aqStat{color:#141413;}   /* dark on the light paper; white over the dim */
-  .aqWrap.aqDev:is(.aqFull, .aqPhone).on:has(.arSheet.hpWel.hpW2Lit) .aqStat{color:#2a1006;transition:color .4s ease;}   /* the welcome V2's picture up: the status bar in its dark ink, either theme */
+  .aqWrap.aqDev:is(.aqFull, .aqPhone).on:has(.arSheet.hpWel.hpW2Lit) .aqStat{color:#2a1006;transition:color .4s ease;} .aqWrap.aqDev:is(.aqFull, .aqPhone).on:has(.arSheet.hpWel.hpW2Lit.hpW2T-diag) .aqStat{color:#0c1a3a;} .aqWrap.aqDev:is(.aqFull, .aqPhone).on:has(.arSheet.hpWel.hpW2Lit.hpW2T-prot) .aqStat{color:#2a1240;}   /* the welcome V2's picture up: the status bar in its dark ink, either theme */
   .aqWrap.aqDev.aqInk:is(.aqFull, .aqPhone).on:has(.arSheet.arIsWelcome) .aqStat, .aqWrap.aqDev.aqInk:is(.aqFull, .aqPhone).on:has(.arSheet.arIsIntro) .aqStat{color:#fff;} .aqWrap.aqDev.aqInk:is(.aqFull, .aqPhone).on:has(.arSheet.arIsWelcome.arHtOn) .aqStat, .aqWrap.aqDev.aqInk:is(.aqFull, .aqPhone).on:has(.arSheet.arIsWelcome.arIsSphere) .aqStat{color:#141413;}   /* the Halftone welcome on the paper: dark again */ .aqWrap.aqDev.aqInk:is(.aqFull, .aqPhone).on:has(.arSheet.arStk1) .aqStat{color:#fff;}   /* a sheet up: the page drawn back on black, the status bar white */   /* white on the welcome's picture (the hero again) */
   /* the phone and the full modal: edge to edge */
   .aqWrap.aqPhone .aqFrame{left:0;top:0;width:100%;height:100%;border-radius:0;box-shadow:none;}
@@ -12076,6 +12076,10 @@
         <div class="tkSub">Welcome</div>
         <div class="tkRow"><span class="lbl">Format</span><select id="stHpWelFmt" class="tkSegSel" aria-label="The welcome's format"><option value="full" selected>Full modal</option><option value="sheet">Bottom sheet full</option></select></div>   <!-- ("tweak format: full modal, bottom sheet full (current)") -->
         <div class="tkRow"><span class="lbl">Version</span><select id="stHpWelVer" class="tkSegSel" aria-label="The welcome: V1, the dot bursting into the sphere; V2, the dot in the middle growing into the membership card"><option value="v1">V1</option><option value="v2" selected>V2</option></select></div>   <!-- ("for the intro, try a different setup, totally V2") -->
+        <div class="tkRow"><span class="lbl">Membership</span><select id="stHpWelTier" class="tkSegSel" aria-label="The membership: its background and the card's tier"><option value="base" selected>Baseline</option><option value="diag">Diagnostics</option><option value="prot">Protocol</option></select></div>   <!-- ("different themes because we have 3 memberships; a change in the background could differentiate them") -->
+        <div class="tkRow hpWelV2Row"><span class="lbl">Card</span><select id="stHpW2Card" class="tkSegSel" aria-label="The card: an outline, or filled (white at 4% over a 32 px blur)"><option value="outline" selected>Outlined</option><option value="filled">Filled</option></select></div>
+        <div class="tkRow hpWelV2Row"><span class="lbl">Flip on tap</span><select id="stHpW2Tap" class="tkSegSel" aria-label="Tap the card to turn it over to the member's details"><option value="on" selected>On</option><option value="off">Off</option></select></div>   <!-- ("an option: when you tap the card, the card flips and you can see some main info about the patient") -->
+        <div class="tkRow hpWelV2Row"><span class="lbl">Halo</span><select id="stHpW2Halo" class="tkSegSel" aria-label="A light running round the card's border"><option value="on" selected>On</option><option value="off">Off</option></select></div>   <!-- ("halo following the border of the card, shiny style: on / off") -->
         <div class="tkRow hpWelV1Row"><span class="lbl">Card</span><select id="stHpWelCard" class="tkSegSel" aria-label="The membership card: the status lines typed in its outline, turned over to the card"><option value="on" selected>On</option><option value="off">Off</option></select></div>   <!-- ("write the bullet points inside an outline rectangle, then this rectangle flips to this card") -->
         <div class="tkRow hpWelV1Row"><span class="lbl">Stream</span><select id="stHpWelStrm" class="tkSegSel" aria-label="A blood stream of particles behind the card"><option value="on" selected>On</option><option value="off">Off</option></select></div>   <!-- ("try a tweak with the stream particles, blood stream particles", "behind the card") -->
         <div class="tkRow hpWelV1Row"><span class="lbl">Sphere</span><select id="stHpWelLogo" class="tkSegSel" aria-label="The sphere: the Everlab logo turning to the sphere and back, or the sphere alone"><option value="on" selected>Logo flips</option><option value="off">Sphere only</option></select></div>   <!-- ("the sphere should be the Everlab logo that sometimes flips to a sphere and sometimes flips back to the logo") -->
@@ -16442,12 +16446,36 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
 .arSheet.hpWel .hpW2Fl { position: absolute; inset: 0; background: oklch(var(--ar-ink)); }   /* the dot's ink, over the picture till it bursts */
 .arSheet.hpWel.hpWelCalm .hpW2Bg { clip-path: none; } .arSheet.hpWel.hpWelCalm .hpW2Fl { opacity: 0; }
 /* the title and the buttons on the screen's own ground, in its own ink; the status bar dark while the picture is up (hpW2Lit, on the wrap) */
+.arSheet.hpWel .hpW2Pt { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 1.4s ease .2s; } .arSheet.hpWel.hpW2Lit .hpW2Pt { opacity: 1; }   /* the motes, over the picture, under the card */
 .arSheet.hpWel .hpW2 { position: absolute; left: 50%; top: 50%; width: 0; height: 0; }   /* the card stays where the dot was, in the middle ("Title / Card / CTA group") */
 .arSheet.hpWel.hpWelV2 .hpWelStage { top: auto; bottom: calc(50% + var(--hpW2H, 150px) / 2 + 40px); }   /* the titles above it, their foot 40 over it */
 .arSheet.hpWel.hpWelV2.hpW2Lit .hpWelStage { --ar-ink: 20% .05 45; }   /* on the picture's light: its dark ink */
-.arSheet.hpWel .hpW2Card { position: absolute; left: 0; top: 0; width: var(--hpW2W, 265px); aspect-ratio: 1.77; translate: -50% -50%; border-radius: 16px; box-shadow: inset 0 0 0 1px oklch(var(--ar-ink) / .45); color: oklch(var(--ar-ink)); text-align: left; opacity: 0; scale: .96; transition: opacity .7s ease, scale .9s cubic-bezier(.2, .8, .2, 1), color .9s ease, box-shadow .9s ease; }   /* an outline, nothing in it but its words, in the screen's ink */
+/* the three memberships, each its own light ("different themes because we have 3 memberships: Baseline, Protocol, Diagnostics; a change in the background could differentiate them"; Tweaks -> Welcome -> Membership): Baseline the given picture, its warm sunrise;
+   Diagnostics the same picture turned to a cool blue, Protocol to a violet (the same light and grain, its hue turned: 190 and 245 degrees, a little less saturated); the title's ink, its ember and the status bar's ink with them */
+.arSheet.hpWel.hpWelV2 { --hpW2Bm: 255, 206, 160; } .arSheet.hpWel.hpWelV2:not(.arDark) { --hpW2Bm: 226, 128, 48; }
+.arSheet.hpWel.hpWelV2.hpW2T-diag .hpW2Img { background-image: url("assets/welcome/card-glow-diag.webp"), linear-gradient(180deg, #c7dbff 0%, #afcbff 38%, #5590f4 50%, #1f61a9 61%, #01263a 77%, #010001 100%); }
+.arSheet.hpWel.hpWelV2.hpW2T-prot .hpW2Img { background-image: url("assets/welcome/card-glow-prot.webp"), linear-gradient(180deg, #f7c4ff 0%, #ecadff 38%, #ae62f6 50%, #6b37b7 61%, #201448 77%, #010001 100%); }
+.arSheet.hpWel.hpWelV2.hpW2Lit.hpW2T-diag .hpWelStage { --ar-ink: 22% .07 260; --hpEmber: #3f7fe8; } .arSheet.hpWel.hpWelV2.hpW2Lit.hpW2T-prot .hpWelStage { --ar-ink: 22% .08 305; --hpEmber: #a45ef0; }
+.arSheet.hpWel.hpWelV2.hpW2T-diag { --hpW2Bm: 178, 212, 255; } .arSheet.hpWel.hpWelV2.hpW2T-diag:not(.arDark) { --hpW2Bm: 64, 128, 232; } .arSheet.hpWel.hpWelV2.hpW2T-prot { --hpW2Bm: 228, 196, 255; } .arSheet.hpWel.hpWelV2.hpW2T-prot:not(.arDark) { --hpW2Bm: 156, 92, 228; }
+.arSheet.hpWel .hpW2Card { position: absolute; left: 0; top: 0; width: var(--hpW2W, 265px); aspect-ratio: 1.77; translate: -50% -50%; border-radius: 16px; color: oklch(var(--ar-ink)); text-align: left; opacity: 0; scale: .96; perspective: 900px; transition: opacity .7s ease, scale .9s cubic-bezier(.2, .8, .2, 1), color .9s ease; }   /* an outline, nothing in it but its words, in the screen's ink */
+/* two faces on one plate ("an option: when you tap the card, the card flips and you can see some main info about the patient"; Tweaks -> Welcome -> Flip on tap): the front its name and tier; the back the member's number, date of birth, member since and doctor; turned about its upright axis (0.8 s), tapped again to turn back */
+.arSheet.hpWel .hpW2In { position: absolute; inset: 0; transform-style: preserve-3d; transition: rotate .8s cubic-bezier(.45, 0, .2, 1); } .arSheet.hpWel .hpW2Card.hpW2Flip .hpW2In { rotate: y 180deg; }
+.arSheet.hpWel :is(.hpW2Fa, .hpW2Bk) { position: absolute; inset: 0; border-radius: 16px; box-shadow: inset 0 0 0 1px oklch(var(--ar-ink) / .45); backface-visibility: hidden; -webkit-backface-visibility: hidden; transition: box-shadow .9s ease; } .arSheet.hpWel .hpW2Bk { rotate: y 180deg; }
+.arSheet.hpWel.hpW2Tap.hpW2Ready .hpW2Card { pointer-events: auto; cursor: pointer; -webkit-tap-highlight-color: transparent; } .arSheet.hpWel.hpWelV2 .hpWelBody { pointer-events: none; } .arSheet.hpWel.hpWelV2 .hpWelCtaR { pointer-events: auto; }   /* the card under the words' layer, reached through it */
+.arSheet.hpWel .hpW2Bk .hpW2BkH { position: absolute; left: 16px; right: 14px; top: 14px; display: flex; align-items: center; justify-content: space-between; font-family: var(--ar-font-mono); font-size: 9px; line-height: 1; letter-spacing: .14em; text-transform: uppercase; opacity: .7; } .arSheet.hpWel .hpW2Bk .hpW2BkH svg { width: 13px; height: 15px; opacity: 1; }
+.arSheet.hpWel .hpW2Bk dl { position: absolute; left: 16px; right: 16px; bottom: 14px; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px 12px; font-family: var(--ar-font); }
+.arSheet.hpWel .hpW2Bk dl div { min-width: 0; } .arSheet.hpWel .hpW2Bk dt { margin: 0 0 3px; font-family: var(--ar-font-mono); font-size: 8.5px; line-height: 1; letter-spacing: .12em; text-transform: uppercase; opacity: .62; } .arSheet.hpWel .hpW2Bk dd { margin: 0; font-size: 12.5px; line-height: 1.15; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-variant-numeric: tabular-nums; }
 
 .arSheet.hpWel.hpW2Ready .hpW2Card { opacity: 1; scale: 1; }
+.arSheet.hpWel.hpW2Fill :is(.hpW2Fa, .hpW2Bk) { background: rgba(255, 255, 255, .04); -webkit-backdrop-filter: blur(32px); backdrop-filter: blur(32px); box-shadow: inset 0 0 0 1px oklch(var(--ar-ink) / .2); }   /* Filled: #fff at 4% over a 32 px blur of what is behind ("Card: Outlined / Filled (bg #fff 4%, blur 32px)") */
+/* the halo ("a halo following the border of the card, shiny style: on / off"): a light running round its edge (4.5 s a turn), a hairline of it sharp and the same blurred into a glow, in the membership's light */
+@property --hpW2A { syntax: '<angle>'; inherits: true; initial-value: 0deg; }
+.arSheet.hpWel :is(.hpW2Beam, .hpW2Glow > i) { position: absolute; inset: 0; border-radius: 16px; padding: 1.5px; pointer-events: none; background: conic-gradient(from var(--hpW2A), rgba(var(--hpW2Bm), 0) 0deg, rgba(var(--hpW2Bm), 0) 220deg, rgba(var(--hpW2Bm), .9) 318deg, rgba(255, 255, 255, .95) 338deg, rgba(var(--hpW2Bm), 0) 360deg);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); mask-composite: exclude; }
+.arSheet.hpWel .hpW2Glow { position: absolute; inset: 0; filter: blur(8px); opacity: 1; pointer-events: none; } .arSheet.hpWel .hpW2Glow > i { padding: 4px; }
+.arSheet.hpWel:not(.hpW2Halo) :is(.hpW2Beam, .hpW2Glow) { display: none; }
+.arSheet.hpWel.hpW2Halo.hpW2Ready .hpW2Card { animation: hpW2Spin 4.5s linear infinite; } @keyframes hpW2Spin { to { --hpW2A: 360deg; } }
+@media (prefers-reduced-motion: reduce) { .arSheet.hpWel.hpW2Halo .hpW2Card { animation: none; --hpW2A: 300deg; } }
 .arSheet.hpWel .hpW2C { opacity: 0; filter: blur(4px); transition: opacity .6s ease, filter .6s ease; } .arSheet.hpWel.hpW2Ready .hpW2C { opacity: 1; filter: none; } .arSheet.hpWel .hpW2Nm.hpW2C { transition-delay: .12s; } .arSheet.hpWel .hpW2Tr.hpW2C { transition-delay: .18s; }
 .arSheet.hpWel .hpW2Mk { position: absolute; left: 16px; top: 14px; width: 15px; height: 17px; }
 .arSheet.hpWel .hpW2Tag { position: absolute; right: 14px; top: 13px; padding: 4px 8px 3px; border: 1px solid color-mix(in srgb, currentColor 60%, transparent); border-radius: 999px; font-family: var(--ar-font-mono); font-size: 9px; line-height: 1; letter-spacing: .16em; text-transform: uppercase; }
@@ -17287,6 +17315,30 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
     return { start: function () { if (!raf && live) raf = requestAnimationFrame(tick); }, stop: function () { live = false; if (raf) cancelAnimationFrame(raf); raf = 0; } };
   };
 
+  /* V2's motes ("black particles floating in the coloured area, from the top left and right to the centre of the viewport"): small dark points coming in from the top corners and the top of either side, drawn along a gentle curve
+     to the middle of the screen, where the card is (6.5-12 s each, quicker as they near it, a little sway), in at once, fading out as they reach it; a new one where it began */
+  var w2Motes = function (cv) {
+    var x = cv.getContext('2d'), raf = 0, live = true, M = [], t0 = performance.now(), i;
+    var spawn = function (m, now, first) { var lf = Math.random() < .5; m.sx = lf ? Math.random() * .38 : 1 - Math.random() * .38; m.sy = -.04 + Math.random() * .26; if (Math.random() < .35) { m.sx = lf ? -.03 : 1.03; m.sy = .02 + Math.random() * .32; }   // the top's corners, or high on either side
+      m.dur = 6500 + Math.random() * 5500; m.t0 = now - (first ? Math.random() * m.dur : 0); m.z = .8 + Math.random() * 1.7; m.a = .28 + .5 * Math.random(); m.wb = Math.random() * 6.2832; m.cv = (Math.random() - .5) * .3; return m; };
+    for (i = 0; i < 64; i++) M.push(spawn({}, t0, true));
+    var tick = function (now) {
+      raf = 0; if (!live || !cv.isConnected) return;
+      var w = cv.clientWidth, hh = cv.clientHeight; if (!w || !hh) { raf = requestAnimationFrame(tick); return; }
+      var dpr = Math.min(2, window.devicePixelRatio || 1); if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(hh * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(hh * dpr); }
+      x.setTransform(dpr, 0, 0, dpr, 0, 0); x.clearRect(0, 0, w, hh);
+      var cx = w / 2, cy = hh / 2;
+      M.forEach(function (m) {
+        var k = (now - m.t0) / m.dur; if (k >= 1) { spawn(m, now, false); k = 0; }
+        var e = Math.pow(k, 1.6), sx = m.sx * w, sy = m.sy * hh, dx = cx - sx, dy = cy - sy, dl = Math.hypot(dx, dy) || 1, sw = Math.sin(k * Math.PI) * m.cv * dl + 5 * Math.sin(now / 1300 + m.wb);
+        var px = sx + dx * e - dy / dl * sw, py = sy + dy * e + dx / dl * sw, aa = m.a * Math.min(1, k / .1) * Math.min(1, Math.hypot(cx - px, cy - py) / 90);
+        if (aa < .01) return; x.fillStyle = 'rgba(16, 8, 4, ' + aa.toFixed(3) + ')'; x.beginPath(); x.arc(px, py, m.z / 2, 0, 6.2832); x.fill();
+      });
+      raf = requestAnimationFrame(tick);
+    };
+    return { start: function () { if (!raf && live) raf = requestAnimationFrame(tick); }, stop: function () { live = false; if (raf) cancelAnimationFrame(raf); raf = 0; } };
+  };
+
   /* ---------- the welcome: a $299 member's first visit, a bottom sheet over the Overview ("the first page should be a normal bottom sheet; the sphere at the top, only its bottom half visible; below, Welcome to Everlab written, then it goes and another text comes, the first step of your journey; Let's discover your health as the CTA") ---------- */
   function welcome(host, opts) {
     opts = opts || {};
@@ -17326,12 +17378,19 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
       card = h('div', { class: 'hpWelCard' }, h('div', { class: 'hpWcIn' }, h('div', { class: 'hpWcF' }, ld),
         h('div', { class: 'hpWcB' }, wc, h('i', { class: 'hpWcSh' }), mark('hpWcMk', 19, 21), h('span', { class: 'hpWcTag', text: 'Member' }),
           h('div', { class: 'hpWcNm' }, h('b', { text: NM || 'Member' }), opts.last ? h('span', { text: opts.last }) : null), h('div', { class: 'hpWcTr' }, h('b', { text: opts.tier || 'Baseline' }), h('span', { text: 'Tier' }))))); }   // the status lines typed in its outline (its front); the card on its back
-    var w2 = null, c2 = null, bg2 = null, fl2 = null;
-    if (V2) { fl2 = h('i', { class: 'hpW2Fl' }); bg2 = h('div', { class: 'hpW2Bg' }, h('i', { class: 'hpW2Img' }), fl2);   // the picture over the top half, the dot its window
-      c2 = h('div', { class: 'hpW2Card' }, mark('hpW2Mk hpW2C', 15, 17), h('span', { class: 'hpW2Tag hpW2C', text: 'Member' }),
-        h('div', { class: 'hpW2Nm hpW2C' }, h('b', { text: NM || 'Member' }), opts.last ? h('span', { text: opts.last }) : null), h('div', { class: 'hpW2Tr hpW2C' }, h('b', { text: opts.tier || 'Baseline' }), h('span', { text: 'Tier' })));
-      w2 = h('div', { class: 'hpW2' }, c2); }   // the card: an outline and its words
-    var ball = h('div', { class: 'hpWelBall' }, flip), sph = h('div', { class: 'hpWelSph', 'aria-hidden': 'true' }, V2 ? [bg2, w2] : ball, stc, card || ld);   // the ball at the profile's own place; the status lines (or the card holding them) under it
+    var w2 = null, c2 = null, bg2 = null, fl2 = null, mt2 = null, mtc = null;
+    if (V2) { mtc = h('canvas', { class: 'hpW2Pt', 'aria-hidden': 'true' }); if (!reduced()) mt2 = w2Motes(mtc); fl2 = h('i', { class: 'hpW2Fl' }); bg2 = h('div', { class: 'hpW2Bg' }, h('i', { class: 'hpW2Img' }), fl2);   // the picture over the top half, the dot its window
+      var halo = function () { return [h('i', { class: 'hpW2Glow' }, h('i')), h('i', { class: 'hpW2Beam' })]; }, info = opts.info || {};
+      c2 = h('div', { class: 'hpW2Card' }, h('div', { class: 'hpW2In' },
+        h('div', { class: 'hpW2Fa' }, halo(), mark('hpW2Mk hpW2C', 15, 17), h('span', { class: 'hpW2Tag hpW2C', text: 'Member' }),
+          h('div', { class: 'hpW2Nm hpW2C' }, h('b', { text: NM || 'Member' }), opts.last ? h('span', { text: opts.last }) : null), h('div', { class: 'hpW2Tr hpW2C' }, h('b', { text: opts.tier || 'Baseline' }), h('span', { text: 'Tier' }))),
+        h('div', { class: 'hpW2Bk' }, halo(), h('div', { class: 'hpW2BkH' }, h('span', { text: 'Member details' }), mark(null, 13, 15)),
+          h('dl', null, [['Member no.', info.no], ['Date of birth', info.dob], ['Member since', info.since], ['Your doctor', info.dr]].map(function (r) { return h('div', null, h('dt', { text: r[0] }), h('dd', { text: r[1] || '—' })); })))));   // the front; the back, the member's details
+      c2.addEventListener('click', function () { if (root.classList.contains('hpW2Tap') && root.classList.contains('hpW2Ready')) c2.classList.toggle('hpW2Flip'); });
+      w2 = h('div', { class: 'hpW2' }, c2); }
+    var look2 = function (o) { if (!V2) return; ['base', 'diag', 'prot'].forEach(function (k) { root.classList.toggle('hpW2T-' + k, k === (o.tierK || 'base')); }); root.classList.toggle('hpW2Fill', o.cs === 'filled'); root.classList.toggle('hpW2Halo', o.halo !== 'off'); root.classList.toggle('hpW2Tap', o.tap !== 'off'); if (o.tap === 'off') c2.classList.remove('hpW2Flip');
+      if (o.tier) { var tb = c2.querySelector('.hpW2Tr b'); if (tb) tb.textContent = o.tier; } };   // the membership's light, the card's style and its halo, changed in place (Tweaks -> Welcome)   // the card: an outline and its words
+    var ball = h('div', { class: 'hpWelBall' }, flip), sph = h('div', { class: 'hpWelSph', 'aria-hidden': 'true' }, V2 ? [bg2, mtc, w2] : ball, stc, card || ld);   // the ball at the profile's own place; the status lines (or the card holding them) under it
     if (CARD || V2) SAY += ' Your membership card: ' + (NM ? NM + ' ' : '') + (opts.last || '') + ', member, ' + (opts.tier || 'Baseline') + ' tier.';
     var root = h('div', { class: 'arSheet hpSheet hpWel' + (opts.theme === 'dark' ? ' arDark' : '') + (calm ? ' hpWelCalm' : '') + (CARD ? ' hpWelCardOn' : '') + (V2 ? ' hpWelV2' : ''), role: 'document', 'aria-label': SAY },
       sph, h('div', { class: 'hpWelBody' }, h('div', { class: 'hpWelStage', style: 'height:calc(var(--hpWelLh) * ' + Math.max(T1.rows, T2.rows) + ')' }, T1.el, T2.el), h('div', { class: 'hpWelCtaR' }, cta, later2)));   // the button in the content, under the title, hugging its words ("hug content CTA, in the content not in the footer")
@@ -17339,6 +17398,7 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
     later2.addEventListener('click', function () { if (opts.onClose) opts.onClose(); });
     cta.addEventListener('click', function () { if (opts.onStart) opts.onStart(); });
     /* one motion, once the sheet is up: the dot drawn in near the top (0.15 s), rippling; the status lines typed one after another under it; on the last, held, the title's first row starts to open (hpWelGo), the dot swells as the line dissolves in a blur (0.3 s on), and bursts into the ball at the top edge, its upper half past it (0.82 s on); as the ball forms the title is written where the lines were (1 s on), the button half a second after its last letter begins, fading in as it rises 18px (0.9 s) in the row kept for it */
+    look2(opts);
     var tm = [], later = function (f, ms) { tm.push(setTimeout(f, ms)); };
     /* each message its own line, square and words together, turning up into place from below as the last turns away above, a drum's roll ("the bullet point should rotate vertically, smoother"), its words typed as it comes round */
     var type = function (i) {
@@ -17358,7 +17418,7 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
         an.onfinish = function () { bg2.style.clipPath = 'none'; an.cancel(); };   // then no clip at all, whatever the screen's size
         fl2.animate([{ opacity: 1 }, { opacity: 1, offset: .22 }, { opacity: 0, offset: .62 }, { opacity: 0 }], { duration: 1300, fill: 'forwards' });   // the ink giving way to the picture
       } else { bg2.style.clipPath = 'none'; fl2.style.opacity = '0'; }
-      later(function () { root.classList.add('hpW2Lit'); }, 420);   // the dark ink, as the light reaches the words
+      later(function () { root.classList.add('hpW2Lit'); if (mt2) mt2.start(); }, 420);   // the dark ink, as the light reaches the words; the motes coming in
       later(function () { root.classList.add('hpW2Ready'); }, 700);   // the card's outline and its words, where the dot was
       later(goT, 1900);   // held a moment, then the title written above it
     };
@@ -17383,8 +17443,8 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
       if (CARD) later(function () { card.classList.add('hpWcOn'); }, 1050);   // its outline in, just before the first line
       later(function () { type(0); }, 1500);
     };
-    if (!calm) requestAnimationFrame(function () { requestAnimationFrame(go); }); else { place(); requestAnimationFrame(place); if (LOGO) later(turn, 2600); if (V2) root.classList.add('hpW2Ready', 'hpW2Lit'); }   // come back to: the sphere, then over to the logo
-    return { el: root, welcome: true, v2: V2, card2: w2, bg2: bg2, sphere: V2 ? null : sp, sphT0: V2 ? null : sp.t0, place: place, flip: flip, logo: logo, hold: function () { held = true; }, theme: function (t) { root.classList.toggle('arDark', t === 'dark'); }, home: function () {}, area: function () {}, destroy: function () { tm.forEach(clearTimeout); tm = []; held = true; if (wv) wv.stop(); if (st) st.stop(); if (root.parentNode) root.parentNode.removeChild(root); } };
+    if (!calm) requestAnimationFrame(function () { requestAnimationFrame(go); }); else { place(); requestAnimationFrame(place); if (LOGO) later(turn, 2600); if (V2) { root.classList.add('hpW2Ready', 'hpW2Lit'); if (mt2) mt2.start(); } }   // come back to: the sphere, then over to the logo
+    return { el: root, welcome: true, v2: V2, card2: w2, bg2: bg2, look2: look2, sphere: V2 ? null : sp, sphT0: V2 ? null : sp.t0, place: place, flip: flip, logo: logo, hold: function () { held = true; }, theme: function (t) { root.classList.toggle('arDark', t === 'dark'); }, home: function () {}, area: function () {}, destroy: function () { tm.forEach(clearTimeout); tm = []; held = true; if (wv) wv.stop(); if (st) st.stop(); if (mt2) mt2.stop(); if (root.parentNode) root.parentNode.removeChild(root); } };
   }
 
   window.HealthProfile = { mount: mount, welcome: welcome, dots: dots, sphere: sphere, look: look, store: { get: function () { return S; }, summary: summary, preset: preset, reset: function () { preset('none'); }, pending: pending, areas: AREAS } };
@@ -31586,8 +31646,11 @@ hairline({
     const dark = () => opt('themeSel') === 'dark';
     const nameOf = () => { const n = document.querySelector('#dOver .dvH1 span'); return (n && n.textContent.trim()) || 'Sam'; };   // the member the Overview greets
     const lastOf = () => { try { return (store.get().a.wear.ans.last || '').trim() || 'Moreau'; } catch (e){ return 'Moreau'; } };   // the card's last name: theirs once given, else the demo member's
-    const tierOf = () => ({ diag: 'Diagnostics', prot: 'Protocol' })[opt('stJvPur')] || 'Baseline';   // the card's tier: what they bought (Tweaks -> Purchased), Baseline for a $299 member
-    const welO = () => ({ theme: dark() ? 'dark' : 'light', name: nameOf(), onClose: close, onStart: () => start(), card: opt('stHpWelCard'), logo: opt('stHpWelLogo'), stream: opt('stHpWelStrm'), v: opt('stHpWelVer'), last: lastOf(), tier: tierOf() });   // the welcome's options (Tweaks -> Welcome: Card, Stream, Sphere)
+    const infoOf = () => { let a = {}; try { a = store.get().a.wear.ans || {}; } catch (e){}
+      const d = (a.dob || '14/03/1984').split('/'), M = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      return { no: 'EVL 2953 1201', dob: d.length === 3 ? (+d[0]) + ' ' + (M[+d[1] - 1] || d[1]) + ' ' + d[2] : a.dob, since: 'Oct 2026', dr: 'Dr Steven Lu' }; };   // the card's back: the member's number, date of birth (theirs once given, else the demo member's), member since, their doctor
+    const tierOf = () => ({ diag: 'Diagnostics', prot: 'Protocol' })[opt('stHpWelTier')] || 'Baseline';   // the card's tier: the membership (Tweaks -> Welcome -> Membership)
+    const welO = () => ({ theme: dark() ? 'dark' : 'light', name: nameOf(), onClose: close, onStart: () => start(), card: opt('stHpWelCard'), logo: opt('stHpWelLogo'), stream: opt('stHpWelStrm'), v: opt('stHpWelVer'), last: lastOf(), tier: tierOf(), tierK: opt('stHpWelTier') || 'base', cs: opt('stHpW2Card'), halo: opt('stHpW2Halo'), tap: opt('stHpW2Tap'), info: infoOf() });   // the welcome's options (Tweaks -> Welcome: Card, Stream, Sphere)
     const bpNow = () => { const f = document.body.dataset.bp, w = innerWidth; return f || (w >= 1440 ? 'l' : w >= 992 ? 'm' : w >= 600 ? 's' : 'xs'); };
     const fit = () => { if (!wrap) return; const b = bpNow(); ['xs', 's', 'm', 'l'].forEach(k => wrap.classList.toggle('aqBp' + k.toUpperCase(), k === b)); wrap.classList.toggle('aqDev', document.body.dataset.bp === 's' || (document.body.dataset.bp === 'xs' && !document.documentElement.classList.contains('bpAuto'))); };
     const build = () => {
@@ -31737,7 +31800,8 @@ hairline({
     { const t = document.getElementById('stHpSt'); if (t) t.value = stepOf(); }
     /* a $299 member's first visit (Tweaks: First-time user -> Trigger; Welcome -> Replay): the welcome over the Overview, from its first frame, in place if it is up; Get started into the profile (start) */
     { ['stHpFirstGo', 'stHpWelRp'].forEach(id => { const b = document.getElementById(id); if (b) b.addEventListener('click', () => open({ welcome: true })); });
-      { const vr = () => document.querySelectorAll('.hpWelV1Row').forEach(r => { r.hidden = opt('stHpWelVer') === 'v2'; }); vr(); const vs = document.getElementById('stHpWelVer'); if (vs) vs.addEventListener('change', vr); }   // V1's own (Card, Stream, Sphere) shown with V1 only
+      { const vr = () => { const v2 = opt('stHpWelVer') === 'v2'; document.querySelectorAll('.hpWelV1Row').forEach(r => { r.hidden = v2; }); document.querySelectorAll('.hpWelV2Row').forEach(r => { r.hidden = !v2; }); }; vr(); const vs = document.getElementById('stHpWelVer'); if (vs) vs.addEventListener('change', vr); }   // each version's own rows shown with it
+      ['stHpWelTier', 'stHpW2Card', 'stHpW2Halo', 'stHpW2Tap'].forEach(id => { const t = document.getElementById(id); if (t) t.addEventListener('change', () => { if (!inst || !inst.welcome) return; if (inst.v2) inst.look2(welO()); else if (id === 'stHpWelTier') open({ welcome: true }); }); });   // V2: the membership, the card's style and its halo changed in place; V1: its card's tier, played again
       ['stHpWelFmt', 'stHpWelVer', 'stHpWelCard', 'stHpWelStrm', 'stHpWelLogo'].forEach(id => { const fm = document.getElementById(id); if (fm) fm.addEventListener('change', () => { if (inst && inst.welcome) open({ welcome: true }); }); }); }   // a new format, card or sphere: the welcome up again with it
     { const lk = () => HP.look && HP.look({ dim: opt('stHpDim'), feed: opt('stHpFeed'), card: opt('stHpLook') }); lk(); ['stHpDim', 'stHpFeed', 'stHpLook'].forEach(id => { const t = document.getElementById(id); if (t) t.addEventListener('change', lk); }); }   // the sphere's look (Tweaks -> Health profile), on every sphere at once
     // the demo states (Tweaks -> Health profile): not started, one or two of three, completed; Saved is whatever was last done here
