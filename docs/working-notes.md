@@ -16020,3 +16020,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Tweaks → **Halo light** (On) and **Light opacity** (40%). Both are shown only with the halo on, and both are kept in each membership's card preset.
 - "Reduce height of desktop card by 160px" and "more padding bottom on modal desktop +32px"
   - The desk's modal is 620 tall (780 before). On the desk, the titles sit 48 over the card (104 on the phone), and the buttons are 48 off the modal's foot (16 before).
+
+## Async report: a full page on the desk
+
+- "Async desktop should be full modal page"
+  - On the desk (M, L), the report's intros (Sphere, Sphere hero, Blood stream, and the halftone's) were their own black ground, the 568 column's width, over the page's grey. The sphere was cut at the column's sides.
+  - Their ground and their foot's gradient now span the whole frame. The column (`.arStage`) is let out sideways to the frame's edges while an intro shows, clipped there and still to its own height (`clip-path: inset(0 calc((100% - 100cqw) / 2))`). It stays let out for 0.7 s as the ground fades on the way to the report (`arSphHold`).
+  - The words stay in the column. The sphere's radius is held by the screen's height, so it grows only a little (338 → 384 at L) and now shows whole. The phone is unchanged.

@@ -5691,7 +5691,8 @@
   /* M and L: the top nav runs the modal's width, 32 in from its edges (24 at M), wider than the column ("top nav top right increase max width"); the frame is the size container, so a forced breakpoint's frame counts, not the window */
   .aqWrap.aqFull:is(.aqBpM, .aqBpL) .aqFrame{container-type:inline-size;}
   .aqWrap.aqFull:is(.aqBpM, .aqBpL) .aqFrame > .arSheet.arSheet.arSheet.arSheet{overflow:visible;}
-  .aqWrap.aqFull:is(.aqBpM, .aqBpL) .arSheet .arQa{left:calc((100% - 100cqw) / 2);right:auto;width:100cqw;}   /* the questionnaire's sheet over the whole frame, its panel the column's width */
+  .aqWrap.aqFull:is(.aqBpM, .aqBpL) .arSheet .arQa{left:calc((100% - 100cqw) / 2);right:auto;width:100cqw;}
+  .aqWrap.aqFull:is(.aqBpM, .aqBpL) .arSheet :is(.arSphBg, .arSphFoot){left:calc((100% - 100cqw) / 2);right:auto;width:100cqw;} .aqWrap.aqFull:is(.aqBpM, .aqBpL) .arSheet:is(.arIsSphere, .arSphHold) .arStage{overflow:visible;clip-path:inset(0 calc((100% - 100cqw) / 2));}   /* the column let out to the frame's sides while they show (and as they fade), held to its height; its foot's dark with them */   /* the intros' own ground (Sphere, Sphere hero, Blood stream, the halftone) over the whole frame, its visual in its middle, the words in the column: a full page on the desk ("async desktop should be full modal page") */   /* the questionnaire's sheet over the whole frame, its panel the column's width */
   /* the phone (XS, S, the device frame): the questionnaire's sheet the full height less the status bar, as iOS's large sheet ("should cover almost the full screen") */
   .aqWrap.aqDev .arSheet{--ar-qa-top:50px;} .aqWrap.aqDev.aqBpS .arSheet{--ar-qa-top:44px;}
   /* desktop (M, L): the questionnaire a modal centred in the page, not a bottom sheet ("desktop should be a modal centred in the page"): rounded all round, no grabber, rising in a touch and fading */
@@ -16174,6 +16175,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       var welcome = step === 0, end = step === NEXT;   // end: That's your debrief, in the Full bg layout ("go with a Full bg layout; no progress nav at the top"), on the welcome's ground (the Sphere's or the Halftone's, else the picture)
       var wasSph = root.classList.contains('arIsSphere');
       root.classList.toggle('arIsWelcome', welcome); root.classList.toggle('arIsIntro', (RVW && welcome) || (end && !sphL)); root.classList.toggle('arIsSphere', !!sphL && (welcome || end)); root.classList.toggle('arIsEnd', end);
+      if (wasSph && !root.classList.contains('arIsSphere')) { root.classList.add('arSphHold'); later(function () { root.classList.remove('arSphHold'); }, 700); }   // the desk's column still let out while the ground fades
       root.setAttribute('data-ar-step', String(step));
       backBtn.hidden = step === 0;
       stepWrap.hidden = welcome || end;
