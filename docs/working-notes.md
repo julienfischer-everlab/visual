@@ -15665,3 +15665,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **The blood stream** ("try a tweak with the stream particles", "behind the card"): the Async report's vessel made small, a tube seen only through its particles lying across the screen through the card's middle, seven strands twisting along it and a sparse fill flowing left to right, in the sphere's inks; it comes in as the card turns over and goes with it.
 - Tweaks → Welcome: Card (On / Off), Stream (On / Off), Sphere (Logo flips / Sphere only); each replays the welcome. Off, the welcome is as before. The desk's bottom-sheet modal is 640 tall with the card. Reduced motion and the way back from the profile show no card.
 - Checked in the device frame, the phone, the desk (full modal and bottom-sheet format), dark and light: the flip on video, the hand-off with the logo showing (one sphere, faded in), Back, each tweak off; no errors, no failed requests.
+
+## Overview's Health profile card: a smaller sphere, its motes from the card's top and right
+
+- The sphere 10% smaller ("this area should be smaller by 10%"): 119 on the desk (was 132), 97 on the phone (was 108), still 20 in from the card's top and right.
+- Its floating motes come in from the card's top and right edges only ("the particles floating should come from the edge of the card on the top right, top and right, not the other side"): each starts just inside the edge along its way in (by the rounded corner, where its arc is), shows at once as if from past it, and is drawn in to the ball as before. `sphere({ edge: 20 })`, the card's inset; the welcome's and the profile's spheres keep theirs from all round.
+- Checked by stacking ten frames 0.7 s apart on the phone and the desk: every trail runs from the top or right edge in to the ball, none from the left or below.
+- Publishing: the standalone Health Profile first, the Everlab service pages last and opened, so a reload lands on the prototype ("when you reload the artefact, focus on the Everlab service page").
