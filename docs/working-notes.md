@@ -15722,3 +15722,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - "Outlined .5px": the Outlined card's line is .5 px (was 1).
 - "Card size: this size Small; Medium +16px; Large +24px" (Tweaks → Welcome → Card size): Small as it was (64 in from either side: 265 × 150 on the phone), Medium 16 wider (281 × 159), Large 24 wider (289 × 163), the height with the card's ratio; the title still 40 above it; changed in place. Read as the card's whole width; 16 off either side would be the other reading.
 - "This version (the Glow): reduce particles by 20%": 2,560 points (was 3,200), on every sphere drawn in the Glow (the Overview card's, the profile's, V1's welcome).
+
+## Mode: Dark (default) and Light; no Colour mode
+
+- "Dark mode, default; Light mode; no need for Colour mode": the Mode menu has two entries, Dark first and selected. The page used to set Dark only when it opened with no hash; a page opened by its hash (#m9 and the like, which the address keeps as you move round) kept the menu's first entry, Colour mode, the app without its black and the Health profile's sheets light. Now the mode is put on the body from the first frame (Dark unless Light is chosen), whatever the hash, and the flags the page changes read start from it.
+- Checked: no hash, #m9, #health-profile, #m26 all open in Dark (body.black), the menu Dark / Light only; Light and back to Dark both ways; no errors.

@@ -11002,10 +11002,9 @@
     <select id="versionSel" aria-label="Version"></select>
     <span class="lbl">Mode</span>
     <select id="themeSel" aria-label="Colour mode">
-      <option value="colour">Colour mode</option>
-      <option value="dark">Dark mode</option>
+      <option value="dark" selected>Dark mode</option>
       <option value="light">Light mode</option>
-    </select>
+    </select>   <!-- two modes, Dark the default ("Dark mode, default; Light mode; no need for Colour mode") -->
     <!-- The archive is a page rather than a group: the dropdown carries the two
          designs that are current, and every version they came from is a tweak
          inside the one entry. Same group treatment as the rest — it is in the
@@ -36067,15 +36066,17 @@ hairline({
   // true until the opening gather has landed; see the copy in drawFrame
   let flowStart = true;
   // colour (the burgundy the concept is designed in), dark, or light
-  let lightOn = false, blackOn = false, lightNow = 0, blackNow = 0, themingT = 0;
+  const theme0 = (document.getElementById('themeSel') || {}).value;   // Dark unless Light is chosen: there is no third mode any more, whatever the page's hash
+  let lightOn = theme0 === 'light', blackOn = !lightOn, lightNow = lightOn ? 1 : 0, blackNow = blackOn ? 1 : 0, themingT = 0;
   // the organ card can take a colour of its own again, the same in every theme
   let organTint = false;
   let parallaxApply = null;
   const themeSel = document.getElementById('themeSel');
+  document.body.classList.toggle('light', lightOn); document.body.classList.toggle('black', blackOn);   // the mode from the first frame, not only once it is changed (a page opened by its hash never changed it, and showed the old Colour mode)
   themeSel.addEventListener('change', () => {
     const v = themeSel.value;
     lightOn = v === 'light';
-    blackOn = v === 'dark';
+    blackOn = !lightOn;
     document.body.classList.toggle('light', lightOn);
     document.body.classList.toggle('black', blackOn);
     document.body.classList.add('theming');
