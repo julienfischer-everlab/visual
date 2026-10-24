@@ -16027,3 +16027,12 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - On the desk (M, L), the report's intros (Sphere, Sphere hero, Blood stream, and the halftone's) were their own black ground, the 568 column's width, over the page's grey. The sphere was cut at the column's sides.
   - Their ground and their foot's gradient now span the whole frame. The column (`.arStage`) is let out sideways to the frame's edges while an intro shows, clipped there and still to its own height (`clip-path: inset(0 calc((100% - 100cqw) / 2))`). It stays let out for 0.7 s as the ground fades on the way to the report (`arSphHold`).
   - The words stay in the column. The sphere's radius is held by the screen's height, so it grows only a little (338 → 384 at L) and now shows whole. The phone is unchanged.
+
+## Welcome V2: the desk's modal hugs its content, 48 round the card
+
+- "Desktop modal height hug content; gap above and below the card 48px"
+  - The modal is as tall as what it holds: the card's height + 432 (634 at L; it was a fixed 620, then 780). The card is in its middle.
+  - Under the card: 48, Get started (56), 24, Do it later (40), then 48 to the foot.
+  - Over the card, the same 216: 48, the titles' three rows (96), 16, the date (14), then 42 to the top.
+  - On the desk each title sits on the stage's foot, so the one showing ends 48 over the card, whether it has three rows or two. The date stays over the stage: 16 over the first title, 48 over "Your commitment…" and "Make it yours…".
+  - The phone is unchanged.
