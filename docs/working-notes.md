@@ -15912,3 +15912,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - At the end the dot is drawn in to a point (`--hpDR` to 1.2 px, 420 ms, ease-in). Then it bursts: the opening (Full screen spread or Card shape morph) starts and the specks are flung out (260–780 px/s), fading over 0.9 s.
   - None of this runs with reduced motion, and it stops with the welcome.
 - The name and the age are 4 px closer (6 px; were 10).
+
+## The "drop shadow" in the card; padding 8 less; the age 14 px
+
+- "It feels like there's a drop shadow in the card." Measured down a column across the card's top edge, with the user's settings (Filled, Fill blur 0, Mask on, Blanket 0): 199 → 194 → 186 above it, then 181 → 175 → 168 inside. That is a smooth fall, and it does not change with the face's highlight, the blur, the halo, the texture, the motes or the blanket switched off (only removing the fill or the highlight changes it, darker by 1 to 5). It is the background's own light falling off from gold to brown right at the card's top edge, most of all with Title below, where the light was raised to sit above the card. So it reads as a shadow the card casts.
+- **Light position** (Tweaks → First-time user, −160 to +160 px, default 0) moves the picture, and the loading light with it, up or down behind the card (`--hpW2BgY`). About +64 puts the card in the light and the shadow is gone.
+- The card's padding is 8 less all round, front and back: the logo at 24/18, the badge at 22/20, the name and age at 24 from the left and 22 from the foot; on the back, 24/22.
+- The age is 14 px (was 12), still 6 px under the name.
