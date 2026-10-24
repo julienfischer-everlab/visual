@@ -15927,3 +15927,11 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - the lines at the foot (back under the dot, 26 px below the middle);
   - the dot drawn in to a point before the burst (the opening goes straight from the breathing dot again).
 - Kept: the name and age 6 px apart, the padding 8 less, the age at 14 px, Light position, and everything before.
+
+## Welcome V2: the footer's gap; the light in code
+
+- Get started and Do it later are 24 px apart (8, then "+16 gap").
+- "Is the orange background an image or code? I would like to have control on it." It was the given picture, with a CSS gradient under it only as its fallback. It can now be drawn in code: **Light source** (Image / Code, Image the default).
+  - Code is a glow centred 42% down the picture's height, as the picture's own, over a dim sky going into the dark.
+  - Its colours are **Light** (the glow's core, #ffd99d), **Warm** (round it, #e9983e) and **Deep** (#6d2305), each a swatch with its hex. **Spread** (20–90%, default 46) sets how tall the glow is.
+  - In light mode the glow goes into the white. Background (opacity) and Light position work on both sources, and the loading light follows the source too.
