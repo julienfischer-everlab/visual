@@ -15826,3 +15826,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Glass card style (Tweaks → Welcome → Card: Outlined / Filled / Glass; Glass the default). Filled's 32 px frosting left a dark band under the card's top edge ("a shadow on the top of the card").
   - Glass is a clear pane: a 10 px blur with saturate 170% and brightness 1.12, a 155° sheen brightest top left, a lit 1 px rim along the top, a .5 px edge and a faint inner light.
   - In light mode it is a whiter pane with a soft shadow.
+
+## Tweaks: First-time user, its own group
+
+- "Treat it as a separate group in the tweaks and put all of the welcome's tweaks in it." The Welcome group (`data-fl="wel"`, which keeps its + beside the welcome sheet) is now titled **First-time user**. Its first row is **Intro → Trigger** (`stHpFirstGo`), moved out of the Primary card group (whose member-only part held only this row). The welcome's tweaks follow: Version, Membership, Opening, Layout, Texture, Card and the rest.
+- The old Intro → Replay row (`stHpWelRp`) did the same as Trigger and is removed.
+- `arrangeG` keeps the group directly under the Primary card group wherever the sections are dragged.
