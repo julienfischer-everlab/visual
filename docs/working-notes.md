@@ -15747,3 +15747,17 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - "Welcome to / Everlab": V2's first title, the name being on the card (V1 keeps "Welcome to Everlab, Julien").
 - "Use the gyroscope too, to add a slight effect": the card tilts a few degrees with the phone (its orientation, from how it was first held; 20° of the phone the card's whole 7–9° tilt), or toward the pointer on a desk, eased; a soft light on its face moves with it. iOS asks leave on a first tap. In the published artifact the viewer's frame refuses motion sensors, so there it follows the pointer only; on a phone opening the page itself it follows the phone. None with reduced motion.
 - Checked: the opening on video and per frame, the sliders (16%, 8 px), the tilt (pointer and a synthetic orientation), the flip after; no errors.
+
+## Welcome V2: titles, the open, sizes, mask; the profile's card back on the Overview
+
+- V2 titles: "Welcome to / Everlab", then "Your health journey / starts here." (V1 keeps its consultation line). The screen reader line and the sheet's label follow.
+- The dot-to-card open no longer passes through a solid ink card. The clip still grows from the dot to the card's shape (1.25 s). The ink now thins out from 24% to 62% of the way, while a 1 px rim (`.hpW2Rm`) is drawn on the clip's own line. The rim uses the same keys and easings, since a clip draws no edge of its own. It lands on the card's outline and fades as the outline takes over.
+- Sizes:
+  - The titles sit 104 px above the card (was 40; "H1 up by 64px").
+  - Large is 60 px wider (was 44).
+  - The card is 24 px taller than its old 1.77 ratio. `--hpW2H` now drives its height, not aspect-ratio.
+- Mask (Tweaks → Welcome → Mask, On by default):
+  - `.hpW2Bl` is a hole the card's size and radius, with a 200vmax shadow as the blanket: #000, or white in light mode. It sits over the picture and the motes, under the card.
+  - The Blanket slider (0–100, default 60) sets its strength.
+  - From 35% up, the title and status bar take the screen's own ink.
+- The Overview's Health profile card went missing for anyone who had saved Tweaks with the old "Health profile" section switched off. Saved `stOvOff: prof` still hid `.hpOvCard`, while Next step stood aside for it, and no switch was left to turn it back on. `offs()` now keeps only the sections that still have a switch in Tweaks.
