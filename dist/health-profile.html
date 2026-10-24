@@ -1240,24 +1240,30 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
 .arSheet.hpWel .hpWcB .hpWcTag { position: absolute; right: 18px; top: 18px; padding: 5px 10px 4px; border: 1px solid rgba(255, 247, 240, .9); border-radius: 999px; font-family: var(--ar-font-mono); font-size: 10.5px; line-height: 1; letter-spacing: .16em; text-transform: uppercase; }
 .arSheet.hpWel .hpWcB :is(.hpWcNm, .hpWcTr) { position: absolute; bottom: 18px; display: flex; flex-direction: column; gap: 6px; font-family: var(--ar-font); line-height: 1; } .arSheet.hpWel .hpWcB .hpWcNm { left: 20px; align-items: flex-start; } .arSheet.hpWel .hpWcB .hpWcTr { right: 20px; align-items: flex-end; text-align: right; }
 .arSheet.hpWel .hpWcB :is(.hpWcNm, .hpWcTr) b { font-size: 26px; font-weight: 500; letter-spacing: -.02em; } .arSheet.hpWel .hpWcB :is(.hpWcNm, .hpWcTr) span { font-size: 15px; font-weight: 500; } .arSheet.hpWel .hpWcB .hpWcTr span { font-weight: 400; opacity: .72; }   /* first name over last; the tier over its label ("Marc / Hermann", "$299 / per year") */
-.aqWrap.hpBs:is(.aqBpM, .aqBpL) .aqFrame > .arSheet.arSheet.arSheet.arSheet.hpWel.hpWelCardOn { min-height: 640px; }
+.aqWrap.hpBs:is(.aqBpM, .aqBpL) .aqFrame > .arSheet.arSheet.arSheet.arSheet.hpWel:is(.hpWelCardOn, .hpWelV2) { min-height: 640px; }
 /* V2 ("for the intro, a different setup, totally V2: the dot centred on the screen; the bullet points just rotating below the dot, without the orange square; the dot, instead of exploding into particles, explodes and increases, becomes the membership card; 64px padding each side";
-   "the card without a background; the entire screen takes the background when the card appears; the card just an outline skeleton; no dots inside"): the dot is a window onto the screen's new ground, the given picture, clipped to a circle in the middle (4 to 6 px, breathing),
-   covered by the ink; on the last line it swells (a quarter of the way) and bursts open to the whole screen (1.3 s), the ink giving way; the card, an outline holding its words, comes in where the dot was; then it goes up to where the sphere was (1 s) and the titles are written under it,
-   in a dark ink on the light of the picture; the button light on its dark */
+   "the card without a background; the entire screen takes the background when the card appears; the card just an outline skeleton; no dots inside"): the dot is a window onto the given picture, clipped to a circle in the middle (4 to 6 px, breathing),
+   covered by the ink; on the last line it swells (a quarter of the way) and bursts open to the whole screen (1.3 s), the ink giving way, the picture over the top half, fading into the screen's own ground; the card, an outline holding its words in the screen's ink, comes in where the dot was;
+   it stays there; the titles are written above it, on the picture's light, in its dark ink; the buttons at the foot ("Title / Card / CTA group") */
 @property --hpDR { syntax: '<length>'; inherits: false; initial-value: 0px; }
-.arSheet.hpWel .hpW2Bg { position: absolute; inset: 0; --hpDR: 0px; clip-path: circle(var(--hpDR) at 50% 50%); background: url("assets/welcome/card-glow.webp") top center / 100% 128% no-repeat, linear-gradient(180deg, #ffd99d 0%, #fdd08a 24%, #f7b763 41%, #e9983e 50%, #ba5a10 61%, #6d2305 78%, #1b0703 98%, #010001 128%); }   /* the given picture over the whole screen, a little taller than it, so its light reaches the title */
+.arSheet.hpWel .hpW2Bg { position: absolute; inset: 0; --hpDR: 0px; clip-path: circle(var(--hpDR) at 50% 50%); }
+.arSheet.hpWel .hpW2Img { position: absolute; left: 0; right: 0; top: 0; height: 64%; background: url("assets/welcome/card-glow.webp") top center / 100% 130% no-repeat, linear-gradient(180deg, #ffd99d 0%, #fcc97d 26%, #e9983e 39%, #ba5a10 48%, #6d2305 61%, #1b0703 77%, #010001 100%) top center / 100% 130% no-repeat;
+  -webkit-mask: linear-gradient(180deg, #000 58%, transparent 100%); mask: linear-gradient(180deg, #000 58%, transparent 100%); }
+.arSheet.hpWel:not(.arDark) .hpW2Img { -webkit-mask: linear-gradient(180deg, #000 40%, rgba(0, 0, 0, .45) 60%, transparent 80%); mask: linear-gradient(180deg, #000 40%, rgba(0, 0, 0, .45) 60%, transparent 80%); }   /* light: into the white sooner, before its browns */   /* the given picture in the top half only, fading into the screen's own ground under it ("bg in the top 50% of the screen, the rest black, depending on the mode") */
 .arSheet.hpWel.hpW2On .hpW2Bg { animation: hpW2Dot .8s cubic-bezier(.2, .8, .2, 1) forwards; } .arSheet.hpWel.hpW2On.hpW2Br .hpW2Bg { animation: hpW2Br 2.8s ease-in-out infinite; }   /* a pixel grown to an 8 px dot; breathing 8 to 12 */
 @keyframes hpW2Dot { from { --hpDR: .5px; } to { --hpDR: 4px; } } @keyframes hpW2Br { 0%, 100% { --hpDR: 4px; } 50% { --hpDR: 6px; } }
 .arSheet.hpWel .hpW2Fl { position: absolute; inset: 0; background: oklch(var(--ar-ink)); }   /* the dot's ink, over the picture till it bursts */
 .arSheet.hpWel.hpWelCalm .hpW2Bg { clip-path: none; } .arSheet.hpWel.hpWelCalm .hpW2Fl { opacity: 0; }
-.arSheet.hpWel.hpW2Lit { --ar-ink: 20% .05 45; --ar-fg: oklch(20% .05 45); --ar-btn-bg: #fff6ee; --ar-btn-fg: #1a0a04; --ar-btn-bg-hover: #ffffff; --ar-btn-bg-active: #f1e6dc; }   /* on the picture: a dark ink for the words and the close; the button light, on its dark */
-.arSheet.hpWel .hpW2 { position: absolute; left: 50%; top: 50%; width: 0; height: 0; transition: top 1s cubic-bezier(.45, 0, .2, 1); } .arSheet.hpWel.hpW2Up .hpW2 { top: var(--hpW2Hy, 50%); } .arSheet.hpWel.hpWelCalm .hpW2 { transition: none; }
-.arSheet.hpWel .hpW2Card { position: absolute; left: 0; top: 0; width: var(--hpW2W, 265px); aspect-ratio: 1.77; translate: -50% -50%; border-radius: 16px; box-shadow: inset 0 0 0 1px rgba(42, 16, 6, .5); color: #2a1006; text-align: left; opacity: 0; scale: .96; transition: opacity .7s ease, scale .9s cubic-bezier(.2, .8, .2, 1); }   /* an outline, nothing in it but its words */
+/* the title and the buttons on the screen's own ground, in its own ink; the status bar dark while the picture is up (hpW2Lit, on the wrap) */
+.arSheet.hpWel .hpW2 { position: absolute; left: 50%; top: 50%; width: 0; height: 0; }   /* the card stays where the dot was, in the middle ("Title / Card / CTA group") */
+.arSheet.hpWel.hpWelV2 .hpWelStage { top: auto; bottom: calc(50% + var(--hpW2H, 150px) / 2 + 40px); }   /* the titles above it, their foot 40 over it */
+.arSheet.hpWel.hpWelV2.hpW2Lit .hpWelStage { --ar-ink: 20% .05 45; }   /* on the picture's light: its dark ink */
+.arSheet.hpWel .hpW2Card { position: absolute; left: 0; top: 0; width: var(--hpW2W, 265px); aspect-ratio: 1.77; translate: -50% -50%; border-radius: 16px; box-shadow: inset 0 0 0 1px oklch(var(--ar-ink) / .45); color: oklch(var(--ar-ink)); text-align: left; opacity: 0; scale: .96; transition: opacity .7s ease, scale .9s cubic-bezier(.2, .8, .2, 1), color .9s ease, box-shadow .9s ease; }   /* an outline, nothing in it but its words, in the screen's ink */
+
 .arSheet.hpWel.hpW2Ready .hpW2Card { opacity: 1; scale: 1; }
 .arSheet.hpWel .hpW2C { opacity: 0; filter: blur(4px); transition: opacity .6s ease, filter .6s ease; } .arSheet.hpWel.hpW2Ready .hpW2C { opacity: 1; filter: none; } .arSheet.hpWel .hpW2Nm.hpW2C { transition-delay: .12s; } .arSheet.hpWel .hpW2Tr.hpW2C { transition-delay: .18s; }
-.arSheet.hpWel .hpW2Mk { position: absolute; left: 16px; top: 14px; width: 15px; height: 17px; color: #2a1006; }
-.arSheet.hpWel .hpW2Tag { position: absolute; right: 14px; top: 13px; padding: 4px 8px 3px; border: 1px solid rgba(42, 16, 6, .6); border-radius: 999px; font-family: var(--ar-font-mono); font-size: 9px; line-height: 1; letter-spacing: .16em; text-transform: uppercase; }
+.arSheet.hpWel .hpW2Mk { position: absolute; left: 16px; top: 14px; width: 15px; height: 17px; }
+.arSheet.hpWel .hpW2Tag { position: absolute; right: 14px; top: 13px; padding: 4px 8px 3px; border: 1px solid color-mix(in srgb, currentColor 60%, transparent); border-radius: 999px; font-family: var(--ar-font-mono); font-size: 9px; line-height: 1; letter-spacing: .16em; text-transform: uppercase; }
 .arSheet.hpWel :is(.hpW2Nm, .hpW2Tr) { position: absolute; bottom: 14px; display: flex; flex-direction: column; gap: 4px; font-family: var(--ar-font); line-height: 1; } .arSheet.hpWel .hpW2Nm { left: 16px; align-items: flex-start; } .arSheet.hpWel .hpW2Tr { right: 16px; align-items: flex-end; text-align: right; }
 .arSheet.hpWel :is(.hpW2Nm, .hpW2Tr) b { font-size: 19px; font-weight: 500; letter-spacing: -.02em; } .arSheet.hpWel :is(.hpW2Nm, .hpW2Tr) span { font-size: 11.5px; font-weight: 500; } .arSheet.hpWel .hpW2Tr span { font-weight: 400; opacity: .7; }
 .arSheet.hpWel.hpWelV2 .hpWelLd { top: calc(50% + 26px); }   /* the lines under the dot */
@@ -1286,7 +1292,7 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
 .arSheet.hpWel .hpWelLater { height: 40px; padding: 0 20px; border-radius: 9999px; background: transparent; color: oklch(var(--ar-ink) / .72); font-size: 15px; line-height: 18px; font-weight: 500; opacity: 0; visibility: hidden; transform: translateY(18px); transition: opacity .9s cubic-bezier(.22, .61, .24, 1) .12s, transform .9s cubic-bezier(.22, .61, .24, 1) .12s, visibility .9s .12s, color .3s ease; }   /* tertiary: words only, after the button */
 @media (hover: hover) { .arSheet.hpWel .hpWelLater:hover { color: oklch(var(--ar-ink)); } }
 .arSheet.hpWel:is(.hpWelCtaIn, .hpWelCalm) .hpWelLater { opacity: 1; visibility: visible; transform: none; }
-.arSheet.hpWel.hpW2Lit .hpWelLater { color: rgba(255, 246, 238, .78); } @media (hover: hover) { .arSheet.hpWel.hpW2Lit .hpWelLater:hover { color: #fff6ee; } }   /* V2: on the picture's dark, light   /* on a full-height sheet, 96 off the bottom ("96 from bottom"); the title alone in the middle above it. The desk's modal keeps it under the title */
+/* V2: the button and Do it later on the screen's own ground, in its ink, as V1   /* on a full-height sheet, 96 off the bottom ("96 from bottom"); the title alone in the middle above it. The desk's modal keeps it under the title */
 .arSheet.hpWel .hpWelCta { width: auto; max-width: 100%; padding: 0 32px; opacity: 0; visibility: hidden; transform: translateY(18px); transition: opacity .9s cubic-bezier(.22, .61, .24, 1), transform .9s cubic-bezier(.22, .61, .24, 1), visibility .9s; }   /* its row there from the start: it only fades in, rising */
 .arSheet.hpWel:is(.hpWelCtaIn, .hpWelCalm) .hpWelCta { opacity: 1; visibility: visible; transform: none; }
 .arSheet.hpWel.hpWelCalm .hpWelC { opacity: 1; top: 0; filter: none; } .arSheet.hpWel.hpWelCalm .hpWelQ1 { display: none; }
@@ -1961,7 +1967,7 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
     var GRMP = { d: [[[214, 84, 24], [236, 116, 42], [246, 150, 76], [250, 176, 128], [252, 198, 168]], [[104, 104, 108], [158, 158, 162], [204, 204, 208], [234, 234, 237]], [[222, 140, 30], [246, 184, 60], [255, 224, 140]]],
       l: [[[222, 132, 76], [204, 100, 46], [178, 72, 28], [146, 50, 16]], [[160, 152, 146], [118, 110, 104], [80, 72, 68], [46, 40, 36]], [[214, 150, 70], [190, 124, 40], [158, 98, 24]]] };   // the top's ramp, the bottom's, the amber's: equator to pole
     var gRamp = function (R5, t) { var n = R5.length - 1, f = Math.min(n - 1e-6, Math.max(0, t * n)), i = Math.floor(f), k = f - i, a0 = R5[i], b0 = R5[i + 1]; return Math.round(a0[0] + (b0[0] - a0[0]) * k) + ',' + Math.round(a0[1] + (b0[1] - a0[1]) * k) + ',' + Math.round(a0[2] + (b0[2] - a0[2]) * k); };
-    var glowOn = function () { return EDGE != null && LOOK.card === 'glow' && !bs; };
+    var glowOn = function () { return LOOK.card === 'glow' && !bs; }, gIn = 0;   // every sphere (the Overview card's, the profile's, the welcome's): "the Look should be the same on the health profile"; gIn: when a burst ended, the dots giving way to the glow from then (0.8 s)
     var drawGlow = function (now, lt, cx, cy, R, a, L, Lx) {
       glowPts(); var pal = lt ? GRMP.l : GRMP.d, tl = .16, ct = Math.cos(tl), st = Math.sin(tl), ca = Math.cos(a), sa = Math.sin(a), TQ = 10, AQ = 8, BK = {};
       for (var q = 0; q < GN; q++) {
@@ -1991,7 +1997,7 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
             var e = Math.pow(k, 1.6), r = (m.r0 * (1 - e) + 3 * e) * (1 - .9 * ce), th = m.th + m.rot * e + .04 * Math.sin(now / 900 + m.wb), aa = Math.min(1, k / .25) * Math.min(1, (r - 2) / 10) * .6 * mf * (1 - ce * ce);
             if (aa <= .01) return; x.fillStyle = 'rgba(' + base + ',' + aa.toFixed(3) + ')'; x.fillRect(ox + Math.cos(th) * r - m.z / 2, oy - Math.sin(th) * r - m.z / 2, m.z, m.z); });
           dot(ox, oy, dr * (1 - ce) + 1.4 * ce, Math.min(1, .35 + dg / 400), base, 0); return true; }   /* no halo round it ("remove the halo around the dot") */
-        bk = Math.min(1, (now - bs.t0) / bs.dur); fe = Math.min(1, Math.max(0, (now - bs.t0 - bs.dur * .55) / 900)); if (fe >= 1) bs = null;
+        bk = Math.min(1, (now - bs.t0) / bs.dur); fe = Math.min(1, Math.max(0, (now - bs.t0 - bs.dur * .55) / 900)); if (fe >= 1) { bs = null; gIn = now; }
         if (bk < .14) dot(ox, oy, 1.4, 1 - bk / .14, base, 0);   /* the point fading as the motes leave it, no flash */
         if (!calm) SPRAY.forEach(function (m) { var k = Math.min(1, Math.max(0, (bk - m.d) / .62)); if (k <= 0 || k >= 1) return; var e = k < .5 ? 16 * Math.pow(k, 5) : 1 - Math.pow(-2 * k + 2, 5) / 2, r = m.f * R * e, aa = Math.min(1, k * 5) * Math.pow(1 - k, 1.3) * .75;
           x.fillStyle = 'rgba(' + (m.c < 0 ? base : ink[m.c]) + ',' + aa.toFixed(3) + ')'; x.fillRect(ox + Math.cos(m.a) * r - m.z / 2, oy - Math.sin(m.a) * r - m.z / 2, m.z, m.z); });
@@ -1999,7 +2005,9 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
       var a = calm ? .6 : (now - t0) / 48000 * 6.2832, tl = .38 + (calm ? 0 : .07 * Math.sin((now - t0) / 6000)), ct = Math.cos(tl), st = Math.sin(tl), ca = Math.cos(a), sa = Math.sin(a);
       var L = levelAt(now), Lx = L < 1 / 3 ? -.12 + L * 1.47 : L < 2 / 3 ? .37 + (L - 1 / 3) * .78 : .63 + (L - 2 / 3) * 1.47, B = [];   /* a third of the ball by area a step (the edge at .37 and .63 of its height), none at 0, all at 1 */   /* the fill: none at 0, every point at 1, the edge between ragged and turning with the ball */
       for (var i = 0; i < 16; i++) B.push([]);
-      if (glowOn()) drawGlow(now, lt, cx, cy, R, a, L, Lx); else {
+      var gl = glowOn(), gk = gl ? (gIn ? Math.min(1, (now - gIn) / 800) : 1) : 0;
+      if (gl) { x.globalAlpha = gk; drawGlow(now, lt, cx, cy, R, a, L, Lx); x.globalAlpha = 1 - gk; }
+      if (!gl || gk < 1) {
       for (var q = 0; q < N; q++) {
         var X = P[q * 3], Y = P[q * 3 + 1], Z = P[q * 3 + 2], x1 = X * ca + Z * sa, z1 = -X * sa + Z * ca, y1 = Y * ct - z1 * st, zz = Y * st + z1 * ct, sx = cx + x1 * R, sy = cy - y1 * R, dp = (zz + 1) / 2;
         var u = (cy + R - sy) / (2 * R), xn = (sx - cx) / R, wv = calm ? 0 : .045 * Math.sin(xn * 5.5 + now / 1600) + .022 * Math.sin(xn * 11 - now / 2300);   /* filled from the foot up, its surface a very slow wave ("some kind of very slow wave on the bottom, so it feels like we fill the sphere") */
@@ -2010,6 +2018,7 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
       for (var b = 0; b < 16; b++) { var L2 = B[b]; if (!L2.length) continue; var c2 = b >> 2; x.fillStyle = 'rgba(' + (c2 < 3 ? ink[c2] : base) + ',' + Math.min(1, ((b & 3) + .5) / 4 * (c2 === 3 ? +LOOK.dim || 1 : 1)).toFixed(3) + ')';   /* the empty ones at the tweak's strength */
         for (var j = 0; j < L2.length; j += 3) x.fillRect(L2[j] - L2[j + 2] / 2, L2[j + 1] - L2[j + 2] / 2, L2[j + 2], L2[j + 2]); }
       }
+      x.globalAlpha = 1;
       var nt = LOOK.feed === 'neutral';   /* neutral: the empty particles' ink, a touch lighter than the orange and white */
       if (!calm && LOOK.feed !== 'off') FEED.forEach(function (m) {
         var k = (now - m.t0) / m.dur; if (k >= 1) { feed(m, now, false); k = 0; }
@@ -2154,7 +2163,7 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
         h('div', { class: 'hpWcB' }, wc, h('i', { class: 'hpWcSh' }), mark('hpWcMk', 19, 21), h('span', { class: 'hpWcTag', text: 'Member' }),
           h('div', { class: 'hpWcNm' }, h('b', { text: NM || 'Member' }), opts.last ? h('span', { text: opts.last }) : null), h('div', { class: 'hpWcTr' }, h('b', { text: opts.tier || 'Baseline' }), h('span', { text: 'Tier' }))))); }   // the status lines typed in its outline (its front); the card on its back
     var w2 = null, c2 = null, bg2 = null, fl2 = null;
-    if (V2) { fl2 = h('i', { class: 'hpW2Fl' }); bg2 = h('div', { class: 'hpW2Bg' }, fl2);   // the screen's new ground, the dot its window
+    if (V2) { fl2 = h('i', { class: 'hpW2Fl' }); bg2 = h('div', { class: 'hpW2Bg' }, h('i', { class: 'hpW2Img' }), fl2);   // the picture over the top half, the dot its window
       c2 = h('div', { class: 'hpW2Card' }, mark('hpW2Mk hpW2C', 15, 17), h('span', { class: 'hpW2Tag hpW2C', text: 'Member' }),
         h('div', { class: 'hpW2Nm hpW2C' }, h('b', { text: NM || 'Member' }), opts.last ? h('span', { text: opts.last }) : null), h('div', { class: 'hpW2Tr hpW2C' }, h('b', { text: opts.tier || 'Baseline' }), h('span', { text: 'Tier' })));
       w2 = h('div', { class: 'hpW2' }, c2); }   // the card: an outline and its words
@@ -2187,7 +2196,7 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
       } else { bg2.style.clipPath = 'none'; fl2.style.opacity = '0'; }
       later(function () { root.classList.add('hpW2Lit'); }, 420);   // the dark ink, as the light reaches the words
       later(function () { root.classList.add('hpW2Ready'); }, 700);   // the card's outline and its words, where the dot was
-      later(function () { root.classList.add('hpW2Up'); later(goT, 350); }, 2400);   // up to the sphere's place; the title under it
+      later(goT, 1900);   // held a moment, then the title written above it
     };
     var goT = function () {
       root.classList.add('hpWelGo'); later(function () { if (!V2) sp.burst(450); ld.classList.add('hpWelLdEnd'); if (LOGO) later(turn, 2000); }, 300);   // the ball formed, then over to the logo
@@ -2202,7 +2211,7 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
       var w = root.closest('.aqWrap'), ht = w && w.classList.contains('aqDev') ? (w.classList.contains('aqBpS') ? 44 : 58) : 16;   // the profile's full modal's content top: under the status bar in the device
       var off = (root.parentNode ? root.parentNode.offsetTop : 0) + root.offsetTop,   /* by layout, not as drawn: the frame may still be sliding in */ sy = Math.max(132, Math.round(ht + 144 - off));   // 32 under the profile's ("sphere 32px down compared to the health profile screen")
       root.style.setProperty('--hpWelSphY', sy + 'px'); band();
-      if (V2) { var cw = Math.max(180, Math.min(root.clientWidth - 128, 340)); root.style.setProperty('--hpW2W', Math.round(cw) + 'px'); root.style.setProperty('--hpW2Hy', Math.round(sy + 137 - 40 - cw / 1.77 / 2) + 'px'); }   /* the card 64 in from either side (340 at most); once up, 40 above the title */
+      if (V2) { var cw = Math.max(180, Math.min(root.clientWidth - 128, 340)); root.style.setProperty('--hpW2W', Math.round(cw) + 'px'); root.style.setProperty('--hpW2H', Math.round(cw / 1.77) + 'px'); }   /* the card 64 in from either side (340 at most) */
     };
     var go = function () {
       if (!root.isConnected) return;
@@ -2210,7 +2219,7 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
       if (CARD) later(function () { card.classList.add('hpWcOn'); }, 1050);   // its outline in, just before the first line
       later(function () { type(0); }, 1500);
     };
-    if (!calm) requestAnimationFrame(function () { requestAnimationFrame(go); }); else { place(); requestAnimationFrame(place); if (LOGO) later(turn, 2600); if (V2) root.classList.add('hpW2Up', 'hpW2Ready', 'hpW2Lit'); }   // come back to: the sphere, then over to the logo
+    if (!calm) requestAnimationFrame(function () { requestAnimationFrame(go); }); else { place(); requestAnimationFrame(place); if (LOGO) later(turn, 2600); if (V2) root.classList.add('hpW2Ready', 'hpW2Lit'); }   // come back to: the sphere, then over to the logo
     return { el: root, welcome: true, v2: V2, card2: w2, bg2: bg2, sphere: V2 ? null : sp, sphT0: V2 ? null : sp.t0, place: place, flip: flip, logo: logo, hold: function () { held = true; }, theme: function (t) { root.classList.toggle('arDark', t === 'dark'); }, home: function () {}, area: function () {}, destroy: function () { tm.forEach(clearTimeout); tm = []; held = true; if (wv) wv.stop(); if (st) st.stop(); if (root.parentNode) root.parentNode.removeChild(root); } };
   }
 
