@@ -15719,3 +15719,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - The prototype's Colour mode shows the Health profile's sheets (and the Async report's) light, as it always has, so the welcome there is the light one.
 - Checked: the three memberships in light, Baseline in dark; no errors.
 - "If the card is filled, no outline then": Filled is the frosted fill alone (#fff 4%, 32 px blur), its outline gone (it fades out over the faces' 0.9 s as the style changes); Outlined keeps its line.
+- "Outlined .5px": the Outlined card's line is .5 px (was 1).
+- "Card size: this size Small; Medium +16px; Large +24px" (Tweaks → Welcome → Card size): Small as it was (64 in from either side: 265 × 150 on the phone), Medium 16 wider (281 × 159), Large 24 wider (289 × 163), the height with the card's ratio; the title still 40 above it; changed in place. Read as the card's whole width; 16 off either side would be the other reading.
