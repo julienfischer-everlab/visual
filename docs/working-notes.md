@@ -15679,3 +15679,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - The fill still says how far they are: what is filled (a third a step, from the foot) at full strength, the rest at 72%. The motes still come in from the card's top and right.
 - Tweaks → Primary card → Look: Glow (default) / Dots (as before). Only the card's sphere: the welcome's and the profile's keep the dots.
 - Checked side by side with the reference, and on the card in dark and light, with Dots, on the phone frame and the desk; no errors.
+
+## Card sphere's Glow: toned down
+
+- "The glow effect is too pronounced, too intense": the light just inside each pole removed; the caps only a little hotter than the rest (their boost .6 → .22) and everything lit a fifth less (.78); the top's ramp ending in a warm peach, not near-white, the bottom's in a soft white (234), not pure; no point above 78% opacity; sparks rarer (1.5% of points, not 3.5%) and smaller. The dark middle, the far side seen through and the fill as before.
