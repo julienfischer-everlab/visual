@@ -15672,3 +15672,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Its floating motes come in from the card's top and right edges only ("the particles floating should come from the edge of the card on the top right, top and right, not the other side"): each starts just inside the edge along its way in (by the rounded corner, where its arc is), shows at once as if from past it, and is drawn in to the ball as before. `sphere({ edge: 20 })`, the card's inset; the welcome's and the profile's spheres keep theirs from all round.
 - Checked by stacking ten frames 0.7 s apart on the phone and the desk: every trail runs from the top or right edge in to the ball, none from the left or below.
 - Publishing: the standalone Health Profile first, the Everlab service pages last and opened, so a reload lands on the prototype ("when you reload the artefact, focus on the Everlab service page").
+
+## Overview's Health profile card: the sphere's Glow look
+
+- From the reference ("this is the effect that I want to achieve on the sphere of the Health profile card; a tweak with this vibe"): a dense dust (3,200 points, 86% on the shell, so the rim and the poles read densest), lit by latitude. The top half orange, warming to a hot peach cap at its pole, a fifth of it amber; the bottom half silver to white at its pole; dark through the middle; the far side seen through, fainter; sparks now and then; a faint light just inside each pole (nothing outside the ball). Light theme: the same in the paper's inks (orange to deep orange, grey to near-black).
+- The fill still says how far they are: what is filled (a third a step, from the foot) at full strength, the rest at 72%. The motes still come in from the card's top and right.
+- Tweaks → Primary card → Look: Glow (default) / Dots (as before). Only the card's sphere: the welcome's and the profile's keep the dots.
+- Checked side by side with the reference, and on the card in dark and light, with Dots, on the phone frame and the desk; no errors.

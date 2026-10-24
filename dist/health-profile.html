@@ -1903,7 +1903,7 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
      the report's particle ball, small: points on its shell and through its body, its three inks (brick-orange most, a cool grey, an off-white), each nearer brighter, turning left to right a little tilted;
      filled from its foot up to the share done (a third a step), the line a gentle swell, the rest in the card's own ink, faint; a new share rising over 1.2 s. Still with reduced motion */
   /* the sphere's look, from the Tweaks (Health profile): the empty particles' strength ("make the inactive particles more visible by 20%"), the floating ones' colour ("neutral, not orange") or none; every sphere drawn again on a change */
-  var LOOK = { dim: 1.2, feed: 'neutral' }, LIVE = [];
+  var LOOK = { dim: 1.2, feed: 'neutral', card: 'glow' }, LIVE = [];   // card: the Overview card's sphere, as the dots or with the glow
   var look = function (o) { for (var k in o) if (o[k] != null && o[k] !== '') LOOK[k] = o[k]; LIVE = LIVE.filter(function (f) { return f(); }); };
   function sphere(opts) {
     opts = opts || {};
@@ -1929,6 +1929,28 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
     /* as the ball forms, a spray of motes going on past its shell and fading there ("instead of the explosion, particles going outside the sphere"): each from the point out to 1.08-1.6 radii, a little after the ball's own begin */
     var SPRAY = []; for (var f3 = 0; f3 < 54; f3++) SPRAY.push({ a: Math.random() * 6.2832, f: 1.08 + Math.random() * .52, d: Math.random() * .3, z: .8 + Math.random() * .7, c: Math.random() < .8 ? -1 : Math.random() < .7 ? 0 : 2 });
     var dot = function (px, py, r, a, rgb, ga) { if (a <= .01 || r <= .05) return; ga = ga == null ? .28 : ga; if (ga > 0) { var g = x.createRadialGradient(px, py, 0, px, py, r * 5); g.addColorStop(0, 'rgba(' + rgb + ',' + (ga * a).toFixed(3) + ')'); g.addColorStop(1, 'rgba(' + rgb + ',0)'); x.fillStyle = g; x.fillRect(px - r * 5, py - r * 5, r * 10, r * 10); } x.fillStyle = 'rgba(' + rgb + ',' + a.toFixed(3) + ')'; x.beginPath(); x.arc(px, py, r, 0, 6.2832); x.fill(); };   /* a point of light, its glow round it ga strong */
+    /* the glow (the Overview card's sphere, Tweaks -> Primary card -> Look: "this is the effect that I want to achieve on the sphere"): a denser dust, most of it on the shell, lit by latitude: the top half orange, warming
+       to a hot peach-white cap at its pole, a share of it amber; the bottom half silver to white at its pole; dark through the middle; the far side seen through, fainter; a soft light over each pole. Filled (a third a step) at full strength, the rest at 72% */
+    var GN = 3200, GP = null, GJ = null;
+    var glowPts = function () { if (GP) return; GP = new Float32Array(GN * 3); GJ = new Float32Array(GN * 3); var sd = 7, rr = function () { sd = (sd * 16807) % 2147483647; return (sd - 1) / 2147483646; };
+      for (var q = 0; q < GN; q++) { var t = rr() * 6.2832, ph = Math.acos(rr() * 2 - 1), r = rr() < .86 ? .955 + .045 * rr() : Math.cbrt(rr()) * .93; GP[q * 3] = Math.sin(ph) * Math.cos(t) * r; GP[q * 3 + 1] = Math.cos(ph) * r; GP[q * 3 + 2] = Math.sin(ph) * Math.sin(t) * r; GJ[q * 3] = rr(); GJ[q * 3 + 1] = rr(); GJ[q * 3 + 2] = rr(); } };   // GJ: its sparkle, its own strength, its hue (amber or not)
+    var GRMP = { d: [[[214, 84, 24], [240, 118, 40], [252, 156, 72], [255, 192, 156], [255, 218, 200]], [[104, 104, 108], [164, 164, 168], [220, 220, 224], [255, 255, 255]], [[222, 140, 30], [246, 184, 60], [255, 224, 140]]],
+      l: [[[222, 132, 76], [204, 100, 46], [178, 72, 28], [146, 50, 16]], [[160, 152, 146], [118, 110, 104], [80, 72, 68], [46, 40, 36]], [[214, 150, 70], [190, 124, 40], [158, 98, 24]]] };   // the top's ramp, the bottom's, the amber's: equator to pole
+    var gRamp = function (R5, t) { var n = R5.length - 1, f = Math.min(n - 1e-6, Math.max(0, t * n)), i = Math.floor(f), k = f - i, a0 = R5[i], b0 = R5[i + 1]; return Math.round(a0[0] + (b0[0] - a0[0]) * k) + ',' + Math.round(a0[1] + (b0[1] - a0[1]) * k) + ',' + Math.round(a0[2] + (b0[2] - a0[2]) * k); };
+    var glowOn = function () { return EDGE != null && LOOK.card === 'glow' && !bs; };
+    var drawGlow = function (now, lt, cx, cy, R, a, L, Lx) {
+      glowPts(); var pal = lt ? GRMP.l : GRMP.d, tl = .16, ct = Math.cos(tl), st = Math.sin(tl), ca = Math.cos(a), sa = Math.sin(a), TQ = 10, AQ = 8, BK = {};
+      if (!lt) [[-1, '255,150,96', .14], [1, '255,255,255', .08]].forEach(function (g) { var py = cy + g[0] * R * ct * .74, gr = x.createRadialGradient(cx, py, 0, cx, py, R * .3); gr.addColorStop(0, 'rgba(' + g[1] + ',' + g[2] + ')'); gr.addColorStop(1, 'rgba(' + g[1] + ',0)'); x.fillStyle = gr; x.fillRect(cx - R * .3, py - R * .3, R * .6, R * .6); });   // a soft light just inside each pole, nothing outside the ball
+      for (var q = 0; q < GN; q++) {
+        var X = GP[q * 3], Y = GP[q * 3 + 1], Z = GP[q * 3 + 2], x1 = X * ca + Z * sa, z1 = -X * sa + Z * ca, y1 = Y * ct - z1 * st, zz = Y * st + z1 * ct, sx = cx + x1 * R, sy = cy - y1 * R, dp = (zz + 1) / 2;
+        var tp = Y > 0, t = Math.min(1, Math.abs(Y)), lit = Math.pow(Math.max(0, (t - .1) / .9), .85), hot = Math.pow(Math.max(0, (t - .72) / .28), 1.6), on = L >= .999 || (L > .001 && (Y + 1) / 2 < Lx + .06 * (GJ[q * 3 + 1] - .5));
+        var bb = (.06 + lit + .6 * hot) * (.55 + .45 * dp) * (on ? 1 : .72) * (.7 + .6 * GJ[q * 3 + 1]); if (bb < .035) continue;   // dark through the middle; the far side fainter; each its own strength
+        var hu = tp ? (GJ[q * 3 + 2] < .22 ? 2 : 0) : 1, key = (hu * TQ + Math.min(TQ - 1, Math.floor(t * TQ))) * AQ + Math.min(AQ - 1, Math.floor(Math.min(1, bb) * AQ)), z = (.55 + .45 * dp) * (GJ[q * 3] > .965 ? 1.8 : 1);   // now and then a larger one, a spark
+        (BK[key] || (BK[key] = [])).push(sx, sy, z);
+      }
+      for (var kk in BK) { var L2 = BK[kk], kn = +kk, ai = kn % AQ, ti = Math.floor(kn / AQ) % TQ, hi = Math.floor(kn / AQ / TQ); x.fillStyle = 'rgba(' + gRamp(pal[hi], (ti + .5) / TQ) + ',' + Math.min(.95, (ai + .5) / AQ).toFixed(3) + ')';
+        for (var j = 0; j < L2.length; j += 3) x.fillRect(L2[j] - L2[j + 2] / 2, L2[j + 1] - L2[j + 2] / 2, L2[j + 2], L2[j + 2]); }
+    };
     var draw = function (now) {
       var w0 = cv.clientWidth, h0 = cv.clientHeight; if (!w0 || !h0) return false;
       var w = w0 * SC, hh = h0 * SC, dpr = Math.min(2, window.devicePixelRatio || 1); if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(hh * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(hh * dpr); }
@@ -1953,6 +1975,7 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
       var a = calm ? .6 : (now - t0) / 48000 * 6.2832, tl = .38 + (calm ? 0 : .07 * Math.sin((now - t0) / 6000)), ct = Math.cos(tl), st = Math.sin(tl), ca = Math.cos(a), sa = Math.sin(a);
       var L = levelAt(now), Lx = L < 1 / 3 ? -.12 + L * 1.47 : L < 2 / 3 ? .37 + (L - 1 / 3) * .78 : .63 + (L - 2 / 3) * 1.47, B = [];   /* a third of the ball by area a step (the edge at .37 and .63 of its height), none at 0, all at 1 */   /* the fill: none at 0, every point at 1, the edge between ragged and turning with the ball */
       for (var i = 0; i < 16; i++) B.push([]);
+      if (glowOn()) drawGlow(now, lt, cx, cy, R, a, L, Lx); else {
       for (var q = 0; q < N; q++) {
         var X = P[q * 3], Y = P[q * 3 + 1], Z = P[q * 3 + 2], x1 = X * ca + Z * sa, z1 = -X * sa + Z * ca, y1 = Y * ct - z1 * st, zz = Y * st + z1 * ct, sx = cx + x1 * R, sy = cy - y1 * R, dp = (zz + 1) / 2;
         var u = (cy + R - sy) / (2 * R), xn = (sx - cx) / R, wv = calm ? 0 : .045 * Math.sin(xn * 5.5 + now / 1600) + .022 * Math.sin(xn * 11 - now / 2300);   /* filled from the foot up, its surface a very slow wave ("some kind of very slow wave on the bottom, so it feels like we fill the sphere") */
@@ -1962,6 +1985,7 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
       }
       for (var b = 0; b < 16; b++) { var L2 = B[b]; if (!L2.length) continue; var c2 = b >> 2; x.fillStyle = 'rgba(' + (c2 < 3 ? ink[c2] : base) + ',' + Math.min(1, ((b & 3) + .5) / 4 * (c2 === 3 ? +LOOK.dim || 1 : 1)).toFixed(3) + ')';   /* the empty ones at the tweak's strength */
         for (var j = 0; j < L2.length; j += 3) x.fillRect(L2[j] - L2[j + 2] / 2, L2[j + 1] - L2[j + 2] / 2, L2[j + 2], L2[j + 2]); }
+      }
       var nt = LOOK.feed === 'neutral';   /* neutral: the empty particles' ink, a touch lighter than the orange and white */
       if (!calm && LOOK.feed !== 'off') FEED.forEach(function (m) {
         var k = (now - m.t0) / m.dur; if (k >= 1) { feed(m, now, false); k = 0; }
