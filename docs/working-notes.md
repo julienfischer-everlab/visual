@@ -15712,3 +15712,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Motes** ("black particles floating in the coloured area, from the top left and right to the centre of the viewport"): 64 small dark points from the top corners and high on either side, drawn along a gentle curve to the middle of the screen, where the card is (6.5–12 s each, quicker as they near), fading out as they reach it; in as the picture bursts open, over the picture, under the card. None with reduced motion.
 - **Flip on tap** ("when you tap the card, the card flips and you can see some main info about the patient"; On / Off): the card is a plate with two faces; a tap turns it over (0.8 s) to Member details: member no. (EVL 2953 1201), date of birth (theirs once given, else 14 Mar 1984), member since (Oct 2026), their doctor (Dr Steven Lu); a tap turns it back. The halo and the Filled style on both faces. The words' layer lets taps through to the card; the buttons stay tappable.
 - Checked: each membership in dark (and Protocol in light), both styles, the halo at three moments and off, the motes over 2 s, the flip (turning, turned, filled, back), Get started after; no errors.
+
+## Welcome V2: the picture follows the mode
+
+- "This bg should depend on the mode": the picture was the same in both, only the ground under it changing, so in light its browns showed as a haze over the white round the card. Light now shows only the picture's light, its upper part (drawn at 210% of the layer's height): a soft peach (Baseline), blue (Diagnostics) or violet (Protocol) light at the top going cleanly into the white; dark keeps the whole picture going into the black. The title's ink, the card and the buttons as before in each.
+- The prototype's Colour mode shows the Health profile's sheets (and the Async report's) light, as it always has, so the welcome there is the light one.
+- Checked: the three memberships in light, Baseline in dark; no errors.
