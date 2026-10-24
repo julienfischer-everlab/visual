@@ -15761,3 +15761,31 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The Blanket slider (0–100, default 60) sets its strength.
   - From 35% up, the title and status bar take the screen's own ink.
 - The Overview's Health profile card went missing for anyone who had saved Tweaks with the old "Health profile" section switched off. Saved `stOvOff: prof` still hid `.hpOvCard`, while Next step stood aside for it, and no switch was left to turn it back on. `offs()` now keeps only the sections that still have a switch in Tweaks.
+
+## Welcome V2: Opening and Layout tweaks, the card's words; the primary card guarded
+
+- Opening (Tweaks → Welcome → Opening):
+  - Full screen is the default, and the earlier version again. The dot is the picture's window. It swells, then its light spreads softly past the screen's corners (1.9 s) while the ink gives way early. The card's outline and words come in once the light has spread.
+  - Card shape is the dot growing into the card (rim and dissolving ink), with the picture rising from the foot. It is kept as the alternative.
+  - Changing the option replays the welcome. The ink sits in the picture (Full screen) or in the card (Card shape).
+- Layout (Tweaks → Welcome → Layout):
+  - Title above is the default.
+  - Title below:
+    - The warm picture sits 256 px higher.
+    - The card forms in the middle, then rises 256 px (1.2 s) to the same place on the gradient.
+    - The titles are written in the middle of the screen, in the screen's own ink (white on dark).
+    - `--hpW2Up` caps the rise so the card stays clear of the status bar on short screens.
+- The card:
+  - The age now sits under the name, on the same side, in the card's mono (uppercase, 10 px, .12em).
+  - The logo is 12 px bigger (28 × 31), its middle level with the plan badge's.
+- Primary card on XS: still not reproduced in Chromium. Checked so far:
+  - every Tweaks option on its own
+  - all the booked-object combinations
+  - Save then reload, including a save made while Type was Next step
+  - loads at several window sizes
+  - stepping through the states, opening and closing the profile and the welcome
+  - a randomized multi-tweak fuzz
+- Safeguards added for the primary card:
+  - `paintCard` catches a failed paint and leaves Next step in the slot, never an empty one.
+  - A 900 ms guard redraws or re-places the card when it is the primary card (Primary card on, Type $299) but missing from the top row, empty, or hidden.
+- The one regex lookbehind (`kvEta`) is rewritten without it. Safari before 16.4 rejects a lookbehind and the whole script with it.
