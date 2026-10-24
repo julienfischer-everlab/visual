@@ -15894,3 +15894,11 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - "When the background appears, the card should move up a little bit, like an animation; then the footer should come after the card."
   - Full screen opening: the card comes in 32 px low and rises into its place as it fades in (translate 1.3 s, cubic-bezier(.16, .84, .24, 1), from the card's moment at 850 ms). Card shape's card is the dot itself, already in its place, so it does not move.
   - The footer (Get started, Do it later) now comes 600 ms after the card (1.45 s Full screen, 1.5 s Card shape), rising 18 px as it fades in. It no longer waits for both titles to be written.
+
+## Save each membership's card from its own row
+
+- "Save each Baseline, Diagnostics, Protocol directly in the tweak."
+  - The Membership row carries its card's **Save** and **Reset** (the separate Card preset row is gone). It is laid out in two lines in the panel: Membership with Save and Reset, then the three memberships, right-aligned.
+  - Save shows the unsaved dot (`.tkPreBtn[data-dirty]`, as the report's presets) while the card rows differ from what the picked membership keeps. The dot clears on Save, on Reset and when a membership is picked.
+  - The top bar's Save now also keeps the current membership's card, so a reload brings back exactly what was saved there.
+  - The buttons are hidden with V1, which has no card presets.
