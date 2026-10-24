@@ -15789,3 +15789,25 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - `paintCard` catches a failed paint and leaves Next step in the slot, never an empty one.
   - A 900 ms guard redraws or re-places the card when it is the primary card (Primary card on, Type $299) but missing from the top row, empty, or hidden.
 - The one regex lookbehind (`kvEta`) is rewritten without it. Safari before 16.4 rejects a lookbehind and the whole script with it.
+
+## Overview: the primary card's section back; one card colour. Welcome card: halo, padding, age, texture
+
+- **Primary card gone on XS: found.** Dragging any section card in Tweaks rewrote `stOvOrder` with the groups' keys. The Primary card group's key `primary` is not a section name, so `order()` dropped it. When the profile card is the primary card it sits in the top row, but that row moved as part of Next step (`hero`), which then came near the end. So the whole top row went to the foot of the page and Services rose to the top.
+  - `order()` now reads `primary` as the Primary card's section (`prof`, or `hero` once Dexa next).
+  - `gEnd` writes that section name.
+  - With the profile card in the top row, `applyD` moves the row as the profile's unit.
+  - The profile's section stands at the first of Next step / profile in the order. It is first by default and can now be dragged under Services or elsewhere.
+- **One card colour on the Overview:** the primary card's, #fff 4% on dark and #2e1f1a 6% on light, hovered at 8% / 9%.
+  - Before: insights were 6% / cream #fdfaf3, Later a solid #1d1d1d / #f4f4f3, the Action plan cards an outline with no fill, Coverage & age 5.5%, the booked card 4%.
+  - `--ovCard` / `--ovCardH` on `#dOver`.
+  - Next step keeps its dark brown and the Program card its dark. The Tab layout's folder keeps its colours.
+- **Welcome card:**
+  - The halo is a 0.5 px border only. The blurred light around it is gone.
+  - Padding is 8 more all round (32 at the sides, 26–30 top and bottom), front and back. On the back, the member number's column takes its full width, so it is no longer cut.
+  - The age is back in the normal font, 12 px, full ink (white on dark), 10 px under the name (was 12).
+- **Card texture** (Tweaks → Welcome → Texture: Dots / Rings / Halftone / Off; Strength 0–100, default 40 for "less visible by 60%"; Spacing 2–8 px, default 3; Motion on/off).
+  - A canvas on the card's face (`w2Tex`), drawn in the card's ink in the bottom-right corner, with a radial CSS mask that fades it toward the middle.
+  - Dots: a fine 1 px grid. A band of light sweeps out from the corner for 2.6 s every 7 s, and the odd dot glints.
+  - Rings: 0.5 px quarter circles about the corner, with a pulse running out through them.
+  - Halftone: dots growing toward the corner, breathing slowly.
+  - The sweep runs fast leaving the corner, slow through the middle, and fast again (u + .75·sin 2πu / 2π).
