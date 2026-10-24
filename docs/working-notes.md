@@ -15859,3 +15859,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The membership's preset loads at start, after saved Tweaks are restored, and whenever Membership changes.
 - The group is reordered: the screen first (Intro, Version, Opening, Layout, Mask, Blanket, Flip on tap), then Membership, Card preset and every card row under it (Card and its rows, Texture and its rows, Halo), then V1's rows.
 - Full screen opening "faster, smoother, in one shot": one continuous spread from the dot past the screen's corners in 1.15 s, cubic-bezier(.5, 0, .2, 1). It was a swell to 44 px and then the spread over 1.9 s. The ink gives way between 12% and 40% of it. The light ink comes at 420 ms, the card at 850 ms and the title's cue at 250 ms (1.1 s with Title below).
+
+## Welcome on the desk: a floating modal over the blanket
+
+- "A modal on desktop, not a full modal: a floating modal, with a blanket." At M and L the welcome opens as the floating modal again (`.hpBs`): 480 wide in the middle, over the page's 45% black dim. V2 is 720 tall (V1's card 640), so the title has room above the card (66 px from the modal's top; it was 18 at 640). XS and S keep the whole screen (`.hpWelF`).
+- `deskM()` decides from the breakpoint at open. `fit()` switches modal and full if the breakpoint changes while it is up. Back from the profile returns to the modal on the desk. Get started grows the modal into the full profile, as `start()` already did from a sheet.
