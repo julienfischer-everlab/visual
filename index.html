@@ -32019,7 +32019,9 @@ hairline({
       const spots = [];
       groups().forEach(g => { const k = kOf(g); const b = plus[k] || (plus[k] = btn(k)); b.setAttribute('aria-label', 'Tweaks: ' + nameOf(g));
         if (k === 'wel'){ const bo = !!(window._hpBack && window._hpBack.ok()), el = document.querySelector('.hpWrap.hpOpen:not(.shut) .hpWel') || (bo ? document.querySelector('.hpWrap.hpOpen:not(.shut) .hpSheet') : null), r = el && el.getBoundingClientRect();   /* the welcome's: beside its sheet, at its top, while it is up; and beside the profile it led to, with the way back */
-          if (r && r.height && r.bottom > top + 16 && r.top < bot + 28) spots.push({ k, b, y: Math.max(top, Math.min(bot, r.top)) }); else { b.classList.remove('vis'); if (openK === k) shut(); } return; }
+          if (r && r.height && r.bottom > top + 16 && r.top < bot + 28) spots.push({ k, b, y: Math.max(top, Math.min(bot, r.top)) });
+          else if (live) spots.push({ k, b, y: top });   /* on the Overview, before it is triggered: at the screen's top right ("another plus tweak, on the top right, for the welcome first user"): its group, Trigger first */
+          else { b.classList.remove('vis'); if (openK === k) shut(); } return; }
         let el = null; if (live) el = [...over.querySelectorAll(k === 'primary' && window._hpGone ? '.ovhero' : SECS[k])]   /* Next step: the hero the primary card, the + at it */
           .find(e => !e.classList.contains('ovOff') && e.getClientRects().length && e.getBoundingClientRect().height > 0);
         let ok = !!el, y = 0; if (el){ const r = el.getBoundingClientRect(); y = Math.max(top, Math.min(bot, r.top)); ok = r.bottom > top + 16 && r.top < bot + 28;

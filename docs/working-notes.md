@@ -15879,3 +15879,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - **Loading light** (0–100%, default 30, was a fixed 60): the top glow's strength at the last loading line. It steps up a third per line (`--hpW2PreA` × `--hpW2PreM`).
   - **Background** (20–100%, default 100): the opacity of the warm picture once it has opened (`--hpW2BgA` on `.hpW2Bg > .hpW2Img`).
 - Both change live.
+
+## A + for First-time user on the Overview
+
+- "Another plus tweak, maybe on the top right, for the welcome first user." The welcome's + (`wel`, the First-time user group) now also shows on the Overview, before the welcome is up. It sits at the screen's top right, 8 px under its top and 32 px off its edge like the others. It opens the group with Trigger first, and Trigger from that panel starts the welcome with the panel kept open beside it.
+- While the welcome is up the + sits at the welcome's top, and on the profile it led to it has the Back under it, as before.
