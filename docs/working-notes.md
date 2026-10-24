@@ -15811,3 +15811,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Rings: 0.5 px quarter circles about the corner, with a pulse running out through them.
   - Halftone: dots growing toward the corner, breathing slowly.
   - The sweep runs fast leaving the corner, slow through the middle, and fast again (u + .75·sin 2πu / 2π).
+
+## Glow sphere: warm, and the empty quieter
+
+- "This glow look is too white; it should be a little more warm, even if not filled; the dot a bit less visible, it feels inactive." The empty part's ramp is now a warm champagne (118,98,84 → 236,212,186) instead of the cool silver (to 246,246,250). The cool blue tint among the empty is now a soft rose, and the peach tint is kept. Light mode is warmed the same way.
+- The empty points are drawn at .72 of their strength (was .95), so the filled orange reads clearly once a step is done.
+- This applies to every sphere using the Glow look: the Overview card, the profile's page and the welcome.
