@@ -15919,3 +15919,11 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Light position** (Tweaks → First-time user, −160 to +160 px, default 0) moves the picture, and the loading light with it, up or down behind the card (`--hpW2BgY`). About +64 puts the card in the light and the shadow is gone.
 - The card's padding is 8 less all round, front and back: the logo at 24/18, the badge at 22/20, the name and age at 24 from the left and 22 from the foot; on the back, 24/22.
 - The age is 14 px (was 12), still 6 px under the name.
+
+## Back: the dot with its lines just under it
+
+- "Come back to the previous version with the dot and the bullet point just below." Reverted:
+  - the specks pulled into the dot (`w2Att` and its canvas, gone);
+  - the lines at the foot (back under the dot, 26 px below the middle);
+  - the dot drawn in to a point before the burst (the opening goes straight from the breathing dot again).
+- Kept: the name and age 6 px apart, the padding 8 less, the age at 14 px, Light position, and everything before.
