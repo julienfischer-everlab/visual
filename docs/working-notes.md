@@ -15968,3 +15968,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Get started: the light goes up and away with the words, translateY 0 to −36% (about 300 px on the phone) while it fades, in 0.76 s (cubic-bezier(.5, 0, .2, 1)).
   - Back to the intro: it comes back down from there into place, fading in (0.76 s, after 80 ms).
   - It was a plain fade both ways.
+
+## The particles gone at once with Get started
+
+- "The particles around the card stay on the next screen too much; they need to disappear directly."
+  - `start()` now adds `hpW2PtOff` to the welcome first thing, before the profile is built (which held the screen a moment). The canvas is at opacity 0 with no transition, on the first frame after the press (measured 0 at 45 ms).
+  - Back to the intro takes the class off, and the specks fade back in as they came.
