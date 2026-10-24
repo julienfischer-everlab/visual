@@ -1245,16 +1245,17 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
    "the card without a background; the entire screen takes the background when the card appears; the card just an outline skeleton; no dots inside"): the dot is a window onto the given picture, clipped to a circle in the middle (4 to 6 px, breathing),
    covered by the ink; on the last line it swells (a quarter of the way) and bursts open to the whole screen (1.3 s), the ink giving way, the picture over the top half, fading into the screen's own ground; the card, an outline holding its words in the screen's ink, comes in where the dot was;
    it stays there; the titles are written above it, on the picture's light, in its dark ink; the buttons at the foot ("Title / Card / CTA group") */
-@property --hpDR { syntax: '<length>'; inherits: false; initial-value: 0px; } @property --hpW2R { syntax: '<length>'; inherits: false; initial-value: 0px; }
-.arSheet.hpWel .hpW2Bg { position: absolute; inset: 0; --hpDR: 0px; clip-path: circle(var(--hpDR) at 50% 50%); }
+@property --hpDR { syntax: '<length>'; inherits: false; initial-value: 0px; } @property --hpW2P { syntax: '<percentage>'; inherits: false; initial-value: 100%; }
+.arSheet.hpWel .hpW2Bg { position: absolute; inset: 0; opacity: 0; translate: 0 8%; --hpW2P: -30%; -webkit-mask: linear-gradient(to top, #000 var(--hpW2P), transparent calc(var(--hpW2P) + 30%)); mask: linear-gradient(to top, #000 var(--hpW2P), transparent calc(var(--hpW2P) + 30%)); }   /* the picture unseen, a little low */
+.arSheet.hpWel.hpW2Rise .hpW2Bg { opacity: 1; translate: 0 0; --hpW2P: 100%; transition: --hpW2P 2.2s cubic-bezier(.3, .55, .2, 1), translate 2.2s cubic-bezier(.2, .7, .15, 1), opacity .8s ease; }   /* coming up from the foot, a soft edge sweeping up the screen, once the card has formed ("the coloured bg should appear from the bottom") */
+.arSheet.hpWel.hpWelCalm .hpW2Bg { opacity: 1; translate: 0 0; --hpW2P: 100%; transition: none; }
 .arSheet.hpWel .hpW2Img { position: absolute; left: 0; right: 0; top: 0; height: 64%; background: url("assets/welcome/card-glow.webp") top center / 100% 130% no-repeat, linear-gradient(180deg, #ffd99d 0%, #fcc97d 26%, #e9983e 39%, #ba5a10 48%, #6d2305 61%, #1b0703 77%, #010001 100%) top center / 100% 130% no-repeat;
   -webkit-mask: linear-gradient(180deg, #000 58%, transparent 100%); mask: linear-gradient(180deg, #000 58%, transparent 100%); }
 .arSheet.hpWel:not(.arDark) .hpW2Img { background-size: 100% 210%, 100% 210%; -webkit-mask: linear-gradient(180deg, #000 40%, rgba(0, 0, 0, .45) 60%, transparent 80%); mask: linear-gradient(180deg, #000 40%, rgba(0, 0, 0, .45) 60%, transparent 80%); }   /* light ("this bg should depend on the mode"): only the picture's light, its upper part, a soft warm (blue, violet) light at the top going into the white; no browns. Dark: the whole of it, into the black */   /* light: into the white sooner, before its browns */   /* the given picture in the top half only, fading into the screen's own ground under it ("bg in the top 50% of the screen, the rest black, depending on the mode") */
-.arSheet.hpWel.hpW2On .hpW2Bg { animation: hpW2Dot .8s cubic-bezier(.2, .8, .2, 1) forwards; } .arSheet.hpWel.hpW2On.hpW2Br .hpW2Bg { animation: hpW2Br 2.8s ease-in-out infinite; }   /* a pixel grown to an 8 px dot; breathing 8 to 12 */
+.arSheet.hpWel .hpW2Card { --hpDR: 0px; clip-path: inset(calc(50% - var(--hpDR)) round var(--hpDR)); } .arSheet.hpWel.hpW2On .hpW2Card { opacity: 1; scale: 1; animation: hpW2Dot .8s cubic-bezier(.2, .8, .2, 1) forwards; } .arSheet.hpWel.hpW2On.hpW2Br .hpW2Card { animation: hpW2Br 2.8s ease-in-out infinite; }   /* the dot is the card itself, clipped to a circle in its middle, filled with the ink: a pixel grown to an 8 px dot; breathing 8 to 12 ("the dot should form the card shape") */
 @keyframes hpW2Dot { from { --hpDR: .5px; } to { --hpDR: 4px; } } @keyframes hpW2Br { 0%, 100% { --hpDR: 4px; } 50% { --hpDR: 6px; } }
-.arSheet.hpWel .hpW2Fl { position: absolute; inset: 0; background: oklch(var(--ar-ink)); }   /* the dot's ink, over the picture till it bursts */
-.arSheet.hpWel.hpWelCalm .hpW2Bg { clip-path: none; } .arSheet.hpWel.hpWelCalm .hpW2Fl { opacity: 0; }
-.arSheet.hpWel .hpW2Bg.hpW2Open { clip-path: none; --hpW2R: 10px; -webkit-mask: radial-gradient(circle at 50% 50%, #000 calc(var(--hpW2R) * .5), transparent var(--hpW2R)); mask: radial-gradient(circle at 50% 50%, #000 calc(var(--hpW2R) * .5), transparent var(--hpW2R)); }   /* opening: a soft-edged light spreading from the dot, its edge half its radius wide ("the opening is weird and not smooth": it was a hard circle) */
+.arSheet.hpWel .hpW2Fl { position: absolute; inset: 0; z-index: 2; border-radius: inherit; background: oklch(var(--ar-ink)); pointer-events: none; }   /* the dot's ink, over the card till it has taken its shape */
+.arSheet.hpWel.hpWelCalm .hpW2Card { clip-path: none; } .arSheet.hpWel.hpWelCalm .hpW2Fl { opacity: 0; }
 /* the title and the buttons on the screen's own ground, in its own ink; the status bar dark while the picture is up (hpW2Lit, on the wrap) */
 .arSheet.hpWel .hpW2Pt { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 1.4s ease .2s; } .arSheet.hpWel.hpW2Lit .hpW2Pt { opacity: 1; }   /* the motes, over the picture, under the card */
 .arSheet.hpWel .hpW2 { position: absolute; left: 50%; top: 50%; width: 0; height: 0; }   /* the card stays where the dot was, in the middle ("Title / Card / CTA group") */
@@ -1277,12 +1278,14 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
 .arSheet.hpWel .hpW2Bk dl div { min-width: 0; } .arSheet.hpWel .hpW2Bk dt { margin: 0 0 3px; font-family: var(--ar-font-mono); font-size: 8.5px; line-height: 1; letter-spacing: .12em; text-transform: uppercase; opacity: .62; } .arSheet.hpWel .hpW2Bk dd { margin: 0; font-size: 12.5px; line-height: 1.15; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-variant-numeric: tabular-nums; }
 
 .arSheet.hpWel.hpW2Ready .hpW2Card { opacity: 1; scale: 1; }
-.arSheet.hpWel.hpW2Fill :is(.hpW2Fa, .hpW2Bk) { background: rgba(255, 255, 255, .04); -webkit-backdrop-filter: blur(32px); backdrop-filter: blur(32px); box-shadow: none; }   /* Filled: #fff at 4% over a 32 px blur of what is behind, no outline ("Card: Outlined / Filled (bg #fff 4%, blur 32px)"; "if the card is filled, no outline then") */
+.arSheet.hpWel .hpW2Fa::after { content: ""; position: absolute; inset: 0; border-radius: inherit; background: radial-gradient(70% 90% at var(--hpW2Gx, 50%) var(--hpW2Gy, 30%), rgba(255, 255, 255, .09), rgba(255, 255, 255, 0) 62%); pointer-events: none; opacity: 0; transition: opacity 1s ease .4s; } .arSheet.hpWel.hpW2Ready .hpW2Fa::after { opacity: 1; }   /* a soft light on the face, moving with the tilt */
+.arSheet.hpWel.hpW2Fill :is(.hpW2Fa, .hpW2Bk) { background: rgba(255, 255, 255, var(--hpW2FillA, .04)); -webkit-backdrop-filter: blur(var(--hpW2FillB, 32px)); backdrop-filter: blur(var(--hpW2FillB, 32px)); box-shadow: none; }   /* its fill and its blur from Tweaks -> Welcome (Fill opacity, Fill blur: "tweak bg filled card: bg opacity value, bg blur value") */   /* Filled: #fff at 4% over a 32 px blur of what is behind, no outline ("Card: Outlined / Filled (bg #fff 4%, blur 32px)"; "if the card is filled, no outline then") */
 /* the halo ("a halo following the border of the card, shiny style: on / off"): a light running round its edge (4.5 s a turn), a hairline of it sharp and the same blurred into a glow, in the membership's light */
 @property --hpW2A { syntax: '<angle>'; inherits: true; initial-value: 0deg; }
 .arSheet.hpWel :is(.hpW2Beam, .hpW2Glow > i) { position: absolute; inset: 0; border-radius: 24px; padding: 1.5px; pointer-events: none; background: conic-gradient(from var(--hpW2A), rgba(var(--hpW2Bm), 0) 0deg, rgba(var(--hpW2Bm), 0) 220deg, rgba(var(--hpW2Bm), .9) 318deg, rgba(255, 255, 255, .95) 338deg, rgba(var(--hpW2Bm), 0) 360deg);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); mask-composite: exclude; }
-.arSheet.hpWel .hpW2Glow { position: absolute; inset: 0; filter: blur(8px); opacity: 1; pointer-events: none; } .arSheet.hpWel .hpW2Glow > i { padding: 4px; }
+.arSheet.hpWel .hpW2Glow { position: absolute; inset: 0; filter: blur(8px); opacity: 0; pointer-events: none; transition: opacity 1s ease .5s; } .arSheet.hpWel .hpW2Glow > i { padding: 4px; } .arSheet.hpWel .hpW2Beam { opacity: 0; transition: opacity 1s ease .5s; }
+.arSheet.hpWel.hpW2Ready :is(.hpW2Glow, .hpW2Beam) { opacity: .5; }   /* half as strong ("halo too intense, reduce by half"), in once the card has formed */
 .arSheet.hpWel:not(.hpW2Halo) :is(.hpW2Beam, .hpW2Glow) { display: none; }
 .arSheet.hpWel.hpW2Halo.hpW2Ready .hpW2Card { animation: hpW2Spin 9s linear infinite; }   /* 9 s a turn ("halo 2x slower"; was 4.5) */ @keyframes hpW2Spin { to { --hpW2A: 360deg; } }
 @media (prefers-reduced-motion: reduce) { .arSheet.hpWel.hpW2Halo .hpW2Card { animation: none; --hpW2A: 300deg; } }
@@ -1296,7 +1299,7 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
 .arSheet.hpWel .hpWelStream { position: absolute; left: 0; width: 100%; top: 0; height: 0; opacity: 0; transition: opacity .8s ease; } .arSheet.hpWel .hpWelStream.hpWsOn { opacity: 1; transition: opacity 1.4s ease .15s; }   /* the stream behind the card: coming in as it turns over (1.4 s), going with it (0.8 s) */   /* the desk's modal tall enough for the card under the title */
 .arSheet.hpWel .hpWelX { position: absolute; top: var(--ar-head-top, 16px); right: 16px; z-index: 2; }   /* under the status bar in the full modal */
 .arSheet.hpWel .hpWelBody { position: relative; z-index: 1; flex: 1 1 auto; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px; width: 100%; max-width: 440px; padding: 120px var(--hpSide) 48px; box-sizing: border-box; }   /* the title and the button together in the middle, under the ball's half */
-.arSheet.hpWel { --hpWelLh: 40px; } .aqWrap:is(.aqBpXS, .aqBpS) .arSheet.hpWel { --hpWelLh: 38px; }   /* the titles: 36 on 40, 34 on 38 on the phone ("H1 bigger +8px", then "smaller by 4px") */
+.arSheet.hpWel { --hpWelLh: 32px; } .aqWrap:is(.aqBpXS, .aqBpS) .arSheet.hpWel { --hpWelLh: 30px; }   /* 8 tighter ("h1 line height reduce by 8px"; was 40 and 38) */   /* the titles: 36 on 40, 34 on 38 on the phone ("H1 bigger +8px", then "smaller by 4px") */
 .arSheet.hpWel .hpH.hpWelQ { position: absolute; left: 0; right: 0; top: 0; height: calc(var(--hpWelLh) * var(--rows, 2)); display: flex; flex-direction: column; justify-content: flex-end; font-size: 36px; line-height: var(--hpWelLh); --hpEmber: #D98B4A; } .aqWrap:is(.aqBpXS, .aqBpS) .arSheet.hpWel .hpH.hpWelQ { font-size: 34px; line-height: var(--hpWelLh); }   /* its own rows' room from the top of the stage, the rows held at its foot: the row being written on one line, those above rising, the whole title ending 64 under the sphere */ .arSheet.arDark.hpWel .hpH.hpWelQ { --hpEmber: #F5842E; }   /* the gift page's ember, light and dark */
 .arSheet.hpWel .hpWelL { display: grid; grid-template-rows: 0fr; } .arSheet.hpWel.hpWelCalm .hpWelL { grid-template-rows: 1fr; }   /* each row shut till the title's turn */ .arSheet.hpWel .hpWelLi { min-height: 0; } .arSheet.hpWel .hpWelWd { white-space: nowrap; }
 .arSheet.hpWel .hpWelC { position: relative; display: inline; opacity: 0; top: 3px; filter: blur(7px); --warm: color-mix(in srgb, var(--hpEmber) var(--e, 100%), oklch(var(--ar-ink))); --halo: color-mix(in srgb, rgba(240, 130, 50, .55) var(--e, 100%), transparent); }
@@ -2152,24 +2155,24 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
     return { start: function () { if (!raf && live) raf = requestAnimationFrame(tick); }, stop: function () { live = false; if (raf) cancelAnimationFrame(raf); raf = 0; } };
   };
 
-  /* V2's motes ("black particles floating in the coloured area, from the top left and right to the centre of the viewport"): small dark points coming in from the top corners and the top of either side, drawn along a gentle curve
-     to the middle of the screen, where the card is (6.5-12 s each, quicker as they near it, a little sway), in at once, fading out as they reach it; a new one where it began */
-  var w2Motes = function (cv) {
+  /* V2's motes ("black particles floating in the coloured area ... to the centre of the viewport"; then "not black but coloured warm, coming from the left and right"): small points of the membership's light coming in from either side of the coloured half,
+     drawn along a gentle curve to the middle of the screen, where the card is (6.5-12 s each, quicker as they near it, a little sway), in at once, fading out as they reach it; a new one where it began */
+  var w2Motes = function (cv, col) {
     var x = cv.getContext('2d'), raf = 0, live = true, M = [], t0 = performance.now(), i;
-    var spawn = function (m, now, first) { var lf = Math.random() < .5; m.sx = lf ? Math.random() * .38 : 1 - Math.random() * .38; m.sy = -.04 + Math.random() * .26; if (Math.random() < .35) { m.sx = lf ? -.03 : 1.03; m.sy = .02 + Math.random() * .32; }   // the top's corners, or high on either side
-      m.dur = 6500 + Math.random() * 5500; m.t0 = now - (first ? Math.random() * m.dur : 0); m.z = .8 + Math.random() * 1.7; m.a = .28 + .5 * Math.random(); m.wb = Math.random() * 6.2832; m.cv = (Math.random() - .5) * .3; return m; };
+    var spawn = function (m, now, first) { var lf = Math.random() < .5; m.sx = lf ? -.04 : 1.04; m.sy = .05 + Math.random() * .42;   // the left or the right edge, across the coloured half
+      m.dur = 6500 + Math.random() * 5500; m.t0 = now - (first ? Math.random() * m.dur : 0); m.z = .9 + Math.random() * 1.6; m.a = .35 + .5 * Math.random(); m.wb = Math.random() * 6.2832; m.cv = (Math.random() - .5) * .35; return m; };
     for (i = 0; i < 64; i++) M.push(spawn({}, t0, true));
     var tick = function (now) {
       raf = 0; if (!live || !cv.isConnected) return;
       var w = cv.clientWidth, hh = cv.clientHeight; if (!w || !hh) { raf = requestAnimationFrame(tick); return; }
       var dpr = Math.min(2, window.devicePixelRatio || 1); if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(hh * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(hh * dpr); }
       x.setTransform(dpr, 0, 0, dpr, 0, 0); x.clearRect(0, 0, w, hh);
-      var cx = w / 2, cy = hh / 2;
+      var cx = w / 2, cy = hh / 2, rgb = col();
       M.forEach(function (m) {
         var k = (now - m.t0) / m.dur; if (k >= 1) { spawn(m, now, false); k = 0; }
         var e = Math.pow(k, 1.6), sx = m.sx * w, sy = m.sy * hh, dx = cx - sx, dy = cy - sy, dl = Math.hypot(dx, dy) || 1, sw = Math.sin(k * Math.PI) * m.cv * dl + 5 * Math.sin(now / 1300 + m.wb);
         var px = sx + dx * e - dy / dl * sw, py = sy + dy * e + dx / dl * sw, aa = m.a * Math.min(1, k / .1) * Math.min(1, Math.hypot(cx - px, cy - py) / 90);
-        if (aa < .01) return; x.fillStyle = 'rgba(16, 8, 4, ' + aa.toFixed(3) + ')'; x.beginPath(); x.arc(px, py, m.z / 2, 0, 6.2832); x.fill();
+        if (aa < .01) return; x.fillStyle = 'rgba(' + rgb + ', ' + aa.toFixed(3) + ')'; x.beginPath(); x.arc(px, py, m.z / 2, 0, 6.2832); x.fill();
       });
       raf = requestAnimationFrame(tick);
     };
@@ -2200,8 +2203,8 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
       }));
       return { el: el, by: at + (cnt - 1) * STG, rows: LNS.length };
     };
-    var T1 = title(NM ? ['Welcome to Everlab,', NM] : ['Welcome to', 'Everlab.'], 1000, 'hpWelQ1'), OUT1 = T1.by + LW + 500 + (CARD ? 900 : 0);   // with the card under it, held a little longer   // its last letter settled, held half a second ("Welcome to Everlab, Julien: pause 0.5 s"), then gone (0.4 s)
-    var T2 = title(['It all starts with', 'a consultation', 'with your doctor.'], OUT1 + 300, 'hpWelQ2'), BY = T2.by, SAY = (NM ? 'Welcome to Everlab, ' + NM + '.' : 'Welcome to Everlab.') + ' It all starts with a consultation with your doctor.';   // ("H1 last sentence: it all starts with a consultation with your doctor"), three rows: two do not fit the phone
+    var T1 = title(V2 ? ['Welcome to', 'Everlab'] : NM ? ['Welcome to Everlab,', NM] : ['Welcome to', 'Everlab.'], 1000, 'hpWelQ1'),   /* V2: the name is on the card ("Welcome to / Everlab") */ OUT1 = T1.by + LW + 500 + (CARD ? 900 : 0);   // with the card under it, held a little longer   // its last letter settled, held half a second ("Welcome to Everlab, Julien: pause 0.5 s"), then gone (0.4 s)
+    var T2 = title(['It all starts with', 'a consultation', 'with your doctor.'], OUT1 + 300, 'hpWelQ2'), BY = T2.by, SAY = (NM && !V2 ? 'Welcome to Everlab, ' + NM + '.' : 'Welcome to Everlab.') + ' It all starts with a consultation with your doctor.';   // ("H1 last sentence: it all starts with a consultation with your doctor"), three rows: two do not fit the phone
     T1.el.style.setProperty('--out', OUT1 + 'ms'); T1.el.setAttribute('aria-hidden', 'true'); T2.el.setAttribute('aria-label', 'It all starts with a consultation with your doctor.');
     /* the loader ("feels like we're creating their personal health profile"): short status lines in the middle, where the title will be, typed in the async report intro's mono capitals behind its orange square, a block cursor running ahead; each line keeps its room from the start (its words held, unseen, under the typing) so it does not shift as it writes; held, then lifted away blurring as the next comes */
     var MSG = ['Creating your health profile', 'Preparing your three steps', 'Personalising it for ' + (opts.name || 'you')], TYC = 30, HOLD = 760;
@@ -2216,18 +2219,19 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
         h('div', { class: 'hpWcB' }, wc, h('i', { class: 'hpWcSh' }), mark('hpWcMk', 19, 21), h('span', { class: 'hpWcTag', text: 'Member' }),
           h('div', { class: 'hpWcNm' }, h('b', { text: NM || 'Member' }), opts.last ? h('span', { text: opts.last }) : null), h('div', { class: 'hpWcTr' }, h('b', { text: opts.tier || 'Baseline' }), h('span', { text: 'Tier' }))))); }   // the status lines typed in its outline (its front); the card on its back
     var w2 = null, c2 = null, bg2 = null, fl2 = null, mt2 = null, mtc = null;
-    if (V2) { mtc = h('canvas', { class: 'hpW2Pt', 'aria-hidden': 'true' }); if (!reduced()) mt2 = w2Motes(mtc); fl2 = h('i', { class: 'hpW2Fl' }); bg2 = h('div', { class: 'hpW2Bg' }, h('i', { class: 'hpW2Img' }), fl2);   // the picture over the top half, the dot its window
+    if (V2) { mtc = h('canvas', { class: 'hpW2Pt', 'aria-hidden': 'true' }); if (!reduced()) mt2 = w2Motes(mtc, function () { return mcol; }); fl2 = h('i', { class: 'hpW2Fl' }); bg2 = h('div', { class: 'hpW2Bg' }, h('i', { class: 'hpW2Img' }));   // the picture over the top half, the dot its window
       var halo = function () { return [h('i', { class: 'hpW2Glow' }, h('i')), h('i', { class: 'hpW2Beam' })]; }, info = opts.info || {};
       c2 = h('div', { class: 'hpW2Card' }, h('div', { class: 'hpW2In' },
         h('div', { class: 'hpW2Fa' }, halo(), h('span', { class: 'hpW2MkW hpW2C' }, mark('hpW2Mk', 16, 18)), h('span', { class: 'hpW2Tag hpW2C', text: (opts.tier || 'Baseline') + ' plan' }),
           h('div', { class: 'hpW2Nm hpW2C' }, h('b', { text: [NM, opts.last].filter(Boolean).join(' ') || 'Member' })), info.age ? h('div', { class: 'hpW2Tr hpW2C' }, h('span', { text: info.age + ' years old' })) : null),   /* the logo at the top left, turning every 4 s; the plan at the top right; the name, bigger and whole; their age at the right ("bigger: Julien Fischer; right side: 42 years old; top right: Baseline plan, badge +4px padding; left top: logo that spins every 4 s") */
         h('div', { class: 'hpW2Bk' }, halo(), h('div', { class: 'hpW2BkH' }, h('span', { text: 'Member details' }), mark(null, 13, 15)),
-          h('dl', null, [['Member no.', info.no], ['Date of birth', info.dob], ['Member since', info.since], ['Your doctor', info.dr]].map(function (r) { return h('div', null, h('dt', { text: r[0] }), h('dd', { text: r[1] || '—' })); })))));   // the front; the back, the member's details
+          h('dl', null, [['Member no.', info.no], ['Date of birth', info.dob], ['Member since', info.since], ['Your doctor', info.dr]].map(function (r) { return h('div', null, h('dt', { text: r[0] }), h('dd', { text: r[1] || '—' })); })))), fl2);   // the front; the back, the member's details
       c2.addEventListener('click', function () { if (root.classList.contains('hpW2Tap') && root.classList.contains('hpW2Ready')) c2.classList.toggle('hpW2Flip'); });
       w2 = h('div', { class: 'hpW2' }, c2); }
-    var sz2 = opts.size || 's';
-    var look2 = function (o) { if (!V2) return; if ((o.size || 's') !== sz2) { sz2 = o.size || 's'; if (root.isConnected) place(); } ['base', 'diag', 'prot'].forEach(function (k) { root.classList.toggle('hpW2T-' + k, k === (o.tierK || 'base')); }); root.classList.toggle('hpW2Fill', o.cs === 'filled'); root.classList.toggle('hpW2Halo', o.halo !== 'off'); root.classList.toggle('hpW2Tap', o.tap !== 'off'); if (o.tap === 'off') c2.classList.remove('hpW2Flip');
-      if (o.tier) { var tb = c2.querySelector('.hpW2Tag'); if (tb) tb.textContent = o.tier + ' plan'; } };   // the membership's light, the card's style and its halo, changed in place (Tweaks -> Welcome)   // the card: an outline and its words
+    var sz2 = opts.size || 's', mcol = '255, 206, 160';   // mcol: the motes' colour, the membership's light (read from the sheet as it changes)
+    var readCol = function () { var v = root && getComputedStyle(root).getPropertyValue('--hpW2Bm').trim(); if (v) mcol = v; };
+    var look2 = function (o) { if (!V2) return; if ((o.size || 's') !== sz2) { sz2 = o.size || 's'; if (root.isConnected) place(); } ['base', 'diag', 'prot'].forEach(function (k) { root.classList.toggle('hpW2T-' + k, k === (o.tierK || 'base')); }); root.classList.toggle('hpW2Fill', o.cs === 'filled'); root.classList.toggle('hpW2Halo', o.halo !== 'off'); root.classList.toggle('hpW2Tap', o.tap !== 'off'); if (o.fillA != null) root.style.setProperty('--hpW2FillA', (+o.fillA / 100).toFixed(3)); if (o.fillB != null) root.style.setProperty('--hpW2FillB', (+o.fillB) + 'px'); if (o.tap === 'off') c2.classList.remove('hpW2Flip');
+      if (o.tier) { var tb = c2.querySelector('.hpW2Tag'); if (tb) tb.textContent = o.tier + ' plan'; } if (root) readCol(); };   // the membership's light, the card's style and its halo, changed in place (Tweaks -> Welcome)   // the card: an outline and its words
     var ball = h('div', { class: 'hpWelBall' }, flip), sph = h('div', { class: 'hpWelSph', 'aria-hidden': 'true' }, V2 ? [bg2, mtc, w2] : ball, stc, card || ld);   // the ball at the profile's own place; the status lines (or the card holding them) under it
     if (CARD || V2) SAY += ' Your membership card: ' + (NM ? NM + ' ' : '') + (opts.last || '') + ', ' + (opts.tier || 'Baseline') + ' plan.';
     var root = h('div', { class: 'arSheet hpSheet hpWel' + (opts.theme === 'dark' ? ' arDark' : '') + (calm ? ' hpWelCalm' : '') + (CARD ? ' hpWelCardOn' : '') + (V2 ? ' hpWelV2' : ''), role: 'document', 'aria-label': SAY },
@@ -2237,6 +2241,19 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
     cta.addEventListener('click', function () { if (opts.onStart) opts.onStart(); });
     /* one motion, once the sheet is up: the dot drawn in near the top (0.15 s), rippling; the status lines typed one after another under it; on the last, held, the title's first row starts to open (hpWelGo), the dot swells as the line dissolves in a blur (0.3 s on), and bursts into the ball at the top edge, its upper half past it (0.82 s on); as the ball forms the title is written where the lines were (1 s on), the button half a second after its last letter begins, fading in as it rises 18px (0.9 s) in the row kept for it */
     look2(opts);
+    /* a slight tilt ("use the gyroscope too, to add a slight effect"): the card turned a few degrees with the phone (its orientation, from how it was held at first), or toward the pointer on a desk, eased; a soft light on its face moving with it. iOS asks leave on a first tap. None with reduced motion */
+    var tlt = { x: 0, y: 0, tx: 0, ty: 0, raf: 0, g0: null }, tIn = V2 && c2.querySelector('.hpW2In');
+    var tTick = function () { tlt.raf = 0; tlt.x += (tlt.tx - tlt.x) * .1; tlt.y += (tlt.ty - tlt.y) * .1;
+      tIn.style.transform = 'rotateX(' + (-tlt.y * 7).toFixed(2) + 'deg) rotateY(' + (tlt.x * 9).toFixed(2) + 'deg)'; c2.style.setProperty('--hpW2Gx', (50 + tlt.x * 35).toFixed(1) + '%'); c2.style.setProperty('--hpW2Gy', (30 + tlt.y * 35).toFixed(1) + '%');
+      if (Math.abs(tlt.tx - tlt.x) > .002 || Math.abs(tlt.ty - tlt.y) > .002) tlt.raf = requestAnimationFrame(tTick); };
+    var aim = function (x, y) { if (!root.classList.contains('hpW2Ready')) { x = 0; y = 0; } tlt.tx = Math.max(-1, Math.min(1, x)); tlt.ty = Math.max(-1, Math.min(1, y)); if (!tlt.raf) tlt.raf = requestAnimationFrame(tTick); };
+    var onOri = function (e) { if (e.gamma == null || e.beta == null) return; if (!tlt.g0) tlt.g0 = [e.gamma, e.beta]; aim((e.gamma - tlt.g0[0]) / 20, (e.beta - tlt.g0[1]) / 20); };   // 20 degrees of the phone, the card's whole tilt
+    if (tIn && !reduced()) {
+      root.addEventListener('pointermove', function (e) { if (e.pointerType !== 'mouse') return; var r = c2.getBoundingClientRect(); aim((e.clientX - (r.left + r.width / 2)) / (r.width * 1.2), (e.clientY - (r.top + r.height / 2)) / (r.height * 2.2)); });
+      root.addEventListener('pointerleave', function () { aim(0, 0); });
+      window.addEventListener('deviceorientation', onOri);
+      root.addEventListener('pointerdown', function () { var D = window.DeviceOrientationEvent; if (D && typeof D.requestPermission === 'function') D.requestPermission().catch(function () {}); }, { once: true });
+    }
     var tm = [], later = function (f, ms) { tm.push(setTimeout(f, ms)); };
     /* each message its own line, square and words together, turning up into place from below as the last turns away above, a drum's roll ("the bullet point should rotate vertically, smoother"), its words typed as it comes round */
     var type = function (i) {
@@ -2249,17 +2266,16 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
         else if (CARD) later(function () { card.classList.add('hpWcFlip'); wv.start(); if (st) { band(); st.start(); stc.classList.add('hpWsOn'); } later(goT, 1650); }, HOLD);   /* the last line held, then the outline turned over to the card (1.15 s); half a second on, the title */
         else later(goT, HOLD - 300); };   /* together: the title written (1 s on), the dot drawn in to a point (0.3 s on), bursting where it is (0.75 s on) */
     var open2 = function () {
-      ld.classList.add('hpWelLdEnd'); var r0 = parseFloat(getComputedStyle(bg2).getPropertyValue('--hpDR')) || 4, R = Math.ceil(Math.hypot(root.clientWidth / 2, root.clientHeight / 2) * 2.1);
-      root.classList.remove('hpW2On', 'hpW2Br'); bg2.style.setProperty('--hpW2R', (r0 * 2).toFixed(2) + 'px'); bg2.classList.add('hpW2Open');   // the dot as it was, its edge now soft
-      var done = function () { bg2.classList.remove('hpW2Open'); bg2.style.clipPath = 'none'; bg2.style.removeProperty('--hpW2R'); };
-      if (bg2.animate) {
-        var an = bg2.animate([{ '--hpW2R': (r0 * 2).toFixed(2) + 'px', easing: 'cubic-bezier(.3, 0, .3, 1)' }, { '--hpW2R': '44px', offset: .2, easing: 'cubic-bezier(.45, 0, .15, 1)' }, { '--hpW2R': R + 'px' }], { duration: 1900, fill: 'forwards' });   // a swell, then the light spreading softly out past the screen's corners
-        an.onfinish = function () { done(); an.cancel(); };   // then no mask at all, whatever the screen's size
-        fl2.animate([{ opacity: 1 }, { opacity: 1, offset: .16 }, { opacity: 0, offset: .36 }, { opacity: 0 }], { duration: 1900, fill: 'forwards' });   // the ink giving way to the picture early in the spread, so it does not wash the dark below with grey
-      } else { done(); fl2.style.opacity = '0'; }
-      later(function () { root.classList.add('hpW2Lit'); if (mt2) mt2.start(); }, 650);   // the dark ink, as the light reaches the words; the motes coming in
-      later(function () { root.classList.add('hpW2Ready'); }, 1350);   // the card's outline and its words, once the light has spread
-      later(goT, 2700);   // held a moment, then the title written above it
+      ld.classList.add('hpWelLdEnd'); var r0 = parseFloat(getComputedStyle(c2).getPropertyValue('--hpDR')) || 4, c0 = 'inset(calc(50% - ' + r0.toFixed(2) + 'px) round ' + r0.toFixed(2) + 'px)';
+      c2.style.clipPath = c0; root.classList.remove('hpW2Br');   // held at the size it breathed to
+      if (c2.animate) {
+        var an = c2.animate([{ clipPath: c0, easing: 'cubic-bezier(.3, 0, .2, 1)' }, { clipPath: 'inset(calc(50% - 16px) round 16px)', offset: .26, easing: 'cubic-bezier(.65, 0, .2, 1)' }, { clipPath: 'inset(0px round 24px)' }], { duration: 1150, fill: 'forwards' });   // a swell, then out to the card's own shape ("the dot should form the card shape")
+        an.onfinish = function () { c2.style.clipPath = 'none'; an.cancel(); };
+        fl2.animate([{ opacity: 1 }, { opacity: 1, offset: .72 }, { opacity: 0 }], { duration: 1150, fill: 'forwards' });   // the ink filling the shape till it is all but made, then quickly giving way to its outline (no grey card for long)
+      } else { c2.style.clipPath = 'none'; fl2.style.opacity = '0'; }
+      later(function () { root.classList.add('hpW2Ready'); }, 900);   // its words
+      later(function () { root.classList.add('hpW2Rise', 'hpW2Lit'); if (mt2) mt2.start(); }, 1000);   // the coloured light rising from the foot; the motes coming in
+      later(goT, 2600);   // then the title written above it
     };
     var goT = function () {
       root.classList.add('hpWelGo'); later(function () { if (!V2) sp.burst(450); ld.classList.add('hpWelLdEnd'); if (LOGO) later(turn, 2000); }, 300);   // the ball formed, then over to the logo
@@ -2282,8 +2298,8 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
       if (CARD) later(function () { card.classList.add('hpWcOn'); }, 1050);   // its outline in, just before the first line
       later(function () { type(0); }, 1500);
     };
-    if (!calm) requestAnimationFrame(function () { requestAnimationFrame(go); }); else { place(); requestAnimationFrame(place); if (LOGO) later(turn, 2600); if (V2) { root.classList.add('hpW2Ready', 'hpW2Lit'); if (mt2) mt2.start(); } }   // come back to: the sphere, then over to the logo
-    return { el: root, welcome: true, v2: V2, card2: w2, bg2: bg2, look2: look2, sphere: V2 ? null : sp, sphT0: V2 ? null : sp.t0, place: place, flip: flip, logo: logo, hold: function () { held = true; }, theme: function (t) { root.classList.toggle('arDark', t === 'dark'); }, home: function () {}, area: function () {}, destroy: function () { tm.forEach(clearTimeout); tm = []; held = true; if (wv) wv.stop(); if (st) st.stop(); if (mt2) mt2.stop(); if (root.parentNode) root.parentNode.removeChild(root); } };
+    if (!calm) requestAnimationFrame(function () { requestAnimationFrame(go); }); else { place(); requestAnimationFrame(place); if (LOGO) later(turn, 2600); if (V2) { root.classList.add('hpW2Ready', 'hpW2Lit', 'hpW2Rise'); if (mt2) mt2.start(); } }   // come back to: the sphere, then over to the logo
+    return { el: root, welcome: true, v2: V2, card2: w2, bg2: bg2, look2: look2, sphere: V2 ? null : sp, sphT0: V2 ? null : sp.t0, place: place, flip: flip, logo: logo, hold: function () { held = true; }, theme: function (t) { root.classList.toggle('arDark', t === 'dark'); if (V2) readCol(); }, home: function () {}, area: function () {}, destroy: function () { tm.forEach(clearTimeout); tm = []; held = true; if (wv) wv.stop(); if (st) st.stop(); if (mt2) mt2.stop(); window.removeEventListener('deviceorientation', onOri); if (tlt.raf) cancelAnimationFrame(tlt.raf); if (root.parentNode) root.parentNode.removeChild(root); } };
   }
 
   window.HealthProfile = { mount: mount, welcome: welcome, dots: dots, sphere: sphere, look: look, store: { get: function () { return S; }, summary: summary, preset: preset, reset: function () { preset('none'); }, pending: pending, areas: AREAS } };
