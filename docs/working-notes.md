@@ -15884,3 +15884,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 
 - "Another plus tweak, maybe on the top right, for the welcome first user." The welcome's + (`wel`, the First-time user group) now also shows on the Overview, before the welcome is up. It sits at the screen's top right, 8 px under its top and 32 px off its edge like the others. It opens the group with Trigger first, and Trigger from that panel starts the welcome with the panel kept open beside it.
 - While the welcome is up the + sits at the welcome's top, and on the profile it led to it has the Back under it, as before.
+
+## Halo opacity
+
+- "An opacity on the halo, when on": a **Halo opacity** slider (0–100%, default 50, the strength it had), shown while Halo is on. It sets `--hpW2HaA` on the halo's beam, and it is part of each membership's card preset (saved with it).
