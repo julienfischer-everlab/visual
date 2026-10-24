@@ -15864,3 +15864,11 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 
 - "A modal on desktop, not a full modal: a floating modal, with a blanket." At M and L the welcome opens as the floating modal again (`.hpBs`): 480 wide in the middle, over the page's 45% black dim. V2 is 720 tall (V1's card 640), so the title has room above the card (66 px from the modal's top; it was 18 at 640). XS and S keep the whole screen (`.hpWelF`).
 - `deskM()` decides from the breakpoint at open. `fit()` switches modal and full if the breakpoint changes while it is up. Back from the profile returns to the modal on the desk. Get started grows the modal into the full profile, as `start()` already did from a sheet.
+
+## Welcome V2: the light at the top comes up while the dot loads
+
+- "While the dot loads, the warm background on the top starts to appear with every rotation of each bullet, clearer each time; at the end, the entire background comes up."
+  - `.hpW2Pre` is a second copy of the picture, masked to the top of the screen (fully shown at the top, gone by 46%), under the dot.
+  - With each status line its opacity steps up a third, to 20%, 40% and then 60% (`--hpW2PreA`, 1.3 s ease).
+  - The opening then brings the whole picture up over it, the Full screen spread or Card shape's rise.
+  - Once settled (2.2 s after the card is ready) the layer fades out, so nothing lingers when Get started fades the background. It is hidden when the welcome is shown already settled.
