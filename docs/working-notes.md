@@ -15952,3 +15952,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - "On card Filled I also need a foreground controller": the card's **Text** colour row shows with Filled as well as Solid and colours its words, logo, badge and texture.
 - The palette chips' ring was flattened by the panel's own button reset; it is now forced.
 - "A controller to add more dense particles around the card": **Particles** (0–400%, default 100) sets how many warm specks float in to the card: 64 at 100%, live (`w2Motes().count`).
+
+## Background saturation
+
+- "Apply saturation 20% on the bg": **Saturation** (0–200%, default 120, read as +20%) sets `filter: saturate()` on the light, the picture or the code, and the loading light with it.
