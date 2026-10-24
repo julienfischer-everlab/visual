@@ -15935,3 +15935,11 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Code is a glow centred 42% down the picture's height, as the picture's own, over a dim sky going into the dark.
   - Its colours are **Light** (the glow's core, #ffd99d), **Warm** (round it, #e9983e) and **Deep** (#6d2305), each a swatch with its hex. **Spread** (20–90%, default 46) sets how tall the glow is.
   - In light mode the glow goes into the white. Background (opacity) and Light position work on both sources, and the loading light follows the source too.
+
+## Protocol card: a big Everlab mark in glossy ink
+
+- "On the Protocol card, a big Everlab logo mark that bleeds over the card, like a glossy ink we usually see on a business card."
+  - **Logo mark** (Off / Glossy) is a card setting, saved in each membership's preset: Protocol's default is Glossy, the others Off.
+  - The Everlab mark is drawn half again the card's height (150%), bleeding off its bottom right (right −15%, bottom −34%), under the words, the face clipping it. It is the mark's SVG as a mask (data URI) on a filled element.
+  - The fill is tone on tone, a lacquer: on a solid card its own colour a shade into its ink, lighter at the top, deeper at the foot. A white glint sweeps across it every 7 s, standing still with reduced motion.
+  - On glass and the other styles it is drawn in the card's ink at 10%.
