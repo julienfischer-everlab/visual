@@ -16164,3 +16164,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The date is 48 under the card, the titles 16 under the date. The desk's modal fits that: 64 · card · 48 · date · 16 · titles and line · 48 · Start my journey · 80.
 - "+4px line height": the titles are 32 on 32 (30 on 30 on the phone).
 - "Rotate less prominent, softer": the phrases now travel a fifth of a line (was 70%), blur 2 px (was 6), and move more slowly (1.1 s). The next comes in as the last has nearly gone. Each is held 3 s.
+
+## Overview: the profile's card, not begun: the button across it
+
+- "CTA full, no left copy": before the profile is begun, the card's foot is Get started alone, the card's whole width. "3 steps / About 12 minutes" is gone from its left. That was so only out of the primary's place; now it is everywhere. The states after it keep their foot (the progress, then the consult).
