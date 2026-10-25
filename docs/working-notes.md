@@ -16062,3 +16062,11 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - While the card is signed, Back is a back arrow at the top left (it was the button under Continue).
   - The phone keeps Get started where it was (112 off the foot).
   - The desk's modal fits what is left: 576 at L, the card + 374. Top to bottom: 48 · date · 16 · three title rows · 48 · card · 48 · Get started · 48. The card, its dot and its specks sit 35 under the modal's middle (half the difference). The visual layer is stretched under the foot so its own middle is there, and the light keeps its top.
+
+## Welcome V2: "Your commitment to" … turning over
+
+- "Your commitment to / rotate, fade in and out (vertical): healthier life. your future. peace of mind."
+  - The second title is now "Your commitment to / a healthier life." ("a" added for the sentence), written as before.
+  - About 1.4 s after it has settled, its last row turns over: "a healthier life." → "your future." → "peace of mind." → back, 2.6 s each. Each phrase goes up and out (70% of the line), fading and blurring, as the next comes up from below.
+  - The written letters give way to the same words first, so the hand-over doesn't show. With reduced motion it stays on the first phrase. Coming back from the profile, it turns at once.
+  - The title reads "Your commitment to a healthier life, your future, peace of mind." to a screen reader.

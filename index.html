@@ -16563,6 +16563,10 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
 .arSheet.hpWel.hpW2Sign .hpW2Sg:focus-visible { box-shadow: inset 0 0 0 .5px color-mix(in srgb, currentColor 22%, transparent), 0 0 0 2px color-mix(in srgb, currentColor 70%, transparent); }
 .arSheet.hpWel.hpW2Sign .hpWelCta { transition: opacity .3s ease, transform .9s cubic-bezier(.22, .61, .24, 1), visibility .9s; } .arSheet.hpWel.hpW2Sign .hpWelCta:disabled { opacity: .5; cursor: default; }   /* Continue held till it is signed */
 .arSheet.hpWel .hpWelQ3 .hpWelL { animation: hpWelLine 1.5s cubic-bezier(.25, .1, .25, 1) var(--ld, 0ms) both; } .arSheet.hpWel .hpWelQ3 .hpWelC { animation: hpWelRes var(--dur, 1640ms) cubic-bezier(.45, 0, .2, 1) var(--d) both, hpWelEmb calc(var(--dur, 1640ms) * .7) cubic-bezier(.3, 0, .5, 1) var(--d) both; }   /* "Make it yours. / Sign your card." written as the others */
+/* the second title's last row turning over: each phrase over the row, centred; in from below, out above, fading and blurring as it goes */
+.arSheet.hpWel .hpW2Rot { position: absolute; left: 0; right: 0; top: 0; height: var(--hpWelLh); pointer-events: none; } .arSheet.hpWel .hpWelLi:has(> .hpW2Rot) { position: relative; } .arSheet.hpWel .hpWelQ.hpW2RotOn .hpWelL:last-child .hpWelWd { visibility: hidden; }
+.arSheet.hpWel .hpW2Rot > span { position: absolute; left: 0; right: 0; top: 0; white-space: nowrap; opacity: 0; transform: translateY(70%); filter: blur(6px); transition: transform .8s cubic-bezier(.45, 0, .2, 1), opacity .55s ease, filter .6s ease; }
+.arSheet.hpWel .hpW2Rot > span.hpW2RotIn { opacity: 1; transform: none; filter: none; transition-delay: .12s; } .arSheet.hpWel .hpW2Rot > span.hpW2RotOut { opacity: 0; transform: translateY(-70%); filter: blur(6px); }
 .arSheet.hpWel .hpWelQ.hpWelOff { animation: hpWelGone .4s ease forwards; } .arSheet.hpWel .hpWelQ.hpWelBack { animation: hpWelBackIn .6s ease both; } @keyframes hpWelBackIn { from { opacity: 0; filter: blur(7px); transform: translateY(8px); } }
 @media (prefers-reduced-motion: reduce) { .arSheet.hpWel .hpWelQ3 .hpWelL { animation: none; grid-template-rows: 1fr; } .arSheet.hpWel .hpWelQ3 .hpWelC { animation: none; opacity: 1; top: 0; filter: none; } .arSheet.hpWel .hpW2In { transition: none; } }
 /* the dark specks over the card, in with the light and the card, gone at once with Get started */
@@ -17592,7 +17596,8 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
     var LEADT = NM ? 'A big step forward, ' + NM + '.' : 'A big step forward.', LEADS = 'You\u2019re joining millions of people committed to taking control of their health.';   // V2's opening words, before the light ("title before the reveal of the bg")
     var EBD = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });   // V2's eyebrow: the day itself ("eyebrow: 24 October 2026")
     var T1 = title(V2 ? ['The day you took', 'control of', 'your health.'] : NM ? ['Welcome to Everlab,', NM] : ['Welcome to', 'Everlab.'], V2 ? 450 : 1000, 'hpWelQ1'),   /* V2: the name is on the card ("Welcome to / Everlab") */ OUT1 = T1.by + LW + 500 + (CARD ? 900 : 0);   // with the card under it, held a little longer   // its last letter settled, held half a second ("Welcome to Everlab, Julien: pause 0.5 s"), then gone (0.4 s)
-    var Q2 = V2 ? ['Your commitment', 'to your future.'] : ['It all starts with', 'a consultation', 'with your doctor.'], Q2S = Q2.join(' ');   /* V2: "Welcome to / Everlab", then "Your health journey / starts here." */
+    var ROT = ['a healthier life.', 'your future.', 'peace of mind.'];   // V2's second title, its last row turning over ("Your commitment to / rotate, fade in and out, vertical: healthier life. your future. peace of mind.")
+    var Q2 = V2 ? ['Your commitment to', ROT[0]] : ['It all starts with', 'a consultation', 'with your doctor.'], Q2S = V2 ? 'Your commitment to a healthier life, your future, peace of mind.' : Q2.join(' ');   /* V2: "Welcome to / Everlab", then "Your health journey / starts here." */
     var T2 = title(Q2, OUT1 + 300, 'hpWelQ2'), BY = T2.by, SAY = V2 ? LEADT + ' ' + LEADS + ' ' + EBD + '. The day you took control of your health. ' + Q2S : (NM ? 'Welcome to Everlab, ' + NM + '.' : 'Welcome to Everlab.') + ' ' + Q2S;   // V2: "The day you took control of your health." then, in its place, "Your commitment to your future." (were Welcome to Everlab; Your health journey starts here)   // ("H1 last sentence: it all starts with a consultation with your doctor"), three rows: two do not fit the phone
     T1.el.style.setProperty('--out', OUT1 + 'ms'); T1.el.setAttribute('aria-hidden', 'true'); T2.el.setAttribute('aria-label', Q2S);
     /* the loader ("feels like we're creating their personal health profile"): short status lines in the middle, where the title will be, typed in the async report intro's mono capitals behind its orange square, a block cursor running ahead; each line keeps its room from the start (its words held, unseen, under the typing) so it does not shift as it writes; held, then lifted away blurring as the next comes */
@@ -17791,9 +17796,18 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
       later(function () { root.classList.add('hpW2Rise', 'hpW2Lit'); if (mt2) mt2.start(); if (kt2) kt2.start(); }, 1000);   // the coloured light rising from the foot; the motes coming in
       later(goT, root.classList.contains('hpW2LoB') ? 1500 : 900);   // the title written as the light rises (was 2.6 s); Title below, once the card is on its way up
     };
+    /* the second title's last row turning over (V2): once it is written and held, its letters give way to the same words, then each phrase goes up and out, fading and blurring, as the next comes up from below; 2.6 s each; still with reduced motion */
+    var rot2 = null, startRot = function () {
+      if (!V2 || rot2 || reduced() || !root.isConnected) return; var li = T2.el.querySelector('.hpWelL:last-child .hpWelLi'); if (!li) return;
+      var sp = ROT.map(function (t, i) { return h('span', { class: i ? '' : 'hpW2RotIn', text: t }); }), i = 0; rot2 = h('span', { class: 'hpW2Rot', 'aria-hidden': 'true' }, sp); li.appendChild(rot2); T2.el.classList.add('hpW2RotOn');
+      var tick = function () { if (!root.isConnected) return; var a = sp[i], b = sp[(i + 1) % sp.length]; i = (i + 1) % sp.length;
+        a.classList.remove('hpW2RotIn'); a.classList.add('hpW2RotOut'); b.style.transition = 'none'; b.classList.remove('hpW2RotOut', 'hpW2RotIn'); void b.offsetWidth; b.style.transition = ''; b.classList.add('hpW2RotIn'); later(tick, 2600); };
+      later(tick, 2600);
+    };
     var goT = function () {
       root.classList.add('hpWelGo'); later(function () { if (!V2) sp.burst(450); ld.classList.add('hpWelLdEnd'); if (LOGO) later(turn, 2000); }, 300);   // the ball formed, then over to the logo
       later(function () { root.classList.add('hpWelCtaIn'); }, BY + 500);
+      later(startRot, BY + LW + 1400);   // V2: its last row turning over, once written and held
       if (CARD) later(function () { card.classList.remove('hpWcOn'); card.classList.add('hpWcOut'); if (stc) stc.classList.remove('hpWsOn'); later(function () { wv.stop(); if (st) st.stop(); }, 900); }, OUT1);   // gone with the first title, the stream with it
     };
       later(tick, 140);
@@ -17812,7 +17826,7 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
       if (CARD) later(function () { card.classList.add('hpWcOn'); }, 1050);   // its outline in, just before the first line
       later(function () { type(0); }, 1500);
     };
-    if (!calm) requestAnimationFrame(function () { requestAnimationFrame(go); }); else { place(); requestAnimationFrame(place); if (LOGO) later(turn, 2600); if (V2) { root.classList.add('hpW2Ready', 'hpW2Lit', 'hpW2Rise'); if (mt2) mt2.start(); if (kt2) kt2.start(); if (tx2) tx2.start(); } }   // come back to: the sphere, then over to the logo
+    if (!calm) requestAnimationFrame(function () { requestAnimationFrame(go); }); else { place(); requestAnimationFrame(place); if (LOGO) later(turn, 2600); if (V2) { later(startRot, 1200); root.classList.add('hpW2Ready', 'hpW2Lit', 'hpW2Rise'); if (mt2) mt2.start(); if (kt2) kt2.start(); if (tx2) tx2.start(); } }   // come back to: the sphere, then over to the logo
     return { el: root, welcome: true, v2: V2, card2: w2, bg2: bg2, look2: look2, sphere: V2 ? null : sp, sphT0: V2 ? null : sp.t0, place: place, flip: flip, logo: logo, hold: function () { held = true; }, theme: function (t) { root.classList.toggle('arDark', t === 'dark'); if (V2) readCol(); }, home: function () {}, area: function () {}, destroy: function () { tm.forEach(clearTimeout); tm = []; held = true; if (wv) wv.stop(); if (st) st.stop(); if (mt2) mt2.stop(); if (kt2) kt2.stop(); if (tx2) tx2.stop(); if (sgRo) sgRo.disconnect(); window.removeEventListener('deviceorientation', onOri); if (tlt.raf) cancelAnimationFrame(tlt.raf); if (root.parentNode) root.parentNode.removeChild(root); } };
   }
 
