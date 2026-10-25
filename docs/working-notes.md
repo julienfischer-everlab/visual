@@ -16199,3 +16199,13 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - **Rim:** each face has a polished rim (1.25 px), brightest where the light catches it: top left, and a softer catch bottom right, moving with the tilt.
   - **Side:** under the card, its side, the slab's thickness: four hairlines stacked down from a lit top (warm cream, amber, brown, shadow), then a soft drop. On a light theme they are paler.
   - The side turns with the card as it flips.
+
+## Welcome V2: Entrance → Images
+
+- "Entrance should have a variation: images stacked. Title; an image that reduces constantly, the image swapped inside every 0.5 s; then suddenly becomes the dot" (with a storyboard: a portrait photo, smaller, smaller, then a dot)
+  - Tweaks → First-time user → **Entrance**: Dot (as it was) or **Images**. Changing it plays the welcome again.
+  - **Images**, in order:
+    1. "Welcome to Everlab. / A big step forward, Julien." (0.35 s, away at 2.85 s).
+    2. A portrait photo (168 × 200, sharp-cornered) where the dot will be, shrinking all the while: by about half every 0.4 s, to a fifth over 3 s. Its picture is swapped every 0.5 s through the prototype's own photos: running, figs, the doctor, a scan, cells, the clinic, rest, the rings.
+    3. Then it is gone at once and the dot is there, breathing. The loading lines, the light and the card follow as before.
+  - The pictures are loaded ahead so no swap blinks. They are inlined with the page like its other images.
