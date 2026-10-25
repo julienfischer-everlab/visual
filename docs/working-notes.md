@@ -16105,3 +16105,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 
 - "No need that (the rail), keep it easy as the mobile view"
   - On the desk, a step has no rail beside it: the page is one 520 column in the middle, as at the intro. The back and the cross sit at its edges, and the progress and the button are its width.
+
+## Overview: Booked after the profile, the plan only after the call
+
+- "After health profile complete we need the Booked state. Only after the call the Review my plan state card"
+  - Finishing the profile and coming back to the Overview now leaves the card Booked: "You're all set for your consult with Dr Steven Lu.", the consult's day and time, View. It no longer jumps to the plan card.
+  - The plan card ("Your plan", Review my plan) is the state after the call.
+  - Tweaks → Health profile → State: "Done" is now **Booked**, and "Plan to purchase" is now **After the call: plan**. The stepper runs through them in that order.
