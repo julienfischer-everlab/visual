@@ -16269,3 +16269,21 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 
 - The dot no longer moves up the screen before the burst ("don't do the dot that moves up on the screen; forget about that idea"; "keep the dot centre"). The light opens from the dot in the middle in one go (1.15 s), and the dot's white grows a little and fades as it does (0.52 s). The date, the ink, the card and the CTA keep their timings from the start of the burst (0.25, 0.42, 0.85, 1.45 s).
 - The pin (dot and line), `pinAt`, `pinRest` and their styles are gone for good. Checked: every variant (Card shape, Images, Draw card, Title below with Rails, V1), Back, Start my journey, and back to the settled welcome.
+
+## Welcome V2: three opening titles in the gift's writing; the dot pops, warm, with the date; lines at the foot; specks doubling; plan card simplified
+
+- **Opening titles:** "Welcome to Everlab.", then "A big step forward, / Julien." (a break after the comma), then "Your health journey starts now.", each in the same place.
+  - Each is written as the gift's message is: a letter every 34 ms out of a blur, warm orange (#D98B4A with a soft halo) while it is out of focus, sharp in 1.3 s (the last word in 1.1 s, a little less warm).
+  - Each is held 0.35 s, rises away, and the next comes 0.3 s on. The condense into the dot is gone ("the title should just go away").
+  - The timeline is computed from each title's length (`leadT` returns its `by`).
+  - Images: the photos start after the third title.
+- **The dot:** a pixel held (0.4 s), then at once 12px; then breathing 12 to 8 ("from 1px to suddenly 12px").
+  - Its white warms to the light's orange at its edge, and a soft warm glow (64px) comes in with the pop and breathes with it ("a touch of the background colour, the orange one").
+  - The date, 25 October 2026, sits over it while it waits (mono, ink at .7) and goes as it opens (`hpW2Opn`).
+- **Loading lines:** at the foot of the screen (64 off it; 48 on the desk), ink at 50%, 11px.
+  - They are not typed and have no cursor: each line is whole, fades in from below, holds 1.4 s, then goes up and out; the next follows. No drum.
+- **Specks round the dot:** 12 with the dot, then twice as many with each line (24, 48, 96 more), and they spread out with each line until the last fills the screen (an ellipse to the screen's edges, easing out). Back to the opening adds the full 96, already spread.
+- **Warmth on the title:** "Your commitment to …" keeps its warm-orange letters, now a deeper orange (#C25E17) on the light so it shows. The rotating phrase comes in warm as it sharpens (1.1 s).
+- **Start my journey:** 40 above its line (+16). The line stays 48 off the foot and the button moves 16 up (128 off the foot); the desk modal is 16 taller (H + 358 + 2 rows; Dy = (2 rows − 106) / 2; Title below H + 374 + 2 rows).
+- **Fixed:** `place()` had dropped out of the opening's start in the same edit, so Title below fell back to the CSS defaults (card 36 too high). It is back; title below is measured again at card 106, date 356 (phone) and card 64, date 314 (desk).
+- **Overview, After the call (Your plan):** the same build as the profile's card. The eyebrow, the doctor and his line, then one big Review my plan at its foot (`.ovBookFoot` + `.hpOvBtn.hpOvFull`). "From your consult", the programme row, the reply time and Message are gone, along with their styles and the unused `PLAN` list.
