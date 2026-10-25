@@ -16185,3 +16185,17 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Two fixes on the way:
     - The way back needed the first version's sphere canvas; V2 has none.
     - The welcome's helpers (the turning row, the typed date, the dot's rest) lived inside the opening's steps, so the welcome come back to stopped part-way. They now sit with the welcome itself.
+
+## The leave question a bottom sheet on the phone; the sphere's fill clearer; the card's acrylic edge
+
+- "This modal should be a bottom sheet, obviously": on the phone, "Are you sure you want to go?" rises from the foot as a sheet (28 radius at the top), Leave and Keep going side by side. On the desk it stays the modal in the middle.
+- "Simulate the states with a tweak so I can go next/previous, and see the state of the screen on top": Tweaks → Primary card → State and its ‹ › already does this with the profile open.
+  - Each step re-draws the profile's intro: the title, each step's card (to finalise, completed, booked with its time), the button, and the sphere at the top filling a third a step.
+  - Checked from not begun to After the call.
+- "On the globe, when the sphere is filled we don't see the particles that fill it; the not-filled a little less prominent; the falling ones thinner, the same environment as the sphere"
+  - The glow's empty dust is now .42 of its strength, times Empty dots (.5 at +20%; was .72). The filled is 1.12, so the orange band reads clearly against it.
+  - The motes floating in are .55–1 px (were .9–1.6), and the ones falling in as a step is done are .6–1.1 px (were .9–1.8): the ball's own dust.
+- "The card should have an edge, glossy, a smooth surface you can see clearly, like an acrylic plastic edge, the thickness of the card"
+  - **Rim:** each face has a polished rim (1.25 px), brightest where the light catches it: top left, and a softer catch bottom right, moving with the tilt.
+  - **Side:** under the card, its side, the slab's thickness: four hairlines stacked down from a lit top (warm cream, amber, brown, shadow), then a soft drop. On a light theme they are paler.
+  - The side turns with the card as it flips.
