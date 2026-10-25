@@ -16150,3 +16150,17 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 
 - "Holo too much colour, make it way softer, almost transparent": the tag is a near-clear chip, 5% white blurred over the card, in the card's own ink. The warm iridescence runs across it at 6–24%, the sheen at a third, the grain faint. It still moves with the tilt.
 - "Start my journey should start the health profile flow": signing the card is off by default now (Tweaks → Sign on start, under a new id so an On kept in saved Tweaks does not hold it). Start my journey goes straight into the profile ("Three steps before your consult").
+
+## Welcome V2: the dot rises to the top on its line; Title below; lines; a softer turn
+
+- "On top a black dot with a 1 px trail above it; it flows from the previous step: the dot moves up, revealing the coloured background"
+  - When the light opens (Full screen, Simple entrance), the loading dot rises from the middle to its place 22 over the date (1.15 s, eased).
+  - The light opens out from the dot as it goes: the mask's centre travels with it.
+  - Its 1 px line runs from the top edge down to it, drawn in as it starts and shortening as it rises. It rests there in the titles' ink (dark on the light, white with the blanket's ink), and goes with Start my journey.
+  - Coming back from the profile, it is there at once. Draw card keeps its own dot (it opens the card), and Title below has none.
+- "Add 32px padding below CTA": on the desk, Start my journey is 80 off the modal's foot (was 48). The modal grows with it (the card + 366 + two lines), and the card sits under the middle by a line less 1.
+- "Title below: card top margin 64px; gap between card and title group 48px"
+  - The card is 64 from the top: on the phone 48 under the status bar (106), clear of the cross. The light rises with it.
+  - The date is 48 under the card, the titles 16 under the date. The desk's modal fits that: 64 · card · 48 · date · 16 · titles and line · 48 · Start my journey · 80.
+- "+4px line height": the titles are 32 on 32 (30 on 30 on the phone).
+- "Rotate less prominent, softer": the phrases now travel a fifth of a line (was 70%), blur 2 px (was 6), and move more slowly (1.1 s). The next comes in as the last has nearly gone. Each is held 3 s.
