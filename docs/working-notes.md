@@ -16117,3 +16117,17 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 
 - "Reduce title by 4px": V2's titles are 32 on a 28 line (were 36 on 32), and 30 on 26 on the phone (were 34 on 30). The rotating row and the line under follow the line.
 - The desk's modal height and the card's place under the middle are now worked out from the line: the card + 334 + two lines, and 15 + a line. It is 592 at L, still 48 · date · 16 · title and line · 48 · card · 48 · Start my journey · 48.
+
+## Welcome V2: the plan's tag in warm holographic foil
+
+- "Tag should be foiled holographic, with a shiny texture based on the gyro. Warm holo style, orange shades"
+  - The tag ("Protocol plan", …) is now a foil chip, no longer an outline:
+    - **Colour:** a warm iridescent run across it (golds, ambers, oranges, peaches, a touch of rose).
+    - **Sheen:** a bright band blended in.
+    - **Grain:** a fine foil cross-grain.
+    - **Edge:** a light top edge, a faint warm glow under it.
+    - **Words:** dark, pressed into it.
+  - **Movement:**
+    - The card's tilt drives it: the phone's gyroscope (iOS asks on the first tap), the pointer on a desk. The colours slide one way and the sheen the other, and the sheen rides up and down with the forward tilt.
+    - When nothing moves, it drifts slowly (7 s each way). It is still with reduced motion.
+  - It is the same on every membership's card: glass, solid or filled.
