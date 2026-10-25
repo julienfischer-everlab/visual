@@ -16236,3 +16236,23 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Plan tag:** the hologram at half again (gradient, sheen, grain, saturate 120%); its edge at a quarter (8.5% ink, top highlight .055).
 - **Card back:** 40 between its columns (+24); its label reads Everlab member. **Card front:** the name 20px (−2).
 - **Profile sphere, a step done:** no particles fall into it any more ("instead of particles falling, just light up the portion that fills the sphere"). The band the step fills lights up as the level rises through it (1.5 s): its dots brighter, larger (up to 1.9×) and toward the pole's warm light; held, then back to the filled look over 1.4 s. At rest the filled dots are 1.3× the empty ones. The same in the dots look. `flowIn` and the inflow drawing are gone; `set(f, true)` now starts the level at once with the band (`litB`).
+
+## Welcome V2: the burst without the grey; two opening titles, the second condensing into the dot; no loading light, no dot and trail, no first title; the card 32 up; Rails
+
+- **The grey during the burst (the user's recording):** the grain sat over the whole screen with `mix-blend-mode: overlay`. While the opening's radial mask was on, the light's layer was its own group, so the grain blended with nothing under the light and showed as a flat grey slab over the bottom of the screen until the mask lifted. The grain now lives in the picture itself (`.hpW2Bg > .hpW2Img::after`, its size divided by the light's Scale), blending with the picture alone. The bottom stays the sheet's dark all through.
+- **The white blob:** the dot's ink (`.hpW2Fl`, white on the dark) covered the whole light layer and faded over 12–40% of the spread, so a white disc grew with the light. It is now masked to the dot's own size (`--hpW2Ri`, registered) at the dot's place (`--hpW2Oy`, animated on it too). It rises with the light, then grows a little and fades (0.52 s) as the light bursts out of it.
+- **Opening words:** "Welcome to Everlab." in (0.35 s), away at 2.05 s; "A big step forward, Julien." in at 2.45 s, in the same place (the two titles stacked in a grid). At 4.25 s it condenses into the dot: it scales to a flat line, then to a point, blurring (0.75 s). Letter spacing is left alone so its lines never re-wrap and jump. The dot comes at 4.65 s and the lines start at 5.7 s. Images entrance: the second title rises away at 4.25 s and the photos start at 4.6 s.
+- **No loading light:** the warm light at the top while the lines turn is gone (`pre2` is never made); its tweak row stays hidden.
+- **No dot and trail:** the pin and its 1px line are never made. The light still rises to just over the date on its own (0.9 s), then bursts.
+- **No "The day you took control of your health.":** "Your commitment to …" is written 0.8 s in, where the first title began. The stage is two rows, so the desk formulas use 2 rows: modal H + 342 + 2 rows, Dy = (2 rows − 90) / 2. Title below: H + 358 + 2 rows. The phone stage's foot is a row higher, so the titles stay put.
+- **Title 32 up:** 16 under the date (eyebrow `bottom: calc(100% + 16px)`, phone stage foot 72 over the card).
+- **Card 32 up on the phone:** `--hpW2Dy: -32px` (full-screen welcome, title above). The visual layer stretches over the top when Dy is negative (`top: min(0, 2Dy)`, `bottom: min(0, −2Dy)`), so it never stops short of the foot (the blanket's seam). The opening words condense onto the dot, checked at 492 = 492.
+- **Measured:**
+  - Phone: date 134, title 164–224, card 294–496, CTA 685 (112 off the foot), line 48 off the foot.
+  - Desk: modal 608, date 48, title 78–142, card 190–392, CTA 440.
+  - Title below: phone card 106, date 356, title 386; desk modal 624.
+- **Particle flow (Tweaks → First-time user, Drawn in / Rails):**
+  - Rails: nine level lines over the card's height and a little past it. On each, particles are evenly spaced (each a hair off its place) and drift left to right at the line's own slow pace (26–54 px/s), in at the screen's left and out at its right.
+  - The warm ones run under the card, seen through its glass; 3.5 times the count, brighter and a touch larger.
+  - The dark ones run on the same lines over it, fading as they reach the card and back as they leave it.
+- **Profile sphere:** the band lit as a step fills is now at the filled look itself, no brighter ("keep the same light as the final portion filled"). The overshoot is gone and the filled dots stay 1.3×.
