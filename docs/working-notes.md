@@ -16070,3 +16070,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - About 1.4 s after it has settled, its last row turns over: "a healthier life." → "your future." → "peace of mind." → back, 2.6 s each. Each phrase goes up and out (70% of the line), fading and blurring, as the next comes up from below.
   - The written letters give way to the same words first, so the hand-over doesn't show. With reduced motion it stays on the first phrase. Coming back from the profile, it turns at once.
   - The title reads "Your commitment to a healthier life, your future, peace of mind." to a screen reader.
+
+## Welcome V2: Start my journey; the card's back, the QR at the top right
+
+- "Get started --> Start my journey": the welcome's button. Back from signing restores it too.
+- "Remove signature; QR code top right instead of the logo"
+  - The card's back is now "Member details" with the QR at its top right, where the mark was. The QR is 58 px, two pixels a module. The details run the whole width under it.
+  - The signature panel shows only while the card is signed (after Start my journey, with Sign on start on); it no longer sits on the back.
