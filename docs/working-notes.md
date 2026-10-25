@@ -16086,3 +16086,22 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
     - **At the intro:** the bar is the steps' 520, with the cross at its right edge, and Let's begin is that width (460–980 at 1440).
     - **On a step:** the bar is the page's 980 (the rail and the page), with the back and the cross at its edges. The progress bars and the footer's button are that width too (230–1210).
   - The phone is unchanged.
+
+## Welcome V2: a new opening
+
+- "Entrance h1: Welcome to Everlab. / A big step forward, Julien. Disappears; the dot appears; 25 October 2026 appears in mono, written, a square cursor; the h1 The day you took control of your health.; the h1 rotates; Joining a community committed to living healthier, for longer."
+  - The sequence:
+    1. "Welcome to Everlab. / A big step forward, Julien." comes first, on its own, in the middle where the dot will be (0.35 s). It is held 3 s, then rises away.
+    2. The dot comes in (3.8 s), breathes, and its loading lines run as before (from 4.85 s).
+    3. The light opens (and the card, Simple or Draw card).
+    4. The date is typed in its mono capitals, a letter each 45 ms, a square cursor ahead of it. The cursor is held, then gone.
+    5. "The day you took control of your health." is written (from 0.8 s after the light).
+    6. It gives way to "Your commitment to …", its last row turning over.
+    7. Once that is written, "Joining a community committed to living healthier, for longer." comes in 12 under it (15 px, 72% ink). It hides while the card is signed.
+  - The opening's old line ("You're joining millions…") is gone; this one takes its place under the title.
+  - On the desk, the titles are again from the stage's top (the date 16 over each), and the stage is the second title and its line (120), 48 over the card. The modal is 600 at L: 48 · date · 16 · titles and line · 48 · card · 48 · Start my journey · 48.
+
+## Health Profile, the desk's steps as the phone's
+
+- "No need that (the rail), keep it easy as the mobile view"
+  - On the desk, a step has no rail beside it: the page is one 520 column in the middle, as at the intro. The back and the cross sit at its edges, and the progress and the button are its width.
