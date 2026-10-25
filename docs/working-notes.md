@@ -16036,3 +16036,15 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Over the card, the same 216: 48, the titles' three rows (96), 16, the date (14), then 42 to the top.
   - On the desk each title sits on the stage's foot, so the one showing ends 48 over the card, whether it has three rows or two. The date stays over the stage: 16 over the first title, 48 over "Your commitment…" and "Make it yours…".
   - The phone is unchanged.
+
+## Welcome V2: Card entrance (Simple / Draw card)
+
+- "When the card appears, a variation (tweak): Card entrance. Simple (current); Draw card: the dot stays white as the coloured background appears; the outline draws the card first, then the dot creates / reveals the card"
+  - Tweaks → First-time user → **Card entrance**. It is shown with the Full screen opening; Card shape has its own. Changing it plays the welcome again.
+  - **Draw card**, step by step:
+    - As the light spreads from under it, the dot stays where it was, white, breathing.
+    - At 0.65 s the card's outline is drawn in the ink, 1 px, from the middle of its top, both ways at once, meeting at its foot (1.1 s, eased in and out). It is drawn where the card will land; the card does not rise in this version.
+    - The dot then swells (to 32) and opens out to the card's own shape (the Card shape opening's keys, 1.1 s). The card is revealed inside it, and its white thins to nothing as it fills.
+    - The outline hands over to the card's own edge (0.7 s), and the buttons come after.
+    - The card's window in the blanket (Mask) waits for the card.
+    - With Title below, the dot rises with the light to where the card will be.
