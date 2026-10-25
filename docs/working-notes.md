@@ -16168,3 +16168,20 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 ## Overview: the profile's card, not begun: the button across it
 
 - "CTA full, no left copy": before the profile is begun, the card's foot is Get started alone, the card's whole width. "3 steps / About 12 minutes" is gone from its left. That was so only out of the primary's place; now it is everywhere. The states after it keep their foot (the progress, then the consult).
+
+## Welcome V2: the flip's blur; the titles 32 lower on the phone; the line under the button; "to" on the second row; Back from the profile
+
+- "Bug when flipping the card: the blur bg stays there"
+  - A blur on a face in 3D is drawn flat, so mid-turn a frosted panel stood there while the faces turned.
+  - The glass's (and the filled card's) blur is now one flat layer under the faces, and the faces keep only their tint and sheen.
+  - As the card turns over, the layer narrows and widens with it: its projected width (|cos| of the turn) on the flip's own easing, 0.8 s.
+- "Push down by 32px, date included and dot trail": on the phone, the date, the titles and the dot sit 32 lower (the titles' stage 72 over the card, was 104).
+- "Sub put below CTA, 12px, 20px gap": "Joining a community…" is under Start my journey, 20 below it, 12 on 16 at 56% ink.
+  - On the phone, Start my journey is still 112 off the foot.
+  - On the desk: 48 · date · 16 · three title rows · 48 · card · 48 · Start my journey · 20 · line · 48. The titles sit on their stage's foot again, and the card is under the middle by half the difference.
+- "Put the to on the 2nd line": "Your commitment / to a healthier life." The second row turns over whole: to a healthier life. / to your future. / to peace of mind.
+- "When I click Get started, then back on the profile, it should go back to the coloured intro card screen"
+  - Reached from the welcome, the profile's intro shows its back arrow, and it takes you back to the card (the welcome as it was left, its title turning, its dot at the top). Reached from the Overview, there is no back at the intro.
+  - Two fixes on the way:
+    - The way back needed the first version's sphere canvas; V2 has none.
+    - The welcome's helpers (the turning row, the typed date, the dot's rest) lived inside the opening's steps, so the welcome come back to stopped part-way. They now sit with the welcome itself.
