@@ -16048,3 +16048,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
     - The outline hands over to the card's own edge (0.7 s), and the buttons come after.
     - The card's window in the blanket (Mask) waits for the card.
     - With Title below, the dot rises with the light to where the card will be.
+
+## Welcome V2: the dark specks finer, with the warm ones
+
+- "Black particles too big: thinner, less intense, smaller with more opacity; should be mixed alongside the white ones"
+  - They now travel with the warm motes: from the screen's left or right edge, across its coloured half, on the same slow curving paths and pace (6.5–12 s, eased in, a little wobble). Each goes to its own spot in the card and dissolves as it crosses the card's edge. Before, they came from a ring round the card, fast.
+  - Size 0.6–1.3 px (was 1–2.5, plus 0.7). Alpha 32–65% (was 50–95%): small and crisp, not heavy.
