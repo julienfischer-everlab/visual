@@ -16054,3 +16054,11 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - "Black particles too big: thinner, less intense, smaller with more opacity; should be mixed alongside the white ones"
   - They now travel with the warm motes: from the screen's left or right edge, across its coloured half, on the same slow curving paths and pace (6.5–12 s, eased in, a little wobble). Each goes to its own spot in the card and dissolves as it crosses the card's edge. Before, they came from a ring round the card, fast.
   - Size 0.6–1.3 px (was 1–2.5, plus 0.7). Alpha 32–65% (was 50–95%): small and crisp, not heavy.
+
+## Welcome V2: a cross instead of Do it later
+
+- "Remove Do it later; add a dismiss cross top right instead, desktop and mobile"
+  - V2 has no Do it later. A cross (the sheets' 36 px icon button) sits at the top right, under the status bar on the phone. It comes in with Get started, closes the welcome as Do it later did, and takes the titles' dark ink on the light.
+  - While the card is signed, Back is a back arrow at the top left (it was the button under Continue).
+  - The phone keeps Get started where it was (112 off the foot).
+  - The desk's modal fits what is left: 576 at L, the card + 374. Top to bottom: 48 · date · 16 · three title rows · 48 · card · 48 · Get started · 48. The card, its dot and its specks sit 35 under the modal's middle (half the difference). The visual layer is stretched under the foot so its own middle is there, and the light keeps its top.
