@@ -16213,3 +16213,16 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 ## Welcome V2: the card's edge taken off
 
 - "Remove the edge of the card. This is not good": the polished rim and the side's thickness are gone (their elements and styles). The card is as it was before them; the flip's blur fix stays.
+
+## Welcome V2: title 32 under the date; the line two rows; the hologram at half; the flip leaves nothing behind
+
+- "+32px margin top" (on the title): the title is now 48 under the date (was 16); the date stays where it was.
+  - On the phone the titles' stage sits 40 over the card.
+  - On the desk the modal grows 32 to keep the 48s: the card + 358 + three rows, the card under the middle by (three rows − 42) / 2.
+  - With Title below, the title group sits 48 under the card.
+- "2 lines, #fff at 50%", "margin top 16": "Joining a community…" is two rows (260 wide at most), the ink at 50%, 16 under Start my journey. On the phone Start my journey stays 112 off the foot.
+- "Reduce hologram effect by 50%": the tag's iridescence (5–12%), sheen (16%) and grain are at half.
+- "See the bg that stays when I flip the card?" (a recording)
+  - Edge-on, a frosted, lighter rectangle stayed, card-sized. It was the flat things about the card that did not turn: the Mask's lighter window round it, the halo's light, the glass's blur.
+  - All three now narrow and widen with the card to its projected width, on the flip's easing: the window by its width (its shadow, the blanket, must not shrink), the others by scale. The change is watched on the card's class, so it does not hang on a browser's transition events.
+  - Checked frozen at five points of the turn.
