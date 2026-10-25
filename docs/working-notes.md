@@ -16264,3 +16264,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - It applies to every sphere (the Overview card's, the profile's), as Look and Empty dots do, and live as it slides (`LOOK.sat`, `satOf`).
 - Checked on the profile's sphere at two of three: 0% grey, 100% as before, 200% vivid.
 - The two opening titles ("Welcome to Everlab." then "A big step forward, Julien.") were already split in v1567; a screenshot showing them together was the earlier version.
+
+## Welcome V2: no rise; the light bursts from the dot where it is
+
+- The dot no longer moves up the screen before the burst ("don't do the dot that moves up on the screen; forget about that idea"; "keep the dot centre"). The light opens from the dot in the middle in one go (1.15 s), and the dot's white grows a little and fades as it does (0.52 s). The date, the ink, the card and the CTA keep their timings from the start of the burst (0.25, 0.42, 0.85, 1.45 s).
+- The pin (dot and line), `pinAt`, `pinRest` and their styles are gone for good. Checked: every variant (Card shape, Images, Draw card, Title below with Rails, V1), Back, Start my journey, and back to the settled welcome.
