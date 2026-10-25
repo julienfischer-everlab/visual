@@ -16131,3 +16131,22 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
     - The card's tilt drives it: the phone's gyroscope (iOS asks on the first tap), the pointer on a desk. The colours slide one way and the sheen the other, and the sheen rides up and down with the forward tilt.
     - When nothing moves, it drifts slowly (7 s each way). It is still with reduced motion.
   - It is the same on every membership's card: glass, solid or filled.
+
+## Health Profile: Booking confirmed; the leave question a centred modal
+
+- The booking's success page now follows the reference ("Booking confirmed", dark and light):
+  - **Tick:** an 80 px tick in a soft green disc (dark: deep green with a light tick; light: pale green with a deep tick).
+  - **Words:** "Booking confirmed" (32) and "We look forward to seeing you.".
+  - **Card:** the appointment's card (24 radius). Each row is an icon and its label at the left, its value at the right:
+    - Appointment: Onboarding consult.
+    - Date & Time: the day written out, the time from and to (10:00AM to 10:30AM), the zone with its GMT.
+    - Duration: 30min.
+  - **Buttons:** Add to calendar (outlined) and Continue (filled), side by side, 16 radius. The group sits in the page's middle, no foot.
+  - **Phone:** each row is its label with its value under it.
+- The tick was an ellipse on the desk: the column rule widened it. It is round again, and the video tile with it.
+- "This should be a centred modal; CTAs next to each other on mobile and desktop": "Are you sure you want to go?" is now a modal in the middle (400 at most, 24 radius), rising in. Leave (outlined) and Keep going (filled) sit side by side.
+
+## Welcome V2: the tag softer; Start my journey into the profile
+
+- "Holo too much colour, make it way softer, almost transparent": the tag is a near-clear chip, 5% white blurred over the card, in the card's own ink. The warm iridescence runs across it at 6–24%, the sheen at a third, the grain faint. It still moves with the tilt.
+- "Start my journey should start the health profile flow": signing the card is off by default now (Tweaks → Sign on start, under a new id so an On kept in saved Tweaks does not hold it). Start my journey goes straight into the profile ("Three steps before your consult").
