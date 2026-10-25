@@ -16256,3 +16256,11 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The warm ones run under the card, seen through its glass; 3.5 times the count, brighter and a touch larger.
   - The dark ones run on the same lines over it, fading as they reach the card and back as they leave it.
 - **Profile sphere:** the band lit as a step fills is now at the filled look itself, no brighter ("keep the same light as the final portion filled"). The overshoot is gone and the filled dots stay 1.3×.
+
+## Sphere: Filled saturation (Tweaks → Primary card)
+
+- A slider under Empty dots, 0–200% (100% as drawn): "the filled dots, need to control the saturation".
+- It moves each filled colour toward its own grey or away from it: in the glow, the top's ramp and the amber; in the dots, the orange and the white. The empty ones are left alone.
+- It applies to every sphere (the Overview card's, the profile's), as Look and Empty dots do, and live as it slides (`LOOK.sat`, `satOf`).
+- Checked on the profile's sphere at two of three: 0% grey, 100% as before, 200% vivid.
+- The two opening titles ("Welcome to Everlab." then "A big step forward, Julien.") were already split in v1567; a screenshot showing them together was the earlier version.
