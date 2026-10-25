@@ -16209,3 +16209,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
     2. A portrait photo (168 × 200, sharp-cornered) where the dot will be, shrinking all the while: by about half every 0.4 s, to a fifth over 3 s. Its picture is swapped every 0.5 s through the prototype's own photos: running, figs, the doctor, a scan, cells, the clinic, rest, the rings.
     3. Then it is gone at once and the dot is there, breathing. The loading lines, the light and the card follow as before.
   - The pictures are loaded ahead so no swap blinks. They are inlined with the page like its other images.
+
+## Welcome V2: the card's edge taken off
+
+- "Remove the edge of the card. This is not good": the polished rim and the side's thickness are gone (their elements and styles). The card is as it was before them; the flip's blur fix stays.
