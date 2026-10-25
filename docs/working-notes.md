@@ -16077,3 +16077,12 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - "Remove signature; QR code top right instead of the logo"
   - The card's back is now "Member details" with the QR at its top right, where the mark was. The QR is 58 px, two pixels a module. The details run the whole width under it.
   - The signature panel shows only while the card is signed (after Start my journey, with Sign on start on); it no longer sits on the back.
+
+## Health Profile, the desk's full modal: bar and foot in the page's column
+
+- "Full modal needs dismiss in the top nav, same container as below; also the footer follows the container as well"
+  - The top bar was out at the frame's edges, the Async report's rule. Its cross sat under the Tweaks' + and couldn't be seen. Let's begin was the sheet's 1000 wide.
+  - Now, on the desk (M, L, the wide profile):
+    - **At the intro:** the bar is the steps' 520, with the cross at its right edge, and Let's begin is that width (460–980 at 1440).
+    - **On a step:** the bar is the page's 980 (the rail and the page), with the back and the cross at its edges. The progress bars and the footer's button are that width too (230–1210).
+  - The phone is unchanged.
