@@ -16331,3 +16331,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Services: its Cards tweak (Tiles / Condensed / Large) retired ("kill that tweak"); the services are tiles. The section keeps its switch and its place in the order; no floating + for it now.
 - The drawn keyboard (XS frame, and the phones' copies) comes up inside the screen ("the keyboard comes from outside the screen"): cut at the screen's foot as it slides (a clip-path inset running with the slide on the same curve), its corners the screen's (--kbR, 56 in the XS frame).
 - The Insights phone (and the Overview's own, #m6) the same device as every other page's XS frame ("the insight page has a different size"): its screen was 383 x 843 (the 5 of black bezel inside the 393 x 853), a pixel off, with side buttons and a rim of its own. Now its screen is exactly the frame's (393 x 853 at --vwC / --bpTop / --bpBot; 393 x 722 in an 800-high window), the bezel and rim outside it as the frame draws them, no side buttons. Measured equal to the Overview's and the Timeline's at 1440 x 1000 and 1280 x 800.
+
+## Chat, a main page
+
+- The Concierge chat is now a main page ("I want the chat part of a dedicated page"): page menu → Main pages → Chat (after Async report; #concierge still opens it); Home lists it after Async report.
+- Its device is the prototype's Viewport, as every main page's: XS, the phone chat on the XS frame's screen (393 x 853, the frame and its status bar drawn over it, its home indicator, clear of both); S, in the tablet frame; M / L, the desktop app with its Chat / Components tabs (the page's own Desktop / Mobile switch hidden there). Concierge.embed('phone' | 'tablet' | 'desk') in visuals/concierge.html; on its own, the page is as it was.
+- While it shows, the frame's tab bar, keyboard and assistant and the Overview's floating + are hidden.
