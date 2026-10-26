@@ -16558,3 +16558,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Card logo ("rotate 2x, then become a dot 8px, 3 sec, then become logo again, loop"): one 6.07 s cycle. Two turns (the Lottie's 52 frames, 2.17 s); the logo drawn into its middle (0.45 s) as an 8 px dot pops up there, a touch past its size and back; the dot held 3 s; the dot shrinking as the logo grows back out of it (0.45 s); again. Sampled: turning 0–2.17 s, dot from 2.6 s to 5.6 s, logo back by 6.07 s. With reduced motion, the still logo.
 - The main artifact is now named "Everlab App - Latest" (renamed by the user in the viewer). The source `<title>` says so too, so builds keep the name. Publish order in CLAUDE.md: Health Profile first if it changed, Everlab App - Latest last, then open it, so the viewer always lands on the app.
 - Card front tag ("Everlab member"): the tag at the card's top right reads "Everlab member" (was the plan: "Baseline plan", "Diagnostics plan"…), whatever the membership; the membership tweak still changes the card's light and style. Read out the same way.
+
+## Card logo: snappier scale-down into the dot
+
+- The logo no longer fades out over .45 s. It now shrinks, staying solid, down to the dot's 8 px (scale .25) in .22 s on a sharp ease-in (`cubic-bezier(.7,0,.84,0)`). The dot takes its place on the same frame with a small pop (1.35 → 1 in .13 s).
+- On the way back, the dot hands over to the logo at 8 px, which grows back to full size in .3 s (ease-out `cubic-bezier(.16,1,.3,1)`).
+- Cycle: two turns 2.17 s, snap .22 s, dot held 3 s, back .3 s = 5.69 s (`hpW2LogoCyc`, `hpW2LogoMk`, `hpW2LogoDot`).
+- Checked by pausing the three animations and stepping them: the logo stays at opacity 1 down to scale .34 at 2.38 s, the dot is at 1.31 at 2.39 s and settles to 1 by 2.52 s; the logo is back to scale .82 at 60 ms after the hold and to 1 at 5.69 s. No page errors.
