@@ -16593,3 +16593,13 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - It's held 1.1 s, blinking. Then the title comes in under it and the cursor fades (`hpW2DdDone`), about 0.5 s sooner than the counter.
   - Each key keeps its place hidden until typed (`visibility`), and the cursor sits in a zero-width slot after the last key. The date is centred over the dot the whole time (measured: date middle 720 = dot middle 720 at XS and L), and the cursor sits 1 px after the last key (7 × 12 px).
 - Checked at XS (copies #2 and #1) and L: keys typed 2, 3, 4 … 10 over about a second, cursor opacity 0 after the title comes. No page errors.
+
+## Card screen opening: date under the dot, no closing title, dot mid-sentence, title higher
+
+- **Date under the dot** ("date should appear below the dot"). `.hpW2DotD` top is `50% + 26px`: the gap it had above, mirrored (box 26–40 px below the dot's middle at XS, S, M and L). It stays there; the push-up over the title is gone.
+- **"Your health journey starts here." killed**: `LEAD3`, `ldC3`, the `.hpW2LeadLo` block and its CSS are gone. `hpW2DdDone` now only fades the cursor. The screen-reader summary `SAY` drops it and now joins every row of the titles (`/\n/g`).
+- **Dot halfway through the second title's entrance** ("dot arrives in the middle of the 2nd sentence entrance"). `DOT` = the last title's start + half its writing time. Measured: 1.42 s into "This is the beginning…" (copy #2) and 0.92 s into "A big step forward, Julien." (#1).
+  - Its date waits until the title has gone: `dateIn(wait)` runs from the dot to the cursor, taking `max(1 s, the old dot time − DOT)`. The cursor shows 0.4 s after the title leaves.
+  - The loading lines and the opening keep their times (opening ≈10.8 s after the second title starts). The Images entrance and the Back starts (`from: 'dot' / 'open'`) are unchanged.
+- **Opening title another 64 px up** ("move up h1 by 64px"): its middle is now 128 px over the dot's (`50% + --hpW2Dy - 128px`). Three rows end 83 px above the dot's middle; #1's two rows end 98 px above.
+- Checked at XS (#2, #1), S and L (#2): event times above, geometry, and the whole run through to the card. No page errors.
