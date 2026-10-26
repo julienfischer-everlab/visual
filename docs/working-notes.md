@@ -16603,3 +16603,21 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The loading lines and the opening keep their times (opening ≈10.8 s after the second title starts). The Images entrance and the Back starts (`from: 'dot' / 'open'`) are unchanged.
 - **Opening title another 64 px up** ("move up h1 by 64px"): its middle is now 128 px over the dot's (`50% + --hpW2Dy - 128px`). Three rows end 83 px above the dot's middle; #1's two rows end 98 px above.
 - Checked at XS (#2, #1), S and L (#2): event times above, geometry, and the whole run through to the card. No page errors.
+
+## Card screen opening: holds, title higher, dot and date timing, warm windows, desk title, loading lines sooner
+
+- **Holds** ("1st title should stay longer by .5 sec, 2nd 1 sec more"): in the `LDS` loop each title's hold is `t.hold` + 500 ms (first) or + 1000 ms (second). Measured, copy #2: the first title is on screen 2.73 s and the second 4.61 s (was 3.63 s).
+- **Both opening titles 32 px higher**: their middle is now 160 px over the dot's (`50% + --hpW2Dy - 160px`).
+- **Dot 0.5 s later**: `DOT` = the second title's start + half its writing + 500 ms. That's 1.89 s into it on copy #2, 1.43 s on #1.
+- **Date 0.5 s after the second title leaves**: `dateIn(max(1 s, LE + 200 − DOT))`. The cursor shows 0.50 s after the title's `hpW2LdOut`.
+- **The dot and the date as windows onto the warm light** ("dot and date should be a mask where we can see the warm bg into it"), dark theme with the dot opening (`winOn()`):
+  - The dot is `.hpW2Bg` clipped to its circle with no white over it (`.hpW2Fl` at 0). Through the burst too: `fl2.animate` is skipped.
+  - The date's letters (`background-clip: text`) and its square cursor are filled with the same picture. `win(el)` measures `.hpW2Img` as drawn (its layers' sizes and positions, its scale and move) and sets `--hpW2WinI/S/P/F` relative to the element. It runs on the date at its start and on the cursor at each key.
+  - Measured against the uncovered picture: a mean difference of 9/255 where lit (glyph edges). Shows the amber of the picture there: the dot a brighter orange, the date a deeper amber.
+  - On the paper theme the picture is faded out around the middle, so the dot and the date keep their ink.
+- **Desk title width** ("we have space to have more width on the h1"):
+  - On M/L, V2's `.hpWelBody` is 640 px wide (was 440), leaving 600 for the words.
+  - Copy #2's card title is two rows there: "You've just made a big decision / for your future health." The phone keeps its three rows.
+  - The welcome gets `desk: deskM()`. Crossing the desk's edge with copy #2 up rebuilds it (`refit`, on resize and on the Breakpoint tweak).
+- **Rolling lines at the foot 2 s sooner** ("the rolling bottom content should come 2 s before"): `type(0)` at `LE + 700` (was 2700), 1.0 s after the second title leaves; `from: 'dot'` uses 800 (was 2800). The opening follows 2 s sooner too (5.3 s after the title leaves). Images entrance unchanged.
+- Checked at XS, S, M and L with copies #1 and #2. No page errors.
