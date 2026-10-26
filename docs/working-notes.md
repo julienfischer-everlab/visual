@@ -16719,3 +16719,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 ## Dismiss flow off: no cross on the profile's home either
 
 - "Dismiss off, the dismiss button is there still" (on the profile's home). `html.hpNoDism` now hides `.arClose` in the whole profile, its home included (was steps only). Its place is kept. The reveal's own close is separate (its Dismiss tweak). Checked at XS: Off hides it on the home and in a step; On shows it. No page errors.
+
+## Health profile card, step 4: usual sphere size, no foot
+
+- "Keep same sphere size! No CTA for this state and no left copy". In step 4 the card's sphere is its usual size again (the 2x rules are gone). The particles still drift across the card into it. The foot (the consult at the left, View at the right) isn't drawn: eyebrow, title, line and sphere only, and the whole card still opens the profile. Booked keeps its foot. Checked at XS and L. No page errors.
