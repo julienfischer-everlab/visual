@@ -16565,3 +16565,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - On the way back, the dot hands over to the logo at 8 px, which grows back to full size in .3 s (ease-out `cubic-bezier(.16,1,.3,1)`).
 - Cycle: two turns 2.17 s, snap .22 s, dot held 3 s, back .3 s = 5.69 s (`hpW2LogoCyc`, `hpW2LogoMk`, `hpW2LogoDot`).
 - Checked by pausing the three animations and stepping them: the logo stays at opacity 1 down to scale .34 at 2.38 s, the dot is at 1.31 at 2.39 s and settles to 1 by 2.52 s; the logo is back to scale .82 at 60 ms after the hold and to 1 at 5.69 s. No page errors.
+
+## Card logo: keeps turning while it scales down and back up
+
+- The turn no longer stops while the logo shrinks into the dot or grows back. The spin strip's mask now repeats along x (`repeat-x`; frame 52 = frame 0), so `hpW2LogoCyc` steps straight on past the two turns. It covers 57 frames over 0–41.95% (≈42 ms a frame, the same speed as the turns), so the shrink plays frames 0–4 of the next turn.
+- The grow-back turns too: frames 45–51 over its .3 s, ending on frame 52 = frame 0 as the loop restarts. The turn joins up across the loop with no jump.
+- Checked by pausing and stepping the animations: strip frames 50, 51, 0, 1, 2, 3, 4 through the shrink (scale 1 → .34), hidden during the hold, then 45 → 51 through the grow (scale .27 → 1), then 0. Captures show the helix turning at each size. No page errors.
