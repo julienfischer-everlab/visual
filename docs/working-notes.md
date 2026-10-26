@@ -16661,3 +16661,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - `back2intro` built the reveal while the wrap lacked `hpWelF`, which was only added 1.1 s later.
   - On M/L the reveal's offset (`--hpW2Dy`) and the button's place come from that class. So the light, card, title and button came back at other offsets, then jumped (stage 193 → 137, button 670 → 611, light 320 px).
   - The class is now added as the reveal is built. The card, stage and button stay at their final places from the first frame on L, M and XS, and the light's slide back down ends where the screen keeps it.
+
+## Membership reveal: no jump on Get started
+
+- "Back is ok, but Get started shows a jumping bg still": `start()` took `hpWelF` off the wrap on its first line, while the reveal was still there going up. On M/L its offset (`--hpW2Dy`) and its button's place come from that class, so it shifted (button 25 px down, title 8 px) before leaving.
+- `hpWelF` now stays until the reveal is destroyed (1 s), then comes off with it. The class only styles the reveal, never the profile page.
+- Sampled through Get started at L, M and XS: card 398, stage 137, button 611 and light −58 hold from the click to the reveal's removal (XS 395/134/606/−32). Then the wrap drops the class and Tweaks shows Health profile. No page errors.

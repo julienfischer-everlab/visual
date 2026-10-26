@@ -32739,7 +32739,7 @@ hairline({
       openN = store.summary().n; fromIntro = true; carried = v2 ? null : wel.sphere || null;
       let lg = false; if (wel.hold) wel.hold(); if (wel.flip){ wel.flip.getAnimations().forEach(a => { try { a.finish(); } catch (e){} }); lg = wel.flip.classList.contains('hpWelLogo'); }   // the logo turning to the sphere and back stopped; the logo showing: the sphere comes in as it goes up, the logo out
       const r0 = wel.el.getBoundingClientRect(), f0 = frame.getBoundingClientRect(), cr = cv ? cv.getBoundingClientRect() : null, fs = getComputedStyle(frame), rd = [fs.borderTopLeftRadius, fs.borderTopRightRadius, fs.borderBottomRightRadius, fs.borderBottomLeftRadius].join(' '), ht = getComputedStyle(wel.el).getPropertyValue('--ar-head-top');
-      frame.style.transition = 'none'; wrap.classList.remove('hpBs', 'hpWelF'); wrap.classList.add('aqFull');
+      frame.style.transition = 'none'; wrap.classList.remove('hpBs'); wrap.classList.add('aqFull');   // hpWelF kept while the welcome is still there going up ("Get started shows a jumping bg"): taken off the moment it went, its offset and its button's place changed under it, and it jumped before leaving; off once it's gone (below)
       const f1 = frame.getBoundingClientRect();
       Object.assign(wel.el.style, { position: 'absolute', left: (r0.left - f1.left) + 'px', top: (r0.top - f1.top) + 'px', width: r0.width + 'px', height: r0.height + 'px', margin: '0', maxWidth: 'none', zIndex: '3', transition: 'none', background: 'transparent', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', pointerEvents: 'none', overflow: 'visible' });
       wel.el.style.setProperty('--ar-head-top', ht);   // the welcome held where it stood, over the profile, as it goes; see-through at once (the sheet's own 0.4 s background transition left its paper over the sphere and the profile for a moment: the blink)
@@ -32764,7 +32764,7 @@ hairline({
       const ft = hp.el.querySelector('.arFoot'), hd = hp.el.querySelector('.arHead'), rl = hp.el.querySelector('.hpRail');
       if (ft) ft.animate([{ transform: 'translateY(24px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 600, delay: 460, easing: 'cubic-bezier(.16, 1, .3, 1)', fill: 'backwards' });
       [hd, rl].forEach(el => { if (el) el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 320, delay: 620, easing: 'ease', fill: 'backwards' }); });
-      setTimeout(() => wel.destroy(), 1000);
+      setTimeout(() => { wel.destroy(); if (inst === hp) wrap.classList.remove('hpWelF'); }, 1000);   // the welcome gone: the wrap the profile's
       hp.el.setAttribute('tabindex', '-1'); hp.el.style.outline = 'none'; setTimeout(() => { if (inst === hp) try { hp.el.focus({ preventScroll: true }); } catch (e){} }, 700);
     };
     /* back to the welcome from the profile it led to (the Back under the Welcome's +, "if we land from the intro on the health profile, a tweak to transition back to the intro"): the welcome mounted over the profile in its last state (the second title and the button),
