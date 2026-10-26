@@ -16583,3 +16583,13 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Opening title 64px higher** ("push h1 opening up by 64px"): `.hpW2Lead` top is now `50% + --hpW2Dy - 64px`. At XS its middle is 96 px above the screen's middle (was 32). "Your health journey starts here." (`.hpW2LeadLo`) keeps its own place.
 - **Opening copy #2 in one sentence**: "Welcome to Everlab, Julien." then "This is your health / in a whole new way." The second line is written as one title, no longer "This is" on its own.
 - **Card logo morph pace: easeInOutCubic** (`cubic-bezier(.65,0,.35,1)`) both ways. The dot's pop is gone: the logo meets the dot at its 8 px and the dot takes over on the same frame. The logo still turns throughout.
+
+## Card screen opening: copy #2 sentence, typed date
+
+- **Opening copy #2**: "Welcome to Everlab, Julien." then "This is the beginning / of knowing your health / in a whole new way.", written as one title over three rows. It's held once written, then disappears, then the dot.
+  - `leadT` now returns a `hold`: 350 ms plus 20 ms for each letter past 30. This sentence is held 0.79 s; short titles are unchanged.
+- **Date over the dot, typed** ("no date animation, just dd mm yyyy directly (writing square cursor animation)"). The birth-year counter and the day/month opening are gone (`ddSet`, the year's wheels and their CSS).
+  - A second after the dot, the square cursor (`.arRvCur`) blinks alone. After a beat, today's date `DDT` ("26 10 2026") types one key every 65–105 ms (+60 ms over a space), the cursor solid while it types (`.hpW2Ty`).
+  - It's held 1.1 s, blinking. Then the title comes in under it and the cursor fades (`hpW2DdDone`), about 0.5 s sooner than the counter.
+  - Each key keeps its place hidden until typed (`visibility`), and the cursor sits in a zero-width slot after the last key. The date is centred over the dot the whole time (measured: date middle 720 = dot middle 720 at XS and L), and the cursor sits 1 px after the last key (7 × 12 px).
+- Checked at XS (copies #2 and #1) and L: keys typed 2, 3, 4 … 10 over about a second, cursor opacity 0 after the title comes. No page errors.
