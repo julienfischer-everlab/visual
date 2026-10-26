@@ -16451,3 +16451,12 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - The sidebar as drawn "with the menu opened": the mark and Concierge, New chat, the Inbox with its count, then Recent in the ink, an unread chat dotted. The badge and dots are the design's peach (#F7B58B dark, #F4A067 light). Opening a chat reads its message.
 - The keyboard ("make sure keyboard version on focus"): in the XS frame, while the field has the focus, a drawn iOS keyboard rises from the foot. It has the predictions ("The", the, to), four rows (ABC, space, return) and the emoji and dictation keys, as in the design. Its keys type at the caret, a capital begins a sentence, and return sends. In a conversation the field stands on the keyboard. Desk and the S frame draw none.
 - Desk: the home's column is the design's 720, with the tiles' labels at 14 px. Measured: no label cut at L, M or XS, no sideways scroll.
+
+## Health profile: the light through Continue, and through Start my journey
+
+- Continue into a step ("bg clipping at the top; add fade out"): the light now fades out (0.62 s) over clear grounds. Before, the profile's page and column took back their solid ground the instant the home class dropped, cutting the fading light into a hard rectangle at the top of the page and the column's sides. Now they stay clear while it fades (hpCarryOut, 1.1 s, the page rising away), then turn solid in the frame's own colour, so nothing shows. Measured: dark oklch(0.1684 0 263.28) and light #fff, the same for the frame, sheet, stage and page.
+- Start my journey → profile ("a black bg during the transition"): two regressions from moving the light into the frame (last batch).
+  - The rule hiding the light in a step also caught the reveal's own sheet while it left over the profile, so the light was forced to 0 for about a second. The rule now excludes the reveal (:not(.hpWel)).
+  - The profile sheet's 0.4 s ground fade covered the light underneath as the sheet went clear. A carried sheet now goes clear the same frame (no fade; same colour either way).
+  - A stage transition rule from the last batch, which overrode the stage's own transform and corner-radius transitions, is removed.
+  - Filmed at 0.3× and frozen at the first frame, on the phone and on desk: the first frame matches the reveal, and the light rises into the profile's top glow with no black. Only the card's glass reads a touch less saturated as it fades out: it can no longer see the reveal's picture through its blur.
