@@ -2510,12 +2510,15 @@
     /* rises from the bottom edge as the device's does, and drops back the
        same way; hidden to touch and to the eye once it is down */
     transform:translateY(100%);visibility:hidden;pointer-events:none;
-    transition:transform .32s cubic-bezier(.2,.8,.2,1),visibility 0s linear .32s;
+    transition:transform .32s cubic-bezier(.2,.8,.2,1),clip-path .32s cubic-bezier(.2,.8,.2,1),visibility 0s linear .32s;
+    /* ...and only ever seen inside the screen ("the keyboard should come inside the screen; it comes from outside it"): cut at the screen's foot as it moves -- the cut, in the keys' own height, runs with the slide on the
+       same curve, so what is past the foot is never drawn; its corners the screen's (--kbR) */
+    clip-path:inset(0 0 100% 0 round 0 0 var(--kbR,0px) var(--kbR,0px));
   }
   body:not(.fullscr) :is(#phone,#phone2) .mKbd{display:block;}   /* the Overview phone has a copy, for the assistant's field */
   body.mSearchOn:not(.fullscr) :is(#phone,#phone2) .mKbd,
   body:not(.fullscr) :is(#phone,#phone2).chatOn .mKbd{   /* the full chat always stands on the keys, focused or not */
-    transform:none;visibility:visible;pointer-events:auto;transition-delay:0s;
+    transform:none;visibility:visible;pointer-events:auto;transition-delay:0s;clip-path:inset(0 0 0 0 round 0 0 var(--kbR,0px) var(--kbR,0px));
   }
   body.mSearchOn:not(.fullscr) #phone .mscroll{padding-bottom:280px;}   /* the list can rise above the keys */
   .mKbd .kr{display:flex;justify-content:center;gap:6px;margin:0 0 11px;padding:0 3px;}
@@ -8634,8 +8637,8 @@
   .tlShAct{flex:none;display:flex;padding:12px 16px 32px;border-top:1px solid var(--tlLine);}
   .tlShAct:empty{display:none;}
   .tlShAct .tlAct{flex:1 1 auto;display:flex;margin:0;padding:0;} .tlShAct .tlBtn{flex:1 1 auto;height:44px;font-size:14px;} .tlShAct .tlMore{height:44px;width:48px;}
-  body[data-bp="xs"] #bpFrame > .mKbd{display:block;border-bottom-left-radius:inherit;border-bottom-right-radius:inherit;overflow:hidden;}   /* the phone's drawn keyboard, in the XS frame for the Timeline's search; its foot rounded with the screen */
-  body[data-bp="xs"].tlKbd #bpFrame > .mKbd{transform:none;visibility:visible;pointer-events:auto;transition-delay:0s;}
+  body[data-bp="xs"] #bpFrame > .mKbd{display:block;border-bottom-left-radius:inherit;border-bottom-right-radius:inherit;overflow:hidden;--kbR:56px;}   /* the phone's drawn keyboard, in the XS frame for the Timeline's search; its foot rounded with the screen */
+  body[data-bp="xs"].tlKbd #bpFrame > .mKbd{transform:none;visibility:visible;pointer-events:auto;transition-delay:0s;clip-path:inset(0 0 0 0 round 0 0 var(--kbR,0px) var(--kbR,0px));}
   body[data-bp="xs"].tlKbd #bpFrame > .mTabs{display:none;} html:not(.bpAuto) body[data-bp="xs"].tlKbd #dTl{padding-bottom:300px;}   /* room for the drawn keys: the frame's only */   /* the keys up: the dock leaves, as on the Insights phone, and the list can rise above them */
   body[data-bp="xs"]:has(.tlSheet.on) #bpFrame > .mTabs, body[data-bp="s"]:has(.tlSheet.on) #bpFrame > .mTabs{display:none;}   /* the sheet stands where the dock was */
   body[data-bp="xs"]:has(.svMenu[data-tl].svMenuSh) #bpFrame > .mTabs{display:none;}   /* the item's ⋯ sheet too */
@@ -8829,7 +8832,7 @@
   body[data-bp="xs"].ovKbd #dOver .ovDimD{opacity:1;pointer-events:auto;}
   body[data-bp="xs"].ovKbd #dOver .ovTop .ovInbox{width:0;margin-right:-10px;opacity:0;pointer-events:none;}   /* the field live, as the phone's: the inbox folds away, the field grows */
   body[data-bp="xs"].ovKbd #dOver .ovTop .ovBell .icBell{opacity:0;transform:rotate(90deg) scale(.6);} body[data-bp="xs"].ovKbd #dOver .ovTop .ovBell .icX{opacity:1;transform:none;}   /* the bell the dismiss ("on active state the icon on the right side a cross that dismisses it") */
-  body[data-bp="xs"]:is(.ovKbd, .frKbd) #bpFrame > .mKbd{transform:none;visibility:visible;pointer-events:auto;transition-delay:0s;} body[data-bp="xs"].ovKbd #bpFrame > .mTabs{display:none;}
+  body[data-bp="xs"]:is(.ovKbd, .frKbd) #bpFrame > .mKbd{transform:none;visibility:visible;pointer-events:auto;transition-delay:0s;clip-path:inset(0 0 0 0 round 0 0 var(--kbR,0px) var(--kbR,0px));} body[data-bp="xs"].ovKbd #bpFrame > .mTabs{display:none;}
   #bpFrame > .aiWrap{pointer-events:auto;border-radius:inherit;overflow:hidden;} body:not([data-bp="xs"]):not([data-bp="s"]) #bpFrame > .aiWrap{display:none;}   /* the assistant's sheet in the XS frame, over the desk's Overview, its corners the screen's */
   body.hdrV3[data-bp="xs"] #dOver .ovAvatar{display:block;}
   body[data-bp="xs"] #dOver .ovInbox, body[data-bp="xs"] #dOver .ovBell{width:44px;height:44px;}
@@ -8966,6 +8969,15 @@
   body.light #dOver .ovbtn{background:rgba(46,31,26,.09);color:#2e1f1a;}
   #dOver .oclab .ocx{cursor:pointer;}
   #dOver .ovcdots{margin-top:22px;}
+  /* the Insights phone (and the Overview's, #m6) the same device as every other page's XS frame ("the insight page has different size as the other page, pls double check"): its own shell had its 5 of black bezel inside the
+     393 x 853 (a screen of 383 x 843), side buttons the frame has not, a rim of its own and sat a pixel off. Now its screen is the frame's, 393 x 853 at the frame's own place (--vwC, --bpTop / --bpBot, as resize() centres it),
+     the bezel and the rim outside it as the frame draws them (5 of black, 6 of #3b3b40, a hairline), no side buttons */
+  html:not(.bpAuto) body.m5:not(.fullscr)[data-bp="xs"] #phoneShell, html:not(.bpAuto) body.m6:not(.fullscr)[data-bp="xs"] #phoneShell2{
+    left:calc(var(--vwC, 50vw) - var(--bpW, 393px) / 2 - 11px);width:calc(var(--bpW, 393px) + 22px);
+    top:calc(var(--bpTop, calc(var(--barH, 57px) + 48px)) - 11px);bottom:calc(var(--bpBot, 48px) - 11px);height:auto;transform:none;
+    border-radius:67px;padding:6px;background:#3b3b40;box-shadow:0 0 0 1px rgba(255,255,255,.14), 0 30px 90px rgba(0,0,0,.45);
+  }
+  html:not(.bpAuto) body:is(.m5, .m6):not(.fullscr)[data-bp="xs"] :is(#phoneShell, #phoneShell2) .pbtn{display:none;}
 
   /* ---- Overview frame: a sibling screen in the same language ---- */
   #phoneShell2{display:none;}
@@ -11929,14 +11941,31 @@
         <div class="tkSub">Overview</div>
         <!-- Header v2: a card under the greeting that holds the inbox and the
              services; the top bar keeps only the field and the bell -->
-        <div class="tkRow">
+        <!-- the version in two selects ("Version -> Latest: keep only V4 here; move all other versions into another select, Older version"): the latest alone in one, the ones before it in the other, each showing a dash while
+             the other's is the one in use. #stHdr, hidden, is still what the page reads and what Save keeps. V5 (a fork of V4 that never changed: nothing of its own) folded back into V4; a save holding it opens V4 -->
+        <div class="tkRow" hidden>
           <span class="lbl">Version</span>
           <select id="stHdr" aria-label="The Overview's version">
             <option value="v1">V1</option>
             <option value="v2">V2</option>
             <option value="v3">V3</option>
-            <option value="v4">V4</option>
-            <option value="v5" selected>V5</option>   <!-- V4 forked ("Overview: create a v5"): the same page to start, what changes from now on changes in V5 alone (body.hdrV5), V4 kept as it is -->
+            <option value="v4" selected>V4</option>
+          </select>
+        </div>
+        <div class="tkRow">
+          <span class="lbl">Latest</span>
+          <select id="stHdrNew" class="tkProxy" aria-label="The Overview's latest version">
+            <option value="v4" selected>V4</option>
+            <option value="" hidden>—</option>
+          </select>
+        </div>
+        <div class="tkRow">
+          <span class="lbl">Older version</span>
+          <select id="stHdrOld" class="tkProxy" aria-label="An older version of the Overview">
+            <option value="" selected>—</option>
+            <option value="v3">V3</option>
+            <option value="v2">V2</option>
+            <option value="v1">V1</option>
           </select>
         </div>
         <!-- who the Overview is for ("for overview I need a tweak Personas,
@@ -11983,16 +12012,7 @@
         <!-- the Overview's sections, one card each: dragged by its title, the order on the page; its switch at the right, the section shown or not ("make these sections adjustable for the order") -->
         <div class="tkGroup" data-pages="ov" data-sec="svc">
         <div class="tkSub">Services</div>
-        <!-- the service cards under the greeting: tiles (glyph, label) or
-             large (title, a line of support, the visual at the right) -->
-        <div class="tkRow">
-          <span class="lbl">Cards</span>
-          <select id="stSvc" aria-label="The Overview's service cards">
-            <option value="tiles" selected>Tiles</option>
-            <option value="cond">Condensed</option>
-            <option value="large">Large</option>
-          </select>
-        </div>
+        <!-- (its Cards tweak, Tiles / Condensed / Large, retired: "kill that tweak"; the services are tiles. The group stays: the section's switch and its place in the order) -->
         </div>
         <!-- the Health profile ("add a Health Profile card to the Overview"): its card's section, and the profile's demo states ("include examples of the not-started, in-progress and completed states"); Saved, what was last done in it here -->
         <!-- the Primary card, the Overview's first card: its Type, a $299 member's card (Health profile, or Plan to purchase) or Next step (the hero and its action) ("this part of Primary card: Type: $299 purchased: Health profile, Plan to purchase; Next step: Dexa, etc.") -->
@@ -25200,7 +25220,6 @@ hairline({
       (CARD_STATE.hdrV2 ? ' hdrV2' : '') +
       (CARD_STATE.hdrV3 ? ' hdrV3' : '') +
       (CARD_STATE.hdrV4 ? ' hdrV4' : '') +
-      (CARD_STATE.hdrV5 ? ' hdrV5' : '') +
       (CARD_STATE.lpCard ? ' tkLpCard' : '') +
       (CARD_STATE.lpGrid ? ' tkLpGrid' : '') +
       (CARD_STATE.svcLg ? ' svcLg' : '') +
@@ -32446,7 +32465,7 @@ hairline({
      a click opens that group in a panel beside it: the group itself borrowed from the Tweaks list (its controls as they are, wired), put back on close. One open: another + swaps; the same +, a click outside or Escape closes */
   (function secTweaks(){
     const bar = document.querySelector('.topbar'); if (!bar) return;
-    const SECS = { primary: '.hpOvCard', svc: '.ovSvc', ins: '.dvSecIns', plan: '.dvSecPlan', later: '.dvSecAvail, .dvDef', wel: '.hpWel' };   // the Primary card's +: at the profile's card, or the hero when Next step; the welcome's: at its sheet, while it is up
+    const SECS = { primary: '.hpOvCard', ins: '.dvSecIns', plan: '.dvSecPlan', later: '.dvSecAvail, .dvDef', wel: '.hpWel' };   // the Primary card's +: at the profile's card, or the hero when Next step; the welcome's: at its sheet, while it is up; the Services none now, nothing left to tweak in it
     const kOf = g => g.dataset.sec || g.dataset.fl;   // a section's group, or one for something over the screen (data-fl)
     const groups = () => [...document.querySelectorAll('.tkGroup[data-sec], .tkGroup[data-fl]')].filter(g => SECS[kOf(g)]);
     const host = document.createElement('div'); host.className = 'tkFl'; bar.appendChild(host);   // in the bar: the Tweaks list's own styles reach the borrowed group
@@ -36752,7 +36771,6 @@ hairline({
                        hdrV2: false,  // V1 again ("keep the header top like this"): the field, the inbox disc and the bell; the tiles under the title are the services
                        // V3 ("do another version"): the greeting centred, the field centred under it, 32px margins, the services carousel kept; the bar keeps the inbox and the bell
                        hdrV3: false,   // was the default ("use V3 Overview as the default one"); V4 is, and it wears V2's header
-                       hdrV5: true,   // the default: V4 forked ("create a v5"), V4's rules all apply (hdrV4 on with it), its own under body.hdrV5
                        hdrV4: true,   // the default ("use as default"); V4: V3 less the Concierge tile, the two small cards and the Insights card; the desk's services in the hero's right column ("create a v4 Overview")
                        // the Services tweak: Large cards, title + support with the visual at the right
                        svcLg: false,
@@ -36801,7 +36819,7 @@ hairline({
       // nor are the library's two grains, Normal and Dense
       // ...nor the report card's two dresses, Neutral and Visual, nor the
       // hero bento's two cards, Tasks and Insights
-      if (opts.length !== 2 || sel.classList.contains('tkSegSel') /* drawn as segments already: no switch beside them */ || sel.id === 'versionSel' || sel.id === 'stInsPos' /* two places, Section and Hero: a select, not a switch ("the position here should be a select") */ || sel.id === 'densSel' || sel.id === 'stPal' ||
+      if (opts.length !== 2 || sel.classList.contains('tkSegSel') /* drawn as segments already: no switch beside them */ || sel.classList.contains('tkProxy') /* the Overview's Latest: a select showing V4, its second option only the dash */ || sel.id === 'versionSel' || sel.id === 'stInsPos' /* two places, Section and Hero: a select, not a switch ("the position here should be a select") */ || sel.id === 'densSel' || sel.id === 'stPal' ||
           sel.id === 'stHeroBg' || sel.id === 'stDefVis' || sel.id === 'stDefAl' ||  sel.id === 'stArWel' || sel.id === 'stArVar' || sel.id === 'stKitFoot' || sel.id === 'stBodySty' || sel.id === 'stWrapSty' || sel.id === 'stSubTl' || sel.id === 'stRepVis' || sel.id === 'stCtaPos' || sel.id === 'stEtaB' || sel.id === 'stSubCard' || sel.id === 'stProgSty' || sel.id === 'stTabC' || sel.id === 'stMdl' || sel.id === 'stKitMono' || sel.id === 'stProfStyle' || sel.id === 'stTlSteps' || sel.id === 'stTlPri' || sel.id === 'stTlVer' || sel.id === 'stMsLay' || sel.id === 'stJvTop' || sel.id === 'stJvVis' || sel.id === 'stJvIt' || sel.id === 'stJvGrp' || sel.id === 'stPlanV' || sel.id === 'stPlanStack' || sel.id === 'stPersona' || sel.id === 'stMsHd' || sel.id === 'stTlStVis' || sel.id === 'stTlStPl' || sel.id === 'stBkN' || sel.id === 'stBkLay' || sel.id === 'stTlCta' || sel.id === 'stTaskHd' || sel.id === 'stProfIn' || sel.id === 'stHeroImg' || sel.id === 'stDTabs' || sel.id === 'stInsCond' || sel.id === 'stLeft' || sel.id === 'stRepLay' || sel.id === 'stRepStyle' || sel.id === 'stIA' || sel.id === 'stHero' || sel.id === 'stLpCard' || sel.id === 'stLpOrg' || sel.id === 'stPersona' || sel.id === 'stJr' || sel.id === 'stJrHz' || sel.id === 'stSvDocs' || sel.id === 'stDocsLayS' || sel.id === 'stDocsLayT' || sel.id === 'stLayout')   // ...nor the journey module's two places
         continue;
       const seg = document.createElement('button');
@@ -37475,11 +37493,10 @@ hairline({
   };
   placeSvcV4();   // at load, for the default
   if (stHdrSel) stHdrSel.addEventListener('change', () => {
+    if (!/^v[1-4]$/.test(stHdrSel.value)) stHdrSel.value = 'v4';   // a save from before (V5, folded into V4): the latest
     CARD_STATE.hdrV2 = stHdrSel.value === 'v2';
     CARD_STATE.hdrV3 = stHdrSel.value === 'v3';   // V4 wears V2's header ("on V4 keep the header of the V2"): the field in the bar with the bell, the greeting at the left
-    CARD_STATE.hdrV4 = stHdrSel.value === 'v4' || stHdrSel.value === 'v5';   // V5 is V4 and more: V4's rules hold under it
-    CARD_STATE.hdrV5 = stHdrSel.value === 'v5';
-    document.body.classList.toggle('hdrV5', CARD_STATE.hdrV5);
+    CARD_STATE.hdrV4 = stHdrSel.value === 'v4';
     document.body.classList.toggle('hdrV2', CARD_STATE.hdrV2);
     document.body.classList.toggle('hdrV3', CARD_STATE.hdrV3);
     document.body.classList.toggle('hdrV4', CARD_STATE.hdrV4);
@@ -37487,12 +37504,13 @@ hairline({
     OV_HOSTS.forEach(h => { h.ph._ovPast = false; }); placeOvChat();
     OV_HOSTS.forEach(h => { const sc = h.sc(h.ph); if (sc) sc.dispatchEvent(new Event('scroll')); });   // read the scroll position as it stands
   });
-  const stSvcSel = document.getElementById('stSvc');
-  if (stSvcSel) stSvcSel.addEventListener('change', () => {
-    CARD_STATE.svcLg = stSvcSel.value === 'large';
-    document.body.classList.toggle('svcLg', CARD_STATE.svcLg);
-    document.documentElement.classList.toggle('svcCond', stSvcSel.value === 'cond');
-  });
+  // its two selects, Latest and Older version: either one picks for #stHdr; each follows it back (a Save put back, a Reset)
+  if (stHdrSel){ const nw = document.getElementById('stHdrNew'), od = document.getElementById('stHdrOld');
+    const sync = () => { const v = stHdrSel.value, latest = v === 'v4'; if (nw) nw.value = latest ? 'v4' : ''; if (od) od.value = latest ? '' : v; };
+    const pick = v => { if (!v || stHdrSel.value === v){ sync(); return; } stHdrSel.value = v; stHdrSel.dispatchEvent(new Event('change', { bubbles: true })); };
+    if (nw) nw.addEventListener('change', () => pick(nw.value || 'v4'));
+    if (od) od.addEventListener('change', () => pick(od.value || 'v4'));   // the dash: back to the latest
+    stHdrSel.addEventListener('change', sync); sync(); }
   // the Layout tweak: the viewport's width, live, with the breakpoint it
   // falls in (or the one forced); and the select that forces one
   {
@@ -39069,7 +39087,7 @@ hairline({
     if (saved && OLDORD.includes(saved.stOvOrder)) saved.stOvOrder = DEF.stOvOrder;
     if (saved) Object.keys(DEF).forEach(id => put(id, saved[id]));
     /* every control in the two tweak panels, saved and put back together ("all tweaks need a Save"): their values as the page loaded are the defaults Reset goes back to */
-    const KEY2 = 'everlab:tkAll', ctl = () => [...document.querySelectorAll('.topbar .tkPanel :is(select, input)[id]')].filter(el => el.id !== 'versionSel' && !el.classList.contains('inkHex'));
+    const KEY2 = 'everlab:tkAll', ctl = () => [...document.querySelectorAll('.topbar .tkPanel :is(select, input)[id]')].filter(el => el.id !== 'versionSel' && !el.classList.contains('inkHex') && !el.classList.contains('tkProxy'));   // not the two that only stand in for another (the Overview's Latest and Older version: #stHdr is kept)
     const valOf = el => el.type === 'checkbox' ? String(el.checked) : el.value;
     const DEF2 = {}; ctl().forEach(el => { DEF2[el.id] = valOf(el); }); Object.assign(DEF2, DEF);
     const put2 = (id, v) => { const el = document.getElementById(id); if (!el || v == null) return; if (el.type === 'checkbox'){ if (String(el.checked) === v) return; el.checked = v === 'true'; el.dispatchEvent(new Event('change', { bubbles: true })); return; } put(id, v); };
