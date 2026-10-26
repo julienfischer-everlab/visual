@@ -16642,3 +16642,13 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 ## Health profile header: step title 4 px further from the dashes
 
 - "+4px gap" (on "Our promise and your details" over its dashes). `.hpMid`'s gap is now 12 px (was 8), between the step's name and the step dashes when Step title is on. Measured 12 px at XS. No page errors.
+
+## Health profile header: no ground on hover; Dismiss flow off hides the cross
+
+- "Header shouldn't have any bg if it's not fixed state" (recording: the grey circle behind the back chevron on hover, lingering as the screen changed).
+  - While the page isn't scrolled under the bar (`:not(.hpScrolled)`), the back and close have no ground at all, hover included. On hover the icon goes from its 64% to full ink.
+  - Grounds still come once the page scrolls under the bar. The keyboard's focus ring is kept.
+- "Dismiss flow" Off didn't remove the cross: it only skipped the "Are you sure you want to go?" question.
+  - Off now also sets `html.hpNoDism`, which hides `.arClose` in the flow's steps (`visibility: hidden`, its place kept so the step title stays centred).
+  - The profile's home keeps its cross, the way out. On is as before: the cross, asking first if anything is filled in.
+- Checked at XS: Off hides the close in a step and keeps it on the home; On shows it; hovering Back gives no background and full ink. No page errors.
