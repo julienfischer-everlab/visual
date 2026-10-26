@@ -16715,3 +16715,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 ## Card logo: reverted to the 8.69 s cycle
 
 - "Revert": the one-turn, slow-to-a-stop, slow-morph cycle (11790fa) is reverted. The logo is back to turning 3.17 s, shrinking into the dot while still turning (0.22 s), the dot held 5 s, and growing back turning (0.3 s): 8.69 s. Stepped through; it matches the earlier samples. No page errors.
+
+## Dismiss flow off: no cross on the profile's home either
+
+- "Dismiss off, the dismiss button is there still" (on the profile's home). `html.hpNoDism` now hides `.arClose` in the whole profile, its home included (was steps only). Its place is kept. The reveal's own close is separate (its Dismiss tweak). Checked at XS: Off hides it on the home and in a step; On shows it. No page errors.
