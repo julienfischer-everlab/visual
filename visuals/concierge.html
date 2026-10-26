@@ -927,7 +927,7 @@
       case 'drawer': app.classList.add('drawer'); break;
       case 'drawerX': app.classList.remove('drawer'); break;
       case 'back': { var h = S.hist.pop(); if (h && (h[0] !== 'chat' || chats[h[1]])) go(h[0], h[1], false); else go('new', null, false); break; }
-      case 'close': setClosed(true); break;
+      case 'close': if (/\bemb/.test(document.documentElement.className) && window.parent !== window){ try { window.parent.postMessage({ everlab: 'ccClose' }, '*'); } catch (err){} } else setClosed(true); break;   // in the prototype, a standalone over its page: the close (and the phone's minimise) takes it away, back to the page
       case 'open': setClosed(false); break;
       case 'send': ask(q.value); break;
       case 'sug': ask(b.dataset.q); break;
