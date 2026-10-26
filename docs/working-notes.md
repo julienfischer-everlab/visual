@@ -16652,3 +16652,12 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Off now also sets `html.hpNoDism`, which hides `.arClose` in the flow's steps (`visibility: hidden`, its place kept so the step title stays centred).
   - The profile's home keeps its cross, the way out. On is as before: the cross, asking first if anything is filled in.
 - Checked at XS: Off hides the close in a step and keeps it on the home; On shows it; hovering Back gives no background and full ink. No page errors.
+
+## Membership reveal: own tweaks only; card logo timing; no jump coming back from the profile
+
+- **Tweaks on the Membership reveal** ("shouldn't have the Overview tweak here"): while the reveal is up (its page, or played over the Overview), `tkPages` shows the First-time user group alone (key `wel`; the group is tagged `ov wel`). Checked: Overview shows Overview, Primary card, First-time user, Services, Insights, Action plan, Later card; the reveal shows First-time user; the Health profile shows Health profile.
+- **Card logo** ("rotate 1 sec more, dot pause +2 sec"): the cycle is now 8.69 s (was 5.69). The logo turns 3.17 s (81 frames to 38.98%) and shrinks into the dot by 3.39 s. The dot holds 5 s, to 8.39 s, then the logo grows back by 8.69 s. Stepped through; the turning still runs on unbroken through the morphs.
+- **Coming back up from the profile's home to the card screen, desk** ("bg is jumping"):
+  - `back2intro` built the reveal while the wrap lacked `hpWelF`, which was only added 1.1 s later.
+  - On M/L the reveal's offset (`--hpW2Dy`) and the button's place come from that class. So the light, card, title and button came back at other offsets, then jumped (stage 193 → 137, button 670 → 611, light 320 px).
+  - The class is now added as the reveal is built. The card, stage and button stay at their final places from the first frame on L, M and XS, and the light's slide back down ends where the screen keeps it.
