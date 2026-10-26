@@ -16711,3 +16711,15 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 ## Card: the tilt reflection warmer
 
 - "Reflection gyroscope a bit warmer": the soft light on the card's face that moves with the tilt (`.hpW2Fa::after`, at `--hpW2Gx/--hpW2Gy`) is now a peach at its heart (`rgba(255,206,160,.11)`) with an amber halo (`rgba(236,152,92,.045)` at 34%), fading out at 62% as before. It was a neutral white at 9%. Checked on the solid card at XS. No page errors.
+
+## Card logo: one turn, a second slowing to a stop, then a slow morph to the dot
+
+- "The logo should rotate one time and the 2nd time slow down and stays, 1 sec to slowly morph to the dot". The cycle is now 9.97 s:
+  - turn 1 at its pace (26 frames, 1.09 s);
+  - turn 2 slowing evenly to a stop facing front (2.18 s, easeOutQuad; each frame its own keyframe, its first as quick as turn 1's), at rest by 3.27 s;
+  - held 0.4 s;
+  - the morph to the 8 px dot over 1 s, on easeInOutCubic, with no turning (to 4.67 s);
+  - the dot held 5 s;
+  - the logo growing back out of it in 0.3 s, turning (frames 45–51, landing on frame 0 as the loop restarts).
+- Keyframes generated (`hpW2LogoCyc` has 30 stops; `hpW2LogoMk` and `hpW2LogoDot` hand over on the same frame).
+- Stepped through: the frame speed falls from ~24 to ~7 frames/s before the stop, the logo is still during the morph, and the dot holds 4.67–9.67 s. No page errors.
