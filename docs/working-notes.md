@@ -16365,3 +16365,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 ## The chat in the app's style
 
 - "Chat doesn't follow the style of the app: match more the font size, CTA etc.": the Concierge page now takes the app's values, measured on the Overview: Suisse Intl at 15 (messages, cards' titles), 14 for secondary lines in the app's grey (#8b8b86; light #7d6b58), 24/500 for the greeting; the sidebar #181818 (light #efe7d8) with the app's 13.5 items, 38 high, round 8; cards a 4% white wash (light: the ink at 5.5%), no border, round 20, padded 20; the CTAs the app's pills (40 high, 15/500, primary white on dark / the ink on light, secondary the 8% wash); count badges the app's #4a4a4a pills; the field the app's ask field grown to two rows (round 24, an 8% wash, a 1.5 ring on focus, 15/1.5, placeholder in the app's grey); the send disc 40; header keys round 36 on a wash; the cream light theme of the app.
+
+## Overview Latest: names
+
+- Tweaks → Overview → Latest: "Current" is now "Latest version" (V4) and "V5" is "Live version" (the framework's page) ("v5 → Live version; Current → Latest version").
