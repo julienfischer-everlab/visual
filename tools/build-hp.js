@@ -86,6 +86,7 @@ ${hpCss}
     <label>Viewport<span class="seg" role="group" aria-label="Viewport"><button type="button" data-bp="auto">Auto</button><button type="button" data-bp="xs">XS</button><button type="button" data-bp="s">S</button><button type="button" data-bp="m">M</button><button type="button" data-bp="l">L</button></span></label>
     <label>Theme<span class="seg" role="group" aria-label="Theme"><button type="button" data-th="dark">Dark</button><button type="button" data-th="light">Light</button></span></label>
     <label>State<select id="dmState" aria-label="The profile's state"><option value="none">Step 1</option><option value="none_d">Step 1.5 (dropped off)</option><option value="one">Step 2</option><option value="one_d">Step 2.5 (dropped off)</option><option value="two">Step 3</option><option value="two_d">Step 3.5 (dropped off)</option><option value="all">Done</option></select></label>
+    <label>Dismiss flow<span class="seg" role="group" aria-label="Dismiss flow: closing mid-way asks first, or leaves at once"><button type="button" data-dm="on">On</button><button type="button" data-dm="off">Off</button></span></label>
     <button type="button" class="go" id="dmReset">Start over</button>
   </div>
 </details>
@@ -109,6 +110,10 @@ ${hpJs}
   document.getElementById('dmReset').addEventListener('click', function () { HP.store.preset('none'); sel.value = 'none'; mount(); });
   [].forEach.call(document.querySelectorAll('.demo [data-th]'), function (b) { b.addEventListener('click', function () { de.setAttribute('data-theme', b.getAttribute('data-th')); paint(); }); });
   [].forEach.call(document.querySelectorAll('.demo [data-bp]'), function (b) { b.addEventListener('click', function () { setBp(b.getAttribute('data-bp')); }); });
+  /* the dismiss flow: closing mid-way asks first (On), or leaves at once (Off); kept as the viewport is */
+  var setDm = function (v) { HP.dismiss(v); [].forEach.call(document.querySelectorAll('.demo [data-dm]'), function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-dm') === v)); }); try { localStorage.setItem(KEY + '.dismiss', v); } catch (e) {} };
+  [].forEach.call(document.querySelectorAll('.demo [data-dm]'), function (b) { b.addEventListener('click', function () { setDm(b.getAttribute('data-dm')); }); });
+  { var dk = null; try { dk = localStorage.getItem(KEY + '.dismiss'); } catch (e) {} setDm(dk === 'off' ? 'off' : 'on'); }
   addEventListener('resize', place);
   { var kept = null; try { kept = localStorage.getItem(KEY); } catch (e) {} setBp(/^(auto|xs|s|m|l)$/.test(kept || '') ? kept : innerWidth >= 560 ? 'xs' : 'auto'); }   /* XS to start where the phone fits, as the prototype opens; a phone itself, Auto; the last picked after */
   if (window.matchMedia) matchMedia('(prefers-color-scheme: dark)').addEventListener('change', paint);
