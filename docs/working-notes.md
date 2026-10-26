@@ -16678,3 +16678,15 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - A 4th row, "Your historical records". While the search runs, it shows "Searching labs across Australia" in a dashed ring turning slowly around the 4; its line is kept live by the existing `[data-pend]` refresh.
   - Once in, the row shows a green tick and "4 past results found". Booked's line now reads "…Your past results are in too." (was "we'll let you know").
 - Checked at XS and L: card and home in Step 3.5 / Step 4 / Booked, the tweak holding Step 4. No page errors.
+
+## Health profile card, step 4: the sphere 2x, particles drawn into it
+
+- "2x + particles floating attracted into the sphere, for this state only". In step 4 (`summary().rec`) the Overview card gets `hpOvRec`:
+  - The sphere is twice its size (238 px on the desk, 194 on the phone, before its own 1.6× draw), set into the card's top right and clipped by its corner (`overflow: hidden`).
+  - The words and the button sit over everything (`z-index: 1`).
+- `recPull()` adds a canvas over the card with 46 particles. Each:
+  - starts anywhere on the card, but not on the sphere;
+  - drifts on a slight curve and is drawn in faster as it nears (k^1.8, 3.6–7.2 s);
+  - fades in, then out into the sphere's shell.
+  - Colours: warm on dark, deeper on the paper. None with reduced motion. It stops once the card leaves step 4 or is redrawn.
+- Booked and every other state are unchanged (normal sphere, no overlay). Checked at XS and L. No page errors.
