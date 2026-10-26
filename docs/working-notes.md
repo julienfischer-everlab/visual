@@ -16401,3 +16401,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Its suggestions are Script renewal, Specialist referral, Blood test referral and Imaging referral. Each starts its chat: Concierge opens the request and asks what it needs, and the member's answer goes to Dr Lu (a care-team reply, "Sent just now"). New intents on the chat page; before them, "blood test referral" matched the blood test's PDF and "imaging referral" the brain MRI.
   - Next step's Book and "Book your onboarding" now open the Health profile (its three steps, the consult booked as the second): the same screen the reveal's Start my journey opens. They used to open the separate consult booking.
   - Desk: the two-column layout (the green card across the top, Next step on the left, the dials and tasks in the second column, the services under) applies wherever the Overview is at least 740 px wide. That includes Auto at a desk-wide window, which had no data-bp and so stayed one column. The green card splits into two columns from 1000 px; narrower, its chips form a 2 × 2 under the field.
+
+## Health profile: close and back clickable-looking
+
+- The profile's close showed the default cursor and no hover ("hover cursor pointer"). It inherited a rule meant for the async report's close, which does nothing on purpose. That rule now skips the profile, and the profile's close and back get the hand and the welcome's hover fill (the ink at 9%). The close still closes.
