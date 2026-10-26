@@ -1054,6 +1054,7 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
 /* home */
 .arSheet.hpSheet .hpHome { position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; }
 .arSheet.hpSheet.hpAtHome .hpScr { isolation: isolate; }
+.arSheet.hpSheet .hpCarry { position: absolute; z-index: 0; pointer-events: none; transition: opacity .5s ease; } .arSheet.hpSheet:not(.hpAtHome) .hpCarry { opacity: 0 !important; } .arSheet.hpSheet.hpCarried.hpAtHome .hpScr::before { display: none; } .arSheet.hpSheet.hpCarried.hpAtHome .hpScr { background: transparent; }   /* the welcome's light, carried in, its bottom the page's top glow; gone in a step */
 .arSheet.hpSheet.hpAtHome .hpScr::before { content: ""; position: absolute; left: 0; top: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none;   /* the card's halo on the intro, from its sphere at the top over the upper 35% of the screen (40% of its page, the page short of the button's foot), its centre 32 higher ("move up the halo by 64px", then "pushed down by 32px, a little more orange": its orange half as strong again) ("halo on top centered", then "the halo should cover 35% of the surface; too much at the moment"); the card's soft orange at its (halved) strength, breathing with it */
   background: radial-gradient(ellipse 72% 35% at 50% calc(5% - 32px), rgb(255 122 26 / .15) 0%, rgb(255 122 26 / .127) 14%, rgb(255 122 26 / .09) 28%, rgb(255 122 26 / .06) 42%, rgb(255 122 26 / .034) 56%, rgb(255 122 26 / .016) 69%, rgb(255 122 26 / .006) 81%, rgb(255 122 26 / 0) 100%);
   opacity: .7; animation: hpHaloIn 1.2s ease .7s both, hpHalo 4s ease-in-out 1.9s infinite; }   /* faded in once the page has landed, in place, then breathing ("halo should appear smoothly when landing on the health profile page") */
@@ -1780,10 +1781,10 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
           var vd = function () { old.remove(); scr.style.zIndex = ''; }; vo.onfinish = vd; vo.oncancel = vd;
         }
         else {
-          var f = dir > 0, P2 = { duration: 440, easing: 'cubic-bezier(.32, .72, 0, 1)' };
-          scr.style.zIndex = f ? '2' : '1'; old.style.zIndex = f ? '1' : '2'; old.setAttribute('inert', ''); old.setAttribute('aria-hidden', 'true');
-          scr.animate([{ transform: 'translateX(' + (f ? '100%' : '-30%') + ')' }, { transform: 'none' }], P2);
-          var out = old.animate([{ transform: 'none', opacity: 1 }, { transform: 'translateX(' + (f ? '-30%' : '100%') + ')', opacity: f ? .5 : 1 }], P2);
+          var f = dir > 0, X = f ? 64 : -64;   /* a soft cross: the old page fading out as it drifts 64 the way it goes, the new fading in from 64 the other side ("left right content transition smoother: fade in/out, -64px +64px") */
+          scr.style.zIndex = '2'; old.style.zIndex = '1'; old.setAttribute('inert', ''); old.setAttribute('aria-hidden', 'true');
+          scr.animate([{ transform: 'translateX(' + X + 'px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 520, delay: 90, easing: 'cubic-bezier(.2, .7, .2, 1)', fill: 'backwards' });
+          var out = old.animate([{ transform: 'none', opacity: 1 }, { transform: 'translateX(' + (-X) + 'px)', opacity: 0 }], { duration: 340, easing: 'cubic-bezier(.4, 0, .6, 1)', fill: 'forwards' });
           var done = function () { old.remove(); scr.style.zIndex = ''; }; out.onfinish = done; out.oncancel = done;
         }
       }

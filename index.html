@@ -520,7 +520,7 @@
   /* retracted ("to see only the icons"): a 72px rail, the wordmark gone, the
      toggle centred, each entry its glyph alone with the label as a title;
      the lit entry keeps its plate. The card moves in with it. */
-  body.sideMin .dash .side{width:72px;padding:26px 0;}
+  body.sideMin .dash .side{width:72px;padding:26px 0 26px 8px;}   /* the icons on the middle of what reads as the rail (to the page's edge, 8 past the rail itself): the same room either side ("retracted menu: the same padding left and right") */
   body.sideMin .dash .side .sideHead{justify-content:center;padding:0;margin:0 auto 34px;width:44px;}
   body.sideMin .dash .side .logo{max-width:0;opacity:0;}
   body.sideMin .dash .side .nv{width:44px;height:44px;margin:0 auto 2px;justify-content:center;padding:0;gap:0;}   /* the plate centred on the rail's own axis: 14 either side ("make the left and right padding even") */
@@ -16278,6 +16278,7 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
 /* home */
 .arSheet.hpSheet .hpHome { position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; }
 .arSheet.hpSheet.hpAtHome .hpScr { isolation: isolate; }
+.arSheet.hpSheet .hpCarry { position: absolute; z-index: 0; pointer-events: none; transition: opacity .5s ease; } .arSheet.hpSheet:not(.hpAtHome) .hpCarry { opacity: 0 !important; } .arSheet.hpSheet.hpCarried.hpAtHome .hpScr::before { display: none; } .arSheet.hpSheet.hpCarried.hpAtHome .hpScr { background: transparent; }   /* the welcome's light, carried in, its bottom the page's top glow; gone in a step */
 .arSheet.hpSheet.hpAtHome .hpScr::before { content: ""; position: absolute; left: 0; top: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none;   /* the card's halo on the intro, from its sphere at the top over the upper 35% of the screen (40% of its page, the page short of the button's foot), its centre 32 higher ("move up the halo by 64px", then "pushed down by 32px, a little more orange": its orange half as strong again) ("halo on top centered", then "the halo should cover 35% of the surface; too much at the moment"); the card's soft orange at its (halved) strength, breathing with it */
   background: radial-gradient(ellipse 72% 35% at 50% calc(5% - 32px), rgb(255 122 26 / .15) 0%, rgb(255 122 26 / .127) 14%, rgb(255 122 26 / .09) 28%, rgb(255 122 26 / .06) 42%, rgb(255 122 26 / .034) 56%, rgb(255 122 26 / .016) 69%, rgb(255 122 26 / .006) 81%, rgb(255 122 26 / 0) 100%);
   opacity: .7; animation: hpHaloIn 1.2s ease .7s both, hpHalo 4s ease-in-out 1.9s infinite; }   /* faded in once the page has landed, in place, then breathing ("halo should appear smoothly when landing on the health profile page") */
@@ -16981,10 +16982,10 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
           var vd = function () { old.remove(); scr.style.zIndex = ''; }; vo.onfinish = vd; vo.oncancel = vd;
         }
         else {
-          var f = dir > 0, P2 = { duration: 440, easing: 'cubic-bezier(.32, .72, 0, 1)' };
-          scr.style.zIndex = f ? '2' : '1'; old.style.zIndex = f ? '1' : '2'; old.setAttribute('inert', ''); old.setAttribute('aria-hidden', 'true');
-          scr.animate([{ transform: 'translateX(' + (f ? '100%' : '-30%') + ')' }, { transform: 'none' }], P2);
-          var out = old.animate([{ transform: 'none', opacity: 1 }, { transform: 'translateX(' + (f ? '-30%' : '100%') + ')', opacity: f ? .5 : 1 }], P2);
+          var f = dir > 0, X = f ? 64 : -64;   /* a soft cross: the old page fading out as it drifts 64 the way it goes, the new fading in from 64 the other side ("left right content transition smoother: fade in/out, -64px +64px") */
+          scr.style.zIndex = '2'; old.style.zIndex = '1'; old.setAttribute('inert', ''); old.setAttribute('aria-hidden', 'true');
+          scr.animate([{ transform: 'translateX(' + X + 'px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 520, delay: 90, easing: 'cubic-bezier(.2, .7, .2, 1)', fill: 'backwards' });
+          var out = old.animate([{ transform: 'none', opacity: 1 }, { transform: 'translateX(' + (-X) + 'px)', opacity: 0 }], { duration: 340, easing: 'cubic-bezier(.4, 0, .6, 1)', fill: 'forwards' });
           var done = function () { old.remove(); scr.style.zIndex = ''; }; out.onfinish = done; out.oncancel = done;
         }
       }
@@ -32173,8 +32174,22 @@ hairline({
        the profile mounted under the welcome in the same frame, the frame opening from the sheet (or the desk's modal) to the whole screen (0.62 s); the welcome's words, button and close rise 72 and fade (0.38 s), as from the profile's intro to a step;
        the profile's page comes up from a third of the screen below as it fades in (0.66 s, from 0.3 s), its button rising after it and its bar fading in; the welcome's sphere itself taken into the profile's place, pushed up to it and easing down to its size as it lands. With reduced motion, the profile at once */
     let fromIntro = false, carried = null;   // the profile reached from the welcome, and the sphere carried into it (its API)
+    /* the welcome's light into the profile ("this top coloured gradient should be the bottom of the image used on the card screen, so the transition will be perfect"): on the phone, a copy of its picture, exactly where it stands (its look read off it: the picture, its grain, its strength, size, position, saturation),
+       put in the profile's view under its page; the welcome's own hidden at once, so nothing changes on the first frame; then it slides up till its bottom is the profile's top glow (35% of the screen), as the welcome's blanket (its card's mask) leaves, fading to what the blanket let through (the light the same all the way); the profile's own halo off while it is there */
+    const capPic = wel => { const img = wel.bg2 && wel.bg2.querySelector('.hpW2Img'); if (!img || deskM()) return null; const r = img.getBoundingClientRect(), b = wel.bg2.getBoundingClientRect(), cs = getComputedStyle(img), ga = getComputedStyle(img, '::after'), wcs = getComputedStyle(wel.el);
+      const k = wel.el.classList.contains('hpW2Mask') ? 1 - (parseFloat(wcs.getPropertyValue('--hpW2BlA')) || .6) : 1;
+      return { left: b.left + img.offsetLeft, top: b.top + img.offsetTop, w: img.offsetWidth, h: img.offsetHeight, bottom: r.bottom, k, css: { backgroundImage: cs.backgroundImage, backgroundSize: cs.backgroundSize, backgroundPosition: cs.backgroundPosition, backgroundRepeat: cs.backgroundRepeat, backgroundColor: cs.backgroundColor, filter: cs.filter, translate: cs.translate, scale: cs.scale, transformOrigin: cs.transformOrigin, maskImage: cs.maskImage, webkitMaskImage: cs.webkitMaskImage }, o: parseFloat(cs.opacity) || 1,
+        grain: ga.display !== 'none' && ga.content !== 'none' ? { backgroundImage: ga.backgroundImage, backgroundSize: ga.backgroundSize, backgroundRepeat: ga.backgroundRepeat, opacity: ga.opacity, mixBlendMode: ga.mixBlendMode } : null }; };
+    const carryIn = (hp, cap, wel) => { const view = hp.el.querySelector('.hpView'); if (!view || !view.animate) return false;   /* in the page's view, under its scroller (the scroller's ground let through while it is there: .hpCarried) */ const vr = view.getBoundingClientRect(), fr = frame.getBoundingClientRect();
+      const el = document.createElement('i'); el.className = 'hpCarry'; el.setAttribute('aria-hidden', 'true'); Object.assign(el.style, cap.css, { left: (cap.left - vr.left) + 'px', top: (cap.top - vr.top) + 'px', width: cap.w + 'px', height: cap.h + 'px', opacity: String(cap.o) });
+      if (cap.grain) { const g = document.createElement('i'); Object.assign(g.style, cap.grain, { position: 'absolute', inset: '0', pointerEvents: 'none' }); el.appendChild(g); }
+      view.prepend(el); hp.el.classList.add('hpCarried'); wel.bg2.style.visibility = 'hidden';   // the welcome's own gone the same frame the copy is there
+      const D = Math.round(cap.bottom - fr.top - fr.height * .35); el.dataset.d = D;
+      el.animate([{ transform: 'translateY(0)' }, { transform: 'translateY(' + (-D) + 'px)' }], { duration: 760, easing: 'cubic-bezier(.5, 0, .2, 1)', fill: 'forwards' });   // up till its bottom is the profile's top 35%
+      el.animate([{ opacity: cap.o }, { opacity: cap.o * cap.k / (cap.k + (1 - cap.k) * .5), offset: .35 }, { opacity: cap.o * cap.k, offset: .7 }, { opacity: cap.o * cap.k }], { duration: 380, easing: 'cubic-bezier(.4, 0, .9, .6)', fill: 'forwards' });   // in step with the blanket leaving (the card's own move): what shows stays what it showed
+      return true; };
     const start = () => {
-      const wel = inst, v2 = !!(wel && wel.welcome && wel.v2), cv = wel && wel.welcome && !v2 && wel.el.querySelector('canvas.hpSph');   // V2: no sphere to carry; the card goes up with the words, the profile's own sphere comes in with its page
+      const wel = inst, v2 = !!(wel && wel.welcome && wel.v2), cap = v2 ? capPic(wel) : null, cv = wel && wel.welcome && !v2 && wel.el.querySelector('canvas.hpSph');   // V2: no sphere to carry; the card goes up with the words, the profile's own sphere comes in with its page
       if (v2) wel.el.classList.add('hpW2PtOff');   // its specks gone at once, first thing, before the profile is built ("the particles stay on the next screen too much; they need to disappear directly")
       if (!(cv || v2) || !frame.animate || matchMedia('(prefers-reduced-motion: reduce)').matches) { open(); fromIntro = true; carried = null; return; }
       openN = store.summary().n; fromIntro = true; carried = v2 ? null : wel.sphere || null;
@@ -32192,7 +32207,8 @@ hairline({
       [wel.el.querySelector('.hpWelBody'), wel.el.querySelector('.hpWelX'), wel.card2].forEach(el => { if (el) el.animate(outK, { duration: 380, easing: 'cubic-bezier(.4, 0, .9, .6)', fill: 'forwards' }); });
       /* one sphere ("important that the sphere from both screens is the same; at the moment there is a jumping problem"): the welcome's own put in the profile's place, the profile's given up, so nothing hands over; from where it stood (32 lower, 10% larger) pushed up to the place and down to the profile's size together, as the screens change ("pushed up a bit to reach the sphere of the health profile screen"; "the scale down should occur while the screen transitions, not at the end"), 0.9 s */
       if (hs && v2) hs.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 700, delay: 300, easing: 'ease', fill: 'backwards' });   // V2: the profile's sphere fading in with its page
-      if (v2 && wel.bg2) wel.bg2.animate([{ opacity: 1, transform: 'translateY(0)' }, { opacity: .6, offset: .5 }, { opacity: 0, transform: 'translateY(-36%)' }], { duration: 760, easing: 'cubic-bezier(.5, 0, .2, 1)', fill: 'forwards' });   // V2: its light going up and away with the words as the profile comes up ("the bg should move up and down when Get started takes it to the next step, and back")
+      const cg = v2 && wel.bg2 && cap ? carryIn(hp, cap, wel) : false;   // the phone: the light carried into the profile, its bottom its top glow
+      if (v2 && wel.bg2 && !cg) wel.bg2.animate([{ opacity: 1, transform: 'translateY(0)' }, { opacity: .6, offset: .5 }, { opacity: 0, transform: 'translateY(-36%)' }], { duration: 760, easing: 'cubic-bezier(.5, 0, .2, 1)', fill: 'forwards' });   // V2: its light going up and away with the words as the profile comes up ("the bg should move up and down when Get started takes it to the next step, and back")
       if (hs && cv){ const sr = hs.getBoundingClientRect(), k0 = cr.width / (sr.width || cr.width);
         hs.parentNode.replaceChild(cv, hs); cv.className = hs.className; ['position', 'left', 'top', 'width', 'height', 'margin'].forEach(p => cv.style.removeProperty(p));
         { const lv = store.summary().n / 3; if (wel.sphere && lv > 0) setTimeout(() => wel.sphere.set(lv, true), 900); }   // the profile's fill coming in once it has landed, not switched on as it leaves the welcome (that was the blink)
@@ -32232,7 +32248,9 @@ hairline({
       [hp.el.querySelector('.hpScr'), hp.el.querySelector('.arFoot'), hp.el.querySelector('.arHead'), hp.el.querySelector('.hpRail')].forEach(el => { if (el) el.animate(downK, { duration: 380, easing: 'cubic-bezier(.4, 0, .9, .6)', fill: 'forwards' }); });   // down and away, the halo in its page
       [wel.el.querySelector('.hpWelBody'), wel.el.querySelector('.hpWelX'), wel.card2].forEach(el => { if (el) el.animate([{ transform: 'translateY(' + -rise + 'px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 660, delay: 300, easing: 'cubic-bezier(.16, 1, .3, 1)', fill: 'backwards' }); });
       wel.el.classList.remove('hpW2PtOff');   // its specks back with it
-      if (wel.bg2) wel.bg2.animate([{ opacity: 0, transform: 'translateY(-36%)' }, { opacity: .6, offset: .5 }, { opacity: 1, transform: 'translateY(0)' }], { duration: 760, delay: 80, easing: 'cubic-bezier(.3, 0, .2, 1)', fill: 'backwards' });   // V2: its light coming back down into place over the screen, with the words
+      const cy = hp.el.querySelector('.hpCarry'), cd = cy ? parseFloat(cy.dataset.d) || 0 : 0, ck = cy && wel.el.classList.contains('hpW2Mask') ? 1 - (parseFloat(getComputedStyle(wel.el).getPropertyValue('--hpW2BlA')) || .6) : 1;
+      if (wel.bg2 && cy) { wel.bg2.animate([{ opacity: ck, transform: 'translateY(' + (-cd) + 'px)' }, { opacity: ck / (ck + (1 - ck) * .5), offset: .5 }, { opacity: 1, transform: 'translateY(0)' }], { duration: 660, delay: 300, easing: 'cubic-bezier(.16, 1, .3, 1)', fill: 'backwards' }); cy.remove(); }   // from the carried light's place, down with the words and the card, its brightness against the blanket coming back with them
+      else if (wel.bg2) wel.bg2.animate([{ opacity: 0, transform: 'translateY(-36%)' }, { opacity: .6, offset: .5 }, { opacity: 1, transform: 'translateY(0)' }], { duration: 760, delay: 80, easing: 'cubic-bezier(.3, 0, .2, 1)', fill: 'backwards' });   // V2: its light coming back down into place over the screen, with the words
       const clip = sheet ? frame.animate([{ clipPath: 'inset(0px 0px 0px 0px round 0px)' }, { clipPath: 'inset(' + (f0.top - f1.top) + 'px ' + (f1.right - f0.right) + 'px ' + (f1.bottom - f0.bottom) + 'px ' + (f0.left - f1.left) + 'px round ' + rd + ')' }], { duration: 620, delay: 200, easing: 'cubic-bezier(.32, .72, 0, 1)', fill: 'forwards' }) : null;
       requestAnimationFrame(() => { frame.style.transition = ''; });
       fromIntro = false; inst = wel; carried = null;
