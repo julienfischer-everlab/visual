@@ -16638,3 +16638,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - "When the title appears it shouldn't go up, it should be already placed at the right place" (and "same on mobile"). Each row used to open from nothing (`hpWelLine`, 0fr → 1fr) with the block held by its foot, so the first line climbed as the next opened (36 px on the desk).
 - V2's card titles (`.hpWelV2 .hpWelQ .hpWelL`) now have every row at full height from the start. The letters are still written one by one (blur, warm tint, a 3 px settle each).
 - Tracked through the entrance: rows stay at 183/215 on L and 196/226/256 on XS and S from the first letter to the last, for copies #1 and #2. Copy #1's turning line still turns. No page errors.
+
+## Health profile header: step title 4 px further from the dashes
+
+- "+4px gap" (on "Our promise and your details" over its dashes). `.hpMid`'s gap is now 12 px (was 8), between the step's name and the step dashes when Step title is on. Measured 12 px at XS. No page errors.
