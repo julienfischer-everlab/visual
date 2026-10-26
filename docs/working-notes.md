@@ -16518,3 +16518,14 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Card screen, phone ("move up by 32px"): Get started and its line 80 px off the foot (was 48). Desk unchanged.
 - Overview field, phone ("arrow CTA white should appear when user types > 0 characters"): the send arrow (32 px, 6 px from the field's edge) appears with the first character, white in dark (the light theme keeps its dark disc), and folds away when the field is emptied. It sends like Enter.
 - Health profile header ("no bg, only when it's fixed on scroll"): back and close are bare at the top of every profile page; their grounds come in (0.2 s) once the page scrolls under the bar, and go again back at the top. Hover and keyboard focus still show them. The card screen's own buttons are unchanged.
+
+## Loading specks by time; sheets over the dock; marker highlight earlier; Documentation clears the overlays
+
+- Card screen, the specks round the dot while it loads ("add particle density controller; remove the amount of particles increasing by phase; it should increase in a linear way"):
+  - Before, they stepped: 48 when the dot appeared, then a quarter more and 20% further out with each loading line.
+  - Now: 6 come out of the dot at once, then a steady stream (15 a second at 100%, capped at 130) while their reach widens evenly to 1.7, by time, until the light bursts.
+  - New tweak, First-time user → Particle density (0–300%, live). Particles still sets the warm motes flying into the card.
+  - Measured every 250 ms: 4 → 111 rising about 4 a sample at 100%; 2.5× as fast at 250%; none at 0%.
+- Bottom sheets on the phone ("all bottom sheets should display above the bottom menu"): the dock belongs to the phone frame, a layer above the page's, so no sheet in the page could rise past it. While a sheet is up (Inbox, service and timeline sheets, the chat sheet, sign-in; the booking sheet already did this), the dock fades out (0.2 s), and it comes back as the sheet goes. Tested: Inbox open → dock gone, closed → back; the Telehealth chat sheet's field now sits where the dock was.
+- Sphere hero, Marker highlight ("highlight when the previous dot area starts to go away; no need to wait for the new area in place"): the highlight moves to the next marker as soon as it is chosen, at the start of the turn, crossfading over 0.6 s while the last area leaves. Before, it waited until the new label was half written. If the marker is re-placed 0.26 s in, the highlight follows it without a second crossfade.
+- Documentation ("when I click documentation the screen stays"): opening it now closes the card reveal, the Health profile and the Async report, as it already did the chat. The floating Tweaks + beside the phone is hidden on Documentation and Hairline (it stood over the documents). Tested from the reveal, the profile and the report: each gone, the menu reading Documentation.
