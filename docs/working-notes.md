@@ -16571,3 +16571,15 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - The turn no longer stops while the logo shrinks into the dot or grows back. The spin strip's mask now repeats along x (`repeat-x`; frame 52 = frame 0), so `hpW2LogoCyc` steps straight on past the two turns. It covers 57 frames over 0–41.95% (≈42 ms a frame, the same speed as the turns), so the shrink plays frames 0–4 of the next turn.
 - The grow-back turns too: frames 45–51 over its .3 s, ending on frame 52 = frame 0 as the loop restarts. The turn joins up across the loop with no jump.
 - Checked by pausing and stepping the animations: strip frames 50, 51, 0, 1, 2, 3, 4 through the shrink (scale 1 → .34), hidden during the hold, then 45 → 51 through the grow (scale .27 → 1), then 0. Captures show the helix turning at each size. No page errors.
+
+## Card screen opening: specks float on out, softer burst, title higher, copy #2, morph pace
+
+- **Specks keep floating outward** ("the particles should continue to float through the outside"). Every speck out of the dot now drifts outward at its own steady pace on top of its throw (`v` in `w2Float.one`); streamed ones move at 8–24 px/s. Its slow turn around the dot makes the path a spiral, and nothing parks in the disc any more. A speck past the canvas edge (8 px margin) is dropped, so the stream (15/s, max 130 × density) keeps sending new ones from the dot.
+- **Softer burst** ("too bright, less movement, too brutal"):
+  - Released specks are 60% as bright (alpha .2–.5).
+  - They no longer get brighter at launch, and only 1.35× bigger (was 1.9×).
+  - They're thrown two thirds as far (`th0: .68`) over 1.7 s (was .95 s), on ease-out cubic (was quart), then drift at 12–28 px/s.
+  - Peak speed drops from ≈550 to ≈170 px/s. Canvas peak alpha in the first second is now 82–154 out of 255.
+- **Opening title 64px higher** ("push h1 opening up by 64px"): `.hpW2Lead` top is now `50% + --hpW2Dy - 64px`. At XS its middle is 96 px above the screen's middle (was 32). "Your health journey starts here." (`.hpW2LeadLo`) keeps its own place.
+- **Opening copy #2 in one sentence**: "Welcome to Everlab, Julien." then "This is your health / in a whole new way." The second line is written as one title, no longer "This is" on its own.
+- **Card logo morph pace: easeInOutCubic** (`cubic-bezier(.65,0,.35,1)`) both ways. The dot's pop is gone: the logo meets the dot at its 8 px and the dot takes over on the same frame. The logo still turns throughout.
