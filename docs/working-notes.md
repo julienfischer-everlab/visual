@@ -16385,3 +16385,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - The card's logo is Everlab's turning helix from the supplied transparent WEBP (52 frames, 2.17 s): cut to a 52-frame strip (assets/welcome/everlab-mark-spin.webp, 32 × 34 a frame at 3x) used as a mask, so it takes the card's ink. It plays once every 3 s and holds on the first frame (the still mark) in between; no motion with reduced motion.
 - The welcome's desk modal: max width 544 (was 800).
 - Desk app: "body radius is missing". The shell's grey strip behind the main panel's rounded corner is sized from the panel's measured left edge. It was measured once, while the sidebar was still sliding in (a breakpoint change or the docked Tweaks), so it stopped at 120 px and the corner cut into the panel's own colour. It's now measured again when the shell's slides end (and once 0.52 s after each resize).
+
+## Card logo: one turn, then 3 s still
+
+- The card's Everlab mark now turns once (the strip is one full revolution, 2.17 s), then holds still on its first frame for 3 s, and loops: a 5.17 s cycle ("rotate one turn then stop for 3 sec and loop"). Checked on the animation's clock over two cycles: frames 0-50 through the turn, the still mark through every hold.
