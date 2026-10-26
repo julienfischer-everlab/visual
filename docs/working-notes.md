@@ -16356,3 +16356,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Your action plan: "5 key priorities to focus on", the five, each its colour and area → Timeline.
   - The desk: the next step and the two dials in one row of four, the rest across.
 - Measured for the question "what is the height of the field and button": the Overview phone's ask field is 48 high (fully round), the inbox and bell 44 x 44 circles, 10 apart.
+
+## Standalone flow group; glints lighter again
+
+- Page menu: a new group, Standalone flow ("create a dedicated page for the card reveal experience and the health profile flow; put this in a group Standalone flow"): Card reveal (the first-time member's welcome from its first frame, as Tweaks → First-time user → Trigger; #card-reveal) and Health profile (moved from Main pages; #health-profile). Both open in Dark, on the XS phone, by their links.
+- The card's edge glints 50% lighter again ("still too intense"): a quarter of their first strength.

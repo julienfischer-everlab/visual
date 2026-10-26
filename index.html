@@ -17688,7 +17688,7 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
     };
     /* only on the card's left and right edges, at half the light ("show the hit effect only on the left and right, and decrease the intensity by 50%"): a crossing nearer the top or the foot than a side makes none (the corners split on their diagonal) */
     return { hit: function (px, py, s) { if (!live || G.length > 12) return; var cr = card.getBoundingClientRect(), dx = Math.abs(px - cr.left - cr.width / 2), dy = Math.abs(py - cr.top - cr.height / 2); if (cr.width / 2 - dx > cr.height / 2 - dy) return;
-        G.push({ right: px > cr.left + cr.width / 2, v: Math.max(.06, Math.min(.94, (py - cr.top) / (cr.height || 1))), t0: performance.now(), s: .5 * Math.max(.2, Math.min(1, s)) }); if (!raf) raf = requestAnimationFrame(tick); },
+        G.push({ right: px > cr.left + cr.width / 2, v: Math.max(.06, Math.min(.94, (py - cr.top) / (cr.height || 1))), t0: performance.now(), s: .25 * Math.max(.2, Math.min(1, s)) });   /* a quarter of the first light: halved twice ("still too intense, 50% lighter") */ if (!raf) raf = requestAnimationFrame(tick); },
       clear: function () { G.length = 0; cvs.forEach(function (cv, i) { xs[i].setTransform(1, 0, 0, 1, 0, 0); xs[i].clearRect(0, 0, cv.width, cv.height); }); },
       stop: function () { live = false; if (raf) cancelAnimationFrame(raf); raf = 0; } };
   };
@@ -25073,10 +25073,15 @@ hairline({
     addTo(mg, 'svcD', 'Service detail');   // a page over the Overview's, opening its Overview and the page over it
     addTo(mg, 'aptD', 'Appointment (OLD)');
     addTo(mg, 'tl', 'Timeline');
-    addTo(mg, 'hp', 'Health profile');   // the Overview with its Health profile open (#health-profile)
     modesOf('Async report').forEach(([v, i]) => addTo(mg, i, v.name === 'Desktop' ? 'Async report' : v.name));
     addTo(mg, 'cc', 'Chat');   // the chat with Eva, a main page of its own ("I want the chat part of a dedicated page"): Concierge, its device the Viewport's
     versionSel.appendChild(mg); }
+  /* the flows that run on their own, each a page ("create a dedicated page for the card reveal experience and the health profile flow; put this in a group Standalone flow"): Card reveal, the first-time member's welcome
+     from its first frame (#card-reveal); Health profile, the profile open over the Overview (#health-profile) */
+  { const sg = document.createElement('optgroup'); sg.label = 'Standalone flow';
+    addTo(sg, 'welc', 'Card reveal');
+    addTo(sg, 'hp', 'Health profile');
+    versionSel.appendChild(sg); }
   { const cg = document.createElement('optgroup'); cg.label = 'OrganAge concept';
     ['Concept', 'Video', 'Landing page'].forEach(g => modesOf(g).forEach(([v, i]) => addTo(cg, i, v.name)));
     versionSel.appendChild(cg); }
@@ -25103,6 +25108,7 @@ hairline({
     if (window._home) window._home.hide();
     if (v === 'tl'){ setMode(9); resize(); if (window._tl) window._tl.open(); return; }
     if (v === 'hp'){ setMode(9); resize(); if (window._hp){ window._hp.open(); versionSel.value = 'hp'; } try { history.replaceState(null, '', '#health-profile'); } catch (e){} return; }   // the Health profile, over the Overview
+    if (v === 'welc'){ setMode(9); resize(); if (window._hp){ window._hp.open({ welcome: true }); versionSel.value = 'welc'; } try { history.replaceState(null, '', '#card-reveal'); } catch (e){} return; }   // the card reveal, the welcome from its first frame, as Tweaks -> First-time user -> Trigger
     if (v === 'aptD' || v === 'aptM'){ setMode(v === 'aptD' ? 9 : 6); resize(); if (window._apt) (v === 'aptD' ? window._apt.openDesk : window._apt.openMob)(); return; }
     if (v === 'tskD'){ setMode(9); resize(); if (window._svc) window._svc.openDesk('wkq', 'active', { at: 0 }); return; }   // Task detail: the weekly questionnaire first
     if (v === 'svcD' || v === 'svcM'){ setMode(v === 'svcD' ? 9 : 6); resize(); if (window._svc) (v === 'svcD' ? window._svc.openDesk : window._svc.openMob)(); return; }
@@ -39431,6 +39437,8 @@ hairline({
       if (location.hash === '#ar2') put('stArPre', 'v2'); else put('stArPer', 'p2'); put('versionSel', '26'); }
     else if (location.hash === '#health-profile' && versionSel){ const put = (id, v) => { const el = document.getElementById(id); if (el && (el.options ? [...el.options].some(o => o.value === v) : !isNaN(+v)) && el.value !== v){ el.value = v; el.dispatchEvent(new Event('change', { bubbles: true })); } };
       put('themeSel', 'dark'); put('stBp', 'xs'); versionSel.value = 'hp'; versionSel.dispatchEvent(new Event('change', { bubbles: true })); }   // the Health profile over the Overview, in the Async report's default dress (Dark, the XS phone)
+    else if (location.hash === '#card-reveal' && versionSel){ const put = (id, v) => { const el = document.getElementById(id); if (el && (el.options ? [...el.options].some(o => o.value === v) : !isNaN(+v)) && el.value !== v){ el.value = v; el.dispatchEvent(new Event('change', { bubbles: true })); } };
+      put('themeSel', 'dark'); put('stBp', 'xs'); versionSel.value = 'welc'; versionSel.dispatchEvent(new Event('change', { bubbles: true })); }   // the card reveal, the same way
     // the viewport saved from the bar: the prototype opens on it, over any page's own default (the XS of the first page); Save keeps the one showing, a dot on it while they differ
     { const bs = document.getElementById('stBp'), sb = document.getElementById('tkBpSave'), KEY = 'everlab.bp'; let kept = null; try { kept = localStorage.getItem(KEY); } catch (e){}
       if (bs && kept && [...bs.options].some(o => o.value === kept) && bs.value !== kept){ bs.value = kept; bs.dispatchEvent(new Event('change', { bubbles: true })); }
