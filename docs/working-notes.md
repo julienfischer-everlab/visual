@@ -16429,3 +16429,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 ## Health profile: its done green
 
 - The profile's done green is its own token now: #42BE65 in dark mode, #24A148 in light ("42BE65 dark mode, 24A148 light mode"). It colours the completed steps' check discs, the rail's done steps, the pending-done ticks and the booking's success badge. The Async report's Optimal keeps the shared --ar-opt-bg. Measured: rgb(66,190,101) dark, rgb(36,161,72) light.
+
+## Health profile opened directly, and the desk's full modals
+
+- Opened directly (the Overview's card, the V5 Next step, the "Book your onboarding" task, the Standalone page), the profile wears the reveal's top light, the same one as after Start my journey ("the health profile should have this bg from the member reveal screen"). The reveal is drawn once out of sight, settled; its light is captured, then the reveal is dropped, and the profile opens with it. Measured on every path: the light at 0.4 in the same place (phone 393 × 697 from −398; desk 1440 × 757 from −423).
+- The light lives in the modal's frame, under the sheet, across its whole width. The desk's 1040 column had clipped it to hard edges. At home, the sheet and its stage let it through. In a step, the light fades out and the profile's own ground comes back (.5 s).
+- Desk: the Membership reveal is a full modal ("full modal on desktop"), no longer the centred 544 modal. Its sheet has no width cap there.
+- Desk: full modals always fade in and out (.38 s opacity, no transform), not rising from the bottom of the screen ("full modal always fade in on desktop"). This covers the reveal, the Health profile and the Async report. The Chat fades too. Phone sizes (XS, S) keep the rise.
