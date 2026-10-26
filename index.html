@@ -2790,6 +2790,7 @@
     -webkit-backdrop-filter:blur(96px) saturate(120%);backdrop-filter:blur(96px) saturate(120%);   /* 64, then "increase field and cta bg blur" */
   }
   body.hdrV3 #dOver > .ovChat .ovChatBox:focus-within{box-shadow:none;background:rgba(255,255,255,.1);}
+  body.hdrV3 #dOver > .ovChat .ovChatBox:not(.hasText){padding-right:18px;}   /* no arrow yet: the words end as far from the edge as they start */
   body.light.hdrV3 #dOver > .ovChat .ovChatBox{box-shadow:none;background:rgba(46,31,26,.06);}
   body.hdrV3 #dOver .ovChatSpace{height:120px;}   /* 48 + 16 + 56 */
   @keyframes ovChatIn{from{opacity:0;transform:translateY(6px);}}
@@ -6305,7 +6306,7 @@
     display:flex;align-items:center;gap:12px;width:80%;height:56px;   /* "AI field just below, centred as well, 80% width" */
     padding:0 8px 0 18px;border-radius:999px;background:rgba(255,255,255,.06);
     box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.08);color:#8b8b86;
-    transition:box-shadow .16s ease,background .16s ease;
+    transition:box-shadow .16s ease,background .16s ease,padding .22s cubic-bezier(.2,.8,.2,1);
   }
   .ovChatBox:focus-within{background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.3);}
   .ovChatSpark{width:18px;height:18px;flex:none;color:#ececec;}
@@ -6341,6 +6342,10 @@
   .ovChatGo svg{width:16px;height:16px;}
   .ovChatGo:hover{background:rgba(255,255,255,.18);}
   .ovChatBox.hasText .ovChatGo{background:#ececec;color:#111;}   /* white once there are characters in the field, not on focus alone ("this white state only when > 0 characters typed") */
+  /* and no arrow at all until then ("remove the arrow CTA, only appear if a character has been typed into the field"): the disc folds to nothing, the field takes its room, and it grows back with the first character */
+  .ovChatGo{transition:background .16s ease,width .22s cubic-bezier(.2,.8,.2,1),margin .22s cubic-bezier(.2,.8,.2,1),opacity .16s ease,transform .22s cubic-bezier(.2,.8,.2,1);}
+  .ovChatBox:not(.hasText) .ovChatGo{width:0;padding:0;margin-left:-12px;opacity:0;transform:scale(.6);pointer-events:none;}
+  .ovChatBox:not(.hasText){padding-right:18px;}
   body.light .ovChatBox{background:rgba(46,31,26,.05);box-shadow:inset 0 0 0 1.5px rgba(46,31,26,.1);color:#7d6b58;}
   body.light .ovChatBox:focus-within{box-shadow:inset 0 0 0 1.5px #2e241c;}
   body.light .ovChatSpark, body.light .ovChatBox input{color:#2e1f1a;}
@@ -6778,7 +6783,7 @@
   /* ---- The home mosaic ---- */
   .home{display:none;position:fixed;left:0;right:0;bottom:0;top:var(--barH,45px);z-index:9;overflow-y:auto;background:#0b0b0b;color:#ececec;}
   body.homeOn .home{display:block;}
-  .hlPage{display:none;position:fixed;left:0;right:0;bottom:0;top:var(--barH,45px);z-index:9;background:#0f0f0e;} body.hlOn .hlPage{display:block;} .hlPage iframe{display:block;width:100%;height:100%;border:0;} body.hlOn #tkMenu, body.hlOn #inkMenu, body.hlOn .svFloatNav, body.homeOn .svFloatNav{display:none !important;} .igPage{display:none;position:fixed;left:0;right:0;bottom:0;top:var(--barH,45px);z-index:9;background:#0e0e0e;} body.igOn .igPage{display:block;} .igPage iframe{display:block;width:100%;height:100%;border:0;} body.igOn #tkMenu, body.igOn #inkMenu, body.igOn .svFloatNav{display:none !important;}   /* the Image generator: under the bar like Home and Hairline */ .rvPage{display:none;position:fixed;left:0;right:0;bottom:0;top:var(--barH,45px);z-index:9;background:#0f0f0e;} body.rvOn .rvPage{display:block;} .rvPage iframe{display:block;width:100%;height:100%;border:0;} body.rvOn #tkMenu, body.rvOn #inkMenu, body.rvOn .svFloatNav{display:none !important;}   /* Report visuals: the same */ body.rvOn #bpGrp, body.rvOn .tbLay, body.rvOn #tkVisuals{display:none !important;} .docPage{display:none;position:fixed;left:0;right:0;bottom:0;top:var(--barH,45px);z-index:9;background:#0d0d0d;} body.docOn .docPage{display:block;} .docPage iframe{display:block;width:100%;height:100%;border:0;} body.docOn #tkMenu, body.docOn #inkMenu, body.docOn .svFloatNav, body.docOn #bpGrp, body.docOn .tbLay, body.docOn #tkVisuals{display:none !important;}   /* Documentation: the same, the bar just the page */ #tkRvSave{display:none;} body.rvOn #tkRvSave{display:inline-flex;} #tkDocSave{display:none;} body.docOn #tkDocSave{display:inline-flex;}   /* Save presets: on Report visuals only */   /* and on it, the bar is just the page and its style: no viewport, no service, no Hairline ("controllers should just be Style; remove viewport, Service, Hairline") */   /* the Hairline page: under the bar like Home, no tweaks, and none of the service page's floating step arrows over it */
+  .hlPage{display:none;position:fixed;left:0;right:0;bottom:0;top:var(--barH,45px);z-index:9;background:#0f0f0e;} body.hlOn .hlPage{display:block;} .hlPage iframe{display:block;width:100%;height:100%;border:0;} body.hlOn #tkMenu, body.hlOn #inkMenu, body.hlOn .svFloatNav, body.homeOn .svFloatNav{display:none !important;} .igPage{display:none;position:fixed;left:0;right:0;bottom:0;top:var(--barH,45px);z-index:9;background:#0e0e0e;} body.igOn .igPage{display:block;} .igPage iframe{display:block;width:100%;height:100%;border:0;} body.igOn #tkMenu, body.igOn #inkMenu, body.igOn .svFloatNav{display:none !important;}   /* the Image generator: under the bar like Home and Hairline */ .rvPage{display:none;position:fixed;left:0;right:0;bottom:0;top:var(--barH,45px);z-index:9;background:#0f0f0e;} body.rvOn .rvPage{display:block;} .rvPage iframe{display:block;width:100%;height:100%;border:0;} body.rvOn #tkMenu, body.rvOn #inkMenu, body.rvOn .svFloatNav, body.ccOn #tkMenu, body.ccOn #inkMenu, body.ccOn .svFloatNav{display:none !important;} .ccPage{display:none;position:fixed;left:0;right:0;bottom:0;top:var(--barH,45px);z-index:9;background:#111;} body.ccOn .ccPage{display:block;} .ccPage iframe{display:block;width:100%;height:100%;border:0;}   /* Report visuals: the same */ body.rvOn #bpGrp, body.rvOn .tbLay, body.rvOn #tkVisuals{display:none !important;} .docPage{display:none;position:fixed;left:0;right:0;bottom:0;top:var(--barH,45px);z-index:9;background:#0d0d0d;} body.docOn .docPage{display:block;} .docPage iframe{display:block;width:100%;height:100%;border:0;} body.docOn #tkMenu, body.docOn #inkMenu, body.docOn .svFloatNav, body.docOn #bpGrp, body.docOn .tbLay, body.docOn #tkVisuals{display:none !important;}   /* Documentation: the same, the bar just the page */ #tkRvSave{display:none;} body.rvOn #tkRvSave{display:inline-flex;} #tkDocSave{display:none;} body.docOn #tkDocSave{display:inline-flex;}   /* Save presets: on Report visuals only */   /* and on it, the bar is just the page and its style: no viewport, no service, no Hairline ("controllers should just be Style; remove viewport, Service, Hairline") */   /* the Hairline page: under the bar like Home, no tweaks, and none of the service page's floating step arrows over it */
   .homeIn{max-width:1320px;margin:0 auto;padding:56px 40px 80px;}
   .homeHead{margin-bottom:40px;}
   .homeBrand{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#8b8b86;}
@@ -8914,6 +8919,7 @@
   #dOver .ovTop .ovChat{flex:1 1 auto;min-width:0;margin:0;}
   #dOver .ovTop .ovChatBox{width:100%;max-width:320px;height:48px;padding:0 6px 0 18px;box-shadow:none;background:rgba(255,255,255,.08);   /* "desktop chat max width 320px", in the bar too */-webkit-backdrop-filter:blur(96px) saturate(120%);backdrop-filter:blur(96px) saturate(120%);}   /* .07 / 64, then "#fff 8% bg", "increase field bg blur" */
   #dOver .ovTop .ovChatBox:focus-within{box-shadow:none;background:rgba(255,255,255,.1);}
+  #dOver .ovTop .ovChatBox:not(.hasText){padding-right:18px;}   /* no arrow until a character is typed: the words end as far from the edge as they start */
   body.light #dOver .ovTop .ovChatBox{box-shadow:none;background:rgba(46,31,26,.06);}
   #dOver .ovInbox, #dOver .ovBell{width:48px;height:48px;}
   /* the greeting: the page's heading, left, in the phone's 24 / 500 */
@@ -10989,6 +10995,8 @@
 <div class="igPage" id="igPage" aria-label="Image generator"></div>
 <!-- Report visuals: the card each report reveals, one per report, on a review sheet (report-visuals.html, published beside this page), a page of the prototype like Hairline ("create a new page 'Report visuals': a grid where we can see the card of each report reveal") -->
 <div class="rvPage" id="rvPage" aria-label="Report visuals"></div>
+<!-- Concierge: the member's chat with Eva from the Figma boards (concierge.html, built from visuals/concierge.html and published beside this page), a page of the prototype like Report visuals ("Need to set up the Chat bot experience. Create a new page and refer all these contexts"): the desktop app or the mobile panel, every component, the bar's Mode its theme -->
+<div class="ccPage" id="ccPage" aria-label="Concierge"></div>
 <!-- Documentation: the system's components documented and live, starting with the Progress timeline's playground (components/progress-timeline/demo.html, published beside this page), a page of the prototype like Report visuals ("merge Progress timeline in a new page called 'Documentation'") -->
 <div class="docPage" id="docPage" aria-label="Documentation"></div>
 <div class="home" id="home" aria-label="All pages">
@@ -16444,7 +16452,7 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
 /* the phone and tablet: a full bottom sheet; the desk: a modal, centred ("first time user: full bottom sheet; desktop: modal"). The sphere's lower half at the top edge of either */
 .aqWrap.hpBs:is(.aqBpXS, .aqBpS) .aqFrame { height: calc(100% - 24px); max-height: none; } .aqWrap.hpBs.aqDev:is(.aqBpXS, .aqBpS) .aqFrame { height: calc(100% - 64px); }   /* in the device: from under its status bar */
 .aqWrap.hpBs:is(.aqBpXS, .aqBpS) .aqFrame > .arSheet.arSheet.arSheet.arSheet.hpWel { height: 100%; }
-.aqWrap.hpBs:is(.aqBpM, .aqBpL) .aqFrame { top: 50%; bottom: auto; width: min(100% - 48px, 480px); height: auto; max-height: calc(100% - 48px); border-radius: 28px; opacity: 0; transform: translate(-50%, calc(-50% + 24px)); transition: transform .45s cubic-bezier(.2, .8, .2, 1), opacity .3s ease; }
+.aqWrap.hpBs:is(.aqBpM, .aqBpL) .aqFrame { top: 50%; bottom: auto; width: min(100% - 48px, 800px); height: auto; max-height: calc(100% - 48px); border-radius: 28px; opacity: 0; transform: translate(-50%, calc(-50% + 24px)); transition: transform .45s cubic-bezier(.2, .8, .2, 1), opacity .3s ease; }
 .aqWrap.hpBs.on:is(.aqBpM, .aqBpL) .aqFrame { opacity: 1; transform: translate(-50%, -50%); }
 .aqWrap.hpBs.shut:is(.aqBpM, .aqBpL) .aqFrame { opacity: 0; transform: translate(-50%, calc(-50% + 24px)); }
 .aqWrap.hpBs:is(.aqBpM, .aqBpL) .aqFrame > .arSheet.arSheet.arSheet.arSheet.hpWel { min-height: 560px; }   /* the desk's modal tall enough for the ball alone in its middle, then the title under it */
@@ -16593,6 +16601,7 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
 @media (prefers-reduced-motion: reduce) { .arSheet.hpWel .hpWelQ3 .hpWelL { animation: none; grid-template-rows: 1fr; } .arSheet.hpWel .hpWelQ3 .hpWelC { animation: none; opacity: 1; top: 0; filter: none; } .arSheet.hpWel .hpW2In { transition: none; } }
 /* the dark specks over the card, in with the light and the card, gone at once with Get started */
 .arSheet.hpWel .hpW2Fp { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }   /* the specks round the dot while it loads */
+.arSheet.hpWel .hpW2Gn { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; opacity: 0; transition: opacity .8s ease; } .arSheet.hpWel.hpW2Lit.hpW2Ready .hpW2Gn { opacity: 1; } .arSheet.hpWel:is(.hpW2PtOff, .hpW2Sign) .hpW2Gn { opacity: 0; transition: none; }   /* the glints, over the card's edge with the specks */
 .arSheet.hpWel .hpW2PtK { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; opacity: 0; transition: opacity 1.4s ease .4s; } .arSheet.hpWel.hpW2Lit.hpW2Ready .hpW2PtK { opacity: 1; } .arSheet.hpWel.hpW2PtOff .hpW2PtK { opacity: 0; transition: none; }
 /* Draw card (Tweaks -> Card entrance): the white dot held as the light spreads, breathing as it did; the card's outline drawn in the ink; the card where it lands from the first (no rise), opened by the dot */
 .arSheet.hpWel .hpW2Dt { position: absolute; left: 0; top: 0; width: 8px; height: 8px; translate: -50% -50%; border-radius: 50%; background: oklch(var(--ar-ink)); pointer-events: none; display: none; }
@@ -16653,6 +16662,13 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
 .arSheet.hpWel .hpWelBk { position: absolute; top: var(--ar-head-top, 16px); left: 16px; z-index: 2; } .arSheet.hpWel.hpWelV2 .hpWelLater { display: none; }   /* V2: the cross instead of Do it later; the back only while the card is signed */
 .arSheet.hpWel.hpWelV2 :is(.hpWelX, .hpWelBk) { opacity: 0; visibility: hidden; transition: opacity .6s ease, visibility .6s; } .arSheet.hpWel.hpWelV2:is(.hpWelCtaIn, .hpWelCalm) .hpWelX, .arSheet.hpWel.hpWelV2.hpW2Sign .hpWelBk { opacity: 1; visibility: visible; }   /* the cross in with the button */
 .arSheet.hpWel.hpWelV2.hpW2Lit:not(.hpW2MaskInk):not(.hpW2LoB) :is(.hpWelX, .hpWelBk) { --ar-ink: 20% .05 45; }   /* on the light, its dark ink, as the titles */
+/* the cross and the back read as buttons ("need cursor pointer and hover state on secondary cta"): the hand, a shade of their own ink over them on hover, a little give when pressed; on the desk's modal 28 ("CTA 28"), the modal's own size */
+.aqWrap .arSheet.hpWel :is(.hpWelX, .hpWelBk) { cursor: pointer; }
+.arSheet.hpWel.hpWelV2 :is(.hpWelX, .hpWelBk) { transition: opacity .6s ease, visibility .6s, box-shadow .18s ease, transform .18s cubic-bezier(.2, .8, .2, 1); }
+.aqWrap .arSheet.hpWel :is(.hpWelX, .hpWelBk):hover { opacity: 1; box-shadow: inset 0 0 0 40px oklch(var(--ar-ink) / .09); }
+.aqWrap .arSheet.hpWel :is(.hpWelX, .hpWelBk):active { transform: scale(.92); }
+html:not(#_m):not(#_d) .aqWrap.hpBs:is(.aqBpM, .aqBpL) .arSheet.hpWel :is(.hpWelX, .hpWelBk) { width: 28px !important; height: 28px !important; min-width: 28px !important; min-height: 28px !important; }
+html:not(#_m):not(#_d) .aqWrap.hpBs:is(.aqBpM, .aqBpL) .arSheet.hpWel :is(.hpWelX, .hpWelBk) svg { width: 14px; height: 14px; }
 .aqWrap:is(.aqBpXS, .aqBpS) .arSheet.hpWel.hpWelV2 .hpWelCtaR, .aqWrap.hpWelF .arSheet.hpWel.hpWelV2 .hpWelCtaR { bottom: 48px; }   /* Start my journey still 112 off the foot, its line (two rows of 20, 24 under it) under it */   /* the phone: Get started where it was, 112 off the foot */   /* under the status bar in the full modal */
 .arSheet.hpWel .hpWelBody { position: relative; z-index: 1; flex: 1 1 auto; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px; width: 100%; max-width: 440px; padding: 120px var(--hpSide) 48px; box-sizing: border-box; }   /* the title and the button together in the middle, under the ball's half */
 .arSheet.hpWel { --hpWelLh: 32px; } .aqWrap:is(.aqBpXS, .aqBpS) .arSheet.hpWel { --hpWelLh: 30px; }
@@ -17524,10 +17540,41 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
   };
   /* rails (Tweaks -> Particle flow: Rails, "particles floating on rails, coming in on the left and going out on the right side of the card; a clear line of particles"): nine level lines across the screen over the card's height and a little past it;
      on each, its particles evenly spaced (each a hair off its place), drifting left to right at the line's own slow pace (26 to 54 px a second), in from the screen's left edge and out at its right */
+  /* the light where a particle meets the card ("when the particles hit the card, a subtle collision effect, like a shiny light that diffuses a light on the edge of the card"): the moment a mote or a speck crosses the card's edge,
+     a soft bloom of the membership's light there and the edge itself catching it, a hairline brightening that spreads a little way along the edge either side as it fades (0.9 s); not every crossing, so it stays a glint */
+  var w2Sdf = function (px, py, hw, hh, r) { var qx = Math.abs(px) - hw + r, qy = Math.abs(py) - hh + r; return Math.hypot(Math.max(qx, 0), Math.max(qy, 0)) + Math.min(Math.max(qx, qy), 0) - r; };   // how far outside a rounded box (under 0: in it)
+  var w2Box = function (card, cv, f) { var cr = card.getBoundingClientRect(), vr = cv.getBoundingClientRect(); if (cr.width < 40) return null; return { cx: cr.left - vr.left + cr.width / 2, cy: cr.top - vr.top + cr.height / 2, cw: cr.width / 2, ch: cr.height / 2, r: 24 * cr.width / (card.offsetWidth || cr.width), ox: vr.left, oy: vr.top, f: f }; };
+  var w2Cross = function (m, px, py, d, f, p, s, ox, oy) { if (m.pd > 0 && d <= 0 && Math.random() < p) { var u = m.pd / (m.pd - d); f(m.qx + (px - m.qx) * u + ox, m.qy + (py - m.qy) * u + oy, s); } m.pd = d; m.qx = px; m.qy = py; };   // crossing in: a glint, now and then, where its path met the edge between the two frames (a slow frame no longer puts it inside)
+  var w2Hit = function (m, px, py, b, p, s) { w2Cross(m, px, py, w2Sdf(px - b.cx, py - b.cy, b.cw, b.ch, b.r), b.f, p, s, b.ox, b.oy); };
+  var w2Glint = function (cv, card, col, dark) {
+    var x = cv.getContext('2d'), raf = 0, live = true, G = [], DUR = 900;
+    var edge = function (l, t, w, hh, r) { x.beginPath(); x.moveTo(l + r, t); x.arcTo(l + w, t, l + w, t + hh, r); x.arcTo(l + w, t + hh, l, t + hh, r); x.arcTo(l, t + hh, l, t, r); x.arcTo(l, t, l + w, t, r); x.closePath(); };
+    var tick = function (now) {
+      raf = 0; if (!live || !cv.isConnected) { G.length = 0; return; }
+      var w = cv.clientWidth, hh = cv.clientHeight; if (!w || !hh) { G.length = 0; return; }
+      var dpr = Math.min(2, window.devicePixelRatio || 1); if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(hh * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(hh * dpr); }
+      x.setTransform(dpr, 0, 0, dpr, 0, 0); x.clearRect(0, 0, w, hh);
+      G = G.filter(function (g) { return now - g.t0 < DUR; });
+      var cr = card.getBoundingClientRect(), vr = cv.getBoundingClientRect(), l = cr.left - vr.left, t = cr.top - vr.top, r = Math.min(cr.height / 2, 24 * cr.width / (card.offsetWidth || cr.width)), rgb = col(), dk = dark();
+      x.globalCompositeOperation = dk ? 'lighter' : 'source-over';   // light adding to the dark; on the paper, a warm sheen over it
+      G.forEach(function (g) {
+        var k = Math.max(0, (now - g.t0) / DUR), e = 1 - Math.pow(1 - k, 3), f = g.s * Math.pow(1 - k, 1.7) * Math.min(1, .35 + k / .06);
+        var gx = g.x - vr.left, gy = g.y - vr.top, R = 7 + 20 * e, S = 6 + 44 * e;
+        var bl = x.createRadialGradient(gx, gy, 0, gx, gy, R); bl.addColorStop(0, 'rgba(' + rgb + ', ' + (.28 * f).toFixed(3) + ')'); bl.addColorStop(1, 'rgba(' + rgb + ', 0)');
+        x.fillStyle = bl; x.fillRect(gx - R, gy - R, R * 2, R * 2);   // the bloom where it struck
+        var sg = x.createRadialGradient(gx, gy, 0, gx, gy, S); sg.addColorStop(0, dk ? 'rgba(255, 248, 238, ' + Math.min(1, f).toFixed(3) + ')' : 'rgba(' + rgb + ', ' + Math.min(1, f).toFixed(3) + ')'); sg.addColorStop(.5, 'rgba(' + rgb + ', ' + (.42 * f).toFixed(3) + ')'); sg.addColorStop(1, 'rgba(' + rgb + ', 0)');
+        x.strokeStyle = sg; x.lineWidth = 1.5; edge(l + .5, t + .5, cr.width - 1, cr.height - 1, r); x.stroke();   // the edge catching it, the light running along it as it fades
+      });
+      x.globalCompositeOperation = 'source-over';
+      if (G.length) raf = requestAnimationFrame(tick);
+    };
+    return { hit: function (px, py, s) { if (!live || G.length > 12) return; G.push({ x: px, y: py, t0: performance.now(), s: Math.max(.2, Math.min(1, s)) }); if (!raf) raf = requestAnimationFrame(tick); },
+      stop: function () { live = false; if (raf) cancelAnimationFrame(raf); raf = 0; } };
+  };
   var W2R = 9, w2Rail = function (k, n, m, now, w, cy, ch) { var r = k % W2R, per = Math.max(1, Math.ceil(n / W2R)), sl = Math.floor(k / W2R), v = 26 + (r * 37 % 9) * 3.5, pad = 24, L = w + pad * 2;
     var u = ((sl + .5 + m.jr) / per + now / 1000 * v / L + r * .137) % 1; return { x: u * L - pad, y: cy + (r / (W2R - 1) - .5) * ch * 1.3 + 1.2 * Math.sin(now / 1500 + m.wb), f: Math.min(1, (u * L) / 70, (L - u * L) / 70) }; };
   var w2Motes = function (cv, col, card) {
-    var x = cv.getContext('2d'), raf = 0, live = true, M = [], t0 = performance.now(), i, RL = false, want = 64;
+    var x = cv.getContext('2d'), raf = 0, live = true, M = [], t0 = performance.now(), i, RL = false, want = 64, hitF = null;
     var spawn = function (m, now, first) { var lf = Math.random() < .5; m.sx = lf ? -.04 : 1.04; m.sy = .05 + Math.random() * .42;   // the left or the right edge, across the coloured half
       m.dur = 6500 + Math.random() * 5500; m.t0 = now - (first ? Math.random() * m.dur : 0); m.z = .9 + Math.random() * 1.6; m.a = .35 + .5 * Math.random(); m.wb = Math.random() * 6.2832; m.cv = (Math.random() - .5) * .35; m.jr = (Math.random() - .5) * .3; return m; };
     for (i = 0; i < 64; i++) M.push(spawn({}, t0, true));
@@ -17536,21 +17583,22 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
       var w = cv.clientWidth, hh = cv.clientHeight; if (!w || !hh) { raf = requestAnimationFrame(tick); return; }
       var dpr = Math.min(2, window.devicePixelRatio || 1); if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(hh * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(hh * dpr); }
       x.setTransform(dpr, 0, 0, dpr, 0, 0); x.clearRect(0, 0, w, hh);
-      var cx = w / 2, cy = hh / 2, rgb = col();
+      var cx = w / 2, cy = hh / 2, rgb = col(), hk = hitF && card ? w2Box(card, cv, hitF) : null;
       if (RL && card) { var cr = card.getBoundingClientRect(), vr = cv.getBoundingClientRect(), rcy = cr.top - vr.top + cr.height / 2, rch = cr.height || 200;   // on the rails, under the card: seen through its glass as they pass behind it
-        M.forEach(function (m, k) { var p = w2Rail(k, M.length, m, now, w, rcy, rch), aa = Math.min(1, .45 + .6 * m.a) * p.f; if (aa < .01) return; x.fillStyle = 'rgba(' + rgb + ', ' + aa.toFixed(3) + ')'; x.beginPath(); x.arc(p.x, p.y, .45 + m.z * .25, 0, 6.2832); x.fill(); });   // clear: brighter and a touch larger than the drawn-in ones
+        M.forEach(function (m, k) { var p = w2Rail(k, M.length, m, now, w, rcy, rch), aa = Math.min(1, .45 + .6 * m.a) * p.f; if (hk) w2Hit(m, p.x, p.y, hk, .3, .4 + .6 * m.a); if (aa < .01) return; x.fillStyle = 'rgba(' + rgb + ', ' + aa.toFixed(3) + ')'; x.beginPath(); x.arc(p.x, p.y, .45 + m.z * .25, 0, 6.2832); x.fill(); });   // clear: brighter and a touch larger than the drawn-in ones
         raf = requestAnimationFrame(tick); return; }
       M.forEach(function (m) {
         var k = (now - m.t0) / m.dur; if (k >= 1) { spawn(m, now, false); k = 0; }
         var e = Math.pow(k, 1.6), sx = m.sx * w, sy = m.sy * hh, dx = cx - sx, dy = cy - sy, dl = Math.hypot(dx, dy) || 1, sw = Math.sin(k * Math.PI) * m.cv * dl + 5 * Math.sin(now / 1300 + m.wb);
         var px = sx + dx * e - dy / dl * sw, py = sy + dy * e + dx / dl * sw, aa = m.a * Math.min(1, k / .1) * Math.min(1, Math.hypot(cx - px, cy - py) / 90);
+        if (hk) w2Hit(m, px, py, hk, .55, .4 + .6 * m.a);
         if (aa < .01) return; x.fillStyle = 'rgba(' + rgb + ', ' + aa.toFixed(3) + ')'; x.beginPath(); x.arc(px, py, m.z / 2, 0, 6.2832); x.fill();
       });
       raf = requestAnimationFrame(tick);
     };
     return { start: function () { if (!raf && live) raf = requestAnimationFrame(tick); }, stop: function () { live = false; if (raf) cancelAnimationFrame(raf); raf = 0; },
       count: function (n) { want = n; n = Math.max(0, Math.round(n * (RL ? 3.5 : 1))); var now = performance.now(); while (M.length < n) M.push(spawn({}, now, true)); if (M.length > n) M.length = n; },   // how many (Tweaks -> Particles: 64 the base; on the rails 3.5 times, for clear lines)
-      rails: function (on) { if (!!on === RL) return; RL = !!on; this.count(want); }, card: function (el) { card = el; } };
+      rails: function (on) { if (!!on === RL) return; RL = !!on; this.count(want); }, card: function (el) { card = el; }, onHit: function (f) { hitF = f; } };
   };
 
   /* the specks round the dot while its lines roll ("when the dot appears it should have floating particles around while the texts are rolling; each rolling text adds more particles"): each comes out of the dot and drifts out to a place of its own round it (1.8 s),
@@ -17562,7 +17610,7 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
       var w = cv.clientWidth, hh = cv.clientHeight; if (!w || !hh) { raf = requestAnimationFrame(tick); return; }
       var dpr = Math.min(2, window.devicePixelRatio || 1); if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(hh * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(hh * dpr); }
       x.setTransform(dpr, 0, 0, dpr, 0, 0); x.clearRect(0, 0, w, hh);
-      RK += (RT - RK) * .03; var c = at(), reach = Math.min(w, hh * 1.2) * .3 * RK, rgb = col(), kb = gone ? Math.min(1, (now - gone) / 1100) : 0;   // close round the dot, a little further with each line
+      RK += (RT - RK) * .03; var c = at(), reach = Math.min(w, hh * 1.2, 480) * .3 * RK, rgb = col(), kb = gone ? Math.min(1, (now - gone) / 1100) : 0;   // close round the dot, a little further with each line
       if (kb >= 1) { live = false; return; }
       M.forEach(function (m) {
         var k = (now - m.t0) / 1800; if (k <= 0) return; k = Math.min(1, k); var e = 1 - Math.pow(1 - k, 3);
@@ -17582,7 +17630,7 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
   /* the dark specks ("add some black particles that are going inside the card"; then "too big: thinner, less intense, smaller; mixed alongside the white ones"): with the warm motes, from the screen's sides across its coloured half, on their slow curving paths and their pace,
      each to its own spot in the card; fine (0.6 to 1.3 px), crisp but not heavy (32 to 65%); over the card, so each is seen crossing its edge and dissolving into it */
   var w2Ink = function (cv, card) {
-    var x = cv.getContext('2d'), raf = 0, live = true, M = [], t0 = performance.now(), i, RL = false, want = 36;
+    var x = cv.getContext('2d'), raf = 0, live = true, M = [], t0 = performance.now(), i, RL = false, want = 36, hitF = null;
     var spawn = function (m, now, first) { var lf = Math.random() < .5; m.sx = lf ? -.04 : 1.04; m.sy = .05 + Math.random() * .42; m.tx = (Math.random() - .5) * 1.3; m.ty = (Math.random() - .5) * 1.1;   // from: the left or the right edge, as the warm ones; to: a spot in the card (halves of its width and height)
       m.dur = 6500 + Math.random() * 5500; m.t0 = now - (first ? Math.random() * m.dur : 0); m.z = .6 + Math.random() * .7; m.a = .32 + .33 * Math.random(); m.wb = Math.random() * 6.2832; m.cv = (Math.random() - .5) * .35; m.jr = (Math.random() - .5) * .3; return m; };
     for (i = 0; i < 36; i++) M.push(spawn({}, t0, true));
@@ -17593,13 +17641,13 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
       var dpr = Math.min(2, window.devicePixelRatio || 1); if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(hh * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(hh * dpr); }
       x.setTransform(dpr, 0, 0, dpr, 0, 0); x.clearRect(0, 0, w, hh);
       var cr = card.getBoundingClientRect(), vr = cv.getBoundingClientRect(), cw = cr.width / 2, ch = cr.height / 2, cx = cr.left - vr.left + cw, cy = cr.top - vr.top + ch, rr = 24 * cr.width / 320;
-      if (RL && cw > 20) { M.forEach(function (m, k) { var p = w2Rail(k + 4, M.length, m, now * .96, w, cy, ch * 2), d = sdf(p.x - cx, p.y - cy, cw, ch, rr), aa = m.a * p.f * Math.min(1, Math.max(0, d / 14)); if (aa < .01) return;   // its own places on the lines (k + 4: between the warm ones), a hair slower; gone as it reaches the card, back as it leaves
+      if (RL && cw > 20) { M.forEach(function (m, k) { var p = w2Rail(k + 4, M.length, m, now * .96, w, cy, ch * 2), d = sdf(p.x - cx, p.y - cy, cw, ch, rr), aa = m.a * p.f * Math.min(1, Math.max(0, d / 14)); if (hitF) w2Cross(m, p.x, p.y, d, hitF, .2, .25 + .5 * m.a, vr.left, vr.top); if (aa < .01) return;   // its own places on the lines (k + 4: between the warm ones), a hair slower; gone as it reaches the card, back as it leaves
           x.fillStyle = 'rgba(10, 8, 6, ' + aa.toFixed(3) + ')'; x.beginPath(); x.arc(p.x, p.y, m.z / 2, 0, 6.2832); x.fill(); }); raf = requestAnimationFrame(tick); return; }
       if (cw > 20) M.forEach(function (m) {
         var k = (now - m.t0) / m.dur; if (k >= 1) { spawn(m, now, false); k = 0; }
         var sx = m.sx * w, sy = m.sy * hh, ex = cx + m.tx * cw, ey = cy + m.ty * ch;
         var e = Math.pow(k, 1.6), dx = ex - sx, dy = ey - sy, dl = Math.hypot(dx, dy) || 1, sw = Math.sin(k * Math.PI) * m.cv * dl + 5 * Math.sin(now / 1300 + m.wb), px = sx + dx * e - dy / dl * sw, py = sy + dy * e + dx / dl * sw;   // the warm motes' own path and pace
-        var d = sdf(px - cx, py - cy, cw, ch, rr); if (d < -18) { spawn(m, now, false); return; }   // gone into it: off again from the side
+        var d = sdf(px - cx, py - cy, cw, ch, rr); if (hitF) w2Cross(m, px, py, d, hitF, .35, .25 + .5 * m.a, vr.left, vr.top); if (d < -18) { spawn(m, now, false); return; }   // gone into it: off again from the side
         var aa = m.a * Math.min(1, k / .1) * (d >= 0 ? 1 : 1 + d / 18); if (aa < .01) return;
         x.fillStyle = 'rgba(10, 8, 6, ' + aa.toFixed(3) + ')'; x.beginPath(); x.arc(px, py, m.z / 2, 0, 6.2832); x.fill();
       });
@@ -17607,7 +17655,7 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
     };
     return { start: function () { if (!raf && live) raf = requestAnimationFrame(tick); }, stop: function () { live = false; if (raf) cancelAnimationFrame(raf); raf = 0; },
       count: function (n) { want = n; n = Math.max(0, Math.round(n * (RL ? 2.5 : 1))); var now = performance.now(); while (M.length < n) M.push(spawn({}, now, true)); if (M.length > n) M.length = n; },   // how many (Tweaks -> Dark particles: 36 the base; on the rails 2.5 times)
-      rails: function (on) { if (!!on === RL) return; RL = !!on; this.count(want); } };
+      rails: function (on) { if (!!on === RL) return; RL = !!on; this.count(want); }, onHit: function (f) { hitF = f; } };
   };
 
   /* a QR code ("add a QR code on the back of the card"): byte mode, error correction M, versions 1 to 3 (42 bytes at most, one block), the mask the standard's penalties pick; its modules, true dark, no quiet zone */
@@ -17694,8 +17742,8 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
       card = h('div', { class: 'hpWelCard' }, h('div', { class: 'hpWcIn' }, h('div', { class: 'hpWcF' }, ld),
         h('div', { class: 'hpWcB' }, wc, h('i', { class: 'hpWcSh' }), mark('hpWcMk', 19, 21), h('span', { class: 'hpWcTag', text: 'Member' }),
           h('div', { class: 'hpWcNm' }, h('b', { text: NM || 'Member' }), opts.last ? h('span', { text: opts.last }) : null), h('div', { class: 'hpWcTr' }, h('b', { text: opts.tier || 'Baseline' }), h('span', { text: 'Tier' }))))); }   // the status lines typed in its outline (its front); the card on its back
-    var imx = null, IMGL = ['assets/overview/plan-physical.webp', 'assets/overview/plan-nutrition.webp', 'assets/overview/hero-consult.webp', 'assets/overview/plan-dexa.webp', 'assets/overview/jv-hero-2.webp', 'assets/overview/plan-consult.webp', 'assets/overview/status-mri.webp', 'assets/overview/jv-hero-3.webp'], gb2 = null, ldA = null, ldB = null, ldC3 = null, fpc = null, fp2 = null, ol2 = null, dt2 = null, sg = null, sgc = null, sgClr = null, sgH = null, sgN = null, sgRo = null, ktc = null, kt2 = null, w2 = null, pre2 = null, c2 = null, bg2 = null, fl2 = null, rm2 = null, mt2 = null, mtc = null, txc = null, tx2 = null, sfg2 = '#f3ede6';
-    if (V2) { mtc = h('canvas', { class: 'hpW2Pt', 'aria-hidden': 'true' }); if (!reduced()) mt2 = w2Motes(mtc, function () { return mcol; }, null); fpc = h('canvas', { class: 'hpW2Fp', 'aria-hidden': 'true' }); fl2 = h('i', { class: 'hpW2Fl' }); rm2 = h('i', { class: 'hpW2Rm' }); ktc = h('canvas', { class: 'hpW2PtK', 'aria-hidden': 'true' }); bg2 = h('div', { class: 'hpW2Bg', 'aria-hidden': 'true' }, h('i', { class: 'hpW2Img' }), OPC ? null : fl2); pre2 = null;   // pre2: the light at the top, coming up line by line while the dot loads   // the picture over the top half, the dot its window
+    var imx = null, IMGL = ['assets/overview/plan-physical.webp', 'assets/overview/plan-nutrition.webp', 'assets/overview/hero-consult.webp', 'assets/overview/plan-dexa.webp', 'assets/overview/jv-hero-2.webp', 'assets/overview/plan-consult.webp', 'assets/overview/status-mri.webp', 'assets/overview/jv-hero-3.webp'], gb2 = null, ldA = null, ldB = null, ldC3 = null, fpc = null, fp2 = null, ol2 = null, dt2 = null, sg = null, sgc = null, sgClr = null, sgH = null, sgN = null, sgRo = null, ktc = null, kt2 = null, gnc = null, gn2 = null, w2 = null, pre2 = null, c2 = null, bg2 = null, fl2 = null, rm2 = null, mt2 = null, mtc = null, txc = null, tx2 = null, sfg2 = '#f3ede6';
+    if (V2) { mtc = h('canvas', { class: 'hpW2Pt', 'aria-hidden': 'true' }); if (!reduced()) mt2 = w2Motes(mtc, function () { return mcol; }, null); fpc = h('canvas', { class: 'hpW2Fp', 'aria-hidden': 'true' }); fl2 = h('i', { class: 'hpW2Fl' }); rm2 = h('i', { class: 'hpW2Rm' }); ktc = h('canvas', { class: 'hpW2PtK', 'aria-hidden': 'true' }); gnc = h('canvas', { class: 'hpW2Gn', 'aria-hidden': 'true' }); bg2 = h('div', { class: 'hpW2Bg', 'aria-hidden': 'true' }, h('i', { class: 'hpW2Img' }), OPC ? null : fl2); pre2 = null;   // pre2: the light at the top, coming up line by line while the dot loads   // the picture over the top half, the dot its window
       var halo = function () { return [h('i', { class: 'hpW2Glow' }, h('i')), h('i', { class: 'hpW2Beam' })]; }, info = opts.info || {};
       var glk = h('i', { class: 'hpW2Gl', 'aria-hidden': 'true' }); glk.style.setProperty('--hpW2MkU', 'url("data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="-.2 0 21.6 24">' + MARK.map(function (d) { return '<path d="' + d + '"/>'; }).join('') + '</svg>') + '")');   // the big glossy mark, the mark its mask
       txc = h('canvas', { class: 'hpW2Tx', 'aria-hidden': 'true' }); tx2 = w2Tex(txc, function () { return root.classList.contains('hpW2Solid') || root.classList.contains('hpW2Fill') ? sfg2 : root.classList.contains('arDark') ? '#ffffff' : '#2e1f1a'; });   // the texture in its corner
@@ -17708,6 +17756,8 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
           h('dl', null, [['Member no.', info.no], ['Date of birth', info.dob], ['Member since', info.since], ['Your doctor', info.dr]].map(function (r) { return h('div', null, h('dt', { text: r[0] }), h('dd', { text: r[1] || '—' })); })))), OPC ? fl2 : null, OPC ? rm2 : null);   // the front; the back, the member's details
       c2.addEventListener('click', function () { if (root.classList.contains('hpW2Tap') && root.classList.contains('hpW2Ready') && !root.classList.contains('hpW2Sign')) c2.classList.toggle('hpW2Flip'); });   // not while it is being signed
       if (!reduced()) kt2 = w2Ink(ktc, c2); if (mt2) mt2.card(c2);   // the warm ones' rails at the card
+      if (!reduced()) { gn2 = w2Glint(gnc, c2, function () { return mcol; }, function () { return root.classList.contains('arDark'); });   // the card's edge catching the light where they meet it, once the card is there
+        var ghit = function (px, py, st) { if (root.classList.contains('hpW2Ready') && !root.classList.contains('hpW2Sign')) gn2.hit(px, py, st); }; if (mt2) mt2.onHit(ghit); if (kt2) kt2.onHit(ghit); }
       /* the glass's blur on its own flat layer under the faces (a blur on a face in 3D stays flat while the face turns: "when the card flips the blur stays there"); as the card turns over, the layer narrows and widens with it, to its projected width on the flip's own easing (.45, 0, .2, 1; 0.8 s) */
       var bz = function (x1, y1, x2, y2) { return function (x) { var lo = 0, hi = 1, t = x; for (var i = 0; i < 24; i++) { t = (lo + hi) / 2; var cx = 3 * x1 * t * (1 - t) * (1 - t) + 3 * x2 * t * t * (1 - t) + t * t * t; if (cx < x) lo = t; else hi = t; } return 3 * y1 * t * (1 - t) * (1 - t) + 3 * y2 * t * t * (1 - t) + t * t * t; }; }, flipE = bz(.45, 0, .2, 1);
       /* everything flat about the card turned with it as it flips ("see the bg that stays when I flip the card": the Mask's lighter window round the card, the halo's light and the glass's blur stood still, card-sized, while the faces turned): each narrowed and widened to the card's projected width, on the flip's own easing (.45, 0, .2, 1; 0.8 s). Watched on the card's class, whatever turned it */
@@ -17728,7 +17778,7 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
       if (o.tier) { var tb = c2.querySelector('.hpW2Tag'); if (tb) tb.textContent = o.tier + ' plan'; } if (root) readCol(); };   // the membership's light, the card's style and its halo, changed in place (Tweaks -> Welcome)   // the card: an outline and its words
     var ebT = document.createTextNode(calm ? EBD : '');   // the date, typed in mono capitals behind a square cursor, before the title
     var stg = h('div', { class: 'hpWelStage', style: 'height:calc(var(--hpWelLh) * ' + Math.max(T1.rows, T2.rows) + ')' }, V2 ? h('div', { class: 'hpW2Eb' }, h('span', { class: 'hpW2EbW' }, h('span', { class: 'hpW2EbG', text: EBD }), h('span', { class: 'hpW2EbT' }, ebT, h('span', { class: 'arRvCur' })))) : null, T1.el, T2.el);   // the titles' stage (each title from its top), the eyebrow over it
-    var ball = h('div', { class: 'hpWelBall' }, flip), sph = h('div', { class: 'hpWelSph', 'aria-hidden': 'true' }, V2 ? [pre2, bg2, fpc, mtc, w2, ktc, imx, dd2 = h('div', { class: 'hpW2DotD' }, h('span', { class: 'hpW2EbW' }, h('span', { class: 'hpW2EbG', text: EBD }), h('span', { class: 'hpW2EbT' }, ddT = document.createTextNode(''), h('span', { class: 'arRvCur' }))))] : ball, stc, card || ld);   // the ball at the profile's own place; the status lines (or the card holding them) under it
+    var ball = h('div', { class: 'hpWelBall' }, flip), sph = h('div', { class: 'hpWelSph', 'aria-hidden': 'true' }, V2 ? [pre2, bg2, fpc, mtc, w2, ktc, gnc, imx, dd2 = h('div', { class: 'hpW2DotD' }, h('span', { class: 'hpW2EbW' }, h('span', { class: 'hpW2EbG', text: EBD }), h('span', { class: 'hpW2EbT' }, ddT = document.createTextNode(''), h('span', { class: 'arRvCur' }))))] : ball, stc, card || ld);   // the ball at the profile's own place; the status lines (or the card holding them) under it
     if (CARD || V2) SAY += ' Your membership card: ' + (NM ? NM + ' ' : '') + (opts.last || '') + ', ' + (opts.tier || 'Baseline') + ' plan.';
     var root = h('div', { class: 'arSheet hpSheet hpWel' + (opts.theme === 'dark' ? ' arDark' : '') + (calm ? ' hpWelCalm' : '') + (CARD ? ' hpWelCardOn' : '') + (V2 ? ' hpWelV2' : '') + (DRW ? ' hpW2Drw' : ''), role: 'document', 'aria-label': SAY },
       sph, h('div', { class: 'hpWelBody' }, V2 ? h('div', { class: 'hpW2Lead', 'aria-hidden': 'true' }, (ldA = leadT(LEAD1)).el, (ldB = leadT(LEADT)).el, (ldC3 = leadT(LEAD3)).el) : null, stg, h('div', { class: 'hpWelCtaR' }, cta, later2, V2 ? h('p', { class: 'hpW2Sub', text: SUBT }) : null)), xb2, bk2);   /* V2: the line under the button ("sub below the CTA, 12px, 20px gap") */   // the button in the content, under the title, hugging its words ("hug content CTA, in the content not in the footer")
@@ -24885,6 +24935,7 @@ hairline({
   { const o = document.createElement('option'); o.value = 'hl'; o.textContent = 'Hairline'; versionSel.appendChild(o); }
   { const o = document.createElement('option'); o.value = 'ig'; o.textContent = 'Image generator'; versionSel.appendChild(o); }
   { const o = document.createElement('option'); o.value = 'rv'; o.textContent = 'Report visuals'; versionSel.appendChild(o); }
+  { const o = document.createElement('option'); o.value = 'cc'; o.textContent = 'Concierge'; versionSel.appendChild(o); }   // the chat with Eva, a page of its own
   { const o = document.createElement('option'); o.value = 'doc'; o.textContent = 'Documentation'; versionSel.appendChild(o); }   // the components, documented: the Progress timeline first   // the report cards, a page of their own   // the halftone tool, a page of its own   // the Hairline illustrations, a page of their own beside Home
   { const o = document.createElement('option'); o.value = 'home'; o.textContent = 'Home'; versionSel.appendChild(o); }   // the mosaic of every page
   /* two groups ("group all of that by main pages; remove all the subgroups: the page's name is in its name"): Main pages, each page an entry of its own, then the OrganAge concept at the very end, the teaser video and the landing page with it
@@ -24924,6 +24975,8 @@ hairline({
     if (window._ig) window._ig.hide();
     if (v === 'rv'){ if (window._rv) window._rv.show(); return; }
     if (window._rv) window._rv.hide();
+    if (v === 'cc'){ if (window._cc) window._cc.show(); return; }
+    if (window._cc) window._cc.hide();
     if (v === 'home'){ if (window._home) window._home.show(); return; }
     if (window._home) window._home.hide();
     if (v === 'tl'){ setMode(9); resize(); if (window._tl) window._tl.open(); return; }
@@ -28851,6 +28904,10 @@ hairline({
   // and the Overview desk. The input's own placeholder is cleared so the two
   // never show together; the line hides while there are words in the field
   // and comes back when they go.
+  (function ovAskHasText(){
+    const sync = e => { const t = e.target; if (!t || t.tagName !== 'INPUT' || !t.closest) return; const b = t.closest('.ovChatBox'); if (b) b.classList.toggle('hasText', !!t.value); };
+    document.addEventListener('input', sync, true); document.addEventListener('focusout', sync, true);
+  })();
   (function ovPlaceholders(){
     const LINES = [
       'Ask Everlab anything',
@@ -39037,6 +39094,7 @@ hairline({
     const phone = inner => B(34, 5, 32, 90, 'dev') + inner;
     const SHOT = {
       docs: () => B(5, 7, 30, 3, 'hi') + B(5, 15, 90, 13, 'card', '6px') + B(5, 34, 90, 24, 'card', '8px') + B(12, 45.6, 76, 0.8) + [12, 31, 50, 69, 88].map((x, i) => B(x - 1.4, 44, 2.8, 4.4, i < 3 ? 'hi' : '', '50%')).join('') + B(40, 51, 20, 2) + B(5, 64, 42, 14, 'card', '6px') + B(5, 82, 62, 14, 'card', '6px'),   // the playground: a title, the controls, the timeline card, two of its widths
+      ccon: () => B(3, 6, 21, 88, 'card', '6px') + B(6, 11, 11, 2.6, 'hi') + [22, 29, 36, 43, 50, 57].map(y => B(6, y, 14, 2)).join('') + B(68, 9, 26, 6, 'card', '99px') + B(30, 21, 46, 2) + B(30, 26, 36, 2) + B(30, 33, 40, 22, 'card', '6px') + B(33, 37, 7, 9, 'lt', '3px') + B(43, 38, 18, 2.2, 'hi') + B(43, 43, 24, 2) + B(30, 80, 64, 12, 'card', '8px'),   // the sidebar, a question, the answer and its appointment card, the input
       rvis: () => B(5, 7, 30, 3, 'hi') + [5, 29, 53, 77].map(x => B(x, 18, 19, 72, 'card', '6px') + B(x + 3, 25, 13, 34, 'lt', '3px') + B(x + 3, 66, 11, 2) + B(x + 3, 73, 8, 2)).join(''),   // four report cards, a panel and two lines each
       igen: () => { let h = B(5, 7, 30, 3, 'hi'); for (let r = 0; r < 7; r++) for (let c = 0; c < 12; c++){ const d = Math.hypot(c - 5.5, (r - 3) * 1.4) / 7, z = Math.max(0.6, 5.2 * (1 - d)); if (z > 0.8) h += B(6 + c * 7.6 + (3.8 - z / 2), 18 + r * 11 + (3.8 - z / 2), z, z * 1.4, (r + c) % 5 ? '' : 'lt', '50%'); } return h; },
       aqDesk: () => side() + B(21, 8, 30, 5, 'hi') + B(21, 20, 36, 40, 'ph', '8px') + B(59, 20, 38, 40, 'card', '8px') + B(0, 0, 100, 100, 'dim') + B(32, 14, 40, 86, 'card', '10px') + B(32, 14, 40, 30, 'ac', '10px') + B(36, 50, 26, 4, 'hi') + B(36, 58, 32, 2.5) + B(36, 64, 28, 2.5) + B(36, 88, 32, 7, 'lt', '5px'),
@@ -39110,6 +39168,7 @@ hairline({
       { g: 'Hairline', n: 'Illustrations', s: 'hairline', hl: true, wide: true },
       { g: 'Image generator', n: 'Halftone', s: 'igen', ig: true, wide: true },
       { g: 'Report visuals', n: 'Report cards', s: 'rvis', rv: true, wide: true },
+      { g: 'Concierge', n: 'Chat with Eva', s: 'ccon', cc: true, wide: true },
       { g: 'Documentation', n: 'Progress timeline', s: 'docs', doc: true, wide: true }
     ];
     const ARR = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 11.5 11.5 4.5M6 4.5h5.5V10"/></svg>';
@@ -39126,12 +39185,13 @@ hairline({
       ['Hairline', 'Every Hairline figure: the report pop-up\u2019s three drafts and the six health checks.'],
       ['Image generator', 'Any picture as an organic print halftone: dots, crosses and diamonds, exported as PNG or SVG.'],
       ['Report visuals', 'The card each report reveals: MRI and CT, microbiome, blood testing and DEXA, side by side.'],
+      ['Concierge', 'The chat with Eva: appointments, goals, files, reports and imaging, on desktop and in the mobile panel.'],
       ['Documentation', 'The system\u2019s components, documented and live: the Progress timeline and its rules.']
     ];
     const cardOf = (p, i) => '<button class="hmCard' + (p.wide ? ' wide' : '') + (p.r ? ' r' : '') + '" type="button" data-i="' + i + '"><div class="hmShot" aria-hidden="true">' + SHOT[p.s]() + '</div><div class="hmMeta"><div><b>' + p.n + '</b></div>' + ARR + '</div></button>';
     grid.innerHTML = ROWS.map(([g, line]) => { const its = P.map((p, i) => [p, i]).filter(([p]) => p.g === g); if (!its.length) return '';
       return '<section class="hmRow"><div class="hmRowHd"><h2>' + (({ Concept: 'OrganAge concept' })[g] || g) + '</h2><p>' + line + '</p><span>' + its.length + (its.length > 1 ? ' entry points' : ' entry point') + '</span></div><div class="hmRowCards">' + its.map(([p, i]) => cardOf(p, i)).join('') + '</div></section>'; }).join('');
-    const show = () => { document.body.classList.remove('hlOn', 'igOn', 'rvOn', 'docOn'); document.body.classList.add('homeOn'); if (versionSel) versionSel.value = 'home'; try { history.replaceState(null, '', '#home'); } catch (e){} const h = document.getElementById('home'); if (h) h.scrollTop = 0; };
+    const show = () => { document.body.classList.remove('hlOn', 'igOn', 'rvOn', 'docOn', 'ccOn'); document.body.classList.add('homeOn'); if (versionSel) versionSel.value = 'home'; try { history.replaceState(null, '', '#home'); } catch (e){} const h = document.getElementById('home'); if (h) h.scrollTop = 0; };
     const hide = () => document.body.classList.remove('homeOn');
     grid.addEventListener('click', e => {
       const c = e.target.closest('.hmCard'); if (!c) return;
@@ -39139,6 +39199,7 @@ hairline({
       if (p.hl){ if (window._hl) window._hl.show(); return; }
       if (p.ig){ if (window._ig) window._ig.show(); return; }
       if (p.rv){ if (window._rv) window._rv.show(); return; }
+      if (p.cc){ if (window._cc) window._cc.show(); return; }
       if (p.doc){ if (window._doc) window._doc.show(); return; }
       setMode(p.m); resize();
       if (p.svc && window._svc) (p.svc === 'desk' ? window._svc.openDesk : window._svc.openMob)();
@@ -39150,12 +39211,12 @@ hairline({
     window._home = { show, hide };
     {
       const pg = document.getElementById('hlPage');
-      const hlShow = () => { if (!pg) return; hide(); if (window._ig) window._ig.hide(); if (window._rv) window._rv.hide(); if (window._doc) window._doc.hide(); if (!pg.firstChild){ const f = document.createElement('iframe'); f.id = 'hlFrame'; f.src = 'hairline.html'; f.title = 'Hairline illustrations'; pg.appendChild(f); } document.body.classList.add('hlOn'); if (versionSel) versionSel.value = 'hl'; try { history.replaceState(null, '', '#hairline'); } catch (e){} };
+      const hlShow = () => { if (!pg) return; hide(); if (window._ig) window._ig.hide(); if (window._rv) window._rv.hide(); if (window._cc) window._cc.hide(); if (window._doc) window._doc.hide(); if (!pg.firstChild){ const f = document.createElement('iframe'); f.id = 'hlFrame'; f.src = 'hairline.html'; f.title = 'Hairline illustrations'; pg.appendChild(f); } document.body.classList.add('hlOn'); if (versionSel) versionSel.value = 'hl'; try { history.replaceState(null, '', '#hairline'); } catch (e){} };
       const hlHide = () => { if (!document.body.classList.contains('hlOn')) return; document.body.classList.remove('hlOn'); if (versionSel && versionSel.value === 'hl') versionSel.value = String(version); };   // left by a link to a page, the menu names that page again
       window._hl = { show: hlShow, hide: hlHide };
       // the Image generator, the same way
       const ig = document.getElementById('igPage');
-      const igShow = () => { if (!ig) return; hide(); hlHide(); if (window._rv) window._rv.hide(); if (window._doc) window._doc.hide(); if (!ig.firstChild){ const f = document.createElement('iframe'); f.id = 'igFrame'; f.src = 'image-generator.html'; f.title = 'Image generator'; f.setAttribute('allow', 'clipboard-write'); ig.appendChild(f); } document.body.classList.add('igOn'); if (versionSel) versionSel.value = 'ig'; try { history.replaceState(null, '', '#image-generator'); } catch (e){} };
+      const igShow = () => { if (!ig) return; hide(); hlHide(); if (window._rv) window._rv.hide(); if (window._cc) window._cc.hide(); if (window._doc) window._doc.hide(); if (!ig.firstChild){ const f = document.createElement('iframe'); f.id = 'igFrame'; f.src = 'image-generator.html'; f.title = 'Image generator'; f.setAttribute('allow', 'clipboard-write'); ig.appendChild(f); } document.body.classList.add('igOn'); if (versionSel) versionSel.value = 'ig'; try { history.replaceState(null, '', '#image-generator'); } catch (e){} };
       const igHide = () => { if (!document.body.classList.contains('igOn')) return; document.body.classList.remove('igOn'); if (versionSel && versionSel.value === 'ig') versionSel.value = String(version); };
       window._ig = { show: igShow, hide: igHide };
       if (location.hash === '#image-generator') igShow();
@@ -39167,12 +39228,21 @@ hairline({
       const rvTheme = () => { const f = document.getElementById('rvFrame'), t = document.getElementById('themeSel'); try { const r = f && f.contentDocument && f.contentDocument.documentElement; if (!r) return; const v = t ? t.value : ''; if (v === 'dark' || v === 'light') r.dataset.theme = v; else delete r.dataset.theme; } catch (e){} };
       { const t = document.getElementById('themeSel'); if (t) t.addEventListener('change', rvTheme); }
       { const b = document.getElementById('tkRvSave'); if (b) b.addEventListener('click', () => { const f = document.getElementById('rvFrame'); try { const w = f && f.contentWindow; if (w && w.RV) w.RV.saveAll(); } catch (e){} }); }   // the bar's Save presets: the page's own action
-      const rvShow = () => { if (!rv) return; hide(); hlHide(); igHide(); if (window._doc) window._doc.hide(); if (!rv.firstChild){ const f = document.createElement('iframe'); f.id = 'rvFrame'; f.src = 'report-visuals.html'; f.title = 'Report visuals'; f.addEventListener('load', rvTheme); rv.appendChild(f); } rvTheme(); document.body.classList.add('rvOn'); if (versionSel) versionSel.value = 'rv'; try { history.replaceState(null, '', '#report-visuals'); } catch (e){} };
+      const rvShow = () => { if (!rv) return; hide(); hlHide(); igHide(); if (window._doc) window._doc.hide(); if (window._cc) window._cc.hide(); if (!rv.firstChild){ const f = document.createElement('iframe'); f.id = 'rvFrame'; f.src = 'report-visuals.html'; f.title = 'Report visuals'; f.addEventListener('load', rvTheme); rv.appendChild(f); } rvTheme(); document.body.classList.add('rvOn'); if (versionSel) versionSel.value = 'rv'; try { history.replaceState(null, '', '#report-visuals'); } catch (e){} };
       window._rv = { show: rvShow, hide: rvHide };
+      // the Concierge, the same way, its theme the bar's Mode as Report visuals' is
+      const cc = document.getElementById('ccPage');
+      const ccHide = () => { if (!document.body.classList.contains('ccOn')) return; document.body.classList.remove('ccOn'); if (versionSel && versionSel.value === 'cc') versionSel.value = String(version); };
+      const ccTheme = () => { const f = document.getElementById('ccFrame'), t = document.getElementById('themeSel'); try { const r = f && f.contentDocument && f.contentDocument.documentElement; if (!r) return; const v = t ? t.value : ''; if (v === 'dark' || v === 'light') r.dataset.theme = v; else delete r.dataset.theme; } catch (e){} };
+      { const t = document.getElementById('themeSel'); if (t) t.addEventListener('change', ccTheme); }
+      const ccShow = () => { if (!cc) return; hide(); hlHide(); igHide(); rvHide(); if (window._doc) window._doc.hide(); if (!cc.firstChild){ const f = document.createElement('iframe'); f.id = 'ccFrame'; f.src = 'concierge.html'; f.title = 'Concierge'; f.setAttribute('allow', 'clipboard-write'); f.addEventListener('load', ccTheme); cc.appendChild(f); } ccTheme(); document.body.classList.add('ccOn'); if (versionSel) versionSel.value = 'cc'; try { history.replaceState(null, '', '#concierge'); } catch (e){} };
+      window._cc = { show: ccShow, hide: ccHide };
+      if (location.hash === '#concierge') ccShow();
+      addEventListener('hashchange', () => { if (location.hash === '#concierge') ccShow(); else ccHide(); });
       // Documentation, the same way
       const doc = document.getElementById('docPage');
       const docHide = () => { if (!document.body.classList.contains('docOn')) return; document.body.classList.remove('docOn'); if (versionSel && versionSel.value === 'doc') versionSel.value = String(version); };
-      const docShow = () => { if (!doc) return; hide(); hlHide(); igHide(); rvHide(); if (!doc.firstChild){ const f = document.createElement('iframe'); f.id = 'docFrame'; f.src = 'components/progress-timeline/demo.html'; f.title = 'Documentation: Progress timeline'; doc.appendChild(f); } document.body.classList.add('docOn'); if (versionSel) versionSel.value = 'doc'; try { history.replaceState(null, '', '#documentation'); } catch (e){} };
+      const docShow = () => { if (!doc) return; hide(); hlHide(); igHide(); rvHide(); if (window._cc) window._cc.hide(); if (!doc.firstChild){ const f = document.createElement('iframe'); f.id = 'docFrame'; f.src = 'components/progress-timeline/demo.html'; f.title = 'Documentation: Progress timeline'; doc.appendChild(f); } document.body.classList.add('docOn'); if (versionSel) versionSel.value = 'doc'; try { history.replaceState(null, '', '#documentation'); } catch (e){} };
       window._doc = { show: docShow, hide: docHide };
       { const b = document.getElementById('tkDocSave'); if (b) b.addEventListener('click', () => { const f = document.getElementById('docFrame'); let ok = false; try { const w = f && f.contentWindow; if (w && w.PTDemo) ok = w.PTDemo.save(); } catch (e){} b.textContent = ok ? 'Saved' : 'Cannot save'; clearTimeout(b._t); b._t = setTimeout(() => { b.textContent = 'Save'; }, ok ? 1400 : 2600); }); }   // the bar's Save: the page's own, as Save presets on Report visuals
       if (location.hash === '#documentation') docShow();

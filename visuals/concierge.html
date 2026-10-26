@@ -1,0 +1,945 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Concierge</title>
+<style>
+  /* Concierge: the member's chat with Eva, from the Figma boards (single appointment, appointment group, goals,
+     attachments, clinician fallback, reports, imaging), as a working page of the prototype: the desktop app (sidebar,
+     chat, input) or the mobile panel, every component the boards draw, and a Components tab laying them all out.
+     Built to dist/concierge.html by tools/build.js, its pictures inlined; the prototype opens it under its bar. */
+  :root {
+    --bg: #ffffff; --side: #fbfbfa; --fg: #161615; --muted: rgba(22, 22, 21, .56); --faint: rgba(22, 22, 21, .36);
+    --line: rgba(22, 22, 21, .08); --card: #ffffff; --cardLine: rgba(22, 22, 21, .09); --bubble: #f2f2f0; --input: #f5f5f3;
+    --hover: rgba(22, 22, 21, .045); --active: rgba(22, 22, 21, .065); --sec: rgba(22, 22, 21, .06); --secH: rgba(22, 22, 21, .1);
+    --pri: #161615; --priFg: #ffffff; --acc: #f0743a; --accFg: #ffffff; --ok: #1e9354; --bad: #d23b3b;
+    --pop: #ffffff; --popLine: rgba(22, 22, 21, .1); --stage: #efefed; --scrim: rgba(10, 10, 10, .32);
+    --shadow: 0 1px 2px rgba(20, 20, 20, .04), 0 6px 20px rgba(20, 20, 20, .05);
+    --popShadow: 0 2px 6px rgba(20, 20, 20, .06), 0 16px 40px rgba(20, 20, 20, .12);
+    --sans: "Saans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #111111; --side: #111111; --fg: #f2f2f0; --muted: rgba(242, 242, 240, .56); --faint: rgba(242, 242, 240, .34);
+      --line: rgba(255, 255, 255, .07); --card: #1b1b1a; --cardLine: rgba(255, 255, 255, .055); --bubble: #232322; --input: #1b1b1a;
+      --hover: rgba(255, 255, 255, .045); --active: rgba(255, 255, 255, .07); --sec: rgba(255, 255, 255, .08); --secH: rgba(255, 255, 255, .13);
+      --pri: #ffffff; --priFg: #111111; --ok: #4cc27e; --bad: #f06a6a;
+      --pop: #212120; --popLine: rgba(255, 255, 255, .08); --stage: #070707; --scrim: rgba(0, 0, 0, .5);
+      --shadow: none; --popShadow: 0 16px 40px rgba(0, 0, 0, .5);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #111111; --side: #111111; --fg: #f2f2f0; --muted: rgba(242, 242, 240, .56); --faint: rgba(242, 242, 240, .34);
+    --line: rgba(255, 255, 255, .07); --card: #1b1b1a; --cardLine: rgba(255, 255, 255, .055); --bubble: #232322; --input: #1b1b1a;
+    --hover: rgba(255, 255, 255, .045); --active: rgba(255, 255, 255, .07); --sec: rgba(255, 255, 255, .08); --secH: rgba(255, 255, 255, .13);
+    --pri: #ffffff; --priFg: #111111; --ok: #4cc27e; --bad: #f06a6a;
+    --pop: #212120; --popLine: rgba(255, 255, 255, .08); --stage: #070707; --scrim: rgba(0, 0, 0, .5);
+    --shadow: none; --popShadow: 0 16px 40px rgba(0, 0, 0, .5);
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 14px/1.45 var(--sans); -webkit-font-smoothing: antialiased; overflow: hidden; }
+  button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+  button:focus-visible, textarea:focus-visible, [tabindex]:focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; }
+  img { display: block; max-width: 100%; }
+  .ic { width: 16px; height: 16px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* the page's own bar: what to look at (the chat or its components), on which device, in which theme */
+  .bar { position: relative; z-index: 3; display: flex; align-items: center; gap: 12px; height: 48px; padding-inline: 16px; border-bottom: 1px solid var(--line); background: var(--side); }
+  .bar h1 { margin: 0 8px 0 0; font-size: 13px; font-weight: 500; letter-spacing: .01em; white-space: nowrap; }
+  .seg { display: inline-flex; padding: 2px; border-radius: 9px; background: var(--sec); }
+  .seg button { height: 28px; padding: 0 12px; border-radius: 7px; font-size: 12.5px; color: var(--muted); white-space: nowrap; }
+  .seg button[aria-pressed="true"] { background: var(--card); color: var(--fg); box-shadow: 0 1px 2px rgba(0, 0, 0, .08); }
+  .bar .sp { flex: 1; }
+  .iconBtn { display: inline-grid; place-items: center; width: 32px; height: 32px; border-radius: 8px; color: var(--muted); }
+  .iconBtn:hover { background: var(--hover); color: var(--fg); }
+  .phoneMode .devSeg { display: none; }
+
+  /* the stage under the bar: the app fills it, or holds the mobile panel framed in the middle */
+  .stage { position: absolute; left: 0; right: 0; top: 48px; bottom: 0; overflow: hidden; }
+  .stage.dvMob { display: grid; place-items: center; background: var(--stage); padding: 24px 16px; }
+  .app { position: relative; display: grid; grid-template-columns: 256px minmax(0, 1fr); width: 100%; height: 100%; background: var(--bg); overflow: hidden; transition: grid-template-columns .32s cubic-bezier(.3, .7, .2, 1), opacity .28s, transform .36s cubic-bezier(.2, .8, .2, 1); }
+  .stage.dvMob .app { width: min(390px, 100%); height: min(800px, 100%); border-radius: 24px; border: 1px solid var(--line); box-shadow: 0 30px 80px rgba(0, 0, 0, .18); }
+  .app.sideMin { grid-template-columns: 64px minmax(0, 1fr); }
+  .app.closed { opacity: 0; transform: translateY(16px) scale(.97); pointer-events: none; }
+  .stage.dvMob .app.closed { transform-origin: 100% 100%; }
+
+  /* sidebar */
+  .side { display: flex; flex-direction: column; min-width: 0; padding: 14px 12px; border-right: 1px solid var(--line); background: var(--side); overflow: hidden; }
+  .sideHd { display: flex; align-items: center; gap: 8px; height: 36px; padding-left: 6px; margin-bottom: 14px; }
+  .brand { display: flex; align-items: center; gap: 8px; min-width: 0; font-size: 15px; font-weight: 600; letter-spacing: -.01em; white-space: nowrap; }
+  .brand .ic { width: 18px; height: 18px; }
+  .sideHd .iconBtn { margin-left: auto; }
+  .nav { display: grid; gap: 2px; }
+  .item { position: relative; display: flex; align-items: center; gap: 10px; width: 100%; min-height: 36px; padding: 8px 10px; border-radius: 9px; font-size: 13px; text-align: left; white-space: nowrap; }
+  .item:hover { background: var(--hover); }
+  .item.on { background: var(--active); }
+  .item span { overflow: hidden; text-overflow: ellipsis; }
+  .badge { margin-left: auto; min-width: 20px; height: 20px; padding: 0 6px; display: inline-grid; place-items: center; border-radius: 6px; background: var(--acc); color: var(--accFg); font-size: 11px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .badge:empty, .badge[data-n="0"] { display: none; }
+  .recHd { margin: 22px 10px 8px; font-size: 11px; color: var(--faint); letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; }
+  .rec { display: grid; gap: 1px; overflow-y: auto; margin-inline: -4px; padding-inline: 4px; scrollbar-width: none; }
+  .rec .item { color: var(--muted); }
+  .rec .item.on, .rec .item:hover { color: var(--fg); }
+  .app.sideMin .side { padding-inline: 12px; }
+  .app.sideMin .brand span, .app.sideMin .item span, .app.sideMin .recHd, .app.sideMin .rec { display: none; }
+  .app.sideMin .sideHd { flex-direction: column; height: auto; gap: 10px; padding-left: 0; }
+  .app.sideMin .sideHd .iconBtn { margin-left: 0; }
+  .app.sideMin .item { justify-content: center; padding-inline: 0; }
+  .app.sideMin .badge { position: absolute; top: 3px; right: 3px; min-width: 8px; width: 8px; height: 8px; padding: 0; border-radius: 50%; font-size: 0; }
+
+  /* the chat */
+  .main { position: relative; display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+  .hd { display: flex; align-items: center; gap: 6px; height: 52px; flex: none; padding: 0 12px; }
+  .hd .ttl { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; color: var(--muted); }
+  .hd .sp { flex: 1; }
+  .hd .mobOnly { display: none; }
+  .thread { flex: 1; min-height: 0; overflow-y: auto; scroll-behavior: smooth; }
+  .col { width: 100%; max-width: 688px; margin: 0 auto; padding: 12px 24px 40px; }
+  .dock { flex: none; width: 100%; max-width: 688px; margin: 0 auto; padding: 0 24px 24px; }
+  .box { border-radius: 20px; background: var(--input); border: 1px solid var(--cardLine); padding: 12px 12px 10px 16px; transition: border-color .2s; }
+  .box:focus-within { border-color: var(--secH); }
+  .box textarea { display: block; width: 100%; min-height: 24px; max-height: 160px; resize: none; border: 0; outline: 0; background: none; color: var(--fg); font: 14px/1.5 var(--sans); padding: 2px 0; }
+  .box textarea::placeholder { color: var(--faint); }
+  .boxRow { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+  .boxRow .sp { flex: 1; }
+  .round { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--cardLine); color: var(--muted); }
+  .round:hover { color: var(--fg); background: var(--hover); }
+  .pill { display: inline-flex; align-items: center; gap: 4px; height: 30px; padding: 0 8px 0 12px; border-radius: 999px; background: var(--sec); font-size: 12.5px; }
+  .pill:hover { background: var(--secH); }
+  .pill .ic { width: 14px; height: 14px; color: var(--muted); }
+  /* the send arrow only once a character is typed: folded away until then, grown in with the first */
+  .send { display: inline-grid; place-items: center; width: 0; height: 30px; margin-left: -8px; border-radius: 50%; overflow: hidden; background: var(--sec); color: var(--faint); opacity: 0; transform: scale(.6); pointer-events: none; transition: background .2s, color .2s, width .22s cubic-bezier(.2, .8, .2, 1), margin .22s cubic-bezier(.2, .8, .2, 1), opacity .16s, transform .22s cubic-bezier(.2, .8, .2, 1); }
+  .send.has { width: 30px; margin-left: 0; opacity: 1; transform: none; pointer-events: auto; }
+  .send.on { background: var(--pri); color: var(--priFg); }
+
+  /* messages */
+  .msg { display: flex; flex-direction: column; margin-top: 24px; }
+  .msg:first-child { margin-top: 8px; }
+  .msg.u { align-items: flex-end; }
+  .msg.u .bub { max-width: min(80%, 480px); padding: 9px 16px; border-radius: 20px; background: var(--bubble); white-space: pre-wrap; overflow-wrap: anywhere; }
+  .msg.a .txt { max-width: 600px; white-space: pre-wrap; overflow-wrap: anywhere; text-wrap: pretty; }
+  .msg.a .txt:empty { display: none; }
+  .blk { margin-top: 16px; min-width: 0; }
+  .blk + .blk { margin-top: 12px; }
+  .blk:has(> .cite) { margin-top: 10px; }
+  .meta { display: flex; align-items: center; gap: 2px; margin-top: 6px; color: var(--faint); font-size: 11.5px; opacity: 0; transition: opacity .2s; font-variant-numeric: tabular-nums; }
+  .msg:hover .meta, .msg:focus-within .meta, .msg.last .meta { opacity: 1; }
+  .meta time { margin-right: 6px; }
+  .meta button { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 7px; color: var(--faint); }
+  .meta button:hover { background: var(--hover); color: var(--fg); }
+  .meta button.on { color: var(--fg); }
+  .meta .ic { width: 15px; height: 15px; }
+  .msg.a .meta { margin-left: -6px; }
+  /* the desk: the question's actions sit in the gap under it on hover, so the answer follows close */
+  .app:not(.mob) .msg.u { position: relative; }
+  .app:not(.mob) .msg.u .meta { position: absolute; right: 0; top: 100%; margin-top: 4px; }
+  .app:not(.mob) .msg.u + .msg, .app:not(.mob) .msg.u + .think { margin-top: 36px; }
+  .in { animation: rise .42s cubic-bezier(.2, .8, .2, 1) both; }
+  @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  .think { margin-top: 24px; font-size: 13px; color: var(--muted); background: linear-gradient(90deg, var(--faint) 0 30%, var(--fg) 45%, var(--faint) 60% 100%) 0 0 / 300% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; animation: shim 1.6s linear infinite; width: fit-content; }
+  @keyframes shim { from { background-position: 100% 0; } to { background-position: 0 0; } }
+
+  /* the new chat: a greeting, then things to ask */
+  .hello { display: flex; flex-direction: column; align-items: center; text-align: center; padding: min(14vh, 120px) 0 24px; }
+  .hello .orb { width: 40px; height: 40px; }
+  .hello h2 { margin: 18px 0 6px; font-size: 24px; font-weight: 500; letter-spacing: -.02em; text-wrap: balance; }
+  .hello p { margin: 0; max-width: 40ch; color: var(--muted); text-wrap: pretty; }
+  .sugs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 28px; width: 100%; }
+  .sug { display: block; width: 100%; padding: 12px 14px; border-radius: 14px; border: 1px solid var(--cardLine); background: var(--card); text-align: left; font-size: 13px; color: var(--fg); box-shadow: var(--shadow); }
+  .sug:hover { background: var(--hover); }
+  .sug small { display: block; margin-top: 2px; color: var(--muted); font-size: 12px; }
+  .sugRow { display: flex; flex-wrap: wrap; gap: 6px; }
+  .sugRow .sug { width: auto; padding: 7px 12px; border-radius: 999px; box-shadow: none; }
+
+  /* inbox */
+  .inbox { display: grid; gap: 8px; padding-top: 8px; }
+  .inbox h2 { margin: 0 0 8px; font-size: 18px; font-weight: 500; letter-spacing: -.01em; }
+  .note { display: flex; gap: 12px; align-items: flex-start; width: 100%; padding: 14px; border-radius: 14px; border: 1px solid var(--cardLine); background: var(--card); text-align: left; box-shadow: var(--shadow); }
+  .note:hover { background: var(--hover); }
+  .note img, .note .noteIc { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; flex: none; }
+  .note .noteIc { display: grid; place-items: center; background: var(--sec); }
+  .note b { display: block; font-size: 13px; font-weight: 500; }
+  .note p { margin: 2px 0 0; color: var(--muted); font-size: 12.5px; }
+  .note time { margin-left: auto; flex: none; color: var(--faint); font-size: 11.5px; }
+  .note .dot { width: 8px; height: 8px; margin-top: 5px; border-radius: 50%; background: var(--acc); flex: none; }
+  .note.read .dot { visibility: hidden; }
+
+  /* appointment card: wide (the chat) or compact (narrow places) */
+  .apt { display: flex; flex-direction: column; width: min(100%, 470px); padding: 16px; border-radius: 16px; background: var(--card); border: 1px solid var(--cardLine); box-shadow: var(--shadow); }
+  .aptTop { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 18px; }
+  .av { width: 44px; height: 44px; border-radius: 10px; object-fit: cover; flex: none; background: var(--sec); }
+  .aptTx { min-width: 0; }
+  .aptTx b { display: block; font-size: 14px; font-weight: 500; line-height: 1.3; }
+  .aptTx p { margin: 3px 0 0; color: var(--muted); font-size: 12.5px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .aptFoot { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; min-height: 32px; margin-top: auto; }   /* at the card's foot, so cards side by side keep their buttons level */
+  .aptSt { display: grid; gap: 1px; font-size: 12px; min-width: 0; }
+  .st { font-weight: 500; }
+  .st.ok { color: var(--ok); } .st.bad { color: var(--bad); } .st.mut { color: var(--muted); font-weight: 400; }
+  .dt { color: var(--muted); font-variant-numeric: tabular-nums; }
+  .btns { display: flex; gap: 6px; flex: none; }
+  .btn { height: 32px; padding: 0 14px; border-radius: 999px; background: var(--sec); font-size: 12.5px; font-weight: 500; white-space: nowrap; transition: background .15s; }
+  .btn:hover { background: var(--secH); }
+  .btn.pri { background: var(--pri); color: var(--priFg); }
+  .btn.pri:hover { opacity: .9; }
+  .apt.cmp { width: 248px; padding: 14px; }
+  .apt.cmp .av { width: 40px; height: 40px; }
+  .apt.cmp .aptTop { margin-bottom: 14px; }
+  .apt.cmp .aptFoot { display: block; }
+  .apt.cmp .aptSt { display: flex; gap: 6px; flex-wrap: wrap; }
+  .apt.cmp .btns { margin-top: 10px; }
+  .apt.cmp .btn { flex: 1; }
+  .apt.flash { animation: flash .9s ease; }
+  @keyframes flash { 30% { border-color: var(--ok); } }
+
+  /* appointment rows and the group around them */
+  .aRow { display: flex; gap: 12px; align-items: center; width: 100%; text-align: left; border-radius: 10px; }
+  .aRow .av { width: 36px; height: 36px; border-radius: 9px; }
+  .aRow b { display: block; font-size: 13px; font-weight: 500; line-height: 1.3; }
+  .aRow .aptSt { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 2px; }
+  .grp { width: min(100%, 420px); padding: 16px; border-radius: 16px; background: var(--card); border: 1px solid var(--cardLine); box-shadow: var(--shadow); }
+  .grpHd { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; font-size: 13px; font-weight: 500; }
+  .count { display: inline-grid; place-items: center; min-width: 20px; height: 18px; padding: 0 5px; border-radius: 5px; background: var(--sec); color: var(--muted); font-size: 11px; font-weight: 500; font-variant-numeric: tabular-nums; }
+  .grpList { display: grid; gap: 14px; }
+  .grpList .aRow:hover b { text-decoration: underline; text-underline-offset: 2px; text-decoration-color: var(--faint); }
+  .grpMore { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .36s cubic-bezier(.3, .7, .2, 1); }
+  .grpMore > div { min-height: 0; overflow: hidden; display: grid; gap: 14px; }
+  .grp.open .grpMore { grid-template-rows: 1fr; }
+  .grp.open .grpMore > div { padding-top: 14px; }
+  .more { display: inline-flex; align-items: center; gap: 4px; margin-top: 14px; font-size: 12px; color: var(--muted); }
+  .more:hover { color: var(--fg); }
+  .more .ic { width: 14px; height: 14px; transition: transform .3s; }
+  .grp.open .more .ic { transform: rotate(180deg); }
+
+  /* carousels: a heading with its count and arrows, then a row that scrolls */
+  .car { min-width: 0; }
+  .carHd { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; font-size: 13px; font-weight: 500; }
+  .carHd .sp { flex: 1; }
+  .carHd .arw { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 7px; color: var(--fg); }
+  .carHd .arw:hover { background: var(--hover); }
+  .carHd .arw:disabled { color: var(--faint); cursor: default; background: none; }
+  .carT { display: flex; gap: 8px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; scrollbar-width: none; padding-bottom: 2px; }
+  .carT::-webkit-scrollbar { display: none; }
+  .carT > * { scroll-snap-align: start; flex: none; }
+  .car.fadeR .carT { -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 56px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 56px), transparent); }
+  .car.fadeL.fadeR .carT { -webkit-mask-image: linear-gradient(90deg, transparent, #000 40px calc(100% - 56px), transparent); mask-image: linear-gradient(90deg, transparent, #000 40px calc(100% - 56px), transparent); }
+  .car.fadeL:not(.fadeR) .carT { -webkit-mask-image: linear-gradient(90deg, transparent, #000 40px); mask-image: linear-gradient(90deg, transparent, #000 40px); }
+
+  /* goal */
+  .goal { display: flex; flex-direction: column; justify-content: space-between; width: 200px; min-height: 176px; padding: 14px; border-radius: 14px; background: var(--card); border: 1px solid var(--cardLine); text-align: left; box-shadow: var(--shadow); }
+  .goalTop { display: flex; gap: 10px; align-items: flex-start; justify-content: space-between; }
+  .goal b { font-size: 13px; font-weight: 500; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .goal p { margin: 16px 0 0; color: var(--muted); font-size: 11.5px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+  .goal.solo { width: min(100%, 240px); }
+  .orb { width: 18px; height: 18px; border-radius: 50%; flex: none; box-shadow: inset -2px -3px 6px rgba(0, 0, 0, .25); }
+  .orb.or { background: radial-gradient(circle at 34% 30%, #ffd9b8 0, #f4762f 42%, #9a300c 100%); }
+  .orb.bl { background: radial-gradient(circle at 34% 30%, #eef4ff 0, #86aee8 42%, #2d4f8e 100%); }
+  .orb.br { background: radial-gradient(circle at 34% 30%, #f3dfcc 0, #b07c55 42%, #4f2d1a 100%); }
+  .orb.rd { background: radial-gradient(circle at 34% 30%, #ffd0c6 0, #dc4b3c 42%, #6e1710 100%); }
+  .orb.gn { background: radial-gradient(circle at 34% 30%, #dcf6e2 0, #56bb79 42%, #1e5c34 100%); }
+
+  /* attachment chips, their menu */
+  .atts { display: flex; flex-wrap: wrap; gap: 8px; }
+  .att { display: flex; align-items: center; gap: 10px; max-width: 100%; padding: 7px 6px 7px 7px; border-radius: 12px; background: var(--card); border: 1px solid var(--cardLine); box-shadow: var(--shadow); }
+  .attIc { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 8px; background: var(--sec); color: var(--muted); flex: none; }
+  .attTx { min-width: 0; }
+  .attTx b { display: block; max-width: 168px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12.5px; font-weight: 500; }
+  .attTx span { display: block; color: var(--muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+  .att .chev { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 6px; color: var(--muted); }
+  .att .chev:hover, .att .chev[aria-expanded="true"] { background: var(--hover); color: var(--fg); }
+  .att .chev .ic { width: 14px; height: 14px; }
+  .pop { position: fixed; z-index: 20; min-width: 168px; padding: 4px; border-radius: 12px; background: var(--pop); border: 1px solid var(--popLine); box-shadow: var(--popShadow); animation: pop .16s cubic-bezier(.2, .8, .2, 1); }
+  .pop[hidden] { display: none; }
+  @keyframes pop { from { opacity: 0; transform: translateY(-4px) scale(.98); } }
+  .menuIt { display: flex; align-items: center; gap: 10px; width: 100%; padding: 8px 10px; border-radius: 8px; font-size: 13px; text-align: left; }
+  .menuIt:hover { background: var(--hover); }
+  .menuIt small { display: block; color: var(--muted); font-size: 11.5px; }
+  .menuIt .ck { margin-left: auto; color: var(--fg); }
+  .menuIt:not(.sel) .ck { visibility: hidden; }
+  .menuStatic { position: static; display: inline-block; animation: none; }
+
+  /* the clinician's answer: Eva hands over, the doctor's own words with who they are, then what they attached */
+  .clin { max-width: min(100%, 470px); padding: 14px 16px; border-radius: 16px; background: var(--bubble); }
+  .clin .txt { white-space: pre-wrap; }
+  .doc { display: flex; align-items: center; gap: 10px; margin-top: 12px; }
+  .doc img { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; }
+  .doc b { font-size: 13px; font-weight: 500; }
+  .doc b em { font-style: normal; color: var(--muted); font-weight: 400; }
+  .doc span { display: block; color: var(--muted); font-size: 11.5px; }
+
+  /* report cards: the report's picture, its date, who it is from */
+  .rep { position: relative; display: flex; flex-direction: column; justify-content: space-between; width: 196px; height: 256px; padding: 10px; border-radius: 16px; overflow: hidden; color: #fff; text-align: left; background: #1d1d1c center / cover no-repeat; isolation: isolate; }
+  .rep::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(0, 0, 0, .1) 0, rgba(0, 0, 0, 0) 30%, rgba(0, 0, 0, .25) 55%, rgba(0, 0, 0, .86) 100%); }
+  .rep .date { align-self: flex-start; padding: 3px 8px; border-radius: 999px; background: rgba(20, 20, 20, .38); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); font-size: 11px; font-variant-numeric: tabular-nums; }
+  .repBy { display: flex; align-items: center; gap: 8px; padding: 2px; }
+  .repBy img, .repBy .repIc { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; flex: none; }
+  .repBy .repIc { display: grid; place-items: center; background: rgba(255, 255, 255, .16); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+  .repBy b { display: block; font-size: 13px; font-weight: 500; line-height: 1.25; }
+  .repBy span { display: block; font-size: 11.5px; color: rgba(255, 255, 255, .7); }
+  .rep:hover { filter: brightness(1.06); }
+  .cite { display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 9px 0 7px; border-radius: 8px; background: var(--sec); font-size: 12px; font-weight: 500; vertical-align: middle; }
+  .cite:hover { background: var(--secH); }
+  .cite .ic { width: 14px; height: 14px; color: var(--muted); }
+
+  /* imaging: a report sheet, a slice, a comparison; on their own or as a group */
+  .imgs { display: flex; gap: 8px; }
+  .im { position: relative; display: block; height: 176px; border-radius: 10px; overflow: hidden; background: #000; flex: none; }
+  .im:hover { filter: brightness(1.12); }
+  .im.sheet { width: 124px; background: #f5f7f8; }
+  .sheet::before { content: ""; position: absolute; inset: 0; background:
+      linear-gradient(#cfe0e8 0 0) 0 0 / 100% 16px no-repeat,
+      repeating-linear-gradient(180deg, transparent 0 15px, rgba(0, 40, 60, .13) 15px 16px) 0 16px / 100% 100% no-repeat,
+      linear-gradient(90deg, transparent 0 32%, rgba(0, 40, 60, .13) 32% calc(32% + 1px), transparent 0 66%, rgba(0, 40, 60, .13) 66% calc(66% + 1px), transparent 0); }
+  .sheet::after { content: ""; position: absolute; inset: 21px 5px 6px; background: repeating-linear-gradient(180deg, transparent 0 4px, rgba(30, 50, 60, .28) 4px 6px, transparent 6px 16px); -webkit-mask-image: linear-gradient(90deg, #000 0 22%, transparent 22% 38%, #000 38% 56%, transparent 56% 72%, #000 72% 86%, transparent 86%); mask-image: linear-gradient(90deg, #000 0 22%, transparent 22% 38%, #000 38% 56%, transparent 56% 72%, #000 72% 86%, transparent 86%); }
+  .im.neuro { width: 176px; }
+  .im img { width: 100%; height: 100%; object-fit: cover; }
+  .im.neuro img { transform: scale(1.3); }   /* the slice, not its black margin */
+  .im.cmp { display: flex; width: 352px; gap: 2px; background: #05070a; }
+  .im.cmp figure { position: relative; flex: 1; margin: 0; overflow: hidden; }
+  .im.cmp img { filter: grayscale(1) sepia(.35) hue-rotate(178deg) saturate(1.8) brightness(1.08) contrast(1.05); transform: scale(1.35); transform-origin: 50% 40%; }
+  .im.cmp figure + figure img { transform: scale(1.35) translateX(-2%); filter: grayscale(1) sepia(.35) hue-rotate(178deg) saturate(1.8) brightness(1.15) contrast(1.1); }
+  .im .lab { position: absolute; left: 6px; bottom: 6px; padding: 2px 6px; border-radius: 6px; background: rgba(0, 0, 0, .5); color: #fff; font: 10px/1.4 var(--mono); letter-spacing: .02em; }
+  .im.sheet .lab { background: rgba(0, 30, 45, .55); }
+
+  /* the picture opened over the page */
+  .lb { position: absolute; inset: 0; z-index: 30; display: grid; place-items: center; padding: 56px 16px 24px; background: rgba(8, 8, 8, .82); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); animation: fade .2s ease; color: #fff; }
+  .lb[hidden] { display: none; }
+  @keyframes fade { from { opacity: 0; } }
+  .lbIn { display: flex; flex-direction: column; align-items: center; gap: 14px; max-width: 100%; max-height: 100%; }
+  .lbIn .im { height: min(60vh, 440px); }
+  .lbIn .im.sheet { width: calc(min(60vh, 440px) * .705); }
+  .lbIn .im.neuro { width: min(60vh, 440px); }
+  .lbIn .im.cmp { width: min(calc(min(60vh, 440px) * 2), calc(100vw - 32px)); }
+  .lbIn .rep { width: min(320px, 80vw); height: min(420px, 60vh); }
+  .lbCap { text-align: center; max-width: 52ch; }
+  .lbCap b { display: block; font-weight: 500; }
+  .lbCap span { color: rgba(255, 255, 255, .64); font-size: 13px; }
+  .lbX, .lbNav { position: absolute; display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: rgba(255, 255, 255, .12); color: #fff; }
+  .lbX:hover, .lbNav:hover { background: rgba(255, 255, 255, .2); }
+  .lbX { top: 14px; right: 14px; }
+  .lbNav { top: 50%; margin-top: -18px; } .lbNav.p { left: 14px; } .lbNav.n { right: 14px; }
+  .lbNav[hidden] { display: none; }
+
+  .toast { position: absolute; left: 50%; bottom: 24px; z-index: 40; transform: translate(-50%, 8px); padding: 9px 14px; border-radius: 999px; background: var(--pri); color: var(--priFg); font-size: 13px; opacity: 0; pointer-events: none; transition: opacity .2s, transform .28s cubic-bezier(.2, .8, .2, 1); white-space: nowrap; max-width: calc(100% - 32px); overflow: hidden; text-overflow: ellipsis; }
+  .toast.on { opacity: 1; transform: translate(-50%, 0); }
+
+  /* closed: the chat folded into its launcher */
+  .launch { position: absolute; right: 24px; bottom: 24px; z-index: 6; display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 18px 0 14px; border-radius: 999px; background: var(--pri); color: var(--priFg); font-size: 14px; font-weight: 500; box-shadow: 0 10px 30px rgba(0, 0, 0, .2); opacity: 0; transform: translateY(12px); pointer-events: none; transition: opacity .25s .12s, transform .4s .12s cubic-bezier(.2, .8, .2, 1); }
+  .launch .ic { width: 18px; height: 18px; }
+  .stage.isClosed .launch { opacity: 1; transform: none; pointer-events: auto; }
+
+  /* the mobile panel: the sidebar as a drawer, the message actions always there */
+  .app.mob { grid-template-columns: minmax(0, 1fr); }
+  .app.mob .side { position: absolute; z-index: 8; left: 0; top: 0; bottom: 0; width: min(300px, 86%); transform: translateX(-102%); transition: transform .34s cubic-bezier(.3, .7, .2, 1); box-shadow: 0 0 40px rgba(0, 0, 0, .2); }
+  .app.mob.drawer .side { transform: none; }
+  .scrim { position: absolute; inset: 0; z-index: 7; background: var(--scrim); opacity: 0; pointer-events: none; transition: opacity .3s; }
+  .app.mob.drawer .scrim { opacity: 1; pointer-events: auto; }
+  .app.mob .hd { height: 48px; padding: 0 8px; }
+  .app.mob .hd .deskOnly { display: none; }
+  .app.mob .hd .mobOnly { display: inline-grid; }
+  .app.mob .hd .ttl { color: var(--fg); font-weight: 500; }
+  .app.mob .col { padding: 8px 16px 28px; }
+  .app.mob .dock { padding: 0 12px 12px; }
+  .app.mob .meta { opacity: 1; }
+  .app.mob .msg.u .bub { max-width: 86%; }
+  .app.mob .apt:not(.cmp), .app.mob .grp, .app.mob .clin { width: 100%; }
+  .app.mob .sugs { grid-template-columns: minmax(0, 1fr); }
+  .app.mob .hello { padding-top: 48px; }
+  .app.mob .im.cmp { width: 300px; }
+
+  /* the components, laid out as the boards lay them out */
+  .cmpPage { position: absolute; inset: 0; overflow-y: auto; background: var(--bg); }
+  .cmpPage[hidden] { display: none; }
+  .cmpIn { max-width: 1240px; margin: 0 auto; padding-inline: 24px; padding-block: 28px 80px; display: grid; gap: 44px; }
+  .cmpIn > header h2 { margin: 0; font-size: 22px; font-weight: 500; letter-spacing: -.02em; }
+  .cmpIn > header p { margin: 6px 0 0; max-width: 64ch; color: var(--muted); text-wrap: pretty; }
+  .sec { display: grid; gap: 16px; min-width: 0; }
+  .sec > h3 { margin: 0; padding-bottom: 10px; border-bottom: 1px solid var(--line); font-size: 13px; font-weight: 500; }
+  .sub { display: grid; gap: 10px; min-width: 0; }
+  .sub > span { font: 11px/1 var(--mono); color: var(--faint); letter-spacing: .04em; text-transform: uppercase; }
+  .wrapRow { display: flex; flex-wrap: wrap; gap: 12px; align-items: stretch; }
+  .wrapRow > .sub { align-content: start; }
+  .wrapRow > .apt:not(.cmp) { width: min(100%, 380px); }
+  .rowList { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 210px), 1fr)); gap: 16px; }
+  .rowList .aRow { padding: 0; }
+  .cmpIn .car { max-width: 640px; }
+
+  @media (max-width: 560px) {
+    .bar { gap: 8px; padding-inline: 12px; }
+    .bar h1 { display: none; }
+    .cmpIn { padding-inline: 16px; }
+    .im.cmp { width: 300px; }
+  }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+</style>
+</head>
+<body>
+<div class="bar" role="toolbar" aria-label="Concierge page">
+  <h1>Concierge</h1>
+  <div class="seg" id="tabSeg"><button type="button" data-act="tab" data-tab="chat" aria-pressed="true">Chat</button><button type="button" data-act="tab" data-tab="cmp" aria-pressed="false">Components</button></div>
+  <div class="seg devSeg" id="devSeg"><button type="button" data-act="dev" data-dev="desk" aria-pressed="true">Desktop</button><button type="button" data-act="dev" data-dev="mob" aria-pressed="false">Mobile</button></div>
+  <span class="sp"></span>
+  <button class="iconBtn" type="button" data-act="theme" aria-label="Switch theme" title="Switch theme" id="themeBtn"></button>
+</div>
+<div class="stage" id="stage">
+  <div class="app" id="app">
+    <aside class="side" aria-label="Concierge">
+      <div class="sideHd">
+        <div class="brand" id="brand"></div>
+        <button class="iconBtn collapse" type="button" data-act="sideMin" aria-label="Collapse the sidebar" title="Collapse"></button>
+      </div>
+      <nav class="nav">
+        <button class="item" type="button" data-act="new" id="navNew"></button>
+        <button class="item" type="button" data-act="inbox" id="navInbox"></button>
+      </nav>
+      <div class="recHd">Recent</div>
+      <div class="rec" id="rec"></div>
+    </aside>
+    <div class="scrim" data-act="drawerX"></div>
+    <section class="main" aria-label="Chat">
+      <div class="hd">
+        <button class="iconBtn mobOnly" type="button" data-act="drawer" aria-label="Open the sidebar" id="hdSide"></button>
+        <button class="iconBtn deskOnly" type="button" data-act="back" aria-label="Back" id="hdBack"></button>
+        <div class="ttl" id="ttl">New chat</div>
+        <span class="sp"></span>
+        <button class="iconBtn mobOnly" type="button" data-act="close" aria-label="Minimise" id="hdMin"></button>
+        <button class="iconBtn" type="button" data-act="close" aria-label="Close" id="hdX"></button>
+      </div>
+      <div class="thread" id="thread"><div class="col" id="col"></div></div>
+      <div class="dock">
+        <div class="box">
+          <textarea id="q" rows="1" placeholder="Ask anything…" aria-label="Message Eva"></textarea>
+          <div class="boxRow">
+            <button class="round" type="button" data-act="plus" aria-label="Add a file" id="plusBtn"></button>
+            <span class="sp"></span>
+            <button class="pill" type="button" data-act="model" aria-haspopup="menu" id="modelBtn"><span id="modelName">Eva</span></button>
+            <button class="send" type="button" data-act="send" aria-label="Send" id="sendBtn"></button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  <button class="launch" type="button" data-act="open" id="launch"><span>Ask Eva</span></button>
+  <div class="cmpPage" id="cmpPage" hidden></div>
+  <div class="lb" id="lb" hidden></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</div>
+<div class="pop" id="pop" role="menu" hidden></div>
+
+<script>
+(function () {
+  'use strict';
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  var el = function (html) { var t = document.createElement('template'); t.innerHTML = html.trim(); return t.content.firstElementChild; };
+
+  /* icons, 24-unit strokes */
+  var IC = {
+    mark: '<circle cx="12" cy="12" r="8.25"/><circle cx="12" cy="12" r="2.6" fill="currentColor" stroke="none"/>',
+    sidebar: '<rect x="3.5" y="4.5" width="17" height="15" rx="3"/><path d="M9.5 4.5v15"/>',
+    newChat: '<path d="M12 4.5H7A2.5 2.5 0 0 0 4.5 7v10A2.5 2.5 0 0 0 7 19.5h10a2.5 2.5 0 0 0 2.5-2.5v-5"/><path d="M17.8 3.9a1.8 1.8 0 0 1 2.5 2.5L13 13.7l-3.2.7.7-3.2z"/>',
+    inbox: '<path d="M3.5 13.5 6 5.8a2 2 0 0 1 1.9-1.3h8.2a2 2 0 0 1 1.9 1.3l2.5 7.7v4a2.5 2.5 0 0 1-2.5 2.5H6a2.5 2.5 0 0 1-2.5-2.5z"/><path d="M3.5 13.5h4.8l1.2 2.2h5l1.2-2.2h4.8"/>',
+    back: '<path d="M14.5 6 8.5 12l6 6"/>',
+    close: '<path d="m6.5 6.5 11 11M17.5 6.5l-11 11"/>',
+    minus: '<path d="M6 12h12"/>',
+    plus: '<path d="M12 6v12M6 12h12"/>',
+    send: '<path d="M12 18.5v-13M6.5 11 12 5.5l5.5 5.5"/>',
+    chevD: '<path d="m7 10 5 5 5-5"/>',
+    chevL: '<path d="m14 7-5 5 5 5"/>',
+    chevR: '<path d="m10 7 5 5-5 5"/>',
+    copy: '<rect x="8.5" y="8.5" width="11" height="11" rx="2.5"/><path d="M15.5 8.5v-2a2 2 0 0 0-2-2h-7a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h2"/>',
+    edit: '<path d="M15.6 5.4a2 2 0 0 1 2.9 2.9L8.6 18.2l-3.9.9.9-3.9z"/>',
+    up: '<path d="M7.5 10.5v9H5A1.5 1.5 0 0 1 3.5 18v-6A1.5 1.5 0 0 1 5 10.5zm0 0 3.6-6.2a1.8 1.8 0 0 1 3.3 1.3l-.7 3.4h4.6a2 2 0 0 1 2 2.4L19 17.9a2 2 0 0 1-2 1.6H7.5"/>',
+    down: '<g transform="rotate(180 12 12)"><path d="M7.5 10.5v9H5A1.5 1.5 0 0 1 3.5 18v-6A1.5 1.5 0 0 1 5 10.5zm0 0 3.6-6.2a1.8 1.8 0 0 1 3.3 1.3l-.7 3.4h4.6a2 2 0 0 1 2 2.4L19 17.9a2 2 0 0 1-2 1.6H7.5"/></g>',
+    regen: '<path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3"/><path d="M19.5 4.5v4h-4"/>',
+    doc: '<path d="M13.5 3.5h-6a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-10z"/><path d="M13.5 3.5v5h5M9 13h6M9 16.5h4"/>',
+    share: '<path d="M12 14.5V4M8 7.5l4-4 4 4"/><path d="M7 11H6a1.5 1.5 0 0 0-1.5 1.5V18A1.5 1.5 0 0 0 6 19.5h12a1.5 1.5 0 0 0 1.5-1.5v-5.5A1.5 1.5 0 0 0 18 11h-1"/>',
+    eye: '<path d="M2.8 12S6 5.5 12 5.5 21.2 12 21.2 12 18 18.5 12 18.5 2.8 12 2.8 12z"/><circle cx="12" cy="12" r="2.8"/>',
+    download: '<path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M5 19.5h14"/>',
+    check: '<path d="m5.5 12.5 4 4 9-9"/>',
+    leaf: '<path d="M5 19c0-8 5-13.5 14-14 0 9-5.5 14-14 14z"/><path d="m5 19 8-8"/>',
+    pulse: '<path d="M3.5 12h4l2-5 4 10 2-5h5"/>',
+    image: '<rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><circle cx="9" cy="10" r="1.6"/><path d="m4 17 5-4.5 4 3.5 3-2.5 4 3.5"/>',
+    sun: '<circle cx="12" cy="12" r="3.6"/><path d="M12 3.5v1.8M12 18.7v1.8M3.5 12h1.8M18.7 12h1.8M6 6l1.3 1.3M16.7 16.7 18 18M6 18l1.3-1.3M16.7 7.3 18 6"/>',
+    moon: '<path d="M19.5 14.5A7.5 7.5 0 0 1 9.5 4.5a7.5 7.5 0 1 0 10 10z"/>',
+    team: '<circle cx="9" cy="9" r="3"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0"/><path d="M15.5 6.2a3 3 0 0 1 0 5.6M17.5 14.2a5.5 5.5 0 0 1 3 4.8"/>'
+  };
+  var ic = function (n, cls) { return '<svg class="ic' + (cls ? ' ' + cls : '') + '" viewBox="0 0 24 24" aria-hidden="true">' + IC[n] + '</svg>'; };
+
+  /* pictures (inlined at build) */
+  var IMG = {
+    consult: '../assets/overview/status-consult.webp', steven: '../assets/overview/avatar-steven.webp', sarah: '../assets/overview/avatar-dr.webp',
+    figs: '../assets/overview/plan-nutrition.webp', mriRoom: '../assets/overview/status-mri.webp', shoes: '../assets/overview/plan-physical.webp',
+    brain: '../assets/overview/plan-mri.webp', dexa: '../assets/overview/plan-dexa.webp', path: '../assets/overview/plan-path.webp', clinic: '../assets/overview/plan-consult.webp'
+  };
+
+  /* ---------- the content: appointments, goals, files, reports, images ---------- */
+  var APT = {
+    review: { t: 'Diagnostic review call', d: 'A 30-minute video call with Dr Steven Lu to go through your blood panel, DEXA and the priorities in your plan.', av: IMG.consult },
+    dexa: { t: 'DEXA body composition scan', d: 'A 10-minute low-dose scan of your bone density, lean mass and visceral fat at Everlab Bondi Junction.', av: IMG.dexa },
+    nutri: { t: 'Nutrition consult', d: 'Forty-five minutes with your dietitian to turn your nutrition review into a weekly plan you can keep.', av: IMG.figs },
+    mri: { t: 'Full-body MRI', d: 'A 60-minute scan of your brain, organs and spine, read by two radiologists.', av: IMG.mriRoom },
+    physical: { t: 'Physical assessment', d: 'Grip strength, a VO2 max estimate, mobility and balance with an exercise physiologist.', av: IMG.shoes },
+    blood: { t: 'Blood collection', d: 'A fasting blood draw for your 100+ biomarker panel. Allow 15 minutes at the clinic.', av: IMG.path }
+  };
+  var ST = {
+    booked: { l: 'Booked', c: '', b: ['View'] },
+    open: { l: 'Not booked', c: 'mut', b: ['View', 'Book'] },
+    done: { l: 'Complete', c: 'ok', b: ['View'] },
+    blocked: { l: 'Blocked', c: 'bad', b: ['View'] },
+    soon: { l: 'Starting soon', c: 'ok', b: ['View', 'Join call'] },
+    review: { l: 'In review', c: '', b: ['View'] }
+  };
+  var GOALS = [
+    { t: 'Pregnancy preparation and fertility support plan', o: 'or', d: 'A personalised plan to support hormonal balance, iron and folate, and your overall wellbeing while you prepare for pregnancy.' },
+    { t: 'Hormonal balance and migraine control', o: 'bl', d: 'Your cycle, sleep and magnesium tracked alongside migraine days, to find the triggers and calm them.' },
+    { t: 'Airway and sleep management', o: 'br', d: 'Deeper sleep through nasal breathing, a steady wind-down and a home sleep study in March.' },
+    { t: 'Iron and energy recovery', o: 'rd', d: 'Ferritin back above 50 µg/L with an iron protocol, rechecked in eight weeks.' },
+    { t: 'Cardiovascular fitness', o: 'gn', d: 'Two zone-2 sessions and one interval session a week, to lift your VO2 max into the top quartile.' }
+  ];
+  var FILES = {
+    blood: { n: 'Blood panel results.pdf', m: 'PDF · 2.4 MB' },
+    bio: { n: 'Biomarker summary.pdf', m: 'PDF · 1.1 MB' },
+    ferritin: { n: 'Ferritin note.pdf', m: 'PDF · 184 KB' },
+    iron: { n: 'Iron protocol.pdf', m: 'PDF · 312 KB' },
+    mriRep: { n: 'Brain MRI report.pdf', m: 'PDF · 860 KB' },
+    study: { n: 'MRI study, 24 Sep.zip', m: 'DICOM · 48 MB' }
+  };
+  var REPORTS = {
+    diag: { t: 'Diagnostic Review', s: 'Dr Steven Lu', date: '12 Oct 2026', img: IMG.consult, av: IMG.steven, d: 'Your results in one conversation: the three flags that matter, what we are watching, and the plan that follows.' },
+    nutri: { t: 'Nutrition Review', s: 'Everlab', date: '2 Oct 2026', img: IMG.figs, icon: 'leaf', d: 'Your protein, iron and fibre targets, with a two-week meal structure to start from.' },
+    mri: { t: 'MRI Briefing', s: 'Dr Sarah Chen', date: '24 Sep 2026', img: IMG.mriRoom, av: IMG.sarah, d: 'Your full-body MRI, read by two radiologists and explained region by region.' },
+    phys: { t: 'Physical assessment', s: 'Everlab', date: '18 Sep 2026', img: IMG.shoes, icon: 'pulse', d: 'Grip strength, VO2 max, mobility and balance against people your age.' }
+  };
+  var IMGS = {
+    sheet: { k: 'sheet', t: 'Structured report', s: 'Brain MRI · 24 Sep 2026 · page 1 of 3' },
+    neuro: { k: 'neuro', t: 'Sagittal T1, midline', s: 'Brain MRI · 24 Sep 2026' },
+    cmp: { k: 'cmp', t: 'Sep 2025 and Sep 2026, side by side', s: 'No change in the white matter' },
+    sheet2: { k: 'sheet', t: 'Radiologist summary', s: 'Brain MRI · 24 Sep 2026 · page 3 of 3' }
+  };
+  var DOCTOR = { n: 'Dr Steven Lu', r: 'Doctor', av: IMG.steven };
+
+  /* ---------- component renderers ---------- */
+  var aptStatus = function (st, date) {
+    var s = ST[st];
+    return '<span class="st ' + s.c + '">' + s.l + '</span>' + (date ? '<span class="dt">' + esc(date) + '</span>' : '');
+  };
+  var aptCard = function (key, st, date, cmp) {
+    var a = APT[key], s = ST[st];
+    return '<div class="apt' + (cmp ? ' cmp' : '') + '" data-apt="' + key + '" data-st="' + st + '">' +
+      '<div class="aptTop"><img class="av" src="' + a.av + '" alt=""><div class="aptTx"><b>' + esc(a.t) + '</b><p>' + esc(a.d) + '</p></div></div>' +
+      '<div class="aptFoot"><div class="aptSt">' + aptStatus(st, date) + '</div><div class="btns">' +
+      s.b.map(function (b, i) { return '<button class="btn' + (i ? ' pri' : '') + '" type="button" data-act="aptBtn" data-b="' + b + '">' + b + '</button>'; }).join('') +
+      '</div></div></div>';
+  };
+  var aptRow = function (key, st, date) {
+    var a = APT[key];
+    return '<button class="aRow" type="button" data-act="aptRow" data-apt="' + key + '"><img class="av" src="' + a.av + '" alt=""><span><b>' + esc(a.t) + '</b><span class="aptSt">' + aptStatus(st, date) + '</span></span></button>';
+  };
+  var aptGroup = function (rows, shown) {
+    var head = rows.slice(0, shown), rest = rows.slice(shown);
+    return '<div class="grp"><div class="grpHd">Appointments <span class="count">' + rows.length + '</span></div><div class="grpList">' +
+      head.map(function (r) { return aptRow(r[0], r[1], r[2]); }).join('') + '</div>' +
+      (rest.length ? '<div class="grpMore"><div>' + rest.map(function (r) { return aptRow(r[0], r[1], r[2]); }).join('') + '</div></div><button class="more" type="button" data-act="grpMore"><span>Show more</span>' + ic('chevD') + '</button>' : '') + '</div>';
+  };
+  var goalCard = function (g, solo) {
+    return '<div class="goal' + (solo ? ' solo' : '') + '"><div class="goalTop"><b>' + esc(g.t) + '</b><span class="orb ' + g.o + '"></span></div><p>' + esc(g.d) + '</p></div>';
+  };
+  var carousel = function (label, items) {
+    return '<div class="car"><div class="carHd">' + label + ' <span class="count">' + items.length + '</span><span class="sp"></span>' +
+      '<button class="arw" type="button" data-act="carL" aria-label="Previous">' + ic('chevL') + '</button><button class="arw" type="button" data-act="carR" aria-label="Next">' + ic('chevR') + '</button></div>' +
+      '<div class="carT">' + items.join('') + '</div></div>';
+  };
+  var attChip = function (k) {
+    var f = FILES[k];
+    return '<div class="att" data-file="' + k + '"><span class="attIc">' + ic('doc') + '</span><span class="attTx"><b>' + esc(f.n) + '</b><span>' + f.m + '</span></span>' +
+      '<button class="chev" type="button" data-act="attMenu" aria-haspopup="menu" aria-expanded="false" aria-label="Options for ' + esc(f.n) + '">' + ic('chevD') + '</button></div>';
+  };
+  var atts = function (ks) { return '<div class="atts">' + ks.map(attChip).join('') + '</div>'; };
+  var repCard = function (k) {
+    var r = REPORTS[k];
+    return '<button class="rep" type="button" data-act="rep" data-rep="' + k + '" style="background-image:url(' + r.img + ')"><span class="date">' + r.date + '</span>' +
+      '<span class="repBy">' + (r.av ? '<img src="' + r.av + '" alt="">' : '<span class="repIc">' + ic(r.icon) + '</span>') + '<span><b>' + esc(r.t) + '</b><span>' + esc(r.s) + '</span></span></span></button>';
+  };
+  var imTile = function (k, i) {
+    var m = IMGS[k], at = ' type="button" data-act="img" data-img="' + k + '"' + (i != null ? ' data-i="' + i + '"' : '') + ' aria-label="' + esc(m.t) + '"';
+    if (m.k === 'sheet') return '<button class="im sheet"' + at + '><span class="lab">' + (k === 'sheet2' ? 'p. 3' : 'p. 1') + '</span></button>';
+    if (m.k === 'neuro') return '<button class="im neuro"' + at + '><img src="' + IMG.brain + '" alt=""><span class="lab">T1 · SAG</span></button>';
+    return '<button class="im cmp"' + at + '><figure><img src="' + IMG.brain + '" alt=""><span class="lab">SEP 2025</span></figure><figure><img src="' + IMG.brain + '" alt=""><span class="lab">SEP 2026</span></figure></button>';
+  };
+  var GROUP = ['sheet', 'neuro', 'cmp', 'sheet2'];
+  var imGroup = function () { return carousel('Images', GROUP.map(function (k, i) { return imTile(k, i); })); };
+  var cite = function (k) { return '<button class="cite" type="button" data-act="rep" data-rep="' + k + '">' + ic('doc') + REPORTS[k].t + '</button>'; };
+  var BLOCK = {
+    apt: function (b) { return aptCard(b.k, b.st, b.date, b.cmp); },
+    aptGroup: function (b) { return aptGroup(b.rows, b.shown || 3); },
+    goals: function () { return carousel('Your goals', GOALS.map(function (g) { return goalCard(g); })); },
+    goal: function (b) { return goalCard(GOALS[b.i], true); },
+    atts: function (b) { return atts(b.f); },
+    reports: function (b) { return carousel('Reports', b.r.map(repCard)); },
+    report: function (b) { return '<div class="imgs">' + repCard(b.r) + '</div>'; },
+    cite: function (b) { return cite(b.r); },
+    img: function (b) { return '<div class="imgs">' + imTile(b.k) + '</div>'; },
+    imgGroup: imGroup,
+    sugs: function () { return '<div class="sugRow">' + SUGS.map(function (s) { return '<button class="sug" type="button" data-act="sug" data-q="' + esc(s.q) + '">' + esc(s.q) + '</button>'; }).join('') + '</div>'; }
+  };
+
+  /* ---------- the conversations ---------- */
+  var A = {
+    aptNext: { text: 'Your next appointment is your diagnostic review call tomorrow with Dr Steven Lu.', blocks: [{ t: 'apt', k: 'review', st: 'booked', date: 'Tue 27 Oct, 2:30 PM AEDT' }] },
+    aptSoon: { text: 'It starts in 10 minutes. Dr Lu is ready when you are.', blocks: [{ t: 'apt', k: 'review', st: 'soon', date: 'Today, 2:30 PM AEDT' }] },
+    aptGroup: { text: 'You have five appointments on your plan. Here are the next three.', blocks: [{ t: 'aptGroup', rows: [['review', 'booked', 'Tue 27 Oct, 2:30 PM'], ['dexa', 'open'], ['nutri', 'blocked'], ['mri', 'review', 'Requested 20 Oct'], ['physical', 'done']] }] },
+    goals: { text: 'Sure, I can help you with that.\nHere are all of your Everlab goals that we are tracking.', blocks: [{ t: 'goals' }] },
+    goalOne: { text: 'This one, and it isn’t a close call. It’s the only goal of the five that’s time-sensitive, and three of your flagged results sit underneath it.', blocks: [{ t: 'goal', i: 0 }] },
+    attach: { text: 'Sure! Here are your reports.', blocks: [{ t: 'atts', f: ['blood', 'bio'] }] },
+    clin: { clin: { text: 'Ferritin needs a clinician to read it with the rest of your results, so I asked Dr Lu. His reply:\n\n“Your ferritin is 18 µg/L, low for where you are in your plan. I’ve attached a short note and an iron protocol. Start it this week and we’ll recheck in eight weeks.”', when: 'Replied today, 8:12 AM' }, blocks: [{ t: 'atts', f: ['ferritin', 'iron'] }] },
+    reports: { text: 'Here are your Everlab reports, newest first.', blocks: [{ t: 'reports', r: ['diag', 'nutri', 'mri', 'phys'] }] },
+    nutri: { text: 'Yes, it was released on 2 October. It sets your protein, iron and fibre targets and gives you a two-week meal structure to start from.', blocks: [{ t: 'report', r: 'nutri' }] },
+    protein: { text: '1.6 g per kg of body weight, which works out to about 110 g a day for you. It was set at your nutrition review to support your strength training and your iron recovery: spread it over three or four meals of 25 to 35 g each.', blocks: [{ t: 'cite', r: 'nutri' }] },
+    mri: { text: 'Here’s the midline slice from your brain MRI on 24 September. Dr Sarah Chen marked it as normal for your age.', blocks: [{ t: 'img', k: 'neuro' }] },
+    mriCmp: { text: 'Side by side, September 2025 on the left and this year on the right. There’s no change in the white matter, which is what we hoped to see.', blocks: [{ t: 'img', k: 'cmp' }] },
+    mriAll: { text: 'Your brain MRI has four images: two pages of the report, the midline slice and the comparison.', blocks: [{ t: 'imgGroup' }] },
+    mriStudy: { text: 'Here’s the full study and Dr Chen’s report.', blocks: [{ t: 'atts', f: ['mriRep', 'study'] }, { t: 'imgGroup' }] },
+    care: { clin: { text: 'I’ve sent this to your care team. Dr Lu usually replies within one business day, and you’ll find his answer in your Inbox.', when: 'Sent just now' }, blocks: [] },
+    help: { text: 'I can help with your appointments, goals, reports, results and imaging. Here are a few things you can ask.', blocks: [{ t: 'sugs' }] }
+  };
+  var SUGS = [
+    { q: 'What’s my next appointment?', s: 'Appointments' },
+    { q: 'List all my current goals', s: 'Goals' },
+    { q: 'Can you share the PDF report of my blood test results?', s: 'Files' },
+    { q: 'List all my Everlab reports', s: 'Reports' },
+    { q: 'How much protein should I be eating?', s: 'From your nutrition review' },
+    { q: 'Can I see the images from my brain MRI?', s: 'Imaging' }
+  ];
+  var match = function (q) {
+    var s = q.toLowerCase();
+    if (/starting|join|call now/.test(s)) return 'aptSoon';
+    if (/next appointment|next booking/.test(s)) return 'aptNext';
+    if (/appointments|coming up|upcoming|schedule|booked/.test(s)) return 'aptGroup';
+    if (/focus|one (single )?goal|which goal|most important/.test(s)) return 'goalOne';
+    if (/goal/.test(s)) return 'goals';
+    if (/ferritin|iron|flag/.test(s)) return 'clin';
+    if (/compare|last year|change/.test(s)) return 'mriCmp';
+    if (/full study|send.*(study|scan)|dicom/.test(s)) return 'mriStudy';
+    if (/(all|every).*(image|scan)|images from the scan|everything from/.test(s)) return 'mriAll';
+    if (/mri|scan|image|imaging|brain/.test(s)) return 'mri';
+    if (/pdf|blood test|blood result|share/.test(s)) return 'attach';
+    if (/nutrition review|review ready/.test(s)) return 'nutri';
+    if (/protein|eat|diet/.test(s)) return 'protein';
+    if (/report/.test(s)) return 'reports';
+    return 'help';
+  };
+  var TITLES = { aptNext: 'Next appointment', aptSoon: 'Joining my call', aptGroup: 'Upcoming appointments', goals: 'My current goals', goalOne: 'One goal to focus on', attach: 'Blood test report', clin: 'Why my ferritin is flagged', reports: 'My Everlab reports', nutri: 'Nutrition review', protein: 'Ideal protein intake', mri: 'Brain MRI images', mriCmp: 'Brain MRI images', mriAll: 'Brain MRI images', mriStudy: 'Brain MRI images', care: 'Question for my care team', help: 'New chat' };
+
+  /* the history in Recent, newest first: each a chat as it was had */
+  var SEED = [
+    ['protein', 'Ideal protein intake', '26 Oct', '9:12 AM', [['How much protein should I be eating?', 'protein']]],
+    ['next', 'Next appointment', '26 Oct', '8:40 AM', [['What’s my next appointment?', 'aptNext']]],
+    ['ferritin', 'Why my ferritin is flagged', '25 Oct', '6:05 PM', [['Can you explain why my ferritin is flagged?', 'clin']]],
+    ['upcoming', 'Upcoming appointments', '25 Oct', '11:20 AM', [['What appointments do I have coming up?', 'aptGroup']]],
+    ['goals', 'My current goals', '24 Oct', '7:48 PM', [['List all my current goals', 'goals'], ['If I had to focus on one single goal which one would that be?', 'goalOne']]],
+    ['blood', 'Blood test report', '23 Oct', '3:02 PM', [['Can you share the PDF report of my blood test results?', 'attach']]],
+    ['reports', 'My Everlab reports', '22 Oct', '10:15 AM', [['List all my Everlab reports', 'reports']]],
+    ['nutrition', 'Nutrition review', '21 Oct', '1:30 PM', [['Is my nutrition review ready?', 'nutri']]],
+    ['mri', 'Brain MRI images', '20 Oct', '5:44 PM', [['Can I see the images from my brain MRI?', 'mri'], ['Compare it with last year’s scan', 'mriCmp'], ['Show me all the images from the scan', 'mriAll'], ['Send me the full study with the report', 'mriStudy']]]
+  ];
+  var chats = {}, order = [];
+  SEED.forEach(function (c) {
+    var msgs = [];
+    c[4].forEach(function (t, i) {
+      var tm = c[2] + ', ' + c[3];
+      msgs.push({ r: 'u', text: t[0], time: tm });
+      msgs.push({ r: 'a', k: t[1], time: tm });
+    });
+    chats[c[0]] = { id: c[0], title: c[1], msgs: msgs };
+    order.push(c[0]);
+  });
+  var INBOX = [
+    { id: 'ferritin', who: 'Dr Steven Lu', av: IMG.steven, line: 'Your ferritin is low for where you are in your plan. I’ve attached a note and an iron protocol.', when: 'Today', read: false },
+    { id: 'nutrition', who: 'Everlab', icon: 'leaf', line: 'Your nutrition review is ready: your targets and a two-week meal structure.', when: '2 Oct', read: false },
+    { id: 'next', who: 'Everlab', icon: 'mark', line: 'Your diagnostic review call with Dr Steven Lu is booked for Tue 27 Oct, 2:30 PM.', when: '19 Oct', read: true }
+  ];
+
+  /* ---------- state ---------- */
+  var app = $('#app'), stage = $('#stage'), col = $('#col'), thread = $('#thread'), q = $('#q'), ttl = $('#ttl');
+  var S = { view: 'new', id: null, hist: [], model: 'eva', busy: false, dev: 'desk', tab: 'chat' };
+
+  /* the static chrome's icons */
+  $('#brand').innerHTML = ic('mark') + '<span>Concierge</span>';
+  $('.collapse').innerHTML = ic('sidebar');
+  $('#navNew').innerHTML = ic('newChat') + '<span>New chat</span>';
+  $('#navInbox').innerHTML = ic('inbox') + '<span>Inbox</span><b class="badge" id="badge"></b>';
+  $('#hdSide').innerHTML = ic('sidebar'); $('#hdBack').innerHTML = ic('back'); $('#hdMin').innerHTML = ic('minus'); $('#hdX').innerHTML = ic('close');
+  $('#plusBtn').innerHTML = ic('plus'); $('#modelBtn').insertAdjacentHTML('beforeend', ic('chevD')); $('#sendBtn').innerHTML = ic('send');
+  $('#launch').insertAdjacentHTML('afterbegin', ic('mark'));
+
+  var now = function () {
+    var d = new Date(), h = d.getHours(), m = d.getMinutes();
+    return d.getDate() + ' ' + ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()] + ', ' + ((h % 12) || 12) + ':' + (m < 10 ? '0' : '') + m + (h < 12 ? ' AM' : ' PM');
+  };
+  var unread = function () { return INBOX.filter(function (n) { return !n.read; }).length; };
+  var renderBadge = function () { var b = $('#badge'), n = unread(); b.textContent = n || ''; b.dataset.n = n; };
+
+  var renderRec = function () {
+    $('#rec').innerHTML = order.map(function (id) {
+      return '<button class="item' + (S.view === 'chat' && S.id === id ? ' on' : '') + '" type="button" data-act="chat" data-id="' + id + '" title="' + esc(chats[id].title) + '"><span>' + esc(chats[id].title) + '</span></button>';
+    }).join('');
+    $('#navNew').classList.toggle('on', S.view === 'new');
+    $('#navInbox').classList.toggle('on', S.view === 'inbox');
+  };
+
+  var metaHtml = function (m) {
+    var b = function (a, n, l) { return '<button type="button" data-act="' + a + '" aria-label="' + l + '" title="' + l + '">' + ic(n) + '</button>'; };
+    return '<div class="meta"><time>' + esc(m.time) + '</time>' + (m.r === 'u' ? b('copy', 'copy', 'Copy') + b('edit', 'edit', 'Edit') : b('copy', 'copy', 'Copy') + b('up', 'up', 'Good answer') + b('down', 'down', 'Bad answer') + b('regen', 'regen', 'Regenerate')) + '</div>';
+  };
+  var answerHtml = function (a) {
+    var h = '';
+    if (a.clin) h += '<div class="clin"><div class="txt">' + esc(a.clin.text) + '</div><div class="doc"><img src="' + DOCTOR.av + '" alt=""><div><b>' + DOCTOR.n + ' <em>· ' + DOCTOR.r + '</em></b><span>' + esc(a.clin.when) + '</span></div></div></div>';
+    else h += '<div class="txt">' + esc(a.text) + '</div>';
+    return h + a.blocks.map(function (b) { return '<div class="blk">' + BLOCK[b.t](b) + '</div>'; }).join('');
+  };
+  var msgEl = function (m, i) {
+    if (m.r === 'u') return el('<div class="msg u" data-i="' + i + '"><div class="bub">' + esc(m.text) + '</div>' + metaHtml(m) + '</div>');
+    return el('<div class="msg a" data-i="' + i + '" data-k="' + m.k + '">' + answerHtml(A[m.k]) + metaHtml(m) + '</div>');
+  };
+  var markLast = function () { $$('.msg.a', col).forEach(function (m, i, all) { m.classList.toggle('last', i === all.length - 1); }); };
+  var carSync = function (root) {
+    $$('.car', root || col).forEach(function (c) {
+      var t = $('.carT', c), l = $('[data-act="carL"]', c), r = $('[data-act="carR"]', c);
+      var upd = function () { var mx = t.scrollWidth - t.clientWidth - 2; l.disabled = t.scrollLeft <= 2; r.disabled = t.scrollLeft >= mx; c.classList.toggle('fadeL', t.scrollLeft > 2); c.classList.toggle('fadeR', t.scrollLeft < mx); };
+      if (!t._sync){ t._sync = upd; t.addEventListener('scroll', upd, { passive: true }); }
+      upd();
+    });
+  };
+  var toBottom = function (smooth) { thread.style.scrollBehavior = smooth ? 'smooth' : 'auto'; thread.scrollTop = thread.scrollHeight; };
+
+  var renderNew = function () {
+    col.innerHTML = '<div class="hello in"><svg class="orb" viewBox="0 0 40 40" aria-hidden="true"><defs><radialGradient id="hg" cx="36%" cy="32%" r="70%"><stop offset="0" stop-color="#ffe1c6"/><stop offset=".45" stop-color="#f0743a"/><stop offset="1" stop-color="#7a2408"/></radialGradient></defs><circle cx="20" cy="20" r="19" fill="url(#hg)"/></svg>' +
+      '<h2>How can I help today?</h2><p>Ask about your appointments, goals, reports, results and imaging. I answer from your Everlab record, and bring in your care team when it needs a clinician.</p>' +
+      '<div class="sugs">' + SUGS.map(function (s) { return '<button class="sug" type="button" data-act="sug" data-q="' + esc(s.q) + '">' + esc(s.q) + '<small>' + esc(s.s) + '</small></button>'; }).join('') + '</div></div>';
+  };
+  var renderInbox = function () {
+    col.innerHTML = '<div class="inbox in"><h2>Inbox</h2>' + INBOX.map(function (n, i) {
+      return '<button class="note' + (n.read ? ' read' : '') + '" type="button" data-act="note" data-n="' + i + '"><span class="dot"></span>' + (n.av ? '<img src="' + n.av + '" alt="">' : '<span class="noteIc">' + ic(n.icon) + '</span>') + '<span><b>' + esc(n.who) + '</b><p>' + esc(n.line) + '</p></span><time>' + n.when + '</time></button>';
+    }).join('') + '</div>';
+  };
+  var renderChat = function () {
+    var c = chats[S.id]; col.innerHTML = '';
+    c.msgs.forEach(function (m, i) { col.appendChild(msgEl(m, i)); });
+    markLast(); carSync(); requestAnimationFrame(function () { toBottom(false); });
+  };
+  var go = function (view, id, push) {
+    if (push !== false && (S.view !== view || S.id !== id)) S.hist.push([S.view, S.id]);
+    S.view = view; S.id = id || null;
+    ttl.textContent = view === 'chat' ? chats[id].title : view === 'inbox' ? 'Inbox' : 'New chat';
+    if (view === 'chat') renderChat(); else if (view === 'inbox') renderInbox(); else renderNew();
+    if (view !== 'chat') thread.scrollTop = 0;
+    renderRec(); closePop(); app.classList.remove('drawer');
+  };
+
+  /* asking: the question, Eva thinking, the answer written out, then what it shows */
+  var ask = function (text) {
+    text = text.trim(); if (!text || S.busy) return;
+    var k = S.model === 'care' ? 'care' : match(text);
+    if (S.view !== 'chat'){
+      var id = 'c' + Date.now();
+      chats[id] = { id: id, title: TITLES[k] === 'New chat' ? text.slice(0, 40) : TITLES[k], msgs: [] };
+      order.unshift(id); S.hist.push([S.view, S.id]); S.view = 'chat'; S.id = id; ttl.textContent = chats[id].title; col.innerHTML = ''; renderRec();
+    } else { order.splice(order.indexOf(S.id), 1); order.unshift(S.id); renderRec(); }
+    var c = chats[S.id], t = now();
+    c.msgs.push({ r: 'u', text: text, time: t });
+    var u = msgEl(c.msgs[c.msgs.length - 1], c.msgs.length - 1); u.classList.add('in'); col.appendChild(u);
+    q.value = ''; grow(); sendState(); toBottom(true);
+    c.msgs.push({ r: 'a', k: k, time: t });
+    play(c.msgs.length - 1, null);
+  };
+  var THINK = { aptNext: 'Checking your bookings', aptSoon: 'Checking your bookings', aptGroup: 'Checking your bookings', goals: 'Reading your plan', goalOne: 'Weighing your goals against your results', attach: 'Finding your files', clin: 'Asking your care team', care: 'Sending to your care team', reports: 'Gathering your reports', nutri: 'Checking your reports', protein: 'Reading your nutrition review', mri: 'Opening your imaging', mriCmp: 'Lining up both scans', mriAll: 'Opening your imaging', mriStudy: 'Preparing the study', help: 'Thinking' };
+  var play = function (i, into) {
+    var c = chats[S.id], m = c.msgs[i], a = A[m.k], chatId = S.id; S.busy = true; sendState();
+    var th = el('<div class="think in">' + (THINK[m.k] || 'Thinking') + '…</div>');
+    if (into) into.replaceWith(th); else col.appendChild(th);
+    toBottom(true);
+    setTimeout(function () {
+      if (S.id !== chatId || !th.isConnected){ S.busy = false; sendState(); return; }
+      var node = msgEl(m, i); node.classList.add('in');
+      var txt = $('.txt', node), full = txt.textContent, blocks = $$('.blk', node), docRow = $('.doc', node), meta = $('.meta', node);
+      blocks.concat(docRow ? [docRow] : [], [meta]).forEach(function (b) { b.style.display = 'none'; });
+      txt.textContent = ''; th.replaceWith(node); markLast();
+      var words = full.split(/(\s+)/), n = 0;
+      var tick = function () {
+        if (!node.isConnected){ S.busy = false; sendState(); return; }
+        n += 2; txt.textContent = words.slice(0, n).join('');
+        if (n < words.length){ if (n % 8 === 0) toBottom(false); setTimeout(tick, 26); return; }
+        var rest = (docRow ? [docRow] : []).concat(blocks);
+        rest.forEach(function (b, j) { setTimeout(function () { b.style.display = ''; b.classList.add('in'); if (b.classList.contains('blk')) carSync(b); toBottom(true); }, 140 + j * 160); });
+        setTimeout(function () { meta.style.display = ''; S.busy = false; sendState(); toBottom(true); }, 160 + rest.length * 160);
+      };
+      tick();
+    }, 700 + Math.min(500, (A[m.k].blocks.length) * 160));
+  };
+
+  /* the input */
+  var grow = function () { q.style.height = 'auto'; q.style.height = Math.min(160, q.scrollHeight) + 'px'; };
+  var sendState = function () { var b = $('#sendBtn'), has = !!q.value.length; b.classList.toggle('has', has); b.classList.toggle('on', has && !!q.value.trim() && !S.busy); };
+  q.addEventListener('input', function () { grow(); sendState(); });
+  q.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing){ e.preventDefault(); ask(q.value); } });
+
+  /* popover menus: a file's, the model's, the plus */
+  var pop = $('#pop'), popFor = null;
+  var closePop = function () { if (popFor) popFor.setAttribute('aria-expanded', 'false'); popFor = null; pop.hidden = true; };
+  var openPop = function (btn, html, up) {
+    if (popFor === btn){ closePop(); return; }
+    closePop(); popFor = btn; btn.setAttribute('aria-expanded', 'true'); pop.innerHTML = html; pop.hidden = false;
+    var r = btn.getBoundingClientRect(), w = pop.offsetWidth, hgt = pop.offsetHeight;
+    var x = Math.max(8, Math.min(innerWidth - w - 8, up ? r.right - w : r.left - 6));
+    var y = up ? r.top - hgt - 8 : r.bottom + 6;
+    if (!up && y + hgt > innerHeight - 8) y = r.top - hgt - 6;
+    pop.style.left = x + 'px'; pop.style.top = Math.max(8, y) + 'px';
+  };
+  var fileMenu = function (k) {
+    return [['share', 'Share'], ['eye', 'Preview'], ['download', 'Download']].map(function (it) { return '<button class="menuIt" type="button" role="menuitem" data-act="fileDo" data-do="' + it[1] + '" data-file="' + k + '">' + ic(it[0]) + it[1] + '</button>'; }).join('');
+  };
+  var modelMenu = function () {
+    return [['eva', 'mark', 'Eva', 'Answers from your Everlab record'], ['care', 'team', 'Care team', 'A clinician replies within a business day']].map(function (m) {
+      return '<button class="menuIt' + (S.model === m[0] ? ' sel' : '') + '" type="button" role="menuitemradio" data-act="modelSet" data-m="' + m[0] + '">' + ic(m[1]) + '<span>' + m[2] + '<small>' + m[3] + '</small></span>' + ic('check', 'ck') + '</button>';
+    }).join('');
+  };
+  var plusMenu = function () { return [['doc', 'Upload a file'], ['image', 'Add a photo']].map(function (it) { return '<button class="menuIt" type="button" role="menuitem" data-act="plusDo" data-do="' + it[1] + '">' + ic(it[0]) + it[1] + '</button>'; }).join(''); };
+
+  var toastT; var toast = function (s) { var t = $('#toast'); t.textContent = s; t.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(function () { t.classList.remove('on'); }, 1800); };
+
+  /* the lightbox: a picture, a report, a file's first page */
+  var lb = $('#lb'), lbSet = null, lbI = 0;
+  var lbShow = function (html, cap, set, i) {
+    lbSet = set || null; lbI = i || 0;
+    lb.innerHTML = '<button class="lbX" type="button" data-act="lbX" aria-label="Close">' + ic('close') + '</button>' + (lbSet ? '<button class="lbNav p" type="button" data-act="lbP" aria-label="Previous">' + ic('chevL') + '</button><button class="lbNav n" type="button" data-act="lbN" aria-label="Next">' + ic('chevR') + '</button>' : '') +
+      '<div class="lbIn">' + html + '<div class="lbCap"><b>' + esc(cap[0]) + '</b><span>' + esc(cap[1]) + '</span></div></div>';
+    lb.hidden = false; $('.lbX', lb).focus({ preventScroll: true });
+  };
+  var lbImg = function (k, set, i) { var m = IMGS[k]; lbShow(imTile(k).replace('data-act="img"', 'tabindex="-1"'), [m.t, m.s], set, i); };
+  var lbClose = function () { lb.hidden = true; lb.innerHTML = ''; };
+
+  /* the closed state */
+  var setClosed = function (v) { app.classList.toggle('closed', v); stage.classList.toggle('isClosed', v); if (v) closePop(); };
+
+  /* the device: the desktop app, or the mobile panel (always on a narrow window) */
+  var phone = false;
+  var layout = function () {
+    phone = stage.clientWidth < 720;
+    var mob = phone || S.dev === 'mob';
+    app.classList.toggle('mob', mob); stage.classList.toggle('dvMob', !phone && S.dev === 'mob'); document.body.classList.toggle('phoneMode', phone);
+    if (!mob) app.classList.remove('drawer');
+    q.placeholder = mob ? 'Ask Eva…' : 'Ask anything…';
+    carSync();
+  };
+  addEventListener('resize', layout);
+
+  /* the theme: the page's own toggle; the prototype sets data-theme on this page from its bar */
+  var themeIcon = function () { var dark = document.documentElement.dataset.theme ? document.documentElement.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches; $('#themeBtn').innerHTML = ic(dark ? 'sun' : 'moon'); return dark; };
+  try { new MutationObserver(themeIcon).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] }); } catch (e) {}
+  try { matchMedia('(prefers-color-scheme: dark)').addEventListener('change', themeIcon); } catch (e) {}
+
+  /* the Components tab */
+  var cmpBuilt = false;
+  var buildCmp = function () {
+    var states = [['booked', 'Fri 30 Oct, 2:30 PM AEDT'], ['open'], ['done'], ['blocked'], ['soon', 'Today, 2:30 PM AEDT'], ['review', 'Requested 20 Oct']];
+    var keys = ['review', 'dexa', 'physical', 'nutri', 'review', 'mri'];
+    var sec = function (t, body) { return '<section class="sec"><h3>' + t + '</h3>' + body + '</section>'; };
+    var sub = function (t, body) { return '<div class="sub"><span>' + t + '</span>' + body + '</div>'; };
+    $('#cmpPage').innerHTML = '<div class="cmpIn"><header><h2>Concierge components</h2><p>Everything Eva can answer with, in each of its states. Open the Chat tab to see them in conversation; every one of them works here too.</p></header>' +
+      sec('Appointments',
+        sub('Card · wide', '<div class="wrapRow">' + states.map(function (s, i) { return aptCard(keys[i], s[0], s[1]); }).join('') + '</div>') +
+        sub('Card · compact', '<div class="wrapRow">' + states.map(function (s, i) { return aptCard(keys[i], s[0], s[1], true); }).join('') + '</div>') +
+        sub('Rows', '<div class="rowList">' + states.map(function (s, i) { return aptRow(keys[i], s[0], s[1]); }).join('') + '</div>') +
+        sub('Group', aptGroup([['review', 'booked', 'Tue 27 Oct, 2:30 PM'], ['dexa', 'open'], ['nutri', 'blocked'], ['mri', 'review', 'Requested 20 Oct'], ['physical', 'done']], 3))) +
+      sec('Goals', sub('Single', goalCard(GOALS[0], true)) + sub('Carousel', BLOCK.goals())) +
+      sec('Attachments',
+        sub('Single', atts(['blood'])) + sub('Wrapping', '<div style="max-width:340px">' + atts(['blood', 'bio', 'ferritin']) + '</div>') +
+        sub('Menu', '<div class="pop menuStatic" role="menu">' + fileMenu('blood') + '</div>')) +
+      sec('Clinician fallback', sub('Message, doctor and files', '<div style="max-width:470px">' + answerHtml(A.clin) + '</div>')) +
+      sec('Reports', sub('Single', '<div class="imgs">' + repCard('diag') + '</div>') + sub('Carousel', BLOCK.reports({ r: ['diag', 'nutri', 'mri', 'phys'] })) + sub('Citation', '<div class="msg a" style="margin:0"><div class="txt">' + esc(A.protein.text) + '</div><div class="blk">' + cite('nutri') + '</div></div>')) +
+      sec('Imaging',
+        '<div class="wrapRow">' + sub('Single · report sheet', '<div class="imgs">' + imTile('sheet') + '</div>') + sub('Single · slice', '<div class="imgs">' + imTile('neuro') + '</div>') + sub('Comparison', '<div class="imgs">' + imTile('cmp') + '</div>') + '</div>' +
+        sub('Group', imGroup()) + sub('Group with attachments', '<div>' + atts(['mriRep', 'study']) + '<div class="blk">' + imGroup() + '</div></div>')) +
+      '</div>';
+    cmpBuilt = true; carSync($('#cmpPage'));
+  };
+  var setTab = function (t) {
+    S.tab = t; $$('#tabSeg button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.tab === t)); });
+    if (t === 'cmp' && !cmpBuilt) buildCmp();
+    $('#cmpPage').hidden = t !== 'cmp'; closePop();
+    if (t === 'cmp') carSync($('#cmpPage'));
+  };
+  var setDev = function (d) { S.dev = d; $$('#devSeg button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.dev === d)); }); layout(); };
+
+  /* every click, by what it asks for */
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-act]');
+    if (!pop.hidden && !e.target.closest('#pop') && (!b || (b !== popFor))) closePop();
+    if (!b) { if (e.target === lb) lbClose(); return; }
+    var act = b.dataset.act, msg = b.closest('.msg');
+    switch (act) {
+      case 'tab': setTab(b.dataset.tab); break;
+      case 'dev': setDev(b.dataset.dev); break;
+      case 'theme': { var r = document.documentElement; r.dataset.theme = themeIcon() ? 'light' : 'dark'; themeIcon(); break; }
+      case 'new': go('new'); setTimeout(function () { q.focus(); }, 50); break;
+      case 'inbox': go('inbox'); break;
+      case 'chat': go('chat', b.dataset.id); break;
+      case 'note': { var n = INBOX[+b.dataset.n]; n.read = true; renderBadge(); go('chat', n.id); break; }
+      case 'sideMin': if (app.classList.contains('mob')) app.classList.remove('drawer'); else app.classList.toggle('sideMin'); break;
+      case 'drawer': app.classList.add('drawer'); break;
+      case 'drawerX': app.classList.remove('drawer'); break;
+      case 'back': { var h = S.hist.pop(); if (h && (h[0] !== 'chat' || chats[h[1]])) go(h[0], h[1], false); else go('new', null, false); break; }
+      case 'close': setClosed(true); break;
+      case 'open': setClosed(false); break;
+      case 'send': ask(q.value); break;
+      case 'sug': ask(b.dataset.q); break;
+      case 'copy': { var t = msg.classList.contains('u') ? $('.bub', msg).textContent : ($('.txt', msg) || {}).textContent || ''; try { navigator.clipboard.writeText(t).catch(function () {}); } catch (x) {} b.innerHTML = ic('check'); setTimeout(function () { b.innerHTML = ic('copy'); }, 1200); toast('Copied'); break; }
+      case 'edit': q.value = $('.bub', msg).textContent; grow(); sendState(); q.focus(); break;
+      case 'up': case 'down': { var on = !b.classList.contains('on'); $$('[data-act="up"],[data-act="down"]', msg).forEach(function (x) { x.classList.remove('on'); }); b.classList.toggle('on', on); if (on) toast(act === 'up' ? 'Thanks for the feedback' : 'Thanks. We’ll use this to improve Eva'); break; }
+      case 'regen': if (!S.busy) play(+msg.dataset.i, msg); break;
+      case 'carL': case 'carR': { var tr = $('.carT', b.closest('.car')), first = tr.firstElementChild; tr.scrollBy({ left: (act === 'carR' ? 1 : -1) * ((first ? first.offsetWidth : 200) + 8) }); break; }
+      case 'grpMore': { var g = b.closest('.grp'), o = g.classList.toggle('open'); $('span', b).textContent = o ? 'Show less' : 'Show more'; break; }
+      case 'attMenu': openPop(b, fileMenu(b.closest('.att').dataset.file)); break;
+      case 'fileDo': { var f = FILES[b.dataset.file]; closePop(); if (b.dataset.do === 'Preview') lbShow('<div class="im sheet"></div>', [f.n, f.m]); else toast((b.dataset.do === 'Share' ? 'Share link copied for ' : 'Downloading ') + f.n); break; }
+      case 'model': openPop(b, modelMenu(), true); break;
+      case 'modelSet': S.model = b.dataset.m; $('#modelName').textContent = S.model === 'care' ? 'Care team' : 'Eva'; closePop(); break;
+      case 'plus': openPop(b, plusMenu()); break;
+      case 'plusDo': closePop(); toast(b.dataset.do + ' from your device'); break;
+      case 'aptBtn': {
+        var card = b.closest('.apt'), label = b.dataset.b, key = card.dataset.apt;
+        if (label === 'Book'){ var nc = el(aptCard(key, 'booked', 'Thu 5 Nov, 9:00 AM AEDT', card.classList.contains('cmp'))); nc.classList.add('flash'); card.replaceWith(nc); toast(APT[key].t + ' booked for Thu 5 Nov'); }
+        else if (label === 'Join call') toast('Joining your call with Dr Steven Lu…');
+        else toast('Opening ' + APT[key].t);
+        break;
+      }
+      case 'aptRow': toast('Opening ' + APT[b.dataset.apt].t); break;
+      case 'rep': { var rp = REPORTS[b.dataset.rep]; lbShow(repCard(b.dataset.rep).replace('data-act="rep"', 'tabindex="-1"'), [rp.t + ' · ' + rp.date, rp.d]); break; }
+      case 'img': { var inGroup = b.closest('.car'); lbImg(b.dataset.img, inGroup ? GROUP : null, +(b.dataset.i || 0)); break; }
+      case 'lbX': lbClose(); break;
+      case 'lbP': case 'lbN': { lbI = (lbI + (act === 'lbN' ? 1 : -1) + lbSet.length) % lbSet.length; lbImg(lbSet[lbI], lbSet, lbI); break; }
+    }
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape'){ if (!lb.hidden) lbClose(); else if (!pop.hidden) closePop(); else app.classList.remove('drawer'); }
+    if (!lb.hidden && lbSet && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')){ lbI = (lbI + (e.key === 'ArrowRight' ? 1 : -1) + lbSet.length) % lbSet.length; lbImg(lbSet[lbI], lbSet, lbI); }
+  });
+  thread.addEventListener('scroll', closePop, { passive: true });
+
+  /* first paint: a link can open the components, the mobile panel or a chat (#components, #mobile, #chat-<id>) */
+  renderBadge(); themeIcon(); layout();
+  var hs = location.hash.slice(1);
+  if (/^chat-/.test(hs) && chats[hs.slice(5)]) go('chat', hs.slice(5), false); else go('new', null, false);
+  if (hs === 'mobile') setDev('mob');
+  if (hs === 'components') setTab('cmp');
+  window.Concierge = { ask: ask, go: go, setDev: setDev, setTab: setTab };
+})();
+</script>
+</body>
+</html>

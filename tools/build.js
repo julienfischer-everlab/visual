@@ -98,5 +98,10 @@ src = src.replace(/assets\/[A-Za-z0-9_\-./]+?\.(webp|png|jpe?g|gif|svg|mp4|mp3|m
   console.log('css   ' + kb(cssIn) + ' -> ' + kb(cssOut));
   console.log('js    ' + kb(jsIn) + ' -> ' + kb(jsOut));
   console.log('total ' + kb(src.length) + ' -> ' + kb(out.length) + '  (dist/index.html)');
+  // the Concierge page (visuals/concierge.html), built beside it with its pictures inlined, as the prototype opens it: concierge.html
+  { let cc = fs.readFileSync(path.join(root, 'visuals', 'concierge.html'), 'utf8'), n = 0;
+    cc = cc.replace(/(?:\.\.\/)?assets\/[A-Za-z0-9_\-./]+?\.(webp|png|jpe?g|gif|svg)\b/g, ref => { const f = path.join(root, ref.replace(/^\.\.\//, '')); if (!fs.existsSync(f)){ console.warn('missing asset, left as a path: ' + ref); return ref; } n++; return 'data:' + MIME[ref.split('.').pop().toLowerCase()] + ';base64,' + fs.readFileSync(f).toString('base64'); });
+    fs.writeFileSync(path.join(root, 'dist', 'concierge.html'), cc);
+    console.log('concierge ' + kb(cc.length) + '  (' + n + ' pictures inlined, dist/concierge.html)'); }
   require('./build-hp.js');   // the Health profile on its own page, from the same source: every build makes both
 })().catch(e => { console.error(e); process.exit(1); });
