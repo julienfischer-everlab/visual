@@ -16667,3 +16667,14 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - "Back is ok, but Get started shows a jumping bg still": `start()` took `hpWelF` off the wrap on its first line, while the reveal was still there going up. On M/L its offset (`--hpW2Dy`) and its button's place come from that class, so it shifted (button 25 px down, title 8 px) before leaving.
 - `hpWelF` now stays until the reveal is destroyed (1 s), then comes off with it. The class only styles the reveal, never the profile page.
 - Sampled through Get started at L, M and XS: card 398, stage 137, button 611 and light −58 hold from the click to the reveal's removal (XS 395/134/606/−32). Then the wrap drops the class and Tweaks shows Health profile. No page errors.
+
+## Health profile: step 4, collecting the historical records
+
+- "Create step 4: we are collecting your historical records". Step 4 is Everlab's: the three steps done, and the past results search (opted into in step 1, run on the Medicare card) still going.
+- **State tweak:** "Step 4 (records)" sits between Step 3.5 and Booked (`SK` and `stateIx` reordered). `preset('rec')` is Booked's answers with the search running and held (`pend.search.hold`: it doesn't finish on its 60 s while that state is picked). `summary().rec` says when step 4 is on. Finishing the profile for real with the search still running lands on Step 4, then on Booked once it's done.
+- **Overview card:** "We're collecting your historical records." with "Searching labs across Australia for your past results, so Dr Steven Lu sees the full picture." The consult stays at its foot with View.
+- **Profile home:**
+  - Title "We're collecting your historical records", with the line "We're searching labs across Australia for your past results, so Dr Lee sees the full picture before <day>."
+  - A 4th row, "Your historical records". While the search runs, it shows "Searching labs across Australia" in a dashed ring turning slowly around the 4; its line is kept live by the existing `[data-pend]` refresh.
+  - Once in, the row shows a green tick and "4 past results found". Booked's line now reads "…Your past results are in too." (was "we'll let you know").
+- Checked at XS and L: card and home in Step 3.5 / Step 4 / Booked, the tweak holding Step 4. No page errors.

@@ -1073,7 +1073,7 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
 .arSheet.hpSheet .hpArea.hpProg .hpNum { box-shadow: inset 0 0 0 1.5px oklch(var(--ar-ink)); }
 .arSheet.hpSheet { --hpOk: #24A148; --hpOkFg: #fff; } .arSheet.hpSheet.arDark { --hpOk: #42BE65; --hpOkFg: var(--ar-paper); }   /* the tick on it: white on the light, the page's dark on the dark ("check foreground should be inverse on dark mode") */   /* the profile's done green, its own ("42BE65 dark mode, 24A148 light mode"); the report's Optimal keeps --ar-opt-bg */
 .arSheet.hpSheet .hpArea.hpDone .hpNum { background: var(--hpOk); color: var(--hpOkFg); box-shadow: none; }
-.arSheet.hpSheet .hpArea.hpProg .hpNum { box-sizing: border-box; border: 1.5px dashed oklch(var(--ar-ink) / .24); box-shadow: none; opacity: 1; color: oklch(var(--ar-ink)); }   /* begun, not finished: a dashed ring and its number in full ink ("if in progress and not finalised, dashed outline white and number white") */   /* done: a green check ("green check if completed"; the report's optimal green) */
+.arSheet.hpSheet .hpArea.hpProg .hpNum { box-sizing: border-box; border: 1.5px dashed oklch(var(--ar-ink) / .24); box-shadow: none; opacity: 1; color: oklch(var(--ar-ink)); } .arSheet.hpSheet .hpArea.hpRun .hpNum { position: relative; border-color: transparent; } .arSheet.hpSheet .hpArea.hpRun .hpNum::before { content: ""; position: absolute; inset: -1.5px; border-radius: 50%; border: 1.5px dashed oklch(var(--ar-ink) / .4); animation: hpRunSpin 9s linear infinite; } @keyframes hpRunSpin { to { rotate: 1turn; } } @media (prefers-reduced-motion: reduce) { .arSheet.hpSheet .hpArea.hpRun .hpNum::before { animation: none; } }   /* step 4 running: its dashed ring turning slowly, the number still */   /* begun, not finished: a dashed ring and its number in full ink ("if in progress and not finalised, dashed outline white and number white") */   /* done: a green check ("green check if completed"; the report's optimal green) */
 .arSheet.hpSheet .hpAreaT { display: flex; flex-direction: column; gap: 4px; min-width: 0; }   /* +2 ("gap +2px") */
 .arSheet.hpSheet .hpAreaT b { font-size: 16px; line-height: 20px; font-weight: 570; }
 .arSheet.hpSheet .hpAreaT > span { font-size: 14px; line-height: 18px; color: oklch(var(--ar-ink) / .56); }
@@ -1766,7 +1766,7 @@ window.EvLoad = (function () {
   function stepsOf(k) { return AREA[k].steps.filter(function (id) { return id !== 'search' || searching(); }); }   /* a stage's steps; the search's page at the end of Tell us about you, after Review, before the intro ("need this at the end of step 3 before coming back to the health profile home"; Anshul's journey map: skipped if they said no to the records search) */
   function pending(k) {   // a background process: null, or { done, label }
     var p = S.pend[k]; if (!p) return null;
-    var done = p.done || Date.now() - p.at > SEARCH_MS;
+    var done = p.done || (!p.hold && Date.now() - p.at > SEARCH_MS);   // hold: the demo's Step 4, searching till another state is picked
     return { done: done, label: done ? '4 past results found' : 'Searching labs across Australia' };
   }
   /* the consult: October 2026, the days with times next week, six times a day, the four Australian zones */
@@ -1777,19 +1777,19 @@ window.EvLoad = (function () {
     return { wd: wd, label: wd.slice(0, 3) + ' ' + a.day + ' Oct, ' + a.time, range: wd.slice(0, 3) + ' ' + a.day + ' Oct, ' + (sl ? sl[1] : a.time) + ' ' + (tz ? tz[2] : '') }; }
   function summary() {
     var st = {}, n = 0; AREAS.forEach(function (a) { st[a.k] = S.a[a.k].st; if (st[a.k] === 'done') n++; });
-    var any = AREAS.some(function (a) { return st[a.k] !== 'not'; }), b = booked();
-    return { n: n, st: st, state: n === 3 ? 'done' : any ? 'prog' : 'not', cta: n === 3 ? 'View health profile' : any ? 'Continue' : 'Let’s begin', bk: b ? b.label : null, wd: b ? b.wd : null };
+    var any = AREAS.some(function (a) { return st[a.k] !== 'not'; }), b = booked(), ps = pending('search');
+    return { n: n, st: st, state: n === 3 ? 'done' : any ? 'prog' : 'not', cta: n === 3 ? 'View health profile' : any ? 'Continue' : 'Let’s begin', bk: b ? b.label : null, wd: b ? b.wd : null, rec: n === 3 && !!(ps && !ps.done) };   // rec: step 4, the three done and the historical records still being collected
   }
   var DEMO = {
     wear: { tc: true, find: true, first: 'Julien', last: 'Fischer', mid: '', sex: 'm', dob: '14/03/1984', state: 'NSW', mc: 'yes', mcn: '2953 12345 1', irn: '1', exp: '08/29', addr: '12 Bayview Street, Bondi NSW 2026', ecn: 'Claire Fischer', ecr: 'partner', ecp: '+61 412 345 678', med: ['none'], fam: ['card', 'meta'] },
     past: { day: 29, time: '10:00am', tz: 'syd' },
     you: { sleep: '6', country: 'AU', eth: '', goals: 'Sleep better and keep my cholesterol in check', occ: 'Product designer', smoke: 'no', alc: 2 }
   };
-  function preset(k) {   // the demo states: on step 1, on step 2, on step 3, done; '_d', the step on left part-way (dropped off)
-    var drop = /_d$/.test(k); k = k.replace(/_d$/, '');
+  function preset(k) {   // the demo states: on step 1, on step 2, on step 3, step 4 (the records being collected), done; '_d', the step on left part-way (dropped off)
+    var drop = /_d$/.test(k), rec = k === 'rec'; k = rec ? 'all' : k.replace(/_d$/, '');
     S = blank();
     var copy = function (o) { return JSON.parse(JSON.stringify(o)); };
-    if (k === 'one' || k === 'two' || k === 'all') { S.a.wear = { st: 'done', i: 3, ans: copy(DEMO.wear) }; S.pend.search = k === 'all' ? { at: Date.now() - SEARCH_MS - 1, done: true } : { at: Date.now() }; }
+    if (k === 'one' || k === 'two' || k === 'all') { S.a.wear = { st: 'done', i: 3, ans: copy(DEMO.wear) }; S.pend.search = rec ? { at: Date.now(), hold: true } : k === 'all' ? { at: Date.now() - SEARCH_MS - 1, done: true } : { at: Date.now() }; }
     if (k === 'two' || k === 'all') S.a.past = { st: 'done', i: 1, ans: copy(DEMO.past) };
     if (k === 'all') S.a.you = { st: 'done', i: 5, ans: copy(DEMO.you) };
     if (drop) { var nd = AREAS.filter(function (a) { return S.a[a.k].st !== 'done'; })[0]; if (nd) S.a[nd.k].st = 'prog'; }   // opened and left: begun
@@ -1904,7 +1904,8 @@ window.EvLoad = (function () {
         var nm = opts.name || 'Sam', nx = AREAS.filter(function (a) { return S.a[a.k].st !== 'done'; })[0], bk = S.a.past.st === 'done';   // the step it is on: the first not done, in order
         var b = booked(), wd = b ? b.wd : 'your consult';   // the booked day, for the words below
         /* the words of each moment (the journey driver's screens, "align the copy"): before any, the three steps; after one, the next; booked, the consult's; all three, done. [title, line, button]; no eyebrow and no news chip over the orb ("remove") */
-        var CP = sm.n === 3 ? ['You\u2019re all set, ' + nm, 'Dr Lee has what they need for ' + wd + '.' + (searching() ? ' We\u2019ll let you know when your past results come in.' : ''), 'Go to overview']
+        var CP = sm.rec ? ['We\u2019re collecting your historical records', 'We\u2019re searching labs across Australia for your past results, so Dr Lee sees the full picture before ' + wd + '.', 'Go to overview']   /* step 4 ("create step 4: we are collecting your historical records"): the three done, the search still going */
+          : sm.n === 3 ? ['You\u2019re all set, ' + nm, 'Dr Lee has what they need for ' + wd + '.' + (searching() ? ' Your past results are in too.' : '')   /* Booked comes after step 4 now: the search done, its row says what was found */, 'Go to overview']
           : !sm.n ? ['Three steps before your consult, ' + nm, 'About 12 minutes. By the end,\nDr Lee knows you before you meet.', sm.state === 'not' ? 'Let\u2019s begin' : 'Continue']
           : nx.k === 'past' ? ['Next, book your consult', 'A 1-on-1 video consult with a longevity-focused doctor. It\u2019s where your plan starts.', 'Choose a time']   /* the main CTA ("CTA: Choose a time"; it was Book): what the next page is for */
           : nx.k === 'you' && bk ? ['Booked. Now let\u2019s get to know you', 'Dr Lee reads this before your call, so your time together goes on what matters.', 'Continue']   /* "Continue", not Let's begin */   /* not the weekday ("before your call") */
@@ -1925,7 +1926,10 @@ window.EvLoad = (function () {
               h('span', { class: 'hpNum', 'aria-hidden': 'true' }, st === 'done' ? ic(16, P.check, 2) : String(i + 1), jd === a.k && dn ? h('span', { class: 'hpNumWas', text: String(i + 1) }) : null),   /* just done: its number there first, giving way to the tick */
               h('span', { class: 'hpAreaT' }, h('b', { text: dn && a.k === 'past' ? 'Onboarding consultation call' : a.t }), h('span', { text: st === 'done' ? (a.k === 'past' && b ? 'Booked ' + b.label : 'Completed') : st === 'prog' ? 'To finalise' : a.s })),   /* booked: "Onboarding consultation call", "Booked <date>" */   /* begun and left: To finalise ("sub: to finalise") */   /* done: Done, or the consult's time; the background processes' lines not here ("align the copy"); booked, the booking's own name ("if booked: Onboarding consultation booked") */
               dn ? h('span', { class: 'hpAreaEd', 'aria-hidden': 'true' }, ic(16, P.pen, 1.6)) : null);   /* begun: no In progress badge, the dashed number and To finalise say it */   /* no Not started: the title on one line ("remove Not started so the title can fit") */
-          }))));
+          }).concat(sm.n === 3 && searching() && S.pend.search ? [(function () { var ps = pending('search'), ok = ps.done;   /* step 4, Everlab's: the historical records, being collected (its dashed ring turning, the line kept live) or in (a tick, what was found) */
+            return h('div', { class: 'hpArea hpRec ' + (ok ? 'hpDone' : 'hpStill hpProg hpNext hpRun'), role: 'group', 'aria-label': 'Your historical records, ' + ps.label },
+              h('span', { class: 'hpNum', 'aria-hidden': 'true' }, ok ? ic(16, P.check, 2) : '4'),
+              h('span', { class: 'hpAreaT' }, h('b', { text: 'Your historical records' }), h('span', { 'data-pend': 'search', text: ps.label }))); })()] : []))));
       }, first ? 0 : dir);
       var next = AREAS.filter(function (a) { return S.a[a.k].st !== 'done'; })[0];
       foot2(opts._cta || (sm.n === 3 ? 'Go to overview' : 'Continue'), true, function () { if (next) area(next.k, 1); else if (opts.onClose) opts.onClose(); });

@@ -12206,7 +12206,7 @@
         <div class="tkSub">Primary card</div>
         <div class="tkRow"><span class="lbl">Type</span><select id="stPcType" class="tkSegSel" aria-label="The Overview's primary card"><option value="member" selected>$299 purchased</option><option value="next">Next step</option></select></div>
         <div class="pcPart" data-pc="hp">
-        <div class="tkRow"><span class="lbl">State</span><select id="stHpSt" aria-label="The Health profile's step"><option value="none" selected>Step 1</option><option value="none_d">Step 1.5 (dropped off)</option><option value="one">Step 2</option><option value="one_d">Step 2.5 (dropped off)</option><option value="two">Step 3</option><option value="two_d">Step 3.5 (dropped off)</option><option value="all">Booked</option><option value="plan">After the call: plan</option></select></div>
+        <div class="tkRow"><span class="lbl">State</span><select id="stHpSt" aria-label="The Health profile's step"><option value="none" selected>Step 1</option><option value="none_d">Step 1.5 (dropped off)</option><option value="one">Step 2</option><option value="one_d">Step 2.5 (dropped off)</option><option value="two">Step 3</option><option value="two_d">Step 3.5 (dropped off)</option><option value="rec">Step 4 (records)</option><option value="all">Booked</option><option value="plan">After the call: plan</option></select></div>
         <div class="tkRow"><span class="lbl">Look</span><select id="stHpLook" class="tkSegSel" aria-label="The sphere, on the card and in the Health profile: the glow, or the dots"><option value="glow" selected>Glow</option><option value="dots">Dots</option></select></div>   <!-- ("this is the effect that I want to achieve on the sphere of the Health profile card; a tweak with this vibe") -->
         <div class="tkRow"><span class="lbl">Empty dots</span><select id="stHpDim" class="tkSegSel" aria-label="The sphere's empty particles, how visible"><option value="1">Base</option><option value="1.2" selected>+20%</option><option value="1.5">+50%</option><option value="2">+100%</option></select></div>
         <div class="tkRow"><span class="lbl">Filled saturation</span><span class="tkSlide"><input type="range" id="stHpSat" min="0" max="200" step="5" value="100" aria-label="The sphere's filled particles, how saturated"><i class="tkVal" id="stHpSatV">100%</i></span></div>   <!-- ("the filled dots: need to control the saturation") -->
@@ -16542,7 +16542,7 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
 .arSheet.hpSheet .hpArea.hpProg .hpNum { box-shadow: inset 0 0 0 1.5px oklch(var(--ar-ink)); }
 .arSheet.hpSheet { --hpOk: #24A148; --hpOkFg: #fff; } .arSheet.hpSheet.arDark { --hpOk: #42BE65; --hpOkFg: var(--ar-paper); }   /* the tick on it: white on the light, the page's dark on the dark ("check foreground should be inverse on dark mode") */   /* the profile's done green, its own ("42BE65 dark mode, 24A148 light mode"); the report's Optimal keeps --ar-opt-bg */
 .arSheet.hpSheet .hpArea.hpDone .hpNum { background: var(--hpOk); color: var(--hpOkFg); box-shadow: none; }
-.arSheet.hpSheet .hpArea.hpProg .hpNum { box-sizing: border-box; border: 1.5px dashed oklch(var(--ar-ink) / .24); box-shadow: none; opacity: 1; color: oklch(var(--ar-ink)); }   /* begun, not finished: a dashed ring and its number in full ink ("if in progress and not finalised, dashed outline white and number white") */   /* done: a green check ("green check if completed"; the report's optimal green) */
+.arSheet.hpSheet .hpArea.hpProg .hpNum { box-sizing: border-box; border: 1.5px dashed oklch(var(--ar-ink) / .24); box-shadow: none; opacity: 1; color: oklch(var(--ar-ink)); } .arSheet.hpSheet .hpArea.hpRun .hpNum { position: relative; border-color: transparent; } .arSheet.hpSheet .hpArea.hpRun .hpNum::before { content: ""; position: absolute; inset: -1.5px; border-radius: 50%; border: 1.5px dashed oklch(var(--ar-ink) / .4); animation: hpRunSpin 9s linear infinite; } @keyframes hpRunSpin { to { rotate: 1turn; } } @media (prefers-reduced-motion: reduce) { .arSheet.hpSheet .hpArea.hpRun .hpNum::before { animation: none; } }   /* step 4 running: its dashed ring turning slowly, the number still */   /* begun, not finished: a dashed ring and its number in full ink ("if in progress and not finalised, dashed outline white and number white") */   /* done: a green check ("green check if completed"; the report's optimal green) */
 .arSheet.hpSheet .hpAreaT { display: flex; flex-direction: column; gap: 4px; min-width: 0; }   /* +2 ("gap +2px") */
 .arSheet.hpSheet .hpAreaT b { font-size: 16px; line-height: 20px; font-weight: 570; }
 .arSheet.hpSheet .hpAreaT > span { font-size: 14px; line-height: 18px; color: oklch(var(--ar-ink) / .56); }
@@ -17210,7 +17210,7 @@ window.EvLoad = (function () {
   function stepsOf(k) { return AREA[k].steps.filter(function (id) { return id !== 'search' || searching(); }); }   /* a stage's steps; the search's page at the end of Tell us about you, after Review, before the intro ("need this at the end of step 3 before coming back to the health profile home"; Anshul's journey map: skipped if they said no to the records search) */
   function pending(k) {   // a background process: null, or { done, label }
     var p = S.pend[k]; if (!p) return null;
-    var done = p.done || Date.now() - p.at > SEARCH_MS;
+    var done = p.done || (!p.hold && Date.now() - p.at > SEARCH_MS);   // hold: the demo's Step 4, searching till another state is picked
     return { done: done, label: done ? '4 past results found' : 'Searching labs across Australia' };
   }
   /* the consult: October 2026, the days with times next week, six times a day, the four Australian zones */
@@ -17221,19 +17221,19 @@ window.EvLoad = (function () {
     return { wd: wd, label: wd.slice(0, 3) + ' ' + a.day + ' Oct, ' + a.time, range: wd.slice(0, 3) + ' ' + a.day + ' Oct, ' + (sl ? sl[1] : a.time) + ' ' + (tz ? tz[2] : '') }; }
   function summary() {
     var st = {}, n = 0; AREAS.forEach(function (a) { st[a.k] = S.a[a.k].st; if (st[a.k] === 'done') n++; });
-    var any = AREAS.some(function (a) { return st[a.k] !== 'not'; }), b = booked();
-    return { n: n, st: st, state: n === 3 ? 'done' : any ? 'prog' : 'not', cta: n === 3 ? 'View health profile' : any ? 'Continue' : 'Let’s begin', bk: b ? b.label : null, wd: b ? b.wd : null };
+    var any = AREAS.some(function (a) { return st[a.k] !== 'not'; }), b = booked(), ps = pending('search');
+    return { n: n, st: st, state: n === 3 ? 'done' : any ? 'prog' : 'not', cta: n === 3 ? 'View health profile' : any ? 'Continue' : 'Let’s begin', bk: b ? b.label : null, wd: b ? b.wd : null, rec: n === 3 && !!(ps && !ps.done) };   // rec: step 4, the three done and the historical records still being collected
   }
   var DEMO = {
     wear: { tc: true, find: true, first: 'Julien', last: 'Fischer', mid: '', sex: 'm', dob: '14/03/1984', state: 'NSW', mc: 'yes', mcn: '2953 12345 1', irn: '1', exp: '08/29', addr: '12 Bayview Street, Bondi NSW 2026', ecn: 'Claire Fischer', ecr: 'partner', ecp: '+61 412 345 678', med: ['none'], fam: ['card', 'meta'] },
     past: { day: 29, time: '10:00am', tz: 'syd' },
     you: { sleep: '6', country: 'AU', eth: '', goals: 'Sleep better and keep my cholesterol in check', occ: 'Product designer', smoke: 'no', alc: 2 }
   };
-  function preset(k) {   // the demo states: on step 1, on step 2, on step 3, done; '_d', the step on left part-way (dropped off)
-    var drop = /_d$/.test(k); k = k.replace(/_d$/, '');
+  function preset(k) {   // the demo states: on step 1, on step 2, on step 3, step 4 (the records being collected), done; '_d', the step on left part-way (dropped off)
+    var drop = /_d$/.test(k), rec = k === 'rec'; k = rec ? 'all' : k.replace(/_d$/, '');
     S = blank();
     var copy = function (o) { return JSON.parse(JSON.stringify(o)); };
-    if (k === 'one' || k === 'two' || k === 'all') { S.a.wear = { st: 'done', i: 3, ans: copy(DEMO.wear) }; S.pend.search = k === 'all' ? { at: Date.now() - SEARCH_MS - 1, done: true } : { at: Date.now() }; }
+    if (k === 'one' || k === 'two' || k === 'all') { S.a.wear = { st: 'done', i: 3, ans: copy(DEMO.wear) }; S.pend.search = rec ? { at: Date.now(), hold: true } : k === 'all' ? { at: Date.now() - SEARCH_MS - 1, done: true } : { at: Date.now() }; }
     if (k === 'two' || k === 'all') S.a.past = { st: 'done', i: 1, ans: copy(DEMO.past) };
     if (k === 'all') S.a.you = { st: 'done', i: 5, ans: copy(DEMO.you) };
     if (drop) { var nd = AREAS.filter(function (a) { return S.a[a.k].st !== 'done'; })[0]; if (nd) S.a[nd.k].st = 'prog'; }   // opened and left: begun
@@ -17348,7 +17348,8 @@ window.EvLoad = (function () {
         var nm = opts.name || 'Sam', nx = AREAS.filter(function (a) { return S.a[a.k].st !== 'done'; })[0], bk = S.a.past.st === 'done';   // the step it is on: the first not done, in order
         var b = booked(), wd = b ? b.wd : 'your consult';   // the booked day, for the words below
         /* the words of each moment (the journey driver's screens, "align the copy"): before any, the three steps; after one, the next; booked, the consult's; all three, done. [title, line, button]; no eyebrow and no news chip over the orb ("remove") */
-        var CP = sm.n === 3 ? ['You\u2019re all set, ' + nm, 'Dr Lee has what they need for ' + wd + '.' + (searching() ? ' We\u2019ll let you know when your past results come in.' : ''), 'Go to overview']
+        var CP = sm.rec ? ['We\u2019re collecting your historical records', 'We\u2019re searching labs across Australia for your past results, so Dr Lee sees the full picture before ' + wd + '.', 'Go to overview']   /* step 4 ("create step 4: we are collecting your historical records"): the three done, the search still going */
+          : sm.n === 3 ? ['You\u2019re all set, ' + nm, 'Dr Lee has what they need for ' + wd + '.' + (searching() ? ' Your past results are in too.' : '')   /* Booked comes after step 4 now: the search done, its row says what was found */, 'Go to overview']
           : !sm.n ? ['Three steps before your consult, ' + nm, 'About 12 minutes. By the end,\nDr Lee knows you before you meet.', sm.state === 'not' ? 'Let\u2019s begin' : 'Continue']
           : nx.k === 'past' ? ['Next, book your consult', 'A 1-on-1 video consult with a longevity-focused doctor. It\u2019s where your plan starts.', 'Choose a time']   /* the main CTA ("CTA: Choose a time"; it was Book): what the next page is for */
           : nx.k === 'you' && bk ? ['Booked. Now let\u2019s get to know you', 'Dr Lee reads this before your call, so your time together goes on what matters.', 'Continue']   /* "Continue", not Let's begin */   /* not the weekday ("before your call") */
@@ -17369,7 +17370,10 @@ window.EvLoad = (function () {
               h('span', { class: 'hpNum', 'aria-hidden': 'true' }, st === 'done' ? ic(16, P.check, 2) : String(i + 1), jd === a.k && dn ? h('span', { class: 'hpNumWas', text: String(i + 1) }) : null),   /* just done: its number there first, giving way to the tick */
               h('span', { class: 'hpAreaT' }, h('b', { text: dn && a.k === 'past' ? 'Onboarding consultation call' : a.t }), h('span', { text: st === 'done' ? (a.k === 'past' && b ? 'Booked ' + b.label : 'Completed') : st === 'prog' ? 'To finalise' : a.s })),   /* booked: "Onboarding consultation call", "Booked <date>" */   /* begun and left: To finalise ("sub: to finalise") */   /* done: Done, or the consult's time; the background processes' lines not here ("align the copy"); booked, the booking's own name ("if booked: Onboarding consultation booked") */
               dn ? h('span', { class: 'hpAreaEd', 'aria-hidden': 'true' }, ic(16, P.pen, 1.6)) : null);   /* begun: no In progress badge, the dashed number and To finalise say it */   /* no Not started: the title on one line ("remove Not started so the title can fit") */
-          }))));
+          }).concat(sm.n === 3 && searching() && S.pend.search ? [(function () { var ps = pending('search'), ok = ps.done;   /* step 4, Everlab's: the historical records, being collected (its dashed ring turning, the line kept live) or in (a tick, what was found) */
+            return h('div', { class: 'hpArea hpRec ' + (ok ? 'hpDone' : 'hpStill hpProg hpNext hpRun'), role: 'group', 'aria-label': 'Your historical records, ' + ps.label },
+              h('span', { class: 'hpNum', 'aria-hidden': 'true' }, ok ? ic(16, P.check, 2) : '4'),
+              h('span', { class: 'hpAreaT' }, h('b', { text: 'Your historical records' }), h('span', { 'data-pend': 'search', text: ps.label }))); })()] : []))));
       }, first ? 0 : dir);
       var next = AREAS.filter(function (a) { return S.a[a.k].st !== 'done'; })[0];
       foot2(opts._cta || (sm.n === 3 ? 'Go to overview' : 'Continue'), true, function () { if (next) area(next.k, 1); else if (opts.onClose) opts.onClose(); });
@@ -32846,7 +32850,7 @@ hairline({
     const paintCard0 = back => { const c = card(); if (!c) return; placeCard(c); if (plan){ paintPlan(c); return; } c.classList.remove('hpOvPlan'); const sm = store.summary();
       const stx = sm.state === 'done' ? 'Completed' : sm.state === 'prog' ? 'In progress' : 'Not started', cls = sm.state === 'done' ? 'hpStDone' : sm.state === 'prog' ? 'hpStProg' : 'hpStNot';
       const nx = ['wear', 'past', 'you'].filter(k => sm.st[k] !== 'done')[0], NXT = { wear: ['Start your health journey', 'Our promise and your details', 'Get started'], past: ['Book your consultation', 'It takes only 1 minute', 'Book a time'], you: ['Tell us more about you', 'It will help us to customise your journey before your call', 'Complete profile'] }, cur = NXT[nx];   /* each step its title, the stage under it, its button ("the title should always be: Start your health journey, Get started; Book your consultation, Book; Tell us more about you, Complete profile") */
-      const ttl = sm.state === 'done' ? 'You\u2019re all set for your consult with Dr Steven Lu.' : cur[0], sub = sm.state === 'done' ? '' : cur[1];
+      const ttl = sm.rec ? 'We\u2019re collecting your historical records.' : sm.state === 'done' ? 'You\u2019re all set for your consult with Dr Steven Lu.' : cur[0], sub = sm.rec ? 'Searching labs across Australia for your past results, so Dr Steven Lu sees the full picture.' : sm.state === 'done' ? '' : cur[1];   /* step 4: the records being collected, the consult still at the foot */
       const bar = '<span class="hpOvBar" role="progressbar" aria-valuemin="0" aria-valuemax="3" aria-valuenow="' + sm.n + '" aria-label="' + sm.n + ' of 3 steps done">' + [0, 1, 2].map(i => '<i class="' + (i < sm.n ? 'on' : i === sm.n && sm.st[nx] === 'prog' ? 'half' : '') + '"></i>').join('') + '</span>';   /* a progress bar, a third a step, the done ones orange ("I just need a progress bar"); the next half only when left part-way through it ("the half increment only when the user drops off in the middle of the flow") */
       const fresh = sm.state === 'not';   // not begun: the button across the card, nothing at its left ("CTA full, no left copy"; was only out of the primary's place)   /* not begun at all, out of the primary's place: no bar, the button across the card ("if the journey has not started yet, use fill full for the main CTA"); in its place, Next step's foot: what it takes at the left, the button at the right */
       const left = sm.state === 'done' ? '<div class="ovBookWhen"><b>Onboarding consultation</b><span>' + (sm.bk || 'Booked') + '</span></div>' : sm.state === 'not' ? '' : bar;   /* done: the consult at the foot, where the progress was ("put your consult on the left side instead of the increment") */
@@ -32862,8 +32866,8 @@ hairline({
       const hs = document.getElementById('stHero'); if (hs){ if (v){ heroKept = hs.value; hs.value = 'dexa'; } else if (heroKept != null){ hs.value = heroKept; heroKept = null; } hs.dispatchEvent(new Event('change', { bubbles: true })); }
       document.dispatchEvent(new Event('everlab:hpgone')); paintCard(); };   // the card in or out of Next step's place
     /* the demo's states in order ("on the step nav, also the dropped-off states: Step 1.5, 2.5, 3.5"): each step, then the same left part-way; Done; the Program card; Dexa next */
-    const SK = ['none', 'none_d', 'one', 'one_d', 'two', 'two_d', 'all', 'plan'];   // Plan to purchase after Done ("plan to purchase should be after step done, so remove the Card tweak"); Dexa next: the Primary card's Type (Next step)
-    const stateIx = () => { if (plan) return 7; const sm = store.summary(); if (sm.n === 3) return 6; const nx = ['wear', 'past', 'you'].find(k => sm.st[k] !== 'done'); return sm.n * 2 + (sm.st[nx] === 'prog' ? 1 : 0); };
+    const SK = ['none', 'none_d', 'one', 'one_d', 'two', 'two_d', 'rec', 'all', 'plan'];   // rec: Step 4, the historical records being collected   // Plan to purchase after Done ("plan to purchase should be after step done, so remove the Card tweak"); Dexa next: the Primary card's Type (Next step)
+    const stateIx = () => { if (plan) return 8; const sm = store.summary(); if (sm.n === 3) return sm.rec ? 6 : 7; const nx = ['wear', 'past', 'you'].find(k => sm.st[k] !== 'done'); return sm.n * 2 + (sm.st[nx] === 'prog' ? 1 : 0); };
     const stepOf = () => SK[stateIx()];   // the State tweak at the step the member is on ("three states, one a step"; Done the end; Dexa next, the card put away)
     document.addEventListener('everlab:hp', () => { paintCard(); const t = document.getElementById('stHpSt'); if (t && !hpSetting) t.value = stepOf(); });
     { const t = document.getElementById('stHpSt'); if (t) t.value = stepOf(); }
