@@ -18,6 +18,8 @@
     --hover: rgba(46, 31, 26, .05); --active: rgba(46, 31, 26, .08); --sec: rgba(46, 31, 26, .08); --secH: rgba(46, 31, 26, .13);
     --pri: #2e1f1a; --priFg: #fdfaf3; --acc: #f26b3a; --accFg: #ffffff; --ok: #2f8f57; --bad: #c8463f; --badge: #4a4a4a; --badgeFg: #ffffff;
     --pop: #fdfaf3; --popLine: rgba(46, 31, 26, .1); --stage: #e9e1d2; --scrim: rgba(20, 14, 10, .32); --ring: rgba(46, 31, 26, .55);
+    --note: #f4a067; --noteFg: #2e1f1a; --edge: rgba(46, 31, 26, .16);
+    --kbBg: #d1d3d9; --kKey: #ffffff; --kFn: #acb0bb; --kInk: #000000; --kSel: rgba(0, 0, 0, .08);
     --shadow: none; --popShadow: 0 2px 6px rgba(46, 31, 26, .06), 0 16px 40px rgba(46, 31, 26, .14);
     --sans: "Suisse Intl", SuisseIntl, "Suisse Int'l", "Helvetica Neue", Helvetica, Arial, sans-serif;
     --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
@@ -30,6 +32,8 @@
       --hover: rgba(255, 255, 255, .05); --active: rgba(255, 255, 255, .07); --sec: rgba(255, 255, 255, .08); --secH: rgba(255, 255, 255, .14);
       --pri: #ffffff; --priFg: #111111; --ok: #4cc27e; --bad: #f06a6a; --badge: #4a4a4a; --badgeFg: #ffffff;
       --pop: #232322; --popLine: rgba(255, 255, 255, .08); --stage: #050505; --scrim: rgba(0, 0, 0, .5); --ring: rgba(255, 255, 255, .3);
+      --note: #f7b58b; --noteFg: #1c1410; --edge: rgba(255, 255, 255, .16);
+      --kbBg: #5a5a5c; --kKey: #7c7c7f; --kFn: #464648; --kInk: #ffffff; --kSel: rgba(0, 0, 0, .16);
       --shadow: none; --popShadow: 0 16px 40px rgba(0, 0, 0, .5);
       color-scheme: dark;
     }
@@ -40,6 +44,8 @@
     --hover: rgba(255, 255, 255, .05); --active: rgba(255, 255, 255, .07); --sec: rgba(255, 255, 255, .08); --secH: rgba(255, 255, 255, .14);
     --pri: #ffffff; --priFg: #111111; --ok: #4cc27e; --bad: #f06a6a; --badge: #4a4a4a; --badgeFg: #ffffff;
     --pop: #232322; --popLine: rgba(255, 255, 255, .08); --stage: #050505; --scrim: rgba(0, 0, 0, .5); --ring: rgba(255, 255, 255, .3);
+    --note: #f7b58b; --noteFg: #1c1410; --edge: rgba(255, 255, 255, .16);
+    --kbBg: #5a5a5c; --kKey: #7c7c7f; --kFn: #464648; --kInk: #ffffff; --kSel: rgba(0, 0, 0, .16);
     --shadow: none; --popShadow: 0 16px 40px rgba(0, 0, 0, .5);
     color-scheme: dark;
   }
@@ -50,6 +56,7 @@
   button:focus-visible, textarea:focus-visible, [tabindex]:focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; }
   img { display: block; max-width: 100%; }
   .ic { width: 16px; height: 16px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .ic.lg { fill: currentColor; stroke: none; }   /* the Everlab mark, filled */
 
   /* the page's own bar: what to look at (the chat or its components), on which device, in which theme */
   .bar { position: relative; z-index: 3; display: flex; align-items: center; gap: 12px; height: 48px; padding-inline: 16px; border-bottom: 1px solid var(--line); background: var(--side); }
@@ -86,7 +93,9 @@
   .item:hover { background: var(--hover); }
   .item.on { background: var(--active); }
   .item span { overflow: hidden; text-overflow: ellipsis; }
-  .badge { margin-left: auto; min-width: 22px; height: 22px; padding: 0 7px; display: inline-grid; place-items: center; border-radius: 11px; background: var(--acc); color: var(--accFg); font-size: 12px; font-weight: 500; font-variant-numeric: tabular-nums; }
+  .badge { margin-left: auto; min-width: 24px; height: 22px; padding: 0 7px; display: inline-grid; place-items: center; border-radius: 7px; background: var(--note); color: var(--noteFg); font-size: 12.5px; font-weight: 500; font-variant-numeric: tabular-nums; }
+  .ud { width: 7px; height: 7px; border-radius: 50%; background: var(--note); flex: none; }   /* unread */
+  .item .ud { margin-left: 4px; }
   .badge:empty, .badge[data-n="0"] { display: none; }
   .recHd { margin: 24px 10px 8px; font-size: 11px; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; white-space: nowrap; }
   .rec { display: grid; gap: 1px; overflow-y: auto; margin-inline: -4px; padding-inline: 4px; scrollbar-width: none; }
@@ -105,6 +114,13 @@
   .hd .ttl { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 15px; font-weight: 500; color: var(--fg); }
   .hd .sp { flex: 1; }
   .hd .mobOnly { display: none; }
+  .hdInbox { display: none; align-items: center; gap: 8px; height: 36px; padding: 0 8px 0 12px; border-radius: 999px; background: var(--sec); font-size: 14px; font-weight: 500; }
+  .hdInbox:hover { background: var(--secH); }
+  .hdInbox .ic { width: 18px; height: 18px; }
+  .hdInbox .badge { margin-left: 0; min-width: 22px; height: 20px; padding: 0 6px; font-size: 12px; border-radius: 6px; }
+  .app.atHome .hd .ttl, .app.atHome #hdBack { visibility: hidden; }
+  .app.mob.atHome .hd .hdInbox { display: inline-flex; }
+  .app.mob.atHome #hdMin { display: none; }
   .thread { flex: 1; min-height: 0; overflow-y: auto; scroll-behavior: smooth; }
   .col { width: 100%; max-width: 688px; margin: 0 auto; padding: 12px 24px 40px; }
   .dock { flex: none; width: 100%; max-width: 688px; margin: 0 auto; padding: 0 24px 24px; }
@@ -116,9 +132,9 @@
   .boxRow .sp { flex: 1; }
   .round { display: inline-grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: var(--sec); color: var(--fg); }
   .round:hover { color: var(--fg); background: var(--hover); }
-  .pill { display: inline-flex; align-items: center; gap: 4px; height: 36px; padding: 0 10px 0 14px; border-radius: 999px; background: var(--sec); font-size: 14px; }
+  .pill { display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 10px 0 16px; border-radius: 999px; background: var(--sec); font-size: 15px; }
   .pill:hover { background: var(--secH); }
-  .pill .ic { width: 14px; height: 14px; color: var(--muted); }
+  .pill .ic { width: 18px; height: 18px; color: var(--fg); }
   /* the send arrow only once a character is typed: folded away until then, grown in with the first */
   .send { display: inline-grid; place-items: center; width: 0; height: 40px; margin-left: -8px; border-radius: 50%; overflow: hidden; background: var(--sec); color: var(--faint); opacity: 0; transform: scale(.6); pointer-events: none; transition: background .2s, color .2s, width .22s cubic-bezier(.2, .8, .2, 1), margin .22s cubic-bezier(.2, .8, .2, 1), opacity .16s, transform .22s cubic-bezier(.2, .8, .2, 1); }
   .send.has { width: 40px; margin-left: 0; opacity: 1; transform: none; pointer-events: auto; }
@@ -151,11 +167,59 @@
   .think { margin-top: 24px; font-size: 14px; color: var(--muted); background: linear-gradient(90deg, var(--faint) 0 30%, var(--fg) 45%, var(--faint) 60% 100%) 0 0 / 300% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; animation: shim 1.6s linear infinite; width: fit-content; }
   @keyframes shim { from { background-position: 100% 0; } to { background-position: 0 0; } }
 
-  /* the new chat: a greeting, then things to ask */
-  .hello { display: flex; flex-direction: column; align-items: center; text-align: center; padding: min(14vh, 120px) 0 24px; }
-  .hello .orb { width: 40px; height: 40px; }
-  .hello h2 { margin: 20px 0 8px; font-size: 24px; font-weight: 500; letter-spacing: -.3px; text-wrap: balance; }
-  .hello p { margin: 0; max-width: 40ch; font-size: 14px; color: var(--muted); text-wrap: pretty; }
+  /* the new chat, the Concierge's home ("that's the screen design", Homepage - With Unread): the mark, the question, the field in the page with the three ways in under it,
+     the disclaimer, then what is waiting (For your attention: all, messages, requests, suggestions); a question asked takes the field back down to the foot */
+  .home { display: flex; flex-direction: column; padding: 80px 0 24px; }
+  .homeHd { display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center; }
+  .homeLogo { width: 40px; height: 40px; color: var(--fg); }
+  .homeHd h2 { margin: 0; font-size: 24px; font-weight: 500; line-height: 1.25; letter-spacing: -.3px; text-wrap: balance; }
+  .homeBox { margin-top: 28px; }
+  .app.atHome .dock { display: none; }
+  .app.atHome .box { padding: 20px 12px 12px; }
+  .app.atHome .box textarea { padding-inline: 8px; }
+  .app.atHome .boxRow { margin-top: 18px; }
+  .app.atHome .box:focus-within { box-shadow: inset 0 0 0 1.5px transparent; }
+  .app.atHome .send { width: 36px; height: 36px; margin-left: 0; opacity: 1; transform: none; }   /* there from the start, faint until a character is typed */
+  .cats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 12px; }
+  .cat { display: flex; align-items: center; gap: 12px; min-width: 0; height: 52px; padding: 0 14px 0 16px; border-radius: 16px; background: var(--input); font-size: 15px; line-height: 1.3; text-align: left; transition: background .15s ease; }
+  .cat:hover, .cat[aria-expanded="true"] { background: linear-gradient(var(--hover), var(--hover)), var(--input); }
+  .cat .ic { width: 22px; height: 22px; }
+  .catT { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .cat .catChev { width: 18px; height: 18px; color: var(--fg); transition: transform .2s ease; }
+  .cat[aria-expanded="true"] .catChev { transform: rotate(180deg); }
+  .pop.catPop { width: max-content; max-width: min(420px, calc(100vw - 16px)); }
+  .app.atHome:not(.mob) .col { max-width: 768px; }   /* the home's column, the design's 720 */
+  .app:not(.mob) .cats { gap: 8px; }
+  .app:not(.mob) .cat { gap: 10px; padding: 0 10px 0 14px; font-size: 14px; }
+  .disc { margin: 16px auto 0; text-align: center; font-size: 12px; line-height: 1.45; color: var(--muted); text-wrap: balance; }
+  .attn { margin-top: 48px; }
+  .attnHd { display: flex; align-items: center; gap: 10px; }
+  .attnHd > .ic { width: 22px; height: 22px; }
+  .attnHd h3 { margin: 0; font-size: 18px; font-weight: 500; letter-spacing: -.01em; }
+  .attnHd .sp { flex: 1; }
+  .seeAll { display: inline-flex; align-items: center; gap: 4px; font-size: 15px; font-weight: 500; }
+  .seeAll .ic { width: 16px; height: 16px; }
+  .seeAll:hover { opacity: .75; }
+  .chips { --chipX: 24px; display: flex; gap: 8px; margin: 18px calc(-1 * var(--chipX)) 4px; padding: 0 var(--chipX); overflow-x: auto; scrollbar-width: none; -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 48px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 48px), transparent); }
+  .chips::-webkit-scrollbar { display: none; }
+  .chip { flex: none; display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 16px; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--edge); font-size: 15px; transition: box-shadow .15s ease; }
+  .chip .ic { width: 18px; height: 18px; }
+  .chip:hover { box-shadow: inset 0 0 0 1px var(--ring); }
+  .chip[aria-selected="true"] { box-shadow: inset 0 0 0 1px var(--fg); }
+  .attnRow { display: flex; align-items: center; gap: 16px; width: calc(100% + 16px); margin-inline: -8px; padding: 20px 8px; border-radius: 14px; text-align: left; position: relative; }
+  .attnRow + .attnRow::before { content: ""; position: absolute; left: 8px; right: 8px; top: 0; border-top: 1px solid var(--line); }
+  .attnRow:hover { background: var(--hover); }
+  .attnRow:hover::before, .attnRow:hover + .attnRow::before { opacity: 0; }
+  .attnAv { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; flex: none; }
+  .attnIc { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 12px; background: var(--input); flex: none; }
+  .attnIc .ic { width: 22px; height: 22px; }
+  .attnTx { flex: 1; min-width: 0; }
+  .attnTx b { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 500; white-space: nowrap; }
+  .attnTx b span { overflow: hidden; text-overflow: ellipsis; }
+  .attnTx b .ud { margin-left: 4px; }
+  .attnTx p { margin: 4px 0 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--muted); font-size: 14px; }
+  .attnSt { flex: none; align-self: flex-start; margin-top: 1px; color: var(--muted); font-size: 14px; }
+  .attnNone { padding: 28px 0 8px; color: var(--muted); font-size: 14px; text-align: center; }
   .sugs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 28px; width: 100%; }
   .sug { display: block; width: 100%; padding: 16px 18px; border-radius: 20px; background: var(--card); text-align: left; font-size: 15px; color: var(--fg); transition: background .15s ease; }
   .sug:hover { background: var(--hover); }
@@ -342,7 +406,16 @@
 
   /* the mobile panel: the sidebar as a drawer, the message actions always there */
   .app.mob { grid-template-columns: minmax(0, 1fr); }
-  .app.mob .side { position: absolute; z-index: 8; left: 0; top: 0; bottom: 0; width: min(300px, 86%); transform: translateX(-102%); transition: transform .34s cubic-bezier(.3, .7, .2, 1); box-shadow: 0 0 40px rgba(0, 0, 0, .2); }
+  .app.mob .side { position: absolute; z-index: 8; left: 0; top: 0; bottom: 0; width: min(320px, 82%); padding-inline: 14px; transform: translateX(-102%); transition: transform .34s cubic-bezier(.3, .7, .2, 1); background: var(--bg); box-shadow: 0 0 40px rgba(0, 0, 0, .2); }
+  /* the drawer ("with the menu opened"): the mark and Concierge, New chat and the Inbox with its count, then Recent, white, an unread one dotted */
+  .app.mob .sideHd { margin-bottom: 18px; padding-left: 10px; }
+  .app.mob .brand { gap: 10px; font-size: 18px; }
+  .app.mob .brand .ic { width: 20px; height: 20px; }
+  .app.mob .nav { gap: 2px; }
+  .app.mob .item { min-height: 44px; gap: 14px; font-size: 15px; }
+  .app.mob .item .ic { width: 20px; height: 20px; }
+  .app.mob .recHd { margin: 26px 10px 6px; font-size: 12px; }
+  .app.mob .rec .item { color: var(--fg); }
   .app.mob.drawer .side { transform: none; }
   .scrim { position: absolute; inset: 0; z-index: 7; background: var(--scrim); opacity: 0; pointer-events: none; transition: opacity .3s; }
   .app.mob.drawer .scrim { opacity: 1; pointer-events: auto; }
@@ -356,7 +429,15 @@
   .app.mob .msg.u .bub { max-width: 86%; }
   .app.mob .apt:not(.cmp), .app.mob .grp, .app.mob .clin { width: 100%; }
   .app.mob .sugs { grid-template-columns: minmax(0, 1fr); }
-  .app.mob .hello { padding-top: 48px; }
+  .app.mob .home { padding-top: 48px; }
+  .app.mob .cats { gap: 8px; margin-top: 8px; }
+  .app.mob .cat { flex-direction: column; align-items: flex-start; justify-content: space-between; height: 96px; padding: 16px; gap: 0; }
+  .app.mob .catT { white-space: normal; }
+  .app.mob .catT > span { display: block; }
+  .app.mob .cat .catChev { display: none; }
+  .app.mob .disc { margin-top: 22px; }
+  .app.mob .attn { margin-top: 40px; }
+  .app.mob .chips { --chipX: 16px; }
   .app.mob .im.cmp { width: 300px; }
 
   /* the components, laid out as the boards lay them out */
@@ -387,6 +468,34 @@
   .app.mob .dock { padding-bottom: calc(12px + var(--safeB)); }
   .lb { padding-top: calc(56px + var(--safeT)); } .lbX { top: calc(14px + var(--safeT)); }
   .launch { bottom: calc(24px + var(--safeB)); }
+  /* the phone's keyboard, drawn in the XS frame while the field is focused ("make sure keyboard version on focus"): the predictions, four rows, the emoji and the dictation;
+     its keys type into the field, return sends; the chat stands on it (the dock above it, the thread shortened) */
+  .kbd { display: none; position: absolute; left: 0; right: 0; bottom: 0; z-index: 9; background: var(--kbBg); color: var(--kInk); user-select: none; -webkit-user-select: none; touch-action: manipulation;
+    font-family: -apple-system, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif; transform: translateY(100%); visibility: hidden; transition: transform .32s cubic-bezier(.2, .8, .2, 1), visibility 0s linear .32s; }
+  .embPhone .kbd { display: block; }
+  .kbd.on { transform: none; visibility: visible; transition-delay: 0s; }
+  .kPred { display: flex; align-items: center; height: 48px; padding: 0 4px; }
+  .kPred span { flex: 1; display: grid; place-items: center; height: 38px; margin: 0 2px; border-radius: 6px; font-size: 17px; cursor: pointer; position: relative; }
+  .kPred span + span::before { content: ""; position: absolute; left: -3px; top: 9px; bottom: 9px; border-left: 1px solid rgba(128, 128, 128, .4); }
+  .kPred span.cur { background: var(--kSel); }
+  .kPred span.cur + span::before { display: none; }
+  .kRows { padding: 6px 3px 0; }
+  .kr { display: flex; gap: 6px; margin-bottom: 11px; padding: 0 3px; }
+  .kr:last-child { margin-bottom: 0; }
+  .kr.r2 { padding: 0 22px; }
+  .k { flex: 1 1 0; min-width: 0; height: 42px; display: flex; align-items: center; justify-content: center; border-radius: 5px; background: var(--kKey); font-size: 22px; line-height: 1; box-shadow: 0 1px 0 rgba(0, 0, 0, .35); cursor: pointer; }
+  .k:active { filter: brightness(1.18); }
+  .k.fn { flex: 1.45 1 0; background: var(--kFn); font-size: 16px; }
+  .k.ab, .k.rt { flex: 2.3 1 0; background: var(--kFn); font-size: 16px; }
+  .k.sp { flex: 4.8 1 0; font-size: 16px; }
+  .k svg { width: 22px; height: 22px; display: block; }
+  .kbd.shift .k.ch { text-transform: uppercase; }
+  .kbd.shift .k.shift { background: var(--kKey); }
+  .kFoot { position: relative; height: 79px; }
+  .kFoot svg { position: absolute; top: 20px; width: 28px; height: 28px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .kFoot .kEmo { left: 22px; } .kFoot .kMic { right: 26px; }
+  .app.kb .main { padding-bottom: var(--kbH, 334px); }
+  .app.kb .dock { padding-bottom: 8px; }
   .homeInd { display: none; position: absolute; left: 50%; bottom: 8px; z-index: 45; width: 134px; height: 5px; border-radius: 3px; transform: translateX(-50%); background: var(--fg); opacity: .32; pointer-events: none; }
   .embPhone .homeInd { display: block; }
   @media (max-width: 560px) {
@@ -425,6 +534,7 @@
       <div class="hd">
         <button class="iconBtn mobOnly" type="button" data-act="drawer" aria-label="Open the sidebar" id="hdSide"></button>
         <button class="iconBtn deskOnly" type="button" data-act="back" aria-label="Back" id="hdBack"></button>
+        <button class="hdInbox" type="button" data-act="inbox" id="hdInbox"></button>
         <div class="ttl" id="ttl">New chat</div>
         <span class="sp"></span>
         <button class="iconBtn mobOnly" type="button" data-act="close" aria-label="Minimise" id="hdMin"></button>
@@ -448,6 +558,7 @@
   <div class="cmpPage" id="cmpPage" hidden></div>
   <div class="lb" id="lb" hidden></div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <div class="kbd" id="kbd" aria-hidden="true"></div>
   <i class="homeInd" aria-hidden="true"></i>
 </div>
 <div class="pop" id="pop" role="menu" hidden></div>
@@ -489,9 +600,20 @@
     image: '<rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><circle cx="9" cy="10" r="1.6"/><path d="m4 17 5-4.5 4 3.5 3-2.5 4 3.5"/>',
     sun: '<circle cx="12" cy="12" r="3.6"/><path d="M12 3.5v1.8M12 18.7v1.8M3.5 12h1.8M18.7 12h1.8M6 6l1.3 1.3M16.7 16.7 18 18M6 18l1.3-1.3M16.7 7.3 18 6"/>',
     moon: '<path d="M19.5 14.5A7.5 7.5 0 0 1 9.5 4.5a7.5 7.5 0 1 0 10 10z"/>',
-    team: '<circle cx="9" cy="9" r="3"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0"/><path d="M15.5 6.2a3 3 0 0 1 0 5.6M17.5 14.2a5.5 5.5 0 0 1 3 4.8"/>'
+    team: '<circle cx="9" cy="9" r="3"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0"/><path d="M15.5 6.2a3 3 0 0 1 0 5.6M17.5 14.2a5.5 5.5 0 0 1 3 4.8"/>',
+    menu: '<path d="M4.5 7h15M4.5 12h15M4.5 17h15"/>',
+    chats: '<path d="M14.5 9.5a5.5 5.5 0 1 0-10.3 2.7L3.5 15l2.9-.7a5.5 5.5 0 0 0 8.1-4.8z"/><path d="M17.6 10.3a4.5 4.5 0 0 1 2.2 6.4l.7 2.3-2.4-.6a4.5 4.5 0 0 1-6.3-1.6"/>',
+    userSearch: '<circle cx="9.5" cy="8" r="3.5"/><path d="M3.5 19.5a6 6 0 0 1 9.2-5"/><circle cx="16.8" cy="16.3" r="2.6"/><path d="m18.7 18.2 1.8 1.8"/>',
+    steth: '<path d="M6.5 3.5H5.5a1.5 1.5 0 0 0-1.5 1.5v4a4.5 4.5 0 0 0 9 0V5a1.5 1.5 0 0 0-1.5-1.5h-1"/><path d="M8.5 13.5v1.5a4.5 4.5 0 0 0 9 0v-2.6"/><circle cx="17.5" cy="10.3" r="2.2"/>',
+    userCircle: '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="10" r="3"/><path d="M6.6 18.1a6.4 6.4 0 0 1 10.8 0"/>',
+    clover: '<g fill="currentColor" stroke="none"><circle cx="12" cy="6.4" r="3.1"/><circle cx="12" cy="17.6" r="3.1"/><circle cx="6.4" cy="12" r="3.1"/><circle cx="17.6" cy="12" r="3.1"/></g>',
+    spark: '<g fill="currentColor" stroke="none"><path d="M10.5 3.5c.55 4 2.1 5.55 6 6.1-3.9.55-5.45 2.1-6 6.1-.55-4-2.1-5.55-6-6.1 3.9-.55 5.45-2.1 6-6.1z"/><path d="M17.6 14.6c.26 1.75.95 2.44 2.65 2.7-1.7.26-2.39.95-2.65 2.7-.26-1.75-.95-2.44-2.65-2.7 1.7-.26 2.39-.95 2.65-2.7z"/></g>',
+    pill: '<rect x="3.4" y="8.6" width="17.2" height="6.8" rx="3.4" transform="rotate(-45 12 12)"/><path d="m9.6 9.6 4.8 4.8"/>'
   };
-  var ic = function (n, cls) { return '<svg class="ic' + (cls ? ' ' + cls : '') + '" viewBox="0 0 24 24" aria-hidden="true">' + IC[n] + '</svg>'; };
+  /* the Everlab mark (its own file, filled in the ink): the home's, the sidebar's, the inbox's, Eva's */
+  var LOGO = '<path d="M12.7966 13.2251L29.0641 13.2251C29.9305 13.2251 30.7442 13.5842 31.38 14.1772C31.7655 14.5363 32.2926 14.7438 32.8691 14.701C33.8739 14.6285 34.6876 13.7654 34.7007 12.7606C34.7172 11.6537 33.8244 10.7544 32.7241 10.7544C32.197 10.7544 31.7194 10.9586 31.3669 11.2946C30.7607 11.8679 29.9898 12.2368 29.1564 12.2368L12.7571 12.2368C11.8017 12.2368 10.9353 11.769 10.3226 11.0377C9.80207 10.4183 9.00154 10.0395 8.11536 10.1021C6.78444 10.1943 5.70719 11.3243 5.67095 12.6552C5.62813 14.1443 6.82398 15.3665 8.30643 15.3665C9.11025 15.3665 9.82842 15.0074 10.3127 14.4375C10.9419 13.6962 11.8281 13.2251 12.7966 13.2251Z"/><path d="M32.0658 30.0726C33.5449 30.0726 34.7408 28.8504 34.7012 27.3614C34.665 26.0305 33.5844 24.9005 32.2568 24.8083C31.3706 24.7457 30.5701 25.1245 30.0496 25.7438C29.4369 26.4752 28.5672 26.943 27.6151 26.943H11.3081C10.4417 26.943 9.62795 26.5839 8.99544 25.9909C8.61 25.6318 8.08291 25.4243 7.5064 25.4671C6.50162 25.5396 5.68792 26.4027 5.67474 27.4108C5.65827 28.5144 6.55104 29.417 7.65135 29.417C8.17844 29.417 8.65612 29.2128 9.00862 28.8768C9.61478 28.3036 10.3857 27.9346 11.2191 27.9346H27.5756C28.5474 27.9346 29.4303 28.409 30.0595 29.1469C30.5438 29.7135 31.2619 30.0759 32.0658 30.0759V30.0726Z"/><path d="M26.8376 37.7577C28.5045 37.7577 29.8519 36.3807 29.8025 34.7005C29.7531 33.1225 28.4156 31.8279 26.8343 31.8279C25.8855 31.8279 25.0454 32.2759 24.5052 32.9677C23.8661 33.7847 22.9074 34.2887 21.8697 34.2887H15.3732C14.6123 34.2887 13.8611 34.0417 13.2879 33.5409C12.9288 33.228 12.4314 33.0731 11.8977 33.1753C11.2652 33.2971 10.7447 33.8012 10.6129 34.4337C10.3889 35.5011 11.196 36.4399 12.2206 36.4399C12.6225 36.4399 12.9914 36.295 13.2748 36.0545C13.8677 35.5538 14.6188 35.2803 15.393 35.2803H21.8269C22.8481 35.2803 23.8463 35.7251 24.4525 36.5487C24.9927 37.2833 25.8592 37.761 26.8409 37.761L26.8376 37.7577Z"/><path d="M18.543 5.87216L24.9933 5.87216C25.7576 5.87216 26.512 6.12582 27.0885 6.62656C27.4476 6.93952 27.945 7.09765 28.4787 6.99553C29.1145 6.87364 29.6317 6.3696 29.7668 5.73709C29.9908 4.66972 29.1837 3.73083 28.1592 3.73083C27.7572 3.73083 27.3916 3.87578 27.1083 4.11627C26.5186 4.61372 25.7675 4.88385 24.9966 4.88385L18.5166 4.88385C17.4756 4.88385 16.5169 4.37652 15.8745 3.55623C15.331 2.86112 14.4876 2.41309 13.5421 2.41309C11.9609 2.4098 10.6201 3.70448 10.5706 5.28576C10.5179 6.96588 11.8653 8.34291 13.5356 8.34291C14.514 8.34292 15.3804 7.86853 15.9207 7.13718C16.5268 6.3136 17.5217 5.87216 18.543 5.87216Z"/><path d="M35.5675 22.3897C36.9939 22.3897 38.1173 21.0983 37.8274 19.6192C37.6495 18.7001 36.8951 17.9687 35.9727 17.8106C35.1227 17.6656 34.342 17.9885 33.8379 18.5584C33.2417 19.237 32.3522 19.5862 31.4462 19.5862L8.92608 19.5862C8.02014 19.5862 7.13067 19.237 6.53439 18.5584C6.03036 17.9852 5.24959 17.6656 4.39965 17.8106C3.47724 17.9687 2.72283 18.7001 2.54494 19.6192C2.25833 21.095 3.3817 22.3897 4.80486 22.3897C5.49338 22.3897 6.11271 22.0866 6.53439 21.6057C7.13396 20.9237 8.03002 20.5778 8.93926 20.5778L31.4331 20.5778C32.3423 20.5778 33.2384 20.9237 33.8379 21.6057C34.2596 22.0866 34.8789 22.3897 35.5675 22.3897Z"/>';
+  var logo = function (cls) { return '<svg class="' + cls + '" viewBox="0 0 40 40" fill="currentColor" aria-hidden="true">' + LOGO + '</svg>'; };
+  var ic = function (n, cls) { if (n === 'mark') return logo('ic lg' + (cls ? ' ' + cls : '')); return '<svg class="ic' + (cls ? ' ' + cls : '') + '" viewBox="0 0 24 24" aria-hidden="true">' + IC[n] + '</svg>'; };
 
   /* pictures (inlined at build) */
   var IMG = {
@@ -645,6 +767,21 @@
     { q: 'How much protein should I be eating?', s: 'From your nutrition review' },
     { q: 'Can I see the images from my brain MRI?', s: 'Imaging' }
   ];
+  /* the home's three ways in, each a menu of what to ask; and what is waiting, by kind */
+  var CATS = [
+    { k: 'health', t: ['Understand', 'my health'], ic: 'userSearch', qs: ['Can you explain why my ferritin is flagged?', 'List all my current goals', 'How much protein should I be eating?', 'Can I see the images from my brain MRI?', 'List all my Everlab reports'] },
+    { k: 'req', t: ['Medical', 'requests'], ic: 'steth', qs: ['I need a script renewal', 'I need a specialist referral', 'I need a blood test referral', 'I need an imaging referral'] },
+    { k: 'acc', t: ['Manage', 'my account'], ic: 'userCircle', qs: ['What’s my next appointment?', 'What appointments do I have coming up?', 'Can you share the PDF report of my blood test results?'] }
+  ];
+  var ATTN = [
+    { k: 'msg', n: 0, who: 'Dr. Steven L', role: 'Doctor', av: IMG.steven, line: 'I wanted to talk to you about your latest reports' },
+    { k: 'msg', n: 1, who: 'Everlab', role: 'Care team', icon: 'mark', line: 'Your nutrition review is ready: your targets and a two-week meal structure' },
+    { k: 'req', who: 'Prescription', role: 'Iron supplement', icon: 'pill', line: 'Our team is looking into your request', st: 'In review', note: 'Dr Lu is reviewing your request. You’ll be notified when it’s ready' },
+    { k: 'req', who: 'Referral', role: 'Cardiologist', icon: 'steth', line: 'Dr Lu signed your referral. It’s in your files', st: 'Ready', note: 'Your referral to a cardiologist is in your files' },
+    { k: 'sug', who: 'Suggestion', role: 'Nutrition', icon: 'spark', line: 'How much protein should I be eating?', q: 'How much protein should I be eating?' }
+  ];
+  var ATTN_F = [['all', 'All'], ['msg', 'Messages'], ['req', 'Requests'], ['sug', 'Suggestions', 'spark']];
+  var attnF = 'all';
   var match = function (q) {
     var s = q.toLowerCase();
     if (/renew|script|prescription/.test(s)) return 'script';   // the requests first: "blood test referral" is not the blood test's PDF, nor "imaging referral" the MRI
@@ -703,9 +840,10 @@
   /* the static chrome's icons */
   $('#brand').innerHTML = ic('mark') + '<span>Concierge</span>';
   $('.collapse').innerHTML = ic('sidebar');
-  $('#navNew').innerHTML = ic('newChat') + '<span>New chat</span>';
-  $('#navInbox').innerHTML = ic('inbox') + '<span>Inbox</span><b class="badge" id="badge"></b>';
-  $('#hdSide').innerHTML = ic('sidebar'); $('#hdBack').innerHTML = ic('back'); $('#hdMin').innerHTML = ic('minus'); $('#hdX').innerHTML = ic('close');
+  $('#navNew').innerHTML = ic('chats') + '<span>New chat</span>';
+  $('#navInbox').innerHTML = ic('inbox') + '<span>Inbox</span><b class="badge" data-badge></b>';
+  $('#hdInbox').innerHTML = ic('inbox') + '<span>Inbox</span><b class="badge" data-badge></b>';
+  $('#hdSide').innerHTML = ic('menu'); $('#hdBack').innerHTML = ic('back'); $('#hdMin').innerHTML = ic('minus'); $('#hdX').innerHTML = ic('close');
   $('#plusBtn').innerHTML = ic('plus'); $('#modelBtn').insertAdjacentHTML('beforeend', ic('chevD')); $('#sendBtn').innerHTML = ic('send');
   $('#launch').insertAdjacentHTML('afterbegin', ic('mark'));
 
@@ -714,11 +852,12 @@
     return d.getDate() + ' ' + ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()] + ', ' + ((h % 12) || 12) + ':' + (m < 10 ? '0' : '') + m + (h < 12 ? ' AM' : ' PM');
   };
   var unread = function () { return INBOX.filter(function (n) { return !n.read; }).length; };
-  var renderBadge = function () { var b = $('#badge'), n = unread(); b.textContent = n || ''; b.dataset.n = n; };
+  var unreadChat = function (id) { return INBOX.some(function (n) { return n.id === id && !n.read; }); };
+  var renderBadge = function () { var n = unread(); $$('[data-badge]').forEach(function (b) { b.textContent = n || ''; b.dataset.n = n; }); };
 
   var renderRec = function () {
     $('#rec').innerHTML = order.map(function (id) {
-      return '<button class="item' + (S.view === 'chat' && S.id === id ? ' on' : '') + '" type="button" data-act="chat" data-id="' + id + '" title="' + esc(chats[id].title) + '"><span>' + esc(chats[id].title) + '</span></button>';
+      return '<button class="item' + (S.view === 'chat' && S.id === id ? ' on' : '') + '" type="button" data-act="chat" data-id="' + id + '" title="' + esc(chats[id].title) + '"><span>' + esc(chats[id].title) + '</span>' + (unreadChat(id) ? '<i class="ud" aria-label="Unread"></i>' : '') + '</button>';
     }).join('');
     $('#navNew').classList.toggle('on', S.view === 'new');
     $('#navInbox').classList.toggle('on', S.view === 'inbox');
@@ -749,10 +888,33 @@
   };
   var toBottom = function (smooth) { thread.style.scrollBehavior = smooth ? 'smooth' : 'auto'; thread.scrollTop = thread.scrollHeight; };
 
+  /* the field: in the home's page, else at the foot (moved, not copied, so what is typed and the focus go with it) */
+  var box = $('.box'), dock = $('.dock');
+  var boxTo = function (where) { if (box.parentNode === where) return; var f = document.activeElement === q; where.appendChild(box); if (f) q.focus({ preventScroll: true }); };
+  var attnRow = function (a, i) {
+    var dot = a.k === 'msg' && !INBOX[a.n].read;
+    return '<button class="attnRow" type="button" data-act="attn" data-i="' + i + '">' + (a.av ? '<img class="attnAv" src="' + a.av + '" alt="">' : '<span class="attnIc">' + ic(a.icon) + '</span>') +
+      '<span class="attnTx"><b><span>' + esc(a.who) + '</span>·<span>' + esc(a.role) + '</span>' + (dot ? '<i class="ud" aria-label="Unread"></i>' : '') + '</b><p>' + esc(a.line) + '</p></span>' + (a.st ? '<span class="attnSt">' + esc(a.st) + '</span>' : '') + '</button>';
+  };
+  var attnList = function () {
+    var rows = ATTN.map(function (a, i) { return attnF === 'all' || a.k === attnF ? attnRow(a, i) : ''; }).join('');
+    return rows || '<p class="attnNone">Nothing here right now.</p>';
+  };
   var renderNew = function () {
-    col.innerHTML = '<div class="hello in"><svg class="orb" viewBox="0 0 40 40" aria-hidden="true"><defs><radialGradient id="hg" cx="36%" cy="32%" r="70%"><stop offset="0" stop-color="#ffe1c6"/><stop offset=".45" stop-color="#f0743a"/><stop offset="1" stop-color="#7a2408"/></radialGradient></defs><circle cx="20" cy="20" r="19" fill="url(#hg)"/></svg>' +
-      '<h2>How can I help today?</h2><p>Ask about your appointments, goals, reports, results and imaging. I answer from your Everlab record, and bring in your care team when it needs a clinician.</p>' +
-      '<div class="sugs">' + SUGS.map(function (s) { return '<button class="sug" type="button" data-act="sug" data-q="' + esc(s.q) + '">' + esc(s.q) + '<small>' + esc(s.s) + '</small></button>'; }).join('') + '</div></div>';
+    boxTo(dock);
+    col.innerHTML = '<div class="home in">' +
+      '<div class="homeHd">' + logo('homeLogo') + '<h2>How can we help you today?</h2></div>' +
+      '<div class="homeBox" id="homeBox"></div>' +
+      '<div class="cats">' + CATS.map(function (c) { return '<button class="cat" type="button" data-act="cat" data-cat="' + c.k + '" aria-haspopup="menu" aria-expanded="false">' + ic(c.ic) + '<span class="catT"><span>' + c.t[0] + '</span> <span>' + c.t[1] + '</span></span>' + ic('chevD', 'catChev') + '</button>'; }).join('') + '</div>' +
+      '<p class="disc">This chat isn’t a substitute for medical advice. In an emergency, please call 000 or head to your nearest emergency department.</p>' +
+      '<section class="attn" aria-label="For your attention"><div class="attnHd">' + ic('clover') + '<h3>For your attention</h3><span class="sp"></span><button class="seeAll" type="button" data-act="inbox">See all' + ic('chevR') + '</button></div>' +
+      '<div class="chips" role="tablist" aria-label="Show">' + ATTN_F.map(function (f) { return '<button class="chip" type="button" role="tab" data-act="attnF" data-f="' + f[0] + '" aria-selected="' + (attnF === f[0]) + '">' + (f[2] ? ic(f[2]) : '') + f[1] + '</button>'; }).join('') + '</div>' +
+      '<div class="attnList" id="attnList">' + attnList() + '</div></section></div>';
+    boxTo($('#homeBox', col));
+  };
+  var catMenu = function (k) {
+    var c = CATS.filter(function (x) { return x.k === k; })[0];
+    return c.qs.map(function (t) { return '<button class="menuIt" type="button" role="menuitem" data-act="sug" data-q="' + esc(t) + '">' + esc(t) + '</button>'; }).join('');
   };
   var renderInbox = function () {
     col.innerHTML = '<div class="inbox in"><h2>Inbox</h2>' + INBOX.map(function (n, i) {
@@ -767,6 +929,9 @@
   var go = function (view, id, push) {
     if (push !== false && (S.view !== view || S.id !== id)) S.hist.push([S.view, S.id]);
     S.view = view; S.id = id || null;
+    if (view !== 'new') boxTo(dock);
+    if (view === 'chat') INBOX.forEach(function (n) { if (n.id === id) n.read = true; });   // its message read
+    app.classList.toggle('atHome', view === 'new'); renderBadge(); placeholder();
     ttl.textContent = view === 'chat' ? chats[id].title : view === 'inbox' ? 'Inbox' : 'New chat';
     if (view === 'chat') renderChat(); else if (view === 'inbox') renderInbox(); else renderNew();
     if (view !== 'chat') thread.scrollTop = 0;
@@ -779,9 +944,10 @@
     var k = S.model === 'care' ? 'care' : match(text);
     if (S.view === 'chat' && S.model !== 'care'){ var lm = chats[S.id].msgs[chats[S.id].msgs.length - 1]; if (lm && lm.r === 'a' && REQ[lm.k]) k = 'reqSent'; }   // the answer to a request's question, whatever it names ("an MRI of my knee" is not the brain MRI): sent to the care team
     if (S.view !== 'chat'){
+      boxTo(dock); app.classList.remove('atHome');
       var id = 'c' + Date.now();
       chats[id] = { id: id, title: TITLES[k] === 'New chat' ? text.slice(0, 40) : TITLES[k], msgs: [] };
-      order.unshift(id); S.hist.push([S.view, S.id]); S.view = 'chat'; S.id = id; ttl.textContent = chats[id].title; col.innerHTML = ''; renderRec();
+      order.unshift(id); S.hist.push([S.view, S.id]); S.view = 'chat'; S.id = id; ttl.textContent = chats[id].title; col.innerHTML = ''; renderRec(); placeholder();
     } else { order.splice(order.indexOf(S.id), 1); order.unshift(S.id); renderRec(); }
     var c = chats[S.id], t = now();
     c.msgs.push({ r: 'u', text: text, time: t });
@@ -823,10 +989,10 @@
 
   /* popover menus: a file's, the model's, the plus */
   var pop = $('#pop'), popFor = null;
-  var closePop = function () { if (popFor) popFor.setAttribute('aria-expanded', 'false'); popFor = null; pop.hidden = true; };
-  var openPop = function (btn, html, up) {
+  var closePop = function () { if (popFor) popFor.setAttribute('aria-expanded', 'false'); popFor = null; pop.hidden = true; pop.classList.remove('catPop'); };
+  var openPop = function (btn, html, up, cls) {
     if (popFor === btn){ closePop(); return; }
-    closePop(); popFor = btn; btn.setAttribute('aria-expanded', 'true'); pop.innerHTML = html; pop.hidden = false;
+    closePop(); popFor = btn; btn.setAttribute('aria-expanded', 'true'); pop.innerHTML = html; if (cls) pop.classList.add(cls); pop.hidden = false;
     var r = btn.getBoundingClientRect(), w = pop.offsetWidth, hgt = pop.offsetHeight;
     var x = Math.max(8, Math.min(innerWidth - w - 8, up ? r.right - w : r.left - 6));
     var y = up ? r.top - hgt - 8 : r.bottom + 6;
@@ -859,6 +1025,7 @@
   /* the closed state */
   var setClosed = function (v) { app.classList.toggle('closed', v); stage.classList.toggle('isClosed', v); if (v) closePop(); };
 
+  var placeholder = function () { q.placeholder = S.view === 'new' ? 'Ask anything ...' : app.classList.contains('mob') ? 'Ask Eva…' : 'Ask anything…'; };
   /* the device: the desktop app, or the mobile panel (always on a narrow window) */
   var phone = false;
   var layout = function () {
@@ -866,7 +1033,7 @@
     var mob = phone || S.dev === 'mob';
     app.classList.toggle('mob', mob); stage.classList.toggle('dvMob', !phone && S.dev === 'mob'); document.body.classList.toggle('phoneMode', phone);
     if (!mob) app.classList.remove('drawer');
-    q.placeholder = mob ? 'Ask Eva…' : 'Ask anything…';
+    placeholder();
     carSync();
   };
   addEventListener('resize', layout);
@@ -909,6 +1076,41 @@
   };
   var setDev = function (d) { S.dev = d; $$('#devSeg button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.dev === d)); }); layout(); };
 
+  /* the phone's keyboard: up while the field has the focus in the XS frame; pointerdown kept off the field's focus, its keys typed at the caret */
+  var kbd = $('#kbd');
+  var KSVG = function (d, extra) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"' + (extra || '') + '>' + d + '</svg>'; };
+  var kKey = function (label, cls, v) { return '<div class="k ' + cls + '" data-k="' + (v === undefined ? label : v) + '">' + label + '</div>'; };
+  var kRow = function (keys, cls) { return '<div class="kr ' + (cls || '') + '">' + keys + '</div>'; };
+  kbd.innerHTML = '<div class="kPred"><span class="cur" data-w="The">“The”</span><span data-w="the">the</span><span data-w="to">to</span></div><div class="kRows">' +
+    kRow('qwertyuiop'.split('').map(function (c) { return kKey(c, 'ch'); }).join('')) +
+    kRow('asdfghjkl'.split('').map(function (c) { return kKey(c, 'ch'); }).join(''), 'r2') +
+    kRow(kKey(KSVG('<path d="M12 4 4.5 12h4.2v7h6.6v-7h4.2z"/>'), 'fn shift', 'shift') + 'zxcvbnm'.split('').map(function (c) { return kKey(c, 'ch'); }).join('') +
+      kKey(KSVG('<path d="M9 5h11a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H9l-6-7z"/><path d="M12 10l5 5M17 10l-5 5"/>'), 'fn', 'del')) +
+    kRow(kKey('ABC', 'ab', 'num') + kKey('space', 'sp', ' ') + kKey('return', 'rt', 'ret')) + '</div>' +
+    '<div class="kFoot"><svg class="kEmo" viewBox="0 0 28 28"><circle cx="14" cy="14" r="11"/><path d="M9.5 16.5a5.5 5.5 0 0 0 9 0"/><circle cx="10.5" cy="11.5" r=".6" fill="currentColor"/><circle cx="17.5" cy="11.5" r=".6" fill="currentColor"/></svg><svg class="kMic" viewBox="0 0 28 28"><rect x="10.5" y="4" width="7" height="13" rx="3.5"/><path d="M6.5 13.5a7.5 7.5 0 0 0 15 0M14 21v3.5"/></svg></div>';
+  var kType = function (v) {
+    var a = q.selectionStart, b = q.selectionEnd, val = q.value;
+    if (v === 'del'){ if (a === b && a > 0) a--; q.value = val.slice(0, a) + val.slice(b); q.setSelectionRange(a, a); }
+    else { q.value = val.slice(0, a) + v + val.slice(b); q.setSelectionRange(a + v.length, a + v.length); }
+    q.dispatchEvent(new Event('input', { bubbles: true }));
+  };
+  var kAuto = function () { var v = q.value.slice(0, q.selectionStart); kbd.classList.toggle('shift', !v.trim() || /[.?!]\s$/.test(v)); };   // a capital to begin a sentence, as the phone's does
+  kbd.addEventListener('pointerdown', function (e) {
+    e.preventDefault();
+    var w = e.target.closest('[data-w]');
+    if (w){ var before = q.value.slice(0, q.selectionStart); kType((before && !/\s$/.test(before) ? ' ' : '') + w.dataset.w + ' '); kAuto(); return; }
+    var k = e.target.closest('.k'); if (!k) return;
+    var v = k.dataset.k;
+    if (v === 'shift'){ kbd.classList.toggle('shift'); return; }
+    if (v === 'num') return;
+    if (v === 'ret'){ if (q.value.trim()) ask(q.value); kAuto(); return; }
+    kType(v === 'del' || v === ' ' || !kbd.classList.contains('shift') ? v : v.toUpperCase());
+    if (v !== 'del' || !q.value) kAuto();
+  });
+  var kbOn = function () { return document.documentElement.classList.contains('embPhone'); };
+  q.addEventListener('focus', function () { if (!kbOn()) return; kAuto(); kbd.classList.add('on'); app.classList.add('kb'); app.style.setProperty('--kbH', kbd.offsetHeight + 'px'); if (S.view === 'chat') requestAnimationFrame(function () { toBottom(false); }); });
+  q.addEventListener('blur', function () { kbd.classList.remove('on'); app.classList.remove('kb'); });
+
   /* every click, by what it asks for */
   document.addEventListener('click', function (e) {
     var b = e.target.closest('[data-act]');
@@ -930,7 +1132,10 @@
       case 'close': if (/\bemb/.test(document.documentElement.className) && window.parent !== window){ try { window.parent.postMessage({ everlab: 'ccClose' }, '*'); } catch (err){} } else setClosed(true); break;   // in the prototype, a standalone over its page: the close (and the phone's minimise) takes it away, back to the page
       case 'open': setClosed(false); break;
       case 'send': ask(q.value); break;
-      case 'sug': ask(b.dataset.q); break;
+      case 'sug': closePop(); ask(b.dataset.q); break;
+      case 'cat': openPop(b, catMenu(b.dataset.cat), false, 'catPop'); break;
+      case 'attnF': attnF = b.dataset.f; $$('.chip', col).forEach(function (c) { c.setAttribute('aria-selected', String(c === b)); }); $('#attnList').innerHTML = attnList(); break;
+      case 'attn': { var it = ATTN[+b.dataset.i]; if (it.k === 'msg'){ INBOX[it.n].read = true; go('chat', INBOX[it.n].id); } else if (it.k === 'sug') ask(it.q); else toast(it.note); break; }
       case 'copy': { var t = msg.classList.contains('u') ? $('.bub', msg).textContent : ($('.txt', msg) || {}).textContent || ''; try { navigator.clipboard.writeText(t).catch(function () {}); } catch (x) {} b.innerHTML = ic('check'); setTimeout(function () { b.innerHTML = ic('copy'); }, 1200); toast('Copied'); break; }
       case 'edit': q.value = $('.bub', msg).textContent; grow(); sendState(); q.focus(); break;
       case 'up': case 'down': { var on = !b.classList.contains('on'); $$('[data-act="up"],[data-act="down"]', msg).forEach(function (x) { x.classList.remove('on'); }); b.classList.toggle('on', on); if (on) toast(act === 'up' ? 'Thanks for the feedback' : 'Thanks. We’ll use this to improve Eva'); break; }
@@ -979,7 +1184,9 @@
     if (m) setDev(fr ? 'mob' : 'desk'); else layout();
   };
   var setModel = function (m) { S.model = m === 'care' ? 'care' : 'eva'; var n = document.getElementById('modelName'); if (n) n.textContent = S.model === 'care' ? 'Care team' : 'Eva'; };
-  window.Concierge = { ask: ask, go: go, setDev: setDev, setTab: setTab, embed: embed, model: setModel };
+  /* the field, ready to type in: the prototype's way into a new chat (its Overview field) lands here, the caret in it */
+  var focusQ = function () { try { window.focus(); } catch (e){} q.focus({ preventScroll: true }); var n = q.value.length; try { q.setSelectionRange(n, n); } catch (e){} };
+  window.Concierge = { ask: ask, go: go, setDev: setDev, setTab: setTab, embed: embed, model: setModel, focus: focusQ };
 })();
 </script>
 </body>

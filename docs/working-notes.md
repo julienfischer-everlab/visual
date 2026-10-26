@@ -16436,3 +16436,18 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - The light lives in the modal's frame, under the sheet, across its whole width. The desk's 1040 column had clipped it to hard edges. At home, the sheet and its stage let it through. In a step, the light fades out and the profile's own ground comes back (.5 s).
 - Desk: the Membership reveal is a full modal ("full modal on desktop"), no longer the centred 544 modal. Its sheet has no width cap there.
 - Desk: full modals always fade in and out (.38 s opacity, no transform), not rising from the bottom of the screen ("full modal always fade in on desktop"). This covers the reveal, the Health profile and the Async report. The Chat fades too. Phone sizes (XS, S) keep the rise.
+
+## Chat: the Concierge home from the design, the keyboard, focus from the field
+
+- The Live version's field ("Explore what Concierge can do") opens the chat on the first click with its field focused ("click should open the chat experience, focus on the chat field"). The chat has a focus() door (Concierge.focus); _cc.fresh() calls it once the new chat is drawn. Measured: focus in the chat's textarea at 100 ms, phone and desk; typing goes straight in.
+- The chat's start screen follows the design (Homepage - With Unread). It replaces the old orange sphere, "How can I help today?" and the suggestion list from the first boards:
+  - the Everlab mark at 40 × 40 (the uploaded Logo.svg, filled in the ink so it follows the theme), then "How can we help you today?";
+  - the field in the page (Ask anything ..., +, Eva, a faint send until a character is typed);
+  - three ways in: Understand my health, Medical requests and Manage my account. On the phone they are three tiles; on desk, a row with chevrons. Each opens a menu of what to ask (the requests' four lead into their chats);
+  - the disclaimer ("This chat isn't a substitute for medical advice…");
+  - For your attention, with All / Messages / Requests / Suggestions and the list (Dr. Steven L's message, Everlab's, a prescription in review, a signed referral, a suggestion). See all opens the Inbox.
+  - A question asked takes the field back down to the foot. The field moves rather than being copied, so the text and focus go with it.
+- Phone header on the home: the menu, the Inbox pill with its count, the close. The title and minimise come back in a conversation.
+- The sidebar as drawn "with the menu opened": the mark and Concierge, New chat, the Inbox with its count, then Recent in the ink, an unread chat dotted. The badge and dots are the design's peach (#F7B58B dark, #F4A067 light). Opening a chat reads its message.
+- The keyboard ("make sure keyboard version on focus"): in the XS frame, while the field has the focus, a drawn iOS keyboard rises from the foot. It has the predictions ("The", the, to), four rows (ABC, space, return) and the emoji and dictation keys, as in the design. Its keys type at the caret, a capital begins a sentence, and return sends. In a conversation the field stands on the keyboard. Desk and the S frame draw none.
+- Desk: the home's column is the design's 720, with the tiles' labels at 14 px. Measured: no label cut at L, M or XS, no sideways scroll.
