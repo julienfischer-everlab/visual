@@ -16543,3 +16543,11 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Overview keyboard chips: 16 between them and the keys, and a ground fading in behind them from 28 above, the page's own colour, so the page doesn't read through ("bottom padding 16; backdrop fade gradient bg").
 - Overview's Health profile card: step 2's button reads "Book a time" (was Book); the booked card's foot reads "Onboarding consultation" (was Your consult).
 - Copy tweak (First-time user → Copy, #1 / #2): checked by clicking #2 in the panel; the title becomes "You've just made / a big decision for / your future health." and the reveal plays again with it.
+
+## Opening copy tweak; the dot's release
+
+- Tweak First-time user → Opening copy (#1 / #2), under Copy. #1, the current words before the dot: "Welcome to Everlab." then "A big step forward, / Julien.". #2 ("captures": one sentence in three phases), each written in the last one's place in the same blur-in style, then gone: "Welcome to Everlab, / Julien." › "This is" › "your health in a / whole new way." The dot follows. Changing it replays the reveal from its start. Copy (#1 / #2) still sets the card screen's title separately. Tested in dark and light: the phases in order, then the dot.
+- The dot's specks ("when the dot expands to 8px we should feel more the release of the particles around"; "the particles should come from the dot center"):
+  - As the dot opens out of its pixel (0.36 s into its 0.8 s growth), 36 specks are released at once from its centre. They shoot out quickly, a touch past their place and back, bigger and brighter as they leave, settling to their size as they land. The steady stream (Particle density) carries on after.
+  - Every speck now starts exactly at the dot's centre and is visible from there, not faded in on the way.
+  - Measured: 4 specks 3–15 px out at 0.41 s, 27 by 0.54 s, 44 spread to 97 px by 0.76 s; new stream specks born within about 1 px of the centre.
