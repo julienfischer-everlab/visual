@@ -16626,3 +16626,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 
 - "Dot colour and date should be white, forget about the mask". The warm-window treatment is removed: the `.arDark` window CSS, `winOn()`, `win()` and their calls. The burst's white core (`fl2.animate`) runs again.
 - Checked at XS and L: the date's colour and the cursor are white (`oklch(1 0 …)`), the date has no text clip, and the dot's white layer is at 1. No page errors.
+
+## Card screen opening: the dot grows from nothing on easeInOutQuint
+
+- "Instead of dot 1px to 8px, do scale 0 to scale 1 (8px), following this pace" (easeInOutQuint). `hpW2Dot` now takes `--hpDR` from 0 to 4 px (8 px across) over its 0.8 s on `cubic-bezier(.83, 0, .17, 1)`, with no overshoot. It was a 1 px point held 0.36 s, then out to 8 a touch past it and back. The breathing after it is unchanged.
+- The specks' release moves to 0.4 s (was 0.36 s), the curve's middle, where the dot grows fastest.
+- Stepped through at XS: ⌀ 0 / 0.07 / 0.35 / 1.10 / 4.00 / 6.90 / 7.65 / 8.00 px at 0 / 0.1 / 0.2 / 0.3 / 0.4 / 0.5 / 0.6 / 0.8 s. No page errors.
