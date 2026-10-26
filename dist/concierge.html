@@ -628,8 +628,15 @@
     mriAll: { text: 'Your brain MRI has four images: two pages of the report, the midline slice and the comparison.', blocks: [{ t: 'imgGroup' }] },
     mriStudy: { text: 'Here’s the full study and Dr Chen’s report.', blocks: [{ t: 'atts', f: ['mriRep', 'study'] }, { t: 'imgGroup' }] },
     care: { clin: { text: 'I’ve sent this to your care team. Dr Lu usually replies within one business day, and you’ll find his answer in your Inbox.', when: 'Sent just now' }, blocks: [] },
-    help: { text: 'I can help with your appointments, goals, reports, results and imaging. Here are a few things you can ask.', blocks: [{ t: 'sugs' }] }
+    help: { text: 'I can help with your appointments, goals, reports, results and imaging. Here are a few things you can ask.', blocks: [{ t: 'sugs' }] },
+    /* the care team's requests, from the Overview's concierge card: Concierge opens the request and asks what it needs; the member's answer goes to Dr Lu (reqSent) */
+    script: { text: 'I can start a script renewal for you. Which medication would you like renewed, and how many repeats do you have left? Dr Lu reviews renewals within one business day, and your eScript is sent to your phone.', blocks: [] },
+    refSpec: { text: 'I can ask Dr Lu for a specialist referral. Which kind of specialist do you need, for example a cardiologist or a dermatologist, and what would you like them to look at?', blocks: [] },
+    refBlood: { text: 'I can ask Dr Lu for a blood test referral. Is it the recheck from your plan, or for something new? Once it’s signed, you can take it to any pathology collection centre.', blocks: [] },
+    refImg: { text: 'I can request an imaging referral for you. What kind of scan do you need, for example an ultrasound, an X-ray or an MRI, and what is it for?', blocks: [] },
+    reqSent: { clin: { text: 'Thanks, that’s everything I need. I’ve sent your request to Dr Lu, who usually replies within one business day. You’ll be notified as soon as it’s ready.', when: 'Sent just now' }, blocks: [] }
   };
+  var REQ = { script: 1, refSpec: 1, refBlood: 1, refImg: 1 };   // the requests: the answer that follows one is sent
   var SUGS = [
     { q: 'What’s my next appointment?', s: 'Appointments' },
     { q: 'List all my current goals', s: 'Goals' },
@@ -640,6 +647,8 @@
   ];
   var match = function (q) {
     var s = q.toLowerCase();
+    if (/renew|script|prescription/.test(s)) return 'script';   // the requests first: "blood test referral" is not the blood test's PDF, nor "imaging referral" the MRI
+    if (/refer/.test(s)) return /blood|pathology/.test(s) ? 'refBlood' : /imaging|scan|x-?ray|ultrasound|mri|ct\b/.test(s) ? 'refImg' : 'refSpec';
     if (/starting|join|call now/.test(s)) return 'aptSoon';
     if (/next appointment|next booking/.test(s)) return 'aptNext';
     if (/appointments|coming up|upcoming|schedule|booked/.test(s)) return 'aptGroup';
@@ -656,7 +665,7 @@
     if (/report/.test(s)) return 'reports';
     return 'help';
   };
-  var TITLES = { aptNext: 'Next appointment', aptSoon: 'Joining my call', aptGroup: 'Upcoming appointments', goals: 'My current goals', goalOne: 'One goal to focus on', attach: 'Blood test report', clin: 'Why my ferritin is flagged', reports: 'My Everlab reports', nutri: 'Nutrition review', protein: 'Ideal protein intake', mri: 'Brain MRI images', mriCmp: 'Brain MRI images', mriAll: 'Brain MRI images', mriStudy: 'Brain MRI images', care: 'Question for my care team', help: 'New chat' };
+  var TITLES = { aptNext: 'Next appointment', aptSoon: 'Joining my call', aptGroup: 'Upcoming appointments', goals: 'My current goals', goalOne: 'One goal to focus on', attach: 'Blood test report', clin: 'Why my ferritin is flagged', reports: 'My Everlab reports', nutri: 'Nutrition review', protein: 'Ideal protein intake', mri: 'Brain MRI images', mriCmp: 'Brain MRI images', mriAll: 'Brain MRI images', mriStudy: 'Brain MRI images', care: 'Question for my care team', script: 'Script renewal', refSpec: 'Specialist referral', refBlood: 'Blood test referral', refImg: 'Imaging referral', help: 'New chat' };
 
   /* the history in Recent, newest first: each a chat as it was had */
   var SEED = [
@@ -768,6 +777,7 @@
   var ask = function (text) {
     text = text.trim(); if (!text || S.busy) return;
     var k = S.model === 'care' ? 'care' : match(text);
+    if (S.view === 'chat' && S.model !== 'care'){ var lm = chats[S.id].msgs[chats[S.id].msgs.length - 1]; if (lm && lm.r === 'a' && REQ[lm.k]) k = 'reqSent'; }   // the answer to a request's question, whatever it names ("an MRI of my knee" is not the brain MRI): sent to the care team
     if (S.view !== 'chat'){
       var id = 'c' + Date.now();
       chats[id] = { id: id, title: TITLES[k] === 'New chat' ? text.slice(0, 40) : TITLES[k], msgs: [] };
@@ -780,7 +790,7 @@
     c.msgs.push({ r: 'a', k: k, time: t });
     play(c.msgs.length - 1, null);
   };
-  var THINK = { aptNext: 'Checking your bookings', aptSoon: 'Checking your bookings', aptGroup: 'Checking your bookings', goals: 'Reading your plan', goalOne: 'Weighing your goals against your results', attach: 'Finding your files', clin: 'Asking your care team', care: 'Sending to your care team', reports: 'Gathering your reports', nutri: 'Checking your reports', protein: 'Reading your nutrition review', mri: 'Opening your imaging', mriCmp: 'Lining up both scans', mriAll: 'Opening your imaging', mriStudy: 'Preparing the study', help: 'Thinking' };
+  var THINK = { aptNext: 'Checking your bookings', aptSoon: 'Checking your bookings', aptGroup: 'Checking your bookings', goals: 'Reading your plan', goalOne: 'Weighing your goals against your results', attach: 'Finding your files', clin: 'Asking your care team', care: 'Sending to your care team', reports: 'Gathering your reports', nutri: 'Checking your reports', protein: 'Reading your nutrition review', mri: 'Opening your imaging', mriCmp: 'Lining up both scans', mriAll: 'Opening your imaging', mriStudy: 'Preparing the study', script: 'Checking your scripts', refSpec: 'Opening a referral request', refBlood: 'Opening a referral request', refImg: 'Opening a referral request', reqSent: 'Sending to Dr Lu', help: 'Thinking' };
   var play = function (i, into) {
     var c = chats[S.id], m = c.msgs[i], a = A[m.k], chatId = S.id; S.busy = true; sendState();
     var th = el('<div class="think in">' + (THINK[m.k] || 'Thinking') + '…</div>');

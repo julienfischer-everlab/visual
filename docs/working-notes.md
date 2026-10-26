@@ -16389,3 +16389,15 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 ## Card logo: one turn, then 3 s still
 
 - The card's Everlab mark now turns once (the strip is one full revolution, 2.17 s), then holds still on its first frame for 3 s, and loops: a 5.17 s cycle ("rotate one turn then stop for 3 sec and loop"). Checked on the animation's clock over two cycles: frames 0-50 through the turn, the still mark through every hold.
+
+## Year counter's pace, the reveal's title above the dot, the glass at rest, the Live version's concierge and desk
+
+- Membership reveal, birth year → today: the count already ran on easeInOutCubic, but mid-roll the units wheel turned ~84 years a second and strobed, reading as slow or stuck (the opposite of the curve). Now it counts like a ticker: each year held, then every wheel that changes slides up together in the last 35% of that year's slot. Checked off-page: the years come 255, 78, 52 ms apart at the start, 12 ms in the middle, 66 then 134 ms at the end; no wheel ever moves backwards; it lands on 2026.
+- The title "Your health journey starts here." is now above the dot. The date rises as the title writes in, so it reads date, title, dot, like the card screen after it.
+- The card's glass blur at rest is as it was before the flip work: its plain filter, no clip. The clip to the card's outline applies only mid-turn, and the blanket's lift only after the first turn ("blur bg doesn't seem to apply anymore"). Headless Chromium blurred in every combination, so the clip or the variable is the likely culprit in the GPU path.
+- Live version:
+  - The top Ask anything is removed; the bell sits on the Welcome row.
+  - The concierge card loses Inbox. Its field is a door to the chat (a new chat on tap), with no arrow.
+  - Its suggestions are Script renewal, Specialist referral, Blood test referral and Imaging referral. Each starts its chat: Concierge opens the request and asks what it needs, and the member's answer goes to Dr Lu (a care-team reply, "Sent just now"). New intents on the chat page; before them, "blood test referral" matched the blood test's PDF and "imaging referral" the brain MRI.
+  - Next step's Book and "Book your onboarding" now open the Health profile (its three steps, the consult booked as the second): the same screen the reveal's Start my journey opens. They used to open the separate consult booking.
+  - Desk: the two-column layout (the green card across the top, Next step on the left, the dials and tasks in the second column, the services under) applies wherever the Overview is at least 740 px wide. That includes Auto at a desk-wide window, which had no data-bp and so stayed one column. The green card splits into two columns from 1000 px; narrower, its chips form a 2 × 2 under the field.
