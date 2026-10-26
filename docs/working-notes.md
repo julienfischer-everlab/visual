@@ -16345,3 +16345,14 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 ## Card edge glints drawn in the card's own plane (flip fix)
 
 - "A bug when I flip the card: the hit effect stays": the glints were drawn over the screen on the card's flat outline, so while the card turned (and as it tilted to the pointer) the light hung where the card had been. Now they are drawn in the card's turning layer (.hpW2In): two layers, one with each face (the back one turned over, drawing mirrored), each glint put on the card's own left or right edge at the height the particle met it. They turn and tilt with the card; nothing is left behind mid-flip. Variant matrix still passes.
+
+## Overview V5 (Latest), from the framework
+
+- Tweaks → Overview → Latest now holds Current (V4) and V5 ("create a version in Latest: current, and one following this framework"). V5 is the framework's page from its dark design (.ov5, body.hdrV5; the rest of the Overview hidden under it, V4 untouched beneath):
+  - Welcome, <name> (the persona's, from the Overview's own greeting), 26/500, the name at 56%.
+  - Next step: the DEXA picture at the right darkened into the card, the "Next step" chip, the two-tone title (Get your health baseline. / Book your DEXA Scan.), Book (white, 44 high, radius 12) → the DEXA service at Book.
+  - Health Insights (copper) and Biological Age (warm dark), side by side: an outlined chip and a share key, a 240° dial (biomarkers in range white, borderline peach, out of range dark; the age a fine ring with its mark), 75 Biomarkers / 34, 8 years younger. Either opens Insights.
+  - Tasks to complete (See all with its 12 → Timeline): a row of task cards, the next peeking (Complete questionnaire → the questionnaire; Book your blood test → Advanced Blood Testing at Book; Upload past records → Insights).
+  - Your action plan: "5 key priorities to focus on", the five, each its colour and area → Timeline.
+  - The desk: the next step and the two dials in one row of four, the rest across.
+- Measured for the question "what is the height of the field and button": the Overview phone's ask field is 48 high (fully round), the inbox and bell 44 x 44 circles, 10 apart.
