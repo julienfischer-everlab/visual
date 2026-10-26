@@ -16632,3 +16632,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - "Instead of dot 1px to 8px, do scale 0 to scale 1 (8px), following this pace" (easeInOutQuint). `hpW2Dot` now takes `--hpDR` from 0 to 4 px (8 px across) over its 0.8 s on `cubic-bezier(.83, 0, .17, 1)`, with no overshoot. It was a 1 px point held 0.36 s, then out to 8 a touch past it and back. The breathing after it is unchanged.
 - The specks' release moves to 0.4 s (was 0.36 s), the curve's middle, where the dot grows fastest.
 - Stepped through at XS: ⌀ 0 / 0.07 / 0.35 / 1.10 / 4.00 / 6.90 / 7.65 / 8.00 px at 0 / 0.1 / 0.2 / 0.3 / 0.4 / 0.5 / 0.6 / 0.8 s. No page errors.
+
+## Card screen title: in its place from the first letter
+
+- "When the title appears it shouldn't go up, it should be already placed at the right place" (and "same on mobile"). Each row used to open from nothing (`hpWelLine`, 0fr → 1fr) with the block held by its foot, so the first line climbed as the next opened (36 px on the desk).
+- V2's card titles (`.hpWelV2 .hpWelQ .hpWelL`) now have every row at full height from the start. The letters are still written one by one (blur, warm tint, a 3 px settle each).
+- Tracked through the entrance: rows stay at 183/215 on L and 196/226/256 on XS and S from the first letter to the last, for copies #1 and #2. Copy #1's turning line still turns. No page errors.
