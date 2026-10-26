@@ -379,8 +379,8 @@
   /* as a page of the prototype (Concierge.embed, from its Viewport): in the XS phone or the S tablet frame, the chat alone filling the screen, its own bar gone, clear of the frame's status bar (--safeT) and home indicator (--safeB);
      on the desk the bar kept for its Chat / Components tabs, the device the prototype's Viewport rather than the switch */
   :root { --safeT: 0px; --safeB: 0px; }
-  .emb .bar { display: none; }
-  .emb .stage { top: 0; }
+  .emb .bar, .embDesk .bar, .embDoc .bar { display: none; }   /* in the prototype, as a page or as its documentation, no bar of its own ("remove this top bar"): the Components live in Documentation */
+  .emb .stage, .embDesk .stage, .embDoc .stage { top: 0; }
   .embDesk .devSeg { display: none; }
   .app.mob .hd { height: calc(48px + var(--safeT)); padding-top: var(--safeT); }
   .app.mob .side { padding-top: calc(14px + var(--safeT)); }
@@ -883,7 +883,7 @@
     var keys = ['review', 'dexa', 'physical', 'nutri', 'review', 'mri'];
     var sec = function (t, body) { return '<section class="sec"><h3>' + t + '</h3>' + body + '</section>'; };
     var sub = function (t, body) { return '<div class="sub"><span>' + t + '</span>' + body + '</div>'; };
-    $('#cmpPage').innerHTML = '<div class="cmpIn"><header><h2>Concierge components</h2><p>Everything Eva can answer with, in each of its states. Open the Chat tab to see them in conversation; every one of them works here too.</p></header>' +
+    $('#cmpPage').innerHTML = '<div class="cmpIn"><header><h2>Concierge components</h2><p>Everything Eva can answer with, in each of its states. Every one of them works here as it does in the chat.</p></header>' +
       sec('Appointments',
         sub('Card · wide', '<div class="wrapRow">' + states.map(function (s, i) { return aptCard(keys[i], s[0], s[1]); }).join('') + '</div>') +
         sub('Card · compact', '<div class="wrapRow">' + states.map(function (s, i) { return aptCard(keys[i], s[0], s[1], true); }).join('') + '</div>') +
@@ -969,12 +969,13 @@
   if (/^chat-/.test(hs) && chats[hs.slice(5)]) go('chat', hs.slice(5), false); else go('new', null, false);
   if (hs === 'mobile') setDev('mob');
   if (hs === 'components') setTab('cmp');
+  if (hs === 'doc-components'){ document.documentElement.classList.add('embDoc'); setTab('cmp'); }   // the prototype's Documentation: the gallery alone
   /* a page of the prototype: 'phone' (the XS frame), 'tablet' (the S frame), 'desk', or nothing (on its own) */
   var embed = function (m) {
     var r = document.documentElement, fr = m === 'phone' || m === 'tablet';
     r.classList.toggle('emb', fr); r.classList.toggle('embPhone', m === 'phone'); r.classList.toggle('embDesk', m === 'desk');
     r.style.setProperty('--safeT', m === 'phone' ? '54px' : m === 'tablet' ? '30px' : '0px'); r.style.setProperty('--safeB', m === 'phone' ? '22px' : m === 'tablet' ? '12px' : '0px');
-    if (fr && S.tab !== 'chat') setTab('chat');
+    if (m && S.tab !== 'chat') setTab('chat');   // a page of the prototype is the chat alone
     if (m) setDev(fr ? 'mob' : 'desk'); else layout();
   };
   var setModel = function (m) { S.model = m === 'care' ? 'care' : 'eva'; var n = document.getElementById('modelName'); if (n) n.textContent = S.model === 'care' ? 'Care team' : 'Eva'; };

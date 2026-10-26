@@ -16405,3 +16405,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 ## Health profile: close and back clickable-looking
 
 - The profile's close showed the default cursor and no hover ("hover cursor pointer"). It inherited a rule meant for the async report's close, which does nothing on purpose. That rule now skips the profile, and the profile's close and back get the hand and the welcome's hover fill (the ink at 9%). The close still closes.
+
+## Concierge components in Documentation; the chat without its bar
+
+- Documentation now has a tab per document: Progress timeline (the playground, as before) and Concierge components ("put this into documentation"). The new tab is the chat page's gallery: every answer component in each state, without the chat page's own bar and in the prototype's theme. Each tab keeps its frame as it was left. #documentation opens the timeline, #concierge-components the gallery; Home lists both. The playground's Save shows on its own tab only.
+- The Chat page in the prototype no longer shows the chat page's own bar (Concierge, Chat / Components, theme) at desk sizes either, as at the phone and tablet ("remove this top bar"); it is always the chat. The standalone concierge.html keeps its bar. The gallery's intro no longer points at a Chat tab.
