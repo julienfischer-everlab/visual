@@ -32540,8 +32540,13 @@ hairline({
       if (inst) inst.destroy(); frame.textContent = '';
       const wf = !!o.welcome && !deskM(); fromIntro = false;   // the welcome: on the phone the whole screen; on the desk a floating modal in the middle, the blanket round it (.hpBs at M and L)
       wrap.classList.toggle('hpBs', !!o.welcome && !wf); wrap.classList.toggle('aqFull', !o.welcome || wf); wrap.classList.toggle('hpWelF', wf);   // the welcome a full bottom sheet; the profile the full modal
+      /* the profile opened on its own (the Overview, the standalone page, Tweaks) wears the welcome's light at its top exactly as it does after Start my journey ("the health profile should have this bg from the member reveal screen"):
+         the welcome built in its last state for a moment, its picture read as the hand-over reads it, then the profile with that picture already where the hand-over leaves it. The phone only, as the hand-over */
+      let cap0 = null;
+      if (!o.welcome && HP.welcome && !deskM()){ wrap.classList.add('hpOpen'); try { const g = HP.welcome(frame, Object.assign(welO(), { from: '', settled: true })); if (g && g.v2) cap0 = capPic(g); if (g && g.destroy) g.destroy(); } catch (e){ cap0 = null; } frame.textContent = ''; }
       inst = o.welcome && HP.welcome ? HP.welcome(frame, Object.assign(welO(), { from: o.from || '' }))
         : HP.mount(frame, { theme: dark() ? 'dark' : 'light', name: nameOf(), onClose: close }); paint();
+      if (cap0 && inst && !inst.welcome) carrySet(inst, cap0);
       if (o.area) inst.area(o.area);
       if (!up){ wrap.classList.remove('on', 'shut'); wrap.classList.add('hpOpen'); document.body.classList.add('hpOn');
         requestAnimationFrame(() => requestAnimationFrame(() => wrap.classList.add('on'))); }
@@ -32557,6 +32562,11 @@ hairline({
       const k = wel.el.classList.contains('hpW2Mask') ? 1 - (parseFloat(wcs.getPropertyValue('--hpW2BlA')) || .6) : 1;
       return { left: b.left + img.offsetLeft, top: b.top + img.offsetTop, w: img.offsetWidth, h: img.offsetHeight, bottom: r.bottom, k, css: { backgroundImage: cs.backgroundImage, backgroundSize: cs.backgroundSize, backgroundPosition: cs.backgroundPosition, backgroundRepeat: cs.backgroundRepeat, backgroundColor: cs.backgroundColor, filter: cs.filter, translate: cs.translate, scale: cs.scale, transformOrigin: cs.transformOrigin, maskImage: cs.maskImage, webkitMaskImage: cs.webkitMaskImage }, o: parseFloat(cs.opacity) || 1,
         grain: ga.display !== 'none' && ga.content !== 'none' ? { backgroundImage: ga.backgroundImage, backgroundSize: ga.backgroundSize, backgroundRepeat: ga.backgroundRepeat, opacity: ga.opacity, mixBlendMode: ga.mixBlendMode } : null }; };
+    const carrySet = (hp, cap) => { const view = hp.el.querySelector('.hpView'); if (!view) return; const vr = view.getBoundingClientRect(), fr = frame.getBoundingClientRect();   /* the hand-over's last frame, held: the picture's bottom at the profile's top 35%, at the blanket's strength */
+      const el = document.createElement('i'); el.className = 'hpCarry'; el.setAttribute('aria-hidden', 'true'); const D = Math.round(cap.bottom - fr.top - fr.height * .35);
+      Object.assign(el.style, cap.css, { left: (cap.left - vr.left) + 'px', top: (cap.top - vr.top) + 'px', width: cap.w + 'px', height: cap.h + 'px', opacity: String(cap.o * cap.k), transform: 'translateY(' + (-D) + 'px)' }); el.dataset.d = D;
+      if (cap.grain) { const g = document.createElement('i'); Object.assign(g.style, cap.grain, { position: 'absolute', inset: '0', pointerEvents: 'none' }); el.appendChild(g); }
+      view.prepend(el); hp.el.classList.add('hpCarried'); };
     const carryIn = (hp, cap, wel) => { const view = hp.el.querySelector('.hpView'); if (!view || !view.animate) return false;   /* in the page's view, under its scroller (the scroller's ground let through while it is there: .hpCarried) */ const vr = view.getBoundingClientRect(), fr = frame.getBoundingClientRect();
       const el = document.createElement('i'); el.className = 'hpCarry'; el.setAttribute('aria-hidden', 'true'); Object.assign(el.style, cap.css, { left: (cap.left - vr.left) + 'px', top: (cap.top - vr.top) + 'px', width: cap.w + 'px', height: cap.h + 'px', opacity: String(cap.o) });
       if (cap.grain) { const g = document.createElement('i'); Object.assign(g.style, cap.grain, { position: 'absolute', inset: '0', pointerEvents: 'none' }); el.appendChild(g); }
