@@ -12159,6 +12159,8 @@
         </div>
         <!-- the Health profile ("add a Health Profile card to the Overview"): its card's section, and the profile's demo states ("include examples of the not-started, in-progress and completed states"); Saved, what was last done in it here -->
         <!-- the Primary card, the Overview's first card: its Type, a $299 member's card (Health profile, or Plan to purchase) or Next step (the hero and its action) ("this part of Primary card: Type: $299 purchased: Health profile, Plan to purchase; Next step: Dexa, etc.") -->
+        <!-- the Health profile on its own ("when I'm on the health profile page I want to control only the health profile tweaks"): while the profile is showing, the panel is this group alone, the profile's rows (Primary card's $299 part) moved in here, and back when it goes -->
+        <div class="tkGroup" data-pages="hp" id="tkHpGrp"><div class="tkSub">Health profile</div></div>
         <div class="tkGroup" data-pages="ov" data-sec="primary">
         <div class="tkSub">Primary card</div>
         <div class="tkRow"><span class="lbl">Type</span><select id="stPcType" class="tkSegSel" aria-label="The Overview's primary card"><option value="member" selected>$299 purchased</option><option value="next">Next step</option></select></div>
@@ -16621,7 +16623,7 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
 /* the journey driver's pages: the promise's checks, fields two across, the calendar and its times, the review's video tile and note */
 .arSheet.hpSheet .hpLead { margin: -12px 0 24px; } .arSheet.hpSheet .hpLink { color: oklch(var(--ar-ink)); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
 .arSheet.hpSheet .hpChecks { padding: 4px 16px; } .arSheet.hpSheet .hpChk { appearance: none; display: flex; align-items: flex-start; gap: 12px; width: 100%; margin: 0; padding: 14px 0; border: 0; background: none; color: oklch(var(--ar-ink)); font: inherit; font-family: var(--ar-font); font-size: 15px; line-height: 20px; text-align: left; cursor: pointer; } .arSheet.hpSheet .hpChk + .hpChk { box-shadow: inset 0 1px 0 oklch(var(--ar-ink) / .08); }
-.arSheet.hpSheet .hpChkB { flex: none; display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; margin-top: 0; border-radius: 5px; box-shadow: inset 0 0 0 1.5px oklch(var(--ar-ink) / .4); color: transparent; } .arSheet.hpSheet .hpChk[aria-checked="true"] .hpChkB { background: oklch(var(--ar-ink)); color: var(--ar-paper); box-shadow: none; } .arSheet.hpSheet .hpChk.hpChkLock { cursor: default; } .arSheet.hpSheet .hpChk.hpChkLock .hpChkB { opacity: .4; } .arSheet.hpSheet .hpChk.hpChkLock .hpChkT > span:first-child { color: oklch(var(--ar-ink) / .64); }   /* locked: the box and its words quieter, the line under them the why */
+.arSheet.hpSheet .hpChkB { flex: none; display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; margin-top: 0; border-radius: 5px; box-shadow: inset 0 0 0 1.5px oklch(var(--ar-ink) / .4); color: transparent; } .arSheet.hpSheet .hpChk[aria-checked="true"] .hpChkB { background: oklch(var(--ar-ink)); color: var(--ar-paper); box-shadow: none; } #tkHpGrp .tkRow:has(#stHpOpen) { display: none; }   /* on the profile, nothing to open */ .arSheet.hpSheet .hpChk.hpChkLock { cursor: default; } .arSheet.hpSheet .hpChk.hpChkLock .hpChkB { opacity: .4; } .arSheet.hpSheet .hpChk.hpChkLock .hpChkT > span:first-child { color: oklch(var(--ar-ink) / .64); }   /* locked: the box and its words quieter, the line under them the why */
 .arSheet.hpSheet .hpChkT { display: flex; flex-direction: column; gap: 4px; min-width: 0; } .arSheet.hpSheet .hpChkT small { font-size: 13px; line-height: 18px; color: oklch(var(--ar-ink) / .56); } .arSheet.hpSheet .hpOptl { color: oklch(var(--ar-ink) / .56); }
 .arSheet.hpSheet .hpTwo { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; } .arSheet.hpSheet .hpTwo.hpTwoN { grid-template-columns: minmax(0, 1fr) 96px; }
 .arSheet.hpSheet .hpLbl { font-size: 14px; line-height: 18px; font-weight: 500; color: oklch(var(--ar-ink)); }
@@ -25393,9 +25395,15 @@ hairline({
     v4Take(document.getElementById('arcA'), document.getElementById('v4Gauge'));
   }
   // Tweaks shows only what concerns the page: its groups, and a standalone's over it (the Async report's while it is up)
+  // the profile's rows: into the Health profile group while the profile is showing, back to the Primary card's $299 part after
+  const tkHp = on => { const part = document.querySelector('.pcPart[data-pc="hp"]'), grp = document.getElementById('tkHpGrp'); if (!part || !grp) return;
+    if (on){ if (part.parentNode !== grp){ tkHp.home = { p: part.parentNode, n: part.nextSibling }; grp.appendChild(part); } part.hidden = false; return; }
+    if (tkHp.home && part.parentNode === grp){ tkHp.home.p.insertBefore(part, tkHp.home.n); const ty = document.getElementById('stPcType'); part.hidden = (ty ? ty.value : 'member') !== 'member'; } };
   function tkPages(m, extra){
     const g = MODES[m] && MODES[m].group, key = g === 'Insights' ? 'ins' : (g === 'Overview page' || g === 'Results received') ? 'ov' : g === 'Landing page' ? 'lp' : g === 'Async report' ? 'ar' : '';
-    const keys = [key, extra].filter(Boolean), tk = document.getElementById('tkMenu');
+    const hpPg = document.body.classList.contains('hpOn') && !!document.querySelector('.hpWrap.hpOpen:not(.hpWelF)');   // the profile showing (not its reveal): its tweaks alone
+    tkHp(hpPg);
+    const keys = hpPg ? ['hp'] : [key, extra].filter(Boolean), tk = document.getElementById('tkMenu');
     if (tk){ tk.querySelectorAll('[data-pages]').forEach(el => { const p = el.dataset.pages.split(' '); el.hidden = !keys.some(k => p.indexOf(k) >= 0); }); tk.hidden = !keys.length; if (!keys.length) tk.open = false; }
   }
   function setMode(m){
@@ -25407,6 +25415,7 @@ hairline({
     // Overview (and results received, which opens over it) -- the Overview;
     // the landing -- its own; a page with none hides the menu
     tkPages(m, document.body.classList.contains('arOpen') ? 'ar' : '');
+    window.__tkPages = () => tkPages(version, document.body.classList.contains('arOpen') ? 'ar' : '');   // for the profile, as it opens, turns from its reveal, goes back to it, or closes
     { const ink = document.getElementById('inkMenu'); if (ink){ const concept = MODES[m] && MODES[m].group === 'Concept'; ink.hidden = !concept; if (!concept) ink.open = false; } }   // the Organs menu (density, inks) only on the Concept pages ("tweak organ ONLY concern Concept pages")
     DUR = reduced ? 300 : MODES[m].dur;
     document.body.className = 'm' + m + (m === 10 ? ' m2 b2' : '') +
@@ -32540,7 +32549,8 @@ hairline({
     const fit = () => { if (!wrap) return; const b = bpNow(); ['xs', 's', 'm', 'l'].forEach(k => wrap.classList.toggle('aqBp' + k.toUpperCase(), k === b)); wrap.classList.toggle('aqDev', document.body.dataset.bp === 's' || (document.body.dataset.bp === 'xs' && !document.documentElement.classList.contains('bpAuto')));
       if (inst && inst.welcome && wrap.classList.contains('hpOpen')){ const d = false; wrap.classList.toggle('hpBs', d); wrap.classList.toggle('hpWelF', !d); wrap.classList.toggle('aqFull', !d); if (inst.place) requestAnimationFrame(inst.place); } };   // across a breakpoint while it is up: modal or full with it
     const build = () => {
-      wrap = document.createElement('div'); wrap.className = 'aqWrap aqDesk aqFull hpWrap'; wrap.setAttribute('role', 'dialog'); wrap.setAttribute('aria-modal', 'true'); wrap.setAttribute('aria-label', 'Health profile');
+      wrap = document.createElement('div'); new MutationObserver(() => { if (window.__tkPages) window.__tkPages(); }).observe(wrap, { attributes: true, attributeFilter: ['class'] });   // Tweaks: the profile's alone while it shows
+      wrap.className = 'aqWrap aqDesk aqFull hpWrap'; wrap.setAttribute('role', 'dialog'); wrap.setAttribute('aria-modal', 'true'); wrap.setAttribute('aria-label', 'Health profile');
       wrap.innerHTML = '<div class="aqDim"></div><div class="aqFrame"></div><div class="aqStat" aria-hidden="true"></div>';
       document.body.appendChild(wrap); frame = wrap.querySelector('.aqFrame');
       const st = document.querySelector('#bpFrame .bpStatus'); if (st) wrap.querySelector('.aqStat').innerHTML = st.innerHTML;
