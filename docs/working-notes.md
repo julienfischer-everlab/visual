@@ -16707,3 +16707,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - brightness 30 → 200% takes mean alpha 16 → 60;
   - speed 0 holds the drift and 300% speeds it.
   - No page errors.
+
+## Card: the tilt reflection warmer
+
+- "Reflection gyroscope a bit warmer": the soft light on the card's face that moves with the tilt (`.hpW2Fa::after`, at `--hpW2Gx/--hpW2Gy`) is now a peach at its heart (`rgba(255,206,160,.11)`) with an amber halo (`rgba(236,152,92,.045)` at 34%), fading out at 62% as before. It was a neutral white at 9%. Checked on the solid card at XS. No page errors.
