@@ -1534,10 +1534,11 @@ body.light .hpOvCard { background: #fdfaf3; color: #2e1f1a; }
 .hpOvCard:not(.hpOvPlan) { isolation: isolate; background: rgba(255, 255, 255, .04); transition: background .16s ease; }
 /* an orange halo at its top right, breathing ("the halo orange as on the OrganAge, top right of the health profile card; it breathes, +30% opacity every 2 seconds in and out"): the OrganAge light's soft falloff, in the brand orange, under the content, inside the card's corners */
 .hpOvCard:not(.hpOvPlan)::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none;
-  background: radial-gradient(circle 230px at calc(100% - 64px) 40px, rgb(255 122 26 / .1) 0%, rgb(255 122 26 / .085) 14%, rgb(255 122 26 / .06) 28%, rgb(255 122 26 / .04) 42%, rgb(255 122 26 / .0225) 56%, rgb(255 122 26 / .011) 69%, rgb(255 122 26 / .004) 81%, rgb(255 122 26 / 0) 100%);   /* half as strong ("halo less prominent by 50%") */
-  opacity: .7; animation: hpHalo 4s ease-in-out infinite; }
-body.light .hpOvCard:not(.hpOvPlan)::before { filter: saturate(1.1); }
-@keyframes hpHalo { 50% { opacity: 1; } }
+  background: url("assets/welcome/card-glow.webp") calc(100% + 130px) -230px / 520px 925px no-repeat; mix-blend-mode: screen;   /* wider than its fade, so no edge of the picture shows */
+  -webkit-mask: radial-gradient(340px 250px at 100% 0%, #000 0%, rgba(0, 0, 0, .5) 42%, rgba(0, 0, 0, .14) 70%, transparent 100%); mask: radial-gradient(340px 250px at 100% 0%, #000 0%, rgba(0, 0, 0, .5) 42%, rgba(0, 0, 0, .14) 70%, transparent 100%);
+  --hpOvL: .16; opacity: calc(var(--hpOvL) * .7); animation: hpHalo 4s ease-in-out infinite; }   /* the card screen's light (its picture, the membership reveal's), super light, from the top right ("use this bg used on the card screen for here, super light on the right top side"; was an orange halo) */
+body.light .hpOvCard:not(.hpOvPlan)::before { mix-blend-mode: multiply; --hpOvL: .3; background-position: calc(100% + 130px) -90px; }   /* light: only its light, warm into the paper, as the card screen's in light */
+@keyframes hpHalo { 50% { opacity: var(--hpOvL, 1); } }
 @media (prefers-reduced-motion: reduce) { .hpOvCard::before { animation: none; } } .hpOvCard:not(.hpOvPlan):hover { background: rgba(255, 255, 255, .08); }   /* the Telehealth tile's ground and its hover (.ovSvcChip: "the background should be the same as the telehealth") */
 body.light .hpOvCard:not(.hpOvPlan) { background: rgba(46, 31, 26, .06); } body.light .hpOvCard:not(.hpOvPlan):hover { background: rgba(46, 31, 26, .09); }
 /* one card colour across the Overview ("all cards on this overview should have the same colour; in light mode all the cards are different shades"): the primary card's, #fff at 4% on the dark, the ink at 6% on the light, hovered 8 and 9;
@@ -1568,6 +1569,29 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }
 body.hdrV4[data-bp="xs"] #dOver .dvTop > .hpOvCard { margin-top: 6px; margin-bottom: 8px; }   /* the V4 phone: the greeting 16 px nearer the card ("reduce gap by 16px"), the services 8 px nearer under it ("reduce gap by 8px") */   /* 16 to the card under it ("16px gap") */   /* 16 less under the greeting ("16px less gap") */ body[data-bp="xs"] #dOver .hpOvCard .hpDots { width: 97px; height: 97px; }   /* 10% smaller (was 108) */ body[data-bp="xs"] #dOver .hpOvCard :is(h3, .hpOvSub) { max-width: calc(100% - 136px); }   /* 16 more room before the sphere ("+16px gap") */   /* the sphere 108 ("increase by 12px") */   /* the phone: the sphere 96 ("32px bigger") */
 .acPrI .hpDots { width: 22px; height: 22px; color: inherit; }
 
+/* Loading states (Documentation -> Loading states; window.EvLoad): one look for every wait in the experience ("create the loading state in the documentation, so we can use them in the whole experience and have one source of truth") */
+.evSpin { display: inline-block; flex: none; box-sizing: border-box; width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid currentColor; border-right-color: transparent; animation: evSpin .8s linear infinite; }
+@keyframes evSpin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .evSpin { animation-duration: 2.4s; } }
+/* Loader with label: the button itself, a spinner and its action ("Submitting"), quieter while it works; its own words kept, hidden, for after */
+.evBusy { cursor: progress !important; background: rgba(29, 26, 23, .34) !important; color: #fff !important; box-shadow: none !important; }
+:is(.arDark, .evDark) .evBusy { background: rgba(255, 255, 255, .2) !important; color: #fff !important; }
+.evBusy > :not(.evBusyL) { display: none !important; }
+.evBusyL { display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+/* Multi-step loading: over the page, the page blurred under a progress of each backend step: a spinner and the step's line, a track with a node for each */
+.evMs { position: absolute; inset: 0; z-index: 40; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; color: var(--evInk, #111); background: var(--evWash, rgba(255, 255, 255, .55)); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border-radius: inherit; opacity: 0; transition: opacity .32s ease; }
+.evMs.on { opacity: 1; }
+.arSheet .evMs { --evInk: oklch(var(--ar-ink)); --evWash: color-mix(in oklab, var(--ar-paper) 55%, transparent); }
+.evDark .evMs { --evInk: #ececec; --evWash: rgba(17, 17, 17, .55); }
+.evMsRow { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; line-height: 20px; font-weight: 500; }
+.evMsRow span { transition: opacity .18s ease; }
+.evMsRow span.out { opacity: 0; }
+.evMsT { position: relative; display: flex; justify-content: space-between; align-items: center; width: 140px; height: 8px; }
+.evMsT::before { content: ""; position: absolute; left: 3px; right: 3px; top: 50%; height: 1px; background: currentColor; opacity: .2; }
+.evMsF { position: absolute; left: 3px; top: 50%; height: 1px; width: 0; background: currentColor; }
+.evMsN { position: relative; width: 6px; height: 6px; box-shadow: inset 0 0 0 1px currentColor; opacity: .35; transition: background-color .2s ease, opacity .2s ease; }
+.evMsN.on { background: currentColor; opacity: 1; }
+
 </style>
 <div id="stage" data-bp="auto"><div id="dev"><div id="hp"></div><div class="bpStatus" aria-hidden="true">
       <span class="tm">9:41</span>
@@ -1593,6 +1617,42 @@ body.hdrV4[data-bp="xs"] #dOver .dvTop > .hpOvCard { margin-top: 6px; margin-bot
   </div>
 </details>
 <script>
+
+/*
+ * Loading states, one source for the whole experience (Documentation -> Loading states):
+ *   EvLoad.label(button, text)          Loader with label: the button turns into a spinner and its action ("Submitting"); returns done(), the button as it was
+ *   EvLoad.multi(host, steps, { step }) Multi-step loading: over host (positioned), the page blurred under each backend step in turn (a spinner and its line, a track with a node each);
+ *                                       returns { el, done (a promise, once the last step is through, as the overlay fades), stop() }
+ */
+window.EvLoad = (function () {
+  var spin = function () { var i = document.createElement('i'); i.className = 'evSpin'; i.setAttribute('aria-hidden', 'true'); return i; };
+  function label(btn, text) {
+    var s = document.createElement('span'), keep = document.createElement('span'), dis = btn.disabled; s.className = 'evBusyL'; s.appendChild(spin()); s.appendChild(document.createTextNode(text));
+    keep.className = 'evBusyO'; btn.style.minWidth = btn.offsetWidth + 'px'; while (btn.firstChild) keep.appendChild(btn.firstChild);   /* its own words (elements or bare text) put aside, hidden, for after */
+    btn.appendChild(keep); btn.appendChild(s); btn.classList.add('evBusy'); btn.disabled = true; btn.setAttribute('aria-busy', 'true');
+    return function () { if (keep.parentNode === btn) { while (keep.firstChild) btn.insertBefore(keep.firstChild, keep); keep.remove(); } s.remove(); btn.classList.remove('evBusy'); btn.disabled = dis; btn.removeAttribute('aria-busy'); btn.style.minWidth = ''; };
+  }
+  function multi(host, steps, o) {
+    o = o || {}; var per = o.step || 1100, n = steps.length, stopped = false, timers = [];
+    var later = function (f, ms) { timers.push(setTimeout(function () { if (!stopped) f(); }, ms)); };
+    var el = document.createElement('div'), row = document.createElement('div'), tx = document.createElement('span'), tr = document.createElement('div'), fill = document.createElement('i'), nodes = [];
+    el.className = 'evMs'; el.setAttribute('role', 'status'); el.setAttribute('aria-live', 'polite'); row.className = 'evMsRow'; tr.className = 'evMsT'; fill.className = 'evMsF';
+    row.appendChild(spin()); row.appendChild(tx); tr.appendChild(fill);
+    for (var k = 0; k <= n; k++) { var nd = document.createElement('i'); nd.className = 'evMsN'; tr.appendChild(nd); nodes.push(nd); }
+    el.appendChild(row); el.appendChild(tr); host.appendChild(el);
+    var say = function (t) { if (!tx.textContent) { tx.textContent = t + '\u2026'; return; } tx.classList.add('out'); later(function () { tx.textContent = t + '\u2026'; tx.classList.remove('out'); }, 180); };
+    var done = new Promise(function (res) {
+      var go = function (i) {
+        if (i >= n) { later(function () { res(); el.classList.remove('on'); later(function () { el.remove(); }, 340); }, 380); return; }
+        say(steps[i]); fill.style.transition = 'width ' + per + 'ms linear'; fill.style.width = 'calc((100% - 6px) * ' + ((i + 1) / n).toFixed(4) + ')';
+        later(function () { nodes[i + 1].classList.add('on'); go(i + 1); }, per);
+      };
+      nodes[0].classList.add('on'); void el.offsetWidth; el.classList.add('on'); go(0);
+    });
+    return { el: el, done: done, stop: function () { stopped = true; timers.forEach(clearTimeout); el.remove(); } };
+  }
+  return { label: label, multi: multi };
+})();
 
 /*
  * Health profile: one home and three areas, each its own flow, in the Async report's sheet.
@@ -1897,7 +1957,9 @@ body.hdrV4[data-bp="xs"] #dOver .dvTop > .hpOvCard { margin-top: 6px; margin-bot
       if (ret != null) { var r = ret; ret = null; I = r; keep(); step(1); return; }
       if (st.st === 'not') st.st = 'prog';
       if (I >= stepsOf(A).length - 1) { st.st = 'done'; st.i = I; save();
-        if (A === 'past') { bookedPage(); return; }   // booked: its success first ("success state screen is missing here")
+        var L = window.EvLoad, k = A;   /* the loading states (Documentation -> Loading states): the booking a multi-step wait over the sheet (booking confirmation), a stage's answers saved on its button (Loader with label) */
+        if (A === 'past') { if (L) L.multi(root, ['Checking Dr Lee\u2019s calendar', 'Reserving your time', 'Confirming your booking'], { step: 950 }).done.then(bookedPage); else bookedPage(); return; }   // booked: its success first ("success state screen is missing here")
+        if (L) { var put = L.label(cta, 'Saving'); setTimeout(function () { put(); justDone = k; home(1); }, 1100); return; }
         justDone = A; home(1); return; }   /* back to the intro after each stage, the card just done animating ("between each step go back to the main health screen and animate the card just completed, a sense of process") */   /* a stage done: straight on into the next not done, pushed as a step ("no need to come back to the main screen when a step is completed, just continue the flow"); the last, up to the intro complete, the success step */
       I++; keep(); step(1);
     }

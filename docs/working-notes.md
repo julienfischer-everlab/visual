@@ -16492,3 +16492,20 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Booking review ("doctor: remove CTA right"): the Doctor row has no Change; Date & time keeps the only one.
 - The locked agreement's line now reads "Cancel your appointment if you'd like to edit this." (was "Your consult is booked under these terms, so this can't be changed now. Contact your care team if you need to.").
 - Tweak "Step title" On / Off (Tweaks → Health profile, and the standalone page's Demo panel): On, the step's title sits over the step dashes in the bar's middle, 8 above them ("above step progress, gap 8"). Off, the dashes alone (the default, as before; the title still read out). The two together stay centred on the back and close; the bar's height is unchanged. Measured: gap 8 on phone and desk, centred to 0 px.
+
+## Loading states: one source in the Documentation, used in the Health profile
+
+- Documentation has a third tab, Loading states (#loading-states), next to Progress timeline and Concierge components ("create the loading state in the documentation, so we can use them in the whole experience and have one source of truth"). It is drawn in the page (not a frame) with the same module the pages use, `window.EvLoad`, so a change to it shows in the docs and everywhere it is used.
+- Two patterns, from the boards. Each has its note on the left (what, Usage, Typical actions, Why this behaviour, where it is used in the prototype, the call). On the right is its board: Trigger new page, Rest (XS and M/L screens), the trigger, Loading (live, looping), "Loading completed / Auto redirect", Next page. A Rest screen's button plays the whole flow on that screen: the wait, then a done screen, then back to rest. The screens follow the prototype's Mode.
+  - Multi-step loading, `EvLoad.multi(host, steps, { step })`: over the page, which blurs under a wash. It shows a spinner and the current step's line ("Processing payment…"), crossfading as the steps change, and a track with a square node for each step that fills as each completes. It fades out once the last step is through and resolves a promise. Board: Review your order → Purchase.
+  - Loader with label, `EvLoad.label(button, text)`: the button turns quieter (ink at 34% in light, white at 20% in dark), disabled, aria-busy, with a spinner and its action ("Submitting"). Its own content is put aside and restored by the function it returns. Board: Change dosage for my medication → Submit request.
+- In the Health profile:
+  - Booking confirmed through a multi-step wait over the sheet: "Checking Dr Lee's calendar", "Reserving your time", "Confirming your booking" (0.95 s each), then the Booking confirmed page.
+  - Each other stage's last button shows "Saving" for 1.1 s before going home.
+  - Tested on phone (dark) and desk (light): steps in order, nodes 1 → 4, overlay gone, page booked; Saving disabled with spinner, home after, nothing left busy. Both work on the standalone Health profile page too (the module is in its script).
+- Only two of the three experiences arrived (the first two pictures were the same Multi-step board). The third is still to come.
+
+## Overview: the Health profile card wears the card screen's light; keyboard chips
+
+- The Health profile card's top-right light is now the card screen's own (the membership reveal's picture), super light, from the top-right corner ("use this bg used on the card screen for here, super light on the right top side"). It replaces the orange halo and still breathes. Dark: screened in at 11–16%. Light: multiplied into the paper at 21–30%, only its warm upper part. The picture is wider than its fade, so no edge shows (checked at XS and L).
+- Chips above the keyboard (phone): Script renewal, Specialist referral, Blood test referral, Imaging referral. They have no border and no fade on the right; the row keeps 16 px at each side, also when scrolled to the end, and 8 px between chips.
