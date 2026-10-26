@@ -16621,3 +16621,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The welcome gets `desk: deskM()`. Crossing the desk's edge with copy #2 up rebuilds it (`refit`, on resize and on the Breakpoint tweak).
 - **Rolling lines at the foot 2 s sooner** ("the rolling bottom content should come 2 s before"): `type(0)` at `LE + 700` (was 2700), 1.0 s after the second title leaves; `from: 'dot'` uses 800 (was 2800). The opening follows 2 s sooner too (5.3 s after the title leaves). Images entrance unchanged.
 - Checked at XS, S, M and L with copies #1 and #2. No page errors.
+
+## Card screen opening: dot and date white again (mask dropped)
+
+- "Dot colour and date should be white, forget about the mask". The warm-window treatment is removed: the `.arDark` window CSS, `winOn()`, `win()` and their calls. The burst's white core (`fl2.animate`) runs again.
+- Checked at XS and L: the date's colour and the cursor are white (`oklch(1 0 …)`), the date has no text clip, and the dot's white layer is at 1. No page errors.
