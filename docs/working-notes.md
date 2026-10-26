@@ -16690,3 +16690,20 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - fades in, then out into the sphere's shell.
   - Colours: warm on dark, deeper on the paper. None with reduced motion. It stops once the card leaves step 4 or is redrawn.
 - Booked and every other state are unchanged (normal sphere, no overlay). Checked at XS and L. No page errors.
+
+## Tweaks: First-time user split into General, Opening, Card screen; the opening's particle controls
+
+- "Controller for particles?" The opening's particle density existed ("Particle density", row 20 of ~40, among the card screen's rows), so it read as the card's.
+- "This panel is confusing; split into groups: General (both), Opening, Card screen". The First-time user group is now three groups. All carry `data-pages="ov wel" data-fl="wel" data-fl-name="First-time user"`.
+  - **General:** Intro (Back / Trigger), Version, the warm light (source, palette, spread, background, position, scale, saturation, grain), and the V1-only rows.
+  - **Opening:** Entrance, Opening copy, Opening (full screen / card shape), and its particles:
+    - Particle density (`stHpW2PtD`, as before);
+    - and new: Particle burst (`stHpW2PtB`, the release as the dot appears), Particle size (`stHpW2PtZ`), Particle brightness (`stHpW2PtA`), Particle speed (`stHpW2PtS`, the outward drift, now integrated per frame so a change carries on smoothly).
+    - All live through `look2` → `ptSet` → `w2Float`'s 4th argument.
+  - **Card screen:** Copy, Layout, Card entrance, Dismiss, then the card's particles. "Particle density" (`stHpW2PtN`, was "Particles"), Dark particles and Particle flow are followed by mask, flip, sign on start, membership, the card's look, texture, logo mark and halo.
+- The reveal's floating "+" borrows all three groups and puts them back in order. `arrangeG` keeps them together under Primary card on the Overview. A group with nothing to show (Opening on V1) isn't drawn. Saved values keep their ids.
+- Checked: the three groups and their rows on the reveal page; the "+" panel in and out in order; Overview order; V1. Live:
+  - size 300% gives ~6× the lit pixels;
+  - brightness 30 → 200% takes mean alpha 16 → 60;
+  - speed 0 holds the drift and 300% speeds it.
+  - No page errors.
