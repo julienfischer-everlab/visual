@@ -8,5 +8,3 @@ After every change: build (`node tools/build.js`), check it, add a note to `docs
   Publish `dist/index.html` with `files: {"concierge.html": "dist/concierge.html"}`.
 - **Health Profile** (standalone): https://claude.ai/artifact/27KVVvtwN5n6VRit7JSrUZ
   Publish `dist/health-profile.html`.
-
-An older artifact with the same name, https://claude.ai/artifact/Ke4yYjiEAjzT4KneLDk7KC (last updated 22 Oct 2026), is not a build target. Don't publish to it.
