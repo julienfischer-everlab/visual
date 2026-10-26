@@ -16410,3 +16410,18 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 
 - Documentation now has a tab per document: Progress timeline (the playground, as before) and Concierge components ("put this into documentation"). The new tab is the chat page's gallery: every answer component in each state, without the chat page's own bar and in the prototype's theme. Each tab keeps its frame as it was left. #documentation opens the timeline, #concierge-components the gallery; Home lists both. The playground's Save shows on its own tab only.
 - The Chat page in the prototype no longer shows the chat page's own bar (Concierge, Chat / Components, theme) at desk sizes either, as at the phone and tablet ("remove this top bar"); it is always the chat. The standalone concierge.html keeps its bar. The gallery's intro no longer points at a Chat tab.
+
+## The card at rest; Chat and the Async report standalone; Asset group; the Live version's top and concierge card
+
+- Membership card ("fill blur still doesn't work"). The blur renders here in every case (the Filled card computes blur(36px)), so the cause is likely your GPU path, which I can't run. The resting card is now exactly as before the flip was scripted: the faces carry only their tilt (their side comes from the class), the halo light is flat, the blur is uncut and uses its plain filter, and the Mask's window is open. The 3D turn, the halo's turn, the clip to the card's outline and the blanket lift exist only while the card turns. The turn now lands exactly on 0° or 180°; landing 1e-7 short had kept the card counted as mid-turn.
+- Chat and the Async report are standalone ("chat page should be a standalone experience: it can overlap / be triggered from any page"; "same for Async report"). Both open over whatever page is showing and close back to it. The page menu names that page again, and its address hash comes back.
+  - Chat rises in and falls away. Its own close (and the phone's minimise) closes it.
+  - The report slides up the way it did on its own page. Its close (which did nothing on that page) closes it. Its Tweaks groups show while it's up.
+  - Both are in the Standalone flow group (Membership reveal, Health profile, Async report, Chat). The report's old page is still reachable at #m26.
+  - Their links (#concierge, #async-report) open them over the Overview.
+- Menu: Hairline, Image generator, Report visuals, Documentation and Home are in an "Asset" group.
+- Live version:
+  - The top nav follows My journey's: the row right under the status bar, the title 26 px at 1.15, the bell a 44 px circle at 4% ink (light: the brown at 4%) with a 20 px icon. They measure the same (title 168–198, button 161–205 in the frame), with 31 px to the first card. The dash's h1 margin (0 0 22) had sat the title off-centre in the row.
+  - The concierge card reads "Ask any question about your health" / "Chat with Eva, your AI health assistant, or reach your doctor and care team directly."
+  - 24 px above the field (+4). Its placeholder: "Explore what Concierge can do".
+  - The suggestions row fades out over its last 64 px while it scrolls (not in the desk's 2 × 2).
