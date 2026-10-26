@@ -1369,7 +1369,7 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
 @media (prefers-reduced-motion: reduce) { .arSheet.hpWel .hpWelQ3 .hpWelL { animation: none; grid-template-rows: 1fr; } .arSheet.hpWel .hpWelQ3 .hpWelC { animation: none; opacity: 1; top: 0; filter: none; } .arSheet.hpWel .hpW2In { transition: none; } }
 /* the dark specks over the card, in with the light and the card, gone at once with Get started */
 .arSheet.hpWel .hpW2Fp { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }   /* the specks round the dot while it loads */
-.arSheet.hpWel .hpW2Gn { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; opacity: 0; transition: opacity .8s ease; } .arSheet.hpWel.hpW2Lit.hpW2Ready .hpW2Gn { opacity: 1; } .arSheet.hpWel:is(.hpW2PtOff, .hpW2Sign) .hpW2Gn { opacity: 0; transition: none; }   /* the glints, over the card's edge with the specks */
+.arSheet.hpWel .hpW2Gn { position: absolute; left: -32px; top: -32px; width: calc(100% + 64px); height: calc(100% + 64px); pointer-events: none; opacity: 0; transition: opacity .8s ease; transform: translateZ(1px); backface-visibility: hidden; -webkit-backface-visibility: hidden; } .arSheet.hpWel .hpW2Gn.hpW2GnB { transform: rotateY(180deg) translateZ(1px); } .arSheet.hpWel.hpW2Lit.hpW2Ready .hpW2Gn { opacity: 1; } .arSheet.hpWel:is(.hpW2PtOff, .hpW2Sign) .hpW2Gn { opacity: 0; transition: none; }   /* the glints, over the card's edge with the specks */
 .arSheet.hpWel .hpW2PtK { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; opacity: 0; transition: opacity 1.4s ease .4s; } .arSheet.hpWel.hpW2Lit.hpW2Ready .hpW2PtK { opacity: 1; } .arSheet.hpWel.hpW2PtOff .hpW2PtK { opacity: 0; transition: none; }
 /* Draw card (Tweaks -> Card entrance): the white dot held as the light spreads, breathing as it did; the card's outline drawn in the ink; the card where it lands from the first (no rise), opened by the dot */
 .arSheet.hpWel .hpW2Dt { position: absolute; left: 0; top: 0; width: 8px; height: 8px; translate: -50% -50%; border-radius: 50%; background: oklch(var(--ar-ink)); pointer-events: none; display: none; }
@@ -2337,31 +2337,36 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
   var w2Box = function (card, cv, f) { var cr = card.getBoundingClientRect(), vr = cv.getBoundingClientRect(); if (cr.width < 40) return null; return { cx: cr.left - vr.left + cr.width / 2, cy: cr.top - vr.top + cr.height / 2, cw: cr.width / 2, ch: cr.height / 2, r: 24 * cr.width / (card.offsetWidth || cr.width), ox: vr.left, oy: vr.top, f: f }; };
   var w2Cross = function (m, px, py, d, f, p, s, ox, oy) { if (m.pd > 0 && d <= 0 && Math.random() < p) { var u = m.pd / (m.pd - d); f(m.qx + (px - m.qx) * u + ox, m.qy + (py - m.qy) * u + oy, s); } m.pd = d; m.qx = px; m.qy = py; };   // crossing in: a glint, now and then, where its path met the edge between the two frames (a slow frame no longer puts it inside)
   var w2Hit = function (m, px, py, b, p, s) { w2Cross(m, px, py, w2Sdf(px - b.cx, py - b.cy, b.cw, b.ch, b.r), b.f, p, s, b.ox, b.oy); };
-  var w2Glint = function (cv, card, col, dark) {
-    var x = cv.getContext('2d'), raf = 0, live = true, G = [], DUR = 900;
-    var edge = function (l, t, w, hh, r) { x.beginPath(); x.moveTo(l + r, t); x.arcTo(l + w, t, l + w, t + hh, r); x.arcTo(l + w, t + hh, l, t + hh, r); x.arcTo(l, t + hh, l, t, r); x.arcTo(l, t, l + w, t, r); x.closePath(); };
+  /* drawn in the card's own plane, not over the screen ("a bug when I flip the card: the hit effect stays"): two layers in the card's turning layer (.hpW2In), one with each face, so a glint turns and tilts with the card as its faces do;
+     the hit, met on the screen, is put on the card's own left or right edge at the height it met it; the back layer, turned over, draws it mirrored */
+  var w2Glint = function (cvs, card, col, dark) {
+    var raf = 0, live = true, G = [], DUR = 900, MG = 32, RAD = 0, xs = cvs.map(function (c) { return c.getContext('2d'); });
+    var edge = function (x, l, t, w, hh, r) { x.beginPath(); x.moveTo(l + r, t); x.arcTo(l + w, t, l + w, t + hh, r); x.arcTo(l + w, t + hh, l, t + hh, r); x.arcTo(l, t + hh, l, t, r); x.arcTo(l, t, l + w, t, r); x.closePath(); };
     var tick = function (now) {
-      raf = 0; if (!live || !cv.isConnected) { G.length = 0; return; }
-      var w = cv.clientWidth, hh = cv.clientHeight; if (!w || !hh) { G.length = 0; return; }
-      var dpr = Math.min(2, window.devicePixelRatio || 1); if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(hh * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(hh * dpr); }
-      x.setTransform(dpr, 0, 0, dpr, 0, 0); x.clearRect(0, 0, w, hh);
+      raf = 0; if (!live || !card.isConnected) { G.length = 0; return; }
+      var W = card.offsetWidth, H = card.offsetHeight; if (!W || !H) { G.length = 0; return; }
+      if (!RAD) RAD = parseFloat(getComputedStyle(card).borderTopLeftRadius) || 24;
+      var dpr = Math.min(2, window.devicePixelRatio || 1), cw = W + MG * 2, ch = H + MG * 2, r = Math.min(H / 2, RAD), rgb = col(), dk = dark();
       G = G.filter(function (g) { return now - g.t0 < DUR; });
-      var cr = card.getBoundingClientRect(), vr = cv.getBoundingClientRect(), l = cr.left - vr.left, t = cr.top - vr.top, r = Math.min(cr.height / 2, 24 * cr.width / (card.offsetWidth || cr.width)), rgb = col(), dk = dark();
-      x.globalCompositeOperation = dk ? 'lighter' : 'source-over';   // light adding to the dark; on the paper, a warm sheen over it
-      G.forEach(function (g) {
-        var k = Math.max(0, (now - g.t0) / DUR), e = 1 - Math.pow(1 - k, 3), f = g.s * Math.pow(1 - k, 1.7) * Math.min(1, .35 + k / .06);
-        var gx = g.x - vr.left, gy = g.y - vr.top, R = 7 + 20 * e, S = 6 + 44 * e;
-        var bl = x.createRadialGradient(gx, gy, 0, gx, gy, R); bl.addColorStop(0, 'rgba(' + rgb + ', ' + (.28 * f).toFixed(3) + ')'); bl.addColorStop(1, 'rgba(' + rgb + ', 0)');
-        x.fillStyle = bl; x.fillRect(gx - R, gy - R, R * 2, R * 2);   // the bloom where it struck
-        var sg = x.createRadialGradient(gx, gy, 0, gx, gy, S); sg.addColorStop(0, dk ? 'rgba(255, 248, 238, ' + Math.min(1, f).toFixed(3) + ')' : 'rgba(' + rgb + ', ' + Math.min(1, f).toFixed(3) + ')'); sg.addColorStop(.5, 'rgba(' + rgb + ', ' + (.42 * f).toFixed(3) + ')'); sg.addColorStop(1, 'rgba(' + rgb + ', 0)');
-        x.strokeStyle = sg; x.lineWidth = 1.5; edge(l + .5, t + .5, cr.width - 1, cr.height - 1, r); x.stroke();   // the edge catching it, the light running along it as it fades
-      });
-      x.globalCompositeOperation = 'source-over';
+      cvs.forEach(function (cv, i) { var x = xs[i];
+        if (cv.width !== Math.round(cw * dpr) || cv.height !== Math.round(ch * dpr)) { cv.width = Math.round(cw * dpr); cv.height = Math.round(ch * dpr); }
+        x.setTransform(dpr, 0, 0, dpr, 0, 0); x.clearRect(0, 0, cw, ch);
+        x.globalCompositeOperation = dk ? 'lighter' : 'source-over';   // light adding to the dark; on the paper, a warm sheen over it
+        G.forEach(function (g) {
+          var k = Math.max(0, (now - g.t0) / DUR), e = 1 - Math.pow(1 - k, 3), f = g.s * Math.pow(1 - k, 1.7) * Math.min(1, .35 + k / .06);
+          var gx = MG + ((g.right ? 1 : 0) ^ i ? W : 0), gy = MG + g.v * H, R = 7 + 20 * e, S = 6 + 44 * e;   // its side; the back, turned over, the other way about
+          var bl = x.createRadialGradient(gx, gy, 0, gx, gy, R); bl.addColorStop(0, 'rgba(' + rgb + ', ' + (.28 * f).toFixed(3) + ')'); bl.addColorStop(1, 'rgba(' + rgb + ', 0)');
+          x.fillStyle = bl; x.fillRect(gx - R, gy - R, R * 2, R * 2);   // the bloom where it struck
+          var sg = x.createRadialGradient(gx, gy, 0, gx, gy, S); sg.addColorStop(0, dk ? 'rgba(255, 248, 238, ' + Math.min(1, f).toFixed(3) + ')' : 'rgba(' + rgb + ', ' + Math.min(1, f).toFixed(3) + ')'); sg.addColorStop(.5, 'rgba(' + rgb + ', ' + (.42 * f).toFixed(3) + ')'); sg.addColorStop(1, 'rgba(' + rgb + ', 0)');
+          x.strokeStyle = sg; x.lineWidth = 1.5; edge(x, MG + .5, MG + .5, W - 1, H - 1, r); x.stroke();   // the edge catching it, the light running along it as it fades
+        });
+        x.globalCompositeOperation = 'source-over'; });
       if (G.length) raf = requestAnimationFrame(tick);
     };
     /* only on the card's left and right edges, at half the light ("show the hit effect only on the left and right, and decrease the intensity by 50%"): a crossing nearer the top or the foot than a side makes none (the corners split on their diagonal) */
     return { hit: function (px, py, s) { if (!live || G.length > 12) return; var cr = card.getBoundingClientRect(), dx = Math.abs(px - cr.left - cr.width / 2), dy = Math.abs(py - cr.top - cr.height / 2); if (cr.width / 2 - dx > cr.height / 2 - dy) return;
-        G.push({ x: px, y: py, t0: performance.now(), s: .5 * Math.max(.2, Math.min(1, s)) }); if (!raf) raf = requestAnimationFrame(tick); },
+        G.push({ right: px > cr.left + cr.width / 2, v: Math.max(.06, Math.min(.94, (py - cr.top) / (cr.height || 1))), t0: performance.now(), s: .5 * Math.max(.2, Math.min(1, s)) }); if (!raf) raf = requestAnimationFrame(tick); },
+      clear: function () { G.length = 0; cvs.forEach(function (cv, i) { xs[i].setTransform(1, 0, 0, 1, 0, 0); xs[i].clearRect(0, 0, cv.width, cv.height); }); },
       stop: function () { live = false; if (raf) cancelAnimationFrame(raf); raf = 0; } };
   };
   var W2R = 9, w2Rail = function (k, n, m, now, w, cy, ch) { var r = k % W2R, per = Math.max(1, Math.ceil(n / W2R)), sl = Math.floor(k / W2R), v = 26 + (r * 37 % 9) * 3.5, pad = 24, L = w + pad * 2;
@@ -2536,7 +2541,7 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
         h('div', { class: 'hpWcB' }, wc, h('i', { class: 'hpWcSh' }), mark('hpWcMk', 19, 21), h('span', { class: 'hpWcTag', text: 'Member' }),
           h('div', { class: 'hpWcNm' }, h('b', { text: NM || 'Member' }), opts.last ? h('span', { text: opts.last }) : null), h('div', { class: 'hpWcTr' }, h('b', { text: opts.tier || 'Baseline' }), h('span', { text: 'Tier' }))))); }   // the status lines typed in its outline (its front); the card on its back
     var imx = null, IMGL = ['assets/overview/plan-physical.webp', 'assets/overview/plan-nutrition.webp', 'assets/overview/hero-consult.webp', 'assets/overview/plan-dexa.webp', 'assets/overview/jv-hero-2.webp', 'assets/overview/plan-consult.webp', 'assets/overview/status-mri.webp', 'assets/overview/jv-hero-3.webp'], gb2 = null, ldA = null, ldB = null, ldC3 = null, fpc = null, fp2 = null, ol2 = null, dt2 = null, sg = null, sgc = null, sgClr = null, sgH = null, sgN = null, sgRo = null, ktc = null, kt2 = null, gnc = null, gn2 = null, w2 = null, pre2 = null, c2 = null, bg2 = null, fl2 = null, rm2 = null, mt2 = null, mtc = null, txc = null, tx2 = null, sfg2 = '#f3ede6';
-    if (V2) { mtc = h('canvas', { class: 'hpW2Pt', 'aria-hidden': 'true' }); if (!reduced()) mt2 = w2Motes(mtc, function () { return mcol; }, null); fpc = h('canvas', { class: 'hpW2Fp', 'aria-hidden': 'true' }); fl2 = h('i', { class: 'hpW2Fl' }); rm2 = h('i', { class: 'hpW2Rm' }); ktc = h('canvas', { class: 'hpW2PtK', 'aria-hidden': 'true' }); gnc = h('canvas', { class: 'hpW2Gn', 'aria-hidden': 'true' }); bg2 = h('div', { class: 'hpW2Bg', 'aria-hidden': 'true' }, h('i', { class: 'hpW2Img' }), OPC ? null : fl2); pre2 = null;   // pre2: the light at the top, coming up line by line while the dot loads   // the picture over the top half, the dot its window
+    if (V2) { mtc = h('canvas', { class: 'hpW2Pt', 'aria-hidden': 'true' }); if (!reduced()) mt2 = w2Motes(mtc, function () { return mcol; }, null); fpc = h('canvas', { class: 'hpW2Fp', 'aria-hidden': 'true' }); fl2 = h('i', { class: 'hpW2Fl' }); rm2 = h('i', { class: 'hpW2Rm' }); ktc = h('canvas', { class: 'hpW2PtK', 'aria-hidden': 'true' }); bg2 = h('div', { class: 'hpW2Bg', 'aria-hidden': 'true' }, h('i', { class: 'hpW2Img' }), OPC ? null : fl2); pre2 = null;   // pre2: the light at the top, coming up line by line while the dot loads   // the picture over the top half, the dot its window
       var halo = function () { return [h('i', { class: 'hpW2Glow' }, h('i')), h('i', { class: 'hpW2Beam' })]; }, info = opts.info || {};
       var glk = h('i', { class: 'hpW2Gl', 'aria-hidden': 'true' }); glk.style.setProperty('--hpW2MkU', 'url("data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="-.2 0 21.6 24">' + MARK.map(function (d) { return '<path d="' + d + '"/>'; }).join('') + '</svg>') + '")');   // the big glossy mark, the mark its mask
       txc = h('canvas', { class: 'hpW2Tx', 'aria-hidden': 'true' }); tx2 = w2Tex(txc, function () { return root.classList.contains('hpW2Solid') || root.classList.contains('hpW2Fill') ? sfg2 : root.classList.contains('arDark') ? '#ffffff' : '#2e1f1a'; });   // the texture in its corner
@@ -2549,7 +2554,8 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
           h('dl', null, [['Member no.', info.no], ['Date of birth', info.dob], ['Member since', info.since], ['Your doctor', info.dr]].map(function (r) { return h('div', null, h('dt', { text: r[0] }), h('dd', { text: r[1] || '—' })); })))), OPC ? fl2 : null, OPC ? rm2 : null);   // the front; the back, the member's details
       c2.addEventListener('click', function () { if (root.classList.contains('hpW2Tap') && root.classList.contains('hpW2Ready') && !root.classList.contains('hpW2Sign')) c2.classList.toggle('hpW2Flip'); });   // not while it is being signed
       if (!reduced()) kt2 = w2Ink(ktc, c2); if (mt2) mt2.card(c2);   // the warm ones' rails at the card
-      if (!reduced()) { gn2 = w2Glint(gnc, c2, function () { return mcol; }, function () { return root.classList.contains('arDark'); });   // the card's edge catching the light where they meet it, once the card is there
+      if (!reduced()) { var gIn = c2.querySelector('.hpW2In'); gnc = [h('canvas', { class: 'hpW2Gn', 'aria-hidden': 'true' }), h('canvas', { class: 'hpW2Gn hpW2GnB', 'aria-hidden': 'true' })]; gnc.forEach(function (c) { gIn.appendChild(c); });
+        gn2 = w2Glint(gnc, c2, function () { return mcol; }, function () { return root.classList.contains('arDark'); });   // the card's edge catching the light where they meet it, once the card is there
         var ghit = function (px, py, st) { if (root.classList.contains('hpW2Ready') && !root.classList.contains('hpW2Sign')) gn2.hit(px, py, st); }; if (mt2) mt2.onHit(ghit); if (kt2) kt2.onHit(ghit); }
       /* the glass's blur on its own flat layer under the faces (a blur on a face in 3D stays flat while the face turns: "when the card flips the blur stays there"); as the card turns over, the layer narrows and widens with it, to its projected width on the flip's own easing (.45, 0, .2, 1; 0.8 s) */
       var bz = function (x1, y1, x2, y2) { return function (x) { var lo = 0, hi = 1, t = x; for (var i = 0; i < 24; i++) { t = (lo + hi) / 2; var cx = 3 * x1 * t * (1 - t) * (1 - t) + 3 * x2 * t * t * (1 - t) + t * t * t; if (cx < x) lo = t; else hi = t; } return 3 * y1 * t * (1 - t) * (1 - t) + 3 * y2 * t * t * (1 - t) + t * t * t; }; }, flipE = bz(.45, 0, .2, 1);
@@ -2571,7 +2577,7 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
       if (o.tier) { var tb = c2.querySelector('.hpW2Tag'); if (tb) tb.textContent = o.tier + ' plan'; } if (root) readCol(); };   // the membership's light, the card's style and its halo, changed in place (Tweaks -> Welcome)   // the card: an outline and its words
     var ebT = document.createTextNode(calm ? EBD : '');   // the date, typed in mono capitals behind a square cursor, before the title
     var stg = h('div', { class: 'hpWelStage', style: 'height:calc(var(--hpWelLh) * ' + Math.max(T1.rows, T2.rows) + ')' }, V2 ? h('div', { class: 'hpW2Eb' }, h('span', { class: 'hpW2EbW' }, h('span', { class: 'hpW2EbG', text: EBD }), h('span', { class: 'hpW2EbT' }, ebT, h('span', { class: 'arRvCur' })))) : null, T1.el, T2.el);   // the titles' stage (each title from its top), the eyebrow over it
-    var ball = h('div', { class: 'hpWelBall' }, flip), sph = h('div', { class: 'hpWelSph', 'aria-hidden': 'true' }, V2 ? [pre2, bg2, fpc, mtc, w2, ktc, gnc, imx, dd2 = h('div', { class: 'hpW2DotD' }, h('span', { class: 'hpW2EbW' }, h('span', { class: 'hpW2EbG', text: EBD }), h('span', { class: 'hpW2EbT' }, ddT = document.createTextNode(''), h('span', { class: 'arRvCur' }))))] : ball, stc, card || ld);   // the ball at the profile's own place; the status lines (or the card holding them) under it
+    var ball = h('div', { class: 'hpWelBall' }, flip), sph = h('div', { class: 'hpWelSph', 'aria-hidden': 'true' }, V2 ? [pre2, bg2, fpc, mtc, w2, ktc, imx, dd2 = h('div', { class: 'hpW2DotD' }, h('span', { class: 'hpW2EbW' }, h('span', { class: 'hpW2EbG', text: EBD }), h('span', { class: 'hpW2EbT' }, ddT = document.createTextNode(''), h('span', { class: 'arRvCur' }))))] : ball, stc, card || ld);   // the ball at the profile's own place; the status lines (or the card holding them) under it
     if (CARD || V2) SAY += ' Your membership card: ' + (NM ? NM + ' ' : '') + (opts.last || '') + ', ' + (opts.tier || 'Baseline') + ' plan.';
     var root = h('div', { class: 'arSheet hpSheet hpWel' + (opts.theme === 'dark' ? ' arDark' : '') + (calm ? ' hpWelCalm' : '') + (CARD ? ' hpWelCardOn' : '') + (V2 ? ' hpWelV2' : '') + (DRW ? ' hpW2Drw' : ''), role: 'document', 'aria-label': SAY },
       sph, h('div', { class: 'hpWelBody' }, V2 ? h('div', { class: 'hpW2Lead', 'aria-hidden': 'true' }, (ldA = leadT(LEAD1)).el, (ldB = leadT(LEADT)).el, (ldC3 = leadT(LEAD3)).el) : null, stg, h('div', { class: 'hpWelCtaR' }, cta, later2, V2 ? h('p', { class: 'hpW2Sub', text: SUBT }) : null)), xb2, bk2);   /* V2: the line under the button ("sub below the CTA, 12px, 20px gap") */   // the button in the content, under the title, hugging its words ("hug content CTA, in the content not in the footer")

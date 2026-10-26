@@ -16341,3 +16341,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 ## Card edge glints: sides only, half the light
 
 - The particles' hit light shows only on the card's left and right edges ("show the hit effect only on the left and right, and decrease the intensity by 50%"): a crossing nearer the top or the foot than a side makes none (corners split on their diagonal); each glint at half its former strength. Checked over 6 s of the drawn-in flow: every glint on a side.
+
+## Card edge glints drawn in the card's own plane (flip fix)
+
+- "A bug when I flip the card: the hit effect stays": the glints were drawn over the screen on the card's flat outline, so while the card turned (and as it tilted to the pointer) the light hung where the card had been. Now they are drawn in the card's turning layer (.hpW2In): two layers, one with each face (the back one turned over, drawing mirrored), each glint put on the card's own left or right edge at the height the particle met it. They turn and tilt with the card; nothing is left behind mid-flip. Variant matrix still passes.
