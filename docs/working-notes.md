@@ -16337,3 +16337,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - The Concierge chat is now a main page ("I want the chat part of a dedicated page"): page menu → Main pages → Chat (after Async report; #concierge still opens it); Home lists it after Async report.
 - Its device is the prototype's Viewport, as every main page's: XS, the phone chat on the XS frame's screen (393 x 853, the frame and its status bar drawn over it, its home indicator, clear of both); S, in the tablet frame; M / L, the desktop app with its Chat / Components tabs (the page's own Desktop / Mobile switch hidden there). Concierge.embed('phone' | 'tablet' | 'desk') in visuals/concierge.html; on its own, the page is as it was.
 - While it shows, the frame's tab bar, keyboard and assistant and the Overview's floating + are hidden.
+
+## Card edge glints: sides only, half the light
+
+- The particles' hit light shows only on the card's left and right edges ("show the hit effect only on the left and right, and decrease the intensity by 50%"): a crossing nearer the top or the foot than a side makes none (corners split on their diagonal); each glint at half its former strength. Checked over 6 s of the drawn-in flow: every glint on a side.

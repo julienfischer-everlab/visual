@@ -17588,7 +17588,9 @@ body[data-bp="xs"] #dOver .hpOvCard { margin-top: 22px; margin-bottom: 16px; }  
       x.globalCompositeOperation = 'source-over';
       if (G.length) raf = requestAnimationFrame(tick);
     };
-    return { hit: function (px, py, s) { if (!live || G.length > 12) return; G.push({ x: px, y: py, t0: performance.now(), s: Math.max(.2, Math.min(1, s)) }); if (!raf) raf = requestAnimationFrame(tick); },
+    /* only on the card's left and right edges, at half the light ("show the hit effect only on the left and right, and decrease the intensity by 50%"): a crossing nearer the top or the foot than a side makes none (the corners split on their diagonal) */
+    return { hit: function (px, py, s) { if (!live || G.length > 12) return; var cr = card.getBoundingClientRect(), dx = Math.abs(px - cr.left - cr.width / 2), dy = Math.abs(py - cr.top - cr.height / 2); if (cr.width / 2 - dx > cr.height / 2 - dy) return;
+        G.push({ x: px, y: py, t0: performance.now(), s: .5 * Math.max(.2, Math.min(1, s)) }); if (!raf) raf = requestAnimationFrame(tick); },
       stop: function () { live = false; if (raf) cancelAnimationFrame(raf); raf = 0; } };
   };
   var W2R = 9, w2Rail = function (k, n, m, now, w, cy, ch) { var r = k % W2R, per = Math.max(1, Math.ceil(n / W2R)), sl = Math.floor(k / W2R), v = 26 + (r * 37 % 9) * 3.5, pad = 24, L = w + pad * 2;
