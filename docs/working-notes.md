@@ -17537,3 +17537,14 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Panel inside the item: 7 rows; a press inside doesn't open the page; a drag reorders; the panel stays in its item.
   - Found state still scanning at 26s.
   - No errors.
+
+## Search map: full white lines; 70% / 25%; radius 192px
+
+- **Lines** ("target line white fully"): both scanning lines are solid ink end to end (white on the dark sheet), at full strength, no fading ends; the locator's corners are full ink too. (On a light sheet the ink is dark, so they stay visible.)
+- **Opacities** ("active area 70% opacity, inactive areas 25%"): the map is 70% at the middle of the crossing's circle, falling off to 25% at its edge and everywhere else. These are now absolute opacities.
+- **Radius** ("radius 192px"): the circle has a 192px radius.
+- **Tweaks inside Past results**:
+  - "Map at rest" is replaced by **Map active** (70%) and **Map inactive** (25%).
+  - "Map circle" is replaced by **Map radius** (32 to 320px, 192).
+  - The new controls have new ids, so earlier saved values don't carry over.
+- Checked: labels read 70% / 25% / 192px; frames show the white lines and the wider circle; one town lit at a time; no errors.
