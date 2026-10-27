@@ -17208,3 +17208,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 
 - The rows of the Gift summary have no rules between them ("remove divider"). Each group's question and the 20px between groups hold the summary together. The rows keep their padding.
 - Checked desk dark, phone dark and desk light: no row has a border. No errors.
+
+## Gift receipt: rows 8px nearer
+
+- The summary's rows are 8px nearer each other ("-8px gap between props"): 18px between them on the desk (was 26) and 16px on the phone (was 24).
+- Each group keeps 4px at its top and foot, so the question over it and the space under it stay as they were.
