@@ -16906,3 +16906,22 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **The cross**: it shows only once step 1 is done, wherever the profile was opened from (`hpW1` on the sheet). The Health profile → Dismiss flow tweak is gone, and so is the standalone page's demo option for it.
 - **Card back V1**: the five lines are regular weight and 2px larger (13.5px), each with a white square.
 - Checked on XS and desk, start to finish. Picker: sheet on XS, menu on desk. Errors show on empty fields. Medicare No/Yes and the example work. Emergency contact, then Health background. Fields are 56px tall on XS; on desk First and Middle are 250 wide each. The cross is hidden at Step 1 / 1.5 and shown from Step 2 on, from the home and from the card. No errors.
+
+## Card back per tier, badge, Live version tiles
+
+- **Card back V1**:
+  - Each membership now lists its own five benefits:
+    - Baseline: onboarding consult, foundational blood testing, health and family history review, past results gathered, personalised plan.
+    - Diagnostic: onboarding consult, 100+ biomarker panel, whole-body MRI & CT chest, advanced screening, results read by specialists.
+    - Protocol: the earlier five.
+  - Baseline's and Diagnostic's lines are condensed from the plans' own descriptions (the Purchased tweak's PLANS). They're placeholder copy until marketing gives the real inclusions.
+  - Lines are 1px closer (5px). The square takes the card's ink: white on a dark card, black on a light one.
+  - "Member since" is 2px larger (10.5px), and 2px closer to the date (3px).
+- **Badge**:
+  - 2px larger (11px) on every card. On the glass card (Baseline) its words are white.
+  - On a light solid card (Protocol's stone, or any pale colour picked in the tweaks) it's a plain light grey chip (#e2e2e0) with no warm foil. `hpW2LtC` is set when the solid card's colour has a luminance over .55.
+- **Live version (V5), phone**:
+  - The Health profile card sat 32px above Health Insights / Biological Age: its own 16px bottom margin plus the grid's 16. It's now the grid's 16 alone, the same as between the two tiles.
+  - "You have no data yet" sits at the foot of each tile, 16px from the bottom.
+  - The arc fades from its top and is gone before its two ends (three stops: .16 → .08 → 0, over y 14–76 of the 70-high dial).
+- Checked: all three tiers front and back (no line cut off). V5 on XS: card to tiles 16, tiles 16 apart, label 16 from the bottom. No errors.
