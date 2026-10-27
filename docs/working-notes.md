@@ -16771,3 +16771,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - The outlined card shows only at Step 4 with Outside, and goes for every other state, Booked and the plan included.
 - **Spacing:** on the phone it sits 22px under the greeting and 12px above the card. On the desktop it spans the bento's width, 24px above it.
 - Checked at XS and on the desktop, in dark and light.
+
+## Step 4, Outside: the outlined card's title
+
+- "Step 4 variant title: We've started looking for your past results". The outlined card above the primary card now reads "We’ve started looking for your past results". That's the title the profile's own records screen uses while it searches. It fits on one line on the phone (56px tall).
+- The Health Profile page is unchanged (the card is the Overview's), so only Everlab App - Latest is republished.
