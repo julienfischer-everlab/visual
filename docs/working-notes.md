@@ -17381,3 +17381,29 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 
 - Two screens next to each other with nothing between them (a card's front and its back, on Step 0) were touching. They now sit 24px apart ("gap! 24px when screens are like this"). Measured: 24, 24, 24 on Step 0.
 - The rows where screens have an arrow or "or" between them are unchanged.
+
+## Comments on the prototype; Step 0 after checkout; Records card coloured; Book a time
+
+- **Comments** ("a comment system that actually works depending on the view / tweak selected"):
+  - **Comments** in the bar, beside Refresh, with this view's open count on it. Pressing it turns comment mode on: the panel at the right, and the pins.
+  - **Leaving one**: click anywhere on the prototype to leave a comment there. It pins to the element clicked, at the point clicked, and follows it as the page scrolls or moves.
+  - **What it saves**: the view it was made on, meaning the version, the page or overlay over it (the Health profile, its reveal, a Documentation tab…), the viewport, the mode, and every tweak that page shows (the Tweaks rows not hidden for it, and the bar's own selects).
+  - **When it shows**: its pin only when all of that matches again. Change a tweak it was made with and the pin goes; set it back and it returns.
+  - **The panel**: This view and All. A comment from another view says what differs (e.g. "Primary card → State: Step 1 (now Step 3)") and has **Go to view**, which sets its version, page, viewport, mode and tweaks back, then opens its thread.
+  - **A thread**: replies, Resolve / Reopen, and Delete (pressed twice). Resolved ones are hidden unless Show resolved is on. Your name is asked once.
+  - **Storage**: kept in this browser, and followed across this page's tabs. **Copy all** and **Import** carry them to someone else's browser. A shared store across viewers would need a capability this account doesn't have.
+  - Escape closes a thread, then the mode. With comments off, the prototype is untouched.
+- **Flows, Step 0, "Post checkout"**:
+  - a **Checkout** placeholder first (the purchase before it);
+  - then the intro's moments: **title 1** ("Welcome to Everlab."), **title 2** ("A big step forward, Julien."), and **the dot and date** (the dot, today's date typed over it, the lines at the foot), played to there and held, never opening;
+  - then the three memberships' card screens.
+  - The intro stills' status bar is white on the dark (it was in the card screen's dark ink).
+- **Overview card: the words 24 clear of the visual** ("space on the right so content doesn't hit the visual + 24px"): the title and its line stop 24px short of the sphere (or the plan's doctor) at every size. On the canvas's Desktop they had run under it.
+- **Flows, Desktop**: screens 128px wider at the 75% the canvas opens on (668px, was 540), scaling the same at other zooms.
+- **Step 2's card button: "Book a time"** (was Book); its docs text with it.
+- **Records card: Tweaks → Health profile → Records card: Neutral / Coloured** ("a coloured version, dark blur bg 0C2241"): Coloured is a dark blue ground (#0C2241 at 86%) over a 24px blur, a softer blue where the dot is; its words, dot, ripples and specks white in either mode.
+- **Documentation shows the Records card** with the Overview card where the Overview shows it (Steps 2 and 3 on Auto; every card on On; none on Off): above it on XS, under it on Desktop. It is drawn again when either Records tweak changes.
+- Docs reflect each change from now on (the user's ask): the canvas is drawn by the same renderers, and its texts are updated with them.
+- Checked:
+  - Comments: posted at 630,304 and pinned there. Changed State → hidden, This view 0 / All 1, the diff named it. Go to view → the state set back, the pin back, the thread open. Reply, Resolve, Show resolved; another version → "Other view". Kept after a reload. No errors.
+  - Dot still: 10/10 date keys, held. Coloured card in dark and light; Docs Records card 1 on Steps 2 and 3, 0 when Off.
