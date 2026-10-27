@@ -16867,3 +16867,14 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - the new line;
   - the back flipped in V2, then V1, with no line cut;
   - no errors.
+
+## Health profile: the doctor's photo on the booking review; the home's new title and line
+
+- **Review step** ("replace visual by this"; "+32px above image"): on "Review and confirm your appointment details", the doctor's photo (the user's portrait) now fills the 72 × 72 rounded tile, where the video call's icon was. It's 32px further down (36px above it, was 4).
+  - The photo is `assets/hp/doctor.webp`: square-cropped on the face and scaled to 288 × 288 with ffmpeg (7 KB).
+- **Home, before any step:** the title is "Let’s get to know you, Julien" (was "Three steps before your consult, Julien"). The line is only "Three quick steps which will give your doctor what he needs before your consult." (was "About 12 minutes. By the end, Dr Lee knows you before you meet.").
+- **A row begun but not finished** now reads "About 12 minutes" instead of "To finalise", as asked: the time moved from the line to the row.
+- **The standalone Health Profile page** now inlines the pictures it names, as the prototype's build does (`tools/build-hp.js`). Its card glow, logo mark and overview pictures used to be paths that went nowhere on the published page. It's 1 MB now (was 462 KB).
+- Checked at XS, with no errors:
+  - the home at Step 1.5: the title, the line, and the row's "About 12 minutes";
+  - booking a time to the review: the photo loaded at 72 × 72, its top 36px under the step's text above.

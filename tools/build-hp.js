@@ -130,6 +130,10 @@ ${hpJs}
 </script>
 `;
 
+// the pictures it names (assets/…), inlined as the prototype's build does: the page is published alone, so a path would lead nowhere
+const MIME = { webp: 'image/webp', png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', gif: 'image/gif', svg: 'image/svg+xml' };
+let pics = 0;
+const out = page.replace(/assets\/[A-Za-z0-9_\-./]+?\.(webp|png|jpe?g|gif|svg)\b/g, ref => { const f = path.join(root, ref); if (!fs.existsSync(f)){ console.warn('build-hp: missing asset, left as a path: ' + ref); return ref; } pics++; return 'data:' + MIME[ref.split('.').pop().toLowerCase()] + ';base64,' + fs.readFileSync(f).toString('base64'); });
 fs.mkdirSync(path.join(root, 'dist'), { recursive: true });
-fs.writeFileSync(path.join(root, 'dist', 'health-profile.html'), page);
-console.log('hp    ' + (page.length / 1024).toFixed(0) + ' KB  (dist/health-profile.html, from index.html)');
+fs.writeFileSync(path.join(root, 'dist', 'health-profile.html'), out);
+console.log('hp    ' + (out.length / 1024).toFixed(0) + ' KB  (' + pics + ' pictures inlined, dist/health-profile.html, from index.html)');

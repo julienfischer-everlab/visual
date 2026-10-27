@@ -17040,6 +17040,7 @@ html:not(#_m):not(#_d) .aqWrap.hpBs:is(.aqBpM, .aqBpL) .arSheet.hpWel :is(.hpWel
 @keyframes hpPop { from { opacity: 0; transform: scale(.6); } }
 @media (prefers-reduced-motion: reduce) { .arSheet.hpSheet .hpDoneB { animation: none; } }
 .arSheet.hpSheet .hpVidT { display: flex; align-items: center; justify-content: center; align-self: center; width: 72px; height: 72px; margin: 4px 0 20px; border-radius: 18px; background: linear-gradient(140deg, #c98a5c, #7d3f22); color: #fff; }
+.arSheet.hpSheet .hpVidT.hpDrPic { margin-top: 36px; overflow: hidden; background: #2b2724; } .arSheet.hpSheet .hpDrPic img { display: block; width: 100%; height: 100%; object-fit: cover; }   /* the doctor's photo, 32 more above it ("+32px above image") */
 .arSheet.hpSheet .hpInfo { display: flex; align-items: flex-start; gap: 10px; margin-top: 20px; padding: 12px 14px; border-radius: 12px; background: var(--ar-card-bg); font-size: 14px; line-height: 20px; color: oklch(var(--ar-ink)); } .arSheet.hpSheet .hpInfo svg { flex: none; margin-top: 2px; color: oklch(var(--ar-ink) / .56); }
 .arSheet.hpSheet :is(.hpChk, .hpDay, .hpSlot, .hpRailH, .hpCalB):focus-visible { outline: 2px solid var(--ar-blue-fg); outline-offset: 2px; }
 /* the Overview's card and My account's row */
@@ -17398,7 +17399,7 @@ window.EvLoad = (function () {
         /* the words of each moment (the journey driver's screens, "align the copy"): before any, the three steps; after one, the next; booked, the consult's; all three, done. [title, line, button]; no eyebrow and no news chip over the orb ("remove") */
         var CP = sm.rec ? ['We\u2019re collecting your historical records', 'We\u2019re searching labs across Australia for your past results, so Dr Lee sees the full picture before ' + wd + '.', 'Go to overview']   /* step 4 ("create step 4: we are collecting your historical records"): the three done, the search still going */
           : sm.n === 3 ? ['You\u2019re all set, ' + nm, 'Dr Lee has what they need for ' + wd + '.' + (searching() ? ' Your past results are in too.' : '')   /* Booked comes after step 4 now: the search done, its row says what was found */, 'Go to overview']
-          : !sm.n ? ['Three steps before your consult, ' + nm, 'About 12 minutes. By the end,\nDr Lee knows you before you meet.', sm.state === 'not' ? 'Let\u2019s begin' : 'Continue']
+          : !sm.n ? ['Let\u2019s get to know you, ' + nm, 'Three quick steps which will give your doctor what he needs before your consult.', sm.state === 'not' ? 'Let\u2019s begin' : 'Continue']   /* "title: Let's get to know you, $name; sub only: Three quick steps..." (was Three steps before your consult; About 12 minutes. By the end, Dr Lee knows you before you meet.) */
           : nx.k === 'past' ? ['Next, book your consult', 'A 1-on-1 video consult with a longevity-focused doctor. It\u2019s where your plan starts.', 'Choose a time']   /* the main CTA ("CTA: Choose a time"; it was Book): what the next page is for */
           : nx.k === 'you' && bk ? ['Booked. Now let\u2019s get to know you', 'Dr Lee reads this before your call, so your time together goes on what matters.', 'Continue']   /* "Continue", not Let's begin */   /* not the weekday ("before your call") */
           : nx.k === 'you' ? ['Next, tell us about you', 'A few questions about you, your habits and your family\u2019s health. About 5 minutes.', 'Continue']
@@ -17416,7 +17417,7 @@ window.EvLoad = (function () {
             var dn = st === 'done', nxt = !dn && nx && nx.k === a.k;   // nxt: the step the member is on, the active card   /* only a step done opens, to edit it from its start ("clickable only on the completed step; I need to see Edit on step 1 to come back and edit"); the others are the way ahead, the button below */
             return h(dn ? 'button' : 'div', dn ? { type: 'button', class: 'hpArea hpDone' + (jd === a.k ? ' hpJust' : ''), 'aria-label': 'Edit ' + (a.k === 'past' ? 'your booking' : a.t), on: { click: function () { area(a.k, 1, 0); } } } : { class: 'hpArea hpStill' + (st === 'prog' ? ' hpProg' : '') + (nxt ? ' hpNext' + (jd ? ' hpWake' : '') : ''), 'aria-label': a.t + ', ' + stx },
               h('span', { class: 'hpNum', 'aria-hidden': 'true' }, st === 'done' ? ic(16, P.check, 2) : String(i + 1), jd === a.k && dn ? h('span', { class: 'hpNumWas', text: String(i + 1) }) : null),   /* just done: its number there first, giving way to the tick */
-              h('span', { class: 'hpAreaT' }, h('b', { text: dn && a.k === 'past' ? 'Onboarding consultation call' : a.t }), h('span', { text: st === 'done' ? (a.k === 'past' && b ? 'Booked ' + b.label : 'Completed') : st === 'prog' ? 'To finalise' : a.s })),   /* booked: "Onboarding consultation call", "Booked <date>" */   /* begun and left: To finalise ("sub: to finalise") */   /* done: Done, or the consult's time; the background processes' lines not here ("align the copy"); booked, the booking's own name ("if booked: Onboarding consultation booked") */
+              h('span', { class: 'hpAreaT' }, h('b', { text: dn && a.k === 'past' ? 'Onboarding consultation call' : a.t }), h('span', { text: st === 'done' ? (a.k === 'past' && b ? 'Booked ' + b.label : 'Completed') : st === 'prog' ? 'About 12 minutes' : a.s })),   /* begun, not finished: "About 12 minutes instead of To finalise" (the time taken out of the line above) */   /* booked: "Onboarding consultation call", "Booked <date>" */   /* begun and left: To finalise ("sub: to finalise") */   /* done: Done, or the consult's time; the background processes' lines not here ("align the copy"); booked, the booking's own name ("if booked: Onboarding consultation booked") */
               dn ? h('span', { class: 'hpAreaEd', 'aria-hidden': 'true' }, ic(16, P.pen, 1.6)) : null);   /* begun: no In progress badge, the dashed number and To finalise say it */   /* no Not started: the title on one line ("remove Not started so the title can fit") */
           }))));
       }, first ? 0 : dir);
@@ -17622,7 +17623,7 @@ window.EvLoad = (function () {
       },
       'past.review': function (scr, ans) {
         var b = booked();
-        scr.appendChild(h('div', { class: 'hpVidT', 'aria-hidden': 'true' }, ic(22, 'M2.5 5.5h7a1.5 1.5 0 0 1 1.5 1.5v2l3-2v6l-3-2v2a1.5 1.5 0 0 1-1.5 1.5h-7A1.5 1.5 0 0 1 1 13V7a1.5 1.5 0 0 1 1.5-1.5Z', 1.5)));
+        scr.appendChild(h('div', { class: 'hpVidT hpDrPic', 'aria-hidden': 'true' }, h('img', { src: 'assets/hp/doctor.webp', alt: '' })));   // the doctor's photo in the tile ("replace visual by this"; was the video call's icon)
         scr.appendChild(q('', 'Review and confirm your appointment details', 'Edit your booking if needed.', true));
         var change = function () { ret = null; I = 0; step(-1); };
         scr.appendChild(h('div', { class: 'hpSum' },
