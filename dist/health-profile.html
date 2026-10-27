@@ -1138,7 +1138,8 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
 .arSheet.hpSheet .hpSearchP > .hpQ { padding: 0 24px; }   /* the title and its words 24 in from either side ("title group +24px padding left right") */
 .arSheet.hpSheet .hpSearch { position: relative; display: flex; flex-direction: column; align-items: center; margin: 0 0 32px; } .arSheet.hpSheet .hpSr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .arSheet.hpSheet .hpAus { position: relative; width: min(100%, 296px, calc(300px * var(--ar, 1.1))); color: oklch(var(--ar-ink)); } .arSheet.hpSheet.hpWide .hpAus { width: min(100%, 340px, calc(340px * var(--ar, 1.1))); }   /* a tall country (the UK, New Zealand) as high as Australia is wide, no higher */ .arSheet.hpSheet .hpAus canvas { display: block; position: absolute; inset: 0; width: 100%; height: 100%; }   /* the map: Australia in the card's dots */
-.arSheet.hpSheet .hpActs { display: flex; flex-direction: column; } .arSheet.hpSheet .hpActs .hpRow { padding: 14px 0; }   /* the two rows plain, on the page */
+.arSheet.hpSheet .hpActs { display: flex; flex-direction: column; } .arSheet.hpSheet .hpActs .hpRow { padding: 16px; }   /* the two rows in the grey card */
+.arSheet.hpSheet .hpActs .hpRow b { font-size: 16px; line-height: 20px; } .arSheet.hpSheet .hpActs .hpRow span { margin-top: 3px; font-size: 14px; line-height: 19px; } .arSheet.hpSheet .hpActs .hpRowB { height: 36px; }   /* title 16, sub 14, the buttons 36 high */
 .arSheet.hpSheet .hpCard { display: flex; flex-direction: column; border-radius: 16px; background: var(--ar-card-bg); }
 .arSheet.hpSheet .hpRow { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 14px; padding: 16px; }
 .arSheet.hpSheet .hpRow + .hpRow { box-shadow: inset 0 1px 0 oklch(var(--ar-ink) / .08); }
@@ -1925,8 +1926,10 @@ window.EvLoad = (function () {
         done = true; if (job && AUSFOUND.indexOf(job.k) < 0) job.skip = true;
         jobs = AUSFOUND.filter(function (k) { return !(job && !job.skip && job.k === k); }); if (o.onDone) o.onDone();
       }
-      if (job && t >= job.at) {   // the crossing on its town, the lines at rest: the gap opens and the town's mark appears in it ("appear only when the crossed lines are positioned on the placement"), held a moment
-        if (!job.skip) { settled = true; Object.keys(lit).forEach(function (k) { if (lit[k].out === Infinity) lit[k].out = t; }); lit[job.k] = { at: t + .08, out: Infinity }; lock = t; }
+      if (job && !job.skip && !job.pre && t >= job.at - .3) {   /* just before the lines land on the town ("the gap should open just before it lands, and the active dot as well"): the gap opening, the town's mark appearing in it; the easing has all but stopped them by then */
+        job.pre = true; settled = true; Object.keys(lit).forEach(function (k) { if (lit[k].out === Infinity) lit[k].out = t; }); lit[job.k] = { at: t, out: Infinity }; lock = t;
+      }
+      if (job && t >= job.at) {   // landed: held a moment, the mark showing
         pendT = t + (job.skip ? .05 : HOLD); job = null;
         if (!jobs.length) jobs = done ? AUSFOUND.slice() : runOf(++round);   // and round again, for ever ("should loop"); found, round the four
       }
@@ -2623,7 +2626,7 @@ window.EvLoad = (function () {
         var fileI = h('input', { type: 'file', accept: '.pdf,image/*', multiple: true, hidden: true });
         var upD = h('span', { text: S.files.length ? S.files.length + (S.files.length === 1 ? ' report added' : ' reports added') : 'Upload a PDF or a photo' });
         fileI.addEventListener('change', function () { [].forEach.call(fileI.files || [], function (f) { S.files.push(String(f.name).slice(0, 80)); }); fileI.value = ''; upD.textContent = S.files.length + (S.files.length === 1 ? ' report added' : ' reports added'); save(true); });
-        var acts = h('div', { class: 'hpActs' },   // the two rows plain, no card ("the 2 actions below, don't use a card")
+        var acts = h('div', { class: 'hpActs hpCard' },   // the two rows in a secondary card, the grey one of the profile's rows ("put this inside a secondary card")
           row('Tell me when they’re ready', 'Turns on notifications for results and reminders', nb, ['M4.5 11.5V7.5a3.5 3.5 0 0 1 7 0v4l1 1.5h-9l1-1.5Z', 'M6.8 14a1.3 1.3 0 0 0 2.4 0']),
           h('div', { class: 'hpRow hpRowIc' }, h('i', { class: 'hpRowI', 'aria-hidden': 'true' }, ic(16, ['M8 10.5V2.5', 'm5 5.5 3-3 3 3', 'M3 10v2.5A1.5 1.5 0 0 0 4.5 14h7a1.5 1.5 0 0 0 1.5-1.5V10'], 1.5)), h('div', null, h('b', { text: 'Have a report from somewhere else?' }), upD), h('button', { type: 'button', class: 'hpRowB hpRowG', on: { click: function () { fileI.click(); } } }, 'Upload'), fileI));
         scr.appendChild(acts);
