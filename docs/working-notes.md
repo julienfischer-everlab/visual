@@ -17407,3 +17407,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Checked:
   - Comments: posted at 630,304 and pinned there. Changed State → hidden, This view 0 / All 1, the diff named it. Go to view → the state set back, the pin back, the thread open. Reply, Resolve, Show resolved; another version → "Other view". Kept after a reload. No errors.
   - Dot still: 10/10 date keys, held. Coloured card in dark and light; Docs Records card 1 on Steps 2 and 3, 0 when Off.
+
+## The booked step names the doctor
+
+- On the Health profile home, step 2 done reads "Booked Thu 29 Oct, 10:00am with Dr Steven Lu" ("add with Dr Steven Lu"). On the phone it wraps to a second line under the title.
+- Documentation's Flows show it too: the home is the profile itself, drawn still.
+- Checked in the app (XS) and on the canvas (Step 3's home). No errors.
