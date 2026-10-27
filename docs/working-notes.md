@@ -16878,3 +16878,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Checked at XS, with no errors:
   - the home at Step 1.5: the title, the line, and the row's "About 12 minutes";
   - booking a time to the review: the photo loaded at 72 × 72, its top 36px under the step's text above.
+
+## Health profile: step 1 can never be edited
+
+- "Can never edit step 1": once done, "Our promise and your details" keeps its tick and Completed, but has no pen and isn't a button. Tapping it does nothing (`hpLocked`, cursor default). This reverses the earlier "I need to see Edit on step 1 to come back and edit".
+- Steps 2 and 3 still open to edit once done: the booking ("Onboarding consultation call", Booked …) and Tell us about you, with their pens.
+- The rail's header does the same for step 1. The rail is only used where it's still drawn.
+- Checked at Step 2 and Booked: step 1 is a plain row with no pen, and tapping it keeps the home. Steps 2 and 3 are buttons with pens once done. No errors.
