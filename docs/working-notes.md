@@ -16783,3 +16783,18 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - The badge follows Tweaks → Welcome → Membership: Baseline member (the default), Diagnostics member or Protocol member. It changes in place when the membership changes. The card's spoken description says the same.
 - The card's back still reads "Everlab member".
 - Checked in the reveal: Baseline by default, Diagnostics after the switch, no errors.
+
+## Live version: the $299 card in Next step's place; the locked arcs fade at the foot
+
+- **The $299 card** ("Integrate the 299 card also in the Live version; the tweak doesn't respond"):
+  - On the Live version (V5), Tweaks → Primary card → Type now works. With $299 purchased, the Health profile card takes Next step's place. On the phone it sits under Concierge's card. On the desk it's the left column, 540px tall like Next step, with Health Insights, Biological Age and Tasks at the right. With Next step, Next step is back.
+  - Its states, Step 4's two versions and its click (the profile, with its cross) are the same as on the Latest version. Switching Latest ↔ Live moves it to its place in that version.
+  - Step 4, Outside: the outlined card sits right above it. On the desk it spans the page.
+  - The Live version's button reset (`.ov5 button`) now leaves the card's own button alone, so Get started and View are the white buttons again.
+- **The arcs** ("arc fade out at the bottom"): the locked dials in Health Insights and Biological Age now fade from 14% white at the top to nothing at their two ends at the foot.
+- Checked at XS and on the desk:
+  - $299 → Next step → $299;
+  - Step 4 Outside;
+  - back to Latest, where the card is in its bento again;
+  - the card opening the profile with its cross;
+  - no errors.
