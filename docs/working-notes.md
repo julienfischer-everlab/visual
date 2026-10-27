@@ -17059,3 +17059,13 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Records processing is no longer a state in the doc ("remove this as it's an independent card"). It's its own card, not the Health profile card's, so it's gone from the sidebar, the gallery and the rules.
 - The doc now lists eight states: Step 1, 1.5, 2, 2.5, 3, 3.5, Booked, After the call. The records card and its tweak are unchanged on the Overview.
 - Checked: sidebar and gallery list the eight, no records card or mention. No errors.
+
+## Health profile card, After the call: the other states' layout
+
+- The Plan to purchase card is laid out as every other state of the Health profile card ("keep same layout, visual top right"):
+  - Eyebrow "Your plan", title "Your plan is ready", and Dr Steven Lu's words as the line under it.
+  - His photo where the sphere stands: round, 96px at the top right (80 on the phone).
+  - At the foot, who he is (Dr Steven Lu, Longevity GP, Everlab) at the left and Review my plan at the right, as Booked has its consult and View.
+- It has the same ground, light, hover and height as the others; the plan's own styles that set it apart are gone. The `hpOvPlan` class stays for its click (to the plan's section).
+- The photo's file is 88px (`avatar-steven.webp`), so at 96 it's a little soft. A larger photo of Dr Lu would sharpen it.
+- Checked in Documentation (desk 272 high like Booked, photo 96 at 20/20; XS 80) and on the Overview (State: After the call). No errors.
