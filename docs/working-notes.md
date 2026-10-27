@@ -17203,3 +17203,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 ## Gift receipt: the third group's heading
 
 - The third group is headed **What is the gift?** ("who is the gift for? → what is the gift?"); my reading had been "What's the occasion?". It holds Occasion, Delivery and Message, as before.
+
+## Gift receipt: no dividers between rows
+
+- The rows of the Gift summary have no rules between them ("remove divider"). Each group's question and the 20px between groups hold the summary together. The rows keep their padding.
+- Checked desk dark, phone dark and desk light: no row has a border. No errors.
