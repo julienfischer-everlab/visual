@@ -1576,7 +1576,7 @@ body:is(.docOn, .hlOn) .tkFlPlus, body:is(.docOn, .hlOn) .tkFlPanel { display: n
 .topbar .tkStep { display: inline-flex; align-items: center; gap: 6px; min-width: 0; }   /* the State row: previous, the list, next */
 .topbar .tkStepB { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; padding: 0; border: 0; border-radius: 50%; background: rgba(255, 255, 255, .08); color: #e4e4e7; cursor: pointer; } .topbar .tkStepB:hover:not(:disabled) { background: rgba(255, 255, 255, .14); } .topbar .tkStepB:disabled { opacity: .35; cursor: default; } .topbar .tkStepB:focus-visible { outline: 2px solid #4b7bec; outline-offset: 2px; } .hpSim.lt .hpSimB:hover { background: rgba(0, 0, 0, .12); } .hpSim.lt .hpSimL { color: rgba(0, 0, 0, .56); }
 #dOver .ovhero.hpRep { display: none !important; } #dOver .dvTop > .hpOvCard { margin: 0; }   /* the profile's card in Next step's place: Next step put away; the card the row's height, no margin of its own */
-.hpOvCard { position: relative; display: flex; flex-direction: column; min-height: 218px; margin: 34px 0 0; padding: 20px; border-radius: 22px; background: rgba(255, 255, 255, .06); color: #ececec; cursor: pointer; }   /* the insight cards' ground, #fff 6% (light: the paper, as theirs) ("the same background as the insights cards") */   /* the Next step card's layout, its picture gone, the sphere at its top right ("keep the same layout as Next step; remove the image; sphere top right; Health profile instead of Next step") */
+.hpOvCard { position: relative; display: flex; flex-direction: column; min-height: 250px; margin: 34px 0 0; padding: 20px; border-radius: 22px; background: rgba(255, 255, 255, .06); color: #ececec; cursor: pointer; }   /* the insight cards' ground, #fff 6% (light: the paper, as theirs) ("the same background as the insights cards") */   /* the Next step card's layout, its picture gone, the sphere at its top right ("keep the same layout as Next step; remove the image; sphere top right; Health profile instead of Next step") */
 body.light .hpOvCard { background: #fdfaf3; color: #2e1f1a; }
 :is(#dOver, .hcDoc) .hpRecOut, body.hdrV4 #dOver .dvTop > div.hpRecOut { position: relative; display: flex; flex-direction: row; align-items: center; gap: 16px; min-height: 0; margin: 0; padding: 17px 20px; border: 1px solid rgba(255, 255, 255, .14); border-radius: 22px; color: #ececec; overflow: hidden; isolation: isolate; box-sizing: border-box; }
 :is(#dOver, .hcDoc) .hpRecTx { flex: 1; min-width: 0; } :is(#dOver, .hcDoc) .hpRecTx p { margin: 2px 0 0; font-size: 14px; line-height: 20px; color: #8b8b86; } body.light :is(#dOver, .hcDoc) .hpRecTx p { color: #7d6b58; }   /* its line under the title, the primary card's sub colour ("we will notify you once we get them") */
@@ -1584,6 +1584,8 @@ body.light .hpOvCard { background: #fdfaf3; color: #2e1f1a; }
 /* its dot: 8 px, white (the light page's ink), breathing, at the card's right in a zone the card's height, the particles drawn into it on its canvas */
 :is(#dOver, .hcDoc) .hpRecDot { position: relative; flex: none; align-self: stretch; width: 72px; margin: -17px -14px -17px 0; } :is(#dOver, .hcDoc) .hpRecDot canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
 :is(#dOver, .hcDoc) .hpRecDot i { position: absolute; left: 50%; top: 50%; width: 8px; height: 8px; margin: -4px 0 0 -4px; border-radius: 50%; background: #fff; animation: hpRecBeat 4s ease-in-out infinite; } body.light :is(#dOver, .hcDoc) .hpRecDot i { background: #2e1f1a; }   /* no halo; a slow breath ("remove halo on dot; dot should breathe slowly") */
+:is(#dOver, .hcDoc) .hpRecDot::after { content: ''; position: absolute; left: 50%; top: 50%; width: 8px; height: 8px; margin: -4px 0 0 -4px; box-sizing: border-box; border-radius: 50%; border: 1px solid rgba(255, 255, 255, .6); opacity: 0; pointer-events: none; animation: hpRecRip 2.6s cubic-bezier(.2, .6, .3, 1) infinite; } body.light :is(#dOver, .hcDoc) .hpRecDot::after { border-color: rgba(46, 31, 26, .5); }   /* a ripple off the dot every 2.6 s ("a ripple effect on the dot every 2-3 sec"): a ring out to 56 px, fading as it goes, then a rest */
+@keyframes hpRecRip { 0% { transform: scale(1); opacity: .7; } 55% { transform: scale(7); opacity: 0; } 100% { transform: scale(7); opacity: 0; } } @media (prefers-reduced-motion: reduce) { :is(#dOver, .hcDoc) .hpRecDot::after { animation: none; } }
 @keyframes hpRecBeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(.5); } }   /* breathing from its 8 px down to 4 and back ("scale down to 4px, 8px, for a more breathing effect") */ @media (prefers-reduced-motion: reduce) { :is(#dOver, .hcDoc) .hpRecDot i { animation: none; } }
 /* stacked: the desk's left column the primary card over it, the primary filling what the services leave; the services spanning both rows */
 #dOver .dvTop.hpRecStk.hpRecTwo { grid-template-rows: minmax(0, 1fr) auto; }
@@ -1668,7 +1670,7 @@ body.hdrV4[data-bp="xs"] #dOver .dvTop > .hpOvCard { margin-top: 6px; margin-bot
     <p class="h">Demo</p>
     <label>Viewport<span class="seg" role="group" aria-label="Viewport"><button type="button" data-bp="auto">Auto</button><button type="button" data-bp="xs">XS</button><button type="button" data-bp="s">S</button><button type="button" data-bp="m">M</button><button type="button" data-bp="l">L</button></span></label>
     <label>Theme<span class="seg" role="group" aria-label="Theme"><button type="button" data-th="dark">Dark</button><button type="button" data-th="light">Light</button></span></label>
-    <label>State<select id="dmState" aria-label="The profile's state"><option value="none">Step 1</option><option value="none_d">Step 1.5 (dropped off)</option><option value="one">Step 2</option><option value="one_d">Step 2.5 (dropped off)</option><option value="two">Step 3</option><option value="two_d">Step 3.5 (dropped off)</option><option value="all">Done</option></select></label>
+    <label>State<select id="dmState" aria-label="The profile's state"><option value="none">Step 1</option><option value="one">Step 2</option><option value="two">Step 3</option><option value="all">Done</option></select></label>
     <label>Step title<span class="seg" role="group" aria-label="Step title: the step's name over the dashes, or the dashes alone"><button type="button" data-stt="on">On</button><button type="button" data-stt="off">Off</button></span></label>
     <button type="button" class="go" id="dmReset">Start over</button>
   </div>
@@ -1813,7 +1815,7 @@ window.EvLoad = (function () {
   var SEARCH_MS = 60000;   // the past results search: how long it runs in the background before it is done
   function blank() { return { v: 2, a: { wear: { st: 'not', i: 0, ans: {} }, past: { st: 'not', i: 0, ans: {} }, you: { st: 'not', i: 0, ans: {} } }, pend: {}, notif: false, files: [] }; }
   var S = blank();
-  try { var raw = JSON.parse(localStorage.getItem(KEY) || 'null'); if (raw && raw.v === 2 && raw.a) { S = blank(); AREAS.forEach(function (a) { if (raw.a[a.k]) S.a[a.k] = raw.a[a.k]; }); S.pend = raw.pend || {}; S.notif = !!raw.notif; S.files = raw.files || []; } } catch (e) {}   // an earlier version's progress (its steps were others) starts again
+  try { var raw = JSON.parse(localStorage.getItem(KEY) || 'null'); if (raw && raw.v === 2 && raw.a) { S = blank(); AREAS.forEach(function (a) { if (raw.a[a.k]) { S.a[a.k] = raw.a[a.k]; if (S.a[a.k].st === 'prog') S.a[a.k].st = 'not'; } });   /* a stage saved as begun (left part-way): not started, as there is no dropped-off state now */ S.pend = raw.pend || {}; S.notif = !!raw.notif; S.files = raw.files || []; } } catch (e) {}   // an earlier version's progress (its steps were others) starts again
   var SNAP = false;   // a still being drawn (Documentation's flows): nothing saved, nothing announced
   function save(quiet) { if (SNAP) return; try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} if (!quiet) document.dispatchEvent(new CustomEvent('everlab:hp', { detail: summary() })); }
   function searching() { var w = S.a.wear.ans; return w.find !== false && w.mc === 'yes'; }   // the past results search: opted in, and a Medicare card to run it on
@@ -1851,13 +1853,13 @@ window.EvLoad = (function () {
   }
   function preset(k) { S = build(k); save(); }
   /* a still of the profile (Documentation -> Health profile card -> Flows: "all the screens of the step next to each other"): mounted in host from a demo state, its home or a stage's page, the member's own answers untouched
-     and nothing saved; o: { state, area, i, fill: [stages given the demo's answers], theme, name }. The page as the profile draws it, so it is never a copy */
+     and nothing saved; o: { state, area, i, fill: [stages given the demo's answers], theme, name, wide }. The page as the profile draws it, so it is never a copy */
   function snap(host, o) {
     o = o || {}; var keepS = S, keepI = INST, inst = null; SNAP = true;
     try {
       S = build(o.state || 'none');
       (o.fill || []).forEach(function (k) { if (S.a[k] && DEMO[k]) S.a[k].ans = JSON.parse(JSON.stringify(DEMO[k])); });
-      inst = mount(host, { theme: o.theme, name: o.name, snap: true, dism: true });
+      inst = mount(host, { theme: o.theme, name: o.name, snap: true, dism: true, wide: o.wide });   // wide: the desk's layout (the canvas's Desktop), told rather than measured: the still is drawn zoomed
       if (o.area) inst.go(o.area, o.i || 0);
     } finally { S = keepS; INST = keepI; SNAP = false; }
     return inst;
@@ -1889,8 +1891,8 @@ window.EvLoad = (function () {
     var cta = h('button', { type: 'button', class: 'arBtn arBtnPrimary arBtnLg' }, h('span', { class: 'arBtnLabel' })), sec = h('button', { type: 'button', class: 'hpSec', hidden: true });
     var foot = h('div', { class: 'arFoot' }, cta, sec);
     var root = h('div', { class: 'arSheet hpSheet' + (opts.theme === 'dark' ? ' arDark' : '') + (opts.dism ? ' hpDism' : '') }, h('div', { class: 'arStage', style: 'display:flex;flex-direction:column;height:100%;min-height:0;' }, head, mainEl, foot));
-    if (window.ResizeObserver) new ResizeObserver(function () { root.classList.toggle('hpWide', root.clientWidth >= 820); root.style.setProperty('--hpHeadH', head.offsetHeight + 'px'); }).observe(root);   // room for the rail: the desk; the bar's height, for the intro to rise under it
-    host.appendChild(root); root.classList.toggle('hpWide', root.clientWidth >= 820); root.style.setProperty('--hpHeadH', head.offsetHeight + 'px');   // at once too, not only when the observer next reports: the page laid out right from its first frame (a sphere carried into it lands true)
+    if (window.ResizeObserver) new ResizeObserver(function () { root.classList.toggle('hpWide', opts.wide != null ? !!opts.wide : root.clientWidth >= 820); root.style.setProperty('--hpHeadH', head.offsetHeight + 'px'); }).observe(root);   // room for the rail: the desk; the bar's height, for the intro to rise under it
+    host.appendChild(root); root.classList.toggle('hpWide', opts.wide != null ? !!opts.wide : root.clientWidth >= 820); root.style.setProperty('--hpHeadH', head.offsetHeight + 'px');   // at once too, not only when the observer next reports: the page laid out right from its first frame (a sphere carried into it lands true)
     var onCta = null, onSec = null;
     cta.addEventListener('click', function () { if (onCta && !cta.disabled) onCta(); });
     sec.addEventListener('click', function () { if (onSec) onSec(); });
@@ -1950,7 +1952,10 @@ window.EvLoad = (function () {
     /* between the intro and a stage, up or down, as the Async report's intro to its insight pages ("move up the content when going to the next step, similar to the Async report's intro to insight page"): on, the old page rises 72 and fades,
        the new comes up from a third of the screen below as it fades in, then the bar's back, title and steps fade in over it; back to the intro, the other way. The old page held where it stood as the bar comes or goes (vFrom) */
     var vFrom = null, carryT = 0;
-    var freeze = function () { if (!shown || reduced()) return null; var r = shown.getBoundingClientRect(); shown.style.paddingTop = getComputedStyle(shown).paddingTop; return { top: r.top }; };
+    var freeze = function () { if (!shown || reduced()) return null; var r = shown.getBoundingClientRect(), cs = getComputedStyle(shown);
+      ['paddingTop', 'paddingRight', 'paddingLeft', 'alignItems'].forEach(function (k) { shown.style[k] = cs[k]; });   /* the old page held as it stood while it leaves: on the desk a step's page has its own side padding and column (32, 520), the intro's not; going back, they changed under it the moment the intro's class came on, and it jumped 17 px ("padding jump when I click back on desktop step") */
+      [].forEach.call(shown.children, function (c) { var cc = getComputedStyle(c); c.style.maxWidth = cc.maxWidth; c.style.width = cc.width; });
+      return { top: r.top }; };
     function show(build, dir) {
       var scr = h('div', { class: 'hpScr' }), old = shown, v = vFrom; vFrom = null; tick++;
       build(scr); view.appendChild(scr); shown = scr;
@@ -2026,7 +2031,7 @@ window.EvLoad = (function () {
     function area(k, dir, i) {
       var a = AREA[k], st = S.a[k];
       if (!A && dir) vFrom = freeze();   // from the intro: up (see show)
-      if (st.st === 'not') { st.st = 'prog'; save(true); }   /* begun as soon as it is opened: left from here, the card's next increment fills half ("if the user dropped off during a current step, fill half the increment") */
+      /* opened, not marked begun: no dropped-off state ("no need this drop off state"); left part-way, the card stays as not started (the member's page kept: they come back to it). Was: begun as soon as it is opened, the card's next increment half filled */
       if (root.classList.contains('hpAtHome') && root.classList.contains('hpCarried')) { root.classList.add('hpCarryOut'); clearTimeout(carryT); carryT = setTimeout(function () { root.classList.remove('hpCarryOut'); }, 1100); }   // the carried light fades out over clear grounds, the page rising away (980ms), then they are solid again, the same colour
       A = k; root.classList.remove('hpAtHome');
       var L = stepsOf(k); I = i != null ? i : st.st === 'done' ? L.length - 1 : Math.min(st.i || 0, L.length - 1);
@@ -2038,7 +2043,6 @@ window.EvLoad = (function () {
     function fwd() {   // the next step, or the area done: back to the home
       var a = AREA[A], st = S.a[A];
       if (ret != null) { var r = ret; ret = null; I = r; keep(); step(1); return; }
-      if (st.st === 'not') st.st = 'prog';
       if (I >= stepsOf(A).length - 1) { st.st = 'done'; st.i = I; save();
         var L = window.EvLoad, k = A;   /* the loading states (Documentation -> Loading states): the booking a multi-step wait over the sheet (booking confirmation), a stage's answers saved on its button (Loader with label) */
         if (A === 'past') { var bk = function () { justDone = 'past'; home(1); }; if (L) L.multi(root, ['Checking Dr Lee\u2019s calendar', 'Reserving your time', 'Confirming your booking'], { step: 950 }).done.then(bk); else bk(); return; }   // booked: the wait, then the intro, its card done (no Booking confirmed page: "no need this Booking")
@@ -3204,7 +3208,7 @@ window.EvLoad = (function () {
   var place = function () { var r = dev.getBoundingClientRect(), x = r.right + 28; demo.classList.toggle('side', x + 36 + 12 <= innerWidth); if (demo.classList.contains('side')) { demo.style.left = Math.round(x) + 'px'; } else demo.style.left = ''; };
   var setBp = function (b) { stage.setAttribute('data-bp', b); [].forEach.call(document.querySelectorAll('.demo [data-bp]'), function (x) { x.setAttribute('aria-pressed', String(x.getAttribute('data-bp') === b)); }); try { localStorage.setItem(KEY, b); } catch (e) {} requestAnimationFrame(place); };
   var mount = function () { if (inst) inst.destroy(); host.textContent = ''; inst = HP.mount(host, { theme: dark() ? 'dark' : 'light', name: 'Julien', onClose: function () { if (inst) inst.home(); } }); paint(); };
-  var stateOf = function () { var sm = HP.store.summary(), nx = ['wear', 'past', 'you'].filter(function (k) { return sm.st[k] !== 'done'; })[0]; return sm.n === 3 ? 'all' : ['none', 'one', 'two'][sm.n] + (nx && sm.st[nx] === 'prog' ? '_d' : ''); };
+  var stateOf = function () { var sm = HP.store.summary(), nx = ['wear', 'past', 'you'].filter(function (k) { return sm.st[k] !== 'done'; })[0]; return sm.n === 3 ? 'all' : ['none', 'one', 'two'][sm.n]; };   // no dropped-off states
   var sel = document.getElementById('dmState');
   sel.addEventListener('change', function () { HP.store.preset(sel.value); mount(); });
   document.getElementById('dmReset').addEventListener('click', function () { HP.store.preset('none'); sel.value = 'none'; mount(); });

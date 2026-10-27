@@ -17251,3 +17251,32 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - After the wait, the home shows step 2 done, with no Booking confirmed page.
   - The canvas's Step 2 row shows the card, the home and the two pages, then the note.
   - No errors.
+
+## Health profile: no dropped-off states; the canvas's ways in and Desktop; card +32; ripple; Records on Auto; Back without the jump
+
+- **No dropped-off states** ("no need this drop off state", on step 2's card then step 1's; done for all three):
+  - Opening a step and leaving it no longer marks it begun. The card stays as not started, with no half-filled segment and no Continue, and the home shows no dashed number.
+  - The member's page is still kept: they come back to where they were.
+  - A stage saved as begun loads as not started.
+  - Tweaks → State and its arrows go Step 1 → Step 2 → Step 3 → Booked. The 1.5, 2.5 and 3.5 entries are gone there and in the standalone page's Demo; a saved `*_d` state reads as its step.
+  - Documentation lists the card's five states.
+- **Flows, Step 1's two ways in** ("instead here the entry point: the Membership intro + reveal card"): the Overview card, **or** the Membership reveal (its intro and the card, Get started), drawn still from the reveal itself with the tweaks' look (`_hp.welStill`). Then the home and the nine pages.
+- **Flows at Desktop** ("create the Desktop breakpoint as well, following the XS"): an XS / Desktop switch beside the zoom; the choice is kept.
+  - Desktop draws every screen at 1440×900 (half the zoom: 540px at 75%) as the full modal: the profile in its 1040 column, the steps' 520 column, the reveal full-screen. The Overview card is the desk's 528×272.
+  - The stills are told they're wide (`snap`'s `wide`), as a zoomed screen would measure narrow.
+  - Screens are clipped (`contain: layout paint`) so nothing of theirs spills onto the canvas.
+- **Health profile card: min height +32** ("min height +32px"): 250px (was 218). It shows where the minimum governs, e.g. the Live version at S: 568×250.
+- **A ripple off the Records card's dot** ("ripple effect on the dot every 2-3 sec"): a 1px ring grows from the 8px dot to 56px, fading, then rests; one every 2.6s. White on dark, ink on light; none with reduced motion.
+- **Records card on Auto** ("if step 1 is completed, on the overview the Records card should be there"):
+  - Tweaks → Records processing is now Auto (the default), On or Off. Auto shows the card once step 1 is done, while the past results are being looked for.
+  - So: Step 1 none; Step 2 and Step 3 shown; Booked none, as the results are in.
+  - A setup saved with the old default Off takes Auto, once.
+- **Back on the desk, no jump** ("padding jump when I click back on desktop step"):
+  - A step's page on the desk has its own side padding and column (32, 520); the intro's doesn't. Going back, they changed under the old page the moment the intro's class came on, and it jumped 17px.
+  - The leaving page now keeps its padding, alignment and column widths as it goes. Measured: the title holds x 506 through the transition (was 506 → 489).
+- Checked:
+  - State options and arrows: Step 1 → Step 2 → Step 3 → Booked.
+  - Records card: none, shown, shown, none.
+  - Live version S card 568×250; ripple 2.6s.
+  - Flows XS and Desktop: 21 stills (wide at Desktop), the reveal second in Step 1.
+  - The step 1 walk and the booking walk still pass. No errors.
