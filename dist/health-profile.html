@@ -1824,7 +1824,8 @@ window.EvLoad = (function () {
   function blank() { return { v: 2, a: { wear: { st: 'not', i: 0, ans: {} }, past: { st: 'not', i: 0, ans: {} }, you: { st: 'not', i: 0, ans: {} } }, pend: {}, notif: false, files: [] }; }
   var S = blank();
   try { var raw = JSON.parse(localStorage.getItem(KEY) || 'null'); if (raw && raw.v === 2 && raw.a) { S = blank(); AREAS.forEach(function (a) { if (raw.a[a.k]) S.a[a.k] = raw.a[a.k]; }); S.pend = raw.pend || {}; S.notif = !!raw.notif; S.files = raw.files || []; } } catch (e) {}   // an earlier version's progress (its steps were others) starts again
-  function save(quiet) { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} if (!quiet) document.dispatchEvent(new CustomEvent('everlab:hp', { detail: summary() })); }
+  var SNAP = false;   // a still being drawn (Documentation's flows): nothing saved, nothing announced
+  function save(quiet) { if (SNAP) return; try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} if (!quiet) document.dispatchEvent(new CustomEvent('everlab:hp', { detail: summary() })); }
   function searching() { var w = S.a.wear.ans; return w.find !== false && w.mc === 'yes'; }   // the past results search: opted in, and a Medicare card to run it on
   function stepsOf(k) { return AREA[k].steps.filter(function (id) { return id !== 'search' || searching(); }); }   /* a stage's steps; the search's page at the end of Tell us about you, after Review, before the intro ("need this at the end of step 3 before coming back to the health profile home"; Anshul's journey map: skipped if they said no to the records search) */
   function pending(k) {   // a background process: null, or { done, label }
@@ -1859,6 +1860,18 @@ window.EvLoad = (function () {
     var out = S; S = keep; return out;
   }
   function preset(k) { S = build(k); save(); }
+  /* a still of the profile (Documentation -> Health profile card -> Flows: "all the screens of the step next to each other"): mounted in host from a demo state, its home or a stage's page, the member's own answers untouched
+     and nothing saved; o: { state, area, i, page: 'booked', fill: [stages given the demo's answers], theme, name }. The page as the profile draws it, so it is never a copy */
+  function snap(host, o) {
+    o = o || {}; var keepS = S, keepI = INST, inst = null; SNAP = true;
+    try {
+      S = build(o.state || 'none');
+      (o.fill || []).forEach(function (k) { if (S.a[k] && DEMO[k]) S.a[k].ans = JSON.parse(JSON.stringify(DEMO[k])); });
+      inst = mount(host, { theme: o.theme, name: o.name, snap: true, dism: true });
+      if (o.page === 'booked') { inst.go('past', 1); inst.booked(); } else if (o.area) inst.go(o.area, o.i || 0);
+    } finally { S = keepS; INST = keepI; SNAP = false; }
+    return inst;
+  }
   function summaryOf(k) { var keep = S; S = build(k); var r = summary(); S = keep; return r; }   // a demo state's summary, nothing saved: what Documentation -> Health profile card draws each state from
 
   /* ---------- the questionnaire's content ---------- */
@@ -2065,7 +2078,7 @@ window.EvLoad = (function () {
       var a = AREA[A], L = stepsOf(A), id = L[I], ans = S.a[A].ans;
       navT.textContent = a.t; navS.textContent = ''; stageBars(a.i, (I + 1) / L.length); paintRail();   /* three bars, the three stages, the one on filling as its steps go ("only three increments, each filled inside by the progression"); no "1 of 4" ("we don't need the subtitle") */
       var scr = show(function (scr) { (BUILD[A + '.' + id] || function () {})(scr, ans); }, dir);
-      var f = scr.querySelector('[data-focus]'); if (f && !('ontouchstart' in window)) setTimeout(function () { try { f.focus({ preventScroll: true }); } catch (e) {} }, dir ? 460 : 0);
+      var f = scr.querySelector('[data-focus]'); if (f && !opts.snap && !('ontouchstart' in window)) setTimeout(function () { try { f.focus({ preventScroll: true }); } catch (e) {} }, dir ? 460 : 0);
     }
 
     /* the rail (the desk): the three stages, each its number (a check once done); the one open highlighted, its steps under it, a dot each (done ink, the one on orange, the rest faint) */
@@ -2478,6 +2491,8 @@ window.EvLoad = (function () {
       el: root,
       home: function () { home(0); },
       area: function (k) { if (AREA[k]) area(k, 0); },
+      go: function (k, i) { if (AREA[k]) area(k, 0, i); },   // a stage at a given page, at once
+      booked: function () { bookedPage(); },   // the booking's success page
       where: function () { return { a: A, i: I }; },
       theme: function (t) { root.classList.toggle('arDark', t === 'dark'); },
       destroy: function () { alive = false; clearInterval(pt); if (root.parentNode) root.parentNode.removeChild(root); },
@@ -3202,7 +3217,7 @@ window.EvLoad = (function () {
     return { el: root, welcome: true, v2: V2, cp2: CP2, deskT: !!opts.desk, stage: function () { return root.classList.contains('hpW2Ready') ? 3 : ph; }, card2: w2, bg2: bg2, look2: look2, sphere: V2 ? null : sp, sphT0: V2 ? null : sp.t0, place: place, flip: flip, logo: logo, hold: function () { held = true; }, theme: function (t) { root.classList.toggle('arDark', t === 'dark'); if (V2) readCol(); }, home: function () {}, area: function () {}, destroy: function () { tm.forEach(clearTimeout); tm = []; held = true; if (wv) wv.stop(); if (st) st.stop(); if (mt2) mt2.stop(); if (fp2) fp2.stop(); if (kt2) kt2.stop(); if (tx2) tx2.stop(); if (sgRo) sgRo.disconnect(); window.removeEventListener('deviceorientation', onOri); if (tlt.raf) cancelAnimationFrame(tlt.raf); if (root.parentNode) root.parentNode.removeChild(root); } };
   }
 
-  window.HealthProfile = { mount: mount, welcome: welcome, dots: dots, sphere: sphere, look: look, dismiss: function (v) { ASK = !(v === false || v === 'off'); document.documentElement.classList.toggle('hpNoDism', !ASK); return ASK; }, stepTitle: function (v) { var on = v === true || v === 'on'; document.documentElement.classList.toggle('hpStepTOn', on); return on; }, wear: { order: wearOrder, names: function () { return JSON.parse(JSON.stringify(W1)); }, def: W1D.slice() }, store: { get: function () { return S; }, summary: summary, summaryOf: summaryOf, preset: preset, reset: function () { preset('none'); }, pending: pending, areas: AREAS } };
+  window.HealthProfile = { mount: mount, snap: snap, welcome: welcome, dots: dots, sphere: sphere, look: look, dismiss: function (v) { ASK = !(v === false || v === 'off'); document.documentElement.classList.toggle('hpNoDism', !ASK); return ASK; }, stepTitle: function (v) { var on = v === true || v === 'on'; document.documentElement.classList.toggle('hpStepTOn', on); return on; }, wear: { order: wearOrder, names: function () { return JSON.parse(JSON.stringify(W1)); }, def: W1D.slice() }, store: { get: function () { return S; }, summary: summary, summaryOf: summaryOf, preset: preset, reset: function () { preset('none'); }, pending: pending, areas: AREAS } };
 })();
 
 </script>

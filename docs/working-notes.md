@@ -17117,3 +17117,19 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Pill: Overview → Insights slides 4 → 63; Overview → Timeline slides 4 → 123.
   - The Step 1 list is hidden on the Overview and shown on the Health profile page, after State…Step title.
   - No errors.
+
+## Documentation → Health profile card: Flows, a canvas of each step
+
+- A **Flows** view sits beside **All states**: "for each step, all the screens related to the step and the home with the three-step completion; the relation between the card and the flow behind it; like a canvas". It opens on Flows, and the last view is kept.
+- A row for each step, read left to right with arrows:
+  - **Step 1**: the Overview card (not started, left part-way), then the profile's home (0 of 3), then the nine pages in the order Tweaks → Step 1 pages sets.
+  - **Step 2**: card, home (1 of 3), Choose a time, Review and confirm, Booking confirmed.
+  - **Step 3**: card, home (2 of 3), then the six pages: Sleep, About you, Smoking, Alcohol, Your answers, Past results.
+  - **Booked**: card, home (3 of 3, You're all set), and what Go to overview does.
+  - **After the call**: the plan card, and what Review my plan does.
+- Every screen is the profile itself, drawn still at XS (393, in the phone's frame and status bar) by a new `HealthProfile.snap(host, { state, area, i, page, fill })`. It runs from the profile's own demo states, never saves, and leaves the member's answers untouched (checked: `everlab.hp` the same before and after). Change a page and the canvas changes with it.
+- The review and success pages are given the demo's answers so they have something to show. The others are drawn empty, as a member first meets them.
+- **Canvas**: drag anywhere to pan, and − / + zoom from 30% to 100% (50% to start, kept). A row's title stays at the left as you pan. Picking a state in the sidebar scrolls to its step's row and underlines it. The canvas redraws with the theme and with Step 1's order.
+- Checked:
+  - Desk 1600, dark and light: five rows, 22 screens, none empty. Picking Step 3 lands on its row.
+  - The Step 1 walk still runs all nine pages, and the live profile is unaffected. No errors.
