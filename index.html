@@ -1201,7 +1201,7 @@
   .mIsland > .mPill{position:absolute;left:0;top:4px;width:0;height:calc(var(--navH) - 8px);border-radius:calc((var(--navH) - 8px)/2);pointer-events:none;opacity:0;z-index:0;
     background:linear-gradient(160deg,rgba(255,255,255,calc(.20 * var(--navActK))),rgba(255,255,255,calc(.07 * var(--navActK))));
     box-shadow:inset 0 1px 0 rgba(255,255,255,calc(.32 * var(--navActK))),inset 0 -1px 0 rgba(255,255,255,calc(.05 * var(--navActK))),0 2px 8px -5px rgba(0,0,0,calc(.5 * var(--navActK)));
-    transition:transform .46s cubic-bezier(.3,.9,.25,1),width .46s cubic-bezier(.3,.9,.25,1),opacity .2s ease;}
+    transition:transform .23s cubic-bezier(.2,1,.3,1),width .23s cubic-bezier(.2,1,.3,1),opacity .2s ease;}   /* twice as quick, a sharper start and settle ("back movement 2x faster and snappier": was .46 s) */
   body.light .mIsland > .mPill{background:linear-gradient(160deg,rgba(255,255,255,calc(.9 * var(--navActK))),rgba(255,255,255,calc(.5 * var(--navActK))));box-shadow:inset 0 1px 0 rgba(255,255,255,calc(.95 * var(--navActK))),0 2px 8px -5px rgba(46,31,26,calc(.28 * var(--navActK)));}
   @media (prefers-reduced-motion: reduce){ .mIsland > .mPill{transition:opacity .2s ease;} }
   /* One bar: the same two pills with the gap closed and their facing corners
@@ -12295,6 +12295,7 @@
         <!-- step 1's pages, their order ("the ability to change the position, the order of all the pages inside step one: drag the page up and down"): drag, or the arrow keys; kept with the tweaks.
              On the Health profile page only ("the steps breakdown should be on the health profile page"), after the rows the profile borrows from the Primary card -->
         <div class="tkRow tkOrdRow" id="stHpW1Row"><span class="lbl">Step 1 pages</span><ol class="tkOrd tkOrdN" id="stHpW1List" aria-label="Step 1's pages: press one to open it; drag, or use the arrow keys, to reorder"></ol><input type="hidden" id="stHpW1Ord" value="promise,details,address,emergency,mobile,otp,medicare,declare,health"></div>
+        <div class="tkRow"><span class="lbl">Country</span><select id="stHpCtry" class="tkSegSel" aria-label="The country searched for past results: its map, and the number searched under"><option value="au" selected>Australia</option><option value="uk">UK</option><option value="nz">New Zealand</option></select></div>   <!-- "need tweak country: Australia, UK, New Zealand" -->
         <div class="tkRow tkOrdRow" id="stHpW3Row"><span class="lbl">Step 3 pages</span><ol class="tkOrd tkOrdN" id="stHpW3List" aria-label="Step 3's pages: press one to open it; drag, or use the arrow keys, to reorder"></ol><input type="hidden" id="stHpW3Ord" value="sleep,about,smoke,alcohol,review,search"></div>   <!-- "same as step 1, I need the breakdown controllable" -->
         </div>
         <div class="tkGroup" data-pages="ov" data-sec="primary">
@@ -16741,8 +16742,8 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
 .arSheet.hpSheet .hpIntro .hpDots { width: 156px; height: 156px; }
 .arSheet.hpSheet .hpIntro .hpQ { margin: 0; align-items: center; }
 /* the search: its radar and its label; the card of two rows */
-.arSheet.hpSheet .hpSearch { display: flex; flex-direction: column; align-items: center; gap: 14px; margin: 0 0 28px; }
-.arSheet.hpSheet .hpAus { position: relative; width: min(100%, 296px); color: oklch(var(--ar-ink)); } .arSheet.hpSheet.hpWide .hpAus { width: min(100%, 340px); } .arSheet.hpSheet .hpAus canvas { display: block; position: absolute; inset: 0; width: 100%; height: 100%; }   /* the map: Australia in the card's dots */
+.arSheet.hpSheet .hpSearch { position: relative; display: flex; flex-direction: column; align-items: center; margin: 0 0 32px; } .arSheet.hpSheet .hpSr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.arSheet.hpSheet .hpAus { position: relative; width: min(100%, 296px, calc(300px * var(--ar, 1.1))); color: oklch(var(--ar-ink)); } .arSheet.hpSheet.hpWide .hpAus { width: min(100%, 340px, calc(340px * var(--ar, 1.1))); }   /* a tall country (the UK, New Zealand) as high as Australia is wide, no higher */ .arSheet.hpSheet .hpAus canvas { display: block; position: absolute; inset: 0; width: 100%; height: 100%; }   /* the map: Australia in the card's dots */
 .arSheet.hpSheet .hpActs { display: flex; flex-direction: column; } .arSheet.hpSheet .hpActs .hpRow { padding: 14px 0; }   /* the two rows plain, on the page */
 .arSheet.hpSheet .hpCard { display: flex; flex-direction: column; border-radius: 16px; background: var(--ar-card-bg); }
 .arSheet.hpSheet .hpRow { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 14px; padding: 16px; }
@@ -17381,100 +17382,148 @@ window.EvLoad = (function () {
     };
     return api;
   }
-  /* the search's map ("an Australian dotted map; no radar style, just a ripple effect that reveals some orange dots randomly positioned; something super smooth; keep the member card's bottom-right pattern as the map's base texture"):
-     the mainland and Tasmania in the card's own fine dots (Tweaks -> Welcome's Dots: a small square every few px, faint, now and then one catching the light), a soft ripple running out from the member's capital (two bands, the second an echo,
-     quick off the mark and easing out, a new one every 2.8 s so two are always under way), lighting the dots it crosses; where it passes a spot picked at random on land an orange dot comes up, holds a few seconds and goes.
-     Done: one last ripple leaves the four found lit, held. A still (Documentation) or reduced motion: one quiet frame */
+  /* the search's map ("a subtle looping animation for the dotted Australia map that feels like the system is actively searching across locations"): the mainland and Tasmania in the member card's fine dots ("keep the card's bottom-right pattern as the map's base texture"), muted and still;
+     two very thin scanning lines, a level one moving up and down and an upright one moving left and right, each on its own course and its own time, every move easeInOutQuint ("continuous and deliberate, not mechanical or like a loading spinner"),
+     a faint wake in the dots along each; where they cross, a small locator. Now and then the crossing settles on a lab's town: its square of the map warms from grey to Everlab orange, a little larger, a faint glow pulsing once, the lines held a moment;
+     it stays lit while they go on to the next. Six towns a round (the member's own capital first), then they fade as the next round begins. Found: the lines settle on the four results, then fade away, the four held.
+     A still (Documentation) or reduced motion: one frame, the lines crossing on a town just lit */
   var AUS = [[142.5, -10.7, 143.4, -12.3, 143.6, -13.6, 144.5, -14.3, 145.3, -14.9, 145.4, -16.4, 146, -17.6, 146.3, -18.9, 147.4, -19.4, 148.4, -20.1, 148.9, -20.5, 149.4, -21.5, 150, -22.2, 150.6, -22.4, 150.8, -23.3, 151.6, -24.1, 152.5, -24.9, 153, -25.2, 153.2, -25.9, 153.1, -27.1, 153.5, -28, 153.6, -28.7, 153.3, -29.5, 153, -31, 152.7, -31.9, 152.2, -32.7, 151.3, -33.6, 151.2, -34.1, 150.8, -34.8, 150.3, -35.6, 150.1, -36.3, 150, -37, 149.9, -37.6, 148.6, -37.8, 147.6, -37.9, 146.9, -38.6, 146.3, -39.1, 145.5, -38.6, 144.9, -38.4, 144.4, -38.2, 143.5, -38.8, 142.3, -38.4, 141.6, -38.3, 140.6, -38, 139.8, -37.2, 139.6, -36.5, 139.3, -35.8, 138.6, -35.6, 138.2, -35.5, 138.5, -35, 138.5, -34.5, 138.1, -34.2, 137.8, -34.7, 137, -35.2, 137.4, -34.4, 137.6, -33.6, 137.9, -32.6, 137.5, -33.2, 136.8, -33.8, 136.2, -34.4, 135.8, -34.9, 135.3, -34.6, 135.1, -33.9, 134.3, -33.2, 134.1, -32.6, 133.4, -32.2, 132.2, -32, 131.2, -31.5, 129.5, -31.6, 128, -31.9, 126.5, -32.3, 125, -32.8, 124, -33.2, 123.5, -33.9, 122, -33.9, 120.5, -33.9, 119.5, -34.4, 118.3, -34.9, 117.2, -35, 116.3, -34.9, 115.6, -34.4, 115, -34.3, 115.1, -33.6, 115.6, -33.3, 115.7, -32.4, 115.7, -31.6, 115.1, -30.5, 114.9, -29.5, 114.6, -28.6, 114.1, -27.6, 113.5, -26.6, 113.3, -25.9, 113.7, -24.8, 113.4, -24, 113.8, -23, 113.9, -22, 114.4, -21.8, 115, -21.5, 116, -20.9, 117, -20.6, 118.2, -20.3, 119.1, -20, 120.2, -19.8, 121.1, -19.4, 121.6, -18.6, 122.2, -18, 122.3, -17.2, 123, -16.5, 123.6, -16.3, 124.2, -16, 124.6, -15.3, 125.2, -14.6, 126, -14.2, 126.9, -13.8, 127.6, -14.2, 128.1, -14.9, 128.6, -14.8, 129.4, -14.9, 129.7, -14.2, 130, -13.5, 130.3, -12.9, 130.8, -12.4, 131.4, -12.2, 132, -11.6, 132.6, -11.3, 133, -11.5, 133.6, -11.8, 134.4, -12, 135.2, -12.2, 135.9, -11.9, 136.6, -12, 136.9, -12.4, 136.6, -13.2, 136, -13.4, 135.8, -14, 135.4, -14.8, 136, -15.4, 136.8, -15.9, 137.6, -16.3, 138.5, -16.8, 139.3, -17.4, 140, -17.7, 140.8, -17.4, 141.3, -16.6, 141.5, -15.5, 141.6, -14.2, 141.5, -13.2, 141.7, -12.4, 141.9, -11.6, 142.2, -10.9],
     [144.7, -40.7, 145.4, -40.9, 146.4, -41.2, 147, -41, 148, -40.8, 148.3, -41.3, 148.3, -42.1, 148, -42.6, 147.9, -43.2, 147.3, -43.3, 146.9, -43.6, 146.1, -43.5, 145.4, -42.6, 145.2, -42.2, 144.8, -41.5, 144.6, -41]];
-  var AUSC = { NSW: [151.21, -33.87], VIC: [144.96, -37.81], QLD: [153.03, -27.47], WA: [115.86, -31.95], SA: [138.6, -34.93], TAS: [147.33, -42.88], ACT: [149.13, -35.28], NT: [130.84, -12.46] };   // where the ripple starts: the member's state's capital
-  var AUSL = 112.4, AUST = -10.2, AUSK = Math.cos(26 * Math.PI / 180), AUSW = (154.1 - AUSL) * AUSK, AUSH = 44 + AUST, AUSR = AUSW / AUSH;   // an equirectangular cut at the continent's middle latitude, a little margin round it
-  var ausP = function (lon, lat) { return [(lon - AUSL) * AUSK / AUSW, (AUST - lat) / AUSH]; };
-  var AUSU = AUS.map(function (r) { var o = []; for (var i = 0; i < r.length; i += 2) o.push(ausP(r[i], r[i + 1])); return o; });
-  var ausIn = function (u, v) { var c = false; AUSU.forEach(function (r) { for (var i = 0, j = r.length - 1; i < r.length; j = i++) { var a = r[i], b = r[j]; if ((a[1] > v) !== (b[1] > v) && u < (b[0] - a[0]) * (v - a[1]) / (b[1] - a[1]) + a[0]) c = !c; } }); return c; };
+  /* the other countries (Tweaks -> Health profile -> Country: "Australia, UK, New Zealand"): Great Britain with Skye and the Outer Hebrides, and Northern Ireland; New Zealand's North and South Islands and Stewart Island */
+  var UKR = [[-3.37, 58.67, -3.03, 58.64, -3.09, 58.44, -3.77, 57.86, -4.22, 57.5, -3.49, 57.7, -2, 57.69, -1.78, 57.5, -2.07, 57.15, -2.2, 56.96, -2.46, 56.7, -2.9, 56.46, -2.58, 56.28, -3.2, 56.02, -2.5, 56, -2.13, 55.9, -2, 55.77, -1.6, 55.4, -1.42, 55, -1.36, 54.9, -1.2, 54.69, -0.6, 54.49, -0.4, 54.28, -0.08, 54.12, -0.2, 53.8, 0.12, 53.58, 0.34, 53.14, 0.2, 52.85, 0.5, 52.95, 1.3, 52.93, 1.73, 52.6, 1.75, 52.48, 1.6, 52.1, 1.35, 51.96, 1.15, 51.79, 0.9, 51.6, 0.7, 51.53, 1.38, 51.39, 1.32, 51.13, 0.97, 50.91, 0.3, 50.77, -0.14, 50.82, -1.09, 50.79, -1.6, 50.72, -2.45, 50.6, -2.94, 50.72, -3.4, 50.62, -3.64, 50.22, -4.14, 50.37, -4.7, 50.3, -5.2, 49.96, -5.71, 50.07, -5.48, 50.21, -4.94, 50.54, -4.53, 51.02, -3.48, 51.2, -2.98, 51.35, -2.7, 51.5, -3.17, 51.45, -3.94, 51.6, -4.32, 51.56, -5.1, 51.65, -5.3, 51.88, -4.66, 52.1, -4.08, 52.41, -4.05, 52.72, -4.42, 52.88, -4.78, 52.78, -4.3, 53.14, -4.6, 53.3, -4.63, 53.31, -4.2, 53.33, -3.83, 53.33, -3, 53.4, -3.05, 53.82, -2.9, 54.07, -3.23, 54.11, -3.64, 54.49, -3.39, 54.87, -3, 54.95, -4.06, 54.83, -4.86, 54.64, -5.03, 54.9, -5.16, 55, -4.63, 55.46, -4.9, 55.8, -5.1, 55.6, -5.8, 55.31, -5.65, 55.9, -5.5, 56.2, -5.47, 56.41, -5.9, 56.55, -6.22, 56.73, -5.83, 57, -5.7, 57.28, -5.8, 57.5, -5.7, 57.73, -5.4, 57.85, -5.16, 57.95, -5.3, 58.25, -5, 58.63, -4.75, 58.56, -4.3, 58.53, -3.52, 58.6],
+    [-6.15, 58.5, -6.6, 58.3, -7.1, 57.75, -7.45, 57.1, -7.25, 57.02, -6.85, 57.6, -6.45, 58, -6.2, 58.2],
+    [-5.65, 57.6, -6.4, 57.7, -6.75, 57.45, -6.3, 57.15, -5.75, 57.2],
+    [-5.45, 54.35, -5.55, 54.66, -5.8, 54.85, -6.15, 55.22, -6.65, 55.2, -7.2, 55.15, -7.3, 55, -7.6, 54.75, -8.15, 54.6, -8, 54.35, -7.6, 54.15, -7, 54.2, -6.6, 54.05, -6.27, 54.1, -5.9, 54.21]];
+  var NZR = [[172.68, -34.43, 173.03, -34.41, 173.5, -35, 174.1, -35.2, 174.5, -35.8, 174.8, -36.4, 174.8, -36.85, 175.3, -36.6, 175.5, -36.5, 175.9, -36.8, 175.95, -37.3, 176.2, -37.65, 177, -37.95, 177.6, -37.85, 178, -37.55, 178.55, -37.69, 178.3, -38.4, 177.95, -38.75, 177.85, -39.1, 177.4, -39.08, 177, -39.3, 176.9, -39.6, 176.95, -39.9, 176.6, -40.3, 176.2, -40.8, 175.8, -41.3, 175.2, -41.6, 174.85, -41.3, 175, -40.9, 175.2, -40.5, 174.9, -39.95, 174.3, -39.6, 173.8, -39.3, 174.2, -38.9, 174.6, -38.5, 174.8, -37.8, 174.6, -37.3, 174.2, -36.6, 173.8, -36.2, 173.3, -35.5, 172.9, -34.9],
+    [172.7, -40.5, 173, -40.9, 173.3, -41.2, 173.9, -40.95, 174.3, -41.3, 174.2, -41.75, 173.7, -42.4, 173.3, -42.8, 172.8, -43.3, 173.1, -43.85, 172.4, -43.9, 171.7, -44.2, 171.1, -44.9, 170.8, -45.4, 170.7, -45.9, 169.8, -46.4, 168.9, -46.6, 168.3, -46.6, 167.6, -46.2, 166.5, -45.8, 166.7, -45.2, 167.5, -44.6, 168.3, -44, 169, -43.6, 170.2, -43.1, 171.2, -42.5, 171.5, -41.8, 172.1, -41, 172.6, -40.6],
+    [167.5, -46.75, 168.2, -46.8, 168.1, -47.25, 167.6, -47.2]];
+  /* each country: its outline, its frame (west, east, north and south edges, and the latitude its scale is true at), its labs' towns (the predetermined spots the locator finds), a round's six in turn, the four results found; Australia's first town the member's state's capital */
+  var MAPS = {
+    au: { rings: AUS, l: 112.4, r: 154.1, t: -10.2, b: -44, mid: 26, cap: { NSW: 'syd', VIC: 'mel', QLD: 'bne', WA: 'per', SA: 'adl', TAS: 'hba', ACT: 'cbr', NT: 'drw' },
+      loc: { syd: [151.21, -33.87], mel: [144.96, -37.81], bne: [153.03, -27.47], per: [115.86, -31.95], adl: [138.6, -34.93], hba: [147.33, -42.88], cbr: [149.13, -35.28], drw: [130.84, -12.46], asp: [133.88, -23.7], tsv: [146.82, -19.26],
+        cns: [145.77, -16.92], isa: [139.49, -20.73], bme: [122.24, -17.96], kgi: [121.47, -30.75], ger: [114.61, -28.77], mld: [142.16, -34.19], kth: [132.26, -14.47], rok: [150.51, -23.38] },
+      run: [['syd', 'per', 'drw', 'mel', 'asp', 'tsv'], ['bne', 'adl', 'bme', 'hba', 'isa', 'kgi'], ['cbr', 'cns', 'ger', 'mld', 'kth', 'rok']], found: ['syd', 'mel', 'bne', 'adl'] },
+    uk: { rings: UKR, l: -8.4, r: 2, t: 58.85, b: 49.75, mid: 54.3, cap: {},
+      loc: { lon: [-0.13, 51.51], man: [-2.24, 53.48], bir: [-1.9, 52.48], gla: [-4.25, 55.86], edi: [-3.19, 55.95], crd: [-3.18, 51.48], bel: [-5.93, 54.6], lds: [-1.55, 53.8], bri: [-2.59, 51.45], ncl: [-1.61, 54.98],
+        abd: [-2.09, 57.15], inv: [-4.22, 57.48], nwi: [1.3, 52.63], ply: [-4.14, 50.37], sou: [-1.4, 50.9], cam: [0.12, 52.2], swa: [-3.94, 51.62], hul: [-0.33, 53.74] },
+      run: [['lon', 'man', 'gla', 'crd', 'ncl', 'nwi'], ['bir', 'edi', 'bel', 'bri', 'abd', 'ply'], ['lds', 'inv', 'sou', 'cam', 'swa', 'hul']], found: ['lon', 'man', 'bir', 'edi'] },
+    nz: { rings: NZR, l: 166.2, r: 178.9, t: -34.2, b: -47.45, mid: 41, cap: {},
+      loc: { akl: [174.76, -36.85], wlg: [174.78, -41.29], chc: [172.64, -43.53], ham: [175.28, -37.79], tau: [176.17, -37.69], dud: [170.5, -45.87], npe: [176.92, -39.49], pmr: [175.61, -40.35], nsn: [173.28, -41.27], rot: [176.25, -38.14],
+        npl: [174.07, -39.06], wre: [174.32, -35.73], ivc: [168.35, -46.41], zqn: [168.66, -45.03], gis: [178.02, -38.66], tiu: [171.25, -44.4], gmn: [171.2, -42.45], bhe: [173.95, -41.51] },
+      run: [['akl', 'wlg', 'chc', 'dud', 'tau', 'npe'], ['ham', 'nsn', 'ivc', 'pmr', 'wre', 'gis'], ['rot', 'zqn', 'npl', 'tiu', 'gmn', 'bhe']], found: ['akl', 'wlg', 'chc', 'ham'] }
+  };
+  var mapOf = function (k) {   // a country's map, its projection worked out once: an equirectangular cut, true at its middle latitude
+    var M = MAPS[k] || MAPS.au; if (M.p) return M;
+    var K = Math.cos(M.mid * Math.PI / 180), Wd = (M.r - M.l) * K, Hd = M.t - M.b;
+    M.R = Wd / Hd; M.p = function (lon, lat) { return [(lon - M.l) * K / Wd, (M.t - lat) / Hd]; };
+    M.U = M.rings.map(function (r) { var o = []; for (var i = 0; i < r.length; i += 2) o.push(M.p(r[i], r[i + 1])); return o; });
+    M.in = function (u, v) { return M.U.some(function (r) { var c = false; for (var i = 0, j = r.length - 1; i < r.length; j = i++) { var a = r[i], b = r[j]; if ((a[1] > v) !== (b[1] > v) && u < (b[0] - a[0]) * (v - a[1]) / (b[1] - a[1]) + a[0]) c = !c; } return c; }); };   // on any island (an island touching the mainland, Skye, no hole where they meet)
+    return M;
+  };
+  var CTRY = { au: ['Australia', 'Medicare'], uk: ['the UK', 'NHS'], nz: ['New Zealand', 'NHI'] };   // where the labs are searched, and the number they're searched under
+  var ctry = function () { var v = (document.getElementById('stHpCtry') || {}).value; return CTRY[v] ? v : 'au'; };
+  var quint = function (u) { return u < .5 ? 16 * u * u * u * u * u : 1 - Math.pow(2 - 2 * u, 5) / 2; };   // easeInOutQuint
   function ausMap(o) {
     o = o || {};
-    var cv = h('canvas'), el = h('div', { class: 'hpAus', 'aria-hidden': 'true', style: 'aspect-ratio: ' + AUSR.toFixed(4) }, cv), x = cv.getContext('2d');
-    var P = 4, Z = 1.5, OR = '#ff7a1a', PER = 2.8, RUN = 4.4, LIFE = 4.2, FOUND = 4;   // P: the dots' pitch, Z: their size (the card's texture, a touch coarser so the coast reads); PER: a ripple every; RUN: its run to the far coast
-    var W = 0, H = 0, dpr = 1, pts = [], ox = 0, oy = 0, RM = 1, ink = '#000', raf = 0, t0 = 0, on = false, still = !!o.still || reduced(), done = !!o.done, doneAt = -1, rip = [], marks = [], nextR = 0, fc = 0, B = [];
+    var M = mapOf(o.country), AUSLOC = M.loc, AUSRUN = M.run, AUSFOUND = M.found, ausP = M.p;   // the country's map (Tweaks -> Country)
+    var cv = h('canvas'), el = h('div', { class: 'hpAus', 'aria-hidden': 'true', style: 'aspect-ratio: ' + M.R.toFixed(4) + '; --ar: ' + M.R.toFixed(4) }, cv), x = cv.getContext('2d');
+    var P = 4, Z = 1.5, OR = '#ff7a1a', HOLD = .7, cap = M.cap[o.from] || AUSRUN[0][0];   // P: the dots' pitch, Z: their size (the card's texture, a touch coarser so the coast reads); HOLD: the lines still on a town just found
+    var W = 0, H = 0, dpr = 1, pts = [], spot = {}, ink = '#000', rgb = '0, 0, 0', raf = 0, t0 = 0, on = false, still = !!o.still || reduced(), done = !!o.done, fc = 0, B = [];
+    var LH = { legs: [], v: .5 }, LV = { legs: [], v: .5 };   // the level line's height and the upright's place across, each a share of the map; legs: its moves, { s: start, d: length, a: from, b: to }
+    var lit = {}, jobs = [], job = null, round = 0, pendT = 0, lineIn = 1e9, lineOut = null, endAt = -1, lock = -9;   // lit: the towns found, by key, { at, out }; job: the town being sought; lock: the moment the last was found
     for (var b = 0; b <= 32; b++) B.push([]);
+    var probe = document.createElement('canvas'); probe.width = probe.height = 1; var px = probe.getContext('2d');
+    var rgbOf = function (c) { px.clearRect(0, 0, 1, 1); px.fillStyle = '#000'; px.fillStyle = c; px.fillRect(0, 0, 1, 1); var d = px.getImageData(0, 0, 1, 1).data; return d[0] + ', ' + d[1] + ', ' + d[2]; };   // the ink as rgb, for the lines' fading ends
     var hash = function (a, c) { var v = Math.sin(a * 12.9898 + c * 78.233) * 43758.5453; return v - Math.floor(v); };
-    var ease = function (u) { return 1 - Math.pow(1 - u, 2.4); }, uAt = function (f) { return 1 - Math.pow(1 - Math.min(1, f), 1 / 2.4); };   // the front: quick off the mark, easing out; and back, the moment it reaches a distance
+    var runOf = function (n) { var r = AUSRUN[n % AUSRUN.length].slice(); if (!n && r[0] !== cap) r = [cap].concat(r.filter(function (k) { return k !== cap; })).slice(0, 6); return r; };
     var grid = function () {
       W = el.clientWidth; H = el.clientHeight; if (!W || !H) return false; dpr = Math.min(2, window.devicePixelRatio || 1);
-      cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); pts = [];
-      var c = ausP.apply(null, AUSC[o.from] || AUSC.NSW); ox = c[0] * W; oy = c[1] * H; RM = 1;
-      for (var y = P / 2; y < H; y += P) for (var xx = P / 2; xx < W; xx += P) if (ausIn(xx / W, y / H)) { var d = Math.hypot(xx - ox, y - oy); RM = Math.max(RM, d); pts.push({ x: Math.round((xx - Z / 2) * dpr) / dpr, y: Math.round((y - Z / 2) * dpr) / dpr, cx: xx, cy: y, d: d, h: hash(xx, y) }); }
-      RM += 24; return true;
+      cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); pts = []; spot = {};
+      for (var y = P / 2; y < H; y += P) for (var xx = P / 2; xx < W; xx += P) if (M.in(xx / W, y / H)) pts.push({ x: Math.round((xx - Z / 2) * dpr) / dpr, y: Math.round((y - Z / 2) * dpr) / dpr, cx: xx, cy: y, h: hash(xx, y) });
+      Object.keys(AUSLOC).forEach(function (k) { var c = ausP.apply(null, AUSLOC[k]), sx = c[0] * W, sy = c[1] * H, bd = 1e9; pts.forEach(function (q) { var d = (q.cx - sx) * (q.cx - sx) + (q.cy - sy) * (q.cy - sy); if (d < bd) { bd = d; spot[k] = q; } }); });   // each town on its nearest square of land
+      return true;
     };
-    var pick = function (n, seed) {   // n spots on land, apart from each other and from the marks showing; seeded: the same every time (the four found)
-      var out = [], tries = 0;
-      while (out.length < n && tries++ < 400) {
-        var r = seed != null ? hash(seed + tries * 7.13, seed * 3.1 + tries) : Math.random(), q = pts[Math.floor(r * pts.length)];
-        if (!q || q.d < 18) continue;
-        if (marks.concat(out).some(function (m) { return Math.hypot(m.p.cx - q.cx, m.p.cy - q.cy) < 30; })) continue;
-        out.push({ p: q });
-      }
-      return out;
-    };
-    var ripple = function (t, last) {   // a ripple setting off at t: its one or two spots, each lit as the front reaches it
-      rip.push({ t: t });
-      (last ? pick(FOUND, 17) : pick(Math.random() < .55 ? 1 : 2)).forEach(function (m) { m.at = t + RUN * uAt(m.p.d / RM); m.end = last ? Infinity : m.at + LIFE + Math.random() * 1.4; marks.push(m); });
+    var at = function (L, t) { var v = L.v; for (var i = 0; i < L.legs.length; i++) { var g = L.legs[i]; if (t <= g.s) return v; if (t < g.s + g.d) return g.a + (g.b - g.a) * quint((t - g.s) / g.d); v = g.b; } return v; };   // where a line is at t
+    var dur = function (dd) { return (done ? .8 : 1) * (1.25 + 2.35 * Math.abs(dd)); };   // found: straight to the four, a little quicker   // a move's length: slow and controlled, longer the further it goes
+    var aim = function (T, k) {   // the next town: each line to its own place on it, each on its own time; now and then a line sweeps somewhere else first and comes back, so it reads as a search
+      var p = spot[k]; if (!p) return null;
+      var course = function (L, to, s) {
+        var cur = at(L, T); L.v = cur; L.legs = [];
+        if (!done && Math.random() < .34) { var d0 = cur; for (var n = 0; n < 10; n++) { d0 = .08 + Math.random() * .84; if (Math.abs(d0 - cur) > .2 && Math.abs(d0 - to) > .2) break; } L.legs.push({ s: s, d: dur(d0 - cur), a: cur, b: d0 }); s += dur(d0 - cur) + .1 + Math.random() * .25; cur = d0; }
+        L.legs.push({ s: s, d: dur(to - cur), a: cur, b: to }); return s + dur(to - cur);
+      };
+      var a = course(LH, p.cy / H, T + Math.random() * .2), c = course(LV, p.cx / W, T + .15 + Math.random() * .4);
+      return { k: k, at: Math.max(a, c) };   // found when the second line gets there
     };
     var draw = function (t) {
       var i, k;
-      if (!(fc++ % 20)) ink = getComputedStyle(el).color || ink;
+      if (!(fc++ % 20)) { var c0 = getComputedStyle(el).color; if (c0 && c0 !== ink) { ink = c0; rgb = rgbOf(ink); } }
       x.setTransform(dpr, 0, 0, dpr, 0, 0); x.clearRect(0, 0, W, H);
-      rip = rip.filter(function (r) { return t - r.t < RUN; });
+      var la = Math.min(1, Math.max(0, (t - lineIn) / .8)); if (lineOut != null) la *= Math.max(0, Math.min(1, 1 - (t - lineOut) / .8));
+      var ly = at(LH, t) * H, lx = at(LV, t) * W;
       for (k = 0; k < B.length; k++) B[k].length = 0;
       for (i = 0; i < pts.length; i++) {
-        var q = pts[i], a = .2 + .07 * q.h;   // the card's dots: faint, each a hair different
-        a += Math.max(0, Math.sin(t * .7 + q.h * 40) - .965) * 9;   // now and then one catching the light, as on the card
-        for (k = 0; k < rip.length; k++) {
-          var u = (t - rip[k].t) / RUN; if (u <= 0) continue; var r = RM * ease(u), s = 11 + 18 * u, am = 1.05 * Math.pow(1 - u, 1.1) * Math.min(1, u / .05), e = q.d - r;
-          if (e > 3 * s || e < -90) continue;
-          a += am * (Math.exp(-e * e / (s * s)) + .45 * Math.exp(-(e + 2.4 * s) * (e + 2.4 * s) / (s * s * 1.6)));   // the band and its echo just inside it
-          if (e < 0) a += am * .1 * Math.exp(e / 50);   // a little warmth left behind
-        }
+        var q = pts[i], a = .2 + .07 * q.h;   // the card's dots: muted, each a hair different
+        if (la > 0) { var dy = q.cy - ly, dx = q.cx - lx; a += la * (.3 * Math.exp(-dy * dy / 14) + .3 * Math.exp(-dx * dx / 14)); }   // a faint wake along each line
         B[Math.max(0, Math.min(32, Math.round(a * 32)))].push(q);
       }
       x.fillStyle = ink;
-      for (k = 1; k < B.length; k++) { var L = B[k]; if (!L.length) continue; var zz = Z * (1 + .55 * Math.max(0, (k / 32 - .32) / .68)), dz = (zz - Z) / 2; x.globalAlpha = k / 32; x.beginPath(); for (i = 0; i < L.length; i++) x.rect(L[i].x - dz, L[i].y - dz, zz, zz); x.fill(); }   // the lit ones a touch larger as the ripple crosses them
+      for (k = 1; k < B.length; k++) { var L = B[k]; if (!L.length) continue; x.globalAlpha = k / 32; x.beginPath(); for (i = 0; i < L.length; i++) x.rect(L[i].x, L[i].y, Z, Z); x.fill(); }
       x.globalAlpha = 1;
-      marks = marks.filter(function (m) { return t < m.end + .9; });
-      marks.forEach(function (m) {   // the orange dots: up as the ripple reaches them (a soft ring spreading off each), held, gone
-        var g = t - m.at; if (g < 0) return;
-        var up = Math.min(1, g / .6), sc = 1 - Math.pow(1 - up, 3), fo = m.end === Infinity ? 1 : Math.max(0, Math.min(1, (m.end + .9 - t) / .9)), cx = m.p.cx, cy = m.p.cy;
-        if (g < 1.3) { var w = g / 1.3; x.globalAlpha = .4 * Math.pow(1 - w, 1.6) * fo; x.strokeStyle = OR; x.lineWidth = 1; x.beginPath(); x.arc(cx, cy, 3 + 13 * (1 - Math.pow(1 - w, 3)), 0, 6.2832); x.stroke(); }
-        var gl = x.createRadialGradient(cx, cy, 0, cx, cy, 9); gl.addColorStop(0, 'rgba(255, 122, 26, .32)'); gl.addColorStop(1, 'rgba(255, 122, 26, 0)');
-        x.globalAlpha = sc * fo; x.fillStyle = gl; x.beginPath(); x.arc(cx, cy, 9, 0, 6.2832); x.fill();
-        x.fillStyle = OR; x.beginPath(); x.arc(cx, cy, 2.6 * sc, 0, 6.2832); x.fill();
+      if (la > 0) {   // the two lines, very thin, their ends fading out
+        var lw = Math.max(.5, 1 / dpr), gh = x.createLinearGradient(0, 0, W, 0), gv = x.createLinearGradient(0, 0, 0, H), c1 = 'rgba(' + rgb + ', ' + (.5 * la).toFixed(3) + ')', c0 = 'rgba(' + rgb + ', 0)';
+        [gh, gv].forEach(function (g) { g.addColorStop(0, c0); g.addColorStop(.16, c1); g.addColorStop(.84, c1); g.addColorStop(1, c0); });
+        x.fillStyle = gh; x.fillRect(0, ly - lw / 2, W, lw); x.fillStyle = gv; x.fillRect(lx - lw / 2, 0, lw, H);
+      }
+      Object.keys(lit).forEach(function (kk) {   // the towns found: grey to orange, a little larger, a faint glow pulsing once; held
+        var m = lit[kk], p = spot[kk], g = t - m.at; if (!p || g < 0) return;
+        var f = m.out === Infinity ? 1 : 1 - (t - m.out) / .9; if (f <= 0) { delete lit[kk]; return; } f = Math.min(1, f);
+        var e = 1 - Math.pow(1 - Math.min(1, g / .5), 3), pu = g < .9 ? Math.sin(Math.PI * g / .9) : 0, z = Z + (3.2 - Z) * e + 1.1 * pu, rr = 5 + 6 * pu;
+        var gl = x.createRadialGradient(p.cx, p.cy, 0, p.cx, p.cy, rr); gl.addColorStop(0, 'rgba(255, 122, 26, ' + ((.16 + .22 * pu) * e * f).toFixed(3) + ')'); gl.addColorStop(1, 'rgba(255, 122, 26, 0)');
+        x.globalAlpha = 1; x.fillStyle = gl; x.beginPath(); x.arc(p.cx, p.cy, rr, 0, 6.2832); x.fill();
+        x.globalAlpha = e * f; x.fillStyle = OR; x.fillRect(p.cx - z / 2, p.cy - z / 2, z, z);
       });
       x.globalAlpha = 1;
-      x.fillStyle = ink; x.beginPath(); x.arc(ox, oy, 2.4, 0, 6.2832); x.fill();   // where it starts: the member
+      if (la > 0) {   // where they cross: the locator, four corners; a find, an orange square opening out of it
+        var r = 4.5, m2 = 2.2; x.strokeStyle = 'rgba(' + rgb + ', ' + (.75 * la).toFixed(3) + ')'; x.lineWidth = Math.max(.75, 1 / dpr); x.beginPath();
+        [[-1, -1], [1, -1], [1, 1], [-1, 1]].forEach(function (s) { var cx = lx + s[0] * r, cy = ly + s[1] * r; x.moveTo(cx - s[0] * m2, cy); x.lineTo(cx, cy); x.lineTo(cx, cy - s[1] * m2); }); x.stroke();
+        var lg = t - lock; if (lg >= 0 && lg < .8) { var w = lg / .8, rs = 4 + 7 * (1 - Math.pow(1 - w, 3)); x.strokeStyle = 'rgba(255, 122, 26, ' + (.6 * Math.pow(1 - w, 2)).toFixed(3) + ')'; x.strokeRect(lx - rs, ly - rs, rs * 2, rs * 2); }
+      }
     };
     var frame = function (now) {
       raf = 0; if (!on) return; if (!el.isConnected || (o.alive && !o.alive())) { on = false; return; }
       var t = (now - t0) / 1000;
-      if (!done && o.isDone && o.isDone()) { done = true; nextR = Infinity; doneAt = t; ripple(Math.max(t, (rip.length ? rip[rip.length - 1].t : t) + .9), true); marks.forEach(function (m) { if (m.end !== Infinity) m.end = Math.min(m.end, t + .4); }); if (o.onDone) o.onDone(); }
-      if (!done && t >= nextR) { ripple(t); nextR = t + PER; }
+      if (!done && o.isDone && o.isDone()) {   // found while it shows: the towns that aren't results go, the lines seek the four still unlit, then leave
+        done = true; Object.keys(lit).forEach(function (k) { if (AUSFOUND.indexOf(k) < 0 && lit[k].out === Infinity) lit[k].out = t; });
+        if (job && AUSFOUND.indexOf(job.k) < 0) job.skip = true;
+        jobs = AUSFOUND.filter(function (k) { return !lit[k] && !(job && !job.skip && job.k === k); }); if (o.onDone) o.onDone();
+      }
+      if (job && t >= job.at) {   // the crossing on its town: lit, the lines held a moment
+        if (!job.skip) { lit[job.k] = { at: t, out: Infinity }; lock = t; }
+        pendT = t + (job.skip ? .05 : HOLD); job = null;
+        if (!jobs.length && !done) { Object.keys(lit).forEach(function (k) { lit[k].out = pendT + 1.2; }); jobs = runOf(++round); pendT += .4; }   // the round's six found: they go as the next round begins
+      }
+      if (!job && jobs.length && t >= pendT) job = aim(t, jobs.shift());
+      if (done && !job && !jobs.length && lineOut == null) { lineOut = Math.max(t, pendT); endAt = lineOut + .9; }   // all four found: the lines fade away
       draw(t);
-      if (done && !rip.length && t > doneAt + RUN + 1 && !marks.some(function (m) { return m.end !== Infinity; })) { on = false; return; }   // all found and settled: the frame held
+      if (endAt >= 0 && t > endAt) { on = false; return; }   // held as it is
       raf = requestAnimationFrame(frame);
     };
-    var quiet = function () {   // one frame: a ripple part way, a few dots lit; done, the four
-      marks = []; rip = []; if (done) { pick(FOUND, 17).forEach(function (m) { m.at = -9; m.end = Infinity; marks.push(m); }); draw(60); return; }
-      rip.push({ t: 60 - RUN * .42 }); pick(3, 5).forEach(function (m) { m.at = -9; m.end = 999; marks.push(m); }); draw(60);
+    var quiet = function () {   // one frame: the lines crossing on a town just lit, two lit before it; found, the four and no lines
+      lit = {}; LH.legs = []; LV.legs = []; lock = -9;
+      if (done) { AUSFOUND.forEach(function (k) { lit[k] = { at: -9, out: Infinity }; }); lineIn = 1e9; lineOut = null; draw(60); return; }
+      var r0 = runOf(0); r0.slice(0, 3).forEach(function (k) { lit[k] = { at: -9, out: Infinity }; }); var p = spot[r0[2]]; if (p) { LH.v = p.cy / H; LV.v = p.cx / W; } lineIn = -9; lineOut = null; draw(60);
     };
-    var rest = function () { marks = []; rip = []; draw(0); };   // before it starts: the map alone
-    var ro = window.ResizeObserver ? new ResizeObserver(function () { if (o.alive && !o.alive()) { ro.disconnect(); return; } var w0 = W; if (!grid()) return; if (still) quiet(); else if (!on) rest(); else if (w0 !== W) marks = []; }) : null;
+    var rest = function () { lit = {}; LH.legs = []; LV.legs = []; lineIn = 1e9; lineOut = null; draw(0); };   // before it starts: the map alone
+    var ro = window.ResizeObserver ? new ResizeObserver(function () { if (o.alive && !o.alive()) { ro.disconnect(); return; } if (!grid()) return; if (still) quiet(); else if (!on) rest(); }) : null;
     if (ro) ro.observe(el);
     return {
       el: el,
-      start: function (delay) {   // the ripples from here on, once it has shown (delay, ms)
+      start: function (delay) {   // the search from here on, once the map has shown (delay, ms)
         if (still) return;
         var go = function () { if (on || (o.alive && !o.alive()) || !el.isConnected && W) return; if (!W && !grid()) { setTimeout(go, 250); return; }   // not laid out yet: again shortly
-          on = true; marks = []; rip = []; t0 = performance.now(); nextR = 0; if (done) { doneAt = 0; ripple(0, true); nextR = Infinity; } raf = requestAnimationFrame(frame); };
+          on = true; t0 = performance.now(); lit = {}; LH.legs = []; LV.legs = []; LH.v = .5; LV.v = .5; lineIn = 0; lineOut = null; endAt = -1; job = null; round = 0; pendT = .5; jobs = done ? AUSFOUND.slice() : runOf(0);
+          raf = requestAnimationFrame(frame); };
         setTimeout(go, delay || 0);
       }
     };
@@ -17511,7 +17560,7 @@ window.EvLoad = (function () {
   function pending(k) {   // a background process: null, or { done, label }
     var p = S.pend[k]; if (!p) return null;
     var done = p.done || (!p.hold && Date.now() - p.at > SEARCH_MS);   // hold: the demo's Step 4, searching till another state is picked
-    return { done: done, label: done ? '4 past results found' : 'Searching labs across Australia' };
+    return { done: done, label: done ? '4 past results found' : 'Searching labs across ' + CTRY[ctry()][0] };
   }
   /* the consult: October 2026, the days with times next week, six times a day, the four Australian zones */
   var WDAY = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'], OPEN = [26, 27, 28, 29, 30];
@@ -17687,7 +17736,7 @@ window.EvLoad = (function () {
         var nm = opts.name || 'Sam', nx = AREAS.filter(function (a) { return S.a[a.k].st !== 'done'; })[0], bk = S.a.past.st === 'done';   // the step it is on: the first not done, in order
         var b = booked(), wd = b ? b.wd : 'your consult';   // the booked day, for the words below
         /* the words of each moment (the journey driver's screens, "align the copy"): before any, the three steps; after one, the next; booked, the consult's; all three, done. [title, line, button]; no eyebrow and no news chip over the orb ("remove") */
-        var CP = sm.rec ? ['We\u2019re collecting your historical records', 'We\u2019re searching labs across Australia for your past results, so Dr Lee sees the full picture before ' + wd + '.', 'Go to overview']   /* step 4 ("create step 4: we are collecting your historical records"): the three done, the search still going */
+        var CP = sm.rec ? ['We\u2019re collecting your historical records', 'We\u2019re searching labs across ' + CTRY[ctry()][0] + ' for your past results, so Dr Lee sees the full picture before ' + wd + '.', 'Go to overview']   /* step 4 ("create step 4: we are collecting your historical records"): the three done, the search still going */
           : sm.n === 3 ? ['You\u2019re all set, ' + nm, 'Dr Lee has what they need for ' + wd + '.' + (searching() ? ' Your past results are in too.' : '')   /* Booked comes after step 4 now: the search done, its row says what was found */, 'Go to overview']
           : !sm.n ? ['Let\u2019s get to know you, ' + nm, 'Three quick steps which will give your doctor what he needs before your consult.', sm.state === 'not' ? 'Let\u2019s begin' : 'Continue']   /* "title: Let's get to know you, $name; sub only: Three quick steps..." (was Three steps before your consult; About 12 minutes. By the end, Dr Lee knows you before you meet.) */
           : nx.k === 'past' ? ['Next, book your consult', 'A 1-on-1 video consult with a longevity-focused doctor. It\u2019s where your plan starts.', 'Choose a time']   /* the main CTA ("CTA: Choose a time"; it was Book): what the next page is for */
@@ -17740,7 +17789,7 @@ window.EvLoad = (function () {
     }
     var justDone = null;   // the stage just finished, its card animated once on the intro
     var landAt = null;   /* opened straight on a step's page (the Overview card's Continue, not the home): no back there, nothing behind it ("if the user lands on the step directly, back shouldn't be there"); the home seen, a back again */
-    var step0Back = function () { backBtn.classList.toggle('hpNoBack', !!landAt && A === landAt.a && I <= landAt.i); };
+    var step0Back = function () { backBtn.classList.toggle('hpNoBack', !!landAt && A === landAt.a && I === 0); };   /* landed part-way through a step (it resumes where it was left, the past results search at its end): a back to the page before ('Need a back cta'); none on a step's first page only */
     function back() { if (!A) { if (opts.onBack) opts.onBack(); return; } if (ret != null) { var r = ret; ret = null; I = r; step(-1); return; } if (I === 0) { home(-1); return; } I--; keep(); step(-1); }
     function keep() { var st = S.a[A]; if (st.st !== 'done') st.i = I; save(); }
     function fwd() {   // the next step, or the area done: back to the home
@@ -18139,9 +18188,9 @@ window.EvLoad = (function () {
       },
       'you.search': function (scr) {
         if (!S.pend.search) S.pend.search = { at: Date.now() };
-        var p = pending('search'), al = live(tick), lab = h('span', { class: 'hpEy', role: 'status', text: p.label });   // al: this page's tick (show() counted it before building)
-        var hd = q('', p.done ? 'We found your past results' : 'We’ve started looking for your past results', 'We check pathology labs across Australia under your name and Medicare number. It runs in the background, so you can keep going.', true);   // centred ("title centred")
-        var map = ausMap({ from: S.a.wear.ans.state, done: p.done, still: !!opts.snap, alive: al, isDone: function () { var x = pending('search'); return !!(x && x.done); },
+        var p = pending('search'), al = live(tick), lab = h('span', { class: 'hpSr', role: 'status', text: p.label });   // al: this page's tick (show() counted it before building); lab: the search's state, for screen readers only (the line under the map removed: "remove")
+        var hd = q('', p.done ? 'We found your past results' : 'We’ve started looking for your past results', 'We check pathology labs across ' + CTRY[ctry()][0] + ' under your name and ' + CTRY[ctry()][1] + ' number. It runs in the background, so you can keep going.', true);   // centred ("title centred")
+        var map = ausMap({ country: ctry(), from: S.a.wear.ans.state, done: p.done, still: !!opts.snap, alive: al, isDone: function () { var x = pending('search'); return !!(x && x.done); },
           onDone: function () { lab.textContent = '4 past results found'; hd.querySelector('.hpH').textContent = 'We found your past results'; } });   // found while it shows: the label and the title say so, the map keeps the four
         var mw = h('div', { class: 'hpSearch' }, map.el, lab);
         scr.classList.add('hpSearchP'); scr.appendChild(hd); scr.appendChild(mw);
@@ -33418,7 +33467,7 @@ hairline({
       html: sm => {
         const stx = sm.state === 'done' ? 'Completed' : sm.state === 'prog' ? 'In progress' : 'Not started', cls = sm.state === 'done' ? 'hpStDone' : sm.state === 'prog' ? 'hpStProg' : 'hpStNot';
         const nx = ['wear', 'past', 'you'].filter(k => sm.st[k] !== 'done')[0], cur = HPC.NXT[nx] || HPC.NXT.you;
-        const ttl = sm.rec ? 'We\u2019re collecting your historical records.' : sm.state === 'done' ? 'You\u2019re all set for your consult with Dr Steven Lu.' : cur[0], sub = sm.rec ? 'Searching labs across Australia for your past results, so Dr Steven Lu sees the full picture.' : sm.state === 'done' ? '' : cur[1];   /* step 4: the records being collected, the consult still at the foot */
+        const ttl = sm.rec ? 'We\u2019re collecting your historical records.' : sm.state === 'done' ? 'You\u2019re all set for your consult with Dr Steven Lu.' : cur[0], sub = sm.rec ? 'Searching labs across ' + ({ uk: 'the UK', nz: 'New Zealand' }[opt('stHpCtry')] || 'Australia') + ' for your past results, so Dr Steven Lu sees the full picture.' : sm.state === 'done' ? '' : cur[1];   /* step 4: the records being collected, the consult still at the foot */
         const bar = '<span class="hpOvBar" role="progressbar" aria-valuemin="0" aria-valuemax="3" aria-valuenow="' + sm.n + '" aria-label="' + sm.n + ' of 3 steps done">' + [0, 1, 2].map(i => '<i class="' + (i < sm.n ? 'on' : i === sm.n && sm.st[nx] === 'prog' ? 'half' : '') + '"></i>').join('') + '</span>';   /* a progress bar, a third a step, the done ones orange ("I just need a progress bar"); the next half only when left part-way through it ("the half increment only when the user drops off in the middle of the flow") */
         const fresh = sm.state === 'not';   // not begun: the button across the card, nothing at its left ("CTA full, no left copy"; was only out of the primary's place)   /* not begun at all, out of the primary's place: no bar, the button across the card ("if the journey has not started yet, use fill full for the main CTA"); in its place, Next step's foot: what it takes at the left, the button at the right */
         const left = sm.state === 'done' || nx === 'you' ? '<div class="ovBookWhen"><b>Onboarding consultation</b><span>' + (sm.bk || 'Booked') + '</span></div>' : sm.state === 'not' ? '' : bar;   /* done: the consult at the foot, where the progress was ("put your consult on the left side instead of the increment"); step 3 too, booked by then ("replace Progress by OC info") */
@@ -33570,6 +33619,7 @@ hairline({
         const st = document.getElementById('stHpSt'); if (st) st.value = stepOf(); sync(); };
       if (ty) ty.addEventListener('change', apply); sync(); }
     { const t = document.getElementById('stHpRecP'); if (t) t.addEventListener('change', () => paintCard()); }   // Records processing
+    { const t = document.getElementById('stHpCtry'); if (t) t.addEventListener('change', () => { paintCard(); try { const w = inst && !inst.welcome && inst.where && inst.where(), ar = w && store.areas.find(x => x.k === 'you'); if (w && w.a === 'you' && ar && ar.steps[w.i] === 'search') inst.goId('you', 'search'); } catch (e){} }); }   /* Country: its map and words */
     { const t = document.getElementById('stHpRecC'), go = () => document.body.classList.toggle('hpRecCol', opt('stHpRecC') === 'col'); if (t) t.addEventListener('change', go); go(); requestAnimationFrame(() => requestAnimationFrame(go)); }   // Records card: Coloured (after the saved Tweaks are back too)
     { let v5 = document.body.classList.contains('hdrV5'); new MutationObserver(() => { const now = document.body.classList.contains('hdrV5'); if (now !== v5){ v5 = now; paintCard(); } }).observe(document.body, { attributes: true, attributeFilter: ['class'] }); }   // Latest <-> Live version: the card to its place in that version
     { const t = document.getElementById('stHpSt'); if (t) t.addEventListener('change', () => { if (t.value === 'live') return; const pl = t.value === 'plan'; hpSetting = true; store.preset(pl ? 'all' : t.value); hpSetting = false; setPlan(pl); t.value = stepOf(); if (inst && wrap.classList.contains('on')) open(); }); }
@@ -40675,7 +40725,7 @@ hairline({
           pick(cur, false); fpick(fsel); };
         window.__hpDocFlow = () => { built = ''; if (view === 'flows' && el.isConnected && !el.hidden) flowsDraw(); };   // step 1's order changed (Tweaks)
         /* the reveal's stills follow its tweaks ("colour doesn't reflect what we have on the page"): what they were drawn with is part of the key, and a change there draws them again */
-        const WSIG = () => { let pk = ''; try { pk = localStorage.getItem('everlab:w2CardPre') || ''; } catch (e){} return '|' + [...document.querySelectorAll('.tkPanel :is([id^="stHpW"], #stHpRecP, #stHpRecC)')].map(x => x.id + '=' + x.value).join('|') + pk; };
+        const WSIG = () => { let pk = ''; try { pk = localStorage.getItem('everlab:w2CardPre') || ''; } catch (e){} return '|' + [...document.querySelectorAll('.tkPanel :is([id^="stHpW"], #stHpRecP, #stHpRecC, #stHpCtry)')].map(x => x.id + '=' + x.value).join('|') + pk; };
         { let wT = 0; document.addEventListener('change', e => { if (!e.target || !/^stHp(W|Rec)/.test(e.target.id || '')) return; clearTimeout(wT); wT = setTimeout(() => { if (view === 'flows' && el.isConnected && !el.hidden) flowsDraw(); }, 250); }); }
         new MutationObserver(() => { if (view === 'flows' && el.isConnected && !el.hidden) flowsDraw(); else built = ''; }).observe(document.body, { attributes: true, attributeFilter: ['class'] });
         const zoom = () => { flows.style.setProperty('--hcZ', ZS[zi]); $('.hcZoom b').textContent = Math.round(ZS[zi] * 100) + '%'; try { localStorage.setItem('everlab:hcZoom2', String(ZS[zi])); } catch (e){} };

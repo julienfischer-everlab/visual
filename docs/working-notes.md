@@ -17487,3 +17487,30 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Search page: fade order title → map → rows and CTA; the ripple and orange dots over 5 s; the found state; the docs still.
   - Flows: headers stack (tops 0,0,0,0,782… at scroll 2600); titles held at the left when panned.
   - No errors.
+
+## Search map: scanning lines and a locator; Country tweak; back; nav pill
+
+- **Past results map** ("a subtle looping animation that feels like the system is actively searching across locations"): the ripple is gone.
+  - The map starts as the muted grey dot texture, still (no twinkle).
+  - Two very thin lines scan it: a level one moving up and down, an upright one moving left and right. Each moves on its own course and timing, every move easeInOutQuint. Each leaves a faint wake in the dots it passes.
+  - Where the lines cross, a small locator (four corner brackets) rides along.
+  - The crossing settles on predetermined lab towns. The second line arrives a beat after the first; sometimes a line sweeps somewhere else first and comes back, so it reads as a search.
+  - On a find, the town's own square warms from grey to Everlab orange, grows a little, and its faint glow pulses once. An orange square opens out of the locator and the lines hold for 0.7s.
+  - The town stays lit while the lines go on to the next. A round is six towns (the member's state capital first); they fade as the next round begins, and the rounds loop.
+  - Found ("4 past results found"): the lines go straight to the four results (Sydney, Melbourne, Brisbane, Adelaide), a little quicker, then fade away; the four stay lit. If the search finishes while the page is open, towns that aren't results fade and the lines seek the remaining results.
+  - Documentation still and reduced motion: one frame, the lines crossing on a town just lit, two lit before it.
+- The label under the map is removed ("remove"). It stays for screen readers only.
+- **Tweaks → Health profile → Country**: Australia / UK / New Zealand.
+  - Each country has its own dotted outline: the UK is Great Britain with Skye, the Outer Hebrides and Northern Ireland; New Zealand is its two islands and Stewart Island.
+  - Each has 18 lab towns in three rounds and four found results (UK: London, Manchester, Birmingham, Edinburgh; NZ: Auckland, Wellington, Christchurch, Hamilton).
+  - A tall country is as high as Australia is wide (300px), so it keeps the page's rhythm.
+  - The search's words follow the country: "across the UK … NHS number", "across New Zealand … NHI number"; also the "Searching labs across…" lines on the home and the records card.
+  - Changing it redraws the search page if it is showing, and the Documentation's flows.
+  - Step 1's Medicare page is unchanged.
+- **Back on a step landed on part-way** ("Need a back cta"): a step opened straight from the Overview resumes where it was left; back is now hidden only on a step's first page. Landing on the search page shows back, which goes to Your answers.
+- **Bottom nav pill** ("back movement 2x faster and snappier"): slides in 0.23s (was 0.46s) on a sharper ease, cubic-bezier(.2, 1, .3, 1).
+- Checked:
+  - Scanning over 16s: Sydney, then Perth found.
+  - The UK and NZ maps and their copy; landing on search shows back, which goes to Review.
+  - Found state: the four, lines faded.
+  - Docs still. No errors.
