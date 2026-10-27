@@ -17233,3 +17233,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - In app Off hides the CTA.
   - Back to overview lands on the Overview (version 9, receipt closed).
   - Phone `#split` and `#web` look right. No errors.
+
+## Gift receipt: rows 4px nearer again
+
+- The summary's rows are 4px nearer once more ("reduce gap 4px"): 10px between them on the desk (was 14) and 8px on the phone (was 12). Each group keeps its top and foot (8px on the lists).
+- Light theme: the secondary ground (the summary card, or each card when split) is black at 4% (`rgba(0,0,0,.04)`; "bg secondary 000 4%"; was `#f1ebe4`). Dark keeps `#1c1916`.
+- Split cards: 16px more under "Gift summary" before the first card ("+16px margin bottom"; 10 → 26).
+- Back to overview hugs its label, 28px each side, on the desk and the phone ("hug: too much padding left right"). It was half the column on the desk and the full column on the phone.
