@@ -10,11 +10,11 @@
   title, card with properties; use the orange imagery from the member card
   screen").
 
-  The Membership reveal's composition: a mono eyebrow, the big title centred,
-  then the card in the middle of the warm light, the actions under it and a
-  quiet line at the foot. The light is the card screen's own (its glow, centred
-  behind the card, over a dim warm sky going into the black); the card is
-  glass over it, darkened enough for its rows to read. Its rows are the gift
+  The Membership reveal's composition: the big title centred, then the card,
+  the actions under it and a quiet line at the foot. Over the top of the
+  screen, the Gift page's own photograph (the couple with the album), dimmed,
+  in a radial gone by half the screen's height ("use this imagery; radial 50%
+  on the top of the screen"); no eyebrow, and the card glass with no edge. Its rows are the gift
   summary the site shows today (Gift, For, Sent to, From, Occasion, Delivery)
   and the message, each an icon and a label at the left, the value at the
   right, as on Booking confirmed; the two buttons side by side under it.
@@ -32,7 +32,7 @@
 <style>
   :root{
     --bg:#0b0908; --ink:#f5f0ea; --ink2:rgba(245,240,234,.62); --ink3:rgba(245,240,234,.42);
-    --card:rgba(18,12,9,.42); --cardEdge:rgba(255,236,214,.13); --line:rgba(255,236,214,.09);
+    --card:rgba(255,244,232,.07); --line:rgba(255,236,214,.09);
     --secEdge:rgba(255,236,214,.22); --secHover:rgba(255,236,214,.06); --pri:#fff; --priInk:#151110; --priHover:#ece7e1;
     --acc:#f08a3c;
     --sans:'Saans','Geist','Helvetica Neue',Helvetica,Arial,sans-serif;
@@ -41,7 +41,7 @@
   }
   :root[data-theme="light"]{
     --bg:#faf7f3; --ink:#1d1a17; --ink2:rgba(29,26,23,.6); --ink3:rgba(29,26,23,.42);
-    --card:rgba(255,255,255,.7); --cardEdge:rgba(29,26,23,.08); --line:rgba(29,26,23,.08);
+    --card:rgba(255,255,255,.72); --line:rgba(29,26,23,.08);
     --secEdge:rgba(29,26,23,.18); --secHover:rgba(29,26,23,.04); --pri:#1d1a17; --priInk:#fff; --priHover:#36312c;
     color-scheme:light;
   }
@@ -50,43 +50,37 @@
   body{position:relative;margin:0;min-height:100vh;background:var(--bg);color:var(--ink);font:400 16px/1.4 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden;}
   svg{display:block;}
 
-  /* ---- the light: the card screen's glow, centred behind the card, over a dim warm sky going into the black (light: the glow into the white) ---- */
-  .skyClip{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;}   /* the light never longer than the page: no scroll past the foot */
-  .sky{position:absolute;left:0;right:0;top:0;height:var(--skyH, 1000px);pointer-events:none;overflow:hidden;}
-  .sky .img{position:absolute;inset:0;filter:saturate(.8);opacity:0;transform:translateY(6%);transition:opacity 1.6s ease, transform 2.2s cubic-bezier(.2,.7,.15,1);
-    background:radial-gradient(95% 38.7% at 50% 35.4%, #ffd99d 0%, color-mix(in oklab, #ffd99d, #e9983e) 18%, #e9983e 38%, #6d2305 70%, transparent 100%),
-               linear-gradient(180deg, color-mix(in oklab, #6d2305 45%, #9a8775) 0%, color-mix(in oklab, #6d2305 60%, #000) 44%, var(--bg) 74%);}
-  .sky::after{content:"";position:absolute;inset:0;background:rgba(8,6,5,.38);}   /* a blanket over it, as the card screen's, so the title and the rows read */
-  :root[data-theme="light"] .sky .img{background:radial-gradient(95% 38.7% at 50% 35.4%, #ffd99d 0%, color-mix(in oklab, #e9983e 55%, #fff) 45%, var(--bg) 100%);}
-  :root[data-theme="light"] .sky::after{display:none;}
+  /* ---- the picture: the Gift page's own photograph (the couple with the album, in the wood-toned living room), dimmed as there, in a radial from the top of
+     the screen gone by half its height ("use this imagery; radial 50% on the top of the screen"); light: the same, washed into the paper ---- */
+  .skyClip{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;}
+  .sky{position:absolute;left:0;right:0;top:0;height:max(100vh, 640px);pointer-events:none;}
+  .sky .img{position:absolute;inset:0;opacity:0;transform:scale(1.04);transition:opacity 1.6s ease, transform 2.4s cubic-bezier(.2,.7,.15,1);
+    background:url(../assets/gift/living-room.webp) 50% 30% / cover no-repeat;filter:brightness(.55) saturate(.9);
+    -webkit-mask:radial-gradient(110% 50% at 50% 0%, #000 30%, rgba(0,0,0,.55) 62%, transparent 100%);mask:radial-gradient(110% 50% at 50% 0%, #000 30%, rgba(0,0,0,.55) 62%, transparent 100%);}
+  @media (min-width:720px){ .sky .img{-webkit-mask:radial-gradient(70% 50% at 50% 0%, #000 30%, rgba(0,0,0,.55) 62%, transparent 100%);mask:radial-gradient(70% 50% at 50% 0%, #000 30%, rgba(0,0,0,.55) 62%, transparent 100%);} }
+  :root[data-theme="light"] .sky .img{filter:saturate(.85);opacity:0;} :root[data-theme="light"].on .sky .img{opacity:.42;}
   .on .sky .img{opacity:1;transform:none;}
-  .sky canvas{position:absolute;inset:0;width:100%;height:100%;}   /* warm specks drifting up through the light */
-  @media (min-width:720px){ .sky{left:50%;right:auto;width:min(100%, 1100px);transform:translateX(-50%);-webkit-mask:radial-gradient(50% 62% at 50% 35%, #000 40%, transparent 100%);mask:radial-gradient(50% 62% at 50% 35%, #000 40%, transparent 100%);} }   /* the desk: the light a pool behind the column, not a band across the page */
 
   /* ---- the page: the wordmark, then the column ---- */
   .top{position:relative;z-index:1;display:flex;justify-content:center;padding:28px 24px 0;}
   .logo{display:block;width:112px;color:var(--ink);}
   .logo svg{width:100%;height:auto;}
-  .rc{position:relative;z-index:1;width:100%;max-width:600px;margin:0 auto;padding:56px 24px 48px;display:flex;flex-direction:column;align-items:center;text-align:center;}
-  .eb{display:inline-flex;align-items:center;gap:10px;margin:0;font:400 12px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink2);}
-  .eb i{width:8px;height:8px;background:var(--acc);}
-  h1{margin:20px 0 0;font:500 clamp(32px, 4.2vw + 18px, 52px)/1.06 var(--sans);letter-spacing:-.025em;text-wrap:balance;}
+  .rc{position:relative;z-index:1;width:100%;max-width:600px;margin:0 auto;padding:88px 24px 48px;display:flex;flex-direction:column;align-items:center;text-align:center;}
+  h1{margin:0;font:500 clamp(32px, 4.2vw + 18px, 52px)/1.06 var(--sans);letter-spacing:-.025em;text-wrap:balance;}
   .sub{max-width:30em;margin:16px 0 0;font-size:16px;line-height:1.45;color:var(--ink2);text-wrap:pretty;}
   .sub b{font-weight:400;color:var(--ink);overflow-wrap:anywhere;}
 
   /* ---- the card: glass over the light; its rows an icon and a label at the left, the value at the right (Booking confirmed's) ---- */
-  .card{width:100%;margin-top:40px;padding:6px 24px 8px;border-radius:24px;text-align:left;background:var(--card);box-shadow:inset 0 0 0 1px var(--cardEdge);
+  .card{width:100%;margin-top:40px;padding:6px 24px 8px;border-radius:24px;text-align:left;background:var(--card);
     -webkit-backdrop-filter:blur(28px) saturate(130%);backdrop-filter:blur(28px) saturate(130%);}
-  :root[data-theme="light"] .card{box-shadow:inset 0 0 0 1px var(--cardEdge), 0 24px 60px rgba(120,64,20,.08);}
+  :root[data-theme="light"] .card{box-shadow:0 24px 60px rgba(120,64,20,.08);}   /* no edge ("remove card border"): the light page's card a soft shadow only */
   .cardH{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 0 12px;font-size:14px;color:var(--ink2);}
-  .cardH span:last-child{font:400 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);}
   .rows{margin:0;}
-  .row{display:grid;grid-template-columns:minmax(0, 9em) minmax(0, 1fr);column-gap:16px;padding:15px 0;border-top:1px solid var(--line);font-size:15px;line-height:20px;}
+  .row{display:grid;grid-template-columns:minmax(0, 9em) minmax(0, 1fr);column-gap:16px;padding:13px 0;border-top:1px solid var(--line);font-size:15px;line-height:20px;}
   .row dt{display:flex;align-items:flex-start;gap:8px;color:var(--ink2);}
   .row dt svg{flex:none;width:16px;height:16px;margin-top:2px;fill:none;stroke:currentColor;stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round;}
   .row dd{margin:0;color:var(--ink);overflow-wrap:anywhere;}
-  .row.msg dd{position:relative;padding-left:12px;}
-  .row.msg dd::before{content:"";position:absolute;left:0;top:2px;bottom:2px;width:2px;border-radius:1px;background:var(--acc);}   /* the message, its orange rule (the site's own) */
+  .row.msg dd{font-style:italic;}   /* the message in italics, no rule beside it ("remove orange bar; italic font") */
 
   /* ---- the actions, side by side; the help line at the foot ---- */
   .btns{display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%;margin-top:32px;}
@@ -109,12 +103,10 @@
   /* ---- the phone: the rows a label over its value ---- */
   @media (max-width:479px){
     .top{padding-top:24px;}
-    .rc{padding:44px 20px 40px;}
-    h1{margin-top:18px;}
+    .rc{padding:76px 20px 40px;}
     .card{margin-top:32px;padding:4px 20px 6px;}
-    .row{grid-template-columns:minmax(0, 1fr);row-gap:6px;padding:14px 0;}
+    .row{grid-template-columns:minmax(0, 1fr);row-gap:6px;padding:12px 0;}
     .row dd{padding-left:24px;}
-    .row.msg dd{margin-left:24px;padding-left:12px;}
     .btns{gap:12px;margin-top:28px;}
     .foot{margin-top:28px;}
   }
@@ -124,7 +116,7 @@
 </style>
 </head>
 <body>
-<div class="skyClip" aria-hidden="true"><div class="sky" id="sky"><div class="img"></div><canvas id="specks"></canvas></div></div>
+<div class="skyClip" aria-hidden="true"><div class="sky" id="sky"><div class="img"></div></div></div>
 <header class="top"><a class="logo" href="#" data-inert aria-label="Everlab"><svg aria-hidden="true" focusable="false" viewBox="0 0 124 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g clip-path="url(#grLogoClip)">
 <path d="M49.3525 19.1583L49.3188 19.2518C49.3007 19.3037 49.254 19.3219 49.2178 19.3219C49.1815 19.3219 49.1375 19.3037 49.1193 19.2518L44.4665 6.26393H42.3629L47.7178 20.8275C47.9484 21.4558 48.552 21.8763 49.2204 21.8763C49.8888 21.8763 50.495 21.4532 50.7229 20.8223L56.0467 6.26133H54.0312L49.3551 19.1557L49.3525 19.1583Z" fill="currentColor"/>
@@ -147,11 +139,10 @@
 </defs>
 </svg></a></header>
 <main class="rc" id="rc">
-  <p class="eb"><i aria-hidden="true"></i>Payment received</p>
   <h1>Your gift is on its way to Olive</h1>
   <p class="sub">We’ll email it to Olive as soon as your payment is confirmed. Your receipt is on its way to <b>marc.taylor@example.com</b>.</p>
   <section class="card" aria-labelledby="sumH">
-    <div class="cardH"><span id="sumH">Gift summary</span><span>27 Oct 2026</span></div>
+    <div class="cardH"><span id="sumH">Gift summary</span></div>
     <dl class="rows" id="rows"></dl>
   </section>
   <div class="btns"><a class="btn sec" href="#" data-inert>Send another gift</a><a class="btn pri" href="#" data-inert>Sign in</a></div>
@@ -164,6 +155,7 @@
   if (/(^|[#&])light(&|$)/.test(location.hash)) root.dataset.theme = 'light';
   // the rows: an icon (16, stroked as Booking confirmed's), the label, the value
   var IC = {
+    paid: '<path d="M4 2.5h8v11l-1.6-1-1.2 1-1.2-1-1.2 1-1.2-1L4 13.5z"/><path d="M6 5.8h4M6 8.3h4"/>',
     gift: '<path d="M2.5 6h11v2.6h-11z"/><path d="M3.5 8.6v4.9h9V8.6"/><path d="M8 6v7.5"/><path d="M8 6C6.9 3.6 4.2 3.3 4.2 4.9 4.2 6 6.4 6 8 6zm0 0c1.1-2.4 3.8-2.7 3.8-1.1C11.8 6 9.6 6 8 6z"/>',
     for: '<path d="M8 7.6a2.6 2.6 0 1 0 0-5.2 2.6 2.6 0 0 0 0 5.2z"/><path d="M3 13.6c.6-2.5 2.6-4 5-4s4.4 1.5 5 4"/>',
     mail: '<rect x="2.5" y="3.5" width="11" height="9" rx="1.8"/><path d="m3 4.6 5 3.9 5-3.9"/>',
@@ -175,6 +167,7 @@
   // the gift summary the site shows today, the Gift page's story in it
   var ROWS = [
     ['gift', 'Gift', 'Health check'],
+    ['paid', 'Purchase date', '27 Oct 2026'],   // the date a row of its own ("purchase date: 27 Oct 2026"; was the card head's mono date)
     ['for', 'For', 'Olive Martin'],
     ['mail', 'Sent to', 'olive.martin@example.com'],
     ['from', 'From', 'Marc'],
@@ -187,40 +180,8 @@
   [].forEach.call($('rc').children, function(el, i){ el.style.setProperty('--i', i); });
   document.addEventListener('click', function(e){ var a = e.target.closest('[data-inert]'); if (a) e.preventDefault(); });   // the links lead nowhere in the prototype
 
-  // the light's height: its glow's centre (35.4% down it) a quarter of the way into the card
-  var sky = $('sky'), card = document.querySelector('.card');
-  var fit = function(){ var y = card.offsetTop + card.offsetHeight * .25; sky.style.setProperty('--skyH', Math.round(y / .354) + 'px'); };
-  fit(); addEventListener('resize', fit);
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
   requestAnimationFrame(function(){ requestAnimationFrame(function(){ root.classList.add('on'); }); });
 
-  // the specks: warm dust rising slowly through the light, brightest near the glow, twinkling
-  var cv = $('specks'), reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (!reduce && cv.getContext){
-    var x = cv.getContext('2d'), P = [], N = 46;
-    var seed = function(p, w, h, first){ p.x = w * (.2 + Math.random() * .6); p.y = first ? h * (.12 + Math.random() * .6) : h * (.55 + Math.random() * .2); p.vy = -(4 + Math.random() * 10); p.vx = (Math.random() - .5) * 4; p.z = .6 + Math.random() * 1.3; p.a = .25 + Math.random() * .55; p.ph = Math.random() * 6.28; p.life = 0; p.max = 6 + Math.random() * 8; return p; };
-    var last = performance.now();
-    var tick = function(now){
-      var dt = Math.min(.05, (now - last) / 1000); last = now;
-      var w = cv.clientWidth, h = cv.clientHeight; if (!w || !h){ requestAnimationFrame(tick); return; }
-      var dpr = Math.min(2, window.devicePixelRatio || 1); if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(h * dpr)){ cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); }
-      x.setTransform(dpr, 0, 0, dpr, 0, 0); x.clearRect(0, 0, w, h);
-      if (!P.length) for (var i = 0; i < N; i++) P.push(seed({}, w, h, true));
-      var lt = root.dataset.theme === 'light', cx = w / 2, cy = h * .354;
-      P.forEach(function(p){
-        p.life += dt; p.x += p.vx * dt; p.y += p.vy * dt;
-        if (p.life > p.max || p.y < 0) seed(p, w, h, false);
-        var k = p.life / p.max, fade = Math.min(1, k / .15) * Math.min(1, (1 - k) / .25);
-        var near = Math.max(0, 1 - Math.hypot((p.x - cx) / (w * .5), (p.y - cy) / (h * .4)));   // brighter in the glow
-        var a = p.a * fade * (.35 + .65 * near) * (.7 + .3 * Math.sin(now / 600 + p.ph));
-        if (a < .01) return;
-        x.fillStyle = lt ? 'rgba(196,108,40,' + (a * .8).toFixed(3) + ')' : 'rgba(255,214,160,' + a.toFixed(3) + ')';
-        x.beginPath(); x.arc(p.x, p.y, p.z / 2, 0, 6.2832); x.fill();
-      });
-      requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
-  }
 })();
 </script>
 </body>

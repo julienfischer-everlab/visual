@@ -16984,3 +16984,26 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Picking a state scrolls to it and outlines it.
 - **Live version**: the Concierge card's two columns 32 apart ("col -8px gap"; was 40). Tweaks → Insights is hidden there, since the Live version has no insights carousel.
 - Checked: the Overview card in every state, the same as before (titles, buttons, bars: Get started; Continue with half; Book a time; Book a time with on/half; Complete profile; Continue; View; Review my plan). The doc shows the nine with the same words, at L and at XS (361), dark and light. No errors.
+
+## Records card copy and motion; reveal tweaks on the reveal only; receipt photo; records above on the phone; Recent insights on the Live version
+
+- **Records card**:
+  - Under its title, "We will notify you once we get them." (14px, the primary card's sub colour).
+  - The dot has no halo and breathes slowly: 4s, scale 1 → 1.22, opacity .82 → 1.
+  - The specks are half as strong (alpha .2–.475) and half as fast (3–6.4s each).
+  - Its radius: both cards are already 22px, the same as the primary card, in both versions and every breakpoint (measured), so it stays.
+- **Phone**: one column puts the Records card *above* the primary card ("on XS records processing above primary card"). The desk keeps it stacked under. Placement follows the column count and is redone when the Overview's width changes.
+  - V4 XS: 6 under the greeting, 12 to the card.
+  - Live XS: 22 under the Concierge card, 16 to the card.
+- **Tweaks → First-time user** (General, Opening, Card screen) shows only on the Membership reveal page, its source of truth, and no longer on the Overview (`data-pages="wel"`).
+- **Live version: Recent insights**, the Latest version's own section (heading, See all, the rail, its arrows and dots), now sits after the Live version's content, on the desk and the phone.
+  - Tweaks → Insights shows there again, without Position: the Live version always has the section.
+  - A saved Hero position no longer hides it there (`insHero` only off the Live version). This reverses the earlier "hide the Insights tweaks on the Live version".
+- **Gift receipt**:
+  - The Gift page's own photograph (the couple with the album in the wood-toned living room, `assets/gift/living-room.webp`, 1600px, 85 KB, taken from gift.html's picture) replaces the orange glow. It's dimmed (brightness .55) in a radial from the top of the screen, gone by half its height. Light: washed into the paper at 42%. No specks.
+  - No "Payment received" eyebrow, and the title is 32px lower.
+  - The card has no border: warm white 7% glass (light: white glass with a soft shadow).
+  - The purchase date is a row ("Purchase date: 27 Oct 2026", a receipt icon) instead of the card head's mono date.
+  - Rows are 2px tighter above and below (13; phone 12).
+  - The message is in italics, without the orange rule.
+- Checked: records above on V4/Live XS and stacked on the desk. Insights on the Live desk and XS, a saved Hero ignored there. Reveal groups absent from the Overview and present on the reveal. The receipt on desk, XS and light. No errors.
