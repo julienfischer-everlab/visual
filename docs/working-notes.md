@@ -17644,3 +17644,11 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - No errors.
 - **Frame style: only the box white, corner squares** ("on the frame one only the frame rectangle should be white, the rest of the trails opacity"; "put a square at each corner of the frame"): the box's four sides are solid white; the lines past its corners start at 35% and fade out before the map's edge. A 5px solid square sits on each corner. Tweak inside Past results: **Frame trails** (0 to 100%, 35%). Checked: the settled box round the east coast with its corner squares and three towns lit; faint trails; no errors.
 - **Frame corner squares as in the reference** ("like this"): each square (6px) now sits outside its corner, diagonally, overlapping the corner by 1.5px, rather than centred on it. Checked on a settled box; no errors.
+- **Each map style saved on its own** ("want to be able to save the map style independently; need a save button"): under Map style, a Style settings row with **Save Crosshair** / **Save Frame** (it names the style showing) and its state (Saved / Unsaved changes / Not saved yet).
+  - Save keeps the pattern's values (pattern, grid, spacing, mark size, active, inactive, line gap, line length, frame trails, radius) for that style only, in this browser (everlab:hpMapStyle).
+  - Choosing a style puts back what was saved for it.
+  - On load, the showing style's saved values go on top of the panel's own.
+  - Checked: Crosshair saved as Dots 6px, Frame as Plus 5px; switching brings each back; it survives a reload.
+- **Frame: only inside lit** ("only active dots INSIDE the frame should be highlighted, not outside"): the marks inside the box are at the active opacity, those outside at the inactive; there's no soft edge past the box now.
+- **Report items 2px apart** ("gap 2px").
+- **+24px before the buttons** ("+24px padding left button gap"): the gap between the words and the Upload button or the switch goes from 14px to 38px.
