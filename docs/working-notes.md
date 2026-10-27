@@ -16723,3 +16723,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 ## Health profile card, step 4: usual sphere size, no foot
 
 - "Keep same sphere size! No CTA for this state and no left copy". In step 4 the card's sphere is its usual size again (the 2x rules are gone). The particles still drift across the card into it. The foot (the consult at the left, View at the right) isn't drawn: eyebrow, title, line and sphere only, and the whole card still opens the profile. Booked keeps its foot. Checked at XS and L. No page errors.
+
+## Health profile home: the historical records row removed
+
+- "Remove 4" / "remove historical step": the profile's home no longer lists "Your historical records" (the 4th row and its turning-ring CSS are gone). It shows the three steps in every state. Step 4 keeps its title and line ("We're collecting your historical records…") and the Overview card's step 4; Booked keeps "…Your past results are in too." Checked at XS and L. No page errors.
