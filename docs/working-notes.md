@@ -16951,3 +16951,23 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The two-column check is measured without the stack's own placement, which would otherwise make a second column of its own on the phone.
 - **Tweaks → Concierge card → Activation cards: On / Off.** Off hides "Explore more" and its cards on the Live version's Concierge card. On the desk the card goes to one column, its question and field across.
 - Checked: V4 desk (primary 197 + 24 + records 56 = the services' 277), V4 XS, Live desk (456 + 28 + 56 = 540) and Live XS; the dot is 8px. Concierge On/Off on desk and XS. No errors.
+
+## Gift receipt page; services grid 16; Concierge tweak on the Live version only
+
+- **Gift receipt** (`visuals/gift-receipt.html` → `dist/gift-receipt.html`, `#gift-receipt`; Version → Standalone flow → Gift receipt; Home → Gift). It's what the giver sees once they've paid. It has the Membership reveal's composition and light:
+  - The Everlab wordmark, a mono eyebrow ("■ Payment received", the site's orange square), and the big title centred: "Your gift is on its way to Olive".
+  - A line on the email and the receipt.
+  - A glass card over the light.
+  - The two buttons side by side (Send another gift, Sign in) and the help line at the foot (support@everlab.com.au).
+  - **The light** is the card screen's coded glow: the same radial glow and dim warm sky going into the black, saturation .8. A blanket (38%) keeps the title and rows readable. The glow's centre is fitted a quarter of the way into the card. On the desk it's a pool behind the column, masked to nothing at its edges. Warm specks rise slowly through it, brightest in the glow.
+  - Light theme: the glow into a warm white, the card white glass, the primary button in ink. It follows the bar's Mode (or `#light`).
+  - **The card** is the site's gift summary today: Gift (Health check), For, Sent to, From, Occasion, Delivery. Its rows are laid out as on Booking confirmed: an icon and label at the left, the value at the right. On the phone the label sits over the value.
+  - The message is last, with the site's orange rule.
+  - The story is the Gift page's: Marc's gift and his message, on its way to Olive.
+  - Coming in: the light rises, then each part comes up 12px in turn, the title out of a blur. Reduced motion: no animation.
+  - Fonts: Saans named, Geist / Geist Mono from Google Fonts stand in.
+  - XS/S framed like the Clinic page; no tweaks of its own (the Tweaks menu hides).
+- **CLAUDE.md**: the publish files now include `gift-receipt.html`.
+- **Overview (V4) desk**: the services' 2 × 2 is 16 apart ("-8px grid gap"; was 24).
+- **Tweaks → Concierge card** shows only with the Live version, the one that has the card.
+- Checked: the receipt alone (desk, XS, dark and light; 7 rows, no sideways scroll, page as long as its content) and in the prototype. `#gift-receipt` opens it with the Tweaks hidden; XS frames it; the menu goes on to the Clinic and Home lists it. Services gap 16. Concierge group hidden on V4, shown on V5. No errors.
