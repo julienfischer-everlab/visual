@@ -12644,6 +12644,8 @@
         <div class="tkGroup" data-pages="gr">
         <div class="tkSub">Gift receipt</div>
         <div class="tkRow"><span class="lbl">Background</span><select id="stGrBg" class="tkSegSel" aria-label="The photograph at the top of the page, or a plain ground"><option value="photo" selected>Photo</option><option value="none">None</option></select></div>
+        <div class="tkRow"><span class="lbl">Split cards</span><select id="stGrSplit" class="tkSegSel" aria-label="The summary as three cards, one a group, or one card"><option value="on">On</option><option value="off" selected>Off</option></select></div>
+        <div class="tkRow"><span class="lbl">In app</span><select id="stGrApp" class="tkSegSel" aria-label="Bought in the app: Back to overview under the summary; on the web: no button"><option value="on" selected>On</option><option value="off">Off</option></select></div>
         </div>
         <div class="tkGroup" data-pages="gift">
         <div class="tkSub">Gift</div>
@@ -40304,8 +40306,9 @@ hairline({
       // the Gift receipt, the same way: the giver's page once they've paid (gift-receipt.html), dark or light as the bar's Mode; at a forced XS or S the page at the phone's width (CSS)
       const gr = document.getElementById('grPage');
       const grHide = () => { if (!document.body.classList.contains('grOn')) return; document.body.classList.remove('grOn'); if (versionSel && versionSel.value === 'gr') versionSel.value = String(version); if (window.__tkPages) window.__tkPages(); };
-      const grTheme = () => { const f = document.getElementById('grFrame'), t = document.getElementById('themeSel'), bg = document.getElementById('stGrBg'); try { const r = f && f.contentDocument && f.contentDocument.documentElement; if (r){ r.dataset.theme = t && t.value === 'light' ? 'light' : 'dark'; r.classList.toggle('noBg', !!bg && bg.value === 'none'); } } catch (e){} };   // the theme, and Tweaks -> Gift receipt -> Background
-      { const t = document.getElementById('themeSel'); if (t) t.addEventListener('change', grTheme); const bg = document.getElementById('stGrBg'); if (bg) bg.addEventListener('change', grTheme); }
+      const grTheme = () => { const f = document.getElementById('grFrame'), t = document.getElementById('themeSel'), bg = document.getElementById('stGrBg'); try { const r = f && f.contentDocument && f.contentDocument.documentElement; if (r){ r.dataset.theme = t && t.value === 'light' ? 'light' : 'dark'; r.classList.toggle('noBg', !!bg && bg.value === 'none'); const ia = document.getElementById('stGrApp'); r.classList.toggle('inApp', !ia || ia.value !== 'off'); const sp = document.getElementById('stGrSplit'); r.classList.toggle('split', !!sp && sp.value === 'on'); } } catch (e){} };   // the theme, and Tweaks -> Gift receipt -> Background, Split cards, In app
+      { const t = document.getElementById('themeSel'); if (t) t.addEventListener('change', grTheme); ['stGrBg', 'stGrApp', 'stGrSplit'].forEach(id => { const x = document.getElementById(id); if (x) x.addEventListener('change', grTheme); }); }
+      addEventListener('message', e => { const f = document.getElementById('grFrame'); if (!f || e.source !== f.contentWindow || !e.data || e.data.everlab !== 'gr:overview') return; if (versionSel){ versionSel.value = '9'; versionSel.dispatchEvent(new Event('change', { bubbles: true })); } });   // its Back to overview: the Overview
       const grShow = () => { if (!gr) return; hide(); hlHide(); igHide(); rvHide(); gfHide(); clHide(); if (window._doc) window._doc.hide(); if (window._cc) window._cc.hide();
         if (window._hp) window._hp.close(true); if (window._ar && window._ar.isOpen()) window._ar.close();
         const dev = gr.querySelector('.grDev'); if (dev && !dev.firstChild){ const f = document.createElement('iframe'); f.id = 'grFrame'; f.src = 'gift-receipt.html'; f.title = 'Gift receipt'; f.addEventListener('load', grTheme); dev.appendChild(f); }

@@ -17213,3 +17213,23 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 
 - The summary's rows are 8px nearer each other ("-8px gap between props"): 18px between them on the desk (was 26) and 16px on the phone (was 24).
 - Each group keeps 4px at its top and foot, so the question over it and the space under it stay as they were.
+
+## Gift receipt: one CTA behind In app; Split cards; rows 4px nearer
+
+- **Send another gift is gone**, and so is Sign in ("remove Send another gift").
+  - The one CTA is **Back to overview**, shown when **Tweaks → Gift receipt → In app** is On (the default).
+  - In app Off (bought on the web) shows no CTA at all; the help line follows the summary.
+  - The button is half the column on the desk and the column's width on the phone, 56 and 36 under the summary.
+  - In the app, Back to overview closes the receipt and shows the Overview: the page posts `gr:overview` to the app.
+  - The page's own link takes `#web` for no CTA.
+- **Tweaks → Gift receipt → Split cards**, On or Off (Off by default) ("split in 3 cards"):
+  - On: "Gift summary" stands on the page, and each of the three groups is a card of its own on the secondary ground, 12 apart. The padding is 14/24/12, or 12/20/10 on the phone.
+  - Off: the one card, as before.
+  - The page's own link takes `#split`.
+- **Rows 4px nearer again** ("reduce gap by 4px"): 14px between them on the desk (was 18) and 12px on the phone (was 16). Each group's top and foot are kept with 6px on the lists.
+- Checked:
+  - The three tweaks show alone on the Gift receipt.
+  - Split moves the ground from the card to the groups (12 apart).
+  - In app Off hides the CTA.
+  - Back to overview lands on the Overview (version 9, receipt closed).
+  - Phone `#split` and `#web` look right. No errors.
