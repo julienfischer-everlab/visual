@@ -16833,3 +16833,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - "128 96 logo zone; logo placement bottom right": the reserved zone at each location's bottom right is now 128 × 96 (was 96 × 96), still 10% red.
 - A logo keeps its ratio, contained and set to the zone's bottom right (`object-position: right bottom`). MeasureUp's comes out at 128 × 46, flush with the zone's right and bottom edges.
 - Checked at 1440 and 393: the zone is 128 × 96 and flush right, the logo's at its foot, no sideways scroll, no errors.
+
+## Clinic: Tweaks → Frame indicator, On / Off
+
+- "Tweak Frame indicator (red): on, off": Tweaks now shows on the Clinic's page, with a **Clinic** group of its own and nothing else. Its **Frame indicator** row is On (the default) or Off.
+- Off removes the logo zones' 10% red fill. The 128 × 96 zone keeps its place, so logos and layout don't move.
+- The prototype sets `noFrame` on the page's root, when the page loads and on each change. Opened by itself, `clinic.html#noframe` does the same. The row is saved with the panel's Save, like every tweak.
+- Checked: Tweaks on the Clinic page shows the Clinic group alone, and the Overview's doesn't show it. Off clears the red, On brings it back. No errors.
