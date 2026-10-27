@@ -1195,6 +1195,15 @@
                inset 0 -1px 0 rgba(255,255,255,calc(.05 * var(--navActK))),
                0 2px 8px -5px rgba(0,0,0,calc(.5 * var(--navActK)));
   }
+  /* the lit tab's layer as one pill of its own that slides to the tab lit ("when the page changes, the background should move left or right"): from the tab lit before, in this dock or the one the page before showed;
+     the tabs over it, their own layer off while it's there */
+  .mIsland.mPillOn{position:relative;} .mIsland.mPillOn > .mTab{position:relative;z-index:1;} .mIsland.mPillOn > .mTab.on{background:none;box-shadow:none;}
+  .mIsland > .mPill{position:absolute;left:0;top:4px;width:0;height:calc(var(--navH) - 8px);border-radius:calc((var(--navH) - 8px)/2);pointer-events:none;opacity:0;z-index:0;
+    background:linear-gradient(160deg,rgba(255,255,255,calc(.20 * var(--navActK))),rgba(255,255,255,calc(.07 * var(--navActK))));
+    box-shadow:inset 0 1px 0 rgba(255,255,255,calc(.32 * var(--navActK))),inset 0 -1px 0 rgba(255,255,255,calc(.05 * var(--navActK))),0 2px 8px -5px rgba(0,0,0,calc(.5 * var(--navActK)));
+    transition:transform .46s cubic-bezier(.3,.9,.25,1),width .46s cubic-bezier(.3,.9,.25,1),opacity .2s ease;}
+  body.light .mIsland > .mPill{background:linear-gradient(160deg,rgba(255,255,255,calc(.9 * var(--navActK))),rgba(255,255,255,calc(.5 * var(--navActK))));box-shadow:inset 0 1px 0 rgba(255,255,255,calc(.95 * var(--navActK))),0 2px 8px -5px rgba(46,31,26,calc(.28 * var(--navActK)));}
+  @media (prefers-reduced-motion: reduce){ .mIsland > .mPill{transition:opacity .2s ease;} }
   /* One bar: the same two pills with the gap closed and their facing corners
      squared, so they read as a single continuous control. Done in CSS rather
      than by moving the chat into the island, because the dock is one asset
@@ -1920,6 +1929,13 @@
   body.v2Tab #phone #mTabsV2 .v2Tab{flex:1 1 0;min-width:0;height:36px;padding:0 12px;display:flex;align-items:center;justify-content:center;} body.v2Tab:not(.v4Tab) #phone #mTabsV2 .v2Tab.v4Only{display:none;}
   body.v2Tab #phone #mTabsV2 .mTabUp{display:inline-flex;flex:none;margin:0 0 0 12px;position:relative;z-index:1;height:44px;padding:0 16px;gap:7px;align-items:center;border-radius:999px;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.09);text-decoration:none;font-size:13.5px;}
   body.light.v2Tab #phone #mTabsV2 .mTabUp{box-shadow:inset 0 0 0 1.5px rgba(46,31,26,.1);}
+  /* the Insights phone set as the Overview's ("make the insights page consistent with the padding and spacing of the overview"): its bar 14 under the status bar as the Overview's field (8 more),
+     16 at the sides (13 before), the track 48 tall as the field with its tabs 40 in it, Upload 44 as the Overview's round buttons, 10 between them; the page's blocks 16 from the edges too */
+  body.m20.v2Tab #phone #mTabsV2{margin-top:14px;margin-left:16px;margin-right:16px;min-height:48px;padding-right:0;}   /* Upload's edge at the 16 too */
+  body.m20.v2Tab #phone #mTabsV2 .v2Tab{height:40px;} body.m20.v2Tab #phone #mTabsV2 .mTabUp{margin-left:10px;}
+  body.m20 #phone :is(#mV4, #mBento, #mSearch, #mRecs, #mRepCards, #mMedsWrap, .secHead.rcHeroHead){padding-left:16px;padding-right:16px;}
+  body.m20 #phone#phone :is(#mHeroOrgan, #mRepCarHost) .rcHeroHead, body.m20 #phone#phone #mRepCards{padding-left:16px;padding-right:16px;}   /* Results: its heading and cards, set by stronger rules */
+  body.m20 #phone :is(#mChips, #mMedBar, #mMedChips){margin-left:-16px;padding-left:16px;} body.m20:not(.expRep) #phone :is(#mChips, #mMedBar, #mMedChips){margin-right:-16px;padding-right:16px;}
   /* Upload records at the right end of the tabs' row */
   .dTabsV2 .dTabUp{display:none;} body.v2Tab .dash .dTabsV2 .dTabUp{display:inline-flex;margin-left:auto;align-self:center;margin-bottom:13px;position:relative;z-index:1;}
   html.dTabSeg body.v2Tab .dash .dTabsV2 .dTabUp{margin-bottom:0;}
@@ -12234,7 +12250,11 @@
         <!-- the Health profile ("add a Health Profile card to the Overview"): its card's section, and the profile's demo states ("include examples of the not-started, in-progress and completed states"); Saved, what was last done in it here -->
         <!-- the Primary card, the Overview's first card: its Type, a $299 member's card (Health profile, or Plan to purchase) or Next step (the hero and its action) ("this part of Primary card: Type: $299 purchased: Health profile, Plan to purchase; Next step: Dexa, etc.") -->
         <!-- the Health profile on its own ("when I'm on the health profile page I want to control only the health profile tweaks"): while the profile is showing, the panel is this group alone, the profile's rows (Primary card's $299 part) moved in here, and back when it goes -->
-        <div class="tkGroup" data-pages="hp" id="tkHpGrp"><div class="tkSub">Health profile</div></div>
+        <div class="tkGroup" data-pages="hp" id="tkHpGrp"><div class="tkSub">Health profile</div>
+        <!-- step 1's pages, their order ("the ability to change the position, the order of all the pages inside step one: drag the page up and down"): drag, or the arrow keys; kept with the tweaks.
+             On the Health profile page only ("the steps breakdown should be on the health profile page"), after the rows the profile borrows from the Primary card -->
+        <div class="tkRow tkOrdRow" id="stHpW1Row"><span class="lbl">Step 1 pages</span><ol class="tkOrd tkOrdN" id="stHpW1List" aria-label="Step 1's pages: drag, or use the arrow keys, to reorder"></ol><input type="hidden" id="stHpW1Ord" value="promise,details,address,emergency,mobile,otp,medicare,declare,health"></div>
+        </div>
         <div class="tkGroup" data-pages="ov" data-sec="primary">
         <div class="tkSub">Primary card</div>
         <div class="tkRow"><span class="lbl">Type</span><select id="stPcType" class="tkSegSel" aria-label="The Overview's primary card"><option value="member" selected>$299 purchased</option><option value="next">Next step</option></select></div>
@@ -12247,8 +12267,6 @@
         <div class="tkRow"><span class="lbl">Filled saturation</span><span class="tkSlide"><input type="range" id="stHpSat" min="0" max="200" step="5" value="100" aria-label="The sphere's filled particles, how saturated"><i class="tkVal" id="stHpSatV">100%</i></span></div>   <!-- ("the filled dots: need to control the saturation") -->
         <div class="tkRow"><span class="lbl">Floating</span><select id="stHpFeed" class="tkSegSel" aria-label="The particles drawn into the sphere: their colour"><option value="neutral" selected>Neutral</option><option value="orange">Orange</option><option value="off">Off</option></select></div>
         <div class="tkRow"><span class="lbl">Step title</span><select id="stHpStepT" class="tkSegSel" aria-label="The step's title over the step dashes in the bar, or the dashes alone"><option value="on">On</option><option value="off" selected>Off</option></select></div>
-        <!-- step 1's pages, their order ("the ability to change the position, the order of all the pages inside step one: drag the page up and down"): drag, or the arrow keys; kept with the tweaks -->
-        <div class="tkRow tkOrdRow" id="stHpW1Row"><span class="lbl">Step 1 pages</span><ol class="tkOrd tkOrdN" id="stHpW1List" aria-label="Step 1's pages: drag, or use the arrow keys, to reorder"></ol><input type="hidden" id="stHpW1Ord" value="promise,details,address,emergency,mobile,otp,medicare,declare,health"></div>
         <div class="tkRow"><span class="lbl">Open</span><span class="tkPreCtl"><button class="tkBtn" type="button" id="stHpOpen">Health profile</button></span></div>
         </div>
         <div class="pcPart" data-pc="next" hidden>
@@ -25884,7 +25902,7 @@ hairline({
   // Tweaks shows only what concerns the page: its groups, and a standalone's over it (the Async report's while it is up)
   // the profile's rows: into the Health profile group while the profile is showing, back to the Primary card's $299 part after
   const tkHp = on => { const part = document.querySelector('.pcPart[data-pc="hp"]'), grp = document.getElementById('tkHpGrp'); if (!part || !grp) return;
-    if (on){ if (part.parentNode !== grp){ tkHp.home = { p: part.parentNode, n: part.nextSibling }; grp.appendChild(part); } part.hidden = false; return; }
+    if (on){ if (part.parentNode !== grp){ tkHp.home = { p: part.parentNode, n: part.nextSibling }; grp.insertBefore(part, document.getElementById('stHpW1Row')); } part.hidden = false; return; }
     if (tkHp.home && part.parentNode === grp){ tkHp.home.p.insertBefore(part, tkHp.home.n); const ty = document.getElementById('stPcType'); part.hidden = (ty ? ty.value : 'member') !== 'member'; } };
   function tkPages(m, extra){
     const g = MODES[m] && MODES[m].group, key = g === 'Insights' ? 'ins' : (g === 'Overview page' || g === 'Results received') ? 'ov' : g === 'Landing page' ? 'lp' : g === 'Async report' ? 'ar' : '';
@@ -40030,6 +40048,26 @@ hairline({
       Object.keys(DEF2).forEach(id => put2(id, DEF2[id]));
     }));
   }
+  /* the dock's sliding pill (see .mPill): each island its pill at the tab lit; a tab lit in its place, it slides there; a dock shown again (another page), it starts where the last dock's was and slides */
+  (function navPill(){
+    let last = -1;
+    const go = (isl, j, anim) => { const p = isl._pill, t = isl._tabs[j];
+      if (!t || !t.offsetWidth){ p.style.opacity = '0'; return; }
+      if (!anim) p.style.transition = 'none';
+      Object.assign(p.style, { opacity: '1', top: t.offsetTop + 'px', width: t.offsetWidth + 'px', height: t.offsetHeight + 'px', borderRadius: getComputedStyle(t).borderRadius, transform: 'translateX(' + t.offsetLeft + 'px)' });
+      if (!anim){ void p.offsetWidth; p.style.transition = ''; } };
+    const sync = (isl, anim) => {
+      if (!isl.offsetWidth){ isl._seen = false; return; }   // hidden: shown again later, it slides in from the last
+      const i = isl._tabs.findIndex(t => t.classList.contains('on'));
+      if (!isl._seen){ isl._seen = true; const from = last >= 0 && i >= 0 ? last : i; go(isl, from, false); if (from !== i) requestAnimationFrame(() => requestAnimationFrame(() => go(isl, i, true))); }
+      else go(isl, i, anim && isl._i !== i);
+      isl._i = i; if (i >= 0) last = i; };
+    const setup = isl => { if (isl._pill) return; const p = document.createElement('i'); p.className = 'mPill'; p.setAttribute('aria-hidden', 'true'); isl.prepend(p); isl._pill = p; isl._tabs = [...isl.querySelectorAll(':scope > .mTab')]; isl.classList.add('mPillOn');
+      new MutationObserver(() => sync(isl, true)).observe(isl, { subtree: true, attributes: true, attributeFilter: ['class'] });
+      if (window.ResizeObserver) new ResizeObserver(() => sync(isl, false)).observe(isl);
+      sync(isl, false); };
+    document.querySelectorAll('.mTabs .mIsland').forEach(setup);
+  })();
   (function homeMosaic(){
     const grid = document.getElementById('homeGrid'); if (!grid) return;
     const B = (x, y, w, h, c, r) => '<i class="' + (c ? 'x-' + c : '') + '" style="left:' + x + '%;top:' + y + '%;width:' + w + '%;height:' + h + '%' + (r ? ';border-radius:' + r : '') + '"></i>';

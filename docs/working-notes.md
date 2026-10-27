@@ -17098,3 +17098,22 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - XS dark: all nine pages walked with Continue, no validation stops.
   - XS light: the order tweak put Health background first; the country sheet closes on a tap and sets the value; the suggestions match "asi".
   - The X shows from the Overview. No page errors.
+
+## Phone dock: the lit tab's ground slides; Insights spaced as the Overview; Step 1 pages on the profile's page
+
+- **The dock's lit ground slides** ("when the page changes, the background should move left or right"). It's now one pill of its own in the island, under the tabs.
+  - Lighting another tab in the same dock (the XS frame's Overview → Timeline) slides it there in .46s.
+  - A dock shown for another page (the Overview phone → the Insights phone) starts where the last dock's pill was, then slides to its own tab.
+  - No tab lit (My account) fades it out. With reduced motion, it moves at once.
+  - It has the same glass as the lit tab had, dark and light.
+- **Insights phone, set as the Overview's** ("consistent with the padding and spacing of the overview"):
+  - The tabs bar sits 14px under the status bar, as the Overview's field does (it was 6px).
+  - It's 16px from the sides (13 before), on a 48px track with 40px tabs, like the Overview's 48px field.
+  - Upload is 44px, like the Overview's round buttons, with 10px between it and the tabs (12 before). Its right edge is on the 16.
+  - Every block of both tabs is 16 from the edges too: the bento, records, search and chips, the debriefs' heading and cards, and the medical records' bar and chips.
+- **Tweaks → Step 1 pages** has moved to the Health profile page's group ("the steps breakdown should be on the health profile page"). It's no longer under the Overview's Primary card; it comes after the rows the profile borrows from there.
+- Checked:
+  - XS: the Overview's field and the Insights tabs both start at 55 (48 tall), Upload at 57 (44 tall). No 13px edge is left on either Insights tab.
+  - Pill: Overview → Insights slides 4 → 63; Overview → Timeline slides 4 → 123.
+  - The Step 1 list is hidden on the Overview and shown on the Health profile page, after State…Step title.
+  - No errors.
