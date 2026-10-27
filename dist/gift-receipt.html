@@ -85,7 +85,12 @@
   .row dt{display:flex;align-items:flex-start;gap:8px;color:var(--ink2);}
   .row dt svg{flex:none;width:16px;height:16px;margin-top:2px;fill:none;stroke:currentColor;stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round;}
   .row dd{margin:0;color:var(--ink);overflow-wrap:anywhere;}
-  .row.msg dd{font-style:italic;}   /* the message in italics, no rule beside it ("remove orange bar; italic font") */
+  .row.msg dd{font-style:italic;}
+  /* Tweaks -> Gift receipt -> Delivery: sent once the payment is confirmed, or on the gifting date ("We'll let Olive know about their gift {if scheduled} on your intended gifting date") */
+  :root.sched .ifNow, :root:not(.sched) .ifSch{display:none;}
+  /* Tweaks -> Gift receipt -> Properties -> 2 columns ("bullets into 2 cols; each property stacked, remove icon"): each group's properties two by two, the label over its value, no icon; the message across both */
+  :root.cols .rows{display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));column-gap:16px;row-gap:12px;padding:8px 0 12px;}
+  :root.cols .row{display:flex;flex-direction:column;gap:2px;padding:0;} :root.cols .row dt{font-size:13px;line-height:18px;} :root.cols .row dt svg{display:none;} :root.cols .row.msg{grid-column:1 / -1;}   /* the message in italics, no rule beside it ("remove orange bar; italic font") */
 
   /* ---- the actions, side by side; the help line at the foot ---- */
   .btns{display:flex;justify-content:center;width:100%;margin-top:56px;}   /* one CTA now, Back to overview, half the column on the desk ("remove Send another gift"; Sign in gone too) */
@@ -113,7 +118,7 @@
     .top{padding-top:48px;}
     .rc{padding:76px 24px 40px;}   /* 24 at each side ("padding left right 24px"; was 20) */
     .card{margin-top:32px;padding:12px 20px 14px;}
-    .row{grid-template-columns:minmax(0, 8.4em) minmax(0, 1fr);column-gap:12px;padding:4px 0;font-size:14px;}   /* the label just wide enough for "Purchase date", the email whole beside it */
+    .row{grid-template-columns:minmax(0, 8.4em) minmax(0, 1fr);column-gap:12px;padding:4px 0;font-size:14px;}   /* the label column narrower, the email whole beside it */
     .btns{margin-top:36px;} .btns .btn{padding:0 28px;}   /* the phone: 36 under the card, hugging its label as on the desk */
     :root.split .grp{padding:12px 20px 10px;}
     .btn{padding:0 10px;font-size:15px;white-space:nowrap;}   /* the two on one line each, 28 apart */
@@ -150,7 +155,7 @@
 </svg></a></header>
 <main class="rc" id="rc">
   <h1>Your gift is on its way to Olive</h1>
-  <p class="sub">We’ll email it to Olive as soon as your payment is confirmed. Your receipt is on its way to <b>marc.taylor@example.com</b>.</p>
+  <p class="sub">We’ll let Olive know about their gift <span class="ifNow">as soon as your payment is confirmed</span><span class="ifSch">on your intended gifting date</span>. Your receipt has been sent to <b>marc.taylor@example.com</b>.</p>
   <section class="card" aria-labelledby="sumH">
     <h2 class="cardH" id="sumH">Gift summary</h2>
     <div class="grps" id="grps"></div>
@@ -176,17 +181,19 @@
   };
   // the gift summary in three groups, a question each ("group the gift summary"): what was bought and when; who it is for; the occasion, how it goes and the note with it. From (the sender's name) left out, as the list asked
   var GROUPS = [
-    ['What did I buy?', [['gift', 'Product', 'Health check'], ['paid', 'Purchase date', '27 Oct 2026']]],
+    ['What did I buy?', [['gift', 'Product', 'Health check']]],   // no purchase date ("remove this")
     ['Who is it for?', [['for', 'Name', 'Olive Martin'], ['mail', 'Email', 'olive.martin@example.com']]],
-    ['What is the gift?', [['occ', 'Occasion', 'Birthday'], ['when', 'Delivery', 'Sent as soon as your payment is confirmed'], ['msg', 'Message', '“Happy Birthday. I want you around for a long time.”', 'msg']]]
+    ['What is the gift?', [['occ', 'Occasion', 'Birthday'], ['when', 'Delivery', ['Sent as soon as your payment is confirmed', 'On 14 Nov 2026']], ['msg', 'Message', '“Happy Birthday. I want you around for a long time.”', 'msg']]]
   ];
   var esc = function(t){ return String(t).replace(/[&<>"]/g, function(c){ return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
-  var row = function(r){ return '<div class="row' + (r[3] ? ' ' + r[3] : '') + '"><dt><svg viewBox="0 0 16 16" aria-hidden="true">' + IC[r[0]] + '</svg>' + esc(r[1]) + '</dt><dd>' + esc(r[2]) + '</dd></div>'; };
+  var row = function(r){ return '<div class="row' + (r[3] ? ' ' + r[3] : '') + '"><dt><svg viewBox="0 0 16 16" aria-hidden="true">' + IC[r[0]] + '</svg>' + esc(r[1]) + '</dt><dd>' + (r[0] === 'mail' ? esc(r[2]).replace('@', '@<wbr>') : Array.isArray(r[2]) ? '<span class="ifNow">' + esc(r[2][0]) + '</span><span class="ifSch">' + esc(r[2][1]) + '</span>' : esc(r[2])) + '</dd></div>'; };   // a value of two: sent now, or scheduled   // an address breaks after its @ when it must (2 columns)
   $('grps').innerHTML = GROUPS.map(function(g, i){ return '<div class="grp"><h3 class="grpH" id="grpH' + i + '">' + esc(g[0]) + '</h3><dl class="rows" aria-labelledby="grpH' + i + '">' + g[1].map(row).join('') + '</dl></div>'; }).join('');
   var BEAT = { H1: 1, P: 1, SECTION: 2, DIV: 3 };   // the logo 0; the title and its line 1; the card 2; the buttons and the help line 3
   [].forEach.call($('rc').children, function(el){ el.style.setProperty('--i', el.classList.contains('foot') ? 3 : BEAT[el.tagName] || 1); });
   if (/(^|[#&])web(&|$)/.test(location.hash)) root.classList.remove('inApp');
   if (/(^|[#&])split(&|$)/.test(location.hash)) root.classList.add('split');   // the page's own link, the groups as three cards   // the page's own link, bought on the web: no CTA
+  if (/(^|[#&])cols(&|$)/.test(location.hash)) root.classList.add('cols');   // the page's own link, the properties in 2 columns
+  if (/(^|[#&])sched(&|$)/.test(location.hash)) root.classList.add('sched');   // the page's own link, the gift scheduled
   document.addEventListener('click', function(e){ var a = e.target.closest('[data-inert]'); if (!a) return; e.preventDefault();   // the links lead nowhere in the prototype
     if (a.dataset.go === 'overview' && window.parent !== window) try { window.parent.postMessage({ everlab: 'gr:overview' }, '*'); } catch (x) {} });   // Back to overview: the app shows its Overview
 

@@ -17293,3 +17293,41 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
     - the rule reads "Dropped off (step 3 only)".
 - Everything else from the last batch stands: steps 1 and 2 never marked begun, the Membership reveal on Flows, the Desktop breakpoint, card 250, the ripple, Records on Auto, no jump going back.
 - Checked: the options and the arrows' order, step 2's card button "Book", steps 1 and 3 opened (not / prog), the six states in the doc and Step 3's two tags. No errors.
+
+## Step 0, no way out of step 1, the home's entrance, the card on the desk, the receipt's lines
+
+- **Merged another session's second publish** (07:12 UTC): no Overview card for step 1, as members go straight into registration at login. The rule, the row and the step's text say so, and a row with no card has no card column or arrow.
+- **Documentation → Health profile card: Flows only** ("remove all states, just keep flows"): the All states / Flows switch is gone.
+- **Step 0, the entry point** ("Intro and card reveal screen"):
+  - A row of its own, first: the Membership reveal at login (the intro, then the card), then the note "Get started opens the Health profile home: step 1".
+  - Step 1's row now starts at the home.
+  - The sidebar lists Step 0; All steps reads "Steps 0 to 3, then booked".
+- **Every page filled for the demo** ("use the filled screen for the sake of demo"):
+  - Each step's pages are drawn with the demo's answers (step 1's details, step 2's Thu 29 Oct 10:00am, step 3's answers).
+  - **A Filled switch under each page** ("toggle Filled ON OFF for each screen") redraws that page empty or filled. It is remembered per page.
+  - A press on it no longer starts a pan of the canvas.
+- **No way out of step 1** ("cant dismiss step 1"):
+  - The profile's cross shows only once step 1 is done, wherever it was opened from. The Overview no longer forces it.
+  - Escape doesn't close it either: it now looks only at a close you can see.
+  - Checked: state none (from the Overview or not), no cross on the home or step 1's pages, and Escape leaves it open. State one: the cross, and Escape closes.
+  - On Flows: Step 1's row has no cross; steps 2 and 3 and Booked do.
+- **No close on the Membership reveal** ("remove dismiss!! on membership entrance and card screen"):
+  - The cross is gone from its intro and its card screen, and so is its Dismiss tweak (a saved value is dropped).
+  - Its back while signing stays.
+- **The reveal's card +48 on the desk** ("card on desktop should be bigger by 48px"): 368 × 232 at M and L (was 320 × 202, still on the phone), its credit-card ratio kept. Docs' Desktop still too.
+- **The Health profile home comes in section by section** ("smooth entrance section by section and each step after each other"):
+  - the sphere (scale .9 → 1, fading in), then the title and its line, then each step card in turn, then the button;
+  - each rises 24 (the button 16) and fades in, 120ms apart, over 0.78s (cubic-bezier(.16, 1, .3, 1));
+  - each comes to its own resting opacity, so the steps ahead land at their 60% with no pop;
+  - it plays when the profile opens (from the Overview, the standalone page), and after Get started on the reveal, once the reveal's words are going (from 300ms; that hand-over's old all-at-once rise is gone);
+  - not on stills, not with reduced motion.
+- **Gift receipt**:
+  - **No Purchase date** ("remove this"): What did I buy? is the product alone.
+  - **Tweaks → Gift receipt → Properties: Rows / 2 columns** ("bullets into 2 cols, each property stacked, remove icon"): each group's properties two by two, the label (13px) over its value, no icons; the message spans both columns; an email breaks after its @ if it must. The page's own link: `#cols`.
+  - **The line under the title**: "We'll let Olive know about their gift as soon as your payment is confirmed. Your receipt has been sent to marc.taylor@example.com."
+  - **Tweaks → Gift receipt → Delivery: Now / Scheduled**: Scheduled reads "…about their gift on your intended gifting date.", and the Delivery row reads "On 14 Nov 2026". The page's own link: `#sched`.
+- Checked:
+  - Reveal close: none on the phone or the desk; card 320 / 368.
+  - Entrance timings, opened from the Overview: sphere .81 at 300ms; areas 0.87 / 0.37 / 0 at 600ms; button .52 at 800ms; at rest 1 / .6 / .6.
+  - Flows rows: entry, wear, past, you, all, plan, with 9 / 2 / 6 switches; Filled off → 0/5 fields, remembered after a reload.
+  - Receipt: both lines, and the 2 columns. No errors.
