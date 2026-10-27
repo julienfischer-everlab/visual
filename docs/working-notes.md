@@ -16815,3 +16815,15 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - "Replace: Baseline, Protocol, Diagnostic": the card's badge drops "member". It reads **Baseline**, **Diagnostic** or **Protocol**, following Tweaks → Welcome → Membership (`tagOf()`, from the tweak's key). "Diagnostic" is singular here, as asked. The tier's name elsewhere is still "Diagnostics".
 - The line under the name still reads "Everlab member". The card's spoken description says "Baseline, Everlab member".
 - Checked in the reveal: Baseline → Diagnostic → Protocol → Baseline, changing in place, no errors.
+
+## Clinic: the full NSW list, Queensland's, MeasureUp's logo, the Book a call pill
+
+- "More demo" (five more NSW screenshots) and "MeasureUp in Queensland (logo here)" (a QLD screenshot).
+- **New South Wales:** now 61 locations, in the screenshots' order, names, addresses and tags as written. From Castlereagh Imaging Westmead on, through the PRP, Medscan, Quantum Radiology and Hunter Imaging sites, down to Advanced Sports Performance.
+  - Three of them had their tags out of frame (Castlereagh Imaging Westmead, Castlereagh Imaging Edgecliff, PRP Woy Woy), so they show none.
+  - Three were cut by the site's own pill or the screenshot edge, so they're left out: a PRP site at "14 Jan…", a second BeFit, and PRP Castle Hill (name only).
+- **Queensland:** the 12 locations of its screenshot, from Exercise Matters to Science of Fitness Burleigh. The screenshot starts part-way through the state, so its first locations are still to come.
+- **MeasureUp Brisbane** (Shop 27/76 Doggett St, Newstead QLD 4006; DEXA, Physical & VO2Max) carries the MeasureUp logo in its 96 × 96 slot, contained (96 × 34).
+- **Need more info? Book a call:** the site's floating pill, white with a black button, fixed 24px above the foot of the screen. It comes in once the first state's list has gone 300px under the top, and goes when you scroll back above it.
+- **Narrow columns:** at 1440 the columns are narrower than the 2000px screenshots, so with the logo slot a location with three tags can stack them.
+- Checked at 1440 and 393: 61 NSW and 12 QLD locations, one logo, the pill's in and out, Queensland marked while reading it, no sideways scroll, no errors.

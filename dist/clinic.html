@@ -101,6 +101,13 @@
   .tags .sh{display:none;}
   .soon{margin:0;padding:28px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:17px;color:var(--ink3);}
 
+  /* ---- Need more info? Book a call: a pill at the foot of the screen, in once the list is being read ---- */
+  .ask{position:fixed;left:50%;bottom:24px;z-index:6;display:flex;align-items:center;gap:12px;padding:6px 6px 6px 18px;border-radius:999px;background:#fff;box-shadow:0 8px 32px rgba(0,0,0,.14),0 0 0 1px rgba(0,0,0,.05);font-size:16px;white-space:nowrap;
+    opacity:0;transform:translate(-50%, 16px);pointer-events:none;transition:opacity .3s ease, transform .3s ease;}
+  .ask.on{opacity:1;transform:translate(-50%, 0);pointer-events:auto;}
+  .call{display:inline-flex;align-items:center;height:44px;padding:0 22px;border-radius:999px;background:#000;color:#fff;text-decoration:none;font-weight:500;}
+  .call:hover{background:#262626;}
+
   /* ---- the phone: the key goes, the states wrap and stay at the top, one location a row ---- */
   @media (max-width:999px){
     :root{--gut:24px;}
@@ -204,6 +211,8 @@
     <div id="lists"></div>
   </section>
 </main>
+<!-- the floating ask, once the list is being read (the screenshots show it over the list, not over the intro) -->
+<div class="ask" id="ask" aria-hidden="true"><span>Need more info?</span><a class="call" href="#" data-inert tabindex="-1">Book a call</a></div>
 
 <script>
 (function(){
@@ -220,19 +229,85 @@
   var LOGO = { measureup: ['data:image/webp;base64,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', 'MeasureUp'] };
   var PIN = '<path d="M20 10c0 4.99-5.54 10.19-7.4 11.8a1 1 0 0 1-1.2 0C9.54 20.19 4 14.99 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/>';
   var STATES = [['nsw', 'New South Wales'], ['vic', 'Victoria'], ['qld', 'Queensland'], ['wa', 'Western Australia'], ['sa', 'South Australia'], ['act', 'Australian Capital Territory'], ['tas', 'Tasmania'], ['nt', 'Northern Territory']];
-  // as the screenshots show them, in their order (the list goes on past Cremorne on the site)
+  // as the screenshots show them, in their order: New South Wales from its top, Queensland from part-way (its first ones not yet shown);
+  // a location whose tags were out of frame has none, one hidden under the Book a call pill is left out; a fourth field names the clinic's logo
   var LOC = {
     nsw: [
-      ['Sullivan Nicolaides Pathology', '500+ Statewide collection centres available across QLD', ['path']],
-      ['Sullivan Nicolaides Pathology (SNP)', 'North Coast NSW (Coffs Harbour to QLD border (incl. Byron Bay, Macksville), inland northern regions)', ['path']],
-      ['Southern.IML Pathology', 'South East NSW (Illawarra, Shoalhaven, Eurobodalla)', ['path']],
-      ['Douglass Hanly Moir (DHM)', 'Statewide collection centres available across NSW', ['path']],
-      ['Beachside Radiology Coffs Harbour', '20 Park Avenue, Coffs Harbour, NSW 2450', ['dexa']],
-      ['Canberra Imaging Group Goulburn', '185 Bourke St, Goulburn NSW 2580', ['dexa', 'mri']],
-      ['Canberra Imaging Group Queanbeyan', 'Super Clinic, level 1/23 Antill St, Queanbeyan NSW 2620', ['dexa', 'mri']],
-      ['Castlereagh Imaging Nepean', 'Suite 101 13 Barber Avenue Kingswood NSW 2747', ['dexa', 'mri']],
-      ['Castlereagh Imaging Kogarah', 'Entry via O’Keefe’s Lane O’Keefes Lane & Kensington Street Kogarah NSW 2217', ['dexa', 'mri']],
-      ['Castlereagh Imaging Cremorne', 'Suite 1 412 Military Road Cremorne NSW 2090', ['dexa', 'mri', 'heart']]
+      ["Sullivan Nicolaides Pathology", "500+ Statewide collection centres available across QLD", ['path']],
+      ["Sullivan Nicolaides Pathology (SNP)", "North Coast NSW (Coffs Harbour to QLD border (incl. Byron Bay, Macksville), inland northern regions)", ['path']],
+      ["Southern.IML Pathology", "South East NSW (Illawarra, Shoalhaven, Eurobodalla)", ['path']],
+      ["Douglass Hanly Moir (DHM)", "Statewide collection centres available across NSW", ['path']],
+      ["Beachside Radiology Coffs Harbour", "20 Park Avenue, Coffs Harbour, NSW 2450", ['dexa']],
+      ["Canberra Imaging Group Goulburn", "185 Bourke St, Goulburn NSW 2580", ['dexa', 'mri']],
+      ["Canberra Imaging Group Queanbeyan", "Super Clinic, level 1/23 Antill St, Queanbeyan NSW 2620", ['dexa', 'mri']],
+      ["Castlereagh Imaging Nepean", "Suite 101 13 Barber Avenue Kingswood NSW 2747", ['dexa', 'mri']],
+      ["Castlereagh Imaging Kogarah", "Entry via O’Keefe’s Lane O’Keefes Lane & Kensington Street Kogarah NSW 2217", ['dexa', 'mri']],
+      ["Castlereagh Imaging Cremorne", "Suite 1 412 Military Road Cremorne NSW 2090", ['dexa', 'mri', 'heart']],
+      ["Castlereagh Imaging Westmead", "Ground Floor 20-22 Mons Road Westmead NSW 2145", []],
+      ["Castlereagh Imaging Edgecliff", "Suite 301, Eastpoint 235 New South Head Road Edgecliff NSW 2027", []],
+      ["Castlereagh Imaging Rooty Hill", "Opposite Blacktown International Sports Park 90 Eastern Rd ,90 Eastern Road Bungarribee NSW 2767", ['dexa', 'mri']],
+      ["Focus Radiology Dapto", "1/20 Princes Hwy, Dapto NSW 2530", ['dexa', 'mri']],
+      ["Focus Radiology Engadine", "1-3 Station St, Engadine NSW 2233", ['dexa']],
+      ["Hunter Imaging Cardiff", "48 Thomas Street Cardiff NSW 2285", ['heart', 'dexa']],
+      ["Hunter Imaging Lake Haven", "1404, 3 Bannister Drive, Lake Haven, 2265", ['dexa']],
+      ["Hunter Imaging Tuggerah", "1 Bryant Dr, Tuggerah NSW 2259", ['dexa', 'mri']],
+      ["Hunter Imaging Adamstown", "Suite 2A, 282 Brunker Road, Adamstown NSW 2289", ['dexa']],
+      ["Hunter Imaging Tumbi Umbi", "11 Mingara Drive, Tumbi Umbi, 2261", ['dexa']],
+      ["Hunter Imaging Salamander Bay", "Suite 2, 6 Central Avenue, Salamander Bay, 2317", ['dexa']],
+      ["I-MED Radiology Wagga Wagga", "36 Hardy Ave, Wagga Wagga NSW 2650", ['heart', 'dexa']],
+      ["iPerform Lab", "Shop 11a Erina Plaza, 210 Central Coast Hwy, Erina NSW 2250", ['vo2']],
+      ["Imaging Associates Wagga Wagga Docker St", "Level 1, Suite 10, 2 Docker Street, Wagga Wagga NSW 2650", ['heart']],
+      ["Macquarie Medical Imaging at Macquarie Centre", "Shop 1046, Macquarie Shopping Centre Macquarie Park NSW 2113", ['dexa']],
+      ["Macquarie Medical Imaging at Macquarie University Hospital", "Ground Floor, 3 Technology Place, Macquarie Park NSW 2113", ['dexa']],
+      ["Oran Park Radiology", "Ground Floor/90 Podium Wy, Oran Park NSW 2570", ['dexa']],
+      ["PRP Dubbo", "47-59 Wingewarra St, Dubbo NSW 2830", ['dexa', 'mri', 'heart']],
+      ["PRP Gordon", "741 Pacific Hwy, Gordon NSW 2072", ['heart']],
+      ["PRP Orange", "135 Summer St, Orange NSW 2800", ['heart', 'dexa']],
+      ["PRP Gosford", "43 William Street, Gosford NSW 2250", ['dexa']],
+      ["PRP Maitland", "262 High St, Maitland NSW 2320", ['heart', 'dexa', 'mri']],
+      ["PRP Adamstown", "156 Brunker Road, Adamstown NSW 2289", ['heart', 'dexa']],
+      ["PRP Blacktown", "13-15 Panorama Parade, Blacktown NSW 2148", ['heart', 'dexa']],
+      ["PRP Warriewood", "Unit 9, 2 Daydream Street, Warriewood NSW 2102", ['heart', 'mri']],
+      ["PRP Charlestown", "95 Pacific Highway, Charlestown NSW 2290", ['dexa', 'mri']],
+      ["PRP Woy Woy", "12-14 Blackwall Rd, Woy Woy NSW 2256", []],
+      ["Medscan Barangaroo", "Level 1, Medical Precinct, 300 Barangaroo Ave, Barangaroo NSW 2000", ['dexa', 'heart', 'mri']],
+      ["Medscan Double Bay", "Level 3 Kiaora Place, 451 New South Head Road, Double Bay NSW 2028", ['heart', 'dexa', 'mri']],
+      ["Nepean Radiology Penrith", "3/191-199 High St, Penrith NSW 2750", ['heart', 'dexa', 'mri']],
+      ["Quantum Radiology Mt Druitt", "Shop 37/40, 10 Zoe Pl, Mount Druitt NSW 2770", ['dexa', 'heart', 'mri']],
+      ["Medical Imaging Erina", "Shop 18A Fountain Plaza, 148-158 Central Coast Hwy, Erina NSW 2250", ['dexa', 'heart', 'mri']],
+      ["Quantum Therapy Sydney", "Mezzanine, 580 George St, Sydney NSW 2000", ['vo2', 'dexa']],
+      ["Strive Performance Dietetics", "19/112 McEvoy St, Alexandria NSW 2015", ['dexa']],
+      ["Sutherland Nuclear Medicine and Bone Densitometry", "Suites 4-6/468-472 Kingsway, Miranda NSW 2228", ['dexa']],
+      ["SSEP Norwest", "Suite 209, Norwest Central, 10 Century Cct, Bella Vista NSW 2153", ['dexa', 'vo2']],
+      ["Elevate Performance Testing", "E/134 Old Pittwater Rd, Brookvale, NSW 2100", ['vo2']],
+      ["BeFit Training Physiotherapy", "Ground floor, 287-289 New South Head Rd, Edgecliff", ['dexa', 'vo2']],
+      ["Urban Physiotherapy North Sydney", "Level 1, 80 Mount St, North Sydney NSW 2060", ['vo2']],
+      ["Body Measure", "Suite 4 38 Albany Street St Leonards, NSW, 2065", ['dexa']],
+      ["Power Potential Alexandria", "Ground Floor, Building 3 The Mill, 41-43 Bourke Road ALEXANDRIA, NSW 2015", ['vo2', 'dexa']],
+      ["Road to Recovery Health & Pilates Springwood Studio", "1/7-9 Raymond Rd, Springwood NSW 2777", ['vo2']],
+      ["Quantum Radiology Springwood", "310 Macquarie Rd, Springwood NSW 2777", ['heart', 'mri']],
+      ["Quantum Radiology Leichhardt", "Suite 2 Ground Floor, 92-94 Norton St, Leichhardt NSW 2040", ['mri']],
+      ["Quantum Radiology St Marys", "50 Chapel St, St Marys NSW 2760", ['mri']],
+      ["Quantum Radiology Chester Hill", "24-27 Chester Square Shopping Centre, 1 Leicester St, Chester Hill NSW 2162", ['mri']],
+      ["Quantum Radiology Jamisontown", "2227 Wolseley St, Jamisontown NSW 2750", ['mri']],
+      ["TrueScan Radiology", "59 Hill St, Cabramatta NSW 2166", ['dexa']],
+      ["Shire Medical Imaging", "86 Kiora Rd, Miranda NSW 2228", ['dexa']],
+      ["Hunter Imaging City Newcastle", "Suite 3, 291 King Street Newcastle NSW 2300", ['mri']],
+      ["Advanced Sports Performance", "29 Tompson Street, Bourkelands, NSW 2650", ['vo2']]
+    ],
+    qld: [
+      ["Exercise Matters", "Shop 4/6 Swanbourne Way, Noosaville QLD 4566, Australia", ['vo2', 'dexa']],
+      ["Bayside Radiology Hervey Bay", "46 Main St, Pialba QLD 4655", ['dexa']],
+      ["Radiology QLD Underwood", "183 Kingston Rd, Underwood QLD 4119", ['dexa']],
+      ["Coastal Medical Imaging", "724 Nicklin Way, Currimundi QLD 4551", ['dexa']],
+      ["GymTherapy Woolloongabba", "993 Stanley St E, East Brisbane QLD 4169", ['vo2']],
+      ["Inspire Health Services Albion", "97 Sandgate Road Albion, QLD, 4010", ['vo2']],
+      ["Inspire Health Services West end", "365 Montague Road West End, QLD, 4101", ['vo2']],
+      ["Brisbane Radiology", "95 Robertson Street, Fortitude Valley, QLD 4006", ['dexa', 'mri', 'heart']],
+      ["MeasureUp Brisbane", "Shop 27/76 Doggett St, Newstead QLD 4006", ['dexa', 'vo2'], 'measureup'],
+      ["Achieve Exercise Physiologists Ormiston", "2/58-68 Delancey St, Ormiston QLD 4160", ['vo2']],
+      ["Achieve Exercise Physiologists Kirwan", "Eastbrooke Health Hub, 86 Thuringowa Drive, Kirwan, QLD", ['vo2']],
+      ["Science of Fitness Burleigh", "3/31 Taree Street, Burleigh Heads, 4221", ['vo2']]
     ]
   };
   var esc = function(t){ return String(t).replace(/[&<>"]/g, function(c){ return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
@@ -281,9 +356,11 @@
     lock = setTimeout(function(){ lock = 0; spy(); }, 900);
     $('st-' + k).scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
   }); });
-  addEventListener('scroll', function(){ requestAnimationFrame(spy); }, { passive: true });
+  // the ask: in once the first state's list has gone 300px under the top, out again above it
+  var ask = $('ask'), askOn = function(){ var on = secs[0].getBoundingClientRect().top < -300; ask.classList.toggle('on', on); ask.setAttribute('aria-hidden', String(!on)); ask.querySelector('a').tabIndex = on ? 0 : -1; };
+  addEventListener('scroll', function(){ requestAnimationFrame(spy); requestAnimationFrame(askOn); }, { passive: true });
   addEventListener('resize', function(){ stickH(); spy(); });
-  stickH(); spy();
+  stickH(); spy(); askOn();
 })();
 </script>
 </body>
