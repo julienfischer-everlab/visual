@@ -12640,6 +12640,11 @@
              stay, for the day it is asked for again.) -->
         </div>
         <!-- the Gift page's own tweaks, its bar's (gift.html, the "Unwrap gift-FINAL" page): its theme is the bar's Mode and its device the Viewport's (XS or S the phone, else the desktop) -->
+        <!-- the Gift receipt's own ("gift receipt: tweak without bg"; the card keeps its ground: "keep card bg") -->
+        <div class="tkGroup" data-pages="gr">
+        <div class="tkSub">Gift receipt</div>
+        <div class="tkRow"><span class="lbl">Background</span><select id="stGrBg" class="tkSegSel" aria-label="The photograph at the top of the page, or a plain ground"><option value="photo" selected>Photo</option><option value="none">None</option></select></div>
+        </div>
         <div class="tkGroup" data-pages="gift">
         <div class="tkSub">Gift</div>
         <div class="tkRow"><span class="lbl">Motion</span><select id="stGfMotion" class="tkSegSel" aria-label="The gift's motion: the reveal, or one scroll"><option value="dynamic" selected>Dynamic</option><option value="static">Static</option></select></div>
@@ -25948,10 +25953,10 @@ hairline({
     const hpPg = document.body.classList.contains('hpOn') && !!document.querySelector('.hpWrap.hpOpen:not(.hpWelF)');   // the profile showing (not its reveal): its tweaks alone
     const gfPg = document.body.classList.contains('gfOn');   // the Gift page: its own group alone
     const clPg = document.body.classList.contains('clOn');   // the Clinic's page: its own group alone
-    const grPg = document.body.classList.contains('grOn');   // the Gift receipt: no tweaks of its own
+    const grPg = document.body.classList.contains('grOn');   // the Gift receipt: its own group alone (Background)
     const welPg = !hpPg && !!document.querySelector('.hpWrap.hpOpen.hpWelF');   // the Membership reveal up (its page, or played over the Overview): First-time user alone ("shouldn't have the Overview tweak here")
     tkHp(hpPg);
-    const keys = grPg ? [] : gfPg ? ['gift'] : clPg ? ['clinic'] : hpPg ? ['hp'] : welPg ? ['wel'] : extra === 'ar' ? ['ar'] : [key, extra].filter(Boolean), tk = document.getElementById('tkMenu');   // a standalone up, its own tweaks alone ("Async report shouldn't have all the tweaks from the Overview, just the async ones")
+    const keys = grPg ? ['gr'] : gfPg ? ['gift'] : clPg ? ['clinic'] : hpPg ? ['hp'] : welPg ? ['wel'] : extra === 'ar' ? ['ar'] : [key, extra].filter(Boolean), tk = document.getElementById('tkMenu');   // a standalone up, its own tweaks alone ("Async report shouldn't have all the tweaks from the Overview, just the async ones")
     if (tk){ tk.querySelectorAll('[data-pages]').forEach(el => { const p = el.dataset.pages.split(' '); el.hidden = !keys.some(k => p.indexOf(k) >= 0); }); tk.hidden = !keys.length; if (!keys.length) tk.open = false; }
   }
   window.__tkPages = () => tkPages(version, document.body.classList.contains('arOpen') ? 'ar' : '');   // from the start too: a page opened by its link (#gift) sets the menu before any mode is
@@ -40299,8 +40304,8 @@ hairline({
       // the Gift receipt, the same way: the giver's page once they've paid (gift-receipt.html), dark or light as the bar's Mode; at a forced XS or S the page at the phone's width (CSS)
       const gr = document.getElementById('grPage');
       const grHide = () => { if (!document.body.classList.contains('grOn')) return; document.body.classList.remove('grOn'); if (versionSel && versionSel.value === 'gr') versionSel.value = String(version); if (window.__tkPages) window.__tkPages(); };
-      const grTheme = () => { const f = document.getElementById('grFrame'), t = document.getElementById('themeSel'); try { const r = f && f.contentDocument && f.contentDocument.documentElement; if (r) r.dataset.theme = t && t.value === 'light' ? 'light' : 'dark'; } catch (e){} };
-      { const t = document.getElementById('themeSel'); if (t) t.addEventListener('change', grTheme); }
+      const grTheme = () => { const f = document.getElementById('grFrame'), t = document.getElementById('themeSel'), bg = document.getElementById('stGrBg'); try { const r = f && f.contentDocument && f.contentDocument.documentElement; if (r){ r.dataset.theme = t && t.value === 'light' ? 'light' : 'dark'; r.classList.toggle('noBg', !!bg && bg.value === 'none'); } } catch (e){} };   // the theme, and Tweaks -> Gift receipt -> Background
+      { const t = document.getElementById('themeSel'); if (t) t.addEventListener('change', grTheme); const bg = document.getElementById('stGrBg'); if (bg) bg.addEventListener('change', grTheme); }
       const grShow = () => { if (!gr) return; hide(); hlHide(); igHide(); rvHide(); gfHide(); clHide(); if (window._doc) window._doc.hide(); if (window._cc) window._cc.hide();
         if (window._hp) window._hp.close(true); if (window._ar && window._ar.isOpen()) window._ar.close();
         const dev = gr.querySelector('.grDev'); if (dev && !dev.firstChild){ const f = document.createElement('iframe'); f.id = 'grFrame'; f.src = 'gift-receipt.html'; f.title = 'Gift receipt'; f.addEventListener('load', grTheme); dev.appendChild(f); }

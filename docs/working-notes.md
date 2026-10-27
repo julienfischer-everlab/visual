@@ -17174,3 +17174,16 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - With no card padding, the rows span the column, edge for edge with the two buttons (desk 444–996, phone 24–369). The photograph at the top stays.
 - The unused `--card` token is gone from both themes.
 - Checked desk dark, phone dark and desk light: no fill, no blur, no shadow. No errors.
+
+## Gift receipt: the card's ground back; a Background tweak
+
+- The Gift summary card has its ground back ("keep card bg"). Its glass fill, blur, padding and the light theme's soft shadow are as before the last change, which is undone.
+- **Tweaks → Gift receipt → Background**: Photo (the living-room photograph at the top, as now) or None, the plain page ground ("tweak without bg"). The card keeps its fill either way.
+  - Tweaks shows this group alone while the Gift receipt is up; before, it had no tweaks.
+  - The choice is kept with Save.
+  - The page's own link takes `#nobg` for the plain version.
+- Checked:
+  - Photo shows the photograph; None hides it.
+  - The card's fill is there in both, dark and light.
+  - The Gift receipt group is the only group shown; `gift-receipt.html#nobg` is plain.
+  - No errors.
