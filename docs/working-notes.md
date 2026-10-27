@@ -17053,3 +17053,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - The photograph sits 128px higher in its radial ("push imagery up by 128px to see people more"): `background-position-y: calc(30% - 128px)`. The couple's faces now show above the card on the desk, and over the title on the phone. Its foot, now short of the box's, falls under the mask's clear end.
 - XS: with the 24px sides the email broke mid-word ("…example.co / m"). The label column is 8.4em (118px, just "Purchase date" and its icon), so the email (171px) holds one line in its 175.
 - Checked desk and XS; every row one line but Delivery and the message. No errors.
+
+## Documentation → Health profile card: records out
+
+- Records processing is no longer a state in the doc ("remove this as it's an independent card"). It's its own card, not the Health profile card's, so it's gone from the sidebar, the gallery and the rules.
+- The doc now lists eight states: Step 1, 1.5, 2, 2.5, 3, 3.5, Booked, After the call. The records card and its tweak are unchanged on the Overview.
+- Checked: sidebar and gallery list the eight, no records card or mention. No errors.
