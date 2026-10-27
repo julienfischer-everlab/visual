@@ -7780,6 +7780,7 @@
   .tkOrd li .gr{flex:none;width:12px;height:12px;color:#8b8b86;} .tkOrd li.off{color:#6d6d69;} .tkOrd li .nm{flex:1 1 auto;min-width:0;} .tkOrd li .hid{font-size:11.5px;color:#6d6d69;} .tkOrd li .tgl{flex:none;margin-left:4px;} .tkOrd li.sw0 .nm{color:#6d6d69;} .ovOff{display:none !important;}   /* each section's switch at its right; off, its name dimmed and the section gone */
   .topbar .tkRow.tkOrdRow{gap:6px;} .tkOrdH{margin:8px 0 0;font-size:11.5px;color:#8b8b86;}
   #stJbOrdRow .tkOrd li{height:32px;gap:8px;padding:0 10px 0 8px;font-size:12.5px;} #stJbOrdRow .tkOrdH{margin:6px 0 -2px 2px;font-size:11px;letter-spacing:.02em;} #stJbRow{padding-left:14px;}   /* the bento's order: compact rows, the status cards' list under its row, indented */ .tkOrd li:focus-visible{outline:2px solid #8ab4ff;outline-offset:1px;}   /* the bento's order: its status cards' own list, under a small heading */
+  .tkOrd li .tkNowDot{display:none;} .tkOrd li.now{background:rgba(255,255,255,.16);color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18);} .tkOrd li.now .tkNowDot{display:block;flex:none;width:7px;height:7px;margin-left:auto;border-radius:50%;background:#ff7a1a;box-shadow:0 0 0 3px rgba(255,122,26,.18);}   /* the page the profile shows: lit, an orange dot at its end, as the profile's own rail marks it */
   .tkOrdN{counter-reset:tkn;} .tkOrdN li{counter-increment:tkn;} .tkOrdN li .nm::before{content:counter(tkn);display:inline-block;width:20px;color:#8b8b86;font-variant-numeric:tabular-nums;}   /* step 1's pages: numbered as they stand */
   .tkOrd li.drag{background:rgba(255,255,255,.14);cursor:grabbing;position:relative;z-index:2;box-shadow:0 6px 18px rgba(0,0,0,.35);}
   select.tkSegSel{display:none;} .tkRow[hidden]{display:none !important;}
@@ -17537,9 +17538,11 @@ window.EvLoad = (function () {
       return scr;
     }
     var live = function (t) { return function () { return alive && tick === t; }; };
+    var tell = function (a, id, i) { if (opts.snap) return; try { document.dispatchEvent(new CustomEvent('everlab:hpstep', { detail: { a: a, id: id, i: i } })); } catch (e) {} };   // the page showing, for Tweaks (Step 1 pages lights it); a still says nothing
 
     /* the home: the circle, the greeting, the three areas */
     function home(dir) {
+      tell(null);
       root.classList.toggle('hpW1', !!(S.a.wear && S.a.wear.st === 'done'));   // step 1 done: the cross
       if (A && dir) vFrom = freeze(); var vt = !!vFrom, jd = justDone; justDone = null;   // from a stage: down (back) or up (a stage done), see show; jd: the card to animate
       A = null; ret = null; succ = null; root.classList.add('hpAtHome'); navT.textContent = ''; navS.textContent = '';
@@ -17594,7 +17597,7 @@ window.EvLoad = (function () {
     var BKI = { appt: ['M4.5 3.5h7a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-7a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2z', 'M2.5 6.5h11', 'M5.5 2v2.6M10.5 2v2.6', 'M8 12.1s-1.9-1.1-1.9-2.3a.95.95 0 0 1 1.9-.3.95.95 0 0 1 1.9.3c0 1.2-1.9 2.3-1.9 2.3z'], date: ['M4.5 3.5h7a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-7a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2z', 'M2.5 6.5h11', 'M5.5 2v2.6M10.5 2v2.6', 'm7.3 9.2 1-.7v3.4'], dur: ['M12.5 9.2a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0z', 'M8 9.2V7', 'M6.5 2.5h3M8 2.5v2.2'] };
     var GMT = { AEDT: 'GMT+11', AEST: 'GMT+10', ACDT: 'GMT+10:30', AWST: 'GMT+8' };
     function bookedPage() {
-      succ = true; var b = booked(), a = S.a.past.ans, sl = SLOTS.filter(function (x) { return x[0] === a.time; })[0], tz = TZ.filter(function (x) { return x[0] === (a.tz || 'syd'); })[0];
+      tell('past', 'booked'); succ = true; var b = booked(), a = S.a.past.ans, sl = SLOTS.filter(function (x) { return x[0] === a.time; })[0], tz = TZ.filter(function (x) { return x[0] === (a.tz || 'syd'); })[0];
       var when = b ? [b.wd + ', ' + a.day + ' October 2026', sl ? sl[1].replace(/^(\d+:\d+) to (\d+:\d+)(am|pm)$/, function (m, f, t, ap) { return f + ap.toUpperCase() + ' to ' + t + ap.toUpperCase(); }) : a.time, tz ? tz[2] + ' (' + (GMT[tz[2]] || '') + ')' : ''].join('\n') : '';
       stageBars(AREA.past.i, 1); paintRail();
       var row = function (k, lab, val) { return h('div', { class: 'hpBkR' }, h('span', { class: 'hpBkL' }, ic(16, BKI[k], 1.3), lab), h('span', { class: 'hpBkV', text: val })); };
@@ -17623,7 +17626,7 @@ window.EvLoad = (function () {
     }
     function step(dir) {
       root.classList.toggle('hpW1', !!(S.a.wear && S.a.wear.st === 'done'));
-      var a = AREA[A], L = stepsOf(A), id = L[I], ans = S.a[A].ans;
+      var a = AREA[A], L = stepsOf(A), id = L[I], ans = S.a[A].ans; tell(A, id, I);
       navT.textContent = a.t; navS.textContent = ''; stageBars(a.i, (I + 1) / L.length); paintRail();   /* three bars, the three stages, the one on filling as its steps go ("only three increments, each filled inside by the progression"); no "1 of 4" ("we don't need the subtitle") */
       var scr = show(function (scr) { (BUILD[A + '.' + id] || function () {})(scr, ans); }, dir);
       var f = scr.querySelector('[data-focus]'); if (f && !opts.snap && !('ontouchstart' in window)) setTimeout(function () { try { f.focus({ preventScroll: true }); } catch (e) {} }, dir ? 460 : 0);
@@ -18043,7 +18046,7 @@ window.EvLoad = (function () {
       booked: function () { bookedPage(); },   // the booking's success page
       where: function () { return { a: A, i: I }; },
       theme: function (t) { root.classList.toggle('arDark', t === 'dark'); },
-      destroy: function () { alive = false; clearInterval(pt); if (root.parentNode) root.parentNode.removeChild(root); },
+      destroy: function () { if (alive) tell(null); alive = false; clearInterval(pt); if (root.parentNode) root.parentNode.removeChild(root); },
       refresh: function () { if (!alive) return; if (!A) home(0); else if (A === 'wear') { I = Math.min(I, stepsOf('wear').length - 1); step(0); } }   // step 1's order changed: the home's lines, or the page now at this place
     };
   }
@@ -33378,7 +33381,10 @@ hairline({
     /* Step 1 pages: the list from the profile's own names, dragged (or arrowed) into an order the profile takes at once; the order in a hidden field, so Save and the restore keep it */
     { const ol = document.getElementById('stHpW1List'), inp = document.getElementById('stHpW1Ord'), W = HP.wear;
       if (ol && inp && W){ const N = W.names(), GR = '<svg class="gr" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><circle cx="4" cy="3" r="1"/><circle cx="8" cy="3" r="1"/><circle cx="4" cy="6" r="1"/><circle cx="8" cy="6" r="1"/><circle cx="4" cy="9" r="1"/><circle cx="8" cy="9" r="1"/></svg>';
-        const draw = ks => { ol.innerHTML = ks.map(k => '<li data-k="' + k + '" tabindex="0">' + GR + '<span class="nm">' + N[k] + '</span></li>').join(''); };
+        let now = null;   // step 1's page the profile shows, lit in the list as it goes ("highlight live the current sub step")
+        const lite = () => [...ol.children].forEach(li => { const on = li.dataset.k === now; li.classList.toggle('now', on); if (on) li.setAttribute('aria-current', 'step'); else li.removeAttribute('aria-current'); });
+        document.addEventListener('everlab:hpstep', e => { const d = e.detail || {}; now = d.a === 'wear' ? d.id : null; lite(); });
+        const draw = ks => { ol.innerHTML = ks.map(k => '<li data-k="' + k + '" tabindex="0">' + GR + '<span class="nm">' + N[k] + '</span><i class="tkNowDot" aria-hidden="true"></i></li>').join(''); lite(); };
         const apply = () => { const ks = W.order(String(inp.value || '').split(',')); if (ks.join(',') !== inp.value) inp.value = ks.join(','); if ([...ol.children].map(x => x.dataset.k).join(',') !== ks.join(',')) draw(ks); if (window.__hpDocFlow) window.__hpDocFlow(); };
         const set = ks => { inp.value = ks.join(','); apply(); try { inp.dispatchEvent(new Event('input', { bubbles: true })); } catch (e){} };
         let d = null;

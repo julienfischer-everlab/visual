@@ -17133,3 +17133,16 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Checked:
   - Desk 1600, dark and light: five rows, 22 screens, none empty. Picking Step 3 lands on its row.
   - The Step 1 walk still runs all nine pages, and the live profile is unaffected. No errors.
+
+## Tweaks → Step 1 pages: the page showing, lit live
+
+- The page the profile is showing now lights up in the Step 1 pages list ("highlight live the current sub step"). The row gets a brighter ground and an orange dot at its end, as the profile's own rail marks the current step.
+- The highlight moves as Continue and Back move through the pages. On the home screen, in another step, or with the profile closed, nothing is lit. After a reorder, it lights the page now at that place.
+- The profile announces its page (`everlab:hpstep`, `{ a, id, i }`). The Documentation's still screens don't, so the canvas never moves it.
+- Checked at XS:
+  - home: none;
+  - page 1: Health information;
+  - page 2: Your personal details;
+  - after moving Your personal details to the end: Your address;
+  - back to the home: none.
+- No errors.
