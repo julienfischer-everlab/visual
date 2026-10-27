@@ -17607,3 +17607,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Bin → Remove? No / Yes; No keeps it; Yes removes it, and the store keeps the other.
   - Lines 1 / 2 documents added; Upload 44px; radius 22, padding 24.
   - No errors.
+- **Fixed: the profile's top light as a block at the left on desktop** ("bug bg here, should be the visual only on top"). The light carried over from the reveal was placed in pixels when the profile opened. Switching the breakpoint (XS → L) or widening the window with the profile open left it at the phone's 393px at the left. It is now placed as shares of the frame (left, top, width, height in %, its lift in % of its own height), so it follows the frame. Opened straight on desktop it sits exactly as before (1440 × 769, lifted 389px). XS → L with it open now spans the top.
