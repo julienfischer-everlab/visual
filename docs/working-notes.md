@@ -17187,3 +17187,15 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The card's fill is there in both, dark and light.
   - The Gift receipt group is the only group shown; `gift-receipt.html#nobg` is plain.
   - No errors.
+
+## Gift receipt: the summary in three groups, on the secondary ground
+
+- The Gift summary is grouped, a question over each group ("group the gift summary"):
+  - **What did I buy?** Product (Health check), Purchase date (27 Oct 2026).
+  - **Who is it for?** Name (Olive Martin), Email (olive.martin@example.com).
+  - **What's the occasion?** Occasion (Birthday), Delivery, Message.
+- The third heading was written as "who is the gift for?", the same as the second; I read it as a slip and named it for what it holds.
+- **From** (Marc) is left out, as it wasn't in the list.
+- Each question is 15/500 in the ink, a size under the card's title, with 20px between groups. Each group is a `dl` labelled by its question.
+- **The card is the secondary colour, solid** ("secondary colour bg"): `#1c1916` dark and `#f1ebe4` light, with no glass blur and no shadow. It was a translucent `.07` glass over the photograph.
+- Checked desk dark, phone dark and desk light: the three groups with their rows. On the phone only Delivery and Message take two lines. No errors.

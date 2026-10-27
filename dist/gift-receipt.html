@@ -32,7 +32,7 @@
 <style>
   :root{
     --bg:#0b0908; --ink:#f5f0ea; --ink2:rgba(245,240,234,.62); --ink3:rgba(245,240,234,.42);
-    --card:rgba(255,244,232,.07); --line:rgba(255,236,214,.09);
+    --card:#1c1916; --line:rgba(255,236,214,.09);   /* --card: the secondary ground, solid ("secondary colour bg"; was a glass .07 over the light) */
     --secEdge:rgba(255,236,214,.22); --secHover:rgba(255,236,214,.06); --pri:#fff; --priInk:#151110; --priHover:#ece7e1;
     --acc:#f08a3c;
     --sans:'Saans','Geist','Helvetica Neue',Helvetica,Arial,sans-serif;
@@ -41,7 +41,7 @@
   }
   :root[data-theme="light"]{
     --bg:#faf7f3; --ink:#1d1a17; --ink2:rgba(29,26,23,.6); --ink3:rgba(29,26,23,.42);
-    --card:rgba(255,255,255,.72); --line:rgba(29,26,23,.08);
+    --card:#f1ebe4; --line:rgba(29,26,23,.08);
     --secEdge:rgba(29,26,23,.18); --secHover:rgba(29,26,23,.04); --pri:#1d1a17; --priInk:#fff; --priHover:#36312c;
     color-scheme:light;
   }
@@ -72,11 +72,12 @@
   .sub b{font-weight:400;color:var(--ink);overflow-wrap:anywhere;}
 
   /* ---- the card: glass over the light; its rows an icon and a label at the left, the value at the right (Booking confirmed's) ---- */
-  .card{width:100%;margin-top:40px;padding:14px 24px 16px;border-radius:24px;text-align:left;background:var(--card);
-    -webkit-backdrop-filter:blur(28px) saturate(130%);backdrop-filter:blur(28px) saturate(130%);}
-  :root[data-theme="light"] .card{box-shadow:0 24px 60px rgba(120,64,20,.08);}   /* no edge ("remove card border"): the light page's card a soft shadow only */
+  .card{width:100%;margin-top:40px;padding:14px 24px 16px;border-radius:24px;text-align:left;background:var(--card);}   /* the secondary ground, solid, no glass ("secondary colour bg"); no edge ("remove card border") */
   .cardH{margin:0 0 4px;padding:16px 0 6px;font:500 20px/26px var(--sans);letter-spacing:-.01em;color:var(--ink);}   /* the card's title, a heading of its own ("gift summary title h2") */
   .rows{margin:0;}
+  /* three groups, each a question over its rows ("group the gift summary: what did I buy? who is it for? ..."); the question in the ink, a size under the card's title */
+  .grp + .grp{margin-top:20px;}
+  .grpH{margin:0;padding:8px 0 4px;font:500 15px/20px var(--sans);letter-spacing:-.005em;color:var(--ink);}
   .row:first-child{border-top:0;}   /* no rule under the title ("remove divider"): the rows' own between them */
   .row{display:grid;grid-template-columns:minmax(0, 9em) minmax(0, 1fr);column-gap:16px;padding:13px 0;border-top:1px solid var(--line);font-size:15px;line-height:20px;}
   .row dt{display:flex;align-items:flex-start;gap:8px;color:var(--ink2);}
@@ -147,7 +148,7 @@
   <p class="sub">We’ll email it to Olive as soon as your payment is confirmed. Your receipt is on its way to <b>marc.taylor@example.com</b>.</p>
   <section class="card" aria-labelledby="sumH">
     <h2 class="cardH" id="sumH">Gift summary</h2>
-    <dl class="rows" id="rows"></dl>
+    <div class="grps" id="grps"></div>
   </section>
   <div class="btns"><a class="btn sec" href="#" data-inert>Send another gift</a><a class="btn pri" href="#" data-inert>Sign in</a></div>
   <p class="foot">For any questions, email us at <span>support@everlab.com.au</span></p>
@@ -168,19 +169,15 @@
     when: '<path d="M4.5 3.5h7a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-7a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2z"/><path d="M2.5 6.5h11"/><path d="M5.5 2v2.6M10.5 2v2.6"/>',
     msg: '<path d="M4 3.5h8a1.5 1.5 0 0 1 1.5 1.5v5A1.5 1.5 0 0 1 12 11.5H7.2L4.5 13.6v-2.1H4A1.5 1.5 0 0 1 2.5 10V5A1.5 1.5 0 0 1 4 3.5z"/>'
   };
-  // the gift summary the site shows today, the Gift page's story in it
-  var ROWS = [
-    ['gift', 'Gift', 'Health check'],
-    ['paid', 'Purchase date', '27 Oct 2026'],   // the date a row of its own ("purchase date: 27 Oct 2026"; was the card head's mono date)
-    ['for', 'For', 'Olive Martin'],
-    ['mail', 'Sent to', 'olive.martin@example.com'],
-    ['from', 'From', 'Marc'],
-    ['occ', 'Occasion', 'Birthday'],
-    ['when', 'Delivery', 'Sent as soon as your payment is confirmed'],
-    ['msg', 'Message', '“Happy Birthday. I want you around for a long time.”', 'msg']
+  // the gift summary in three groups, a question each ("group the gift summary"): what was bought and when; who it is for; the occasion, how it goes and the note with it. From (the sender's name) left out, as the list asked
+  var GROUPS = [
+    ['What did I buy?', [['gift', 'Product', 'Health check'], ['paid', 'Purchase date', '27 Oct 2026']]],
+    ['Who is it for?', [['for', 'Name', 'Olive Martin'], ['mail', 'Email', 'olive.martin@example.com']]],
+    ['What’s the occasion?', [['occ', 'Occasion', 'Birthday'], ['when', 'Delivery', 'Sent as soon as your payment is confirmed'], ['msg', 'Message', '“Happy Birthday. I want you around for a long time.”', 'msg']]]
   ];
   var esc = function(t){ return String(t).replace(/[&<>"]/g, function(c){ return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
-  $('rows').innerHTML = ROWS.map(function(r){ return '<div class="row' + (r[3] ? ' ' + r[3] : '') + '"><dt><svg viewBox="0 0 16 16" aria-hidden="true">' + IC[r[0]] + '</svg>' + esc(r[1]) + '</dt><dd>' + esc(r[2]) + '</dd></div>'; }).join('');
+  var row = function(r){ return '<div class="row' + (r[3] ? ' ' + r[3] : '') + '"><dt><svg viewBox="0 0 16 16" aria-hidden="true">' + IC[r[0]] + '</svg>' + esc(r[1]) + '</dt><dd>' + esc(r[2]) + '</dd></div>'; };
+  $('grps').innerHTML = GROUPS.map(function(g, i){ return '<div class="grp"><h3 class="grpH" id="grpH' + i + '">' + esc(g[0]) + '</h3><dl class="rows" aria-labelledby="grpH' + i + '">' + g[1].map(row).join('') + '</dl></div>'; }).join('');
   var BEAT = { H1: 1, P: 1, SECTION: 2, DIV: 3 };   // the logo 0; the title and its line 1; the card 2; the buttons and the help line 3
   [].forEach.call($('rc').children, function(el){ el.style.setProperty('--i', el.classList.contains('foot') ? 3 : BEAT[el.tagName] || 1); });
   document.addEventListener('click', function(e){ var a = e.target.closest('[data-inert]'); if (a) e.preventDefault(); });   // the links lead nowhere in the prototype
