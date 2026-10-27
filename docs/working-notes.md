@@ -16798,3 +16798,14 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - back to Latest, where the card is in its bento again;
   - the card opening the profile with its cross;
   - no errors.
+
+## Clinic: a logo slot on every location, the MeasureUp logo ready
+
+- "Add this logo on the bottom right of the item in the corresponding clinic"; then "put a red 10% filled frame reserve for the logo placement; the logo should fit into a 96 x 96 square, keeping the right ratio; placement bottom right".
+- **The slot:** every location item now has a 96 × 96 slot at its bottom right, filled 10% red (`rgba(255,0,0,.1)`), with the tags at the left level with its foot. The gap under the address is now 24px (was 56 desktop, 52 phone), since the slot gives the foot its height.
+- **The logo:** a logo sits in the slot with `object-fit: contain`, keeping its proportions. MeasureUp's comes out at 96 × 34.
+  - The file is `assets/clinic/measureup.webp`: the user's logo, black on transparent, scaled to 480 × 172 with ffmpeg (10 KB).
+  - The build now inlines the Clinic page's assets, as it does Concierge's.
+  - An item names its logo in a fourth field (`LOGO.measureup`).
+- **Not shown yet:** none of the ten New South Wales locations is MeasureUp, so the logo isn't on any item. It needs MeasureUp's item: its state, address and services.
+- Checked at 1440 and 393. The slot is 96 × 96, flush right, 25px above the rule, its foot level with the tags'. The logo was placed in a slot for the test only.

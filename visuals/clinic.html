@@ -86,11 +86,15 @@
   .state h2{margin:0;font:500 36px/1.15 var(--sans);letter-spacing:-.01em;}
   .grid{display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));column-gap:40px;}
   .loc{display:flex;flex-direction:column;padding:62px 0 24px;border-bottom:1px solid var(--line);}
-  .loc .hd{display:flex;gap:19px;margin-bottom:56px;}
+  .loc .hd{display:flex;gap:19px;margin-bottom:24px;}
   .loc .pin{width:28px;height:28px;color:var(--pin);stroke-width:1.4;margin-top:2px;}
   .loc b{display:block;font-weight:500;font-size:22px;line-height:1.2;color:var(--ink2);}
   .loc span{display:block;margin-top:9px;font-size:17px;line-height:1.24;color:var(--ink3);}
-  .tags{display:flex;flex-wrap:wrap;gap:10px;margin-top:auto;}
+  /* the foot: the tags at the left, the clinic's logo at the bottom right, in a 96 x 96 frame reserved for it (10% red until the logos are in: "put a red 10% filled frame reserve for the logo placement; the logo should fit into a 96 x 96 square, keeping the right ratio; bottom right") */
+  .ft{display:flex;align-items:flex-end;gap:16px;margin-top:auto;}
+  .mark{flex:none;display:grid;place-items:center;width:96px;height:96px;background:rgba(255,0,0,.1);}
+  .mark img{display:block;width:100%;height:100%;object-fit:contain;}
+  .tags{flex:1;min-width:0;display:flex;flex-wrap:wrap;gap:10px;}
   .tags em{display:inline-flex;align-items:center;gap:6px;padding:6px 9px;border:1px solid var(--tagLine);border-radius:8px;font:normal 15px/18px var(--sans);color:#555;}
   .tags .ic{width:16px;height:16px;}
   .tags i{font-style:normal;}
@@ -127,7 +131,7 @@
     .state h2{font-size:28px;margin-bottom:0;}
     .grid{grid-template-columns:minmax(0, 1fr);}
     .loc{padding:44px 0 24px;}
-    .loc .hd{gap:16px;margin-bottom:52px;}
+    .loc .hd{gap:16px;margin-bottom:24px;}
     .loc .pin{width:26px;height:26px;}
     .loc b{font-size:21px;}
     .loc span{font-size:16px;}
@@ -212,6 +216,8 @@
     heart: ['Heart Scans', 'Heart Scans', '<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>']
   };
   var KEY = ['mri', 'vo2', 'path', 'dexa', 'heart'];   // the key reads across: MRI & CT, Physical & VO2Max; Pathology, DEXA; Heart Scans
+  // the clinics' logos, by key: an item's fourth field names its own (the file inlined at build)
+  var LOGO = { measureup: ['../assets/clinic/measureup.webp', 'MeasureUp'] };
   var PIN = '<path d="M20 10c0 4.99-5.54 10.19-7.4 11.8a1 1 0 0 1-1.2 0C9.54 20.19 4 14.99 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/>';
   var STATES = [['nsw', 'New South Wales'], ['vic', 'Victoria'], ['qld', 'Queensland'], ['wa', 'Western Australia'], ['sa', 'South Australia'], ['act', 'Australian Capital Territory'], ['tas', 'Tasmania'], ['nt', 'Northern Territory']];
   // as the screenshots show them, in their order (the list goes on past Cremorne on the site)
@@ -239,7 +245,8 @@
     var L = LOC[s[0]];
     var body = L ? '<div class="grid">' + L.map(function(l){
       return '<article class="loc"><div class="hd">' + ic(PIN, 'pin') + '<div><b>' + esc(l[0]) + '</b><span>' + esc(l[1]) + '</span></div></div>' +
-        '<div class="tags">' + l[2].map(function(k){ return '<em>' + ic(SVC[k][2]) + '<i class="lg">' + esc(SVC[k][0]) + '</i><i class="sh">' + esc(SVC[k][1]) + '</i></em>'; }).join('') + '</div></article>';
+        '<div class="ft"><div class="tags">' + l[2].map(function(k){ return '<em>' + ic(SVC[k][2]) + '<i class="lg">' + esc(SVC[k][0]) + '</i><i class="sh">' + esc(SVC[k][1]) + '</i></em>'; }).join('') + '</div>' +
+        (LOGO[l[3]] ? '<span class="mark"><img src="' + LOGO[l[3]][0] + '" alt="' + esc(LOGO[l[3]][1]) + '"></span>' : '<span class="mark" aria-hidden="true"></span>') + '</div></article>';
     }).join('') + '</div>'
       : '<p class="soon">' + esc(s[1]) + '’s testing locations aren’t in the prototype yet.</p>';   // not invented: only the screenshots' list is here
     return '<section class="state" id="st-' + s[0] + '" aria-labelledby="h-' + s[0] + '"><h2 id="h-' + s[0] + '">' + esc(s[1]) + '</h2>' + body + '</section>';
