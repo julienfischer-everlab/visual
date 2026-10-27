@@ -17541,7 +17541,8 @@ window.EvLoad = (function () {
             if (hz) x.fillRect(Math.min(z[0], z[1]), p2, z[2], lw2); else x.fillRect(p2, Math.min(z[0], z[1]), lw2, z[2]); });
         };
         run(true, ry0, rx0, rx1, W); run(true, ry1, rx0, rx1, W); run(false, rx0, ry0, ry1, H); run(false, rx1, ry0, ry1, H);
-        var CS = 5; x.fillStyle = c1; [[rx0, ry0], [rx1, ry0], [rx0, ry1], [rx1, ry1]].forEach(function (k) { x.fillRect(Math.round((k[0] - CS / 2 + lw2 / 2) * dpr) / dpr, Math.round((k[1] - CS / 2 + lw2 / 2) * dpr) / dpr, CS, CS); });   // a small square at each corner of the box ("put a square at each corner of the frame")
+        var CS = 6, OV = 1.5; x.fillStyle = c1;   /* a small square at each corner of the box, sitting outside it, diagonally, overlapping the corner a little ("put a square at each corner of the frame"; "like this") */
+        [[rx0, ry0, -1, -1], [rx1, ry0, 1, -1], [rx0, ry1, -1, 1], [rx1, ry1, 1, 1]].forEach(function (k) { var sx2 = k[2] < 0 ? k[0] - CS + OV : k[0] + lw2 - OV, sy2 = k[3] < 0 ? k[1] - CS + OV : k[1] + lw2 - OV; x.fillRect(Math.round(sx2 * dpr) / dpr, Math.round(sy2 * dpr) / dpr, CS, CS); });
       }
       if (la > 0 && !FM) {   /* the two lines as a crosshair: broken round the crossing, a gap where they meet ("the crossed line should present as gap"); each arm white at full strength at the gap ("target line white fully"),
                          fading out along its length ("keep progress fade out on the line"), quickly at first then more slowly, to nothing a little past half the map away; on whole pixels, crisp ("no halo on line as well") */
