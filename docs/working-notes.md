@@ -16971,3 +16971,16 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Overview (V4) desk**: the services' 2 × 2 is 16 apart ("-8px grid gap"; was 24).
 - **Tweaks → Concierge card** shows only with the Live version, the one that has the card.
 - Checked: the receipt alone (desk, XS, dark and light; 7 rows, no sideways scroll, page as long as its content) and in the prototype. `#gift-receipt` opens it with the Tweaks hidden; XS frames it; the menu goes on to the Clinic and Home lists it. Services gap 16. Concierge group hidden on V4, shown on V5. No errors.
+
+## Documentation → Health profile card (the card's source of truth)
+
+- **One renderer**: the Overview's Health profile card is now drawn by `HPC` (`window._hpCard`), and Documentation draws it from there too. Change it there and it changes in both places ("that will be the source of truth for the UI").
+  - `HPC.html(summary)` gives the words and the foot: eyebrow, the step's title and stage, the progress bar, the button. `HPC.plan()` gives the Plan to purchase card. `HPC.rec()` gives the records card with its dot. `HPC.NXT` holds each step's lines.
+  - The profile's store gained `summaryOf(state)`: a demo state's summary built without saving anything, so the doc can show every state while the member's own stays as it was. `preset()` is now `build()` plus save.
+- **Documentation → Health profile card** (`#health-profile-card`), the Loading states layout:
+  - Sidebar: the states (Step 1, 1.5, 2, 2.5, 3, 3.5, Booked, Records processing, After the call), the picked state's description, the anatomy, the rules, and where it's used.
+  - Main: all states in a gallery, live (spheres lit a third per step), each with its name and its State key.
+  - Shown at the bar's breakpoint: XS 361px wide with the phone's sizes; S 552; M/L 528 × 272, as in the desk's left column. In the prototype's theme. The Viewport shows on this tab.
+  - Picking a state scrolls to it and outlines it.
+- **Live version**: the Concierge card's two columns 32 apart ("col -8px gap"; was 40). Tweaks → Insights is hidden there, since the Live version has no insights carousel.
+- Checked: the Overview card in every state, the same as before (titles, buttons, bars: Get started; Continue with half; Book a time; Book a time with on/half; Complete profile; Continue; View; Review my plan). The doc shows the nine with the same words, at L and at XS (361), dark and light. No errors.

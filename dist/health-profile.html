@@ -1569,12 +1569,12 @@ body:is(.docOn, .hlOn) .tkFlPlus, body:is(.docOn, .hlOn) .tkFlPanel { display: n
 #dOver .ovhero.hpRep { display: none !important; } #dOver .dvTop > .hpOvCard { margin: 0; }   /* the profile's card in Next step's place: Next step put away; the card the row's height, no margin of its own */
 .hpOvCard { position: relative; display: flex; flex-direction: column; min-height: 218px; margin: 34px 0 0; padding: 20px; border-radius: 22px; background: rgba(255, 255, 255, .06); color: #ececec; cursor: pointer; }   /* the insight cards' ground, #fff 6% (light: the paper, as theirs) ("the same background as the insights cards") */   /* the Next step card's layout, its picture gone, the sphere at its top right ("keep the same layout as Next step; remove the image; sphere top right; Health profile instead of Next step") */
 body.light .hpOvCard { background: #fdfaf3; color: #2e1f1a; }
-#dOver .hpRecOut, body.hdrV4 #dOver .dvTop > div.hpRecOut { position: relative; display: flex; flex-direction: row; align-items: center; gap: 16px; min-height: 0; margin: 0; padding: 17px 20px; border: 1px solid rgba(255, 255, 255, .14); border-radius: 22px; color: #ececec; overflow: hidden; isolation: isolate; box-sizing: border-box; }
-#dOver .hpRecOut h3 { flex: 1; min-width: 0; margin: 0; font-size: 15px; line-height: 20px; font-weight: 500; letter-spacing: -.1px; text-wrap: pretty; } body.light #dOver .hpRecOut { border-color: rgba(46, 31, 26, .16); color: #2e1f1a; }
+:is(#dOver, .hcDoc) .hpRecOut, body.hdrV4 #dOver .dvTop > div.hpRecOut { position: relative; display: flex; flex-direction: row; align-items: center; gap: 16px; min-height: 0; margin: 0; padding: 17px 20px; border: 1px solid rgba(255, 255, 255, .14); border-radius: 22px; color: #ececec; overflow: hidden; isolation: isolate; box-sizing: border-box; }
+:is(#dOver, .hcDoc) .hpRecOut h3 { flex: 1; min-width: 0; margin: 0; font-size: 15px; line-height: 20px; font-weight: 500; letter-spacing: -.1px; text-wrap: pretty; } body.light :is(#dOver, .hcDoc) .hpRecOut { border-color: rgba(46, 31, 26, .16); color: #2e1f1a; }
 /* its dot: 8 px, white (the light page's ink), breathing, at the card's right in a zone the card's height, the particles drawn into it on its canvas */
-#dOver .hpRecDot { position: relative; flex: none; align-self: stretch; width: 72px; margin: -17px -14px -17px 0; } #dOver .hpRecDot canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
-#dOver .hpRecDot i { position: absolute; left: 50%; top: 50%; width: 8px; height: 8px; margin: -4px 0 0 -4px; border-radius: 50%; background: #fff; box-shadow: 0 0 10px rgba(255, 255, 255, .5); animation: hpRecBeat 1.6s ease-in-out infinite; } body.light #dOver .hpRecDot i { background: #2e1f1a; box-shadow: 0 0 8px rgba(46, 31, 26, .25); }
-@keyframes hpRecBeat { 50% { transform: scale(1.18); box-shadow: 0 0 14px rgba(255, 255, 255, .7); } } @media (prefers-reduced-motion: reduce) { #dOver .hpRecDot i { animation: none; } }
+:is(#dOver, .hcDoc) .hpRecDot { position: relative; flex: none; align-self: stretch; width: 72px; margin: -17px -14px -17px 0; } :is(#dOver, .hcDoc) .hpRecDot canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+:is(#dOver, .hcDoc) .hpRecDot i { position: absolute; left: 50%; top: 50%; width: 8px; height: 8px; margin: -4px 0 0 -4px; border-radius: 50%; background: #fff; box-shadow: 0 0 10px rgba(255, 255, 255, .5); animation: hpRecBeat 1.6s ease-in-out infinite; } body.light :is(#dOver, .hcDoc) .hpRecDot i { background: #2e1f1a; box-shadow: 0 0 8px rgba(46, 31, 26, .25); }
+@keyframes hpRecBeat { 50% { transform: scale(1.18); box-shadow: 0 0 14px rgba(255, 255, 255, .7); } } @media (prefers-reduced-motion: reduce) { :is(#dOver, .hcDoc) .hpRecDot i { animation: none; } }
 /* stacked: the desk's left column the primary card over it, the primary filling what the services leave; the services spanning both rows */
 #dOver .dvTop.hpRecStk.hpRecTwo { grid-template-rows: minmax(0, 1fr) auto; }
 #dOver .dvTop.hpRecStk.hpRecTwo > :is(.hpOvCard, .ovhero) { grid-column: 1; grid-row: 1; min-height: 0; } #dOver .dvTop.hpRecStk.hpRecTwo > .hpRecOut { grid-column: 1; grid-row: 2; }
@@ -1825,16 +1825,18 @@ window.EvLoad = (function () {
     past: { day: 29, time: '10:00am', tz: 'syd' },
     you: { sleep: '6', country: 'AU', eth: '', goals: 'Sleep better and keep my cholesterol in check', occ: 'Product designer', smoke: 'no', alc: 2 }
   };
-  function preset(k) {   // the demo states: on step 1, on step 2, on step 3, step 4 (the records being collected), done; '_d', the step on left part-way (dropped off)
-    var drop = /_d$/.test(k), rec = k === 'rec'; k = rec ? 'all' : k.replace(/_d$/, '');
+  function build(k) {   // the demo states: on step 1, on step 2, on step 3, step 4 (the records being collected), done; '_d', the step on left part-way (dropped off) -- built, the member's own left as they were
+    var keep = S, drop = /_d$/.test(k), rec = k === 'rec'; k = rec ? 'all' : k.replace(/_d$/, '');
     S = blank();
     var copy = function (o) { return JSON.parse(JSON.stringify(o)); };
     if (k === 'one' || k === 'two' || k === 'all') { S.a.wear = { st: 'done', i: 3, ans: copy(DEMO.wear) }; S.pend.search = rec ? { at: Date.now(), hold: true } : k === 'all' ? { at: Date.now() - SEARCH_MS - 1, done: true } : { at: Date.now() }; }
     if (k === 'two' || k === 'all') S.a.past = { st: 'done', i: 1, ans: copy(DEMO.past) };
     if (k === 'all') S.a.you = { st: 'done', i: 5, ans: copy(DEMO.you) };
     if (drop) { var nd = AREAS.filter(function (a) { return S.a[a.k].st !== 'done'; })[0]; if (nd) S.a[nd.k].st = 'prog'; }   // opened and left: begun
-    save();
+    var out = S; S = keep; return out;
   }
+  function preset(k) { S = build(k); save(); }
+  function summaryOf(k) { var keep = S; S = build(k); var r = summary(); S = keep; return r; }   // a demo state's summary, nothing saved: what Documentation -> Health profile card draws each state from
 
   /* ---------- the questionnaire's content ---------- */
   var SLEEP = [['5', 'Less than 6 hours'], ['6', '6 to 7 hours'], ['7', '7 to 8 hours'], ['8', 'More than 8 hours']];
@@ -3076,7 +3078,7 @@ window.EvLoad = (function () {
     return { el: root, welcome: true, v2: V2, cp2: CP2, deskT: !!opts.desk, stage: function () { return root.classList.contains('hpW2Ready') ? 3 : ph; }, card2: w2, bg2: bg2, look2: look2, sphere: V2 ? null : sp, sphT0: V2 ? null : sp.t0, place: place, flip: flip, logo: logo, hold: function () { held = true; }, theme: function (t) { root.classList.toggle('arDark', t === 'dark'); if (V2) readCol(); }, home: function () {}, area: function () {}, destroy: function () { tm.forEach(clearTimeout); tm = []; held = true; if (wv) wv.stop(); if (st) st.stop(); if (mt2) mt2.stop(); if (fp2) fp2.stop(); if (kt2) kt2.stop(); if (tx2) tx2.stop(); if (sgRo) sgRo.disconnect(); window.removeEventListener('deviceorientation', onOri); if (tlt.raf) cancelAnimationFrame(tlt.raf); if (root.parentNode) root.parentNode.removeChild(root); } };
   }
 
-  window.HealthProfile = { mount: mount, welcome: welcome, dots: dots, sphere: sphere, look: look, dismiss: function (v) { ASK = !(v === false || v === 'off'); document.documentElement.classList.toggle('hpNoDism', !ASK); return ASK; }, stepTitle: function (v) { var on = v === true || v === 'on'; document.documentElement.classList.toggle('hpStepTOn', on); return on; }, store: { get: function () { return S; }, summary: summary, preset: preset, reset: function () { preset('none'); }, pending: pending, areas: AREAS } };
+  window.HealthProfile = { mount: mount, welcome: welcome, dots: dots, sphere: sphere, look: look, dismiss: function (v) { ASK = !(v === false || v === 'off'); document.documentElement.classList.toggle('hpNoDism', !ASK); return ASK; }, stepTitle: function (v) { var on = v === true || v === 'on'; document.documentElement.classList.toggle('hpStepTOn', on); return on; }, store: { get: function () { return S; }, summary: summary, summaryOf: summaryOf, preset: preset, reset: function () { preset('none'); }, pending: pending, areas: AREAS } };
 })();
 
 </script>
