@@ -16809,3 +16809,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - An item names its logo in a fourth field (`LOGO.measureup`).
 - **Not shown yet:** none of the ten New South Wales locations is MeasureUp, so the logo isn't on any item. It needs MeasureUp's item: its state, address and services.
 - Checked at 1440 and 393. The slot is 96 × 96, flush right, 25px above the rule, its foot level with the tags'. The logo was placed in a slot for the test only.
+
+## Membership card: the badge shows the membership's name only
+
+- "Replace: Baseline, Protocol, Diagnostic": the card's badge drops "member". It reads **Baseline**, **Diagnostic** or **Protocol**, following Tweaks → Welcome → Membership (`tagOf()`, from the tweak's key). "Diagnostic" is singular here, as asked. The tier's name elsewhere is still "Diagnostics".
+- The line under the name still reads "Everlab member". The card's spoken description says "Baseline, Everlab member".
+- Checked in the reveal: Baseline → Diagnostic → Protocol → Baseline, changing in place, no errors.
