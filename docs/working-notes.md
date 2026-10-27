@@ -16727,3 +16727,15 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 ## Health profile home: the historical records row removed
 
 - "Remove 4" / "remove historical step": the profile's home no longer lists "Your historical records" (the 4th row and its turning-ring CSS are gone). It shows the three steps in every state. Step 4 keeps its title and line ("We're collecting your historical records…") and the Overview card's step 4; Booked keeps "…Your past results are in too." Checked at XS and L. No page errors.
+
+## Gift: the "Unwrap gift-FINAL" page as a page of the prototype
+
+- "Integrate the gift experience in a new page": the gift page (the "Unwrap gift-FINAL" artifact) is now `visuals/gift.html`. The build copies it to `dist/gift.html`, which is published beside the prototype like `concierge.html`.
+- It's in the version menu under Standalone flow, as **Gift** (`#gift`). It also has a Home card. It opens as a page under the bar, like Report visuals.
+- Opened as `gift.html#embed&…`, its own bar is hidden. The prototype drives it instead:
+  - the bar's Mode sets its theme;
+  - the Viewport sets its device: XS or S shows its iPhone frame, anything else its desktop;
+  - Tweaks → **Gift** holds the rest of its bar: Motion, Card, Hero, Next, Content, Message, and the Panel's colour, opacity and blur.
+- The page opens with the tweaks as they are, passed in its link. After that, each change is set live on the page's own control. Opened by itself, `gift.html` keeps its own bar.
+- Tweaks now sets its groups from the start (`__tkPages` is defined with `tkPages`). A page opened by its link, such as `#gift`, shows its group alone.
+- `CLAUDE.md`: the main artifact is now published with `gift.html` too.
