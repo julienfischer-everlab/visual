@@ -16752,3 +16752,12 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **In the prototype:** light only, like the site, with no Tweaks. At a forced XS or S the page sits at the phone's width in the phone shell, without a status bar.
 - `CLAUDE.md`: the main artifact is now published with `clinic.html` too.
 - The Chat entry's comment, moved after the Gift line by the last change, is back on its own line.
+
+## Health profile: the cross depends on where it was opened from
+
+- "From the Overview primary card: need dismiss top right; from the Health profile page directly: no dismiss."
+- `open({ dism: true })` from inside the app keeps the cross, top right: the Overview's Health profile card, the Overview's next-step card, and My account's entry.
+- Everywhere else, `html.hpNoX` hides it, keeping its space so the step's title stays centred. That covers the menu's Health profile, its `#health-profile` link, Tweaks → Open, the Membership reveal's Get started, and the standalone Health Profile page (`tools/build-hp.js`).
+- Opening the profile again in place (a State picked while it's up) keeps the cross as it was.
+- Dismiss flow Off still hides the cross everywhere. On, the cross follows the rule above.
+- Checked at XS and on the desktop. From the card, the cross is there and closes back to the Overview. From the menu or after a state change, it's hidden. On the standalone page, it's hidden.

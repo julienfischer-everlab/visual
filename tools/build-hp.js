@@ -104,6 +104,7 @@ ${hpJs}
   /* the Demo button beside the screen when it fits (28 right of the device, or in a wide Auto's gutter); else the pill under the sheet's button */
   var place = function () { var r = dev.getBoundingClientRect(), x = r.right + 28; demo.classList.toggle('side', x + 36 + 12 <= innerWidth); if (demo.classList.contains('side')) { demo.style.left = Math.round(x) + 'px'; } else demo.style.left = ''; };
   var setBp = function (b) { stage.setAttribute('data-bp', b); [].forEach.call(document.querySelectorAll('.demo [data-bp]'), function (x) { x.setAttribute('aria-pressed', String(x.getAttribute('data-bp') === b)); }); try { localStorage.setItem(KEY, b); } catch (e) {} requestAnimationFrame(place); };
+  de.classList.add('hpNoX');   // the profile's own page: nothing behind it to go back to, so no cross ("from the Health profile page directly: no dismiss"), as the prototype's menu entry
   var mount = function () { if (inst) inst.destroy(); host.textContent = ''; inst = HP.mount(host, { theme: dark() ? 'dark' : 'light', name: 'Julien', onClose: function () { if (inst) inst.home(); } }); paint(); };
   var stateOf = function () { var sm = HP.store.summary(), nx = ['wear', 'past', 'you'].filter(function (k) { return sm.st[k] !== 'done'; })[0]; return sm.n === 3 ? 'all' : ['none', 'one', 'two'][sm.n] + (nx && sm.st[nx] === 'prog' ? '_d' : ''); };
   var sel = document.getElementById('dmState');
