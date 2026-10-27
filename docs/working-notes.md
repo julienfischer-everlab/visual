@@ -16885,3 +16885,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Steps 2 and 3 still open to edit once done: the booking ("Onboarding consultation call", Booked …) and Tell us about you, with their pens.
 - The rail's header does the same for step 1. The rail is only used where it's still drawn.
 - Checked at Step 2 and Booked: step 1 is a plain row with no pen, and tapping it keeps the home. Steps 2 and 3 are buttons with pens once done. No errors.
+
+## Clinic: clinics with a logo first in their state
+
+- "Move clinic with logo at the top of the list (keep inside the group)": in each state, the locations that carry a logo come first, then the rest in their own order. It's a stable sort on whether an item names a logo in `LOGO`, done as each state is drawn; the data keeps the screenshots' order.
+- Today that's MeasureUp Brisbane, now the first of Queensland's 12. New South Wales has no logo yet, so its 61 are as they were.
+- Checked: Queensland opens with MeasureUp Brisbane and then Exercise Matters, Bayside Radiology Hervey Bay…; New South Wales unchanged; no errors.
