@@ -17586,3 +17586,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Sydney frames: tint in with the mark, gone with it.
   - New Zealand (narrow) round Auckland: the up and side arms fade out before the edge.
   - No errors.
+- **Orange tint removed** ("remove this orange light, no good"): the marks round the lit town stay as the map is; only the town's own mark is orange. The Dot tint / Tint radius Tweaks are gone. The arms' fade before the edge stays. Checked round Sydney: no tint, the mark alone in the gap, no errors.
