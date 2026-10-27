@@ -16761,3 +16761,13 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Opening the profile again in place (a State picked while it's up) keeps the cross as it was.
 - Dismiss flow Off still hides the cross everywhere. On, the cross follows the rule above.
 - Checked at XS and on the desktop. From the card, the cross is there and closes back to the Overview. From the menu or after a state change, it's hidden. On the standalone page, it's hidden.
+
+## Health profile, step 4: a variant with the records outside the primary card
+
+- "Add variant step 4: is the primary card / primary card is outside, an outlined card: Your past records are currently being collected."
+- Tweaks → Health profile now has a **Step 4** row: **Primary card** (the default) or **Outside**.
+  - **Primary card:** as before. The card itself reads "We're collecting your historical records." with its particles and no foot.
+  - **Outside:** the primary card is as when Booked: "You're all set for your consult with Dr Steven Lu.", with the consult and View at its foot. Above it, under the greeting, an outlined card reads "Your past records are currently being collected." It has a 1px rule, the card's 22px radius, no fill, and the title only.
+- The outlined card shows only at Step 4 with Outside, and goes for every other state, Booked and the plan included.
+- **Spacing:** on the phone it sits 22px under the greeting and 12px above the card. On the desktop it spans the bento's width, 24px above it.
+- Checked at XS and on the desktop, in dark and light.
