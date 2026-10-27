@@ -17535,11 +17535,11 @@ window.EvLoad = (function () {
       for (k = 1; k < B.length; k++) { var L = B[k]; if (!L.length) continue; x.globalAlpha = k / 32; x.beginPath(); for (i = 0; i < L.length; i++) mark(pat, L[i].cx, L[i].cy, pat === 'half' ? C.Z * (.35 + 1.3 * L[i].n) : C.Z); x.fill(); }
       x.globalAlpha = 1;
       if (la > 0 && FM) {   /* the Frame style's four lines: solid along the box's sides, each running on past its corners and fading out there, before the map's edge */
-        var lw2 = 1 / dpr, EX = Math.max(16, C.len * Math.max(W, H) * .5), c1 = 'rgba(' + rgb + ', ' + la.toFixed(3) + ')', c0 = 'rgba(' + rgb + ', 0)', tA = C.trail * la, cT = 'rgba(' + rgb + ', ' + tA.toFixed(3) + ')';   /* only the box white; the trails past its corners fainter (35%), fading out ("only the frame rectangle should be white, the rest of the trails opacity") */
+        var lw2 = 1 / dpr, c1 = 'rgba(' + rgb + ', ' + la.toFixed(3) + ')', c0 = 'rgba(' + rgb + ', 0)', tA = C.trail * la, cT = 'rgba(' + rgb + ', ' + tA.toFixed(3) + ')';   /* only the box white; the trails past its corners fainter (35%), fading out ("only the frame rectangle should be white, the rest of the trails opacity") */
         var run = function (hz, at2, a0, a1, lim) {   // one line: hz level (at y = at2, from x a0 to a1) or upright (at x = at2, from y a0 to a1)
-          var p2 = Math.floor(at2 * dpr) / dpr, e0 = Math.min(EX, a0 - 1), e1 = Math.min(EX, lim - a1 - 1);
+          var p2 = Math.floor(at2 * dpr) / dpr, e0 = a0 - 1, e1 = lim - a1 - 1;   // the trails across the whole map, to its edges ("the trail should cover the full map frame, fading out approaching the edge")
           x.fillStyle = c1; if (hz) x.fillRect(a0, p2, a1 - a0, lw2); else x.fillRect(p2, a0, lw2, a1 - a0);
-          [[a0, a0 - e0, e0], [a1, a1 + e1, e1]].forEach(function (z) { if (z[2] <= 1 || tA <= 0) return; var g = hz ? x.createLinearGradient(z[0], 0, z[1], 0) : x.createLinearGradient(0, z[0], 0, z[1]); g.addColorStop(0, cT); g.addColorStop(.45, 'rgba(' + rgb + ', ' + (.4 * tA).toFixed(3) + ')'); g.addColorStop(1, c0); x.fillStyle = g;
+          [[a0, a0 - e0, e0], [a1, a1 + e1, e1]].forEach(function (z) { if (z[2] <= 1 || tA <= 0) return; var g = hz ? x.createLinearGradient(z[0], 0, z[1], 0) : x.createLinearGradient(0, z[0], 0, z[1]); g.addColorStop(0, cT); g.addColorStop(.55, 'rgba(' + rgb + ', ' + (.6 * tA).toFixed(3) + ')'); g.addColorStop(1, c0); x.fillStyle = g;   // held most of the way, fading out as it nears the edge
             if (hz) x.fillRect(Math.min(z[0], z[1]), p2, z[2], lw2); else x.fillRect(p2, Math.min(z[0], z[1]), lw2, z[2]); });
         };
         run(true, ry0, rx0, rx1, W); run(true, ry1, rx0, rx1, W); run(false, rx0, ry0, ry1, H); run(false, rx1, ry0, ry1, H);

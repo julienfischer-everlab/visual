@@ -17652,3 +17652,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Frame: only inside lit** ("only active dots INSIDE the frame should be highlighted, not outside"): the marks inside the box are at the active opacity, those outside at the inactive; there's no soft edge past the box now.
 - **Report items 2px apart** ("gap 2px").
 - **+24px before the buttons** ("+24px padding left button gap"): the gap between the words and the Upload button or the switch goes from 14px to 38px.
+
+- Frame trails now run across the whole map: from each side of the frame out to the map's edge, fading from the trail opacity to nothing as they near the edge (the frame rectangle itself stays solid white, with its corner squares).
