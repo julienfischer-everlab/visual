@@ -17023,3 +17023,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Phone**: the properties stay in two columns ("keep 2 cols for properties"), the label at 8.8em and the value beside it, rows at 14px. "Purchase date" and the email each hold one line; Delivery and the message wrap to two.
 - **Entrance**: four beats one after another ("logo; title group with sub; card; CTA group + sub"). The wordmark, the title with its line, the card, then the two buttons with the help line, each rising 12px out of nothing over 1.1s, 380ms apart (250, 630, 1010, 1390ms). Reduced motion: all at once.
 - Checked: opacities sampled every 250ms rise in that order, and all are in by ~2s. XS columns 123/178, no row cut. No errors.
+
+## Gift receipt: card title spacing
+
+- "Gift summary" sits 4px higher in the card ("top padding -4px": its own top 20 → 16) and has 4px more under it ("h2 margin bottom +4px").
+- Measured: the title's text starts 30px below the card's top on desk (28 on XS), with 4px more before the first row. No errors.
