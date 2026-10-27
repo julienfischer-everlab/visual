@@ -12291,6 +12291,7 @@
         <!-- step 1's pages, their order ("the ability to change the position, the order of all the pages inside step one: drag the page up and down"): drag, or the arrow keys; kept with the tweaks.
              On the Health profile page only ("the steps breakdown should be on the health profile page"), after the rows the profile borrows from the Primary card -->
         <div class="tkRow tkOrdRow" id="stHpW1Row"><span class="lbl">Step 1 pages</span><ol class="tkOrd tkOrdN" id="stHpW1List" aria-label="Step 1's pages: press one to open it; drag, or use the arrow keys, to reorder"></ol><input type="hidden" id="stHpW1Ord" value="promise,details,address,emergency,mobile,otp,medicare,declare,health"></div>
+        <div class="tkRow tkOrdRow" id="stHpW3Row"><span class="lbl">Step 3 pages</span><ol class="tkOrd tkOrdN" id="stHpW3List" aria-label="Step 3's pages: press one to open it; drag, or use the arrow keys, to reorder"></ol><input type="hidden" id="stHpW3Ord" value="sleep,about,smoke,alcohol,review,search"></div>   <!-- "same as step 1, I need the breakdown controllable" -->
         </div>
         <div class="tkGroup" data-pages="ov" data-sec="primary">
         <div class="tkSub">Primary card</div>
@@ -17401,16 +17402,22 @@ window.EvLoad = (function () {
   /* step 1's pages, the designs' nine ("this is all we need"), and their names; their order Tweaks -> Health profile -> Step 1 pages ("drag the page up and down so it changes the order; that might change over time") */
   var W1 = { promise: 'Health information', details: 'Your personal details', address: 'Your address', emergency: 'Emergency contact', mobile: 'Verify your mobile', otp: 'Enter your code', medicare: 'Your Medicare details', declare: 'Health declaration', health: 'Health background' };
   var W1D = ['promise', 'details', 'address', 'emergency', 'mobile', 'otp', 'medicare', 'declare', 'health'];
+  /* step 3's pages and their names; their order Tweaks -> Health profile -> Step 3 pages ("same as step 1, I need the breakdown controllable"); the past results search's page only when it runs */
+  var Y3 = { sleep: 'Sleep and energy', about: 'About you', smoke: 'Smoking', alcohol: 'Alcohol', review: 'Your answers', search: 'Past results' };
+  var Y3D = ['sleep', 'about', 'smoke', 'alcohol', 'review', 'search'];
   var AREAS = [   /* the journey driver's three stages and their steps ("go with something like this": the desk's rail lists them), keyed as before */
     { k: 'wear', t: 'Our promise and your details', s: 'About 8 minutes', steps: W1D.slice(), sub: W1D.map(function (k) { return W1[k]; }) },
     { k: 'past', t: 'Book your onboarding consult', s: 'About 1 minute', steps: ['time', 'review'], sub: ['Choose a time', 'Review and confirm'] },
-    { k: 'you', t: 'Tell us about you', s: 'About 5 minutes', steps: ['sleep', 'about', 'smoke', 'alcohol', 'review', 'search'], sub: ['Sleep and energy', 'About you', 'Smoking', 'Alcohol', 'Your answers', 'Past results'] }
+    { k: 'you', t: 'Tell us about you', s: 'About 5 minutes', steps: Y3D.slice(), sub: Y3D.map(function (k) { return Y3[k]; }) }
   ];
   var AREA = {}; AREAS.forEach(function (a, i) { a.i = i; AREA[a.k] = a; });
   var INST = null;   // the profile mounted last, drawn again when step 1's order changes
   function wearOrder(list) {   // step 1's pages in this order: the known ones as listed, any left out after them
     var ks = (list || []).filter(function (k, i, a) { return W1[k] && a.indexOf(k) === i; }); W1D.forEach(function (k) { if (ks.indexOf(k) < 0) ks.push(k); });
     AREA.wear.steps = ks; AREA.wear.sub = ks.map(function (k) { return W1[k]; }); if (INST && INST.refresh) INST.refresh(); return ks; }
+  function youOrder(list) {   // step 3's pages in this order, the same way
+    var ks = (list || []).filter(function (k, i, a) { return Y3[k] && a.indexOf(k) === i; }); Y3D.forEach(function (k) { if (ks.indexOf(k) < 0) ks.push(k); });
+    AREA.you.steps = ks; AREA.you.sub = ks.map(function (k) { return Y3[k]; }); if (INST && INST.refresh) INST.refresh(); return ks; }
   var SEARCH_MS = 60000;   // the past results search: how long it runs in the background before it is done
   function blank() { return { v: 2, a: { wear: { st: 'not', i: 0, ans: {} }, past: { st: 'not', i: 0, ans: {} }, you: { st: 'not', i: 0, ans: {} } }, pend: {}, notif: false, files: [] }; }
   var S = blank();
@@ -17822,7 +17829,7 @@ window.EvLoad = (function () {
     var link = function (t) { return h('a', { class: 'hpLink', href: '#', on: { click: function (e) { e.preventDefault(); } } }, t); };
     var row = function (t, d, b, icon) { return h('div', { class: 'hpRow' + (icon ? ' hpRowIc' : '') }, icon ? h('i', { class: 'hpRowI', 'aria-hidden': 'true' }, ic(16, icon, 1.5)) : null, h('div', null, h('b', { text: t }), h('span', { text: d })), b); };   // icon: a tile at its left (the search page's rows, as Anshul's map)
     var sumRow = function (q2, a2, go) { return h('div', { class: 'hpSumR' }, h('div', null, h('span', { text: q2 }), h('b', { text: a2 || '—' })), go ? h('button', { type: 'button', class: 'hpEdit', 'aria-label': 'Edit ' + q2, text: 'Edit', on: { click: go } }) : null); };
-    var editTo = function (j) { return function () { ret = I; I = j; step(-1); }; };
+    var editTo = function (j) { return function () { ret = I; I = typeof j === 'string' ? Math.max(0, stepsOf(A).indexOf(j)) : j; step(-1); }; };   // j: the page's id (its place follows Tweaks' order)
     function intro(scr, t, d) {
       var dd = dots(); scr.appendChild(h('div', { class: 'hpIntro' }, dd.el, q('', t, d, true)));
       dd.core(0, false); setTimeout(function () { dd.core(12, true); }, 200); setTimeout(function () { dd.core(32, true); }, 1200);   // its core warms outward ("dots blinking" in the reference's two frames)
@@ -18043,8 +18050,8 @@ window.EvLoad = (function () {
       'you.review': function (scr, ans) {
         scr.appendChild(q('', 'Review your answers', 'Tap Edit to change anything. You can come back to these any time.'));
         scr.appendChild(h('div', { class: 'hpSum' },
-          sumRow('Sleep', name(SLEEP, ans.sleep), editTo(0)), sumRow('Country of birth', name(COUNTRY, ans.country), editTo(1)), sumRow('Ethnicity', ans.eth, editTo(1)), sumRow('Health goals and concerns', ans.goals, editTo(1)), sumRow('Occupation', ans.occ, editTo(1)),
-          sumRow('Smoking', name(SMOKE, ans.smoke), editTo(2)), sumRow('Alcohol', ans.alc != null ? ans.alc + (ans.alc === 1 ? ' time' : ' times') + ' a week' : '', editTo(3))));
+          sumRow('Sleep', name(SLEEP, ans.sleep), editTo('sleep')), sumRow('Country of birth', name(COUNTRY, ans.country), editTo('about')), sumRow('Ethnicity', ans.eth, editTo('about')), sumRow('Health goals and concerns', ans.goals, editTo('about')), sumRow('Occupation', ans.occ, editTo('about')),
+          sumRow('Smoking', name(SMOKE, ans.smoke), editTo('smoke')), sumRow('Alcohol', ans.alc != null ? ans.alc + (ans.alc === 1 ? ' time' : ' times') + ' a week' : '', editTo('alcohol'))));
         foot2(S.a.you.st === 'done' && !searching() ? 'Done' : 'Save answers', true, fwd);
       },
       'you.search': function (scr) {
@@ -18083,6 +18090,7 @@ window.EvLoad = (function () {
       home: function () { home(0); },
       area: function (k, land) { if (!AREA[k]) return; area(k, 0); if (land) { landAt = { a: k, i: I }; step0Back(); } },   // land: opened straight on the step (the Overview card's button), nothing behind it
       go: function (k, i) { if (AREA[k]) area(k, 0, i); },   // a stage at a given page, at once
+      goId: function (k, id) { if (!AREA[k]) return false; var i = stepsOf(k).indexOf(id); if (i < 0) return false; area(k, 0, i); return true; },   // a stage at a named page (Tweaks' page lists), wherever its order puts it
       where: function () { return { a: A, i: I }; },
       theme: function (t) { root.classList.toggle('arDark', t === 'dark'); },
       destroy: function () { if (alive) tell(null); alive = false; clearInterval(pt); if (root.parentNode) root.parentNode.removeChild(root); },
@@ -18821,7 +18829,7 @@ window.EvLoad = (function () {
     return { el: root, welcome: true, v2: V2, cp2: CP2, deskT: !!opts.desk, stage: function () { return root.classList.contains('hpW2Ready') ? 3 : ph; }, card2: w2, bg2: bg2, look2: look2, sphere: V2 ? null : sp, sphT0: V2 ? null : sp.t0, place: place, flip: flip, logo: logo, hold: function () { held = true; }, theme: function (t) { root.classList.toggle('arDark', t === 'dark'); if (V2) readCol(); }, home: function () {}, area: function () {}, destroy: function () { tm.forEach(clearTimeout); tm = []; held = true; if (wv) wv.stop(); if (st) st.stop(); if (mt2) mt2.stop(); if (fp2) fp2.stop(); if (kt2) kt2.stop(); if (tx2) tx2.stop(); if (sgRo) sgRo.disconnect(); window.removeEventListener('deviceorientation', onOri); if (tlt.raf) cancelAnimationFrame(tlt.raf); if (root.parentNode) root.parentNode.removeChild(root); } };
   }
 
-  window.HealthProfile = { mount: mount, snap: snap, welcome: welcome, dots: dots, sphere: sphere, look: look, dismiss: function (v) { ASK = !(v === false || v === 'off'); document.documentElement.classList.toggle('hpNoDism', !ASK); return ASK; }, stepTitle: function (v) { var on = v === true || v === 'on'; document.documentElement.classList.toggle('hpStepTOn', on); return on; }, wear: { order: wearOrder, names: function () { return JSON.parse(JSON.stringify(W1)); }, def: W1D.slice() }, store: { get: function () { return S; }, summary: summary, summaryOf: summaryOf, preset: preset, reset: function () { preset('none'); }, pending: pending, areas: AREAS } };
+  window.HealthProfile = { mount: mount, snap: snap, welcome: welcome, dots: dots, sphere: sphere, look: look, dismiss: function (v) { ASK = !(v === false || v === 'off'); document.documentElement.classList.toggle('hpNoDism', !ASK); return ASK; }, stepTitle: function (v) { var on = v === true || v === 'on'; document.documentElement.classList.toggle('hpStepTOn', on); return on; }, wear: { order: wearOrder, names: function () { return JSON.parse(JSON.stringify(W1)); }, def: W1D.slice() }, you: { order: youOrder, names: function () { return JSON.parse(JSON.stringify(Y3)); }, def: Y3D.slice() }, store: { get: function () { return S; }, summary: summary, summaryOf: summaryOf, preset: preset, reset: function () { preset('none'); }, pending: pending, areas: AREAS } };
 })();
 </script>
 
@@ -33433,11 +33441,11 @@ hairline({
       ['stHpWelTier', 'stHpW2Flow', 'stHpW2Card', 'stHpW2Back', 'stHpW2SBd', 'stHpW2Halo', 'stHpW2Tap', 'stHpW2Mask', 'stHpW2Lay', 'stHpW2Tx', 'stHpW2TxM', 'stHpW2BgSrc', 'stHpW2Gl', 'stHpW2Gr', 'stHpW2HL', 'stHpW2SignOn'].forEach(id => { const t = document.getElementById(id); if (t) t.addEventListener('change', () => { if (!inst || !inst.welcome) return; if (inst.v2) inst.look2(welO()); else if (id === 'stHpWelTier') open({ welcome: true }); }); });   // V2: the membership, the card's style and its halo changed in place; V1: its card's tier, played again
       ['stHpWelVer', 'stHpWelCard', 'stHpWelStrm', 'stHpWelLogo', 'stHpW2Open', 'stHpW2Ent', 'stHpW2Intro'].forEach(id => { const fm = document.getElementById(id); if (fm) fm.addEventListener('change', () => { if (inst && inst.welcome) open({ welcome: true }); }); }); }   // a new format, card or sphere: the welcome up again with it
     /* Step 1 pages: the list from the profile's own names, dragged (or arrowed) into an order the profile takes at once; the order in a hidden field, so Save and the restore keep it */
-    { const ol = document.getElementById('stHpW1List'), inp = document.getElementById('stHpW1Ord'), W = HP.wear;
+    const pageList = (ol, inp, W, AK) => {   // a step's pages in Tweaks: lit as the profile shows them, dragged into an order, pressed to open (AK: the step, wear or you)
       if (ol && inp && W){ const N = W.names(), GR = '<svg class="gr" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><circle cx="4" cy="3" r="1"/><circle cx="8" cy="3" r="1"/><circle cx="4" cy="6" r="1"/><circle cx="8" cy="6" r="1"/><circle cx="4" cy="9" r="1"/><circle cx="8" cy="9" r="1"/></svg>';
         let now = null;   // step 1's page the profile shows, lit in the list as it goes ("highlight live the current sub step")
         const lite = () => [...ol.children].forEach(li => { const on = li.dataset.k === now; li.classList.toggle('now', on); if (on) li.setAttribute('aria-current', 'step'); else li.removeAttribute('aria-current'); });
-        document.addEventListener('everlab:hpstep', e => { const d = e.detail || {}; now = d.a === 'wear' ? d.id : null; lite(); });
+        document.addEventListener('everlab:hpstep', e => { const d = e.detail || {}; now = d.a === AK ? d.id : null; lite(); });
         const draw = ks => { ol.innerHTML = ks.map(k => '<li data-k="' + k + '" tabindex="0">' + GR + '<span class="nm">' + N[k] + '</span><i class="tkNowDot" aria-hidden="true"></i></li>').join(''); lite(); };
         const apply = () => { const ks = W.order(String(inp.value || '').split(',')); if (ks.join(',') !== inp.value) inp.value = ks.join(','); if ([...ol.children].map(x => x.dataset.k).join(',') !== ks.join(',')) draw(ks); if (window.__hpDocFlow) window.__hpDocFlow(); };
         const set = ks => { inp.value = ks.join(','); apply(); try { inp.dispatchEvent(new Event('input', { bubbles: true })); } catch (e){} };
@@ -33447,14 +33455,16 @@ hairline({
           if (dy > d.h / 2 && li.nextElementSibling){ li.nextElementSibling.after(li); d.y0 += d.h; dy -= d.h; d.moved = true; }
           else if (dy < -d.h / 2 && li.previousElementSibling){ li.previousElementSibling.before(li); d.y0 -= d.h; dy += d.h; d.moved = true; }
           li.style.transform = 'translateY(' + dy + 'px)'; });
-        const jump = k => { const i = [...ol.children].findIndex(x => x.dataset.k === k); if (i < 0) return; if (!inst || inst.welcome || !wrap || !wrap.classList.contains('on')) open({ dism: true }); if (inst && inst.go) inst.go('wear', i); };   // a page pressed: the profile opened on it ("need to be able to jump into sub steps")
+        const jump = k => { if (!inst || inst.welcome || !wrap || !wrap.classList.contains('on')) open({ dism: true }); if (inst && inst.goId && !inst.goId(AK, k)) { const d = document.createElement('div'); d.className = 'evcToast'; d.setAttribute('role', 'status'); d.textContent = 'Past results shows only when the records search runs'; document.body.appendChild(d); setTimeout(() => d.remove(), 2400); } };   // a page pressed: the profile opened on it ("need to be able to jump into sub steps")
         const end = () => { if (!d) return; d.li.classList.remove('drag'); d.li.style.transform = ''; const mv = d.moved, k = d.li.dataset.k; d = null; if (mv) set([...ol.children].map(x => x.dataset.k)); else jump(k); };   // dragged: the order; pressed: the page
         ol.addEventListener('pointerup', end); ol.addEventListener('pointercancel', () => { if (d) d.moved = true; end(); });
         ol.addEventListener('keydown', e => { const li = e.target.closest('li'); if (li && (e.key === 'Enter' || e.key === ' ')){ e.preventDefault(); jump(li.dataset.k); return; } if (!li || (e.key !== 'ArrowUp' && e.key !== 'ArrowDown')) return; e.preventDefault();
           if (e.key === 'ArrowUp' && li.previousElementSibling) li.previousElementSibling.before(li); else if (e.key === 'ArrowDown' && li.nextElementSibling) li.nextElementSibling.after(li); else return;
           li.focus(); set([...ol.children].map(x => x.dataset.k)); });
         inp.addEventListener('change', apply);   // a saved order put back (Tweaks' restore)
-        apply(); } }
+        apply(); } };
+    pageList(document.getElementById('stHpW1List'), document.getElementById('stHpW1Ord'), HP.wear, 'wear');
+    pageList(document.getElementById('stHpW3List'), document.getElementById('stHpW3Ord'), HP.you, 'you');
     { const stt = () => { if (HP.stepTitle) HP.stepTitle(opt('stHpStepT')); }; stt(); const t = document.getElementById('stHpStepT'); if (t) t.addEventListener('change', stt); }   // the step's title over the dashes, or not
     /* (the Dismiss flow tweak removed: "remove the Dismiss tweak set previously"; leaving mid-way still asks first when something is filled) */   // the dismiss flow, on or off
     { const lk = () => { const sv = document.getElementById('stHpSat'), v = sv ? +sv.value : 100, lb = document.getElementById('stHpSatV'); if (lb) lb.textContent = v + '%'; if (HP.look) HP.look({ dim: opt('stHpDim'), feed: opt('stHpFeed'), card: opt('stHpLook'), sat: v / 100 }); }; lk(); ['stHpDim', 'stHpFeed', 'stHpLook', 'stHpSat'].forEach(id => { const t = document.getElementById(id); if (t) { t.addEventListener('change', lk); t.addEventListener('input', lk); } }); }   // with the filled particles' saturation (as it slides)   // the sphere's look (Tweaks -> Health profile), on every sphere at once
@@ -40541,7 +40551,7 @@ hairline({
           return f; };
         const clear = () => { insts.forEach(i => { try { i.destroy(); } catch (e){} }); insts = []; rows.textContent = ''; };
         const flowsDraw = () => {
-          if (!HPm || !HPm.snap) return; const key = fbp + (document.body.classList.contains('light') ? 'l' : 'd') + HPm.store.areas[0].steps.join() + WSIG(); if (built === key && rows.childElementCount) return; built = key; clear();
+          if (!HPm || !HPm.snap) return; const key = fbp + (document.body.classList.contains('light') ? 'l' : 'd') + HPm.store.areas.map(a => a.steps.join()).join('|') + WSIG(); /* every step's page order (Tweaks) */ if (built === key && rows.childElementCount) return; built = key; clear();
           flows.classList.toggle('hcDkOn', DK()); $('.ldBp').textContent = DK() ? 'Desktop · 1440 px screens' : 'XS · 393 px screens';
           ROWS.forEach(R => {
             const row = document.createElement('section'); row.className = 'hcRow'; row.dataset.row = R.k;

@@ -17449,3 +17449,17 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Documentation → Health profile card**: no description under the title ("remove the desc below title"), and the first entry is **Big picture · All steps**.
 - **Shared comments verified**: the store answers, its `comments` collection empty before anyone comments. The default rules let any signed-in viewer read and write; nothing is hidden by level.
 - Checked: pressed pages 3 and 7 → "Your address", "Your Medicare details", lit; Enter on 1 → "Health information"; a drag still reorders. State: fresh shows "Step 1 (no card)", Step 2 → Step 3 → back to Step 2, previous off at Step 2. "Complete" beside the consult on the phone, 3 and 3.5. The docs' first entry reads Big picture / All steps. No errors.
+
+## Step 3's pages in Tweaks, like step 1's
+
+- **Tweaks → Health profile → Step 3 pages** ("same as step 1, I need the breakdown controllable"): Sleep and energy, About you, Smoking, Alcohol, Your answers, Past results.
+  - Drag (or arrow keys) to reorder; the profile takes the order at once.
+  - Press a page (or Enter) to open it.
+  - The page showing is lit.
+  - Past results opens only when the records search runs; otherwise a note says so.
+  - The order is kept by Save, as step 1's is.
+- The review's Edit links go to their page by name, wherever the order puts it, and back to the review after.
+- One list maker now serves both steps' lists.
+- The Flows canvas is drawn again when step 3's order changes too.
+- **Fixed**: an inline comment on the canvas's key line cut off the guard after it, so each redraw added a full set of rows (18 instead of 6). Now 6.
+- Checked: Alcohol pressed → its page, lit; order sleep, about, alcohol, smoke… → Alcohol → Next: Smoking → Next: Your answers; Edit Smoking → its page → back to Your answers. Docs: 6 rows. No errors.

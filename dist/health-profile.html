@@ -1824,16 +1824,22 @@ window.EvLoad = (function () {
   /* step 1's pages, the designs' nine ("this is all we need"), and their names; their order Tweaks -> Health profile -> Step 1 pages ("drag the page up and down so it changes the order; that might change over time") */
   var W1 = { promise: 'Health information', details: 'Your personal details', address: 'Your address', emergency: 'Emergency contact', mobile: 'Verify your mobile', otp: 'Enter your code', medicare: 'Your Medicare details', declare: 'Health declaration', health: 'Health background' };
   var W1D = ['promise', 'details', 'address', 'emergency', 'mobile', 'otp', 'medicare', 'declare', 'health'];
+  /* step 3's pages and their names; their order Tweaks -> Health profile -> Step 3 pages ("same as step 1, I need the breakdown controllable"); the past results search's page only when it runs */
+  var Y3 = { sleep: 'Sleep and energy', about: 'About you', smoke: 'Smoking', alcohol: 'Alcohol', review: 'Your answers', search: 'Past results' };
+  var Y3D = ['sleep', 'about', 'smoke', 'alcohol', 'review', 'search'];
   var AREAS = [   /* the journey driver's three stages and their steps ("go with something like this": the desk's rail lists them), keyed as before */
     { k: 'wear', t: 'Our promise and your details', s: 'About 8 minutes', steps: W1D.slice(), sub: W1D.map(function (k) { return W1[k]; }) },
     { k: 'past', t: 'Book your onboarding consult', s: 'About 1 minute', steps: ['time', 'review'], sub: ['Choose a time', 'Review and confirm'] },
-    { k: 'you', t: 'Tell us about you', s: 'About 5 minutes', steps: ['sleep', 'about', 'smoke', 'alcohol', 'review', 'search'], sub: ['Sleep and energy', 'About you', 'Smoking', 'Alcohol', 'Your answers', 'Past results'] }
+    { k: 'you', t: 'Tell us about you', s: 'About 5 minutes', steps: Y3D.slice(), sub: Y3D.map(function (k) { return Y3[k]; }) }
   ];
   var AREA = {}; AREAS.forEach(function (a, i) { a.i = i; AREA[a.k] = a; });
   var INST = null;   // the profile mounted last, drawn again when step 1's order changes
   function wearOrder(list) {   // step 1's pages in this order: the known ones as listed, any left out after them
     var ks = (list || []).filter(function (k, i, a) { return W1[k] && a.indexOf(k) === i; }); W1D.forEach(function (k) { if (ks.indexOf(k) < 0) ks.push(k); });
     AREA.wear.steps = ks; AREA.wear.sub = ks.map(function (k) { return W1[k]; }); if (INST && INST.refresh) INST.refresh(); return ks; }
+  function youOrder(list) {   // step 3's pages in this order, the same way
+    var ks = (list || []).filter(function (k, i, a) { return Y3[k] && a.indexOf(k) === i; }); Y3D.forEach(function (k) { if (ks.indexOf(k) < 0) ks.push(k); });
+    AREA.you.steps = ks; AREA.you.sub = ks.map(function (k) { return Y3[k]; }); if (INST && INST.refresh) INST.refresh(); return ks; }
   var SEARCH_MS = 60000;   // the past results search: how long it runs in the background before it is done
   function blank() { return { v: 2, a: { wear: { st: 'not', i: 0, ans: {} }, past: { st: 'not', i: 0, ans: {} }, you: { st: 'not', i: 0, ans: {} } }, pend: {}, notif: false, files: [] }; }
   var S = blank();
@@ -2245,7 +2251,7 @@ window.EvLoad = (function () {
     var link = function (t) { return h('a', { class: 'hpLink', href: '#', on: { click: function (e) { e.preventDefault(); } } }, t); };
     var row = function (t, d, b, icon) { return h('div', { class: 'hpRow' + (icon ? ' hpRowIc' : '') }, icon ? h('i', { class: 'hpRowI', 'aria-hidden': 'true' }, ic(16, icon, 1.5)) : null, h('div', null, h('b', { text: t }), h('span', { text: d })), b); };   // icon: a tile at its left (the search page's rows, as Anshul's map)
     var sumRow = function (q2, a2, go) { return h('div', { class: 'hpSumR' }, h('div', null, h('span', { text: q2 }), h('b', { text: a2 || '—' })), go ? h('button', { type: 'button', class: 'hpEdit', 'aria-label': 'Edit ' + q2, text: 'Edit', on: { click: go } }) : null); };
-    var editTo = function (j) { return function () { ret = I; I = j; step(-1); }; };
+    var editTo = function (j) { return function () { ret = I; I = typeof j === 'string' ? Math.max(0, stepsOf(A).indexOf(j)) : j; step(-1); }; };   // j: the page's id (its place follows Tweaks' order)
     function intro(scr, t, d) {
       var dd = dots(); scr.appendChild(h('div', { class: 'hpIntro' }, dd.el, q('', t, d, true)));
       dd.core(0, false); setTimeout(function () { dd.core(12, true); }, 200); setTimeout(function () { dd.core(32, true); }, 1200);   // its core warms outward ("dots blinking" in the reference's two frames)
@@ -2466,8 +2472,8 @@ window.EvLoad = (function () {
       'you.review': function (scr, ans) {
         scr.appendChild(q('', 'Review your answers', 'Tap Edit to change anything. You can come back to these any time.'));
         scr.appendChild(h('div', { class: 'hpSum' },
-          sumRow('Sleep', name(SLEEP, ans.sleep), editTo(0)), sumRow('Country of birth', name(COUNTRY, ans.country), editTo(1)), sumRow('Ethnicity', ans.eth, editTo(1)), sumRow('Health goals and concerns', ans.goals, editTo(1)), sumRow('Occupation', ans.occ, editTo(1)),
-          sumRow('Smoking', name(SMOKE, ans.smoke), editTo(2)), sumRow('Alcohol', ans.alc != null ? ans.alc + (ans.alc === 1 ? ' time' : ' times') + ' a week' : '', editTo(3))));
+          sumRow('Sleep', name(SLEEP, ans.sleep), editTo('sleep')), sumRow('Country of birth', name(COUNTRY, ans.country), editTo('about')), sumRow('Ethnicity', ans.eth, editTo('about')), sumRow('Health goals and concerns', ans.goals, editTo('about')), sumRow('Occupation', ans.occ, editTo('about')),
+          sumRow('Smoking', name(SMOKE, ans.smoke), editTo('smoke')), sumRow('Alcohol', ans.alc != null ? ans.alc + (ans.alc === 1 ? ' time' : ' times') + ' a week' : '', editTo('alcohol'))));
         foot2(S.a.you.st === 'done' && !searching() ? 'Done' : 'Save answers', true, fwd);
       },
       'you.search': function (scr) {
@@ -2506,6 +2512,7 @@ window.EvLoad = (function () {
       home: function () { home(0); },
       area: function (k, land) { if (!AREA[k]) return; area(k, 0); if (land) { landAt = { a: k, i: I }; step0Back(); } },   // land: opened straight on the step (the Overview card's button), nothing behind it
       go: function (k, i) { if (AREA[k]) area(k, 0, i); },   // a stage at a given page, at once
+      goId: function (k, id) { if (!AREA[k]) return false; var i = stepsOf(k).indexOf(id); if (i < 0) return false; area(k, 0, i); return true; },   // a stage at a named page (Tweaks' page lists), wherever its order puts it
       where: function () { return { a: A, i: I }; },
       theme: function (t) { root.classList.toggle('arDark', t === 'dark'); },
       destroy: function () { if (alive) tell(null); alive = false; clearInterval(pt); if (root.parentNode) root.parentNode.removeChild(root); },
@@ -3244,7 +3251,7 @@ window.EvLoad = (function () {
     return { el: root, welcome: true, v2: V2, cp2: CP2, deskT: !!opts.desk, stage: function () { return root.classList.contains('hpW2Ready') ? 3 : ph; }, card2: w2, bg2: bg2, look2: look2, sphere: V2 ? null : sp, sphT0: V2 ? null : sp.t0, place: place, flip: flip, logo: logo, hold: function () { held = true; }, theme: function (t) { root.classList.toggle('arDark', t === 'dark'); if (V2) readCol(); }, home: function () {}, area: function () {}, destroy: function () { tm.forEach(clearTimeout); tm = []; held = true; if (wv) wv.stop(); if (st) st.stop(); if (mt2) mt2.stop(); if (fp2) fp2.stop(); if (kt2) kt2.stop(); if (tx2) tx2.stop(); if (sgRo) sgRo.disconnect(); window.removeEventListener('deviceorientation', onOri); if (tlt.raf) cancelAnimationFrame(tlt.raf); if (root.parentNode) root.parentNode.removeChild(root); } };
   }
 
-  window.HealthProfile = { mount: mount, snap: snap, welcome: welcome, dots: dots, sphere: sphere, look: look, dismiss: function (v) { ASK = !(v === false || v === 'off'); document.documentElement.classList.toggle('hpNoDism', !ASK); return ASK; }, stepTitle: function (v) { var on = v === true || v === 'on'; document.documentElement.classList.toggle('hpStepTOn', on); return on; }, wear: { order: wearOrder, names: function () { return JSON.parse(JSON.stringify(W1)); }, def: W1D.slice() }, store: { get: function () { return S; }, summary: summary, summaryOf: summaryOf, preset: preset, reset: function () { preset('none'); }, pending: pending, areas: AREAS } };
+  window.HealthProfile = { mount: mount, snap: snap, welcome: welcome, dots: dots, sphere: sphere, look: look, dismiss: function (v) { ASK = !(v === false || v === 'off'); document.documentElement.classList.toggle('hpNoDism', !ASK); return ASK; }, stepTitle: function (v) { var on = v === true || v === 'on'; document.documentElement.classList.toggle('hpStepTOn', on); return on; }, wear: { order: wearOrder, names: function () { return JSON.parse(JSON.stringify(W1)); }, def: W1D.slice() }, you: { order: youOrder, names: function () { return JSON.parse(JSON.stringify(Y3)); }, def: Y3D.slice() }, store: { get: function () { return S; }, summary: summary, summaryOf: summaryOf, preset: preset, reset: function () { preset('none'); }, pending: pending, areas: AREAS } };
 })();
 
 </script>
