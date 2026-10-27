@@ -17037,3 +17037,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - The two buttons are 16px further apart ("gap +16": 16 → 32; phone 12 → 28) and fully rounded ("rounded full CTA", 999px).
 - On the phone the buttons are 15px with 10px sides and never wrap, so "Send another gift" holds one line at 393 and 360 wide.
 - Checked: logo top 52 / 48, sides 24 at XS, card to buttons 56 / 52, buttons 32 / 28 apart, no button cut. No errors.
+
+## Gift receipt: help line inset
+
+- The help line ("For any questions, email us at support@everlab.com.au") is 32px in at each side ("+32 padding left right"), its lines balanced.
+- On the phone it's two even lines: "…email us" / "at support@…". On the desk it's still one line. No errors.
