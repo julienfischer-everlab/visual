@@ -17514,3 +17514,26 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The UK and NZ maps and their copy; landing on search shows back, which goes to Review.
   - Found state: the four, lines faded.
   - Docs still. No errors.
+
+## Search map: spotlight, one town at a time, loop, pattern Tweaks; title; Tweaks inside Past results
+
+- **Spotlight** ("the crossed area should highlight the map in a circle, progressive, 128px; the rest shows the map at 40%"): the map sits at 40% everywhere except a soft circle 128px across, centred on the crossing, where it shows whole, fading out from its middle. The faint wake along the lines is gone (the circle replaces it).
+- **One town lit at a time** ("the crossed should only show one square active at a time"): when the next town is found, the last one fades out (0.6s).
+- **Loops for ever** ("should loop"): round after round while searching; when found, round the four results without stopping (the lines no longer fade away).
+- **No halo** ("avoid halo on this active dot style"; "no halo on line as well"): the town's mark is only orange and a little larger, with a slight swell as it lights; no glow round it, no orange square opening out of the locator. The lines are drawn on whole device pixels (1 px), crisp, with no soft edge.
+- **Map Tweaks** ("tweak to control more pattern map"):
+  - Pattern: Squares / Dots / Plus / Halftone. Halftone dots swell and shrink across the land.
+  - Grid: Straight / Offset (every other row offset by half).
+  - Spacing: 3 to 10px (4).
+  - Mark size: 0.5 to 4px (1.5).
+  - At rest: 0 to 100% (40%).
+  - Circle: 48 to 256px (128).
+  - The running map takes changes live; the Documentation still redraws.
+- **Where those Tweaks live** ("at the end, inside Past results item"): Country and the six Map rows sit in a small panel at the end of the Past results item in Step 3 pages, and follow it wherever the order puts it. Pressing inside that panel doesn't drag or open the item; dragging still works, past the taller item too.
+- **Title** ("We've started looking for your past results"): the same title whether found or not. The title and its text have 24px more padding on each side.
+- Checked:
+  - Sydney → Perth → Darwin, one lit at a time, with the circle round the crossing.
+  - Dots / Offset / 6px / 2.5px, and Halftone / 25% / 176px, applied live; labels 5px / 2.5px / 25% / 176px.
+  - Panel inside the item: 7 rows; a press inside doesn't open the page; a drag reorders; the panel stays in its item.
+  - Found state still scanning at 26s.
+  - No errors.
