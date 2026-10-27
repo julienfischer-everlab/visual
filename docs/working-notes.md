@@ -17413,3 +17413,30 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - On the Health profile home, step 2 done reads "Booked Thu 29 Oct, 10:00am with Dr Steven Lu" ("add with Dr Steven Lu"). On the phone it wraps to a second line under the title.
 - Documentation's Flows show it too: the home is the profile itself, drawn still.
 - Checked in the app (XS) and on the canvas (Step 3's home). No errors.
+
+## Comments shared with everyone; @tags; Go to view switches fully; Records card colour
+
+- **Comments are shared** ("visible by everyone and autosaved for everyone"):
+  - Inside claude.ai the page uses the artifact's shared store (`db`). Every comment, reply, resolve and delete is saved as it happens, for everyone in the organisation who opens the page, and appears live in every open view.
+  - Authors are the people viewing (`user`), kept by their id and named as each viewer sees them.
+  - Opened outside claude.ai, comments stay in that browser as before (the panel says "This browser" or "Shared").
+  - Comments made in this browser before sharing existed get a "Share N comments kept in this browser" button.
+  - Anyone can resolve or reply. Delete is for the author (or the artifact's owner).
+  - Comments are numbered in the order they were made.
+  - Declared: `{ downloads, db, user: { scopes: ["profile"] } }`. A page with `db` stays inside the organisation (it already was).
+- **@tags** ("need to be able to tag someone"):
+  - Type @ and a name. Shared: the organisation's people, searched as you type, kept by their id. In this browser: the names seen here, or a new one tagged as typed.
+  - Arrows and Enter/Tab pick, or click. A tag shows highlighted; **Mentions** lists the comments that tag you.
+  - Tags notify nobody: there is no notification channel.
+- **Buttons**: Comment beside Cancel and Reply at the right, the same height. The page's own `.cmGo` style had been pulling them out of place; every comment class is now `evc…`.
+- **Go to its view switches fully** ("really need to swap fully to the other view"):
+  - every page and overlay is put away (the Health profile, the Async report, the chat, Gift, Documentation, Report visuals…);
+  - the comment's mode and viewport are set, its version drawn afresh, its tweaks set, then its page or overlay opened;
+  - a comment's page is now one key (the topmost overlay), so "Page: Chat (now Chat)" no longer shows. Older comments are read the new way.
+- **Changing page closes the Health profile** ("move to page sometimes keeps the XS view"): picking any version but Health profile or Membership reveal closes it and its reveal.
+- Checked (in this browser; the shared store only answers inside claude.ai):
+  - Old comment read as page cc, its reply kept.
+  - Composer: Cancel 72×29 and Comment 78×29 side by side. @ list; "Tag “Ma”"; posted with tags ["Ma"]; Mentions (1) for Ma, the tag highlighted.
+  - Thread: Resolve, Delete, Reply in one row, Reply at the right.
+  - Go to view from Report visuals → the chat over the prototype, Report visuals gone.
+  - Health profile closed when changing to Report visuals. No errors.

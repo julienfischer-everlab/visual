@@ -25810,6 +25810,7 @@ hairline({
     // archive select is already showing, so stepping out and back returns to
     // the one you were reading rather than to the top of the list.
     const v = versionSel.value;
+    if (v !== 'hp' && v !== 'welc' && window._hp) { try { window._hp.close(true); } catch (e){} }   // the Health profile or its reveal gone with any other page picked ("move to page sometimes keeps the XS view: focus only on the new page selected")
     if (v === 'cc'){ if (window._cc) window._cc.show(); return; }   // the standalones: over the page that is showing, which stays
     if (v === 'ar'){ if (window._ar) window._ar.open(); return; }
     if (window._cc) window._cc.hide(); if (window._ar) window._ar.close();   // another page: they go
@@ -42295,58 +42296,63 @@ hairline({
 <style>
 /* Comments ("add a comment system that actually works depending on the view / tweak selected"): a pin on what was clicked, kept with the view it was made on (the version, the page or overlay over it, the viewport, the mode, every tweak that page shows);
    shown only when that view is on screen again, its thread a click away; the panel lists them, this view's or all, each able to take you back to its view. Kept in this browser; Copy and Import carry them to someone else's */
-.topbar .tkBtn.cmBtn { display: inline-flex; align-items: center; gap: 6px; } .topbar .tkBtn.cmBtn[aria-pressed="true"] { background: #f78359; border-color: #f78359; color: #1a0d07; }
-.cmBadge { display: inline-grid; place-items: center; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 8px; background: #f78359; color: #1a0d07; font-size: 10.5px; font-weight: 600; line-height: 1; } .cmBtn[aria-pressed="true"] .cmBadge { background: #1a0d07; color: #f78359; } .cmBadge[hidden] { display: none; }
-.cmLayer { position: fixed; inset: 0; z-index: 2147483000; pointer-events: none; }
-.cmCatch { position: fixed; left: 0; right: 0; bottom: 0; top: var(--barH, 45px); z-index: 2147482999; display: none; cursor: crosshair; } body.cmOn .cmCatch { display: block; } body.cmOn .cmCatch.cmBusy { pointer-events: none; }
-.cmPin { position: absolute; display: grid; place-items: center; width: 28px; height: 28px; margin: 0; padding: 0; border: 2px solid #fff; border-radius: 14px 14px 14px 3px; background: #f78359; color: #1a0d07; font: 600 12px/1 -apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue", Arial, sans-serif; translate: 0 -100%; pointer-events: auto; cursor: pointer; box-shadow: 0 4px 14px rgba(0, 0, 0, .35); transition: transform .15s ease; transform-origin: 0 100%; }
-.cmPin:hover, .cmPin.cmSel { transform: scale(1.12); } .cmPin.cmDone { background: #3f3f46; color: #d4d4d8; } .cmPin:focus-visible { outline: 2px solid #f78359; outline-offset: 2px; }
-.cmPanel { position: fixed; top: var(--barH, 45px); right: 0; bottom: 0; z-index: 2147483001; display: none; flex-direction: column; width: 340px; max-width: 100vw; background: #0f0f11; border-left: 1px solid #1f1f22; color: #e4e4e7; font: 13px/1.45 -apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue", Arial, sans-serif; } body.cmOn .cmPanel { display: flex; }
-.cmHead { display: flex; align-items: center; gap: 8px; padding: 12px 14px 10px; border-bottom: 1px solid #1f1f22; } .cmHead h2 { flex: 1; margin: 0; font-size: 14px; font-weight: 600; }
-.cmX, .cmMini { appearance: none; border: 1px solid #232326; background: #131316; color: #e4e4e7; border-radius: 8px; font: inherit; font-size: 12px; padding: 5px 10px; cursor: pointer; } .cmX:hover, .cmMini:hover { border-color: #3f3f46; } .cmX { width: 28px; height: 28px; padding: 0; display: grid; place-items: center; }
-.cmTabs { display: flex; gap: 2px; margin: 10px 14px 0; padding: 3px; border-radius: 10px; background: rgba(255, 255, 255, .05); } .cmTabs button { flex: 1; appearance: none; border: 0; border-radius: 8px; background: none; color: #a1a1aa; font: inherit; font-size: 12px; padding: 6px 8px; cursor: pointer; } .cmTabs button[aria-selected="true"] { background: #232326; color: #fafafa; }
-.cmHint { margin: 10px 14px 0; color: #71717a; font-size: 12px; } .cmOpts { display: flex; align-items: center; justify-content: space-between; margin: 8px 14px 4px; color: #a1a1aa; font-size: 12px; } .cmOpts label { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
-.cmList { flex: 1; min-height: 0; overflow: auto; padding: 4px 8px 12px; } .cmEmpty { margin: 24px 8px; color: #71717a; text-align: center; font-size: 12.5px; }
-.cmItem { display: block; width: 100%; margin: 4px 0; padding: 10px; border: 1px solid transparent; border-radius: 10px; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; } .cmItem:hover, .cmItem.cmSel { background: rgba(255, 255, 255, .04); border-color: #232326; }
-.cmItemH { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; } .cmNum { display: inline-grid; place-items: center; flex: none; width: 20px; height: 20px; border-radius: 10px 10px 10px 2px; background: #f78359; color: #1a0d07; font-size: 10.5px; font-weight: 600; } .cmDone .cmNum, .cmNum.cmDone { background: #3f3f46; color: #d4d4d8; }
-.cmWho { font-weight: 600; } .cmWhen { margin-left: auto; color: #71717a; font-size: 11.5px; } .cmTxt { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; } .cmItem .cmTxt { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-.cmWhere { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; } .cmChip { padding: 2px 7px; border-radius: 999px; background: rgba(255, 255, 255, .06); color: #a1a1aa; font-size: 11px; } .cmChip.cmOff { background: rgba(247, 131, 89, .12); color: #f7a383; }
-.cmFoot { display: flex; gap: 6px; padding: 10px 14px; border-top: 1px solid #1f1f22; } .cmFoot .cmMini { flex: 1; }
-.cmPop { position: fixed; z-index: 2147483002; width: 300px; max-width: calc(100vw - 24px); max-height: calc(100vh - 24px); overflow: auto; padding: 12px; border: 1px solid #2a2a2e; border-radius: 12px; background: #18181b; color: #e4e4e7; font: 13px/1.45 -apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue", Arial, sans-serif; box-shadow: 0 16px 48px rgba(0, 0, 0, .55); }
-.cmPop textarea, .cmPop input { box-sizing: border-box; width: 100%; margin: 0; padding: 8px 10px; border: 1px solid #2a2a2e; border-radius: 8px; background: #0f0f11; color: #fafafa; font: inherit; resize: vertical; outline: none; } .cmPop textarea:focus, .cmPop input:focus { border-color: #f78359; } .cmPop textarea { min-height: 72px; }
-.cmPop .cmRow { display: flex; align-items: center; gap: 6px; margin-top: 8px; } .cmPop .cmRow .cmSp { flex: 1; } .cmGo { appearance: none; border: 0; border-radius: 8px; background: #f78359; color: #1a0d07; font: inherit; font-size: 12px; font-weight: 600; padding: 6px 12px; cursor: pointer; } .cmGo:disabled { opacity: .45; cursor: default; }
-.cmLbl { display: block; margin: 0 0 4px; color: #a1a1aa; font-size: 11.5px; } .cmRe { margin-top: 10px; padding-top: 10px; border-top: 1px solid #26262a; } .cmDiff { margin: 8px 0 0; padding: 8px 10px; border-radius: 8px; background: rgba(247, 131, 89, .08); color: #f7c3ae; font-size: 12px; } .cmDiff ul { margin: 4px 0 0; padding-left: 16px; }
-.cmToast { position: fixed; left: 50%; bottom: 24px; z-index: 2147483003; translate: -50% 0; padding: 8px 14px; border-radius: 999px; background: #18181b; border: 1px solid #2a2a2e; color: #e4e4e7; font: 12.5px/1.3 -apple-system, BlinkMacSystemFont, "Inter", sans-serif; }
+.topbar .tkBtn.evcBtn { display: inline-flex; align-items: center; gap: 6px; } .topbar .tkBtn.evcBtn[aria-pressed="true"] { background: #f78359; border-color: #f78359; color: #1a0d07; }
+.evcBadge { display: inline-grid; place-items: center; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 8px; background: #f78359; color: #1a0d07; font-size: 10.5px; font-weight: 600; line-height: 1; } .evcBtn[aria-pressed="true"] .evcBadge { background: #1a0d07; color: #f78359; } .evcBadge[hidden] { display: none; }
+.evcLayer { position: fixed; inset: 0; z-index: 2147483000; pointer-events: none; }
+.evcCatch { position: fixed; left: 0; right: 0; bottom: 0; top: var(--barH, 45px); z-index: 2147482999; display: none; cursor: crosshair; } body.evcOn .evcCatch { display: block; } body.evcOn .evcCatch.evcBusy { pointer-events: none; }
+.evcPin { position: absolute; display: grid; place-items: center; width: 28px; height: 28px; margin: 0; padding: 0; border: 2px solid #fff; border-radius: 14px 14px 14px 3px; background: #f78359; color: #1a0d07; font: 600 12px/1 -apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue", Arial, sans-serif; translate: 0 -100%; pointer-events: auto; cursor: pointer; box-shadow: 0 4px 14px rgba(0, 0, 0, .35); transition: transform .15s ease; transform-origin: 0 100%; }
+.evcPin:hover, .evcPin.evcSel { transform: scale(1.12); } .evcPin.evcDone { background: #3f3f46; color: #d4d4d8; } .evcPin:focus-visible { outline: 2px solid #f78359; outline-offset: 2px; }
+.evcPanel { position: fixed; top: var(--barH, 45px); right: 0; bottom: 0; z-index: 2147483001; display: none; flex-direction: column; width: 340px; max-width: 100vw; background: #0f0f11; border-left: 1px solid #1f1f22; color: #e4e4e7; font: 13px/1.45 -apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue", Arial, sans-serif; } body.evcOn .evcPanel { display: flex; }
+.evcHead { display: flex; align-items: center; gap: 8px; padding: 12px 14px 10px; border-bottom: 1px solid #1f1f22; } .evcHead h2 { flex: 1; margin: 0; font-size: 14px; font-weight: 600; }
+.evcX, .evcMini { appearance: none; border: 1px solid #232326; background: #131316; color: #e4e4e7; border-radius: 8px; font: inherit; font-size: 12px; padding: 5px 10px; cursor: pointer; } .evcX:hover, .evcMini:hover { border-color: #3f3f46; } .evcX { width: 28px; height: 28px; padding: 0; display: grid; place-items: center; }
+.evcTabs { display: flex; gap: 2px; margin: 10px 14px 0; padding: 3px; border-radius: 10px; background: rgba(255, 255, 255, .05); } .evcTabs button { flex: 1; appearance: none; border: 0; border-radius: 8px; background: none; color: #a1a1aa; font: inherit; font-size: 12px; padding: 6px 8px; cursor: pointer; } .evcTabs button[aria-selected="true"] { background: #232326; color: #fafafa; }
+.evcHint { margin: 10px 14px 0; color: #71717a; font-size: 12px; } .evcOpts { display: flex; align-items: center; justify-content: space-between; margin: 8px 14px 4px; color: #a1a1aa; font-size: 12px; } .evcOpts label { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+.evcList { flex: 1; min-height: 0; overflow: auto; padding: 4px 8px 12px; } .evcEmpty { margin: 24px 8px; color: #71717a; text-align: center; font-size: 12.5px; }
+.evcItem { display: block; width: 100%; margin: 4px 0; padding: 10px; border: 1px solid transparent; border-radius: 10px; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; } .evcItem:hover, .evcItem.evcSel { background: rgba(255, 255, 255, .04); border-color: #232326; }
+.evcItemH { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; } .evcNum { display: inline-grid; place-items: center; flex: none; width: 20px; height: 20px; border-radius: 10px 10px 10px 2px; background: #f78359; color: #1a0d07; font-size: 10.5px; font-weight: 600; } .evcDone .evcNum, .evcNum.evcDone { background: #3f3f46; color: #d4d4d8; }
+.evcWho { font-weight: 600; } .evcWhen { margin-left: auto; color: #71717a; font-size: 11.5px; } .evcTxt { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; } .evcItem .evcTxt { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.evcWhere { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; } .evcChip { padding: 2px 7px; border-radius: 999px; background: rgba(255, 255, 255, .06); color: #a1a1aa; font-size: 11px; } .evcChip.evcOff { background: rgba(247, 131, 89, .12); color: #f7a383; }
+.evcFoot { display: flex; gap: 6px; padding: 10px 14px; border-top: 1px solid #1f1f22; } .evcFoot .evcMini { flex: 1; } .evcFoot[hidden] { display: none; }
+.evcWhere1 { padding: 2px 8px; border-radius: 999px; background: rgba(255, 255, 255, .06); color: #a1a1aa; font-size: 11px; } .evcDiff .evcGoTo { margin-top: 8px; }   /* where they live: Shared, or This browser */
+.evcPop { position: fixed; z-index: 2147483002; width: 300px; max-width: calc(100vw - 24px); max-height: calc(100vh - 24px); overflow: auto; padding: 12px; border: 1px solid #2a2a2e; border-radius: 12px; background: #18181b; color: #e4e4e7; font: 13px/1.45 -apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue", Arial, sans-serif; box-shadow: 0 16px 48px rgba(0, 0, 0, .55); }
+.evcPop textarea, .evcPop input { box-sizing: border-box; width: 100%; margin: 0; padding: 8px 10px; border: 1px solid #2a2a2e; border-radius: 8px; background: #0f0f11; color: #fafafa; font: inherit; resize: vertical; outline: none; } .evcPop textarea:focus, .evcPop input:focus { border-color: #f78359; } .evcPop textarea { min-height: 72px; }
+.evcPop .evcRow { display: flex; align-items: center; gap: 6px; margin-top: 8px; } .evcPop .evcRow .evcSp { flex: 1; } .evcGo { appearance: none; border: 1px solid #f78359; border-radius: 8px; background: #f78359; color: #1a0d07; font: inherit; font-size: 12px; font-weight: 600; padding: 5px 10px; cursor: pointer; } .evcPop .evcRow :is(.evcGo, .evcMini) { min-width: 72px; }   /* the call beside Cancel, the same size ("keep next to cancel, same size") */ .evcGo:disabled { opacity: .45; cursor: default; }
+.evcLbl { display: block; margin: 0 0 4px; color: #a1a1aa; font-size: 11.5px; } .evcRe { margin-top: 10px; padding-top: 10px; border-top: 1px solid #26262a; } .evcDiff { margin: 8px 0 0; padding: 8px 10px; border-radius: 8px; background: rgba(247, 131, 89, .08); color: #f7c3ae; font-size: 12px; } .evcDiff ul { margin: 4px 0 0; padding-left: 16px; }
+.evcAt { display: flex; flex-direction: column; gap: 2px; margin-top: 4px; padding: 4px; border: 1px solid #2a2a2e; border-radius: 8px; background: #0f0f11; } .evcAt[hidden] { display: none; } .evcAt button { appearance: none; border: 0; border-radius: 6px; background: none; color: #e4e4e7; font: inherit; font-size: 12.5px; text-align: left; padding: 6px 8px; cursor: pointer; } .evcAt button b { color: #f7a383; font-weight: 600; } .evcAt button[aria-selected="true"], .evcAt button:hover { background: #232326; }   /* the @ list */
+.evcTag { color: #f7a383; font-weight: 600; } .evcChip.evcMe { background: rgba(247, 131, 89, .16); color: #f7a383; }
+.evcToast { position: fixed; left: 50%; bottom: 24px; z-index: 2147483003; translate: -50% 0; padding: 8px 14px; border-radius: 999px; background: #18181b; border: 1px solid #2a2a2e; color: #e4e4e7; font: 12.5px/1.3 -apple-system, BlinkMacSystemFont, "Inter", sans-serif; }
 </style>
 <script>
 (function () {
   'use strict';
-  var KEY = 'everlab:comments', NK = 'everlab:cmName';
+  /* where they live: the artifact's shared store when the viewer grants it ("comments should be visible by everyone and autosaved for everyone"), everyone who opens the page reading and writing the same comments, live;
+     otherwise (the page opened outside claude.ai) this browser, as before. Authors and tags are people of the organisation, kept by their ids and named as each viewer sees them */
+  var KEY = 'everlab:comments', NK = 'everlab:cmName', PK = 'everlab:cmPeople';
   var $ = function (id) { return document.getElementById(id); };
   var rd = function (k, d) { try { var v = localStorage.getItem(k); return v == null ? d : v; } catch (e) { return d; } };
   var wr = function (k, v) { try { localStorage.setItem(k, v); return true; } catch (e) { return false; } };
-  var list = []; try { list = JSON.parse(rd(KEY, '[]')) || []; } catch (e) { list = []; }
   var esc = function (t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
-  var toast = function (t) { var d = document.createElement('div'); d.className = 'cmToast'; d.setAttribute('role', 'status'); d.textContent = t; document.body.appendChild(d); setTimeout(function () { d.remove(); }, 2200); };
-  var save = function () { if (!wr(KEY, JSON.stringify(list))) toast('Couldn’t save comments in this browser'); };
+  var toast = function (t) { var d = document.createElement('div'); d.className = 'evcToast'; d.setAttribute('role', 'status'); d.textContent = t; document.body.appendChild(d); setTimeout(function () { d.remove(); }, 2400); };
 
-  /* the view: the version, the page or overlay over it (the Health profile, its reveal, a documentation tab…), the viewport, the mode, and every tweak that page shows (the Tweaks panel's rows not hidden for it, the bar's own selects showing) */
-  var OVL = [['hpOn', 'Health profile'], ['arOpen', 'Async report'], ['ccOn', 'Chat'], ['gfOn', 'Gift'], ['grOn', 'Gift receipt'], ['clOn', 'Testing locations'], ['docOn', 'Documentation'], ['hlOn', 'Hairline'], ['igOn', 'Illustrations'], ['rvOn', 'Report visuals'], ['homeOn', 'Home']];
+  /* the view: the version, the page or overlay over it (one, the topmost: the reveal, the Health profile, the Async report, the chat, a documentation tab…), the viewport, the mode, and every tweak that page shows (the Tweaks rows not hidden for it, the bar's own selects showing) */
+  var bc = function (k) { return function () { return document.body.classList.contains(k); }; };
+  var PAGES = [['wel', 'Membership reveal', function () { return !!document.querySelector('.hpWrap.hpOpen.hpWelF'); }], ['hp', 'Health profile', bc('hpOn')], ['ar', 'Async report', bc('arOpen')], ['cc', 'Chat', bc('ccOn')], ['gf', 'Gift', bc('gfOn')], ['gr', 'Gift receipt', bc('grOn')], ['cl', 'Testing locations', bc('clOn')], ['doc', 'Documentation', bc('docOn')], ['hl', 'Hairline', bc('hlOn')], ['ig', 'Illustrations', bc('igOn')], ['rv', 'Report visuals', bc('rvOn')], ['home', 'Home', bc('homeOn')]];
+  var pageKey = function () { var p = PAGES.filter(function (x) { return x[2](); })[0]; if (!p) return ''; if (p[0] === 'doc') { var dt = document.querySelector('.docNav [aria-selected="true"]'); return 'doc' + (dt && dt.dataset.doc ? ':' + dt.dataset.doc : ''); } return p[0]; };
+  var LEG = { wel: 'wel', hpOn: 'hp', arOpen: 'ar', ccOn: 'cc', gfOn: 'gf', grOn: 'gr', clOn: 'cl', docOn: 'doc', hlOn: 'hl', igOn: 'ig', rvOn: 'rv', homeOn: 'home' };
+  var canonPg = function (pg) { var p = String(pg || '').split(' ').filter(Boolean); if (p.length === 1 && (/^doc/.test(p[0]) || PAGES.some(function (x) { return x[0] === p[0]; }))) return p[0];
+    var d = p.filter(function (x) { return /^doc:/.test(x); })[0]; if (d) return d; if (p.indexOf('wel') >= 0) return 'wel'; for (var i = 0; i < PAGES.length; i++) { for (var o in LEG) if (LEG[o] === PAGES[i][0] && p.indexOf(o) >= 0) return PAGES[i][0]; } return ''; };   // comments kept before this: their page as the classes it had
   var bp = function () { var b = document.body.dataset.bp; if (b) return b; var w = innerWidth; return w >= 1440 ? 'l' : w >= 992 ? 'm' : w >= 600 ? 's' : 'xs'; };
   var SKIP = { versionSel: 1, themeSel: 1, stBp: 1 };
   var ctx = function () {
-    var vs = $('versionSel'), pg = [], tk = {}, menu = $('tkMenu');
-    OVL.forEach(function (o) { if (document.body.classList.contains(o[0])) pg.push(o[0]); });
-    if (document.querySelector('.hpWrap.hpOpen.hpWelF')) pg.push('wel');
-    if (pg.indexOf('docOn') >= 0) { var dt = document.querySelector('.docNav [aria-selected="true"]'); if (dt && dt.dataset.doc) pg.push('doc:' + dt.dataset.doc); }
-    var take = function (el) { if (!el.id || SKIP[el.id] || el.classList.contains('inkHex') || /^(button|submit|reset|file|hidden)$/.test(el.type) || el.closest('[hidden]')) return; tk[el.id] = el.type === 'checkbox' || el.type === 'radio' ? String(el.checked) : el.value; };
+    var vs = $('versionSel'), tk = {}, menu = $('tkMenu');
+    var take = function (el) { if (!el.id || SKIP[el.id] || el.classList.contains('inkHex') || /^(button|submit|reset|file|hidden)$/.test(el.type) || el.closest('[hidden]') || el.closest('.evcPop, .evcPanel')) return; tk[el.id] = el.type === 'checkbox' || el.type === 'radio' ? String(el.checked) : el.value; };
     if (menu && !menu.hidden) [].forEach.call(menu.querySelectorAll('select, input'), take);
     [].forEach.call(document.querySelectorAll('.tkFlPanel select, .tkFlPanel input'), take);
     [].forEach.call(document.querySelectorAll('.topbar select'), function (el) { if ((!menu || !menu.contains(el)) && el.offsetParent) take(el); });
-    return { v: vs ? vs.value : '', pg: pg.join(' '), bp: bp(), th: ($('themeSel') || {}).value || '', tk: tk };
+    return { v: vs ? vs.value : '', pg: pageKey(), bp: bp(), th: ($('themeSel') || {}).value || '', tk: tk };
   };
   var vName = function (v) { var vs = $('versionSel'), o = vs && [].find.call(vs.options, function (x) { return x.value === v; }); return o ? o.textContent.trim() : v; };
-  var pgName = function (c) { var p = (c.pg || '').split(' ').filter(Boolean); if (p.indexOf('wel') >= 0) return 'Membership reveal'; var dk = p.filter(function (x) { return /^doc:/.test(x); })[0]; if (dk) { var b = document.querySelector('.docNav [data-doc="' + dk.slice(4) + '"]'); return 'Documentation' + (b ? ' · ' + b.textContent.trim() : ''); } var o = OVL.filter(function (x) { return p.indexOf(x[0]) >= 0 && x[0] !== 'homeOn'; })[0]; return o ? o[1] : vName(c.v); };
+  var pgName = function (c) { var p = c.pg || ''; if (/^doc/.test(p)) { var b = p.length > 4 && document.querySelector('.docNav [data-doc="' + p.slice(4) + '"]'); return 'Documentation' + (b ? ' · ' + b.textContent.trim() : ''); } var o = PAGES.filter(function (x) { return x[0] === p && p !== 'home'; })[0]; return o ? o[1] : vName(c.v); };
   var labelOf = function (id) { var el = $(id); if (!el) return id; var r = el.closest('.tkRow'), l = r && r.querySelector('.lbl'), g = el.closest('.tkGroup'), gs = g && g.querySelector('.tkSub, summary'); var t = (l && l.textContent.trim()) || el.getAttribute('aria-label') || id; return gs && gs.textContent.trim() && t.length < 40 ? gs.textContent.trim().replace(/\s+/g, ' ').slice(0, 28) + ' → ' + t : t; };
   var valOf = function (id, v) { var el = $(id); if (el && el.tagName === 'SELECT') { var o = [].find.call(el.options, function (x) { return x.value === v; }); if (o) return o.textContent.trim(); } if (v === 'true') return 'On'; if (v === 'false') return 'Off'; return v; };
   /* what stands between a comment's view and this one; nothing: it is on screen */
@@ -42355,144 +42361,207 @@ hairline({
     if (a.pg !== b.pg) d.push(['Page', pgName(a), pgName(b)]);
     if (a.bp !== b.bp) d.push(['Viewport', a.bp.toUpperCase(), b.bp.toUpperCase()]);
     if (a.th !== b.th) d.push(['Mode', a.th === 'light' ? 'Light' : 'Dark', b.th === 'light' ? 'Light' : 'Dark']);
-    if (!d.length) Object.keys(a.tk).forEach(function (k) { if (k in b.tk && a.tk[k] !== b.tk[k]) d.push([labelOf(k), valOf(k, a.tk[k]), valOf(k, b.tk[k])]); });
+    if (!d.length) Object.keys(a.tk || {}).forEach(function (k) { if (k in b.tk && a.tk[k] !== b.tk[k]) d.push([labelOf(k), valOf(k, a.tk[k]), valOf(k, b.tk[k])]); });
     return d; };
 
   /* the pin's place: the element clicked, by its path from the nearest id, and where on it; the screen's place too, if the element is gone */
   var pathOf = function (el) { var parts = []; while (el && el.nodeType === 1) { if (el === document.body) { parts.unshift('body'); break; } if (el.id && /^[A-Za-z][\w-]*$/.test(el.id) && document.querySelectorAll('#' + el.id).length === 1) { parts.unshift('#' + el.id); break; } var p = el.parentElement; if (!p) break; parts.unshift(el.tagName.toLowerCase() + ':nth-child(' + ([].indexOf.call(p.children, el) + 1) + ')'); el = p; } return parts.join(' > '); };
   var elOf = function (c) { try { return c.a && c.a.p ? document.querySelector(c.a.p) : null; } catch (e) { return null; } };
 
+  /* the comments: this browser's, then the shared store's once it answers */
+  var reMap = function (re) { if (Array.isArray(re)) { var m = {}; re.forEach(function (r, i) { m['r' + i] = r; }); return m; } return re && typeof re === 'object' ? re : {}; };
+  var reList = function (c) { var m = reMap(c.re); return Object.keys(m).map(function (k) { return m[k]; }).filter(function (r) { return r && typeof r.text === 'string'; }).sort(function (a, b) { return (a.at || 0) - (b.at || 0); }); };
+  var tidy = function (c) { if (!c || !/^[A-Za-z0-9_-]{1,64}$/.test(String(c.id)) || typeof c.text !== 'string' || !c.ctx || typeof c.ctx !== 'object' || !c.a || typeof c.a !== 'object') return null; c.ctx.tk = c.ctx.tk && typeof c.ctx.tk === 'object' ? c.ctx.tk : {}; c.ctx.pg = canonPg(c.ctx.pg); c.ctx.bp = String(c.ctx.bp || ''); c.ctx.v = String(c.ctx.v || ''); c.ctx.th = String(c.ctx.th || '');
+    if (c.by != null && !c.uid && !c.byN) c.byN = String(c.by); c.re = reMap(c.re); Object.keys(c.re).forEach(function (k) { var r = c.re[k]; if (r && r.by != null && !r.uid && !r.byN) r.byN = String(r.by); }); c.at = +c.at || 0; return c; };   // shared data is anyone's input: shape checked, shown escaped
+  var local = []; try { local = (JSON.parse(rd(KEY, '[]')) || []).map(tidy).filter(Boolean); } catch (e) { local = []; }
+  var list = local, DB = null, U = null, ME = null, NAMES = {};
+  var saveLocal = function () { if (!wr(KEY, JSON.stringify(local))) toast('Couldn’t save comments in this browser'); };
+  var fail = function () { toast('Couldn’t save that: try again'); };
+  var col = function () { return DB.collection('comments'); };
+  var newId = function (p) { return p + Date.now().toString(36) + Math.random().toString(36).slice(2, 7); };
+  var add = function (c) { if (DB) { col().doc(c.id).set(JSON.parse(JSON.stringify(c))).catch(fail); return; } local.push(c); saveLocal(); refresh(); };
+  var addReply = function (c, r) { var rid = newId('r'); if (DB) { var u = {}; u[rid] = r; col().doc(c.id).update({ re: u }).catch(fail); return; } c.re = reMap(c.re); c.re[rid] = r; saveLocal(); refresh(); };
+  var setDone = function (c, v) { if (DB) { col().doc(c.id).update({ done: v }).catch(fail); return; } c.done = v; saveLocal(); refresh(); };
+  var del = function (c) { if (DB) { col().doc(c.id).delete().catch(fail); return; } local = local.filter(function (k) { return k.id !== c.id; }); list = local; saveLocal(); refresh(); };
+  var who = function (o) { return o.uid ? (NAMES[o.uid] || 'Someone') : (o.byN || 'Someone'); };
+  var meName = function () { return ME && ME.name ? ME.name : rd(NK, ''); };
+  var mine = function (o) { return ME && ME.id ? o.uid === ME.id : !o.uid && !!o.byN && o.byN === rd(NK, ''); };
+  var tagged = function (c) { var test = function (o) { return ME && ME.id && (o.tags || []).indexOf(ME.id) >= 0 || (!!rd(NK, '') && (o.tags || []).indexOf(rd(NK, '')) >= 0); }; return test(c) || reList(c).some(test); };
+
+  /* names, as this viewer sees them: the authors and everyone tagged, resolved together, the list drawn again when one changes */
+  var idsOf = function () { var s = {}; var take = function (o) { if (o.uid) s[o.uid] = 1; String(o.text || '').replace(/@\[([^\]\s]+)\]/g, function (m, id) { s[id] = 1; return m; }); }; list.forEach(function (c) { take(c); reList(c).forEach(take); }); return Object.keys(s); };
+  var names = function () { if (!U) return; var ids = idsOf(); if (!ids.length) return; U.profiles(ids).then(function (ps) { var ch = false; ids.forEach(function (id) { var n = (ps[id] && ps[id].name) || ''; if (NAMES[id] !== n) { NAMES[id] = n; ch = true; } }); if (ch) paintList(); }); };
+
+  /* tagging ("need to be able to tag someone"): @ and a name. Shared, the organisation's people (its directory, searched as you type), kept by their id; in this browser, the names seen here and any tagged as typed */
+  var people = function () { var o = {}; try { (JSON.parse(rd(PK, '[]')) || []).forEach(function (n) { o[n] = 1; }); } catch (e) {} list.forEach(function (c) { if (c.byN) o[c.byN] = 1; (c.tags || []).forEach(function (n) { o[n] = 1; }); reList(c).forEach(function (r) { if (r.byN) o[r.byN] = 1; }); }); delete o.Someone; var me = rd(NK, ''); if (me) o[me] = 1; return Object.keys(o).filter(Boolean).sort(function (a, b) { return a.localeCompare(b); }); };
+  var addPerson = function (n) { var a = []; try { a = JSON.parse(rd(PK, '[]')) || []; } catch (e) {} if (a.indexOf(n) < 0) { a.push(n); wr(PK, JSON.stringify(a)); } };
+  var reEsc = function (t) { return t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); };
+  var fmt = function (t, o) { var h = esc(t).replace(/@\[([^\]\s]+)\]/g, function (m, id) { return '<b class="evcTag">@' + esc(NAMES[id] || 'Someone') + '</b>'; });
+    var tags = (o && !DB && o.tags) || []; if (!tags.length) return h; var ns = tags.filter(function (n) { return typeof n === 'string' && n; }).sort(function (a, b) { return b.length - a.length; }).map(function (n) { return reEsc(esc(n)); }); return ns.length ? h.replace(new RegExp('@(' + ns.join('|') + ')', 'g'), '<b class="evcTag">@$1</b>') : h; };
+  /* the text as it is kept: shared, each picked name turned into its person's id (@[id]); here, the names as typed */
+  var seal = function (ta, t) { if (!DB) return { text: t, tags: people().filter(function (n) { return t.indexOf('@' + n) >= 0; }) }; var pk = ta._pk || {}, tags = []; Object.keys(pk).sort(function (a, b) { return b.length - a.length; }).forEach(function (n) { if (t.indexOf('@' + n) >= 0) { t = t.split('@' + n).join('@[' + pk[n] + ']'); tags.push(pk[n]); } }); return { text: t, tags: tags }; };
+  var atList = function (ta) {
+    ta._pk = {}; var box = document.createElement('div'); box.className = 'evcAt'; box.setAttribute('role', 'listbox'); box.hidden = true; ta.insertAdjacentElement('afterend', box); var opts = [], k = 0, seq = 0;
+    var find = function () { var m = /(^|\s)@([^\s@]{0,30})$/.exec(ta.value.slice(0, ta.selectionStart)); return m ? m[2] : null; };
+    var show = function (o) { opts = o; if (!opts.length) { box.hidden = true; return; } k = Math.min(k, opts.length - 1);
+      box.innerHTML = opts.map(function (x, i) { return '<button type="button" role="option" data-i="' + i + '" aria-selected="' + (i === k) + '">' + (x.add ? 'Tag “' + esc(x.n) + '”' : '<b>@</b>' + esc(x.n)) + '</button>'; }).join(''); box.hidden = false; };
+    var paint = function () { var q = find(); if (q === null) { box.hidden = true; return; }
+      if (DB && U) { var my = ++seq; U.search(q).then(function (hits) { if (my !== seq || find() === null) return; show((hits || []).filter(function (h) { return h && h.id && h.name; }).map(function (h) { return { n: h.name, id: h.id }; })); }); return; }
+      var ql = q.toLowerCase(), o = people().filter(function (n) { return n.toLowerCase().indexOf(ql) >= 0; }).slice(0, 6).map(function (n) { return { n: n }; }); if (q && !o.some(function (x) { return x.n.toLowerCase() === ql; })) o.push({ n: q, add: true }); show(o); };
+    var pick = function (i) { var o = opts[i]; if (!o) return; if (o.id) ta._pk[o.n] = o.id; else if (o.add) addPerson(o.n); var pos = ta.selectionStart, before = ta.value.slice(0, pos).replace(/@([^\s@]{0,30})$/, '@' + o.n + ' '); ta.value = before + ta.value.slice(pos); ta.selectionStart = ta.selectionEnd = before.length; box.hidden = true; ta.focus(); ta.dispatchEvent(new Event('input')); box.hidden = true; };
+    ta.addEventListener('input', paint); ta.addEventListener('click', paint); ta.addEventListener('keyup', function (e) { if (/^(ArrowLeft|ArrowRight|Home|End)$/.test(e.key)) paint(); });
+    ta.addEventListener('keydown', function (e) { if (box.hidden) return; if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); k = (k + (e.key === 'ArrowDown' ? 1 : opts.length - 1)) % opts.length; show(opts); } else if ((e.key === 'Enter' && !e.metaKey && !e.ctrlKey) || e.key === 'Tab') { e.preventDefault(); pick(k); } });
+    box.addEventListener('mousedown', function (e) { e.preventDefault(); }); box.addEventListener('click', function (e) { var b = e.target.closest('[data-i]'); if (b) pick(+b.dataset.i); });
+  };
+
+  /* the bar's button, the pins' layer, the click catcher, the panel */
   var bar = document.querySelector('.topbar .tweaks'), btn = document.createElement('button');
-  btn.type = 'button'; btn.className = 'tkBtn cmBtn'; btn.setAttribute('aria-pressed', 'false'); btn.title = 'Comments on this view';
-  btn.innerHTML = '<span>Comments</span><b class="cmBadge" hidden></b>';
+  btn.type = 'button'; btn.className = 'tkBtn evcBtn'; btn.setAttribute('aria-pressed', 'false'); btn.title = 'Comments on this view';
+  btn.innerHTML = '<span>Comments</span><b class="evcBadge" hidden></b>';
   var rl = $('tkReload'); if (rl && rl.parentNode) rl.parentNode.insertBefore(btn, rl); else if (bar) bar.appendChild(btn);
-  var layer = document.createElement('div'); layer.className = 'cmLayer'; layer.setAttribute('aria-label', 'Comment pins');
-  var catcher = document.createElement('div'); catcher.className = 'cmCatch'; catcher.title = 'Click to comment here';
-  var panel = document.createElement('aside'); panel.className = 'cmPanel'; panel.setAttribute('aria-label', 'Comments');
-  panel.innerHTML = '<div class="cmHead"><h2>Comments</h2><button type="button" class="cmX" data-a="close" aria-label="Close comments">✕</button></div>' +
-    '<div class="cmTabs" role="tablist"><button type="button" role="tab" data-t="view">This view</button><button type="button" role="tab" data-t="all">All</button></div>' +
-    '<p class="cmHint">Click anywhere on the prototype to leave a comment. It shows again only on this view: this version and page, viewport, mode and tweaks.</p>' +
-    '<div class="cmOpts"><label><input type="checkbox" data-a="resolved"> Show resolved</label><span class="cmCount"></span></div><div class="cmList" role="list"></div>' +
-    '<div class="cmFoot"><button type="button" class="cmMini" data-a="copy">Copy all</button><button type="button" class="cmMini" data-a="import">Import</button></div>';
+  var layer = document.createElement('div'); layer.className = 'evcLayer'; layer.setAttribute('aria-label', 'Comment pins');
+  var catcher = document.createElement('div'); catcher.className = 'evcCatch'; catcher.title = 'Click to comment here';
+  var panel = document.createElement('aside'); panel.className = 'evcPanel'; panel.setAttribute('aria-label', 'Comments');
+  panel.innerHTML = '<div class="evcHead"><h2>Comments</h2><span class="evcWhere1"></span><button type="button" class="evcX" data-a="close" aria-label="Close comments">✕</button></div>' +
+    '<div class="evcTabs" role="tablist"><button type="button" role="tab" data-t="view">This view</button><button type="button" role="tab" data-t="all">All</button><button type="button" role="tab" data-t="me">Mentions</button></div>' +
+    '<p class="evcHint"></p><div class="evcOpts"><label><input type="checkbox" data-a="resolved"> Show resolved</label><span class="evcCount"></span></div><div class="evcList" role="list"></div><div class="evcFoot"></div>';
   document.body.appendChild(catcher); document.body.appendChild(layer); document.body.appendChild(panel);
   var on = false, tab = 'view', showDone = false, sel = null, pop = null, cur = ctx(), shown = [];
-  try { tab = rd('everlab:cmTab', 'view') === 'all' ? 'all' : 'view'; showDone = rd('everlab:cmDone', '') === '1'; } catch (e) {}
+  tab = ({ all: 'all', me: 'me' })[rd('everlab:cmTab', 'view')] || 'view'; showDone = rd('everlab:cmDone', '') === '1';
   panel.querySelector('[data-a="resolved"]').checked = showDone;
 
   var ago = function (t) { var s = Math.round((Date.now() - t) / 1000); if (s < 60) return 'now'; if (s < 3600) return Math.round(s / 60) + 'm'; if (s < 86400) return Math.round(s / 3600) + 'h'; var d = new Date(t); return d.getDate() + ' ' + ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()]; };
   var matches = function (c) { return !diff(c.ctx, cur).length; };
   var closePop = function () { if (pop) { pop.remove(); pop = null; } sel = null; paintSel(); };
   var place = function (el, x, y) { var w = el.offsetWidth, h = el.offsetHeight, L = Math.min(Math.max(12, x + 14), innerWidth - w - 12), T = Math.min(Math.max(12, y - 10), innerHeight - h - 12); el.style.left = L + 'px'; el.style.top = T + 'px'; };
-  var openPop = function (html, x, y) { closePop(); pop = document.createElement('div'); pop.className = 'cmPop'; pop.setAttribute('role', 'dialog'); pop.innerHTML = html; document.body.appendChild(pop); place(pop, x, y); return pop; };
-  var nameField = function () { var n = rd(NK, ''); return n ? '' : '<label class="cmLbl" for="cmName">Your name</label><input id="cmName" autocomplete="name" placeholder="So people know who wrote it" style="margin-bottom:8px">'; };
-  var takeName = function (p) { var f = p.querySelector('#cmName'); if (f) { var v = f.value.trim(); if (v) wr(NK, v); } return rd(NK, '') || 'Someone'; };
+  var openPop = function (html, x, y) { closePop(); pop = document.createElement('div'); pop.className = 'evcPop'; pop.setAttribute('role', 'dialog'); pop.innerHTML = html; document.body.appendChild(pop); place(pop, x, y); return pop; };
+  var nameField = function () { return DB || rd(NK, '') ? '' : '<label class="evcLbl" for="evcName">Your name</label><input id="evcName" autocomplete="name" placeholder="So people know who wrote it" style="margin-bottom:8px">'; };
+  var author = function (p) { if (DB && ME && ME.id) return { uid: ME.id }; var f = p.querySelector('#evcName'); if (f) { var v = f.value.trim(); if (v) wr(NK, v); } return { byN: rd(NK, '') || meName() || 'Someone' }; };
 
   /* a new comment where the click was */
   var compose = function (x, y, target) {
     var r = target.getBoundingClientRect(), a = { p: pathOf(target), fx: r.width ? (x - r.left) / r.width : 0, fy: r.height ? (y - r.top) / r.height : 0, sx: x / innerWidth, sy: y / innerHeight };
-    var p = openPop(nameField() + '<label class="cmLbl" for="cmText">Comment on ' + esc(pgName(cur)) + ' · ' + cur.bp.toUpperCase() + '</label><textarea id="cmText" placeholder="Leave a comment"></textarea><div class="cmRow"><span class="cmSp"></span><button type="button" class="cmMini" data-a="cancel">Cancel</button><button type="button" class="cmGo" data-a="post" disabled>Comment</button></div>', x, y);
-    var ta = p.querySelector('#cmText'), go = p.querySelector('[data-a="post"]');
+    var p = openPop(nameField() + '<label class="evcLbl" for="evcText">Comment on ' + esc(pgName(cur)) + ' · ' + cur.bp.toUpperCase() + '</label><textarea id="evcText" placeholder="Leave a comment. @ to tag someone" maxlength="4000"></textarea><div class="evcRow"><span class="evcSp"></span><button type="button" class="evcMini" data-a="cancel">Cancel</button><button type="button" class="evcGo" data-a="post" disabled>Comment</button></div>', x, y);
+    var ta = p.querySelector('#evcText'), go = p.querySelector('[data-a="post"]'); atList(ta);
     ta.addEventListener('input', function () { go.disabled = !ta.value.trim(); });
-    var post = function () { var t = ta.value.trim(); if (!t) return; var n = list.reduce(function (m, c) { return Math.max(m, c.n || 0); }, 0) + 1;
-      var c = { id: 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), n: n, by: takeName(p), at: Date.now(), text: t, ctx: ctx(), a: a, done: false, re: [] };
-      list.push(c); save(); closePop(); refresh(); toast('Comment ' + n + ' added to this view'); };
+    var post = function () { var t = ta.value.trim(); if (!t) return; var sl = seal(ta, t);
+      var c = Object.assign({ id: newId('c'), at: Date.now(), text: sl.text, tags: sl.tags, ctx: ctx(), a: a, done: false, re: {} }, author(p));
+      add(c); closePop(); toast(DB ? 'Comment shared on this view' : 'Comment added to this view'); };
     go.addEventListener('click', post); p.querySelector('[data-a="cancel"]').addEventListener('click', closePop);
     ta.addEventListener('keydown', function (e) { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); post(); } });
-    setTimeout(function () { (p.querySelector('#cmName') || ta).focus(); }, 0);
+    setTimeout(function () { (p.querySelector('#evcName') || ta).focus(); }, 0);
   };
 
   /* a comment's thread: its words, its replies, a reply; resolve, delete; off its view, what differs and the way there */
   var thread = function (c, x, y) {
-    sel = c.id; paintSel(); var d = diff(c.ctx, cur);
-    var html = '<div class="cmItemH' + (c.done ? ' cmDone' : '') + '"><span class="cmNum">' + c.n + '</span><span class="cmWho">' + esc(c.by) + '</span><span class="cmWhen">' + ago(c.at) + '</span></div><p class="cmTxt">' + esc(c.text) + '</p>' +
-      '<div class="cmWhere"><span class="cmChip">' + esc(pgName(c.ctx)) + '</span><span class="cmChip">' + esc(c.ctx.bp.toUpperCase()) + '</span><span class="cmChip">' + (c.ctx.th === 'light' ? 'Light' : 'Dark') + '</span><span class="cmChip">' + Object.keys(c.ctx.tk).length + ' tweaks</span></div>' +
-      (d.length ? '<div class="cmDiff">Made on another view. What differs:<ul>' + d.slice(0, 8).map(function (x) { return '<li>' + esc(x[0]) + ': ' + esc(x[1]) + ' (now ' + esc(x[2]) + ')</li>'; }).join('') + (d.length > 8 ? '<li>and ' + (d.length - 8) + ' more</li>' : '') + '</ul></div>' : '') +
-      (c.re || []).map(function (r) { return '<div class="cmRe"><div class="cmItemH"><span class="cmWho">' + esc(r.by) + '</span><span class="cmWhen">' + ago(r.at) + '</span></div><p class="cmTxt">' + esc(r.text) + '</p></div>'; }).join('') +
-      '<div class="cmRe">' + nameField() + '<textarea id="cmText" placeholder="Reply" style="min-height:52px"></textarea><div class="cmRow">' + (d.length ? '<button type="button" class="cmMini" data-a="goto">Go to view</button>' : '') + '<button type="button" class="cmMini" data-a="done">' + (c.done ? 'Reopen' : 'Resolve') + '</button><button type="button" class="cmMini" data-a="del">Delete</button><span class="cmSp"></span><button type="button" class="cmGo" data-a="reply" disabled>Reply</button></div></div>';
-    var p = openPop(html, x, y), ta = p.querySelector('#cmText'), rb = p.querySelector('[data-a="reply"]');
+    sel = c.id; paintSel(); var d = diff(c.ctx, cur), canDel = !DB || mine(c) || (ME && ME.isOwner);
+    var html = '<div class="evcItemH' + (c.done ? ' evcDone' : '') + '"><span class="evcNum">' + c.n + '</span><span class="evcWho">' + esc(who(c)) + '</span><span class="evcWhen">' + ago(c.at) + '</span></div><p class="evcTxt">' + fmt(c.text, c) + '</p>' +
+      '<div class="evcWhere"><span class="evcChip">' + esc(pgName(c.ctx)) + '</span><span class="evcChip">' + esc(c.ctx.bp.toUpperCase()) + '</span><span class="evcChip">' + (c.ctx.th === 'light' ? 'Light' : 'Dark') + '</span><span class="evcChip">' + Object.keys(c.ctx.tk).length + ' tweaks</span></div>' +
+      (d.length ? '<div class="evcDiff">Made on another view. What differs:<ul>' + d.slice(0, 8).map(function (q) { return '<li>' + esc(q[0]) + ': ' + esc(q[1]) + ' (now ' + esc(q[2]) + ')</li>'; }).join('') + (d.length > 8 ? '<li>and ' + (d.length - 8) + ' more</li>' : '') + '</ul><button type="button" class="evcGo evcGoTo" data-a="goto">Go to its view</button></div>' : '') +
+      reList(c).map(function (r) { return '<div class="evcRe"><div class="evcItemH"><span class="evcWho">' + esc(who(r)) + '</span><span class="evcWhen">' + ago(r.at) + '</span></div><p class="evcTxt">' + fmt(r.text, r) + '</p></div>'; }).join('') +
+      '<div class="evcRe">' + nameField() + '<textarea id="evcText" placeholder="Reply. @ to tag someone" style="min-height:52px" maxlength="4000"></textarea><div class="evcRow"><button type="button" class="evcMini" data-a="done">' + (c.done ? 'Reopen' : 'Resolve') + '</button>' + (canDel ? '<button type="button" class="evcMini" data-a="del">Delete</button>' : '') + '<span class="evcSp"></span><button type="button" class="evcGo" data-a="reply" disabled>Reply</button></div></div>';
+    var p = openPop(html, x, y), ta = p.querySelector('#evcText'), rb = p.querySelector('[data-a="reply"]'); atList(ta);
     ta.addEventListener('input', function () { rb.disabled = !ta.value.trim(); });
-    var reply = function () { var t = ta.value.trim(); if (!t) return; (c.re = c.re || []).push({ by: takeName(p), at: Date.now(), text: t }); save(); refresh(); thread(c, x, y); };
+    var reply = function () { var t = ta.value.trim(); if (!t) return; var sl = seal(ta, t); addReply(c, Object.assign({ at: Date.now(), text: sl.text, tags: sl.tags }, author(p))); closePop(); setTimeout(function () { var k = list.filter(function (o) { return o.id === c.id; })[0]; if (k) thread(k, x, y); }, DB ? 350 : 0); };
     rb.addEventListener('click', reply); ta.addEventListener('keydown', function (e) { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); reply(); } });
-    p.querySelector('[data-a="done"]').addEventListener('click', function () { c.done = !c.done; save(); closePop(); refresh(); });
-    p.querySelector('[data-a="del"]').addEventListener('click', function (e) { var b = e.currentTarget; if (b.dataset.sure) { list = list.filter(function (k) { return k.id !== c.id; }); save(); closePop(); refresh(); return; } b.dataset.sure = '1'; b.textContent = 'Delete for good?'; });   // a second press to delete: no dialog in the viewer
+    p.querySelector('[data-a="done"]').addEventListener('click', function () { setDone(c, !c.done); closePop(); });
+    var db2 = p.querySelector('[data-a="del"]'); if (db2) db2.addEventListener('click', function (e) { var b = e.currentTarget; if (b.dataset.sure) { del(c); closePop(); return; } b.dataset.sure = '1'; b.textContent = 'Delete for good?'; });   // a second press to delete: no dialog in the viewer
     var gt = p.querySelector('[data-a="goto"]'); if (gt) gt.addEventListener('click', function () { goTo(c); });
   };
 
-  /* back to a comment's view: its version, its page, its viewport and mode, its tweaks as they were; then its thread */
-  var setv = function (id, v) { var el = $(id); if (!el) return false; if (el.type === 'checkbox' || el.type === 'radio') { if (String(el.checked) === v) return false; el.checked = v === 'true'; } else { if (el.value === v) return false; el.value = v; } el.dispatchEvent(new Event('input', { bubbles: true })); el.dispatchEvent(new Event('change', { bubbles: true })); return true; };
+  /* to a comment's view, fully ("really need to swap fully to the other view"): whatever stands over the page put away, its mode and viewport, its version drawn afresh, its tweaks as they were, its page or overlay opened; then its thread */
+  var setv = function (id, v) { var el = $(id); if (!el || v == null) return false; if (el.type === 'checkbox' || el.type === 'radio') { if (String(el.checked) === v) return false; el.checked = v === 'true'; } else { if (el.value === v) return false; el.value = v; } el.dispatchEvent(new Event('input', { bubbles: true })); el.dispatchEvent(new Event('change', { bubbles: true })); return true; };
+  var closeAll = function () { try { if (window._hp) window._hp.close(true); } catch (e) {} try { if (window._ar && window._ar.isOpen && window._ar.isOpen()) window._ar.close(); } catch (e) {} ['_cc', '_gf', '_gr', '_cl', '_doc', '_hl', '_ig', '_rv', '_home'].forEach(function (k) { try { if (window[k] && window[k].hide) window[k].hide(); } catch (e) {} }); };   // every page and overlay put away: the prototype alone under what opens next
+  var openPage = function (pg) { var k = (pg || '').split(':')[0]; if (!k || k === 'home' || pageKey().split(':')[0] === k) return;
+    try { if (k === 'wel' && window._hp) window._hp.open({ welcome: true }); else if (k === 'hp' && window._hp) window._hp.open({}); else if (k === 'ar' && window._ar) window._ar.open(); else if (k === 'cc' && window._cc) window._cc.show(); else if (k === 'gf' && window._gf) window._gf.show(); else if (k === 'gr' && window._gr) window._gr.show(); else if (k === 'cl' && window._cl) window._cl.show(); else if (k === 'doc' && window._doc) window._doc.show(); } catch (e) {} };
   var goTo = function (c) {
-    var x = c.ctx; closePop(); setv('versionSel', x.v);
+    var x = c.ctx, vs = $('versionSel'); closePop(); closeAll();
+    setv('themeSel', x.th); if (bp() !== x.bp) setv('stBp', x.bp);
+    if (vs && [].some.call(vs.options, function (o) { return o.value === x.v; })) { vs.value = x.v; vs.dispatchEvent(new Event('change', { bubbles: true })); }   // always: the page drawn afresh, not left as it was
     setTimeout(function () {
-      setv('themeSel', x.th); if (bp() !== x.bp) setv('stBp', x.bp);
       Object.keys(x.tk).forEach(function (k) { setv(k, x.tk[k]); });
-      var p = x.pg.split(' ');
-      if (p.indexOf('hpOn') >= 0 && window._hp && !document.body.classList.contains('hpOn')) window._hp.open(p.indexOf('wel') >= 0 ? { welcome: true } : {});
-      var dk = p.filter(function (k) { return /^doc:/.test(k); })[0], db = dk && document.querySelector('.docNav [data-doc="' + dk.slice(4) + '"]'); if (db) db.click();
-      Object.keys(x.tk).forEach(function (k) { setv(k, x.tk[k]); });   // again, for the rows its page shows only once it is up
-      setTimeout(function () { refresh(); var el = elOf(c); if (el && el.scrollIntoView) el.scrollIntoView({ block: 'center', behavior: 'smooth' }); setTimeout(function () { var pin = layer.querySelector('[data-id="' + c.id + '"]'); if (pin && matches(c)) { var r = pin.getBoundingClientRect(); thread(c, r.right, r.top); } else { var d = diff(c.ctx, ctx()); toast(d.length ? 'Nearly there: ' + d[0][0] + ' still differs' : 'This view, but what it pointed at isn’t on screen'); } }, 500); }, 700);
+      openPage(x.pg);
+      var dt = /^doc:/.test(x.pg) && document.querySelector('.docNav [data-doc="' + x.pg.slice(4) + '"]'); if (dt && dt.getAttribute('aria-selected') !== 'true') dt.click();
+      setTimeout(function () { Object.keys(x.tk).forEach(function (k) { setv(k, x.tk[k]); });   // again, for the rows its page shows only once it is up
+        refresh(); var el = elOf(c); if (el && el.scrollIntoView) el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+        setTimeout(function () { var pin = layer.querySelector('[data-id="' + c.id + '"]'); if (pin && !pin.hidden && matches(c)) { var r = pin.getBoundingClientRect(); thread(c, r.right, r.top); } else { var d = diff(c.ctx, ctx()); toast(d.length ? 'Nearly there: ' + d[0][0] + ' still differs' : 'This is its view; what it pointed at isn’t on screen'); } }, 500); }, 700);
     }, 450);
   };
 
-  /* the list: this view's (or all), the resolved ones too if asked */
-  var paintSel = function () { [].forEach.call(layer.children, function (p) { p.classList.toggle('cmSel', p.dataset.id === sel); }); [].forEach.call(panel.querySelectorAll('.cmItem'), function (i) { i.classList.toggle('cmSel', i.dataset.id === sel); }); };
+  /* the list: this view's, all, or those tagging you; the resolved ones too if asked */
+  var paintSel = function () { [].forEach.call(layer.children, function (p) { p.classList.toggle('evcSel', p.dataset.id === sel); }); [].forEach.call(panel.querySelectorAll('.evcItem'), function (i) { i.classList.toggle('evcSel', i.dataset.id === sel); }); };
   var paintList = function () {
-    var here = list.filter(matches), open = here.filter(function (c) { return !c.done; });
-    var b = btn.querySelector('.cmBadge'); b.hidden = !open.length; b.textContent = open.length;
-    [].forEach.call(panel.querySelectorAll('.cmTabs [data-t]'), function (t) { t.setAttribute('aria-selected', String(t.dataset.t === tab)); t.textContent = (t.dataset.t === 'view' ? 'This view' : 'All') + ' (' + (t.dataset.t === 'view' ? here : list).filter(function (c) { return showDone || !c.done; }).length + ')'; });
-    var rows = (tab === 'view' ? here : list).filter(function (c) { return showDone || !c.done; }).slice().sort(function (a, b) { return a.n - b.n; });
-    panel.querySelector('.cmCount').textContent = list.filter(function (c) { return c.done; }).length + ' resolved';
-    var L = panel.querySelector('.cmList');
-    L.innerHTML = rows.length ? rows.map(function (c) { var m = matches(c); return '<button type="button" class="cmItem' + (c.done ? ' cmDone' : '') + '" role="listitem" data-id="' + c.id + '"><div class="cmItemH"><span class="cmNum">' + c.n + '</span><span class="cmWho">' + esc(c.by) + '</span><span class="cmWhen">' + ago(c.at) + '</span></div><p class="cmTxt">' + esc(c.text) + '</p>' + ((c.re || []).length ? '<div class="cmWhere"><span class="cmChip">' + c.re.length + (c.re.length > 1 ? ' replies' : ' reply') + '</span></div>' : '') +
-      '<div class="cmWhere"><span class="cmChip">' + esc(pgName(c.ctx)) + '</span><span class="cmChip">' + esc(c.ctx.bp.toUpperCase()) + '</span>' + (m ? '' : '<span class="cmChip cmOff">Other view</span>') + '</div></button>'; }).join('')
-      : '<p class="cmEmpty">' + (tab === 'view' ? 'No comments on this view yet.' : 'No comments yet.') + '</p>';
-    paintSel();
+    var here = list.filter(matches), open = here.filter(function (c) { return !c.done; }), mn = list.filter(tagged), SET = { view: here, all: list, me: mn }, NM = { view: 'This view', all: 'All', me: 'Mentions' };
+    var b = btn.querySelector('.evcBadge'); b.hidden = !open.length; b.textContent = open.length;
+    [].forEach.call(panel.querySelectorAll('.evcTabs [data-t]'), function (t) { t.setAttribute('aria-selected', String(t.dataset.t === tab)); t.textContent = NM[t.dataset.t] + ' (' + SET[t.dataset.t].filter(function (c) { return showDone || !c.done; }).length + ')'; });
+    panel.querySelector('.evcWhere1').textContent = DB ? 'Shared' : 'This browser';
+    panel.querySelector('.evcHint').textContent = 'Click anywhere on the prototype to leave a comment. It shows again only on this view: this version and page, viewport, mode and tweaks. ' + (DB ? 'Everyone who opens this page sees it, saved as you go.' : 'Kept in this browser: open the page in claude.ai to share comments.');
+    var rows = SET[tab].filter(function (c) { return showDone || !c.done; }).slice().sort(function (a, b) { return a.n - b.n; });
+    panel.querySelector('.evcCount').textContent = list.filter(function (c) { return c.done; }).length + ' resolved';
+    var L = panel.querySelector('.evcList');
+    L.innerHTML = rows.length ? rows.map(function (c) { var m = matches(c), rn = reList(c).length; return '<button type="button" class="evcItem' + (c.done ? ' evcDone' : '') + '" role="listitem" data-id="' + esc(c.id) + '"><div class="evcItemH"><span class="evcNum">' + c.n + '</span><span class="evcWho">' + esc(who(c)) + '</span><span class="evcWhen">' + ago(c.at) + '</span></div><p class="evcTxt">' + fmt(c.text, c) + '</p>' +
+      '<div class="evcWhere"><span class="evcChip">' + esc(pgName(c.ctx)) + '</span><span class="evcChip">' + esc(c.ctx.bp.toUpperCase()) + '</span>' + (rn ? '<span class="evcChip">' + rn + (rn > 1 ? ' replies' : ' reply') + '</span>' : '') + (m ? '' : '<span class="evcChip evcOff">Other view</span>') + (tagged(c) ? '<span class="evcChip evcMe">Mentions you</span>' : '') + '</div></button>'; }).join('')
+      : '<p class="evcEmpty">' + ({ view: 'No comments on this view yet.', all: 'No comments yet.', me: 'Nobody has tagged you yet.' })[tab] + '</p>';
+    var F = panel.querySelector('.evcFoot');
+    F.innerHTML = DB ? (local.length ? '<button type="button" class="evcMini" data-a="share">Share ' + local.length + ' comment' + (local.length > 1 ? 's' : '') + ' kept in this browser</button>' : '') : '<button type="button" class="evcMini" data-a="copy">Copy all</button><button type="button" class="evcMini" data-a="import">Import</button>';
+    F.hidden = !F.innerHTML; paintSel();
   };
   /* the pins: this view's comments, each on its element, followed as the page moves */
   var paintPins = function () {
     shown = on ? list.filter(function (c) { return (showDone || !c.done) && matches(c); }) : [];
     var have = {}; [].forEach.call(layer.children, function (p) { have[p.dataset.id] = p; });
-    shown.forEach(function (c) { var p = have[c.id]; delete have[c.id]; if (!p) { p = document.createElement('button'); p.type = 'button'; p.className = 'cmPin'; p.dataset.id = c.id; p.addEventListener('click', function (e) { e.stopPropagation(); var r = p.getBoundingClientRect(); thread(c, r.right, r.top); }); layer.appendChild(p); }
-      p.textContent = c.n; p.classList.toggle('cmDone', !!c.done); p.setAttribute('aria-label', 'Comment ' + c.n + ' by ' + c.by + ': ' + c.text); });
+    shown.forEach(function (c) { var p = have[c.id]; delete have[c.id]; if (!p) { p = document.createElement('button'); p.type = 'button'; p.className = 'evcPin'; p.dataset.id = c.id; p.addEventListener('click', function (e) { e.stopPropagation(); var k = list.filter(function (o) { return o.id === p.dataset.id; })[0], r = p.getBoundingClientRect(); if (k) thread(k, r.right, r.top); }); layer.appendChild(p); }
+      p.textContent = c.n; p.classList.toggle('evcDone', !!c.done); p.setAttribute('aria-label', 'Comment ' + c.n + ' by ' + who(c) + ': ' + c.text.replace(/@\[[^\]\s]+\]/g, '@someone')); });
     Object.keys(have).forEach(function (k) { have[k].remove(); }); paintSel(); track();
   };
   var raf = 0, track = function () { cancelAnimationFrame(raf); if (!on || !shown.length) return;
     var step = function () { shown.forEach(function (c) { var p = layer.querySelector('[data-id="' + c.id + '"]'); if (!p) return; var el = elOf(c), x, y, vis = true;
-        if (el) { var r = el.getBoundingClientRect(); vis = r.width > 0 || r.height > 0; x = r.left + c.a.fx * r.width; y = r.top + c.a.fy * r.height; } else { x = c.a.sx * innerWidth; y = c.a.sy * innerHeight; }
+        if (el) { var r = el.getBoundingClientRect(); vis = r.width > 0 || r.height > 0; x = r.left + (+c.a.fx || 0) * r.width; y = r.top + (+c.a.fy || 0) * r.height; } else { x = (+c.a.sx || 0) * innerWidth; y = (+c.a.sy || 0) * innerHeight; }
         p.hidden = !vis; p.style.left = Math.round(x) + 'px'; p.style.top = Math.round(y) + 'px'; });
       raf = requestAnimationFrame(step); }; step(); };
-  var refresh = function () { if (document.body.classList.contains('cmOn') !== on) document.body.classList.toggle('cmOn', on); cur = ctx(); paintList(); paintPins(); };   // the mode kept through a version change (it resets the body's classes)
+  var number = function () { list.sort(function (a, b) { return a.at - b.at || (a.id < b.id ? -1 : 1); }); list.forEach(function (c, i) { c.n = i + 1; }); };   // numbered in the order they were made
+  var refresh = function () { if (document.body.classList.contains('evcOn') !== on) document.body.classList.toggle('evcOn', on); cur = ctx(); number(); paintList(); paintPins(); names(); };   // the mode kept through a version change (it resets the body's classes)
 
-  var setOn = function (v) { on = v; document.body.classList.toggle('cmOn', on); btn.setAttribute('aria-pressed', String(on)); if (!on) closePop(); refresh(); };
+  var setOn = function (v) { on = v; document.body.classList.toggle('evcOn', on); btn.setAttribute('aria-pressed', String(on)); if (!on) closePop(); refresh(); };
   btn.addEventListener('click', function () { setOn(!on); });
+  var fallbackCopy = function (j) { var r = panel.getBoundingClientRect(); var p = openPop('<label class="evcLbl" for="evcText">Copy this, then paste it into Import elsewhere</label><textarea id="evcText" style="min-height:120px" readonly></textarea><div class="evcRow"><span class="evcSp"></span><button type="button" class="evcMini" data-a="cancel">Done</button></div>', r.left - 320, r.top + 40); var ta = p.querySelector('#evcText'); ta.value = j; ta.focus(); ta.select(); p.querySelector('[data-a="cancel"]').addEventListener('click', closePop); };
   panel.addEventListener('click', function (e) {
-    var a = e.target.closest('[data-a]'), t = e.target.closest('[data-t]'), it = e.target.closest('.cmItem');
+    var a = e.target.closest('[data-a]'), t = e.target.closest('[data-t]'), it = e.target.closest('.evcItem');
     if (t) { tab = t.dataset.t; wr('everlab:cmTab', tab); paintList(); return; }
     if (it) { var c = list.filter(function (k) { return k.id === it.dataset.id; })[0]; if (!c) return; var pin = layer.querySelector('[data-id="' + c.id + '"]'), r = (pin && !pin.hidden ? pin : it).getBoundingClientRect(); if (pin && !pin.hidden) thread(c, r.right, r.top); else thread(c, Math.max(12, panel.getBoundingClientRect().left - 330), r.top); return; }
     if (!a) return;
     if (a.dataset.a === 'close') setOn(false);
-    else if (a.dataset.a === 'copy') { var j = JSON.stringify(list); var done = function () { toast(list.length + ' comments copied: paste them into Import elsewhere'); };
-      try { navigator.clipboard.writeText(j).then(done, function () { fallbackCopy(j); }); } catch (x) { fallbackCopy(j); } }
-    else if (a.dataset.a === 'import') { var r2 = a.getBoundingClientRect(); var p = openPop('<label class="cmLbl" for="cmText">Paste comments copied from another browser</label><textarea id="cmText" style="min-height:120px"></textarea><div class="cmRow"><span class="cmSp"></span><button type="button" class="cmMini" data-a="cancel">Cancel</button><button type="button" class="cmGo" data-a="in">Import</button></div>', r2.left - 320, r2.top - 200);
+    else if (a.dataset.a === 'share' && DB) { var n = local.length; local.forEach(function (c) { var o = JSON.parse(JSON.stringify(c)); delete o.n; col().doc(o.id).set(o).catch(fail); }); local = []; saveLocal(); toast(n + ' comment' + (n > 1 ? 's' : '') + ' shared'); }   // the earlier ones, kept in this browser, to everyone
+    else if (a.dataset.a === 'copy') { var j = JSON.stringify(list); try { navigator.clipboard.writeText(j).then(function () { toast(list.length + ' comments copied: paste them into Import elsewhere'); }, function () { fallbackCopy(j); }); } catch (x) { fallbackCopy(j); } }
+    else if (a.dataset.a === 'import') { var r2 = a.getBoundingClientRect(); var p = openPop('<label class="evcLbl" for="evcText">Paste comments copied from another browser</label><textarea id="evcText" style="min-height:120px"></textarea><div class="evcRow"><span class="evcSp"></span><button type="button" class="evcMini" data-a="cancel">Cancel</button><button type="button" class="evcGo" data-a="in">Import</button></div>', r2.left - 320, r2.top - 200);
       p.querySelector('[data-a="cancel"]').addEventListener('click', closePop);
-      p.querySelector('[data-a="in"]').addEventListener('click', function () { var got; try { got = JSON.parse(p.querySelector('#cmText').value); } catch (x) { toast('That isn’t a comments list'); return; }
-        if (!Array.isArray(got)) { toast('That isn’t a comments list'); return; } var ids = {}, n0 = list.reduce(function (m, c) { return Math.max(m, c.n || 0); }, 0), k = 0; list.forEach(function (c) { ids[c.id] = 1; });
-        got.forEach(function (c) { if (!c || !c.id || ids[c.id] || !c.ctx || !c.a || typeof c.text !== 'string') return; c.n = n0 + (++k); list.push(c); ids[c.id] = 1; }); save(); closePop(); refresh(); toast(k + ' comments imported'); }); }
+      p.querySelector('[data-a="in"]').addEventListener('click', function () { var got; try { got = JSON.parse(p.querySelector('#evcText').value); } catch (x) { toast('That isn’t a comments list'); return; }
+        if (!Array.isArray(got)) { toast('That isn’t a comments list'); return; } var ids = {}, k = 0; local.forEach(function (c) { ids[c.id] = 1; });
+        got.forEach(function (c) { c = tidy(c); if (!c || !c.id || ids[c.id]) return; local.push(c); ids[c.id] = 1; k++; }); saveLocal(); closePop(); refresh(); toast(k + ' comments imported'); }); }
   });
   panel.querySelector('[data-a="resolved"]').addEventListener('change', function (e) { showDone = e.target.checked; wr('everlab:cmDone', showDone ? '1' : ''); refresh(); });
-  var fallbackCopy = function (j) { var r = panel.getBoundingClientRect(); var p = openPop('<label class="cmLbl" for="cmText">Copy this, then paste it into Import elsewhere</label><textarea id="cmText" style="min-height:120px" readonly></textarea><div class="cmRow"><span class="cmSp"></span><button type="button" class="cmMini" data-a="cancel">Done</button></div>', r.left - 320, r.top + 40); var ta = p.querySelector('#cmText'); ta.value = j; ta.focus(); ta.select(); p.querySelector('[data-a="cancel"]').addEventListener('click', closePop); };
 
   /* a click on the prototype, in comment mode: the element under it, through the catching layer */
-  catcher.addEventListener('click', function (e) { if (pop) { closePop(); return; } catcher.classList.add('cmBusy'); layer.style.display = 'none'; var t = document.elementFromPoint(e.clientX, e.clientY); catcher.classList.remove('cmBusy'); layer.style.display = ''; if (!t || t === document.documentElement) t = document.body; cur = ctx(); compose(e.clientX, e.clientY, t); });
-  document.addEventListener('keydown', function (e) { if (e.key !== 'Escape' || !on) return; if (pop) closePop(); else setOn(false); e.stopPropagation(); }, true);
-  document.addEventListener('pointerdown', function (e) { if (pop && !pop.contains(e.target) && !e.target.closest('.cmPin, .cmItem, .cmCatch, .cmPanel')) closePop(); }, true);
+  catcher.addEventListener('click', function (e) { if (pop) { closePop(); return; } catcher.classList.add('evcBusy'); layer.style.display = 'none'; var t = document.elementFromPoint(e.clientX, e.clientY); catcher.classList.remove('evcBusy'); layer.style.display = ''; if (!t || t === document.documentElement) t = document.body; cur = ctx(); compose(e.clientX, e.clientY, t); });
+  document.addEventListener('keydown', function (e) { if (e.key !== 'Escape' || !on) return; var at = document.querySelector('.evcAt:not([hidden])'); if (at) at.hidden = true; else if (pop) closePop(); else setOn(false); e.stopPropagation(); }, true);   // the @ list first, then the thread, then the mode
+  document.addEventListener('pointerdown', function (e) { if (pop && !pop.contains(e.target) && !e.target.closest('.evcPin, .evcItem, .evcCatch, .evcPanel')) closePop(); }, true);
   /* the view followed: a tweak or the version changed, a page opened or closed, the window resized */
   var rT = 0, later = function () { clearTimeout(rT); rT = setTimeout(refresh, 120); };
-  document.addEventListener('change', function (e) { if (e.target && e.target.closest && e.target.closest('.cmPop, .cmPanel')) return; later(); }, true);
+  document.addEventListener('change', function (e) { if (e.target && e.target.closest && e.target.closest('.evcPop, .evcPanel')) return; later(); }, true);
   new MutationObserver(later).observe(document.body, { attributes: true, attributeFilter: ['class', 'data-bp'] });
   addEventListener('resize', later);
   setInterval(function () { if (on) { var k = JSON.stringify(ctx()); if (k !== JSON.stringify(cur)) refresh(); } }, 800);   // whatever else moved the view (an overlay's own class, a doc tab)
-  addEventListener('storage', function (e) { if (e.key === KEY) { try { list = JSON.parse(e.newValue || '[]') || []; } catch (x) {} refresh(); } });   // another tab of this page
+  addEventListener('storage', function (e) { if (e.key === KEY && !DB) { try { local = (JSON.parse(e.newValue || '[]') || []).map(tidy).filter(Boolean); } catch (x) {} list = local; refresh(); } });   // another tab of this page
   setTimeout(refresh, 600);
-  window._cm = { list: function () { return list; }, ctx: ctx, open: function () { setOn(true); } };
+
+  /* the shared store and who is looking, once the viewer answers (inside claude.ai); the comments then everyone's, live */
+  if (window.claude && typeof window.claude.use === 'function') {
+    window.claude.use('user').then(function (u) { if (!u) return; U = u; return u.me().then(function (m) { ME = m; refresh(); }); }).catch(function () {});
+    window.claude.use('db').then(function (db) { if (!db) return; DB = db; list = [];
+      col().onSnapshot(function (snap) { list = snap.docs.map(function (d) { var o; try { o = JSON.parse(JSON.stringify(d.data() || {})); } catch (x) { return null; } o.id = d.id; return tidy(o); }).filter(Boolean); refresh(); },
+        function () { toast('Comments are offline: reload to see the latest'); });
+      refresh(); }).catch(function () {});
+  }
+  window._cm = { list: function () { return list; }, ctx: ctx, open: function () { setOn(true); }, shared: function () { return !!DB; } };
 })();
 </script>
