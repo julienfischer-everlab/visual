@@ -12309,6 +12309,8 @@
           <div class="tkRow"><span class="lbl">Map inactive</span><span class="tkSlide"><input type="range" id="stHpMapIn" min="0" max="100" step="5" value="25" aria-label="The search map away from the crossing, its opacity"><i class="tkVal" id="stHpMapInV">25%</i></span></div>
           <div class="tkRow"><span class="lbl">Line gap</span><span class="tkSlide"><input type="range" id="stHpMapGap" min="0" max="32" step="1" value="10" aria-label="The scanning lines' gap round their crossing, from the crossing to each line's start"><i class="tkVal" id="stHpMapGapV">10px</i></span></div>
           <div class="tkRow"><span class="lbl">Line length</span><span class="tkSlide"><input type="range" id="stHpMapLen" min="20" max="120" step="5" value="55" aria-label="How far each scanning line runs from the crossing before it has faded out, as a share of the map"><i class="tkVal" id="stHpMapLenV">55%</i></span></div>
+          <div class="tkRow"><span class="lbl">Dot tint</span><span class="tkSlide"><input type="range" id="stHpMapTintA" min="0" max="100" step="5" value="50" aria-label="The marks round the lit town, how orange at the town"><i class="tkVal" id="stHpMapTintAV">50%</i></span></div>
+          <div class="tkRow"><span class="lbl">Tint radius</span><span class="tkSlide"><input type="range" id="stHpMapTintR" min="0" max="80" step="2" value="24" aria-label="How far round the lit town its marks are tinted orange"><i class="tkVal" id="stHpMapTintRV">24px</i></span></div>
           <div class="tkRow"><span class="lbl">Map radius</span><span class="tkSlide"><input type="range" id="stHpMapRad" min="32" max="320" step="8" value="192" aria-label="The circle round the crossing, its radius"><i class="tkVal" id="stHpMapRadV">192px</i></span></div>
         </div>
         </div>
@@ -17443,7 +17445,7 @@ window.EvLoad = (function () {
      the spacing and the size of its marks, its opacity in the crossing's circle (70%, "active area 70% opacity") and away from it (25%, "inactive areas 25%"), and the circle's radius (192 px, "radius 192px") */
   var mapCfg = function () {
     var g = function (id, d) { var el = document.getElementById(id); return el && el.value !== '' ? el.value : d; }, n = function (id, d, lo, hi) { var v = +g(id, d); return isNaN(v) ? d : Math.max(lo, Math.min(hi, v)); };
-    return { pat: g('stHpMapPat', 'sq'), off: g('stHpMapGrid', 'grid') === 'off', P: n('stHpMapP', 4, 3, 10), Z: n('stHpMapZ', 1.5, .5, 4), act: n('stHpMapAct', 70, 0, 100) / 100, rest: n('stHpMapIn', 25, 0, 100) / 100, rad: n('stHpMapRad', 192, 16, 400), gap: n('stHpMapGap', 10, 0, 40), len: n('stHpMapLen', 55, 20, 120) / 100 };
+    return { pat: g('stHpMapPat', 'sq'), off: g('stHpMapGrid', 'grid') === 'off', P: n('stHpMapP', 4, 3, 10), Z: n('stHpMapZ', 1.5, .5, 4), act: n('stHpMapAct', 70, 0, 100) / 100, rest: n('stHpMapIn', 25, 0, 100) / 100, rad: n('stHpMapRad', 192, 16, 400), gap: n('stHpMapGap', 10, 0, 40), len: n('stHpMapLen', 55, 20, 120) / 100, tintA: n('stHpMapTintA', 50, 0, 100) / 100, tintR: n('stHpMapTintR', 24, 0, 80) };
   };
   function ausMap(o) {
     o = o || {};
@@ -17453,7 +17455,7 @@ window.EvLoad = (function () {
     var W = 0, H = 0, dpr = 1, pts = [], spot = {}, ink = '#000', rgb = '0, 0, 0', raf = 0, t0 = 0, on = false, still = !!o.still || reduced(), done = !!o.done, fc = 0, B = [];
     var LH = { legs: [], v: .5 }, LV = { legs: [], v: .5 };   // the level line's height and the upright's place across, each a share of the map; legs: its moves, { s: start, d: length, a: from, b: to }
     var lit = {}, jobs = [], job = null, round = 0, pendT = 0, lineIn = 1e9, lock = -9, settled = true, gS = -1, tP = 0;   // settled: the lines at rest (on a town, or not yet off); gS: the gap as drawn, easing to its mark; tP: the last frame's time   // lit: the town lit (and the one going), by key, { at, out }; job: the town being sought; lock: the moment the last was found
-    for (var b = 0; b <= 32; b++) B.push([]);
+    var OB = []; for (var b = 0; b <= 32; b++) { B.push([]); OB.push([]); }   // B: the marks by their grey; OB: those round the lit town, by their orange
     var probe = document.createElement('canvas'); probe.width = probe.height = 1; var px = probe.getContext('2d');
     var rgbOf = function (c) { px.clearRect(0, 0, 1, 1); px.fillStyle = '#000'; px.fillStyle = c; px.fillRect(0, 0, 1, 1); var d = px.getImageData(0, 0, 1, 1).data; return d[0] + ', ' + d[1] + ', ' + d[2]; };   // the ink as rgb, for the lines' fading ends
     var hash = function (a, c) { var v = Math.sin(a * 12.9898 + c * 78.233) * 43758.5453; return v - Math.floor(v); };
@@ -17489,20 +17491,25 @@ window.EvLoad = (function () {
       if (!(fc++ % 20)) { var c0 = getComputedStyle(el).color; if (c0 && c0 !== ink) { ink = c0; rgb = rgbOf(ink); } }
       x.setTransform(dpr, 0, 0, dpr, 0, 0); x.clearRect(0, 0, W, H);
       var la = Math.min(1, Math.max(0, (t - lineIn) / .8)), ly = at(LH, t) * H, lx = at(LV, t) * W, R = C.rad, R2 = R * R, rest = C.rest, act = C.act, pat = C.pat;
-      for (k = 0; k < B.length; k++) B[k].length = 0;
+      for (k = 0; k < B.length; k++) { B[k].length = 0; OB[k].length = 0; }
+      var TR = C.tintR, TA = C.tintA, AT = [];   /* the marks round the lit town coloured orange, 50% at it, less and less further out ("colour the element around the active dot by orange, opacity 50%, progressive"): in with its mark, gone with it */
+      if (TR > 0 && TA > 0) Object.keys(lit).forEach(function (kk) { var m = lit[kk], p = spot[kk], g = t - m.at; if (!p || g < 0) return; var f = m.out === Infinity ? 1 : 1 - (t - m.out) / .12; if (f <= 0) return; AT.push({ x: p.cx, y: p.cy, w: (1 - Math.pow(1 - Math.min(1, g / .32), 3)) * Math.min(1, f) }); });
       for (i = 0; i < pts.length; i++) {   // the map at 25% away from the crossing, 70% at the middle of its circle, fading out to its edge (192 px radius)
-        var q = pts[i], dx = q.cx - lx, dy = q.cy - ly, d2 = dx * dx + dy * dy, s = d2 < R2 ? Math.pow(1 - d2 / R2, 2) * la : 0;
-        B[Math.max(0, Math.min(32, Math.round((.92 + .16 * q.h) * (rest + (act - rest) * s) * 32)))].push(q);   // each mark a hair different
+        var q = pts[i], dx = q.cx - lx, dy = q.cy - ly, d2 = dx * dx + dy * dy, s = d2 < R2 ? Math.pow(1 - d2 / R2, 2) * la : 0, tk = 0;
+        for (var j = 0; j < AT.length; j++) { var ax = q.cx - AT[j].x, ay = q.cy - AT[j].y, ad = ax * ax + ay * ay; if (ad < TR * TR) tk = Math.max(tk, Math.pow(1 - Math.sqrt(ad) / TR, 1.4) * AT[j].w); }
+        B[Math.max(0, Math.min(32, Math.round((.92 + .16 * q.h) * (rest + (act - rest) * s) * (1 - tk) * 32)))].push(q);   // each mark a hair different; the tinted ones giving up their grey to the orange
+        if (tk > .01) OB[Math.max(0, Math.min(32, Math.round(TA * tk * 32)))].push(q);
       }
-      x.fillStyle = ink;
-      for (k = 1; k < B.length; k++) { var L = B[k]; if (!L.length) continue; x.globalAlpha = k / 32; x.beginPath(); for (i = 0; i < L.length; i++) mark(pat, L[i].cx, L[i].cy, pat === 'half' ? C.Z * (.35 + 1.3 * L[i].n) : C.Z); x.fill(); }
+      var paint = function (BB) { for (k = 1; k < BB.length; k++) { var L = BB[k]; if (!L.length) continue; x.globalAlpha = k / 32; x.beginPath(); for (i = 0; i < L.length; i++) mark(pat, L[i].cx, L[i].cy, pat === 'half' ? C.Z * (.35 + 1.3 * L[i].n) : C.Z); x.fill(); } };
+      x.fillStyle = ink; paint(B); x.fillStyle = OR; paint(OB);
       x.globalAlpha = 1;
       if (la > 0) {   /* the two lines as a crosshair: broken round the crossing, a gap where they meet ("the crossed line should present as gap"); each arm white at full strength at the gap ("target line white fully"),
                          fading out along its length ("keep progress fade out on the line"), quickly at first then more slowly, to nothing a little past half the map away; on whole pixels, crisp ("no halo on line as well") */
         var gT = settled ? C.gap : C.gap / 2, dt = Math.max(0, Math.min(.1, t - tP)); gS = gS < 0 ? gT : gS + (gT - gS) * (1 - Math.exp(-dt / .09));   /* the gap half shut while the lines move ("retract the middle gap to a half gap"), opening whole as they stop on a town, its mark appearing in it */
         var lw = 1 / dpr, G = gS, LL = Math.max(C.gap + 8, C.len * Math.max(W, H)), sy = Math.floor(ly * dpr) / dpr, sx = Math.floor(lx * dpr) / dpr;
         [[1, 0], [-1, 0], [0, 1], [0, -1]].forEach(function (a) {
-          var x0 = lx + a[0] * G, y0 = ly + a[1] * G, x1 = lx + a[0] * LL, y1 = ly + a[1] * LL, g = x.createLinearGradient(x0, y0, x1, y1);
+          var la2 = Math.min(LL, a[0] > 0 ? W - lx : a[0] < 0 ? lx : a[1] > 0 ? H - ly : ly) - 1; if (la2 <= G + 1) return;   /* each arm faded out wholly before the map's edge, shorter when the crossing is near it ("the line should always fade out entirely across the frame edge") */
+          var x0 = lx + a[0] * G, y0 = ly + a[1] * G, x1 = lx + a[0] * la2, y1 = ly + a[1] * la2, g = x.createLinearGradient(x0, y0, x1, y1);
           g.addColorStop(0, 'rgba(' + rgb + ', ' + la.toFixed(3) + ')'); g.addColorStop(.45, 'rgba(' + rgb + ', ' + (.4 * la).toFixed(3) + ')'); g.addColorStop(1, 'rgba(' + rgb + ', 0)'); x.fillStyle = g;
           if (a[0]) x.fillRect(Math.min(x0, x1), sy, Math.abs(x1 - x0), lw); else x.fillRect(sx, Math.min(y0, y1), lw, Math.abs(y1 - y0));
         });
@@ -33645,7 +33652,7 @@ hairline({
         const st = document.getElementById('stHpSt'); if (st) st.value = stepOf(); sync(); };
       if (ty) ty.addEventListener('change', apply); sync(); }
     { const t = document.getElementById('stHpRecP'); if (t) t.addEventListener('change', () => paintCard()); }   // Records processing
-    { const U = { stHpMapP: 'px', stHpMapZ: 'px', stHpMapAct: '%', stHpMapIn: '%', stHpMapRad: 'px', stHpMapGap: 'px', stHpMapLen: '%' }, lab = () => Object.keys(U).forEach(id => { const e = document.getElementById(id), l = document.getElementById(id + 'V'); if (e && l) l.textContent = e.value + U[id]; });
+    { const U = { stHpMapP: 'px', stHpMapZ: 'px', stHpMapAct: '%', stHpMapIn: '%', stHpMapRad: 'px', stHpMapGap: 'px', stHpMapLen: '%', stHpMapTintA: '%', stHpMapTintR: 'px' }, lab = () => Object.keys(U).forEach(id => { const e = document.getElementById(id), l = document.getElementById(id + 'V'); if (e && l) l.textContent = e.value + U[id]; });
       ['stHpMapPat', 'stHpMapGrid'].concat(Object.keys(U)).forEach(id => { const e = document.getElementById(id); if (e) ['input', 'change'].forEach(ev => e.addEventListener(ev, () => { lab(); document.dispatchEvent(new CustomEvent('everlab:hpmap')); })); });
       lab(); requestAnimationFrame(() => requestAnimationFrame(lab)); }   /* the map's pattern: its values shown, the map drawn again (a running one takes it on its next frames) */
     { const t = document.getElementById('stHpCtry'); if (t) t.addEventListener('change', () => { paintCard(); try { const w = inst && !inst.welcome && inst.where && inst.where(), ar = w && store.areas.find(x => x.k === 'you'); if (w && w.a === 'you' && ar && ar.steps[w.i] === 'search') inst.goId('you', 'search'); } catch (e){} }); }   /* Country: its map and words */

@@ -17574,3 +17574,15 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **The two actions in a secondary card** ("put this inside a secondary card; title 16px, sub 14px, CTA 36px height"): Tell me when they're ready / Have a report from somewhere else? are back in the grey card (the profile's rows' card, --ar-card-bg, 16px radius), with 16px padding and a hairline between. Titles 16/20, subs 14/19, the buttons 36px high.
 - Checked: card bg, radius 16, title 16px, sub 14px, button 36px; landing frames show the gap open with the mark as the lines settle; no errors.
 - **Longer rest on each town** ("stays .5 sec more on the active dot"): the lines rest 1.6s on a town found, its mark showing (was 1.1s).
+
+## Search map: orange tint round the lit town; arms fade out before the edge
+
+- **Tint** ("colour the element around the active dot by orange, opacity 50%, progressive"): the map's marks round the lit town turn orange, 50% at the town and less with distance, out to 24px.
+  - Those marks give up their grey in the same measure, so they read orange rather than a blend.
+  - The tint comes in with the town's mark and goes with it. It's colour on the marks themselves, not a glow, so there's still no halo.
+  - Tweaks inside Past results: **Dot tint** (0 to 100%, 50%) and **Tint radius** (0 to 80px, 24).
+- **Arms never cut off** ("the line should always fade out entirely across the frame edge"): each of the four arms ends at whichever comes first, its full length or the map's edge, and fades to nothing by then. Near an edge an arm is shorter but still fades out wholly; an arm with no room is not drawn.
+- Checked:
+  - Sydney frames: tint in with the mark, gone with it.
+  - New Zealand (narrow) round Auckland: the up and side arms fade out before the edge.
+  - No errors.
