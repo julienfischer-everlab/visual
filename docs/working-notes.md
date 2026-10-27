@@ -17167,3 +17167,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 
 - The Not started and Dropped off groups in a step's card column are 24px apart ("a 24px gap between these two groups"); they were 14px. The caption stays 14px under the last card.
 - Checked: 24px between the groups, 14px to the caption. No errors.
+
+## Gift receipt: the summary without its card
+
+- The Gift summary has no card round it any more ("gift receipt without bg"). The glass fill, its blur and the light theme's shadow are gone. The title and rows sit straight on the page, keeping the dividers between rows.
+- With no card padding, the rows span the column, edge for edge with the two buttons (desk 444–996, phone 24–369). The photograph at the top stays.
+- The unused `--card` token is gone from both themes.
+- Checked desk dark, phone dark and desk light: no fill, no blur, no shadow. No errors.
