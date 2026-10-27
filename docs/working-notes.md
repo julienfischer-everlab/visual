@@ -17069,3 +17069,32 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - It has the same ground, light, hover and height as the others; the plan's own styles that set it apart are gone. The `hpOvPlan` class stays for its click (to the plan's section).
 - The photo's file is 88px (`avatar-steven.webp`), so at 96 it's a little soft. A larger photo of Dr Lu would sharpen it.
 - Checked in Documentation (desk 272 high like Booked, photo 96 at 20/20; XS 80) and on the Overview (State: After the call). No errors.
+
+## Health profile, Step 1: the nine pages, in an order Tweaks sets
+
+- Step 1 ("Our promise and your details") is now the designs' nine pages:
+  1. Health information
+  2. Your personal details
+  3. Your address
+  4. Emergency contact
+  5. Verify your mobile
+  6. Enter your code
+  7. Your Medicare details
+  8. Health declaration
+  9. Health background
+- **Health information**: the promise's line, then two checkboxes, "I agree to Everlab's Terms and Conditions" and the optional access to past records.
+- **Your address**: Country is held at Australia. The address is searched as it's typed, and a match is a tap. "Enter your address manually" swaps in Street, Suburb and Postcode.
+- **Verify your mobile**: +61 and a 3 3 3 number. **Enter your code**: six boxes, each a digit, the next taking over as one is typed; a pasted code fills them all. "Request new code in 59s" counts down, then becomes a link.
+- **Your Medicare details**: Yes or No. No shows the cost note. The address left it for its own page.
+- **Health declaration**: five Yes / No questions, each in its own block. A Yes opens an optional "Tell us more".
+- **Health background**: Country of birth (a dropdown), Ethnicity (searched, e.g. Southeast Asian, Caucasian), and Health goals and concerns with its helper.
+- **Tweaks → Health profile → Step 1 pages**: the nine, numbered. Drag one up or down (or focus it and use the arrow keys) and the profile takes the new order at once: the pages, the bar and the home. The order is saved with the tweaks.
+- **Dropdowns** (State, Country of birth): on the phone, a tap on an option picks it and closes the sheet. No Confirm or Cancel ("tapping a state closes the modal and changes the select"). A long list scrolls in the sheet.
+- **Dark mode**: fields have no fill, only their rule ("the field in dark mode shouldn't have any background"). This covers inputs, the phone box and the radio cards.
+- **Number pad, drawn** ("for fun, a numeral keyboard"): on the phone frame, focusing a number field (phone, code, date, Medicare, postcode) brings up an iOS-style pad under the page, with the button riding on it. Its keys type into the field, and the field's own formatting runs. It goes down when the field is left. It's not drawn on a real phone, which brings its own, or on the desk layout.
+- **From the Overview the X is always there** ("if the user comes from the overview, the dismiss action will always be in the interface"). The Overview's card, V5's and My account's row open it with the cross on every screen. From the onboarding (the card reveal's Get started), the cross still waits for step 1 to be done.
+- **Records card**: the title has a full stop ("We've started looking for your past results."). The dot breathes from 8px down to 4px and back over 4s.
+- Checked:
+  - XS dark: all nine pages walked with Continue, no validation stops.
+  - XS light: the order tweak put Health background first; the country sheet closes on a tap and sets the value; the suggestions match "asi".
+  - The X shows from the Overview. No page errors.
