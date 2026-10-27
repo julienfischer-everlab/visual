@@ -17623,3 +17623,22 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Frame over 11s: an east-coast box with three towns, then Perth with two.
   - Live switch in the found state: boxes of the results.
   - No errors.
+
+## Card states for the call; report card items; 20px; footer fade
+
+- **Health profile card states** (Tweaks → Primary card → State, and its arrows):
+  - "Booked" is now **All complete (>24h)**: You're all set for your consult with Dr Steven Lu; Onboarding consultation, Thu 29 Oct, 10:00am; View.
+  - New **All complete · Approaching (<24h)**: "Your call with Dr Steven is today at 2:30pm"; Onboarding consultation, Today, 2:30pm; **View**.
+  - New **All complete · Imminent (<1h)**: "Your call with Dr Steven is today at 2:30pm"; Onboarding consultation, Today, 2:30pm · starts soon; **Join call**. Join call shows "Joining your call with Dr Steven Lu…" (the call itself isn't in the prototype); the rest of the card still opens the profile.
+  - The profile's store keeps how near the call is (when: '' / soon / now); its summary carries it.
+  - The arrows now step in order: Step 2, Step 3, Step 3.5, All complete (>24h), Approaching, Imminent, After the call. Before, stepping onto Booked turned the card into the plan.
+  - Documentation: the seven states listed. The Flows row "All complete" shows the three cards (more than a day off, today, within the hour).
+- **Reports as card items** ("card item"): each report added is a small card of its own inside the upload card: a light fill (ink 5%), 14px corners, 8px apart, the bin at its right.
+- **20px padding** on the two action cards ("padding 20px", as the Overview primary card).
+- **Footer fade on every step** ("footer gradient bg for all steps"): a 40px fade above the footer, from clear to the sheet's colour, so the page dissolves into the footer as it scrolls under.
+- Checked:
+  - The three card states' words and buttons; Join call toast.
+  - Stepper order and the end disabled.
+  - Docs states and the All complete row.
+  - Card items; the fade over scrolled reports.
+  - No errors.
