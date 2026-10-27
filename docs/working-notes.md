@@ -17376,3 +17376,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Ripple: two, 0s and 0.45s.
   - Step 0: the intro alone, then the three memberships, each with its own tag and card, flipped on the back. Copy #2 and Card back V1 redraw them.
   - Simple loader: 317 wide resting and loading; "Saved"; "Hang tight…". No errors.
+
+## Flows: 24 between screens side by side
+
+- Two screens next to each other with nothing between them (a card's front and its back, on Step 0) were touching. They now sit 24px apart ("gap! 24px when screens are like this"). Measured: 24, 24, 24 on Step 0.
+- The rows where screens have an arrow or "or" between them are unchanged.
