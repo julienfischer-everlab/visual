@@ -17012,3 +17012,14 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 
 - The Records card's title ("We've started looking for your past results") is now regular weight, 400 instead of 500 ("regular title"). Size, colour and the line under it are unchanged.
 - Checked at XS: weight 400; no errors.
+
+## Gift receipt: card title, tighter title, two columns on the phone, four-beat entrance
+
+- **Card**:
+  - "Gift summary" is the card's own heading: an `h2`, 20px, medium, in ink.
+  - No rule under it ("remove divider"); the rules only fall between the rows.
+  - 8px more padding at the top and bottom (14/16; phone 12/14).
+- **Title**: its lines are 8px closer at the desk's 52px (line height 55 → 47, ratio .906; the same ratio at smaller sizes).
+- **Phone**: the properties stay in two columns ("keep 2 cols for properties"), the label at 8.8em and the value beside it, rows at 14px. "Purchase date" and the email each hold one line; Delivery and the message wrap to two.
+- **Entrance**: four beats one after another ("logo; title group with sub; card; CTA group + sub"). The wordmark, the title with its line, the card, then the two buttons with the help line, each rising 12px out of nothing over 1.1s, 380ms apart (250, 630, 1010, 1390ms). Reduced motion: all at once.
+- Checked: opacities sampled every 250ms rise in that order, and all are in by ~2s. XS columns 123/178, no row cut. No errors.
