@@ -16840,3 +16840,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Off removes the logo zones' 10% red fill. The 128 × 96 zone keeps its place, so logos and layout don't move.
 - The prototype sets `noFrame` on the page's root, when the page loads and on each change. Opened by itself, `clinic.html#noframe` does the same. The row is saved with the panel's Save, like every tweak.
 - Checked: Tweaks on the Clinic page shows the Clinic group alone, and the Overview's doesn't show it. Off clears the red, On brings it back. No errors.
+
+## Clinic: location names black, the address 2px closer
+
+- "Title black, less gap 2px": each location's name is now black (`--ink`, #0b0b0b; was the grey #4f4f4f), and its address sits 7px under it (was 9px), on desktop and phone.
+- Checked at 1440 and 393: the name is rgb(11,11,11) and the gap 7px. No errors.
