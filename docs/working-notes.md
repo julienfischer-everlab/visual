@@ -16845,3 +16845,25 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 
 - "Title black, less gap 2px": each location's name is now black (`--ink`, #0b0b0b; was the grey #4f4f4f), and its address sits 7px under it (was 9px), on desktop and phone.
 - Checked at 1440 and 393: the name is rgb(11,11,11) and the gap 7px. No errors.
+
+## Membership card: Card back V1 / V2; no dismiss on the card screen; the line under Get started
+
+- **Card back** ("back card version: V1, member since Oct 2026 and 4 to 5 key points on the membership's value, way more condensed; V2 current"): Tweaks → First-time user → Card screen → Card back, V1 or V2 (the default).
+  - **V2** is the back as it was: Everlab member, the QR, the member's number, date of birth, member since and doctor.
+  - **V1** has MEMBER SINCE at the top left, "Oct 2026" under it, and five short lines at the foot, each with a small square before it:
+    - Doctor onboarding consult
+    - 100+ biomarker blood panel
+    - DEXA body scan
+    - VO₂ max & physical assessment
+    - Retest + 12-month review
+
+    They're condensed from the six inclusions given. The nutrition assessment is left out to keep five.
+  - It changes in place. While signing, V1's lines go as V2's details do.
+  - The lines are the same for every membership: no per-tier lists yet.
+- **No dismiss:** the card screen's Dismiss tweak is now Off by default, so there's no × on the card screen. A setup saved before with it On is moved to Off once (`everlab:mig:noX`). Saving On after that keeps it On.
+- **The line under Get started:** "There’s a lot your body hasn’t told you yet. Let’s discover together." (it was the first sentence alone).
+- Checked in the reveal at XS:
+  - no ×, even after a saved On;
+  - the new line;
+  - the back flipped in V2, then V1, with no line cut;
+  - no errors.
