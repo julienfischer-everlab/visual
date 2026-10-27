@@ -103,9 +103,9 @@ src = src.replace(/assets\/[A-Za-z0-9_\-./]+?\.(webp|png|jpe?g|gif|svg|mp4|mp3|m
     cc = cc.replace(/(?:\.\.\/)?assets\/[A-Za-z0-9_\-./]+?\.(webp|png|jpe?g|gif|svg)\b/g, ref => { const f = path.join(root, ref.replace(/^\.\.\//, '')); if (!fs.existsSync(f)){ console.warn('missing asset, left as a path: ' + ref); return ref; } n++; return 'data:' + MIME[ref.split('.').pop().toLowerCase()] + ';base64,' + fs.readFileSync(f).toString('base64'); });
     fs.writeFileSync(path.join(root, 'dist', 'concierge.html'), cc);
     console.log('concierge ' + kb(cc.length) + '  (' + n + ' pictures inlined, dist/concierge.html)'); }
-  // the Gift page (visuals/gift.html, the "Unwrap gift-FINAL" page, its pictures already inside it), beside it as the prototype opens it: gift.html
-  { const gf = fs.readFileSync(path.join(root, 'visuals', 'gift.html'), 'utf8');
-    fs.writeFileSync(path.join(root, 'dist', 'gift.html'), gf);
-    console.log('gift ' + kb(gf.length) + '  (dist/gift.html)'); }
+  // the Gift page (visuals/gift.html, the "Unwrap gift-FINAL" page, its pictures already inside it) and the Clinic's Testing locations (visuals/clinic.html), beside it as the prototype opens them: gift.html, clinic.html
+  for (const n of ['gift', 'clinic']){ const t = fs.readFileSync(path.join(root, 'visuals', n + '.html'), 'utf8');
+    fs.writeFileSync(path.join(root, 'dist', n + '.html'), t);
+    console.log(n + ' ' + kb(t.length) + '  (dist/' + n + '.html)'); }
   require('./build-hp.js');   // the Health profile on its own page, from the same source: every build makes both
 })().catch(e => { console.error(e); process.exit(1); });

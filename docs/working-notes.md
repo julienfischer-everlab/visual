@@ -16739,3 +16739,16 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - The page opens with the tweaks as they are, passed in its link. After that, each change is set live on the page's own control. Opened by itself, `gift.html` keeps its own bar.
 - Tweaks now sets its groups from the start (`__tkPages` is defined with `tkPages`). A page opened by its link, such as `#gift`, shows its group alone.
 - `CLAUDE.md`: the main artifact is now published with `gift.html` too.
+
+## Clinic: Testing locations (everlab.com.au/locations)
+
+- "Replicate this page in a group version webpage: Clinic": a new **Clinic** group in the version menu, with **Testing locations** (`#clinic`). It also has a Home card. The page is `visuals/clinic.html`, built to `dist/clinic.html` and published beside the prototype.
+- This environment's network policy blocks everlab.com.au, so the page is rebuilt from the user's four screenshots (desktop top and scrolled, phone top and scrolled).
+  - **Desktop:** the header (wordmark, How it Works, For Business, Book Discovery Call, Login, Get Started), the tag, the title, the two paragraphs and the services key at the right. Under them, the states, sticky at the left, then each state's locations two by two: pin, name, address, service tags at the foot, rule under.
+  - **Under 1000px:** a menu button instead of the links, no key, the states wrapping and sticky at the top with Find nearby locations, one location a row, short tags ("MRI & CT").
+  - **The states:** clicking one scrolls to its list, and scrolling marks the one being read. A state picked near the foot stays marked.
+- **The data:** the ten New South Wales locations the screenshots show, in their order and as written, including the first one's "…across QLD". The other seven states say their locations aren't in the prototype yet; none are invented. The links do nothing.
+- **Fonts:** Tobias and Saans are named, never loaded. Newsreader, Geist and Geist Mono (Google Fonts) stand in.
+- **In the prototype:** light only, like the site, with no Tweaks. At a forced XS or S the page sits at the phone's width in the phone shell, without a status bar.
+- `CLAUDE.md`: the main artifact is now published with `clinic.html` too.
+- The Chat entry's comment, moved after the Gift line by the last change, is back on its own line.
