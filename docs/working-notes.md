@@ -17642,3 +17642,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Docs states and the All complete row.
   - Card items; the fade over scrolled reports.
   - No errors.
+- **Frame style: only the box white, corner squares** ("on the frame one only the frame rectangle should be white, the rest of the trails opacity"; "put a square at each corner of the frame"): the box's four sides are solid white; the lines past its corners start at 35% and fade out before the map's edge. A 5px solid square sits on each corner. Tweak inside Past results: **Frame trails** (0 to 100%, 35%). Checked: the settled box round the east coast with its corner squares and three towns lit; faint trails; no errors.

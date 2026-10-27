@@ -1860,7 +1860,7 @@ window.EvLoad = (function () {
      the spacing and the size of its marks, its opacity in the crossing's circle (70%, "active area 70% opacity") and away from it (25%, "inactive areas 25%"), and the circle's radius (192 px, "radius 192px") */
   var mapCfg = function () {
     var g = function (id, d) { var el = document.getElementById(id); return el && el.value !== '' ? el.value : d; }, n = function (id, d, lo, hi) { var v = +g(id, d); return isNaN(v) ? d : Math.max(lo, Math.min(hi, v)); };
-    return { mode: g('stHpMapMode', 'cross') === 'frame' ? 'frame' : 'cross', pat: g('stHpMapPat', 'sq'), off: g('stHpMapGrid', 'grid') === 'off', P: n('stHpMapP', 4, 3, 10), Z: n('stHpMapZ', 1.5, .5, 4), act: n('stHpMapAct', 70, 0, 100) / 100, rest: n('stHpMapIn', 25, 0, 100) / 100, rad: n('stHpMapRad', 192, 16, 400), gap: n('stHpMapGap', 10, 0, 40), len: n('stHpMapLen', 55, 20, 120) / 100 };
+    return { mode: g('stHpMapMode', 'cross') === 'frame' ? 'frame' : 'cross', pat: g('stHpMapPat', 'sq'), off: g('stHpMapGrid', 'grid') === 'off', P: n('stHpMapP', 4, 3, 10), Z: n('stHpMapZ', 1.5, .5, 4), act: n('stHpMapAct', 70, 0, 100) / 100, rest: n('stHpMapIn', 25, 0, 100) / 100, rad: n('stHpMapRad', 192, 16, 400), gap: n('stHpMapGap', 10, 0, 40), len: n('stHpMapLen', 55, 20, 120) / 100, trail: n('stHpMapTrail', 35, 0, 100) / 100 };
   };
   function ausMap(o) {
     o = o || {};
@@ -1934,14 +1934,15 @@ window.EvLoad = (function () {
       for (k = 1; k < B.length; k++) { var L = B[k]; if (!L.length) continue; x.globalAlpha = k / 32; x.beginPath(); for (i = 0; i < L.length; i++) mark(pat, L[i].cx, L[i].cy, pat === 'half' ? C.Z * (.35 + 1.3 * L[i].n) : C.Z); x.fill(); }
       x.globalAlpha = 1;
       if (la > 0 && FM) {   /* the Frame style's four lines: solid along the box's sides, each running on past its corners and fading out there, before the map's edge */
-        var lw2 = 1 / dpr, EX = Math.max(16, C.len * Math.max(W, H) * .5), c1 = 'rgba(' + rgb + ', ' + la.toFixed(3) + ')', c0 = 'rgba(' + rgb + ', 0)';
+        var lw2 = 1 / dpr, EX = Math.max(16, C.len * Math.max(W, H) * .5), c1 = 'rgba(' + rgb + ', ' + la.toFixed(3) + ')', c0 = 'rgba(' + rgb + ', 0)', tA = C.trail * la, cT = 'rgba(' + rgb + ', ' + tA.toFixed(3) + ')';   /* only the box white; the trails past its corners fainter (35%), fading out ("only the frame rectangle should be white, the rest of the trails opacity") */
         var run = function (hz, at2, a0, a1, lim) {   // one line: hz level (at y = at2, from x a0 to a1) or upright (at x = at2, from y a0 to a1)
           var p2 = Math.floor(at2 * dpr) / dpr, e0 = Math.min(EX, a0 - 1), e1 = Math.min(EX, lim - a1 - 1);
           x.fillStyle = c1; if (hz) x.fillRect(a0, p2, a1 - a0, lw2); else x.fillRect(p2, a0, lw2, a1 - a0);
-          [[a0, a0 - e0, e0], [a1, a1 + e1, e1]].forEach(function (z) { if (z[2] <= 1) return; var g = hz ? x.createLinearGradient(z[0], 0, z[1], 0) : x.createLinearGradient(0, z[0], 0, z[1]); g.addColorStop(0, c1); g.addColorStop(.45, 'rgba(' + rgb + ', ' + (.4 * la).toFixed(3) + ')'); g.addColorStop(1, c0); x.fillStyle = g;
+          [[a0, a0 - e0, e0], [a1, a1 + e1, e1]].forEach(function (z) { if (z[2] <= 1 || tA <= 0) return; var g = hz ? x.createLinearGradient(z[0], 0, z[1], 0) : x.createLinearGradient(0, z[0], 0, z[1]); g.addColorStop(0, cT); g.addColorStop(.45, 'rgba(' + rgb + ', ' + (.4 * tA).toFixed(3) + ')'); g.addColorStop(1, c0); x.fillStyle = g;
             if (hz) x.fillRect(Math.min(z[0], z[1]), p2, z[2], lw2); else x.fillRect(p2, Math.min(z[0], z[1]), lw2, z[2]); });
         };
         run(true, ry0, rx0, rx1, W); run(true, ry1, rx0, rx1, W); run(false, rx0, ry0, ry1, H); run(false, rx1, ry0, ry1, H);
+        var CS = 5; x.fillStyle = c1; [[rx0, ry0], [rx1, ry0], [rx0, ry1], [rx1, ry1]].forEach(function (k) { x.fillRect(Math.round((k[0] - CS / 2 + lw2 / 2) * dpr) / dpr, Math.round((k[1] - CS / 2 + lw2 / 2) * dpr) / dpr, CS, CS); });   // a small square at each corner of the box ("put a square at each corner of the frame")
       }
       if (la > 0 && !FM) {   /* the two lines as a crosshair: broken round the crossing, a gap where they meet ("the crossed line should present as gap"); each arm white at full strength at the gap ("target line white fully"),
                          fading out along its length ("keep progress fade out on the line"), quickly at first then more slowly, to nothing a little past half the map away; on whole pixels, crisp ("no halo on line as well") */
