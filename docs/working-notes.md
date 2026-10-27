@@ -17042,3 +17042,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 
 - The help line ("For any questions, email us at support@everlab.com.au") is 32px in at each side ("+32 padding left right"), its lines balanced.
 - On the phone it's two even lines: "…email us" / "at support@…". On the desk it's still one line. No errors.
+
+## Gift receipt: phone buttons
+
+- XS: the two buttons are 12px nearer each other ("-12px gap": 28 → 16) and 16px nearer the card ("XS -16px gap rows": 52 → 36). The desk keeps 32 and 56.
+- Checked: XS gap 16, card to buttons 36, both labels on one line at 393 and 360. No errors.
