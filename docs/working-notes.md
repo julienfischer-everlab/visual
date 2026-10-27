@@ -17162,3 +17162,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - All steps shows the five rows; Step 1 shows only Step 1; Step 2 shows only Step 2.
   - All states still lists the eight states and cards; back on Flows, the pick holds.
   - No errors.
+
+## Documentation → Flows: 24px between the card's two states
+
+- The Not started and Dropped off groups in a step's card column are 24px apart ("a 24px gap between these two groups"); they were 14px. The caption stays 14px under the last card.
+- Checked: 24px between the groups, 14px to the caption. No errors.
