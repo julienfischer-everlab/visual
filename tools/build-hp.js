@@ -85,7 +85,7 @@ ${hpCss}
     <p class="h">Demo</p>
     <label>Viewport<span class="seg" role="group" aria-label="Viewport"><button type="button" data-bp="auto">Auto</button><button type="button" data-bp="xs">XS</button><button type="button" data-bp="s">S</button><button type="button" data-bp="m">M</button><button type="button" data-bp="l">L</button></span></label>
     <label>Theme<span class="seg" role="group" aria-label="Theme"><button type="button" data-th="dark">Dark</button><button type="button" data-th="light">Light</button></span></label>
-    <label>State<select id="dmState" aria-label="The profile's state"><option value="none">Step 1</option><option value="one">Step 2</option><option value="two">Step 3</option><option value="all">Done</option></select></label>
+    <label>State<select id="dmState" aria-label="The profile's state"><option value="none">Step 1</option><option value="one">Step 2</option><option value="two">Step 3</option><option value="two_d">Step 3.5 (dropped off)</option><option value="all">Done</option></select></label>
     <label>Step title<span class="seg" role="group" aria-label="Step title: the step's name over the dashes, or the dashes alone"><button type="button" data-stt="on">On</button><button type="button" data-stt="off">Off</button></span></label>
     <button type="button" class="go" id="dmReset">Start over</button>
   </div>
@@ -104,7 +104,7 @@ ${hpJs}
   var place = function () { var r = dev.getBoundingClientRect(), x = r.right + 28; demo.classList.toggle('side', x + 36 + 12 <= innerWidth); if (demo.classList.contains('side')) { demo.style.left = Math.round(x) + 'px'; } else demo.style.left = ''; };
   var setBp = function (b) { stage.setAttribute('data-bp', b); [].forEach.call(document.querySelectorAll('.demo [data-bp]'), function (x) { x.setAttribute('aria-pressed', String(x.getAttribute('data-bp') === b)); }); try { localStorage.setItem(KEY, b); } catch (e) {} requestAnimationFrame(place); };
   var mount = function () { if (inst) inst.destroy(); host.textContent = ''; inst = HP.mount(host, { theme: dark() ? 'dark' : 'light', name: 'Julien', onClose: function () { if (inst) inst.home(); } }); paint(); };
-  var stateOf = function () { var sm = HP.store.summary(), nx = ['wear', 'past', 'you'].filter(function (k) { return sm.st[k] !== 'done'; })[0]; return sm.n === 3 ? 'all' : ['none', 'one', 'two'][sm.n]; };   // no dropped-off states
+  var stateOf = function () { var sm = HP.store.summary(), nx = ['wear', 'past', 'you'].filter(function (k) { return sm.st[k] !== 'done'; })[0]; return sm.n === 3 ? 'all' : ['none', 'one', 'two'][sm.n] + (nx === 'you' && sm.st.you === 'prog' ? '_d' : ''); };   // only step 3 has a dropped-off state
   var sel = document.getElementById('dmState');
   sel.addEventListener('change', function () { HP.store.preset(sel.value); mount(); });
   document.getElementById('dmReset').addEventListener('click', function () { HP.store.preset('none'); sel.value = 'none'; mount(); });

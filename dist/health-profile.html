@@ -1670,7 +1670,7 @@ body.hdrV4[data-bp="xs"] #dOver .dvTop > .hpOvCard { margin-top: 6px; margin-bot
     <p class="h">Demo</p>
     <label>Viewport<span class="seg" role="group" aria-label="Viewport"><button type="button" data-bp="auto">Auto</button><button type="button" data-bp="xs">XS</button><button type="button" data-bp="s">S</button><button type="button" data-bp="m">M</button><button type="button" data-bp="l">L</button></span></label>
     <label>Theme<span class="seg" role="group" aria-label="Theme"><button type="button" data-th="dark">Dark</button><button type="button" data-th="light">Light</button></span></label>
-    <label>State<select id="dmState" aria-label="The profile's state"><option value="none">Step 1</option><option value="one">Step 2</option><option value="two">Step 3</option><option value="all">Done</option></select></label>
+    <label>State<select id="dmState" aria-label="The profile's state"><option value="none">Step 1</option><option value="one">Step 2</option><option value="two">Step 3</option><option value="two_d">Step 3.5 (dropped off)</option><option value="all">Done</option></select></label>
     <label>Step title<span class="seg" role="group" aria-label="Step title: the step's name over the dashes, or the dashes alone"><button type="button" data-stt="on">On</button><button type="button" data-stt="off">Off</button></span></label>
     <button type="button" class="go" id="dmReset">Start over</button>
   </div>
@@ -1815,7 +1815,7 @@ window.EvLoad = (function () {
   var SEARCH_MS = 60000;   // the past results search: how long it runs in the background before it is done
   function blank() { return { v: 2, a: { wear: { st: 'not', i: 0, ans: {} }, past: { st: 'not', i: 0, ans: {} }, you: { st: 'not', i: 0, ans: {} } }, pend: {}, notif: false, files: [] }; }
   var S = blank();
-  try { var raw = JSON.parse(localStorage.getItem(KEY) || 'null'); if (raw && raw.v === 2 && raw.a) { S = blank(); AREAS.forEach(function (a) { if (raw.a[a.k]) { S.a[a.k] = raw.a[a.k]; if (S.a[a.k].st === 'prog') S.a[a.k].st = 'not'; } });   /* a stage saved as begun (left part-way): not started, as there is no dropped-off state now */ S.pend = raw.pend || {}; S.notif = !!raw.notif; S.files = raw.files || []; } } catch (e) {}   // an earlier version's progress (its steps were others) starts again
+  try { var raw = JSON.parse(localStorage.getItem(KEY) || 'null'); if (raw && raw.v === 2 && raw.a) { S = blank(); AREAS.forEach(function (a) { if (raw.a[a.k]) { S.a[a.k] = raw.a[a.k]; if (S.a[a.k].st === 'prog' && a.k !== 'you') S.a[a.k].st = 'not'; } });   /* steps 1 or 2 saved as begun (left part-way): not started, as they have no dropped-off state now */ S.pend = raw.pend || {}; S.notif = !!raw.notif; S.files = raw.files || []; } } catch (e) {}   // an earlier version's progress (its steps were others) starts again
   var SNAP = false;   // a still being drawn (Documentation's flows): nothing saved, nothing announced
   function save(quiet) { if (SNAP) return; try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} if (!quiet) document.dispatchEvent(new CustomEvent('everlab:hp', { detail: summary() })); }
   function searching() { var w = S.a.wear.ans; return w.find !== false && w.mc === 'yes'; }   // the past results search: opted in, and a Medicare card to run it on
@@ -2031,7 +2031,7 @@ window.EvLoad = (function () {
     function area(k, dir, i) {
       var a = AREA[k], st = S.a[k];
       if (!A && dir) vFrom = freeze();   // from the intro: up (see show)
-      /* opened, not marked begun: no dropped-off state ("no need this drop off state"); left part-way, the card stays as not started (the member's page kept: they come back to it). Was: begun as soon as it is opened, the card's next increment half filled */
+      if (st.st === 'not' && k === 'you') { st.st = 'prog'; save(true); }   /* step 3 begun as soon as it is opened: left from here, its increment half filled (Step 3.5). Steps 1 and 2 have no dropped-off state ("no need this drop off state"): left part-way, their card stays as not started (the member's page kept) */
       if (root.classList.contains('hpAtHome') && root.classList.contains('hpCarried')) { root.classList.add('hpCarryOut'); clearTimeout(carryT); carryT = setTimeout(function () { root.classList.remove('hpCarryOut'); }, 1100); }   // the carried light fades out over clear grounds, the page rising away (980ms), then they are solid again, the same colour
       A = k; root.classList.remove('hpAtHome');
       var L = stepsOf(k); I = i != null ? i : st.st === 'done' ? L.length - 1 : Math.min(st.i || 0, L.length - 1);
@@ -2043,6 +2043,7 @@ window.EvLoad = (function () {
     function fwd() {   // the next step, or the area done: back to the home
       var a = AREA[A], st = S.a[A];
       if (ret != null) { var r = ret; ret = null; I = r; keep(); step(1); return; }
+      if (st.st === 'not' && A === 'you') st.st = 'prog';
       if (I >= stepsOf(A).length - 1) { st.st = 'done'; st.i = I; save();
         var L = window.EvLoad, k = A;   /* the loading states (Documentation -> Loading states): the booking a multi-step wait over the sheet (booking confirmation), a stage's answers saved on its button (Loader with label) */
         if (A === 'past') { var bk = function () { justDone = 'past'; home(1); }; if (L) L.multi(root, ['Checking Dr Lee\u2019s calendar', 'Reserving your time', 'Confirming your booking'], { step: 950 }).done.then(bk); else bk(); return; }   // booked: the wait, then the intro, its card done (no Booking confirmed page: "no need this Booking")
@@ -3208,7 +3209,7 @@ window.EvLoad = (function () {
   var place = function () { var r = dev.getBoundingClientRect(), x = r.right + 28; demo.classList.toggle('side', x + 36 + 12 <= innerWidth); if (demo.classList.contains('side')) { demo.style.left = Math.round(x) + 'px'; } else demo.style.left = ''; };
   var setBp = function (b) { stage.setAttribute('data-bp', b); [].forEach.call(document.querySelectorAll('.demo [data-bp]'), function (x) { x.setAttribute('aria-pressed', String(x.getAttribute('data-bp') === b)); }); try { localStorage.setItem(KEY, b); } catch (e) {} requestAnimationFrame(place); };
   var mount = function () { if (inst) inst.destroy(); host.textContent = ''; inst = HP.mount(host, { theme: dark() ? 'dark' : 'light', name: 'Julien', onClose: function () { if (inst) inst.home(); } }); paint(); };
-  var stateOf = function () { var sm = HP.store.summary(), nx = ['wear', 'past', 'you'].filter(function (k) { return sm.st[k] !== 'done'; })[0]; return sm.n === 3 ? 'all' : ['none', 'one', 'two'][sm.n]; };   // no dropped-off states
+  var stateOf = function () { var sm = HP.store.summary(), nx = ['wear', 'past', 'you'].filter(function (k) { return sm.st[k] !== 'done'; })[0]; return sm.n === 3 ? 'all' : ['none', 'one', 'two'][sm.n] + (nx === 'you' && sm.st.you === 'prog' ? '_d' : ''); };   // only step 3 has a dropped-off state
   var sel = document.getElementById('dmState');
   sel.addEventListener('change', function () { HP.store.preset(sel.value); mount(); });
   document.getElementById('dmReset').addEventListener('click', function () { HP.store.preset('none'); sel.value = 'none'; mount(); });

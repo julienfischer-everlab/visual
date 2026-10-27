@@ -12285,7 +12285,7 @@
         <div class="tkSub">Primary card</div>
         <div class="tkRow"><span class="lbl">Type</span><select id="stPcType" class="tkSegSel" aria-label="The Overview's primary card"><option value="member" selected>$299 purchased</option><option value="next">Next step</option></select></div>
         <div class="pcPart" data-pc="hp">
-        <div class="tkRow"><span class="lbl">State</span><select id="stHpSt" aria-label="The Health profile's step"><option value="none" selected>Step 1</option><option value="one">Step 2</option><option value="two">Step 3</option><option value="all">Booked</option><option value="plan">After the call: plan</option></select></div>
+        <div class="tkRow"><span class="lbl">State</span><select id="stHpSt" aria-label="The Health profile's step"><option value="none" selected>Step 1</option><option value="one">Step 2</option><option value="two">Step 3</option><option value="two_d">Step 3.5 (dropped off)</option><option value="all">Booked</option><option value="plan">After the call: plan</option></select></div>
         <!-- Step 4's variant ("add variant step 4: is the primary card / primary card is outside, an outlined card: Your past records are currently being collected"): the records in the primary card itself, or the primary card as when Booked and an outlined card above it, under the greeting -->
         <div class="tkRow"><span class="lbl">Records processing</span><select id="stHpRecP" class="tkSegSel" aria-label="The past results being collected, a card of its own under the primary card: Auto once step 1 is done and while the search runs, or always On, or Off"><option value="auto" selected>Auto</option><option value="on">On</option><option value="off">Off</option></select></div>
         <div class="tkRow"><span class="lbl">Look</span><select id="stHpLook" class="tkSegSel" aria-label="The sphere, on the card and in the Health profile: the glow, or the dots"><option value="glow" selected>Glow</option><option value="dots">Dots</option></select></div>   <!-- ("this is the effect that I want to achieve on the sphere of the Health profile card; a tweak with this vibe") -->
@@ -17378,7 +17378,7 @@ window.EvLoad = (function () {
   var SEARCH_MS = 60000;   // the past results search: how long it runs in the background before it is done
   function blank() { return { v: 2, a: { wear: { st: 'not', i: 0, ans: {} }, past: { st: 'not', i: 0, ans: {} }, you: { st: 'not', i: 0, ans: {} } }, pend: {}, notif: false, files: [] }; }
   var S = blank();
-  try { var raw = JSON.parse(localStorage.getItem(KEY) || 'null'); if (raw && raw.v === 2 && raw.a) { S = blank(); AREAS.forEach(function (a) { if (raw.a[a.k]) { S.a[a.k] = raw.a[a.k]; if (S.a[a.k].st === 'prog') S.a[a.k].st = 'not'; } });   /* a stage saved as begun (left part-way): not started, as there is no dropped-off state now */ S.pend = raw.pend || {}; S.notif = !!raw.notif; S.files = raw.files || []; } } catch (e) {}   // an earlier version's progress (its steps were others) starts again
+  try { var raw = JSON.parse(localStorage.getItem(KEY) || 'null'); if (raw && raw.v === 2 && raw.a) { S = blank(); AREAS.forEach(function (a) { if (raw.a[a.k]) { S.a[a.k] = raw.a[a.k]; if (S.a[a.k].st === 'prog' && a.k !== 'you') S.a[a.k].st = 'not'; } });   /* steps 1 or 2 saved as begun (left part-way): not started, as they have no dropped-off state now */ S.pend = raw.pend || {}; S.notif = !!raw.notif; S.files = raw.files || []; } } catch (e) {}   // an earlier version's progress (its steps were others) starts again
   var SNAP = false;   // a still being drawn (Documentation's flows): nothing saved, nothing announced
   function save(quiet) { if (SNAP) return; try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} if (!quiet) document.dispatchEvent(new CustomEvent('everlab:hp', { detail: summary() })); }
   function searching() { var w = S.a.wear.ans; return w.find !== false && w.mc === 'yes'; }   // the past results search: opted in, and a Medicare card to run it on
@@ -17594,7 +17594,7 @@ window.EvLoad = (function () {
     function area(k, dir, i) {
       var a = AREA[k], st = S.a[k];
       if (!A && dir) vFrom = freeze();   // from the intro: up (see show)
-      /* opened, not marked begun: no dropped-off state ("no need this drop off state"); left part-way, the card stays as not started (the member's page kept: they come back to it). Was: begun as soon as it is opened, the card's next increment half filled */
+      if (st.st === 'not' && k === 'you') { st.st = 'prog'; save(true); }   /* step 3 begun as soon as it is opened: left from here, its increment half filled (Step 3.5). Steps 1 and 2 have no dropped-off state ("no need this drop off state"): left part-way, their card stays as not started (the member's page kept) */
       if (root.classList.contains('hpAtHome') && root.classList.contains('hpCarried')) { root.classList.add('hpCarryOut'); clearTimeout(carryT); carryT = setTimeout(function () { root.classList.remove('hpCarryOut'); }, 1100); }   // the carried light fades out over clear grounds, the page rising away (980ms), then they are solid again, the same colour
       A = k; root.classList.remove('hpAtHome');
       var L = stepsOf(k); I = i != null ? i : st.st === 'done' ? L.length - 1 : Math.min(st.i || 0, L.length - 1);
@@ -17606,6 +17606,7 @@ window.EvLoad = (function () {
     function fwd() {   // the next step, or the area done: back to the home
       var a = AREA[A], st = S.a[A];
       if (ret != null) { var r = ret; ret = null; I = r; keep(); step(1); return; }
+      if (st.st === 'not' && A === 'you') st.st = 'prog';
       if (I >= stepsOf(A).length - 1) { st.st = 'done'; st.i = I; save();
         var L = window.EvLoad, k = A;   /* the loading states (Documentation -> Loading states): the booking a multi-step wait over the sheet (booking confirmation), a stage's answers saved on its button (Loader with label) */
         if (A === 'past') { var bk = function () { justDone = 'past'; home(1); }; if (L) L.multi(root, ['Checking Dr Lee\u2019s calendar', 'Reserving your time', 'Confirming your booking'], { step: 950 }).done.then(bk); else bk(); return; }   // booked: the wait, then the intro, its card done (no Booking confirmed page: "no need this Booking")
@@ -33249,7 +33250,7 @@ hairline({
     /* the Health profile card: one renderer ("put these cards into a health profile documentation, with all states; that will be the source of truth for the UI"). The Overview's card and
        Documentation -> Health profile card both draw from here: HPC.html(sm) its words and its foot for a summary of the profile, HPC.plan its Plan to purchase, HPC.NXT each step's lines */
     const HPC = {
-      NXT: { wear: ['Start your health journey', 'Our promise and your details', 'Get started'], past: ['Book your consultation', 'It takes only 1 minute', 'Book a time'], you: ['Tell us more about you', 'It will help us to customise your journey before your call', 'Complete profile'] },   /* each step its title, the stage under it, its button ("the title should always be: Start your health journey, Get started; Book your consultation, Book; Tell us more about you, Complete profile") */
+      NXT: { wear: ['Start your health journey', 'Our promise and your details', 'Get started'], past: ['Book your consultation', 'It takes only 1 minute', 'Book'], you: ['Tell us more about you', 'It will help us to customise your journey before your call', 'Complete profile'] },   /* each step its title, the stage under it, its button ("the title should always be: Start your health journey, Get started; Book your consultation, Book; Tell us more about you, Complete profile") */
       html: sm => {
         const stx = sm.state === 'done' ? 'Completed' : sm.state === 'prog' ? 'In progress' : 'Not started', cls = sm.state === 'done' ? 'hpStDone' : sm.state === 'prog' ? 'hpStProg' : 'hpStNot';
         const nx = ['wear', 'past', 'you'].filter(k => sm.st[k] !== 'done')[0], cur = HPC.NXT[nx] || HPC.NXT.you;
@@ -33329,7 +33330,7 @@ hairline({
       document.dispatchEvent(new Event('everlab:hpgone')); paintCard(); };   // the card in or out of Next step's place
     /* the demo's states in order ("on the step nav, also the dropped-off states: Step 1.5, 2.5, 3.5"): each step, then the same left part-way; Done; the Program card; Dexa next */
     const SK = ['none', 'none_d', 'one', 'one_d', 'two', 'two_d', 'rec', 'all', 'plan'];   // rec: Step 4, the historical records being collected   // Plan to purchase after Done ("plan to purchase should be after step done, so remove the Card tweak"); Dexa next: the Primary card's Type (Next step)
-    const stateIx = () => { if (plan) return 8; const sm = store.summary(); if (sm.n === 3) return 7; return sm.n * 2; };   // no dropped-off states now (1.5, 2.5, 3.5 gone: "no need this drop off state")
+    const stateIx = () => { if (plan) return 8; const sm = store.summary(); if (sm.n === 3) return 7; return sm.n * 2 + (sm.n === 2 && sm.st.you === 'prog' ? 1 : 0); };   // only step 3 can be left part-way (3.5); 1.5 and 2.5 gone ("no need this drop off state")
     const stepOf = () => SK[stateIx()];   // the State tweak at the step the member is on ("three states, one a step"; Done the end; Dexa next, the card put away)
     document.addEventListener('everlab:hp', () => { paintCard(); const t = document.getElementById('stHpSt'); if (t && !hpSetting) t.value = stepOf(); });
     { const t = document.getElementById('stHpSt'); if (t) t.value = stepOf(); }
@@ -33412,7 +33413,7 @@ hairline({
       const pv = arrow(-1, 'Previous state'), nx = arrow(1, 'Next state');
       if (t && row){ const box = document.createElement('span'); box.className = 'tkStep'; t.before(box); box.append(pv, t, nx); }
       const at = stateIx;
-      const STOPS = [0, 2, 4, 7];   // Step 1, Step 2, Step 3, Booked: no dropped-off states between them now
+      const STOPS = [0, 2, 4, 5, 7];   // Step 1, Step 2, Step 3, Step 3.5, Booked: 1.5 and 2.5 gone
       const go = d => { const n = at(), i = Math.max(0, STOPS.indexOf(Math.min(n, 7))), to = STOPS[Math.max(0, Math.min(STOPS.length - 1, i + d))]; if (to === n) return; hpSetting = true; store.preset(to === 7 ? 'all' : KS[to]); hpSetting = false; setPlan(to === 7); const t = document.getElementById('stHpSt'); if (t) t.value = KS[to]; if (inst && wrap.classList.contains('on')) inst.home(); tick(); };
       nx.addEventListener('click', () => go(1)); pv.addEventListener('click', () => go(-1));
       const tick = () => { const k = at(); nx.disabled = k >= 7; pv.disabled = k <= 0; };
@@ -40066,7 +40067,7 @@ hairline({
     if (saved2 && OLDORD.includes(saved2.stOvOrder)) saved2.stOvOrder = DEF.stOvOrder;
     try { if (saved2 && saved2.stHpSt === 'rec'){ saved2.stHpSt = 'all'; saved2.stHpRecP = 'on'; } delete (saved2 || {}).stHpRecV; } catch (e){}
     try { if (saved2 && saved2.stHpRecP === 'off' && !localStorage.getItem('everlab:mig:recAuto')){ saved2.stHpRecP = 'auto'; localStorage.setItem('everlab:mig:recAuto', '1'); } } catch (e){}   // Records processing now Auto by default (Off was the old default, saved with every Save): a setup saved before takes Auto, once
-    try { if (saved2 && /_d$/.test(saved2.stHpSt || '')) saved2.stHpSt = saved2.stHpSt.replace(/_d$/, ''); } catch (e){}   // no dropped-off states now   // Step 4 (records) retired: a setup saved on it, Booked with Records processing On
+    try { if (saved2 && /^(none|one)_d$/.test(saved2.stHpSt || '')) saved2.stHpSt = saved2.stHpSt.replace(/_d$/, ''); } catch (e){}   // steps 1 and 2 have no dropped-off state now   // Step 4 (records) retired: a setup saved on it, Booked with Records processing On
     try { if (saved2 && !localStorage.getItem('everlab:mig:noX')){ delete saved2.stHpW2X; localStorage.setItem('everlab:mig:noX', '1'); } } catch (e){}   // the card screen's Dismiss now Off by default ("no dismiss"): a setup saved before keeps it On no more, once; saved On after this stays On
     if (saved2) requestAnimationFrame(() => Object.keys(saved2).forEach(id => put2(id, saved2[id])));
     document.querySelectorAll('.stTkSave').forEach(b => b.addEventListener('click', () => {
@@ -40393,8 +40394,9 @@ hairline({
         const HPC = window._hpCard, HPm = window.HealthProfile, el = document.createElement('div'); el.className = 'ldDoc hcDoc';
         const ST = [
           { k: 'none', t: 'Step 1', s: 'Not started', d: 'Nothing begun yet: the first step’s title and stage, no progress at the foot, the button across the card.' },
-          { k: 'one', t: 'Step 2', s: 'Book your consultation', d: 'Step 1 done: a third of the sphere lit, one segment, the booking’s title and Book a time.' },
+          { k: 'one', t: 'Step 2', s: 'Book your consultation', d: 'Step 1 done: a third of the sphere lit, one segment, the booking’s title and Book.' },
           { k: 'two', t: 'Step 3', s: 'Tell us more about you', d: 'Two done: two thirds lit, Complete profile.' },
+          { k: 'two_d', t: 'Step 3.5', s: 'Dropped off', d: 'The questions opened and left: the last segment half filled, Continue.' },
           { k: 'all', t: 'Booked', s: 'All set', d: 'The three done: the sphere full; at the foot the consult where the progress was (Onboarding consultation, its day and time), and View.' },
           { k: 'plan', t: 'After the call', s: 'Plan to purchase', d: 'The consult had: the plan Dr Steven Lu built, his words, Review my plan across the card. After it the card leaves the Overview (State → Dexa next): Next step takes its place.', plan: true }
         ];
@@ -40409,7 +40411,7 @@ hairline({
           '<div class="hcGal"><div class="hcGrid"></div></div><div class="hcFlows" hidden tabindex="0" aria-label="Each step: its card, the profile’s home, then every page of its flow"><div class="hcRows"></div></div></section>';
         const $ = q => el.querySelector(q), grid = $('.hcGrid'), notes = $('.ldNotes'), gal = $('.hcGal'), flows = $('.hcFlows'), rows = $('.hcRows');
         const RULES = '<h3>Anatomy</h3><ul><li><b>Eyebrow</b> Health profile</li><li><b>Title</b> the next step’s; <b>sub</b> its stage</li><li><b>Sphere</b> a third lit for each step done</li><li><b>Foot</b> the progress at the left (three segments; done white, half when left part-way), the step’s button at the right</li></ul>' +
-          '<h3>Rules</h3><ul><li>Not started: no progress, the button full width</li><li>Done: the consult in the progress’ place, View</li></ul>' +
+          '<h3>Rules</h3><ul><li>Not started: no progress, the button full width</li><li>Dropped off (step 3 only): the next segment half; Continue. Steps 1 and 2 have no dropped-off state</li><li>Done: the consult in the progress’ place, View</li></ul>' +
           '<h3>In the prototype</h3><p>Overview, Latest and Live versions: the primary card (Tweaks → Primary card → State).</p><code>_hpCard.html(summary)</code> <code>HealthProfile.store.summaryOf(state)</code>';
         const pick = (i, scroll) => { cur = i; el.querySelectorAll('.hcStPats button').forEach((b, j) => b.setAttribute('aria-selected', String(j === i))); grid.querySelectorAll('.hcItem').forEach((it, j) => it.classList.toggle('hcOn', j === i));
           rows.querySelectorAll('.hcRow').forEach(r => r.classList.toggle('hcOn', r.dataset.row === ROWOF[ST[i].k]));
@@ -40422,18 +40424,18 @@ hairline({
         const ROWS = [
           { k: 'wear', t: 'Step 1', s: 'Our promise and your details', cards: ['none'], st: 'none', area: 'wear', reveal: true },   // reveal: the Membership reveal, the other way in ("instead here the entry point: the Membership intro + reveal card")
           { k: 'past', t: 'Step 2', s: 'Book your onboarding consult', cards: ['one'], st: 'one', area: 'past', fillAt: { review: ['past'] }, note: 'Book: a short wait (Checking Dr Lee’s calendar, Reserving your time, Confirming your booking), then the home, step 2 done.' },
-          { k: 'you', t: 'Step 3', s: 'Tell us about you', cards: ['two'], st: 'two', area: 'you', fillAt: { review: ['you'], search: ['you'] } },
+          { k: 'you', t: 'Step 3', s: 'Tell us about you', cards: ['two', 'two_d'], st: 'two', area: 'you', fillAt: { review: ['you'], search: ['you'] } },
           { k: 'all', t: 'Booked', s: 'The three done', cards: ['all'], st: 'all', note: 'Go to overview closes the profile. The card shows the consult and View until the call.' },
           { k: 'plan', t: 'After the call', s: 'Plan to purchase', cards: ['plan'], st: null, note: 'Review my plan opens the plan. After it, the card leaves the Overview and Next step takes its place.' }
         ];
-        const ROWOF = { none: 'wear', one: 'past', two: 'you', all: 'all', plan: 'plan' };
+        const ROWOF = { none: 'wear', one: 'past', two: 'you', two_d: 'you', all: 'all', plan: 'plan' };
         const ZS = [.35, .5, .65, .75, .9, 1]; let view = 'flows', zi = 3, insts = [], built = '', fsel = '*', fbp = 'xs';   // fbp: the canvas's breakpoint, XS (the phone, 393) or Desktop (1440) ("create the Desktop breakpoint as well, following the XS")   // 75% to start ("make the card bigger and the screen bigger"; was 50%)
         try { const v = localStorage.getItem('everlab:hcView'); if (v === 'cards' || v === 'flows') view = v; const z = +localStorage.getItem('everlab:hcZoom2'); if (ZS.indexOf(z) >= 0) zi = ZS.indexOf(z); const f = localStorage.getItem('everlab:hcFlow'); if (f) fsel = f; if (localStorage.getItem('everlab:hcBp') === 'desk') fbp = 'desk'; } catch (e){}
         /* the sidebar on Flows: All steps (every row, "steps 1 to 3 on the canvas"), or one step alone ("select step 1, only show step 1") */
-        const FD = { '*': 'Every step in a row: its Overview card, the profile’s home with the steps done so far, then each page behind it in order. Pick a step to see it alone.',
+        const FD = { '*': 'Every step in a row: its Overview card (step 3’s left part-way too), the profile’s home with the steps done so far, then each page behind it in order. Pick a step to see it alone.',
           wear: 'Step 1: two ways in, the Overview card or, on a first visit, the Membership reveal (its intro, then the card) and Get started; the home at 0 of 3, then the nine pages in the order Tweaks → Health profile → Step 1 pages sets. The last saves the step.',
-          past: 'Step 2: the card’s Book a time, the home at 1 of 3, Choose a time, Review and confirm; Book confirms it after a short wait and lands on the home, step 2 done.',
-          you: 'Step 3: the card’s Complete profile, the home at 2 of 3, then its six pages, the last the past results search.',
+          past: 'Step 2: the card’s Book, the home at 1 of 3, Choose a time, Review and confirm; Book confirms it after a short wait and lands on the home, step 2 done.',
+          you: 'Step 3: the card’s Complete profile (and, left part-way, Continue), the home at 2 of 3, then its six pages, the last the past results search.',
           all: 'The three done: the card shows the consult and View; the home says You’re all set, and Go to overview closes it.',
           plan: 'After the call: the plan card; Review my plan opens the plan, and the card then leaves the Overview.' };
         const FHOW = '<h3>Reading the canvas</h3><ul><li>Left to right: the card, the profile’s home, then its pages</li><li>Drag anywhere to move about; − and + to zoom</li><li>Every screen is the profile itself, drawn still (<code>HealthProfile.snap</code>): change a page and it changes here</li></ul>';
@@ -40458,9 +40460,9 @@ hairline({
             row.innerHTML = '<header class="hcRowH"><b>' + R.t + '</b><span>' + R.s + '</span></header><div class="hcStrip"></div>';
             const strip = row.querySelector('.hcStrip');
             /* each card its state over it ("indicate that the first card, on the top, didn't start yet"): Not started, then Dropped off (left part-way) */
-            const col = document.createElement('figure'); col.className = 'hcShot hcCards'; const TAG = { none: 'Not started', one: 'Not started', two: 'Not started', all: 'All set', plan: 'Plan to purchase' };
-            R.cards.forEach(k => { const x = ST.find(y => y.k === k); if (!x) return; const it = document.createElement('div'); it.className = 'hcCardI'; it.innerHTML = '<span class="hcCardTag"><i aria-hidden="true"></i>' + TAG[k] + '</span>'; const box = document.createElement('div'); box.className = 'hcCardBox'; box.appendChild(cardOf(x)); it.appendChild(box); col.appendChild(it); });
-            col.insertAdjacentHTML('beforeend', '<figcaption><b>Overview card</b><span>' + (R.reveal ? 'From the Overview' : (ST.find(y => y.k === R.cards[0]) || {}).s) + '</span></figcaption>'); strip.appendChild(col);
+            const col = document.createElement('figure'); col.className = 'hcShot hcCards'; const TAG = { none: 'Not started', one: 'Not started', two: 'Not started', two_d: 'Dropped off', all: 'All set', plan: 'Plan to purchase' };
+            R.cards.forEach(k => { const x = ST.find(y => y.k === k); if (!x) return; const it = document.createElement('div'); it.className = 'hcCardI' + (/_d$/.test(k) ? ' hcCardD' : ''); it.innerHTML = '<span class="hcCardTag"><i aria-hidden="true"></i>' + TAG[k] + '</span>'; const box = document.createElement('div'); box.className = 'hcCardBox'; box.appendChild(cardOf(x)); it.appendChild(box); col.appendChild(it); });
+            col.insertAdjacentHTML('beforeend', '<figcaption><b>Overview card</b><span>' + (R.reveal ? 'From the Overview' : R.cards.length > 1 ? 'The step not started yet (top), then left part-way (below)' : (ST.find(y => y.k === R.cards[0]) || {}).s) + '</span></figcaption>'); strip.appendChild(col);
             if (R.reveal && window._hp && window._hp.welStill){   // or, a first visit: the Membership reveal (its intro, then the card), Get started into the profile
               strip.insertAdjacentHTML('beforeend', '<i class="hcOr" aria-hidden="true">or</i>'); const f = document.createElement('figure'); f.className = 'hcShot';
               f.innerHTML = wrapOf(true) + '<figcaption><b>Membership reveal</b><span>A first visit: its intro, then the card; Get started</span></figcaption>';

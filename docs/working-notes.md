@@ -17280,3 +17280,16 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Live version S card 568×250; ripple 2.6s.
   - Flows XS and Desktop: 21 stills (wide at Desktop), the reveal second in Step 1.
   - The step 1 walk and the booking walk still pass. No errors.
+
+## Merged with another session's publish: "Book", and step 3 keeps its dropped-off state
+
+- Everlab App - Latest had a newer version published by another session (07:08 UTC) on top of v1675. Its two changes are merged here, with nothing of it lost:
+  - **Step 2's card button reads "Book"** (was "Book a time"), in the Documentation's texts too.
+  - **Only steps 1 and 2 lose their dropped-off state; step 3 keeps 3.5** (the request was on step 2's card, then step 1's). This session had taken all three out; 3.5 is back:
+    - opening step 3 marks it begun, and left part-way, its card shows half a segment and Continue;
+    - Tweaks → State and its arrows go Step 1 → 2 → 3 → 3.5 → Booked;
+    - the standalone Demo lists 3.5;
+    - Documentation has six states, and Step 3's row on Flows shows its two cards (Not started, Dropped off);
+    - the rule reads "Dropped off (step 3 only)".
+- Everything else from the last batch stands: steps 1 and 2 never marked begun, the Membership reveal on Flows, the Desktop breakpoint, card 250, the ripple, Records on Auto, no jump going back.
+- Checked: the options and the arrows' order, step 2's card button "Book", steps 1 and 3 opened (not / prog), the six states in the doc and Step 3's two tags. No errors.
