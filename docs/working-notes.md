@@ -17331,3 +17331,48 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Entrance timings, opened from the Overview: sphere .81 at 300ms; areas 0.87 / 0.37 / 0 at 600ms; button .52 at 800ms; at rest 1 / .6 / .6.
   - Flows rows: entry, wear, past, you, all, plan, with 9 / 2 / 6 switches; Filled off → 0/5 fields, remembered after a reload.
   - Receipt: both lines, and the 2 columns. No errors.
+
+## Step 3's card, Step 0's screens per membership, the card's back, Book's wait, the Simple loader
+
+- **Step 3's Overview card**:
+  - Title "Consultation booked. Now, tell us more about you."; the line under it stays.
+  - At its foot, the booked consult (Onboarding consultation, Thu 29 Oct, 10:00am) in place of the progress bars, as the Booked state has.
+  - Left part-way, the same with Continue.
+- **Flows, Step 0**:
+  - First the **intro screen**: "Welcome to Everlab." alone on the dark, as it rests.
+  - Then the **card screen, front and back, for each membership**: Baseline, or Diagnostics, or Protocol. Each card is as Tweaks → Welcome → Membership keeps it (glass; graphite; stone). The back follows Card back (V1: what the membership includes; V2: the member's details).
+  - Then "Get started opens the Health profile home: step 1".
+- **Flows, Step 1**: the member card screen at its left, its entry point ("Member card screen entry point"), then the home and its pages.
+- **Flows follow the reveal's tweaks** ("colour doesn't reflect what we have on the page"):
+  - The stills were kept as first drawn, so a change in Tweaks (Copy, the card, a membership's preset) never reached them.
+  - Their values are now part of what the canvas is keyed on, and a change there draws it again.
+  - With the defaults, live and still match pixel for pixel, phone and desk.
+- **Flows tidied**:
+  - the Booked row is now **All completed**;
+  - **no state badges** (Not started, Dropped off…) over the cards;
+  - **no Dropped off card** on Step 3's row;
+  - the card's caption reads "Overview card entry point".
+- **The card's back, V1: an icon and one line each, five per membership** ("pick 4-5 for each that fit on one line"):
+  - **Diagnostics**: Consult with an Everlab doctor (chat), Advanced blood testing (droplet), DEXA body composition scan (bone), 45-minute Diagnostics Review (report), End-of-year check-in (calendar).
+  - **Protocol**: Advanced blood testing (droplet), DEXA body composition scan (bone), Physical assessment & VO₂ max (dumbbell), Dietitian review & food tracking (leaf), Mid-year re-test & review (re-test).
+  - **Baseline** (its lines kept): Doctor onboarding consult (chat), Foundational blood testing (droplet), Health & family history review (report), Your past results, gathered (records), Your personalised plan (spark).
+- **Book: the button's own wait** ("use CTA loading state here, 2 sec, Processing"): the Loader with label, "Processing", for 2s, then the home with step 2 done. It was the multi-step wait over the sheet.
+- **Landing straight on a step, no back** ("there is nothing back"):
+  - Opened from the Overview card's Continue, the step's first page has no back. From the next page on, it is there; back on the landing page, it goes again.
+  - Opened on the home, as before.
+- **The step pages' sideways cross: twice as quick, half as far** (32px, 260/170ms; was 64px, 520/340ms).
+- **No eyebrows on step 3's pages** (Sleep and energy · 1 of 4, About you · 2 of 4, Habits · 3/4 of 4).
+- **The Records card's dot: two ripples, half as bright** (the second 0.45s behind; .35 at its start, was .7).
+- **Documentation → Loading states: Simple loader (no label)**, from the board:
+  - its usage, typical actions and consistency;
+  - each kind of button (primary, secondary, tertiary, destructive) shown into its loading look;
+  - three cases: **Trigger new page** (Continue → spinner → next page), **Inline validation** (Save changes → spinner → ✓ Saved on the button, the page stays), **Loader > 5 sec** (past 5s, "Hang tight…" beside the spinner, then the next page);
+  - `EvLoad.simple(button, { slow, after })`: the same button, lighter (42%), its exact width, the spinner in place of its words and icons, nothing moving.
+  - The Multi-step and Loader with label notes now say where each is used.
+- Checked:
+  - Book: Processing at 0.4s and 1.7s, the home ("Booked. Now let's get to know you") at 2.7s.
+  - Landed on step 3: back hidden on page 1, shown on page 2, hidden on going back to page 1; opened on the home, shown.
+  - Cross: 32 → 0 in about 250ms. Eyebrows 0.
+  - Ripple: two, 0s and 0.45s.
+  - Step 0: the intro alone, then the three memberships, each with its own tag and card, flipped on the back. Copy #2 and Card back V1 redraw them.
+  - Simple loader: 317 wide resting and loading; "Saved"; "Hang tight…". No errors.
