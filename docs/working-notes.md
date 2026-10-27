@@ -17007,3 +17007,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Rows are 2px tighter above and below (13; phone 12).
   - The message is in italics, without the orange rule.
 - Checked: records above on V4/Live XS and stacked on the desk. Insights on the Live desk and XS, a saved Hero ignored there. Reveal groups absent from the Overview and present on the reveal. The receipt on desk, XS and light. No errors.
+
+## Records card: regular title
+
+- The Records card's title ("We've started looking for your past results") is now regular weight, 400 instead of 500 ("regular title"). Size, colour and the line under it are unchanged.
+- Checked at XS: weight 400; no errors.
