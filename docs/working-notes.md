@@ -17587,3 +17587,23 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - New Zealand (narrow) round Auckland: the up and side arms fade out before the edge.
   - No errors.
 - **Orange tint removed** ("remove this orange light, no good"): the marks round the lit town stay as the map is; only the town's own mark is orange. The Dot tint / Tint radius Tweaks are gone. The arms' fade before the edge stays. Checked round Sydney: no tint, the mark alone in the gap, no errors.
+
+## Search page: uploads simulated with a list and a bin; two cards; a switch
+
+- **Upload, simulated** ("simulate the addition of a report by clicking Upload"): Upload adds the next of five sample reports (Blood test results, Lipid panel, Full blood count, Thyroid function, Vitamin D and iron studies). It shows "Uploading…" with a thin bar filling for about a second, then its date, kind and size, e.g. "March 2025 · PDF · 284 KB". There's no file picker any more.
+- **The list** ("need to see the list of reports added"): the reports sit under the upload row in its card, one per line, the name in one line and the details below.
+- **Bin with hesitation** ("need a bin icon, with hesitation: are you sure, yes / no, inline"): each report has a bin. Pressing it shows "Remove?" No / Yes in its place, focus on No. No puts the bin back; Yes folds the line away and drops the report. Only one asks at a time.
+- **Line under the title**:
+  - "You can also add them later" while there are none.
+  - "1 document added", "2 documents added"… once there are some ("X document added if any added").
+- **Two cards** ("2 cards instead, gap 8px; remove icon left to save space"):
+  - Each row is its own grey secondary card, 8px apart, with no icon tile at the left; the reports list has no icons either.
+  - Card corners 22px, the Overview primary card's ("card style same as overview primary card in radius and padding"), and 24px inside ("padding 24px"). The primary card's own padding is 20px (28px on the wide Overview).
+- **Upload** button 44px high ("44px height"). The Yes / No buttons are 32px.
+- **Tell me when they're ready is a switch** ("toggle"): grey track and light knob when off; white track with the knob across when on. Saved as before.
+- Checked:
+  - Switch on, saved.
+  - Two uploads: Uploading… then their details.
+  - Bin → Remove? No / Yes; No keeps it; Yes removes it, and the store keeps the other.
+  - Lines 1 / 2 documents added; Upload 44px; radius 22, padding 24.
+  - No errors.

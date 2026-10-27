@@ -1138,8 +1138,21 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
 .arSheet.hpSheet .hpSearchP > .hpQ { padding: 0 24px; }   /* the title and its words 24 in from either side ("title group +24px padding left right") */
 .arSheet.hpSheet .hpSearch { position: relative; display: flex; flex-direction: column; align-items: center; margin: 0 0 32px; } .arSheet.hpSheet .hpSr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .arSheet.hpSheet .hpAus { position: relative; width: min(100%, 296px, calc(300px * var(--ar, 1.1))); color: oklch(var(--ar-ink)); } .arSheet.hpSheet.hpWide .hpAus { width: min(100%, 340px, calc(340px * var(--ar, 1.1))); }   /* a tall country (the UK, New Zealand) as high as Australia is wide, no higher */ .arSheet.hpSheet .hpAus canvas { display: block; position: absolute; inset: 0; width: 100%; height: 100%; }   /* the map: Australia in the card's dots */
-.arSheet.hpSheet .hpActs { display: flex; flex-direction: column; } .arSheet.hpSheet .hpActs .hpRow { padding: 16px; }   /* the two rows in the grey card */
-.arSheet.hpSheet .hpActs .hpRow b { font-size: 16px; line-height: 20px; } .arSheet.hpSheet .hpActs .hpRow span { margin-top: 3px; font-size: 14px; line-height: 19px; } .arSheet.hpSheet .hpActs .hpRowB { height: 36px; }   /* title 16, sub 14, the buttons 36 high */
+.arSheet.hpSheet .hpActs { display: flex; flex-direction: column; gap: 8px; } .arSheet.hpSheet .hpActs > .hpCard { border-radius: 22px; } .arSheet.hpSheet .hpActs .hpRow { padding: 24px; }   /* the two rows, a grey card each, 8 apart; the Overview primary card's corners (22) and 24 inside ("padding 24px"; "card style same as the Overview primary card in radius and padding") */
+.arSheet.hpSheet .hpFiles { display: flex; flex-direction: column; padding: 0 24px 12px; margin-top: -8px; } .arSheet.hpSheet .hpFiles:empty { display: none; }   /* the reports added, under their row */
+.arSheet.hpSheet .hpFile { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 14px; min-height: 56px; padding: 8px 0; box-shadow: inset 0 1px 0 oklch(var(--ar-ink) / .08); overflow: hidden; transition: height .24s cubic-bezier(.4, 0, .2, 1), opacity .18s ease, padding .24s ease; }
+.arSheet.hpSheet .hpFile.hpGone { height: 0 !important; min-height: 0; padding-top: 0; padding-bottom: 0; opacity: 0; }
+.arSheet.hpSheet .hpFileT { min-width: 0; } .arSheet.hpSheet .hpFileT b { display: block; overflow: hidden; font-size: 14px; line-height: 18px; font-weight: 570; white-space: nowrap; text-overflow: ellipsis; } .arSheet.hpSheet .hpFileT .hpFileM { display: block; overflow: hidden; margin-top: 2px; white-space: nowrap; text-overflow: ellipsis; font-size: 12px; line-height: 16px; color: oklch(var(--ar-ink) / .56); font-variant-numeric: tabular-nums; }
+.arSheet.hpSheet .hpFileBar { display: none; } .arSheet.hpSheet .hpFile.hpUp .hpFileBar { position: relative; display: block; height: 2px; margin-top: 6px; overflow: hidden; border-radius: 1px; background: oklch(var(--ar-ink) / .1); } .arSheet.hpSheet .hpFile.hpUp .hpFileBar::after { content: ""; position: absolute; inset: 0 auto 0 0; width: 0; background: oklch(var(--ar-ink)); animation: hpFileUp 1.05s cubic-bezier(.3, .6, .3, 1) forwards; } @keyframes hpFileUp { to { width: 100%; } }   /* uploading: a thin bar filling */
+.arSheet.hpSheet .hpFileX { appearance: none; display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; margin: 0; padding: 0; border: 0; border-radius: 50%; background: oklch(var(--ar-ink) / .06); color: oklch(var(--ar-ink) / .8); cursor: pointer; } .arSheet.hpSheet .hpFileX:hover { color: oklch(var(--ar-ink)); } .arSheet.hpSheet .hpFile.hpUp .hpFileX { visibility: hidden; }   /* the bin */
+.arSheet.hpSheet .hpFileAsk { display: none; align-items: center; gap: 8px; } .arSheet.hpSheet .hpFileAsk > span { font-size: 13px; line-height: 16px; color: oklch(var(--ar-ink) / .64); white-space: nowrap; } .arSheet.hpSheet .hpFileAsk .hpRowB { height: 32px; padding: 0 12px; }
+.arSheet.hpSheet .hpFile.hpAsk .hpFileX { display: none; } .arSheet.hpSheet .hpFile.hpAsk .hpFileAsk { display: flex; } .arSheet.hpSheet :is(.hpFileX):focus-visible { outline: 2px solid var(--ar-blue-fg); outline-offset: 2px; }   /* the bin asks first, in its place: Remove? No / Yes */
+@media (prefers-reduced-motion: reduce) { .arSheet.hpSheet .hpFile { transition: none; } .arSheet.hpSheet .hpFile.hpUp .hpFileBar::after { animation: none; width: 100%; } }
+.arSheet.hpSheet .hpSw { appearance: none; position: relative; flex: none; width: 48px; height: 28px; margin: 0; padding: 0; border: 0; border-radius: 14px; background: oklch(var(--ar-ink) / .16); cursor: pointer; transition: background .2s ease; }
+.arSheet.hpSheet .hpSw i { position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; border-radius: 50%; background: oklch(var(--ar-ink)); box-shadow: 0 1px 3px rgb(0 0 0 / .25); transition: transform .24s cubic-bezier(.3, .7, .2, 1), background .2s ease; }
+.arSheet.hpSheet .hpSw[aria-checked="true"] { background: oklch(var(--ar-ink)); } .arSheet.hpSheet .hpSw[aria-checked="true"] i { transform: translateX(20px); background: var(--ar-paper); }   /* on: the primary's white, its knob across */
+.arSheet.hpSheet .hpSw:focus-visible { outline: 2px solid var(--ar-blue-fg); outline-offset: 2px; } @media (prefers-reduced-motion: reduce) { .arSheet.hpSheet .hpSw, .arSheet.hpSheet .hpSw i { transition: none; } }
+.arSheet.hpSheet .hpActs .hpRow b { font-size: 16px; line-height: 20px; } .arSheet.hpSheet .hpActs .hpRow span { margin-top: 3px; font-size: 14px; line-height: 19px; } .arSheet.hpSheet .hpActs .hpRow > .hpRowB { height: 44px; padding: 0 18px; }   /* Upload 44 high ("44px height") */   /* title 16, sub 14, the buttons 36 high */
 .arSheet.hpSheet .hpCard { display: flex; flex-direction: column; border-radius: 16px; background: var(--ar-card-bg); }
 .arSheet.hpSheet .hpRow { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 14px; padding: 16px; }
 .arSheet.hpSheet .hpRow + .hpRow { box-shadow: inset 0 1px 0 oklch(var(--ar-ink) / .08); }
@@ -2623,13 +2636,38 @@ window.EvLoad = (function () {
           onDone: function () { lab.textContent = '4 past results found'; } });   // found while it shows: the status says so (for screen readers); the map goes round the four
         var mw = h('div', { class: 'hpSearch' }, map.el, lab);
         scr.classList.add('hpSearchP'); scr.appendChild(hd); scr.appendChild(mw);
-        var nb = h('button', { type: 'button', class: 'hpRowB hpRowG', 'aria-pressed': String(!!S.notif), on: { click: function () { S.notif = !S.notif; nb.setAttribute('aria-pressed', String(S.notif)); nb.textContent = ''; add(nb, S.notif ? [ic(14, P.check, 2), 'On'] : 'Turn on'); save(true); } } }, S.notif ? [ic(14, P.check, 2), 'On'] : 'Turn on');
-        var fileI = h('input', { type: 'file', accept: '.pdf,image/*', multiple: true, hidden: true });
-        var upD = h('span', { text: S.files.length ? S.files.length + (S.files.length === 1 ? ' report added' : ' reports added') : 'Upload a PDF or a photo' });
-        fileI.addEventListener('change', function () { [].forEach.call(fileI.files || [], function (f) { S.files.push(String(f.name).slice(0, 80)); }); fileI.value = ''; upD.textContent = S.files.length + (S.files.length === 1 ? ' report added' : ' reports added'); save(true); });
-        var acts = h('div', { class: 'hpActs hpCard' },   // the two rows in a secondary card, the grey one of the profile's rows ("put this inside a secondary card")
-          row('Tell me when they’re ready', 'Turns on notifications for results and reminders', nb, ['M4.5 11.5V7.5a3.5 3.5 0 0 1 7 0v4l1 1.5h-9l1-1.5Z', 'M6.8 14a1.3 1.3 0 0 0 2.4 0']),
-          h('div', { class: 'hpRow hpRowIc' }, h('i', { class: 'hpRowI', 'aria-hidden': 'true' }, ic(16, ['M8 10.5V2.5', 'm5 5.5 3-3 3 3', 'M3 10v2.5A1.5 1.5 0 0 0 4.5 14h7a1.5 1.5 0 0 0 1.5-1.5V10'], 1.5)), h('div', null, h('b', { text: 'Have a report from somewhere else?' }), upD), h('button', { type: 'button', class: 'hpRowB hpRowG', on: { click: function () { fileI.click(); } } }, 'Upload'), fileI));
+        var nb = h('button', { type: 'button', class: 'hpSw', role: 'switch', 'aria-checked': String(!!S.notif), 'aria-label': 'Tell me when they’re ready', on: { click: function () { S.notif = !S.notif; nb.setAttribute('aria-checked', String(S.notif)); save(true); } } }, h('i', { 'aria-hidden': 'true' }));   // a switch, not a button ("toggle")
+        /* reports added by hand ("simulate the addition of a report by clicking Upload; need to see the list of reports added; need a bin icon, with hesitation: are you sure, yes / no, inline"): Upload adds the next of a few sample reports,
+           a moment "Uploading…" with a bar filling, then its date, kind and size; each in a list under the row, with a bin; the bin asks "Remove?" No / Yes in its place, Yes takes it away */
+        var FS = [['Blood test results', 'March 2025', 'PDF', 284], ['Lipid panel', 'November 2024', 'PDF', 196], ['Full blood count', 'June 2024', 'Photo', 1840], ['Thyroid function', 'February 2024', 'PDF', 158], ['Vitamin D and iron studies', 'September 2023', 'PDF', 221]];
+        var BIN = ['M2.75 4.25h10.5', 'M6 4.25V2.75h4v1.5', 'm4.25 4.25.62 8.6a1 1 0 0 0 1 .9h4.26a1 1 0 0 0 1-.9l.62-8.6', 'M6.75 7v4.25', 'M9.25 7v4.25'];
+        S.files = (S.files || []).map(function (f, i) { return typeof f === 'string' ? { id: 'f' + i, n: f, t: 'File' } : f; });   // an older save: names only
+        var upD = h('span'), fl = h('div', { class: 'hpFiles', role: 'list', 'aria-label': 'Reports added' }), upl = {};
+        var cnt = function () { var n = S.files.length; upD.textContent = n ? n + (n === 1 ? ' document added' : ' documents added') : 'You can also add them later'; };   // none yet: they can wait ("You can also add them later"); some: how many ("X document added if any added")
+        var metaOf = function (f) { return upl[f.id] ? 'Uploading…' : [f.d, f.t, f.kb ? (f.kb >= 1000 ? (f.kb / 1000).toFixed(1) + ' MB' : f.kb + ' KB') : ''].filter(Boolean).join(' · '); };
+        var item = function (f) {
+          var meta = h('span', { class: 'hpFileM', text: metaOf(f) }), el;
+          var no = h('button', { type: 'button', class: 'hpRowB hpRowG', on: { click: function () { el.classList.remove('hpAsk'); bin.focus(); } } }, 'No');
+          var yes = h('button', { type: 'button', class: 'hpRowB', on: { click: function () {   // gone: folded away, then out of the list and the store
+            el.style.height = el.offsetHeight + 'px'; void el.offsetHeight; el.classList.add('hpGone');
+            setTimeout(function () { S.files = S.files.filter(function (x) { return x.id !== f.id; }); save(true); cnt(); if (el.parentNode) el.parentNode.removeChild(el); }, reduced() ? 0 : 240); } } }, 'Yes');
+          var bin = h('button', { type: 'button', class: 'hpFileX', 'aria-label': 'Remove ' + f.n, on: { click: function () { [].forEach.call(fl.querySelectorAll('.hpAsk'), function (x) { x.classList.remove('hpAsk'); }); el.classList.add('hpAsk'); no.focus(); } } }, ic(14, BIN, 1.5));
+          el = h('div', { class: 'hpFile' + (upl[f.id] ? ' hpUp' : ''), role: 'listitem' },   // no icon at its left either, in line with the row's words
+            h('div', { class: 'hpFileT' }, h('b', { text: f.n }), meta, h('i', { class: 'hpFileBar', 'aria-hidden': 'true' })), bin,
+            h('div', { class: 'hpFileAsk', role: 'group', 'aria-label': 'Remove ' + f.n + '?' }, h('span', { text: 'Remove?' }), no, yes));
+          return el;
+        };
+        S.files.forEach(function (f) { fl.appendChild(item(f)); }); cnt();
+        var upB = h('button', { type: 'button', class: 'hpRowB hpRowG', on: { click: function () {   // a sample report "uploaded": the next not yet added
+          var have = S.files.map(function (x) { return x.n; }), pk = FS.filter(function (x) { return have.indexOf(x[0]) < 0; })[0] || FS[S.files.length % FS.length];
+          var f = { id: 'f' + Date.now().toString(36), n: pk[0], d: pk[1], t: pk[2], kb: pk[3] }, it;
+          S.files.push(f); upl[f.id] = 1; save(true); cnt(); it = item(f); fl.appendChild(it);
+          if (it.animate && !reduced()) it.animate([{ opacity: 0, transform: 'translateY(-4px)' }, { opacity: 1, transform: 'none' }], { duration: 260, easing: 'cubic-bezier(.2, .7, .2, 1)' });
+          setTimeout(function () { delete upl[f.id]; if (!it.isConnected) return; it.classList.remove('hpUp'); it.querySelector('.hpFileM').textContent = metaOf(f); }, reduced() ? 0 : 1100);
+        } } }, 'Upload');
+        var acts = h('div', { class: 'hpActs' },   // each row a secondary card of its own, the grey one of the profile's rows, 8 apart; no icon at their left, to save room ("2 cards instead, gap 8px; remove icon left to save space")
+          h('div', { class: 'hpCard' }, row('Tell me when they’re ready', 'Turns on notifications for results and reminders', nb)),
+          h('div', { class: 'hpCard' }, h('div', { class: 'hpRow' }, h('div', null, h('b', { text: 'Have a report from somewhere else?' }), upD), upB), fl));
         scr.appendChild(acts);
         foot2(S.a.you.st === 'done' ? 'Done' : 'Continue', true, fwd);
         /* in turn ("title centred, appearing, fade in, then the map, then the CTA"): the title, the map (its ripples once it is there), the rows and the Continue */
