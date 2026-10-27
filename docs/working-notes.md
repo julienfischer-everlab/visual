@@ -17146,3 +17146,19 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - after moving Your personal details to the end: Your address;
   - back to the home: none.
 - No errors.
+
+## Documentation → Flows: bigger, a step at a time, each card's state named
+
+- **Bigger** ("make the card bigger and the screen bigger"): the canvas opens at 75% (it was 50%). The screens are 295px wide, and the Overview cards are a size up from them (1.2×, 325px). The zoom steps are 35, 50, 65, 75, 90 and 100%; the last one picked is kept.
+- **The sidebar on Flows lists the steps** ("all steps on the left; select step 1, only show step 1"): All steps (every row: steps 1 to 3, Booked, After the call), then Step 1, Step 2, Step 3, Booked and After the call. Picking one shows that step's row alone.
+  - Under the list are what the step holds and how to read the canvas.
+  - All states keeps its own list of the card's eight states.
+  - The pick is kept.
+- **Each card says its state** ("indicate that the first card on the top didn't start yet"): a tag over each card.
+  - Steps 1 to 3: **Not started** (an empty ring) over the top card, and **Dropped off** (a half-filled ring) over the one below.
+  - Booked: All set. After the call: Plan to purchase.
+  - The caption under the column reads "The step not started yet (top), then left part-way (below)".
+- Checked at 1600:
+  - All steps shows the five rows; Step 1 shows only Step 1; Step 2 shows only Step 2.
+  - All states still lists the eight states and cards; back on Flows, the pick holds.
+  - No errors.
