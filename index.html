@@ -12307,6 +12307,8 @@
           <div class="tkRow"><span class="lbl">Map mark size</span><span class="tkSlide"><input type="range" id="stHpMapZ" min="0.5" max="4" step="0.25" value="1.5" aria-label="The search map's marks, how big"><i class="tkVal" id="stHpMapZV">1.5px</i></span></div>
           <div class="tkRow"><span class="lbl">Map active</span><span class="tkSlide"><input type="range" id="stHpMapAct" min="0" max="100" step="5" value="70" aria-label="The search map in the circle round the crossing, its opacity at the middle"><i class="tkVal" id="stHpMapActV">70%</i></span></div>
           <div class="tkRow"><span class="lbl">Map inactive</span><span class="tkSlide"><input type="range" id="stHpMapIn" min="0" max="100" step="5" value="25" aria-label="The search map away from the crossing, its opacity"><i class="tkVal" id="stHpMapInV">25%</i></span></div>
+          <div class="tkRow"><span class="lbl">Line gap</span><span class="tkSlide"><input type="range" id="stHpMapGap" min="0" max="32" step="1" value="10" aria-label="The scanning lines' gap round their crossing, from the crossing to each line's start"><i class="tkVal" id="stHpMapGapV">10px</i></span></div>
+          <div class="tkRow"><span class="lbl">Line length</span><span class="tkSlide"><input type="range" id="stHpMapLen" min="20" max="120" step="5" value="55" aria-label="How far each scanning line runs from the crossing before it has faded out, as a share of the map"><i class="tkVal" id="stHpMapLenV">55%</i></span></div>
           <div class="tkRow"><span class="lbl">Map radius</span><span class="tkSlide"><input type="range" id="stHpMapRad" min="32" max="320" step="8" value="192" aria-label="The circle round the crossing, its radius"><i class="tkVal" id="stHpMapRadV">192px</i></span></div>
         </div>
         </div>
@@ -17397,7 +17399,7 @@ window.EvLoad = (function () {
   }
   /* the search's map ("a subtle looping animation for the dotted Australia map that feels like the system is actively searching across locations"): the mainland and Tasmania in the member card's fine dots ("keep the card's bottom-right pattern as the map's base texture"), muted and still;
      two very thin scanning lines, a level one moving up and down and an upright one moving left and right, each on its own course and its own time, every move easeInOutQuint ("continuous and deliberate, not mechanical or like a loading spinner"),
-     where they cross, a small locator, and round it a soft circle (192 px radius) where the map shows at 70%, the rest of it at 25%. Now and then the crossing settles on a lab's town: its mark warms from grey to Everlab orange, a little larger, a faint glow pulsing once,
+     broken round where they cross, a gap there (a crosshair), each arm fading out along its length, and round the crossing a soft circle (192 px radius) where the map shows at 70%, the rest of it at 25%. Now and then the crossing settles on a lab's town: its mark warms from grey to Everlab orange, a little larger, a faint glow pulsing once,
      the lines held a moment; it stays lit till the next is found, one at a time. Six towns a round (the member's own capital first), round after round, for ever; found, round the four results.
      A still (Documentation) or reduced motion: one frame, the lines crossing on a town just lit */
   var AUS = [[142.5, -10.7, 143.4, -12.3, 143.6, -13.6, 144.5, -14.3, 145.3, -14.9, 145.4, -16.4, 146, -17.6, 146.3, -18.9, 147.4, -19.4, 148.4, -20.1, 148.9, -20.5, 149.4, -21.5, 150, -22.2, 150.6, -22.4, 150.8, -23.3, 151.6, -24.1, 152.5, -24.9, 153, -25.2, 153.2, -25.9, 153.1, -27.1, 153.5, -28, 153.6, -28.7, 153.3, -29.5, 153, -31, 152.7, -31.9, 152.2, -32.7, 151.3, -33.6, 151.2, -34.1, 150.8, -34.8, 150.3, -35.6, 150.1, -36.3, 150, -37, 149.9, -37.6, 148.6, -37.8, 147.6, -37.9, 146.9, -38.6, 146.3, -39.1, 145.5, -38.6, 144.9, -38.4, 144.4, -38.2, 143.5, -38.8, 142.3, -38.4, 141.6, -38.3, 140.6, -38, 139.8, -37.2, 139.6, -36.5, 139.3, -35.8, 138.6, -35.6, 138.2, -35.5, 138.5, -35, 138.5, -34.5, 138.1, -34.2, 137.8, -34.7, 137, -35.2, 137.4, -34.4, 137.6, -33.6, 137.9, -32.6, 137.5, -33.2, 136.8, -33.8, 136.2, -34.4, 135.8, -34.9, 135.3, -34.6, 135.1, -33.9, 134.3, -33.2, 134.1, -32.6, 133.4, -32.2, 132.2, -32, 131.2, -31.5, 129.5, -31.6, 128, -31.9, 126.5, -32.3, 125, -32.8, 124, -33.2, 123.5, -33.9, 122, -33.9, 120.5, -33.9, 119.5, -34.4, 118.3, -34.9, 117.2, -35, 116.3, -34.9, 115.6, -34.4, 115, -34.3, 115.1, -33.6, 115.6, -33.3, 115.7, -32.4, 115.7, -31.6, 115.1, -30.5, 114.9, -29.5, 114.6, -28.6, 114.1, -27.6, 113.5, -26.6, 113.3, -25.9, 113.7, -24.8, 113.4, -24, 113.8, -23, 113.9, -22, 114.4, -21.8, 115, -21.5, 116, -20.9, 117, -20.6, 118.2, -20.3, 119.1, -20, 120.2, -19.8, 121.1, -19.4, 121.6, -18.6, 122.2, -18, 122.3, -17.2, 123, -16.5, 123.6, -16.3, 124.2, -16, 124.6, -15.3, 125.2, -14.6, 126, -14.2, 126.9, -13.8, 127.6, -14.2, 128.1, -14.9, 128.6, -14.8, 129.4, -14.9, 129.7, -14.2, 130, -13.5, 130.3, -12.9, 130.8, -12.4, 131.4, -12.2, 132, -11.6, 132.6, -11.3, 133, -11.5, 133.6, -11.8, 134.4, -12, 135.2, -12.2, 135.9, -11.9, 136.6, -12, 136.9, -12.4, 136.6, -13.2, 136, -13.4, 135.8, -14, 135.4, -14.8, 136, -15.4, 136.8, -15.9, 137.6, -16.3, 138.5, -16.8, 139.3, -17.4, 140, -17.7, 140.8, -17.4, 141.3, -16.6, 141.5, -15.5, 141.6, -14.2, 141.5, -13.2, 141.7, -12.4, 141.9, -11.6, 142.2, -10.9],
@@ -17440,7 +17442,7 @@ window.EvLoad = (function () {
      the spacing and the size of its marks, its opacity in the crossing's circle (70%, "active area 70% opacity") and away from it (25%, "inactive areas 25%"), and the circle's radius (192 px, "radius 192px") */
   var mapCfg = function () {
     var g = function (id, d) { var el = document.getElementById(id); return el && el.value !== '' ? el.value : d; }, n = function (id, d, lo, hi) { var v = +g(id, d); return isNaN(v) ? d : Math.max(lo, Math.min(hi, v)); };
-    return { pat: g('stHpMapPat', 'sq'), off: g('stHpMapGrid', 'grid') === 'off', P: n('stHpMapP', 4, 3, 10), Z: n('stHpMapZ', 1.5, .5, 4), act: n('stHpMapAct', 70, 0, 100) / 100, rest: n('stHpMapIn', 25, 0, 100) / 100, rad: n('stHpMapRad', 192, 16, 400) };
+    return { pat: g('stHpMapPat', 'sq'), off: g('stHpMapGrid', 'grid') === 'off', P: n('stHpMapP', 4, 3, 10), Z: n('stHpMapZ', 1.5, .5, 4), act: n('stHpMapAct', 70, 0, 100) / 100, rest: n('stHpMapIn', 25, 0, 100) / 100, rad: n('stHpMapRad', 192, 16, 400), gap: n('stHpMapGap', 10, 0, 40), len: n('stHpMapLen', 55, 20, 120) / 100 };
   };
   function ausMap(o) {
     o = o || {};
@@ -17494,9 +17496,14 @@ window.EvLoad = (function () {
       x.fillStyle = ink;
       for (k = 1; k < B.length; k++) { var L = B[k]; if (!L.length) continue; x.globalAlpha = k / 32; x.beginPath(); for (i = 0; i < L.length; i++) mark(pat, L[i].cx, L[i].cy, pat === 'half' ? C.Z * (.35 + 1.3 * L[i].n) : C.Z); x.fill(); }
       x.globalAlpha = 1;
-      if (la > 0) {   // the two lines, very thin, solid ink end to end ("target line white fully": white on the dark sheet, at full strength, no fading ends)
-        var lw = 1 / dpr; x.globalAlpha = la; x.fillStyle = ink;
-        x.fillRect(0, Math.floor(ly * dpr) / dpr, W, lw); x.fillRect(Math.floor(lx * dpr) / dpr, 0, lw, H); x.globalAlpha = 1;   // on whole pixels: crisp, no soft edge either side ("no halo on line as well")
+      if (la > 0) {   /* the two lines as a crosshair: broken round the crossing, a gap where they meet ("the crossed line should present as gap"); each arm white at full strength at the gap ("target line white fully"),
+                         fading out along its length ("keep progress fade out on the line"), quickly at first then more slowly, to nothing a little past half the map away; on whole pixels, crisp ("no halo on line as well") */
+        var lw = 1 / dpr, G = C.gap, LL = Math.max(G + 8, C.len * Math.max(W, H)), sy = Math.floor(ly * dpr) / dpr, sx = Math.floor(lx * dpr) / dpr;
+        [[1, 0], [-1, 0], [0, 1], [0, -1]].forEach(function (a) {
+          var x0 = lx + a[0] * G, y0 = ly + a[1] * G, x1 = lx + a[0] * LL, y1 = ly + a[1] * LL, g = x.createLinearGradient(x0, y0, x1, y1);
+          g.addColorStop(0, 'rgba(' + rgb + ', ' + la.toFixed(3) + ')'); g.addColorStop(.45, 'rgba(' + rgb + ', ' + (.4 * la).toFixed(3) + ')'); g.addColorStop(1, 'rgba(' + rgb + ', 0)'); x.fillStyle = g;
+          if (a[0]) x.fillRect(Math.min(x0, x1), sy, Math.abs(x1 - x0), lw); else x.fillRect(sx, Math.min(y0, y1), lw, Math.abs(y1 - y0));
+        });
       }
       Object.keys(lit).forEach(function (kk) {   // the town found, one at a time: grey to orange, a little larger, swelling once; held till the next is found, then gone
         var m = lit[kk], p = spot[kk], g = t - m.at; if (!p || g < 0) return;
@@ -17505,10 +17512,6 @@ window.EvLoad = (function () {
         x.globalAlpha = e * f; x.fillStyle = OR; x.beginPath(); mark(pat, p.cx, p.cy, z); x.fill();
       });
       x.globalAlpha = 1;
-      if (la > 0) {   // where they cross: the locator, four corners
-        var r = 4.5, m2 = 2.2; x.strokeStyle = 'rgba(' + rgb + ', ' + la.toFixed(3) + ')';   /* the locator too, full ink */ x.lineWidth = Math.max(.75, 1 / dpr); x.beginPath();
-        [[-1, -1], [1, -1], [1, 1], [-1, 1]].forEach(function (sg) { var cx = lx + sg[0] * r, cy = ly + sg[1] * r; x.moveTo(cx - sg[0] * m2, cy); x.lineTo(cx, cy); x.lineTo(cx, cy - sg[1] * m2); }); x.stroke();
-      }
     };
     var frame = function (now) {
       raf = 0; if (!on) return; if (!el.isConnected || (o.alive && !o.alive())) { on = false; return; }
@@ -33638,7 +33641,7 @@ hairline({
         const st = document.getElementById('stHpSt'); if (st) st.value = stepOf(); sync(); };
       if (ty) ty.addEventListener('change', apply); sync(); }
     { const t = document.getElementById('stHpRecP'); if (t) t.addEventListener('change', () => paintCard()); }   // Records processing
-    { const U = { stHpMapP: 'px', stHpMapZ: 'px', stHpMapAct: '%', stHpMapIn: '%', stHpMapRad: 'px' }, lab = () => Object.keys(U).forEach(id => { const e = document.getElementById(id), l = document.getElementById(id + 'V'); if (e && l) l.textContent = e.value + U[id]; });
+    { const U = { stHpMapP: 'px', stHpMapZ: 'px', stHpMapAct: '%', stHpMapIn: '%', stHpMapRad: 'px', stHpMapGap: 'px', stHpMapLen: '%' }, lab = () => Object.keys(U).forEach(id => { const e = document.getElementById(id), l = document.getElementById(id + 'V'); if (e && l) l.textContent = e.value + U[id]; });
       ['stHpMapPat', 'stHpMapGrid'].concat(Object.keys(U)).forEach(id => { const e = document.getElementById(id); if (e) ['input', 'change'].forEach(ev => e.addEventListener(ev, () => { lab(); document.dispatchEvent(new CustomEvent('everlab:hpmap')); })); });
       lab(); requestAnimationFrame(() => requestAnimationFrame(lab)); }   /* the map's pattern: its values shown, the map drawn again (a running one takes it on its next frames) */
     { const t = document.getElementById('stHpCtry'); if (t) t.addEventListener('change', () => { paintCard(); try { const w = inst && !inst.welcome && inst.where && inst.where(), ar = w && store.areas.find(x => x.k === 'you'); if (w && w.a === 'you' && ar && ar.steps[w.i] === 'search') inst.goId('you', 'search'); } catch (e){} }); }   /* Country: its map and words */

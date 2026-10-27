@@ -17548,3 +17548,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - "Map circle" is replaced by **Map radius** (32 to 320px, 192).
   - The new controls have new ids, so earlier saved values don't carry over.
 - Checked: labels read 70% / 25% / 192px; frames show the white lines and the wider circle; one town lit at a time; no errors.
+
+## Search map: crosshair with a gap; arms fading out
+
+- **Gap at the crossing** ("the crossed line should present as gap", from the crosshair reference): the two lines stop 10px short of where they cross, so they read as a crosshair with an open centre; the lit town sits in the gap. The four corner brackets are gone (the gap marks the target).
+- **Fading arms** ("keep progress fade out on the line"): each of the four arms is white at full strength at the gap and fades out along its length, quickly at first then more slowly. It reaches nothing 55% of the map's width from the crossing. Still 1 device pixel, crisp, no halo.
+- **Tweaks inside Past results**: **Line gap** (0 to 32px, 10) and **Line length** (20 to 120% of the map, 55%).
+- Checked: frames show the open crosshair round Sydney with the town in the gap and the arms fading; labels 10px / 55%; no errors.
