@@ -16827,3 +16827,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Need more info? Book a call:** the site's floating pill, white with a black button, fixed 24px above the foot of the screen. It comes in once the first state's list has gone 300px under the top, and goes when you scroll back above it.
 - **Narrow columns:** at 1440 the columns are narrower than the 2000px screenshots, so with the logo slot a location with three tags can stack them.
 - Checked at 1440 and 393: 61 NSW and 12 QLD locations, one logo, the pill's in and out, Queensland marked while reading it, no sideways scroll, no errors.
+
+## Clinic: the logo zone 128 × 96, the logo at its bottom right
+
+- "128 96 logo zone; logo placement bottom right": the reserved zone at each location's bottom right is now 128 × 96 (was 96 × 96), still 10% red.
+- A logo keeps its ratio, contained and set to the zone's bottom right (`object-position: right bottom`). MeasureUp's comes out at 128 × 46, flush with the zone's right and bottom edges.
+- Checked at 1440 and 393: the zone is 128 × 96 and flush right, the logo's at its foot, no sideways scroll, no errors.
