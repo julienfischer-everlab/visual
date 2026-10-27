@@ -17199,3 +17199,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Each question is 15/500 in the ink, a size under the card's title, with 20px between groups. Each group is a `dl` labelled by its question.
 - **The card is the secondary colour, solid** ("secondary colour bg"): `#1c1916` dark and `#f1ebe4` light, with no glass blur and no shadow. It was a translucent `.07` glass over the photograph.
 - Checked desk dark, phone dark and desk light: the three groups with their rows. On the phone only Delivery and Message take two lines. No errors.
+
+## Gift receipt: the third group's heading
+
+- The third group is headed **What is the gift?** ("who is the gift for? → what is the gift?"); my reading had been "What's the occasion?". It holds Occasion, Delivery and Message, as before.
