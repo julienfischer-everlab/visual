@@ -17240,3 +17240,14 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Light theme: the secondary ground (the summary card, or each card when split) is black at 4% (`rgba(0,0,0,.04)`; "bg secondary 000 4%"; was `#f1ebe4`). Dark keeps `#1c1916`.
 - Split cards: 16px more under "Gift summary" before the first card ("+16px margin bottom"; 10 → 26).
 - Back to overview hugs its label, 28px each side, on the desk and the phone ("hug: too much padding left right"). It was half the column on the desk and the full column on the phone.
+
+## Health profile: no Booking confirmed page
+
+- The booking's success page is gone ("no need this Booking"). After Book, the short wait runs as before (Checking Dr Lee's calendar, Reserving your time, Confirming your booking). Then the profile lands on its home, with step 2's card animating to done ("Booked. Now let's get to know you"). That's where the page's Continue used to lead.
+- Removed with it: the page's code (`bookedPage`, its icons and time zones), its styles (except the buttons' own, which the leave question uses), the `booked()` call on a mounted profile, and the still's `page: 'booked'`.
+- Documentation → Flows: Step 2 now ends at Review and confirm, with a note on what Book does.
+- Checked:
+  - XS, from the Step 2 home: Choose a time, then Review and confirm, then Book.
+  - After the wait, the home shows step 2 done, with no Booking confirmed page.
+  - The canvas's Step 2 row shows the card, the home and the two pages, then the note.
+  - No errors.
