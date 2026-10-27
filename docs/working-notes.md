@@ -17028,3 +17028,12 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 
 - "Gift summary" sits 4px higher in the card ("top padding -4px": its own top 20 → 16) and has 4px more under it ("h2 margin bottom +4px").
 - Measured: the title's text starts 30px below the card's top on desk (28 on XS), with 4px more before the first row. No errors.
+
+## Gift receipt: spacing round
+
+- The buttons sit 24px further under the card ("+24px gap": 32 → 56; phone 28 → 52).
+- On the phone the page has 24px at each side ("padding left right 24px"; was 20). The card is 345 wide at XS.
+- The logo has 24px more above it on desk and phone ("+24px margin top logo, both desktop mobile": 28 → 52, phone 24 → 48).
+- The two buttons are 16px further apart ("gap +16": 16 → 32; phone 12 → 28) and fully rounded ("rounded full CTA", 999px).
+- On the phone the buttons are 15px with 10px sides and never wrap, so "Send another gift" holds one line at 393 and 360 wide.
+- Checked: logo top 52 / 48, sides 24 at XS, card to buttons 56 / 52, buttons 32 / 28 apart, no button cut. No errors.
