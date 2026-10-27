@@ -16776,3 +16776,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 
 - "Step 4 variant title: We've started looking for your past results". The outlined card above the primary card now reads "We’ve started looking for your past results". That's the title the profile's own records screen uses while it searches. It fits on one line on the phone (56px tall).
 - The Health Profile page is unchanged (the card is the Overview's), so only Everlab App - Latest is republished.
+
+## Membership card: badge "Baseline member", sub line "Everlab member"
+
+- "Badge → Baseline member; sub → Everlab member": the card front's badge now reads "Baseline member" (it was "Everlab member"). The line under the name now reads "Everlab member" (it was their age, "42 years old").
+- The badge follows Tweaks → Welcome → Membership: Baseline member (the default), Diagnostics member or Protocol member. It changes in place when the membership changes. The card's spoken description says the same.
+- The card's back still reads "Everlab member".
+- Checked in the reveal: Baseline by default, Diagnostics after the switch, no errors.
