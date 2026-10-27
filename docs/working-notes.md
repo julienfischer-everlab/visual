@@ -17555,3 +17555,15 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Fading arms** ("keep progress fade out on the line"): each of the four arms is white at full strength at the gap and fades out along its length, quickly at first then more slowly. It reaches nothing 55% of the map's width from the crossing. Still 1 device pixel, crisp, no halo.
 - **Tweaks inside Past results**: **Line gap** (0 to 32px, 10) and **Line length** (20 to 120% of the map, 55%).
 - Checked: frames show the open crosshair round Sydney with the town in the gap and the arms fading; labels 10px / 55%; no errors.
+
+## Search map: the gap breathes; the town shows only while the lines rest on it
+
+- **Gap** ("when the crossed lines are moving, retract the middle gap to a half gap; when the lines stop, increase the gap to let the active element appear in the middle"): while the lines seek the next town, the gap is half (5px each side by default). As they settle on a town it opens to its full size (10px, the Line gap Tweak), eased over about 0.1s.
+- **Town mark** ("the active dot should disappear the moment the crossed lines go away, and appear only when the crossed lines are positioned on the placement"): it appears 0.08s after the lines arrive, as the gap opens, swelling in over 0.3s. It goes the moment the lines start for the next town (0.12s fade). Only one ever shows.
+- The lines now rest on each find for 1.1s (was 0.7s), so the mark can be seen.
+- Checked frame by frame round Sydney:
+  - moving: gap ≈5px each side, no mark;
+  - arriving: gap opening, mark appearing;
+  - settled: gap 10px with the mark;
+  - leaving: mark gone, gap closing.
+  - No errors.
