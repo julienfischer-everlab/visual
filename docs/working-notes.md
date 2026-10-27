@@ -17463,3 +17463,27 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - The Flows canvas is drawn again when step 3's order changes too.
 - **Fixed**: an inline comment on the canvas's key line cut off the guard after it, so each redraw added a full set of rows (18 instead of 6). Now 6.
 - Checked: Alcohol pressed → its page, lit; order sleep, about, alcohol, smoke… → Alcohol → Next: Smoking → Next: Your answers; Edit Smoking → its page → back to Your answers. Docs: 6 rows. No errors.
+
+## Past results map, sticky step sections, card logo -8px
+
+- **Past results search** (Step 3's last page), reworked as asked: "an Australian dotted map; no radar style, just a ripple that reveals some orange dots randomly positioned; super smooth; keep the member card's bottom-right pattern as the map's base texture; the 2 actions below, don't use a card; title centred, fading in, then the map, then the CTA".
+  - The map: the mainland and Tasmania filled with the card's fine dot texture (small squares every 4 px, faint, now and then one catching the light), drawn on a canvas.
+  - A soft ripple runs out from the member's state capital (Sydney for the demo, a small dot marks it). A new ripple starts every 2.8 s, two in flight. Each one is fast at first and eases out, and lights and slightly enlarges the dots it crosses.
+  - As a ripple passes a random spot on land, an orange dot comes up with a ring spreading off it, holds a few seconds, then fades.
+  - Found ("4 past results found"): one last ripple leaves four orange dots lit and held. If the search finishes while the page is open, the title and label change in place.
+  - Order on arrival: the centred title and text, then the map (its ripples start once it's in), then the two rows and the Continue.
+  - The two rows (Turn on, Upload) sit on the page, not in a card.
+  - Reduced motion and the Documentation still: one quiet frame, part-way through a ripple with a few dots lit.
+  - The old radar code is removed.
+- **Documentation → Flows**: each step is a proper section ("use stacked fixed grouping on scroll"; "we need proper section for grouping").
+  - Each section has a full-width header: the step, its title and its number of screens.
+  - The header holds at the top as you scroll, and the next step's header slides up over it and holds in turn.
+  - The words stay at the left when the canvas pans sideways.
+- Documentation screens: no drop shadow, outline only ("remove shadow on screen").
+- Documentation canvas a bit lighter in dark (#151515 → #1c1c1c).
+- Member card: the turning logo is 8 px smaller (20 wide, from 28), centred where it was; the 8 px dot it becomes stays 8 px.
+- A backup zip of the prototype at cb60947 was sent (not committed).
+- Checked:
+  - Search page: fade order title → map → rows and CTA; the ripple and orange dots over 5 s; the found state; the docs still.
+  - Flows: headers stack (tops 0,0,0,0,782… at scroll 2600); titles held at the left when panned.
+  - No errors.
