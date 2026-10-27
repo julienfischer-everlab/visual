@@ -1859,7 +1859,7 @@ window.EvLoad = (function () {
      the spacing and the size of its marks, its opacity in the crossing's circle (70%, "active area 70% opacity") and away from it (25%, "inactive areas 25%"), and the circle's radius (192 px, "radius 192px") */
   var mapCfg = function () {
     var g = function (id, d) { var el = document.getElementById(id); return el && el.value !== '' ? el.value : d; }, n = function (id, d, lo, hi) { var v = +g(id, d); return isNaN(v) ? d : Math.max(lo, Math.min(hi, v)); };
-    return { pat: g('stHpMapPat', 'sq'), off: g('stHpMapGrid', 'grid') === 'off', P: n('stHpMapP', 4, 3, 10), Z: n('stHpMapZ', 1.5, .5, 4), act: n('stHpMapAct', 70, 0, 100) / 100, rest: n('stHpMapIn', 25, 0, 100) / 100, rad: n('stHpMapRad', 192, 16, 400), gap: n('stHpMapGap', 10, 0, 40), len: n('stHpMapLen', 55, 20, 120) / 100 };
+    return { mode: g('stHpMapMode', 'cross') === 'frame' ? 'frame' : 'cross', pat: g('stHpMapPat', 'sq'), off: g('stHpMapGrid', 'grid') === 'off', P: n('stHpMapP', 4, 3, 10), Z: n('stHpMapZ', 1.5, .5, 4), act: n('stHpMapAct', 70, 0, 100) / 100, rest: n('stHpMapIn', 25, 0, 100) / 100, rad: n('stHpMapRad', 192, 16, 400), gap: n('stHpMapGap', 10, 0, 40), len: n('stHpMapLen', 55, 20, 120) / 100 };
   };
   function ausMap(o) {
     o = o || {};
@@ -1867,7 +1867,7 @@ window.EvLoad = (function () {
     var cv = h('canvas'), el = h('div', { class: 'hpAus', 'aria-hidden': 'true', style: 'aspect-ratio: ' + M.R.toFixed(4) + '; --ar: ' + M.R.toFixed(4) }, cv), x = cv.getContext('2d');
     var C = mapCfg(), OR = '#ff7a1a', HOLD = 1.6, cap = M.cap[o.from] || AUSRUN[0][0];   // C: the pattern and its opacities; HOLD: the lines resting on a town found, its mark showing (1.6 s: "stays .5 sec more on the active dot")
     var W = 0, H = 0, dpr = 1, pts = [], spot = {}, ink = '#000', rgb = '0, 0, 0', raf = 0, t0 = 0, on = false, still = !!o.still || reduced(), done = !!o.done, fc = 0, B = [];
-    var LH = { legs: [], v: .5 }, LV = { legs: [], v: .5 };   // the level line's height and the upright's place across, each a share of the map; legs: its moves, { s: start, d: length, a: from, b: to }
+    var LH = { legs: [], v: .5 }, LV = { legs: [], v: .5 }, FL = { legs: [], v: .38 }, FR = { legs: [], v: .62 }, FT = { legs: [], v: .38 }, FB = { legs: [], v: .62 }, mode = C.mode;   // FL FR FT FB: the Frame style's four lines, left and right across, top and bottom down   // the level line's height and the upright's place across, each a share of the map; legs: its moves, { s: start, d: length, a: from, b: to }
     var lit = {}, jobs = [], job = null, round = 0, pendT = 0, lineIn = 1e9, lock = -9, settled = true, gS = -1, tP = 0;   // settled: the lines at rest (on a town, or not yet off); gS: the gap as drawn, easing to its mark; tP: the last frame's time   // lit: the town lit (and the one going), by key, { at, out }; job: the town being sought; lock: the moment the last was found
     for (var b = 0; b <= 32; b++) B.push([]);   // the marks by their grey
     var probe = document.createElement('canvas'); probe.width = probe.height = 1; var px = probe.getContext('2d');
@@ -1885,15 +1885,32 @@ window.EvLoad = (function () {
     };
     var at = function (L, t) { var v = L.v; for (var i = 0; i < L.legs.length; i++) { var g = L.legs[i]; if (t <= g.s) return v; if (t < g.s + g.d) return g.a + (g.b - g.a) * quint((t - g.s) / g.d); v = g.b; } return v; };   // where a line is at t
     var dur = function (dd) { return (done ? .8 : 1) * (1.25 + 2.35 * Math.abs(dd)); };   // a move's length: slow and controlled, longer the further it goes; found, a little quicker
-    var aim = function (T, k) {   // the next town: each line to its own place on it, each on its own time; now and then a line sweeps somewhere else first and comes back, so it reads as a search
+    var course = function (L, to, s, T, pd) {   // a line's way to `to` from wherever it is at T, starting at s; now and then (pd) it sweeps somewhere else first and comes back, so it reads as a search
+      var cur = at(L, T); L.v = cur; L.legs = [];
+      if (!done && Math.random() < pd) { var d0 = cur; for (var n = 0; n < 10; n++) { d0 = .08 + Math.random() * .84; if (Math.abs(d0 - cur) > .2 && Math.abs(d0 - to) > .2) break; } L.legs.push({ s: s, d: dur(d0 - cur), a: cur, b: d0 }); s += dur(d0 - cur) + .1 + Math.random() * .25; cur = d0; }
+      L.legs.push({ s: s, d: dur(to - cur), a: cur, b: to }); return s + dur(to - cur);
+    };
+    var aim = function (T, k) {   // the next town: each line to its own place on it, each on its own time
       var p = spot[k]; if (!p) return null;
-      var course = function (L, to, s) {
-        var cur = at(L, T); L.v = cur; L.legs = [];
-        if (!done && Math.random() < .34) { var d0 = cur; for (var n = 0; n < 10; n++) { d0 = .08 + Math.random() * .84; if (Math.abs(d0 - cur) > .2 && Math.abs(d0 - to) > .2) break; } L.legs.push({ s: s, d: dur(d0 - cur), a: cur, b: d0 }); s += dur(d0 - cur) + .1 + Math.random() * .25; cur = d0; }
-        L.legs.push({ s: s, d: dur(to - cur), a: cur, b: to }); return s + dur(to - cur);
-      };
-      var a = course(LH, p.cy / H, T + Math.random() * .2), c = course(LV, p.cx / W, T + .15 + Math.random() * .4);
-      return { k: k, at: Math.max(a, c) };   // found when the second line gets there
+      var a = course(LH, p.cy / H, T + Math.random() * .2, T, .34), c = course(LV, p.cx / W, T + .15 + Math.random() * .4, T, .34);
+      return { k: k, ks: [k], at: Math.max(a, c) };   // found when the second line gets there
+    };
+    /* the Frame style ("try a version where the crossed lines draw a frame that reveals a few orange spots"): a town and its nearest one or two (found: of the results), boxed with a margin; the four lines each to their side of the box, each on its own time */
+    var region = function (k) {
+      var p = spot[k]; if (!p) return null;
+      var pool = done ? AUSFOUND : Object.keys(AUSLOC), lim = .3 * Math.max(W, H);
+      var near = pool.filter(function (j) { return j !== k && spot[j]; }).map(function (j) { return { j: j, d: Math.hypot(spot[j].cx - p.cx, spot[j].cy - p.cy) }; }).filter(function (o) { return o.d < lim; })
+        .sort(function (a, b) { return a.d - b.d; }).slice(0, done ? 3 : 1 + Math.floor(Math.random() * 2)).map(function (o) { return o.j; });
+      var ks = [k].concat(near), xs = ks.map(function (j) { return spot[j].cx; }), ys = ks.map(function (j) { return spot[j].cy; }), pad = 14, MN = 44;
+      var x0 = Math.min.apply(null, xs) - pad, x1 = Math.max.apply(null, xs) + pad, y0 = Math.min.apply(null, ys) - pad, y1 = Math.max.apply(null, ys) + pad;
+      if (x1 - x0 < MN) { var cx = (x0 + x1) / 2; x0 = cx - MN / 2; x1 = cx + MN / 2; } if (y1 - y0 < MN) { var cy = (y0 + y1) / 2; y0 = cy - MN / 2; y1 = cy + MN / 2; }
+      x0 = Math.max(3, x0); y0 = Math.max(3, y0); x1 = Math.min(W - 3, x1); y1 = Math.min(H - 3, y1);
+      return { ks: ks, r: [x0 / W, y0 / H, x1 / W, y1 / H] };
+    };
+    var aimF = function (T, k) {
+      var R = region(k); if (!R) return null;
+      var e = [course(FL, R.r[0], T + Math.random() * .25, T, .2), course(FR, R.r[2], T + .05 + Math.random() * .3, T, .2), course(FT, R.r[1], T + Math.random() * .25, T, .2), course(FB, R.r[3], T + .05 + Math.random() * .3, T, .2)];
+      return { k: k, ks: R.ks, at: Math.max.apply(null, e) };   // framed when the last line gets there
     };
     var mark = function (pat, cx, cy, z) {   // one mark of the pattern, added to the path
       if (pat === 'dot' || pat === 'half') { var r = Math.max(.3, z / 2); x.moveTo(cx + r, cy); x.arc(cx, cy, r, 0, 6.2832); }
@@ -1904,16 +1921,28 @@ window.EvLoad = (function () {
       var i, k;
       if (!(fc++ % 20)) { var c0 = getComputedStyle(el).color; if (c0 && c0 !== ink) { ink = c0; rgb = rgbOf(ink); } }
       x.setTransform(dpr, 0, 0, dpr, 0, 0); x.clearRect(0, 0, W, H);
-      var la = Math.min(1, Math.max(0, (t - lineIn) / .8)), ly = at(LH, t) * H, lx = at(LV, t) * W, R = C.rad, R2 = R * R, rest = C.rest, act = C.act, pat = C.pat;
+      var la = Math.min(1, Math.max(0, (t - lineIn) / .8)), ly = at(LH, t) * H, lx = at(LV, t) * W, R = C.rad, R2 = R * R, rest = C.rest, act = C.act, pat = C.pat, FM = C.mode === 'frame';
+      var fa = at(FL, t) * W, fb = at(FR, t) * W, fc2 = at(FT, t) * H, fd = at(FB, t) * H, rx0 = Math.min(fa, fb), rx1 = Math.max(fa, fb), ry0 = Math.min(fc2, fd), ry1 = Math.max(fc2, fd), FE = 22;   // the frame as drawn now; FE: its soft edge outside
       for (k = 0; k < B.length; k++) B[k].length = 0;
       for (i = 0; i < pts.length; i++) {   // the map at 25% away from the crossing, 70% at the middle of its circle, fading out to its edge (192 px radius); no orange round the lit town ("remove this orange light, no good")
         var q = pts[i], dx = q.cx - lx, dy = q.cy - ly, d2 = dx * dx + dy * dy, s = d2 < R2 ? Math.pow(1 - d2 / R2, 2) * la : 0;
+        if (FM) { var ox = Math.max(rx0 - q.cx, 0, q.cx - rx1), oy = Math.max(ry0 - q.cy, 0, q.cy - ry1), od = Math.sqrt(ox * ox + oy * oy); s = (od <= 0 ? 1 : Math.pow(Math.max(0, 1 - od / FE), 2)) * la; }   // Frame: the map whole inside the box, softening just outside it
         B[Math.max(0, Math.min(32, Math.round((.92 + .16 * q.h) * (rest + (act - rest) * s) * 32)))].push(q);   // each mark a hair different
       }
       x.fillStyle = ink;
       for (k = 1; k < B.length; k++) { var L = B[k]; if (!L.length) continue; x.globalAlpha = k / 32; x.beginPath(); for (i = 0; i < L.length; i++) mark(pat, L[i].cx, L[i].cy, pat === 'half' ? C.Z * (.35 + 1.3 * L[i].n) : C.Z); x.fill(); }
       x.globalAlpha = 1;
-      if (la > 0) {   /* the two lines as a crosshair: broken round the crossing, a gap where they meet ("the crossed line should present as gap"); each arm white at full strength at the gap ("target line white fully"),
+      if (la > 0 && FM) {   /* the Frame style's four lines: solid along the box's sides, each running on past its corners and fading out there, before the map's edge */
+        var lw2 = 1 / dpr, EX = Math.max(16, C.len * Math.max(W, H) * .5), c1 = 'rgba(' + rgb + ', ' + la.toFixed(3) + ')', c0 = 'rgba(' + rgb + ', 0)';
+        var run = function (hz, at2, a0, a1, lim) {   // one line: hz level (at y = at2, from x a0 to a1) or upright (at x = at2, from y a0 to a1)
+          var p2 = Math.floor(at2 * dpr) / dpr, e0 = Math.min(EX, a0 - 1), e1 = Math.min(EX, lim - a1 - 1);
+          x.fillStyle = c1; if (hz) x.fillRect(a0, p2, a1 - a0, lw2); else x.fillRect(p2, a0, lw2, a1 - a0);
+          [[a0, a0 - e0, e0], [a1, a1 + e1, e1]].forEach(function (z) { if (z[2] <= 1) return; var g = hz ? x.createLinearGradient(z[0], 0, z[1], 0) : x.createLinearGradient(0, z[0], 0, z[1]); g.addColorStop(0, c1); g.addColorStop(.45, 'rgba(' + rgb + ', ' + (.4 * la).toFixed(3) + ')'); g.addColorStop(1, c0); x.fillStyle = g;
+            if (hz) x.fillRect(Math.min(z[0], z[1]), p2, z[2], lw2); else x.fillRect(p2, Math.min(z[0], z[1]), lw2, z[2]); });
+        };
+        run(true, ry0, rx0, rx1, W); run(true, ry1, rx0, rx1, W); run(false, rx0, ry0, ry1, H); run(false, rx1, ry0, ry1, H);
+      }
+      if (la > 0 && !FM) {   /* the two lines as a crosshair: broken round the crossing, a gap where they meet ("the crossed line should present as gap"); each arm white at full strength at the gap ("target line white fully"),
                          fading out along its length ("keep progress fade out on the line"), quickly at first then more slowly, to nothing a little past half the map away; on whole pixels, crisp ("no halo on line as well") */
         var gT = settled ? C.gap : C.gap / 2, dt = Math.max(0, Math.min(.1, t - tP)); gS = gS < 0 ? gT : gS + (gT - gS) * (1 - Math.exp(-dt / .09));   /* the gap half shut while the lines move ("retract the middle gap to a half gap"), opening whole as they stop on a town, its mark appearing in it */
         var lw = 1 / dpr, G = gS, LL = Math.max(C.gap + 8, C.len * Math.max(W, H)), sy = Math.floor(ly * dpr) / dpr, sx = Math.floor(lx * dpr) / dpr;
@@ -1936,24 +1965,33 @@ window.EvLoad = (function () {
       raf = 0; if (!on) return; if (!el.isConnected || (o.alive && !o.alive())) { on = false; return; }
       var t = (now - t0) / 1000;
       if (!(fc % 15)) { var c3 = mapCfg(); if (c3.P !== C.P || c3.off !== C.off) { C = c3; grid(); } else C = c3; }   // the pattern's Tweaks, live
+      if (C.mode !== mode) {   // Map style changed while it runs: the frame grows out of the crossing, or the crossing comes to the frame's middle
+        mode = C.mode; Object.keys(lit).forEach(function (k) { if (lit[k].out === Infinity) lit[k].out = t; }); job = null; pendT = t + .15; settled = false;
+        if (mode === 'frame') { FL.v = FR.v = at(LV, t); FT.v = FB.v = at(LH, t); FL.legs = []; FR.legs = []; FT.legs = []; FB.legs = []; }
+        else { LH.v = (at(FT, t) + at(FB, t)) / 2; LV.v = (at(FL, t) + at(FR, t)) / 2; LH.legs = []; LV.legs = []; }
+        if (!jobs.length) jobs = done ? AUSFOUND.slice() : runOf(round);
+      }
       if (!done && o.isDone && o.isDone()) {   // found while it shows: the lines go on round the four results instead
         done = true; if (job && AUSFOUND.indexOf(job.k) < 0) job.skip = true;
         jobs = AUSFOUND.filter(function (k) { return !(job && !job.skip && job.k === k); }); if (o.onDone) o.onDone();
       }
       if (job && !job.skip && !job.pre && t >= job.at - .3) {   /* just before the lines land on the town ("the gap should open just before it lands, and the active dot as well"): the gap opening, the town's mark appearing in it; the easing has all but stopped them by then */
-        job.pre = true; settled = true; Object.keys(lit).forEach(function (k) { if (lit[k].out === Infinity) lit[k].out = t; }); lit[job.k] = { at: t, out: Infinity }; lock = t;
+        job.pre = true; settled = true; Object.keys(lit).forEach(function (k) { if (lit[k].out === Infinity) lit[k].out = t; }); (job.ks || [job.k]).forEach(function (k, i) { lit[k] = { at: t + i * .09, out: Infinity }; }); lock = t;   // Frame: the towns inside, one after another
       }
       if (job && t >= job.at) {   // landed: held a moment, the mark showing
         pendT = t + (job.skip ? .05 : HOLD); job = null;
         if (!jobs.length) jobs = done ? AUSFOUND.slice() : runOf(++round);   // and round again, for ever ("should loop"); found, round the four
       }
-      if (!job && jobs.length && t >= pendT) { job = aim(t, jobs.shift()); settled = false; Object.keys(lit).forEach(function (k) { if (lit[k].out === Infinity) lit[k].out = t; }); }   // off to the next: the gap half shut, the mark gone at once
+      if (!job && jobs.length && t >= pendT) { job = (C.mode === 'frame' ? aimF : aim)(t, jobs.shift()); settled = false; Object.keys(lit).forEach(function (k) { if (lit[k].out === Infinity) lit[k].out = t; }); }   // off to the next: the gap half shut, the mark gone at once
       draw(t); tP = t;
       raf = requestAnimationFrame(frame);
     };
     var quiet = function () {   // one frame: the lines crossing on a town just lit, its circle round it
-      lit = {}; LH.legs = []; LV.legs = []; lock = -9; settled = true; gS = -1;
-      var k = done ? AUSFOUND[0] : runOf(0)[0], p = spot[k]; lit[k] = { at: -9, out: Infinity }; if (p) { LH.v = p.cy / H; LV.v = p.cx / W; } lineIn = -9; draw(60);
+      lit = {}; LH.legs = []; LV.legs = []; lock = -9; settled = true; gS = -1; mode = C.mode;
+      var k = done ? AUSFOUND[0] : runOf(0)[0], p = spot[k];
+      if (C.mode === 'frame') { var R0 = region(k); if (R0) { FL.v = R0.r[0]; FT.v = R0.r[1]; FR.v = R0.r[2]; FB.v = R0.r[3]; FL.legs = []; FR.legs = []; FT.legs = []; FB.legs = []; R0.ks.forEach(function (kk) { lit[kk] = { at: -9, out: Infinity }; }); } }
+      else { lit[k] = { at: -9, out: Infinity }; if (p) { LH.v = p.cy / H; LV.v = p.cx / W; } }
+      lineIn = -9; draw(60);
     };
     var rest = function () { lit = {}; LH.legs = []; LV.legs = []; lineIn = 1e9; draw(0); };   // before it starts: the map alone, at its rest
     var redo = function () { if (o.alive && !o.alive() || !el.isConnected && W) { document.removeEventListener('everlab:hpmap', redo); return; } C = mapCfg(); if (!grid()) return; if (still) quiet(); else if (!on) rest(); };   // a pattern Tweak changed: drawn again (running, the next frames take it)
@@ -1965,7 +2003,7 @@ window.EvLoad = (function () {
       start: function (delay) {   // the search from here on, once the map has shown (delay, ms)
         if (still) return;
         var go = function () { if (on || (o.alive && !o.alive()) || !el.isConnected && W) return; if (!W && !grid()) { setTimeout(go, 250); return; }   // not laid out yet: again shortly
-          on = true; t0 = performance.now(); lit = {}; LH.legs = []; LV.legs = []; LH.v = .5; LV.v = .5; lineIn = 0; job = null; round = 0; pendT = .5; settled = true; gS = -1; tP = 0; jobs = done ? AUSFOUND.slice() : runOf(0);
+          on = true; t0 = performance.now(); lit = {}; LH.legs = []; LV.legs = []; LH.v = .5; LV.v = .5; FL.legs = []; FR.legs = []; FT.legs = []; FB.legs = []; FL.v = FT.v = .38; FR.v = FB.v = .62; mode = C.mode; lineIn = 0; job = null; round = 0; pendT = .5; settled = true; gS = -1; tP = 0; jobs = done ? AUSFOUND.slice() : runOf(0);
           raf = requestAnimationFrame(frame); };
         setTimeout(go, delay || 0);
       }

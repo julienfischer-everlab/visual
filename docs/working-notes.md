@@ -17608,3 +17608,18 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Lines 1 / 2 documents added; Upload 44px; radius 22, padding 24.
   - No errors.
 - **Fixed: the profile's top light as a block at the left on desktop** ("bug bg here, should be the visual only on top"). The light carried over from the reveal was placed in pixels when the profile opened. Switching the breakpoint (XS → L) or widening the window with the profile open left it at the phone's 393px at the left. It is now placed as shares of the frame (left, top, width, height in %, its lift in % of its own height), so it follows the frame. Opened straight on desktop it sits exactly as before (1440 × 769, lifted 389px). XS → L with it open now spans the top.
+
+## Search map: the Frame style
+
+- **Frame** ("try a version where the crossed lines draw a frame that reveals a few orange spots; tweak that style"): Tweaks inside Past results → **Map style**: Crosshair (as before) / Frame.
+  - Four lines, two across and two down, each on its own course and timing (easeInOutQuint, now and then a sweep elsewhere first), close in to box a small area: a town and its nearest one or two within about a third of the map (found: other results).
+  - The box has a 14px margin, at least 44px a side, kept inside the map.
+  - The map is whole inside the box, softening over 22px outside it, and at the inactive opacity elsewhere.
+  - The lines are solid along the box's sides and run on past its corners, fading out before the map's edge (half the Line length).
+  - As the box settles (0.3s before), the towns inside light orange one after another (0.09s apart). It holds 1.6s, and they go the moment the box moves off. Round after round, for ever; found, round the four results.
+  - Switching style while it runs: the box grows out of the crossing, or the crossing goes to the box's middle.
+  - The Documentation still follows the style.
+- Checked:
+  - Frame over 11s: an east-coast box with three towns, then Perth with two.
+  - Live switch in the found state: boxes of the results.
+  - No errors.
