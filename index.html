@@ -9129,7 +9129,8 @@
   body.ov5Wide .ov5Top{grid-column:1/-1;}
   body.ov5Wide .ov5H{font-size:30px;}
   body.ov5Wide .ov5Cc{grid-column:1/-1;gap:24px;padding:28px 24px;}
-  body.ov5Cc2 .ov5Cc{grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:40px;}   /* the green card in two columns ("the green card layout in 2 col") where its halves have room (1000 px of Overview); narrower, its chips a 2 x 2 under the field */
+  body.ov5Cc2 .ov5Cc{grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:40px;}
+  body.ccActOff .ov5CcR{display:none;} body.ccActOff.ov5Cc2 .ov5Cc{grid-template-columns:minmax(0,1fr);}   /* Activation cards off (Tweaks -> Concierge card): the card its question and field alone, across */   /* the green card in two columns ("the green card layout in 2 col") where its halves have room (1000 px of Overview); narrower, its chips a 2 x 2 under the field */
   body.ov5Wide .ov5Cc h2{font-size:22px;}
   body.ov5Wide .ov5Chips{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));margin:0;padding:0;overflow:visible;}
   body.ov5Wide .ov5Chip2{height:52px;}
@@ -9137,7 +9138,6 @@
   .ov5 > .ov5Next.hpRep{display:none;}   /* the $299 card in its place (Tweaks -> Primary card -> Type) */
   #dOver > .ov5 > .hpOvCard{margin:0;} body.ov5Wide #dOver > .ov5 > .hpOvCard{grid-column:1;min-height:540px;padding:28px;}
   body.hdrV5[data-bp="xs"] #dOver > .ov5 > .hpOvCard{margin-bottom:0;}   /* the phone: the tiles under it as near as they are to each other, the grid's 16 alone ("use same gap as the 2 cards") */   /* the Health profile card where Next step stands: its column and height on the desk */
-  #dOver > .ov5 > .hpRecOut{margin:0;} body.ov5Wide #dOver > .ov5 > .hpRecOut{grid-column:1/-1;}   /* Step 4, Outside: above it, across the page on the desk */
   body.ov5Wide .ov5NextT{font-size:24px;} body.ov5Wide .ov5NextT span{display:block;}   /* the desk: the two sentences on their own lines, as its design */
   body.ov5Wide .ov5Side{grid-column:2;gap:24px 20px;}
   body.ov5Wide .ov5Sq{min-height:216px;}
@@ -12205,6 +12205,11 @@
           <input type="hidden" id="stOvOff" value="">   <!-- the sections switched off ("put a toggle on/off for all items") -->
         </div>
         </div>
+        <!-- the Live version's Concierge card ("tweak Concierge card: activation cards (carousel) on / off"): Explore more and its cards, or the card without them -->
+        <div class="tkGroup" data-pages="ov">
+        <div class="tkSub">Concierge card</div>
+        <div class="tkRow"><span class="lbl">Activation cards</span><select id="stCcAct" class="tkSegSel" aria-label="The Concierge card's activation cards, the Explore more carousel"><option value="on" selected>On</option><option value="off">Off</option></select></div>
+        </div>
         <!-- the Overview's sections, one card each: dragged by its title, the order on the page; its switch at the right, the section shown or not ("make these sections adjustable for the order") -->
         <div class="tkGroup" data-pages="ov" data-sec="svc">
         <div class="tkSub">Services</div>
@@ -12218,9 +12223,9 @@
         <div class="tkSub">Primary card</div>
         <div class="tkRow"><span class="lbl">Type</span><select id="stPcType" class="tkSegSel" aria-label="The Overview's primary card"><option value="member" selected>$299 purchased</option><option value="next">Next step</option></select></div>
         <div class="pcPart" data-pc="hp">
-        <div class="tkRow"><span class="lbl">State</span><select id="stHpSt" aria-label="The Health profile's step"><option value="none" selected>Step 1</option><option value="none_d">Step 1.5 (dropped off)</option><option value="one">Step 2</option><option value="one_d">Step 2.5 (dropped off)</option><option value="two">Step 3</option><option value="two_d">Step 3.5 (dropped off)</option><option value="rec">Step 4 (records)</option><option value="all">Booked</option><option value="plan">After the call: plan</option></select></div>
+        <div class="tkRow"><span class="lbl">State</span><select id="stHpSt" aria-label="The Health profile's step"><option value="none" selected>Step 1</option><option value="none_d">Step 1.5 (dropped off)</option><option value="one">Step 2</option><option value="one_d">Step 2.5 (dropped off)</option><option value="two">Step 3</option><option value="two_d">Step 3.5 (dropped off)</option><option value="all">Booked</option><option value="plan">After the call: plan</option></select></div>
         <!-- Step 4's variant ("add variant step 4: is the primary card / primary card is outside, an outlined card: Your past records are currently being collected"): the records in the primary card itself, or the primary card as when Booked and an outlined card above it, under the greeting -->
-        <div class="tkRow"><span class="lbl">Step 4</span><select id="stHpRecV" class="tkSegSel" aria-label="Step 4: the records in the primary card, or an outlined card outside it"><option value="card" selected>Primary card</option><option value="out">Outside</option></select></div>
+        <div class="tkRow"><span class="lbl">Records processing</span><select id="stHpRecP" class="tkSegSel" aria-label="The past results being collected: a card of its own under the primary card, a dot drawing particles in"><option value="off" selected>Off</option><option value="on">On</option></select></div>
         <div class="tkRow"><span class="lbl">Look</span><select id="stHpLook" class="tkSegSel" aria-label="The sphere, on the card and in the Health profile: the glow, or the dots"><option value="glow" selected>Glow</option><option value="dots">Dots</option></select></div>   <!-- ("this is the effect that I want to achieve on the sphere of the Health profile card; a tweak with this vibe") -->
         <div class="tkRow"><span class="lbl">Empty dots</span><select id="stHpDim" class="tkSegSel" aria-label="The sphere's empty particles, how visible"><option value="1">Base</option><option value="1.2" selected>+20%</option><option value="1.5">+50%</option><option value="2">+100%</option></select></div>
         <div class="tkRow"><span class="lbl">Filled saturation</span><span class="tkSlide"><input type="range" id="stHpSat" min="0" max="200" step="5" value="100" aria-label="The sphere's filled particles, how saturated"><i class="tkVal" id="stHpSatV">100%</i></span></div>   <!-- ("the filled dots: need to control the saturation") -->
@@ -17082,7 +17087,20 @@ body:is(.docOn, .hlOn) .tkFlPlus, body:is(.docOn, .hlOn) .tkFlPanel { display: n
 #dOver .ovhero.hpRep { display: none !important; } #dOver .dvTop > .hpOvCard { margin: 0; }   /* the profile's card in Next step's place: Next step put away; the card the row's height, no margin of its own */
 .hpOvCard { position: relative; display: flex; flex-direction: column; min-height: 218px; margin: 34px 0 0; padding: 20px; border-radius: 22px; background: rgba(255, 255, 255, .06); color: #ececec; cursor: pointer; }   /* the insight cards' ground, #fff 6% (light: the paper, as theirs) ("the same background as the insights cards") */   /* the Next step card's layout, its picture gone, the sphere at its top right ("keep the same layout as Next step; remove the image; sphere top right; Health profile instead of Next step") */
 body.light .hpOvCard { background: #fdfaf3; color: #2e1f1a; }
-#dOver .hpRecOut { margin: 0; padding: 17px 20px; border: 1px solid rgba(255, 255, 255, .14); border-radius: 22px; color: #ececec; } #dOver .hpRecOut h3 { margin: 0; font-size: 15px; line-height: 20px; font-weight: 500; letter-spacing: -.1px; } body.light #dOver .hpRecOut { border-color: rgba(46, 31, 26, .16); color: #2e1f1a; } body[data-bp="xs"] #dOver > .hpRecOut { margin-bottom: 6px; }   /* the phone: 12 above the primary card (its own 6 and the card's) */   /* Step 4, Outside: the records an outlined card of its own, above the primary card (Tweaks -> Health profile -> Step 4) */
+#dOver .hpRecOut, body.hdrV4 #dOver .dvTop > div.hpRecOut { position: relative; display: flex; flex-direction: row; align-items: center; gap: 16px; min-height: 0; margin: 0; padding: 17px 20px; border: 1px solid rgba(255, 255, 255, .14); border-radius: 22px; color: #ececec; overflow: hidden; isolation: isolate; box-sizing: border-box; }
+#dOver .hpRecOut h3 { flex: 1; min-width: 0; margin: 0; font-size: 15px; line-height: 20px; font-weight: 500; letter-spacing: -.1px; text-wrap: pretty; } body.light #dOver .hpRecOut { border-color: rgba(46, 31, 26, .16); color: #2e1f1a; }
+/* its dot: 8 px, white (the light page's ink), breathing, at the card's right in a zone the card's height, the particles drawn into it on its canvas */
+#dOver .hpRecDot { position: relative; flex: none; align-self: stretch; width: 72px; margin: -17px -14px -17px 0; } #dOver .hpRecDot canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+#dOver .hpRecDot i { position: absolute; left: 50%; top: 50%; width: 8px; height: 8px; margin: -4px 0 0 -4px; border-radius: 50%; background: #fff; box-shadow: 0 0 10px rgba(255, 255, 255, .5); animation: hpRecBeat 1.6s ease-in-out infinite; } body.light #dOver .hpRecDot i { background: #2e1f1a; box-shadow: 0 0 8px rgba(46, 31, 26, .25); }
+@keyframes hpRecBeat { 50% { transform: scale(1.18); box-shadow: 0 0 14px rgba(255, 255, 255, .7); } } @media (prefers-reduced-motion: reduce) { #dOver .hpRecDot i { animation: none; } }
+/* stacked: the desk's left column the primary card over it, the primary filling what the services leave; the services spanning both rows */
+#dOver .dvTop.hpRecStk.hpRecTwo { grid-template-rows: minmax(0, 1fr) auto; }
+#dOver .dvTop.hpRecStk.hpRecTwo > :is(.hpOvCard, .ovhero) { grid-column: 1; grid-row: 1; min-height: 0; } #dOver .dvTop.hpRecStk.hpRecTwo > .hpRecOut { grid-column: 1; grid-row: 2; }
+#dOver .dvTop.hpRecStk.hpRecTwo > :not(.hpOvCard):not(.ovhero):not(.hpRecOut) { grid-column: 2; grid-row: 1 / span 2; }
+body[data-bp="xs"] #dOver .dvTop > .hpRecOut { margin: 0 0 16px; }   /* the phone: under the primary card, 16 to the services */
+body.ov5Wide #dOver > .ov5.hpRecStk { grid-template-rows: auto auto minmax(0, 1fr) auto; }
+body.ov5Wide #dOver > .ov5.hpRecStk > :is(.hpOvCard, .ov5Next) { grid-row: 3; min-height: 0; } body.ov5Wide #dOver > .ov5.hpRecStk > .hpRecOut { grid-column: 1; grid-row: 4; }
+body.ov5Wide #dOver > .ov5.hpRecStk > .ov5Side { grid-row: 3 / span 2; min-height: 540px; }   /* the Live version's desk: the same, the column's 540 kept */
 .hpOvCard:not(.hpOvPlan) { isolation: isolate; background: rgba(255, 255, 255, .04); transition: background .16s ease; }
 /* an orange halo at its top right, breathing ("the halo orange as on the OrganAge, top right of the health profile card; it breathes, +30% opacity every 2 seconds in and out"): the OrganAge light's soft falloff, in the brand orange, under the content, inside the card's corners */
 .hpOvCard:not(.hpOvPlan)::before { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: inherit; pointer-events: none;
@@ -29510,6 +29528,7 @@ hairline({
   })();
   (function ov5(){
     const sec = document.querySelector('#dOver > .ov5'); if (!sec) return;
+    { const t = document.getElementById('stCcAct'), on = () => document.body.classList.toggle('ccActOff', !!t && t.value === 'off'); if (t){ t.addEventListener('change', on); on(); } }   // Tweaks -> Concierge card -> Activation cards
     { const dv = document.getElementById('dOver'); if (window.ResizeObserver) new ResizeObserver(() => { const w = dv.clientWidth; document.body.classList.toggle('ov5Wide', w >= 740); document.body.classList.toggle('ov5Cc2', w >= 1000); }).observe(dv); }   // the desk's two columns wherever the Overview is wide enough (forced M and L, and Auto at a desk-wide window)
     const NS = 'http://www.w3.org/2000/svg', A0 = 150, SW = 240, R = 48, C = 60;   // the dial: 240 degrees, open at the foot
     const pt = a => { const r = a * Math.PI / 180; return [(C + R * Math.cos(r)).toFixed(2), (C + R * Math.sin(r)).toFixed(2)]; };
@@ -33058,12 +33077,38 @@ hairline({
       requestAnimationFrame(tick); };
     let cardErr = false;
     const paintCard = back => { try { paintCard0(back); cardErr = false; } catch (e){ cardErr = true; console.warn('Health profile card:', e); const c = document.querySelector('#dOver .hpOvCard'), hero = document.querySelector('#dOver > .dvTop > .ovhero'); if (c && !c.childElementCount){ c.classList.add('ovOff'); if (hero) hero.classList.remove('hpRep'); } } };   /* a card that cannot be drawn leaves Next step in its place, never an empty slot ("primary card is gone on XS") */
-    /* Step 4, Outside: an outlined card under the greeting, above the primary card (the card itself then as when Booked) */
-    const recNote = on => { const over = document.getElementById('dOver'), top = over && over.querySelector(':scope > .dvTop'); let n = over && over.querySelector('.hpRecOut'); if (!on || !top){ if (n) n.remove(); return; }
-      if (!n){ n = document.createElement('div'); n.className = 'hpRecOut'; n.setAttribute('role', 'status'); n.innerHTML = '<h3>We\u2019ve started looking for your past results</h3>';   /* "step 4 variant title: We've started looking for your past results" */ }
-      const c = over.querySelector(':scope > .ov5 > .hpOvCard'), at = c || top; if (n.nextElementSibling !== at) at.before(n); };   // the Live version: right above the $299 card, in its section
+    /* Records processing (Tweaks -> Primary card): the past results being collected, an outlined card of its own under the primary card ("if records being
+       processed, the card stacked with the primary on the left side, below it, hugging its content; the primary fills the height"): on the desk the left
+       column the two, the services spanning both rows; one column, simply under it. At its right an 8 px dot, particles drawn into it ("to feel it's processing") */
+    const recDots = n => { const z = n.querySelector('.hpRecDot'), cv = z && z.querySelector('canvas'); if (!cv || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const x = cv.getContext('2d'), M = [], N = 30;
+      const seed = (m, w, h, now, first) => { const R = Math.max(14, Math.min(w / 2, h / 2 + 10) - 2); Object.assign(m, { a: Math.random() * 6.2832, r: 9 + Math.random() * (R - 9), sw: (Math.random() < .5 ? -1 : 1) * (.5 + Math.random() * .9), dur: 1500 + Math.random() * 1700, z: .7 + Math.random() * 1, al: .4 + Math.random() * .55 }); m.t0 = now - (first ? Math.random() * m.dur : 0); return m; };
+      const tick = now => { if (!n.isConnected) return; const w = z.clientWidth, h = z.clientHeight; if (!w || !h) { requestAnimationFrame(tick); return; }
+        const dpr = Math.min(2, window.devicePixelRatio || 1); if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(h * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); } x.setTransform(dpr, 0, 0, dpr, 0, 0); x.clearRect(0, 0, w, h);
+        const cx = w / 2, cy = h / 2, rgb = document.body.classList.contains('light') ? '46,31,26' : '255,255,255';
+        if (!M.length) for (let i = 0; i < N; i++) M.push(seed({}, w, h, now, true));
+        M.forEach(m => { let k = (now - m.t0) / m.dur; if (k >= 1) { seed(m, w, h, now, false); k = 0; }
+          const e = Math.pow(k, 2.1), r = m.r * (1 - e), an = m.a + m.sw * e * 1.4, px = cx + Math.cos(an) * r, py = cy + Math.sin(an) * r;   // falling in faster as it nears, curling round the dot
+          const aa = m.al * Math.min(1, k / .2) * Math.min(1, Math.max(0, (r - 3) / 6)); if (aa < .01) return;   // in from nothing, gone into the dot
+          x.fillStyle = 'rgba(' + rgb + ',' + aa.toFixed(3) + ')'; x.beginPath(); x.arc(px, py, m.z / 2, 0, 6.2832); x.fill(); });
+        requestAnimationFrame(tick); };
+      requestAnimationFrame(tick); };
+    let recRO = null;
+    const recNote = on => { const over = document.getElementById('dOver'), top = over && over.querySelector(':scope > .dvTop'), v5 = over && over.querySelector(':scope > .ov5'); let n = over && over.querySelector('.hpRecOut');
+      const unstack = () => { [top, v5].forEach(g => { if (g) g.classList.remove('hpRecStk'); }); };
+      if (!on || !top){ if (n) n.remove(); unstack(); return; }
+      if (!n){ n = document.createElement('div'); n.className = 'hpRecOut'; n.setAttribute('role', 'status'); n.innerHTML = '<h3>We’ve started looking for your past results</h3><span class="hpRecDot" aria-hidden="true"><canvas></canvas><i></i></span>'; recDots(n); }   /* "We've started looking for your past results" */
+      const shown = el => el && getComputedStyle(el).display !== 'none' && !el.classList.contains('ovOff');
+      const live = document.body.classList.contains('hdrV5') && v5, g = live ? v5 : top;
+      const pri = live ? [v5.querySelector(':scope > .hpOvCard'), v5.querySelector(':scope > .ov5Next')].find(shown) : [top.querySelector(':scope > .hpOvCard'), top.querySelector(':scope > .ovhero')].find(shown);
+      if (!pri){ n.remove(); unstack(); return; }
+      if (pri.nextElementSibling !== n) pri.after(n);
+      unstack(); g.classList.add('hpRecStk');
+      if (!live && window.ResizeObserver && !recRO){ recRO = new ResizeObserver(() => { const t = document.querySelector('#dOver > .dvTop'); if (t) recTwo(t); }); recRO.observe(top); }
+      if (!live) recTwo(top); };
+    const recTwo = t => { t.classList.remove('hpRecTwo'); t.classList.toggle('hpRecTwo', t.classList.contains('hpRecStk') && getComputedStyle(t).gridTemplateColumns.trim().split(/\s+/).length > 1); };   // measured without the stack's own placing, which would make a second column of its own   // the desk's two columns: the stack and the services beside it; one column, in the flow
     const paintCard0 = back => { const c = card(); if (!c) return; placeCard(c); if (plan){ recNote(false); paintPlan(c); return; } c.classList.remove('hpOvPlan'); const sm0 = store.summary();
-      const out = !!sm0.rec && opt('stHpRecV') === 'out', sm = out ? Object.assign({}, sm0, { rec: false }) : sm0; recNote(out && !gone);   // Outside: the card as when Booked, the records in the outlined card
+      const sm = sm0.rec ? Object.assign({}, sm0, { rec: false }) : sm0; { const on = opt('stHpRecP') === 'on'; if (!on) recNote(false); else requestAnimationFrame(() => recNote(opt('stHpRecP') === 'on')); }   // placed once the card is drawn, under whichever primary shows   // the records never in the primary card now (Step 4 retired: "remove tweak step 4 record"); Records processing On, their own card under it
       const stx = sm.state === 'done' ? 'Completed' : sm.state === 'prog' ? 'In progress' : 'Not started', cls = sm.state === 'done' ? 'hpStDone' : sm.state === 'prog' ? 'hpStProg' : 'hpStNot';
       const nx = ['wear', 'past', 'you'].filter(k => sm.st[k] !== 'done')[0], NXT = { wear: ['Start your health journey', 'Our promise and your details', 'Get started'], past: ['Book your consultation', 'It takes only 1 minute', 'Book a time'], you: ['Tell us more about you', 'It will help us to customise your journey before your call', 'Complete profile'] }, cur = NXT[nx];   /* each step its title, the stage under it, its button ("the title should always be: Start your health journey, Get started; Book your consultation, Book; Tell us more about you, Complete profile") */
       const ttl = sm.rec ? 'We\u2019re collecting your historical records.' : sm.state === 'done' ? 'You\u2019re all set for your consult with Dr Steven Lu.' : cur[0], sub = sm.rec ? 'Searching labs across Australia for your past results, so Dr Steven Lu sees the full picture.' : sm.state === 'done' ? '' : cur[1];   /* step 4: the records being collected, the consult still at the foot */
@@ -33083,7 +33128,7 @@ hairline({
       document.dispatchEvent(new Event('everlab:hpgone')); paintCard(); };   // the card in or out of Next step's place
     /* the demo's states in order ("on the step nav, also the dropped-off states: Step 1.5, 2.5, 3.5"): each step, then the same left part-way; Done; the Program card; Dexa next */
     const SK = ['none', 'none_d', 'one', 'one_d', 'two', 'two_d', 'rec', 'all', 'plan'];   // rec: Step 4, the historical records being collected   // Plan to purchase after Done ("plan to purchase should be after step done, so remove the Card tweak"); Dexa next: the Primary card's Type (Next step)
-    const stateIx = () => { if (plan) return 8; const sm = store.summary(); if (sm.n === 3) return sm.rec ? 6 : 7; const nx = ['wear', 'past', 'you'].find(k => sm.st[k] !== 'done'); return sm.n * 2 + (sm.st[nx] === 'prog' ? 1 : 0); };
+    const stateIx = () => { if (plan) return 8; const sm = store.summary(); if (sm.n === 3) return 7; const nx = ['wear', 'past', 'you'].find(k => sm.st[k] !== 'done'); return sm.n * 2 + (sm.st[nx] === 'prog' ? 1 : 0); };
     const stepOf = () => SK[stateIx()];   // the State tweak at the step the member is on ("three states, one a step"; Done the end; Dexa next, the card put away)
     document.addEventListener('everlab:hp', () => { paintCard(); const t = document.getElementById('stHpSt'); if (t && !hpSetting) t.value = stepOf(); });
     { const t = document.getElementById('stHpSt'); if (t) t.value = stepOf(); }
@@ -33133,7 +33178,7 @@ hairline({
       const apply = () => { const t = ty ? ty.value : 'member'; if (t === 'next'){ setPlan(false); setGone(true); } else setGone(false);
         const st = document.getElementById('stHpSt'); if (st) st.value = stepOf(); sync(); };
       if (ty) ty.addEventListener('change', apply); sync(); }
-    { const t = document.getElementById('stHpRecV'); if (t) t.addEventListener('change', () => paintCard()); }   // Step 4's variant
+    { const t = document.getElementById('stHpRecP'); if (t) t.addEventListener('change', () => paintCard()); }   // Records processing
     { let v5 = document.body.classList.contains('hdrV5'); new MutationObserver(() => { const now = document.body.classList.contains('hdrV5'); if (now !== v5){ v5 = now; paintCard(); } }).observe(document.body, { attributes: true, attributeFilter: ['class'] }); }   // Latest <-> Live version: the card to its place in that version
     { const t = document.getElementById('stHpSt'); if (t) t.addEventListener('change', () => { if (t.value === 'live') return; const pl = t.value === 'plan'; hpSetting = true; store.preset(pl ? 'all' : t.value); hpSetting = false; setPlan(pl); t.value = stepOf(); if (inst && wrap.classList.contains('on')) open(); }); }
     /* the demo's steps, in the Health profile's tweak ("steps --> states inside the card tweak"; the floating arrows beside the screen retired): the State row a stepper, previous and next either side of its list, a step on or back through every state;
@@ -39717,7 +39762,7 @@ hairline({
       ins: ['Insights', '.ovInsCard, .ovsecIns, .ovcar, .ovcdots'], prof: ['Health profile', '.ovsecProf, .ovProf'], plan: ['Action plan', '.ovsecPlan, .ovplan, .ovtl'], later: ['Later card', '.ovsecAvail, .ovDef'] };
     const host = () => { const c = document.querySelector('#phone2 .ovcar'); return c && c.parentElement; };
     const inp = document.getElementById('stOvOrder'), list = document.getElementById('tkOvOrd'), offI = document.getElementById('stOvOff');
-    const DSEC = { primary: '.hpOvCard, .ovhero', svc: '.ovSvc, .dvTop > div:not(.ovhero):not(.ovBk):not(.hpOvCard)', hero: '.ovhero', row2: '.ovrow2', ins: '.dvSecIns, .dvRail, .railNav, .dvDots', prof: '.ovsecProf, .ovProf, .dvSecProf, .dvProf, .hpOvCard', plan: '.dvSecPlan, .dvPlanChips, .dvPlanGrid, .dvPlanList, .dvPlanTl', later: '.dvSecAvail, .dvDef' };   // the same sections on the Overview itself (desk to XS)
+    const DSEC = { primary: '.hpOvCard, .ovhero', svc: '.ovSvc, .dvTop > div:not(.ovhero):not(.ovBk):not(.hpOvCard):not(.hpRecOut)', hero: '.ovhero', row2: '.ovrow2', ins: '.dvSecIns, .dvRail, .railNav, .dvDots', prof: '.ovsecProf, .ovProf, .dvSecProf, .dvProf, .hpOvCard', plan: '.dvSecPlan, .dvPlanChips, .dvPlanGrid, .dvPlanList, .dvPlanTl', later: '.dvSecAvail, .dvDef' };   // the same sections on the Overview itself (desk to XS)
     const pkOf = () => window._hpGone ? 'hero' : 'prof';   // the Primary card's section: the profile's card, or Next step once it is put away
     const offs = () => { const lv = new Set([...document.querySelectorAll('.tkGroup[data-sec]')].map(g => g.dataset.sec)); return new Set((offI && offI.value || '').split(',').filter(k => k && (!lv.size || lv.has(k)))); };   /* only the sections Tweaks still has a switch for: one saved from a retired switch (the old Health profile section) no longer hides the profile's card with no way back ("health profile gone?") */
     // the order on the Overview itself ("changing the order must change also on the screen"): its sections moved as units in the list's order; on the desk Services and Next step share one row (.dvTop), placed where the first of the two stands, Next step left and Services right as ever
@@ -39795,6 +39840,7 @@ hairline({
     const put2 = (id, v) => { const el = document.getElementById(id); if (!el || v == null) return; if (el.type === 'checkbox'){ if (String(el.checked) === v) return; el.checked = v === 'true'; el.dispatchEvent(new Event('change', { bubbles: true })); return; } put(id, v); };
     let saved2 = null; try { saved2 = JSON.parse(localStorage.getItem(KEY2) || 'null'); } catch (e){}
     if (saved2 && OLDORD.includes(saved2.stOvOrder)) saved2.stOvOrder = DEF.stOvOrder;
+    try { if (saved2 && saved2.stHpSt === 'rec'){ saved2.stHpSt = 'all'; saved2.stHpRecP = 'on'; } delete (saved2 || {}).stHpRecV; } catch (e){}   // Step 4 (records) retired: a setup saved on it, Booked with Records processing On
     try { if (saved2 && !localStorage.getItem('everlab:mig:noX')){ delete saved2.stHpW2X; localStorage.setItem('everlab:mig:noX', '1'); } } catch (e){}   // the card screen's Dismiss now Off by default ("no dismiss"): a setup saved before keeps it On no more, once; saved On after this stays On
     if (saved2) requestAnimationFrame(() => Object.keys(saved2).forEach(id => put2(id, saved2[id])));
     document.querySelectorAll('.stTkSave').forEach(b => b.addEventListener('click', () => {

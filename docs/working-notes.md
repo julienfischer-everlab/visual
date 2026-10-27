@@ -16939,3 +16939,15 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The logo sits at the right of the name (80 × 60, top right). Its red zone shows only with the Frame indicator on.
   - The foot holds the tags alone. With no tags there's no foot, so the location hugs its name and address ("hug content if no tag").
 - Checked: every state has its list (no "not in the prototype" left). On desk, grid and rows have MeasureUp's logo left of its tags in rows. On XS the logo is at the name's right, and a location without tags ends 29px under its address. No errors.
+
+## Records processing replaces Step 4; Concierge card tweak
+
+- **Step 4 (records) retired**: it's gone from Primary card → State, and so is the Step 4 variant row. The records are never in the primary card now. A setup saved on Step 4 opens Booked with Records processing On.
+- **Tweaks → Primary card → Records processing: Off / On.**
+  - On: "We've started looking for your past results" gets its own outlined card, under the primary card, whatever the step.
+  - Desk: the primary card and the records card stack in the left column. The records card hugs its content and the primary fills what's left. The services (V4) or the two tiles (Live version, keeping its 540) span both rows.
+  - One column (phone): it simply sits under the primary card, 16px to what follows.
+  - At its right, an 8px dot (white; the ink on the light page) breathes, and about 30 specks fall into it, faster as they near, curling round it. They fade in from nothing and are gone into the dot. With reduced motion: the dot alone, still.
+  - The two-column check is measured without the stack's own placement, which would otherwise make a second column of its own on the phone.
+- **Tweaks → Concierge card → Activation cards: On / Off.** Off hides "Explore more" and its cards on the Live version's Concierge card. On the desk the card goes to one column, its question and field across.
+- Checked: V4 desk (primary 197 + 24 + records 56 = the services' 277), V4 XS, Live desk (456 + 28 + 56 = 540) and Live XS; the dot is 8px. Concierge On/Off on desk and XS. No errors.
