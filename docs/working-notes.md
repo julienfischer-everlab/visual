@@ -17440,3 +17440,12 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Thread: Resolve, Delete, Reply in one row, Reply at the right.
   - Go to view from Report visuals → the chat over the prototype, Report visuals gone.
   - Health profile closed when changing to Report visuals. No errors.
+
+## Jump to a step 1 page; Overview State without Step 1; "Complete"; docs sidebar
+
+- **Tweaks → Health profile → Step 1 pages: press a page to open it** ("need to be able to jump into sub steps"). The profile shows that page at once (Enter or Space too), and the list lights it as before. Dragging still reorders; only a press without a drag jumps.
+- **Overview → Primary card → State offers no Step 1** ("remove access to step 1 from this overview tweak": there is no Overview card for step 1). It starts at Step 2, and its arrows stop there. A member still on step 1 reads "Step 1 (no card)", not offered.
+- **Step 3's card button: "Complete"** (was Complete profile, which fell under the consult on the phone), for Step 3 and Step 3.5 alike (3.5 said Continue). The docs' texts say so too.
+- **Documentation → Health profile card**: no description under the title ("remove the desc below title"), and the first entry is **Big picture · All steps**.
+- **Shared comments verified**: the store answers, its `comments` collection empty before anyone comments. The default rules let any signed-in viewer read and write; nothing is hidden by level.
+- Checked: pressed pages 3 and 7 → "Your address", "Your Medicare details", lit; Enter on 1 → "Health information"; a drag still reorders. State: fresh shows "Step 1 (no card)", Step 2 → Step 3 → back to Step 2, previous off at Step 2. "Complete" beside the consult on the phone, 3 and 3.5. The docs' first entry reads Big picture / All steps. No errors.
