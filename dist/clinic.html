@@ -89,7 +89,9 @@
   .loc .hd{display:flex;gap:19px;margin-bottom:24px;}
   .loc .pin{width:28px;height:28px;color:var(--pin);stroke-width:1.4;margin-top:2px;}
   .loc b{display:block;font-weight:500;font-size:22px;line-height:1.2;color:var(--ink);}   /* the name black ("title black"; was the grey #4f4f4f) */
-  .loc span{display:block;margin-top:7px;font-size:17px;line-height:1.24;color:var(--ink3);}
+  .loc .nm{flex:1;min-width:0;}
+  .loc .nm span{display:block;margin-top:7px;font-size:17px;line-height:1.24;color:var(--ink3);}
+  .loc .hd .mark{display:none;}   /* the name's logo: the phone's alone */
   /* the foot: the tags at the left, the clinic's logo at the bottom right, in a 96 x 96 frame reserved for it (10% red until the logos are in: "put a red 10% filled frame reserve for the logo placement; the logo should fit into a 96 x 96 square, keeping the right ratio; bottom right") */
   .ft{display:flex;align-items:flex-end;gap:16px;margin-top:auto;}
   .mark{flex:none;display:block;width:128px;height:96px;background:rgba(255,0,0,.1);}   /* the zone 128 x 96 ("128 96 logo zone"; was 96 x 96) */
@@ -100,6 +102,15 @@
   .tags .ic{width:16px;height:16px;}
   .tags i{font-style:normal;}
   .tags .sh{display:none;}
+  /* Layout: Rows ("a version without grid but inline rows"): a location a row; at the left the pin, the name and the address; at the right its tags,
+     the clinic's logo before them when it has one (no zone kept for the others) */
+  html.rows .grid{grid-template-columns:minmax(0, 1fr);}
+  html.rows .loc{flex-direction:row;align-items:center;gap:40px;padding:32px 0;}
+  html.rows .loc .hd{flex:1;min-width:0;margin:0;}
+  html.rows .ft{flex:0 1 auto;max-width:56%;align-items:center;gap:20px;margin:0;}
+  html.rows .tags{justify-content:flex-end;}
+  html.rows .ft .mark{order:-1;width:96px;height:48px;} html.rows .ft .mark:not(.has){display:none;}
+  html.rows .ft .mark img{object-position:center;}
   .soon{margin:0;padding:28px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:17px;color:var(--ink3);}
 
   /* ---- Need more info? Book a call: a pill at the foot of the screen, in once the list is being read ---- */
@@ -142,12 +153,20 @@
     .loc .hd{gap:16px;margin-bottom:24px;}
     .loc .pin{width:26px;height:26px;}
     .loc b{font-size:21px;}
-    .loc span{font-size:16px;}
+    .loc .nm span{font-size:16px;}
+    /* the logo at the name's right ("place logo on the right side on mobile"), 80 x 60, its zone shown with the Frame indicator; none in the foot,
+       which holds the tags alone -- and with no tags, no foot: the location hugs its name ("hug content if no tag") */
+    .loc .hd .mark{display:block;flex:none;width:80px;height:60px;} .loc .hd .mark img{object-position:right top;}
+    html.noFrame .loc .hd .mark:not(.has){display:none;}
+    .loc .ft .mark{display:none;}
+    .loc.noTag .ft{display:none;} .loc.noTag .hd{margin-bottom:0;}
+    .loc.noTag{padding-bottom:28px;}
     .tags{gap:10px;}
     .tags em{font-size:14px;padding:5px 7px;}
     .tags .lg{display:none;} .tags .sh{display:inline;}
   }
-  @media (min-width:720px) and (max-width:999px){ .grid{grid-template-columns:repeat(2, minmax(0, 1fr));column-gap:32px;} }
+  @media (min-width:720px) and (max-width:999px){ .grid{grid-template-columns:repeat(2, minmax(0, 1fr));column-gap:32px;} html.rows .grid{grid-template-columns:minmax(0, 1fr);} }
+  @media (max-width:719px){ html.rows .loc{flex-direction:column;align-items:stretch;gap:20px;padding:28px 0 24px;} html.rows .ft{max-width:none;} html.rows .tags{justify-content:flex-start;} }   /* the phone: no room at the right, its tags under it, the logo still first */
   @media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto;} *{transition:none !important;} }
 </style>
 </head>
@@ -311,19 +330,57 @@
       ["Science of Fitness Burleigh", "3/31 Taree Street, Burleigh Heads, 4221", ['vo2']]
     ]
   };
+  /* the other states: placeholders ("add random placeholder for these"), invented for the prototype -- made-up names on real streets, so the page reads full;
+     not Everlab's partners, to be replaced by the site's own list */
+  LOC.vic = [
+    ["Collins Street Imaging", "Level 2, 180 Collins St, Melbourne VIC 3000", ['dexa', 'mri', 'heart']],
+    ["Northside Collection Network", "Collection centres available across VIC", ['path']],
+    ["Richmond Performance Lab", "12 Swan St, Richmond VIC 3121", ['vo2']],
+    ["Bayside Body Composition", "Shop 3/45 Church St, Brighton VIC 3186", ['dexa']],
+    ["Geelong Coastal Radiology", "88 Ryrie St, Geelong VIC 3220", ['dexa', 'mri']],
+    ["Fitzroy Exercise Physiology", "201 Brunswick St, Fitzroy VIC 3065", ['vo2']]
+  ];
+  LOC.wa = [
+    ["Western Collection Network", "Collection centres available across WA", ['path']],
+    ["St Georges Imaging", "Level 1, 140 St Georges Tce, Perth WA 6000", ['dexa', 'mri', 'heart']],
+    ["Subiaco Movement Lab", "9 Rokeby Rd, Subiaco WA 6008", ['vo2', 'dexa']],
+    ["Fremantle Harbour Radiology", "34 Queen Victoria St, Fremantle WA 6160", ['dexa']]
+  ];
+  LOC.sa = [
+    ["Adelaide Collection Network", "Collection centres available across SA", ['path']],
+    ["North Terrace Imaging", "Ground Floor, 70 North Tce, Adelaide SA 5000", ['dexa', 'mri']],
+    ["Unley Exercise Studio", "155 Unley Rd, Unley SA 5061", ['vo2']],
+    ["Jetty Road Heart & Imaging", "22 Jetty Rd, Glenelg SA 5045", ['heart', 'dexa']]
+  ];
+  LOC.act = [
+    ["Canberra Collection Network", "Collection centres available across the ACT", ['path']],
+    ["Woden Valley Radiology", "6 Bowes St, Phillip ACT 2606", ['dexa', 'mri']],
+    ["Braddon Performance Studio", "30 Lonsdale St, Braddon ACT 2612", ['vo2']]
+  ];
+  LOC.tas = [
+    ["Island Collection Network", "Collection centres available across TAS", ['path']],
+    ["Salamanca Imaging", "40 Salamanca Pl, Hobart TAS 7000", ['dexa']],
+    ["Launceston Exercise Lab", "18 Brisbane St, Launceston TAS 7250", ['vo2']]
+  ];
+  LOC.nt = [
+    ["Top End Collection Network", "Collection centres available across the NT", ['path']],
+    ["Knuckey Street Radiology", "Level 1, 21 Knuckey St, Darwin City NT 0800", ['dexa', 'mri']]
+  ];
   var esc = function(t){ return String(t).replace(/[&<>"]/g, function(c){ return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
   var ic = function(d, cls){ return '<svg class="ic' + (cls ? ' ' + cls : '') + '" viewBox="0 0 24 24" aria-hidden="true">' + d + '</svg>'; };
   var $ = function(id){ return document.getElementById(id); };
   if (/(^|[#&])noframe(&|$)/.test(location.hash)) document.documentElement.classList.add('noFrame');
+  if (/(^|[#&])rows(&|$)/.test(location.hash)) document.documentElement.classList.add('rows');   // Layout: Rows (the prototype's Tweaks -> Clinic -> Layout, or #rows)
 
   $('key').innerHTML = KEY.map(function(k){ return '<li><span class="tile">' + ic(SVC[k][2]) + '</span>' + esc(SVC[k][0]) + '</li>'; }).join('');
   $('states').innerHTML = STATES.map(function(s, i){ return '<button type="button" data-s="' + s[0] + '"' + (i ? '' : ' aria-current="true"') + '>' + esc(s[1]) + '</button>'; }).join('');
   $('lists').innerHTML = STATES.map(function(s){
     var L = LOC[s[0]] && LOC[s[0]].map(function (l, i) { return [l, i]; }).sort(function (x, y) { return (LOGO[y[0][3]] ? 1 : 0) - (LOGO[x[0][3]] ? 1 : 0) || x[1] - y[1]; }).map(function (x) { return x[0]; });   // the clinics with a logo first in their state ("move clinic with logo at the top of the list; keep inside the group"), the rest in their order
     var body = L ? '<div class="grid">' + L.map(function(l){
-      return '<article class="loc"><div class="hd">' + ic(PIN, 'pin') + '<div><b>' + esc(l[0]) + '</b><span>' + esc(l[1]) + '</span></div></div>' +
+      var mk = function(cls){ return LOGO[l[3]] ? '<span class="mark has ' + cls + '"><img src="' + LOGO[l[3]][0] + '" alt="' + (cls === 'mkHd' ? '' : esc(LOGO[l[3]][1])) + '"></span>' : '<span class="mark ' + cls + '" aria-hidden="true"></span>'; };   // the logo twice: the foot's (desk), the name's right (phone), one shown
+      return '<article class="loc' + (l[2].length ? '' : ' noTag') + '"><div class="hd">' + ic(PIN, 'pin') + '<div class="nm"><b>' + esc(l[0]) + '</b><span>' + esc(l[1]) + '</span></div>' + mk('mkHd') + '</div>' +
         '<div class="ft"><div class="tags">' + l[2].map(function(k){ return '<em>' + ic(SVC[k][2]) + '<i class="lg">' + esc(SVC[k][0]) + '</i><i class="sh">' + esc(SVC[k][1]) + '</i></em>'; }).join('') + '</div>' +
-        (LOGO[l[3]] ? '<span class="mark"><img src="' + LOGO[l[3]][0] + '" alt="' + esc(LOGO[l[3]][1]) + '"></span>' : '<span class="mark" aria-hidden="true"></span>') + '</div></article>';
+        mk('mkFt') + '</div></article>';
     }).join('') + '</div>'
       : '<p class="soon">' + esc(s[1]) + '’s testing locations aren’t in the prototype yet.</p>';   // not invented: only the screenshots' list is here
     return '<section class="state" id="st-' + s[0] + '" aria-labelledby="h-' + s[0] + '"><h2 id="h-' + s[0] + '">' + esc(s[1]) + '</h2>' + body + '</section>';

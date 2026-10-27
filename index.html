@@ -12592,6 +12592,7 @@
         <!-- the Clinic's Testing locations: the logo zone's red fill, shown or not ("tweak frame indicator (red): on, off"); the zone keeps its place either way -->
         <div class="tkGroup" data-pages="clinic">
         <div class="tkSub">Clinic</div>
+        <div class="tkRow"><span class="lbl">Layout</span><select id="stClLay" class="tkSegSel" aria-label="The locations: two by two in a grid, or a row each"><option value="grid" selected>Grid</option><option value="rows">Rows</option></select></div>
         <div class="tkRow"><span class="lbl">Frame indicator</span><select id="stClFrame" class="tkSegSel" aria-label="The logo zone's red frame on each location"><option value="on" selected>On</option><option value="off">Off</option></select></div>
         </div>
         <!-- which build this page is: the source says dev, dist says when it
@@ -39983,8 +39984,8 @@ hairline({
       const cl = document.getElementById('clPage');
       const clHide = () => { if (!document.body.classList.contains('clOn')) return; document.body.classList.remove('clOn'); if (versionSel && versionSel.value === 'cl') versionSel.value = String(version); if (window.__tkPages) window.__tkPages(); };
       // Tweaks -> Clinic -> Frame indicator: the logo zones' red fill on the page, or not
-      const clFrame = () => { const f = document.getElementById('clFrame'), t = document.getElementById('stClFrame'); try { const r = f && f.contentDocument && f.contentDocument.documentElement; if (r) r.classList.toggle('noFrame', !!t && t.value === 'off'); } catch (e){} };
-      { const t = document.getElementById('stClFrame'); if (t) t.addEventListener('change', clFrame); }
+      const clFrame = () => { const f = document.getElementById('clFrame'), t = document.getElementById('stClFrame'); try { const r = f && f.contentDocument && f.contentDocument.documentElement; if (r){ r.classList.toggle('noFrame', !!t && t.value === 'off'); const ly = document.getElementById('stClLay'); r.classList.toggle('rows', !!ly && ly.value === 'rows'); } } catch (e){} };   // and Layout: Grid or Rows
+      ['stClFrame', 'stClLay'].forEach(id => { const t = document.getElementById(id); if (t) t.addEventListener('change', clFrame); });
       const clShow = () => { if (!cl) return; hide(); hlHide(); igHide(); rvHide(); gfHide(); if (window._doc) window._doc.hide(); if (window._cc) window._cc.hide();
         if (window._hp) window._hp.close(true); if (window._ar && window._ar.isOpen()) window._ar.close();
         const dev = cl.querySelector('.clDev'); if (dev && !dev.firstChild){ const f = document.createElement('iframe'); f.id = 'clFrame'; f.src = 'clinic.html'; f.title = 'Testing locations'; f.addEventListener('load', clFrame); dev.appendChild(f); }

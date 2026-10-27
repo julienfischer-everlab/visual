@@ -16925,3 +16925,17 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - "You have no data yet" sits at the foot of each tile, 16px from the bottom.
   - The arc fades from its top and is gone before its two ends (three stops: .16 → .08 → 0, over y 14–76 of the 70-high dial).
 - Checked: all three tiers front and back (no line cut off). V5 on XS: card to tiles 16, tiles 16 apart, label 16 from the bottom. No errors.
+
+## Clinic: placeholder locations, Rows layout, logo on the phone
+
+- **Placeholders** ("add random placeholder for these"): the six states that said "testing locations aren't in the prototype yet" now have made-up locations, two to six each, so the page reads full:
+  - Victoria 6, Western Australia 4, South Australia 4, ACT 3, Tasmania 3, Northern Territory 2.
+  - Each has a collection-network row for Pathology, then imaging, DEXA, heart and VO2 places.
+  - The names are invented, on real streets. They're not Everlab's partners and are marked as such in the source, to be replaced by the site's own list.
+- **Tweaks → Clinic → Layout: Grid / Rows** (`#rows` on the page).
+  - Rows: a location per row. At the left the pin, name and address; at the right its tags, with the clinic's logo before them when it has one (96 × 48, no zone kept for the others).
+  - Under 720px the tags drop under the name.
+- **Phone (under 1000px), both layouts**:
+  - The logo sits at the right of the name (80 × 60, top right). Its red zone shows only with the Frame indicator on.
+  - The foot holds the tags alone. With no tags there's no foot, so the location hugs its name and address ("hug content if no tag").
+- Checked: every state has its list (no "not in the prototype" left). On desk, grid and rows have MeasureUp's logo left of its tags in rows. On XS the logo is at the name's right, and a location without tags ends 29px under its address. No errors.
