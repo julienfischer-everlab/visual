@@ -87,7 +87,6 @@ ${hpCss}
     <label>Theme<span class="seg" role="group" aria-label="Theme"><button type="button" data-th="dark">Dark</button><button type="button" data-th="light">Light</button></span></label>
     <label>State<select id="dmState" aria-label="The profile's state"><option value="none">Step 1</option><option value="none_d">Step 1.5 (dropped off)</option><option value="one">Step 2</option><option value="one_d">Step 2.5 (dropped off)</option><option value="two">Step 3</option><option value="two_d">Step 3.5 (dropped off)</option><option value="all">Done</option></select></label>
     <label>Step title<span class="seg" role="group" aria-label="Step title: the step's name over the dashes, or the dashes alone"><button type="button" data-stt="on">On</button><button type="button" data-stt="off">Off</button></span></label>
-    <label>Dismiss flow<span class="seg" role="group" aria-label="Dismiss flow: closing mid-way asks first, or leaves at once"><button type="button" data-dm="on">On</button><button type="button" data-dm="off">Off</button></span></label>
     <button type="button" class="go" id="dmReset">Start over</button>
   </div>
 </details>
@@ -104,7 +103,6 @@ ${hpJs}
   /* the Demo button beside the screen when it fits (28 right of the device, or in a wide Auto's gutter); else the pill under the sheet's button */
   var place = function () { var r = dev.getBoundingClientRect(), x = r.right + 28; demo.classList.toggle('side', x + 36 + 12 <= innerWidth); if (demo.classList.contains('side')) { demo.style.left = Math.round(x) + 'px'; } else demo.style.left = ''; };
   var setBp = function (b) { stage.setAttribute('data-bp', b); [].forEach.call(document.querySelectorAll('.demo [data-bp]'), function (x) { x.setAttribute('aria-pressed', String(x.getAttribute('data-bp') === b)); }); try { localStorage.setItem(KEY, b); } catch (e) {} requestAnimationFrame(place); };
-  de.classList.add('hpNoX');   // the profile's own page: nothing behind it to go back to, so no cross ("from the Health profile page directly: no dismiss"), as the prototype's menu entry
   var mount = function () { if (inst) inst.destroy(); host.textContent = ''; inst = HP.mount(host, { theme: dark() ? 'dark' : 'light', name: 'Julien', onClose: function () { if (inst) inst.home(); } }); paint(); };
   var stateOf = function () { var sm = HP.store.summary(), nx = ['wear', 'past', 'you'].filter(function (k) { return sm.st[k] !== 'done'; })[0]; return sm.n === 3 ? 'all' : ['none', 'one', 'two'][sm.n] + (nx && sm.st[nx] === 'prog' ? '_d' : ''); };
   var sel = document.getElementById('dmState');
@@ -112,10 +110,6 @@ ${hpJs}
   document.getElementById('dmReset').addEventListener('click', function () { HP.store.preset('none'); sel.value = 'none'; mount(); });
   [].forEach.call(document.querySelectorAll('.demo [data-th]'), function (b) { b.addEventListener('click', function () { de.setAttribute('data-theme', b.getAttribute('data-th')); paint(); }); });
   [].forEach.call(document.querySelectorAll('.demo [data-bp]'), function (b) { b.addEventListener('click', function () { setBp(b.getAttribute('data-bp')); }); });
-  /* the dismiss flow: closing mid-way asks first (On), or leaves at once (Off); kept as the viewport is */
-  var setDm = function (v) { HP.dismiss(v); [].forEach.call(document.querySelectorAll('.demo [data-dm]'), function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-dm') === v)); }); try { localStorage.setItem(KEY + '.dismiss', v); } catch (e) {} };
-  [].forEach.call(document.querySelectorAll('.demo [data-dm]'), function (b) { b.addEventListener('click', function () { setDm(b.getAttribute('data-dm')); }); });
-  { var dk = null; try { dk = localStorage.getItem(KEY + '.dismiss'); } catch (e) {} setDm(dk === 'off' ? 'off' : 'on'); }
   var setStt = function (v) { HP.stepTitle(v); [].forEach.call(document.querySelectorAll('.demo [data-stt]'), function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-stt') === v)); }); try { localStorage.setItem(KEY + '.steptitle', v); } catch (e) {} };
   [].forEach.call(document.querySelectorAll('.demo [data-stt]'), function (b) { b.addEventListener('click', function () { setStt(b.getAttribute('data-stt')); }); });
   { var sk = null; try { sk = localStorage.getItem(KEY + '.steptitle'); } catch (e) {} setStt(sk === 'on' ? 'on' : 'off'); }

@@ -16891,3 +16891,18 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - "Move clinic with logo at the top of the list (keep inside the group)": in each state, the locations that carry a logo come first, then the rest in their own order. It's a stable sort on whether an item names a logo in `LOGO`, done as each state is drawn; the data keeps the screenshots' order.
 - Today that's MeasureUp Brisbane, now the first of Queensland's 12. New South Wales has no logo yet, so its 61 are as they were.
 - Checked: Queensland opens with MeasureUp Brisbane and then Exercise Matters, Bayside Radiology Hervey Bay…; New South Wales unchanged; no errors.
+
+## Health profile step 1: details, Medicare, Emergency contact; the cross after step 1
+
+- **Field spec** across the profile: 12px between label and input, 16px for both, "(optional)" in secondary ink (.56), inputs 56px tall with a 1.5px inset edge and a 14px radius. Sex at birth and Yes/No are radio cards: a 20px ring, and once picked a 2px ink edge with a dot.
+- **Your personal details** ("This will allow us to order tests and provide medical services for you in Australia."): First name, Middle name (optional), Last name, Sex at birth, Date of birth (dd / mm / yyyy), Occupation (new), State. On the phone (XS/S) they're stacked. From M up (the desk, `hpWide`) First and Middle name sit side by side (`hpTwoNm`, 20px gap).
+- **State** is kept as a dropdown, "Select your state". On the phone it opens a bottom sheet, "Select state", with the eight states, a round tick on the one picked, and Confirm/Cancel. On the desk it's a menu under the field, where a tap picks and closes. Escape or a tap outside closes either one. With nothing picked, focus goes to the list rather than the first state, so NSW no longer looks chosen.
+- **Your Medicare details**: "Do you have a Medicare card?" as Yes/No radio cards.
+  - No shows an info note: government-funded testing billed as an extra cost.
+  - Yes shows Medicare card number (1234 56789 1), Reference number (1–9, with an info tip, "The number next to your name on the card") and Valid to (mm / yyyy), then "See a Medicare card example".
+  - The example is a sheet on XS (under 560 wide) and a centred modal from S up. It shows a stylised card drawn here, not the real one, with Card No. and Ref No. callouts.
+  - Home address stays at the foot of the page, since no design places it anywhere else, and the past-results search still starts from here.
+- **Emergency contact** is now its own page, moved out of Medicare ("In the unlikely event of an emergency, please provide details of who we should contact."). It asks Full name, Email, Phone number (an AU flag and +61 in front, 123 456 789) and Relationship. Step 1 is now Promise → Details → Medicare → Emergency contact → Health background.
+- **The cross**: it shows only once step 1 is done, wherever the profile was opened from (`hpW1` on the sheet). The Health profile → Dismiss flow tweak is gone, and so is the standalone page's demo option for it.
+- **Card back V1**: the five lines are regular weight and 2px larger (13.5px), each with a white square.
+- Checked on XS and desk, start to finish. Picker: sheet on XS, menu on desk. Errors show on empty fields. Medicare No/Yes and the example work. Emergency contact, then Health background. Fields are 56px tall on XS; on desk First and Middle are 250 wide each. The cross is hidden at Step 1 / 1.5 and shown from Step 2 on, from the home and from the card. No errors.
