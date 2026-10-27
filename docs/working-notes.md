@@ -17657,3 +17657,6 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 
 - Trail opacity: the Frame style's trail slider is now called "Trail opacity". It sits right under Map style in the Past results Tweaks and shows only when Frame is picked. 0% hides the trails; 100% makes them as strong as the frame where they leave it, still fading to nothing at the map's edge. Saved with Save Frame.
 - Added reports: 4px between items (was 2px).
+
+- Documentation → Flows: a screen longer than the phone now scrolls in place. Use the wheel or trackpad over it, or drag it; the canvas takes over once the screen reaches its end. The wheel sticks to whichever it started on (the screen or the canvas) for the length of one gesture, so scrolling the canvas past a screen doesn't get caught by it. A thin bar at the screen's right shows while the pointer is over it or while it scrolls (4px wide, 5px in, at any zoom). Screens that fit are unchanged. "Reading the canvas" mentions it.
+- Flows step headers: the next header now pushes the previous one up and out as it arrives, instead of stacking on top of it (each header sticks inside its own section). The title lines up with the first screen below it: sticky `left` already counted the canvas's 32px padding, so it was 32px too far right.
