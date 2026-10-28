@@ -17846,3 +17846,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - **Paragraphs**: one paragraph at a time, 24 / 28 (4px bigger), always centred, no edge mask. Each is held for 1.6 s plus 230 ms a word, leaves upward, then a 0.45 s pause before the next. At the end the previous paragraph comes back above the last at 25%, and the pair recentres (FLIP, 0.9 s). Tapping jumps to that end state.
 - Desktop letter side padding 64px (+32).
 - All set opened from the Overview (its card, or the Live version's next step) reads **Back to overview** and closes the profile. `open({ ov: true })` passes through to `opts.ov`. From anywhere else it still reads "Next, see your past results".
+- Past results: the map now sits in the header, above the title.
+- Journey panel: a **Concierge** row after Past results, with its own Open. It opens the Past results page on its second page, the Concierge intro (`openPast(1)` → `soloI`), and lights up while that page shows. Past results' Got it still leads there too.
