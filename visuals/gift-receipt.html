@@ -243,12 +243,12 @@
   (function(){ var g = $('grps').querySelector('.grp'); if (!g) return;
     var box = document.createElement('div'); box.className = 'inc' + (INC.length > SHOW ? ' shut' : '');
     box.innerHTML = '<p class="incH" id="incH">What\u2019s included</p><ul class="incL" id="incL" aria-labelledby="incH">' + INC.map(function(t){ return '<li><i class="incSq" aria-hidden="true"></i><span>' + esc(t) + '</span></li>'; }).join('') + '</ul>'
-      + (INC.length > SHOW ? '<button type="button" class="incMore" aria-expanded="false" aria-controls="incL"><span>Show all ' + INC.length + '</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></button>' : '');
+      + (INC.length > SHOW ? '<button type="button" class="incMore" aria-expanded="false" aria-controls="incL"><span>See more</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></button>' : '');
     g.appendChild(box);
     var L = box.querySelector('.incL'), b = box.querySelector('.incMore'); if (!b) return;
     var shutH = function(){ var li = L.children[SHOW - 1]; return li ? li.offsetTop - L.offsetTop + li.offsetHeight : L.scrollHeight; };   // down to the fourth's foot
     var fit = function(){ L.style.maxHeight = (box.classList.contains('shut') ? shutH() : L.scrollHeight) + 'px'; };
-    b.addEventListener('click', function(){ var open = box.classList.contains('shut'); box.classList.toggle('shut', !open); b.setAttribute('aria-expanded', String(open)); b.firstChild.textContent = open ? 'Show less' : 'Show all ' + INC.length; fit(); });
+    b.addEventListener('click', function(){ var open = box.classList.contains('shut'); box.classList.toggle('shut', !open); b.setAttribute('aria-expanded', String(open)); b.firstChild.textContent = open ? 'See less' : 'See more';   /* "See more" (was Show all 6); open, See less */ fit(); });
     fit(); addEventListener('resize', fit); if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
   })();
   var BEAT = { H1: 1, P: 1, SECTION: 2, DIV: 3 };   // the logo 0; the title and its line 1; the card 2; the buttons and the help line 3

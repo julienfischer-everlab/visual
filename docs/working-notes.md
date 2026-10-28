@@ -17877,3 +17877,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   5. The second exchange: "Can I ask my doctor too?" and "Yes—tap 'Reach your care team' below."
   6. A 2.9 s hold, then the thread moves up 32px and fades. The empty field returns, pauses 1.5 s and the loop restarts.
   - Reduced motion and stills show the whole conversation.
+- Gift receipt: the list's toggle reads "See more" (was "Show all 6"), and "See less" when open.
