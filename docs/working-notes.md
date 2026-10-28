@@ -18013,3 +18013,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 ## Overview never on Step 1
 
 - The Overview's Health profile card can no longer show Step 1. Whenever the card repaints, or the profile closes (`hpOn` removed), and the store is still at Step 1 with the profile not open, `step2()` sets it to Step 2 (`store.preset('one')`). This catches every way back to Step 1: a saved setup, the reveal's fresh profile after Steven's note, or the State tweak. Inside the profile and the onboarding, Step 1 still plays as before. Checked: the card shows "Book your consultation" after a load, after setting the State tweak to Step 1, and after going through the note and back to the Overview.
+
+## From the Overview: Past results closes on Got it; no Flow panel
+
+- The Overview's past results card opens Past results with `ov` (`_hp.past(0, true)`). There, Got it simply closes the modal; the HP `fwd()` for `res` calls `onClose` when `opts.ov && opts.solo === 'res'`. Opened from the Flow panel or Tweaks, Got it still leads on to the Concierge introduction.
+- A page opened from the Overview (its Health profile card or its past results card) is a standalone page: no Flow panel, no Flow button, nothing docked (`window.__hpFromOv`, checked in `jny`). Opened from the Flow panel or Tweaks, the panel shows as before.
