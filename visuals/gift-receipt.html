@@ -62,9 +62,12 @@
   .on .sky .img{opacity:1;transform:none;}
   :root.noBg .skyClip{display:none;}
   /* Tweaks -> Gift receipt -> Background: Warm (#warm), the Health profile's light at the top ("add bg warm same as health profile, on top"): the reveal's light, its lower part, fading to the page; with Logo animated it comes once the dot lands at the top */
-  .grWarm{display:none;position:absolute;left:0;right:0;top:0;z-index:0;height:max(320px, 44vh);pointer-events:none;background:linear-gradient(180deg, rgba(186,90,16,.46) 0%, rgba(109,35,5,.32) 30%, rgba(60,18,4,.16) 58%, rgba(27,7,3,.05) 80%, rgba(1,0,1,0) 100%);opacity:0;transition:opacity 1.2s ease;}
-  :root[data-theme="light"] .grWarm{background:linear-gradient(180deg, rgba(252,201,125,.55) 0%, rgba(233,152,62,.22) 35%, rgba(233,152,62,.06) 70%, rgba(233,152,62,0) 100%);}
-  :root.warmBg .grWarm{display:block;} :root.warmBg.on:not(.logoAnim) .grWarm, :root.warmBg.lgLit .grWarm{opacity:1;}   /* Tweaks -> Gift receipt -> Background: None, the plain ground ("tweak without bg"); also #nobg on the page's own link */
+  /* the warm top, the Health profile's own ("Health profile top bg seems different, please double check"): the light the profile wears at its top, as it stands there, read off it and set here the same way.
+     The card screen's picture and its warm gradient (100% x 109.5%), 81.7% of the screen high from 7.5% above it, raised by 47.9% of itself so its bottom glows over the top third; 80% saturation, faded out from 58% of its height, its grain over it (35%, overlay); at 24% */
+  .grWarm{display:none;position:absolute;left:0;top:-7.503vh;z-index:0;width:100%;height:81.712vh;pointer-events:none;transform:translateY(-47.92%);background:url("../assets/welcome/card-glow.webp") top center / 100% 109.5% no-repeat, linear-gradient(180deg, #ffd99d 0%, #fcc97d 26%, #e9983e 39%, #ba5a10 48%, #6d2305 61%, #1b0703 77%, #010001 100%) top center / 100% 109.5% no-repeat;filter:saturate(.8);-webkit-mask:linear-gradient(#000 58%, transparent 100%);mask:linear-gradient(#000 58%, transparent 100%);opacity:0;transition:opacity 1.2s ease;--wA:.24;}
+  .grWarm::after{content:"";position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22150%22%20height%3D%22150%22%3E%3Cfilter%20id%3D%22n%22%3E%3CfeTurbulence%20type%3D%22fractalNoise%22%20baseFrequency%3D%220.92%22%20numOctaves%3D%223%22%20stitchTiles%3D%22stitch%22%2F%3E%3CfeColorMatrix%20values%3D%220.33%200.33%200.33%200%200%200.33%200.33%200.33%200%200%200.33%200.33%200.33%200%200%200%200%200%200%201%22%2F%3E%3CfeComponentTransfer%3E%3CfeFuncR%20type%3D%22linear%22%20slope%3D%222.2%22%20intercept%3D%22-.6%22%2F%3E%3CfeFuncG%20type%3D%22linear%22%20slope%3D%222.2%22%20intercept%3D%22-.6%22%2F%3E%3CfeFuncB%20type%3D%22linear%22%20slope%3D%222.2%22%20intercept%3D%22-.6%22%2F%3E%3C%2FfeComponentTransfer%3E%3C%2Ffilter%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20filter%3D%22url(%23n)%22%2F%3E%3C%2Fsvg%3E") 0 0 / 150px 150px repeat;opacity:.35;mix-blend-mode:overlay;}
+  :root[data-theme="light"] .grWarm{top:0;height:max(320px, 44vh);transform:none;filter:none;-webkit-mask:none;mask:none;background:linear-gradient(180deg, rgba(252,201,125,.55) 0%, rgba(233,152,62,.22) 35%, rgba(233,152,62,.06) 70%, rgba(233,152,62,0) 100%);--wA:1;} :root[data-theme="light"] .grWarm::after{display:none;}
+  :root.warmBg .grWarm{display:block;} :root.warmBg.on:not(.logoAnim) .grWarm, :root.warmBg.lgLit .grWarm{opacity:var(--wA);}   /* Tweaks -> Gift receipt -> Background: Warm; it comes in once the dot has landed */
 
   /* ---- the page: the wordmark, then the column ---- */
   .top{position:relative;z-index:1;display:flex;justify-content:center;padding:52px 24px 0;}   /* 24 more above the logo, desk and phone ("+24px margin top logo"; was 28) */
@@ -75,6 +78,7 @@
   .lgStage{display:none;position:absolute;left:50%;top:50vh;z-index:2;width:48px;height:51px;margin:-25.5px 0 0 -24px;color:var(--ink);pointer-events:none;} :root.logoAnim .lgStage{display:block;}
   .lgSpin{--sp:url(../assets/welcome/everlab-mark-spin.webp);position:absolute;inset:0;background:currentColor;-webkit-mask:var(--sp) 0 0 / 2496px 51px repeat-x;mask:var(--sp) 0 0 / 2496px 51px repeat-x;}   /* the strip named once (inlined once) */
   .lgChk{position:absolute;left:50%;top:50%;width:40px;height:40px;margin:-20px 0 0 -20px;overflow:visible;opacity:0;} .lgChk path{fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:22;stroke-dashoffset:22;}
+  .lgWake{display:none;position:absolute;left:0;top:0;z-index:2;width:100%;height:100vh;pointer-events:none;} :root.logoAnim .lgWake{display:block;}   /* the dot's wake: floating specks left behind it as it rises, widening into a triangle under it */
   .lgPt{position:absolute;left:50%;top:50%;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;background:currentColor;opacity:0;}
   @keyframes lgTurn{to{-webkit-mask-position:-2496px 0;mask-position:-2496px 0;}}
   :root.logoAnim .top{animation:none !important;opacity:0 !important;}   /* the dot is the header while it plays */
@@ -114,7 +118,7 @@
   .inc.shut .incL{--incA:0;}
   .incL li{display:grid;grid-template-columns:5px minmax(0,1fr);column-gap:12px;align-items:start;padding:5px 0;font-size:14px;line-height:20px;color:var(--ink);text-wrap:pretty;}
   .incL li .incSq{display:block;width:5px;height:5px;margin-top:7.5px;background:var(--acc);}   /* orange ("orange square") */   /* a small square before each line, no icon ("square no icon"), as the card back's list */
-  .incMore{display:flex;align-items:center;gap:6px;width:fit-content;height:32px;margin:2px auto 0;padding:0;border:0;background:none;color:var(--ink);font:500 14px/20px var(--sans);cursor:pointer;}
+  .incMore{display:flex;align-items:center;gap:6px;width:fit-content;height:32px;margin:14px auto 0;padding:0;border:0;background:none;color:var(--ink);font:500 14px/20px var(--sans);cursor:pointer;}   /* 12 more above it ("+12px margin top") */
   .incMore svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;transition:transform .3s ease;} .inc:not(.shut) .incMore svg{transform:rotate(180deg);}
   .incMore:hover{color:var(--ink2);}   /* centred under the list ("see more centered") */ .incMore:focus-visible{outline:2px solid var(--acc);outline-offset:3px;border-radius:6px;}
   @media (prefers-reduced-motion: reduce){ .incL, .incMore svg{transition:none;} }
@@ -190,10 +194,10 @@
 </defs>
 </svg></a></header>
 <i class="grWarm" aria-hidden="true"></i>
-<div class="lgStage" aria-hidden="true"><i class="lgSpin"></i><svg class="lgChk" viewBox="0 0 24 24"><path d="M5.5 12.6l4.2 4.2 8.8-9"/></svg><i class="lgPt"></i></div>
+<canvas class="lgWake" aria-hidden="true"></canvas><div class="lgStage" aria-hidden="true"><i class="lgSpin"></i><svg class="lgChk" viewBox="0 0 24 24"><path d="M5.5 12.6l4.2 4.2 8.8-9"/></svg><i class="lgPt"></i></div>
 <main class="rc" id="rc">
   <h1>Your gift is on its way to Olive</h1>
-  <p class="sub">We’ll let Olive know about their gift <span class="ifNow">as soon as your payment is confirmed</span><span class="ifSch">on your intended gifting date</span>. Your receipt has been sent to <b>marc.taylor@example.com</b>.</p>
+  <p class="sub">We’ll let Olive know about their gift <span class="ifNow">as soon as your payment is confirmed</span><span class="ifSch">on your intended gifting date</span>. Your receipt has been sent to <b>marc.taylor@example.com</b></p>
   <section class="card" aria-label="Gift summary">   <!-- no title over the cards ("remove": Gift summary) -->
     <div class="grps" id="grps"></div>
   </section>
@@ -258,7 +262,22 @@
     var spin = st.querySelector('.lgSpin'), chk = st.querySelector('.lgChk'), cp = chk.querySelector('path'), pt = st.querySelector('.lgPt'), T = [], born = performance.now();
     var reduced = function(){ return !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches); };
     var E = 'cubic-bezier(.65, 0, .35, 1)', F = 'forwards';
-    var stop = function(){ T.forEach(clearTimeout); T = []; [st, spin, chk, cp, pt].forEach(function(e){ e.getAnimations().forEach(function(a){ a.cancel(); }); }); root.classList.remove('lgT', 'lgC', 'lgLit'); };
+    /* the wake ("floating particles on top of the dot, to feel it moving; they fit into a triangle"): specks shed by the dot as it rises, more the quicker it goes, each left where it was dropped, drifting a little down and out to its side, wider the older it is: a cone, its point at the dot; they float on and fade once it has landed */
+    var wk = document.querySelector('.lgWake'), wx = wk && wk.getContext('2d'), P = [], wRaf = 0, wOn = false, wLast = null, wT = 0, wCol = '240, 138, 60';
+    var wSize = function(){ var d = Math.min(2, window.devicePixelRatio || 1); wk.width = Math.round(innerWidth * d); wk.height = Math.round(innerHeight * d); wx.setTransform(d, 0, 0, d, 0, 0); };
+    var wDot = function(){ var r = pt.getBoundingClientRect(), c = wk.getBoundingClientRect(); return [r.left + r.width / 2 - c.left, r.top + r.height / 2 - c.top]; };
+    var wFrame = function(now){ wRaf = 0; var dt = Math.min(.05, wT ? (now - wT) / 1000 : .016); wT = now;
+      if (wOn){ var d = wDot(); if (wLast){ var dist = Math.hypot(d[0] - wLast[0], d[1] - wLast[1]), n = Math.min(14, dist * .55 + (Math.random() < .3 ? 1 : 0));
+          for (var i = 0; i < n; i++){ var f = Math.random(), sd = Math.random() < .5 ? -1 : 1; P.push({ x: wLast[0] + (d[0] - wLast[0]) * f + (Math.random() - .5) * 3, y: wLast[1] + (d[1] - wLast[1]) * f + (Math.random() - .5) * 3, vx: sd * Math.pow(Math.random(), .7) * 95, vy: 6 + Math.random() * 18, a: 0, life: 1.5 + Math.random() * 1, r: .5 + Math.random() * 1.1, w: Math.random() < .35 }); } }
+        wLast = d; }
+      wx.clearRect(0, 0, wk.width, wk.height);
+      for (var j = P.length - 1; j >= 0; j--){ var q = P[j]; q.a += dt; if (q.a >= q.life){ P.splice(j, 1); continue; } var k = q.a / q.life;
+        q.x += q.vx * dt; q.y += q.vy * dt; q.vx *= 1 - .45 * dt; q.vy *= 1 - .9 * dt; q.x += Math.sin((q.a + j) * 3) * 4 * dt;   // out to its side, slowing; a little sway
+        wx.globalAlpha = Math.min(1, q.a * 8) * (1 - k) * (1 - k) * .9; wx.fillStyle = q.w ? 'rgb(255, 236, 214)' : 'rgb(' + wCol + ')'; wx.beginPath(); wx.arc(q.x, q.y, q.r * (1 - k * .4), 0, 6.283); wx.fill(); }
+      wx.globalAlpha = 1; if (wOn || P.length) wRaf = requestAnimationFrame(wFrame); };
+    var wake = function(on){ if (!wx) return; if (on){ wSize(); wCol = (getComputedStyle(root).getPropertyValue('--acc').trim().match(/^#([0-9a-f]{6})$/i) || [0, 'f08a3c'])[1].match(/../g).map(function(h){ return parseInt(h, 16); }).join(', '); wOn = true; wLast = null; wT = 0; if (!wRaf) wRaf = requestAnimationFrame(wFrame); } else wOn = false; };
+    var wStop = function(){ wOn = false; P = []; if (wRaf) cancelAnimationFrame(wRaf); wRaf = 0; if (wx) wx.clearRect(0, 0, wk.width, wk.height); };
+    var stop = function(){ wStop(); T.forEach(clearTimeout); T = []; [st, spin, chk, cp, pt].forEach(function(e){ e.getAnimations().forEach(function(a){ a.cancel(); }); }); root.classList.remove('lgT', 'lgC', 'lgLit'); };
     var lift = function(){ var L = logo.getBoundingClientRect(), S = st.getBoundingClientRect(); return (L.top + L.height / 2 + window.scrollY) - (S.top + S.height / 2 + window.scrollY); };   // from the middle of the screen to the logo's middle
     var at = function(ms, fn){ T.push(setTimeout(fn, ms)); };
     var play = function(){ stop(); window.scrollTo(0, 0);
@@ -271,11 +290,12 @@
         cp.animate([{ strokeDashoffset: 22 }, { strokeDashoffset: 0 }], { duration: 460, delay: 120, easing: 'cubic-bezier(.3, 0, .2, 1)', fill: 'both' }); });
       at(3500, function(){ chk.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'scale(.12)' }], { duration: 320, easing: 'cubic-bezier(.55, 0, .75, .2)', fill: F });   // held, then gathered into the dot
         pt.animate([{ opacity: 0, transform: 'scale(0)' }, { opacity: 1, transform: 'scale(1.3)', offset: .55 }, { opacity: 1, transform: 'none' }], { duration: 440, delay: 200, easing: 'cubic-bezier(.2, .8, .2, 1)', fill: 'both' }); });
-      at(4300, function(){ var dy = lift(); st.animate([{ transform: 'none' }, { transform: 'translateY(' + dy + 'px)' }], { duration: 820, easing: E, fill: F });   // the dot up to the header
-        pt.animate([{ transform: 'none' }, { transform: 'scale(.8)' }], { duration: 820, easing: E, fill: F }); });
-      at(5100, function(){ root.classList.add('lgLit'); });   // the dot landed: the warm light comes in
-      at(4900, function(){ root.classList.add('lgT'); });   // the title under it
-      at(5450, function(){ root.classList.add('lgC'); }); };   // then the cards
+      at(4300, function(){ var dy = lift(), Q = 'cubic-bezier(.83, 0, .17, 1)'; st.animate([{ transform: 'none' }, { transform: 'translateY(' + dy + 'px)' }], { duration: 1000, easing: Q, fill: F });   // the dot up to the header, easeInOutQuint ("dot movement": a slow start, quick through the middle, a soft landing)
+        pt.animate([{ transform: 'none' }, { transform: 'scale(.8)' }], { duration: 1000, easing: Q, fill: F }); wake(true); });
+      at(5300, function(){ wake(false); });   // landed: no more specks, the last ones floating away
+      at(5300, function(){ root.classList.add('lgLit'); });   // the dot landed: the warm light comes in
+      at(5000, function(){ root.classList.add('lgT'); });   // the title under it
+      at(5600, function(){ root.classList.add('lgC'); }); };   // then the cards
     window.grLogo = function(on, replay){ var was = root.classList.contains('logoAnim'); root.classList.toggle('logoAnim', !!on); if (!on){ stop(); return; } if (was && !replay) return; stop(); root.classList.add('logoAnim'); var wait = Math.max(0, 450 - (performance.now() - born)); if (wait) at(wait, play); else play(); };
     if (/(^|[#&])logoanim(&|$)/.test(location.hash)) window.grLogo(true);   // the page's own link (the prototype opens it so when Header is Logo animated)
   })();

@@ -17747,3 +17747,14 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - While it's up, the reveal's timeline shows (not the profile's journey) and Tweaks shows First-time user, not the profile's tweaks.
   - Let's begin hands over to the profile, its journey and its tweaks.
   - Documentation's note screens open the Membership reveal, and its Intro · title 2 arrow now plays from the second title.
+- Note from Steven, as a personal welcome:
+  - Steven's avatar large (96) in the middle, "Hi <first name>, I'm Dr Steven Lu." / "I'm really glad you're here." under it, line by line, held to be read (about 2.7 s).
+  - The greeting fades as the same avatar shrinks and moves to the top centre in one move (easeInOutCubic, 0.85 s), into a header held at the top (sticky): avatar 56, Dr Steven Lu, Everlab Co-founder (they fade in as it settles).
+  - The letter from "Everlab exists to look after all of your health…": a paragraph at a time, word by word (52 ms a word, each clearing from a light blur), 420 ms between paragraphs, each kept. Its words are laid out from the start, so nothing moves.
+  - Let's begin fades in once the last paragraph is there. A tap shows it all, and the button, at once.
+  - Drawn still (Documentation, back from the home, reduced motion): the end state. The signature at the foot and the "A note from Steven" eyebrow are gone (the header says who).
+- Gift receipt:
+  - The dot's move up is easeInOutQuint (1 s, was 0.82 s with an in-out cubic). The title, warm light and cards follow it a little later.
+  - The dot leaves floating specks as it rises (a canvas): shed more the quicker it goes, each drifting out to its side and a little down, wider the older. A triangle, its point at the dot. They float off and fade once it lands.
+  - The warm top is now the Health profile's own light, read off the profile as it stands: the card screen's picture (card-glow.webp) and its warm gradient, 81.7% of the screen high from 7.5% above, raised 47.9%, 80% saturation, masked out from 58%, its grain (35%, overlay), at 24%. It was a brighter gradient of its own. Light mode keeps its soft wash.
+  - No full stop after the email. Show all 12px lower (14 from the list).
