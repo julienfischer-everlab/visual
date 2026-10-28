@@ -17740,3 +17740,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The Desktop frames are 12px round on screen, whatever the zoom (were 14 before the zoom).
 - Health profile, home → a step (Start the questions): no dark band over the bottom any more. The home is taller than the view and clipped its own overflow; rising to leave, its box took that clip up with it and left an empty band above the CTA (over the last step card). The leaving page now drops its clip (the view still clips), its scroll position kept in the move.
 - Documentation → Health profile flows → All complete: each Overview card has its state under it, as a screen's caption: All set (the call more than a day off, >24h), Approaching (today, <24h), Imminent (within the hour, <1h: Join call). The column's caption now reads "Its three states, by how near the call is".
+- Membership reveal timeline: a panel beside the phone (at the window's top left when there's no room there, as on the desk's full modal), as the Health profile's journey.
+  - Its five moments: Intro #1 title, Intro #2 title, Dot particles, Card membership, Note from Steven.
+  - The one playing is lit (orange dot) as the reveal runs. Pressing one plays the reveal from there. Intro #2 starts on the second title, the first left out (welcome `from: 't2'`).
+- Note from Steven is the reveal's last screen, not the Health profile ("not health profile"):
+  - While it's up, the reveal's timeline shows (not the profile's journey) and Tweaks shows First-time user, not the profile's tweaks.
+  - Let's begin hands over to the profile, its journey and its tweaks.
+  - Documentation's note screens open the Membership reveal, and its Intro · title 2 arrow now plays from the second title.
