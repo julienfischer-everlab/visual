@@ -17956,3 +17956,12 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 ## Concierge intro: WIP badge
 
 - An orange "WIP" pill sits above "Meet Concierge" (`.hpCcWip`: 22px tall, orange at 16% behind #FF8A3D text, 11px semibold with letter-spacing, 12px above the title).
+
+## Note order, card auto-flip, Overview at Step 2, dismiss from the Overview
+
+- Steven's note runs in order again: the avatar rises; once it settles, the name and role fade up 8px under it (`hpLtrS3` at T); the letter starts 550ms later (`T += 550`). This replaces the earlier version where the title rose together with the avatar.
+- Card screen (V2): the card turns over every 3s once it is ready (`af()`, started where `hpW2Ready` is added). A tap flips it at once and restarts the 3s count. There is no auto-flip in stills or snaps, or while the card is being signed.
+- The Overview always starts the Health profile at Step 2: `store.preset('one')` runs on load unless the page is in Membership onboarding (the note still resets to a fresh profile itself). The card reads "Book your consultation".
+- Opened from the Overview's card (`ov: true`): `_hpBack.ok()` returns false, so the floating Back beside the phone is gone, and `.hpDism` forces the header's X visible on every page, including Step 1, to close the full modal.
+- Concierge intro: orange WIP badge (earlier commit).
+- Not done: "Looking for a service?" — I couldn't find a visible "Services" heading over the tiles in any version tried (v5, pr, welc at XS); asked the user where it shows.
