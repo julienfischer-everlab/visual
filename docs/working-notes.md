@@ -17965,3 +17965,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Opened from the Overview's card (`ov: true`): `_hpBack.ok()` returns false, so the floating Back beside the phone is gone, and `.hpDism` forces the header's X visible on every page, including Step 1, to close the full modal.
 - Concierge intro: orange WIP badge (earlier commit).
 - Not done: "Looking for a service?" — I couldn't find a visible "Services" heading over the tiles in any version tried (v5, pr, welc at XS); asked the user where it shows.
+
+## Letter reveal line by line; first title shorter; saved note mode respected
+
+- Letter mode reveals its text line by line, 90ms apart. Words are grouped into lines by their on-screen top. There is no blur and no ember: words rise 6px and fade in over .4–.5s. The previous version revealed paragraph by paragraph, 380ms apart, with the blurred word animation.
+- The first greeting ("Hi, I'm Dr Steven Lu.") stays 0.5s less: T2 = IN + BY[0] + 700 (was 1200).
+- Saving the Tweaks already covered Steven's note, Card, Font size and Line height (checked across a reload). What undid it was the timeline's "Note from Steven" row, which always switched Letter back to Word by word. That row now uses the saved mode (everlab:tkAll), falling back to Word by word when nothing is saved. "Letter view" still forces Letter.
