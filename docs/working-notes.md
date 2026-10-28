@@ -17784,3 +17784,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - No Delivery property. Instead a line under Back to overview, over the help line: "The gift will be sent as soon as your payment is confirmed" ("on 14 Nov 2026" when scheduled), 14 px, secondary.
   - The card's title is "Occasion" (was Reason & Occasion).
 - Gift receipt: 4px more under What's included (6, was 2).
+- Gift receipt: What's included lines 6 apart (were 8).
