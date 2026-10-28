@@ -18002,3 +18002,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Both columns are 320px (`--flDockW`, `--tkDockW`, and the JS that reads the Tweaks dock width). The segmented switches inside the docked Tweaks are tighter (8px padding, 12px text) so three options fit.
 - Desktop card screen to Steven's note: the card's dark mask (`.hpW2Bl`, a card-sized hole in a 200vmax box-shadow) used to stay behind as the card left, showing an outlined frame where the card had been. It now fades out over 260ms with the card.
 - Steven's avatar is the new photo (832px jpg sent as a zip, decoded with ffmpeg, centre-cropped to 224px webp) in `assets/overview/avatar-steven.webp`. That updates the note and every other place the file is used.
+
+## Concierge intro: slower bubbles, latest at full, centred; cards removed
+
+- The bubbles come in about 1.5x slower: each step's wait is longer (450→700, 1200→1800, 1800→2700, 600→900, 1100→1650, held 2900→3200ms), and the entrance runs .7s (was .45s).
+- Only the latest bubble is at full opacity; the ones before it sit at 50% (`.hpCcTh > .hpCcB:has(~ .hpCcB)`). The entrance animation now fills `backwards` only, so it no longer holds opacity at 1.
+- The active bubble (or the Thinking indicator) is always centred vertically in the frame. On each new item the thread's `padding-bottom` is set so its middle meets the frame's middle, eased over .7s, with older bubbles rising above it. It resets when the loop starts again. Checked: an offset of 0px for each new bubble.
+- Removed the three cards under the chat (Ask Eva anything, Reach your care team, Book in a few taps).
