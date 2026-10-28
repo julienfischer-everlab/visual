@@ -17794,3 +17794,6 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The foot's two lines 32 from the screen's edge (the page's 24 and 8, were 24 + 32), and 4 apart (were 8).
 - Membership reveal timeline: its two title rows show the words as Tweaks -> First-time user -> Opening copy has them, with the member's name (#1 Welcome to Everlab. / A big step forward, Julien.; #2 Welcome to Everlab, Julien. / This is the beginning of knowing your health…). They had #1's words written in, so they didn't match the screens with #2 picked.
 - Gift receipt foot: its two lines as wide as they go (text-wrap pretty, no word left alone), not balanced in half.
+- Tweaks: the records card's controls (Records processing, Records card, Border light and its speed, brightness, length) are a group of their own, "Past result card", out of the Primary card. It shows on the Overview and the Health profile page, with its own floating + beside the records card on the Overview.
+- Past results: the search map 30% smaller (207 px wide, the desk 238; was 296 / 340), the two cards under it up with it.
+- Why two browsers show different versions: Tweaks' Save keeps the setup in that browser's own storage (everlab:tkAll), per browser and per app. A Claude app window and Chrome each have their own saved Tweaks (Opening copy #1 vs #2, card screen copy and so on).
