@@ -17939,3 +17939,12 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - New Tweak under Note from Steven: Card, Yes / No (`#stHpLtrCard`, `html.hpLtrNoCard`). Yes is the outlined card. No removes the outline and the inner padding; the 16px margin at the sides stays.
 - The Letter's paragraph gap is now 10px instead of 16, in both versions.
 - While the main Tweaks panel is open (`html.tkDocked`), the floating + shortcuts to each screen's own tweaks, and their panels, are hidden.
+
+## Steven's note: type tweaks, subtitle, timing; viewport readout
+
+- New Tweaks under Note from Steven: Font size (10–18, default 12) and Line height (12–32, default 16) for the Letter, set live through `--ltrFs` and `--ltrLh`.
+- The subtitle is now "Notes from Everlab Co-founder". The gap under the avatar is 2px (was 4).
+- The Letter has 12px more margin above it.
+- The name and role now rise with the avatar: `hpLtrS3` is set at IN + HOLD, when the avatar starts up, and the title travels 24px on the avatar's curve (.65,0,.35,1) over 850ms. Before, it faded in only after the avatar had settled.
+- Top bar: the "Viewport" label comes after the select, and the readout drops "(forced, window N)".
+- Not applied: the −2px gap between name and role. That edit was rejected mid-turn.
