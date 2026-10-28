@@ -17761,3 +17761,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Gift receipt:
   - The first card (Gifted product) is 4% brighter than the others: white at 8% on the dark (the others 4%), ink at 10% on the light (6%).
   - What's included: its lines 8 apart (were 10).
+- Gift receipt dot's wake, the other way round:
+  - Specks few as the dot sets off and more and more as it nears the header. Each is put out to its side by how far along the move it was dropped, so the trail is a point where the dot started and wide at the dot.
+  - They hang where they were left, swaying and rising a little, fading over 2.4–4.2 s.
+  - Once it has landed, a few keep rising round the dot for as long as the page is up.
+- Gift receipt, Gifted product:
+  - On S, M, L the badge sits inline beside the title, the 64 picture at the right. On XS the badge stays under the title, the picture beside both.
+  - The badge 2px more padding (6 × 12).

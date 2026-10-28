@@ -102,9 +102,9 @@
   .grpH{margin:0;padding:8px 0 4px;font:500 18px/24px var(--sans);letter-spacing:-.005em;color:var(--ink);}   /* the card titles 18 px ("card title 18px"; was 15) */
   .grpTop{display:flex;align-items:center;justify-content:space-between;gap:12px;} .grpTop .grpH{min-width:0;}
   /* Tweaks -> Gift receipt -> Card visual (#vis on the page's own link): a picture down the Gifted product card's right side, the full height of the card, its outer corners the card's ("added a right bg"); the words and the list beside it */
-  :root.cardVis .grpVis .grpTop{display:grid;grid-template-columns:minmax(0, 1fr) 64px;column-gap:16px;row-gap:8px;align-items:start;} :root.cardVis .grpVis .grpBadge{grid-column:1;justify-self:start;margin-top:0;}   /* the title and the badge stacked at the left, the picture beside them; What's included the card's full width below ("64 x 64 rounded 20 image on the right, next to the h2 and chip") */
-  .grpImg{display:none;} :root.cardVis .grpVis .grpImg{display:block;grid-column:2;grid-row:1 / span 2;width:64px;height:64px;margin-top:6px;border-radius:20px;background:url(../assets/gift/product-visual.webp) 50% 50% / cover no-repeat;}
-  .grpBadge{flex:none;margin-top:4px;padding:4px 10px;border-radius:999px;background:var(--badge);color:var(--ink);font:500 13px/18px var(--sans);white-space:nowrap;}   /* the product, a badge at the title's right ("Diagnostic membership") */
+  :root.cardVis .grpVis .grpTop{display:grid;grid-template-columns:auto minmax(0, 1fr) 64px;column-gap:12px;row-gap:8px;align-items:center;} :root.cardVis .grpVis .grpBadge{grid-column:2;grid-row:1;justify-self:start;margin-top:0;}   /* S, M, L: the title, the badge inline beside it, the picture at the right ("inline on S M L") */   /* the title and the badge stacked at the left, the picture beside them; What's included the card's full width below ("64 x 64 rounded 20 image on the right, next to the h2 and chip") */
+  .grpImg{display:none;} :root.cardVis .grpVis .grpImg{display:block;grid-column:3;grid-row:1;width:64px;height:64px;margin-top:0;border-radius:20px;background:url(../assets/gift/product-visual.webp) 50% 50% / cover no-repeat;}
+  .grpBadge{flex:none;margin-top:4px;padding:6px 12px;border-radius:999px;background:var(--badge);color:var(--ink);font:500 13px/18px var(--sans);white-space:nowrap;}   /* the product, a badge at the title's right ("Diagnostic membership") */
   .row{display:grid;grid-template-columns:minmax(0, 9em) minmax(0, 1fr);column-gap:16px;padding:5px 0;font-size:14px;line-height:20px;}   /* the properties 14 px ("props 14px font size") */   /* no rules between the rows ("remove divider"): the groups and their space hold them */
   .row dt{display:flex;align-items:flex-start;gap:8px;color:var(--ink2);}
   .row dt svg{flex:none;width:16px;height:16px;margin-top:2px;fill:none;stroke:currentColor;stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round;}
@@ -151,6 +151,7 @@
 
   /* ---- the phone: the rows still two columns ("keep 2 cols for properties"), the label's narrower ---- */
   @media (max-width:479px){
+    :root.cardVis .grpVis .grpTop{grid-template-columns:minmax(0, 1fr) 64px;column-gap:16px;align-items:start;} :root.cardVis .grpVis .grpBadge{grid-column:1;grid-row:2;} :root.cardVis .grpVis .grpImg{grid-column:2;grid-row:1 / span 2;margin-top:6px;}   /* XS: the badge under the title, the picture beside both */
     .top{padding-top:48px;}
     .rc{padding:52px 24px 40px;}   /* the title 24 higher ("title move up by 24px"; was 76, 88 on the desk) */   /* 24 at each side ("padding left right 24px"; was 20) */
     .card{margin-top:44px;padding:12px 20px 14px;}   /* 12 more under the title group ("title group margin bottom +12px") */
@@ -262,21 +263,29 @@
     var spin = st.querySelector('.lgSpin'), chk = st.querySelector('.lgChk'), cp = chk.querySelector('path'), pt = st.querySelector('.lgPt'), T = [], born = performance.now();
     var reduced = function(){ return !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches); };
     var E = 'cubic-bezier(.65, 0, .35, 1)', F = 'forwards';
-    /* the wake ("floating particles on top of the dot, to feel it moving; they fit into a triangle"): specks shed by the dot as it rises, more the quicker it goes, each left where it was dropped, drifting a little down and out to its side, wider the older it is: a cone, its point at the dot; they float on and fade once it has landed */
-    var wk = document.querySelector('.lgWake'), wx = wk && wk.getContext('2d'), P = [], wRaf = 0, wOn = false, wLast = null, wT = 0, wCol = '240, 138, 60';
+    /* the wake ("floating particles on top of the dot, to feel it moving"; then "more at the end of the dot's movement, still floating once it lands, the trail the other way around"):
+       specks shed along the dot's path, few as it sets off, more and more as it nears the header; each one put out to its side by how far along the move it was dropped, so the trail is a point where the dot started, wide at the dot (a triangle the other way up);
+       they hang where they were left, drifting and swaying, fading slowly; once it has landed, a few keep rising round it, floating for as long as the page is up */
+    var wk = document.querySelector('.lgWake'), wx = wk && wk.getContext('2d'), P = [], wRaf = 0, wMode = 0, wLast = null, wT = 0, wT0 = 0, wAmb = 0, wCol = '240, 138, 60', WD = 1000;   // wMode: 0 off, 1 the move, 2 landed (floating)
     var wSize = function(){ var d = Math.min(2, window.devicePixelRatio || 1); wk.width = Math.round(innerWidth * d); wk.height = Math.round(innerHeight * d); wx.setTransform(d, 0, 0, d, 0, 0); };
     var wDot = function(){ var r = pt.getBoundingClientRect(), c = wk.getBoundingClientRect(); return [r.left + r.width / 2 - c.left, r.top + r.height / 2 - c.top]; };
+    var wAdd = function(x, y, spread, o){ var sd = Math.random() < .5 ? -1 : 1, u = Math.pow(Math.random(), .6); P.push(Object.assign({ x: x + sd * u * spread, y: y + (Math.random() - .5) * 6, vx: sd * u * (4 + Math.random() * 10), vy: (Math.random() - .6) * 10, a: 0, life: 2.4 + Math.random() * 1.8, r: .5 + Math.random() * 1.1, w: Math.random() < .35, ph: Math.random() * 6.283 }, o || {})); };
     var wFrame = function(now){ wRaf = 0; var dt = Math.min(.05, wT ? (now - wT) / 1000 : .016); wT = now;
-      if (wOn){ var d = wDot(); if (wLast){ var dist = Math.hypot(d[0] - wLast[0], d[1] - wLast[1]), n = Math.min(14, dist * .55 + (Math.random() < .3 ? 1 : 0));
-          for (var i = 0; i < n; i++){ var f = Math.random(), sd = Math.random() < .5 ? -1 : 1; P.push({ x: wLast[0] + (d[0] - wLast[0]) * f + (Math.random() - .5) * 3, y: wLast[1] + (d[1] - wLast[1]) * f + (Math.random() - .5) * 3, vx: sd * Math.pow(Math.random(), .7) * 95, vy: 6 + Math.random() * 18, a: 0, life: 1.5 + Math.random() * 1, r: .5 + Math.random() * 1.1, w: Math.random() < .35 }); } }
+      var d = wMode ? wDot() : null;
+      if (wMode === 1 && d){ var pr = Math.min(1, (now - wT0) / WD);
+        if (wLast){ var n = Math.round(10 * pr * pr + (Math.random() < .35 ? 1 : 0));   /* more the nearer the end */
+          for (var i = 0; i < n; i++){ var f = Math.random(), q = Math.max(0, pr - (1 - f) * .04); wAdd(wLast[0] + (d[0] - wLast[0]) * f, wLast[1] + (d[1] - wLast[1]) * f, 6 + 64 * q * q); } }   /* out to its side by how far along: a point at the start, wide at the dot */
         wLast = d; }
+      if (wMode === 2 && d){ wAmb -= dt; if (wAmb <= 0){ wAmb = .06 + Math.random() * .1; wAdd(d[0], d[1] + 6 + Math.random() * 40, 10 + Math.random() * 60, { vy: -(4 + Math.random() * 10), life: 3 + Math.random() * 2.5 }); } }   // landed: a few rising round it, all the time
       wx.clearRect(0, 0, wk.width, wk.height);
-      for (var j = P.length - 1; j >= 0; j--){ var q = P[j]; q.a += dt; if (q.a >= q.life){ P.splice(j, 1); continue; } var k = q.a / q.life;
-        q.x += q.vx * dt; q.y += q.vy * dt; q.vx *= 1 - .45 * dt; q.vy *= 1 - .9 * dt; q.x += Math.sin((q.a + j) * 3) * 4 * dt;   // out to its side, slowing; a little sway
-        wx.globalAlpha = Math.min(1, q.a * 8) * (1 - k) * (1 - k) * .9; wx.fillStyle = q.w ? 'rgb(255, 236, 214)' : 'rgb(' + wCol + ')'; wx.beginPath(); wx.arc(q.x, q.y, q.r * (1 - k * .4), 0, 6.283); wx.fill(); }
-      wx.globalAlpha = 1; if (wOn || P.length) wRaf = requestAnimationFrame(wFrame); };
-    var wake = function(on){ if (!wx) return; if (on){ wSize(); wCol = (getComputedStyle(root).getPropertyValue('--acc').trim().match(/^#([0-9a-f]{6})$/i) || [0, 'f08a3c'])[1].match(/../g).map(function(h){ return parseInt(h, 16); }).join(', '); wOn = true; wLast = null; wT = 0; if (!wRaf) wRaf = requestAnimationFrame(wFrame); } else wOn = false; };
-    var wStop = function(){ wOn = false; P = []; if (wRaf) cancelAnimationFrame(wRaf); wRaf = 0; if (wx) wx.clearRect(0, 0, wk.width, wk.height); };
+      for (var j = P.length - 1; j >= 0; j--){ var q2 = P[j]; q2.a += dt; if (q2.a >= q2.life){ P.splice(j, 1); continue; } var k = q2.a / q2.life;
+        q2.x += q2.vx * dt + Math.sin(q2.a * 1.7 + q2.ph) * 5 * dt; q2.y += q2.vy * dt; q2.vx *= 1 - .8 * dt; q2.vy = q2.vy * (1 - .4 * dt) - 3 * dt;   // hanging, swaying, rising a little
+        wx.globalAlpha = Math.min(1, q2.a * 5) * Math.pow(1 - k, 1.5) * .9; wx.fillStyle = q2.w ? 'rgb(255, 236, 214)' : 'rgb(' + wCol + ')'; wx.beginPath(); wx.arc(q2.x, q2.y, q2.r * (1 - k * .3), 0, 6.283); wx.fill(); }
+      wx.globalAlpha = 1; if (wMode || P.length) wRaf = requestAnimationFrame(wFrame); };
+    var wake = function(m){ if (!wx) return; if (m === 1){ wSize(); wCol = (getComputedStyle(root).getPropertyValue('--acc').trim().match(/^#([0-9a-f]{6})$/i) || [0, 'f08a3c'])[1].match(/../g).map(function(h){ return parseInt(h, 16); }).join(', '); wLast = null; wT = 0; wT0 = performance.now(); }
+      wMode = m; if (m && !wRaf) wRaf = requestAnimationFrame(wFrame); };
+    var wStop = function(){ wMode = 0; P = []; if (wRaf) cancelAnimationFrame(wRaf); wRaf = 0; if (wx) wx.clearRect(0, 0, wk.width, wk.height); };
+    addEventListener('resize', function(){ if (wMode && wx) wSize(); });
     var stop = function(){ wStop(); T.forEach(clearTimeout); T = []; [st, spin, chk, cp, pt].forEach(function(e){ e.getAnimations().forEach(function(a){ a.cancel(); }); }); root.classList.remove('lgT', 'lgC', 'lgLit'); };
     var lift = function(){ var L = logo.getBoundingClientRect(), S = st.getBoundingClientRect(); return (L.top + L.height / 2 + window.scrollY) - (S.top + S.height / 2 + window.scrollY); };   // from the middle of the screen to the logo's middle
     var at = function(ms, fn){ T.push(setTimeout(fn, ms)); };
@@ -291,8 +300,8 @@
       at(3500, function(){ chk.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'scale(.12)' }], { duration: 320, easing: 'cubic-bezier(.55, 0, .75, .2)', fill: F });   // held, then gathered into the dot
         pt.animate([{ opacity: 0, transform: 'scale(0)' }, { opacity: 1, transform: 'scale(1.3)', offset: .55 }, { opacity: 1, transform: 'none' }], { duration: 440, delay: 200, easing: 'cubic-bezier(.2, .8, .2, 1)', fill: 'both' }); });
       at(4300, function(){ var dy = lift(), Q = 'cubic-bezier(.83, 0, .17, 1)'; st.animate([{ transform: 'none' }, { transform: 'translateY(' + dy + 'px)' }], { duration: 1000, easing: Q, fill: F });   // the dot up to the header, easeInOutQuint ("dot movement": a slow start, quick through the middle, a soft landing)
-        pt.animate([{ transform: 'none' }, { transform: 'scale(.8)' }], { duration: 1000, easing: Q, fill: F }); wake(true); });
-      at(5300, function(){ wake(false); });   // landed: no more specks, the last ones floating away
+        pt.animate([{ transform: 'none' }, { transform: 'scale(.8)' }], { duration: 1000, easing: Q, fill: F }); wake(1); });
+      at(5300, function(){ wake(2); });   // landed: the trail floating on, a few specks rising round the dot from then on
       at(5300, function(){ root.classList.add('lgLit'); });   // the dot landed: the warm light comes in
       at(5000, function(){ root.classList.add('lgT'); });   // the title under it
       at(5600, function(){ root.classList.add('lgC'); }); };   // then the cards
