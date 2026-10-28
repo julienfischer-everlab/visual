@@ -17758,3 +17758,6 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The dot leaves floating specks as it rises (a canvas): shed more the quicker it goes, each drifting out to its side and a little down, wider the older. A triangle, its point at the dot. They float off and fade once it lands.
   - The warm top is now the Health profile's own light, read off the profile as it stands: the card screen's picture (card-glow.webp) and its warm gradient, 81.7% of the screen high from 7.5% above, raised 47.9%, 80% saturation, masked out from 58%, its grain (35%, overlay), at 24%. It was a brighter gradient of its own. Light mode keeps its soft wash.
   - No full stop after the email. Show all 12px lower (14 from the list).
+- Gift receipt:
+  - The first card (Gifted product) is 4% brighter than the others: white at 8% on the dark (the others 4%), ink at 10% on the light (6%).
+  - What's included: its lines 8 apart (were 10).
