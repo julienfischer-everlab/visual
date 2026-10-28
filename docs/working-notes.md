@@ -17900,3 +17900,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Note from Steven, a new group holding the Steven's note row: the note alone.
   - The others fold away (`tkAtOff`), checked every 300 ms against `_hpBack.at()`. With the reveal not up, everything shows as before.
 - Documentation: the "Health profile card" tab and its sidebar title are now **Membership onboarding**. The link (#health-profile-card) is unchanged.
+- Concierge storyboard: the thread's top fade removed ("frame is a mask, outside should be visible"), so the bubbles show in full wherever they sit, inside the frame or out. Eva's bubbles are solid (8% ink mixed into the ground), so the frame's line no longer shows through them.
