@@ -17952,3 +17952,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 ## Concierge intro: chat inside its frame
 
 - The thread (`.hpCcTh`) now sits inside the frame box (`inset 0 20px 20px`, radius 24) with 24px padding. It clips with `overflow: hidden` and fades the top and bottom 24px through `mask-image`, so a bubble running past either edge fades out. The field (`.hpCcF`) sits 24px in from the frame's sides and foot (left/right/bottom 44). Before, both ran edge to edge across the chat box, past the frame.
+
+## Concierge intro: WIP badge
+
+- An orange "WIP" pill sits above "Meet Concierge" (`.hpCcWip`: 22px tall, orange at 16% behind #FF8A3D text, 11px semibold with letter-spacing, 12px above the title).
