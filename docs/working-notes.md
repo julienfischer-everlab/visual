@@ -17893,3 +17893,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - It opens with "I'm really glad you're here, <first name>." and is signed Steven.
   - Its paragraphs come in one after another, 0.38 s apart. Then it scrolls inside the card; nothing is lit or dimmed.
 - Concierge storyboard: a frame round the visual, a 24-radius outline (1px, ink 14%, faint fill). It is set 20px in from the sides and 28px up from the foot, so the field and the bubbles run past its edges ("elements inside can overflow").
+- The Tweaks follow the Membership reveal's moment ("only see the tweaks of the current screen"). Its groups carry `data-at`:
+  - General: titles, dot and card.
+  - Opening: titles and dot.
+  - Card screen: the card.
+  - Note from Steven, a new group holding the Steven's note row: the note alone.
+  - The others fold away (`tkAtOff`), checked every 300 ms against `_hpBack.at()`. With the reveal not up, everything shows as before.
