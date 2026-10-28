@@ -17858,3 +17858,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Once the letter is written, scrolling it lights the paragraph nearest the middle and sets the rest to 25% (`hpLtrRead` / `p.hl`). This only reacts to the member's own scroll, not the letter's automatic rise, and works in Words and Paragraphs. Before, Paragraphs had hidden the earlier paragraphs, so scrolling up showed nothing.
 - Steven's first greeting title: "Hi, I'm Dr Steven Lu." (no name; on one line). The second still reads "I'm really glad / you're here, <first name>."
 - Paragraphs: each paragraph is centred as a whole block from its first word (`mid(p)`), held still while it is written, then the letter rises to centre the next. The first paragraph is already centred as its words begin.
+- The Steven's note Tweak is down to **2 versions**:
+  - **Word by word** (the default): written word by word, rising on its own while it writes. This is the Words mode as it was.
+  - **Full**: the whole letter appears at once, the first paragraph centred. The member scrolls, and the paragraph in the middle is lit (opacity 1) while the rest sit at 25%. Let's begin appears 1.6 s in.
+  - Paragraphs is removed, along with its CSS and code. A saved "para" value falls back to Word by word.
