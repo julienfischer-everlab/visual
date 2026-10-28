@@ -17785,3 +17785,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The card's title is "Occasion" (was Reason & Occasion).
 - Gift receipt: 4px more under What's included (6, was 2).
 - Gift receipt: What's included lines 6 apart (were 8).
+- Gift receipt dot: its specks now come out of it. Each is born at the dot and drifts slowly outward its own way (7–20 px a second), swaying, fading in and out.
+- Gift receipt foot:
+  - The delivery line and the help line are the same colour (the help line's, the email still underlined) and 8 apart.
+  - The delivery line 8 lower under the button (28 on the desk, 24 on the phone).

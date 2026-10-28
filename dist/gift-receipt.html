@@ -140,7 +140,7 @@
   .btn.pri{background:var(--pri);color:var(--priInk);}
   .btn.pri:hover{background:var(--priHover);}
   .btn:focus-visible{outline:2px solid var(--acc);outline-offset:3px;}
-  .when{margin:20px 0 0;padding:0 32px;font-size:14px;line-height:1.45;color:var(--ink2);text-wrap:balance;} .when + .foot{margin-top:12px;}   /* the gift's delivery, under the button, over the help line */
+  .when{margin:28px 0 0;padding:0 32px;font-size:14px;line-height:1.45;color:var(--ink3);text-wrap:balance;} .when + .foot{margin-top:8px;}   /* 8 more over it, 8 between it and the help line, both the help line's colour ("8px gap, same text colour; margin top +8px") */   /* the gift's delivery, under the button, over the help line */
   .foot{margin:32px 0 0;padding:0 32px;font-size:14px;line-height:1.45;color:var(--ink3);text-wrap:balance;}   /* 32 in at each side ("+32 padding left right"), its two lines balanced */
   .foot span{color:var(--ink2);text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px;}
 
@@ -164,7 +164,7 @@
     .btns{margin-top:36px;} .btns .btn{padding:0 28px;}   /* the phone: 36 under the card, hugging its label as on the desk */
     :root.split .grp{padding:12px 20px 10px;}
     .btn{padding:0 10px;font-size:15px;white-space:nowrap;}   /* the two on one line each, 28 apart */
-    .foot{margin-top:28px;} .when{margin-top:16px;} .when + .foot{margin-top:10px;}
+    .foot{margin-top:28px;} .when{margin-top:24px;} .when + .foot{margin-top:8px;}
   }
   @media (prefers-reduced-motion:reduce){
     .sky .img, .top, .rc > *{transition:none;animation:none !important;opacity:1;transform:none;filter:none;}
@@ -275,8 +275,8 @@
     var wDot = function(){ var r = pt.getBoundingClientRect(), c = wk.getBoundingClientRect(); return [r.left + r.width / 2 - c.left, r.top + r.height / 2 - c.top]; };
     var wFrame = function(now){ wRaf = 0; var dt = Math.min(.05, wT ? (now - wT) / 1000 : .016); wT = now;
       var d = wMode ? wDot() : null;
-      if (wMode === 2 && d){   /* floating round the dot, no speed ("remove the speed effect, just floating particles around the dot"; "thinner"): each born somewhere in a ring round it, drifting slowly, swaying, fading in and out; about 36 at a time */
-        wAmb -= dt; while (wAmb <= 0 && P.length < 36){ wAmb += .09; var an = Math.random() * 6.283, rr = 8 + Math.pow(Math.random(), .7) * 52; P.push({ x: d[0] + Math.cos(an) * rr, y: d[1] + Math.sin(an) * rr * .8, vx: (Math.random() - .5) * 6, vy: (Math.random() - .5) * 6 - 1.5, a: 0, life: 3 + Math.random() * 2.5, r: .3 + Math.random() * .45, w: Math.random() < .4, ph: Math.random() * 6.283, fl: 1 }); }
+      if (wMode === 2 && d){   /* floating out of the dot, no speed ("remove the speed effect, just floating particles around the dot"; "thinner"; "particles moving out of dot"): each born at the dot, drifting slowly out of it, its own way (7-20 px a second), swaying, fading in and out; about 36 at a time */
+        wAmb -= dt; while (wAmb <= 0 && P.length < 36){ wAmb += .09; var an = Math.random() * 6.283, sp = 7 + Math.random() * 13, rr = 3 + Math.random() * 3; P.push({ x: d[0] + Math.cos(an) * rr, y: d[1] + Math.sin(an) * rr, vx: Math.cos(an) * sp, vy: Math.sin(an) * sp, a: 0, life: 3 + Math.random() * 2.5, r: .3 + Math.random() * .45, w: Math.random() < .4, ph: Math.random() * 6.283, fl: 1 }); }
         if (wAmb < -1) wAmb = 0;
         wRip -= dt; if (wRip <= 0){ wRip = 2.6; R.push({ a: 0 }); } }   /* a ripple off the dot, super subtle ("ripple effect super subtle on dot"): one as it lands, then one every 2.6 s */   // then floating on, all the time
       wx.clearRect(0, 0, wk.width, wk.height);
