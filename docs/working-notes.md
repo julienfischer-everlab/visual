@@ -17991,3 +17991,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 ## Letter just after the name and its line
 
 - Letter mode now waits for the avatar to settle and the name and "Notes from Everlab Co-founder" to come in (`hpLtrS3` at T). The first line follows shortly after (`T = T - 50`, so lines start at T + 300). Checked: the avatar settles at 1.26s from Letter view, the title fades 1.26–1.7s, and the first line comes at 1.42s. The earlier version started the letter during the avatar's rise.
+
+## Concierge intro: phase one copy
+
+- The Concierge intro's title and sub now carry the phase-one (AI chat) copy: "Ask an AI that knows you" / "Ask about any result, trend or worry, all answered from your own data." This replaces "Meet Concierge" and its sub. The WIP badge and the chat storyboard are unchanged.
