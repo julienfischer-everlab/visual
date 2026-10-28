@@ -17975,3 +17975,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 ## Card auto-flip every 5s
 
 - The card screen's auto-flip now runs every 5s (was 3s). A tap still flips at once and restarts the count. Checked: tap at 5.0s gives back at 5.1s, then front at 10.2s and back at 15.1s.
+
+## Letter faster, CTA earlier, title drops in
+
+- The Letter's lines come in 1.2x faster: 75ms per line (was 90), with the word transitions at .33s / .42s (were .4s / .5s).
+- The CTA appears once 30% of the letter's lines are written, by removing `hpLtrWait` at `ceil(lines × .3)`. Before, it waited for the whole letter.
+- Name and role fade in moving 4px down into place (`translateY(-4px)` to 0). They used to rise 8px from below.
