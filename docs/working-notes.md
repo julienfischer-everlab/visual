@@ -17933,3 +17933,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 ## Letter: no blur behind the card
 
 - The Letter card's `backdrop-filter: blur(20px)` is removed. It showed as a dark rectangle behind Steven's photo while the note opened. The card is now just its .5px outline, which appears with the text.
+
+## Letter: Card tweak, tighter paragraphs; + shortcuts hidden with Tweaks open
+
+- New Tweak under Note from Steven: Card, Yes / No (`#stHpLtrCard`, `html.hpLtrNoCard`). Yes is the outlined card. No removes the outline and the inner padding; the 16px margin at the sides stays.
+- The Letter's paragraph gap is now 10px instead of 16, in both versions.
+- While the main Tweaks panel is open (`html.tkDocked`), the floating + shortcuts to each screen's own tweaks, and their panels, are hidden.
