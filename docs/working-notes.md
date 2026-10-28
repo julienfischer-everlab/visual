@@ -17868,3 +17868,12 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Steven's screen entrance: the dot no longer rises. It fades and scales in where it stands, holds, then grows into the avatar.
 - Steven's note → Full: the paragraphs enter one after another, 0.45 s apart, each resolving as a whole (blur to ink). The first sits on the reading line, lit. Let's begin appears 1.4 s after the last one, and the member can then scroll inside.
 - Docs → Health profile card → Membership reveal: two stills added before Note from Steven, "Steven · greeting 1" (Hi, I'm Dr Steven Lu.) and "Steven · greeting 2" (I'm really glad you're here, Julien.). They come from a `greet` option on the HP still (`hpLtrGreet`): Steven's photo large in the middle and the title written, held still.
+- Gift receipt: the first card's title reads "You gifted a Diagnostic membership" (no badge; was "Gifted product" plus a badge).
+- Concierge intro header: a looping storyboard, about 15 s, in a fixed 248px box so nothing under it moves. It replaces the static bubbles.
+  1. An empty field reads "Ask Eva anything…" with a send button.
+  2. "Can you help me understand my results?" is typed (48 ms a letter, orange caret) and the send lights up.
+  3. The send is pressed (scale .88).
+  4. The field fades as its words become the first right bubble, then Eva types for 1.2 s and replies.
+  5. The second exchange: "Can I ask my doctor too?" and "Yes—tap 'Reach your care team' below."
+  6. A 2.9 s hold, then the thread moves up 32px and fades. The empty field returns, pauses 1.5 s and the loop restarts.
+  - Reduced motion and stills show the whole conversation.
