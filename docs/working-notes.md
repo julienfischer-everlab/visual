@@ -17971,3 +17971,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Letter mode reveals its text line by line, 90ms apart. Words are grouped into lines by their on-screen top. There is no blur and no ember: words rise 6px and fade in over .4–.5s. The previous version revealed paragraph by paragraph, 380ms apart, with the blurred word animation.
 - The first greeting ("Hi, I'm Dr Steven Lu.") stays 0.5s less: T2 = IN + BY[0] + 700 (was 1200).
 - Saving the Tweaks already covered Steven's note, Card, Font size and Line height (checked across a reload). What undid it was the timeline's "Note from Steven" row, which always switched Letter back to Word by word. That row now uses the saved mode (everlab:tkAll), falling back to Word by word when nothing is saved. "Letter view" still forces Letter.
+
+## Card auto-flip every 5s
+
+- The card screen's auto-flip now runs every 5s (was 3s). A tap still flips at once and restarts the count. Checked: tap at 5.0s gives back at 5.1s, then front at 10.2s and back at 15.1s.
