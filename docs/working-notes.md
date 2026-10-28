@@ -17892,3 +17892,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - In a card with sharp corners, a 0.5px rule at 20% and a 20px backdrop blur. 24 / 22 padding on the phone, 32 at the sides on the desk.
   - It opens with "I'm really glad you're here, <first name>." and is signed Steven.
   - Its paragraphs come in one after another, 0.38 s apart. Then it scrolls inside the card; nothing is lit or dimmed.
+- Concierge storyboard: a frame round the visual, a 24-radius outline (1px, ink 14%, faint fill). It is set 20px in from the sides and 28px up from the foot, so the field and the bubbles run past its edges ("elements inside can overflow").
