@@ -66,12 +66,17 @@
   .top{position:relative;z-index:1;display:flex;justify-content:center;padding:52px 24px 0;}   /* 24 more above the logo, desk and phone ("+24px margin top logo"; was 28) */
   .logo{display:block;width:112px;color:var(--ink);}
   .logo svg{width:100%;height:auto;}
-  /* Tweaks -> Gift receipt -> Header: Logo static, or animated (#logoanim): the mark turns once and becomes a check, held; the check gathers into a dot; then specks and short streaks rise past the dot, a trail over it, as if it were travelling down (a quiet loop) */
-  .logo{position:relative;} .logo svg{overflow:visible;}
-  .lgMark, .lgCheck, .lgDot{transform-box:fill-box;transform-origin:center;}
-  .lgCheck{fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:20;stroke-dashoffset:20;opacity:0;} .lgDot{fill:currentColor;opacity:0;}
-  :root.lgOn .logo svg > g{clip-path:none;}
-  .lgFx{position:absolute;left:50%;top:0;width:120px;height:110px;margin-left:-60px;pointer-events:none;display:none;} :root.lgOn .lgFx{display:block;}
+  /* Tweaks -> Gift receipt -> Header: Logo static, or animated (#logoanim): in the middle of the screen the mark turns (the membership card's own turning mark, its 52 frames), becomes a check, then a dot;
+     the dot rises to the header, the logo's place; the title comes in under it, then the cards ("logo rotating same as the card membership page; rotate, check, dot, dot move up, title appear below, card appear below") */
+  .lgStage{display:none;position:absolute;left:50%;top:50vh;z-index:2;width:48px;height:51px;margin:-25.5px 0 0 -24px;color:var(--ink);pointer-events:none;} :root.logoAnim .lgStage{display:block;}
+  .lgSpin{--sp:url(../assets/welcome/everlab-mark-spin.webp);position:absolute;inset:0;background:currentColor;-webkit-mask:var(--sp) 0 0 / 2496px 51px repeat-x;mask:var(--sp) 0 0 / 2496px 51px repeat-x;}   /* the strip named once (inlined once) */
+  .lgChk{position:absolute;left:50%;top:50%;width:40px;height:40px;margin:-20px 0 0 -20px;overflow:visible;opacity:0;} .lgChk path{fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:22;stroke-dashoffset:22;}
+  .lgPt{position:absolute;left:50%;top:50%;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;background:currentColor;opacity:0;}
+  @keyframes lgTurn{to{-webkit-mask-position:-2496px 0;mask-position:-2496px 0;}}
+  :root.logoAnim .top{animation:none !important;opacity:0 !important;}   /* the dot is the header while it plays */
+  :root.logoAnim .rc > *{animation:none;opacity:0;transform:translateY(12px);}
+  :root.logoAnim.lgT .rc > :is(h1, .sub){animation:up 1.1s cubic-bezier(.2,.7,.15,1) forwards;} :root.logoAnim.lgT .rc > h1{animation-name:upBlur;} :root.logoAnim.lgT .rc > .sub{animation-delay:.18s;}
+  :root.logoAnim.lgC .rc > :not(h1):not(.sub){animation:up 1.1s cubic-bezier(.2,.7,.15,1) forwards;} :root.logoAnim.lgC .rc > .btns{animation-delay:.2s;} :root.logoAnim.lgC .rc > .foot{animation-delay:.32s;}
   .rc{position:relative;z-index:1;width:100%;max-width:600px;margin:0 auto;padding:88px 24px 48px;display:flex;flex-direction:column;align-items:center;text-align:center;}
   h1{margin:0;font:500 clamp(32px, 4.2vw + 18px, 52px)/.906 var(--sans);letter-spacing:-.025em;text-wrap:balance;}
   .sub{max-width:30em;margin:16px 0 0;font-size:16px;line-height:1.45;color:var(--ink2);text-wrap:pretty;}
@@ -86,7 +91,7 @@
   /* Tweaks -> Gift receipt -> Split cards ("split in 3 cards"): the title on the page, each group a card of its own on the secondary ground, 12 apart */
   :root.split .card{padding:0;border-radius:0;background:none;} :root.split .cardH{padding-top:0;margin-bottom:20px;}   /* 16 more under the title over the cards ("+16px margin bottom") */
   :root.split .grp{padding:14px 24px 12px;border-radius:24px;background:var(--card);} :root.split .grp + .grp{margin-top:8px;}   /* the cards 8 apart ("gap 8px"; was 4) */
-  .grpH{margin:0;padding:8px 0 4px;font:500 15px/20px var(--sans);letter-spacing:-.005em;color:var(--ink);}
+  .grpH{margin:0;padding:8px 0 4px;font:500 18px/24px var(--sans);letter-spacing:-.005em;color:var(--ink);}   /* the card titles 18 px ("card title 18px"; was 15) */
   .grpTop{display:flex;align-items:center;justify-content:space-between;gap:12px;} .grpTop .grpH{min-width:0;}
   /* Tweaks -> Gift receipt -> Card visual (#vis on the page's own link): a picture down the Gifted product card's right side, the full height of the card, its outer corners the card's ("added a right bg"); the words and the list beside it */
   :root.split.cardVis .grp.grpVis{position:relative;overflow:hidden;padding-right:calc(clamp(76px, 26%, 150px) + 20px);}
@@ -104,8 +109,8 @@
   .incH{margin:8px 0 2px;font-size:14px;line-height:20px;color:var(--ink2);}   /* 8 more over it ("+8px top margin") */ :root.cols .incH{font-size:13px;line-height:18px;}
   .incL{list-style:none;margin:0;padding:0;overflow:hidden;--incA:1;transition:max-height .45s cubic-bezier(.3,.7,.2,1), --incA .3s ease;-webkit-mask-image:linear-gradient(to bottom, #000 calc(100% - 56px), rgba(0,0,0,var(--incA)) 100%);mask-image:linear-gradient(to bottom, #000 calc(100% - 56px), rgba(0,0,0,var(--incA)) 100%);}
   .inc.shut .incL{--incA:0;}
-  .incL li{display:grid;grid-template-columns:20px minmax(0,1fr);column-gap:12px;align-items:start;padding:5px 0;font-size:14px;line-height:20px;color:var(--ink);text-wrap:pretty;}
-  .incL li svg{display:block;width:18px;height:18px;margin-top:1px;fill:none;stroke:var(--ink2);stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;}
+  .incL li{display:grid;grid-template-columns:5px minmax(0,1fr);column-gap:12px;align-items:start;padding:5px 0;font-size:14px;line-height:20px;color:var(--ink);text-wrap:pretty;}
+  .incL li .incSq{display:block;width:5px;height:5px;margin-top:7.5px;background:var(--ink2);}   /* a small square before each line, no icon ("square no icon"), as the card back's list */
   .incMore{display:flex;align-items:center;gap:6px;width:fit-content;height:32px;margin:2px auto 0;padding:0;border:0;background:none;color:var(--ink);font:500 14px/20px var(--sans);cursor:pointer;}
   .incMore svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;transition:transform .3s ease;} .inc:not(.shut) .incMore svg{transform:rotate(180deg);}
   .incMore:hover{color:var(--ink2);}   /* centred under the list ("see more centered") */ .incMore:focus-visible{outline:2px solid var(--acc);outline-offset:3px;border-radius:6px;}
@@ -174,15 +179,14 @@
 <path d="M9.62577 4.8667H13.496C13.9545 4.8667 14.4072 5.0189 14.7531 5.31935C14.9685 5.50712 15.267 5.602 15.5872 5.54073C15.9687 5.46759 16.279 5.16517 16.3601 4.78566C16.4945 4.14524 16.0102 3.58191 15.3955 3.58191C15.1543 3.58191 14.9349 3.66888 14.765 3.81317C14.4111 4.11164 13.9605 4.27372 13.4979 4.27372L9.60996 4.27372C8.98535 4.27372 8.41016 3.96932 8.02472 3.47715C7.69858 3.06008 7.19257 2.79127 6.62528 2.79127C5.67651 2.78929 4.87203 3.5661 4.84238 4.51487C4.81076 5.52294 5.61919 6.34916 6.62133 6.34916C7.20838 6.34916 7.72823 6.06453 8.05239 5.62572C8.41609 5.13157 9.01302 4.8667 9.62577 4.8667Z" fill="currentColor"/>
 <path d="M19.8405 14.7772C20.6963 14.7772 21.3704 14.0024 21.1964 13.1149C21.0897 12.5634 20.6371 12.1246 20.0836 12.0298C19.5736 11.9428 19.1052 12.1365 18.8028 12.4784C18.445 12.8856 17.9113 13.0951 17.3677 13.0951L3.85565 13.0951C3.31208 13.0951 2.7784 12.8856 2.42063 12.4784C2.11821 12.1345 1.64976 11.9428 1.13979 12.0298C0.586342 12.1246 0.133699 12.5634 0.0269615 13.1149C-0.145003 14.0004 0.529021 14.7772 1.38291 14.7772C1.79603 14.7772 2.16763 14.5954 2.42063 14.3068C2.78038 13.8976 3.31801 13.6901 3.86356 13.6901L17.3598 13.6901C17.9054 13.6901 18.443 13.8977 18.8028 14.3068C19.0558 14.5954 19.4274 14.7772 19.8405 14.7772Z" fill="currentColor"/>
 </g>
-<path class="lgCheck" d="M56.4 12.4l3.9 3.9 7.4-7.6"/>
-<circle class="lgDot" cx="61.875" cy="12" r="2.4"/>
 </g>
 <defs>
 <clipPath id="grLogoClip">
 <rect width="123.75" height="24" fill="white"/>
 </clipPath>
 </defs>
-</svg><canvas class="lgFx" aria-hidden="true"></canvas></a></header>
+</svg></a></header>
+<div class="lgStage" aria-hidden="true"><i class="lgSpin"></i><svg class="lgChk" viewBox="0 0 24 24"><path d="M5.5 12.6l4.2 4.2 8.8-9"/></svg><i class="lgPt"></i></div>
 <main class="rc" id="rc">
   <h1>Your gift is on its way to Olive</h1>
   <p class="sub">We’ll let Olive know about their gift <span class="ifNow">as soon as your payment is confirmed</span><span class="ifSch">on your intended gifting date</span>. Your receipt has been sent to <b>marc.taylor@example.com</b>.</p>
@@ -223,7 +227,7 @@
   var SHOW = 4;
   (function(){ var g = $('grps').querySelector('.grp'); if (!g) return;
     var box = document.createElement('div'); box.className = 'inc' + (INC.length > SHOW ? ' shut' : '');
-    box.innerHTML = '<p class="incH" id="incH">What\u2019s included</p><ul class="incL" id="incL" aria-labelledby="incH">' + INC.map(function(t, n){ return '<li><svg viewBox="0 0 20 20" aria-hidden="true">' + INC_IC[n % INC_IC.length] + '</svg><span>' + esc(t) + '</span></li>'; }).join('') + '</ul>'
+    box.innerHTML = '<p class="incH" id="incH">What\u2019s included</p><ul class="incL" id="incL" aria-labelledby="incH">' + INC.map(function(t){ return '<li><i class="incSq" aria-hidden="true"></i><span>' + esc(t) + '</span></li>'; }).join('') + '</ul>'
       + (INC.length > SHOW ? '<button type="button" class="incMore" aria-expanded="false" aria-controls="incL"><span>Show all ' + INC.length + '</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></button>' : '');
     g.appendChild(box);
     var L = box.querySelector('.incL'), b = box.querySelector('.incMore'); if (!b) return;
@@ -246,36 +250,29 @@
 
   /* the header's logo, animated (Tweaks -> Gift receipt -> Header: Logo animated; #logoanim on the page's own link): window.grLogo(on, replay) */
   (function(){
-    var svg = document.querySelector('.logo svg'), logo = document.querySelector('.logo'), cv = document.querySelector('.lgFx');
-    if (!svg || !cv) return;
-    var mark = svg.querySelector('.lgMark'), word = svg.querySelector('.lgWord'), chk = svg.querySelector('.lgCheck'), dot = svg.querySelector('.lgDot');
-    var raf = 0, T = [], P = [], live = false, t0 = 0, lastT = 0, spawn = 0, born = performance.now();
+    var st = document.querySelector('.lgStage'), logo = document.querySelector('.logo'); if (!st || !logo) return;
+    var spin = st.querySelector('.lgSpin'), chk = st.querySelector('.lgChk'), cp = chk.querySelector('path'), pt = st.querySelector('.lgPt'), T = [], born = performance.now();
     var reduced = function(){ return !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches); };
-    var all = [mark, word, chk, dot];
-    var stop = function(){ live = false; cancelAnimationFrame(raf); raf = 0; T.forEach(clearTimeout); T = []; P = []; all.forEach(function(e){ e.getAnimations().forEach(function(a){ a.cancel(); }); }); root.classList.remove('lgOn'); var x = cv.getContext('2d'); x.clearRect(0, 0, cv.width, cv.height); };
-    var place = function(){ var L = logo.getBoundingClientRect(), D = dot.getBoundingClientRect(), cy = D.top + D.height / 2 - L.top; cv.style.top = (cy - 90) + 'px'; };   // the dot 90 px down the canvas: the trail's room over it
-    /* the trail: specks and short streaks born round the dot, rising at their own speeds, fading out 40 to 72 px over it; a faint line just over the dot */
-    var tick = function(now){ if (!live) return; raf = requestAnimationFrame(tick);
-      var dpr = Math.min(2, window.devicePixelRatio || 1), W = 120, H = 110; if (cv.width !== W * dpr){ cv.width = W * dpr; cv.height = H * dpr; }
-      var x = cv.getContext('2d'); x.setTransform(dpr, 0, 0, dpr, 0, 0); x.clearRect(0, 0, W, H);
-      var dt = Math.min(.05, (now - (lastT || now)) / 1000); lastT = now; var k = Math.min(1, (now - t0) / 900);   // the trail eases in
-      var rgb = getComputedStyle(logo).color.replace(/^rgba?\(|\)$/g, '').split(',').slice(0, 3).join(','), cx = W / 2, cy = 90;
-      spawn += dt * 7; while (spawn >= 1 && P.length < 16){ spawn -= 1; var v = 16 + Math.random() * 30; P.push({ x: cx + (Math.random() - .5) * 26, y: cy - 2 + Math.random() * 10, v: v, top: 40 + Math.random() * 32, a: .22 + Math.random() * .4, s: Math.random() < .55 ? 2 + v * .14 : 0 }); }
-      var g = x.createLinearGradient(0, cy - 2, 0, cy - 30); g.addColorStop(0, 'rgba(' + rgb + ',' + (.22 * k).toFixed(3) + ')'); g.addColorStop(1, 'rgba(' + rgb + ',0)'); x.fillStyle = g; x.fillRect(cx - .5, cy - 30, 1, 28);
-      P = P.filter(function(p){ p.y -= p.v * dt; var up = cy - p.y, f = 1 - up / p.top; if (f <= 0) return false; var al = p.a * k * Math.min(1, f * 1.6) * Math.min(1, (up + 6) / 8); if (al < .01) return true;
-        x.fillStyle = 'rgba(' + rgb + ',' + al.toFixed(3) + ')'; if (p.s) x.fillRect(p.x - .5, p.y, 1, p.s); else { x.beginPath(); x.arc(p.x, p.y, .7, 0, 6.2832); x.fill(); } return true; }); };
-    var trail = function(){ place(); live = true; t0 = performance.now(); lastT = 0; raf = requestAnimationFrame(tick); };
-    var play = function(){ stop(); root.classList.add('lgOn');
-      var bb = mark.getBBox(), dx = 61.875 - (bb.x + bb.width / 2), dy = 12 - (bb.y + bb.height / 2), F = { fill: 'forwards' };
-      if (reduced() || !mark.animate){ word.style.opacity = '0'; dot.animate ? dot.animate([{ opacity: 1 }, { opacity: 1 }], { duration: 1, fill: 'forwards' }) : (dot.style.opacity = '1'); return; }
-      word.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 420, easing: 'ease', fill: 'forwards' });
-      mark.animate([{ transform: 'translate(0px, 0px) rotate(0deg) scale(1)', opacity: 1 }, { transform: 'translate(' + dx + 'px, ' + dy + 'px) rotate(360deg) scale(1.3)', opacity: 1, offset: .76 }, { transform: 'translate(' + dx + 'px, ' + dy + 'px) rotate(420deg) scale(.45)', opacity: 0 }], { duration: 1500, easing: 'cubic-bezier(.65, 0, .35, 1)', fill: 'forwards' });   // one smooth turn to the middle, then it folds away into the check
-      chk.animate([{ strokeDashoffset: 20, opacity: 0, transform: 'scale(.7) rotate(-12deg)' }, { strokeDashoffset: 0, opacity: 1, transform: 'none' }], { duration: 520, delay: 1180, easing: 'cubic-bezier(.2, .8, .2, 1)', fill: 'both' });   // the check drawn as the mark goes
-      chk.animate([{ transform: 'none', opacity: 1, strokeDashoffset: 0 }, { transform: 'scale(.12)', opacity: 0, strokeDashoffset: 0 }], { duration: 380, delay: 2600, easing: 'cubic-bezier(.55, 0, .75, .2)', fill: 'forwards' });   // held ~0.9 s, then gathered in
-      dot.animate([{ transform: 'scale(0)', opacity: 0 }, { transform: 'scale(1.35)', opacity: 1, offset: .55 }, { transform: 'scale(1)', opacity: 1 }], { duration: 520, delay: 2860, easing: 'cubic-bezier(.2, .8, .2, 1)', fill: 'both' });
-      T.push(setTimeout(trail, 3200)); };
-    window.grLogo = function(on, replay){ var was = root.classList.contains('lgOn') || T.length > 0; root.classList.toggle('logoAnim', !!on); if (!on){ stop(); return; } if (was && !replay) return; stop(); var wait = Math.max(0, 900 - (performance.now() - born)); if (wait) T.push(setTimeout(play, wait)); else play(); };   // once the header has come in
-    if (/(^|[#&])logoanim(&|$)/.test(location.hash)) window.grLogo(true);   // the page's own link
+    var E = 'cubic-bezier(.65, 0, .35, 1)', F = 'forwards';
+    var stop = function(){ T.forEach(clearTimeout); T = []; [st, spin, chk, cp, pt].forEach(function(e){ e.getAnimations().forEach(function(a){ a.cancel(); }); }); root.classList.remove('lgT', 'lgC'); };
+    var lift = function(){ var L = logo.getBoundingClientRect(), S = st.getBoundingClientRect(); return (L.top + L.height / 2 + window.scrollY) - (S.top + S.height / 2 + window.scrollY); };   // from the middle of the screen to the logo's middle
+    var at = function(ms, fn){ T.push(setTimeout(fn, ms)); };
+    var play = function(){ stop(); window.scrollTo(0, 0);
+      if (reduced() || !st.animate){ st.animate ? st.animate([{ transform: 'translateY(' + lift() + 'px)' }, { transform: 'translateY(' + lift() + 'px)' }], { duration: 1, fill: F }) : 0; spin.style.opacity = '0'; pt.style.opacity = '1'; root.classList.add('lgT', 'lgC'); return; }
+      spin.style.opacity = ''; pt.style.opacity = '';
+      spin.animate([{ maskPosition: '0 0', webkitMaskPosition: '0 0' }, { maskPosition: '-2496px 0', webkitMaskPosition: '-2496px 0' }], { duration: 2210, easing: 'steps(52, end)', iterations: Infinity });   // the card's turn: 52 frames, 42.5 ms each
+      spin.animate([{ opacity: 0, transform: 'scale(.86)' }, { opacity: 1, transform: 'none' }], { duration: 420, easing: 'ease-out', fill: 'backwards' });
+      at(2210, function(){ spin.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'scale(.3)' }], { duration: 380, easing: E, fill: F });   // one turn, then it folds into the check
+        chk.animate([{ opacity: 0, transform: 'scale(.6)' }, { opacity: 1, transform: 'none' }], { duration: 460, delay: 90, easing: 'cubic-bezier(.2, .8, .2, 1)', fill: 'both' });
+        cp.animate([{ strokeDashoffset: 22 }, { strokeDashoffset: 0 }], { duration: 460, delay: 120, easing: 'cubic-bezier(.3, 0, .2, 1)', fill: 'both' }); });
+      at(3500, function(){ chk.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'scale(.12)' }], { duration: 320, easing: 'cubic-bezier(.55, 0, .75, .2)', fill: F });   // held, then gathered into the dot
+        pt.animate([{ opacity: 0, transform: 'scale(0)' }, { opacity: 1, transform: 'scale(1.3)', offset: .55 }, { opacity: 1, transform: 'none' }], { duration: 440, delay: 200, easing: 'cubic-bezier(.2, .8, .2, 1)', fill: 'both' }); });
+      at(4300, function(){ var dy = lift(); st.animate([{ transform: 'none' }, { transform: 'translateY(' + dy + 'px)' }], { duration: 820, easing: E, fill: F });   // the dot up to the header
+        pt.animate([{ transform: 'none' }, { transform: 'scale(.8)' }], { duration: 820, easing: E, fill: F }); });
+      at(4900, function(){ root.classList.add('lgT'); });   // the title under it
+      at(5450, function(){ root.classList.add('lgC'); }); };   // then the cards
+    window.grLogo = function(on, replay){ var was = root.classList.contains('logoAnim'); root.classList.toggle('logoAnim', !!on); if (!on){ stop(); return; } if (was && !replay) return; stop(); root.classList.add('logoAnim'); var wait = Math.max(0, 450 - (performance.now() - born)); if (wait) at(wait, play); else play(); };
+    if (/(^|[#&])logoanim(&|$)/.test(location.hash)) window.grLogo(true);   // the page's own link (the prototype opens it so when Header is Logo animated)
   })();
 
 })();

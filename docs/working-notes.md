@@ -17710,3 +17710,11 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The cards are 8px apart (was 4).
 - Gift receipt: no "Gift summary" title over the cards; the section keeps it as its accessible name. On the phone the properties are always inline (label beside value), even with "2 columns" picked.
 - Gift receipt, Gifted product card: a picture down its right side (Tweaks → Gift receipt → Card visual, On by default; #vis on the page's own link). It takes the card's full height and outer corners, 26% of the card (76 to 150px). The picture is the reports' pink texture, resized to assets/gift/product-visual.webp (15KB). The title, badge and list sit beside it, and the badge drops under the title when there's no room (the phone). Split cards only.
+- Gift receipt, Header "Logo animated", redone ("logo rotating same as the card membership page: rotate, check, dot, dot moves up, title appears below, card appears below"):
+  - In the middle of the screen, the membership card's own turning mark (assets/welcome/everlab-mark-spin.webp, 52 frames at 42.5ms) makes one turn.
+  - It folds into a check that is drawn in and held.
+  - The check gathers into a 10px dot, and the dot rises (0.82s) to the logo's place in the header.
+  - The title and its line come in under it, then the cards, the button and the help line.
+  - Nothing shows before it; the prototype opens the page with #logoanim when Header is "Logo animated". It replays each time the page opens. With reduced motion, the dot sits in the header and the page shows at once.
+  - The rising specks are gone. The strip is inlined once (the page is 362KB).
+- Gift receipt: What's included has a 5px square before each line instead of icons. Card titles are 18px (was 15).
