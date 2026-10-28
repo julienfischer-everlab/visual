@@ -98,12 +98,13 @@
   .topbar .tkMenu summary::-webkit-details-marker{display:none;}
   .topbar .tkMenu summary:hover,.topbar .tkMenu[open] summary{border-color:#3f3f46;}
   /* Tweaks open: a column docked at the right, the screen centred in what is left of the window, so the page is always seen beside it ("when I select Tweaks, can this be a right column so we always see the screen on the left") */
-  html.tkDocked{--tkDockW:380px;--vwC:calc((100vw - var(--tkDockW)) / 2);}
+  html.tkDocked{--tkDockW:320px;--vwC:calc((100vw - var(--tkDockW)) / 2);}
   html.tkDocked .topbar #tkMenu > .tkPanel{top:var(--tkTop, 57px) !important;left:auto !important;right:0 !important;width:var(--tkDockW);height:calc(100vh - var(--tkTop, 57px));max-height:none;box-sizing:border-box;border-radius:0;border-width:0 0 0 1px;padding:8px 8px 0;}
   html.tkDocked body:not([data-bp]) .dash{right:var(--tkDockW);}
   /* the Flow panel docked as a column at the left, as Tweaks at the right ("left panel shouldn't float, should be a column, same as the right panel"): the screen centred in what is left between the two */
-  html.flowDocked{--flDockW:300px;--vwC:calc(var(--flDockW) + (100vw - var(--flDockW) - var(--tkDockW, 0px)) / 2);}
+  html.flowDocked{--flDockW:320px;   /* both columns 320 ("tweak and flow panel 320px width") */--vwC:calc(var(--flDockW) + (100vw - var(--flDockW) - var(--tkDockW, 0px)) / 2);}
   html.flowDocked body:not([data-bp]) .dash{left:var(--flDockW);}
+  html.flowDocked body:not([data-bp="xs"]):not([data-bp="s"]) .aqWrap.aqFull{left:var(--flDockW) !important;} html.tkDocked body:not([data-bp="xs"]):not([data-bp="s"]) .aqWrap.aqFull{right:var(--tkDockW) !important;} html.tkDocked body:not([data-bp="xs"]):not([data-bp="s"]) .aqWrap.aqFull.on{width:auto !important;max-width:none !important;}   /* the phone sizes keep their own frame, centred by --vwC */   /* Tweaks too pushes it ("right panel as well should push the viewport"): the modal's own width let go, its two sides set */   /* the full modals (the reveal, the profile, the report) between the two columns, pushed, not under them ("flow panel should push the viewport, not overlap") */
   html.flowDocked .topbar .hpJny:not([hidden]){left:0 !important;top:var(--flTop, 57px) !important;width:var(--flDockW);height:calc(100vh - var(--flTop, 57px));max-height:none !important;border-radius:0;border-width:0 1px 0 0;padding:8px;background:#131316;}
   .topbar .tkMenu summary:focus-visible{border-color:#71717a;}
   .topbar .tkMenu summary{background-image:none;padding-right:12px;}   /* no chevron ("no chevron, Tweaks"): a button like Flow */
@@ -7888,7 +7889,8 @@
   .tbLay{display:none;align-items:center;gap:8px;} .tbLay .lbl{font-size:13px;color:#71717a;} body:is(.svcOn, .aptOn) .tbLay, body:has(#phone2.svcOn) .tbLay, body:has(#phone2.aptOn) .tbLay{display:inline-flex;}
   .tkSegT{display:inline-flex;gap:2px;padding:3px;border-radius:10px;background:rgba(255,255,255,.06);}
   .tkSegT button{height:28px;padding:0 12px;border:0;border-radius:8px;background:none;color:#a1a1aa;font:inherit;font-size:12.5px;font-weight:500;cursor:pointer;white-space:nowrap;}
-  .tkSegT button.on{background:rgba(255,255,255,.14);color:#fafafa;} .tkSegT button:not(.on):hover{color:#e4e4e7;}
+  .tkSegT button.on{background:rgba(255,255,255,.14);color:#fafafa;}
+  html.tkDocked #tkMenu .tkSegT{flex-shrink:1;min-width:0;max-width:100%;} html.tkDocked #tkMenu .tkSegT button{padding:0 8px;font-size:12px;}   /* the 320 column: its segments tighter, all of them in view */ .tkSegT button:not(.on):hover{color:#e4e4e7;}
   .svH2.svH2Apt{display:flex;align-items:center;gap:12px;} .svAptGo{margin-left:auto;height:32px;padding:0 14px;border:0;border-radius:10px;background:rgba(255,255,255,.08);color:#ececec;font:inherit;font-size:13px;font-weight:500;cursor:pointer;} body.light .svAptGo{background:rgba(46,31,26,.07);color:#2e241c;}
   #phone2.svcOn .svcMob{display:block;} #phone2.svcOn .mscroll{display:none;} body.m6 #phone2.svcOn > .mTabs{display:none;}   /* no dock on the detail screen, as the design */
   .svmHero{position:relative;margin-top:calc(-1 * (var(--stH,54px) + 72px));padding:calc(var(--stH,54px) + 128px) 16px 16px;   /* up under the sticky bar (its height: the strip and the master's 72), the title where it stood */background:linear-gradient(180deg,#151515,#111 70%,#0d0d0c);overflow:hidden;}   /* neutral: the warm brown read as an orange shade ("remove this weird orange shade") */
@@ -33757,7 +33759,7 @@ hairline({
     const nav = document.createElement('nav'); nav.className = 'aqNav'; nav.setAttribute('aria-label', 'Debrief steps'); document.body.appendChild(nav);
     let navKey = '';
     const navTick = () => {
-      const r = frame.getBoundingClientRect(), s = inst && inst.steps ? inst.steps() : null, show = !!s && wrap.getClientRects().length > 0 && wrap.classList.contains('on') && r.width > 0 && r.right + 40 + 170 < innerWidth - (document.documentElement.classList.contains('tkDocked') ? 380 : 0);
+      const r = frame.getBoundingClientRect(), s = inst && inst.steps ? inst.steps() : null, show = !!s && wrap.getClientRects().length > 0 && wrap.classList.contains('on') && r.width > 0 && r.right + 40 + 170 < innerWidth - (document.documentElement.classList.contains('tkDocked') ? 320 : 0);
       nav.classList.toggle('on', show); if (!show) return;
       nav.classList.toggle('lt', document.body.classList.contains('light'));
       nav.style.left = Math.round(r.right + 40) + 'px'; nav.style.top = Math.round(r.top + 72) + 'px';
@@ -33919,6 +33921,7 @@ hairline({
       requestAnimationFrame(() => { frame.style.transition = ''; });
       const outK = [{ transform: 'none', opacity: 1 }, { transform: 'translateY(-48px)', opacity: 0, offset: .7 }, { transform: 'translateY(-72px)', opacity: 0 }];
       [wel.el.querySelector('.hpWelBody'), wel.el.querySelector('.hpWelX'), wel.card2].forEach(el => { if (el) el.animate(outK, { duration: 380, easing: 'cubic-bezier(.4, 0, .9, .6)', fill: 'forwards' }); });
+      { const bl = wel.el.querySelector('.hpW2Bl'); if (bl) bl.animate([{ opacity: getComputedStyle(bl).opacity }, { opacity: 0 }], { duration: 260, easing: 'ease', fill: 'forwards' }); }   /* the card's mask out with the card, not left behind as an outlined frame where it stood ("on desktop, from the card screen to Steven, a frame outline appears for a bit") */
       /* one sphere ("important that the sphere from both screens is the same; at the moment there is a jumping problem"): the welcome's own put in the profile's place, the profile's given up, so nothing hands over; from where it stood (32 lower, 10% larger) pushed up to the place and down to the profile's size together, as the screens change ("pushed up a bit to reach the sphere of the health profile screen"; "the scale down should occur while the screen transitions, not at the end"), 0.9 s */
       if (v2 && cap) carrySet(hp, cap);   /* the light the note and the home wear ("Steven screen: keep the same bg as the health profile, with the transition") */
       const cyF = v2 && cap ? frame.querySelector(':scope > .hpCarry') : null;
@@ -34253,7 +34256,7 @@ hairline({
     const nameOf = g => { if (g.dataset.flName) return g.dataset.flName; const t = g.querySelector('.tkSecH .nm, .tkSub'); return t ? t.textContent.trim() : kOf(g); };   // data-fl-name: one name for groups shown together (First-time user's three)
     /* the screen steps left while a panel is open, room at its right for it ("when a plus tweak is opened, the viewport moves to the left to leave free space for the tweak cards on the right"): its centre (--vwC, the dock's too) set so the + and the panel fit beside it, never past its own half-width from the edge; back on close; a slide either way */
     const follow = () => { const de = document.documentElement, t0 = performance.now(); de.classList.add('tkFlMove'); const f = () => { tick(); if (performance.now() - t0 < 520) requestAnimationFrame(f); else de.classList.remove('tkFlMove'); }; requestAnimationFrame(f); };
-    const shiftOn = () => { const de = document.documentElement, dock = de.classList.contains('tkDocked') ? 380 : 0, bw = parseFloat(getComputedStyle(document.body).getPropertyValue('--bpW')) || 0; if (!bw || !document.body.dataset.bp) return;
+    const shiftOn = () => { const de = document.documentElement, dock = de.classList.contains('tkDocked') ? 320 : 0, bw = parseFloat(getComputedStyle(document.body).getPropertyValue('--bpW')) || 0; if (!bw || !document.body.dataset.bp) return;
       const cur = (innerWidth - dock) / 2, c = Math.max(bw / 2 + 16, Math.min(cur, (innerWidth - dock - 500) / 2)); if (c < cur - 1){ de.style.setProperty('--vwC', Math.round(c) + 'px'); follow(); } };
     const shiftOff = () => { const de = document.documentElement; if (de.style.getPropertyValue('--vwC')){ de.style.removeProperty('--vwC'); follow(); } };
     const shut = keep => { if (!openK) return; if (keep !== true) shiftOff(); if (home) home.slice().reverse().forEach(h => { if (h.next && h.next.parentNode === h.parent) h.parent.insertBefore(h.g, h.next); else h.parent.appendChild(h.g); });   // each back where it was, the last first (so each one's next is in place)
@@ -34269,7 +34272,7 @@ hairline({
     document.addEventListener('pointerdown', e => { if (!openK) return; if (e.target.closest && (e.target.closest('.tkFlPanel') || e.target.closest('.tkFlPlus') || e.target.closest('.tkFlBack') || (openK === 'wel' && e.target.closest('.hpWrap')))) return; shut(); }, true);   /* not on the Back ("the back doesn't work": a press on it shut the open card, the screen slid back under the pointer and the click fell beside it), nor, with the Welcome's card open, in the welcome or the profile it leads to: the card stays while they play, nothing slides under them */
     document.addEventListener('keydown', e => { if (e.key === 'Escape' && openK){ shut(); } });
     const tick = () => {
-      const over = document.getElementById('dOver'), room = innerWidth - (document.documentElement.classList.contains('tkDocked') ? 380 : 0);
+      const over = document.getElementById('dOver'), room = innerWidth - (document.documentElement.classList.contains('tkDocked') ? 320 : 0);
       const live = over && over.offsetParent && !document.body.classList.contains('hpOn');
       const fe = document.getElementById('bpFrame'), fr = fe && getComputedStyle(fe).display !== 'none' ? fe.getBoundingClientRect() : null, orr = over ? over.getBoundingClientRect() : null;
       const top = Math.max(fr ? fr.top : (orr ? orr.top : 0), (bar.getBoundingClientRect().bottom || 0)) + 8, bot = Math.min(fr ? fr.bottom : innerHeight, innerHeight) - 44;

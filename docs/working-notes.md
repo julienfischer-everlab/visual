@@ -17995,3 +17995,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 ## Concierge intro: phase one copy
 
 - The Concierge intro's title and sub now carry the phase-one (AI chat) copy: "Ask an AI that knows you" / "Ask about any result, trend or worry, all answered from your own data." This replaces "Meet Concierge" and its sub. The WIP badge and the chat storyboard are unchanged.
+
+## Panels push the viewport; 320px columns; card mask out with the card; new Steven photo
+
+- Both docked panels now push the desktop full modals (the reveal, the profile, the report) instead of covering them. Flow sets the modal's left to `--flDockW`; Tweaks sets its right to `--tkDockW` and lets an open modal's width go (`width:auto`). Not at a forced XS/S: those phones stay centred by `--vwC` (applying it there had moved the phone screen off its device frame). The width release only applies to an open modal; a closed one collapsing made the Flow panel flicker.
+- Both columns are 320px (`--flDockW`, `--tkDockW`, and the JS that reads the Tweaks dock width). The segmented switches inside the docked Tweaks are tighter (8px padding, 12px text) so three options fit.
+- Desktop card screen to Steven's note: the card's dark mask (`.hpW2Bl`, a card-sized hole in a 200vmax box-shadow) used to stay behind as the card left, showing an outlined frame where the card had been. It now fades out over 260ms with the card.
+- Steven's avatar is the new photo (832px jpg sent as a zip, decoded with ffmpeg, centre-cropped to 224px webp) in `assets/overview/avatar-steven.webp`. That updates the note and every other place the file is used.
