@@ -17718,3 +17718,6 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Nothing shows before it; the prototype opens the page with #logoanim when Header is "Logo animated". It replays each time the page opens. With reduced motion, the dot sits in the header and the page shows at once.
   - The rising specks are gone. The strip is inlined once (the page is 362KB).
 - Gift receipt: What's included has a 5px square before each line instead of icons. Card titles are 18px (was 15).
+- Consent: the title in the Health profile's title style (Saans, 26/30, weight 570, -0.2px). The desk modal's header is the title, so it gets the same. The header label "Terms and Conditions" is 16px/570. The buttons are the profile's footer pill: 56px, fully rounded, 16px/570, the secondary outlined. The modal uses the app's font (Saans) wherever it opens.
+- Health profile is a linear flow ("if 2 is completed, 1 is completed"): a step begun or done means every step before it is done, kept so on every save (an earlier step without answers gets the demo's). Jumping to a later step's page from the journey completes the steps before it.
+- Booked step card: when step 2 is done but no time was kept (a State set from Tweaks), it uses the demo booking (Thu 29 Oct, 10:00am). So it always shows "Booked" with the doctor and the time, never "Completed" alone.
