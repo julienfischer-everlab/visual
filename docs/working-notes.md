@@ -17824,3 +17824,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The button says "Saved for everyone" (or "Saved here only" if the store refuses).
   - Reset clears the shared setup too: everyone back to the defaults.
   - Without the store (the page opened on its own), this browser's alone, as before.
+- Note from Steven: the letter always rises, slowly. It follows the line being written, held in the middle of the letter, easing after it every frame (a 0.9 s lag), so the words drift up as they're written and on into the next paragraph without a jump. It was a step a paragraph. Room above the first line and under the last for them to sit in the middle.
