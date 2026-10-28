@@ -17768,3 +17768,14 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Gift receipt, Gifted product:
   - On S, M, L the badge sits inline beside the title, the 64 picture at the right. On XS the badge stays under the title, the picture beside both.
   - The badge 2px more padding (6 × 12).
+- Note from Steven:
+  - The letter's text centred, as its header.
+  - On the desk the greeting is centred on the whole screen (the desk's 520 column had held it at the left).
+  - The Health profile's top light (the carried card-screen picture) now shows behind the note too, not only on the home. From Get started, the card screen's own light rises into place (0.76 s, 40% fainter as it goes), one light moving into the note, then on into the home.
+  - Its header has no ground of its own over the light.
+  - The button and the header avatar are hidden from the note's first frame till the sequence runs (they flashed for a moment). Let's begin fades in, and goes at once.
+- Gift receipt dot:
+  - No specks while it rises. As it lands, a burst out of it, rising and spreading as they go (a cone opening upward, at the top), then a few more all the time, floating up.
+  - A super subtle ripple off the dot: a thin ring (20%), out to 34 px over 1.9 s, as it lands and every 2.6 s.
+- Gift receipt cards: on S, M, L Gifted product spans the width, and Recipient and Reason & Occasion sit side by side under it, as high as the taller. Their properties are one under the other in the half width. XS: one under the other, as before.
+- Steven's avatar is still the 88 px file (assets/overview/avatar-steven.webp). The HD one sent in the chat is not in the workspace yet.
