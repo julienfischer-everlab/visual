@@ -17987,3 +17987,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - The first dot is quicker: DOT 450 (was 700) and held 100ms (DH was 800).
 - Letter mode starts writing as the avatar begins its move up (`T = IN + HOLD - 150`). The name and role still come in under the avatar once it settles. Word by word and Full keep their order: avatar, then title, then text.
 - Timeline rows are now moments, not modes. "Note from Steven" plays the entrance. "Letter view" opens the note at the moment the avatar goes up (`ltrAt`: `SKIP = IN + HOLD - 250` shifts every scheduled step and the avatar's animation `currentTime`). Neither row changes the note's version anymore; that is left to Tweaks and Save. "Letter view" lights from `hpLtrS2` onward.
+
+## Letter just after the name and its line
+
+- Letter mode now waits for the avatar to settle and the name and "Notes from Everlab Co-founder" to come in (`hpLtrS3` at T). The first line follows shortly after (`T = T - 50`, so lines start at T + 300). Checked: the avatar settles at 1.26s from Letter view, the title fades 1.26–1.7s, and the first line comes at 1.42s. The earlier version started the letter during the avatar's rise.
