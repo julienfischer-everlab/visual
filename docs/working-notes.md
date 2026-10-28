@@ -17865,3 +17865,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Steven's note → Full: the content sits 128px higher. The reading line is 128 above the middle (`UPF`), used both for centring and for picking the lit paragraph.
   - The paddings were rebalanced: top is half the height − 128 − 12, bottom is half + 128 − 12, so together they stay under the letter's own height. A larger bottom padding alone had made the letter box grow past its place.
   - Full uses a short top fade (48px) so the lit paragraph is clear of it.
+- Steven's screen entrance: the dot no longer rises. It fades and scales in where it stands, holds, then grows into the avatar.
