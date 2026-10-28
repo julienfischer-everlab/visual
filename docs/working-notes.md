@@ -17803,3 +17803,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Three rows: Ask Eva anything; Reach your care team; Book in a few taps.
   - Go to overview closes it.
   - Documentation's Past results row shows it after the Past results page (snap: solo res with soloI 1).
+- Note from Steven, as a story:
+  - The letter is its own scroll under the fixed header, faded at its top and foot edges, with 32 more at each side.
+  - Paragraphs medium, 22 / 28 (the titles' style, a little smaller), centred, 24 apart.
+  - Each paragraph comes up under the header (a 0.45 s scroll), then is written word by word; the ones before it dim to 30%.
+  - Room is left for the last one to come up too. Written, all of them come back to full and the letter scrolls freely, to read it from the top.
+  - A tap: all of it, from its start.
+- Its opening: a white dot (12 px) in the middle of the greeting, grown into Steven's photo (it comes through as the dot grows), up to its place, then the two lines fade in from below (0.4 s apart). Held, then the avatar up into the header as before.
