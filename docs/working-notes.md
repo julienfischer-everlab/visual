@@ -17825,3 +17825,12 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Reset clears the shared setup too: everyone back to the defaults.
   - Without the store (the page opened on its own), this browser's alone, as before.
 - Note from Steven: the letter always rises, slowly. It follows the line being written, held in the middle of the letter, easing after it every frame (a 0.9 s lag), so the words drift up as they're written and on into the next paragraph without a jump. It was a step a paragraph. Room above the first line and under the last for them to sit in the middle.
+
+## Note from Steven: dot hold, flowing letter, diffuse fades, light position
+
+- The white dot holds for 1 s before it pops into Steven's avatar ("more pause on the dot").
+- No pause between paragraphs: the next one starts one word-beat after the last, and the scroll follows more slowly (a 1.6 s lag, up from 0.9 s).
+- The letter's top and bottom fades are more diffuse: eased over 160px at the top and 200px at the bottom (were 64 / 96).
+- Let's begin appears only once the letter has settled (1.6 s after the last word). The drift keeps going until the last line is in place.
+- Header: 24px higher (top padding 40 → 16), with 8px more below the avatar.
+- Carried light: 160px above where it stood on the card screen (`--hpCyD - 160px`), then 64px more as the avatar goes up into the header (0.85 s, the avatar's easing).
