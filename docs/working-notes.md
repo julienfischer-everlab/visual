@@ -17878,3 +17878,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   6. A 2.9 s hold, then the thread moves up 32px and fades. The empty field returns, pauses 1.5 s and the loop restarts.
   - Reduced motion and stills show the whole conversation.
 - Gift receipt: the list's toggle reads "See more" (was "Show all 6"), and "See less" when open.
+- Steven's note on the desk, laid out as the card screen. The header top and the button sit where the card screen's title group and Get started do: a centred group, 329 above the middle and 199 below it (`deskLtr()`, rerun on resize). The letter between them is a 320px box that scrolls inside. Full mode's 128px lift applies on the phone only; on the desk the lit paragraph sits at the box's middle.
+- Concierge as a standalone page: Version → Standalone flow → **Concierge** (`ci`, link `#concierge`). It is the Concierge intro on its own, with no back arrow (`landAt.i`); Go to overview closes it. The Journey panel's Concierge row opens it and lights up. Past results' Got it still leads there with a back arrow.
