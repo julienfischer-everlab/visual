@@ -17867,3 +17867,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Full uses a short top fade (48px) so the lit paragraph is clear of it.
 - Steven's screen entrance: the dot no longer rises. It fades and scales in where it stands, holds, then grows into the avatar.
 - Steven's note → Full: the paragraphs enter one after another, 0.45 s apart, each resolving as a whole (blur to ink). The first sits on the reading line, lit. Let's begin appears 1.4 s after the last one, and the member can then scroll inside.
+- Docs → Health profile card → Membership reveal: two stills added before Note from Steven, "Steven · greeting 1" (Hi, I'm Dr Steven Lu.) and "Steven · greeting 2" (I'm really glad you're here, Julien.). They come from a `greet` option on the HP still (`hpLtrGreet`): Steven's photo large in the middle and the title written, held still.
