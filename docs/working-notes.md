@@ -17913,3 +17913,11 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 
 - Letter view: a fake handwritten "Steven" signature (inline SVG, single stroke plus an underline) sits at the card's bottom right, across from the typed name. It draws itself in with stroke-dashoffset once the name is written. It only shows in Letter mode.
 - Membership onboarding timeline: the reveal rows lose their 44px minimum and take 8px padding, so each row is now 32px.
+
+## Top bar: Flow toggle, active states, right-hand cluster; Home rows; left panel
+
+- Each step group's Home in the journey is now a row styled like its pages, labelled "Health profile home". When the home is showing, it gets the same lit state and orange dot as the pages.
+- The flow panel always sits at the window's left, 16px in and below the top bar. This applies to both the Membership onboarding timeline and the Health profile journey, and no longer depends on where the phone sits.
+- New "Flow" button in the top bar, beside Tweaks. It appears only when the screen has a flow panel and toggles that panel. The choice is remembered (`evFlowOff`).
+- Active state: Tweaks while its panel is open and Flow while its panel shows get a filled #2a2a2e background, a lighter border and white text.
+- Save (the viewport's), Comments and Refresh now sit at the bar's far right, pushed there by a `.tkGrow` spacer. The build stamp is removed from the bar; the build.js replace becomes a no-op.

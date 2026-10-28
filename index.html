@@ -46,6 +46,7 @@
   .topbar, .topbar *{box-shadow:none !important;filter:none !important;}
   .tweaks{display:flex;align-items:center;gap:16px;flex-wrap:nowrap;flex:1;}
   .tweaks > #tkRvSave, .tweaks > #tkDocSave{order:1;}
+  .tweaks > .tkGrow{order:1;flex:1;min-width:0;} .tweaks > #tkBpSave, .tweaks > #tkRvSave, .tweaks > #tkDocSave, .tweaks > .evcBtn, .tweaks > #tkReload{order:2;}
   .tweaks > .tkVerNav{display:inline-flex;align-items:center;gap:4px;margin-right:-4px;} .tweaks > .tkVerNav .tkStepB:disabled{opacity:.35;cursor:default;}   /* back and forward through the pages seen, at the bar's left before Version ("based on nav history"; "the arrow group before the version, on the left side") */   /* a page's Save always the last on the bar, at the far right ("save always on far right"): after Comments and Refresh */
   .tweaks .lbl{
     font-size:11.5px;font-weight:500;color:#71717a;
@@ -101,6 +102,10 @@
   html.tkDocked .topbar #tkMenu > .tkPanel{top:var(--tkTop, 57px) !important;left:auto !important;right:0 !important;width:var(--tkDockW);height:calc(100vh - var(--tkTop, 57px));max-height:none;box-sizing:border-box;border-radius:0;border-width:0 0 0 1px;padding:8px 8px 0;}
   html.tkDocked body:not([data-bp]) .dash{right:var(--tkDockW);}
   .topbar .tkMenu summary:focus-visible{border-color:#71717a;}
+  /* on, its panel showing ("create an active state when Panel is displayed"): Tweaks open, Flow's left panel showing */
+  .topbar .tkMenu[open] summary, .topbar .tkFlowBtn[aria-pressed="true"]{background-color:#2a2a2e;border-color:#52525b;color:#fff;}
+  .topbar .tkFlowBtn{flex:none;font:inherit;font-size:12px;font-weight:500;color:#e4e4e7;background:#131316;border:1px solid #232326;border-radius:8px;padding:6px 12px;cursor:pointer;white-space:nowrap;}
+  .topbar .tkFlowBtn:hover{border-color:#3f3f46;} .topbar .tkFlowBtn:focus-visible{outline:none;border-color:#71717a;} .topbar .tkFlowBtn[hidden]{display:none;}
   .topbar .tkPanel{
     position:fixed;z-index:30;min-width:232px;padding:6px;
     background:#131316;border:1px solid #232326;border-radius:12px;
@@ -139,7 +144,7 @@
   }
   .topbar .tkRow:hover{background:#1c1c20;}
   .tkJnyRows{display:contents;}   /* the journey's rows: in Tweaks as any others */
-  .tkOrdTop{display:flex;align-items:center;justify-content:space-between;gap:8px;} .tkHpHome{appearance:none;display:inline-flex;align-items:center;gap:4px;height:24px;margin:-4px -6px -4px 0;padding:0 8px;border:0;border-radius:6px;background:none;color:#a1a1aa;font:inherit;font-size:12px;cursor:pointer;text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(161,161,170,.4);} .tkHpHome:hover{background:rgba(255,255,255,.06);color:#fff;} .tkHpHome.now{background:rgba(255,255,255,.16);color:#fff;text-decoration:none;} .tkHpHome.now::after, :is(#stHpPastRow,#stHpCcRow).now .lbl::after{content:"";width:7px;height:7px;margin-left:6px;border-radius:50%;background:#f08a3c;} :is(#stHpPastRow,#stHpCcRow).now{background:rgba(255,255,255,.1);} :is(#stHpPastRow,#stHpCcRow).now .lbl{display:inline-flex;align-items:center;color:#fff;}   /* the page showing, lit as the step pages are ("need to see the active page I'm in"): the home on its step's Home, Past results on its row */ .tkHpHome:focus-visible{outline:2px solid #a1a1aa;outline-offset:1px;}   /* each step's pages: a Home link to the profile's home, its steps summary ("for each group, a link to Home") */
+  .tkOrdTop{display:flex;align-items:center;justify-content:space-between;gap:8px;} .tkHpHome{appearance:none;display:inline-flex;align-items:center;gap:4px;height:24px;margin:-4px -6px -4px 0;padding:0 8px;border:0;border-radius:6px;background:none;color:#a1a1aa;font:inherit;font-size:12px;cursor:pointer;text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(161,161,170,.4);} .tkHpHome:hover{background:rgba(255,255,255,.06);color:#fff;} .tkHpHome.now{background:rgba(255,255,255,.16);color:#fff;text-decoration:none;} .tkHpHome.now::after, :is(#stHpPastRow,#stHpCcRow).now .lbl::after{content:"";width:7px;height:7px;margin-left:6px;border-radius:50%;background:#f08a3c;} :is(#stHpPastRow,#stHpCcRow).now{background:rgba(255,255,255,.1);} :is(#stHpPastRow,#stHpCcRow).now .lbl{display:inline-flex;align-items:center;color:#fff;}   /* the page showing, lit as the step pages are ("need to see the active page I'm in"): the home on its step's Home, Past results on its row */ .tkHpHome:focus-visible{outline:2px solid #a1a1aa;outline-offset:1px;} .tkOrdTop:has(.tkHpHome){flex-wrap:wrap;row-gap:6px;} .tkOrdTop .tkHpHome{flex:1 0 100%;justify-content:flex-start;gap:0;height:34px;margin:0;padding:0 10px;border-radius:9px;background:rgba(255,255,255,.06);color:#ececec;font-size:13px;text-decoration:none;} .tkOrdTop .tkHpHome:hover{background:rgba(255,255,255,.1);} .tkOrdTop .tkHpHome.now{background:rgba(255,255,255,.16);box-shadow:inset 0 0 0 1px rgba(255,255,255,.18);} .tkOrdTop .tkHpHome.now::after{margin-left:auto;background:#ff7a1a;box-shadow:0 0 0 3px rgba(255,122,26,.18);} .topbar .hpWtl .tkOrdTop .tkHpHome{height:32px;padding:0 8px;}   /* each step's Home as a row like its pages ("put the home as same style as step: Health profile home") */   /* each step's pages: a Home link to the profile's home, its steps summary ("for each group, a link to Home") */
   /* the Health profile at a forced XS: its journey beside the phone, Tweaks' panel as it is ("the XS view deserves the journey tweak up front visible, to jump between the steps without opening the Tweaks panel") */
   .topbar .hpJny{position:fixed;z-index:29;display:flex;flex-direction:column;gap:2px;width:280px;box-sizing:border-box;padding:6px;overflow-y:auto;background:#131316;border:1px solid #232326;border-radius:12px;} .topbar .hpJny[hidden]{display:none;}
   .topbar .hpWtl .tkOrd{display:flex;flex-direction:column;gap:2px;margin:0;padding:0;list-style:none;} .topbar .hpWtl .tkOrd li{height:auto;min-height:0;padding:8px;cursor:pointer;} .topbar .hpWtl .tkOrd li .nm{display:flex;flex-wrap:wrap;align-items:baseline;row-gap:1px;} .topbar .hpWtl .tkOrd li .nm small{flex-basis:100%;padding-left:20px;font-size:11.5px;color:#8b8b86;} .topbar .hpWtl .tkOrd li.now .nm small{color:#b5b5b0;}   /* the reveal's timeline: each moment and a line of what it is, numbered */
@@ -11521,6 +11526,7 @@
         </div>
       </details>
     </span>
+    <button type="button" class="tkFlowBtn" id="tkFlowBtn" aria-pressed="true" hidden>Flow</button>   <!-- the left panel of a screen that is a flow (its timeline, its pages), shown or folded away ("add Flow for left panel when a screen has a flow, same active state") -->
     <details class="tkMenu" id="tkMenu">
       <summary aria-label="Tweaks">Tweaks</summary>
       <div class="tkPanel" role="group" aria-label="Tweaks">
@@ -12370,9 +12376,9 @@
         <i id="stHpJnyMk" hidden></i><div class="tkJnyRows" id="stHpJnyRows">
         <!-- step 1's pages, their order ("the ability to change the position, the order of all the pages inside step one: drag the page up and down"): drag, or the arrow keys; kept with the tweaks.
              On the Health profile page only ("the steps breakdown should be on the health profile page"), after the rows the profile borrows from the Primary card -->
-        <div class="tkRow tkOrdRow" id="stHpW1Row"><span class="tkOrdTop"><span class="lbl">Step 1 pages</span><button type="button" class="tkHpHome" data-k="wear" aria-label="Open the Health profile home, the steps summary">Home</button></span><ol class="tkOrd tkOrdN" id="stHpW1List" aria-label="Step 1's pages: press one to open it; drag, or use the arrow keys, to reorder"></ol><input type="hidden" id="stHpW1Ord" value="promise,details,address,emergency,mobile,otp,medicare,declare,health"></div>
-        <div class="tkRow tkOrdRow" id="stHpW2pRow"><span class="tkOrdTop"><span class="lbl">Step 2 pages</span><button type="button" class="tkHpHome" data-k="past" aria-label="Open the Health profile home, the steps summary">Home</button></span><ol class="tkOrd tkOrdN tkOrdFix" id="stHpW2pList" aria-label="Step 2's pages, in their fixed order: press one to open it"></ol></div>   <!-- ("add the step 2 sub pages here as well; step 2 pages can't be reordered") -->
-        <div class="tkRow tkOrdRow" id="stHpW3Row"><span class="tkOrdTop"><span class="lbl">Step 3 pages</span><button type="button" class="tkHpHome" data-k="you" aria-label="Open the Health profile home, the steps summary">Home</button></span><ol class="tkOrd tkOrdN" id="stHpW3List" aria-label="Step 3's pages: press one to open it; drag, or use the arrow keys, to reorder"></ol><input type="hidden" id="stHpW3Ord" value="sleep,about,smoke,alcohol,review"></div>   <!-- "same as step 1, I need the breakdown controllable" -->
+        <div class="tkRow tkOrdRow" id="stHpW1Row"><span class="tkOrdTop"><span class="lbl">Step 1 pages</span><button type="button" class="tkHpHome" data-k="wear" aria-label="Open the Health profile home, the steps summary">Health profile home</button></span><ol class="tkOrd tkOrdN" id="stHpW1List" aria-label="Step 1's pages: press one to open it; drag, or use the arrow keys, to reorder"></ol><input type="hidden" id="stHpW1Ord" value="promise,details,address,emergency,mobile,otp,medicare,declare,health"></div>
+        <div class="tkRow tkOrdRow" id="stHpW2pRow"><span class="tkOrdTop"><span class="lbl">Step 2 pages</span><button type="button" class="tkHpHome" data-k="past" aria-label="Open the Health profile home, the steps summary">Health profile home</button></span><ol class="tkOrd tkOrdN tkOrdFix" id="stHpW2pList" aria-label="Step 2's pages, in their fixed order: press one to open it"></ol></div>   <!-- ("add the step 2 sub pages here as well; step 2 pages can't be reordered") -->
+        <div class="tkRow tkOrdRow" id="stHpW3Row"><span class="tkOrdTop"><span class="lbl">Step 3 pages</span><button type="button" class="tkHpHome" data-k="you" aria-label="Open the Health profile home, the steps summary">Health profile home</button></span><ol class="tkOrd tkOrdN" id="stHpW3List" aria-label="Step 3's pages: press one to open it; drag, or use the arrow keys, to reorder"></ol><input type="hidden" id="stHpW3Ord" value="sleep,about,smoke,alcohol,review"></div>   <!-- "same as step 1, I need the breakdown controllable" -->
         <!-- the past results search, its own page after the three ("move it after all set"): Open, then its own Tweaks (they were inside its item in Step 3 pages) -->
         <div class="tkRow" id="stHpPastRow"><span class="lbl">Past results</span><span class="tkPreCtl"><button class="tkBtn" type="button" id="stHpPastGo">Open</button></span></div>
         <div class="tkRow" id="stHpCcRow"><span class="lbl">Concierge</span><span class="tkPreCtl"><button class="tkBtn" type="button" id="stHpCcGo">Open</button></span></div>   <!-- the Concierge's introduction, after Past results' Got it ("need the Concierge screen after that") -->
@@ -12874,7 +12880,6 @@
         <option value="l">L</option>
       </select>
       <!-- the viewport kept as the one the prototype opens on ("need Save to save preset here"); a dot while the one showing is not the one kept -->
-      <button class="tkBtn tkPreBtn" id="tkBpSave" type="button" title="Open the prototype at this viewport">Save</button>
       <!-- a page cannot resize the window it runs in; it can open one. With a
            breakpoint forced, this opens the page in a new window exactly that
            wide, where the real media queries take over ("this is the viewport
@@ -12910,13 +12915,14 @@
     </span>
     <!-- the report pop-up's illustration drafts, a page of their own in the artifact ("treat these inside a page of the main artifact") -->
     <!-- Report visuals: every card's settings saved as a preset at once ("add Save presets action") -->
+    <span class="tkGrow" aria-hidden="true"></span>   <!-- Save, Comments and Refresh pushed to the bar's far right, always ("Save Refresh on the far right always, with comment") -->
+    <button class="tkBtn tkPreBtn" id="tkBpSave" type="button" title="Open the prototype at this viewport">Save</button>
     <button class="tkBtn" id="tkRvSave" type="button">Save presets</button>
     <!-- Documentation: Save keeps the playground's settings ("need a Save on documentation") -->
     <button class="tkBtn" id="tkDocSave" type="button">Save</button>
     <button class="tkBtn" id="tkReload" type="button"
             aria-label="Reload the page on this version">Refresh</button>
     <!-- the build this browser shows, stamped by tools/build.js ("on web I get an old version": a stale page told apart from different saved Tweaks) -->
-    <span class="tkBuild" title="The build this browser is showing">dev build</span>
   </div>
 </div>
 <div class="carousel" id="carousel" role="group" aria-label="Health metrics"></div>
@@ -26623,15 +26629,20 @@ hairline({
     if (tk){ tk.querySelectorAll('[data-pages]').forEach(el => { const p = el.dataset.pages.split(' '); el.hidden = !keys.some(k => p.indexOf(k) >= 0); }); tk.hidden = !keys.length; if (!keys.length) tk.open = false; }
     if (typeof jny === 'function'){ jny(); requestAnimationFrame(jny); setTimeout(jny, 500); }   // the journey beside the phone, once the profile's frame is placed
   }
+  /* Flow, in the top bar: there while a screen has its flow panel at the left (the reveal's timeline, the profile's journey), pressed to fold the panel away and back; remembered */
+  { const av = {}, b = document.getElementById('tkFlowBtn'), H = document.documentElement; try { if (localStorage.getItem('evFlowOff') === '1') H.classList.add('flowOff'); } catch (x){}
+    const sync = () => { if (!b) return; b.hidden = !(av.jny || av.wtl); b.setAttribute('aria-pressed', String(!H.classList.contains('flowOff'))); };
+    window.__flowAv = (k, on) => { if (av[k] !== on){ av[k] = on; sync(); } };
+    if (b) b.addEventListener('click', () => { const off = H.classList.toggle('flowOff'); try { localStorage.setItem('evFlowOff', off ? '1' : '0'); } catch (x){} sync(); if (typeof jny === 'function') jny(); if (typeof wtl === 'function') wtl(); }); sync(); }
   /* the Health profile at a forced XS: the journey's rows (Step 1, 2, 3 pages, Past results) in a panel beside the phone, at its left, from its top; back in Tweaks otherwise, or with no room */
   const jny = (() => { let el = null;
     const make = () => { if (el) return el; const bar = document.querySelector('.topbar'); if (!bar) return null; el = document.createElement('aside'); el.className = 'hpJny'; el.id = 'hpJny'; el.setAttribute('aria-label', 'Health profile journey'); el.hidden = true; el.innerHTML = '<div class="tkSub">Journey</div>'; bar.appendChild(el); return el; };
     return () => { const rows = document.getElementById('stHpJnyRows'), mk = document.getElementById('stHpJnyMk'); if (!rows || !mk) return;
-      if ((document.getElementById('versionSel') || {}).value === 'welc'){ if (el) el.hidden = true; return; }   // Membership onboarding: its timeline holds the profile's rows (see wtl)
+      if ((document.getElementById('versionSel') || {}).value === 'welc'){ if (el) el.hidden = true; if (window.__flowAv) window.__flowAv('jny', false); return; }   // Membership onboarding: its timeline holds the profile's rows (see wtl)
       const fr = document.querySelector('.hpWrap.hpOpen:not(.hpWelF) .aqFrame'), r = fr && fr.getBoundingClientRect(), W = 280, G = 40;
       const on = !!r && r.width > 0 && document.body.classList.contains('hpOn') && !document.querySelector('.hpWrap.hpOpen .hpAtLtr') && !document.documentElement.classList.contains('bpAuto') && document.body.dataset.bp === 'xs' && r.left - G - W >= 16;
-      const p = on ? make() : el; if (on && !p) return;
-      if (on){ if (rows.parentNode !== p) p.appendChild(rows); p.style.left = Math.round(r.left - G - W) + 'px'; p.style.top = Math.round(r.top) + 'px'; p.style.maxHeight = Math.round(Math.max(200, innerHeight - r.top - 24)) + 'px'; p.hidden = false; }
+      if (window.__flowAv) window.__flowAv('jny', on); const shw = on && !document.documentElement.classList.contains('flowOff'), p = shw ? make() : el; if (shw && !p) return;
+      if (shw){ if (rows.parentNode !== p) p.appendChild(rows); const bar = document.querySelector('.topbar'), top = (bar ? bar.getBoundingClientRect().bottom : 56) + 16; p.style.left = '16px'; p.style.top = Math.round(top) + 'px'; p.style.maxHeight = Math.round(Math.max(200, innerHeight - top - 24)) + 'px'; p.hidden = false; }   /* the window's left panel, as the reveal's timeline */
       else { if (rows.parentNode !== mk.parentNode) mk.parentNode.insertBefore(rows, mk.nextSibling); if (p) p.hidden = true; } }; })();
   /* the Membership reveal's timeline ("Membership reveal deserves a persistent timeline to be able to jump quickly"): its moments in a panel beside the phone, as the profile's journey, lit as they play, pressed to play from there:
      the first title, the second, the dot and its particles, the card screen, the note from Steven (its last screen, "not health profile"); at the window's top left when the phone has no room at its left (the desk's full modal) */
@@ -26647,9 +26658,9 @@ hairline({
     const tick = () => { const welc = (document.getElementById('versionSel') || {}).value === 'welc';
       const at = window._hpBack && window._hpBack.at ? window._hpBack.at() : -1, fr = (at >= 0 || (welc && document.body.classList.contains('hpOn'))) && document.querySelector('.hpWrap.hpOpen .aqFrame'), r = fr && fr.getBoundingClientRect(), W = 280, G = 40;   /* the profile's pages too, in Membership onboarding ("also include the health profile pages, with the timeline on the left") */
       const k = at + ':' + !!document.querySelector('.hpWrap.hpOpen .hpAtLtr'); if (k !== last){ last = k; if (window.__tkPages) window.__tkPages(); }   // the tweaks and the journey as the note comes and goes
-      if (!(r && r.width > 0)){ if (el) el.hidden = true; return; }
+      if (window.__flowAv) window.__flowAv('wtl', !!(r && r.width > 0)); if (!(r && r.width > 0) || document.documentElement.classList.contains('flowOff')){ if (el) el.hidden = true; return; }
       const p = make(); if (!p) return; const side = r.left - G - W >= 16, bar = document.querySelector('.topbar'), bb = bar ? bar.getBoundingClientRect().bottom : 56;
-      const top = side ? r.top : bb + 16; p.style.left = (side ? Math.round(r.left - G - W) : 16) + 'px'; p.style.top = Math.round(top) + 'px'; p.style.maxHeight = Math.round(Math.max(200, innerHeight - top - 24)) + 'px'; p.hidden = false;
+      const top = bb + 16; p.style.left = '16px';   /* always the window's left panel, under the top bar ("the timeline flow like this always put as left panel") */ void side; p.style.top = Math.round(top) + 'px'; p.style.maxHeight = Math.round(Math.max(200, innerHeight - top - 24)) + 'px'; p.hidden = false;
       { const rows = document.getElementById('stHpJnyRows'); if (rows && welc && rows.parentNode !== p){ const h = document.createElement('div'); h.className = 'tkSub hpWtlHp'; h.textContent = 'Health profile'; if (!p.querySelector('.hpWtlHp')) p.appendChild(h); p.appendChild(rows); } }   // the profile's own rows under the reveal's: Step 1, 2, 3 pages and their Homes, Past results, Concierge
       const at2 = at === 4 && (document.getElementById('stHpLtrMode') || {}).value === 'letter' ? 5 : at;   // the note as a letter lights Letter view
       p.querySelectorAll('li').forEach((li, i) => { li.classList.toggle('now', i === at2); if (i === at2) li.setAttribute('aria-current', 'step'); else li.removeAttribute('aria-current'); }); };
