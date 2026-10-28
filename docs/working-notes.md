@@ -17883,3 +17883,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Concierge storyboard field restyled to the reference: a light rounded box (#F4F4F4, 28 radius, soft shadow) with the words on top, and under them a + circle, an "Eva ⌄" pill and the round send (grey until there are words, then black). Eva's typing dots are now "Thinking · Looking at your records" with a 3 × 3 grid of dots turning over.
 - Gift receipt: the Tweak is now **Scheduled**, Now / Later (was Delivery: Now / Scheduled). The sub copy reads "Thank you for giving Olive the gift of health. We'll let Olive know shortly / on 14 November, and your receipt is on its way to marc.taylor@example.com."
 - Gift receipt (2-column properties): 8px more between the properties (row gap 12 → 20). This applies in Recipient and Occasion alike.
+- Gift receipt:
+  - The h1 reads "Your gift is on its way" (Now) or "Your gift is all set" (Later).
+  - The line under the button ("The gift will be sent…") is gone. Delivery is a property again, in Recipient: "As soon as your payment is confirmed" (Now) or "14 Nov 2026" (Later), with a calendar icon in the rows layout.
+  - The list's heading reads "Gift details" (was "What's included").
