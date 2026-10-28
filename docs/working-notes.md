@@ -17862,3 +17862,6 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - **Word by word** (the default): written word by word, rising on its own while it writes. This is the Words mode as it was.
   - **Full**: the whole letter appears at once, the first paragraph centred. The member scrolls, and the paragraph in the middle is lit (opacity 1) while the rest sit at 25%. Let's begin appears 1.6 s in.
   - Paragraphs is removed, along with its CSS and code. A saved "para" value falls back to Word by word.
+- Steven's note → Full: the content sits 128px higher. The reading line is 128 above the middle (`UPF`), used both for centring and for picking the lit paragraph.
+  - The paddings were rebalanced: top is half the height − 128 − 12, bottom is half + 128 − 12, so together they stay under the letter's own height. A larger bottom padding alone had made the letter box grow past its place.
+  - Full uses a short top fade (48px) so the lit paragraph is clear of it.
