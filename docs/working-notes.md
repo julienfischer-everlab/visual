@@ -17699,3 +17699,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Medicare page: the "If you don’t have a registered Medicare card…" note has no outline, just its ground.
 - Past results on its own keeps the profile's light at its top (the reveal's picture, as on the home).
 - Gift receipt: the product is a badge at the right of "Gifted product" ("Diagnostic membership"), no Product row. The included list's "Show all 6" is centred. The property rows have no icons and are 14px.
+- Gift receipt: "What’s included" 8px further from the title (margin-top 8).
