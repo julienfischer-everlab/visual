@@ -17901,3 +17901,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The others fold away (`tkAtOff`), checked every 300 ms against `_hpBack.at()`. With the reveal not up, everything shows as before.
 - Documentation: the "Health profile card" tab and its sidebar title are now **Membership onboarding**. The link (#health-profile-card) is unchanged.
 - Concierge storyboard: the thread's top fade removed ("frame is a mask, outside should be visible"), so the bubbles show in full wherever they sit, inside the frame or out. Eva's bubbles are solid (8% ink mixed into the ground), so the frame's line no longer shows through them.
+- Concierge intro: the title on top, the visual under it, its frame 320 high (the box 340, the field running 20 past the frame's foot).
+- Steven's note:
+  - Letter is 12 / 20 (2px less), with 16 more padding at each side (38 phone, 48 desk). The card has no ground of its own and appears with the words (`hpLtrCard` at the letter's start), not over the greeting.
+  - The header sits 32 higher on the phone. The note's `.hpView` moves up, since it clips at the hidden bar's line; a negative margin on the header alone was cut off.
+  - 4 less between the photo and the name.
+- The reveal timeline: a **Letter view** row (it opens the note in its Letter version; the note's own row goes back to Word by word). The rows have no sub-titles.
+- "Membership reveal" in the Version menu is now **Membership onboarding**. Its timeline on the left carries the Health profile's rows under the reveal's (Step 1, 2 and 3 pages and their Homes, Past results, Concierge), and it stays up on the profile's pages. The Health profile as its own flow keeps its Journey panel.
