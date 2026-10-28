@@ -2277,7 +2277,8 @@ window.EvConsent = (function () {
       if (old) {
         if (!dir || reduced() || !scr.animate) { old.remove(); }
         else if (v) {
-          var up = dir > 0, dy = v.top - old.getBoundingClientRect().top, rise = Math.max(160, Math.round((view.clientHeight || 600) * .34));
+          var ost = old.scrollTop; old.style.overflow = 'visible'; old.scrollTop = 0;   /* the leaving page unclipped, its scroll kept in the move: rising, its own box took its foot with it and left an empty band over the CTA ("a dark rectangle overlaps the bottom of the screen"); the view still clips it */
+          var up = dir > 0, dy = v.top - old.getBoundingClientRect().top - ost, rise = Math.max(160, Math.round((view.clientHeight || 600) * .34));
           scr.style.zIndex = '2'; old.style.zIndex = '1'; old.setAttribute('inert', ''); old.setAttribute('aria-hidden', 'true');
           var vo = old.animate([{ transform: 'translateY(' + dy + 'px)', opacity: 1 }, { transform: 'translateY(' + (dy + (up ? -48 : 48)) + 'px)', opacity: 0, offset: .7 }, { transform: 'translateY(' + (dy + (up ? -72 : 72)) + 'px)', opacity: 0 }], { duration: 380, easing: 'cubic-bezier(.4, 0, .9, .6)', fill: 'forwards' });
           scr.style.background = 'transparent';   /* its ground left out till it has landed ("black bg overlapping the steps card"): rising from a third down, it laid a dark block over the home's steps; the frame's own ground is behind both */

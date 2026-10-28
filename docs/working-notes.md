@@ -17738,3 +17738,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Documentation → Health profile flows:
   - A screen's arrow (and Go to prototype) opens the prototype at the canvas's viewport: XS from the phone canvas, Auto from the Desktop canvas.
   - The Desktop frames are 12px round on screen, whatever the zoom (were 14 before the zoom).
+- Health profile, home → a step (Start the questions): no dark band over the bottom any more. The home is taller than the view and clipped its own overflow; rising to leave, its box took that clip up with it and left an empty band above the CTA (over the last step card). The leaving page now drops its clip (the view still clips), its scroll position kept in the move.
