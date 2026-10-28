@@ -17948,3 +17948,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - The name and role now rise with the avatar: `hpLtrS3` is set at IN + HOLD, when the avatar starts up, and the title travels 24px on the avatar's curve (.65,0,.35,1) over 850ms. Before, it faded in only after the avatar had settled.
 - Top bar: the "Viewport" label comes after the select, and the readout drops "(forced, window N)".
 - Not applied: the −2px gap between name and role. That edit was rejected mid-turn.
+
+## Concierge intro: chat inside its frame
+
+- The thread (`.hpCcTh`) now sits inside the frame box (`inset 0 20px 20px`, radius 24) with 24px padding. It clips with `overflow: hidden` and fades the top and bottom 24px through `mask-image`, so a bubble running past either edge fades out. The field (`.hpCcF`) sits 24px in from the frame's sides and foot (left/right/bottom 44). Before, both ran edge to edge across the chat box, past the frame.
