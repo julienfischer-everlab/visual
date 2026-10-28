@@ -17708,3 +17708,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Gift receipt:
   - Purchase success header: Tweaks → Gift receipt → Header, "Logo animated" (default) or "Logo static". Animated: the wordmark fades and the mark turns once to the middle, folding into a check that is drawn in. The check is held about 0.9s, then gathers into a dot. Specks and short streaks then rise past the dot at their own speeds, with a faint line just over it, so it seems to travel down. It is sparse and fades in, and the loop runs on. It plays again each time the page opens, and with reduced motion only the dot shows. The page's own link takes #logoanim.
   - The cards are 8px apart (was 4).
+- Gift receipt: no "Gift summary" title over the cards; the section keeps it as its accessible name. On the phone the properties are always inline (label beside value), even with "2 columns" picked.
