@@ -18009,3 +18009,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Only the latest bubble is at full opacity; the ones before it sit at 50% (`.hpCcTh > .hpCcB:has(~ .hpCcB)`). The entrance animation now fills `backwards` only, so it no longer holds opacity at 1.
 - The active bubble (or the Thinking indicator) is always centred vertically in the frame. On each new item the thread's `padding-bottom` is set so its middle meets the frame's middle, eased over .7s, with older bubbles rising above it. It resets when the loop starts again. Checked: an offset of 0px for each new bubble.
 - Removed the three cards under the chat (Ask Eva anything, Reach your care team, Book in a few taps).
+
+## Overview never on Step 1
+
+- The Overview's Health profile card can no longer show Step 1. Whenever the card repaints, or the profile closes (`hpOn` removed), and the store is still at Step 1 with the profile not open, `step2()` sets it to Step 2 (`store.preset('one')`). This catches every way back to Step 1: a saved setup, the reveal's fresh profile after Steven's note, or the State tweak. Inside the profile and the onboarding, Step 1 still plays as before. Checked: the card shows "Book your consultation" after a load, after setting the State tweak to Step 1, and after going through the note and back to the Overview.
