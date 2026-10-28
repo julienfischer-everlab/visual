@@ -17887,3 +17887,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The h1 reads "Your gift is on its way" (Now) or "Your gift is all set" (Later).
   - The line under the button ("The gift will be sent…") is gone. Delivery is a property again, in Recipient: "As soon as your payment is confirmed" (Now) or "14 Nov 2026" (Later), with a calendar icon in the rows layout.
   - The list's heading reads "Gift details" (was "What's included").
+- Steven's note Tweak: a third version, **Letter**:
+  - Mono 14 / 22 (`--ar-font-mono`), left aligned.
+  - In a card with sharp corners, a 0.5px rule at 20% and a 20px backdrop blur. 24 / 22 padding on the phone, 32 at the sides on the desk.
+  - It opens with "I'm really glad you're here, <first name>." and is signed Steven.
+  - Its paragraphs come in one after another, 0.38 s apart. Then it scrolls inside the card; nothing is lit or dimmed.
