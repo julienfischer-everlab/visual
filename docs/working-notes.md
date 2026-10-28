@@ -17735,3 +17735,6 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The list's squares are orange (the accent).
   - The title is 24px higher, with 12px more under the title group.
   - Background has a new "Warm" option (now the default): the Health profile's warm light at the top, fading to the page. With Logo animated it comes in once the dot lands at the top.
+- Documentation → Health profile flows:
+  - A screen's arrow (and Go to prototype) opens the prototype at the canvas's viewport: XS from the phone canvas, Auto from the Desktop canvas.
+  - The Desktop frames are 12px round on screen, whatever the zoom (were 14 before the zoom).
