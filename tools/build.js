@@ -17,6 +17,8 @@ const csso = require('csso');
 
 const root = path.resolve(__dirname, '..');
 let src = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+// the build's stamp in the toolbar (Sydney time), so a page a browser kept from before is told apart at a glance
+src = src.replace('>dev build</span>', '>Build ' + new Date().toLocaleString('en-AU', { timeZone: 'Australia/Sydney', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', hour12: false }) + '</span>');
 
 // Images live under assets/ so the source stays a file people can read and
 // the dev page loads them over HTTP like any other page. dist/index.html has

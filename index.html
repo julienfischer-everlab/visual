@@ -11315,6 +11315,7 @@
   body.light .emCta:hover{background:rgba(0,0,0,.11);}
   /* every eyebrow 12 ("12 eyebrow everywhere"): the product's small uppercase labels, whatever size their own rules (and their breakpoints') gave them */
   :is(.ovhero .tag, .ovBk .ovBkH > b, .ovBkC .lbl, #phone .lbl, #phone2 .lbl, #dOver .lbl, .dash .lbl, .dash .hiCard .lbl, .slbl, .isSec .lbl, .msEy, .msGl, .jvEy, .tlDetH, .tlGtx small, .ovrow2 .mono, .soLbl, .rcEyebrow, .rcKind, .tcEyebrow, .tcLbl){font-size:12px !important;}
+.tkBuild { align-self: center; margin-left: 4px; font-size: 11px; white-space: nowrap; opacity: .5; font-variant-numeric: tabular-nums; }
 </style>
 
 <canvas id="field"></canvas>
@@ -12908,6 +12909,8 @@
     <button class="tkBtn" id="tkDocSave" type="button">Save</button>
     <button class="tkBtn" id="tkReload" type="button"
             aria-label="Reload the page on this version">Refresh</button>
+    <!-- the build this browser shows, stamped by tools/build.js ("on web I get an old version": a stale page told apart from different saved Tweaks) -->
+    <span class="tkBuild" title="The build this browser is showing">dev build</span>
   </div>
 </div>
 <div class="carousel" id="carousel" role="group" aria-label="Health metrics"></div>
@@ -16785,7 +16788,7 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
 .arSheet.hpSheet.hpCarried .hpLtrHd { background: none; }   /* over the carried light: no ground of its own */
 .arSheet.hpSheet .hpLtrHd img { flex: none; width: 56px; height: 56px; margin-bottom: 8px; border-radius: 50%; object-fit: cover; } .arSheet.hpSheet .hpLtrHdT { display: flex; flex-direction: column; gap: 2px; } .arSheet.hpSheet .hpLtrHdT b { font-size: 15px; line-height: 20px; font-weight: 500; } .arSheet.hpSheet .hpLtrHdT span { font-size: 13px; line-height: 17px; color: oklch(var(--ar-ink) / .56); }
 .arSheet.hpSheet .hpLtr { position: relative; flex: 1 1 auto; min-height: 0; overflow-y: auto; scrollbar-width: none; display: flex; flex-direction: column; gap: 20px; padding: 20px 32px 32px; text-align: center; text-wrap: pretty; -webkit-mask: linear-gradient(transparent, rgba(0,0,0,.35) 48px, #000 160px, #000 calc(100% - 200px), rgba(0,0,0,.35) calc(100% - 64px), transparent); mask: linear-gradient(transparent, rgba(0,0,0,.35) 48px, #000 160px, #000 calc(100% - 200px), rgba(0,0,0,.35) calc(100% - 64px), transparent); }   /* faded out at its top and foot, diffuse ("more diffuse": over 160 / 200, eased; were 64 / 96) */ .arSheet.hpSheet .hpLtr::-webkit-scrollbar { display: none; } .arSheet.hpSheet .hpScr.hpLtrP > .hpLtr { flex: 1 1 0; min-height: 0; }   /* the screen's height, not its words' (the page rule keeps every block at its own height: the letter grew past the button and never scrolled) */   /* a story ("one paragraph at a time"; "padding +32 left right"): its own scroll under the header, faded at its edges; centred */
-.arSheet.hpSheet .hpLtr p { flex: none; margin: 0; font-size: 24px; line-height: 26px; font-weight: 570; letter-spacing: -.2px; transition: opacity .7s ease; }   /* 2px bigger, the titles' medium (570), set tight ("line height -8px, font medium, bigger by 2px": 26, not 20: under its own size the lines would collide) */   /* medium, the titles' style a little smaller (28 / 32 there: "font medium and bigger; h1 a bit smaller") */
+.arSheet.hpSheet .hpLtr p { flex: none; margin: 0; font-size: 20px; line-height: 24px; font-weight: 570; letter-spacing: -.1px;   /* 4px smaller ("smaller by 4px": 20 / 24, were 24 / 26) */ transition: opacity .7s ease; }   /* 2px bigger, the titles' medium (570), set tight ("line height -8px, font medium, bigger by 2px": 26, not 20: under its own size the lines would collide) */   /* medium, the titles' style a little smaller (28 / 32 there: "font medium and bigger; h1 a bit smaller") */
 .arSheet.hpSheet .hpLtrPlay:not(.hpLtrDone) .hpLtr { overflow: hidden; } .arSheet.hpSheet .hpLtrPlay .hpLtr p.past { opacity: .3; } .arSheet.hpSheet .hpLtrPlay.hpLtrDone .hpLtr p { opacity: 1; transition-duration: 1.2s; }   /* the paragraph being written in focus, the ones before it dimmed, up out of the way; written, all of it, to scroll back through */
 .arSheet.hpSheet .hpScr > .hpLtrHi { max-width: none !important; width: auto !important; }   /* the whole screen, not the desk column (520, at the left) */ .arSheet.hpSheet .hpLtrHi { display: none; position: absolute; inset: 0; z-index: 3; flex-direction: column; align-items: center; justify-content: center; gap: 0; padding: 0 var(--hpSide) 12%; text-align: center; pointer-events: none; } .arSheet.hpSheet .hpLtrHiAv { width: 96px; height: 96px; margin-bottom: 24px; } .arSheet.hpSheet .hpLtrHi p { margin: 0; font-size: 22px; line-height: 28px; letter-spacing: -.01em; text-wrap: balance; }   /* the greeting: the avatar's place (the avatar itself is the header's, moved here), the two lines under it */
 .arSheet.hpSheet .hpLtrHi p + p { margin-top: 4px; color: oklch(var(--ar-ink) / .72); }
@@ -18093,7 +18096,7 @@ window.EvConsent = (function () {
     }
     var playLtr = function (d0) {   // the sequence, from note() just drawn (from the card screen's Get started, or opened on the note)
       var scr = shown; if (reduced() || !scr || !scr.animate || !scr.classList.contains('hpLtrP')) return;
-      var DOT = 220, DH = 1000, GROW = 380, UP = 520, IN = DOT + DH + GROW + UP, MOVE = 850, W = 180, PP = 900, HT = [].slice.call(scr.querySelectorAll('.hpLtrT')), BY = HT.map(function (e) { return +e.dataset.by || 1500; }), T2 = IN + BY[0] + 900 + 300, HOLD = T2 - IN + BY[1] + 1300;   /* snappier dot ("dot becomes avatar: snappier"); the first title written and held, away, the second in its place, held; the letter twice as slow ("slower by 2x") */   /* the opening ("dot, avatar, move up, title below fades in from the bottom"): a dot, grown into the avatar, up to its place; then the greeting */   /* the avatar in, the greeting read, the move up; a word every 52 ms, 420 between paragraphs (brisk, readable) */
+      var DOT = 700, DH = 800, GROW = 700, UP = 520, IN = DOT + DH + GROW + UP, MOVE = 850, W = 180, PP = 900, HT = [].slice.call(scr.querySelectorAll('.hpLtrT')), BY = HT.map(function (e) { return +e.dataset.by || 1500; }), T2 = IN + BY[0] + 900 + 300, HOLD = T2 - IN + BY[1] + 1300;   /* snappier dot ("dot becomes avatar: snappier"); the first title written and held, away, the second in its place, held; the letter twice as slow ("slower by 2x") */   /* the opening ("dot, avatar, move up, title below fades in from the bottom"): a dot, grown into the avatar, up to its place; then the greeting */   /* the avatar in, the greeting read, the move up; a word every 52 ms, 420 between paragraphs (brisk, readable) */
       var av = scr.querySelector('.hpLtrHd img'), ph = scr.querySelector('.hpLtrHiAv'), L = scr.querySelector('.hpLtr'), PS = [].slice.call(L.querySelectorAll('p')), words = PS.map(function (p) { return [].slice.call(p.querySelectorAll('.hpLw')); });
       var focus = function (i) { PS.forEach(function (p, k) { p.classList.toggle('past', k < i); }); };   /* a new paragraph: the ones before it dimmed */
       /* the letter always rising, slowly ("should always move up slowly"): it follows the line being written, held in the middle of the letter, easing after it frame by frame (a 0.9 s lag), so the words drift up as they are written, one line after another, and on to the next paragraph without a jump */
@@ -18109,11 +18112,11 @@ window.EvConsent = (function () {
         var off = function (el) { var x = 0, y = 0; while (el && el !== scr) { x += el.offsetLeft; y += el.offsetTop; el = el.offsetParent; } return [x, y]; };   // layout positions in the screen (its moves and zooms aside)
         var a = off(av), b = off(ph), k = ph.offsetWidth / (av.offsetWidth || 56), dx = b[0] + ph.offsetWidth / 2 - (a[0] + av.offsetWidth / 2), dy = b[1] + ph.offsetHeight / 2 - (a[1] + av.offsetHeight / 2), T = IN + HOLD + MOVE;
         var tx = (scr.querySelector('.hpLtrHiT') || {}).offsetHeight || 0; var dy0 = dy + (tx + 24) / 2;   // the dot in the middle of the whole greeting (the avatar and its lines), lower than the avatar's own place
-        var c = 'translate(' + dx.toFixed(1) + 'px, ' + dy.toFixed(1) + 'px) scale(' + k.toFixed(3) + ')', c0 = 'translate(' + dx.toFixed(1) + 'px, ' + dy0.toFixed(1) + 'px) scale(', D = (12 / (av.offsetWidth || 56)).toFixed(3), WH = 'brightness(0) invert(1)';
+        var c = 'translate(' + dx.toFixed(1) + 'px, ' + dy.toFixed(1) + 'px) scale(' + k.toFixed(3) + ')', c0 = 'translate(' + dx.toFixed(1) + 'px, ' + dy0.toFixed(1) + 'px) scale(', D = (12 / (av.offsetWidth || 56)).toFixed(3), WH = 'brightness(0) invert(1)', cB = 'translate(' + dx.toFixed(1) + 'px, ' + (dy0 + 64).toFixed(1) + 'px) scale(';   /* the dot's start: 64 lower, pushed up to the middle ("dot should come from bottom -64px, push up to center") */
         ltrAv = av.animate([
-          { transform: c0 + D + ') scale(.4)', filter: WH, opacity: 0, easing: 'cubic-bezier(.16, 1, .3, 1)' },   // a white dot (12 px), coming in
+          { transform: cB + D + ') scale(.4)', filter: WH, opacity: 0, easing: 'cubic-bezier(.3, .6, .3, 1)' },   // a white dot (12 px), coming in, rising 64 px into the middle
           { transform: c0 + D + ')', filter: WH, opacity: 1, offset: DOT / T },
-          { transform: c0 + D + ')', filter: WH, opacity: 1, offset: (DOT + DH) / T, easing: 'cubic-bezier(.34, 1.4, .64, 1)' },   /* the dot held a moment before it opens ("more pause on the dot before Steven's avatar") */
+          { transform: c0 + D + ')', filter: WH, opacity: 1, offset: (DOT + DH) / T, easing: 'cubic-bezier(.83, 0, .17, 1)' },   /* dot to avatar on easeInOutQuint ("dot to avatar": the curve sent), over 700 ms */   /* the dot held a moment before it opens ("more pause on the dot before Steven's avatar") */
           { transform: c0 + k.toFixed(3) + ')', filter: 'none', opacity: 1, offset: (DOT + DH + GROW) / T, easing: 'cubic-bezier(.65, 0, .35, 1)' },   /* popped open, a touch past its size and back */   // grown into the avatar, its photo coming through
           { transform: c, filter: 'none', opacity: 1, offset: IN / T },   // up to its place over the greeting
           { transform: c, filter: 'none', opacity: 1, offset: (IN + HOLD) / T, easing: 'cubic-bezier(.65, 0, .35, 1)' },
@@ -18123,7 +18126,7 @@ window.EvConsent = (function () {
         at(function () { HT[0].classList.add('out'); }, T2 - 300); at(function () { HT[1].classList.add('on'); }, T2);   // away, the second written in its place
         at(function () { scr.classList.add('hpLtrS2'); }, IN + HOLD - 150);   // the greeting away as the avatar starts up
         at(function () { scr.classList.add('hpLtrS3'); }, T - 200);   // his name and role, as it settles
-        L.style.paddingTop = Math.max(20, L.clientHeight / 2 - 13) + 'px'; L.style.paddingBottom = Math.max(32, L.clientHeight / 2 - 13) + 'px';   // room for the first line and the last to sit in the middle too
+        L.style.paddingTop = Math.max(20, L.clientHeight / 2 - 12) + 'px'; L.style.paddingBottom = Math.max(32, L.clientHeight / 2 - 12) + 'px';   // room for the first line and the last to sit in the middle too
         var t = T + 350; words.forEach(function (ws, i) { at(function () { focus(i); }, t); ws.forEach(function (w, j) { at(function () { w.classList.add('on'); follow(w); }, t + j * W); }); t += ws.length * W + W; });   /* each paragraph in focus, written, straight on into the next ("no pause between paragraph"), the letter rising after its words */
         at(done, t + 1600);   /* Let's begin once the letter has settled, its last line written and risen into place ("CTA should appear at the end") */
       }, d0 == null ? 160 : d0);
@@ -18142,7 +18145,7 @@ window.EvConsent = (function () {
     var justDone = null;   // the stage just finished, its card animated once on the intro
     var landAt = null;   /* opened straight on a step's page (the Overview card's Continue, not the home): no back there, nothing behind it ("if the user lands on the step directly, back shouldn't be there"); the home seen, a back again */
     var step0Back = function () { backBtn.classList.toggle('hpNoBack', !!landAt && A === landAt.a && I === 0); };   /* landed part-way through a step (it resumes where it was left, the past results search at its end): a back to the page before ('Need a back cta'); none on a step's first page only */
-    function back() { if (!A) { if (opts.note) { note(); return; } if (opts.onBack) opts.onBack(); return; }   /* the home after the note from Steven: back to the note */ if (ret != null) { var r = ret; ret = null; I = r; step(-1); return; } if (I === 0) { home(-1); return; } I--; keep(); step(-1); }
+    function back() { if (!A) { note(); return; }   /* the home: back to the note from Steven, however the profile was opened ("Health profile back should land on Steven screen"; opened from the journey's Home or the Tweaks it did nothing) */ if (ret != null) { var r = ret; ret = null; I = r; step(-1); return; } if (I === 0) { home(-1); return; } I--; keep(); step(-1); }
     function keep() { var st = S.a[A]; if (st.st !== 'done') st.i = I; save(); }
     function fwd() {   // the next step, or the area done: back to the home
       var a = AREA[A], st = S.a[A];
@@ -18629,6 +18632,7 @@ window.EvConsent = (function () {
       go: function (k, i) { if (AREA[k]) area(k, 0, i); },   // a stage at a given page, at once
       goId: function (k, id) { if (!AREA[k]) return false; var i = stepsOf(k).indexOf(id); if (i < 0) return false; if (k !== 'res' && root.classList.contains('hpSolo')) { root.classList.remove('hpSolo'); landAt = null; if (opts.onUnsolo) opts.onUnsolo(); } if (ORD.indexOf(k) > 0) { linear(k); save(true); } area(k, 0, i); return true; },   // a later step's page: the steps before it done (linear)   // a step's page from Past results on its own: the profile again round it   // a stage at a named page (Tweaks' page lists), wherever its order puts it
       where: function () { return { a: A, i: I }; },
+      note: function () { note(); },   // the note from Steven (the prototype's Back from the home)
       theme: function (t) { root.classList.toggle('arDark', t === 'dark'); },
       destroy: function () { if (alive) tell(null); alive = false; clearInterval(pt); if (root.parentNode) root.parentNode.removeChild(root); },
       refresh: function () { if (!alive) return; if (!A) home(0); else if (A === 'wear') { I = Math.min(I, stepsOf('wear').length - 1); step(0); } }   // step 1's order changed: the home's lines, or the page now at this place
@@ -33792,6 +33796,7 @@ hairline({
       if (cap.grain) { const g = document.createElement('i'); Object.assign(g.style, cap.grain, { position: 'absolute', inset: '0', pointerEvents: 'none' }); el.appendChild(g); }
       frame.prepend(el); hp.el.classList.add('hpCarried'); };
     const start = () => {
+      store.preset('none'); setPlan(false);   /* the reveal is the journey's first moment: the profile after it always fresh, on step 1 ("how come after Steven's screen I end up in All complete": it read the saved / Tweak state) */
       const wel = inst, v2 = !!(wel && wel.welcome && wel.v2), cap = v2 ? capPic(wel) : null, cv = wel && wel.welcome && !v2 && wel.el.querySelector('canvas.hpSph');   // V2: no sphere to carry; the card goes up with the words, the profile's own sphere comes in with its page
       if (v2) wel.el.classList.add('hpW2PtOff');   // its specks gone at once, first thing, before the profile is built ("the particles stay on the next screen too much; they need to disappear directly")
       if (!(cv || v2) || !frame.animate || matchMedia('(prefers-reduced-motion: reduce)').matches) { open({ note: true }); fromIntro = true; carried = null; return; }
@@ -33866,7 +33871,8 @@ hairline({
     /* the welcome itself a step back (V2): the card to its opening again, the opening to the dot, the dot to the first words */
     const welAt = () => inst && inst.welcome && inst.v2 && inst.stage && wrap && wrap.classList.contains('on') && !wrap.classList.contains('shut') ? inst.stage() : -1;
     const welBack = () => { const s = welAt(); if (s < 1) return; open({ welcome: true, from: s >= 3 ? 'open' : s === 2 ? 'dot' : '' }); };
-    window._hpBack = { ok: () => backOk() || welAt() > 0, go: () => { if (backOk()) back2intro(); else welBack(); },
+    const hpHome = () => !!(inst && !inst.welcome && inst.note && inst.el.classList.contains('hpAtHome') && !inst.el.classList.contains('hpSolo') && wrap && wrap.classList.contains('on') && !wrap.classList.contains('shut'));   /* the profile's home: Back to the note from Steven before it ("Health profile back should land on Steven screen"; was the card screen) */
+    window._hpBack = { ok: () => hpHome() || backOk() || welAt() > 0, go: () => { if (hpHome()) inst.note(); else if (backOk()) back2intro(); else welBack(); },
       at: () => { if (wrap && wrap.classList.contains('on') && !wrap.classList.contains('shut') && wrap.querySelector('.hpAtLtr')) return 4; const s = welAt(); if (s < 0) return -1; if (s >= 2) return 3; if (s === 1) return 2; const l = inst.el.querySelector('.hpW2Lead'), t2 = l && l.children[1]; return t2 && t2.classList.contains('hpW2LdIn') ? 1 : 0; } };   /* the reveal's moment for its timeline: 0 the first title, 1 the second, 2 the dot, 3 the card, 4 the note from Steven; -1 not up */
     /* Past results, a page of its own (Standalone flow -> Past results, #past-results; "a standalone page, not part of the health profile"): from the Overview's records card, All set's Next, Tweaks' Open */
     const openPast = () => { open({ solo: 'res', dism: true }); const vs = document.getElementById('versionSel'); if (vs && (vs.value === 'hp' || vs.value === 'pr')){ vs.value = 'pr'; try { history.replaceState(null, '', '#past-results'); } catch (e){} } };

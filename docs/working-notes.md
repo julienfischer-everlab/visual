@@ -17835,3 +17835,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Header: 24px higher (top padding 40 → 16), with 8px more below the avatar.
 - Carried light: 160px above where it stood on the card screen (`--hpCyD - 160px`), then 64px more as the avatar goes up into the header (0.85 s, the avatar's easing).
 - Written slowly ("need to write slowly"): a word every 180 ms (was 104), each word resolving over 1.8 s (was 1.3 s). The letter now takes about 15 s.
+- The dot rises in: it starts 64px below the centre and is pushed up into the middle (700 ms), holds 800 ms, then grows into the avatar on easeInOutQuint over 700 ms.
+- Letter 4px smaller: 20 / 24 (was 24 / 26).
+- After Steven's screen the profile always starts fresh on Step 1. The reveal handover resets the store with `store.preset('none')`; before, it read the saved or Tweak state, and a saved All complete landed on "You're all set".
+- Back from the profile home always goes to Steven's note: the in-phone back (before, it did nothing unless the profile came from the reveal) and the prototype's floating Back (before, it went to the card screen). Uses `INST.note()` and `hpHome()` in `_hpBack`.
+- Toolbar build stamp ("Build 28 Oct, 16:57", Sydney time, written by tools/build.js). It tells a browser showing an old page apart from one showing different saved Tweaks.
