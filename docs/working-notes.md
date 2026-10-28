@@ -17908,3 +17908,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - 4 less between the photo and the name.
 - The reveal timeline: a **Letter view** row (it opens the note in its Letter version; the note's own row goes back to Word by word). The rows have no sub-titles.
 - "Membership reveal" in the Version menu is now **Membership onboarding**. Its timeline on the left carries the Health profile's rows under the reveal's (Step 1, 2 and 3 pages and their Homes, Past results, Concierge), and it stays up on the profile's pages. The Health profile as its own flow keeps its Journey panel.
+
+## Steven's signature; tighter timeline cards
+
+- Letter view: a fake handwritten "Steven" signature (inline SVG, single stroke plus an underline) sits at the card's bottom right, across from the typed name. It draws itself in with stroke-dashoffset once the name is written. It only shows in Letter mode.
+- Membership onboarding timeline: the reveal rows lose their 44px minimum and take 8px padding, so each row is now 32px.
