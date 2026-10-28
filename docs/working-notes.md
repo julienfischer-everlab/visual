@@ -17700,3 +17700,11 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Past results on its own keeps the profile's light at its top (the reveal's picture, as on the home).
 - Gift receipt: the product is a badge at the right of "Gifted product" ("Diagnostic membership"), no Product row. The included list's "Show all 6" is centred. The property rows have no icons and are 14px.
 - Gift receipt: "What’s included" 8px further from the title (margin-top 8).
+- Top bar: the back and forward arrows sit at the bar's far left, before "Version". They walk the pages you've seen, like a browser, instead of the next page in the menu. That includes pages a link or a closing page put in the menu. Going somewhere new after stepping back drops what was ahead. Each arrow is dimmed when there is nowhere to go.
+- Health profile journey: each group's Home opens the home as that step starts (Step 1: nothing done; Step 2: step 1 done; Step 3: steps 1 and 2), not as it stands. It sets the State as it does.
+- Past results on its own: no top light again ("past result, no top bg").
+- Booked step card: the doctor's card inside it has 4px more padding (14/16).
+- Overview desk (Latest): the bento is 16px apart everywhere (was 24), as the service tiles are. The primary card, the records card under it and the tiles column line up.
+- Gift receipt:
+  - Purchase success header: Tweaks → Gift receipt → Header, "Logo animated" (default) or "Logo static". Animated: the wordmark fades and the mark turns once to the middle, folding into a check that is drawn in. The check is held about 0.9s, then gathers into a dot. Specks and short streaks then rise past the dot at their own speeds, with a faint line just over it, so it seems to travel down. It is sparse and fades in, and the loop runs on. It plays again each time the page opens, and with reduced motion only the dot shows. The page's own link takes #logoanim.
+  - The cards are 8px apart (was 4).
