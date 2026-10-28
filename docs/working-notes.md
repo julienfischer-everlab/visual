@@ -17921,3 +17921,11 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - New "Flow" button in the top bar, beside Tweaks. It appears only when the screen has a flow panel and toggles that panel. The choice is remembered (`evFlowOff`).
 - Active state: Tweaks while its panel is open and Flow while its panel shows get a filled #2a2a2e background, a lighter border and white text.
 - Save (the viewport's), Comments and Refresh now sit at the bar's far right, pushed there by a `.tkGrow` spacer. The build stamp is removed from the bar; the build.js replace becomes a no-op.
+
+## Flow and Tweaks side by side; docked left column; Tweaks per HP screen; Letter spacing
+
+- The Flow panel no longer depends on room beside the phone. It shows whenever a flow screen is open, at every viewport and with Tweaks open, and the profile's journey rows never appear inside Tweaks (`#tkMenu #stHpJnyRows` hidden).
+- The Flow panel is now docked as a 300px column at the left (`html.flowDocked`, `--flDockW`), matching the Tweaks column on the right. `--vwC` centres the XS/S frames between the two columns, and the desk `.dash` starts after the left column.
+- Tweaks lost its chevron. The viewport readout now comes after the breakpoint select.
+- Health profile Tweaks follow the screen: the home shows State, Documentation, Past result card and Sphere; step pages show Step title; Past results shows its map settings. A screen with none shows "This screen has no tweaks." at the top of the panel (`.tkNone`, a check every 300ms while the panel is open).
+- Letter: 16px more margin on each side of the card (`margin: 0 16px 16px`), 16px less inner side padding (22, and 32 on desk), line height 16.
