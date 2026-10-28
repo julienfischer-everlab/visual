@@ -17779,3 +17779,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - A super subtle ripple off the dot: a thin ring (20%), out to 34 px over 1.9 s, as it lands and every 2.6 s.
 - Gift receipt cards: on S, M, L Gifted product spans the width, and Recipient and Reason & Occasion sit side by side under it, as high as the taller. Their properties are one under the other in the half width. XS: one under the other, as before.
 - Steven's avatar is still the 88 px file (assets/overview/avatar-steven.webp). The HD one sent in the chat is not in the workspace yet.
+- Gift receipt dot: no speed effect any more (no burst, no rising stream). Once it lands, fine specks (0.3–0.75 px, were up to 1.6) float round it in a ring 8–60 px out, drifting and swaying, fading in and out (3–5.5 s each, about 36 at a time). The subtle ripple stays.
+- Gift receipt:
+  - No Delivery property. Instead a line under Back to overview, over the help line: "The gift will be sent as soon as your payment is confirmed" ("on 14 Nov 2026" when scheduled), 14 px, secondary.
+  - The card's title is "Occasion" (was Reason & Occasion).

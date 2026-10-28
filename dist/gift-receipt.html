@@ -84,7 +84,7 @@
   :root.logoAnim .top{animation:none !important;opacity:0 !important;}   /* the dot is the header while it plays */
   :root.logoAnim .rc > *{animation:none;opacity:0;transform:translateY(12px);}
   :root.logoAnim.lgT .rc > :is(h1, .sub){animation:up 1.1s cubic-bezier(.2,.7,.15,1) forwards;} :root.logoAnim.lgT .rc > h1{animation-name:upBlur;} :root.logoAnim.lgT .rc > .sub{animation-delay:.18s;}
-  :root.logoAnim.lgC .rc > :not(h1):not(.sub){animation:up 1.1s cubic-bezier(.2,.7,.15,1) forwards;} :root.logoAnim.lgC .rc > .btns{animation-delay:.2s;} :root.logoAnim.lgC .rc > .foot{animation-delay:.32s;}
+  :root.logoAnim.lgC .rc > :not(h1):not(.sub){animation:up 1.1s cubic-bezier(.2,.7,.15,1) forwards;} :root.logoAnim.lgC .rc > .btns{animation-delay:.2s;} :root.logoAnim.lgC .rc > .when{animation-delay:.26s;} :root.logoAnim.lgC .rc > .foot{animation-delay:.32s;}
   .rc{position:relative;z-index:1;width:100%;max-width:600px;margin:0 auto;padding:64px 24px 48px;display:flex;flex-direction:column;align-items:center;text-align:center;}
   h1{margin:0;font:500 clamp(32px, 4.2vw + 18px, 52px)/.906 var(--sans);letter-spacing:-.025em;text-wrap:balance;}
   .sub{max-width:30em;margin:16px 0 0;font-size:16px;line-height:1.45;color:var(--ink2);text-wrap:pretty;}
@@ -140,6 +140,7 @@
   .btn.pri{background:var(--pri);color:var(--priInk);}
   .btn.pri:hover{background:var(--priHover);}
   .btn:focus-visible{outline:2px solid var(--acc);outline-offset:3px;}
+  .when{margin:20px 0 0;padding:0 32px;font-size:14px;line-height:1.45;color:var(--ink2);text-wrap:balance;} .when + .foot{margin-top:12px;}   /* the gift's delivery, under the button, over the help line */
   .foot{margin:32px 0 0;padding:0 32px;font-size:14px;line-height:1.45;color:var(--ink3);text-wrap:balance;}   /* 32 in at each side ("+32 padding left right"), its two lines balanced */
   .foot span{color:var(--ink2);text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px;}
 
@@ -163,7 +164,7 @@
     .btns{margin-top:36px;} .btns .btn{padding:0 28px;}   /* the phone: 36 under the card, hugging its label as on the desk */
     :root.split .grp{padding:12px 20px 10px;}
     .btn{padding:0 10px;font-size:15px;white-space:nowrap;}   /* the two on one line each, 28 apart */
-    .foot{margin-top:28px;}
+    .foot{margin-top:28px;} .when{margin-top:16px;} .when + .foot{margin-top:10px;}
   }
   @media (prefers-reduced-motion:reduce){
     .sky .img, .top, .rc > *{transition:none;animation:none !important;opacity:1;transform:none;filter:none;}
@@ -206,6 +207,7 @@
     <div class="grps" id="grps"></div>
   </section>
   <div class="btns"><a class="btn pri" href="#" data-inert data-go="overview">Back to overview</a></div>
+  <p class="when">The gift will be sent <span class="ifNow">as soon as your payment is confirmed</span><span class="ifSch">on 14 Nov 2026</span></p>   <!-- the Delivery property, now a line under the button ("remove delivery prop; instead: The gift will be sent as soon as your payment is confirmed; below CTA, above For any…") -->
   <p class="foot">For any questions, email us at <span>support@everlab.com.au</span></p>
 </main>
 <script>
@@ -228,7 +230,7 @@
   var GROUPS = [
     ['Gifted product', [], 'Diagnostic membership'],   // no purchase date ("remove this"); titled "Gifted product" (was What did I buy?); the product a badge at its right, no row ("just put a right side badge with $productname")
     ['Recipient', [['for', 'Name', 'Olive Martin'], ['mail', 'Email', 'olive.martin@example.com']]],
-    ['Reason & Occasion', [['occ', 'Occasion', 'Birthday'], ['when', 'Delivery', ['Sent as soon as your payment is confirmed', 'On 14 Nov 2026']], ['msg', 'Message', '“Happy Birthday. I want you around for a long time.”', 'msg']]]
+    ['Occasion', [['occ', 'Occasion', 'Birthday'], ['msg', 'Message', '“Happy Birthday. I want you around for a long time.”', 'msg']]]
   ];
   var esc = function(t){ return String(t).replace(/[&<>"]/g, function(c){ return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
   var row = function(r){ return '<div class="row' + (r[3] ? ' ' + r[3] : '') + '"><dt>' + esc(r[1]) + '</dt><dd>' + (r[0] === 'mail' ? esc(r[2]).replace('@', '@<wbr>') : Array.isArray(r[2]) ? '<span class="ifNow">' + esc(r[2][0]) + '</span><span class="ifSch">' + esc(r[2][1]) + '</span>' : esc(r[2])) + '</dd></div>'; };   // a value of two: sent now, or scheduled   // an address breaks after its @ when it must (2 columns)
@@ -267,27 +269,25 @@
     var reduced = function(){ return !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches); };
     var E = 'cubic-bezier(.65, 0, .35, 1)', F = 'forwards';
     /* the wake ("floating particles on top of the dot, to feel it moving"; then "more at the end of the dot's movement, still floating once it lands, the trail the other way around"):
-       then "at the top, present once the dot lands, not before": nothing while it rises; as it lands, a burst of specks out of it, rising and spreading as they go (a cone opening upward over the header),
-       then a few more all the time, floating up and fading slowly, for as long as the page is up */
-    var wk = document.querySelector('.lgWake'), wx = wk && wk.getContext('2d'), P = [], wRaf = 0, wMode = 0, wLast = null, wT = 0, wT0 = 0, wAmb = 0, wBurst = 0, R = [], wRip = 0, wCol = '240, 138, 60', WD = 1000;   // wMode: 0 off, 1 the move, 2 landed (floating)
+       then "at the top, present once the dot lands, not before", then no speed at all: nothing while it rises; once it lands, fine specks floating round it, for as long as the page is up */
+    var wk = document.querySelector('.lgWake'), wx = wk && wk.getContext('2d'), P = [], wRaf = 0, wMode = 0, wLast = null, wT = 0, wT0 = 0, wAmb = 0, R = [], wRip = 0, wCol = '240, 138, 60', WD = 1000;   // wMode: 0 off, 1 the move, 2 landed (floating)
     var wSize = function(){ var d = Math.min(2, window.devicePixelRatio || 1); wk.width = Math.round(innerWidth * d); wk.height = Math.round(innerHeight * d); wx.setTransform(d, 0, 0, d, 0, 0); };
     var wDot = function(){ var r = pt.getBoundingClientRect(), c = wk.getBoundingClientRect(); return [r.left + r.width / 2 - c.left, r.top + r.height / 2 - c.top]; };
-    var wAdd = function(x, y, spread, o){ var sd = Math.random() < .5 ? -1 : 1, u = Math.pow(Math.random(), .6); P.push(Object.assign({ x: x + sd * u * spread, y: y + (Math.random() - .5) * 6, vx: sd * u * (4 + Math.random() * 10), vy: (Math.random() - .6) * 10, a: 0, life: 2.4 + Math.random() * 1.8, r: .5 + Math.random() * 1.1, w: Math.random() < .35, ph: Math.random() * 6.283 }, o || {})); };
     var wFrame = function(now){ wRaf = 0; var dt = Math.min(.05, wT ? (now - wT) / 1000 : .016); wT = now;
       var d = wMode ? wDot() : null;
-      if (wMode === 2 && d){ var up = function(){ var vy = -(14 + Math.random() * 34); return { vx: (Math.random() - .5) * 2 * -vy * .75, vy: vy, life: 2.6 + Math.random() * 2.2 }; };   /* rising from the dot, out to the sides as they go: a cone opening upward, at the top */
-        if (wBurst > 0){ var nb = Math.min(wBurst, 4); wBurst -= nb; for (var i = 0; i < nb; i++) wAdd(d[0], d[1], 4, up()); }   // as it lands: a burst, over a few frames
-        wAmb -= dt; if (wAmb <= 0){ wAmb = .07 + Math.random() * .1; wAdd(d[0], d[1], 6, up()); }
+      if (wMode === 2 && d){   /* floating round the dot, no speed ("remove the speed effect, just floating particles around the dot"; "thinner"): each born somewhere in a ring round it, drifting slowly, swaying, fading in and out; about 36 at a time */
+        wAmb -= dt; while (wAmb <= 0 && P.length < 36){ wAmb += .09; var an = Math.random() * 6.283, rr = 8 + Math.pow(Math.random(), .7) * 52; P.push({ x: d[0] + Math.cos(an) * rr, y: d[1] + Math.sin(an) * rr * .8, vx: (Math.random() - .5) * 6, vy: (Math.random() - .5) * 6 - 1.5, a: 0, life: 3 + Math.random() * 2.5, r: .3 + Math.random() * .45, w: Math.random() < .4, ph: Math.random() * 6.283, fl: 1 }); }
+        if (wAmb < -1) wAmb = 0;
         wRip -= dt; if (wRip <= 0){ wRip = 2.6; R.push({ a: 0 }); } }   /* a ripple off the dot, super subtle ("ripple effect super subtle on dot"): one as it lands, then one every 2.6 s */   // then floating on, all the time
       wx.clearRect(0, 0, wk.width, wk.height);
       if (d) for (var r = R.length - 1; r >= 0; r--){ var rp = R[r]; rp.a += dt; var rk = rp.a / 1.9; if (rk >= 1){ R.splice(r, 1); continue; } var re = 1 - Math.pow(1 - rk, 3);   // easeOutCubic, out to 34 px, fading
         wx.globalAlpha = .2 * Math.pow(1 - rk, 2); wx.strokeStyle = 'rgb(255, 236, 214)'; wx.lineWidth = 1; wx.beginPath(); wx.arc(d[0], d[1], 5 + 29 * re, 0, 6.283); wx.stroke(); }
       for (var j = P.length - 1; j >= 0; j--){ var q2 = P[j]; q2.a += dt; if (q2.a >= q2.life){ P.splice(j, 1); continue; } var k = q2.a / q2.life;
-        q2.x += q2.vx * dt + Math.sin(q2.a * 1.7 + q2.ph) * 5 * dt; q2.y += q2.vy * dt; q2.vx *= 1 - .7 * dt; q2.vy = q2.vy * (1 - .5 * dt) - 2 * dt;   // hanging, swaying, rising a little
-        wx.globalAlpha = Math.min(1, q2.a * 5) * Math.pow(1 - k, 1.5) * .9; wx.fillStyle = q2.w ? 'rgb(255, 236, 214)' : 'rgb(' + wCol + ')'; wx.beginPath(); wx.arc(q2.x, q2.y, q2.r * (1 - k * .3), 0, 6.283); wx.fill(); }
+        q2.x += q2.vx * dt + Math.sin(q2.a * 1.3 + q2.ph) * 3 * dt; q2.y += q2.vy * dt + Math.cos(q2.a * 1.1 + q2.ph) * 2 * dt;   // drifting, swaying
+        wx.globalAlpha = Math.sin(Math.PI * k) * .85;   /* in and out, softly */ wx.fillStyle = q2.w ? 'rgb(255, 236, 214)' : 'rgb(' + wCol + ')'; wx.beginPath(); wx.arc(q2.x, q2.y, q2.r, 0, 6.283); wx.fill(); }
       wx.globalAlpha = 1; if (wMode || P.length) wRaf = requestAnimationFrame(wFrame); };
     var wake = function(m){ if (!wx) return; if (m === 1){ wSize(); wCol = (getComputedStyle(root).getPropertyValue('--acc').trim().match(/^#([0-9a-f]{6})$/i) || [0, 'f08a3c'])[1].match(/../g).map(function(h){ return parseInt(h, 16); }).join(', '); wLast = null; wT = 0; wT0 = performance.now(); }
-      if (m === 2){ wBurst = 56; wRip = 0; } wMode = m; if (m && !wRaf) wRaf = requestAnimationFrame(wFrame); };
+      if (m === 2){ wRip = 0; } wMode = m; if (m && !wRaf) wRaf = requestAnimationFrame(wFrame); };
     var wStop = function(){ wMode = 0; P = []; R = []; wRip = 0; if (wRaf) cancelAnimationFrame(wRaf); wRaf = 0; if (wx) wx.clearRect(0, 0, wk.width, wk.height); };
     addEventListener('resize', function(){ if (wMode && wx) wSize(); });
     var stop = function(){ wStop(); T.forEach(clearTimeout); T = []; [st, spin, chk, cp, pt].forEach(function(e){ e.getAnimations().forEach(function(a){ a.cancel(); }); }); root.classList.remove('lgT', 'lgC', 'lgLit'); };
