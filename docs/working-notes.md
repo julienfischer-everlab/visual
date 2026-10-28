@@ -17834,3 +17834,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Let's begin appears only once the letter has settled (1.6 s after the last word). The drift keeps going until the last line is in place.
 - Header: 24px higher (top padding 40 → 16), with 8px more below the avatar.
 - Carried light: 160px above where it stood on the card screen (`--hpCyD - 160px`), then 64px more as the avatar goes up into the header (0.85 s, the avatar's easing).
+- Written slowly ("need to write slowly"): a word every 180 ms (was 104), each word resolving over 1.8 s (was 1.3 s). The letter now takes about 15 s.
