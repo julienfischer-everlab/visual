@@ -17929,3 +17929,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Tweaks lost its chevron. The viewport readout now comes after the breakpoint select.
 - Health profile Tweaks follow the screen: the home shows State, Documentation, Past result card and Sphere; step pages show Step title; Past results shows its map settings. A screen with none shows "This screen has no tweaks." at the top of the panel (`.tkNone`, a check every 300ms while the panel is open).
 - Letter: 16px more margin on each side of the card (`margin: 0 16px 16px`), 16px less inner side padding (22, and 32 on desk), line height 16.
+
+## Letter: no blur behind the card
+
+- The Letter card's `backdrop-filter: blur(20px)` is removed. It showed as a dark rectangle behind Steven's photo while the note opened. The card is now just its .5px outline, which appears with the text.
