@@ -17820,3 +17820,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
     - The paragraph being written is always in the middle of the letter's height (room left above the first and under the last).
   - Faded at its top and foot, 64 / 96 px.
   - Fix: the letter took its words' height, not the screen's (the page's no-shrink rule), so it never scrolled and ran under the button.
+- Tweaks' Save is shared: it keeps the setup in the artifact's shared store (db, doc tweaks/shared: the panel's values) as well as in the browser. Every browser takes the shared setup as it opens, so Chrome, the Claude app and anyone with the link see the same prototype.
+  - The button says "Saved for everyone" (or "Saved here only" if the store refuses).
+  - Reset clears the shared setup too: everyone back to the defaults.
+  - Without the store (the page opened on its own), this browser's alone, as before.

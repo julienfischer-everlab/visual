@@ -40760,14 +40760,22 @@ hairline({
     try { if (saved2 && /^(none|one)_d$/.test(saved2.stHpSt || '')) saved2.stHpSt = saved2.stHpSt.replace(/_d$/, ''); } catch (e){}   // steps 1 and 2 have no dropped-off state now   // Step 4 (records) retired: a setup saved on it, Booked with Records processing On
     try { if (saved2) delete saved2.stHpW2X; } catch (e){}   // the card screen's Dismiss tweak is gone (no close on the reveal): its saved value dropped
     if (saved2) requestAnimationFrame(() => Object.keys(saved2).forEach(id => put2(id, saved2[id])));
+    /* one setup for everyone ("the web version shows different things"): Save keeps the Tweaks in the artifact's shared store as well as in this browser, and every browser takes the shared one as it opens,
+       so Chrome, the Claude app and anyone with the link see the same prototype; Reset clears it for everyone. Without the store (the page on its own), this browser's alone, as before */
+    let SDB = null; const SK = 'tweaks/shared';
+    const takeShared = d => { if (!d || !d.all) return; try { localStorage.setItem(KEY, JSON.stringify(d.v || {})); localStorage.setItem(KEY2, JSON.stringify(d.all)); } catch (e){} Object.keys(d.v || {}).forEach(id => put(id, d.v[id])); Object.keys(d.all).forEach(id => put2(id, d.all[id])); };
+    try { if (window.claude && window.claude.use) window.claude.use('db').then(db => { if (!db) return; SDB = db; return db.doc(SK).get().then(sn => { if (sn && sn.exists) requestAnimationFrame(() => takeShared(sn.data())); }); }).catch(() => {}); } catch (e){}
     document.querySelectorAll('.stTkSave').forEach(b => b.addEventListener('click', () => {
       const v = {}; Object.keys(DEF).forEach(id => { const el = document.getElementById(id); if (el) v[id] = el.value; });
       const all = {}; ctl().forEach(el => { all[el.id] = valOf(el); });
       let ok = true; try { localStorage.setItem(KEY, JSON.stringify(v)); localStorage.setItem(KEY2, JSON.stringify(all)); } catch (e){ ok = false; }
-      document.querySelectorAll('.stTkSave').forEach(x => { x.textContent = ok ? 'Saved' : 'Cannot save'; setTimeout(() => { x.textContent = 'Save'; }, ok ? 1400 : 2600); });
+      const say = (t, ms) => document.querySelectorAll('.stTkSave').forEach(x => { x.textContent = t; setTimeout(() => { x.textContent = 'Save'; }, ms); });
+      if (SDB){ say('Saving…', 4000); SDB.doc(SK).set({ v, all, at: Date.now() }).then(() => say('Saved for everyone', 1800), () => say(ok ? 'Saved here only' : 'Cannot save', 2600)); }   // shared: every browser opens with it
+      else say(ok ? 'Saved' : 'Cannot save', ok ? 1400 : 2600);
     }));
     document.querySelectorAll('.stTkReset').forEach(b => b.addEventListener('click', () => {
       try { localStorage.removeItem(KEY); localStorage.removeItem(KEY2); } catch (e){}
+      if (SDB) SDB.doc(SK).delete().catch(() => {});   // the shared one too: everyone back to the defaults
       Object.keys(DEF2).forEach(id => put2(id, DEF2[id]));
     }));
   }
