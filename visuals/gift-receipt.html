@@ -88,6 +88,10 @@
   :root.split .grp{padding:14px 24px 12px;border-radius:24px;background:var(--card);} :root.split .grp + .grp{margin-top:8px;}   /* the cards 8 apart ("gap 8px"; was 4) */
   .grpH{margin:0;padding:8px 0 4px;font:500 15px/20px var(--sans);letter-spacing:-.005em;color:var(--ink);}
   .grpTop{display:flex;align-items:center;justify-content:space-between;gap:12px;} .grpTop .grpH{min-width:0;}
+  /* Tweaks -> Gift receipt -> Card visual (#vis on the page's own link): a picture down the Gifted product card's right side, the full height of the card, its outer corners the card's ("added a right bg"); the words and the list beside it */
+  :root.split.cardVis .grp.grpVis{position:relative;overflow:hidden;padding-right:calc(clamp(76px, 26%, 150px) + 20px);}
+  :root.split.cardVis .grp.grpVis::after{content:"";position:absolute;top:0;right:0;bottom:0;width:clamp(76px, 26%, 150px);background:url(../assets/gift/product-visual.webp) 50% 50% / cover no-repeat;pointer-events:none;}
+  :root.split.cardVis .grpVis .grpTop{flex-wrap:wrap;row-gap:6px;}   /* the badge under the title when the room runs out */
   .grpBadge{flex:none;margin-top:4px;padding:4px 10px;border-radius:999px;background:var(--badge);color:var(--ink);font:500 13px/18px var(--sans);white-space:nowrap;}   /* the product, a badge at the title's right ("Diagnostic membership") */
   .row{display:grid;grid-template-columns:minmax(0, 9em) minmax(0, 1fr);column-gap:16px;padding:5px 0;font-size:14px;line-height:20px;}   /* the properties 14 px ("props 14px font size") */   /* no rules between the rows ("remove divider"): the groups and their space hold them */
   .row dt{display:flex;align-items:flex-start;gap:8px;color:var(--ink2);}
@@ -212,7 +216,7 @@
   ];
   var esc = function(t){ return String(t).replace(/[&<>"]/g, function(c){ return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
   var row = function(r){ return '<div class="row' + (r[3] ? ' ' + r[3] : '') + '"><dt>' + esc(r[1]) + '</dt><dd>' + (r[0] === 'mail' ? esc(r[2]).replace('@', '@<wbr>') : Array.isArray(r[2]) ? '<span class="ifNow">' + esc(r[2][0]) + '</span><span class="ifSch">' + esc(r[2][1]) + '</span>' : esc(r[2])) + '</dd></div>'; };   // a value of two: sent now, or scheduled   // an address breaks after its @ when it must (2 columns)
-  $('grps').innerHTML = GROUPS.map(function(g, i){ return '<div class="grp"><div class="grpTop"><h3 class="grpH" id="grpH' + i + '">' + esc(g[0]) + '</h3>' + (g[2] ? '<span class="grpBadge">' + esc(g[2]) + '</span>' : '') + '</div>' + (g[1].length ? '<dl class="rows" aria-labelledby="grpH' + i + '">' + g[1].map(row).join('') + '</dl>' : '') + '</div>'; }).join('');
+  $('grps').innerHTML = GROUPS.map(function(g, i){ return '<div class="grp' + (i === 0 ? ' grpVis' : '') + '"><div class="grpTop"><h3 class="grpH" id="grpH' + i + '">' + esc(g[0]) + '</h3>' + (g[2] ? '<span class="grpBadge">' + esc(g[2]) + '</span>' : '') + '</div>' + (g[1].length ? '<dl class="rows" aria-labelledby="grpH' + i + '">' + g[1].map(row).join('') + '</dl>' : '') + '</div>'; }).join('');
   // Gifted product: what the gift includes (the Gift page's list and its icons), four then the rest behind Show all
   var INC = ['A 45-minute onboarding consult with an Everlab doctor', 'Advanced blood panel \u2014 100+ biomarkers across 50 health areas', 'DEXA scan for body composition and bone density', 'A 90-minute physical assessment, including VO\u2082 max', 'Nutrition assessment with an Everlab nutritionist', 'Re-testing part-way through, plus a full 12-month review'];
   var INC_IC = ['<path d="M4 5.5h12a1.5 1.5 0 0 1 1.5 1.5v6A1.5 1.5 0 0 1 16 14.5H9l-4 3v-3H4A1.5 1.5 0 0 1 2.5 13V7A1.5 1.5 0 0 1 4 5.5z"/>', '<path d="M10 2.5s5.5 6 5.5 10a5.5 5.5 0 0 1-11 0c0-4 5.5-10 5.5-10z"/>', '<rect x="3.5" y="3.5" width="13" height="13" rx="2"/><path d="M6.5 10h7M10 6.5v7"/>', '<path d="M2.5 10h4l1.8-4.5 3.4 9 1.8-4.5h4"/>', '<path d="M3.5 16.5C3.5 9 8 4.5 16.5 3.5c1 8.5-3.5 13-13 13z"/><path d="M3.5 16.5 12 8"/>', '<path d="M16 8.5a6 6 0 0 0-10.9-2M4 11.5a6 6 0 0 0 10.9 2"/><path d="M16 3.5v5h-5M4 16.5v-5h5"/>'];
@@ -233,7 +237,8 @@
   if (/(^|[#&])web(&|$)/.test(location.hash)) root.classList.remove('inApp');
   if (/(^|[#&])split(&|$)/.test(location.hash)) root.classList.add('split');   // the page's own link, the groups as three cards   // the page's own link, bought on the web: no CTA
   if (/(^|[#&])cols(&|$)/.test(location.hash)) root.classList.add('cols');   // the page's own link, the properties in 2 columns
-  if (/(^|[#&])sched(&|$)/.test(location.hash)) root.classList.add('sched');   // the page's own link, the gift scheduled
+  if (/(^|[#&])sched(&|$)/.test(location.hash)) root.classList.add('sched');
+  if (/(^|[#&])vis(&|$)/.test(location.hash)) root.classList.add('cardVis');   // the page's own link, the product card's picture   // the page's own link, the gift scheduled
   document.addEventListener('click', function(e){ var a = e.target.closest('[data-inert]'); if (!a) return; e.preventDefault();   // the links lead nowhere in the prototype
     if (a.dataset.go === 'overview' && window.parent !== window) try { window.parent.postMessage({ everlab: 'gr:overview' }, '*'); } catch (x) {} });   // Back to overview: the app shows its Overview
 
