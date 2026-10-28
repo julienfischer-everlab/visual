@@ -17797,3 +17797,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Tweaks: the records card's controls (Records processing, Records card, Border light and its speed, brightness, length) are a group of their own, "Past result card", out of the Primary card. It shows on the Overview and the Health profile page, with its own floating + beside the records card on the Overview.
 - Past results: the search map 30% smaller (207 px wide, the desk 238; was 296 / 340), the two cards under it up with it.
 - Why two browsers show different versions: Tweaks' Save keeps the setup in that browser's own storage (everlab:tkAll), per browser and per app. A Claude app window and Chrome each have their own saved Tweaks (Opening copy #1 vs #2, card screen copy and so on).
+- Past results: its button reads "Got it" (was Go to overview) and leads to a new page, the Concierge intro (the res area's second page, 'res.cc'):
+  - The Concierge spark in a warm ringed glow.
+  - "Meet Concierge", with the Overview Concierge card's words: "Ask any question about your health. Chat with Eva, your AI health assistant, or reach your doctor and care team directly."
+  - Three rows: Ask Eva anything; Reach your care team; Book in a few taps.
+  - Go to overview closes it.
+  - Documentation's Past results row shows it after the Past results page (snap: solo res with soloI 1).

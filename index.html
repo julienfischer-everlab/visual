@@ -16869,6 +16869,7 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
 /* the search: its radar and its label; the card of two rows */
 .arSheet.hpSheet .hpSearchP > .hpQ { padding: 0 24px; }   /* the title and its words 24 in from either side ("title group +24px padding left right") */
 .arSheet.hpSheet .hpSearch { position: relative; display: flex; flex-direction: column; align-items: center; margin: 0 0 32px; } .arSheet.hpSheet .hpSr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.arSheet.hpSheet .hpScr.hpCcP { align-items: stretch; } .arSheet.hpSheet .hpCcV { position: relative; align-self: center; width: 72px; height: 72px; margin: 32px 0 20px; border-radius: 50%; background: radial-gradient(circle at 50% 40%, rgb(255 154 74 / .28), rgb(255 122 26 / .08) 62%, transparent 72%); box-shadow: inset 0 0 0 1px oklch(var(--ar-ink) / .1); } .arSheet.hpSheet .hpCcV i { position: absolute; inset: 20px; background: linear-gradient(160deg, #ffd99d, #e9983e 55%, #ba5a10); -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M10 1.5c.3 3.9 2.6 6.2 6.5 6.5-3.9.3-6.2 2.6-6.5 6.5-.3-3.9-2.6-6.2-6.5-6.5 3.9-.3 6.2-2.6 6.5-6.5ZM16 12.5c.15 1.6 1.05 2.5 2.65 2.65-1.6.15-2.5 1.05-2.65 2.65-.15-1.6-1.05-2.5-2.65-2.65 1.6-.15 2.5-1.05 2.65-2.65Z'/%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M10 1.5c.3 3.9 2.6 6.2 6.5 6.5-3.9.3-6.2 2.6-6.5 6.5-.3-3.9-2.6-6.2-6.5-6.5 3.9-.3 6.2-2.6 6.5-6.5ZM16 12.5c.15 1.6 1.05 2.5 2.65 2.65-1.6.15-2.5 1.05-2.65 2.65-.15-1.6-1.05-2.5-2.65-2.65 1.6-.15 2.5-1.05 2.65-2.65Z'/%3E%3C/svg%3E") center / contain no-repeat; } .arSheet.hpSheet .hpCcP .hpActs { margin-top: 28px; }   /* the Concierge intro: its spark in a warm glow, ringed, over the title; its three rows 28 under it */
 .arSheet.hpSheet .hpAus { position: relative; width: min(100%, 207px, calc(210px * var(--ar, 1.1))); color: oklch(var(--ar-ink)); } .arSheet.hpSheet.hpWide .hpAus { width: min(100%, 238px, calc(238px * var(--ar, 1.1))); }   /* 30% smaller ("reduce visual by 30%": was 296 / 340), the cards under it up with it */   /* a tall country (the UK, New Zealand) as high as Australia is wide, no higher */ .arSheet.hpSheet .hpAus canvas { display: block; position: absolute; inset: 0; width: 100%; height: 100%; }   /* the map: Australia in the card's dots */
 .arSheet.hpSheet .hpActs { display: flex; flex-direction: column; gap: 8px; } .arSheet.hpSheet .hpActs > .hpCard { border-radius: 22px; } .arSheet.hpSheet .hpActs .hpRow { padding: 20px; column-gap: 38px; }   /* +24 between the words and the button or switch ("+24px padding left button gap": 14 → 38) */   /* the two rows, a grey card each, 8 apart; the Overview primary card's corners (22) and padding (20) ("card style same as the Overview primary card in radius and padding"; "padding 20px") */
 .arSheet.hpSheet .hpFiles { display: flex; flex-direction: column; gap: 4px; padding: 0 20px 20px; margin-top: -4px; }   /* each report a card item of its own inside the card ("card item"), 4 apart ("gap 2px", then "+2px gap") */ .arSheet.hpSheet .hpFiles:empty { display: none; }   /* the reports added, under their row */
@@ -17816,7 +17817,7 @@ window.EvConsent = (function () {
     { k: 'you', t: 'Tell us about you', s: 'About 5 minutes', steps: Y3D.slice(), sub: Y3D.map(function (k) { return Y3[k]; }) }
   ];
   var AREA = {}; AREAS.forEach(function (a, i) { a.i = i; AREA[a.k] = a; });
-  AREA.res = { k: 'res', t: 'Your past results', s: '', steps: ['search'], sub: ['Past results'], i: 2 };   /* the past results search, after the three ("You're all set" -> "Next: your past results", the capture): a page of its own, not a step; the bar's three dashes full (i: the last) */
+  AREA.res = { k: 'res', t: 'Your past results', s: '', steps: ['search', 'cc'], sub: ['Past results', 'Concierge'], i: 2 };   /* then the Concierge's introduction ("next screen needs to be a Concierge intro, with CTA Go to overview") */   /* the past results search, after the three ("You're all set" -> "Next: your past results", the capture): a page of its own, not a step; the bar's three dashes full (i: the last) */
   var INST = null;   // the profile mounted last, drawn again when step 1's order changes
   function wearOrder(list) {   // step 1's pages in this order: the known ones as listed, any left out after them
     var ks = (list || []).filter(function (k, i, a) { return W1[k] && a.indexOf(k) === i; }); W1D.forEach(function (k) { if (ks.indexOf(k) < 0) ks.push(k); });
@@ -17875,7 +17876,7 @@ window.EvConsent = (function () {
     try {
       S = build(o.state || 'none');
       (o.fill || []).forEach(function (k) { if (S.a[k] && DEMO[k]) S.a[k].ans = JSON.parse(JSON.stringify(DEMO[k])); });
-      inst = mount(host, { theme: o.theme, name: o.name, snap: true, dism: true, wide: o.wide, note: !!o.note, solo: o.solo || null });   // wide: the desk's layout (the canvas's Desktop), told rather than measured: the still is drawn zoomed
+      inst = mount(host, { theme: o.theme, name: o.name, snap: true, dism: true, wide: o.wide, note: !!o.note, solo: o.solo || null, soloI: o.solo ? o.i || 0 : 0 });   // wide: the desk's layout (the canvas's Desktop), told rather than measured: the still is drawn zoomed
       if (o.area && !o.solo) inst.go(o.area, o.i || 0);
     } finally { S = keepS; INST = keepI; SNAP = false; }
     return inst;
@@ -18126,7 +18127,7 @@ window.EvConsent = (function () {
     function keep() { var st = S.a[A]; if (st.st !== 'done') st.i = I; save(); }
     function fwd() {   // the next step, or the area done: back to the home
       var a = AREA[A], st = S.a[A];
-      if (A === 'res') { if (opts.onClose) opts.onClose(); else home(-1); return; }   // the past results: Go to overview, the profile closed (the standalone page: its home)
+      if (A === 'res') { if (I < stepsOf('res').length - 1) { I++; step(1); return; } if (opts.onClose) opts.onClose(); else home(-1); return; }   // the past results' Got it: the Concierge's introduction; its Go to overview closes   // the past results: Go to overview, the profile closed (the standalone page: its home)
       if (ret != null) { var r = ret; ret = null; I = r; keep(); step(1); return; }
       if (st.st === 'not' && A === 'you') st.st = 'prog';
       if (I >= stepsOf(A).length - 1) { st.st = 'done'; st.i = I; save();
@@ -18525,6 +18526,16 @@ window.EvConsent = (function () {
           sumRow('Smoking', name(SMOKE, ans.smoke), editTo('smoke')), sumRow('Alcohol', ans.alc != null ? ans.alc + (ans.alc === 1 ? ' time' : ' times') + ' a week' : '', editTo('alcohol'))));
         foot2(S.a.you.st === 'done' ? 'Done' : 'Save answers', true, fwd);
       },
+      'res.cc': function (scr) {   /* the Concierge's introduction, after the past results: its mark, what it is (the Overview's Concierge card's words), three things it does, Go to overview */
+        scr.classList.add('hpCcP');
+        scr.appendChild(h('div', { class: 'hpCcV', 'aria-hidden': 'true' }, h('i')));
+        scr.appendChild(q('', 'Meet Concierge', 'Ask any question about your health. Chat with Eva, your AI health assistant, or reach your doctor and care team directly.', true));
+        scr.appendChild(h('div', { class: 'hpActs' },
+          h('div', { class: 'hpCard' }, row('Ask Eva anything', 'Your results and your plan, explained in plain language')),
+          h('div', { class: 'hpCard' }, row('Reach your care team', 'Message your doctor and care team directly')),
+          h('div', { class: 'hpCard' }, row('Book in a few taps', 'Consults, tests and scans, when it suits you'))));
+        foot2('Go to overview', true, fwd);
+      },
       'res.search': function (scr) {
         if (!S.pend.search) S.pend.search = { at: Date.now() };
         var p = pending('search'), al = live(tick), lab = h('span', { class: 'hpSr', role: 'status', text: p.label });   // al: this page's tick (show() counted it before building); lab: the search's state, for screen readers only (the line under the map removed: "remove")
@@ -18566,7 +18577,7 @@ window.EvConsent = (function () {
           h('div', { class: 'hpCard' }, row('Tell me when they’re ready', 'Turns on notifications for results and reminders', nb)),
           h('div', { class: 'hpCard' }, h('div', { class: 'hpRow' }, h('div', null, h('b', { text: 'Have a report from somewhere else?' }), upD), upB), fl));
         scr.appendChild(acts);
-        foot2('Go to overview', true, fwd);   // after the three: the profile done with
+        foot2('Got it', true, fwd);   // after the three: the profile done with ("Got it CTA"; was Go to overview)
         /* in turn ("title centred, appearing, fade in, then the map, then the CTA"): the title, the map (its ripples once it is there), the rows and the Continue */
         if (opts.snap || reduced() || !scr.animate) map.start(0);
         else {
@@ -18590,7 +18601,7 @@ window.EvConsent = (function () {
     }, true);
     // the home's background lines, kept current while it shows
     var pt = setInterval(function () { if (!alive) return; if (A) return; root.querySelectorAll('[data-pend]').forEach(function (el) { var p = pending(el.dataset.pend); if (!p) return; el.classList.toggle('hpOk', p.done); el.lastChild.textContent = p.label; }); }, 3000);
-    if (opts.solo === 'res') { root.classList.add('hpSolo'); area('res', 0, 0); landAt = { a: 'res', i: 0 }; step0Back(); }   /* Past results on its own ("a standalone page, not part of the health profile"): its page alone, no back, its cross */
+    if (opts.solo === 'res') { root.classList.add('hpSolo'); area('res', 0, opts.soloI || 0); landAt = { a: 'res', i: 0 }; step0Back(); }   /* Past results on its own ("a standalone page, not part of the health profile"): its page alone, no back, its cross */
     else if (opts.note) { note(!opts.snap); if (!opts.snap) playLtr(opts.enterAt); } else home(0);   // from the card screen's Get started: the note first
     return INST = {
       el: root,
@@ -41189,7 +41200,7 @@ hairline({
           { k: 'past', t: 'Step 2', s: 'Book your onboarding consult', grp: 'Health profile', cards: ['one'], st: 'one', area: 'past', note: 'Book: Processing on the button for 2 seconds, then the home, step 2 done.' },
           { k: 'you', t: 'Step 3', s: 'Tell us about you', grp: 'Health profile', cards: ['two'], st: 'two', area: 'you' },   // its card alone, no dropped-off one ("no need")
           { k: 'all', t: 'All complete', s: 'The three done', grp: 'Health profile', cards: ['all', 'all_soon', 'all_now'], cap: 'Its three states, by how near the call is', st: 'all', note: 'Next, see your past results opens Past results, a page of its own (below); otherwise Go to overview closes the profile. The card shows the consult and View until the call; on the day, the call’s time; within the hour, Join call.' },   // res: the past results after the home
-          { k: 'res', t: 'Past results', s: 'A page of its own', grp: 'Past results', cards: [], st: null, recEntry: true, solo: true, note: 'The Overview\u2019s records card opens it, as does All set\u2019s Next, see your past results. No steps, no back; its cross and Go to overview close it.' },   // its own page, not the profile's ("Past result screen should be a standalone page, not part of health profile")
+          { k: 'res', t: 'Past results', s: 'A page of its own', grp: 'Past results', cards: [], st: null, recEntry: true, solo: true, note: 'The Overview\u2019s records card opens it, as does All set\u2019s Next, see your past results. No steps, no back; Got it leads to the Concierge intro, whose Go to overview closes it.' },   // its own page, not the profile's ("Past result screen should be a standalone page, not part of health profile")
           { k: 'plan', t: 'After the call', s: 'Plan to purchase', cards: ['plan'], st: null, note: 'Review my plan opens the plan. After it, the card leaves the Overview and Next step takes its place.' }
         ];
         const ROWOF = { none: 'wear', one: 'past', two: 'you', two_d: 'you', all: 'all', all_soon: 'all', all_now: 'all', plan: 'plan' };
@@ -41202,7 +41213,7 @@ hairline({
           past: 'Step 2: the card’s Book a time, the home at 1 of 3, Choose a time, Review and confirm; Book shows Processing for 2 seconds and lands on the home, step 2 done.',
           you: 'Step 3: the card (Consultation booked. Now, tell us more about you.) and Complete (left part-way too), the home at 2 of 3, then its pages (the questions), the last Your answers.',
           all: 'The three done: the card shows the consult and View; the home says You’re all set, and its Next, see your past results hands over to Past results, a page of its own.',
-          res: 'Past results, a page of its own, not part of the profile: the Overview’s records card opens it (while the search runs), and so does All set’s Next, see your past results. Its map searching, Tell me when they’re ready, and Go to overview, which closes it. No steps and no back; its cross.',
+          res: 'Past results, a page of its own, not part of the profile: the Overview’s records card opens it (while the search runs), and so does All set’s Next, see your past results. Its map searching, Tell me when they’re ready, and Got it, which closes it. No steps and no back; its cross.',
           plan: 'After the call: the plan card; Review my plan opens the plan, and the card then leaves the Overview.' };
         /* (Reading the canvas removed from the sidebar: "remove"; the step's own description alone) */
         const fpick = k => { fsel = FD[k] ? k : '*'; try { localStorage.setItem('everlab:hcFlow', fsel); } catch (e){}
@@ -41246,7 +41257,7 @@ hairline({
             col.insertAdjacentHTML('afterbegin', OPEN({ v: '9', st: R.st || R.cards[0] }));   // the Overview, its card in this state
             col.insertAdjacentHTML('beforeend', '<figcaption><b>Overview card entry point</b><span>' + (R.cap || (R.cards.length > 1 ? 'The step not started yet (top), then left part-way (below)' : '')) + (R.cap || R.cards.length > 1 ? '' : (ST.find(y => y.k === R.cards[0]) || {}).s) + '</span></figcaption>'); if (R.cards.length) strip.appendChild(col);
             if (R.recEntry){ const f = document.createElement('figure'); f.className = 'hcShot hcCards'; f.appendChild(recI()); f.insertAdjacentHTML('afterbegin', OPEN({ v: 'pr', st: 'all' })); f.insertAdjacentHTML('beforeend', '<figcaption><b>Overview records card entry point</b><span>Tapped, it opens Past results</span></figcaption>'); strip.appendChild(f); }   // Past results' way in: the records card
-            if (R.solo){ if (strip.childElementCount) strip.insertAdjacentHTML('beforeend', ARR); strip.appendChild(shot('Past results', 'Its own page: no steps, no back; Go to overview closes it', { state: 'all', area: 'res', solo: 'res', i: 0 })); }
+            if (R.solo){ if (strip.childElementCount) strip.insertAdjacentHTML('beforeend', ARR); strip.appendChild(shot('Past results', 'Its own page: no steps, no back; Got it leads on', { state: 'all', area: 'res', solo: 'res', i: 0 })); strip.insertAdjacentHTML('beforeend', ARR); strip.appendChild(shot('Concierge intro', 'After Got it; Go to overview closes it', { state: 'all', area: 'res', solo: 'res', i: 1 })); }   // then the Concierge's introduction
             const still = (lab, sub, o) => { const f = document.createElement('figure'); f.className = 'hcShot'; f.innerHTML = wrapOf(true) + OPEN({ v: 'welc', tier: o.tier, from: o.still === 'dot' ? 'dot' : o.still === 't2' ? 't2' : '', settled: !o.still || o.still === 'back', back: o.still === 'back' }) + '<figcaption><b>' + lab + '</b><span>' + sub + '</span></figcaption>';   // the reveal: from its start (its words), from the dot, or at its card screen (turned for the back), the membership's   // the reveal drawn still
               const fr = f.querySelector('.aqFrame'), w = window._hp.welStill(fr, DK(), o); if (w){ insts.push(w); if (w.el) fr.style.background = getComputedStyle(w.el).backgroundColor; } return f; };
             if (R.entry) strip.appendChild(shot('Note from Steven entry point', 'The Membership reveal’s last screen: Let’s begin', { note: true }));   // step 1's entry point at its left ("add the same member card screen on the left as entry point"): step 0's last screen, the note from Steven now
