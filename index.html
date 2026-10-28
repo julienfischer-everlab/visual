@@ -12332,6 +12332,8 @@
         <div class="tkRow"><span class="lbl">Floating</span><select id="stHpFeed" class="tkSegSel" aria-label="The particles drawn into the sphere: their colour"><option value="neutral" selected>Neutral</option><option value="orange">Orange</option><option value="off">Off</option></select></div>
         <div class="tkRow"><span class="lbl">Step title</span><select id="stHpStepT" class="tkSegSel" aria-label="The step's title over the step dashes in the bar, or the dashes alone"><option value="on">On</option><option value="off" selected>Off</option></select></div>
         <div class="tkRow"><span class="lbl">Open</span><span class="tkPreCtl"><button class="tkBtn" type="button" id="stHpOpen">Health profile</button></span></div>
+        <!-- its page in Documentation ("add an action documentation trigger in the $299 tab tweak that will trigger the doc page related to this"): Health profile card, on the step the State above is at -->
+        <div class="tkRow"><span class="lbl">Documentation</span><span class="tkPreCtl"><button class="tkBtn" type="button" id="stHpDocGo" aria-label="Open the Health profile card's documentation, on this state's step">Health profile</button></span></div>
         </div>
         <div class="pcPart" data-pc="next" hidden>
         <div class="tkRow">
@@ -33778,6 +33780,7 @@ hairline({
       const c = over.querySelector('.hpOvCard'); if (!c || c.parentNode !== top || !c.childElementCount){ paintCard(); return; } if (c.classList.contains('ovOff')){ c.classList.remove('ovOff'); const hero = top.querySelector(':scope > .ovhero'); if (hero) hero.classList.add('hpRep'); } }, 900);
     document.addEventListener('everlab:mode', () => setTimeout(paintCard, 60));
     { const b = document.getElementById('stHpOpen'); if (b) b.addEventListener('click', () => { if (typeof version !== 'undefined' && version !== 9){ setMode(9); resize(); } open(); }); }   // Tweaks -> Health profile -> Open
+    { const b = document.getElementById('stHpDocGo'); if (b) b.addEventListener('click', () => { if (!window._doc) return; window._doc.show('hp'); if (window.__hpDocStep) window.__hpDocStep((document.getElementById('stHpSt') || {}).value); }); }   // Tweaks -> Primary card -> Documentation: the card's page, its Flows on the State's step
     window._hp = { open, close, paint: paintCard, welStill: (host, desk, o) => { try { o = o || {}; const cur = optG('stHpWelTier') || 'base', ov = o.tier ? Object.assign({ stHpWelTier: o.tier }, o.tier !== cur && preOf ? preOf(o.tier) : {}) : null;   // a membership's own card: its kept rows (the one picked in Tweaks as the rows stand)
       return HP.welcome(host, Object.assign(welO(ov), ov ? { tier: ({ diag: 'Diagnostics', prot: 'Protocol' })[o.tier] || 'Baseline' } : {}, { from: o.still === 'dot' ? 'dot' : '', settled: o.still !== 'dot', still: o.still || '', desk: !!desk, onClose: () => {}, onStart: () => {} })); } catch (e){ return null; } } };   // welStill: the Membership reveal drawn still (Documentation -> Flows, step 0): its intro (still: 'intro'), the card screen, the card turned (still: 'back'), for a membership (tier)
   })();
@@ -40783,7 +40786,7 @@ hairline({
         const $ = q => el.querySelector(q), grid = $('.hcGrid'), notes = $('.ldNotes'), gal = $('.hcGal'), flows = $('.hcFlows'), rows = $('.hcRows');
         const RULES = '<h3>Anatomy</h3><ul><li><b>Eyebrow</b> Health profile</li><li><b>Title</b> the next step’s; <b>sub</b> its stage</li><li><b>Sphere</b> a third lit for each step done</li><li><b>Foot</b> the progress at the left (three segments; done white, half when left part-way), the step’s button at the right</li></ul>' +
           '<h3>Rules</h3><ul><li>No card for step 1: members go straight into registration at login</li><li>Dropped off (step 3 only): the same card, Complete. Steps 1 and 2 have no dropped-off state</li><li>From step 3 (booked) on: the consult in the progress’ place; done, View</li></ul>' +
-          '<h3>In the prototype</h3><p>Overview, Latest and Live versions: the primary card (Tweaks → Primary card → State).</p><code>_hpCard.html(summary)</code> <code>HealthProfile.store.summaryOf(state)</code>';
+          '<h3>In the prototype</h3><p>Overview, Latest and Live versions: the primary card (Tweaks → Primary card → State). Tweaks → Primary card → Documentation opens this page on that state’s step.</p><code>_hpCard.html(summary)</code> <code>HealthProfile.store.summaryOf(state)</code>';
         const pick = (i, scroll) => { cur = i; el.querySelectorAll('.hcStPats button').forEach((b, j) => b.setAttribute('aria-selected', String(j === i))); grid.querySelectorAll('.hcItem').forEach((it, j) => it.classList.toggle('hcOn', j === i));
           rows.querySelectorAll('.hcRow').forEach(r => r.classList.toggle('hcOn', r.dataset.row === ROWOF[ST[i].k]));
           if (view === 'cards') notes.innerHTML = '<p class="ldD">' + ST[i].d + '</p>' + RULES; const sm = matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
@@ -40811,7 +40814,7 @@ hairline({
           you: 'Step 3: the card (Consultation booked. Now, tell us more about you.) and Complete (left part-way too), the home at 2 of 3, then its pages, the last the past results search.',
           all: 'The three done: the card shows the consult and View; the home says You’re all set, and Go to overview closes it.',
           plan: 'After the call: the plan card; Review my plan opens the plan, and the card then leaves the Overview.' };
-        const FHOW = '<h3>Reading the canvas</h3><ul><li>Left to right: the card, the profile’s home, then its pages</li><li>Drag anywhere to move about; − and + to zoom</li><li>A screen longer than the phone scrolls: the wheel or a drag over it, then the canvas once it reaches its end</li><li>Every screen is the profile itself, drawn still (<code>HealthProfile.snap</code>): change a page and it changes here</li><li>Each page filled with the demo’s answers, as a member would have them; its Filled switch shows it empty</li></ul>';
+        const FHOW = '<h3>Reading the canvas</h3><ul><li>Left to right: the card, the profile’s home, then its pages</li><li>Drag anywhere to move about; − and + to zoom</li><li>A screen longer than the phone scrolls: the wheel or a drag over it, then the canvas once it reaches its end</li><li>From the app: Tweaks → Primary card → Documentation opens this page on the step the card’s State is at</li><li>Every screen is the profile itself, drawn still (<code>HealthProfile.snap</code>): change a page and it changes here</li><li>Each page filled with the demo’s answers, as a member would have them; its Filled switch shows it empty</li></ul>';
         const fpick = k => { fsel = FD[k] ? k : '*'; try { localStorage.setItem('everlab:hcFlow', fsel); } catch (e){}
           el.querySelectorAll('.hcFlPats button').forEach(b => b.setAttribute('aria-selected', String(b.dataset.f === fsel)));
           rows.querySelectorAll('.hcRow').forEach(r => { r.hidden = fsel !== '*' && r.dataset.row !== fsel; });
@@ -40861,6 +40864,7 @@ hairline({
             if (R.note) strip.insertAdjacentHTML('beforeend', ARR + '<p class="hcNote">' + R.note + '</p>');
             const nS = strip.querySelectorAll(':scope > figure.hcShot:not(.hcCards)').length; row.querySelector('.hcRowT i').textContent = nS ? nS + (nS === 1 ? ' screen' : ' screens') : '';   /* the screens drawn, not the card or the arrows */ rows.appendChild(row); });
           pick(cur, false); fpick(fsel); };
+        window.__hpDocStep = st => { if (view !== 'flows') setView('flows'); fpick(ROWOF[st] || '*'); };   // from Tweaks -> Primary card -> Documentation: the step the card's State is at (none of them: every step)
         window.__hpDocFlow = () => { built = ''; if (view === 'flows' && el.isConnected && !el.hidden) flowsDraw(); };   // step 1's order changed (Tweaks)
         /* the reveal's stills follow its tweaks ("colour doesn't reflect what we have on the page"): what they were drawn with is part of the key, and a change there draws them again */
         const WSIG = () => { let pk = ''; try { pk = localStorage.getItem('everlab:w2CardPre') || ''; } catch (e){} return '|' + [...document.querySelectorAll('.tkPanel :is([id^="stHpW"], [id^="stHpMap"], #stHpRecP, #stHpRecC, #stHpCtry)')].map(x => x.id + '=' + x.value).join('|') + pk; };
