@@ -17852,3 +17852,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - The title group has 32px more padding on each side.
 - Past results map 32px higher in the header (`margin-top: -32px`).
 - Past results: the gap between the map and the title is 20px smaller (32 → 12).
+- Steven's note → Paragraphs reworked ("need to write the text and move up still, just paragraph after paragraph"). It is written word by word and keeps rising as in Words, at 24 / 28. There is a 0.7 s pause before each new paragraph. Only the previous paragraph stays, faint (25%), above the one being written; older paragraphs are gone, through to the end. Tapping lands on that end state.
+- After Steven the profile is always fresh. The reset now lives in the wrapper's `open()` for any `note` open, so it also covers the timeline's Note row and Docs. Before, only the Get started handover reset it, so the timeline route still landed on "You're all set".
