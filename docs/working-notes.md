@@ -17810,3 +17810,13 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Room is left for the last one to come up too. Written, all of them come back to full and the letter scrolls freely, to read it from the top.
   - A tap: all of it, from its start.
 - Its opening: a white dot (12 px) in the middle of the greeting, grown into Steven's photo (it comes through as the dot grows), up to its place, then the two lines fade in from below (0.4 s apart). Held, then the avatar up into the header as before.
+- Note from Steven:
+  - Steven's avatar is his HD photo now (assets/overview/avatar-steven.webp, 160 px; was 88, blurred). Sent in the chat, taken from the session.
+  - The greeting is the reveal's title style: "Hi Julien, / I'm Dr Steven Lu." written letter by letter (34 ms a letter, each resolving warm over 1.3 s), held; away (up, blurred) as "I'm really glad / you're here." is written in its place; held, then away as the avatar goes up into the header.
+  - The dot pops into the avatar, snappier (0.22 s in, 0.38 s grown with a touch of overshoot, 0.52 s up).
+  - The letter:
+    - Written word by word in the titles' style (each word resolving warm, then ink), twice as slow: 104 ms a word, 0.9 s between paragraphs.
+    - 24 px, medium (570), line height 26 (tightened; 20 would make 24 px lines collide), paragraphs 20 apart.
+    - The paragraph being written is always in the middle of the letter's height (room left above the first and under the last).
+  - Faded at its top and foot, 64 / 96 px.
+  - Fix: the letter took its words' height, not the screen's (the page's no-shrink rule), so it never scrolled and ran under the button.
