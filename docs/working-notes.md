@@ -17725,3 +17725,13 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - XS · S (393 and 600): status bar 54; nav bar 76 Hug (16 sides, 16 between, 44 Back and Close circles at ink 7%, the modal's title 18/24 · 500); title 32/40 for a questionnaire (84 Hug) or 24/30 for a page (54 Hug).
   - M · L: no status bar; nav bar 64 with 32 circles at the page column's edges (76); title 20/26 (48 Hug).
   - Sizes are read off the boards; the pages don't take them yet.
+- Documentation → General layout → Container: a live questionnaire page (as the M board: header, centred title, options, Continue) at XS 393, S 600, M 992 or L 1440, scaled to fit. The tokens are set on its frame. "Show sizes" shades the padding and outlines the container. Then the tokens table, as the token board: max-width/2xs 10000/512/544/576, xs 800, sm 1080, md 1280, lg 1440, padding left-right 16/16/24/24, top-bottom 24/28/32/36, gap/xl 24/28/32/36, with the token board's breakpoint modes noted against the prototype's.
+- Health profile home, the three done: always "You're all set" (no "We're collecting your historical records" words any more). Its button reads "Next, see your past results" whenever the search runs or records are being collected, and opens the Past results page.
+- Records card: under the primary card on the phone too (it was above; "push down the past results card"), 20 (Latest) / 16 (Live) from it. The same in Documentation's entry points.
+- Records card, Border light controls (shown with Border light On): Light speed (seconds a lap, 3–30, 12), Light brightness (10–100%), Light length (the trail, 40–320°, 160).
+- Every XS and S page in the same phone, on the same canvas, the Overview the reference: the Gift now sits in the prototype's phone (the frame's place, 56 radius, the same bezel) as the Gift receipt and Clinic do. The Gift draws itself edge to edge inside it (its own device "shell": island, status and home bar where the Overview's are). Gift, Gift receipt, Clinic and Consent take the Overview's black canvas at a forced XS or S (was #141414).
+- Gift receipt:
+  - The Gifted product picture is a 64×64 tile (radius 20) at the right of the title and badge; What's included runs the card's full width below. The full-height strip is gone.
+  - The list's squares are orange (the accent).
+  - The title is 24px higher, with 12px more under the title group.
+  - Background has a new "Warm" option (now the default): the Health profile's warm light at the top, fading to the page. With Logo animated it comes in once the dot lands at the top.

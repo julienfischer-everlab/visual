@@ -60,7 +60,11 @@
   @media (min-width:720px){ .sky .img{-webkit-mask:radial-gradient(70% 50% at 50% 0%, #000 30%, rgba(0,0,0,.55) 62%, transparent 100%);mask:radial-gradient(70% 50% at 50% 0%, #000 30%, rgba(0,0,0,.55) 62%, transparent 100%);} }
   :root[data-theme="light"] .sky .img{filter:saturate(.85);opacity:0;} :root[data-theme="light"].on .sky .img{opacity:.42;}
   .on .sky .img{opacity:1;transform:none;}
-  :root.noBg .skyClip{display:none;}   /* Tweaks -> Gift receipt -> Background: None, the plain ground ("tweak without bg"); also #nobg on the page's own link */
+  :root.noBg .skyClip{display:none;}
+  /* Tweaks -> Gift receipt -> Background: Warm (#warm), the Health profile's light at the top ("add bg warm same as health profile, on top"): the reveal's light, its lower part, fading to the page; with Logo animated it comes once the dot lands at the top */
+  .grWarm{display:none;position:absolute;left:0;right:0;top:0;z-index:0;height:max(320px, 44vh);pointer-events:none;background:linear-gradient(180deg, rgba(186,90,16,.46) 0%, rgba(109,35,5,.32) 30%, rgba(60,18,4,.16) 58%, rgba(27,7,3,.05) 80%, rgba(1,0,1,0) 100%);opacity:0;transition:opacity 1.2s ease;}
+  :root[data-theme="light"] .grWarm{background:linear-gradient(180deg, rgba(252,201,125,.55) 0%, rgba(233,152,62,.22) 35%, rgba(233,152,62,.06) 70%, rgba(233,152,62,0) 100%);}
+  :root.warmBg .grWarm{display:block;} :root.warmBg.on:not(.logoAnim) .grWarm, :root.warmBg.lgLit .grWarm{opacity:1;}   /* Tweaks -> Gift receipt -> Background: None, the plain ground ("tweak without bg"); also #nobg on the page's own link */
 
   /* ---- the page: the wordmark, then the column ---- */
   .top{position:relative;z-index:1;display:flex;justify-content:center;padding:52px 24px 0;}   /* 24 more above the logo, desk and phone ("+24px margin top logo"; was 28) */
@@ -77,13 +81,13 @@
   :root.logoAnim .rc > *{animation:none;opacity:0;transform:translateY(12px);}
   :root.logoAnim.lgT .rc > :is(h1, .sub){animation:up 1.1s cubic-bezier(.2,.7,.15,1) forwards;} :root.logoAnim.lgT .rc > h1{animation-name:upBlur;} :root.logoAnim.lgT .rc > .sub{animation-delay:.18s;}
   :root.logoAnim.lgC .rc > :not(h1):not(.sub){animation:up 1.1s cubic-bezier(.2,.7,.15,1) forwards;} :root.logoAnim.lgC .rc > .btns{animation-delay:.2s;} :root.logoAnim.lgC .rc > .foot{animation-delay:.32s;}
-  .rc{position:relative;z-index:1;width:100%;max-width:600px;margin:0 auto;padding:88px 24px 48px;display:flex;flex-direction:column;align-items:center;text-align:center;}
+  .rc{position:relative;z-index:1;width:100%;max-width:600px;margin:0 auto;padding:64px 24px 48px;display:flex;flex-direction:column;align-items:center;text-align:center;}
   h1{margin:0;font:500 clamp(32px, 4.2vw + 18px, 52px)/.906 var(--sans);letter-spacing:-.025em;text-wrap:balance;}
   .sub{max-width:30em;margin:16px 0 0;font-size:16px;line-height:1.45;color:var(--ink2);text-wrap:pretty;}
   .sub b{font-weight:400;color:var(--ink);overflow-wrap:anywhere;}
 
   /* ---- the card: glass over the light; its rows an icon and a label at the left, the value at the right (Booking confirmed's) ---- */
-  .card{width:100%;margin-top:40px;padding:14px 24px 16px;border-radius:24px;text-align:left;background:var(--card);}   /* the secondary ground, solid, no glass ("secondary colour bg"); no edge ("remove card border") */
+  .card{width:100%;margin-top:52px;padding:14px 24px 16px;border-radius:24px;text-align:left;background:var(--card);}   /* the secondary ground, solid, no glass ("secondary colour bg"); no edge ("remove card border") */
   .cardH{margin:0 0 4px;padding:16px 0 6px;font:500 20px/26px var(--sans);letter-spacing:-.01em;color:var(--ink);}   /* the card's title, a heading of its own ("gift summary title h2") */
   .rows{margin:0;padding:8px 0;}   /* the rows 8, then 4, then 4 more nearer each other ("-8px gap between props", "reduce gap by 4px" twice), their group's edges where they were: 8 back at its top and foot */
   /* three groups, each a question over its rows ("group the gift summary: what did I buy? who is it for? ..."); the question in the ink, a size under the card's title */
@@ -94,9 +98,8 @@
   .grpH{margin:0;padding:8px 0 4px;font:500 18px/24px var(--sans);letter-spacing:-.005em;color:var(--ink);}   /* the card titles 18 px ("card title 18px"; was 15) */
   .grpTop{display:flex;align-items:center;justify-content:space-between;gap:12px;} .grpTop .grpH{min-width:0;}
   /* Tweaks -> Gift receipt -> Card visual (#vis on the page's own link): a picture down the Gifted product card's right side, the full height of the card, its outer corners the card's ("added a right bg"); the words and the list beside it */
-  :root.split.cardVis .grp.grpVis{position:relative;overflow:hidden;padding-right:calc(clamp(76px, 26%, 150px) + 20px);}
-  :root.split.cardVis .grp.grpVis::after{content:"";position:absolute;top:0;right:0;bottom:0;width:clamp(76px, 26%, 150px);background:url(../assets/gift/product-visual.webp) 50% 50% / cover no-repeat;pointer-events:none;}
-  :root.split.cardVis .grpVis .grpTop{flex-wrap:wrap;row-gap:6px;}   /* the badge under the title when the room runs out */
+  :root.cardVis .grpVis .grpTop{display:grid;grid-template-columns:minmax(0, 1fr) 64px;column-gap:16px;row-gap:8px;align-items:start;} :root.cardVis .grpVis .grpBadge{grid-column:1;justify-self:start;margin-top:0;}   /* the title and the badge stacked at the left, the picture beside them; What's included the card's full width below ("64 x 64 rounded 20 image on the right, next to the h2 and chip") */
+  .grpImg{display:none;} :root.cardVis .grpVis .grpImg{display:block;grid-column:2;grid-row:1 / span 2;width:64px;height:64px;margin-top:6px;border-radius:20px;background:url(../assets/gift/product-visual.webp) 50% 50% / cover no-repeat;}
   .grpBadge{flex:none;margin-top:4px;padding:4px 10px;border-radius:999px;background:var(--badge);color:var(--ink);font:500 13px/18px var(--sans);white-space:nowrap;}   /* the product, a badge at the title's right ("Diagnostic membership") */
   .row{display:grid;grid-template-columns:minmax(0, 9em) minmax(0, 1fr);column-gap:16px;padding:5px 0;font-size:14px;line-height:20px;}   /* the properties 14 px ("props 14px font size") */   /* no rules between the rows ("remove divider"): the groups and their space hold them */
   .row dt{display:flex;align-items:flex-start;gap:8px;color:var(--ink2);}
@@ -110,7 +113,7 @@
   .incL{list-style:none;margin:0;padding:0;overflow:hidden;--incA:1;transition:max-height .45s cubic-bezier(.3,.7,.2,1), --incA .3s ease;-webkit-mask-image:linear-gradient(to bottom, #000 calc(100% - 56px), rgba(0,0,0,var(--incA)) 100%);mask-image:linear-gradient(to bottom, #000 calc(100% - 56px), rgba(0,0,0,var(--incA)) 100%);}
   .inc.shut .incL{--incA:0;}
   .incL li{display:grid;grid-template-columns:5px minmax(0,1fr);column-gap:12px;align-items:start;padding:5px 0;font-size:14px;line-height:20px;color:var(--ink);text-wrap:pretty;}
-  .incL li .incSq{display:block;width:5px;height:5px;margin-top:7.5px;background:var(--ink2);}   /* a small square before each line, no icon ("square no icon"), as the card back's list */
+  .incL li .incSq{display:block;width:5px;height:5px;margin-top:7.5px;background:var(--acc);}   /* orange ("orange square") */   /* a small square before each line, no icon ("square no icon"), as the card back's list */
   .incMore{display:flex;align-items:center;gap:6px;width:fit-content;height:32px;margin:2px auto 0;padding:0;border:0;background:none;color:var(--ink);font:500 14px/20px var(--sans);cursor:pointer;}
   .incMore svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;transition:transform .3s ease;} .inc:not(.shut) .incMore svg{transform:rotate(180deg);}
   .incMore:hover{color:var(--ink2);}   /* centred under the list ("see more centered") */ .incMore:focus-visible{outline:2px solid var(--acc);outline-offset:3px;border-radius:6px;}
@@ -145,8 +148,8 @@
   /* ---- the phone: the rows still two columns ("keep 2 cols for properties"), the label's narrower ---- */
   @media (max-width:479px){
     .top{padding-top:48px;}
-    .rc{padding:76px 24px 40px;}   /* 24 at each side ("padding left right 24px"; was 20) */
-    .card{margin-top:32px;padding:12px 20px 14px;}
+    .rc{padding:52px 24px 40px;}   /* the title 24 higher ("title move up by 24px"; was 76, 88 on the desk) */   /* 24 at each side ("padding left right 24px"; was 20) */
+    .card{margin-top:44px;padding:12px 20px 14px;}   /* 12 more under the title group ("title group margin bottom +12px") */
     .row{grid-template-columns:minmax(0, 8.4em) minmax(0, 1fr);column-gap:12px;padding:4px 0;font-size:14px;}   /* the label column narrower, the email whole beside it */
     :root.cols .rows{display:block;padding:8px 0;} :root.cols .row{display:grid;grid-template-columns:minmax(0, 8.4em) minmax(0, 1fr);column-gap:12px;padding:4px 0;} :root.cols .row dt{font-size:14px;line-height:20px;}   /* the phone: each property on one line, its label beside its value, even with 2 columns picked ("props inline on XS") */
     .btns{margin-top:36px;} .btns .btn{padding:0 28px;}   /* the phone: 36 under the card, hugging its label as on the desk */
@@ -160,7 +163,7 @@
 </style>
 </head>
 <body>
-<script>if (location.hash === '#nobg') document.documentElement.classList.add('noBg');</script>
+<script>if (location.hash === '#nobg') document.documentElement.classList.add('noBg'); if (/(^|[#&])warm(&|$)/.test(location.hash)) document.documentElement.classList.add('noBg', 'warmBg');</script>
 <div class="skyClip" aria-hidden="true"><div class="sky" id="sky"><div class="img"></div></div></div>
 <header class="top"><a class="logo" href="#" data-inert aria-label="Everlab"><svg aria-hidden="true" focusable="false" viewBox="0 0 124 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g clip-path="url(#grLogoClip)">
@@ -186,6 +189,7 @@
 </clipPath>
 </defs>
 </svg></a></header>
+<i class="grWarm" aria-hidden="true"></i>
 <div class="lgStage" aria-hidden="true"><i class="lgSpin"></i><svg class="lgChk" viewBox="0 0 24 24"><path d="M5.5 12.6l4.2 4.2 8.8-9"/></svg><i class="lgPt"></i></div>
 <main class="rc" id="rc">
   <h1>Your gift is on its way to Olive</h1>
@@ -220,7 +224,7 @@
   ];
   var esc = function(t){ return String(t).replace(/[&<>"]/g, function(c){ return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
   var row = function(r){ return '<div class="row' + (r[3] ? ' ' + r[3] : '') + '"><dt>' + esc(r[1]) + '</dt><dd>' + (r[0] === 'mail' ? esc(r[2]).replace('@', '@<wbr>') : Array.isArray(r[2]) ? '<span class="ifNow">' + esc(r[2][0]) + '</span><span class="ifSch">' + esc(r[2][1]) + '</span>' : esc(r[2])) + '</dd></div>'; };   // a value of two: sent now, or scheduled   // an address breaks after its @ when it must (2 columns)
-  $('grps').innerHTML = GROUPS.map(function(g, i){ return '<div class="grp' + (i === 0 ? ' grpVis' : '') + '"><div class="grpTop"><h3 class="grpH" id="grpH' + i + '">' + esc(g[0]) + '</h3>' + (g[2] ? '<span class="grpBadge">' + esc(g[2]) + '</span>' : '') + '</div>' + (g[1].length ? '<dl class="rows" aria-labelledby="grpH' + i + '">' + g[1].map(row).join('') + '</dl>' : '') + '</div>'; }).join('');
+  $('grps').innerHTML = GROUPS.map(function(g, i){ return '<div class="grp' + (i === 0 ? ' grpVis' : '') + '"><div class="grpTop"><h3 class="grpH" id="grpH' + i + '">' + esc(g[0]) + '</h3>' + (g[2] ? '<span class="grpBadge">' + esc(g[2]) + '</span>' : '') + (i === 0 ? '<i class="grpImg" aria-hidden="true"></i>' : '') + '</div>' + (g[1].length ? '<dl class="rows" aria-labelledby="grpH' + i + '">' + g[1].map(row).join('') + '</dl>' : '') + '</div>'; }).join('');
   // Gifted product: what the gift includes (the Gift page's list and its icons), four then the rest behind Show all
   var INC = ['A 45-minute onboarding consult with an Everlab doctor', 'Advanced blood panel \u2014 100+ biomarkers across 50 health areas', 'DEXA scan for body composition and bone density', 'A 90-minute physical assessment, including VO\u2082 max', 'Nutrition assessment with an Everlab nutritionist', 'Re-testing part-way through, plus a full 12-month review'];
   var INC_IC = ['<path d="M4 5.5h12a1.5 1.5 0 0 1 1.5 1.5v6A1.5 1.5 0 0 1 16 14.5H9l-4 3v-3H4A1.5 1.5 0 0 1 2.5 13V7A1.5 1.5 0 0 1 4 5.5z"/>', '<path d="M10 2.5s5.5 6 5.5 10a5.5 5.5 0 0 1-11 0c0-4 5.5-10 5.5-10z"/>', '<rect x="3.5" y="3.5" width="13" height="13" rx="2"/><path d="M6.5 10h7M10 6.5v7"/>', '<path d="M2.5 10h4l1.8-4.5 3.4 9 1.8-4.5h4"/>', '<path d="M3.5 16.5C3.5 9 8 4.5 16.5 3.5c1 8.5-3.5 13-13 13z"/><path d="M3.5 16.5 12 8"/>', '<path d="M16 8.5a6 6 0 0 0-10.9-2M4 11.5a6 6 0 0 0 10.9 2"/><path d="M16 3.5v5h-5M4 16.5v-5h5"/>'];
@@ -254,11 +258,11 @@
     var spin = st.querySelector('.lgSpin'), chk = st.querySelector('.lgChk'), cp = chk.querySelector('path'), pt = st.querySelector('.lgPt'), T = [], born = performance.now();
     var reduced = function(){ return !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches); };
     var E = 'cubic-bezier(.65, 0, .35, 1)', F = 'forwards';
-    var stop = function(){ T.forEach(clearTimeout); T = []; [st, spin, chk, cp, pt].forEach(function(e){ e.getAnimations().forEach(function(a){ a.cancel(); }); }); root.classList.remove('lgT', 'lgC'); };
+    var stop = function(){ T.forEach(clearTimeout); T = []; [st, spin, chk, cp, pt].forEach(function(e){ e.getAnimations().forEach(function(a){ a.cancel(); }); }); root.classList.remove('lgT', 'lgC', 'lgLit'); };
     var lift = function(){ var L = logo.getBoundingClientRect(), S = st.getBoundingClientRect(); return (L.top + L.height / 2 + window.scrollY) - (S.top + S.height / 2 + window.scrollY); };   // from the middle of the screen to the logo's middle
     var at = function(ms, fn){ T.push(setTimeout(fn, ms)); };
     var play = function(){ stop(); window.scrollTo(0, 0);
-      if (reduced() || !st.animate){ st.animate ? st.animate([{ transform: 'translateY(' + lift() + 'px)' }, { transform: 'translateY(' + lift() + 'px)' }], { duration: 1, fill: F }) : 0; spin.style.opacity = '0'; pt.style.opacity = '1'; root.classList.add('lgT', 'lgC'); return; }
+      if (reduced() || !st.animate){ st.animate ? st.animate([{ transform: 'translateY(' + lift() + 'px)' }, { transform: 'translateY(' + lift() + 'px)' }], { duration: 1, fill: F }) : 0; spin.style.opacity = '0'; pt.style.opacity = '1'; root.classList.add('lgT', 'lgC', 'lgLit'); return; }
       spin.style.opacity = ''; pt.style.opacity = '';
       spin.animate([{ maskPosition: '0 0', webkitMaskPosition: '0 0' }, { maskPosition: '-2496px 0', webkitMaskPosition: '-2496px 0' }], { duration: 2210, easing: 'steps(52, end)', iterations: Infinity });   // the card's turn: 52 frames, 42.5 ms each
       spin.animate([{ opacity: 0, transform: 'scale(.86)' }, { opacity: 1, transform: 'none' }], { duration: 420, easing: 'ease-out', fill: 'backwards' });
@@ -269,6 +273,7 @@
         pt.animate([{ opacity: 0, transform: 'scale(0)' }, { opacity: 1, transform: 'scale(1.3)', offset: .55 }, { opacity: 1, transform: 'none' }], { duration: 440, delay: 200, easing: 'cubic-bezier(.2, .8, .2, 1)', fill: 'both' }); });
       at(4300, function(){ var dy = lift(); st.animate([{ transform: 'none' }, { transform: 'translateY(' + dy + 'px)' }], { duration: 820, easing: E, fill: F });   // the dot up to the header
         pt.animate([{ transform: 'none' }, { transform: 'scale(.8)' }], { duration: 820, easing: E, fill: F }); });
+      at(5100, function(){ root.classList.add('lgLit'); });   // the dot landed: the warm light comes in
       at(4900, function(){ root.classList.add('lgT'); });   // the title under it
       at(5450, function(){ root.classList.add('lgC'); }); };   // then the cards
     window.grLogo = function(on, replay){ var was = root.classList.contains('logoAnim'); root.classList.toggle('logoAnim', !!on); if (!on){ stop(); return; } if (was && !replay) return; stop(); root.classList.add('logoAnim'); var wait = Math.max(0, 450 - (performance.now() - born)); if (wait) at(wait, play); else play(); };

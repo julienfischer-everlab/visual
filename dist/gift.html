@@ -1024,6 +1024,13 @@
   }
   body[data-device="phone"][data-state="revealing"] .device .home,
   body[data-device="phone"][data-state="gift"] .device .home{color:var(--ink-d);}
+  /* in the prototype's phone (device "shell", "all XS frames the same, the Overview the reference"): the page is the screen itself, edge to edge; its island, status and home bar where the Overview's are */
+  html.gfShell body[data-device="phone"] .device{inset:0;width:100%;height:100%;transform:none;border-radius:0;box-shadow:none;background:transparent;}
+  html.gfShell body[data-device="phone"] #stage{inset:0;border-radius:0;}
+  html.gfShell body[data-device="phone"] .device .island{top:11px;width:125px;height:37px;}
+  html.gfShell body[data-device="phone"] .device .status{top:19px;left:34px;right:30px;font-size:15px;}
+  html.gfShell body[data-device="phone"] .device .home{bottom:8px;width:134px;}
+  html.gfShell body[data-device="phone"] .logo{top:60px;} html.gfShell body[data-device="phone"] .back{top:58px;right:16px;} html.gfShell body[data-device="phone"] .hero{padding-top:102px;}
   /* inside the phone the fixed chrome makes room for the island and the home bar */
   body[data-device="phone"] .logo{top:76px;}
   body[data-device="phone"] .back{top:74px;right:22px;}
@@ -1142,6 +1149,7 @@
     <select id="device" aria-label="Device">
       <option value="desktop">Desktop</option>
       <option value="phone">Mobile</option>
+      <option value="shell" hidden>Mobile, in the prototype's phone</option>
     </select>
     <label for="theme">Theme</label>
     <select id="theme" aria-label="Theme">
@@ -1583,14 +1591,15 @@
     document.documentElement.style.setProperty('--fit', fit.toFixed(4));
   }
   function setDevice(d){
-    document.body.dataset.device = d;
+    document.documentElement.classList.toggle('gfShell', d === 'shell');   // the prototype's own phone around it: the page is the screen, edge to edge
+    document.body.dataset.device = d === 'shell' ? 'phone' : d;
     deviceSel.value = d;
     fitDevice();
     // the stage has a new size: recompute the circle and let the layout settle
     requestAnimationFrame(function(){ placeHead(); layoutScene(); panelSet(); });
   }
   var wanted = (params.get('device') || '').toLowerCase();
-  setDevice(wanted === 'phone' || wanted === 'iphone' ? 'phone' : 'desktop');
+  setDevice(wanted === 'shell' ? 'shell' : wanted === 'phone' || wanted === 'iphone' ? 'phone' : 'desktop');
   deviceSel.addEventListener('change', function(){ setDevice(deviceSel.value); });
   window.addEventListener('resize', function(){ fitDevice(); placeHead(); layoutScene(); placeSig(); panelSet(); });
 
