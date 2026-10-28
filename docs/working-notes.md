@@ -17851,3 +17851,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Concierge intro: a short chat replaces the mark. The member's questions sit at the right (ink bubble), Eva's answers at the left (grey), each after 1.3 s of typing dots. Four bubbles in a 232px window, the oldest fading at the top. Shown all at once with reduced motion and in stills.
 - The title group has 32px more padding on each side.
 - Past results map 32px higher in the header (`margin-top: -32px`).
+- Past results: the gap between the map and the title is 20px smaller (32 → 12).
