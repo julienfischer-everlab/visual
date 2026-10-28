@@ -17789,3 +17789,6 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Gift receipt foot:
   - The delivery line and the help line are the same colour (the help line's, the email still underlined) and 8 apart.
   - The delivery line 8 lower under the button (28 on the desk, 24 on the phone).
+- Gift receipt:
+  - Gifted product's title centred on its badge (6 over and under it on S, M, L; it was 8 over, 4 under, 2 low).
+  - The foot's two lines 32 from the screen's edge (the page's 24 and 8, were 24 + 32), and 4 apart (were 8).
