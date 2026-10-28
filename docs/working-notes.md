@@ -17840,3 +17840,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - After Steven's screen the profile always starts fresh on Step 1. The reveal handover resets the store with `store.preset('none')`; before, it read the saved or Tweak state, and a saved All complete landed on "You're all set".
 - Back from the profile home always goes to Steven's note: the in-phone back (before, it did nothing unless the profile came from the reveal) and the prototype's floating Back (before, it went to the card screen). Uses `INST.note()` and `hpHome()` in `_hpBack`.
 - Toolbar build stamp ("Build 28 Oct, 16:57", Sydney time, written by tools/build.js). It tells a browser showing an old page apart from one showing different saved Tweaks.
+- Tweak **Steven's note** (Membership reveal group, `stHpLtrMode`):
+  - **Words** (the default): as before.
+  - **Full**: the whole letter resolves at once.
+  - **Paragraphs**: one paragraph at a time, 24 / 28 (4px bigger), always centred, no edge mask. Each is held for 1.6 s plus 230 ms a word, leaves upward, then a 0.45 s pause before the next. At the end the previous paragraph comes back above the last at 25%, and the pair recentres (FLIP, 0.9 s). Tapping jumps to that end state.
+- Desktop letter side padding 64px (+32).
+- All set opened from the Overview (its card, or the Live version's next step) reads **Back to overview** and closes the profile. `open({ ov: true })` passes through to `opts.ov`. From anywhere else it still reads "Next, see your past results".
