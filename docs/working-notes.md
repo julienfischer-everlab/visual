@@ -18298,3 +18298,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 
 - Past results (the records card) and the Concierge intro (its Overview card) opened from the Overview (`o.solo === 'res' && o.ov`): `.hpBs.hpPrSh` — a bottom sheet on XS/S (from under the status bar), the floating modal on M/L, 544 wide and min(760, 100% − 48) tall. Opened from the membership flow they stay full.
 - Desk lead row: 16 between and under it, 20 padding inside its cards, as the services' grid.
+
+## Desk first row: Past results back beside Concierge; 50/50 with the services
+
+- Past result card made fresh on the desk (Records processing turned on, or first shown) was never put in the page in lead mode, so it didn't appear beside the Concierge card: `recNote` now appends it before handing it to `_ovLead`, and recounts the row when it removes the card.
+- Desk column with a first row: a 2-row grid, the first row (Concierge and/or Past results) half the column, the services' 2x2 the other half (tiles no min-height there). Checked at L: 131 / 131 with both, one, either switched off; none → the 2x2 alone.
