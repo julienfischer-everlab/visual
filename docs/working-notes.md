@@ -18204,3 +18204,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Concierge Tweaks, new "Layout" row: Centred (default, as before) or Field at bottom (`stHpCcLay`).
   - Field at bottom: the chat field's foot sits 24px above the screen's midline, and the video is on from the field phase. Each run turns it on at its start; the team phase still takes it away.
   - Changing the layout replays the screen.
+- Concierge specialists:
+  - After the third sticker lands, the three fan out in an arc: the first out left at −13°, the middle lifted and on top, the third out right at +13°.
+  - The label rolls to "Doctors · Dieticians · Nurses" and drops 22px to clear the arc. The phase holds a second longer.
+  - No light sheen on the lifting sticker any more, just a deeper double drop-shadow.
+- Card back: new V4, which is V3 without the silhouette (`hpW2Bk4` hides `.hpW2Body`).
