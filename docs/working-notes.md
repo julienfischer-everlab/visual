@@ -18285,3 +18285,11 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - The general Tweaks Save (`everlab:tkAll`) also kept the dock's selects (`dk*`): a one-time migration (`everlab:mig:dock2`) drops them from an older save, so the documentation's island (labels below at 12, 60 tall) shows on every page.
 - XS ask suggestions above the keyboard: once scrolled, the row fades out over its left 48px (`.fadeL`).
 - AI sheet services: the Overview's service card style (the name alone, 16px, 20 padding, 20 radius, no disc), two equal columns.
+
+## More as stacked cards; 12px top gaps; no service renders; desk lead row; Go to concierge chip
+
+- Dock More (`EvMore`): three floating cards stacked over the dock, 12 off the edges, 8 apart, the AI sheet's card (#1b1b1a, 26 round) and its 44px dismiss above the top right. Groups: Plan · Contact us, Settings, My account (the member's photo) · Gift Everlab, Refer a loved one. Cards rise in turn from the dock; scrim, X, a row or Escape close.
+- XS Overview: 12px between the top cards (was 16), every order.
+- Service cards: the renders hidden at every size (`.ovSvcVis`).
+- Desk (S/M/L) top row: the Concierge and Past result cards lead the services' column (`.dvLead`, `window._ovLead`): none → the 2x2 alone; one → it, then the 2x2; both → 1:1, then the 2x2. Side by side their visuals go; in a narrow column (< 440, M/S) the two stack and the Concierge video goes. Back on XS they return to the flow.
+- XS suggestions over the keyboard: tweak Overview → Concierge chip (On by default): "Go to concierge" first, a primary chip, opening the Concierge.
