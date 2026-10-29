@@ -18119,3 +18119,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - No dismiss on the Concierge (it is the reveal's last step). Opened on its own, there's no back either; reached from Past results, it keeps its back. Secondary CTA is now "Try it later".
 - Field: 16px wider (24px from the sides), text 14px. At rest it's scaled to .9; while typing or sending it snaps to 1 and the orb lights go out.
 - Chat page (embedded on the phone): the top bar matches the Overview's, with 16px sides, a 10px gap, 44px round buttons, a 44px Inbox pill and 20px icons.
+- Fix: the video's overlap gradient restored (top half-strength, bottom fade into the page). "Remove fade on the visual top and bottom" meant the conversation's mask fades, which stay removed.
