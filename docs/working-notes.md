@@ -18187,3 +18187,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Concierge buttons: the standalone check is now a flag set only when "Concierge" is picked in the Page menu (`window.__ccSolo`). Before, the menu could relabel itself as Concierge while the flow showed the screen.
   - From the membership flow or the Flow panel: Go to overview, then Try concierge.
   - The Concierge page on its own: Try concierge, then Try it later.
+- Concierge specialist sticker: 30% bigger again: 85×98, 23px radius, photo zoomed to 132px.
