@@ -18179,3 +18179,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The word rolls up and out, then in from below: doctors → dieticians → nurses.
   - The horizontal row and the active ring are gone.
 - Concierge titles: every swap now goes up. The one leaving gets `.out` (−12px) and the next snaps below without a transition, then rises in. This includes title 3 → title 1 at the loop restart, which used to come down. A motion trace over a full loop shows only upward moves.
+- Concierge team: just the sticker now, with no "Meet your team of". It's centred, 30% bigger (65×75, 18px radius, photo zoomed to 104px), and the word swaps right under it at 18px: Doctors / Dieticians / Nurses.
