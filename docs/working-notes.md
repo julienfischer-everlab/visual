@@ -18158,3 +18158,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Tweaks: Question 2 On/Off (`stHpCcQ2On`). With it off, answer 1 is followed directly by "Connecting you to your doctor" and the doctor's answer. The copy row is now labelled "Question 2 copy".
 - Concierge bubbles leaving: they now fade and blur out as one piece, 0 → 8px blur with the opacity. Before, the whole thread faded its opacity, which made it a backdrop root and cut the bubbles' frosted background off instantly, so the background vanished before the text. Now the thread only moves up and each bubble fades itself. Older bubbles beyond the last two also blur as they go.
 - Concierge: after "Connecting you to your doctor", the doctor first says "Hi Julien, I'm Dr Steven, your doctor." (it replaces the loader). The Script answer follows 1.7s later. A new Tweaks copy row, "Doctor hello" (`stHpCcHi`), edits that line.
+- Concierge, new last phase (after the Script answer has held about 3s):
+  - The bubbles leave and the video goes.
+  - Three clinicians appear stacked left over right at 72px each, with an 18px overlap, ringed in the page's background colour. They pop in one after another in the video's place, using `assets/hp/team1-3.webp` re-encoded from the user's zip.
+  - A third title swaps in: "Personalised answers" / "Built from your health data by a team of specialists." It holds about 5s, then the loop restarts.
+- Tweaks: "Your bubble colour" (`stHpCcMeCol` → `--ccMeRgb`, default white). The fill opacity stays on its own slider.
