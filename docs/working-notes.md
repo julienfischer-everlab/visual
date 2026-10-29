@@ -18056,3 +18056,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - V3 follow-up: the list is gone. The Body is bigger and runs off the card's right and bottom, clipped by the card's rounded edge.
 - Its particles are white, keeping the cloud's own opacity spread. makeOrganView now takes an `ink` option, and `__bodyOrgan` takes `n` for density; it's at 5,200 dots and fill .7. The head shows whole.
 - V3: Member no. and Member since 16px further apart (24px).
+- V3: the Body 20% smaller (fill .56) and 24px further left.
