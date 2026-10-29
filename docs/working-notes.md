@@ -18163,3 +18163,11 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Three clinicians appear stacked left over right at 72px each, with an 18px overlap, ringed in the page's background colour. They pop in one after another in the video's place, using `assets/hp/team1-3.webp` re-encoded from the user's zip.
   - A third title swaps in: "Personalised answers" / "Built from your health data by a team of specialists." It holds about 5s, then the loop restarts.
 - Tweaks: "Your bubble colour" (`stHpCcMeCol` → `--ccMeRgb`, default white). The fill opacity stays on its own slider.
+- Concierge, team phase redone:
+  - The specialists arrive one at a time, every 1.15s. Each grows in from nothing, so the row re-centres and pushes the earlier ones aside.
+  - The newest is lit: ringed, 1.08×, full colour. The others are dimmed.
+  - A label under the row swaps with a blur: Doctors, then Dieticians, then Nurses.
+  - Answer 2 holds 1s longer (4.2s).
+- Concierge titles: three title groups, driven by one number (`data-s` 1/2/3), so exactly one shows at a time. A loop trace confirmed no overlap. The old s2/s3 class rules are now dead.
+  - Title 1 is "Personalised answers, built from your health data." / "Your health companion, live in the Everlab app."
+  - Tweaks has Title 1–3 and Sub 1–3 copy rows (`stHpCcT1t`…`stHpCcT3s`). Editing one replays the screen.
