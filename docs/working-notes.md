@@ -18100,3 +18100,6 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - The video appears only once the dot and Thinking are done.
 - The title swap is a slower crossfade (0.9s, a 6px blur, overlapping).
 - Tweaks on the Concierge screen: Video opacity (0–100%), plus Question 1, Answer 1, Question 2 and Answer 2, the bubbles' words, with the current copy as defaults. Changing a bubble's words replays the screen with them, and Save keeps them.
+- Concierge with the video up: the top is always dark, even in light mode. Black sits behind the status bar and the bar (the video starts 64px down, under black), fading down over the video's top, and the bar's controls and the status are white. Only while the video shows.
+- Overview history button: opens the chat's home (attention list, conversations), not the menu drawer.
+- Overview typing state: no sparkle in the field.
