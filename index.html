@@ -46,7 +46,8 @@
   .topbar, .topbar *{box-shadow:none !important;filter:none !important;}
   .tweaks{display:flex;align-items:center;gap:16px;flex-wrap:nowrap;flex:1;}
   .tweaks > #tkRvSave, .tweaks > #tkDocSave{order:1;}
-  .tweaks > .tkGrow{order:1;flex:1;min-width:0;} .tweaks > #tkBpSave, .tweaks > #tkRvSave, .tweaks > #tkDocSave, .tweaks > .evcBtn, .tweaks > #tkReload{order:2;}
+  .tweaks > .tkGrow{order:1;flex:1;min-width:0;} .tweaks > #tkDocsGo{order:2;} .tweaks > .evcBtn{order:3;} .tweaks > .tkDiv{order:4;} .tweaks > #tkBpSave, .tweaks > #tkRvSave, .tweaks > #tkDocSave{order:5;} .tweaks > #tkReload{order:6;}   /* Docs, Comments, | Save, Refresh */
+  .tweaks > .tkDiv{flex:none;width:1px;height:20px;margin:0 -4px;background:#2a2a2e;} .topbar .tkBtn.tkIcoBtn{display:inline-grid;place-items:center;width:30px;height:30px;padding:0;position:relative;} .topbar .tweaks > #tkBpSave{padding:6px 12px;font-size:12px;}   /* one size along the cluster */ .topbar .tkIcoBtn .evcBadge{position:absolute;top:-5px;right:-6px;} .topbar .tkModeIc{display:inline-grid;place-items:center;color:#a1a1aa;} .topbar .tkModeIc svg{grid-area:1/1;} body:not(.light) .topbar .tkModeIc .tkSun, body.light .topbar .tkModeIc .tkMoon{display:none;}
   .tweaks > .tkVerNav{display:inline-flex;align-items:center;gap:4px;margin-right:-4px;} .tweaks > .tkVerNav .tkStepB:disabled{opacity:.35;cursor:default;}   /* back and forward through the pages seen, at the bar's left before Version ("based on nav history"; "the arrow group before the version, on the left side") */   /* a page's Save always the last on the bar, at the far right ("save always on far right"): after Comments and Refresh */
   .tweaks .lbl{
     font-size:11.5px;font-weight:500;color:#71717a;
@@ -11369,7 +11370,7 @@
     <span class="tkVerNav"><button class="tkStepB" type="button" id="verPrev" aria-label="Back to the page before" title="Back"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3 5 8l5 5"/></svg></button><button class="tkStepB" type="button" id="verNext" aria-label="Forward to the page after" title="Forward"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3 5 5-5 5"/></svg></button></span>   <!-- back and next through the versions, in the menu's order ("a way to go back and next when I navigate through versions") -->
     <span class="lbl">Page</span>
     <select id="versionSel" aria-label="Version"></select>
-    <span class="lbl">Mode</span>
+    <span class="lbl tkModeIc" title="Colour mode"><svg class="tkMoon" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M13.2 9.6A5.5 5.5 0 0 1 6.4 2.8a5.5 5.5 0 1 0 6.8 6.8Z"/></svg><svg class="tkSun" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 1.5v1.3M8 13.2v1.3M1.5 8h1.3M13.2 8h1.3M3.4 3.4l.9.9M11.7 11.7l.9.9M3.4 12.6l.9-.9M11.7 4.3l.9-.9"/></svg></span>   <!-- a moon or a sun for the mode, not its word ("mode: use moon sun icon instead of label") -->
     <select id="themeSel" aria-label="Colour mode">
       <option value="dark" selected>Dark mode</option>
       <option value="light">Light mode</option>
@@ -12929,13 +12930,15 @@
     </span>
     <!-- the report pop-up's illustration drafts, a page of their own in the artifact ("treat these inside a page of the main artifact") -->
     <!-- Report visuals: every card's settings saved as a preset at once ("add Save presets action") -->
-    <span class="tkGrow" aria-hidden="true"></span>   <!-- Save, Comments and Refresh pushed to the bar's far right, always ("Save Refresh on the far right always, with comment") -->
+    <span class="tkGrow" aria-hidden="true"></span>
+    <button class="tkBtn" id="tkDocsGo" type="button" title="Open the Documentation">Docs</button>   <!-- the right cluster ("Docs, Comments (icon), divider, Save, Refresh (icon)") -->
+    <span class="tkDiv" aria-hidden="true"></span>   <!-- Save, Comments and Refresh pushed to the bar's far right, always ("Save Refresh on the far right always, with comment") -->
     <button class="tkBtn tkPreBtn" id="tkBpSave" type="button" title="Open the prototype at this viewport">Save</button>
     <button class="tkBtn" id="tkRvSave" type="button">Save presets</button>
     <!-- Documentation: Save keeps the playground's settings ("need a Save on documentation") -->
     <button class="tkBtn" id="tkDocSave" type="button">Save</button>
-    <button class="tkBtn" id="tkReload" type="button"
-            aria-label="Reload the page on this version">Refresh</button>
+    <button class="tkBtn tkIcoBtn" id="tkReload" type="button" title="Refresh"
+            aria-label="Reload the page on this version"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.5 8a5.5 5.5 0 1 1-1.6-3.9"/><path d="M13.6 2.2v3h-3"/></svg></button>
     <!-- the build this browser shows, stamped by tools/build.js ("on web I get an old version": a stale page told apart from different saved Tweaks) -->
   </div>
 </div>
@@ -26659,6 +26662,7 @@ hairline({
   [['stHpLtrFs', '--ltrFs'], ['stHpLtrLh', '--ltrLh']].forEach(([id, v]) => { const r = document.getElementById(id), o = document.getElementById(id + 'V'); if (!r) return; const set = () => { document.documentElement.style.setProperty(v, r.value + 'px'); if (o) o.textContent = r.value + 'px'; }; r.addEventListener('input', set); r.addEventListener('change', set); set(); setTimeout(set, 800); });   /* the Letter's font size and line height, live */
   { const s = document.getElementById('stHpRecShow'), b = document.getElementById('stHpRecTgl'), set = () => { const on = !s || s.value !== 'hide'; document.body.classList.toggle('hpRecHide', !on); if (b) b.setAttribute('aria-checked', String(on)); };   /* the past results card shown or not */
     if (s){ s.addEventListener('change', set); if (b) b.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); s.value = s.value === 'hide' ? 'show' : 'hide'; s.dispatchEvent(new Event('change', { bubbles: true })); }); set(); setTimeout(set, 800); } }
+  { const d = document.getElementById('tkDocsGo'); if (d) d.addEventListener('click', () => { const v = document.getElementById('versionSel'); if (!v) return; v.value = 'doc'; v.dispatchEvent(new Event('change', { bubbles: true })); }); }   /* Docs: the Documentation page */
   { const c = document.getElementById('stHpLtrCard'), set = () => document.documentElement.classList.toggle('hpLtrNoCard', !!c && c.value === 'no'); if (c){ c.addEventListener('change', set); set(); setTimeout(set, 800); } }   /* the Letter's Card tweak, live */
   /* the Health profile at a forced XS: the journey's rows (Step 1, 2, 3 pages, Past results) in a panel beside the phone, at its left, from its top; back in Tweaks otherwise, or with no room */
   const jny = (() => { let el = null;
@@ -43310,7 +43314,7 @@ hairline({
   /* the bar's button, the pins' layer, the click catcher, the panel */
   var bar = document.querySelector('.topbar .tweaks'), btn = document.createElement('button');
   btn.type = 'button'; btn.className = 'tkBtn evcBtn'; btn.setAttribute('aria-pressed', 'false'); btn.title = 'Comments on this view';
-  btn.innerHTML = '<span>Comments</span><b class="evcBadge" hidden></b>';
+  btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4a1.5 1.5 0 0 1 1.5-1.5h8A1.5 1.5 0 0 1 13.5 4v6a1.5 1.5 0 0 1-1.5 1.5H7l-3 2.5v-2.5h0A1.5 1.5 0 0 1 2.5 10Z"/></svg><b class="evcBadge" hidden></b>'; btn.classList.add('tkIcoBtn'); btn.setAttribute('aria-label', 'Comments');   /* an icon, not the word ("comment: use icon instead") */
   var rl = $('tkReload'); if (rl && rl.parentNode) rl.parentNode.insertBefore(btn, rl); else if (bar) bar.appendChild(btn);
   var layer = document.createElement('div'); layer.className = 'evcLayer'; layer.setAttribute('aria-label', 'Comment pins');
   var catcher = document.createElement('div'); catcher.className = 'evcCatch'; catcher.title = 'Click to comment here';

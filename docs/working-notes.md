@@ -18026,3 +18026,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Membership onboarding timeline: while a reveal moment shows (or no profile is up), the profile's rows are no longer lit. Before, step 2's "Health profile home" stayed lit from an earlier visit. The reveal's own lighting is limited to its list (`:scope > ol > li`); it used to index every li in the panel.
 - Card back V1: "Member no." (EVL 2953 1201) beside "Member since", in two columns 28 apart. Both values are 13px (was 15) with tabular numbers.
 - Live version (XS): the primary card under the Concierge card takes no top margin (it was 22 plus the column's 16 gap). The gap above "Your plan" is now 16, the same as the gap below it.
+
+## Top bar: Docs, icon Comments and Refresh, divider; mode icon
+
+- Right cluster, in order: Docs (opens the Documentation page), Comments as a speech-bubble icon (its count badge on the corner), a divider, Save, Refresh as a circular-arrow icon. Both icon buttons are 30x30 with their names as aria-labels; Save takes the bar's button size.
+- The "Mode" label is now an icon: a moon in dark mode, a sun in light mode, beside the switch.
