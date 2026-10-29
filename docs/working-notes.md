@@ -18244,3 +18244,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Concierge bubbles: the stack moves up over 420ms on cubic-bezier(.22, 1, .36, 1). The new bubble rises 16px on the same curve, at scale 1, and fades in over 200ms. I set the fade to start at 120ms, not 35ms: with a tall reply the stack moves about 170px, and at 35ms the new one showed through the bubble above. The gap between bubbles is 8px (was 12px).
 - Concierge: "Your care team" (title 2) now comes in 120ms after the loader appears, right after the field is sent, about 2s before the first bubble.
 - Concierge: the video is at 30% under the specialists (was 50%). The sticker shadow is unchanged: the "black area" report was withdrawn.
+- Concierge title 3: max width 274px (was 250px). With the user's copy "Meet your team of specialists, in one place." it still wraps to three lines; it stays at three even at 320px.
