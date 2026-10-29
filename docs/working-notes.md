@@ -18293,3 +18293,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Service cards: the renders hidden at every size (`.ovSvcVis`).
 - Desk (S/M/L) top row: the Concierge and Past result cards lead the services' column (`.dvLead`, `window._ovLead`): none → the 2x2 alone; one → it, then the 2x2; both → 1:1, then the 2x2. Side by side their visuals go; in a narrow column (< 440, M/S) the two stack and the Concierge video goes. Back on XS they return to the flow.
 - XS suggestions over the keyboard: tweak Overview → Concierge chip (On by default): "Go to concierge" first, a primary chip, opening the Concierge.
+
+## Past results and Concierge as a sheet from outside the membership flow; desk lead spacing
+
+- Past results (the records card) and the Concierge intro (its Overview card) opened from the Overview (`o.solo === 'res' && o.ov`): `.hpBs.hpPrSh` — a bottom sheet on XS/S (from under the status bar), the floating modal on M/L, 544 wide and min(760, 100% − 48) tall. Opened from the membership flow they stay full.
+- Desk lead row: 16 between and under it, 20 padding inside its cards, as the services' grid.
