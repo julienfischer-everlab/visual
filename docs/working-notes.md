@@ -18151,3 +18151,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Concierge Script chip: scaled to 0.8 (`zoom: .8`, so its box shrinks too: 116 × 35).
 - Concierge intro: the "Meet Concierge" dot is 12px (+4).
 - The care team title's line is now "Concierge connects you to the right clinician."
+- Concierge copy: the first title's line is now "Your health companion, live in the Everlab app."
+- Bubble max width tweak: the range now goes to 420. The cap is `min(100%, var)`, but on the XS phone the conversation column is only 265px wide, so values above 265 change nothing there.
+- Field: inverted. It rests at 1.1 and settles to 1 on the tap, more smoothly (.45s ease-out).
+- Question 1 now rises with the video as it comes in (60ms after), and answer 1 follows 1.15s later.
+- Tweaks: Question 2 On/Off (`stHpCcQ2On`). With it off, answer 1 is followed directly by "Connecting you to your doctor" and the doctor's answer. The copy row is now labelled "Question 2 copy".
