@@ -18053,3 +18053,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Card back tweak gains V3: V1 with a dotted body silhouette down the right. It uses the Biomarkers hero's human figure, sampled on a grid in the card's ink, with six marker dots lit fuller.
 - Member no. and Member since are stacked at the left. The five lines are a touch smaller (12.5px, 3px apart) and stay clear of the body.
 - Card back V3 now uses the Biomarkers' own Body: its particle view (makeOrganView, exposed as window.__bodyOrgan), drawn in a 104px slot at the right. Settings: fill .6, no feed or flow streams, its canvases pinned inside the slot. The standalone Health Profile page has no organ engine, so it keeps the dotted figure.
+- V3 follow-up: the list is gone. The Body is bigger and runs off the card's right and bottom, clipped by the card's rounded edge.
+- Its particles are white, keeping the cloud's own opacity spread. makeOrganView now takes an `ink` option, and `__bodyOrgan` takes `n` for density; it's at 5,200 dots and fill .7. The head shows whole.
