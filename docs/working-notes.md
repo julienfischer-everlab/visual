@@ -18216,3 +18216,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Stickers bare: no shadow, no rim.
   - Label 20px.
 - Titles: travel 24px down on every swap. Title group top now 64px under the screen's middle (32px lower). It still clears the buttons by about 40px with a three-line title.
+- Concierge specialists: the second sticker comes over from the left and the third from the right. `peel(av, mir)` mirrors the mask (225°), the fold origin and the tilt axis (rotate3d(1, 1, 0)).
+- Video:
+  - Its zoom-in is softer: 1.05 → 1 over 2.4s (was 1.15 over 1.6s).
+  - It drops to 50% opacity during the specialists phase.
+  - Its bottom fade into the page is 25% longer, starting at 40% instead of 52%.
