@@ -18060,3 +18060,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Concierge intro: a Back at its top left, to Past results, however it was reached (Got it, or Concierge → Open). Past results itself keeps no back.
 - Concierge intro: no frame round the visual. The field and the thread run to the canvas's edges with no padding. The field starts in the middle of the canvas.
 - Concierge intro: speech bubbles at most 256px wide (or 80% of the canvas when that is narrower).
+- Concierge intro bubbles follow the reference style: round (24px radius, no tail), 12/18 padding, 15px text. The member's bubble is an outline, the AI's is solid in the ink.
+- The thread and the field sit 48px in from the canvas's sides, and the bubbles are 12px apart (+4).
