@@ -18037,3 +18037,11 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - The floating Back (was under the Welcome's +) shows only while the screen has a flow (the top bar's Flow button is there) and there is a step to go back to. It sits at the screen's top left, 32px off its left edge, mirroring the + on the right; when the room there is short it sits inside the corner.
 - Back from the Health profile home to Steven's note now plays Let's begin in reverse: the home's sections leave last-first (button, steps from the bottom, title, sphere), each sinking the way it rose, then the note drops back into place.
 - The note drawn still (Back from the home) now wears the Letter tweaks (Version, Card) like the played one, so it lands on the Letter style as saved; the Flow timeline lights "Letter view".
+
+## Backs on Steven and the home; no + without tweaks; profile home tweaks
+
+- Steven's note now has the app's own Back at its top left (the rest of the bar stays hidden). It goes to the card screen at rest. The floating Back works there too.
+- The Health profile home has its Back whenever it's reached from the reveal: Let's begin, the Back from Steven, or the Flow timeline's Health profile home row on Membership onboarding. It plays back to Steven's Letter view.
+- The welcome's + shows on the reveal screens and on Steven's note only (where its tweaks are). It no longer shows on the profile, which has none of them.
+- On the profile home, Tweaks shows the Sphere alone. The Past result card group and the Health profile section (State, Open) are hidden on the profile.
+- The Documentation row is gone from the Health profile card's tweaks.
