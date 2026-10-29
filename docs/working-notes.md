@@ -18156,3 +18156,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Field: inverted. It rests at 1.1 and settles to 1 on the tap, more smoothly (.45s ease-out).
 - Question 1 now rises with the video as it comes in (60ms after), and answer 1 follows 1.15s later.
 - Tweaks: Question 2 On/Off (`stHpCcQ2On`). With it off, answer 1 is followed directly by "Connecting you to your doctor" and the doctor's answer. The copy row is now labelled "Question 2 copy".
+- Concierge bubbles leaving: they now fade and blur out as one piece, 0 → 8px blur with the opacity. Before, the whole thread faded its opacity, which made it a backdrop root and cut the bubbles' frosted background off instantly, so the background vanished before the text. Now the thread only moves up and each bubble fades itself. Older bubbles beyond the last two also blur as they go.
