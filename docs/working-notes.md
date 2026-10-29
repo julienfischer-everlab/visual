@@ -18103,3 +18103,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Concierge with the video up: the top is always dark, even in light mode. Black sits behind the status bar and the bar (the video starts 64px down, under black), fading down over the video's top, and the bar's controls and the status are white. Only while the video shows.
 - Overview history button: opens the chat's home (attention list, conversations), not the menu drawer.
 - Overview typing state: no sparkle in the field.
+- Concierge: the field and the dot with Thinking sit in the middle of the video's area (the video's centre, measured). The bubbles stay at its foot.
+- The video covers 40% of the height, from 64px down.
+- The title group is 96px higher during the field phase and 24px higher for the second title, gliding between. I fixed an unclosed CSS comment that had swallowed the swap rules.
+- The 8px dot opens into the 3×3 mosaic loader, which keeps turning over. Thinking under it has no grid of its own; the in-thread Thinking keeps its grid.
+- Tweak "Bubble text" sets the bubbles' text size (12–20px, default 15). Every bubble blurs what's under it at 32px, and the AI bubble is the ink at 90%.
+- Only the latest bubble (or Thinking) and the one before it show, both at full opacity. Older ones fade out entirely.
