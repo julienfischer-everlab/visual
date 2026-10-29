@@ -18047,3 +18047,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - The Documentation row is gone from the Health profile card's tweaks.
 - Journey headings renamed: "Step 1 - Promise & Personal details", "Step 2 - Book OC", "Step 3 - Tell us about you" (were "Step N pages").
 - Journey: "All steps complete" after Step 3, with its own Health profile home (the home with the three done, "You're all set"); it lights when the member has finished all three.
+
+## Card back V3: the body in dots
+
+- Card back tweak gains V3: V1 with a dotted body silhouette down the right. It uses the Biomarkers hero's human figure, sampled on a grid in the card's ink, with six marker dots lit fuller.
+- Member no. and Member since are stacked at the left. The five lines are a touch smaller (12.5px, 3px apart) and stay clear of the body.
