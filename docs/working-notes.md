@@ -18135,3 +18135,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Intro H1: the AI outline now reveals as one piece with its letters (blur to sharp, at the letters' timing).
 - Overview XS: the service tiles have no visual.
 - Chat on the XS phone: the phone's status bar and island are cloned over it (`.ccStat`).
+- Concierge field typing: now human. Keys are uneven (about 38–70ms), with a 120–210ms pause between words and +220ms after punctuation. The send tap follows 520ms after the last key.
