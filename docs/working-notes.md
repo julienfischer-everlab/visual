@@ -18171,3 +18171,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Concierge titles: three title groups, driven by one number (`data-s` 1/2/3), so exactly one shows at a time. A loop trace confirmed no overlap. The old s2/s3 class rules are now dead.
   - Title 1 is "Personalised answers, built from your health data." / "Your health companion, live in the Everlab app."
   - Tweaks has Title 1–3 and Sub 1–3 copy rows (`stHpCcT1t`…`stHpCcT3s`). Editing one replays the screen.
+- Concierge field: 1.05 at rest (was 1.1), easing to 1 on the tap.
