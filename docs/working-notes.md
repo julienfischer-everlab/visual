@@ -18122,3 +18122,16 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Fix: the video's overlap gradient restored (top half-strength, bottom fade into the page). "Remove fade on the visual top and bottom" meant the conversation's mask fades, which stay removed.
 - Video: 64px higher in the same area. It now starts at the top of the area, under the header's black, instead of 64px down.
 - Nav: the back is restored on the Concierge in every case (it goes back to Past results). There's still no dismiss.
+
+## Concierge polish, Docs page switch, chat status bar
+
+- Docs and the other full pages (Hairline, Home, Gift…): picking Chat or Async report from the Page menu now closes the full page first and lands on the Overview underneath. Before, the overlay opened on top of the docs.
+- Concierge video: comes in at 1.15× and settles to 1×. It sits 24px higher again (top −24px). The top black gradient is gone; the bottom fade into the page stays.
+- Touch dot: lands on the field and taps it, and the field snaps up at that moment (.99 at rest, 1.1 while in use, .12s). The dot fades while the words are typed, then glides to send and taps it. The typing caret is white.
+- Field: centred in the top half below 80px of padding.
+- Bubbles: 64px blur.
+- CTAs: in the membership flow, Go to overview is primary and Try concierge is secondary. On the standalone Concierge page (Page = Concierge), it's Try concierge, then Try it later.
+- Top nav: always dark. The back is a 44px round secondary button (white at 12%, blur). I had to raise the selector's specificity to beat `:not(.hpWel):not(.hpScrolled) .arIconBtn{transparent!important}`.
+- Intro H1: the AI outline now reveals as one piece with its letters (blur to sharp, at the letters' timing).
+- Overview XS: the service tiles have no visual.
+- Chat on the XS phone: the phone's status bar and island are cloned over it (`.ccStat`).
