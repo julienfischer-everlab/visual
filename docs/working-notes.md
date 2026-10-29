@@ -18252,3 +18252,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Overview services, XS: the chips' padding is 8px top and bottom (half of before, minus 2px) and their height follows their content.
 - Concierge field: no more scale on the tap. At rest it's white 4% with a 40px blur and its orange orb spinning round the edge; focused it's white 8%, same blur, no orb.
 - Concierge: when the specialists come in, the bubbles leave going up. The thread rises 64px over 0.8s on (.55, 0, .25, 1) while each bubble fades with a 4px blur (0.55s, from 80ms). Inactive specialist avatars are at 40% (was 60%).
+- Concierge title 3 group is 32px wider (329px): "Meet your team of specialists, / in one place." now fits on two lines.
+- XS service chips: 12px padding top and bottom, 16px labels. Overview Concierge card: 14px title, no border, video at 40%.
+- Concierge card: its own "+" in the right-hand column, with a group showing only its name and an On/Off switch (data-fl="cc"). Opened from the card (outside the membership flow), the Concierge intro shows a round dismiss at top right, through the intro too; the back stays hidden.
+- Concierge: Answer 1 stays on screen 0.75s longer before what follows (Question 2, or the hand-off).
+- Documentation → Modals: a third type, Full bottom sheet, built on the app's stacking rules. On XS and S the page draws back into an emptied card on black (92%, 35px corners, 80%), the sheet rises 12px under it with 32px corners and no grabber, and the status bar turns white. On M and L it's a tall floating modal. XS and S demos now sit in the app's iPhone frame (56px corners, the bezel's three rings, island, home indicator). In every demo, the X, the scrim and the buttons dismiss it.
