@@ -26,10 +26,10 @@ src = src.replace('>dev build</span>', '>Build ' + new Date().toLocaleString('en
 // what gets mailed around -- so every assets/ path in the source, in CSS or
 // in a string, is replaced here by the file itself as a data URI.
 const MIME = { webp: 'image/webp', png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg',
-               gif: 'image/gif', svg: 'image/svg+xml', mp4: 'video/mp4',
+               gif: 'image/gif', svg: 'image/svg+xml', mp4: 'video/mp4', webm: 'video/webm',
                mp3: 'audio/mpeg', m4a: 'audio/mp4', wav: 'audio/wav' };
 let assetIn = 0, assetOut = 0, assetN = 0;
-src = src.replace(/assets\/[A-Za-z0-9_\-./]+?\.(webp|png|jpe?g|gif|svg|mp4|mp3|m4a|wav)\b/g, ref => {
+src = src.replace(/assets\/[A-Za-z0-9_\-./]+?\.(webp|png|jpe?g|gif|svg|mp4|webm|mp3|m4a|wav)\b/g, ref => {
   const f = path.join(root, ref);
   if (!fs.existsSync(f)){ console.warn('missing asset, left as a path: ' + ref); return ref; }
   const buf = fs.readFileSync(f);

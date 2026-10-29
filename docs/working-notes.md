@@ -18076,3 +18076,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - The click is a white touch dot (34px, translucent, blurring what's under it). It replaces the arrow cursor.
 - The field is 32px wider (32px in from the canvas's sides instead of 48px).
 - The Beam light is more diffuse: a longer, fading tail, a soft 16px glow on the edge, and a wider 30px haze round it.
+- Concierge loop: the frame and its photo are gone. Once the field shrinks into the Thinking dot, your video (assets/hp/concierge.webm, plus concierge.mp4 for Safari) fades in full-bleed behind the whole screen: header, conversation and buttons. It's 1152×648, no audio, about 1MB each, inlined by both builds (build.js and build-hp.js now take webm/mp4).
+- A gradient of the page's ground runs down over the top of the video so the title reads, and a lighter one rises under the buttons. The member's bubble gets a light blur over the video.
+- The video goes away when the loop resets or the screen is left.
+- The WIP badge sits in the top bar, centred.
