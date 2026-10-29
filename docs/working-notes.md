@@ -18178,3 +18178,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Each new photo sweeps in on top of the last from the lower left, turning upright (−30° → 0, with blur), stacked in the same spot.
   - The word rolls up and out, then in from below: doctors → dieticians → nurses.
   - The horizontal row and the active ring are gone.
+- Concierge titles: every swap now goes up. The one leaving gets `.out` (−12px) and the next snaps below without a transition, then rises in. This includes title 3 → title 1 at the loop restart, which used to come down. A motion trace over a full loop shows only upward moves.
