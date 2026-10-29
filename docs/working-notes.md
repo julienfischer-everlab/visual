@@ -18209,3 +18209,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The label rolls to "Doctors · Dieticians · Nurses" and drops 22px to clear the arc. The phase holds a second longer.
   - No light sheen on the lifting sticker any more, just a deeper double drop-shadow.
 - Card back: new V4, which is V3 without the silhouette (`hpW2Bk4` hides `.hpW2Body`).
+- Concierge, Field at bottom layout: the video comes in first and the field follows 0.7s later, on every loop. The field is kept hidden through the loop reset, so it no longer flashes.
+- Video: once it has come in, it stays on through the specialists and round the loop. `vidOn()` now starts it only when it first comes on, never jumping it back to 0. Opening Specialists directly turns it on too.
+- Specialists:
+  - Arc tighter (±48px, ±12°). Group 48px higher. 24px under the sticker.
+  - Stickers bare: no shadow, no rim.
+  - Label 20px.
+- Titles: travel 24px down on every swap. Title group top now 64px under the screen's middle (32px lower). It still clears the buttons by about 40px with a three-line title.
