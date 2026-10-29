@@ -18062,3 +18062,12 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Concierge intro: speech bubbles at most 256px wide (or 80% of the canvas when that is narrower).
 - Concierge intro bubbles follow the reference style: round (24px radius, no tail), 12/18 padding, 15px text. The member's bubble is an outline, the AI's is solid in the ink.
 - The thread and the field sit 48px in from the canvas's sides, and the bubbles are 12px apart (+4).
+
+## Concierge intro: H1 intro, cursor click, Thinking dot, photo frame, CTAs
+
+- Opens on its own title, written the way the reveal's intro is: letter by letter from blur, with a warm touch. It reads "Every health question answered, / by Eva (AI) or a clinician", with AI in an outlined tag. It holds, lifts away, then the screen comes up into place and the loop starts.
+- In the loop, after typing, a cursor comes in and clicks send. The field shrinks into an 8px dot with two ripples and "Thinking" under it (2s).
+- Then an outlined frame comes in (24 radius, with the warm living-room photo dimmed inside it), framing the conversation.
+- Every change to the thread glides as one motion (FLIP): bubbles in, Thinking out, the active bubble re-centred. Before, it snapped and then eased.
+- The field follows the theme: grey a step off the page, its words and controls in the ink, the send lit in the ink.
+- CTAs: Try concierge (opens the Concierge chat), with Go to overview as the secondary.
