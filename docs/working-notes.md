@@ -18149,3 +18149,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Touch dot: no border, and 30% smaller (24px).
 - Tweaks: "Bubble max width" (200–360, default 320, `--ccBubMw`).
 - Concierge Script chip: scaled to 0.8 (`zoom: .8`, so its box shrinks too: 116 × 35).
+- Concierge intro: the "Meet Concierge" dot is 12px (+4).
+- The care team title's line is now "Concierge connects you to the right clinician."
