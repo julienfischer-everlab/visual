@@ -18148,3 +18148,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The answer carries a Script attachment chip, in the chat library's style: file icon tile, Script, download.
 - Touch dot: no border, and 30% smaller (24px).
 - Tweaks: "Bubble max width" (200–360, default 320, `--ccBubMw`).
+- Concierge Script chip: scaled to 0.8 (`zoom: .8`, so its box shrinks too: 116 × 35).
