@@ -18221,3 +18221,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Its zoom-in is softer: 1.05 → 1 over 2.4s (was 1.15 over 1.6s).
   - It drops to 50% opacity during the specialists phase.
   - Its bottom fade into the page is 25% longer, starting at 40% instead of 52%.
+- Concierge stickers: each rests a little askew (−5°, +6°, −3°, offset a few px), so the one behind peeks out. The arc still overrides this at the end.
+- The arc's label now reads "Everlab specialists".
+- Flow panel: Concierge is now a step-style group (`#stHpCcList`): numbered rows 1 Intro, 2 Bubble speech, 3 Specialists, with the current phase lit with the orange dot. Pressing a row opens the screen at that phase. The Open buttons are gone.
+- Concierge titles: the title group top is now 48px under the screen's middle (16px up).
