@@ -18109,3 +18109,13 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - The 8px dot opens into the 3×3 mosaic loader, which keeps turning over. Thinking under it has no grid of its own; the in-thread Thinking keeps its grid.
 - Tweak "Bubble text" sets the bubbles' text size (12–20px, default 15). Every bubble blurs what's under it at 32px, and the AI bubble is the ink at 90%.
 - Only the latest bubble (or Thinking) and the one before it show, both at full opacity. Older ones fade out entirely.
+
+## Concierge intro: Meet Concierge, title on the midline, nav, field states
+
+- Intro: the H1 collapses to a dot, which becomes the cursor of "Meet Concierge" as it types; then the field, title group and footer come in.
+- Bubbles: max width 320px. Tweaks for line height and padding (X and Y) next to Bubble text. The bubble backdrop blur now works: the thread's fade mask was cutting it off from the video, so the mask is gone (only the last two bubbles show anyway).
+- Title group: both titles sit in the same place, 32px under the screen's midline. `place()` measures them minus their current translate. The chat may take a negative margin so its foot meets the video's.
+- Video: no fade at the top or bottom.
+- No dismiss on the Concierge (it is the reveal's last step). Opened on its own, there's no back either; reached from Past results, it keeps its back. Secondary CTA is now "Try it later".
+- Field: 16px wider (24px from the sides), text 14px. At rest it's scaled to .9; while typing or sending it snaps to 1 and the orb lights go out.
+- Chat page (embedded on the phone): the top bar matches the Overview's, with 16px sides, a 10px gap, 44px round buttons, a 44px Inbox pill and 20px icons.
