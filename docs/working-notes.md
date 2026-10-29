@@ -18225,3 +18225,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - The arc's label now reads "Everlab specialists".
 - Flow panel: Concierge is now a step-style group (`#stHpCcList`): numbered rows 1 Intro, 2 Bubble speech, 3 Specialists, with the current phase lit with the orange dot. Pressing a row opens the screen at that phase. The Open buttons are gone.
 - Concierge titles: the title group top is now 48px under the screen's middle (16px up).
+- Concierge intro: the video already plays under the intro, which is now centred on the whole screen. Then, in order: the field fades in rising 32px, and the titles and footer follow .5s later. The field's flash on entrance is fixed: its transition only covered scale, and the loop re-hid it right after the screen faded it in. Each loop it comes back the same way, and it leaves fading out while sinking 32px. That replaces the shrink into the dot.
+- Video loop checked: it wraps at 31s and keeps playing.
+- Field orb: one orange light (no red) on one side, swaying there instead of circling the whole edge.
+- Bubbles: a new bubble rises in from 32px below right away, while the earlier ones are pushed up. The 420ms wait is gone.
+- Cursor dot: 20px (was 24), white at 40% (52% pressed, 36% gliding).
+- Title swaps: the next title comes in .4s after the previous one starts leaving (was .18s).
+- Specialists: the names sit in a row (Doctors · Dieticians · Nurses). Each arrival pushes the row left so the named one is centred at 100%; the earlier names stay at 50%. At the arc the row fades out and "Everlab specialists" fades in. Stickers behind the newest one are at 60% (all whole in the arc), with a soft drop shadow that follows each sticker's shape.
