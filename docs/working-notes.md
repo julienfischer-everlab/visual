@@ -18018,3 +18018,11 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 
 - The Overview's past results card opens Past results with `ov` (`_hp.past(0, true)`). There, Got it simply closes the modal; the HP `fwd()` for `res` calls `onClose` when `opts.ov && opts.solo === 'res'`. Opened from the Flow panel or Tweaks, Got it still leads on to the Concierge introduction.
 - A page opened from the Overview (its Health profile card or its past results card) is a standalone page: no Flow panel, no Flow button, nothing docked (`window.__hpFromOv`, checked in `jny`). Opened from the Flow panel or Tweaks, the panel shows as before.
+
+## Top bar "Page"; Past result card switch, under Primary; journey lights; card back member no.; Live version gap
+
+- The top bar's "Version" label now reads "Page".
+- The Past result card Tweaks group has an on/off switch in its header (`#stHpRecTgl`, saved through a hidden input `#stHpRecShow` = show/hide; `body.hpRecHide` hides `#dOver .hpRecOut`). A hidden select with On/Off became a second switch through the generic converter, hence the input. The group is placed right under the Primary card group (in `arrangeG`, before the First-time user groups).
+- Membership onboarding timeline: while a reveal moment shows (or no profile is up), the profile's rows are no longer lit. Before, step 2's "Health profile home" stayed lit from an earlier visit. The reveal's own lighting is limited to its list (`:scope > ol > li`); it used to index every li in the panel.
+- Card back V1: "Member no." (EVL 2953 1201) beside "Member since", in two columns 28 apart. Both values are 13px (was 15) with tabular numbers.
+- Live version (XS): the primary card under the Concierge card takes no top margin (it was 22 plus the column's 16 gap). The gap above "Your plan" is now 16, the same as the gap below it.
