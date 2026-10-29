@@ -18180,3 +18180,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The horizontal row and the active ring are gone.
 - Concierge titles: every swap now goes up. The one leaving gets `.out` (−12px) and the next snaps below without a transition, then rises in. This includes title 3 → title 1 at the loop restart, which used to come down. A motion trace over a full loop shows only upward moves.
 - Concierge team: just the sticker now, with no "Meet your team of". It's centred, 30% bigger (65×75, 18px radius, photo zoomed to 104px), and the word swaps right under it at 18px: Doctors / Dieticians / Nurses.
+- Concierge team sticker: now applied like a real sticker (the user's reference).
+  - Each photo lands from its lower-right corner. The rest of it stays lifted off the surface along a diagonal fold, tilted toward the viewer (rotate3d about the fold line, −52°→0, 150px perspective), with a light sheen, and lays flat over the one before (820ms ease-out).
+  - Built from two layers, laid and lifted, cut with `mask-image` gradients along the fold.
+  - `window.__ccPeelSlow` slows it down for testing.
+- Concierge buttons: the standalone check is now a flag set only when "Concierge" is picked in the Page menu (`window.__ccSolo`). Before, the menu could relabel itself as Concierge while the flow showed the screen.
+  - From the membership flow or the Flow panel: Go to overview, then Try concierge.
+  - The Concierge page on its own: Try concierge, then Try it later.
