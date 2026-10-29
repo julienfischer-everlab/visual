@@ -18200,3 +18200,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Concierge: only Concierge and its phases.
   - Membership onboarding: everything.
 - Concierge titles: the travel is now 20px (was 12px), always downward. The one leaving drops, and the next comes from above and moves down into place. A per-title trace shows every in and out moving down.
+- Card back V3 silhouette: 24px higher (top −46px) and quieter (55% opacity).
+- Concierge Tweaks, new "Layout" row: Centred (default, as before) or Field at bottom (`stHpCcLay`).
+  - Field at bottom: the chat field's foot sits 24px above the screen's midline, and the video is on from the field phase. Each run turns it on at its start; the team phase still takes it away.
+  - Changing the layout replays the screen.
