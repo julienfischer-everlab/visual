@@ -18238,3 +18238,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Concierge specialists: the names row fades out at both ends (masked on its own wrapper), and past names are at 30%. "Everlab specialists" is centred on its own; it overflowed its 120px box to the right.
 - Concierge title 3: "Meet your team / of specialists" on two lines (max 250px), with the sub "Personalised answers, built from your health data." Tweak defaults are updated too.
 - Concierge loop: the field is back about 0.8s after the specialists leave (reset +600, run +150, reveal +60), down from about 2.3s.
+- Concierge bubbles: a new bubble lands by pushing the earlier ones. It comes up from exactly below (as far as they move, at least 32px), with the same 640ms and easing as them. Paused halfway, the 12px gap between bubbles holds.
