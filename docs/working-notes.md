@@ -18232,3 +18232,6 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Cursor dot: 20px (was 24), white at 40% (52% pressed, 36% gliding).
 - Title swaps: the next title comes in .4s after the previous one starts leaving (was .18s).
 - Specialists: the names sit in a row (Doctors · Dieticians · Nurses). Each arrival pushes the row left so the named one is centred at 100%; the earlier names stay at 50%. At the arc the row fades out and "Everlab specialists" fades in. Stickers behind the newest one are at 60% (all whole in the arc), with a soft drop shadow that follows each sticker's shape.
+- Concierge: the video now starts only after Meet Concierge has gone (not under the intro). Order: video, the field 0.6s later, then the titles and footer 0.5s after that.
+- Concierge titles: the title spans the group's full width with balanced wrapping, so "Personalised answers, / built from your health data." fits on two lines.
+- Concierge video: the picture sits 48px higher in its area (top −72px) and its fade now ends just under the picture's new bottom edge. The area's black ground is gone, so no hard edge shows during the zoom-in.
