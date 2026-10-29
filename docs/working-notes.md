@@ -18072,3 +18072,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - The field follows the theme: grey a step off the page, its words and controls in the ink, the send lit in the ink.
 - CTAs: Try concierge (opens the Concierge chat), with Go to overview as the secondary.
 - Concierge field: a Beam border effect, like libraries.dev's border-beam (md, colorful, strength .7, dark), rebuilt in CSS since the prototype isn't React. A conic arc (orange, pink, violet, blue) rides the edge every 3.4s, with a blurred copy under it for the glow.
+- Concierge loop: Thinking uses the Concierge chat page's own style. "Thinking…" under the dot and "Asking your care team…" in the thread, both muted, with a light passing through the words. It replaces the dot grid and label.
+- The click is a white touch dot (34px, translucent, blurring what's under it). It replaces the arrow cursor.
+- The field is 32px wider (32px in from the canvas's sides instead of 48px).
+- The Beam light is more diffuse: a longer, fading tail, a soft 16px glow on the edge, and a wider 30px haze round it.
