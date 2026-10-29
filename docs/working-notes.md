@@ -18240,3 +18240,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Concierge loop: the field is back about 0.8s after the specialists leave (reset +600, run +150, reveal +60), down from about 2.3s.
 - Concierge bubbles: a new bubble lands by pushing the earlier ones. It comes up from exactly below (as far as they move, at least 32px), with the same 640ms and easing as them. Paused halfway, the 12px gap between bubbles holds.
 - Concierge: the second title group now comes in 1s after the first bubble (measured 0.98s). The video is 20px lower (top −52px), and its fade ends 16px from the area's foot, under the picture's new bottom.
+- Concierge bubbles: a new bubble now fades in over the whole 640ms push (its own ease-in-out), not in the first third.
