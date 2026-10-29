@@ -18188,3 +18188,14 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - From the membership flow or the Flow panel: Go to overview, then Try concierge.
   - The Concierge page on its own: Try concierge, then Try it later.
 - Concierge specialist sticker: 30% bigger again: 85×98, 23px radius, photo zoomed to 132px.
+- Concierge in three phases:
+  - The Flow panel's Concierge entry has three rows: Intro, Bubble speech, Specialists. Each opens the screen at that phase via `window.__ccPhase`.
+  - The team part is now its own function, `teamFrom(t)`, used by the loop and by the Specialists entry.
+  - From any entry the loop then carries on as normal.
+- Title swaps now go down: the one leaving drops 12px and the next comes down from above. A motion trace showed only downward moves.
+- Team sticker shadow: stronger and layered (contact + lift + long soft), with a thin light rim. The lifted part drops a longer shadow.
+- Flow panel per page, by the page picked (`html[data-jny]`):
+  - Health profile: its three steps and All complete only.
+  - Past results: only Past results.
+  - Concierge: only Concierge and its phases.
+  - Membership onboarding: everything.
