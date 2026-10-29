@@ -18083,3 +18083,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Concierge Tweaks (on its screen): Layout is Title first (default) or Visual first, which puts the conversation above the title group. Video is Full (default) or Half: the top 50% of the screen, fading progressively into the page at its foot, with the page's ground under the buttons.
 - Footer over the full video: one smooth fade from 96px above the buttons down. The old 40px fade above the footer, which met the new one with an edge, is gone.
 - The field's Beam now follows the screen-recording reference, in warm orange tones: three soft lights rest on the edge at once and drift round it (7s). Their light spills inward as a soft glow inside the field, the line is lit faintly only near them, and a faint halo sits outside.
+- Concierge loop: the field shrinks into the dot snappier (260ms, with a sharp ease) and the dot pops in. No ripple.
+- Thinking follows the capture: the grid of dots turning over, "Thinking", then "· Looking at your records" muted. It shows centred under the dot and again in the thread before Eva's second reply, replacing the shimmer text.
