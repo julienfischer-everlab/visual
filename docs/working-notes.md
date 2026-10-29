@@ -18277,3 +18277,11 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Dock: "Below · 12px" is now the default and the reset value. `navLab12` is now part of `CARD_STATE` so it survives the body class rebuild on page changes (it was dropped on Insights/Timeline). The dock's localStorage key is now `everlab.dock.v2`, so older saves (56px, Shown) no longer override the new setup.
 - XS service chips: padding 20 top and bottom (59px tall); gaps still 16 in every order.
 - XS frame on the #phone / #phone2 pages (Insights, Timeline…): `#phone` radius 61 so its screen is 56 round inside the 5px black, as Home's `#bpFrame` (it was 51).
+
+## Chips hug; AI chip shine; dock setup over old saves; chip row left fade; AI sheet service cards
+
+- XS Overview service chips hug their label (`flex: 0 0 auto; width: auto`), ~118px each.
+- Concierge intro title: the AI tag is 19px in the 26px title (26px line, 8px sides, 13 round). Once the title is fully written (`--sd` = iBy), for 1.5s a warm orb (`::before`) blooms behind it and the letters and outline catch orange with a glow (`hpCcAiOrb`, `hpCcAiShine`, `hpCcTagGlow`), then back to white.
+- The general Tweaks Save (`everlab:tkAll`) also kept the dock's selects (`dk*`): a one-time migration (`everlab:mig:dock2`) drops them from an older save, so the documentation's island (labels below at 12, 60 tall) shows on every page.
+- XS ask suggestions above the keyboard: once scrolled, the row fades out over its left 48px (`.fadeL`).
+- AI sheet services: the Overview's service card style (the name alone, 16px, 20 padding, 20 radius, no disc), two equal columns.
