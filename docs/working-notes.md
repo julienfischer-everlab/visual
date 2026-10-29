@@ -18031,3 +18031,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 
 - Right cluster, in order: Docs (opens the Documentation page), Comments as a speech-bubble icon (its count badge on the corner), a divider, Save, Refresh as a circular-arrow icon. Both icon buttons are 30x30 with their names as aria-labels; Save takes the bar's button size.
 - The "Mode" label is now an icon: a moon in dark mode, a sun in light mode, beside the switch.
+
+## Back: only on flows, top left; reverse to the Letter view
+
+- The floating Back (was under the Welcome's +) shows only while the screen has a flow (the top bar's Flow button is there) and there is a step to go back to. It sits at the screen's top left, 32px off its left edge, mirroring the + on the right; when the room there is short it sits inside the corner.
+- Back from the Health profile home to Steven's note now plays Let's begin in reverse: the home's sections leave last-first (button, steps from the bottom, title, sphere), each sinking the way it rose, then the note drops back into place.
+- The note drawn still (Back from the home) now wears the Letter tweaks (Version, Card) like the played one, so it lands on the Letter style as saved; the Flow timeline lights "Letter view".
