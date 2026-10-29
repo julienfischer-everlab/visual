@@ -18085,3 +18085,12 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - The field's Beam now follows the screen-recording reference, in warm orange tones: three soft lights rest on the edge at once and drift round it (7s). Their light spills inward as a soft glow inside the field, the line is lit faintly only near them, and a faint halo sits outside.
 - Concierge loop: the field shrinks into the dot snappier (260ms, with a sharp ease) and the dot pops in. No ripple.
 - Thinking follows the capture: the grid of dots turning over, "Thinking", then "· Looking at your records" muted. It shows centred under the dot and again in the thread before Eva's second reply, replacing the shimmer text.
+
+## Overview history button; Concierge refinements
+
+- Overview, typing on the phone (field focused, cross at its right): a history icon button sits at the field's left. It opens the Concierge chat with its sidebar drawer, which holds the past conversations. The chat page gets a `drawer()` hook (visuals/concierge.html), and `_cc.history()` calls it.
+- Concierge: the video is Half for good, with the Video tweak removed. It sits 64px lower (top 64px, bottom at 50% − 64px), and the title group is 48px lower. The WIP badge is gone.
+- The footer buttons are 12px apart (+8).
+- The member's bubble has no border, a 32px backdrop blur and white at 4%.
+- The orb lights are half as strong.
+- A second title group, "Your care team, one tap away" / "When a question needs a person, Eva brings in your doctor.", takes over once the conversation starts. The first rises out and the second rises in from 14px below, then back as the loop resets.
