@@ -18235,3 +18235,6 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Concierge: the video now starts only after Meet Concierge has gone (not under the intro). Order: video, the field 0.6s later, then the titles and footer 0.5s after that.
 - Concierge titles: the title spans the group's full width with balanced wrapping, so "Personalised answers, / built from your health data." fits on two lines.
 - Concierge video: the picture sits 48px higher in its area (top −72px) and its fade now ends just under the picture's new bottom edge. The area's black ground is gone, so no hard edge shows during the zoom-in.
+- Concierge specialists: the names row fades out at both ends (masked on its own wrapper), and past names are at 30%. "Everlab specialists" is centred on its own; it overflowed its 120px box to the right.
+- Concierge title 3: "Meet your team / of specialists" on two lines (max 250px), with the sub "Personalised answers, built from your health data." Tweak defaults are updated too.
+- Concierge loop: the field is back about 0.8s after the specialists leave (reset +600, run +150, reveal +60), down from about 2.3s.
