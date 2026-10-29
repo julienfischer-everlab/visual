@@ -18265,3 +18265,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Overview XS: 16px between the top cards (primary, Past result, Concierge, the service chips' row) in every order tried, on load and after reordering. The service chips straight under the primary card stay at 8px.
 - Concierge card video: the left fade is on the video itself now, so its left edge always fades in. Shifted to 48px right and 24px up (16 down and 24 left of before).
 - Dock: the first tab reads Home; the island and the AI button are 60px tall (were 56; the Dock height Tweak defaults to 60); 4px between icon and label (5px with 12px labels). Documentation → Navigation: the lit tab's background slides to the tab tapped, as in the app; its table is updated.
+
+## Overview XS: 16px around the service chips; chips +4 padding
+
+- The services row (`#dOver > .ovSvc`) lost its scroller padding (12 above, 16 below) on XS and joined the top cards' gap rules: 16px between primary, past results, service chips and the Concierge card, in any order (checked five orders on fresh loads). Two hidden-sibling cases handled: the off insights hero between the chips and the Insights section, or between a card and the top row.
+- XS service chips: padding 16 top and bottom (was 12); 51px tall.
