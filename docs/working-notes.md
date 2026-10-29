@@ -18270,3 +18270,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 
 - The services row (`#dOver > .ovSvc`) lost its scroller padding (12 above, 16 below) on XS and joined the top cards' gap rules: 16px between primary, past results, service chips and the Concierge card, in any order (checked five orders on fresh loads). Two hidden-sibling cases handled: the off insights hero between the chips and the Insights section, or between a card and the top row.
 - XS service chips: padding 16 top and bottom (was 12); 51px tall.
+
+## Tweaks order above the Primary card; dock labels below by default; chips +4; one phone frame
+
+- Tweaks section drag: the hidden First-time user groups under the Primary card's group no longer stop a card being dragged above it (`secSib` skips hidden and `data-fl="wel"` groups). Checked: Concierge card dragged above Primary, the Overview follows (Concierge card first, then the top row).
+- Dock: "Below · 12px" is now the default and the reset value. `navLab12` is now part of `CARD_STATE` so it survives the body class rebuild on page changes (it was dropped on Insights/Timeline). The dock's localStorage key is now `everlab.dock.v2`, so older saves (56px, Shown) no longer override the new setup.
+- XS service chips: padding 20 top and bottom (59px tall); gaps still 16 in every order.
+- XS frame on the #phone / #phone2 pages (Insights, Timeline…): `#phone` radius 61 so its screen is 56 round inside the 5px black, as Home's `#bpFrame` (it was 51).
