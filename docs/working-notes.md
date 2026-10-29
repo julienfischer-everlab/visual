@@ -18137,3 +18137,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Chat on the XS phone: the phone's status bar and island are cloned over it (`.ccStat`).
 - Concierge field typing: now human. Keys are uneven (about 38–70ms), with a 120–210ms pause between words and +220ms after punctuation. The send tap follows 520ms after the last key.
 - Concierge touch dot: white at 16% with a 32px backdrop blur (28% while pressing).
+- Concierge fixes from the recording:
+  - Header strip: it no longer shows the video before the rest of the screen. The screen has no background of its own on the Concierge, so the video fades in evenly.
+  - Send: the arrow stays readable under the touch dot. While gliding to and tapping send, the dot's blur drops to 1.5px at 12% white.
+- User bubble: white at 6%, with a Tweaks row "Your bubble fill" (0–20%, `--ccMeOp`).
+- Bubbles: the older ones glide up first (560ms), then the new one comes in under them (420ms delay).
