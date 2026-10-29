@@ -18172,3 +18172,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Title 1 is "Personalised answers, built from your health data." / "Your health companion, live in the Everlab app."
   - Tweaks has Title 1–3 and Sub 1–3 copy rows (`stHpCcT1t`…`stHpCcT3s`). Editing one replays the screen.
 - Concierge field: 1.05 at rest (was 1.1), easing to 1 on the tap.
+- Concierge team phase, after the user's reference recording:
+  - It's now one line, "Meet your team of [photo] doctors", at 22px/500 in the video's place.
+  - The photo is a 50×58 rounded vignette (14px radius, soft shadow). The round source crops are zoomed to 84px inside it, so its corners are full.
+  - Each new photo sweeps in on top of the last from the lower left, turning upright (−30° → 0, with blur), stacked in the same spot.
+  - The word rolls up and out, then in from below: doctors → dieticians → nurses.
+  - The horizontal row and the active ring are gone.
