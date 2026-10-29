@@ -18045,3 +18045,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - The welcome's + shows on the reveal screens and on Steven's note only (where its tweaks are). It no longer shows on the profile, which has none of them.
 - On the profile home, Tweaks shows the Sphere alone. The Past result card group and the Health profile section (State, Open) are hidden on the profile.
 - The Documentation row is gone from the Health profile card's tweaks.
+- Journey headings renamed: "Step 1 - Promise & Personal details", "Step 2 - Book OC", "Step 3 - Tell us about you" (were "Step N pages").
