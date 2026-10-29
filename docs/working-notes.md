@@ -18071,3 +18071,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Every change to the thread glides as one motion (FLIP): bubbles in, Thinking out, the active bubble re-centred. Before, it snapped and then eased.
 - The field follows the theme: grey a step off the page, its words and controls in the ink, the send lit in the ink.
 - CTAs: Try concierge (opens the Concierge chat), with Go to overview as the secondary.
+- Concierge field: a Beam border effect, like libraries.dev's border-beam (md, colorful, strength .7, dark), rebuilt in CSS since the prototype isn't React. A conic arc (orange, pink, violet, blue) rides the edge every 3.4s, with a blurred copy under it for the glow.
