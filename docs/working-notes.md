@@ -18046,3 +18046,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - On the profile home, Tweaks shows the Sphere alone. The Past result card group and the Health profile section (State, Open) are hidden on the profile.
 - The Documentation row is gone from the Health profile card's tweaks.
 - Journey headings renamed: "Step 1 - Promise & Personal details", "Step 2 - Book OC", "Step 3 - Tell us about you" (were "Step N pages").
+- Journey: "All steps complete" after Step 3, with its own Health profile home (the home with the three done, "You're all set"); it lights when the member has finished all three.
