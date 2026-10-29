@@ -18094,3 +18094,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - The member's bubble has no border, a 32px backdrop blur and white at 4%.
 - The orb lights are half as strong.
 - A second title group, "Your care team, one tap away" / "When a question needs a person, Eva brings in your doctor.", takes over once the conversation starts. The first rises out and the second rises in from 14px below, then back as the loop resets.
+- Concierge: Visual first is now fixed and its Layout tweak is gone.
+- The conversation sits at the foot of the video's half. Its box is moved so its foot meets the video's, and the field, the dot with Thinking, and the latest bubble sit at its bottom, with earlier bubbles above.
+- The video is back at 64px from the top (the "32px down" was about the conversation). The title group is 32px higher (16px margin).
+- The video appears only once the dot and Thinking are done.
+- The title swap is a slower crossfade (0.9s, a 6px blur, overlapping).
+- Tweaks on the Concierge screen: Video opacity (0–100%), plus Question 1, Answer 1, Question 2 and Answer 2, the bubbles' words, with the current copy as defaults. Changing a bubble's words replays the screen with them, and Save keeps them.
