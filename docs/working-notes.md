@@ -18199,3 +18199,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Past results: only Past results.
   - Concierge: only Concierge and its phases.
   - Membership onboarding: everything.
+- Concierge titles: the travel is now 20px (was 12px), always downward. The one leaving drops, and the next comes from above and moves down into place. A per-title trace shows every in and out moving down.
