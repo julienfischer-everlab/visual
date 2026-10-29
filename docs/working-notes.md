@@ -18142,3 +18142,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Send: the arrow stays readable under the touch dot. While gliding to and tapping send, the dot's blur drops to 1.5px at 12% white.
 - User bubble: white at 6%, with a Tweaks row "Your bubble fill" (0–20%, `--ccMeOp`).
 - Bubbles: the older ones glide up first (560ms), then the new one comes in under them (420ms delay).
+- Concierge loop:
+  - After "Can I ask my doctor too?" it now shows the chat's grid loader with "Connecting you to your doctor" (2.3s).
+  - The doctor's answer 2 is "Your results aren't quite where we want them, especially given your family history. The next step I'd recommend is lifting your dose." (also the Tweaks default).
+  - The answer carries a Script attachment chip, in the chat library's style: file icon tile, Script, download.
+- Touch dot: no border, and 30% smaller (24px).
+- Tweaks: "Bubble max width" (200–360, default 320, `--ccBubMw`).
