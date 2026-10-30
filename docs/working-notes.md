@@ -18501,3 +18501,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Desk floating modal: the carousel dots were under the foot's solid ground, which starts 18px above the buttons. They're now kept 10px clear of the foot's top (`vPaint`), and the foot's fade over the Concierge is only 12px tall, since nothing scrolls there. Checked: the dots are hit at their centre, above "Go to overview". This was already broken before.
 - **Cursor to the star:** it now appears about 51px away (was 85), still above the 48px floor.
 - **Big star (1.6x, alone):** its edge is 0.62px, about 1px on screen (it showed 1.6px), and its inner light is at 0.55. Both ease back over 0.7s once the menu is in.
+- **Specialists.** The first avatar is straight (no rotation; it was −5°). The two laid over it keep their slight tilt, and the final fan still arcs.
