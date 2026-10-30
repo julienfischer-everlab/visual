@@ -18398,3 +18398,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - More opened: the bottom nav (island + AI) slides down out of view while the cards rise and stack; back up on close.
 - Desk sidebar in the phone menu's order: Overview, Insights, Timeline, Services, then Plan.
 - Concierge carousel: on a swap the new slide's title comes at once; its visual waits 2s after the old one leaves, then rises in (the phase starts then; the video undims at once).
+- Concierge intro on the desk: the intro overlay spans the whole screen (no 520 column cap), so the title is centred.
+- Carousel swap: the new visual now appears 1s after the old one leaves (was 2s).
