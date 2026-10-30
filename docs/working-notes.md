@@ -18392,3 +18392,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Services stack cards hug their height (84: 20 + title/line + 20, icon top right).
 - Video dims only on the avatars (Specialists) phase; the services phase keeps it at full.
 - Concierge → Container guide (On/Off, Off by default): the content column (chat + title group, Content max width) shown as a red area. Services cards 276 wide so their line stays on one row.
+- Tweaks → Top Chat AI: the row now reads Full modal, On / Off (On the full modal, Off the keyboard and chips).
