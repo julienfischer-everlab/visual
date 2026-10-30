@@ -18327,3 +18327,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Concierge card video 32 further left: translate(16px, -24px) (was 48).
 
 - Concierge intro AI chip: the halo (blooming blob, outer glow, text glow) removed; once the title is written, an orange light runs one turn round its outline (`::before` conic arc masked to the ring, `--aiOrb` 0→360deg over 1.5s), the letters tinting orange meanwhile.
+
+## Concierge: a Services phase; the values as a carousel
+
+- New phase after the conversation (`svcFrom`): the bubbles away, a stack of service cards (Telehealth, Med Certs, Treatments, Pathology, Referrals; line icon, name, one line) in the visual's place, the video at 30%; the front card drops away every 1.3s, the others step forward; its title group (#4): Services · Direct access to health services · GPs, scripts, referrals and tests, sorted in a few taps. Then the specialists. Tweaks → Concierge flow list gains Services (opens straight on it).
+- Carousel: four dots under the titles (Ask Eva, Your care team, Services, Specialists), the lit one a 20px bar following the title showing. A horizontal swipe on the screen (or a dot) jumps to the next/previous value (wraps), clearing the timeline and playing on from there (`goV`; the conversation split out as `convFrom`). Hidden during the intro.
