@@ -18340,3 +18340,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - AI sheet: service cards 2px less padding top and bottom (18); blanket 67% (+12); the sheet's and More's bottom card corners 44 (the screen's 56 less 12 of inset), concentric with the phone.
 
 - Search modal: Suggestions one row (a carousel: wheel and mouse drag scroll it; its edges fade where more chips run on); group titles 4 more below (10).
+
+- Phone search (full modal): the cross its own 52px round button beside the field; opening it focuses the field (lighter plate, inner ring, orange caret) and raises the frame's keyboard over it (`frKbd`), typing into it; the list clears the keys. Closing lowers them.
