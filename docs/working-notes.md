@@ -18513,3 +18513,6 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - `hpCcFoc` is cleared on send and on every reset.
   - The field reached without the star (the Ask Eva dot, island-first off) keeps its tap and focus look.
   - Checked: after the tap the ground is 0.04 throughout, the beam eases in, then holds 0.42 / 1.0 through typing and the press, scale is 1, and there's no touch on the field.
+- **Meet Concierge holds less** ("too much screen time on this, make the click sequence earlier"). After the intro hand-off, run starts 500ms after the slide lands (`MRun`; was about 2.4s). The touch comes in sooner: pre 80 / 980 (was 150 / 1150), loop i0 + 900 / i0 + 1800 (was i0 + 1500 / 2500). Measured from the slide landing to the tap: intro 1.5s (was about 3.5s), dot 1.46s (was about 2.5s). The cursor still glides about 0.7s onto the star first.
+- **Your care team** ("title should appear only when the first answer appears"): title 2 now comes with the first answer (`convFrom`, bubble CH[1]), no longer at the send. Measured: the answer and the title land on the same frame.
+- **Specialists' arc:** the two avatars behind are 50% opacity with a 4px blur (and their shadows); the front one stays sharp. A 0.6s filter transition.
