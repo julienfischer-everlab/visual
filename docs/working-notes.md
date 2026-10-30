@@ -18502,3 +18502,14 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Cursor to the star:** it now appears about 51px away (was 85), still above the 48px floor.
 - **Big star (1.6x, alone):** its edge is 0.62px, about 1px on screen (it showed 1.6px), and its inner light is at 0.55. Both ease back over 0.7s once the menu is in.
 - **Specialists.** The first avatar is straight (no rotation; it was −5°). The two laid over it keep their slight tilt, and the final fan still arcs.
+
+## Concierge: the star opens the field already focused
+
+- "When clicking the star next to the menu it opens the chat field, and the state at this point is already focus; no need to click again inside the field. The border beam should still be active through the typing state. No bg variation."
+  - The morph adds `hpCcFoc hpCcTyping` to the field before measuring (transitions off), so the field opens focused at its typing size from the first frame.
+  - Island path: there is no second touch on the field (the cursor-to-field and the tap are skipped). The cursor only comes back for the send.
+  - Typing starts a beat after the field has opened: `ID = tM + MD + 60 + 450 − 1900`, so T0 ≈ 0.9s after the tap.
+  - `.hpCcFoc`: the ground stays white 4% (no change to 8%). The beam keeps its own strength through typing and the send press: light 1, edge 0.42, glow 0.09, where focus used to cut it 80%.
+  - `hpCcFoc` is cleared on send and on every reset.
+  - The field reached without the star (the Ask Eva dot, island-first off) keeps its tap and focus look.
+  - Checked: after the tap the ground is 0.04 throughout, the beam eases in, then holds 0.42 / 1.0 through typing and the press, scale is 1, and there's no touch on the field.
