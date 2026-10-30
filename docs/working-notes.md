@@ -18441,3 +18441,13 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The buttons now share the title's fade instead of popping in ahead.
   - The slide holds about 2.4s, then the star is tapped.
 - **Concierge menu bar.** 8px more padding at each end inside the pill (13px, was 5px).
+
+## Concierge: field line back, star opens the field right to left (also on desk), lone star = beam, cursor travels to the star
+
+- **Chat field.** Its edge line is back (0.42), as before. Focused or typing, the line and the light both drop by 80%. The "remove border, just light" request was meant for the star, not the field.
+- **Star → field.**
+  - The morph is now one continuous stretch, computed frame by frame (21 keyframes, 540ms).
+  - It starts with the field slid so its right end sits on the star, clipped to the star's circle. It reaches the field's height early (ease-out, first 38%). Then its left edge sweeps out leftwards (ease in-out) as it slides home.
+  - Everything is measured in the field's own units, after its scale and the frame's zoom. On desk the menu bar is wider than the field and the star sits up to 76px past the field's right edge. Before, the clip started outside the field's box there, so it looked like a plain fade.
+- **Lone star (V3, out of the dot).** Barely any fill (white 2.5%) and the beam's edge at full strength. When the menu pushes in, the star takes the menu's glass and the edge eases back to the soft light (0.7s). The dot now grows into the same faint fill.
+- **Cursor to the star.** It appears about 85px below-left of the star and glides 0.7s to land on it, then taps. The tap was pushed back to fit (pre: 1150ms, otherwise i0 + 2500).
