@@ -6405,7 +6405,9 @@
   .ovChatBox:focus-within{background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.3);}
   .ovChatSpark{width:18px;height:18px;flex:none;color:#ececec;}
   /* the field's stars morph to an 8px dot every 5s, held 3s, then back ("stars should morph to an 8px dot every 5 seconds for 3 sec then go back to stars"): one 8s loop */
-  .ovChatSpark{overflow:visible;} .ovChatSpark path, .ovChatSpark .ovSpDot{transform-box:view-box;transform-origin:10px 10px;}
+  .ovChatSpark{overflow:visible;border-radius:50%;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);animation:ovSpBg 8s cubic-bezier(.65,0,.35,1) infinite;}
+  /* while the dot and its orb show, a ground behind it: white 12%, 12px blur ("when orb active, bg 12% blur 12px"), a 30px disc (the icon's box and 6px of spread) */
+  @keyframes ovSpBg{0%,60%{background-color:rgba(255,255,255,0);box-shadow:0 0 0 0 rgba(255,255,255,0);}66%,92%{background-color:rgba(255,255,255,.12);box-shadow:0 0 0 6px rgba(255,255,255,.12);}98%,100%{background-color:rgba(255,255,255,0);box-shadow:0 0 0 0 rgba(255,255,255,0);}} .ovChatSpark path, .ovChatSpark .ovSpDot{transform-box:view-box;transform-origin:10px 10px;}
   .ovChatSpark path{animation:ovSpStar 8s cubic-bezier(.65,0,.35,1) infinite;}
   .ovChatSpark .ovSpDot{transform:scale(0);opacity:0;animation:ovSpDot 8s cubic-bezier(.65,0,.35,1) infinite;}
   @keyframes ovSpStar{0%,58%{transform:none;opacity:1;}64%,94%{transform:rotate(45deg) scale(.15);opacity:0;}100%{transform:none;opacity:1;}}
@@ -6413,7 +6415,7 @@
   /* while it is a dot, an orange light goes once round it ("when dot, add orange orb one round") */
   .ovChatSpark .ovSpOrb{stroke:#ffa45c;stroke-width:2.4;stroke-linecap:round;stroke-dasharray:34 66;stroke-dashoffset:0;opacity:0;transform-box:view-box;transform-origin:10px 10px;transform:rotate(-90deg);filter:blur(.7px) drop-shadow(0 0 2.5px rgba(255,140,60,.85));}   /* hugging the dot, no gap: a soft halo of light running round it ("orb shouldn't have any gap with dot, should be like a light halo smooth") */ .ovChatSpark .ovSpOrb{animation:ovSpOrb 8s linear infinite;}
   @keyframes ovSpOrb{0%,64%{opacity:0;stroke-dashoffset:0;}67%{opacity:1;stroke-dashoffset:-8;}88%{opacity:1;stroke-dashoffset:-92;}92%,100%{opacity:0;stroke-dashoffset:-100;}}
-  @media (prefers-reduced-motion:reduce){ .ovChatSpark path, .ovChatSpark .ovSpDot, .ovChatSpark .ovSpOrb{animation:none;} }
+  @media (prefers-reduced-motion:reduce){ .ovChatSpark, .ovChatSpark path, .ovChatSpark .ovSpDot, .ovChatSpark .ovSpOrb{animation:none;} }
   .ovChatBox input{
     flex:1;min-width:0;border:0;background:none;font:inherit;font-size:15px;color:#ececec;outline:none;
   }
@@ -9162,6 +9164,9 @@
   #bpFrame > .ovSug .aiChipsRow{gap:8px;padding:0 16px;-webkit-mask-image:none;mask-image:none;} #bpFrame > .ovSug .aiChip.aiChipPri{background:#f2f2f2;color:#141414;} #bpFrame > .ovSug .aiChip.aiChipPri{display:inline-flex;align-items:center;gap:8px;} #bpFrame > .ovSug .aiChip.aiChipPri svg{flex:none;width:16px;height:16px;}   /* its stars ("add stars icon Go to concierge") */ body.light #bpFrame > .ovSug .aiChip.aiChipPri{background:#141414;color:#f2f2f2;}   /* Go to concierge, the primary chip */ #bpFrame > .ovSug .aiChipsRow.fadeL{-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 48px);mask-image:linear-gradient(90deg,transparent 0,#000 48px);}   /* scrolled, its left edge fades */   /* 16 at each side, 8 between, no fade at the right ("no fade out on the right side; padding 16px; chip gap 8px") */
   #bpFrame > .ovSug .aiChip{height:40px;padding:0 16px;font-size:14px;background:rgba(44,44,46,.92);box-shadow:none;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);}   /* no border ("chip no border") */
   #bpFrame > .ovSug .aiChip:hover{background:rgba(58,58,60,.95);}
+  #bpFrame > .ovSug .aiChip{transition:background-color .2s ease,transform .15s ease;} #bpFrame > .ovSug .aiChip:active{transform:scale(.96);}
+  #bpFrame > .ovSug .aiChip.aiChipPri:hover{background:#dcdcdc;color:#141414;} #bpFrame > .ovSug .aiChip.aiChipPri:active{background:#cfcfcf;}   /* the primary keeps its light ground and dark words on hover, a touch darker ("review hover, doesn't work like this") */
+  body.light #bpFrame > .ovSug .aiChip.aiChipPri:hover{background:#2c2c2e;color:#f2f2f2;} body.light #bpFrame > .ovSug .aiChip:not(.aiChipPri):hover{background:rgba(46,31,26,.1);}
   body.light[data-bp="xs"] #bpFrame > .ovSug{background:linear-gradient(to bottom,rgba(247,242,233,0) 0%,rgba(247,242,233,.86) 46%,#f7f2e9 100%);}   /* 16 under the chips ("bottom padding 16"), and a ground fading in behind them from above, the page's own, so what scrolls under them never reads through ("backdrop fade gradient bg") */
   body.light #bpFrame > .ovSug .aiChip{background:rgba(255,255,255,.94);box-shadow:none;color:#2e1f1a;}
   body[data-bp="xs"]:is(.ovKbd, .frKbd) #bpFrame > .mKbd{transform:none;visibility:visible;pointer-events:auto;transition-delay:0s;clip-path:inset(0 0 0 0 round 0 0 var(--kbR,0px) var(--kbR,0px));} body[data-bp="xs"].ovKbd #bpFrame > .mTabs{display:none;}
