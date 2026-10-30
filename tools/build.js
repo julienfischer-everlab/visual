@@ -106,8 +106,8 @@ src = src.replace(/assets\/[A-Za-z0-9_\-./]+?\.(webp|png|jpe?g|gif|svg|mp4|webm|
   { const [cc, n] = inline(fs.readFileSync(path.join(root, 'visuals', 'concierge.html'), 'utf8'));
     fs.writeFileSync(path.join(root, 'dist', 'concierge.html'), cc);
     console.log('concierge ' + kb(cc.length) + '  (' + n + ' pictures inlined, dist/concierge.html)'); }
-  // the Gift page (visuals/gift.html, the "Unwrap gift-FINAL" page, its pictures already inside it), the Clinic's Testing locations (visuals/clinic.html) and the Gift receipt (visuals/gift-receipt.html), beside it as the prototype opens them: gift.html, clinic.html, gift-receipt.html
-  for (const n of ['gift', 'clinic', 'gift-receipt']){ const [t, k] = inline(fs.readFileSync(path.join(root, 'visuals', n + '.html'), 'utf8'));   // the Clinic's logos (assets/clinic/) inlined
+  // the Gift page (visuals/gift.html, the "Unwrap gift-FINAL" page, its pictures already inside it), the Clinic's Testing locations (visuals/clinic.html) and the Gift receipt (visuals/gift-receipt.html), beside it as the prototype opens them: gift.html, clinic.html, gift-receipt.html; and the Gift referral (visuals/referral.html): referral.html
+  for (const n of ['gift', 'clinic', 'gift-receipt', 'referral']){ const [t, k] = inline(fs.readFileSync(path.join(root, 'visuals', n + '.html'), 'utf8'));   // the Clinic's logos (assets/clinic/) inlined
     fs.writeFileSync(path.join(root, 'dist', n + '.html'), t);
     console.log(n + ' ' + kb(t.length) + '  (' + k + ' pictures inlined, dist/' + n + '.html)'); }
   require('./build-hp.js');   // the Health profile on its own page, from the same source: every build makes both
