@@ -18470,3 +18470,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - index.html: 118 rules. concierge.html: header icon buttons, inbox pill, non-primary `.btn`, carousel arrows, lightbox. gift.html: `.back`. gift-receipt, referral and report-visuals: `.btn.sec`; referral also `.x`.
   - Deliberately bare states keep their stronger rule, e.g. the Health profile header buttons before the page scrolls. The Concierge's own back button is outranked by its specific selector, so it now blurs at 32px (it had none).
   - Checked: Concierge back blur(32px); Overview inbox, bell and card pills blur(32px); the chat field and primaries unchanged.
+
+## Intro: no white flash as the star appears; thinner spinning edge
+
+- The 8px white dot no longer grows as a white disc. It dims to white 4% within the first 10% of its growth, so it grows as a faint disc (that was the white flash).
+- The lone star is white 4% with its beam and no backdrop blur ("no blur bg at this point, just fff 4% with beam border"). Next to the menu it takes the menu's glass: white 4% plus blur 40px.
+- The spinning edge is thinner (1px, was 1.5px), at 85% while the star is alone ("border thickness too prominent").
