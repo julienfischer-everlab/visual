@@ -18307,3 +18307,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 ## Desk first row: one row always
 
 - Concierge and Past results side by side at every desk size (the narrow-column stacking at M/S removed: "one row"); their visuals hidden whenever both show.
+
+## Desk ask: a search modal; 24 padding on the desk's top cards
+
+- Desk (S/M/L) ask field: a tap (or Tab focus) opens `EvSearch` — a search modal in the middle of the screen (640 wide, 18vh from the top, blurred dim): the field (spark, Ask Everlab anything, esc), then Suggestions: Go to concierge (primary, follows the Concierge chip tweak) and seven questions. Typing puts "Ask “…”" first and narrows the suggestions; ↑/↓ move, Enter or a click asks the Concierge (Go to concierge opens it), Esc or the dim closes. XS keeps the keyboard and chips.
+- Desk top row: 24 padding in the primary card, the Concierge / Past results cards and the service tiles.
