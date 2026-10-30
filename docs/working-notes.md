@@ -18342,3 +18342,11 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Search modal: Suggestions one row (a carousel: wheel and mouse drag scroll it; its edges fade where more chips run on); group titles 4 more below (10).
 
 - Phone search (full modal): the cross its own 52px round button beside the field; opening it focuses the field (lighter plate, inner ring, orange caret) and raises the frame's keyboard over it (`frKbd`), typing into it; the list clears the keys. Closing lowers them.
+
+## Concierge intro: horizontal titles, glass services, doctor bubbles; search links
+
+- Title group as a carousel: the next title in from the right (32), the one leaving out to the left, fading; backwards (a right swipe, or an earlier dot) the other way (`ccTg._back` → `.back`). While swiping, the showing title follows the finger at half speed and fades.
+- Services stack: no border, the chat field's glass (white 4%, 40 blur), 64 higher; the cards behind show only their edges (their contents hidden), so glass doesn't show their words through.
+- The doctor's bubbles (Dr Steven's hello, his answer with the Script): glass, white 4% over a 32 blur (`.hpCcDr`).
+- From the membership flow the footer stays Go to overview (primary) / Try concierge; from the Overview card, Try concierge alone.
+- Search modal links: every chip, conversation and Ask opens the Concierge on the phone too (the modal now takes pointer events inside the frame, which passes them through by default).
