@@ -18323,3 +18323,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 
 - Concierge + Past results side by side (XS pair, desk first row): titles only — "Meet Concierge", "Past results" (a short `h3.dvShort` added to the records card) — no sub-lines. Past results keeps its dot.
 - Tweaks → Concierge card → Video On/Off (`html.ccNoVid`): the card's video everywhere. On by default.
+
+- Concierge card video 32 further left: translate(16px, -24px) (was 48).
