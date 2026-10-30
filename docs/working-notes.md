@@ -18332,3 +18332,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 
 - New phase after the conversation (`svcFrom`): the bubbles away, a stack of service cards (Telehealth, Med Certs, Treatments, Pathology, Referrals; line icon, name, one line) in the visual's place, the video at 30%; the front card drops away every 1.3s, the others step forward; its title group (#4): Services · Direct access to health services · GPs, scripts, referrals and tests, sorted in a few taps. Then the specialists. Tweaks → Concierge flow list gains Services (opens straight on it).
 - Carousel: four dots under the titles (Ask Eva, Your care team, Services, Specialists), the lit one a 20px bar following the title showing. A horizontal swipe on the screen (or a dot) jumps to the next/previous value (wraps), clearing the timeline and playing on from there (`goV`; the conversation split out as `convFrom`). Hidden during the intro.
+
+## Search modal: chips + past conversations; Top Chat AI (phone full modal); sheet details
+
+- `EvSearch`: Suggestions as a row of chips (Go to concierge the white primary first, then the seven questions; wrapping on the desk), then a new group, Past conversations, as list items (chat icon, title, when). Typing narrows both under "Ask “…”"; ←/→ move along the chips, ↑/↓ through everything.
+- Tweaks → Top Chat AI → Phone: Full modal (default) / Keyboard. Full modal: the phone's top field opens the same search full-screen in the frame (the field with a close, the chips one scrolling row, the conversations under). Keyboard keeps the drawn keys and chips.
+- AI sheet: service cards 2px less padding top and bottom (18); blanket 67% (+12); the sheet's and More's bottom card corners 44 (the screen's 56 less 12 of inset), concentric with the phone.
