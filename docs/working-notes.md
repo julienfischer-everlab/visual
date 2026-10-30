@@ -18485,3 +18485,13 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Fix: the stage is shown first, then the row is reset with no transition (row and names), centred on Doctors and hidden until the first avatar names it.
   - Checked: on both services → team and dot → team, no name is visible off-centre.
 - **Star → field.** Snappier: 400ms (was 540). It takes the field's height in the first 30%, then stretches leftwards fast out of the star (ease-out after a 10% beat), still right to left.
+
+## Concierge: the menu bar and star stay on the intro's middle line
+
+- "The menu and CTA star don't need to go up, keep the same height to match the dot and big star circle in the centre": the bar no longer lifts to the field's place.
+  - `islPlace()` now centres the bar on the intro's middle line, `islLine()`. That's the line the intro recorded for its dot (`islCY`, measured from the stage's top), or 47% down the stage when the intro hasn't run. The intro's own box is the stage less the foot, so its dot sits at 47%.
+  - The line is measured, not copied from the field: the field's place settles later. It also discounts the chat box's in-flight swap slide; the box's rectangle included the 40px slide.
+  - The bar is re-centred whenever the layout settles (`place()`).
+  - Measured: dot 448, bar centre 449 on XS and 448 on desk, from both the intro and the carousel dot. 22px from the bar to the Meet Concierge title.
+- The intro's lift step is removed, so the bar stays where the menu pushed the star.
+- Star → field: the field starts down at the star, as its circle on the bar's line. It rises to its own place (ease-out) while it opens right to left (same 400ms).
