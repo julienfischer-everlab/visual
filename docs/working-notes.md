@@ -18405,3 +18405,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Concierge island: no tab lit (Home no longer active), all tabs alike, cleaner.
 - Concierge intro AI tag: the letters stay white (no warm shine); the outline carries a border beam, a soft orange light running round and round (3.2s) with a blurred glow under it, as the chat field's; it fades in once the title is written.
 - Concierge star CTA: the orb ring and halo replaced by a border beam (as the reference video): a thin orange light running along its edge (3.2s), a soft glow inside where it passes, clipped to the circle; nothing outside it.
+- Concierge carousel dots: one row only. A new Concierge screen removes any dots an earlier one left behind; a screen's dots go with it and hide while it is hidden ("why double carousel nav").
+- Carousel swap: the new visual 0.2s after the old one leaves (was 1s).
