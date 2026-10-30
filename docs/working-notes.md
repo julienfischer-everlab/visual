@@ -18593,3 +18593,21 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Classes renamed from `hpCcSpk*` to `hpCcArc*` (the root class is `hpCcArcOn`). A jump between slides closes the arc.
   - The Documentation's Concierge Services still follows the Tweak: the arc open on V2, the stack on V1. Its caption follows too.
   - Checked: on V2 the classes run in → open → off, then the Specialists' avatars and title. The arc cards hold the four services' names; no errors. The doc still shows the arc on V2 and the stack on V1.
+- **Services V2 Star, review** ("push up visual by 64px; opacity video 30%; card less rounded; bg card fff 12% blur 32px"):
+  - The star and its arc are 64px higher: the star sits on the middle line, not 64 under it. On the Centred layout that put the top cards past the screen's top edge (the screen clips there), so the arc is lowered just enough to keep its top cards 12 under it. On Field at bottom (the user's) it stays the full 64 higher.
+  - Video under it at `--ccVidOp × .3` (`hpCcArcOn`).
+  - Cards: radius 16 (was 22); glass, white at 12% with a 32px backdrop blur. The goo can't be see-through, so the burst runs in white blobs at 12% and hands over to the cards' own glass as they land (the goo fades out over .35s from .34s, the cards' fill in over the same beat).
+  - The arc is spaced so the glass cards never overlap: ±48/−150/±4° and ±130/−92/±15°, 5 to 9 px apart.
+  - Checked on both layouts: the card tops below the screen's top, fill rgba(255,255,255,.12), blur 32, radius 16, video .3.
+- **Star → chat field morph** ("where is the morph effect from CTA star to chat field, we miss that again"; "the chat field should go up; the CTA star is basically the bottom right of the chat field when fully displayed"):
+  - Traced it: the 340ms morph lost its first ~220ms to a stalled frame (the title's change and the restyle at the same moment), so it read as a pop.
+  - Now the field is set, for that round, so its send sits exactly where the star was (margin-top from the star's centre to the send's, cleared each round).
+  - It opens out of the star's circle: up first to the field's height (0 to 55%), then leftwards to its width (20 to 100%), the corners from the circle to 28. It runs 540ms on in-out cubic curves.
+  - All its animations are held on their first frame for two frames, then played together; the slide's title changes once it's open.
+  - The words and buttons come in from 45%.
+  - Checked: the circle starts on the send (both centred 1006, 449); at .12s a pill rising, by .22s full height, then widening to full by .54s.
+- **Doctor's avatar at the bubble's top left** ("doctor avatar bubble on the top left"): `top: 0` (was bottom). With several of his bubbles in a row, it shows on the first. Checked: avatar top = bubble top, 32 to its left.
+- **Full modal on the phone: up 64 with a fade** ("full modal 64px go up with fade in, not the full screen movement"):
+  - XS and S full modals (`.aqWrap.aqDesk.aqFull`: the concierge, the health profile, the report) start 64 low and transparent, rising and fading in (transform .5s on (.2,.8,.2,1), opacity .35s), and leave the same way. They no longer slide the whole screen's height. M and L still fade.
+  - The master follows: the Modal doc's Full on XS·S (`.mdFull .mdPanel`), its note and its Enter/Exit rows.
+  - Checked: the concierge's frame from top 127 at opacity 0 to 63 at 1 over about 0.5s.
