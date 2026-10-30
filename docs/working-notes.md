@@ -18365,3 +18365,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Concierge intro: Tweaks → Concierge → Content max width (280–1200, Full by default): the visual (video frame) and the chat + title group no wider than it, centred (`--ccMaxW`). Title swipe fade stronger: edges masked over 30% each side, the leaving title gone by 40% of the width, the next one only fading in past 20%. Dots were already visible on desktop in the published build (v1861 on).
 
 - Concierge carousel dots: 24 more under the sub (margin 44).
+
+- Content max width: one centred column for visual + chat + title group (`--ccMaxW`, tweak `stHpCcMaxW`). Fixed the phone chat collapsing to a thin column (flex child with margin auto had no width → width 100%), and the desk 520 cap no longer overrides the tweak. Full = visual full width, chat and titles 520.
