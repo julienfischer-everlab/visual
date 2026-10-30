@@ -18325,3 +18325,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Tweaks → Concierge card → Video On/Off (`html.ccNoVid`): the card's video everywhere. On by default.
 
 - Concierge card video 32 further left: translate(16px, -24px) (was 48).
+
+- Concierge intro AI chip: the halo (blooming blob, outer glow, text glow) removed; once the title is written, an orange light runs one turn round its outline (`::before` conic arc masked to the ring, `--aiOrb` 0→360deg over 1.5s), the letters tinting orange meanwhile.
