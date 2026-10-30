@@ -18400,3 +18400,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Concierge carousel: on a swap the new slide's title comes at once; its visual waits 2s after the old one leaves, then rises in (the phase starts then; the video undims at once).
 - Concierge intro on the desk: the intro overlay spans the whole screen (no 520 column cap), so the title is centred.
 - Carousel swap: the new visual now appears 1s after the old one leaves (was 2s).
+- Concierge island (menu nav phase): no border; the pill and the star take the chat field's ground and blur (white 4%, 40px blur). Intro V3's lone star keeps its lighter 10% ground.
