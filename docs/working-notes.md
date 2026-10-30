@@ -18617,3 +18617,23 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The words and buttons come in from 55%, as it rises.
   - Checked by seeking the morph: a circle at the star, a capsule running left (about 90, 190, then 310 wide), then rising into the field by .38s.
 - **Intro Tweak retired, V3 kept** ("remove, keep v3 as default"): the row is hidden with V3 as its only option, so a saved V1 lands on V3; the code reads V3 always.
+- **Star → field morph, a real transition** ("need a transition on the morph effect!!!!!! cta star to chat field!"):
+  - Slower: 780ms (was 540). The capsule runs out leftwards over 0 to 60% and rises over 45 to 100%.
+  - The capsule starts in the star's own colour and turns to the field's between 15% and 70%, so the star's circle reads as the one surface stretching, not the star swapped for the grey field.
+  - The star's icon fades .36s from .22s, and the send comes in at the same spot from 60%.
+  - Checked by seeking: a dark circle at the star, a dark capsule running left (to about 180, then 330), then turning grey and rising into the field by .56s.
+- **Overview field's dot** ("remove this halo, just need the beam border with a dot with bg 20% opacity"; "dot should stay 3sec"):
+  - The glow halo (blur + drop shadow orbit) is gone. While it is a dot: a disc behind it, white at 20% (drawn in the SVG, 30 across at 18), and a thin beam running once round the disc's border, orange to cream like the island star's.
+  - The loop is 8.8s: the stars 5s, the morph .4s, the dot held 3s, back .4s (the dot had held about 2.2s).
+- **Desk Ask Everlab is not a search** ("shouldn't have an auto completer, it's not a search"):
+  - Typing no longer adds the "Ask '…'" row or narrows the chips. Enter or the send asks what is typed; with nothing typed, Enter takes the chip the arrows or pointer are on.
+  - No chip is lit when it opens (the first one used to be marked as the top hit).
+  - Checked: "hello there" typed, the Ask row hidden, all 8 chips still there, none marked.
+- **Services: a Grid version** ("try another service version with grid, 2 cards per row, 3 rows; items appear smoothly one after another; call that grid"):
+  - The Services Tweak now has V1 Stack / V2 Star / **Grid** (Grid the default for now).
+  - Six services: GP consult, Script renewal, Specialist referral, Blood test referral, Imaging referral, Check symptoms. Each card is the Star's glass (white 12%, blur 32, radius 16), its icon in a round tile beside the name, 60 tall.
+  - Two a row, three rows, 345 wide, its foot 40 under the middle line, kept 12 under the screen's top edge as the arc is.
+  - Each card comes in from 14 below, blur to sharp, 140ms after the one before. Held 3.2s, then all out together, then on to the Specialists.
+  - The doc still and caption follow the Tweak.
+  - Classes `hpCcSg*` (`hpCcGrid` is the Thinking loader's dot grid).
+  - Checked on both layouts: the cards in one after another, all six, clear of the top.
