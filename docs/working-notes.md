@@ -18391,3 +18391,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Intro V2 (app preview under the title) retired; V3 the default (an old V2 setting plays V3). V3 reworked: the AI chip morphs into the star, alone, centred and 1.6x, on a lighter see-through ground with its orb; then the star settles into place as the menu slides in on its left; then Meet Concierge.
 - Services stack cards hug their height (84: 20 + title/line + 20, icon top right).
 - Video dims only on the avatars (Specialists) phase; the services phase keeps it at full.
+- Concierge → Container guide (On/Off, Off by default): the content column (chat + title group, Content max width) shown as a red area. Services cards 276 wide so their line stays on one row.
