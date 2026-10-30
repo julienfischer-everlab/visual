@@ -18383,3 +18383,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Keyboard suggestions (Overview phone): "Go to concierge" chip now leads with the stars icon (16px, 8 gap), as in the search modal.
 - More menu: each row a ghost card (radius 22, 40 at the stack's foot) 4px in from its card, with hover (5%), press (9%, scale .985) and focus states; card padding 4.
 - Ask field icon: while it is a dot, an orange light (an arc of a ring) goes once round it, fading in and out.
+- Search modal (desk + phone full): the field is the documented chat field (words on top; +, Eva, send under them; send lit once typed; esc on desk). Past conversations removed.
+- Ask field dot: the orange light now hugs the dot as a soft blurred halo (r 5.3, no gap) running once round it.
