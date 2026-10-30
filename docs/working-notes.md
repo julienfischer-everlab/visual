@@ -18397,3 +18397,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Keyboard chips hover: the primary (Go to concierge) keeps its light ground and dark words, a touch darker (#dcdcdc), pressed #cfcfcf; all chips press to .96.
 - More opened: the bottom nav (island + AI) slides down out of view while the cards rise and stack; back up on close.
 - Desk sidebar in the phone menu's order: Overview, Insights, Timeline, Services, then Plan.
+- Concierge carousel: on a swap the new slide's title comes at once; its visual waits 2s after the old one leaves, then rises in (the phase starts then; the video undims at once).
