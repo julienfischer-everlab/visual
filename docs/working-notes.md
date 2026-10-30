@@ -18361,3 +18361,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Concierge titles: the sub 32 in at each side (a narrower measure). The dots pinned 20 under the title showing (absolute in the title group, `top` set from that title in `vPaint`, gliding between heights), so a taller title elsewhere in the group no longer pushes them behind the footer.
 
 - Concierge Services phase: the stack 30% slower (a card every 1.69s, moves .98s); its title group without the eyebrow, the H1 "Direct access to health services in seconds". Swiping the titles: their left and right edges fade (56px mask), kept while they settle.
+
+- Concierge intro: Tweaks → Concierge → Content max width (280–1200, Full by default): the visual (video frame) and the chat + title group no wider than it, centred (`--ccMaxW`). Title swipe fade stronger: edges masked over 30% each side, the leaving title gone by 40% of the width, the next one only fading in past 20%. Dots were already visible on desktop in the published build (v1861 on).
