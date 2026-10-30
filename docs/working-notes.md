@@ -18338,3 +18338,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - `EvSearch`: Suggestions as a row of chips (Go to concierge the white primary first, then the seven questions; wrapping on the desk), then a new group, Past conversations, as list items (chat icon, title, when). Typing narrows both under "Ask “…”"; ←/→ move along the chips, ↑/↓ through everything.
 - Tweaks → Top Chat AI → Phone: Full modal (default) / Keyboard. Full modal: the phone's top field opens the same search full-screen in the frame (the field with a close, the chips one scrolling row, the conversations under). Keyboard keeps the drawn keys and chips.
 - AI sheet: service cards 2px less padding top and bottom (18); blanket 67% (+12); the sheet's and More's bottom card corners 44 (the screen's 56 less 12 of inset), concentric with the phone.
+
+- Search modal: Suggestions one row (a carousel: wheel and mouse drag scroll it; its edges fade where more chips run on); group titles 4 more below (10).
