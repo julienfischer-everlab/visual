@@ -18430,3 +18430,13 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Field beam.** The line on the field's edge is gone and only the light is kept. When focused or typing, the light drops by 80% instead of vanishing.
 - **Glass that kept losing its blur.** When a box holding frosted glass fades, the glass loses its blur until the fade ends, then snaps back. Fades now go on each glass piece instead: the menu bar's pill and star, every service card, and every bubble and the field during carousel swaps and drags. The chat box no longer fades itself at all; it had its own opacity transition.
 - **Intro dot.** The dot is placed, measured and corrected onto the words' middle, so it lands exactly where the star then grows. It was about 28px to the right.
+
+## Concierge: softer star beam, services lower, star opens the field from the right, Meet Concierge lands with the video and the dots
+
+- **Star beam.** The edge line drops to 22%. The light inside the ring is wider and softer (mask from 30%, blur 9px), so the light does the work, not the border.
+- **Services stack.** 32px lower.
+- **Star → field.** The circle first takes the field's height at the star, as a short pill on the right. Then the field draws out leftwards to full width, from the right where the button was (about 460ms). The field's contents unblur in after the first step.
+- **Intro handoff.** Once the menu bar has risen, the intro hands straight over to the real Meet Concierge slide. Its title group, the video behind it, the carousel dots and the buttons all arrive together. The intro's separate copy of the title is gone.
+  - The slide's title is set while the intro still covers it, so no other title passes first.
+  - The buttons now share the title's fade instead of popping in ahead.
+  - The slide holds about 2.4s, then the star is tapped.
