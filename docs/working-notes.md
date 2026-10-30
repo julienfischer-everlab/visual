@@ -18611,3 +18611,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - XS and S full modals (`.aqWrap.aqDesk.aqFull`: the concierge, the health profile, the report) start 64 low and transparent, rising and fading in (transform .5s on (.2,.8,.2,1), opacity .35s), and leave the same way. They no longer slide the whole screen's height. M and L still fade.
   - The master follows: the Modal doc's Full on XS·S (`.mdFull .mdPanel`), its note and its Enter/Exit rows.
   - Checked: the concierge's frame from top 127 at opacity 0 to 63 at 1 over about 0.5s.
+- **Star → field: the circle runs out leftwards** ("CTA star click → chat field should morph; the shape of the circle CTA star should extend to the left to create this chat field!!!"):
+  - The order is swapped: first leftwards, a capsule the star's height running out to the field's width (0 to 62% of the 540ms, in-out cubic). Then up to the field's height (42 to 100%), corners easing to 28. The star stays the field's bottom right throughout.
+  - The star no longer shrinks away at the tap (it was scale .82 and gone in .12s). It holds where it is over the field (`.hpCcIsl.mo`), its circle the field's start, and fades only once the capsule is under way (.26s from .14s).
+  - The words and buttons come in from 55%, as it rises.
+  - Checked by seeking the morph: a circle at the star, a capsule running left (about 90, 190, then 310 wide), then rising into the field by .38s.
+- **Intro Tweak retired, V3 kept** ("remove, keep v3 as default"): the row is hidden with V3 as its only option, so a saved V1 lands on V3; the code reads V3 always.
