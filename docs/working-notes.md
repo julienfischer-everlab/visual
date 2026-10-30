@@ -18477,3 +18477,11 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - The lone star is white 4% with its beam and no backdrop blur ("no blur bg at this point, just fff 4% with beam border"). Next to the menu it takes the menu's glass: white 4% plus blur 40px.
 - The spinning edge is thinner (1px, was 1.5px), at 85% while the star is alone ("border thickness too prominent").
 - **Bubbles → services.** Coming from the exchange in the loop, the bubbles leave first, and the services stack comes in 750ms later. Measured: bubbles gone at about 0.49s, stack first visible at about 0.92s. The title changes as the bubbles leave, and the four turns shift by the same 750ms. Opened straight on Services (a dot, a swipe, the docs phase), there are no bubbles to wait for, so the stack comes in at once. `svcFrom(t, fromChat)`.
+
+## Specialists: no names row flashing on the right; star → field snappier
+
+- **Specialists slide.** At the start of the team phase, the names row ("Doctors Dieticians Nurses") flashed off to the right.
+  - Causes: it was re-centred while the stage was still hidden, so it measured zero and sat right of centre. And the last round's names faded out from where they were instead of going at once.
+  - Fix: the stage is shown first, then the row is reset with no transition (row and names), centred on Doctors and hidden until the first avatar names it.
+  - Checked: on both services → team and dot → team, no name is visible off-centre.
+- **Star → field.** Snappier: 400ms (was 540). It takes the field's height in the first 30%, then stretches leftwards fast out of the star (ease-out after a 10% beat), still right to left.
