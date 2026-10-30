@@ -18386,3 +18386,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Search modal (desk + phone full): the field is the documented chat field (words on top; +, Eva, send under them; send lit once typed; esc on desk). Past conversations removed.
 - Ask field dot: the orange light now hugs the dot as a soft blurred halo (r 5.3, no gap) running once round it.
 - Documentation → Membership onboarding: new Concierge row under Past results, one still per phase: Intro (title, AI tag), Island (menu, star, orb), Meet Concierge (Intro V3), Chat field (question typed), Bubble speech, Services, Specialists. Stills via a ccPh option passed through HP.snap; Open goes to the Concierge page.
+- Concierge carousel: forward swipe swaps the visual (chat, services, specialists) with the next rising from below as the previous leaves by the top, faded; back the inverse (vSwap on goV).
+- Concierge standalone page: no back, a dismiss (hpCcCardM for __ccSolo too).
+- Intro V2 (app preview under the title) retired; V3 the default (an old V2 setting plays V3). V3 reworked: the AI chip morphs into the star, alone, centred and 1.6x, on a lighter see-through ground with its orb; then the star settles into place as the menu slides in on its left; then Meet Concierge.
+- Services stack cards hug their height (84: 20 + title/line + 20, icon top right).
+- Video dims only on the avatars (Specialists) phase; the services phase keeps it at full.
