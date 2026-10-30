@@ -18368,3 +18368,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 
 - Content max width: one centred column for visual + chat + title group (`--ccMaxW`, tweak `stHpCcMaxW`). Fixed the phone chat collapsing to a thin column (flex child with margin auto had no width → width 100%), and the desk 520 cap no longer overrides the tweak. Full = visual full width, chat and titles 520.
 - Content max width now excludes the video: the visual always spans the full width; only chat + title group follow `--ccMaxW`.
+- Services are now Script renewal, Specialist referral, Blood test referral and Imaging referral, in both the Overview service cards and the Concierge services stack; each opens the chat with its own ask and Eva reply.
+- Values carousel release: a softer glide (.62s) that starts at the finger's pace. The next value's set-up (goV) now runs 140ms after the glide starts, so it no longer stalls the release (~230ms). tAt keeps the glide on a title the finger brought in.
