@@ -18395,3 +18395,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Tweaks → Top Chat AI: the row now reads Full modal, On / Off (On the full modal, Off the keyboard and chips).
 - Ask field dot: while the orb runs, a 30px disc behind it (white 12%, 12px backdrop blur), fading with the dot.
 - Keyboard chips hover: the primary (Go to concierge) keeps its light ground and dark words, a touch darker (#dcdcdc), pressed #cfcfcf; all chips press to .96.
+- More opened: the bottom nav (island + AI) slides down out of view while the cards rise and stack; back up on close.
+- Desk sidebar in the phone menu's order: Overview, Insights, Timeline, Services, then Plan.
