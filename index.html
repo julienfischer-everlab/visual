@@ -6388,6 +6388,13 @@
   }
   .ovChatBox:focus-within{background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.3);}
   .ovChatSpark{width:18px;height:18px;flex:none;color:#ececec;}
+  /* the field's stars morph to an 8px dot every 5s, held 3s, then back ("stars should morph to an 8px dot every 5 seconds for 3 sec then go back to stars"): one 8s loop */
+  .ovChatSpark{overflow:visible;} .ovChatSpark path, .ovChatSpark .ovSpDot{transform-box:view-box;transform-origin:10px 10px;}
+  .ovChatSpark path{animation:ovSpStar 8s cubic-bezier(.65,0,.35,1) infinite;}
+  .ovChatSpark .ovSpDot{transform:scale(0);opacity:0;animation:ovSpDot 8s cubic-bezier(.65,0,.35,1) infinite;}
+  @keyframes ovSpStar{0%,58%{transform:none;opacity:1;}64%,94%{transform:rotate(45deg) scale(.15);opacity:0;}100%{transform:none;opacity:1;}}
+  @keyframes ovSpDot{0%,59%{transform:scale(0);opacity:0;}65%,93%{transform:scale(1);opacity:1;}99%,100%{transform:scale(0);opacity:0;}}
+  @media (prefers-reduced-motion:reduce){ .ovChatSpark path, .ovChatSpark .ovSpDot{animation:none;} }
   .ovChatBox input{
     flex:1;min-width:0;border:0;background:none;font:inherit;font-size:15px;color:#ececec;outline:none;
   }
@@ -13761,7 +13768,7 @@
         <button class="ovHist" type="button" aria-label="Your conversations" tabindex="-1"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.6 10a6.4 6.4 0 1 0 1.9-4.55"/><path d="M3.3 3.6v2.6h2.6"/><path d="M10 6.7V10l2.3 1.5"/></svg></button>   <!-- the conversations, at the field's left while typing ("a left icon-only CTA to the general chat, its past conversations") -->
         <div class="ovChat">
           <div class="ovChatBox">
-            <svg class="ovChatSpark" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5c.3 3.9 2.6 6.2 6.5 6.5-3.9.3-6.2 2.6-6.5 6.5-.3-3.9-2.6-6.2-6.5-6.5 3.9-.3 6.2-2.6 6.5-6.5ZM16 12.5c.15 1.6 1.05 2.5 2.65 2.65-1.6.15-2.5 1.05-2.65 2.65-.15-1.6-1.05-2.5-2.65-2.65 1.6-.15 2.5-1.05 2.65-2.65Z"/></svg>
+            <svg class="ovChatSpark" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5c.3 3.9 2.6 6.2 6.5 6.5-3.9.3-6.2 2.6-6.5 6.5-.3-3.9-2.6-6.2-6.5-6.5 3.9-.3 6.2-2.6 6.5-6.5ZM16 12.5c.15 1.6 1.05 2.5 2.65 2.65-1.6.15-2.5 1.05-2.65 2.65-.15-1.6-1.05-2.5-2.65-2.65 1.6-.15 2.5-1.05 2.65-2.65Z"/><circle class="ovSpDot" cx="10" cy="10" r="4.6"/></svg>
             <input type="text" placeholder="Ask Everlab anything" autocomplete="off" autocorrect="off" spellcheck="false" aria-label="Ask Everlab">
           </div>
         </div>
@@ -14129,7 +14136,7 @@
       <button class="ovHist" type="button" aria-label="Your conversations" tabindex="-1"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.6 10a6.4 6.4 0 1 0 1.9-4.55"/><path d="M3.3 3.6v2.6h2.6"/><path d="M10 6.7V10l2.3 1.5"/></svg></button>
       <div class="ovChat">
         <div class="ovChatBox">
-          <svg class="ovChatSpark" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5c.3 3.9 2.6 6.2 6.5 6.5-3.9.3-6.2 2.6-6.5 6.5-.3-3.9-2.6-6.2-6.5-6.5 3.9-.3 6.2-2.6 6.5-6.5ZM16 12.5c.15 1.6 1.05 2.5 2.65 2.65-1.6.15-2.5 1.05-2.65 2.65-.15-1.6-1.05-2.5-2.65-2.65 1.6-.15 2.5-1.05 2.65-2.65Z"/></svg>
+          <svg class="ovChatSpark" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5c.3 3.9 2.6 6.2 6.5 6.5-3.9.3-6.2 2.6-6.5 6.5-.3-3.9-2.6-6.2-6.5-6.5 3.9-.3 6.2-2.6 6.5-6.5ZM16 12.5c.15 1.6 1.05 2.5 2.65 2.65-1.6.15-2.5 1.05-2.65 2.65-.15-1.6-1.05-2.5-2.65-2.65 1.6-.15 2.5-1.05 2.65-2.65Z"/><circle class="ovSpDot" cx="10" cy="10" r="4.6"/></svg>
           <input type="text" placeholder="Ask Everlab anything" autocomplete="off" spellcheck="false" aria-label="Ask Everlab">
           <button class="ovChatGo" type="button" aria-label="Send"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 13V3M3.5 7.5 8 3l4.5 4.5"/></svg></button>
         </div>
