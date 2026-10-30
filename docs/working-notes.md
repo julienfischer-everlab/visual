@@ -18312,3 +18312,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 
 - Desk (S/M/L) ask field: a tap (or Tab focus) opens `EvSearch` — a search modal in the middle of the screen (640 wide, 18vh from the top, blurred dim): the field (spark, Ask Everlab anything, esc), then Suggestions: Go to concierge (primary, follows the Concierge chip tweak) and seven questions. Typing puts "Ask “…”" first and narrows the suggestions; ↑/↓ move, Enter or a click asks the Concierge (Go to concierge opens it), Esc or the dim closes. XS keeps the keyboard and chips.
 - Desk top row: 24 padding in the primary card, the Concierge / Past results cards and the service tiles.
+
+## XS: Past results + Concierge one group; the Navigation doc is the master
+
+- XS: the Past result and Concierge cards share one block (`.dvLead.dvPair`, a direct child of the Overview): side by side when both show (visuals hidden), one full width when the other is off. In the order they're always adjacent (`order()` keeps them together), so dragging either moves the pair; the block sits at the first of the two. 12 around it. Desk keeps the first-row behaviour.
+- Documentation → Navigation: "Save setup" stores the labels choice (`everlab:navMaster`); on every load, once Tweaks and older saves have restored, `_navMaster()` applies it to the dock (Below · 12px until one is saved). Checked: an old save saying Icons only is overridden; Save setup with Icons only, then with Below · 12px, each carries to the app on reload.
+- CLAUDE.md: Documentation pages are the master components; the app reflects them.
