@@ -18458,3 +18458,15 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **AI chip.** The trail is lighter: tail 0.06–0.24, head 0.55–0.7, tip a soft warm 0.78 instead of near-white. The glow is down about 40%. The chip's glass is up to white 8%.
 - **Concierge menu bar.** Icons only: the labels are hidden and the icons are centred (21px above and below in the 62px bar).
 - **Intro V3.** The lone star now holds in the centre for 2s (measured 1.97s, was 1s) before the menu pushes in. The bar's rise and the hand-off moved 1s later.
+
+## Chat field clipping fixed; secondary CTAs on a 32px blur everywhere
+
+- **Field (and bubbles, services) clipping after a carousel swap.**
+  - Cause: the fade-in written earlier for the glass pieces used a single keyframe, `{ opacity: 0 }`. A lone keyframe is the end state, so every piece faded *out* after the swap, then popped back. In the recording, the field appeared, vanished for about 0.6s, then reappeared.
+  - Fix: the keyframe is now pinned at the start (`offset: 0`). Traced: the field goes 0 → 1 as it slides home, and no piece dips after appearing.
+- **Secondary CTAs always blur 32px.**
+  - A sweep (7 readers over index.html in slices and visuals/*.html, then a verify/merge pass) found 129 secondary-button selectors. They cover back/close/dismiss discs, chevron discs, tinted and outlined secondary pills, the Documentation's Secondary kind (`.ldVbS`) and its masters (`.glBtn`, `.mdIc`, `.mdCta.b`).
+  - Each selector got its own rule, `backdrop-filter: blur(32px) !important`, so one selector can't void the rest, and older 12, 16 or 48px blurs settle at 32. All selectors were checked to parse.
+  - index.html: 118 rules. concierge.html: header icon buttons, inbox pill, non-primary `.btn`, carousel arrows, lightbox. gift.html: `.back`. gift-receipt, referral and report-visuals: `.btn.sec`; referral also `.x`.
+  - Deliberately bare states keep their stronger rule, e.g. the Health profile header buttons before the page scrolls. The Concierge's own back button is outranked by its specific selector, so it now blurs at 32px (it had none).
+  - Checked: Concierge back blur(32px); Overview inbox, bell and card pills blur(32px); the chat field and primaries unchanged.
