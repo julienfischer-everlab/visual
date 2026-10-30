@@ -18421,3 +18421,12 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Menu items.** Each tab fades in one after another inside the menu bar (50ms apart) as the bar comes in.
 - **Star → field.** The morph now runs 340ms with a long soft ease, and the field's contents unblur in. The stars fade out in 120ms and shrink a little. The pill and the beam go faster too.
 - **Carousel swaps.** The next slide is now set up in one frame with transitions off, while the visual is hidden. Before, the field still faded out on the bubble slide and the bubbles still faded on the field slide; that clipping is gone. The visual also fades with the finger while dragging, and on release it fades out from where the drag left it.
+
+## Concierge: no scroll, video mask, beam fixes, glass that keeps its blur in transitions, dot centred
+
+- **No scroll.** The Concierge screen (`.hpScr.hpCcP`) never scrolls. Its content ran 68px past the screen at one point in the loop and showed a scrollbar.
+- **Video on the full desk modal.** At most 1280px wide, centred. A radial mask fades its sides and foot into the page in one curve, so there is no cut at left or right. The floating modal is unchanged.
+- **Star → field.** The field's beam is held back until the field is nearly open, then eased in. It no longer starts crammed and too bright inside the small circle.
+- **Field beam.** The line on the field's edge is gone and only the light is kept. When focused or typing, the light drops by 80% instead of vanishing.
+- **Glass that kept losing its blur.** When a box holding frosted glass fades, the glass loses its blur until the fade ends, then snaps back. Fades now go on each glass piece instead: the menu bar's pill and star, every service card, and every bubble and the field during carousel swaps and drags. The chat box no longer fades itself at all; it had its own opacity transition.
+- **Intro dot.** The dot is placed, measured and corrected onto the words' middle, so it lands exactly where the star then grows. It was about 28px to the right.
