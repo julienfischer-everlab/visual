@@ -18357,3 +18357,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Release: past 48px, the showing title carries on out the way it was going and the next glides from where it was to the middle (`settle`, inline transition, no .4s delay); short of it, both settle back. Checked frame by frame: monotonic, no jump back.
 - The dots now sit inside the title group (its second row), so they move with it on the desk too (they overlapped the sub there).
 - Chat field 320 at most, centred.
+
+- Concierge titles: the sub 32 in at each side (a narrower measure). The dots pinned 20 under the title showing (absolute in the title group, `top` set from that title in `vPaint`, gliding between heights), so a taller title elsewhere in the group no longer pushes them behind the footer.
