@@ -18495,3 +18495,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Measured: dot 448, bar centre 449 on XS and 448 on desk, from both the intro and the carousel dot. 22px from the bar to the Meet Concierge title.
 - The intro's lift step is removed, so the bar stays where the menu pushed the star.
 - Star → field: the field starts down at the star, as its circle on the bar's line. It rises to its own place (ease-out) while it opens right to left (same 400ms).
+- **Fixes from the background regression check** (3 testers: the loop's second Meet slide, swipe, desk floating modal, intro, Documentation stills, Island-first off). The bar on the 47% line and the morph out of the star passed everywhere.
+  - "Island first" off with the intro: the old reveal at MT + 1000 showed an empty field above the bar for about 0.4s. It's skipped after Intro V3, since its bar is up and its star opens the field. Checked: 0 frames of the field before the tap.
+  - Documentation's Intro still: its title box is now the stage less the foot, like the live intro, so the title's middle is 47% down the stage. It was at 42% on XS and 39% on desk.
+  - Desk floating modal: the carousel dots were under the foot's solid ground, which starts 18px above the buttons. They're now kept 10px clear of the foot's top (`vPaint`), and the foot's fade over the Concierge is only 12px tall, since nothing scrolls there. Checked: the dots are hit at their centre, above "Go to overview". This was already broken before.
+- **Cursor to the star:** it now appears about 51px away (was 85), still above the 48px floor.
+- **Big star (1.6x, alone):** its edge is 0.62px, about 1px on screen (it showed 1.6px), and its inner light is at 0.55. Both ease back over 0.7s once the menu is in.
