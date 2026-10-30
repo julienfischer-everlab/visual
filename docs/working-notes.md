@@ -18638,3 +18638,15 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Classes `hpCcSg*` (`hpCcGrid` is the Thinking loader's dot grid).
   - Checked on both layouts: the cards in one after another, all six, clear of the top.
 - **Services Grid 24 lower** ("push down 24px"): its foot 64 under the middle line (was 40). Checked on Field at bottom: grid top 241 → 265, about 57 clear of the title. On Centred the top-edge guard still holds it 12 under the screen's top.
+- **Star → field: one shape growing from the star, on the user's curve** ("the star icon CTA needs a better morph to chat field, need to feel it belong to the same shape that increase to the left; change the pace" with an S-curve; "chat field should grow FROM the CTA star from right to left!!!"):
+  - Pace: the curve fitted from the user's plot is cubic-bezier(.6, .05, .15, 1), within .02 at every read point: a slow start, a steep middle, a long soft settle. The morph runs 900ms on it: running out leftwards over 0 to 75%, rising over 50 to 100%.
+  - One shape: at the tap the star hands its disc to the field at once (`.hpCcIsl.go.mo .hpCcIslS` loses its fill and blur). The field starts as that very disc: the star's 4% white and its 40px backdrop blur, the clip a circle on it.
+  - It runs out leftwards, turning to the field's colour from 8 to 50%, so the growth reads. The star's icon rides at its right end and fades from .46s as the send comes in its place.
+  - The inline blur is cleared after.
+  - Checked by seeking with the loop's timers frozen: the menu gone, a capsule growing left from the star (about 110 at .2s, full width by .44s, the icon at its right end), then rising into the field by .7s.
+- **Services Grid another 24 lower** ("down by 24px the visual grid"): its foot 88 under the middle line.
+- **Typing bubble in the conversation** ("need a typing bubble during the conversation"):
+  - Eva's bubble with three dots rising in turn (6px, 1.2s, .15s apart) once the question has landed. Her answer takes its place a second later; the answer is now 500ms later.
+  - After the doctor's hello, his typing bubble, then his answer in its place (600ms longer).
+  - The master too: the Chat bubbles doc has `B.typ`, shown in Style and played in the Animation sequence before each reply.
+- **Doctor's avatar 28 and top aligned** ("avatar aligned on top with the bubble, avatar +4px size"): 28 (was 24), its top on the bubble's, 8 from it (the bubble 36 in). The same in the Chat bubbles doc, where it was still at the foot. Checked: avatar top = bubble top, 28 wide, shown on the first of his run.
