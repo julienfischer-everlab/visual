@@ -18440,3 +18440,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The slide's title is set while the intro still covers it, so no other title passes first.
   - The buttons now share the title's fade instead of popping in ahead.
   - The slide holds about 2.4s, then the star is tapped.
+- **Concierge menu bar.** 8px more padding at each end inside the pill (13px, was 5px).
