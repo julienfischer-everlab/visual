@@ -18303,3 +18303,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 
 - Past result card made fresh on the desk (Records processing turned on, or first shown) was never put in the page in lead mode, so it didn't appear beside the Concierge card: `recNote` now appends it before handing it to `_ovLead`, and recounts the row when it removes the card.
 - Desk column with a first row: a 2-row grid, the first row (Concierge and/or Past results) half the column, the services' 2x2 the other half (tiles no min-height there). Checked at L: 131 / 131 with both, one, either switched off; none → the 2x2 alone.
+
+## Desk first row: one row always
+
+- Concierge and Past results side by side at every desk size (the narrow-column stacking at M/S removed: "one row"); their visuals hidden whenever both show.
