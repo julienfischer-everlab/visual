@@ -18456,3 +18456,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Intro V3.** The lone star is now on screen 1s (measured 0.99s) before the menu pushes in. The bar's rise and the hand-off moved 250ms later.
 - **Star → field flash, fixed.** The beam's fade-in after the morph ended on an explicit `opacity: 1`, above each layer's own value (edge line 0.42, outer glow 0.09). The glow lit at about 11× for a moment, then snapped back: the flash at the field's top right. The fades (the beam's, and the field's contents') now end on each layer's own opacity (implicit end keyframe). Measured: the peaks are now 0.42 / 0.09.
 - **AI chip.** The trail is lighter: tail 0.06–0.24, head 0.55–0.7, tip a soft warm 0.78 instead of near-white. The glow is down about 40%. The chip's glass is up to white 8%.
+- **Concierge menu bar.** Icons only: the labels are hidden and the icons are centred (21px above and below in the 62px bar).
