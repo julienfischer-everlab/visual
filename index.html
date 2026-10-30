@@ -1252,9 +1252,11 @@
   body.light .evSrchP{background:#fff;color:#141414;box-shadow:0 0 0 1px rgba(46,31,26,.08),0 40px 120px -20px rgba(46,31,26,.45);} body.light .evSrchF{border-bottom-color:rgba(46,31,26,.08);} body.light .evSrchF input::placeholder, body.light .evSrchH{color:rgba(20,20,20,.5);} body.light .evSrchF kbd{background:rgba(46,31,26,.06);color:rgba(20,20,20,.55);} body.light .evSrchR.on{background:rgba(46,31,26,.06);} body.light .evSrchCc i{background:#141414;color:#f2f2f2;}   /* the desk's ask: a search modal in the middle of the screen, the field, then the suggestions */
   .mvWrap{position:absolute;inset:0;z-index:40;pointer-events:auto;border-radius:inherit;overflow:hidden;font-family:var(--ar-font,ui-sans-serif,system-ui,sans-serif);} .mvScrim{position:absolute;inset:0;background:rgba(0,0,0,.55);opacity:0;transition:opacity .35s ease;} .mvWrap.on .mvScrim{opacity:1;}
   .mvStack{position:absolute;left:12px;right:12px;bottom:12px;display:flex;flex-direction:column;gap:8px;color:#f2f2f2;}
-  .mvCard{padding:4px 16px;border-radius:26px;background:#1b1b1a;box-shadow:0 -20px 60px -30px rgba(0,0,0,.9),0 0 0 1px rgba(255,255,255,.05);opacity:0;transform:translateY(28px) scale(.98);transition:transform .5s cubic-bezier(.2,.8,.2,1) var(--dl,0ms),opacity .28s ease var(--dl,0ms);} .mvWrap.on .mvCard{opacity:1;transform:none;}
+  .mvCard{padding:4px;border-radius:26px;background:#1b1b1a;box-shadow:0 -20px 60px -30px rgba(0,0,0,.9),0 0 0 1px rgba(255,255,255,.05);opacity:0;transform:translateY(28px) scale(.98);transition:transform .5s cubic-bezier(.2,.8,.2,1) var(--dl,0ms),opacity .28s ease var(--dl,0ms);} .mvWrap.on .mvCard{opacity:1;transform:none;}
   .mvX{position:absolute;top:-60px;right:16px;display:flex;align-items:center;justify-content:center;width:44px;height:44px;padding:0;border:0;border-radius:50%;background:rgba(255,255,255,.14);color:#fff;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);cursor:pointer;opacity:0;transition:opacity .2s ease,background .16s ease;} .mvWrap.on .mvX{opacity:1;transition:opacity .24s ease .2s,background .16s ease;} .mvX:hover{background:rgba(255,255,255,.22);} .mvX svg{width:14px;height:14px;}
-  .mvRow{display:flex;align-items:center;gap:14px;width:100%;height:56px;padding:0 4px;border:0;background:none;color:inherit;font:inherit;font-size:16px;text-align:left;cursor:pointer;} .mvRow svg{flex:none;width:22px;height:22px;} .mvRow img{flex:none;width:24px;height:24px;border-radius:50%;object-fit:cover;} .mvRow span{flex:1;}
+  .mvRow{display:flex;align-items:center;gap:14px;width:100%;height:56px;padding:0 16px;border:0;border-radius:22px;background:none;color:inherit;font:inherit;font-size:16px;text-align:left;cursor:pointer;transition:background-color .2s ease,transform .15s ease;}   /* each a ghost card, 4 in from its card, concentric ("item should be ghost card, hover press states, 4px padding from card around") */
+  .mvRow:hover{background:rgba(255,255,255,.05);} .mvRow:active{background:rgba(255,255,255,.09);transform:scale(.985);} .mvRow:focus-visible{outline:none;background:rgba(255,255,255,.07);}
+  body.light .mvRow:hover{background:rgba(46,31,26,.05);} body.light .mvRow:active{background:rgba(46,31,26,.09);} .mvCard:last-child .mvRow:last-child{border-radius:22px 22px 40px 40px;} .mvRow svg{flex:none;width:22px;height:22px;} .mvRow img{flex:none;width:24px;height:24px;border-radius:50%;object-fit:cover;} .mvRow span{flex:1;}
   body.light .mvCard{background:#fff;box-shadow:0 -20px 60px -30px rgba(46,31,26,.5),0 0 0 1px rgba(46,31,26,.08);} body.light .mvStack{color:#141414;} body.light .mvX{background:rgba(46,31,26,.14);color:#2e1f1a;}   /* the dock's More: three cards stacked over the dock, the AI sheet's floating card and its dismiss above the top right ("card stacked by group of menu with dismiss outside top right") */
   body.navNoLab .mTab i{display:none;}
   body.navNoLab .mTab{gap:0;}
@@ -6394,7 +6396,10 @@
   .ovChatSpark .ovSpDot{transform:scale(0);opacity:0;animation:ovSpDot 8s cubic-bezier(.65,0,.35,1) infinite;}
   @keyframes ovSpStar{0%,58%{transform:none;opacity:1;}64%,94%{transform:rotate(45deg) scale(.15);opacity:0;}100%{transform:none;opacity:1;}}
   @keyframes ovSpDot{0%,59%{transform:scale(0);opacity:0;}65%,93%{transform:scale(1);opacity:1;}99%,100%{transform:scale(0);opacity:0;}}
-  @media (prefers-reduced-motion:reduce){ .ovChatSpark path, .ovChatSpark .ovSpDot{animation:none;} }
+  /* while it is a dot, an orange light goes once round it ("when dot, add orange orb one round") */
+  .ovChatSpark .ovSpOrb{stroke:#ff9a4d;stroke-width:1.6;stroke-linecap:round;stroke-dasharray:24 76;stroke-dashoffset:0;opacity:0;transform-box:view-box;transform-origin:10px 10px;transform:rotate(-90deg);filter:drop-shadow(0 0 1.5px rgba(255,140,60,.9));animation:ovSpOrb 8s linear infinite;}
+  @keyframes ovSpOrb{0%,64%{opacity:0;stroke-dashoffset:0;}67%{opacity:1;stroke-dashoffset:-8;}88%{opacity:1;stroke-dashoffset:-92;}92%,100%{opacity:0;stroke-dashoffset:-100;}}
+  @media (prefers-reduced-motion:reduce){ .ovChatSpark path, .ovChatSpark .ovSpDot, .ovChatSpark .ovSpOrb{animation:none;} }
   .ovChatBox input{
     flex:1;min-width:0;border:0;background:none;font:inherit;font-size:15px;color:#ececec;outline:none;
   }
@@ -13768,7 +13773,7 @@
         <button class="ovHist" type="button" aria-label="Your conversations" tabindex="-1"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.6 10a6.4 6.4 0 1 0 1.9-4.55"/><path d="M3.3 3.6v2.6h2.6"/><path d="M10 6.7V10l2.3 1.5"/></svg></button>   <!-- the conversations, at the field's left while typing ("a left icon-only CTA to the general chat, its past conversations") -->
         <div class="ovChat">
           <div class="ovChatBox">
-            <svg class="ovChatSpark" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5c.3 3.9 2.6 6.2 6.5 6.5-3.9.3-6.2 2.6-6.5 6.5-.3-3.9-2.6-6.2-6.5-6.5 3.9-.3 6.2-2.6 6.5-6.5ZM16 12.5c.15 1.6 1.05 2.5 2.65 2.65-1.6.15-2.5 1.05-2.65 2.65-.15-1.6-1.05-2.5-2.65-2.65 1.6-.15 2.5-1.05 2.65-2.65Z"/><circle class="ovSpDot" cx="10" cy="10" r="4.6"/></svg>
+            <svg class="ovChatSpark" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5c.3 3.9 2.6 6.2 6.5 6.5-3.9.3-6.2 2.6-6.5 6.5-.3-3.9-2.6-6.2-6.5-6.5 3.9-.3 6.2-2.6 6.5-6.5ZM16 12.5c.15 1.6 1.05 2.5 2.65 2.65-1.6.15-2.5 1.05-2.65 2.65-.15-1.6-1.05-2.5-2.65-2.65 1.6-.15 2.5-1.05 2.65-2.65Z"/><circle class="ovSpOrb" cx="10" cy="10" r="7.4" fill="none" pathLength="100"/><circle class="ovSpDot" cx="10" cy="10" r="4.6"/></svg>
             <input type="text" placeholder="Ask Everlab anything" autocomplete="off" autocorrect="off" spellcheck="false" aria-label="Ask Everlab">
           </div>
         </div>
@@ -14136,7 +14141,7 @@
       <button class="ovHist" type="button" aria-label="Your conversations" tabindex="-1"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.6 10a6.4 6.4 0 1 0 1.9-4.55"/><path d="M3.3 3.6v2.6h2.6"/><path d="M10 6.7V10l2.3 1.5"/></svg></button>
       <div class="ovChat">
         <div class="ovChatBox">
-          <svg class="ovChatSpark" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5c.3 3.9 2.6 6.2 6.5 6.5-3.9.3-6.2 2.6-6.5 6.5-.3-3.9-2.6-6.2-6.5-6.5 3.9-.3 6.2-2.6 6.5-6.5ZM16 12.5c.15 1.6 1.05 2.5 2.65 2.65-1.6.15-2.5 1.05-2.65 2.65-.15-1.6-1.05-2.5-2.65-2.65 1.6-.15 2.5-1.05 2.65-2.65Z"/><circle class="ovSpDot" cx="10" cy="10" r="4.6"/></svg>
+          <svg class="ovChatSpark" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5c.3 3.9 2.6 6.2 6.5 6.5-3.9.3-6.2 2.6-6.5 6.5-.3-3.9-2.6-6.2-6.5-6.5 3.9-.3 6.2-2.6 6.5-6.5ZM16 12.5c.15 1.6 1.05 2.5 2.65 2.65-1.6.15-2.5 1.05-2.65 2.65-.15-1.6-1.05-2.5-2.65-2.65 1.6-.15 2.5-1.05 2.65-2.65Z"/><circle class="ovSpOrb" cx="10" cy="10" r="7.4" fill="none" pathLength="100"/><circle class="ovSpDot" cx="10" cy="10" r="4.6"/></svg>
           <input type="text" placeholder="Ask Everlab anything" autocomplete="off" spellcheck="false" aria-label="Ask Everlab">
           <button class="ovChatGo" type="button" aria-label="Send"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 13V3M3.5 7.5 8 3l4.5 4.5"/></svg></button>
         </div>
