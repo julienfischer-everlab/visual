@@ -18350,3 +18350,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - The doctor's bubbles (Dr Steven's hello, his answer with the Script): glass, white 4% over a 32 blur (`.hpCcDr`).
 - From the membership flow the footer stays Go to overview (primary) / Try concierge; from the Overview card, Try concierge alone.
 - Search modal links: every chip, conversation and Ask opens the Concierge on the phone too (the modal now takes pointer events inside the frame, which passes them through by default).
+
+## Concierge titles: a real swipe; field 320; dots in the title group
+
+- The title group follows the finger 1:1: the showing title out, the next (or previous) one in beside it a width away, each fading by distance; `touch-action: pan-y` on the screen, no text selection (a mouse drag no longer starts a native text drag that cancelled the swipe).
+- Release: past 48px, the showing title carries on out the way it was going and the next glides from where it was to the middle (`settle`, inline transition, no .4s delay); short of it, both settle back. Checked frame by frame: monotonic, no jump back.
+- The dots now sit inside the title group (its second row), so they move with it on the desk too (they overlapped the sub there).
+- Chat field 320 at most, centred.
