@@ -18385,3 +18385,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Ask field icon: while it is a dot, an orange light (an arc of a ring) goes once round it, fading in and out.
 - Search modal (desk + phone full): the field is the documented chat field (words on top; +, Eva, send under them; send lit once typed; esc on desk). Past conversations removed.
 - Ask field dot: the orange light now hugs the dot as a soft blurred halo (r 5.3, no gap) running once round it.
+- Documentation → Membership onboarding: new Concierge row under Past results, one still per phase: Intro (title, AI tag), Island (menu, star, orb), Meet Concierge (Intro V3), Chat field (question typed), Bubble speech, Services, Specialists. Stills via a ccPh option passed through HP.snap; Open goes to the Concierge page.
