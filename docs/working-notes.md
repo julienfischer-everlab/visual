@@ -18318,3 +18318,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - XS: the Past result and Concierge cards share one block (`.dvLead.dvPair`, a direct child of the Overview): side by side when both show (visuals hidden), one full width when the other is off. In the order they're always adjacent (`order()` keeps them together), so dragging either moves the pair; the block sits at the first of the two. 12 around it. Desk keeps the first-row behaviour.
 - Documentation → Navigation: "Save setup" stores the labels choice (`everlab:navMaster`); on every load, once Tweaks and older saves have restored, `_navMaster()` applies it to the dock (Below · 12px until one is saved). Checked: an old save saying Icons only is overridden; Save setup with Icons only, then with Below · 12px, each carries to the app on reload.
 - CLAUDE.md: Documentation pages are the master components; the app reflects them.
+
+## The pair, minimal; Concierge video tweak
+
+- Concierge + Past results side by side (XS pair, desk first row): titles only — "Meet Concierge", "Past results" (a short `h3.dvShort` added to the records card) — no sub-lines. Past results keeps its dot.
+- Tweaks → Concierge card → Video On/Off (`html.ccNoVid`): the card's video everywhere. On by default.
