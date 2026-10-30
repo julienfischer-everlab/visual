@@ -3121,8 +3121,11 @@ window.EvConsent = (function () {
             t += 600; at2(function () { tSwap(false);   /* the video left playing round the loop ("the video loops always at the top") */ th.textContent = ''; th.style.paddingBottom = ''; th.classList.remove('hpCcAway'); chat.classList.remove('hpCcConv', 'hpCcFrOn'); fT.textContent = ''; fld.classList.add('hpCcHid'); fld.classList.remove('hpCcOut', 'hpCcOn'); }, t);   // the empty field back in its place (Field at bottom: kept hidden till the video is in)
             t += 150; at2(function () { run(false); }, t);   /* the field straight back after the specialists ("takes too long to appear") */   // a pause, round again
           };
-          var svcFrom = function (t) {   /* 5b. the services: the bubbles away, the stack in the visual's place, its title (Services · Direct access to health services), four turns, then on to the specialists */
-            at2(function () { if (!svcSt.parentNode) chat.appendChild(svcSt); svcCs.forEach(function (e, i) { e.dataset.p = String(i); }); th.classList.add('hpCcAway'); root.classList.add('hpCcSvcOn'); tAt(4); }, t);
+          var svcFrom = function (t, fromChat) {   /* 5b. the services: the bubbles away, the stack in the visual's place, its title (Services · Direct access to health services), four turns, then on to the specialists */
+            var G = fromChat ? 750 : 0;   /* coming from the exchange: the bubbles gone first, then the stack ("too close; the stacked asset a bit later, the bubbles disappear first") */
+            at2(function () { if (!svcSt.parentNode) chat.appendChild(svcSt); svcCs.forEach(function (e, i) { e.dataset.p = String(i); }); th.classList.add('hpCcAway'); tAt(4); if (!G) root.classList.add('hpCcSvcOn'); }, t);
+            if (G) at2(function () { root.classList.add('hpCcSvcOn'); }, t + G);
+            t += G;
             for (var k = 1; k <= 4; k++) at2(svcRot, t + 900 + k * 1690);   /* 30% slower ("stacked service slower by 30%") */
             t += 900 + 4 * 1690 + 1100; at2(function () { root.classList.remove('hpCcSvcOn'); }, t);
             teamFrom(t + 450);
@@ -3174,7 +3177,7 @@ window.EvConsent = (function () {
             t += 900; at2(function () { typ = dots('Connecting you to your doctor'); }, t);   /* the hand-off to the doctor, as the chat's ("Connecting you to your doctor") */
             t += 2300; at2(function () { bub(['ai', cv('stHpCcHi', 'Hi Julien, I\u2019m Dr Steven, your doctor.'), null, 'dr'], false, typ); }, t);   /* the doctor says hello first ("after connecting, add bubble: Hi Julien, I'm Dr Steven your doctor") */
             t += 1700; at2(function () { bub(CH[3]); }, t);
-            svcFrom(t + 4200);   // 5b. the services, then 6. the specialists, then round again
+            svcFrom(t + 4200, true);   // 5b. the services, then 6. the specialists, then round again
           };
           /* the values as a carousel ("add a carousel on Concierge after intro, so the user can swipe the values"): dots under the titles, a swipe or a dot jumps to a value; it plays on from there */
           var VAL = [5, 1, 2, 4, 3], dotsW = h('div', { class: 'hpCcVDots', role: 'tablist', 'aria-label': 'Concierge' }), vDots = VAL.map(function (n, i) { var d = h('button', { type: 'button', class: 'hpCcVDot', 'aria-label': ['Meet Concierge', 'Ask Eva', 'Your care team', 'Services', 'Specialists'][i] }); d.addEventListener('click', function (e) { e.stopPropagation(); goV(i); }); dotsW.appendChild(d); return d; });
