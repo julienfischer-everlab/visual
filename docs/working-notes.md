@@ -18409,3 +18409,15 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Carousel swap: the new visual 0.2s after the old one leaves (was 1s).
 - Concierge carousel: Meet Concierge (the island: menu + star) is now a slide of its own, the first of five (Meet Concierge, Ask Eva, Your care team, Services, Specialists), with its own title (Meet Concierge / Eva and your care team, one tap away on every screen). The loop opens on it; the star opens the field and the title moves to Ask Eva; the loop comes back to it. Its dot jumps there; the Ask Eva dot goes straight to the field.
 - Intro V3 tightened: the whole title collapses into the 8px dot at its words' own middle (not the heading box); the dot grows in place, centred, into the star (380ms), its beam; then the star flies to its place in the menu bar as the menu pushes in (550ms); Meet Concierge. The lone star has no border.
+
+## Concierge: AI chip trail, V3 choreography, menu items fade in, snappier star→field, clean carousel swaps
+
+- **AI chip.** The outline is now a rotating trail: a bright head with a long orange tail fading behind it, inside the beam. It turns once every 2.6s. The still white outline fades to a faint line as the trail starts, so the trail reads as the outline.
+- **V3 intro.**
+  - The title collapses into the dot, and the dot holds for 0.5s.
+  - The dot grows into the star at the same centre. The whole bar sits at the dot's height.
+  - The menu pushes in from the left, pushing the star right along that line.
+  - The whole bar rises to its place, and Meet Concierge appears below it.
+- **Menu items.** Each tab fades in one after another inside the menu bar (50ms apart) as the bar comes in.
+- **Star → field.** The morph now runs 340ms with a long soft ease, and the field's contents unblur in. The stars fade out in 120ms and shrink a little. The pill and the beam go faster too.
+- **Carousel swaps.** The next slide is now set up in one frame with transitions off, while the visual is hidden. Before, the field still faded out on the bubble slide and the bubbles still faded on the field slide; that clipping is gone. The visual also fades with the finger while dragging, and on release it fades out from where the drag left it.
