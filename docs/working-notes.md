@@ -18534,3 +18534,18 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Sheet layering, fixes from verification:**
   - Desk M/L: `stacked()` no longer stacks inside a desk `.aqWrap` (`aqDesk` with `aqBpM`/`aqBpL`). The second dialog opened from the first had been blanking the report page behind it. Measured at L: page colour, stage opacity 1, no transform.
   - My journey steps sheet → locked item: the locked-service sheet now paints over the steps sheet (`.dash:has(> .tlSheet.on:not(.svLkM)) > .tlSheet.svLkM { z-index: 31 }`; both were 30 and the steps sheet came later in the DOM). Any open sheet, partial ones included, can now be the one under. Measured: steps sheet layer 1 (blanket, nothing drawn back); locked sheet over it with `iosStk`, the card #181818 on black, status strip black; Close back to the steps sheet. This path is latent in the current UI (Steps is pinned to Chip) but ready.
+- **Services stack review** ("specialist stacking card review: tweak opacity on inactive card, padding, radius, pace → video ref, bg blur tweak"). Four new Concierge Tweaks:
+  - Stack back cards, 65%: the second card; the third is about 0.46 of it.
+  - Stack padding, 20px: the icon space follows at padding + 44, and the stack's height at 2 × padding + 44.
+  - Stack radius, 24px.
+  - Stack blur, 40px: the cards' backdrop blur.
+  - They're CSS variables (`--ccSvcOp`, `--ccSvcPad`, `--ccSvcRad`, `--ccSvcBlur`) wired like the bubble Tweaks, and shown on the Concierge screen's Tweaks.
+  - Pace matched to the reference recording (measured frame by frame: a card about every 1.42s, a short ease-out settle). It was a card every 1.69s with a 0.98s glide. Now a card every 1.42s, each card moving in 0.5s on (.22, 1, .36, 1) and fading in 0.3s, its words in 0.25s.
+  - Measured: rotations at about 1.34–1.51s intervals (timer jitter); the Tweaks apply live (0.4 / 0.18 opacity, 28 / 72 padding, 12 radius, blur 10 when set).
+- **Sheets, second verification pass fixes:**
+  - The Insights phone's Your debriefs drawer (`.shWrap.arWrap > .sheet.arSheet`) was a white full-screen panel with no slide in dark mode. The Async report module's root reset (`.arSheet` ×4) caught it through the shared class. Its own box is now restated above that reset: a bottom sheet, max 82%, 26 corners, #181818, slide up; the desk drawer at 12 in, 24 corners, slide in from the right. This bug predates this change.
+  - Async report: a ResizeObserver re-runs `stacked()` when the breakpoint changes with two sheets up, so the phone and desk states never stick.
+  - The almost-full locked sheet gets 32 corners like the other almost-full sheets; its own 24 had won.
+  - Docs master at M / L: layers 2 and 3 are hidden (their `display:none` had lost to `.mdTall.mdDk .mdPanel{display:flex}`), so the tall modal shows layer 1 only, and its Done CTA is full width (`margin:0`; it had collapsed to 40px).
+  - The Health profile's small sheets (leave question, picker, Medicare example): scrim 62%, as the master's Bottom sheet (was 44%).
+  - Verified by the four-path workflow and re-checked here: the report (XS layer 1 / 2 / back, desk no stack), My journey (steps sheet → locked sheet stacks, Close back), the Insights sheets (biomarker detail, Organ ages and the insight sheet are layer 1 at 72%; the rest are #181818), the Health profile consent, leave question, picker and Medicare example (#181818, no draw-back), and the Docs master at XS 1 / 2 / 3 and M.
