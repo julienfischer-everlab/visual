@@ -18367,3 +18367,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Concierge carousel dots: 24 more under the sub (margin 44).
 
 - Content max width: one centred column for visual + chat + title group (`--ccMaxW`, tweak `stHpCcMaxW`). Fixed the phone chat collapsing to a thin column (flex child with margin auto had no width → width 100%), and the desk 520 cap no longer overrides the tweak. Full = visual full width, chat and titles 520.
+- Content max width now excludes the video: the visual always spans the full width; only chat + title group follow `--ccMaxW`.
