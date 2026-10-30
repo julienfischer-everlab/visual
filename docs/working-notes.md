@@ -18371,3 +18371,5 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Services are now Script renewal, Specialist referral, Blood test referral and Imaging referral, in both the Overview service cards and the Concierge services stack; each opens the chat with its own ask and Eva reply.
 - Values carousel release: a softer glide (.62s) that starts at the finger's pace. The next value's set-up (goV) now runs 140ms after the glide starts, so it no longer stalls the release (~230ms). tAt keeps the glide on a title the finger brought in.
 - Values carousel dots: moved out of the title group into the view, beside the scroller, and kept 44px under the active title each frame. They were clipped by the scroller's foot on XS ("carousel is missing") and masked by the swipe's edge fade ("shouldn't disappear while swiping"). Edge fade tightened from 30% to 12%.
+- Flow panel now also shows when a page with a flow is opened as a modal from the Overview (Health profile, Past results, Concierge); dropped the `__hpFromOv` exclusion in jny.
+- Concierge services stack cards: icon top right; title group 24px higher (padding-bottom 44).
