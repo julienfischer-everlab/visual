@@ -18583,3 +18583,13 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The modal radius is 32px (was 24).
   - The phone's full-screen search is unchanged.
   - Checked: radius 32px; field bg transparent, border 0, padding 22 20 8; input padding 0.
+- **The star arc moves to Services** ("no, the arc card reveal was a tweak for services, not specialists, my bad"; "variation of this visual", the services stack). This replaces the Specialists V2 entry above.
+  - The Tweak is now **Services** (`stHpCcSvcV`): V1 Stack (the glass cards turning over, with every Stack Tweak as before) or V2 Star (default).
+  - V2, in the stack's place under "Direct access to health services in seconds":
+    - The beam star comes in and the cursor taps it.
+    - The four services goo out of it as one blob and spring into the arc: Script renewal, Specialist referral, Blood test referral, Imaging referral. Each card has the service's icon in a round tile and its name, two lines, centred.
+    - The star turns into ×, holds 3.4s, then fades. The arc closes again out of sight, and the slide goes on to the Specialists.
+  - Specialists are back to their avatars only; their Tweak is gone.
+  - Classes renamed from `hpCcSpk*` to `hpCcArc*` (the root class is `hpCcArcOn`). A jump between slides closes the arc.
+  - The Documentation's Concierge Services still follows the Tweak: the arc open on V2, the stack on V1. Its caption follows too.
+  - Checked: on V2 the classes run in → open → off, then the Specialists' avatars and title. The arc cards hold the four services' names; no errors. The doc still shows the arc on V2 and the stack on V1.
