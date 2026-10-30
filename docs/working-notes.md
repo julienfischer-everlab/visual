@@ -18568,3 +18568,18 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Cursor on the send, not the star** ("??? I meant on this one cta", the white send disc). The star's landing is back to its centre. The touch on the send now lands with its middle on the send's edge, low on its left (centre + R × (−.707, .707)), half over the white disc and half off it, so it shows on the white. Measured: 18px from the send's centre, its radius 18.
 - **Services stack, the cards behind** ("stacking card still super weird"). Each card is see-through glass, so the cards behind showed through the front one, and so did their shadows. Every card but the front is now masked to its top edge (`mask-image: linear-gradient(#000 0 14px, transparent 30px)`). Only the strip above the card in front shows; the rest is cut, never seen through the glass. The mask comes off a card the moment it becomes the front. Checked over three rotations: the front clean, the two edges above it, nothing under its glass.
 - **Loading dots at random** ("the loading dot square should highlight randomly, not as a wave"). The 3 × 3 grid's dots each run on their own clock: delays −0.95 to 0.8s, durations 1.3 to 1.9s. A short glint (0.2 → 0.95 at 14%, back by 36%) then dim, so they light out of step, not row by row. Same in the Docs master's Chat bubbles loader (`.bbGrid`, `bbDot`).
+- **Specialists V2: star burst** ("using the central icon Star (beam) that on click (cursor) opens multiple cards above in an arc. x4"). New Tweak **Specialists visual** (`stHpCcTeamV`): V1 Avatars (the old slide) or V2 Star (default).
+  - V2 shows the beam star (the AI button's ring) under the title area.
+  - The cursor comes in, taps it, and four cards (Doctor, Dietitian, Nurse, Coach) ooze out of the star as one goo blob (SVG `feGaussianBlur` + alpha matrix). They spring into an arc above it: ±121/±46 px out, tilted ±16/±5°, the outer two 60ms later. The star turns into ×.
+  - Then the slide moves on.
+  - Fixed `curAt is not defined` in `teamFrom` with a local `curTo`.
+  - Checked frame by frame: star, tap, the blob at 1.85s, the arc by 1.95s; no errors.
+- **Modal doc, first layer just overlaps** ("Modal doc → first layer just overlap the screen, no stacked effect on bottom sheet").
+  - The doc's stack example now opens at depth 1 by default (a saved choice still wins): one sheet over the page, blanked at 72%, nothing pushed back.
+  - The app's XS/S action sheets (`.aqWrap.hpBs`) dim at .72 too.
+  - Checked: doc XS shows `mdL1 up`, the others idle, scrim rgba(0,0,0,.72).
+- **Ask Everlab search on desk** ("shouldn't see any input field here. Remove input padding / increase radius on the modal").
+  - The field has no box of its own on the desk modal: no fill, border, shadow or margin. The text sits on the modal at 22/20 px, the input has no padding, and esc is at 20/20.
+  - The modal radius is 32px (was 24).
+  - The phone's full-screen search is unchanged.
+  - Checked: radius 32px; field bg transparent, border 0, padding 22 20 8; input padding 0.
