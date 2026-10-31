@@ -18689,3 +18689,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - It carries the field's soft shadow from the start, so none appears at the end.
   - Checked frame by frame: the ring .85 → .09 before the landing; in the landing frame the surface gone, the field shown, its content from 0, fading in over 260ms (beam layers 520ms).
 - **Service cards more rounded** ("service card more rounded"): 8 rounder everywhere a service card shows. The Overview's (every size, phone chips too) and the AI card's service tiles go to 28 (were 20); the Concierge's Services Grid cards go to 24 (were 16). Checked: L 28, XS 28, AI card 28.
+- **No flash as the big star appears** ("when this appears there is a flash type of effect in the bg, clipping a bit"):
+  - Intro V3's dot grows into the star's own disc (white 4%, 99 across), then the star came in over it at full opacity while the dot faded out for 160ms: two discs stacked, a brighter flash. Now the two hand over in one frame (the dot's transition off, its opacity 0 as the star shows), and only the star's icon comes in (scale .6 → 1, fading, 320ms).
+  - When the menu pushes in, the star's glass blur (40px) eases in with its move instead of switching on.
+  - The warm glow inside the star's ring softens before the rim (mask to 82%, then .35 at the edge), so its blur is not cut hard at the circle's edge.
+  - Checked frame by frame: dot 1 / star 0, then dot 0 / star 1 in the next frame, no frame with both.
