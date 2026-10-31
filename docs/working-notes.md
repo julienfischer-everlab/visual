@@ -18677,3 +18677,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
     - The bottom navigation's AI card: each service tile with its render, 32, top-left, and the name under it, wrapping instead of being cut ("Specialist refe…").
   - Check Symptoms has no render, so it keeps its line glyph.
   - Checked at L, XS and the XS frame's AI card: all six renders shown, no errors.
+- **Star → field: one surface, snappier** ("the chat circle icon merge to chat field is not good yet; make it snappier and it should feel it belongs to one shape"):
+  - The clip-path reveal of the field is replaced by one real surface (`.hpCcMs`). At the tap it takes the star's place exactly: its 62 circle, its glass (fill and 40px blur), its beam running round the edge, its icon. The star and its ring go at once.
+  - It then grows as a box (left, top, width, height and corners animated). Leftwards first, a capsule the star's height to the field's width (0 to 62%), then up to the field's height (38 to 100%), the corners from the circle's to the field's 28. Its fill turns from the star's glass to the field's as it runs out, the beam travelling round its edge throughout, the icon held at the bottom right (where the send will be) till it has nearly risen.
+  - It lands on the field's own box, the field (hidden till then) takes over under it, its words and buttons fade in (260ms, the beam layers 520ms), and the surface fades away.
+  - Pace: 560ms in all (was 900) on cubic-bezier(.32, 0, .12, 1), off at once with a long soft settle.
+  - Checked by seeking: about 105 wide at .06s, 216 at .12s, full width by .25s, the field's height by .42s. In real time it starts on the star (62×62) and lands on the field (313×100 at the same place), then the content comes in and the surface is gone. A jump between slides clears it.
