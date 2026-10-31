@@ -43,8 +43,8 @@ body { margin: 0; overflow: hidden; background: var(--pg); color: var(--pgFg); f
 #hp > .arSheet { position: relative; display: flex; flex-direction: column; width: 100%; height: 100%; min-height: 0; overflow: hidden; }
 .bpStatus { display: none; }
 @media (min-width: 1100px) { #stage[data-bp="auto"] #dev { height: calc(100% - 48px); border-radius: 24px; box-shadow: 0 30px 80px rgba(0, 0, 0, .3); } }
-#stage[data-bp="xs"] #dev { width: 393px; max-width: none; height: calc(100% - 96px); max-height: 900px; border-radius: 56px; box-shadow: 0 0 0 5px #000, 0 0 0 11px #3b3b40, 0 0 0 12px rgba(255, 255, 255, .14), 0 30px 90px rgba(0, 0, 0, .45); }
-#stage[data-bp="s"] #dev { width: 600px; max-width: calc(100% - 64px); height: calc(100% - 96px); border-radius: 28px; box-shadow: 0 0 0 9px #000, 0 0 0 16px #3b3b40, 0 0 0 17px rgba(255, 255, 255, .14), 0 30px 90px rgba(0, 0, 0, .45); }
+#stage[data-bp="xs"] #dev { width: 393px; max-width: none; height: calc(100% - 96px); max-height: 900px; border-radius: 56px; box-shadow: 0 0 0 5px #000, 0 0 0 11px #3b3b40, 0 0 0 12px rgba(255, 255, 255, .14); }   /* the prototype's XS frame (--evPhBz), no drop shadow ("the SAME iPhone frame all the time, meaning NO shadow") */
+#stage[data-bp="s"] #dev { width: 600px; max-width: calc(100% - 64px); height: calc(100% - 96px); border-radius: 28px; box-shadow: 0 0 0 9px #000, 0 0 0 16px #3b3b40, 0 0 0 17px rgba(255, 255, 255, .14); }
 #stage[data-bp="m"] #dev { width: 992px; max-width: 100%; }
 #stage[data-bp="l"] #dev { width: 1440px; max-width: 100%; }
 #stage:is([data-bp="xs"], [data-bp="s"]) .bpStatus { position: absolute; left: 0; right: 0; top: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; padding: 18px 34px 4px; color: #fff; pointer-events: none; }

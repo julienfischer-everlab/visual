@@ -29,11 +29,17 @@ const MIME = { webp: 'image/webp', png: 'image/png', jpg: 'image/jpeg', jpeg: 'i
                gif: 'image/gif', svg: 'image/svg+xml', mp4: 'video/mp4', webm: 'video/webm',
                mp3: 'audio/mpeg', m4a: 'audio/mp4', wav: 'audio/wav' };
 let assetIn = 0, assetOut = 0, assetN = 0;
+// Each inlined picture or video keeps its name, as a parameter of its data:
+// URI (data:image/webp;as=overview~avatar-dr.webp;base64,...): the Assets
+// library page finds every copy of it by that name and puts a replacement in
+// its place at run time, everywhere it shows. "~" stands for "/" (a MIME
+// parameter value is a token). Sound is left untagged: it cannot be replaced.
+const tagOf = ref => /\.(mp3|m4a|wav)$/i.test(ref) ? '' : ';as=' + ref.replace(/^(\.\.\/)?assets\//, '').replace(/\//g, '~');
 src = src.replace(/assets\/[A-Za-z0-9_\-./]+?\.(webp|png|jpe?g|gif|svg|mp4|webm|mp3|m4a|wav)\b/g, ref => {
   const f = path.join(root, ref);
   if (!fs.existsSync(f)){ console.warn('missing asset, left as a path: ' + ref); return ref; }
   const buf = fs.readFileSync(f);
-  const uri = 'data:' + MIME[ref.split('.').pop().toLowerCase()] + ';base64,' + buf.toString('base64');
+  const uri = 'data:' + MIME[ref.split('.').pop().toLowerCase()] + tagOf(ref) + ';base64,' + buf.toString('base64');
   assetIn += buf.length; assetOut += uri.length; assetN++;
   return uri;
 });
@@ -102,7 +108,7 @@ src = src.replace(/assets\/[A-Za-z0-9_\-./]+?\.(webp|png|jpe?g|gif|svg|mp4|webm|
   console.log('total ' + kb(src.length) + ' -> ' + kb(out.length) + '  (dist/index.html)');
   // the Concierge page (visuals/concierge.html), built beside it with its pictures inlined, as the prototype opens it: concierge.html
   // a page's pictures (assets/…, or ../assets/… from visuals/), inlined as data: URIs; how many
-  const inline = txt => { let n = 0; const out = txt.replace(/(?:\.\.\/)?assets\/[A-Za-z0-9_\-./]+?\.(webp|png|jpe?g|gif|svg)\b/g, ref => { const f = path.join(root, ref.replace(/^\.\.\//, '')); if (!fs.existsSync(f)){ console.warn('missing asset, left as a path: ' + ref); return ref; } n++; return 'data:' + MIME[ref.split('.').pop().toLowerCase()] + ';base64,' + fs.readFileSync(f).toString('base64'); }); return [out, n]; };
+  const inline = txt => { let n = 0; const out = txt.replace(/(?:\.\.\/)?assets\/[A-Za-z0-9_\-./]+?\.(webp|png|jpe?g|gif|svg)\b/g, ref => { const f = path.join(root, ref.replace(/^\.\.\//, '')); if (!fs.existsSync(f)){ console.warn('missing asset, left as a path: ' + ref); return ref; } n++; return 'data:' + MIME[ref.split('.').pop().toLowerCase()] + tagOf(ref) + ';base64,' + fs.readFileSync(f).toString('base64'); }); return [out, n]; };
   { const [cc, n] = inline(fs.readFileSync(path.join(root, 'visuals', 'concierge.html'), 'utf8'));
     fs.writeFileSync(path.join(root, 'dist', 'concierge.html'), cc);
     console.log('concierge ' + kb(cc.length) + '  (' + n + ' pictures inlined, dist/concierge.html)'); }
