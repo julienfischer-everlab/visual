@@ -18699,3 +18699,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Eight specks fly out from the middle: four-point sparkles (5–7px) and 3px dots, white and the beam's warm orange. Each flies 15 to 25 out, a slight turn, gone in about 0.7s (staggered 0–60ms), inside the circle or just past it, then removed.
   - It plays on Intro V3's big star as the dot hands over to it, and on the island's star each later round as the bar comes in (160ms after).
   - Checked by seeking: icon popping in, the specks out at .12–.32s, fading by .64s, all eight removed after.
+- **The big star: softer border, no shadow inside** ("reduce the border intensity and also there is a shadow inside???"):
+  - The warm glow inside the star's ring is gone. On the dark disc it read as a brown shadow, more so once its edge was softened; compared side by side, the clean disc with the beam alone reads best.
+  - The big star's border beam is at .5 (was .85).
+  - Checked: the disc plain (white 4%), the beam on the rim alone, no specks left after the burst.
