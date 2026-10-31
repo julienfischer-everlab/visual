@@ -18694,3 +18694,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - When the menu pushes in, the star's glass blur (40px) eases in with its move instead of switching on.
   - The warm glow inside the star's ring softens before the rim (mask to 82%, then .35 at the edge), so its blur is not cut hard at the circle's edge.
   - Checked frame by frame: dot 1 / star 0, then dot 0 / star 1 in the next frame, no frame with both.
+- **The star's sparkles burst a little as its circle comes in** ("make the stars exploding a little, on circle shape entrance"): `starBurst(star)`.
+  - The star's icon pops in from small (scale .15, turned −35°), a touch past its size (1.22, +6°) and back, 620ms.
+  - Eight specks fly out from the middle: four-point sparkles (5–7px) and 3px dots, white and the beam's warm orange. Each flies 15 to 25 out, a slight turn, gone in about 0.7s (staggered 0–60ms), inside the circle or just past it, then removed.
+  - It plays on Intro V3's big star as the dot hands over to it, and on the island's star each later round as the bar comes in (160ms after).
+  - Checked by seeking: icon popping in, the specks out at .12–.32s, fading by .64s, all eight removed after.
