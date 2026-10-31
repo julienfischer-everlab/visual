@@ -18683,3 +18683,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - It lands on the field's own box, the field (hidden till then) takes over under it, its words and buttons fade in (260ms, the beam layers 520ms), and the surface fades away.
   - Pace: 560ms in all (was 900) on cubic-bezier(.32, 0, .12, 1), off at once with a long soft settle.
   - Checked by seeking: about 105 wide at .06s, 216 at .12s, full width by .25s, the field's height by .42s. In real time it starts on the star (62×62) and lands on the field (313×100 at the same place), then the content comes in and the surface is gone. A jump between slides clears it.
+- **No flash at the hand-over** ("when the chat field is fully formed there is a flash kind of effect, clipping? do you change the bg opacity?"): no; the fill was the same, but the field is glass (white 4% and a 40px backdrop blur), and the morph's surface faded out over it for 220ms: two layers of glass stacked, a brighter flash. On top of that, the surface's beam and the field's own beam showed at two angles at once.
+  - Now the surface is removed the instant it lands (it is the field's own box, fill and blur, so nothing changes).
+  - Its beam fades out over the last 30% of the morph, and the field's beam fades in after.
+  - It carries the field's soft shadow from the start, so none appears at the end.
+  - Checked frame by frame: the ring .85 → .09 before the landing; in the landing frame the surface gone, the field shown, its content from 0, fading in over 260ms (beam layers 520ms).
