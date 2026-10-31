@@ -15378,12 +15378,13 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
   var hit = function (v) { return typeof v === 'string' && (v.indexOf(';as=') >= 0 || v.indexOf('assets/') >= 0 || v.indexOf('/_blob/') >= 0 || v.indexOf('blob:') >= 0); };
   var off = function (el) { return !!(el.closest && el.closest('[data-eva-off]')); };   // the library's own originals: never swapped
   var to = function (k, m) { var o = OV[k]; return o ? o.u : m; };
+  var RXC = {}, revRx = function (u) { return RXC[u] || (RXC[u] = new RegExp((u.charAt(0) === '/' ? '(?:[a-z][a-z0-9+.-]*:\\/\\/[^\\s"\'()\\/]+)?' : '') + u.replace(/[.*+?^${}()|[\]\\\/]/g, '\\$&'), 'g')); };
   /* a string with every asset in it put as it should be now: replaced, or back to its original */
   var sub = function (s) {
     if (typeof s !== 'string' || !s) return s;
     if (s.indexOf(';as=') >= 0) s = s.replace(TAG, function (m, k) { if (!BASE[k]) BASE[k] = m; return to(k, m); });
     if (s.indexOf('assets/') >= 0) s = s.replace(DEV, function (m, p) { var k = keyOfPath(p); if (!BASE[k]) BASE[k] = m; return to(k, m); });
-    if (s.indexOf('/_blob/') >= 0 || s.indexOf('blob:') >= 0) for (var u in REV) { if (s.indexOf(u) < 0) continue; var k = REV[u], w = OV[k] ? OV[k].u : (BASE[k] || u); if (w !== u) s = s.split(u).join(w); }   // a replacement put in earlier: the one now, or the original back
+    if (s.indexOf('/_blob/') >= 0 || s.indexOf('blob:') >= 0) for (var u in REV) { if (s.indexOf(u) < 0) continue; var k = REV[u], w = OV[k] ? OV[k].u : (BASE[k] || u); if (w !== u) s = s.replace(revRx(u), function () { return w; }); }   // a replacement put in earlier: the one now, or the original back (with the host in front of it too, as a computed style copied by the app carries it)
     return s;
   };
   var keyIn = function (s) { var m; TAG.lastIndex = 0; if ((m = TAG.exec(s))) { TAG.lastIndex = 0; return m[1]; } DEV.lastIndex = 0; if ((m = DEV.exec(s))) { DEV.lastIndex = 0; return keyOfPath(m[1]); } for (var u in REV) if (s.indexOf(u) >= 0) return REV[u]; return ''; };
@@ -15401,7 +15402,8 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
   };
   var reload = function () { var l = vids; vids = []; l.forEach(function (vd) { try { var was = !vd.paused || vd.autoplay; vd.load(); if (was) { var p = vd.play(); if (p && p.catch) p.catch(function () {}); } } catch (e) {} }); };
   /* the CSS: every declaration that carries an asset, kept with its original value, so it can be set and set back */
-  var CSSX = [], SEEN = typeof WeakSet === 'function' ? new WeakSet() : null;
+  var CSSX = [], SEEN = typeof WeakSet === 'function' ? new WeakSet() : null, IMGS = [];
+  var reImgs = function () { IMGS = IMGS.filter(function (r) { var el = r.deref(); if (!el) return false; if (!el.isConnected && el.__evaO) { var nv = sub(el.__evaO); if (el.getAttribute('src') !== nv) el.src = el.__evaO; } return true; }); };   // pictures never put in the page (a canvas's source): their src set again, so their load draws the new one
   var idxRules = function (rules) { for (var i = 0; i < rules.length; i++) { var r = rules[i], st = r.style;
       if (st && st.length) { var txt = st.cssText; if (txt.indexOf('url(') >= 0 || txt.indexOf('/_blob/') >= 0) for (var j = 0; j < st.length; j++) { var p = st[j], v = st.getPropertyValue(p); if (hit(v)) CSSX.push({ st: st, p: p, o: v, pr: st.getPropertyPriority(p) }); } }
       if (r.cssRules && r.cssRules.length) idxRules(r.cssRules); } };
@@ -15412,7 +15414,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
   var sweep = function (root) { if (root.nodeType === 1 && root.matches && root.matches(SEL)) fixEl(root); var q = root.querySelectorAll ? root.querySelectorAll(SEL) : []; for (var i = 0; i < q.length; i++) fixEl(q[i]); };
   /* a src set from script (a picture never put in the page: a canvas's): set as it should be */
   var patch = function (win) { try { [[win.HTMLImageElement, 'src'], [win.HTMLSourceElement, 'src'], [win.HTMLMediaElement, 'src'], [win.HTMLVideoElement, 'poster']].forEach(function (x) { var C = x[0]; if (!C) return; var d = Object.getOwnPropertyDescriptor(C.prototype, x[1]); if (!d || !d.set || d.set.__eva) return;
-    var set = function (v) { d.set.call(this, ACTIVE && hit(v) && !off(this) ? sub(v) : v); }; set.__eva = 1; Object.defineProperty(C.prototype, x[1], { configurable: true, enumerable: d.enumerable, get: d.get, set: set }); }); } catch (e) {} };
+    var set = function (v) { var h = hit(v); if (h && C === win.HTMLImageElement && !off(this)) { this.__evaO = v; if (!this.__evaT && typeof WeakRef === 'function') { this.__evaT = 1; IMGS.push(new WeakRef(this)); } } d.set.call(this, ACTIVE && h && !off(this) ? sub(v) : v); }; set.__eva = 1; Object.defineProperty(C.prototype, x[1], { configurable: true, enumerable: d.enumerable, get: d.get, set: set }); }); } catch (e) {} };
   var watch = function (doc) { var W = doc.defaultView; if (!W || doc.__evaMo) return;
     var mo = new W.MutationObserver(function (recs) { if (!ACTIVE) return; var css = false;
       for (var i = 0; i < recs.length; i++) { var r = recs[i];
@@ -15421,7 +15423,9 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
           if (tn === 'STYLE' || tn === 'LINK') { css = true; continue; } if (tn === 'IFRAME') frame(n); sweep(n); if (n.querySelector && n.querySelector('iframe')) [].forEach.call(n.querySelectorAll('iframe'), frame); } }
       if (css) { idxSheets(doc); applyCss(); } reload(); });
     mo.observe(doc.documentElement, { subtree: true, childList: true, attributes: true, attributeFilter: ['src', 'poster', 'style', 'href', 'srcset'] }); doc.__evaMo = mo; };
-  var frame = function (f) { if (f.__eva) return; f.__eva = 1; var go = function () { try { var d = f.contentDocument; if (d && d.documentElement) attach(d); } catch (e) {} }; f.addEventListener('load', go); go(); };
+  var frame = function (f) { if (f.__eva) return; f.__eva = 1; var go = function () { try { var d = f.contentDocument; if (d && d.documentElement) attach(d); } catch (e) {} };
+    f.addEventListener('load', go); go();
+    if (ACTIVE) { var n = 0, t = setInterval(function () { go(); try { var d = f.contentDocument; if ((d && d.URL !== 'about:blank' && d.documentElement) || ++n > 400) clearInterval(t); } catch (e) { clearInterval(t); } }, 16); } };   // while something is replaced: the frame's page watched from its first parsed node, so it never paints an original first
   var applyDoc = function (doc) { try { idxSheets(doc); applyCss(); sweep(doc); reload(); } catch (e) {} };
   var attach = function (doc) { if (DOCS.indexOf(doc) < 0) { DOCS = DOCS.filter(function (d) { try { return !!d.defaultView; } catch (e) { return false; } }); DOCS.push(doc); patch(doc.defaultView); }
     if (ACTIVE) { watch(doc); applyDoc(doc); } [].forEach.call(doc.querySelectorAll('iframe'), frame); };
@@ -15429,17 +15433,21 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
   var merge = function () { var m = {}; Object.keys(REMOTE).forEach(function (k) { m[k] = REMOTE[k]; }); Object.keys(LOCAL).forEach(function (k) { if (LOCAL[k]) m[k] = LOCAL[k]; else delete m[k]; });
     OV = m; Object.keys(OV).forEach(function (k) { REV[OV[k].u] = k; });
     if (Object.keys(OV).length) ACTIVE = true;
-    if (ACTIVE) DOCS.forEach(function (d) { watch(d); applyDoc(d); });
+    if (ACTIVE) { DOCS.slice().forEach(attach); reImgs(); }
     subs.forEach(function (f) { try { f(); } catch (e) {} }); };
   var DB = null, COL = 'assets';
-  var start = function () { try { if (!(window.claude && typeof window.claude.use === 'function')) return; window.claude.use('db').then(function (db) { if (!db) return; DB = db;
-    db.collection(COL).onSnapshot(function (qs) { var r = {}; qs.docs.forEach(function (d) { var x = d.data(); if (x && x.id) r[d.id] = { u: '/_blob/' + x.id, t: x.type || '', doc: x }; }); REMOTE = r; merge(); }, function () {}); }).catch(function () {}); } catch (e) {} };
+  var REC = {};
+  var listen = function () { DB.collection(COL).onSnapshot(function (qs) { var r = {}, all = {}; qs.docs.forEach(function (d) { var x = d.data(); if (!x) return; all[d.id] = x; if (x.id) r[d.id] = { u: '/_blob/' + x.id + '#' + d.id, t: x.type || '', doc: x }; }); REC = all; REMOTE = r; merge(); },   /* each asset its own url (the fragment names it): two assets on one file (a video's two formats) still go back each to its own original */
+    function (e) { var c = e && e.code; if (c === 'revoked' || c === 'invalid_argument' || c === 'not_granted' || c === 'capability_disabled' || c === 'capability_removed') return; setTimeout(listen, 1500 + Math.random() * 2500); }); };   // ended by the platform (unavailable): a fresh listener is the only way back
+  var start = function () { try { if (!(window.claude && typeof window.claude.use === 'function')) return; window.claude.use('db').then(function (db) { if (!db) return; DB = db; listen(); }).catch(function () {}); } catch (e) {} };
   window.EvAssets = {
     sub: sub, keyIn: keyIn,
     /* the replacements as they stand: key -> { u: its url, t: its type, doc: its record } */
     now: function () { return OV; }, remote: function () { return REMOTE; }, db: function () { return DB; }, col: COL,
     /* a replacement in this tab only (no store, or before saving): a blob: url, or null to take it away */
-    preview: function (k, url, type) { if (url) { LOCAL[k] = { u: url, t: type || '', local: true }; REV[url] = k; } else LOCAL[k] = null; merge(); },
+    preview: function (k, url, type) { if (url) { var u = url + '#' + k; LOCAL[k] = { u: u, t: type || '', local: true }; REV[u] = k; } else LOCAL[k] = null; merge(); },
+    /* every record of the shared store, a file in it now or not (its history) */
+    records: function () { return REC; },
     clearPreview: function (k) { delete LOCAL[k]; merge(); },
     /* the original of an asset, as the page carries it (a data: URI, or its path in the source), once seen; the library looks for it when it opens */
     base: function (k) { return BASE[k] || ''; }, learn: function (k, v) { if (k && v && !BASE[k]) BASE[k] = v; },
@@ -15555,12 +15563,13 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
   var metaLine = function (k) { var c = pg.querySelector('.alCard[data-k="' + k + '"]'), wh = c && c.dataset.wh, f = fam(k), size = f.reduce(function (s, x) { return s + bytesOf((KEYS[x] || {}).uri); }, 0);
     return f.map(EXT).join(' + ') + (wh ? ' · ' + wh : '') + (size ? ' · ' + kb(size) : ''); };
   var card = function (k) { var m = metaOf(k), o = cur(k), kind = KIND_OF(k), u = m.used;
-    return '<article class="alCard" data-k="' + esc(k) + '" data-g="' + esc(m.group) + '" data-t="' + kind + '" data-s="' + esc((m.name + ' ' + k + ' ' + m.group + ' ' + u.join(' ') + ' ' + m.note).toLowerCase()) + '">' +
+    return '<article class="alCard' + (BUSY[k] ? ' busy' : '') + '" data-k="' + esc(k) + '" data-g="' + esc(m.group) + '" data-t="' + kind + '" data-s="' + esc((m.name + ' ' + k + ' ' + m.group + ' ' + u.join(' ') + ' ' + m.note).toLowerCase()) + '">' +
       '<div class="alTh" data-open="1">' + thumb(k, o ? o.u : (KEYS[k] || {}).uri) + (o ? '<span class="alBadge' + (o.local ? ' loc' : '') + '">' + (o.local ? 'Preview' : 'Replaced') + '</span>' : '') + '</div>' +
       '<div class="alBody"><h3 class="alName">' + esc(m.name) + '</h3><span class="alKey">' + esc(fam(k).map(function (x) { return x.replace(/~/g, '/'); }).join(' · ')) + '</span><span class="alMeta">' + esc(metaLine(k)) + '</span>' +
       (u.length ? '<p class="alUse">' + esc(u[0]) + (u.length > 1 ? ' · +' + (u.length - 1) + ' more' : '') + '</p>' : '') + '</div>' +
       '<div class="alAct">' + (kind === 'sound' ? '<button type="button" class="alBtn" data-open="1">Details</button>' : '<button type="button" class="alBtn pri" data-rep="1"' + (can.write || !can.store ? '' : ' disabled title="Replacing needs edit access to this artifact"') + '>Replace</button>' + (o ? '<button type="button" class="alBtn" data-rev="1">Use original</button>' : '<button type="button" class="alBtn" data-open="1">Details</button>')) + '</div></article>'; };
   var paint = function () {
+    var ae = document.activeElement, foc = !!(ae && ae.classList && ae.classList.contains('alSearch') && pg.contains(ae)), sel = foc ? [ae.selectionStart, ae.selectionEnd] : null;   // typing in the search when a change comes in: the field keeps its focus and caret
     var ks = shown(), rep = ks.filter(function (k) { return !!cur(k); }).length;
     var byG = {}; ks.forEach(function (k) { var g = metaOf(k).group; (byG[g] = byG[g] || []).push(k); });
     var gs = GROUPS.filter(function (g) { return byG[g]; }).concat(Object.keys(byG).filter(function (g) { return GROUPS.indexOf(g) < 0; }));
@@ -15573,7 +15582,8 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       '<div class="alSeg" role="group" aria-label="Show"><button type="button" data-rep="tog" aria-pressed="' + F.rep + '">Replaced only</button></div></div>' +
       gs.map(function (g) { return '<section class="alSec" data-sec="' + esc(g) + '"><h2 class="alSecH">' + esc(g) + '<small>' + byG[g].length + '</small></h2><div class="alGrid">' + byG[g].map(card).join('') + '</div></section>'; }).join('') +
       '<p class="alEmpty" hidden>No asset matches.</p><input type="file" id="alFile" hidden accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml,video/mp4,video/webm"></div>';
-    hydrate(pg); filter(); note(); };
+    hydrate(pg); filter(); note();
+    if (foc) { var sf = pg.querySelector('.alSearch'); if (sf) { sf.focus(); try { sf.setSelectionRange(sel[0], sel[1]); } catch (e) {} } } };
   var note = function () { var n = pg.querySelector('#alNote'); if (!n) return; var t, c = '';
     if (can.store && can.write) { t = 'Connected: a file you put here replaces the asset for everyone, on every page, straight away.'; c = 'ok'; }
     else if (can.store) t = 'View only: you see the replacements in place. Replacing needs edit access to this artifact.';
@@ -15581,29 +15591,35 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
     n.className = 'alNote ' + c; n.querySelector('span').textContent = t; };
   var filter = function () { var q = F.q.trim().toLowerCase(), any = false;
     [].forEach.call(pg.querySelectorAll('.alSec'), function (s) { var vis = 0;
-      [].forEach.call(s.querySelectorAll('.alCard'), function (c) { var ok = (F.g === 'All' || c.dataset.g === F.g) && (F.t === 'all' || c.dataset.t === F.t) && (!q || c.dataset.s.indexOf(q) >= 0) && (!F.rep || !!cur(c.dataset.k)); c.hidden = !ok; if (ok) vis++; });
+      [].forEach.call(s.querySelectorAll('.alCard'), function (c) { var ok = (F.g === 'All' || c.dataset.g === F.g) && (F.t === 'all' || c.dataset.t === F.t) && (!q || q.split(/\s+/).every(function (w) { return c.dataset.s.indexOf(w) >= 0; })) && (!F.rep || !!cur(c.dataset.k)); c.hidden = !ok; if (ok) vis++; });
       s.hidden = !vis; if (vis) any = true; });
     var e = pg.querySelector('.alEmpty'); if (e) e.hidden = any; };
   /* a file in: checked, measured, stored, named; then every page shows it */
   var measure = function (file, type) { return new Promise(function (res) { var u = URL.createObjectURL(file), done = function (w, h) { URL.revokeObjectURL(u); res({ w: w || 0, h: h || 0 }); };
     if (/^video\//.test(type)) { var v = document.createElement('video'); v.preload = 'metadata'; v.muted = true; v.onloadedmetadata = function () { done(v.videoWidth, v.videoHeight); }; v.onerror = function () { done(); }; v.src = u; }
     else { var i = new Image(); i.onload = function () { done(i.naturalWidth, i.naturalHeight); }; i.onerror = function () { done(); }; i.src = u; } setTimeout(function () { done(); }, 6000); }); };
-  var ERR = { too_large: 'That file is too big: 20 MB at most (2 MB for an SVG).', unsupported_type: 'That kind of file cannot be stored: PNG, JPEG, WebP, GIF, SVG, MP4 or WebM.', quota_or_state: 'The library is full or not available right now.', rate_limited: 'Too many uploads at once: try again in a moment.', upstream_auth: 'Your session needs a reload before uploading.', not_granted: 'Replacing needs edit access to this artifact.' };
+  var BUSY = {};   // assets whose file is on its way up: one at a time each
+  var ERR = { quota_exceeded: 'The library’s records are full: put an asset back to its original to free one.', resource_exhausted: 'Too many changes at once: try again in a moment.', store_unavailable: 'The library is not answering right now: try again in a moment.', capability_disabled: 'Replacing is not available in this view.', invalid_argument: 'That change could not be saved.', too_large: 'That file is too big: 20 MB at most (2 MB for an SVG).', unsupported_type: 'That kind of file cannot be stored: PNG, JPEG, WebP, GIF, SVG, MP4 or WebM.', quota_or_state: 'The library is full or not available right now.', rate_limited: 'Too many uploads at once: try again in a moment.', upstream_auth: 'Your session needs a reload before uploading.', not_granted: 'Replacing needs edit access to this artifact.' };
   var replace = function (k, file) {
     var kind = KIND_OF(k), type = TYPE_OF(file);
     if (!type) { toast('That kind of file cannot be used: PNG, JPEG, WebP, GIF, SVG, MP4 or WebM.'); return; }
     if ((kind === 'video') !== /^video\//.test(type)) { toast(kind === 'video' ? 'This asset is a video: replace it with an MP4 or WebM.' : 'This asset is a picture: replace it with an image.'); return; }
-    var c = pg.querySelector('.alCard[data-k="' + k + '"]'); if (c) c.classList.add('busy');
+    if (BUSY[k]) { toast('Still storing the last file for ' + metaOf(k).name + '.'); return; }
+    var tg = fam(k), webmOnly = kind === 'video' && type === 'video/webm' && tg.length > 1; if (webmOnly) tg = tg.filter(function (x) { return /\.webm$/i.test(x); });   /* a WebM replaces the WebM only: Safari plays the MP4, which stays as it is until an MP4 is put in (an MP4 replaces both: it plays everywhere) */
+    BUSY[k] = 1; var c = pg.querySelector('.alCard[data-k="' + k + '"]'); if (c) c.classList.add('busy');
+    var upId = '';
     measure(file, type).then(function (wh) {
       if (!can.store || !can.write || !can.assets) {   // no store: this tab only
-        var u = URL.createObjectURL(file); fam(k).forEach(function (x) { EA.preview(x, u, type); }); toast('Shown in this tab only: ' + metaOf(k).name + ' replaced until you reload.'); return; }
-      return can.assets.upload(file, { type: type }).then(function (r) {
+        var u = URL.createObjectURL(file); tg.forEach(function (x) { EA.preview(x, u, type); }); toast('Shown in this tab only: ' + metaOf(k).name + ' replaced until you reload.'); return; }
+      return can.assets.upload(file, { type: type }).then(function (r) { upId = r.id;
         var db = EA.db(), ref = function (x) { return db.doc(EA.col + '/' + x); };
-        return Promise.all(fam(k).map(function (x) { return ref(x).get().then(function (sn) { var prev = sn && sn.exists ? sn.data() : null, hist = ((prev && prev.hist) || []).slice(-11);
+        return Promise.all(tg.map(function (x) { return ref(x).get().then(function (sn) { var prev = sn && sn.exists ? sn.data() : null, hist = ((prev && prev.hist) || []).slice(-11);
           if (prev && prev.id) hist.push({ id: prev.id, type: prev.type || '', name: prev.name || '', w: prev.w || 0, h: prev.h || 0, size: prev.size || 0, at: prev.at || '', by: prev.by || '' });
           return ref(x).set({ id: r.id, type: r.contentType || type, name: file.name, size: r.sizeBytes || file.size, w: wh.w, h: wh.h, at: new Date().toISOString(), by: can.me || '', hist: hist }); }); }))
-          .then(function () { toast(metaOf(k).name + ' replaced: every page shows it now.'); usageRead(); }); });
-    }).catch(function (e) { toast(ERR[e && e.code] || 'The file could not be stored. Try again.'); }).then(function () { var c2 = pg.querySelector('.alCard[data-k="' + k + '"]'); if (c2) c2.classList.remove('busy'); });
+          .then(function () { upId = ''; toast(metaOf(k).name + ' replaced: every page shows it now.' + (webmOnly ? ' Safari still plays the old MP4: put in an MP4 for it.' : '')); usageRead(); }); });
+    }).catch(function (e) { var code = e && e.code;
+      if (upId && can.assets) { var gone = upId; can.assets.delete(gone).catch(function () {}); }   // stored but not named: let it go, so a retry does not leave a file nothing points at
+      toast(ERR[code] || 'The file could not be stored. Try again.'); }).then(function () { delete BUSY[k]; var c2 = pg.querySelector('.alCard[data-k="' + k + '"]'); if (c2) c2.classList.remove('busy'); });
   };
   /* back to the original: the record kept (its history), only its file let go of */
   var revert = function (k) { var o = cur(k); if (!o) return;
@@ -15617,7 +15633,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       return ref.set({ id: h.id, type: h.type || '', name: h.name || '', size: h.size || 0, w: h.w || 0, h: h.h || 0, at: new Date().toISOString(), by: can.me || '', hist: hist.slice(-12) }); }); }))
       .then(function () { toast('Restored: ' + (h.name || 'the earlier file') + '.'); }).catch(function () { toast('That did not go through. Try again.'); }); };
   var pick = null, picking = '';
-  var choose = function (k) { pick = pick || pg.querySelector('#alFile'); if (!pick) return; picking = k; pick.value = ''; pick.accept = KIND_OF(k) === 'video' ? 'video/mp4,video/webm' : 'image/png,image/jpeg,image/webp,image/gif,image/svg+xml'; pick.click(); };
+  var choose = function (k) { pick = pg.querySelector('#alFile'); if (!pick) return;   /* looked up each time: a repaint makes a new one */ picking = k; pick.value = ''; pick.accept = KIND_OF(k) === 'video' ? 'video/mp4,video/webm' : 'image/png,image/jpeg,image/webp,image/gif,image/svg+xml'; pick.click(); };
   /* the asset opened: original and now, the ratio checked, where it shows, its history */
   var dlg = null;
   var openK = function (k) { var m = metaOf(k), o = cur(k), d = o && o.doc, base = (KEYS[k] || {}).uri, kind = KIND_OF(k);
@@ -15626,7 +15642,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         if (b.dataset.do === 'rep') choose(kk); else if (b.dataset.do === 'rev') { revert(kk); shut(); } else if (b.dataset.do === 'res') { var hh = JSON.parse(b.dataset.h); restore(kk, hh); shut(); } else if (b.dataset.do === 'dl') download(kk, b.dataset.which); });
       document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && dlg.classList.contains('on')) shut(); }); }
     dlg.dataset.k = k; var sh = dlg.querySelector('.alSh'), ow = 0, oh = 0;
-    var hist = (d && d.hist) || ((EA.remote()[k] || {}).doc || {}).hist || [];
+    var hist = ((EA.records && EA.records()[k]) || d || {}).hist || [];   // the record's history, even once put back to the original
     sh.innerHTML = '<div class="alShH"><div><h2>' + esc(m.name) + '</h2><div class="alKey">' + esc(fam(k).map(function (x) { return x.replace(/~/g, '/'); }).join(' · ')) + '</div></div><button type="button" class="alX" aria-label="Close">×</button></div>' +
       '<div class="alCmp' + (o ? '' : ' one') + '"><figure><div class="alTh">' + thumb(k, base, true) + '</div><figcaption><b>Original</b><span class="alWh0"></span></figcaption></figure>' +
       (o ? '<figure><div class="alTh">' + thumb(k, o.u, true) + '</div><figcaption><b>' + (o.local ? 'Preview (this tab)' : 'Now') + '</b><span>' + esc((d && d.w ? d.w + '×' + d.h : '') + (d && d.size ? ' · ' + kb(d.size) : '')) + '</span></figcaption></figure>' : '') + '</div>' +
@@ -15667,9 +15683,10 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
   /* the page: shown like Home, under the bar; every other page hidden */
   var hideOthers = function () { ['_home', '_hl', '_ig', '_rv', '_doc', '_gf', '_cl', '_gr', '_cn', '_rf', '_cc'].forEach(function (n) { var p = window[n]; if (p && p.hide) try { p.hide(); } catch (e) {} });
     if (window._hp) try { window._hp.close(true); } catch (e) {} if (window._ar && window._ar.isOpen && window._ar.isOpen()) try { window._ar.close(); } catch (e) {} };
-  var show = function () { if (document.readyState !== 'complete') { addEventListener('load', function () { setTimeout(show, 80); }, { once: true }); return; }   /* the whole page in first: its scripts carry most of the assets, and the menu is set by then */
-    hideOthers(); if (!built) { scan(document); built = true; scanFiles().then(function () { if (document.body.classList.contains('alOn')) { var y = pg.scrollTop; paint(); pg.scrollTop = y; } }); } paint(); usageRead(); document.body.classList.add('alOn'); var vs = document.getElementById('versionSel'); if (vs) vs.value = 'al'; if (window.__tkPages) try { window.__tkPages(); } catch (e) {} try { history.replaceState(null, '', '#assets-library'); } catch (e) {} pg.scrollTop = 0; };
-  var hide = function () { if (!document.body.classList.contains('alOn')) return; document.body.classList.remove('alOn'); shut(); if (window.__tkPages) try { window.__tkPages(); } catch (e) {} };
+  var pend = false;
+  var show = function () { if (document.readyState !== 'complete') { if (!pend) { pend = true; addEventListener('load', function () { setTimeout(function () { if (pend) { pend = false; show(); } }, 80); }, { once: true }); } return; }   /* the whole page in first: its scripts carry most of the assets, and the menu is set by then; another page picked meanwhile cancels it */
+    pend = false; hideOthers(); if (!built) { scan(document); built = true; scanFiles().then(function () { if (document.body.classList.contains('alOn')) { var y = pg.scrollTop; paint(); pg.scrollTop = y; } }); } paint(); usageRead(); document.body.classList.add('alOn'); var vs = document.getElementById('versionSel'); if (vs) vs.value = 'al'; if (window.__tkPages) try { window.__tkPages(); } catch (e) {} try { history.replaceState(null, '', '#assets-library'); } catch (e) {} pg.scrollTop = 0; };
+  var hide = function () { pend = false; if (!document.body.classList.contains('alOn')) return; document.body.classList.remove('alOn'); shut(); if (window.__tkPages) try { window.__tkPages(); } catch (e) {} };
   window._al = { show: show, hide: hide, open: openK, keys: function () { return ORDER.slice(); }, scan: function () { scan(document); } };
   addEventListener('hashchange', function () { if (location.hash === '#assets-library') show(); else hide(); });
   if (location.hash === '#assets-library') show();
