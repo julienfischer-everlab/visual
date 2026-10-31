@@ -18670,3 +18670,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The doctor's typing bubble stays: in the loader's place before his hello, and after his hello before his answer.
   - The Chat bubbles doc's sequence and Style list match.
   - Checked: me, ai, me, think, TYPdr, dr, TYPdr, dr.
+- **Tweak: Services → Icons** ("can you put back the iconography emoji and the services on the overview and on the bottom navigation AI cards? just a tweak"):
+  - A new Overview Tweak group, Services, with Icons On / Off (`stSvcIc`, `html.svcIc`). Off by default: names alone, as now.
+  - On brings the services' 3D renders back (bell, pills, laptop, tubes, papers):
+    - The Overview's service cards: 32 at the card's top-left on the desk, 24 before the name on the phone's chips.
+    - The bottom navigation's AI card: each service tile with its render, 32, top-left, and the name under it, wrapping instead of being cut ("Specialist refe…").
+  - Check Symptoms has no render, so it keeps its line glyph.
+  - Checked at L, XS and the XS frame's AI card: all six renders shown, no errors.
