@@ -18650,3 +18650,13 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - After the doctor's hello, his typing bubble, then his answer in its place (600ms longer).
   - The master too: the Chat bubbles doc has `B.typ`, shown in Style and played in the Animation sequence before each reply.
 - **Doctor's avatar 28 and top aligned** ("avatar aligned on top with the bubble, avatar +4px size"): 28 (was 24), its top on the bubble's, 8 from it (the bubble 36 in). The same in the Chat bubbles doc, where it was still at the foot. Checked: avatar top = bubble top, 28 wide, shown on the first of his run.
+- **A typing bubble before every new bubble** ("we need the typing state and the bubble speech, the dot moving, every time there's a new bubble that's coming"):
+  - Every bubble after the first question (typed in the field on screen) is announced by its typing bubble, three dots moving, which it then replaces:
+    - Eva typing → her answer.
+    - The member typing at the right → question 2 (1s of dots).
+    - "Connecting you to your doctor" → the doctor typing in its place, with his avatar → his hello (the hello 1s later than before).
+    - The doctor typing → his answer.
+  - `typB(who, rm)` takes 'me', 'ai' or 'dr' and an element to replace.
+  - The Chat bubbles doc's sequence matches, its entries now [kind, words, attachment, replaces, doctor's], and its Style list shows the member's typing bubble too.
+  - Checked: me, TYP, ai, TYPme, me, think, TYPdr, dr, TYPdr, dr.
+- **Doctor's avatar 36** ("avatars 8 pixels bigger on the doctor on the left side, and align on the top of the bubble speech"): 36 (was 28), its top on the bubble's, 8 from it (the bubble 44 in). App and Chat bubbles doc. Checked: bubble top 326, avatar top 326, 36 wide.
