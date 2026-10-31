@@ -18660,3 +18660,13 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The Chat bubbles doc's sequence matches, its entries now [kind, words, attachment, replaces, doctor's], and its Style list shows the member's typing bubble too.
   - Checked: me, TYP, ai, TYPme, me, think, TYPdr, dr, TYPdr, dr.
 - **Doctor's avatar 36** ("avatars 8 pixels bigger on the doctor on the left side, and align on the top of the bubble speech"): 36 (was 28), its top on the bubble's, 8 from it (the bubble 44 in). App and Chat bubbles doc. Checked: bubble top 326, avatar top 326, 36 wide.
+- **AI chip as the star circle** ("this AI chip should have the same kind of feeling as the star circle, with the same gradient and border beam"):
+  - The intro title's AI chip takes the island star's look: its glass (white 5% + 40px blur), and the star's beam running round its edge, the same stops (transparent to 40°, orange .55 at 90°, #FFB866, #FFE7CC, #FF8A3D to 160°, gone by 205°) at .85, every 3.2s. Its warm glow turns with the beam inside its edge (the star's conic glow masked to the rim, blurred 5, at .55).
+  - The long trail and the 1.5px white outline are gone; the outline settles to a 1px hairline at 6%.
+  - It starts as the chip appears, as before. The Documentation's still matches.
+  - Checked: fill .05, beam .85, glow .55, hairline 1px .06.
+- **Typing: the doctor only** ("the typing state shouldn't be there when it's AI talking, only when it's the doctor"):
+  - Eva's answer and the member's second question come in straight again (Eva's answer back at 1150ms).
+  - The doctor's typing bubble stays: in the loader's place before his hello, and after his hello before his answer.
+  - The Chat bubbles doc's sequence and Style list match.
+  - Checked: me, ai, me, think, TYPdr, dr, TYPdr, dr.
