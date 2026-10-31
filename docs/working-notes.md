@@ -18688,3 +18688,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Its beam fades out over the last 30% of the morph, and the field's beam fades in after.
   - It carries the field's soft shadow from the start, so none appears at the end.
   - Checked frame by frame: the ring .85 → .09 before the landing; in the landing frame the surface gone, the field shown, its content from 0, fading in over 260ms (beam layers 520ms).
+- **Service cards more rounded** ("service card more rounded"): 8 rounder everywhere a service card shows. The Overview's (every size, phone chips too) and the AI card's service tiles go to 28 (were 20); the Concierge's Services Grid cards go to 24 (were 16). Checked: L 28, XS 28, AI card 28.
