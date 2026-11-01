@@ -9810,6 +9810,19 @@
   html.defL :is(#phone2, body[data-bp="xs"] #dOver) .ovDefRow{flex-direction:row;align-items:center;gap:0;text-align:left;} html.defL :is(#phone2, body[data-bp="xs"] #dOver) .ovDefRow{padding:32px;}   /* 32 every side ("card padding when left aligned 32px") */   /* 32 between the visual and the words ("+16 px gap") */   /* Later card -> Alignment Left: the visual on the left, the words beside it ("content on the left when left aligned"), 16 less above and below ("when left align reduce padding by 16px") */ html.defL :is(#phone2, body[data-bp="xs"] #dOver) .ovDefTx{flex:1 1 auto;}
   /* the Overview at XS: every card 20 inside, all four sides ("make all card 20px padding on the overview XS") -- the services, Next step, Explore, Plan ahead; the booked card is 20 already, its 2 Columns and Tab forms set with it */
   html body[data-bp="xs"] #dOver .ovSvcChip, html body[data-bp="xs"] #dOver .ovhero.ovBook, html body[data-bp="xs"] #dOver .ovcard{padding:20px;} html body[data-bp="xs"] #dOver .ovSvcChip{height:64px;} html body[data-bp="xs"] #dOver .ovSvcVis{width:20px;height:20px;} html body[data-bp="xs"] #dOver .ovSvcChip .ovSvcVis{display:none;}   /* no visual on the tiles ("remove visual") */   /* XS: each service 64 tall (88 less 24: "I said -16, so now it's -24"), its visual 20 ("reduce the visual by 12px") */ html body[data-bp="xs"] #dOver .ovDefRow{padding:20px !important;}   /* Plan ahead in every dress (pictures or Hairline, centred or left): past their own 44 / 12-24-12-12 */
+  /* Tweaks -> Services -> Style: Apple, as the Apple Store's Products row ("the same style as Apple, with the image on the top and the title below"): each service a card, its render centred on top, its name centred under it */
+  html.svcApple body #dOver .ovSvc .ovSvcChip.ovSvcChip.ovSvcChip{flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:16px 12px;text-align:center;}
+  html.svcApple body #dOver .ovSvc .ovSvcChip.ovSvcChip .ovSvcVis{display:flex !important;order:-1;flex:none;width:56px;height:56px;margin:0;border-radius:0;background:none;}
+  html.svcApple body #dOver .ovSvc .ovSvcVis img{display:block;width:100%;height:100%;object-fit:contain;}
+  html.svcApple body #dOver .ovSvc .ovSvcChip .ovSvcTx{align-items:center;gap:0;}
+  html.svcApple body #dOver .ovSvc .ovSvcChip .ovSvcTx b{display:block;white-space:normal;overflow:visible;text-overflow:clip;font-weight:500;line-height:1.22;text-wrap:balance;}
+  html.svcApple body #dOver .ovSvc .ovSvcChip .ovSvcTx small{display:none;}
+  html.svcApple body #dOver .ovSvc .ovSvcChip > .ovNewBadge{top:8px;right:8px;}
+  /* XS: a row of upright cards, three and the start of a fourth on the screen, scrolled sideways, as Apple's (its 107 x 131 on a 430 screen, here 100 x 124 on 393) */
+  html.svcApple body[data-bp="xs"] #dOver .ovSvc .ovSvcChip.ovSvcChip.ovSvcChip{flex:0 0 100px;width:100px;min-width:0;height:124px;padding:14px 8px 14px;justify-content:space-between;border-radius:22px;font-size:15px;scroll-snap-align:start;}
+  html.svcApple body[data-bp="xs"] #dOver .ovSvc .ovSvcChip.ovSvcChip .ovSvcVis{width:60px;height:60px;}
+  /* the desk: the same cards, in its grid (the five in a row, or the 2 x 2 beside the hero) */
+  html.svcApple body:not([data-bp="xs"]) #dOver .ovSvc .ovSvcChip.ovSvcChip.ovSvcChip{height:auto;min-height:112px;padding:14px 12px;gap:8px;border-radius:24px;font-size:15px;} html.svcApple body:not([data-bp="xs"]) #dOver .ovSvc .ovSvcChip.ovSvcChip .ovSvcVis{width:48px;height:48px;}   /* in the desk's own grid (the 2 x 2 beside the hero keeps the column's balance; four in a row left the column short) */
   html.defL body[data-bp="xs"] #dOver .ovDefRow.ovDefHlOn.ovDefHlOn{gap:20px;}   /* Left with the Hairline: 20 between the drawing and the words ("-16px gap", from 32; "8px gap"; then "+12px gap horizontal") */
   html.defL :is(#phone2, body[data-bp="xs"] #dOver) .ovDefRow.ovDefHlOn .ovDefHl{width:96px;height:96px;aspect-ratio:auto;margin:0;} html.defL :is(#phone2, body[data-bp="xs"] #dOver) .ovDefRow.ovDefHlOn{padding:12px 24px 12px 12px;gap:32px;}   /* Left with the Hairline: flush left, top and bottom, as the desk's */ html.defL :is(#phone2, body[data-bp="xs"] #dOver) .ovDefRow.ovDefHlOn .ovDefHl svg{position:absolute;left:var(--sqL, 0px);top:var(--sqT, 0px);width:var(--sqW, 100%);height:var(--sqH, 100%);}   /* the drawing 80 tall, its own air trimmed all round: its left on the padding's edge, the words 32 after it */
   .ovDefTx{flex:1 1 auto;min-width:0;} .ovDefTx b{display:block;font-size:15px;font-weight:500;line-height:1.3;color:#f4f4f4;}
@@ -12515,6 +12528,7 @@
         <div class="tkGroup" data-pages="ov" id="tkSvcIcGrp">
         <div class="tkSub">Services</div>
         <div class="tkRow"><span class="lbl">Icons</span><select id="stSvcIc" class="tkSegSel" aria-label="The services' 3D renders on the Overview and in the AI card: on, or the names alone"><option value="on">On</option><option value="off" selected>Off</option></select></div>
+        <div class="tkRow"><span class="lbl">Style</span><select id="stSvcSty" class="tkSegSel" aria-label="The Overview's services: pills, or Apple's cards (the picture on top, the title under it)"><option value="pill" selected>Pills</option><option value="apple">Apple</option></select></div>   <!-- "the same style as Apple, with the image on the top and the title below" -->
         </div>
         <!-- the Live version's Concierge card ("tweak Concierge card: activation cards (carousel) on / off"): Explore more and its cards, or the card without them -->
         <div class="tkGroup" data-pages="ov" id="tkCcGrp">
@@ -31447,7 +31461,8 @@ hairline({
   (function ov5(){
     const sec = document.querySelector('#dOver > .ov5'); if (!sec) return;
     { const t = document.getElementById('stCcAct'), on = () => document.body.classList.toggle('ccActOff', !!t && t.value === 'off'); if (t){ t.addEventListener('change', on); on(); } }   // Tweaks -> Concierge card -> Activation cards
-    { const t = document.getElementById('stSvcIc'), on = () => document.documentElement.classList.toggle('svcIc', !!t && t.value === 'on'); if (t){ t.addEventListener('change', on); on(); } }   // Tweaks -> Services -> Icons: the 3D renders back on the services (html.svcIc)
+    { const t = document.getElementById('stSvcIc'), on = () => document.documentElement.classList.toggle('svcIc', !!t && t.value === 'on'); if (t){ t.addEventListener('change', on); on(); } }
+    { const t = document.getElementById('stSvcSty'), on = () => document.documentElement.classList.toggle('svcApple', !!t && t.value === 'apple'); if (t){ t.addEventListener('change', on); on(); } }   // Tweaks -> Services -> Style: Apple's cards (html.svcApple)   // Tweaks -> Services -> Icons: the 3D renders back on the services (html.svcIc)
     { const dv = document.getElementById('dOver'); if (window.ResizeObserver) new ResizeObserver(() => { const w = dv.clientWidth; document.body.classList.toggle('ov5Wide', w >= 740); document.body.classList.toggle('ov5Cc2', w >= 1000); }).observe(dv); }   // the desk's two columns wherever the Overview is wide enough (forced M and L, and Auto at a desk-wide window)
     const NS = 'http://www.w3.org/2000/svg', A0 = 150, SW = 240, R = 48, C = 60;   // the dial: 240 degrees, open at the foot
     const pt = a => { const r = a * Math.PI / 180; return [(C + R * Math.cos(r)).toFixed(2), (C + R * Math.sin(r)).toFixed(2)]; };

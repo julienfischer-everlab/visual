@@ -18735,3 +18735,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
     - Pictures made in script (a canvas's source) are set again when a replacement comes or goes, so their canvas redraws.
     - The shared store's listener, if the platform ends it, is opened again; an upload whose record cannot be written lets the stored file go; errors say what happened; one upload per asset at a time (its card stays busy through repaints); the search keeps its focus and caret when a change arrives; search matches every word; a deferred open (the page still loading) is cancelled by picking another page.
     - Re-checked in the browser: frame opened first then replaced and put back; both video sources back to their own format; two Replaces in a row; search through a repaint; replace → Use original → Restore from Earlier files with the store double.
+- **Tweaks → Services → Style: Pills / Apple** ("a tweak for the services cards and the section on the Overview, the same style as Apple, with the image on the top and the title below"; the Apple Store app's Products row). Pills stays the default. `html.svcApple`.
+  - Apple: each service a card, its 3D render centred on top, its name centred under it (15, medium, up to two lines, balanced). The renders show whatever Services → Icons says.
+  - XS: upright cards 100 × 124, 22 round, 8 apart, scrolled sideways and snapped: three and half of the fourth on the screen, as Apple's row (107 × 131 on a 430 screen).
+  - The desk: the same cards in the desk's own 2 × 2 beside the hero (render 48, at least 112 tall). Four in one row was tried; it left the column short and the hero shrank, so the 2 × 2 keeps the layout's balance.
+  - Checked: XS dark and light, the desk L, Pills unchanged.
