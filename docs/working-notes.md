@@ -18740,3 +18740,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - XS: upright cards 100 × 124, 22 round, 8 apart, scrolled sideways and snapped: three and half of the fourth on the screen, as Apple's row (107 × 131 on a 430 screen).
   - The desk: the same cards in the desk's own 2 × 2 beside the hero (render 48, at least 112 tall). Four in one row was tried; it left the column short and the hero shrank, so the 2 × 2 keeps the layout's balance.
   - Checked: XS dark and light, the desk L, Pills unchanged.
+- **The star's particles: tiny and super light** ("stars explosion, super light, not prominent like this; use particles tiny"): ten specks (was 14), 0.6–1.1px (under 2 on screen with the big star at 1.6; were up to 2.6 with a glow), no glow, at 14–30% at most (were up to 56%), mostly white with a pale warm one now and then, drifting 14–34 out and a little up over about 2s. Checked close up: faint specks only.
