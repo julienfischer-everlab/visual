@@ -1971,6 +1971,39 @@ window.EvOverlap = (function () {
     save: function () { try { localStorage.setItem('everlab:hoMaster', JSON.stringify(M)); return true; } catch (e) { return false; } },
     reset: function () { Object.keys(D).forEach(function (k) { M[k] = D[k]; }); try { localStorage.removeItem('everlab:hoMaster'); } catch (e) {} tok(); } };
 })();
+/* EvMagnet: a row of cards swiped by hand, the magnet one ("if you swipe more than 50%, you go to the second card. If not, you come back to the normal card"), once for every carousel: the Plan's goals, the Services' recommended row.
+   Dragged by hand, a mouse as a finger (a mouse cannot pan a scroller, and a press-and-pull only selected the text); a drag more down than across is left to the page's scroll; the row's snapping off while it moves.
+   Let go: half a card's travel (and its gap) or more goes on to the next, or back to the one before; less springs back to its own. The glide 240 ms off a quintic, as the Records carousel's; the last card stops at the row's end. A drag never opens a card.
+   bind(row, { item, drag, onMove }) -> { go(i), at() }: item the cards' selector, drag the class the row wears while dragged, onMove() once a frame while the row moves (a glide, a drag, a scroll) */
+window.EvMagnet = (function () {
+  var red = function () { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
+  function bind(row, o) {
+    o = o || {}; if (!row) return { go: function () {}, at: function () { return 0; } };
+    var cs = function () { return [].slice.call(row.querySelectorAll(o.item)); };
+    var posOf = function (i) { var c = cs(); if (!c[i]) return 0; return Math.min(row.scrollWidth - row.clientWidth, Math.max(0, c[i].offsetLeft - c[0].offsetLeft)); };
+    var near = function () { var b = 0, d = Infinity; cs().forEach(function (x, i) { var v = Math.abs(posOf(i) - row.scrollLeft); if (v < d) { d = v; b = i; } }); return b; };
+    var an = 0, d0 = null, pend = 0, mq = 0;
+    var glide = function (to) { if (an) cancelAnimationFrame(an); var from = row.scrollLeft, d = to - from, t0 = performance.now(); if (Math.abs(d) < .5 || red()) { row.scrollLeft = to; row.style.scrollSnapType = ''; return; }
+      row.style.scrollSnapType = 'none';   // a glide the arrows start too: no snap pulling at it frame by frame
+      var st = function (now) { var k = Math.min(1, (now - t0) / 240); row.scrollLeft = from + d * (1 - Math.pow(1 - k, 5)); if (k < 1) an = requestAnimationFrame(st); else { an = 0; row.style.scrollSnapType = ''; } }; an = requestAnimationFrame(st); };
+    row.addEventListener('pointerdown', function (e) { if (e.button) return; if (an) { cancelAnimationFrame(an); an = 0; } d0 = { x: e.clientX, y: e.clientY, left: row.scrollLeft, dx: 0, i: near(), moved: false, pid: e.pointerId }; });
+    row.addEventListener('pointermove', function (e) { if (!d0) return; d0.dx = e.clientX - d0.x;
+      if (!d0.moved) { if (Math.abs(d0.dx) < 6) return; if (Math.abs(e.clientY - d0.y) > Math.abs(d0.dx)) { d0 = null; return; }   // more down than across: the page's scroll, not the row's
+        d0.moved = true; row.style.scrollSnapType = 'none'; if (o.drag) row.classList.add(o.drag); try { row.setPointerCapture(d0.pid); } catch (x) {} }
+      e.preventDefault(); if (!pend) pend = requestAnimationFrame(function () { pend = 0; if (d0 && d0.moved) row.scrollLeft = d0.left - d0.dx; }); });
+    var rel = function () { if (!d0) return; var m = d0.moved, dx = d0.dx, from = d0.i; d0 = null; if (o.drag) row.classList.remove(o.drag); if (pend) { cancelAnimationFrame(pend); pend = 0; } if (!m) return;
+      row.dataset.dragged = '1'; setTimeout(function () { row.dataset.dragged = ''; }, 0);   // the click after a drag opens nothing
+      var c = cs(), step = c.length > 1 ? c[1].offsetLeft - c[0].offsetLeft : row.clientWidth, to = from;
+      if (Math.abs(dx) >= step * .5) to = from + (dx < 0 ? 1 : -1);   // the magnet: half a card (and its gap) or more, on to the next
+      glide(posOf(Math.max(0, Math.min(c.length - 1, to)))); };
+    row.addEventListener('pointerup', rel); row.addEventListener('pointercancel', rel);
+    row.addEventListener('click', function (e) { if (row.dataset.dragged === '1') { e.stopPropagation(); e.preventDefault(); } }, true);
+    row.addEventListener('dragstart', function (e) { e.preventDefault(); });
+    if (o.onMove) row.addEventListener('scroll', function () { if (!mq) mq = requestAnimationFrame(function () { mq = 0; o.onMove(); }); }, { passive: true });
+    return { go: function (i) { var n = cs().length; if (n) glide(posOf(Math.max(0, Math.min(n - 1, i)))); }, at: near };
+  }
+  return { bind: bind };
+})();
 window.EvLoad = (function () {
   var spin = function () { var i = document.createElement('i'); i.className = 'evSpin'; i.setAttribute('aria-hidden', 'true'); return i; };
   function label(btn, text) {

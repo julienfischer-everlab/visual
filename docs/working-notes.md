@@ -19088,3 +19088,26 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Its photo stays pinned while the sheet slides over, and the title drifts and fades as it goes.
   - The page bar, its title and Back follow as before.
   - The sheet is now 24 round and 28 over the photo (it was 20 and 20), the master's numbers.
+
+## Services: the marketplace, a skeleton ("We need to create a page, services, which is the marketplace, so you can start with just a skeleton of a marketplace. When you click on a service, you will have the details of the service in a modal and a bottom sheet on mobile. The service detail triggers only from the timeline view. On the bottom navigation, Services redirects to the service marketplace.")
+- **A page of its own** in the shell, as the Plan is: *Services marketplace* in the page menu, `#services`.
+  - The dock's Services opens it and stays lit while it is up. The desk nav's Services opens it too. From a phone page, it opens in the XS device, as the Timeline does.
+  - Neither opens the Service detail any more. The Service detail is the Timeline's: its rows still open it. The page menu keeps its Service detail entry, for the prototype.
+- **The mock's Version #1 (Grid 3 columns)**, XS to XL, dark and light:
+  - *Everlab Services*, then *Your recommended services*. From M, two arrows sit at its right.
+  - The recommended row has three cards: Longevity Essentials (olive), Heart Health Check (deep maroon) and Gut microbiome (deep teal).
+  - Each card has its words, two chips with the rest counted, three values in an inset panel, the price and a glass Learn more. The photo fills its right half.
+  - One card and a peek at XS to M, about two at L and XL.
+  - The row swipes by hand with the Plan's magnet. The magnet is now one helper, `EvMagnet`, used by both.
+  - All | Individual | Bundles, the search, Price and Category all work.
+    - XS and S: two icons at the row's right open the search and the Price / Category row.
+    - M: the search runs across above the row. L, XL: everything on one row.
+  - The services are a list at XS, two columns of cards at S and M, and three at L and XL.
+  - The bundle is highlighted: a warm brown ground (pale yellow in light), three stacked photos, its Learn more filled.
+  - The prices are samples, and the page says so.
+  - The page's own width picks the layout (S from 480, M from 640, L from 1000), so Auto reads right at any window.
+- **A service** opens in Design system › Modals › Full bottom sheet: a bottom sheet at XS and S, the floating modal (544 wide, up to 720) from M.
+  - The picture (the bundle's three), its category, title, price, description, chips, What's included and How it works.
+  - *Add to my plan* shows the Simple loader, then its tick. *Ask Eva about it* opens the Chat with the question asked.
+  - Close, the scrim or Escape dismiss it. The Modals doc lists it under Used by.
+- **Pictures**: the app's own, as placeholders. The microbiome's two are cut small for the page (Assets library › Services).
