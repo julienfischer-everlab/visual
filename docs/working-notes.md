@@ -19098,3 +19098,15 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Contact us → the chat with Care team picked.
   - Plan and Refer a loved one went somewhere already.
 - **Fix**: opening My account from the Plan used to leave the Plan up and put My account away. My account now puts the Plan away first, as the Plan does for My account.
+
+## Async report: Persona #3 ("Create a tweak with the personal 3, with this information on the left side of this capture. What we recommended should be just a list of what the right side says here.")
+- **Tweaks › Async report › Persona** gains **#3**.
+- **Its one insight**: *Your iron pattern may reflect slow blood loss from your bowel* (10 Oct 2026), from the capture.
+  - Transferrin saturation 18 % and iron-binding capacity (TIBC) 72 µmol/L, both out of range. Haemoglobin 140 g/L and serum ferritin 171 ng/mL, both optimal. All 8 Oct 2026.
+  - What we noticed, as the capture writes it: the carrier protein, the October and June 2025 draws, the bowel referral in November 2025 and its cancelled colonoscopy.
+  - The capture's last line was cut off. It is completed with a mainstream point: ferritin also rises with inflammation, so a normal reading does not rule out iron being lost.
+- **Here's what we recommend** is just the list, from the capture's right side:
+  - An eyebrow in mono and orange: *The plan · Updated 10 Oct*.
+  - Then *New: gastroenterology review, booked*, *New: iron studies retest* ("New:" in orange), *Diagnostics review, Dec*, and *Annual bloods, 2027* (quieter).
+  - The lines sit in a rounded, outlined card.
+- **The rest borrows from Persona #1**: its welcome (doctor, assurance copy) and Everything else.

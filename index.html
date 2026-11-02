@@ -13154,7 +13154,7 @@
         <div class="tkRow tkPreRow"><span class="lbl">Preset</span><span class="tkPreCtl"><select id="stArPre" class="tkSegSel" aria-label="The report's preset"><option value="v1">V1</option><option value="v2" selected>V2</option></select><button class="tkBtn tkPreBtn" id="stArPreSave" type="button" title="Keep the current tweaks in this preset">Save</button><button class="tkBtn tkPreBtn" id="stArPreReset" type="button" title="Give this preset back its own tweaks">Reset</button></span></div>
         <!-- no Variation ("remove variation; full modal should be the one"): the desktop debrief is always the full modal -->
         <!-- whose report: Persona #1, or Persona #2, another member's results ("create a duplicate of the Async to create a different persona"); a tweak only, the menu the one Async report ("Persona 1 and 2 must be a tweak inside the page") -->
-        <div class="tkRow"><span class="lbl">Persona</span><select id="stArPer" class="tkSegSel" aria-label="Whose report"><option value="p1" selected>#1</option><option value="p2">#2</option></select></div>
+        <div class="tkRow"><span class="lbl">Persona</span><select id="stArPer" class="tkSegSel" aria-label="Whose report"><option value="p1" selected>#1</option><option value="p2">#2</option><option value="p3">#3</option></select></div>
         <div class="tkRow"><span class="lbl">Step shortcuts</span><select id="stArNav" class="tkSegSel" aria-label="The floating steps beside the report (Welcome, each insight, Everything else, Recommendations, Next steps): shown, or hidden"><option value="on" selected>Shown</option><option value="off">Hidden</option></select></div>   <!-- "tweak option to hide this shortcut nav" -->
         <!-- whose report it is, for reference ("put the name of the user and the ID below the persona, just as a reference") -->
         <div class="tkRow tkBuildRow tkPerRow"><span class="lbl">Member</span><span class="tkBuild tkPerRef" id="stArPerRef">Sample report, no member record</span></div>
@@ -15511,6 +15511,9 @@
    Its sheets: the products' rows on the mocks' warm grey tiles, the meals as cards of tips (the My meals mock), the others an icon tile; every row's detail stacked over it */
 .arSheet .arRcHead .arRcLede { margin: 0; font-size: 16px; line-height: 22px; color: oklch(var(--ar-ink) / .56); }   /* the title and how many, centred at every width (Everything else's head) */
 .arSheet .arRcCats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }   /* two a row */
+.arSheet .arPlanL { --plO: #c45a2a; padding: 24px; border-radius: 28px; border: 1.5px solid oklch(var(--ar-ink) / .1); } .arSheet.arDark .arPlanL { --plO: #f08a52; }   /* Persona #3's plan, a list ("the plan · updated 10 Oct"): its eyebrow mono and orange, a line each, New in orange, the later ones quieter */
+.arSheet .arPlanE { margin: 0 0 8px; font: 500 15px/20px var(--ar-font-mono); letter-spacing: .02em; text-transform: uppercase; color: var(--plO); }
+.arSheet .arPlanL ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; } .arSheet .arPlanL li { font-size: 20px; line-height: 28px; color: oklch(var(--ar-ink)); text-wrap: balance; } .arSheet .arPlanL li b { font-weight: 600; color: var(--plO); } .arSheet .arPlanL li.later { color: oklch(var(--ar-ink) / .56); }
 .arSheet .arRsArea.arRcCat { flex-direction: column; align-items: center; justify-content: flex-start; gap: 12px; min-height: 0; padding: 20px 12px 18px; border-radius: 20px; text-align: center; }   /* the render on top, the name and how many under it, centred (the services' Apple style) */
 .arSheet .arRcVis { position: relative; display: block; flex: none; width: 52px; height: 52px; } .arSheet .arRcVis img { position: relative; display: block; width: 100%; height: 100%; object-fit: contain; }   /* 24 smaller ("the visuals should be 24px smaller"), then 12 more ("reduce the image by 12 px") */
 .arSheet .arRcVis::before { content: ""; position: absolute; inset: calc(15% - 6px); border-radius: 50%; background: oklch(var(--ar-ink) / .1); }   /* then 12 larger and more filled, the ink at 10% (was 6%) ("the circle should be a bit more visible, increase it by 12px, a bit more filled") */   /* each render on a grey circle, 70% of it, centred behind ("a grey circle field that takes around 70% of the visual, so it feels like the visuals sit on this circle") */
@@ -16318,6 +16321,29 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
      A woman of 37 in the year after giving birth, with endometriosis: a pelvic protein, an inherited cholesterol, low iron, her thyroid and inflammation settled, her vitamin D.
      Its words as the screens have them; what they do not show (each marker's earlier readings, the markers inside each area's counts) filled in to fit ---------- */
   var REPORT2 = { name: 'Advanced blood test', date: '15 Oct 2026' };
+  /* Persona #3 ("create a tweak with the persona 3, with this information on the left side of this capture; what we recommend should be just a list of what the right side says"): one insight, the iron pattern, and the plan as a list */
+  var REPORT3 = { name: 'Advanced blood test', date: '10 Oct 2026' };
+  var IRON3 = {
+    headline: 'Your iron pattern may reflect slow blood loss from your bowel', short: 'Iron pattern, slow blood loss',
+    sources: [['blood', 'October 2026 blood test'], ['blood', 'June 2025 blood test']],
+    markers: [
+      { name: 'Transferrin saturation', value: '18 %', date: '8 Oct 2026', status: 'Out of range', bar: 'xox', pos: 0.27, trend: { pts: [19, 18, 18, 18], from: 'Out of range', to: 'Out of range' } },
+      { name: 'Iron-binding capacity (TIBC)', value: '72 \u00b5mol/L', date: '8 Oct 2026', status: 'Out of range', bar: 'xox', pos: 0.72, trend: { pts: [71, 72, 72, 72], from: 'Out of range', to: 'Out of range' } },
+      { name: 'Haemoglobin', value: '140 g/L', date: '8 Oct 2026', status: 'Optimal', bar: 'xsox', pos: 0.5, trend: { pts: [141, 140, 141, 140], from: 'Optimal', to: 'Optimal' } },
+      { name: 'Serum ferritin', value: '171 ng/mL', date: '8 Oct 2026', status: 'Optimal', bar: 'xsox', pos: 0.6, trend: { pts: [168, 170, 171, 171], from: 'Optimal', to: 'Optimal' } }
+    ],
+    noticed: [
+      'Iron travels in the blood on a carrier protein called transferrin. When supply runs short, the body makes extra carrier and each one holds less iron.',
+      'On 8 October 2026 your transferrin saturation, the share of carrier filled with iron, was low and your carrier level high, as in June 2025. Your haemoglobin, the oxygen-carrying protein in red cells, sits at the bottom of its healthy range.',
+      ['In November 2025 your doctor referred you for changed bowel habits, bloating and rectal bleeding, and ', { b: 'slow blood loss from the gut' }, ' can drain iron in exactly this way. That colonoscopy was cancelled.'],
+      'Your stored iron, ferritin, reads in range. Ferritin also rises with inflammation, so a normal reading does not rule out iron being lost.'
+    ],
+    means: [
+      ['Your blood shows ', { b: 'iron being used up faster than it is replaced' }, ', and your bowel symptoms are the likeliest place it is going.'],
+      [{ b: 'A gastroenterology review is booked' }, ' to look at your bowel, and your iron studies will be rechecked to see where they are heading.']
+    ]
+  };
+  var PLAN3 = { eyebrow: 'The plan \u00b7 Updated 10 Oct', items: [{ n: 1, t: 'gastroenterology review, booked' }, { n: 1, t: 'iron studies retest' }, { t: 'Diagnostics review, Dec' }, { t: 'Annual bloods, 2027', later: 1 }] };
   var WEL2 = { title: WEL.title, count: '89 biomarkers analysed', assure: WEL.assure, assureS: WEL.assureS, dr: 'Dr Joshua Martin', av: 'assets/overview/avatar-steven.webp', date: '15 October 2026', intro: ['Dr Joshua Martin has reviewed your latest results and health history.'], found: WEL.found, peace: WEL.peace, talk: WEL.talk };   // 89: the 77 of Everything else and the 12 of this draw behind the insights
   var CA125 = {
     headline: 'A pelvic protein stays raised, possibly from endometriosis, cause not yet confirmed', short: 'Pelvic protein raised',   // its name in Your insights
@@ -16514,7 +16540,8 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
   // each persona: its report, welcome, insights in order, everything else, its recommendations
   var PERSONA = {
     p1: { report: REPORT, wel: WEL, newi: NEWI, panels: PANELS, restH: REST_H, recs: RECS },
-    p2: { report: REPORT2, wel: WEL2, newi: [CA125, LPA, IRON, THYR, VITD2], panels: PANELS2, restH: REST_H, recs: RECS2 }
+    p2: { report: REPORT2, wel: WEL2, newi: [CA125, LPA, IRON, THYR, VITD2], panels: PANELS2, restH: REST_H, recs: RECS2 },
+    p3: { report: REPORT3, wel: { title: WEL.title, count: '64 biomarkers analysed', assure: WEL.assure, assureS: WEL.assureS, dr: WEL.dr, av: WEL.av, date: '10 October 2026', intro: WEL.intro, found: WEL.found, peace: WEL.peace, talk: WEL.talk }, newi: [IRON3], panels: PANELS, restH: REST_H, recs: [], plan: PLAN3 }   // Persona #3: the iron pattern alone, its plan a list
   };
 
 
@@ -16600,7 +16627,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
     if (!host || typeof host.appendChild !== 'function') throw new TypeError('AsyncReport.mount(host, opts): host must be an element');
     opts = opts || {};
     var D = PERSONA[opts.persona] || PERSONA.p1;   // whose report: Persona #1 (the default) or Persona #2
-    var REPORT = D.report, WEL = D.wel, NEWI = D.newi, PANELS = D.panels, REST_H = D.restH, RCS = D.recs || [];
+    var REPORT = D.report, WEL = D.wel, NEWI = D.newi, PANELS = D.panels, REST_H = D.restH, RCS = D.recs || [], RPLAN = D.plan || null;
     var o = {
       theme: opts.theme === 'dark' ? 'dark' : 'light',
       welcome: ['includes', 'reveal', 'sphere', 'halftone', 'orbit'].indexOf(opts.welcome) >= 0 ? opts.welcome : 'cards',   // 'orbit' (Sphere hero): a larger sphere 48 under the title, the insights one typed message at a time over it, the ball turning a little with each   // 'halftone': the Sphere's layout on a creme ground, the picture dithered at its foot as the Report visuals draw theirs   // 'sphere': the reveal on black (white in light) over a particle sphere turning at the foot   // Full bg ('reveal'): the welcome itself as the reveal, the title word by word over the picture, then the card of what is covered
@@ -17501,6 +17528,11 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       sheetOpen(c.t, nRec(rcCount(c)), c.t, ' arRcSheet', rows, from, false, true);   // as tall as its content
     }
     function buildRecs() {
+      if (RPLAN) {   /* the plan as a list ("what we recommend should be just a list"): its eyebrow, then each line, New ones flagged, the later ones quieter */
+        var pt = h('h2', { class: 'arH700', 'aria-label': 'Here’s what we recommend' }, 'Here’s what', h('br'), 'we recommend'), pl = h('p', { class: 'arPara arRcLede', text: nRec(RPLAN.items.length) });
+        var ph = h('div', { class: 'arIntroBlock arRsHead arRcHead' }, pt, pl);
+        var card = h('div', { class: 'arPlanL' }, h('p', { class: 'arPlanE', text: RPLAN.eyebrow }), h('ul', {}, RPLAN.items.map(function (it) { return h('li', { class: it.later ? 'later' : '' }, it.n ? h('b', { text: 'New:' }) : null, it.n ? ' ' : null, it.n ? it.t : it.t); })));
+        return enter(h('div', { class: 'arStack arGap24 arRcStack' }, ph, card), ph, pt, [pl, card]); }
       var all = RCS.reduce(function (t, c) { return t + rcCount(c); }, 0);
       var title = h('h2', { class: 'arH700', 'aria-label': 'Here’s what we recommend' }, 'Here’s what', h('br'), 'we recommend'), lede = h('p', { class: 'arPara arRcLede', text: nRec(all) });   // the title on two lines at every width, the break after what ("the break line under what")
       var hd = h('div', { class: 'arIntroBlock arRsHead arRcHead' }, title, lede);   // centred, as Everything else's ("you can centre the title here")
@@ -35469,7 +35501,7 @@ hairline({
     const opt = id => { const el = document.getElementById(id); return el ? el.value : ''; };
     const shut = () => wrap.classList.add('shut');
     let per = '';
-    const mount = keep => { const w = keep && inst && inst.where ? inst.where() : null, was = per; per = opt('stArPer') === 'p2' ? 'p2' : 'p1';   // a tweak changed: back on the same screen after ("don't reload the experience from the beginning")
+    const mount = keep => { const w = keep && inst && inst.where ? inst.where() : null, was = per; per = ['p2', 'p3'].indexOf(opt('stArPer')) >= 0 ? opt('stArPer') : 'p1';   // a tweak changed: back on the same screen after ("don't reload the experience from the beginning")
       if (inst) inst.destroy(); frame.textContent = '';
       inst = window.AsyncReport.mount(frame, { ev: opt('stArEv') === 'v2' ? 'v2' : 'v1', persona: per, more: opt('stArMore') === 'fold' ? 'fold' : 'sheet', bm: opt('stArBm') === 'carousel' ? 'carousel' : 'static', mean: opt('stArMean') === 'text' ? 'text' : 'card', src: opt('stArSrc') === 'out' ? 'out' : 'in', assure: opt('stArAss') !== 'off', lbg: opt('stArLbg') === 'on', svis: opt('stArList') === 'stream' ? 'stream' : 'sphere', mhl: opt('stArMhl') === 'on', areas: opt('stArAreas') === 'list' ? 'list' : opt('stArAreas') === 'grid' ? 'grid' : 'stack', cdn: opt('stArCdn') === '' ? .4 : +opt('stArCdn') / 100, amt: opt('stArAmt') === '' ? .5 : +opt('stArAmt') / 100, wvis: 'photo',   /* Intro screen: Split bg, the welcome's picture (no list after it now); Halftone, Full bg and Sphere, the welcome itself as the reveal (Halftone on creme, its picture dithered as the Report visuals do) */ theme: opt('themeSel') === 'dark' ? 'dark' : 'light', bar: opt('stArBar') === 'grad' ? 'grad' : 'solid', foot: opt('stArFoot') === 'grad' ? 'grad' : 'solid', welcome: opt('stArList') === 'reveal' ? 'reveal' : opt('stArList') === 'sphere' ? 'sphere' : opt('stArList') === 'orbit' || opt('stArList') === 'stream' ? 'orbit' : opt('stArList') === 'ht' ? 'halftone' : opt('stArWel') === 'includes' ? 'includes' : 'cards', tabs: opt('stArTab') || 'pills', cards: opt('stArCard') === 'outline' ? 'outline' : 'fill', mb: opt('stArMb') === '2' ? 2 : 3, srcVis: opt('stArSrcVis') === 'image' ? 'image' : 'hairline', onClose: () => { if (inst) inst.reset(); } });
       wrap.classList.toggle('aqInk', !!(inst && inst.el && !inst.el.classList.contains('arDark')));
