@@ -18785,3 +18785,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
     - Opening Plan over Gift, Docs and the like puts that page away first, so it no longer closes itself.
     - More → Plan from the old phone pages lands in the XS device.
     - The status strip doesn't appear in Auto.
+- **No more Overview showing through a closing experience** ("still some clipping issues when the Overview is behind an experience"; the "You're all set" screen half-faded over the Overview): two causes, both fixed.
+  - **Full-screen experiences now dip through their own background** (Health profile, Membership onboarding, Past results, Concierge, Async report): the layer under them is the screen's own paper (the dark sheet colour, or white on light sheets) instead of a 45% dim.
+    - **Opening**: the background covers the page in 0.2s, then the screen rises in over it 0.12s later.
+    - **Closing**: the screen fades and drops over that background, and only then (from 0.3s, over 0.26s) does the background fade to give the page back.
+    - The page never shows through a half-faded screen. The desk's centred modals (`hpBs`) keep their dim; with reduced motion, no delays.
+  - **The phone no longer recentres mid-close**: the profile's Flow panel (the journey beside the phone) went away the moment the close began, so the phone jumped 160px under a screen still fading. The panel now stays until the profile has gone. When a Flow panel comes or goes, the phone and whatever is over it slide back together (0.45s) instead of jumping.
+  - Checked on a recorded close and reopen at XS: profile → its background → Overview, and Overview → background → profile, with no frame showing both.
