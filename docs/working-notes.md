@@ -19088,3 +19088,13 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Its photo stays pinned while the sheet slides over, and the title drifts and fades as it goes.
   - The page bar, its title and Back follow as before.
   - The sheet is now 24 round and 28 over the photo (it was 20 and 20), the master's numbers.
+
+## More lit on its pages ("When I click on the sub, the main page (like Example Plan), if I'm on the plan page, the More needs to be highlighted because it's one of these pages and the More that is active. And the same for account, same for Contact Us, Settings, and all of the stuff page, basically.")
+- **More lights up** (its pill and its filled icon) while a page reached from More is up: the Plan and its subpages, and My account (its Settings tab included). Before, no tab was lit there.
+- **The More sheet's rows go somewhere now**:
+  - My account → My account.
+  - Settings → My account's Settings tab.
+  - Gift Everlab → the Gift page.
+  - Contact us → the chat with Care team picked.
+  - Plan and Refer a loved one went somewhere already.
+- **Fix**: opening My account from the Plan used to leave the Plan up and put My account away. My account now puts the Plan away first, as the Plan does for My account.

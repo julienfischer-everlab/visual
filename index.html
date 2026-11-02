@@ -31625,6 +31625,8 @@ hairline({
     const im = document.getElementById('dkIcM'); if (im && mo && im.value !== mo){ im.value = mo; im.dispatchEvent(new Event('change', { bubbles: true })); } };   // and the icons' motion, once saved there
   addEventListener('load', () => setTimeout(window._navMaster, 400));
   /* the dock's More: a bottom sheet of the rest of the app ("more icon needs to open a bottom sheet"), over the phone it is tapped in; the scrim, its close, a row or Escape put it away. Shared by the app and Documentation -> Navigation */
+  /* More lit ("if I'm on the plan page, the More needs to be highlighted because it's one of these pages; the same for account, Contact us, Settings, and all of the stuff"): every dock's More tab, its pill and its filled icon, while a page More opens is up */
+  window.__litMore = () => document.querySelectorAll('#bpFrame .mTab, #phone .mTab, #phone2 .mTab').forEach(t => { const m = !!t.querySelector('i') && t.querySelector('i').textContent.trim() === 'More'; t.classList.toggle('on', m); t.setAttribute('aria-selected', String(m)); });
   window.EvMore = (function () {
     const ic = d => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + d + '</svg>';
     const I = { plan: '<rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2M12 11h4M12 16h4M8 11h.01M8 16h.01"/>',
@@ -31639,7 +31641,12 @@ hairline({
         GROUPS.map((g, i) => '<div class="mvCard" style="--dl:' + ((n - 1 - i) * 50) + 'ms">' + g.map(r => '<button type="button" class="mvRow">' + (r[1] === 'me' ? me : r[1] === 'plan' && window.EvNavIc ? window.EvNavIc.svg('plan', 'mvIc', '0 0 24 24') : ic(I[r[1]])) + '<span>' + r[0] + '</span></button>').join('') + '</div>').join('') + '</div>';   /* each card rises in turn, the one by the dock first */
       host.appendChild(w); requestAnimationFrame(() => requestAnimationFrame(() => w.classList.add('on'))); const x = w.querySelector('.mvX'); setTimeout(() => { try { x.focus({ preventScroll: true }); } catch (e) {} }, 60);
       const esc = e => { if (e.key === 'Escape') close(); }, close = () => { document.removeEventListener('keydown', esc); w.classList.remove('on'); setTimeout(() => w.remove(), 520); };
-      document.addEventListener('keydown', esc); w.addEventListener('click', e => { const r = e.target.closest('.mvRow'); if (r && /Refer/.test(r.textContent) && window._rf) setTimeout(() => window._rf.show(1), 360);   /* Refer a loved one: the Gift referral at its Refer step */ if (e.target.closest('.mvScrim, .mvX, .mvRow')) close(); }); return { el: w, close }; }
+      document.addEventListener('keydown', esc); w.addEventListener('click', e => { const r = e.target.closest('.mvRow'); if (r && /Refer/.test(r.textContent) && window._rf) setTimeout(() => window._rf.show(1), 360);   /* Refer a loved one: the Gift referral at its Refer step */
+        { const t = r ? r.textContent.trim() : '', go = f => setTimeout(f, 360);   /* the rest of the sheet's rows to their pages (Plan has its own handler): My account, its Settings tab, the Gift page, the care team's chat */
+          if (t === 'My account' && window._acc) go(() => window._acc.open({ tab: 'profile' }));
+          else if (t === 'Settings' && window._acc) go(() => window._acc.open({ tab: 'settings' }));
+          else if (t === 'Gift Everlab' && window._gf) go(() => window._gf.show());
+          else if (t === 'Contact us' && window._cc && window._cc.run) go(() => window._cc.run(c => { if (c.model) c.model('care'); if (c.go) c.go('new'); if (c.focus) c.focus(); })); } if (e.target.closest('.mvScrim, .mvX, .mvRow')) close(); }); return { el: w, close }; }
     return { open };
   })();
   document.addEventListener('click', e => { const t = e.target.closest && e.target.closest('#bpFrame .mTab, #phone .mTab, #phone2 .mTab'); if (!t) return; const lab = t.querySelector('i'); if (!lab || lab.textContent.trim() !== 'More') return;
@@ -42654,10 +42661,11 @@ hairline({
     // open from the nav's foot, as the other desk pages open: the Overview's shell, the others closed; closed by any other page
     let mine = false;
     const open = o => { o = o || {}; TAB = o.tab || 'health'; if (o.sec) SEC = o.sec;   /* lands on Health profile ("active tab: Health profile") */
+      if (window._plan) window._plan.close(true);   // from the Plan (More -> My account / Settings): the Plan away first, as the Plan puts My account away
       if (window._tl) window._tl.close(true); if (window._svc && document.body.classList.contains('svcOn')) window._svc.close(); if (window._apt) window._apt.close(true);
       if (typeof version !== 'undefined' && version !== 9 && typeof setMode === 'function'){ setMode(9); }
       paint(); mine = true; document.body.classList.add('accOn'); mine = false; host.scrollTop = 0;
-      document.querySelectorAll('#bpFrame .mTab').forEach(t => { t.classList.remove('on'); t.setAttribute('aria-selected', 'false'); });   // the dock has no My account: no tab lit, not the page before's
+      if (window.__litMore) window.__litMore();   // My account is in More: More lit ("the same for account")
       requestAnimationFrame(() => { if (typeof resize === 'function') resize(); }); };
     const close = () => { if (!document.body.classList.contains('accOn')) return; document.body.classList.remove('accOn');
       { const b = document.body.classList; if (typeof version !== 'undefined' && version === 9 && !b.contains('tlOn') && !b.contains('svcOn') && !b.contains('aptOn')) document.querySelectorAll('#bpFrame .mTab').forEach((t, j) => { t.classList.toggle('on', j === 0); t.setAttribute('aria-selected', String(j === 0)); }); }   /* back on the Overview: its tab lit */ requestAnimationFrame(() => { if (typeof resize === 'function') resize(); }); };
@@ -42791,7 +42799,7 @@ hairline({
       ['_home', '_doc', '_hl', '_ig', '_rv', '_gf', '_cl', '_gr', '_cn', '_rf', '_al'].forEach(k => { if (window[k]) try { window[k].hide(); } catch (e) {} });   // a standalone page up: away first, or the observer below would close the Plan as it opens
       if (typeof version !== 'undefined' && version !== 9 && typeof setMode === 'function') setMode(9);
       sheet(); mine = true; document.body.classList.add('plOn'); mine = false; host.scrollTop = 0; const gl = host.querySelector('.plGoals'); if (gl) gl.scrollLeft = 0;
-      document.querySelectorAll('#bpFrame .mTab').forEach(t => { t.classList.remove('on'); t.setAttribute('aria-selected', 'false'); });   // the dock has no Plan (it is in More): no tab lit
+      if (window.__litMore) window.__litMore();   // the Plan is in More: More lit, its subpages too ("if I'm on the plan page, the More needs to be highlighted")
       const v = vs(); if (v) v.value = 'plan'; try { history.replaceState(null, '', '#plan'); } catch (e) {}
       if (sub) actShow(true);
       if (window.__tkPages) window.__tkPages(); requestAnimationFrame(() => { if (typeof resize === 'function') resize(); }); };
