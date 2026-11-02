@@ -18756,3 +18756,19 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The frame is read from the tokens when the screenshot is taken, so a change to the master frame reaches the screenshot. Files are named `…@3x.png`, or `…-frame@3x.png` for the framed version.
 - **Gift receipt: "Gift details"** (the "Occasion" title with "Gift details"): the card holding Occasion and Message is now titled **Gift details** (was Occasion). To avoid two "Gift details" on the page, the list in the first card is headed **What's included** again, as you chose.
 - **Concierge → Background video: On / Off** ("on concierge, a general tweak so we can just hide the video in the background"): it's the first row of the Concierge's tweaks. Off hides the video behind the screen, with its black band and top gradient, and pauses it. The Concierge then sits on its own dark ground; titles, bubbles and buttons are unchanged. Video opacity dims while the video is off. It applies wherever the Concierge shows (its standalone page, the Health profile's last step, the docs' phases), and it's saved with the other tweaks.
+- **Plan page, from the mock** ("edit the plan page; listen to this UI"): there was no Plan page (the desk nav's Plan and More → Plan went nowhere), so it's now one, inside the app shell like My account (`#dPlan`, `body.plOn`).
+  - **Ways in**: the page menu (Main pages → Plan), `#plan`, the desk nav's Plan (lit while open), and the phone's More → Plan. Any other page closes it.
+  - **Top**, dark in both variants:
+    - The hero photo runs up under the status bar on the phone; the shell's 47px band is removed while Plan shows, and the status bar stays white.
+    - The title "Don't lose sight of what's changing inside" (24pt, wraps after "what's").
+    - The goals' cards in a row: 340 × 152, radius 20, glass, peeking the next. Each has a title, a 72% line, a 36pt icon tile, and chips (e.g. "Cortisol ↓", or "ApoB 00" with a green dot).
+  - **Sheet**, radius 20, over the top 16pt below the cards:
+    - **Activity**: 80pt photo rows (radius 20), name, "3 Sections", chevron, dividers.
+    - **Nutrition**: a card (#181818 / #fafafa, radius 20) with title, description and the plate, then four swaps as 50pt rows.
+    - **Medical actions** with a count badge (6): 56pt product tiles (white, radius 6), name, outlined dose pill, frequency at 72%.
+    - Each section has an underlined "See plan".
+  - **Tweaks → Plan → Sheet: Dark / Light**, the mock's two. The top doesn't change. Measured from the mock: sheet #0f0f0f or white; secondary text 56%, swaps 72% (70 light), sections full ink.
+  - Once the sheet scrolls under the status bar, a band in the sheet's colour shows there; on Light, the status bar turns dark.
+  - **Desk**: the same page in the card; the hero across the top, the three goals side by side, the sheet's content a centred 720 column.
+  - **Images**: the hero (a clean strip of the mock, stretched and blurred), the two protocol photos, the plate (one per sheet colour) and the three product shots are cut from the mock (low resolution), in `assets/plan/`. They're in the Assets library's new **Plan** group, ready to be replaced with the originals.
+  - **Copy**: the mock's words. The 2nd and 3rd goal cards are new, in its voice ("Stronger heart", "Steady energy"). Medical actions lists six, as its count says; the last three (Metformin, Vitamin D3, Omega-3) reuse the bottle shots.
