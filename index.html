@@ -5699,7 +5699,7 @@
   .aqNavB:hover{background:rgba(255,255,255,.14);color:#fff;} .aqNavB.on{background:#fff;color:#111;} .aqNavB:focus-visible{outline:2px solid currentColor;outline-offset:2px;}
   .aqNav.lt .aqNavB{background:rgba(0,0,0,.07);color:rgba(0,0,0,.68);} .aqNav.lt .aqNavB:hover{background:rgba(0,0,0,.12);color:#000;} .aqNav.lt .aqNavB.on{background:#000;color:#fff;}
   body.asyncD .aqWrap.aqDesk{display:block;position:fixed;left:0;right:0;top:var(--barH,45px);bottom:0;z-index:40;pointer-events:auto;}
-  body.arOpen .aqWrap.arWrap{display:block;position:fixed;left:0;right:0;top:var(--barH,45px);bottom:0;z-index:40;pointer-events:auto;}   /* standalone ("same for Async report"): over whatever page is showing, the bar over it */ body.arOpen .topbar{z-index:61;}
+  body.arOpen .aqWrap.arWrap{display:block;position:fixed;left:0;right:0;top:var(--barH,45px);bottom:0;z-index:40;pointer-events:auto;} body.sugOn .aqWrap.sugWrap{display:block;position:fixed;left:0;right:0;top:var(--barH,45px);bottom:0;z-index:40;pointer-events:auto;} body:not(.sugOn) .aqWrap.sugWrap{display:none !important;} body.sugOn .topbar{z-index:61;}   /* the Suggestion, a standalone the same way (see its block by the full modals' close) */   /* standalone ("same for Async report"): over whatever page is showing, the bar over it */ body.arOpen .topbar{z-index:61;}
   body:is(.asyncD, .asyncM) .topbar{z-index:61;}   /* the step navigator (50) under it too ("the tweaks should always be above everything") */   /* the bar, and its Tweaks panel, over the report, the desk's (40) and the phone's (60) ("tweak should go above screen") */
   body.asyncM #phone2 .aqWrap.aqPhone{display:block;position:absolute;inset:0;z-index:60;pointer-events:auto;border-radius:inherit;overflow:hidden;}
   .aqDim{position:absolute;inset:0;background:rgba(0,0,0,.45);opacity:0;transition:opacity .35s ease;}
@@ -5760,7 +5760,65 @@
   /* M and L: a centred column, the title centred (above); 496 wide at M, 528 at L, the back and close at its edges */
   .aqWrap.aqFull.aqBpM .aqFrame > .arSheet.arSheet.arSheet.arSheet{max-width:536px;}
   .aqWrap.aqFull.aqBpL .aqFrame > .arSheet.arSheet.arSheet.arSheet{max-width:568px;}
-  .aqWrap:not(.hpWrap) .arSheet .arClose{cursor:default;} .aqWrap:not(.hpWrap) .arSheet .arClose:hover{opacity:1;}   /* the async report's close does nothing, so it doesn't look clickable; the Health profile's closes */
+  .aqWrap:not(.hpWrap) .arSheet .arClose{cursor:default;} .aqWrap:not(.hpWrap) .arSheet .arClose:hover{opacity:1;} .aqWrap.sugWrap .arSheet .arClose{cursor:pointer;transition:box-shadow .15s ease;} .aqWrap.sugWrap .arSheet .arClose:hover{box-shadow:inset 0 0 0 40px oklch(var(--ar-ink) / .09);}   /* the async report's close does nothing, so it doesn't look clickable; the Health profile's closes */
+  /* ---- the Suggestion (Standalone flow -> Suggestion, #suggestion; "create a standalone modal, Suggestion full modal, based on that UI"): the Full modal shell as the report's and the profile's (above: its ground, its device, the 64 rise on the phone, the fade on the desk, the dip), on the report's paper and type (.arSheet);
+     the mock's parts on it: the eyebrow, the title beside the close, the signals card and its chart, the rule, what we suggest next and its three numbered rows, the footer's View your recommendations and Not now. Its colours: the mock's (pink, green, the blue CTA) in dark, deeper in light */
+  .arSheet.sgmSheet{--sgmSide:20px;--sgmPink:#c2457f;--sgmGreen:#2f9e4a;--sgmBlue:#3a6fd8;--sgmCta:#3c66bf;--sgmCtaFg:#fff;--sgmLine:oklch(var(--ar-ink) / .1);}
+  .arSheet.sgmSheet.arDark{--sgmPink:#e493be;--sgmGreen:#8ad490;--sgmBlue:#9fb8f2;--sgmCtaFg:#0d0d0d;}
+  .aqWrap.sugWrap:is(.aqBpXS, .aqBpS) .arSheet.sgmSheet{--sgmSide:16px;}
+  .sgmSheet .sgmMain{position:relative;flex:1 1 auto;min-height:0;}
+  .aqWrap.sugWrap .arSheet.sgmSheet .arHead.sgmHead{position:absolute;left:0;right:0;top:0;z-index:3;padding:var(--ar-head-top) var(--sgmSide) 0;background:none;pointer-events:none;}   /* the close over the content's top right, beside the title (the mock), not a row of its own */
+  .aqWrap.aqFull.sugWrap .arSheet.sgmSheet .arHeadRow{margin-inline:0;justify-content:flex-end;}   /* at the column's edge on the desk (the master: "Close at the column's edges") */
+  .sgmSheet .sgmHead .arClose{pointer-events:auto;}
+  .sgmSheet .sgmScr{position:absolute;left:0;right:0;bottom:0;top:max(0px, calc(var(--ar-head-top) - 12px));overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;padding:14px var(--sgmSide) 32px;}   /* from just under the status bar: the page scrolls under nothing */
+  .sgmSheet.sgmScrolled .sgmScr{-webkit-mask-image:linear-gradient(to bottom, transparent 0, #000 20px);mask-image:linear-gradient(to bottom, transparent 0, #000 20px);}   /* scrolled: its top fades out under the close */
+  .sgmSheet .sgmTop{padding-top:8px;}
+  .sgmSheet .sgmTop::before{content:"";float:right;width:44px;height:24px;}   /* the close's room beside the eyebrow only; the title runs the full width under it (the mock: two lines, not three on the phone) */
+  .sgmSheet .sgmEy{margin:0;font:500 12px/16px var(--ar-font);letter-spacing:.16em;text-transform:uppercase;color:oklch(var(--ar-ink) / .56);}
+  .sgmSheet .sgmH{margin:10px 0 0;font:570 28px/32px var(--ar-font);letter-spacing:-.02em;color:oklch(var(--ar-ink) / 1);}
+  .aqWrap.sugWrap:is(.aqBpM, .aqBpL) .sgmSheet .sgmH{font-size:32px;line-height:36px;}
+  .sgmSheet .sgmCard{margin-top:28px;padding:20px;border-radius:24px;box-shadow:inset 0 0 0 1px var(--sgmLine);}
+  .aqWrap.sugWrap:is(.aqBpM, .aqBpL) .sgmSheet .sgmCard{margin-top:32px;padding:24px;}
+  .sgmSheet .sgmCardH{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;}
+  .sgmSheet .sgmCardEy{margin:0;font:400 14px/20px var(--ar-font);color:oklch(var(--ar-ink) / .56);}
+  .sgmSheet .sgmCardT{margin:4px 0 0;font:500 18px/24px var(--ar-font);color:oklch(var(--ar-ink) / 1);}
+  .sgmSheet .sgmRange{flex:none;font:400 13px/24px var(--ar-font);color:oklch(var(--ar-ink) / .56);}
+  .sgmSheet .sgmPlot{position:relative;height:112px;margin-top:20px;}
+  .aqWrap.sugWrap:is(.aqBpM, .aqBpL) .sgmSheet .sgmPlot{height:128px;margin-top:24px;}
+  .sgmSheet .sgmPlot svg{position:absolute;left:0;top:0;display:block;overflow:visible;}
+  .sgmSheet .sgmBase{stroke:oklch(var(--ar-ink) / .12);stroke-width:1;}
+  .sgmSheet .sgmLn{fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+  .sgmSheet .sgmDot{stroke:var(--ar-paper);stroke-width:2;transform-box:fill-box;transform-origin:center;}
+  .sgmSheet.sgmTwo :is(.sgmLn3, .sgmDot3){display:none;}   /* 2 lines: the mock's chart, LDL and vitamin D only, and its grey legend */
+  .sgmSheet.sgmTwo .sgmLeg i{background:oklch(var(--ar-ink) / .72);}
+  .sgmSheet .sgmAxis{display:flex;justify-content:space-between;margin-top:10px;font:400 12px/16px var(--ar-font);color:oklch(var(--ar-ink) / .56);}
+  .sgmSheet .sgmLeg{display:flex;flex-wrap:wrap;gap:8px 16px;margin:16px 0 0;padding:0;list-style:none;font:400 13px/18px var(--ar-font);color:oklch(var(--ar-ink) / .72);}
+  .sgmSheet .sgmLeg li{display:inline-flex;align-items:center;gap:6px;}
+  .sgmSheet .sgmLeg i{flex:none;width:8px;height:8px;border-radius:50%;background:var(--c);}
+  .sgmSheet .sgmRule{display:block;height:1px;border:0;margin:28px calc(-1 * var(--sgmSide)) 0;background:var(--sgmLine);}
+  .sgmSheet .sgmNext{margin-top:28px;}
+  .sgmSheet .sgmLede{margin:12px 0 0;font:400 16px/24px var(--ar-font);color:oklch(var(--ar-ink) / .64);text-wrap:pretty;}
+  .sgmSheet .sgmList{margin:20px 0 0;padding:0;list-style:none;border-top:1px solid var(--sgmLine);}
+  .sgmSheet .sgmList li{border-bottom:1px solid var(--sgmLine);}
+  .sgmSheet .sgmRow{appearance:none;position:relative;display:grid;grid-template-columns:36px minmax(0,1fr) 16px;align-items:center;gap:12px;width:100%;margin:0;padding:20px 0;border:0;border-radius:0;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer;}
+  .sgmSheet .sgmRow::before{content:"";position:absolute;inset:4px -10px;border-radius:14px;background:oklch(var(--ar-ink) / .04);opacity:0;transition:opacity .15s ease;pointer-events:none;}
+  .sgmSheet .sgmRow:hover::before{opacity:1;}
+  .sgmSheet .sgmRow:focus-visible{outline:2px solid var(--ar-blue-fg);outline-offset:2px;border-radius:12px;}
+  .sgmSheet .sgmNo{position:relative;font:500 15px/20px var(--ar-font);font-variant-numeric:tabular-nums;color:oklch(var(--ar-ink) / .9);}
+  .sgmSheet .sgmRowT{position:relative;display:flex;flex-direction:column;gap:2px;min-width:0;}
+  .sgmSheet .sgmRowT b{font:500 17px/24px var(--ar-font);color:oklch(var(--ar-ink) / 1);}
+  .sgmSheet .sgmRowT span{font:400 15px/20px var(--ar-font);color:oklch(var(--ar-ink) / .64);}
+  .sgmSheet .sgmRow svg{position:relative;width:16px;height:16px;color:oklch(var(--ar-ink) / .45);}
+  .aqWrap.sugWrap .arSheet.sgmSheet .arFoot.sgmFoot{position:relative;gap:4px;padding-left:var(--sgmSide);padding-right:var(--sgmSide);}
+  .sgmSheet .sgmFoot::before{content:"";position:absolute;left:0;right:0;bottom:100%;height:40px;background:linear-gradient(to bottom, color-mix(in srgb, var(--ar-paper) 0%, transparent), var(--ar-paper));pointer-events:none;}   /* the list fades under the footer */
+  .aqWrap.sugWrap:is(.aqBpM, .aqBpL) .arSheet.sgmSheet .arFoot.sgmFoot{flex-direction:row;align-items:center;gap:8px;}   /* the desk: side by side, as the mock */
+  .aqWrap.sugWrap:is(.aqBpM, .aqBpL) .sgmSheet .sgmGo{flex:1 1 auto;width:auto;}
+  .sgmSheet .sgmNot{appearance:none;margin:0;height:48px;padding:0 16px;border:0;border-radius:16px;background:none;color:oklch(var(--ar-ink) / 1);font:570 16px/18px var(--ar-font);cursor:pointer;transition:background-color .15s ease;}
+  .aqWrap.sugWrap:is(.aqBpM, .aqBpL) .sgmSheet .sgmNot{flex:none;height:56px;padding:0 28px;border-radius:9999px;}
+  .sgmSheet .sgmNot:hover{background:oklch(var(--ar-ink) / .04);}
+  .sgmSheet .sgmNot:focus-visible{outline:2px solid var(--ar-blue-fg);outline-offset:2px;}
+  .arSheet.sgmSheet.sgmBlue .sgmGo{--ar-btn-bg:var(--sgmCta);--ar-btn-fg:var(--sgmCtaFg);--ar-btn-bg-hover:color-mix(in srgb, var(--sgmCta) 86%, #fff);--ar-btn-bg-active:color-mix(in srgb, var(--sgmCta) 82%, #000);}   /* Tweaks -> CTA colour: Blue, the mock's; App, the sheet's own button */
+  .arSheet.sgmSheet:focus{outline:none;}
   .aqWrap.hpWrap .arSheet :is(.arClose, .arBack){cursor:pointer;transition:box-shadow .15s ease;} .aqWrap.hpWrap .arSheet :is(.arClose, .arBack):hover{opacity:1;box-shadow:inset 0 0 0 40px oklch(var(--ar-ink) / .09);}   /* its close and back: the hand and a fill on hover, as the welcome's ("hover cursor pointer") */
   /* the Full modal's welcome: content only, as every other step and as the board ("async still doesn't follow the Full modal style"): back and close on the paper, the title and its chips in the content (centred at M and L), the picture a rounded banner under them, then the debrief; the button at the foot */
   .aqWrap:is(.aqBpXS, .aqBpS){--aqSide:16px;}
@@ -8194,7 +8252,7 @@
   body.m9.tlOn .dash .side .nvOver{background:none;color:inherit;}
   body.m9.tlOn .dash .side .nvTl{background:#1e1e1c;color:#ececec;}   /* the page lights Timeline */
   body.light.m9.tlOn .dash .side .nvTl{background:#ece4d3;color:#2e241c;} body.light.m9.tlOn .dash .side .nvOver{background:none;}
-  #tkMenu [data-tl], #tkMenu [data-svc]{display:none !important;} body.tlOn:not(.svcOn) #tkMenu [data-tl], body.svcOn #tkMenu [data-svc], body.aptOn #tkMenu [data-svc], body:has(#phone2.svcOn) #tkMenu [data-svc], body:has(#phone2.aptOn) #tkMenu [data-svc]{display:flex !important;} body.tlOn #tkMenu [data-pages], body.svcOn #tkMenu [data-pages], body.aptOn #tkMenu [data-pages], body:has(#phone2.svcOn) #tkMenu [data-pages], body:has(#phone2.aptOn) #tkMenu [data-pages]{display:none !important;}   /* the phone's service and appointment screens too ("no need the Overview tweak here") */   /* on the Timeline, only its own tweaks */
+  #tkMenu [data-tl], #tkMenu [data-svc]{display:none !important;} body.tlOn:not(.svcOn) #tkMenu [data-tl], body.svcOn #tkMenu [data-svc], body.aptOn #tkMenu [data-svc], body:has(#phone2.svcOn) #tkMenu [data-svc], body:has(#phone2.aptOn) #tkMenu [data-svc]{display:flex !important;} body.tlOn #tkMenu [data-pages], body.svcOn #tkMenu [data-pages], body.aptOn #tkMenu [data-pages], body:has(#phone2.svcOn) #tkMenu [data-pages], body:has(#phone2.aptOn) #tkMenu [data-pages]{display:none !important;} html body.sugOn:not(#sg_) #tkMenu :is([data-tl], [data-svc]){display:none !important;} html body.sugOn:not(#sg_) #tkMenu .tkGroup[data-pages~="sug"]:not([hidden]){display:block !important;}   /* the Suggestion over them: its own tweaks only */   /* the phone's service and appointment screens too ("no need the Overview tweak here") */   /* on the Timeline, only its own tweaks */
   /* one rule for every sticky top bar ("the total height of the sticky is 100: 50% full black, the other 50% a black gradient, plus 32px bleeding
      outside; the blur the same, over the remaining 50% + 32"): the tint and the blur both run the bar's height + 32px; the top half solid,
      then an eased fade to nothing at 32px under the bar; the blur in ten stacked bands (no mask: a masked backdrop blur drew a hard line in
@@ -13087,6 +13145,13 @@
         <div class="tkSub">Plan</div>
         <div class="tkRow"><span class="lbl">Sheet</span><select id="stPlSheet" class="tkSegSel" aria-label="The Plan page's sheet, under the hero: dark, or light"><option value="dark" selected>Dark</option><option value="light">Light</option></select></div>   <!-- the mock's two: the sheet dark or white, the top dark in both -->
         </div>
+        <!-- the Suggestion, a standalone full modal: its CTA's colour (the mock's blue, or the app's own button), its chart (the three patterns drawn, or the mock's two lines), and its entrance played again -->
+        <div class="tkGroup" data-pages="sug">
+        <div class="tkSub">Suggestion</div>
+        <div class="tkRow"><span class="lbl">CTA colour</span><select id="stSgmCta" class="tkSegSel" aria-label="The Suggestion's primary button: the mock's blue, or the app's own"><option value="blue" selected>Blue</option><option value="app">App</option></select></div>
+        <div class="tkRow"><span class="lbl">Chart</span><select id="stSgmLines" class="tkSegSel" aria-label="The Suggestion's chart: a line for each of the three patterns, or the mock's two"><option value="3" selected>3 lines</option><option value="2">2 lines</option></select></div>
+        <div class="tkRow"><span class="lbl">Entrance</span><span class="tkPreCtl"><button class="tkBtn" type="button" id="stSgmReplay">Replay</button></span></div>
+        </div>
         <div class="tkGroup" data-pages="gift">
         <div class="tkSub">Gift</div>
         <div class="tkRow"><span class="lbl">Motion</span><select id="stGfMotion" class="tkSegSel" aria-label="The gift's motion: the reveal, or one scroll"><option value="dynamic" selected>Dynamic</option><option value="static">Static</option></select></div>
@@ -15792,7 +15857,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
   EA.on(function () { if (built && document.body.classList.contains('alOn')) { var y = pg.scrollTop; paint(); pg.scrollTop = y; } });
   /* the page: shown like Home, under the bar; every other page hidden */
   var hideOthers = function () { ['_home', '_hl', '_ig', '_rv', '_doc', '_gf', '_cl', '_gr', '_cn', '_rf', '_cc'].forEach(function (n) { var p = window[n]; if (p && p.hide) try { p.hide(); } catch (e) {} });
-    if (window._hp) try { window._hp.close(true); } catch (e) {} if (window._ar && window._ar.isOpen && window._ar.isOpen()) try { window._ar.close(); } catch (e) {} };
+    if (window._hp) try { window._hp.close(true); } catch (e) {} if (window._ar && window._ar.isOpen && window._ar.isOpen()) try { window._ar.close(); } catch (e) {} if (window._sug && window._sug.isOpen && window._sug.isOpen()) try { window._sug.close(true); } catch (e) {} };
   var pend = false;
   var show = function () { if (document.readyState !== 'complete') { if (!pend) { pend = true; addEventListener('load', function () { setTimeout(function () { if (pend) { pend = false; show(); } }, 80); }, { once: true }); } return; }   /* the whole page in first: its scripts carry most of the assets, and the menu is set by then; another page picked meanwhile cancels it */
     pend = false; hideOthers(); if (!built) { scan(document); built = true; scanFiles().then(function () { if (document.body.classList.contains('alOn')) { var y = pg.scrollTop; paint(); pg.scrollTop = y; } }); } paint(); usageRead(); document.body.classList.add('alOn'); var vs = document.getElementById('versionSel'); if (vs) vs.value = 'al'; if (window.__tkPages) try { window.__tkPages(); } catch (e) {} try { history.replaceState(null, '', '#assets-library'); } catch (e) {} pg.scrollTop = 0; };
@@ -27449,7 +27514,8 @@ hairline({
     addTo(sg, 'hp', 'Health profile');
     addTo(sg, 'pr', 'Past results');
     addTo(sg, 'ci', 'Concierge');   /* the Concierge's introduction, a page of its own ("Concierge as standalone page") */   /* the search for past results, a page of its own ("not part of the health profile") */
-    addTo(sg, 'ar', 'Async report');   /* over whatever page is showing ("same for Async report") */
+    addTo(sg, 'ar', 'Async report');
+    addTo(sg, 'sug', 'Suggestion');   /* a full modal over whatever page is showing ("create a standalone modal, Suggestion full modal") */   /* over whatever page is showing ("same for Async report") */
     addTo(sg, 'cc', 'Chat');   /* Concierge, over whatever page is showing ("chat page should be a standalone experience, meaning that it can overlap / be triggered from any page") */
     addTo(sg, 'gf', 'Gift');
     addTo(sg, 'gr', 'Gift receipt');
@@ -27486,10 +27552,11 @@ hairline({
     const v = versionSel.value;
     window.__ccSolo = v === 'ci'; window.__ccCard = false; document.documentElement.dataset.jny = v;   /* the Flow panel shows only the picked page's own flow */   /* the Concierge picked as its own page; anything else (the membership flow, the Flow panel) is the flow ("if from flow membership: primary Go to overview") */
     if (v !== 'hp' && v !== 'welc' && v !== 'pr' && v !== 'ci' && window._hp) { try { window._hp.close(true); } catch (e){} }   // the Health profile or its reveal gone with any other page picked ("move to page sometimes keeps the XS view: focus only on the new page selected")
-    if ((v === 'cc' || v === 'ar') && document.body.matches('.docOn, .hlOn, .igOn, .rvOn, .homeOn, .gfOn, .clOn, .grOn, .cnOn, .rfOn, .alOn')) { ['_doc', '_hl', '_ig', '_rv', '_home', '_gf', '_cl', '_gr', '_cn', '_rf', '_al'].forEach(k => { if (window[k]) try { window[k].hide(); } catch (e){} }); setMode(9); resize(); }   /* over a full page (the Documentation, Hairline, Home, Gift…): that page goes, the Overview under them instead ("every time I'm on Docs and select another page the screen goes over the docs") */
+    if ((v === 'cc' || v === 'ar' || v === 'sug') && document.body.matches('.docOn, .hlOn, .igOn, .rvOn, .homeOn, .gfOn, .clOn, .grOn, .cnOn, .rfOn, .alOn')) { ['_doc', '_hl', '_ig', '_rv', '_home', '_gf', '_cl', '_gr', '_cn', '_rf', '_al'].forEach(k => { if (window[k]) try { window[k].hide(); } catch (e){} }); setMode(9); resize(); }   /* over a full page (the Documentation, Hairline, Home, Gift…): that page goes, the Overview under them instead ("every time I'm on Docs and select another page the screen goes over the docs") */
     if (v === 'cc'){ if (window._cc) window._cc.show(); return; }   // the standalones: over the page that is showing, which stays
-    if (v === 'ar'){ if (window._ar) window._ar.open(); return; }
-    if (window._cc) window._cc.hide(); if (window._ar) window._ar.close();   // another page: they go
+    if (v === 'ar'){ if (window._sug) window._sug.close(true); if (window._ar) window._ar.open(); return; }
+    if (v === 'sug'){ if (window._ar) window._ar.close(); if (window._cc) window._cc.hide(); if (window._sug) window._sug.open(); return; }   // the Suggestion, a standalone the same way (the Chat, above it, put away)
+    if (window._cc) window._cc.hide(); if (window._ar) window._ar.close(); if (window._sug) window._sug.close(true);   // another page: they go
     { const SA = { al: '_al', rf: '_rf', gf: '_gf', cl: '_cl', gr: '_gr', cn: '_cn' };   // the Assets library and the website's pages: every other one gone first, then the picked one (Testing locations left the Consent on under it: only the pages before it in this list went)
       Object.keys(SA).forEach(k => { if (k !== v && window[SA[k]]) window[SA[k]].hide(); });
       if (SA[v]){ if (window[SA[v]]) window[SA[v]].show(); return; } }
@@ -27681,7 +27748,7 @@ hairline({
     const plPg = document.body.classList.contains('plOn');   // the Plan page: its own group alone
     const welPg = !hpPg && !!document.querySelector('.hpWrap.hpOpen.hpWelF, .hpWrap.hpOpen .hpAtLtr');   // the Membership reveal up (its page, or played over the Overview): First-time user alone ("shouldn't have the Overview tweak here")
     tkHp(hpPg);
-    const keys = plPg && extra !== 'ar' ? ['plan'] : cnPg ? [] : grPg ? ['gr'] : gfPg ? ['gift'] : clPg ? ['clinic'] : hpPg ? ['hp'] : welPg ? ['wel'] : extra === 'ar' ? ['ar'] : [key, extra].filter(Boolean), tk = document.getElementById('tkMenu');   // a standalone up, its own tweaks alone ("Async report shouldn't have all the tweaks from the Overview, just the async ones")
+    const keys = extra === 'sug' ? ['sug'] : plPg && extra !== 'ar' ? ['plan'] : cnPg ? [] : grPg ? ['gr'] : gfPg ? ['gift'] : clPg ? ['clinic'] : hpPg ? ['hp'] : welPg ? ['wel'] : extra === 'ar' ? ['ar'] : [key, extra].filter(Boolean), tk = document.getElementById('tkMenu');   // a standalone up, its own tweaks alone ("Async report shouldn't have all the tweaks from the Overview, just the async ones")
     if (tk){ tk.querySelectorAll('[data-pages]').forEach(el => { const p = el.dataset.pages.split(' '); el.hidden = !keys.some(k => p.indexOf(k) >= 0); }); tk.hidden = !keys.length; if (!keys.length) tk.open = false; }
     if (typeof jny === 'function'){ jny(); requestAnimationFrame(jny); setTimeout(jny, 500); }   // the journey beside the phone, once the profile's frame is placed
   }
@@ -27842,7 +27909,8 @@ hairline({
     const pr = document.getElementById('stHpPastRow'); if (pr) pr.classList.toggle('now', open && d.a === 'res' && d.id !== 'cc'); const cr = document.getElementById('stHpCcRow'); if (cr) { const on = open && d.a === 'res' && d.id === 'cc'; cr.querySelectorAll('li').forEach(li => li.classList.toggle('now', on && li.dataset.ph === (window.__ccPhaseCur || 'intro'))); }   /* the phase showing lit, as a step's page is */
     requestAnimationFrame(() => { const jp = document.getElementById('hpJny'); if (!jp || jp.hidden) return; const lit = jp.querySelector('li.now, .tkHpHome.now, #stHpPastRow.now, #stHpCcRow.now'); if (!lit) return; const r = lit.getBoundingClientRect(), R = jp.getBoundingClientRect(); if (r.top < R.top + 8) jp.scrollTop -= R.top + 8 - r.top + 24; else if (r.bottom > R.bottom - 8) jp.scrollTop += r.bottom - R.bottom + 8 + 24; }); });
   { const later = () => { requestAnimationFrame(jny); setTimeout(jny, 500); }; addEventListener('resize', later); const mo = new MutationObserver(later); mo.observe(document.body, { attributes: true, attributeFilter: ['data-bp'] }); }
-  window.__tkPages = () => tkPages(version, document.body.classList.contains('arOpen') ? 'ar' : '');   // from the start too: a page opened by its link (#gift) sets the menu before any mode is
+  const tkExtra = () => document.body.classList.contains('sugOn') ? 'sug' : document.body.classList.contains('arOpen') ? 'ar' : '';   // a standalone up: its own tweaks (the Suggestion, the Async report)
+  window.__tkPages = () => tkPages(version, tkExtra());   // from the start too: a page opened by its link (#gift) sets the menu before any mode is
   function setMode(m){
     version = m;
     document.dispatchEvent(new Event('everlab:mode'));
@@ -27851,8 +27919,8 @@ hairline({
     // Insights -- the Layout, the Biomarkers tab and the Reports; the
     // Overview (and results received, which opens over it) -- the Overview;
     // the landing -- its own; a page with none hides the menu
-    tkPages(m, document.body.classList.contains('arOpen') ? 'ar' : '');
-    window.__tkPages = () => tkPages(version, document.body.classList.contains('arOpen') ? 'ar' : '');   // for the profile, as it opens, turns from its reveal, goes back to it, or closes
+    tkPages(m, tkExtra());
+    window.__tkPages = () => tkPages(version, tkExtra());   // for the profile, as it opens, turns from its reveal, goes back to it, or closes
     { const ink = document.getElementById('inkMenu'); if (ink){ const concept = MODES[m] && MODES[m].group === 'Concept'; ink.hidden = !concept; if (!concept) ink.open = false; } }   // the Organs menu (density, inks) only on the Concept pages ("tweak organ ONLY concern Concept pages")
     DUR = reduced ? 300 : MODES[m].dur;
     document.body.className = 'm' + m + (m === 10 ? ' m2 b2' : '') +
@@ -34991,7 +35059,7 @@ hairline({
     };
     setInterval(navTick, 250); addEventListener('resize', navTick);
     vary(); mount(); raise(); navTick();
-    return { reset: () => { if (inst) inst.reset(); raise(); }, remount: () => { mount(true); navTick(); }, vary: () => { vary(); raise(); }, shut: () => wrap.classList.add('shut') };   // a tweak: remounted where it was, the sheet not risen again
+    return { reset: () => { if (inst) inst.reset(); raise(); }, remount: () => { mount(true); navTick(); }, vary: () => { vary(); raise(); }, shut: () => { wrap.classList.remove('on'); wrap.classList.add('shut'); } };   // its close: the screen fades over its own ground, then the ground goes (it kept .on, so the ground faded at once and the page showed through the fading report: "clipping")   // a tweak: remounted where it was, the sheet not risen again
   }
   {
     const arD = asyncReport(document.body, true), arM = asyncReport(document.getElementById('phone2'), false);
@@ -35001,6 +35069,83 @@ hairline({
       const open = () => { if (!arD) return; const b = document.body; clearTimeout(t); if (!b.classList.contains('arOpen')){ under = window.__pageVal ? window.__pageVal() : String(version); hash = location.hash !== '#async-report' ? location.hash : ''; } b.classList.add('arOpen'); arD.reset(); tkPages(version, 'ar'); if (versionSel) versionSel.value = 'ar'; try { history.replaceState(null, '', '#async-report'); } catch (e){} };
       const close = () => { const b = document.body; if (!b.classList.contains('arOpen')) return; if (arD) arD.shut(); clearTimeout(t); t = setTimeout(() => { b.classList.remove('arOpen'); tkPages(version); }, 460); if (versionSel && versionSel.value === 'ar') versionSel.value = under && under !== 'ar' ? under : String(version); if (location.hash === '#async-report') try { history.replaceState(null, '', hash || location.pathname + location.search); } catch (e){} };
       return { open, close, isOpen: () => document.body.classList.contains('arOpen') }; })();
+    /* the Suggestion (Standalone flow -> Suggestion, #suggestion; "create a standalone modal, Suggestion full modal, based on that UI"): a full modal over whatever page is showing, as the report and the profile (the same shell: .aqWrap.aqDesk.aqFull, its ground, its device, its breakpoints, its close dip),
+       on the report's paper and type (.arSheet, .arDark with the Mode). Its parts as the mock: the eyebrow, the title, the signals card (three patterns over six weeks, drawn in as it opens), the rule, what we suggest next and its three rows (each to its section of the Plan), View your recommendations (the Plan) and Not now */
+    window._sug = (() => {
+      const E = 'cubic-bezier(.16, 1, .3, 1)', reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const optV = id => { const el = document.getElementById(id); return el ? el.value : ''; };
+      const dark = () => optV('themeSel') !== 'light';
+      /* the patterns over the six weeks (x 0 to 1, y 0 to 1 up): LDL trending up, vitamin D below target and drifting down, recovery improving; each dot a reading that made it a pattern. Drawn back to front, LDL on top as the mock */
+      const SER = [
+        { c: '--sgmPink', t: 'LDL cholesterol trending up', p: [[0, .12], [.16, .18], [.3, .2], [.44, .28], [.52, .31], [.63, .48], [.73, .55], [.84, .66], [.91, .6], [1, .86]], d: [5, 7, 9] },
+        { c: '--sgmGreen', t: 'Vitamin D below target', p: [[0, .56], [.2, .53], [.36, .55], [.5, .47], [.6, .42], [.68, .45], [.84, .41], [1, .42]], d: [5, 7] },
+        { c: '--sgmBlue', t: 'Recovery improving', p: [[0, .04], [.22, .08], [.42, .1], [.56, .17], [.72, .22], [.86, .28], [1, .34]], d: [6] } ];
+      const ROWS = [['01', 'Improve your vitamin D', 'Start a targeted 8-week protocol and retest.', 3], ['02', 'Lower your LDL cholesterol', 'Adjust nutrition and add a follow-up lipid panel.', 2], ['03', 'Protect your progress', 'Keep your current activity plan — your recovery trend is improving.', 1]];   // the Plan's section each opens: Medical actions, Nutrition, Activity
+      const CHEV = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5"/></svg>';
+      const XI = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9"/></svg>';
+      let wrap = null, frame = null, sheet = null, plot = null, ro = null, under = null, hash = '', endT = 0, goT = 0, pw = 0, anims = [];
+      const isOpen = () => document.body.classList.contains('sugOn');
+      const bpNow = () => { const f = document.body.dataset.bp, w = innerWidth; return f || (w >= 1440 ? 'l' : w >= 992 ? 'm' : w >= 600 ? 's' : 'xs'); };
+      const fit = () => { if (!wrap) return; const b = bpNow(); ['xs', 's', 'm', 'l'].forEach(k => wrap.classList.toggle('aqBp' + k.toUpperCase(), k === b)); wrap.classList.toggle('aqDev', document.body.dataset.bp === 's' || (document.body.dataset.bp === 'xs' && !document.documentElement.classList.contains('bpAuto'))); };
+      const stop = () => { anims.forEach(a => { try { a.cancel(); } catch (e){} }); anims = []; };
+      // the chart, at the card's own width (redrawn as it changes; no stretched strokes or squashed dots): the curve the biomarker chart draws (each segment's handles at its middle), the baseline under it
+      const draw = anim => { if (!plot) return; const W = plot.clientWidth, H = plot.clientHeight; if (!W || !H) return; pw = W;
+        const PX = 10, PT = 8, PB = 14, X = x => PX + x * (W - 2 * PX), Y = y => PT + (1 - y) * (H - PT - PB), f = n => n.toFixed(1);
+        const path = pts => pts.map((q, i) => { const x = X(q[0]), y = Y(q[1]); if (!i) return 'M' + f(x) + ' ' + f(y); const ax = X(pts[i - 1][0]), ay = Y(pts[i - 1][1]), mx = (ax + x) / 2; return 'C' + f(mx) + ' ' + f(ay) + ' ' + f(mx) + ' ' + f(y) + ' ' + f(x) + ' ' + f(y); }).join('');
+        let h = '<svg width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" aria-hidden="true" focusable="false"><line class="sgmBase" x1="0" x2="' + W + '" y1="' + (H - .5) + '" y2="' + (H - .5) + '"/>', dots = '';
+        for (let i = SER.length - 1; i >= 0; i--){ const s = SER[i]; h += '<path class="sgmLn sgmLn' + (i + 1) + '" d="' + path(s.p) + '" pathLength="1" style="stroke:var(' + s.c + ')"/>'; s.d.forEach(j => { const q = s.p[j]; dots += '<circle class="sgmDot sgmDot' + (i + 1) + '" cx="' + f(X(q[0])) + '" cy="' + f(Y(q[1])) + '" r="4.5" data-x="' + q[0] + '" style="fill:var(' + s.c + ')"/>'; }); }
+        plot.innerHTML = h + dots + '</svg>'; if (anim != null) drawIn(anim); };
+      // the lines drawn in left to right, one after the other, each dot popping as its line reaches it
+      const drawIn = d0 => { if (!plot || reduced() || !plot.animate) return; const D = 1100, base = plot.querySelector('.sgmBase');
+        if (base) anims.push(base.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 420, delay: d0, easing: 'ease-out', fill: 'backwards' }));
+        plot.querySelectorAll('.sgmLn').forEach(l => { const i = +l.getAttribute('class').replace(/\D+/g, '') - 1; anims.push(l.animate([{ strokeDasharray: '1 1', strokeDashoffset: 1 }, { strokeDasharray: '1 1', strokeDashoffset: 0 }], { duration: D, delay: d0 + i * 140, easing: 'cubic-bezier(.45, 0, .25, 1)', fill: 'backwards' })); });
+        plot.querySelectorAll('.sgmDot').forEach(c => { const i = +c.getAttribute('class').replace(/\D+/g, '') - 1; anims.push(c.animate([{ opacity: 0, transform: 'scale(.3)' }, { opacity: 1, transform: 'scale(1)' }], { duration: 420, delay: d0 + i * 140 + (+c.dataset.x) * D * .9, easing: 'cubic-bezier(.34, 1.56, .64, 1)', fill: 'backwards' })); }); };
+      // its entrance, as the profile's home: each part rising 24 as it fades in, 120 ms after the one before (the title, the card and its chart, what we suggest next, each row), the footer last
+      const enter = () => { stop(); if (!sheet || reduced() || !sheet.animate) { draw(); return; } let d = 280;
+        const up = (els, y) => { els.forEach(el => { if (el) anims.push(el.animate([{ transform: 'translateY(' + y + 'px)', opacity: 0, offset: 0 }], { duration: 780, delay: d, easing: E, fill: 'backwards' })); }); d += 120; };
+        up([sheet.querySelector('.sgmTop')], 24); const cd = d; up([sheet.querySelector('.sgmCard')], 24); draw(cd + 260);
+        up([sheet.querySelector('.sgmRule'), sheet.querySelector('.sgmNext > .sgmEy'), sheet.querySelector('.sgmLede')], 24);
+        sheet.querySelectorAll('.sgmList > li').forEach(li => up([li], 24)); up([sheet.querySelector('.sgmFoot')], 16); };
+      const paint = () => { if (!sheet) return; sheet.classList.toggle('arDark', dark()); sheet.classList.toggle('sgmBlue', optV('stSgmCta') !== 'app'); sheet.classList.toggle('sgmTwo', optV('stSgmLines') === '2'); wrap.classList.toggle('aqInk', !dark()); frame.style.background = getComputedStyle(sheet).getPropertyValue('--ar-paper').trim() || (dark() ? 'oklch(16.84% 0 263.28)' : '#fff'); };   // its paper, the token (the sheet's background colour reads mid-transition after a Mode change: the desk's frame stayed dark in light)
+      const mount = () => { frame.textContent = ''; if (ro){ ro.disconnect(); ro = null; }
+        sheet = document.createElement('div'); sheet.className = 'arSheet sgmSheet'; sheet.tabIndex = -1;
+        sheet.innerHTML = '<div class="arStage"><div class="sgmMain"><div class="arHead sgmHead"><div class="arHeadRow"><button class="arIconBtn arClose" type="button" aria-label="Close">' + XI + '</button></div></div>'
+          + '<div class="sgmScr"><div class="sgmTop"><p class="sgmEy">Your health report · Last 6 weeks</p><h2 class="sgmH">We’ve noticed a few changes worth acting on.</h2></div>'
+          + '<section class="sgmCard" aria-label="Your recent signals"><div class="sgmCardH"><div><p class="sgmCardEy">Your recent signals</p><p class="sgmCardT">3 patterns identified</p></div><span class="sgmRange">Sep — Nov</span></div>'
+          + '<div class="sgmPlot" role="img" aria-label="The last six weeks: LDL cholesterol trending up, vitamin D below target, recovery improving"></div><div class="sgmAxis" aria-hidden="true"><span>6 weeks ago</span><span>Today</span></div>'
+          + '<ul class="sgmLeg">' + SER.map(s => '<li><i style="--c:var(' + s.c + ')"></i>' + s.t + '</li>').join('') + '</ul></section>'
+          + '<hr class="sgmRule"><section class="sgmNext" aria-label="What we suggest next"><p class="sgmEy">What we suggest next</p><p class="sgmLede">Based on your latest blood results, activity and health history, we’ve prepared three recommendations for you.</p>'
+          + '<ol class="sgmList">' + ROWS.map(r => '<li><button class="sgmRow" type="button" data-sec="' + r[3] + '"><span class="sgmNo">' + r[0] + '</span><span class="sgmRowT"><b>' + r[1] + '</b><span>' + r[2] + '</span></span>' + CHEV + '</button></li>').join('') + '</ol></section></div></div>'
+          + '<div class="arFoot sgmFoot"><button class="arBtn arBtnPrimary arBtnLg sgmGo" type="button"><span class="arBtnLabel">View your recommendations</span></button><button class="sgmNot" type="button">Not now</button></div></div>';
+        frame.appendChild(sheet); plot = sheet.querySelector('.sgmPlot'); paint(); pw = 0;
+        { const sc = sheet.querySelector('.sgmScr'); sc.addEventListener('scroll', () => sheet.classList.toggle('sgmScrolled', sc.scrollTop > 2), { passive: true }); }
+        if (window.ResizeObserver){ ro = new ResizeObserver(() => { if (plot && plot.clientWidth && plot.clientWidth !== pw) draw(); }); ro.observe(plot); } };
+      const build = () => { wrap = document.createElement('div'); wrap.className = 'aqWrap aqDesk aqFull sugWrap'; wrap.setAttribute('role', 'dialog'); wrap.setAttribute('aria-modal', 'true'); wrap.setAttribute('aria-label', 'Your health report: what we suggest next');
+        wrap.innerHTML = '<div class="aqDim"></div><div class="aqFrame"></div><div class="aqStat" aria-hidden="true"></div>'; document.body.appendChild(wrap); frame = wrap.querySelector('.aqFrame');
+        { const st = document.querySelector('#bpFrame .bpStatus'); if (st) wrap.querySelector('.aqStat').innerHTML = st.innerHTML; }   // a device's status bar, on the modal's own paper
+        addEventListener('resize', fit); { const bp = document.getElementById('stBp'); if (bp) bp.addEventListener('change', () => setTimeout(fit, 60)); }
+        frame.addEventListener('click', e => { if (!wrap.classList.contains('on')) return; if (e.target.closest('.arClose, .sgmNot')){ close(); return; } const g = e.target.closest('.sgmRow, .sgmGo'); if (g) toPlan(+g.dataset.sec || 0); }); };
+      const open = () => { if (!wrap) build(); const b = document.body; clearTimeout(endT); clearTimeout(goT);
+        const up = isOpen() && wrap.classList.contains('on'); if (!isOpen()){ under = window.__pageVal ? window.__pageVal() : String(version); hash = location.hash !== '#suggestion' ? location.hash : ''; }
+        b.classList.add('sugOn'); fit();
+        if (!up){ mount(); wrap.classList.remove('on', 'shut'); enter(); requestAnimationFrame(() => requestAnimationFrame(() => { if (isOpen()) wrap.classList.add('on'); })); setTimeout(() => { if (sheet && wrap.classList.contains('on') && !sheet.contains(document.activeElement)) sheet.focus({ preventScroll: true }); }, 540); }
+        tkPages(version, 'sug'); if (versionSel) versionSel.value = 'sug'; try { history.replaceState(null, '', '#suggestion'); } catch (e){} };
+      // its close, as the profile's: the screen fades over its own ground (.on off, .shut on), then the ground gives the page back; now: at once (another page picked)
+      const close = now => { const b = document.body; if (!wrap || !isOpen()) return; clearTimeout(endT); wrap.classList.remove('on'); wrap.classList.add('shut');
+        if (versionSel && versionSel.value === 'sug') versionSel.value = under && under !== 'sug' ? under : String(version);
+        if (location.hash === '#suggestion') try { history.replaceState(null, '', hash || location.pathname + location.search); } catch (e){}
+        const end = () => { b.classList.remove('sugOn'); wrap.classList.remove('shut'); stop(); if (ro){ ro.disconnect(); ro = null; } frame.textContent = ''; sheet = plot = null; if (window.__tkPages) window.__tkPages(); };
+        if (now === true) end(); else endT = setTimeout(end, 580); };
+      // a row or View your recommendations: the modal goes, then the Plan, at the row's section (under the phone's status band)
+      const toPlan = n => { close(); if (!window._plan) return; clearTimeout(goT); goT = setTimeout(() => { try { window._plan.open(); } catch (e){ return; } if (!n) return;
+        requestAnimationFrame(() => requestAnimationFrame(() => { const pg = document.getElementById('dPlan'), el = pg && pg.querySelectorAll('.plSheetIn > .plSec')[n - 1]; if (!el) return; const band = pg.querySelector('.plStBar'), off = (band && band.offsetHeight ? band.offsetHeight : 0) + 16;
+          pg.scrollTo({ top: Math.max(0, el.getBoundingClientRect().top - pg.getBoundingClientRect().top + pg.scrollTop - off), behavior: reduced() ? 'auto' : 'smooth' }); })); }, 600); };
+      document.addEventListener('keydown', e => { if (e.key !== 'Escape' || !wrap || !isOpen() || !wrap.classList.contains('on')) return; if (e.target.closest && e.target.closest('.topbar')) return; e.preventDefault(); close(); });   // the master's desk dismiss: Close, Escape
+      document.addEventListener('everlab:mode', () => close(true));   // a page change under it (setMode rewrites the body's classes): it goes at once
+      { const th = document.getElementById('themeSel'); if (th) th.addEventListener('change', () => setTimeout(() => { if (isOpen()) paint(); }, 30)); }   // the Mode, live
+      ['stSgmCta', 'stSgmLines'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener('change', () => { if (isOpen()) paint(); }); });   // its tweaks, live, where it stands
+      { const r = document.getElementById('stSgmReplay'); if (r) r.addEventListener('click', () => { if (!isOpen()){ open(); return; } const sc = sheet && sheet.querySelector('.sgmScr'); if (sc) sc.scrollTop = 0; enter(); }); }   // its entrance again
+      return { open, close, isOpen, replay: () => { if (isOpen() && sheet) enter(); } }; })();
     { const l = document.getElementById('stArList'), r = document.getElementById('stArLbgRow'), r2 = document.getElementById('stArCdnRow'), cv = document.getElementById('stArCdn'), cvv = document.getElementById('stArCdnV'); const sh = () => { if (r && l) r.hidden = ['orbit', 'stream'].indexOf(l.value) < 0; { const rm = document.getElementById('stArMhlRow'); if (rm && l) rm.hidden = ['orbit', 'stream'].indexOf(l.value) < 0; } const two = l && ['sphere', 'orbit', 'stream'].indexOf(l.value) >= 0; if (r2) r2.hidden = !two; ['stArAmtRow'].forEach(id => { const rr = document.getElementById(id); if (rr) rr.hidden = !two; }); }; [['stArCdn', 'stArCdnV'], ['stArAmt', 'stArAmtV']].forEach(([a, b]) => { const e = document.getElementById(a), t = document.getElementById(b); if (!e || !t) return; const sync = () => { t.textContent = e.value; }; e.addEventListener('input', sync); e.addEventListener('change', sync); sync(); requestAnimationFrame(() => requestAnimationFrame(sync)); });   /* each slider's number its own value, however it was set: dragged, a preset, the remembered tweaks (a preset set it silently, so it read 40 and 50 over 85) */ if (l){ l.addEventListener('change', sh); sh(); setInterval(sh, 600); } }   // Label badge: the Sphere hero's alone
     { const l = document.getElementById('stArList'), r = document.getElementById('stArAssRow'); const sh = () => { if (r && l) r.hidden = ['reveal', 'sphere', 'ht', 'orbit', 'stream'].indexOf(l.value) < 0; }; if (l){ l.addEventListener('change', sh); sh(); setInterval(sh, 600); } }   // Rest assured is the reveal intros' (Full bg, Sphere, Halftone)
     { const e = document.getElementById('stArEv'), r = document.getElementById('stArSrcRow'); const sh = () => { if (r && e) r.hidden = e.value !== 'v2'; }; if (e){ e.addEventListener('change', sh); sh(); setInterval(sh, 600); } }   // Sources is One card's (V2)
@@ -42431,7 +42576,7 @@ hairline({
         gfVals().forEach(([to, , v]) => { const el = d.getElementById(to); if (!el || !v || el.value === v) return; el.value = v; el.dispatchEvent(new w.Event(el.tagName === 'INPUT' ? 'input' : 'change', { bubbles: true })); }); } catch (e){} };
       const gfHide = () => { if (!document.body.classList.contains('gfOn')) return; document.body.classList.remove('gfOn'); if (versionSel && versionSel.value === 'gf') versionSel.value = String(version); if (window.__tkPages) window.__tkPages(); };
       const gfShow = () => { if (!gf) return; hide(); hlHide(); igHide(); rvHide(); if (window._gr) window._gr.hide(); if (window._cl) window._cl.hide(); if (window._rf) window._rf.hide(); if (window._cn) window._cn.hide(); if (window._doc) window._doc.hide(); if (window._cc) window._cc.hide();
-        if (window._hp) window._hp.close(true); if (window._ar && window._ar.isOpen()) window._ar.close();   // the reveal, the profile, the report: not over it
+        if (window._hp) window._hp.close(true); if (window._ar && window._ar.isOpen()) window._ar.close(); if (window._sug && window._sug.isOpen()) window._sug.close(true);   // the reveal, the profile, the report: not over it
         if (!gf.firstChild){ const f = document.createElement('iframe'); f.id = 'gfFrame'; f.src = 'gift.html#embed&' + gfVals().map(([, k, v]) => k + '=' + encodeURIComponent(v)).join('&'); f.title = 'Gift'; f.addEventListener('load', gfSync); gf.appendChild(f); }   // opened with the tweaks as they are, so its first run is theirs
         gfSync(); document.body.classList.add('gfOn'); if (versionSel) versionSel.value = 'gf'; if (window.__tkPages) window.__tkPages(); try { history.replaceState(null, '', '#gift'); } catch (e){} };
       window._gf = { show: gfShow, hide: gfHide };
@@ -42447,7 +42592,7 @@ hairline({
       const clFrame = () => { const f = document.getElementById('clFrame'), t = document.getElementById('stClFrame'); try { const r = f && f.contentDocument && f.contentDocument.documentElement; if (r){ r.classList.toggle('noFrame', !!t && t.value === 'off'); const ly = document.getElementById('stClLay'); r.classList.toggle('rows', !!ly && ly.value === 'rows'); } } catch (e){} };   // and Layout: Grid or Rows
       ['stClFrame', 'stClLay'].forEach(id => { const t = document.getElementById(id); if (t) t.addEventListener('change', clFrame); });
       const clShow = () => { if (!cl) return; hide(); hlHide(); igHide(); rvHide(); gfHide(); if (window._gr) window._gr.hide(); if (window._rf) window._rf.hide(); if (window._cn) window._cn.hide(); if (window._doc) window._doc.hide(); if (window._cc) window._cc.hide();
-        if (window._hp) window._hp.close(true); if (window._ar && window._ar.isOpen()) window._ar.close();
+        if (window._hp) window._hp.close(true); if (window._ar && window._ar.isOpen()) window._ar.close(); if (window._sug && window._sug.isOpen()) window._sug.close(true);
         const dev = cl.querySelector('.clDev'); if (dev && !dev.firstChild){ const f = document.createElement('iframe'); f.id = 'clFrame'; f.src = 'clinic.html'; f.title = 'Testing locations'; f.addEventListener('load', clFrame); dev.appendChild(f); }
         clFrame(); document.body.classList.add('clOn'); if (versionSel) versionSel.value = 'cl'; if (window.__tkPages) window.__tkPages(); try { history.replaceState(null, '', '#clinic'); } catch (e){} };
       window._cl = { show: clShow, hide: clHide };
@@ -42458,7 +42603,7 @@ hairline({
       { const t = document.getElementById('themeSel'); if (t) t.addEventListener('change', grTheme); ['stGrBg', 'stGrApp', 'stGrSplit', 'stGrCols', 'stGrSched', 'stGrLogo', 'stGrVis'].forEach(id => { const x = document.getElementById(id); if (x) x.addEventListener('change', grTheme); }); }
       addEventListener('message', e => { const f = document.getElementById('grFrame'); if (!f || e.source !== f.contentWindow || !e.data || e.data.everlab !== 'gr:overview') return; if (versionSel){ versionSel.value = '9'; versionSel.dispatchEvent(new Event('change', { bubbles: true })); } });   // its Back to overview: the Overview
       const grShow = () => { if (!gr) return; hide(); hlHide(); igHide(); rvHide(); gfHide(); clHide(); if (window._rf) window._rf.hide(); if (window._cn) window._cn.hide(); if (window._doc) window._doc.hide(); if (window._cc) window._cc.hide();
-        if (window._hp) window._hp.close(true); if (window._ar && window._ar.isOpen()) window._ar.close();
+        if (window._hp) window._hp.close(true); if (window._ar && window._ar.isOpen()) window._ar.close(); if (window._sug && window._sug.isOpen()) window._sug.close(true);
         const dev = gr.querySelector('.grDev'); if (dev && !dev.firstChild){ const f = document.createElement('iframe'); f.id = 'grFrame'; { const lg = document.getElementById('stGrLogo'); f.src = 'gift-receipt.html' + (!lg || lg.value === 'anim' ? '#logoanim' : ''); }   /* Header animated from its first frame: nothing shown before it */ f.title = 'Gift receipt'; f.addEventListener('load', grTheme); dev.appendChild(f); }
         grTheme(); { const f = document.getElementById('grFrame'), lg = document.getElementById('stGrLogo'); try { if (f && f.contentWindow && f.contentWindow.grLogo && (!lg || lg.value === 'anim')) f.contentWindow.grLogo(true, true); } catch (e){} }   /* the page opened again: its logo plays again */
         document.body.classList.add('grOn'); if (versionSel) versionSel.value = 'gr'; if (window.__tkPages) window.__tkPages(); try { history.replaceState(null, '', '#gift-receipt'); } catch (e){} };
@@ -42481,7 +42626,7 @@ hairline({
         if (window.__flowDock) window.__flowDock(); };
       const rfHide = () => { if (!document.body.classList.contains('rfOn')) return; document.body.classList.remove('rfOn'); if (versionSel && versionSel.value === 'rf') versionSel.value = String(version); rfTl(); if (window.__tkPages) window.__tkPages(); };
       const rfShow = at => { if (!rf) return; hide(); hlHide(); igHide(); rvHide(); gfHide(); clHide(); grHide(); if (window._cn) window._cn.hide(); if (window._doc) window._doc.hide(); if (window._cc) window._cc.hide();
-        if (window._hp) window._hp.close(true); if (window._ar && window._ar.isOpen()) window._ar.close();
+        if (window._hp) window._hp.close(true); if (window._ar && window._ar.isOpen()) window._ar.close(); if (window._sug && window._sug.isOpen()) window._sug.close(true);
         const dev = rf.querySelector('.rfDev'); if (dev && !dev.firstChild){ const f = document.createElement('iframe'); f.id = 'rfFrame'; f.src = 'referral.html#s=' + (at || 0) + (rfXs() ? '&xs' : ''); f.title = 'Gift referral'; f.addEventListener('load', rfSync); dev.appendChild(f); rfAt = at || 0; }
         else if (at != null) rfGo(at);
         rfSync(); document.body.classList.add('rfOn'); if (versionSel) versionSel.value = 'rf'; rfTl(); if (window.__tkPages) window.__tkPages(); try { history.replaceState(null, '', '#gift-referral'); } catch (e){} };
@@ -42511,7 +42656,7 @@ hairline({
       const cnPaint = () => { if (cn) cn.classList.toggle('cnLight', cnLight()); };
       const cnHide = () => { if (!document.body.classList.contains('cnOn')) return; if (cnM){ cnM.kill(); cnM = null; } cnOpenNow = false; document.body.classList.remove('cnOn'); if (versionSel && versionSel.value === 'cn') versionSel.value = String(version); if (window.__tkPages) window.__tkPages(); };
       const cnShow = () => { if (!cn) return; hide(); hlHide(); igHide(); rvHide(); gfHide(); clHide(); grHide(); if (window._rf) window._rf.hide(); if (window._doc) window._doc.hide(); if (window._cc) window._cc.hide();
-        if (window._hp) window._hp.close(true); if (window._ar && window._ar.isOpen()) window._ar.close();
+        if (window._hp) window._hp.close(true); if (window._ar && window._ar.isOpen()) window._ar.close(); if (window._sug && window._sug.isOpen()) window._sug.close(true);
         const was = document.body.classList.contains('cnOn'); cnPaint(); document.body.classList.add('cnOn'); if (versionSel) versionSel.value = 'cn'; if (window.__tkPages) window.__tkPages(); try { history.replaceState(null, '', '#consent'); } catch (e){}
         if (!was) requestAnimationFrame(cnOpen); };   // laid out first: its width picks the sheet or the modal
       window._cn = { show: cnShow, hide: cnHide };
@@ -42547,9 +42692,10 @@ hairline({
       const ccShow = () => { if (!cc) return; const b = document.body; clearTimeout(ccT); b.classList.remove('ccOut'); if (!b.classList.contains('ccOn')){ ccUnder = window.__pageVal(); ccHash = location.hash !== '#concierge' ? location.hash : ''; } if (!cc.querySelector('iframe')){ const f = document.createElement('iframe'); f.id = 'ccFrame'; f.src = 'concierge.html'; f.title = 'Concierge'; f.setAttribute('allow', 'clipboard-write'); f.addEventListener('load', () => { ccTheme(); ccDev(true); }); cc.appendChild(f); } if (!cc.querySelector('.ccStat')){ const sb = document.querySelector('#bpFrame .bpStatus'); if (sb){ const st = sb.cloneNode(true); st.className = 'ccStat'; st.setAttribute('aria-hidden', 'true'); cc.appendChild(st); } }   /* the phone's status bar and island over the chat ("when no top home iphone") */ ccTheme(); ccDev(); document.body.classList.add('ccOn'); if (versionSel) versionSel.value = 'cc'; try { history.replaceState(null, '', '#concierge'); } catch (e){} };
       const ccRun = fn => { ccShow(); const f = document.getElementById('ccFrame'); if (!f) return; const go = () => { try { const w = f.contentWindow; if (w && w.Concierge) fn(w.Concierge); } catch (e){} }; let ok = false; try { ok = !!(f.contentWindow && f.contentWindow.Concierge); } catch (e){} if (ok) go(); else f.addEventListener('load', () => setTimeout(go, 60), { once: true }); };
       window._cc = { show: ccShow, hide: ccHide, run: ccRun, fresh: () => ccRun(c => { c.model('eva'); c.go('new'); if (c.focus) c.focus(); }), ask: q => ccRun(c => { c.model('eva'); c.go('new'); c.ask(q); }), inbox: () => ccRun(c => c.go('inbox')), history: () => ccRun(c => { c.model('eva'); c.go('new'); }),   /* the chat's home, its attention list and conversations ("redirect to the home chat, not the menu open") */ care: () => ccRun(c => { c.go('new'); c.model('care'); }) };   // the Overview's doors into the chat
-      if (location.hash === '#concierge' || location.hash === '#async-report'){ const h = location.hash; if (versionSel){ versionSel.value = '9'; versionSel.dispatchEvent(new Event('change', { bubbles: true })); } if (h === '#concierge') ccShow(); else if (window._ar) window._ar.open(); }   // a standalone by its link: over the Overview, the prototype's first page
+      if (location.hash === '#concierge' || location.hash === '#async-report' || location.hash === '#suggestion'){ const h = location.hash; if (versionSel){ versionSel.value = '9'; versionSel.dispatchEvent(new Event('change', { bubbles: true })); } if (h === '#concierge') ccShow(); else if (h === '#suggestion'){ if (window._sug) window._sug.open(); } else if (window._ar) window._ar.open(); }   // a standalone by its link: over the Overview, the prototype's first page
       addEventListener('hashchange', () => { if (location.hash === '#concierge') ccShow(); else ccHide(); });
       addEventListener('hashchange', () => { if (!window._ar) return; if (location.hash === '#async-report') window._ar.open(); else if (window._ar.isOpen()) window._ar.close(); });
+      addEventListener('hashchange', () => { if (!window._sug) return; if (location.hash === '#suggestion') window._sug.open(); else if (window._sug.isOpen()) window._sug.close(); });   // the Suggestion by its link too
       // Documentation, the same way
       const doc = document.getElementById('docPage');
       const docHide = () => { if (!document.body.classList.contains('docOn')) return; document.body.classList.remove('docOn', 'docCc', 'docLd'); delete document.body.dataset.docSet; if (versionSel && (versionSel.value === 'doc' || versionSel.value === 'ds')) versionSel.value = String(version); };
@@ -42900,7 +43046,7 @@ hairline({
           full: ['Full', 'Covers the whole viewport, its own page with a nav bar (Back, its title, Close). On the phone it slides up from the foot; on the desk it fades in place.',
             [['Covers', 'The whole viewport, status bar included', 'The whole viewport'], ['Enter', 'Rises 64 and fades in: transform 500 ms cubic-bezier(.2, .8, .2, 1), opacity 350 ms ease', 'Fades in: opacity 380 ms ease'], ['Exit', 'Sinks 64 as it fades out, the same curve', 'Fades out, 380 ms'],
               ['Ground', 'The page’s own (paper); a 0 −20 80 shadow while it moves', 'The page’s own'], ['Nav bar', '76 · Back and Close 44 circles (ink 7%) · title 18/24 beside Back', '64 · Back and Close 32 circles at the column’s edges · title centred'],
-              ['Title', 'Page 24/30 · 500', 'Page 20/26 · 500'], ['Footer', 'CTA 56 pill · 16 sides · 34 under it (home indicator)', 'CTA 56 pill · the column’s width (544)'], ['Dismiss', 'Close, Back, the system back', 'Close, Back, Escape'], ['Used by', 'The Health profile, the Async report, the Concierge', 'The same; the Membership reveal on the desk']]],
+              ['Title', 'Page 24/30 · 500', 'Page 20/26 · 500'], ['Footer', 'CTA 56 pill · 16 sides · 34 under it (home indicator)', 'CTA 56 pill · the column’s width (544)'], ['Dismiss', 'Close, Back, the system back', 'Close, Back, Escape'], ['Used by', 'The Health profile, the Async report, the Concierge, the Suggestion', 'The same; the Membership reveal on the desk']]],
           sheet: ['Bottom sheet · Floating', 'One modal, two shapes: a bottom sheet on the phone (XS, S), up from the foot and hugging its content; a floating modal on the desk (M, L), centred, rising a little as it fades in. A scrim dims the page under both.',
             [['Shape', 'Full width · 28 top corners · hugs its content, up to 64 under the top', 'min(viewport − 48, 544) wide · 28 corners · up to the viewport − 48 high · centred'], ['Ground', '#181818 in dark · white in light', 'The same'], ['Grabber', '36 × 4 · 2 corners · line colour · 12 above the content', 'None'],
               ['Padding', '8 top · 16 sides · 34 bottom (home indicator)', '24'], ['Header', 'Title 24/30 · 500 · Close 32 circle at its right', 'The same'], ['Buttons', 'Stacked · 56 pills · 8 apart · primary first', 'Side by side · 56 pills · 8 apart'],
@@ -43019,7 +43165,7 @@ hairline({
         if (window.ResizeObserver) new ResizeObserver(fit).observe(st); requestAnimationFrame(fit);
         return el; };
       const docShow = (k, set) => { if (!doc) return; k = DOCS[k] ? k : set ? docLast[set] : docCur; docCur = k; const dst = setOf(k); docLast[dst] = k; hide(); hlHide(); igHide(); rvHide(); if (window._gf) window._gf.hide(); if (window._gr) window._gr.hide(); if (window._cl) window._cl.hide(); if (window._cc) window._cc.hide();
-        if (window._hp) window._hp.close(true); if (window._ar && window._ar.isOpen()) window._ar.close();   // the card reveal, the Health profile, the Async report gone too: they stood over the documents ("when I click documentation the screen stays; shouldn't be there")
+        if (window._hp) window._hp.close(true); if (window._ar && window._ar.isOpen()) window._ar.close(); if (window._sug && window._sug.isOpen()) window._sug.close(true);   // the card reveal, the Health profile, the Async report gone too: they stood over the documents ("when I click documentation the screen stays; shouldn't be there")
         if (!doc.querySelector('.docNav')){ const nav = document.createElement('div'); nav.className = 'docNav'; nav.setAttribute('role', 'tablist'); nav.setAttribute('aria-label', 'Documentation'); nav.innerHTML = DORD.filter(d => DOCS[d]).map(d => '<button type="button" role="tab" data-doc="' + d + '">' + DOCS[d].t + '</button>').join(''); nav.addEventListener('click', e => { const b = e.target.closest('[data-doc]'); if (b) docShow(b.dataset.doc); }); doc.prepend(nav); }
         let f = doc.querySelector('iframe[data-doc="' + k + '"]');
         if (!f) f = doc.querySelector('[data-doc="' + k + '"]:not(button)');
@@ -44766,9 +44912,9 @@ hairline({
 
   /* the view: the version, the page or overlay over it (one, the topmost: the reveal, the Health profile, the Async report, the chat, a documentation tab…), the viewport, the mode, and every tweak that page shows (the Tweaks rows not hidden for it, the bar's own selects showing) */
   var bc = function (k) { return function () { return document.body.classList.contains(k); }; };
-  var PAGES = [['wel', 'Membership reveal', function () { return !!document.querySelector('.hpWrap.hpOpen.hpWelF'); }], ['hp', 'Health profile', bc('hpOn')], ['ar', 'Async report', bc('arOpen')], ['cc', 'Chat', bc('ccOn')], ['gf', 'Gift', bc('gfOn')], ['gr', 'Gift receipt', bc('grOn')], ['cl', 'Testing locations', bc('clOn')], ['doc', 'Documentation', bc('docOn')], ['hl', 'Hairline', bc('hlOn')], ['ig', 'Illustrations', bc('igOn')], ['rv', 'Report visuals', bc('rvOn')], ['al', 'Assets library', bc('alOn')], ['home', 'Home', bc('homeOn')]];
+  var PAGES = [['wel', 'Membership reveal', function () { return !!document.querySelector('.hpWrap.hpOpen.hpWelF'); }], ['hp', 'Health profile', bc('hpOn')], ['ar', 'Async report', bc('arOpen')], ['sug', 'Suggestion', bc('sugOn')], ['cc', 'Chat', bc('ccOn')], ['gf', 'Gift', bc('gfOn')], ['gr', 'Gift receipt', bc('grOn')], ['cl', 'Testing locations', bc('clOn')], ['doc', 'Documentation', bc('docOn')], ['hl', 'Hairline', bc('hlOn')], ['ig', 'Illustrations', bc('igOn')], ['rv', 'Report visuals', bc('rvOn')], ['al', 'Assets library', bc('alOn')], ['home', 'Home', bc('homeOn')]];
   var pageKey = function () { var p = PAGES.filter(function (x) { return x[2](); })[0]; if (!p) return ''; if (p[0] === 'doc') { var dt = document.querySelector('.docNav [aria-selected="true"]'); return 'doc' + (dt && dt.dataset.doc ? ':' + dt.dataset.doc : ''); } return p[0]; };
-  var LEG = { wel: 'wel', hpOn: 'hp', arOpen: 'ar', ccOn: 'cc', gfOn: 'gf', rfOn: 'rf', grOn: 'gr', clOn: 'cl', docOn: 'doc', hlOn: 'hl', igOn: 'ig', rvOn: 'rv', alOn: 'al', homeOn: 'home' };
+  var LEG = { wel: 'wel', hpOn: 'hp', arOpen: 'ar', sugOn: 'sug', ccOn: 'cc', gfOn: 'gf', rfOn: 'rf', grOn: 'gr', clOn: 'cl', docOn: 'doc', hlOn: 'hl', igOn: 'ig', rvOn: 'rv', alOn: 'al', homeOn: 'home' };
   var canonPg = function (pg) { var p = String(pg || '').split(' ').filter(Boolean); if (p.length === 1 && (/^doc/.test(p[0]) || PAGES.some(function (x) { return x[0] === p[0]; }))) return p[0];
     var d = p.filter(function (x) { return /^doc:/.test(x); })[0]; if (d) return d; if (p.indexOf('wel') >= 0) return 'wel'; for (var i = 0; i < PAGES.length; i++) { for (var o in LEG) if (LEG[o] === PAGES[i][0] && p.indexOf(o) >= 0) return PAGES[i][0]; } return ''; };   // comments kept before this: their page as the classes it had
   var bp = function () { var b = document.body.dataset.bp; if (b) return b; var w = innerWidth; return w >= 1440 ? 'l' : w >= 992 ? 'm' : w >= 600 ? 's' : 'xs'; };
@@ -44901,9 +45047,9 @@ hairline({
 
   /* to a comment's view, fully ("really need to swap fully to the other view"): whatever stands over the page put away, its mode and viewport, its version drawn afresh, its tweaks as they were, its page or overlay opened; then its thread */
   var setv = function (id, v) { var el = $(id); if (!el || v == null) return false; if (el.type === 'checkbox' || el.type === 'radio') { if (String(el.checked) === v) return false; el.checked = v === 'true'; } else { if (el.value === v) return false; el.value = v; } el.dispatchEvent(new Event('input', { bubbles: true })); el.dispatchEvent(new Event('change', { bubbles: true })); return true; };
-  var closeAll = function () { try { if (window._hp) window._hp.close(true); } catch (e) {} try { if (window._ar && window._ar.isOpen && window._ar.isOpen()) window._ar.close(); } catch (e) {} ['_cc', '_gf', '_gr', '_cl', '_doc', '_hl', '_ig', '_rv', '_home'].forEach(function (k) { try { if (window[k] && window[k].hide) window[k].hide(); } catch (e) {} }); };   // every page and overlay put away: the prototype alone under what opens next
+  var closeAll = function () { try { if (window._hp) window._hp.close(true); } catch (e) {} try { if (window._ar && window._ar.isOpen && window._ar.isOpen()) window._ar.close(); } catch (e) {} try { if (window._sug && window._sug.isOpen && window._sug.isOpen()) window._sug.close(true); } catch (e) {} ['_cc', '_gf', '_gr', '_cl', '_doc', '_hl', '_ig', '_rv', '_home'].forEach(function (k) { try { if (window[k] && window[k].hide) window[k].hide(); } catch (e) {} }); };   // every page and overlay put away: the prototype alone under what opens next
   var openPage = function (pg) { var k = (pg || '').split(':')[0]; if (!k || k === 'home' || pageKey().split(':')[0] === k) return;
-    try { if (k === 'wel' && window._hp) window._hp.open({ welcome: true }); else if (k === 'hp' && window._hp) window._hp.open({}); else if (k === 'ar' && window._ar) window._ar.open(); else if (k === 'cc' && window._cc) window._cc.show(); else if (k === 'gf' && window._gf) window._gf.show(); else if (k === 'gr' && window._gr) window._gr.show(); else if (k === 'cl' && window._cl) window._cl.show(); else if (k === 'doc' && window._doc) window._doc.show(); } catch (e) {} };
+    try { if (k === 'wel' && window._hp) window._hp.open({ welcome: true }); else if (k === 'hp' && window._hp) window._hp.open({}); else if (k === 'ar' && window._ar) window._ar.open(); else if (k === 'sug' && window._sug) window._sug.open(); else if (k === 'cc' && window._cc) window._cc.show(); else if (k === 'gf' && window._gf) window._gf.show(); else if (k === 'gr' && window._gr) window._gr.show(); else if (k === 'cl' && window._cl) window._cl.show(); else if (k === 'doc' && window._doc) window._doc.show(); } catch (e) {} };
   var goTo = function (c) {
     var x = c.ctx, vs = $('versionSel'); closePop(); closeAll();
     setv('themeSel', x.th); if (bp() !== x.bp) setv('stBp', x.bp);

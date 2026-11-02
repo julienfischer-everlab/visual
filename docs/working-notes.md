@@ -18812,3 +18812,29 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - the Past results tile.
   No frame shows the Overview through a full-screen experience. The bottom sheets show it above the sheet, as designed.
 - **Page switch fix**: picking Testing locations, Gift or Gift receipt after Consent (or Referral) left that page switched on underneath. On Testing locations, the Consent page was still displayed. The menu now closes every other website page first, and each page's own show does too.
+
+## Suggestion: a standalone full modal ("Create a standalone modal, Suggestion full modal, based on that UI")
+- **Where**: version menu → Standalone flow → **Suggestion** (link `#suggestion`). Like the Async report, it opens over whatever page is showing.
+- **Shell**: the master Full modal, the same as the Health profile and the Async report:
+  - on the phone it rises 64 and fades in;
+  - on the desk it fades in, its content in the centred column (536 wide at M, 568 at L), the close at the column's edge;
+  - device status bar and home bar; solid ground for the open/close dip; no scrollbars; Escape closes.
+- **From the mock**:
+  - the eyebrow (Your health report · Last 6 weeks) and the title beside the close;
+  - the signals card: "3 patterns identified", Sep — Nov, a chart of the six weeks drawn in as it opens (lines left to right, dots popping), 6 weeks ago / Today, the legend;
+  - a full-width rule, then What we suggest next, its line and the three numbered rows with chevrons;
+  - footer: View your recommendations (the mock's blue) and Not now.
+  - Colours from the mock in dark (pink #e493be, green #8ad490, CTA #3c66bf with near-black text); deeper versions in light.
+- **Actions**: each row closes the modal and opens the **Plan** at its section:
+  - 01 vitamin D → Medical actions;
+  - 02 LDL → Nutrition;
+  - 03 Protect your progress → Activity.
+  - View your recommendations opens the Plan at the top. Not now, the X and Escape close it and give back the page underneath, with its menu entry and address.
+- **Chart**: three lines, one per pattern in the legend. The mock drew two with a grey legend; Tweaks → Suggestion → Chart → **2 lines** shows exactly that.
+- **Tweaks → Suggestion**:
+  - CTA colour: Blue (the mock) or App (the sheet's own white/black button);
+  - Chart: 3 lines or 2 lines;
+  - Entrance: Replay.
+  - Its tweaks show alone while it is up, over the Timeline and service pages too.
+- **Wired into**: the menu handler, Tweaks, hash routing, every page that puts the report away, the comments system and the Modals doc's "Used by".
+- **Async report close fixed** (the "clipping"): its close kept the full modal's `on` class, so the solid ground faded at once and the Overview showed through the report as it faded. It now closes like the Health profile: the screen fades over its ground, then the ground goes. Checked on video at XS and M with the Overview painted magenta: no frame shows both.
