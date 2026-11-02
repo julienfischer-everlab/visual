@@ -19033,3 +19033,12 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Under each, its Inactive and Active states, a line on how it is drawn, and the Pop / Rise / Fade choice with Play all.
   - Save setup stores the motion with the labels. The sizes table gains the Icons and Icon motion rows.
 - **One source**: the dock and the doc both draw from `window.EvNavIc`, so a change to an icon lands everywhere.
+
+## Recommendations: a stronger circle, two new names ("The circle on the background should be a bit more visible, so increase it by 12px. It should be a bit more filled... Exercise and well-being (not just exercice). Nutrition and XXX, I don't know. Find something.")
+- **The circle** behind each visual is 12px larger: 48 on the phone (was 36), 60 on the desk (was 48). It is filled more, the ink at 10% (was 6%).
+- **Exercise & wellbeing**: the yoga and stretching (Persona #1) and the pelvic floor recovery (Persona #2) sit under it.
+- **Nutrition & hydration**, after the card's own picture, a glass of water with lemon.
+  - To make the name true, each persona's sheet gains a **Hydration** group after Breakfast, four tips each, with the glass as its picture.
+  - Persona #1: water within reach, more on training days, water as the everyday drink, alcohol kept light.
+  - Persona #2: a drink at every feed, a bottle where she feeds, the colour check, water as the everyday drink.
+  - The category now counts 3, and each report 13 recommendations.
