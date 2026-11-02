@@ -12850,6 +12850,7 @@
         <!-- no Variation ("remove variation; full modal should be the one"): the desktop debrief is always the full modal -->
         <!-- whose report: Persona #1, or Persona #2, another member's results ("create a duplicate of the Async to create a different persona"); a tweak only, the menu the one Async report ("Persona 1 and 2 must be a tweak inside the page") -->
         <div class="tkRow"><span class="lbl">Persona</span><select id="stArPer" class="tkSegSel" aria-label="Whose report"><option value="p1" selected>#1</option><option value="p2">#2</option></select></div>
+        <div class="tkRow"><span class="lbl">Step shortcuts</span><select id="stArNav" class="tkSegSel" aria-label="The floating steps beside the report (Welcome, each insight, Everything else, Next steps): shown, or hidden"><option value="on" selected>Shown</option><option value="off">Hidden</option></select></div>   <!-- "tweak option to hide this shortcut nav" -->
         <!-- whose report it is, for reference ("put the name of the user and the ID below the persona, just as a reference") -->
         <div class="tkRow tkBuildRow tkPerRow"><span class="lbl">Member</span><span class="tkBuild tkPerRef" id="stArPerRef">Sample report, no member record</span></div>
         </div>
@@ -14553,6 +14554,10 @@
 .arSheet .arHead { gap: 0; } .arSheet .arStepWrap { padding: 12px 0; }   /* the progress 12 above and below ("progress padding top 12, bottom 12") */
 /* Fixed bar Gradient (the Insights' sticky): past the welcome the body runs up under the head (its height, --ar-head-h, measured), the flow scrolling beneath; once it has, the paper fades down from .55 at the head's top to nothing 32 under it, over ten bands of blur, the softest the tallest */
 .arSheet.arBarGrad:not(.arIsWelcome) .arBody { margin-top: calc(-1 * var(--ar-head-h, 0px)); padding-top: calc(var(--ar-head-h, 0px) + 24px); scroll-padding-top: var(--ar-head-h, 0px); }
+/* Solid bar / foot: the flow fades out over the last 24px under the bar and above the foot (--ar-tf / --ar-bf, set from the scroll: 0 at rest and at the end); once the anchors are pinned, the fade hangs under them instead */
+.arSheet.arEdge:not(.arIsWelcome) .arBody { -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 var(--ar-tf, 0px), #000 calc(100% - var(--ar-bf, 0px)), transparent 100%); mask-image: linear-gradient(180deg, transparent 0, #000 var(--ar-tf, 0px), #000 calc(100% - var(--ar-bf, 0px)), transparent 100%); }
+.arSheet.arChipsStuck .arBody { --ar-tf: 0px; } .arSheet.arBarGrad .arBody { --ar-tf: 0px; } .arSheet.arFootGrad .arBody { --ar-bf: 0px; }
+.arSheet:not(.arBarGrad) .arLfChips::after { content: ''; position: absolute; left: 0; right: 0; top: 100%; height: 24px; pointer-events: none; background: linear-gradient(180deg, var(--ar-paper), transparent); opacity: 0; transition: opacity .2s ease; } .arSheet.arChipsStuck:not(.arBarGrad) .arLfChips::after { opacity: 1; }
 .arSheet.arFootGrad .arFoot { position: relative; z-index: 2; background: transparent; } .arSheet.arFootGrad .arBody { margin-bottom: calc(-1 * var(--ar-foot-h, 0px)); padding-bottom: calc(var(--ar-foot-h, 0px) + 24px); }   /* Footer Gradient: the flow runs on under the button */
 .arSheet .arFootGround { position: absolute; left: 0; right: 0; bottom: 0; height: var(--ar-fe, calc(100% + 40px)); z-index: -1; pointer-events: none; background: linear-gradient(0deg, var(--ar-paper) 0, var(--ar-paper) var(--ar-fs, 50%), color-mix(in srgb, var(--ar-paper) 88%, transparent) calc(var(--ar-fs, 50%) + (var(--ar-fe, 100%) - var(--ar-fs, 50%)) * .2), color-mix(in srgb, var(--ar-paper) 62%, transparent) calc(var(--ar-fs, 50%) + (var(--ar-fe, 100%) - var(--ar-fs, 50%)) * .45), color-mix(in srgb, var(--ar-paper) 30%, transparent) calc(var(--ar-fs, 50%) + (var(--ar-fe, 100%) - var(--ar-fs, 50%)) * .7), color-mix(in srgb, var(--ar-paper) 9%, transparent) calc(var(--ar-fs, 50%) + (var(--ar-fe, 100%) - var(--ar-fs, 50%)) * .9), transparent var(--ar-fe, 100%)); }   /* the sticky rule, upward: the paper solid through 70% of the button, then eased out to nothing 40 above the footer */
 .arSheet .arFootGround i { position: absolute; left: 0; right: 0; bottom: var(--ar-fs, 50%); display: block; -webkit-mask-image: linear-gradient(0deg, #000 82%, transparent); mask-image: linear-gradient(0deg, #000 82%, transparent); }
@@ -16200,7 +16205,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
     /* The sticky gradient, one rule for both fixed groups ("solid bg until 70% of the last section; after that a gradient, ending 40px bleeding past the last section"):
        the bar's last section is the pinned anchors when they are pinned, else the progress; the footer's, read from its foot, is its button.
        --ar-gs: where the solid ends, --ar-ge: where the gradient ends, both from the group's own edge; an optional blur in ten bands under it */
-    var bands = function () { return o.blur ? [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(function () { return h('i'); }) : []; }, fitG = null;   // the blur's bands only when a blur is asked for
+    var bands = function () { return o.blur ? [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(function () { return h('i'); }) : []; }, fitG = null, edge = null;   // the blur's bands only when a blur is asked for
     if (o.welcome === 'sphere' || o.welcome === 'orbit') foot.insertBefore(h('span', { class: 'arSphFoot', 'aria-hidden': 'true' }), foot.firstChild);   // the Sphere's and Sphere hero's foot: the ground's own colour fading up behind the button
     if (o.foot === 'grad'){   // the flow runs on under the button
       foot.insertBefore(h('span', { class: 'arFootGround', 'aria-hidden': 'true' }, bands()), foot.firstChild);
@@ -16214,6 +16219,11 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
         root.style.setProperty('--ar-gs', Math.round(last.top + last.height * .7 - hd.top) + 'px'); root.style.setProperty('--ar-ge', Math.round(last.bottom - hd.top + 40) + 'px'); };   // solid through 70% of the last section, out by 40 past it
       if (window.ResizeObserver) new ResizeObserver(fitG).observe(head); later(fitG, 0);
       on(body, 'scroll', function () { root.classList.toggle('arScrolled', body.scrollTop > 2); }, { passive: true }); }
+    if (o.bar !== 'grad' || o.foot !== 'grad') {   // Solid bar / foot: the flow fades out over 24px at the edge it scrolls under, never cut by a hard line ("screen is clipping on scroll"); the fade grows with the distance scrolled, so nothing fades at rest
+      root.classList.add('arEdge');
+      edge = function () { var t = body.scrollTop, r = body.scrollHeight - body.clientHeight - t;
+        root.style.setProperty('--ar-tf', (o.bar !== 'grad' ? Math.max(0, Math.min(24, t)) : 0) + 'px'); root.style.setProperty('--ar-bf', (o.foot !== 'grad' ? Math.max(0, Math.min(24, r)) : 0) + 'px'); };
+      on(body, 'scroll', edge, { passive: true }); on(body, 'click', function () { later(edge, 450); }); if (window.ResizeObserver) new ResizeObserver(function () { edge(); }).observe(body); later(edge, 0); }
 
     // the welcome's scroll for the host's parallax: --ar-hero-y (px scrolled) and --ar-hero-k (0..1 over the hero's height less 40, as the service page's)
     var spy = null;   // the insight's chips following the scroll (set by its step, cleared by the next)
@@ -17234,7 +17244,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
       while (timers.length) clearTimeout(timers.pop());
       dropFigs();
       qaClose(true);   // a step change closes the questionnaire's sheet
-      spy = null; if (chipRO) chipRO.disconnect(); root.classList.remove('arChipsStuck', 'arScrolled'); if (fitG) later(fitG, 0);
+      spy = null; if (chipRO) chipRO.disconnect(); root.classList.remove('arChipsStuck', 'arScrolled'); if (fitG) later(fitG, 0); if (edge) { later(edge, 60); later(edge, 700); }   // the new step's own length
       var welcome = step === 0, end = step === NEXT;   // end: That's your debrief, in the Full bg layout ("go with a Full bg layout; no progress nav at the top"), on the welcome's ground (the Sphere's or the Halftone's, else the picture)
       var wasSph = root.classList.contains('arIsSphere');
       root.classList.toggle('arIsWelcome', welcome); root.classList.toggle('arIsIntro', (RVW && welcome) || (end && !sphL)); root.classList.toggle('arIsSphere', !!sphL && (welcome || end)); root.classList.toggle('arIsEnd', end);
@@ -34791,7 +34801,7 @@ hairline({
     const nav = document.createElement('nav'); nav.className = 'aqNav'; nav.setAttribute('aria-label', 'Debrief steps'); document.body.appendChild(nav);
     let navKey = '';
     const navTick = () => {
-      const r = frame.getBoundingClientRect(), s = inst && inst.steps ? inst.steps() : null, show = !!s && wrap.getClientRects().length > 0 && wrap.classList.contains('on') && r.width > 0 && r.right + 40 + 170 < innerWidth - (document.documentElement.classList.contains('tkDocked') ? 320 : 0);
+      const r = frame.getBoundingClientRect(), s = inst && inst.steps ? inst.steps() : null, show = !!s && opt('stArNav') !== 'off' && wrap.getClientRects().length > 0 && wrap.classList.contains('on') && r.width > 0 && r.right + 40 + 170 < innerWidth - (document.documentElement.classList.contains('tkDocked') ? 320 : 0);
       nav.classList.toggle('on', show); if (!show) return;
       nav.classList.toggle('lt', document.body.classList.contains('light'));
       nav.style.left = Math.round(r.right + 40) + 'px'; nav.style.top = Math.round(r.top + 72) + 'px';
