@@ -19336,3 +19336,28 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The goals carousel keeps the shared magnet (EvMagnet, from the marketplace). The new pages' logic follows it.
   - The menu handles both the marketplace and the three pages. `__pageVal` knows both.
   - The pages' top bar takes the header overlap's overflow ground: the page's ground as the master's gradient over the Overview bar's blur bands, once the title is under the bar. It replaces the solid band they had. There is no dark stage, as there is no photo above these pages.
+
+## Plan → the Lifestyle hub ("Adjust plan design based on that")
+
+- **From the Lifestyle hub mock** (Julien's board, XS to XL, Dark and Light). The subpages are untouched.
+- **Section order**: Activity, Nutrition, Medical actions, My routines, Supplements.
+  - Each header: the title, a count (Medical actions, Supplements) or a small clock (My routines), and See plan at the right (was See all). My routines has none.
+  - Sections 36 apart on the phone, 40 on the desk. Rows 56 to 64.
+- **Activity**: the protocols' photos 48, rounded 12 (were 80).
+- **Medical actions**: the picture on a white tile (40, a hairline round it on the Light sheet), the name, its dose chip, how often under it.
+- **Supplements**: My supplements' own list, iron and the vitamin D first (the readings that call for them), then the rest in the page's order.
+  - The render on its dark tile (warm grey on the Light sheet), the strength chip where the label gives one, Daily under it.
+- **Long lists**: four rows, then View N more, a 40 tall outlined pill (20 round). It opens the rest in place and reads Show less.
+  - Supplements has seven: View 3 more. Medical actions has four, so no button. Nothing was added to fill a list.
+- **My routines**: cards, not rows. Each card has a soft gradient ground (no new pictures), its icon in a white disc, the title, its line, two glass chips (steps, time) and View routine.
+  - The phone: a carousel on the goals' magnet (EvMagnet). The first card is 85 % of the row, the next one peeks.
+  - From M: two side by side, square (taller where the words need it).
+  - Wind-down routine (4 steps, 10:00pm) opens its page. The morning routine is the mock's placeholder: no page, its button disabled, Coming soon.
+  - The Restorative sleep goal still opens the Wind-down routine.
+- **The phone's top is unchanged**: the photo, the title and the goals' carousel, then the sheet.
+- **From M, two columns** (no hero across the page):
+  - At the left, My plan (28) and the sections: 520 at M, 580 from L.
+  - At the right, the photo as a card of its own (260 at M, 312 from L), sticking 24 from the top. The title is centred near its top, the goals stacked in it as white cards with dark words in either mode, and the photo fades to dark at its foot.
+  - The page's ground is the sheet's (dark, or white on the Light sheet).
+- **Kept**: every subpage's open and Back, the goals' swipe, the Supplement stack hook, More lit in the dock, Light mode, and the Suggestion's rows finding their sections by title.
+  - Supplements is now last, so its row scrolls the Plan to its end.
