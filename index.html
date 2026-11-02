@@ -104,7 +104,8 @@
   html.tkDocked body:not([data-bp]) .dash{right:var(--tkDockW);}
   /* the Flow panel docked as a column at the left, as Tweaks at the right ("left panel shouldn't float, should be a column, same as the right panel"): the screen centred in what is left between the two */
   html.flowDocked{--flDockW:320px;   /* both columns 320 ("tweak and flow panel 320px width") */--vwC:calc(var(--flDockW) + (100vw - var(--flDockW) - var(--tkDockW, 0px)) / 2);}
-  html.flowDocked body:not([data-bp]) .dash{left:var(--flDockW);}
+  html.flowDocked body:not([data-bp]) .dash, html.flowDocked body:not([data-bp]) .dash .side{left:var(--flDockW);}   /* the flow panel pushes the whole app, its menu too ("the flow should push the viewport! Here for e.g. should see the menu!"): the sidebar is fixed, so it moves on its own */
+  html.tkFlMove body:not([data-bp]) :is(.dash, .dash .side){transition:left .45s cubic-bezier(.2, .8, .2, 1);}
   html.flowDocked body:not([data-bp]) .aqWrap.aqFull{left:var(--flDockW) !important;} html.tkDocked body:not([data-bp]) .aqWrap.aqFull{right:var(--tkDockW) !important;} html.tkDocked body:not([data-bp]) .aqWrap.aqFull:is(.on, .shut){width:auto !important;max-width:none !important;}   /* Auto only, as the page's own (.dash) above: a forced M or L keeps its frame, centred by --vwC as the page is (pinned to a docked column, the modal sat 16 off the page, the Overview showing in the strip: "I see the overview clipping behind") */   /* the phone sizes keep their own frame, centred by --vwC */   /* Tweaks too pushes it ("right panel as well should push the viewport"): the modal's own width let go, its two sides set */   /* the full modals (the reveal, the profile, the report) between the two columns, pushed, not under them ("flow panel should push the viewport, not overlap") */
   html.flowDocked .topbar .hpJny:not([hidden]){left:0 !important;top:var(--flTop, 57px) !important;width:var(--flDockW);height:calc(100vh - var(--flTop, 57px));max-height:none !important;border-radius:0;border-width:0 1px 0 0;padding:8px;background:#131316;}
   .topbar .tkMenu summary:focus-visible{border-color:#71717a;}
@@ -552,10 +553,10 @@
   /* retracted ("to see only the icons"): a 72px rail, the wordmark gone, the
      toggle centred, each entry its glyph alone with the label as a title;
      the lit entry keeps its plate. The card moves in with it. */
-  body.sideMin .dash .side{width:72px;padding:26px 0 26px 8px;}   /* the icons on the middle of what reads as the rail (to the page's edge, 8 past the rail itself): the same room either side ("retracted menu: the same padding left and right") */
-  body.sideMin .dash .side .sideHead{justify-content:center;padding:0;margin:0 auto 34px;width:44px;}
+  body.sideMin .dash .side{width:72px;padding:26px 12px 26px 20px;}   /* the items stay where they are, only the labels go ("when contract the nav, the item should stay in place, its just the label that disappear"): the same 20 on the left as open, so every glyph keeps its x */   /* the icons on the middle of what reads as the rail (to the page's edge, 8 past the rail itself): the same room either side ("retracted menu: the same padding left and right") */
+  body.sideMin .dash .side .sideHead{justify-content:flex-start;padding:0 0 0 6px;}   /* the wordmark gone, the toggle over the glyphs' column (its centre on theirs, 40 in) */
   body.sideMin .dash .side .logo{max-width:0;opacity:0;}
-  body.sideMin .dash .side .nv{width:44px;height:44px;margin:0 auto 2px;justify-content:center;padding:0;gap:0;}   /* the plate centred on the rail's own axis: 14 either side ("make the left and right padding even") */
+  body.sideMin .dash .side .nv{width:40px;gap:0;}   /* the same padding as open (10 either side of the 20 glyph), the plate as wide as the glyph's: nothing moves sideways */   /* the plate centred on the rail's own axis: 14 either side ("make the left and right padding even") */
   body.sideMin .dash .side .nv span{max-width:0;opacity:0;}
   body.sideMin .dash{padding-left:72px;--sideW:72px;}
   body.sideMin #dMain, body.sideMin #dOver, body.sideMin #dSvc, body.sideMin #dTl, body.sideMin #dApt, body.sideMin #dAcc, body.sideMin #dPlan, body.sideMin #dMkt{left:72px;}
@@ -7829,9 +7830,10 @@
     --acPanel:#FBF8F3;--acTile:#F4F1EC;--acPill:#F0EDE7;--acPillH:#E8E3DA;--acSegT:#EEEEEF;--acSegOn:#fff;--acField:#fff;
     --acAcc:#C6531B;--acAccBg:#FDF6F1;--acAccLn:rgba(198,83,27,.35);--acOk:#3F7D4E;--acOkTx:#2E6B3E;--acOkBg:rgba(63,125,78,.12);--acCta:#20180F;--acCtaInk:#fff;}
   /* ---- Plan (#dPlan, "edit the plan page; listen to this UI"): a page in the shell, as My account. The top on its own dark ground in either sheet (the hero photo, its title, the goals' cards in a row); the sheet over it, rounded, Dark or Light (Tweaks -> Plan -> Sheet), with Activity, Nutrition and Medical actions. Sizes from the mock, the XS phone's points */
-  #dPlan{display:none;padding:0 0 0;background:#181818;color:#fff;max-width:min(1360px, calc(var(--bpW,100vw) - var(--sideW,224px) - 16px));
+  #dPlan{display:none;padding:0 0 0;background:#181818;color:#fff;max-width:none;
     --plSh:#0f0f0f;--plInk:#fff;--plMut:rgba(255,255,255,.56);--plTx2:rgba(255,255,255,.72);--plCard:#181818;--plLine:rgba(255,255,255,.035);--plChev:rgba(255,255,255,.15);--plPill:rgba(255,255,255,.2);--plCnt:rgba(255,255,255,.06);--plTile:#fff;}
   #dPlan.plLight{--plSh:#fff;--plInk:#141414;--plMut:rgba(20,20,20,.56);--plTx2:rgba(20,20,20,.7);--plCard:#fafafa;--plLine:rgba(0,0,0,.045);--plChev:rgba(0,0,0,.3);--plPill:rgba(0,0,0,.16);--plCnt:rgba(0,0,0,.04);}
+  #dPlan > :is(.plTop, .plSheet){max-width:min(1360px, 100%);margin-left:auto;margin-right:auto;}   /* the cap on the Plan's own page, not on the Plan: its subpages (and their breadcrumb bar) take the whole panel ("breadcrumb always full width") */
   body.m9.plOn #dPlan{display:block;} body.m9.plOn #dOver, body.m9.plOn #dSvc, body.m9.plOn #dTl, body.m9.plOn #dApt, body.m9.plOn #dAcc{display:none !important;}
   body.m9.plOn .dash .side .nvOver{background:none;color:inherit;} body.m9.plOn .dash .side .nvPlan{background:#1e1e1c;color:#ececec;} body.light.m9.plOn .dash .side .nvPlan{background:#ece4d3;color:#2e241c;} body.light.m9.plOn .dash .side .nvOver{background:none;}
   body.m9.plOn:is([data-bp="xs"], [data-bp="s"]) .dash{border-top-width:0;}   /* in the device the hero runs up under the status bar, as the mock has it (the shell's 47 band of ground taken away while the page shows) */
@@ -8490,7 +8492,7 @@
   body.m9.accOn .dash .side .nvOver{background:none;color:inherit;} body.m9.accOn .dash .side .nvAcc{background:#1e1e1c;color:#ececec;} body.light.m9.accOn .dash .side .nvAcc{background:#ece4d3;color:#2e241c;} body.light.m9.accOn .dash .side .nvOver{background:none;}
   .dash .side .sideFoot{position:absolute;left:20px;right:20px;bottom:20px;padding-top:12px;border-top:1px solid rgba(255,255,255,.07);} body.light .dash .side .sideFoot{border-top-color:rgba(46,31,26,.1);} .dash .side .sideFoot .nv{margin-bottom:0;}   /* the account, at the nav's foot ("display this menu at the bottom of the left nav") */
   .dash .side .sdJr{bottom:88px;}   /* the journey demo's step above it */
-  body.sideMin .dash .side .sideFoot{left:14px;right:14px;}
+  body.sideMin .dash .side .sideFoot{left:20px;right:12px;}
   .acCol{max-width:960px;margin:0 auto;}
   .acHead{display:flex;align-items:center;justify-content:space-between;gap:16px;} .acHead h1{margin:0;font-size:32px;line-height:1.15;font-weight:500;letter-spacing:-.02em;color:var(--acInk);}
   .acHdA{display:none;gap:8px;} .acHdA button{display:grid;place-items:center;width:44px;height:44px;padding:0;border:0;border-radius:50%;background:var(--acTile);color:var(--acInk);cursor:pointer;} .acHdA svg{width:19px;height:19px;}
@@ -16039,9 +16041,9 @@
 .arSheet .arPlanL { --plO: #c45a2a; padding: 24px; border-radius: 28px; border: 1.5px solid oklch(var(--ar-ink) / .1); } .arSheet.arDark .arPlanL { --plO: #f08a52; }   /* Persona #3's plan, a list ("the plan · updated 10 Oct"): its eyebrow mono and orange, a line each, New in orange, the later ones quieter */
 .arSheet .arPlanE { margin: 0 0 8px; font: 500 15px/20px var(--ar-font-mono); letter-spacing: .02em; text-transform: uppercase; color: var(--plO); }
 .arSheet .arPlanL ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; } .arSheet .arPlanL li { font-size: 20px; line-height: 28px; color: oklch(var(--ar-ink)); text-wrap: balance; } .arSheet .arPlanL li b { font-weight: 600; color: var(--plO); } .arSheet .arPlanL li.later { color: oklch(var(--ar-ink) / .56); }
-.arSheet .arRsArea.arRcCat { flex-direction: column; align-items: center; justify-content: flex-start; gap: 12px; min-height: 0; padding: 20px 12px 18px; border-radius: 20px; text-align: center; }   /* the render on top, the name and how many under it, centred (the services' Apple style) */
+.arSheet .arRsArea.arRcCat { flex-direction: column; align-items: center; justify-content: flex-start; gap: 12px; min-height: 0; padding: 28px 20px 26px; border-radius: 20px; text-align: center; }   /* the render on top, the name and how many under it, centred (the services' Apple style) */
 .arSheet .arRcVis { position: relative; display: block; flex: none; width: 52px; height: 52px; } .arSheet .arRcVis img { position: relative; display: block; width: 100%; height: 100%; object-fit: contain; }   /* 24 smaller ("the visuals should be 24px smaller"), then 12 more ("reduce the image by 12 px") */
-.arSheet .arRcVis::before { content: ""; position: absolute; inset: calc(15% - 6px); border-radius: 50%; background: oklch(var(--ar-ink) / .1); }   /* then 12 larger and more filled, the ink at 10% (was 6%) ("the circle should be a bit more visible, increase it by 12px, a bit more filled") */   /* each render on a grey circle, 70% of it, centred behind ("a grey circle field that takes around 70% of the visual, so it feels like the visuals sit on this circle") */
+.arSheet .arRcVis::before { content: none; }   /* no circle behind the render ("remove circle behind"); the cards 8px roomier all round ("padding card +8px") */
 .aqWrap.aqDesk:is(.aqBpM, .aqBpL) .arSheet .arRcVis { width: 68px; height: 68px; }
 .arSheet .arRcCat .arRcCatT { flex: none; align-items: center; } .arSheet .arRcCat .arRcCatN { font-size: 16px; text-wrap: balance; }
 .arSheet .arRcTile { flex: none; display: flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 14px; background: oklch(var(--ar-ink) / .05); color: oklch(var(--ar-ink) / .8); }
@@ -19240,6 +19242,14 @@ window.__ccVid = ['assets/hp/concierge.webm', 'assets/hp/concierge.mp4'];   /* t
    or the data-ov contract (data-ov="hero|img|title|sheet"), which bind() turns into those classes. bind(scroller, {hero, short, onFrame}) -> {update}: one rAF per scroller.
    The numbers are the master's, Design system -> General layout -> Header overlap: saved there (everlab:hoMaster), every page takes them on load */
 window.EvBeamStar = function (size) { var e = document.createElement('span'); e.className = 'evBeamStar'; e.setAttribute('aria-hidden', 'true'); if (size) e.style.setProperty('--bsz', size + 'px'); e.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11 3c.4 4.6 2.4 6.6 7 7-4.6.4-6.6 2.4-7 7-.4-4.6-2.4-6.6-7-7 4.6-.4 6.6-2.4 7-7Z"/><path d="M18.5 14.5c.2 2 1 2.8 3 3-2 .2-2.8 1-3 3-.2-2-1-2.8-3-3 2-.2 2.8-1 3-3Z"/></svg>'; return e; };   // Eva's beam star (.evBeamStar), the one the debrief's last step and the Iconography doc show
+/* EvFullView: a modal over the whole app, never only the page it opened from ("modal should ALWAYS cover the full viewport, not just the body"): on the desk, fixed over the app's own window (.dash: the sidebar too), re-fitted on resize; on the phone (XS, S) it already covers the screen */
+window.EvFullView = (function () {
+  var held = []; var phone = function () { return /^(xs|s)$/.test(document.body.dataset.bp || ''); };
+  var fit = function (el) { var st = el.style; if (phone()) { ['position', 'left', 'top', 'right', 'bottom', 'width', 'height'].forEach(function (k) { st[k] = ''; }); return; }
+    var d = document.querySelector('.dash'); if (!d) return; var r = d.getBoundingClientRect(); st.position = 'fixed'; st.left = r.left + 'px'; st.top = r.top + 'px'; st.width = r.width + 'px'; st.height = r.height + 'px'; st.right = 'auto'; st.bottom = 'auto'; };
+  addEventListener('resize', function () { held = held.filter(function (el) { return el.isConnected && !el.hidden; }); held.forEach(fit); });
+  return { cover: function (el) { if (held.indexOf(el) < 0) held.push(el); fit(el); }, fit: fit };
+})();
 window.EvOverlap = (function () {
   var M = { ty: .25, rise: 32, end: 40, overlap: 28, radius: 24, dim: .35, tint: .85 }, D = JSON.parse(JSON.stringify(M)), root = document.documentElement;
   var red = function () { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
@@ -28750,6 +28760,8 @@ hairline({
   { const av = {}, b = document.getElementById('tkFlowBtn'), H = document.documentElement; try { if (localStorage.getItem('evFlowOff') === '1') H.classList.add('flowOff'); } catch (x){}
     const sync = () => { if (!b) return; b.hidden = !Object.keys(av).some(k => av[k]); b.setAttribute('aria-pressed', String(!H.classList.contains('flowOff'))); };   // any screen with a flow panel (the profile's, the reveal's, the referral's, a service's, the report's)
     window.__flowAv = (k, on) => { if (av[k] !== on){ av[k] = on; sync(); } };
+    /* a panel shown or hidden by anything at all re-docks: a panel gone with the app still pushed left the page 320 off the menu ("why this right gap?") */
+    { let fq = 0; const tb = document.querySelector('.topbar'); if (tb) new MutationObserver(() => { if (!fq) fq = requestAnimationFrame(() => { fq = 0; if (window.__flowDock) window.__flowDock(); }); }).observe(tb, { subtree: true, childList: true, attributes: true, attributeFilter: ['hidden'] }); }
     window.__flowDock = () => { const on = !!document.querySelector('.topbar .hpJny:not([hidden])'); if (on){ const t = Math.round(document.querySelector('.topbar').getBoundingClientRect().bottom) + 'px'; if (H.style.getPropertyValue('--flTop') !== t) H.style.setProperty('--flTop', t); } if (H.classList.contains('flowDocked') !== on){ if (!matchMedia('(prefers-reduced-motion: reduce)').matches){ H.classList.add('tkFlMove'); clearTimeout(window.__flMvT); window.__flMvT = setTimeout(() => H.classList.remove('tkFlMove'), 520); } H.classList.toggle('flowDocked', on); dispatchEvent(new Event('resize')); } };   /* a slide (0.45 s), the phone and the screen over it together, not a jump */   /* docked while a flow panel shows; the screens re-centre */
     if (b) b.addEventListener('click', () => { const off = H.classList.toggle('flowOff'); try { localStorage.setItem('evFlowOff', off ? '1' : '0'); } catch (x){} sync(); if (typeof jny === 'function') jny(); if (typeof wtl === 'function') wtl(); window.__flowDock(); }); sync();
     /* a flow panel for any screen with steps ("for all of the services that have steps, we should be able to select the flow controller so I can see it on the left and I can jump into steps quickly"): the referral's panel made general.
@@ -28936,6 +28948,7 @@ hairline({
   /* the page showing, lit in the journey: the step pages light themselves (their lists); the home on the Home of the step the member is on (the first not done), Past results on its row; kept in view in the panel */
   document.addEventListener('everlab:hpstep', e => { const d = e.detail || {}, open = true; let cur = 'you'; try { const st = window.HealthProfile.store.summary().st; cur = ['wear', 'past', 'you'].find(k => st[k] !== 'done') || 'all'; } catch (x){}
     document.querySelectorAll('.tkHpHome').forEach(b => { const on = open && !d.a && b.dataset.k === cur; b.classList.toggle('now', on); if (on) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
+    { const H = document.documentElement; if (d.a === 'res' && (H.dataset.jny === 'pr' || H.dataset.jny === 'ci')) H.dataset.jny = d.id === 'cc' ? 'ci' : 'pr'; }   /* Past results' Next on to the Concierge: the Flow panel the Concierge's own flow, its phases, not Past results ("WHY this flow on concierge (from past result screen). Should be the concierge flows!!!"); and back again */
     const pr = document.getElementById('stHpPastRow'); if (pr) pr.classList.toggle('now', open && d.a === 'res' && d.id !== 'cc'); const cr = document.getElementById('stHpCcRow'); if (cr) { const on = open && d.a === 'res' && d.id === 'cc'; cr.querySelectorAll('li').forEach(li => li.classList.toggle('now', on && li.dataset.ph === (window.__ccPhaseCur || 'intro'))); }   /* the phase showing lit, as a step's page is */
     requestAnimationFrame(() => { const jp = document.getElementById('hpJny'); if (!jp || jp.hidden) return; const lit = jp.querySelector('li.now, .tkHpHome.now, #stHpPastRow.now, #stHpCcRow.now'); if (!lit) return; const r = lit.getBoundingClientRect(), R = jp.getBoundingClientRect(); if (r.top < R.top + 8) jp.scrollTop -= R.top + 8 - r.top + 24; else if (r.bottom > R.bottom - 8) jp.scrollTop += r.bottom - R.bottom + 8 + 24; }); });
   { const later = () => { requestAnimationFrame(jny); setTimeout(jny, 500); }; addEventListener('resize', later); const mo = new MutationObserver(later); mo.observe(document.body, { attributes: true, attributeFilter: ['data-bp'] }); }
@@ -43527,7 +43540,7 @@ hairline({
       return null; };
     const detShow = (k, from) => { const d = detOf(k); if (!d) return; clearTimeout(detT); detFrom = from || null;
       det.querySelector('.plNShE').textContent = d[0]; det.querySelector('.plNShT').textContent = d[1]; det.querySelector('.plNShB').innerHTML = d[2].map(p => '<p>' + esc(p) + '</p>').join('');
-      detP.classList.remove('plNDrag'); detP.style.removeProperty('--plNDrag'); det.hidden = false; nut.inert = true; detP.scrollTop = 0; void detP.offsetWidth; det.classList.add('on');
+      detP.classList.remove('plNDrag'); detP.style.removeProperty('--plNDrag'); det.hidden = false; if (window.EvFullView) window.EvFullView.cover(det); nut.inert = true; detP.scrollTop = 0; void detP.offsetWidth; det.classList.add('on');
       try { detP.focus({ preventScroll: true }); } catch (e) {} };
     const detHide = now => { if (det.hidden) return; clearTimeout(detT); det.classList.remove('on'); nut.inert = false;
       const done = () => { det.hidden = true; detP.classList.remove('plNDrag'); detP.style.removeProperty('--plNDrag'); };
@@ -43611,7 +43624,7 @@ hairline({
       if (now || reduced()) end(); else { m.el.classList.remove('on'); setTimeout(end, 500); } };
     const mdOpen = (from, title, body) => { mdClose(true); const el = document.createElement('div'), id = 'plPMdT' + (++mdN); el.className = 'plPMd';
       el.innerHTML = '<div class="plPMdScrim"></div><div class="plPMdP" role="dialog" aria-modal="true" aria-labelledby="' + id + '" tabindex="-1"><i class="plPMdGrab" aria-hidden="true"></i><header class="plPMdHd"><h2 id="' + id + '">' + esc(title) + '</h2><button type="button" class="plPMdX" aria-label="Close">' + PI.x + '</button></header>' + body + '</div>';
-      pStage.appendChild(el); pSc.inert = true; const p = el.querySelector('.plPMdP');
+      pStage.appendChild(el); if (window.EvFullView) window.EvFullView.cover(el); pSc.inert = true; const p = el.querySelector('.plPMdP');
       const key = e => { if (!el.isConnected) return; if (e.key === 'Escape'){ e.preventDefault(); e.stopPropagation(); mdClose(); return; }
         if (e.key !== 'Tab') return; const f = [...p.querySelectorAll('button')], i = f.indexOf(document.activeElement); if (e.shiftKey ? i <= 0 : i === f.length - 1){ e.preventDefault(); f[e.shiftKey ? f.length - 1 : 0].focus(); } };   // the keys kept in it
       md = { el, key, from }; document.addEventListener('keydown', key, true);

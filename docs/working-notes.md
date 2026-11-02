@@ -19337,6 +19337,26 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The menu handles both the marketplace and the three pages. `__pageVal` knows both.
   - The pages' top bar takes the header overlap's overflow ground: the page's ground as the master's gradient over the Overview bar's blur bands, once the title is under the bar. It replaces the solid band they had. There is no dark stage, as there is no photo above these pages.
 
+## The app's frame: flow panel, sidebar, breadcrumb, modals; recommendation cards; nav beam
+
+- **The flow panel pushes the whole app** ("the flow should push the viewport! Here for e.g. should see the menu!").
+  - The sidebar is fixed, so it now moves with the page when the panel docks, instead of staying under the panel.
+  - Showing or hiding any flow panel re-checks the docking. A panel gone while the app was still pushed had left the page 320 off the menu ("why this right gap?").
+- **Sidebar collapse** ("when contract the nav, the item should stay in place, its just the label that disappear"): collapsed, the rail keeps the open padding. Every icon stays at its x (40), only the labels go, and the toggle sits over the icons' column.
+- **Breadcrumb always full width**: the 1360 cap is on the Plan's own page now, not on the Plan, so its subpages and their back and breadcrumb bar span the whole panel.
+- **Modals cover the whole app** ("Modal should ALWAYS cover the full viewport, not just the body"): EvFullView fixes a modal over the app's window (the sidebar too) on the desk, re-fitted on resize. Used by the Plan subpages' detail modal and the Nutrition plan's. On the phone they already cover the screen.
+- **Recommendation cards** (the Async report's "What we recommend"): no circle behind the 3D render ("remove circle behind"), and 8px more padding all round ("padding card +8px").
+- **Nav icons**:
+  - A new Beam motion, the default ("add a beam effect on the active icon... start with bg opacity 16% to end up fully filled; beam between these 2 states"): the filled icon at 16%, a warm light running once round its outline, then fully filled. It is in Tweaks (Icon motion) and in Navigation › Iconography. A setup saved with the old default (Pop) now gets the beam.
+  - The Insights phone's dock lit More after a page that More opens. The phones' docks now name their own screen again on every page change ("why insight dont have an icon active").
+
+## Past results → Concierge: the Flow panel follows
+
+"WHY this flow on concierge (from past result screen). Should be the concierge flows !!!"
+
+- Past results' Next goes on to the Concierge within the same flow, and the Flow panel kept Past results' row (its `data-jny` stayed `pr`).
+- Now the step change sets it: on the Concierge, the panel shows the Concierge and its phases (Intro, Bubble speech, Services, Specialists); back on Past results, Past results again.
+
 ## Plan → the Lifestyle hub ("Adjust plan design based on that")
 
 - **From the Lifestyle hub mock** (Julien's board, XS to XL, Dark and Light). The subpages are untouched.
