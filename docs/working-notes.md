@@ -19146,6 +19146,34 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Open in Hairline instead of Replace**: the figures are live code that answers the pointer, so a picture put in here would change nothing. The card's main button (and the sheet's) opens the Hairline page scrolled to that figure.
 - **How it is built**: the library lists the stills from a registry in its own code (the paths, so the build inlines them with their names), plus a name, a group, the section it is in, and a note.
 
+## Plan → Nutrition plan ("Does it design UI for nutrition?"; the mocks at XS, S, M, L and XL, dark and light: the salad bowl photo with "<name>'s nutrition plan / By Dr. Steven", Your daily recommendations, Key actions, My meals, Supplement stack, What this moves, Need something else?)
+- **How it opens**: the Plan's Nutrition section now has **See all** (aria "See all nutrition"), as Activity has. It, and the Nutrition card's rows, push the Nutrition plan in over the Plan, the Activity plan's way: the Plan drifts left under a dim; instant with reduced motion.
+  - Back or Escape pushes it out, the Plan where it was. On the desk, the crumb's "Plan" does too.
+  - Link: #nutrition-plan. Page menu: Nutrition plan, right after Activity plan.
+  - It follows Tweaks → Plan → Sheet (Dark / Light). Only one of the two subpages is up at a time.
+- **XS / S**, the Activity plan's phone: the photo under the status bar with Back over it, the title on its foot ("Julien’s nutrition plan", the first name read where the Overview's welcome reads it), the sheet rounded over the photo's foot. Once the photo scrolls away, General layout's nav bar (Back and the title) appears.
+- **M**: a back line at the top (Back, "Plan / Julien’s nutrition plan"), the title on the page, the photo as a 16:9 card, then one card split in two: the four numbers two by two with "Suggested daily macros (i)" on the left, Key actions on the right. Then the meals, the stack, What this moves and the tiles in one column.
+- **L and XL** (the page 1000 wide or more): two columns. Left: the title, My meals, Supplement stack, What this moves, Need something else?. Right: the photo, the numbers in a row, Key actions, held in view while the meals scroll (if it is taller than the window, it scrolls along until its foot shows).
+- **The page, from the mock**:
+  - Your daily recommendations: 2,000 kcal · 150g protein · 200g carbs · 67g fat. These add up: 600 + 800 + 603 kcal, about 30 / 40 / 30.
+  - Key actions: fibre, a protein each meal, oily fish, olive oil for butter. Each has a line icon (a wheat ear, an egg, a fish, a drop).
+  - My meals: seven cards in the Async report's meal card style, redrawn in the Plan's own classes (no shared code): Before meals, Breakfast, Snacks & drinks, Lunch, Dinner, Nutrition tips, After meals.
+  - Supplement stack: Iron 25 mg, Vitamin D 2000 IU, both daily, on the products' warm grey tile.
+  - What this moves: the Insights' own October readings, LDL cholesterol 3.8 mmol/L, Apolipoprotein B 1.12 g/L and Ferritin 22 µg/L, each Out of range. They use the Insights phone's range bar and status, in the design system's out-of-range colours for each sheet.
+  - Need something else?: the Activity plan's two tiles.
+- **Details**: every row with a chevron, and the (i), opens a short detail in a sheet built to Modals' "Bottom sheet · Floating". On the phone it rises from the foot over the dock, with a grabber, and a swipe down closes it. On the desk it is a floating modal. Close, the scrim or Escape closes either one.
+  - The words are new: one or two plain sentences for each tip, in second person, Australian spelling and mainstream advice. They say nothing about the member's data that the page does not show.
+- **Header overlap**: on the shared pattern (EvOverlap), as the Activity plan is. Its phone parts carry data-ov (scroller, hero, img, title, sheet) and the same classes as the Activity plan's.
+  - XS / S: the photo is pinned and the sheet slides up over it. The picture rises and dims, and the title drifts up and fades. There is no parallax code of its own.
+  - The sheet's overlap and corners, the title's place and the picture's rise come from the Header overlap master (Design system › General layout), 28 and 24 by default, so a saved setup reaches this page too. Before, the page had its own 20 and 20.
+  - M, L and XL have no photo above the page, so the sheet takes no overlap or corners there. The title sits whole under the back line.
+  - Merged with the branch that brought the pattern in. The Activity plan keeps that branch's code.
+- **Pictures are placeholders**, all in the Assets library under a new Nutrition plan group, each noted "to replace":
+  - The hero is a crop of the celery juice photo, as there is no salad bowl.
+  - Lunch and Nutrition tips are crops of the same photo (the juice glass, the lemons). Dinner is the plate of figs. After meals is the runner's shoe.
+  - Before meals, Breakfast and Snacks & drinks (the glass render), and the two products, are the Async report's own pictures. Their library entries now list the Nutrition plan too.
+- Built in the background in a separate worktree, to merge.
+
 ## Header overlap: the bar's overflow state
 
 "When the card and the body start to touch the top header, the top header should take the overflow state with a gradient on the background and the blur effect."
@@ -19163,3 +19191,18 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The XS phone has the bar too: scroll it or Play to see it light at the touch.
   - A new control, Bar tint, sets how strong the gradient is at the top; Save setup makes it every page's.
   - The table's Bar row describes the state.
+
+## Nutrition plan merged; the Plan in Light mode
+
+- **The Nutrition plan is in** (the background build above, its review and fixes), merged onto the header's overflow state.
+  - Its phone bar is the same `.hoBand` as the Activity plan's: it lights with the gradient and blur the moment the sheet touches it.
+  - The desk's back line stays as it was: a plain bar on the page's ground, as there is no photo above the page there.
+- **The Plan follows Light mode** ("The plan page doesn't work in light mode").
+  - In the app's Light mode, the Plan, the Activity plan and the Nutrition plan all take the light sheet.
+  - The photo header stays dark in both modes, as in the mock.
+  - The status bar takes dark ink only once the bar is lit over the light sheet.
+  - In Dark mode, Tweaks → Plan → Sheet still offers the light sheet under the dark top.
+- **The design system's Header overlap phone follows the docs' mode** ("Light mode should work on the screen as well. But not on the header, as the header is forced on dark"; "only when the title reached outside of the header did it turn to the screen mode").
+  - The sheet, its rows and the lit bar take the mode's colours.
+  - The photo with its white title stays dark.
+  - Only once the bar is lit over the sheet do the status bar (its icons too) and Back turn to the screen's ink.
