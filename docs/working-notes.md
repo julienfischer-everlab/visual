@@ -19062,3 +19062,27 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **The magnet**, the Records carousel's rule: let go past half a card (and its gap: 176 of 352 on the phone) and it goes on to the next one, or back to the one before. Less than that and it springs back to its own card.
   - The glide is 240 ms off a quintic, the Records one. The last card stops at the row's end.
   - A drag never opens a card.
+
+## Plan → Nutrition plan ("Does it design UI for nutrition?"; the mocks at XS, S, M, L and XL, dark and light: the salad bowl photo with "<name>'s nutrition plan / By Dr. Steven", Your daily recommendations, Key actions, My meals, Supplement stack, What this moves, Need something else?)
+- **How it opens**: the Plan's Nutrition section now has **See all** (aria "See all nutrition"), as Activity has. It, and the Nutrition card's rows, push the Nutrition plan in over the Plan, the Activity plan's way: the Plan drifts left under a dim; instant with reduced motion.
+  - Back or Escape pushes it out, the Plan where it was. On the desk, the crumb's "Plan" does too.
+  - Link: #nutrition-plan. Page menu: Nutrition plan, right after Activity plan.
+  - It follows Tweaks → Plan → Sheet (Dark / Light). Only one of the two subpages is up at a time.
+- **XS / S**, the Activity plan's phone: the photo under the status bar with Back over it, the title on its foot ("Julien’s nutrition plan", the first name read where the Overview's welcome reads it), the sheet rounded over the photo's foot. Once the photo scrolls away, General layout's nav bar (Back and the title) appears.
+- **M**: a back line at the top (Back, "Plan / Julien’s nutrition plan"), the title on the page, the photo as a 16:9 card, then one card split in two: the four numbers two by two with "Suggested daily macros (i)" on the left, Key actions on the right. Then the meals, the stack, What this moves and the tiles in one column.
+- **L and XL** (the page 1000 wide or more): two columns. Left: the title, My meals, Supplement stack, What this moves, Need something else?. Right: the photo, the numbers in a row, Key actions, held in view while the meals scroll (if it is taller than the window, it scrolls along until its foot shows).
+- **The page, from the mock**:
+  - Your daily recommendations: 2,000 kcal · 150g protein · 200g carbs · 67g fat. These add up: 600 + 800 + 603 kcal, about 30 / 40 / 30.
+  - Key actions: fibre, a protein each meal, oily fish, olive oil for butter. Each has a line icon (a wheat ear, an egg, a fish, a drop).
+  - My meals: seven cards in the Async report's meal card style, redrawn in the Plan's own classes (no shared code): Before meals, Breakfast, Snacks & drinks, Lunch, Dinner, Nutrition tips, After meals.
+  - Supplement stack: Iron 25 mg, Vitamin D 2000 IU, both daily, on the products' warm grey tile.
+  - What this moves: the Insights' own October readings, LDL cholesterol 3.8 mmol/L, Apolipoprotein B 1.12 g/L and Ferritin 22 µg/L, each Out of range. They use the Insights phone's range bar and status, in the design system's out-of-range colours for each sheet.
+  - Need something else?: the Activity plan's two tiles.
+- **Details**: every row with a chevron, and the (i), opens a short detail in a sheet built to Modals' "Bottom sheet · Floating". On the phone it rises from the foot over the dock, with a grabber, and a swipe down closes it. On the desk it is a floating modal. Close, the scrim or Escape closes either one.
+  - The words are new: one or two plain sentences for each tip, in second person, Australian spelling and mainstream advice. They say nothing about the member's data that the page does not show.
+- **Header overlap contract**: the phone parts carry data-ov (scroller, hero, img, title, sheet) for the shared header overlap pattern being built alongside. The Activity plan's matching parts carry them too, with no change in behaviour. No parallax of its own.
+- **Pictures are placeholders**, all in the Assets library under a new Nutrition plan group, each noted "to replace":
+  - The hero is a crop of the celery juice photo, as there is no salad bowl.
+  - Lunch and Nutrition tips are crops of the same photo (the juice glass, the lemons). Dinner is the plate of figs. After meals is the runner's shoe.
+  - Before meals, Breakfast and Snacks & drinks (the glass render), and the two products, are the Async report's own pictures. Their library entries now list the Nutrition plan too.
+- Built in the background in a separate worktree, to merge.
