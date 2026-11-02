@@ -19206,3 +19206,17 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The sheet, its rows and the lit bar take the mode's colours.
   - The photo with its white title stays dark.
   - Only once the bar is lit over the sheet do the status bar (its icons too) and Back turn to the screen's ink.
+
+## Header overlap: the bar dark first, then the screen's mode
+
+"Now, the top header on scroll should be in dark mode until they reach the body, and then turn to the screen mode."
+
+- **Two stages of the bar's overflow state** (EvOverlap, so the Activity plan, the Nutrition plan and the design system's phone all have them):
+  1. **Scrolled, over the photo**: from the first pixel of scroll, the bar is dark.
+     - A near-black gradient (#0f0f0f, the bar tint at the top) over the progressive blur.
+     - The status bar and Back are white, with no title yet: the photo's own title is still in view.
+  2. **The sheet reaches the bar**: it turns to the screen's mode.
+     - The page's ground in the gradient (white in Light mode, near-black in Dark).
+     - The page's title beside Back. Back and the status bar take the sheet's ink.
+- Each change eases over .28s. At rest, at the very top, there is no bar at all.
+- The design system's table (General layout › Header overlap › Bar) says the same.
