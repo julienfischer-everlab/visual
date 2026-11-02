@@ -19367,3 +19367,23 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - **Inside**: each service's thumbnail, name, Remove and price; the subtotal; "Prices are for the prototype."; a full-width Checkout. Checkout shows the Simple loader, then "Booked. Your care team will be in touch to schedule." with Done, and the cart empties. An empty cart says so, with Browse services, which scrolls down to the services.
   - **Kept in this browser** (`everlab:cart`), so a reload keeps it. Another tab's changes follow.
 - Modals › Full bottom sheet's "Used by" names the cart.
+
+### The cart, after review
+
+- **The header from M**: Your recommended services sits 12 under the title again, as on XS and S. Only the carousel's arrows moved down (16), so they still sit 11 under the cart.
+- **No toast on add or remove**: the button ("In your cart") and the badge say it. The toast is left only for "Booked…" when the cart was shut while Checkout loaded, and it now sits at the foot (above the dock on the phone), clear of the title and the cart.
+- **The badge** uses the app's count-badge orange and ink (#f78359 on #1a120e, as the Inbox and the hub counts), about 7:1. The filter's dot uses the same orange.
+- **In your cart** is a lasting state, not the loader's moment: the primary at full strength, with a green tick (drawn on as it goes in) and the words. It is `aria-disabled` rather than disabled, so it keeps the focus after the Simple loader and reads out. Tab goes on to Remove.
+- **The grabber is now an option of the Full bottom sheet master** (Design system › Modals): "no grabber by default", a new Grabber row (36 × 4, line colour, 8 from the top, 12 above the header, on every layer; a swipe down on it or the header, past 80, lets it go), and a Grabber button in the demo that turns it on. The swipe is one shared helper, `window.EvSheetSwipe`, used by the demo and the cart, so they run the same code. The cart opts in with `.shGrabOn` instead of an `!important` override.
+- **Smaller fixes**:
+  - Empty and booked: Browse services and Done are the foot's full-width 56 primary.
+  - Close is the master's (ink 7%, a 16 glyph).
+  - On XS and S the cart takes the filter and search buttons' fill; from M it keeps the arrows' glass and ring.
+  - Remove's hit area is 34 tall.
+  - Dragging the header no longer selects its text.
+- **Bugs fixed**:
+  - Remove during Checkout's loader no longer leads to a false "Booked": the list waits until the booking is done, and only the services booked leave the cart, so another tab's adds stay.
+  - An Add still loading when the sheet is shut and another service opened is now finished, not dropped.
+  - The badge pops only if the cart grew while the sheet was open.
+  - Leaving the page during an add or a checkout finishes it quietly, with nothing said over the next page.
+- **Not done here**: the service detail (also a Full bottom sheet) still has no swipe. Without a grabber it needs a swipe that knows about the scroll, which belongs to the swipe-down-to-dismiss master in progress (it can take `EvSheetSwipe` over).
