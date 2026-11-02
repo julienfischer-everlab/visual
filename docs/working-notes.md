@@ -19223,7 +19223,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **A supplement's detail**: what it's for and when to take it. Where a reading applies it is the member's own: vitamin D 42 nmol/L (below range); vitamin C, selenium and B12 a little low; magnesium in range, so the glycinate is for sleep, not a shortfall.
 - **Pictures**: the Async report's renders, cut out of their grey so the tile can be dark. The spray and the bar are placeholders (the dropper toned cobalt; the pouch's black band as a wrapper). All are in the Assets library under Plan.
 - **On the Plan**: a new Supplements section after Nutrition, the first three rows and See all. Link: #my-supplements; page menu: Supplements.
-- **For the Nutrition plan's Supplement stack**: `window.__plOpen('sup', { item: 'Magnesium Glycinate' })` opens this page and that supplement's detail.
+- **The Nutrition plan's Supplement stack** reads its two rows off this list (see the review fixes below), and a row opens this page with that supplement's detail: `window.__plOpen('sup', { item: 'Iron', from: row })`.
 
 ## Plan → Wind-down routine ("That's for routines.")
 - **From the mocks** (the S column's "My supplements" title read as the routine's): "Wind-down routine / A short routine to help your body and mind switch off before bed", four numbered steps.
@@ -19239,3 +19239,18 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Shared bits, one helper each**: Need something else? (Adjust your plan, Recovery tips) and What this moves, using the Activity plan's tiles and rows.
 - **Details**: Modals → Bottom sheet · Floating. A sheet on the phone (its grabber, a swipe down), a floating modal from M; the scrim, Close and Escape shut it.
 - Built in a separate worktree, alongside the Nutrition plan.
+
+## The three with the Nutrition plan (merge and review fixes)
+- **Merged onto the Nutrition plan.** Only one of the Plan's subpages is up at a time.
+  - Opening Medical actions, Supplements or the routine, from the menu, a link or a row, takes the Activity or the Nutrition plan away first, and the other way round.
+  - Back always leaves the Plan interactive again.
+  - A page opened from the Nutrition plan's stack slides back off over the Nutrition plan, which keeps its scroll. The breadcrumb's Plan goes to the Plan.
+- **One supplement list.** The Nutrition plan's stack now reads My supplements' entries, so the names and doses agree on both pages.
+  - Iron joins My supplements (1 tablet daily, 25 mg). It's there for the member's low iron stores: ferritin 22 µg/L and transferrin saturation 14 %, both out of range in the Insights. The picture is a placeholder, one of the magnesium picture's bottles.
+  - Vitamin D is "Vitamin D3 + K2 Drops", 1 drop daily, 2000 IU, on both pages. A supplement's detail shows the strength beside the dose.
+- **One Need something else?** The Activity and Nutrition plans now use the same tiles as the three pages, with the mocks' sliders for Adjust your plan (it was a numbered list).
+- **The routine's numbers** sit in a small disc, as in the mock: 24 px, ink at 6 %, full ink and semibold. The titles start 40 px in.
+- **The marker chips** show the reading as a small caret over the range, as What this moves does. Before, a bar across the range read as a plus.
+- **What this moves** takes each reading's own status (Optimal, Suboptimal or Out of range) and places the marker in that band. A reading with no status shows neither.
+- **The Suggestion's rows** go to their section by its title, not its position: 01 vitamin D to Supplements (where the vitamin D now is), 02 to Nutrition, 03 to Activity.
+- **The status bar's ink** follows every theme change, the app's Light mode included, while one of the three is up on the phone.
