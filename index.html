@@ -6500,8 +6500,8 @@
   body.m9 .dash .side .nvIns{background:none;color:inherit;}
   body.m9 .dash .side .nvOver{background:#1e1e1c;color:#ececec;}
   body.m9.svcOn .dash .side .nvOver{background:none;color:inherit;}
-  body.m9.svcOn .dash .side .nvSvc{background:#1e1e1c;color:#ececec;}   /* the service page lights Services */
-  body.light.m9.svcOn .dash .side .nvSvc{background:#ece4d3;color:#2e241c;} body.light.m9.svcOn .dash .side .nvOver{background:none;}
+  body.m9.svcOn .dash .side .nvTl{background:#1e1e1c;color:#ececec;}   /* the service page lights the Timeline, whose page it is now ("the service detail triggers only from the timeline view"); Services is the marketplace */
+  body.light.m9.svcOn .dash .side .nvTl{background:#ece4d3;color:#2e241c;} body.light.m9.svcOn .dash .side .nvOver{background:none;}
   body.light.m9 .dash .side .nvOver{background:#ece4d3;color:#2e241c;}
   .dvNav{
     display:flex;flex-direction:column;padding:26px 20px 22px;gap:26px;
@@ -7978,6 +7978,8 @@
   body.m9.mkOn #dMkt{display:block;} body.m9.mkOn #dOver, body.m9.mkOn #dSvc, body.m9.mkOn #dTl, body.m9.mkOn #dApt, body.m9.mkOn #dAcc, body.m9.mkOn #dPlan{display:none !important;}
   body.m9.mkOn .dash .side .nvOver{background:none;color:inherit;} body.m9.mkOn .dash .side .nvSvc{background:#1e1e1c;color:#ececec;} body.light.m9.mkOn .dash .side .nvSvc{background:#ece4d3;color:#2e241c;} body.light.m9.mkOn .dash .side .nvOver{background:none;}   /* the page lights Services */
   body[data-bp="xs"] #dMkt{--mkPx:16px;padding:17px var(--mkPx) 120px;} body[data-bp="s"] #dMkt{--mkPx:24px;padding:52px var(--mkPx) 132px;}   /* the Timeline's 17 under the status band; the tablet's 52 under its strip; room under the last card for the dock */
+  #dMkt .mkStBar{display:none;}
+  html:not(.bpAuto) body[data-bp="s"] #dMkt .mkStBar{display:block;position:sticky;top:-52px;z-index:25;height:52px;margin:-52px calc(-1 * var(--mkPx)) 0;background:var(--pageBg, #0f0f0f);pointer-events:none;}   /* the tablet's strip: a band of the page's ground under the drawn 9:41, at the scroll's very edge, as the Plan's and the Timeline's, so nothing scrolls under the status; the page's whole 52 (the sheet's top), so no sliver shows above the sheet either; the layout unchanged */
   #dMkt button{font-family:inherit;} #dMkt :is(button, input):focus-visible{outline:2px solid var(--mkInk);outline-offset:2px;}
   /* the head: the title, Your recommended services, and from M the carousel's arrows at its right */
   #dMkt .mkT{margin:0;font-size:24px;line-height:30px;font-weight:500;letter-spacing:-.01em;color:var(--mkInk);}
@@ -8004,7 +8006,8 @@
   /* chips: a category's dot and its name; the rest counted (+2). The sheet's too */
   .mkChips{display:flex;flex-wrap:wrap;gap:6px;}
   .mkChip{display:inline-flex;align-items:center;gap:6px;height:26px;box-sizing:border-box;padding:0 10px;border:1px solid var(--mkChipB, var(--tlRing));border-radius:999px;font-size:12px;line-height:1;color:var(--mkInk, var(--tlTx));white-space:nowrap;}
-  .mkChip i{flex:none;width:6px;height:6px;border-radius:50%;background:var(--dot, #999);}
+  .mkChip i{flex:none;width:6px;height:6px;border-radius:50%;background:var(--dot, #999);} .mkChip[hidden]{display:none;}
+  #dMkt .mkChips{flex-wrap:nowrap;min-width:0;overflow:hidden;} #dMkt .mkChip{flex:0 1 auto;min-width:0;} #dMkt .mkChip > span{min-width:0;overflow:hidden;text-overflow:ellipsis;} #dMkt .mkChip.mkMore, #dMkt .mkChips.mkFitting .mkChip{flex:none;}   /* the cards' chips on one line, as the mock's: two named where two fit, else one, the rest counted (+N); a name too long for the room shortened */
   /* the filters: All | Individual | Bundles, the search, Price and Category. XS and S: the two icons at the row's right (the filters, the search) open their rows; M: the search across above, Price and Category at the right; L, XL: one row */
   #dMkt .mkTools{position:relative;display:grid;grid-template-columns:minmax(0, 1fr) auto;grid-template-areas:"srch srch" "seg ic" "drops drops";align-items:center;gap:12px;margin-top:32px;}
   #dMkt .mkSearch{grid-area:srch;display:none;align-items:center;gap:8px;height:44px;box-sizing:border-box;padding:0 8px 0 14px;border-radius:999px;background:var(--mkField);color:var(--mkMut);transition:background-color .2s ease;}
@@ -32392,7 +32395,8 @@ hairline({
         else if (k === 'plan') page('tl');
         else if (k === 'svc') page('svcMkt');   // Services: the marketplace
         else if (k === 'ins') page('18');
-        else if (window._svc) window._svc.openDesk(k, 'book');   // consult, path, dexa
+        else if (b.classList.contains('ov5Svc')){ if (window._mkt) (window._mkt.has(k) ? window._mkt.detail(k) : window._mkt.open()); }   // a service of Services (consult, path): the marketplace, its sheet where it has the service ("the service detail triggers only from the timeline view")
+        else if (window._svc) window._svc.viaTl(k, 'book');   // a Book task (path, dexa): the Service detail as the Timeline's page, Back to My journey
       } catch (err){} });
   })();
   (function ovPlaceholders(){
@@ -38443,7 +38447,7 @@ hairline({
     let backTo = null;   // where the back chevron returns: the Overview, or the Timeline the page was opened from
     const sel = document.getElementById('versionSel'), mark = v => { if (sel && [...sel.options].some(op => op.value === v)) sel.value = v; };   // the menu names the page that is showing
     const lightDock = i => document.querySelectorAll('#bpFrame .mTab').forEach((t, j) => { t.classList.toggle('on', j === i); t.setAttribute('aria-selected', String(j === i)); });
-    const openDesk = (key, state, o) => { if (!key){ key = 'gutq'; state = state || 'request'; }   /* Service detail's own door: the Microbiome test, from its questionnaire ("service desktop should be microbiome test by default") */ [key, state, o] = simIn(key, state, o); if (LAY === 'apt' && window._apt){ window._apt.openDesk({ from: o && o.from === 'tl' ? 'tl' : null }); return; } backTo = o && o.from || null; paint(key, state || 'request', o); if (window._tl) window._tl.close(true); document.body.classList.add('svcOn'); requestAnimationFrame(() => resize()); if (desk){ desk.scrollTop = 0; desk.classList.remove('ovScrolled'); const dh = desk.closest('.dash'); if (dh) dh.scrollTop = 0; } mark('svcD'); lightDock(3); try { sessionStorage.setItem('everlab:svc', JSON.stringify([key, state || 'request'])); } catch (e){} };   /* remembered through a reload, as the Timeline */
+    const openDesk = (key, state, o) => { if (!key){ key = 'gutq'; state = state || 'request'; }   /* Service detail's own door: the Microbiome test, from its questionnaire ("service desktop should be microbiome test by default") */ [key, state, o] = simIn(key, state, o); if (LAY === 'apt' && window._apt){ window._apt.openDesk({ from: o && o.from === 'tl' ? 'tl' : null }); return; } backTo = o && o.from || null; paint(key, state || 'request', o); if (window._tl) window._tl.close(true); document.body.classList.add('svcOn'); requestAnimationFrame(() => resize()); if (desk){ desk.scrollTop = 0; desk.classList.remove('ovScrolled'); const dh = desk.closest('.dash'); if (dh) dh.scrollTop = 0; } mark('svcD'); lightDock(2); /* My journey lit: the Timeline's page ("the service detail triggers only from the timeline view"), Services the marketplace */ try { sessionStorage.setItem('everlab:svc', JSON.stringify([key, state || 'request'])); } catch (e){} };   /* remembered through a reload, as the Timeline */
     // the hero holds while the sheet slides up over it, its words drifting up and fading, as the Insights phone's header ("remember the scroll parallax used for Insights mobile? do the same here; the body should overlap the hero")
     const heroFx = sc => { const h = sc && sc.querySelector('.svmHero'); if (!h) return; const y = sc.scrollTop, span = document.body.classList.contains('svTaskOn') ? Math.max(60, Math.min(h.offsetHeight - 40, sc.scrollHeight - sc.clientHeight)) : h.offsetHeight - 40, k = Math.min(1, Math.max(0, y / Math.max(1, span)));   /* a task's short page: the hero gone by the end of what scrolls (60 at least) */
       { const e = k * k * (3 - 2 * k), g = Math.round(28 - 13 * e); sc.style.setProperty('--svG', g + ' ' + g + ' ' + g); sc.style.setProperty('--svGc', g + ',' + g + ',' + g); }   // No card: the one ground, the hero's grey (28) eased to #0f0f0f (15) as the hero goes, as the Insights page's header
@@ -38669,9 +38673,15 @@ hairline({
     addEventListener('keydown', e => { if (e.key === 'Escape') shutAll(); });
     document.addEventListener('everlab:mode', shutAll);
     const close = () => { shutAll(); const was = document.body.classList.contains('svcOn') || (ph && ph.classList.contains('svcOn')); if (document.body.classList.contains('svcOn')){ lightDock(0); requestAnimationFrame(() => resize()); } document.body.classList.remove('svcOn'); if (ph) ph.classList.remove('svcOn'); if (was) try { sessionStorage.removeItem('everlab:svc'); } catch (e){} if (was && sel && (sel.value === 'svcD' || sel.value === 'svcM' || sel.value === 'tskD')) mark(sel.value === 'svcM' ? '6' : '9'); document.body.classList.remove('svTaskOn'); const back = backTo; backTo = null; if (was && back === 'tl' && window._tl) window._tl.open(true); };
+    /* the Service detail's one door, the Timeline ("the service detail triggers only from the timeline view"): a booking anywhere else (the Overview's hero and plan rows, its V5 tasks, the Standalone's progress) opens it as the Timeline's page,
+       My journey under it and lit, Back to it. The old phone (#phone2) has no Timeline: the desk's, in the XS device, as More services does */
+    const viaTl = (key, state, o, phone) => {
+      if (phone){ const bs = document.getElementById('stBp'); if (bs && document.body.dataset.bp !== 'xs'){ bs.value = 'xs'; bs.dispatchEvent(new Event('change', { bubbles: true })); } if (sel){ sel.value = 'tl'; sel.dispatchEvent(new Event('change')); } }
+      else if (window._tl) window._tl.open();
+      openDesk(key, state, Object.assign({}, o, { from: 'tl' })); };
     const heroKey = () => document.body.classList.contains('heroDexa') ? 'dexa' : 'consult';   // the booking card's Book: whichever service its hero shows
-    if (over) over.addEventListener('click', e => { const b = e.target.closest('.dvProt, .ovact, .ovDefIt, .ovBookBtn, .ovhero.ovBook'); if (!b) return; e.preventDefault(); e.stopPropagation(); if (b.matches('.ovBookBtn, .ovhero.ovBook')) openDesk(heroKey(), 'book'); else openDesk(keyOf(b), b.dataset.st || (/book/i.test(b.textContent) ? 'book' : 'booked')); });   /* the whole plan card, not only its button */
-    if (ph) ph.addEventListener('click', e => { const b = e.target.closest('.ovact, .ovDefIt, .ovBookBtn, .ovhero.ovBook'); if (!b) return; e.preventDefault(); e.stopPropagation(); if (b.matches('.ovBookBtn, .ovhero.ovBook')) openMob(heroKey(), 'book'); else openMob(keyOf(b), b.dataset.st || (/book/i.test(b.textContent) ? 'book' : 'booked')); });
+    if (over) over.addEventListener('click', e => { const b = e.target.closest('.dvProt, .ovact, .ovDefIt, .ovBookBtn, .ovhero.ovBook'); if (!b) return; e.preventDefault(); e.stopPropagation(); if (b.matches('.ovBookBtn, .ovhero.ovBook')) viaTl(heroKey(), 'book'); else viaTl(keyOf(b), b.dataset.st || (/book/i.test(b.textContent) ? 'book' : 'booked')); });   /* the whole plan card, not only its button */
+    if (ph) ph.addEventListener('click', e => { const b = e.target.closest('.ovact, .ovDefIt, .ovBookBtn, .ovhero.ovBook'); if (!b) return; e.preventDefault(); e.stopPropagation(); if (b.matches('.ovBookBtn, .ovhero.ovBook')) viaTl(heroKey(), 'book', null, true); else viaTl(keyOf(b), b.dataset.st || (/book/i.test(b.textContent) ? 'book' : 'booked'), null, true); });
     document.addEventListener('click', e => { const r = e.target.closest('.ovDefRow'); if (!r || !window._tl) return; e.preventDefault();   // More services: the Timeline, on its Later tab ("go to timeline 'Later' tab")
       if (r.closest('#phone2')){ const bs = document.getElementById('stBp'); if (bs && document.body.dataset.bp !== 'xs'){ bs.value = 'xs'; bs.dispatchEvent(new Event('change', { bubbles: true })); } }   // a phone has no Timeline of its own: the desk's, in the XS device, as the dock's Timeline does
       if (sel){ sel.value = 'tl'; sel.dispatchEvent(new Event('change')); } window._tl.tab('claim'); });
@@ -38737,7 +38747,7 @@ hairline({
       paint(key, state || 'request', o); [bkD, bkM, dmD, dmM].forEach(x => x && x.classList.remove('svDemo'));
       const bk = /^book/i.test(act), sh = bk ? (mobile ? bkM : bkD) : (mobile ? dmM : dmD); if (sh) sh.classList.add('svDemo');
       if (bk) bkOpen(mobile); else dmOpen(T.t, mobile); return true; };
-    window._svc = { openDesk, openMob, close, plan, head, bars: jBars, lock: lkOpen, demo, sim: k => SIM[k] || null, simSet: (k, state, o) => { SIM[k] = { state, o: o || {} }; document.dispatchEvent(new Event('everlab:sim')); }, simDel: k => { delete SIM[k]; document.dispatchEvent(new Event('everlab:sim')); }, reset: () => { Object.keys(SIM).forEach(k => delete SIM[k]); Object.keys(SIM0).forEach(k => delete SIM0[k]); DOCDONE.clear(); }, persona: on => { SOLO_P = !!on; }, repaint: () => { if (cur && cur.key) paint(cur.key, cur.state, cur.o); } };
+    window._svc = { openDesk, openMob, viaTl, close, plan, head, bars: jBars, lock: lkOpen, demo, sim: k => SIM[k] || null, simSet: (k, state, o) => { SIM[k] = { state, o: o || {} }; document.dispatchEvent(new Event('everlab:sim')); }, simDel: k => { delete SIM[k]; document.dispatchEvent(new Event('everlab:sim')); }, reset: () => { Object.keys(SIM).forEach(k => delete SIM[k]); Object.keys(SIM0).forEach(k => delete SIM0[k]); DOCDONE.clear(); }, persona: on => { SOLO_P = !!on; }, repaint: () => { if (cur && cur.key) paint(cur.key, cur.state, cur.o); } };
     // the Overview's action plan cards carry the Timeline's step chip and the step in hand's badge ("add the badge step + badge status on the Overview action plan items"): the state is the one the card opens its page in (Book: to book; View: booked), so the card and its page agree
     { const PV = /^(Get |Your .* being prepared|Ordered|Pending results|Results in|Report written|Report ready)/;
       document.querySelectorAll('.dvProt, .ovact').forEach(c => {
@@ -41547,9 +41557,10 @@ hairline({
     [['dOver', ':scope > .dvH1, :scope > .ovTop', false], ['phone2', '.mscroll > .mtitle', true]].forEach(([id, after, phone]) => { const host = document.getElementById(id); if (!host || host.querySelector('.ovSolo')) return; const ats = host.querySelectorAll(after), at = ats[ats.length - 1]; if (!at) return;   /* after the greeting where it is its own line, else after the bar */
       const el = document.createElement('div'); el.className = 'ovSolo'; el.innerHTML = soHtml(phone); at.after(el);
       el.addEventListener('click', e => { const r = e.target.closest('.soRow'), g = e.target.closest('.soSugC[data-sg]'); if (!window._svc || (!r && !g)) return; e.preventDefault(); e.stopPropagation();
-        const open = phone ? window._svc.openMob : window._svc.openDesk;
-        if (r){ const x = SOLO.items[+r.dataset.si]; open(x.k, x.st, Object.assign({}, x.o)); return; }   // each of the three opens its page, where it stands
-        const x = SOLO.sug[+g.dataset.sg]; open(x.k, 'purchase', {}); }); });   // a suggestion opens its page, to buy (Recommended by Dr Sarah Chen)
+        if (r){ const x = SOLO.items[+r.dataset.si]; window._svc.viaTl(x.k, x.st, Object.assign({}, x.o), phone); return; }   // each of the three opens its page, where it stands, as the Timeline's page ("the service detail triggers only from the timeline view")
+        const x = SOLO.sug[+g.dataset.sg], mk = window._mkt; if (!mk) return;   // a suggestion: the marketplace, the service's sheet where it has it (Recommended by Dr Sarah Chen)
+        if (phone){ const bs = document.getElementById('stBp'); if (bs && document.body.dataset.bp !== 'xs'){ bs.value = 'xs'; bs.dispatchEvent(new Event('change', { bubbles: true })); } }   // the old phone: the XS device's
+        if (mk.has(x.k)) mk.detail(x.k); else mk.open(); }); });
   };
   const stPersonaSel = document.getElementById('stPersona');
   if (stPersonaSel) stPersonaSel.addEventListener('change', () => { if (!/^(julien|steven)$/.test(stPersonaSel.value)) stPersonaSel.value = 'julien'; paintPersona(stPersonaSel.value); dispatchEvent(new CustomEvent('everlab:persona', { detail: stPersonaSel.value })); });   /* Member or Standalone (a saved New user goes back to Member); the Timeline listens */
@@ -43043,8 +43054,14 @@ hairline({
     const ic = (d, w) => '<svg viewBox="0 0 ' + (w || 24) + ' ' + (w || 24) + '" fill="none" stroke="currentColor" stroke-width="' + (w ? 1.6 : 1.75) + '" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + d + '</svg>';
     const I = { prev: ic('<path d="M10 3.5 5.5 8l4.5 4.5"/>', 16), next: ic('<path d="m6 3.5 4.5 4.5L6 12.5"/>', 16), down: ic('<path d="m4 6 4 4 4-4"/>', 16), check: ic('<path d="m3.5 8.4 2.9 2.9 6.1-6.6"/>', 16), x: ic('<path d="M4 4l8 8M12 4l-8 8"/>', 16),
       search: ic('<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>'), sliders: ic('<path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/>') };
-    const chips = (s, n) => { const c = s.cats, k = n == null ? c.length : Math.min(n, c.length);
-      return '<div class="mkChips">' + c.slice(0, k).map(x => '<span class="mkChip"><i style="--dot:' + CAT[x] + '"></i>' + esc(x) + '</span>').join('') + (c.length > k ? '<span class="mkChip" aria-label="and ' + (c.length - k) + ' more">+' + (c.length - k) + '</span>' : '') + '</div>'; };
+    const chips = (s, n) => { const c = s.cats, k = n == null ? c.length : Math.min(n, c.length);   /* n: the most named on a card (the sheet: all); every name drawn, those past it hidden, the count a chip of its own, so fitChips can show fewer */
+      return '<div class="mkChips"' + (n == null ? '' : ' data-fit="' + k + '"') + '>' + c.map((x, i) => '<span class="mkChip"' + (i >= k ? ' hidden' : '') + '><i style="--dot:' + CAT[x] + '"></i><span>' + esc(x) + '</span></span>').join('')
+        + (n == null ? '' : '<span class="mkChip mkMore" aria-label="and ' + (c.length - k) + ' more"' + (c.length > k ? '' : ' hidden') + '>+' + (c.length - k) + '</span>') + '</div>'; };
+    /* the chips on one line ("two chips with a dot and +2"): two named where both fit beside the count, else one; the one left shortened if even it is too long */
+    const fitChips = row => { const cs = [...row.children].filter(x => !x.classList.contains('mkMore')), more = row.querySelector('.mkMore'); if (!more || !row.clientWidth) return;
+      const show = n => { cs.forEach((x, i) => { x.hidden = i >= n; }); const r = cs.length - n; more.hidden = !r; more.textContent = '+' + r; more.setAttribute('aria-label', 'and ' + r + ' more'); };
+      let n = +row.dataset.fit || 1; row.classList.add('mkFitting'); show(n); while (n > 1 && row.scrollWidth > row.clientWidth + 1) show(--n); row.classList.remove('mkFitting'); };
+    const fitAll = () => host.querySelectorAll('.mkChips[data-fit]').forEach(fitChips);
     const thumb = s => s.stack ? '<span class="mkTh mkStk" aria-hidden="true">' + s.stack.map(k => '<img src="' + IMG[k] + '" alt="" decoding="async" draggable="false">').join('') + '</span>'
       : '<span class="mkTh" aria-hidden="true"><img src="' + IMG[s.img] + '" alt="" decoding="async" draggable="false"></span>';
     const lm = (s, cls) => '<button type="button" class="' + cls + '" data-mk-open="' + s.k + '" aria-label="Learn more about ' + esc(s.t) + '">Learn more</button>';
@@ -43054,7 +43071,7 @@ hairline({
       return '<article class="mkRc" role="listitem" style="--mkG:' + r[1] + '" data-mk="' + s.k + '"><img class="mkRcPh" src="' + IMG[s.tall || s.big || s.img] + '" alt="" decoding="async" draggable="false"' + (s.pos ? ' style="object-position:' + s.pos + '"' : '') + '>'
         + '<div class="mkRcL"><h3>' + esc(s.t) + '</h3><p>' + esc(s.short || s.d) + '</p>' + chips(s, 2) + '<ul class="mkRcV" aria-label="What you get">' + s.v.map(v => '<li>' + esc(v) + '</li>').join('') + '</ul></div>'
         + '<div class="mkRcFoot"><b class="mkPr">' + fmt(s.p) + '</b>' + lm(s, 'mkGlass') + '</div></article>'; };
-    host.innerHTML = '<header class="mkHead"><h1 class="mkT">Everlab Services</h1><div class="mkSubRow"><p class="mkSub" id="mkRecT">Your recommended services</p><div class="mkArrows"><button type="button" class="mkArr" data-mk-dir="-1" aria-label="Previous recommended service">' + I.prev + '</button><button type="button" class="mkArr" data-mk-dir="1" aria-label="Next recommended service">' + I.next + '</button></div></div></header>'
+    host.innerHTML = '<div class="mkStBar" aria-hidden="true"></div><header class="mkHead"><h1 class="mkT">Everlab Services</h1><div class="mkSubRow"><p class="mkSub" id="mkRecT">Your recommended services</p><div class="mkArrows"><button type="button" class="mkArr" data-mk-dir="-1" aria-label="Previous recommended service">' + I.prev + '</button><button type="button" class="mkArr" data-mk-dir="1" aria-label="Next recommended service">' + I.next + '</button></div></div></header>'
       + '<div class="mkRec" role="list" aria-labelledby="mkRecT">' + REC.map(recCard).join('') + '</div>'
       + '<div class="mkTools"><label class="mkSearch">' + I.search + '<input type="search" placeholder="Search services" aria-label="Search services" autocomplete="off" spellcheck="false"><button type="button" class="mkClr" aria-label="Clear the search" hidden>' + I.x + '</button></label>'
       + '<div class="mkSeg" role="group" aria-label="Show">' + [['all', 'All'], ['one', 'Individual'], ['bundle', 'Bundles']].map(o => '<button type="button" data-kind="' + o[0] + '" aria-pressed="' + (o[0] === 'all') + '">' + o[1] + '</button>').join('') + '</div>'
@@ -43069,11 +43086,13 @@ hairline({
     const mag = window.EvMagnet ? window.EvMagnet.bind(rec, { item: '.mkRc', drag: 'mkDrag', onMove: arrowsSet }) : { go: () => {}, at: () => 0 };
     arrows.forEach(b => b.addEventListener('click', () => mag.go(mag.at() + +b.dataset.mkDir)));
     if (window.ResizeObserver) new ResizeObserver(arrowsSet).observe(rec);
+    { let fq = 0; const fitQ = () => { if (fq) return; fq = requestAnimationFrame(() => { fq = 0; fitAll(); }); };   // the chips fitted again at every new width (a breakpoint, the page shown) and once the fonts are in
+      if (window.ResizeObserver) new ResizeObserver(fitQ).observe(host); if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitQ); }
     /* the filters, all local: the kind (All | Individual | Bundles), the name searched, the price's order, a category */
     const F = { kind: 'all', q: '', sort: 'rec', cat: '' };
     const shown = () => { let r = SV.filter(s => (F.kind === 'all' || (F.kind === 'bundle') === !!s.bundle) && (!F.q || s.t.toLowerCase().includes(F.q)) && (!F.cat || s.cats.includes(F.cat)));
       if (F.sort !== 'rec') r = r.slice().sort((a, b) => F.sort === 'lo' ? a.p - b.p : b.p - a.p); return r; };
-    const list = () => { const r = shown(); grid.innerHTML = r.map(card).join(''); grid.hidden = !r.length; empty.hidden = !!r.length;
+    const list = () => { const r = shown(); grid.innerHTML = r.map(card).join(''); grid.hidden = !r.length; empty.hidden = !!r.length; grid.querySelectorAll('.mkChips[data-fit]').forEach(fitChips);
       const dd = k => tools.querySelector('[data-dd="' + k + '"]'), pr = dd('price'), ct = dd('cat');
       pr.firstChild.textContent = F.sort === 'rec' ? 'Price' : F.sort === 'lo' ? 'Price: low to high' : 'Price: high to low'; pr.classList.toggle('on', F.sort !== 'rec');
       ct.firstChild.textContent = F.cat || 'Category'; ct.classList.toggle('on', !!F.cat);
@@ -43151,7 +43170,7 @@ hairline({
     document.querySelectorAll('.dash .side .nv:not(.nvSvc)').forEach(x => x.addEventListener('click', () => close(), true));   // the nav's other pages
     const atHash = () => { if (location.hash === '#services' && !document.body.classList.contains('mkOn')) open(); };
     addEventListener('hashchange', atHash); if (location.hash === '#services') addEventListener('load', () => setTimeout(atHash, 700));
-    window._mkt = { open, close, detail: k => { if (!document.body.classList.contains('mkOn')) open(); detOpen(k); } };
+    window._mkt = { open, close, has: k => !!BY[k === 'gutq' ? 'gut' : k], detail: k => { k = k === 'gutq' ? 'gut' : k; if (!document.body.classList.contains('mkOn')) open(); if (BY[k]) detOpen(k); } };   // detail: a service of the page's (the questionnaire's, its microbiome), else the page alone
   })();
   // a segmented tab in place of a select ("put a segmented tab instead of a select"): the select stays, hidden, as the value and its change event
   document.querySelectorAll('select.tkSegSel').forEach(sel => {

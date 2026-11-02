@@ -19111,3 +19111,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - *Add to my plan* shows the Simple loader, then its tick. *Ask Eva about it* opens the Chat with the question asked.
   - Close, the scrim or Escape dismiss it. The Modals doc lists it under Used by.
 - **Pictures**: the app's own, as placeholders. The microbiome's two are cut small for the page (Assets library › Services).
+- **The Service detail is the Timeline's** ("the service detail triggers only from the timeline view"), after review:
+  - It lights My journey (the dock's tab, the desk nav's entry), no longer Services. Services means the marketplace.
+  - The Overview's bookings (the hero's Book, the plan rows, the More services rows), Overview V5's Book tasks and the Standalone's progress rows open it as the Timeline's page: My journey under it, Back to it. The old phone (`#m6`) goes to the XS device's Timeline first, as More services does.
+  - Overview V5's service cards and the Standalone's *Your doctor suggested* open the marketplace instead: the service's sheet where the marketplace sells it (DEXA, MRI), else the page.
+  - Prototype shortcuts kept as they were: the page menu's Service detail and Task detail, the Home mosaic's tiles and a reload on the page.
+- **At S**, a band of the page's ground sits under the tablet's 9:41, as on the Plan and the Timeline. Nothing scrolls under the status any more, and nothing shows above the sheet.
+- **The chips stay on one line**, as in the mock: two named where both fit beside the count, else one, with the rest counted (+N). A name too long for the room is shortened. The cards no longer grow, and the sheet still lists every chip.
