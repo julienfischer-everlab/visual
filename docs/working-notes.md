@@ -18987,3 +18987,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **So the page under a full modal is no longer painted.** About 0.7s after a full modal is up (the report, the Health profile, the Suggestion, the Doctor's suggestion, the Personal recommendation; on the desk and in the XS / S device) and covering the page whole, the page's layers (.dash and the other pages) are hidden. Nothing of the Overview can show through, and its own motion (particles, videos, carousels) no longer costs the scroll.
   - The page comes back the instant the modal starts to close, so the close dip still shows it.
   - A bottom sheet over a page (Past results or the Concierge from the Overview at XS) keeps the page under its blanket.
+
+## Recommendations cards: title break, smaller visuals on a circle ("The break line under 'what recommend' also, the visuals should be 24px smaller. You can have a circle behind each visual…")
+- **Title**: "Here's what / we recommend" breaks after "what" at every width, the desk too.
+- **Visuals**: 24px smaller: 64 on the phone, 80 on the desk.
+- **The circle**: each visual now sits on a grey circle (the ink at 6%), 70% of the visual's size and centred behind it, so the renders sit on it.
