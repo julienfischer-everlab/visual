@@ -8287,6 +8287,16 @@
   #dMkt button{font-family:inherit;} #dMkt :is(button, input):focus-visible{outline:2px solid var(--mkInk);outline-offset:2px;}
   /* the head: the title, Your recommended services, and from M the carousel's arrows at its right */
   #dMkt .mkT{margin:0;font-size:24px;line-height:30px;font-weight:500;letter-spacing:-.01em;color:var(--mkInk);}
+  /* the cart ("top right add a cart system"): a 44 glass disc at the title's right, centred on its line (its 7 above and below the line's 30 given back, so the page keeps its rhythm), the bag in the app's line icons; the count a small orange badge, popping as a service goes in */
+  #dMkt .mkTRow{display:flex;align-items:center;justify-content:space-between;gap:12px;} #dMkt .mkTRow .mkT{min-width:0;}
+  html:not(.bpAuto) body[data-bp="s"] #dMkt .mkTRow{margin-top:10px;}   /* the tablet: the disc and its badge clear of the status strip above (the strip stays over whatever scrolls under it) */
+  #dMkt .mkCartB{position:relative;flex:none;display:grid;place-items:center;width:44px;height:44px;margin:-7px 0;padding:0;border:0;border-radius:50%;background:var(--mkGhost);box-shadow:inset 0 0 0 1px var(--mkLine);-webkit-backdrop-filter:blur(32px);backdrop-filter:blur(32px);color:var(--mkInk);cursor:pointer;transition:background-color .2s ease;}
+  #dMkt .mkCartB:hover{background:var(--mkGhostH);} #dMkt .mkCartB svg{width:20px;height:20px;}
+  #dMkt .mkCartN{position:absolute;top:-3px;right:-3px;box-sizing:border-box;min-width:20px;height:20px;padding:0 5px;border-radius:10px;background:#f26b3a;color:#fff;font-size:11px;line-height:20px;font-weight:600;text-align:center;font-variant-numeric:tabular-nums;box-shadow:0 0 0 2px var(--pageBg, #0f0f0f);pointer-events:none;}
+  #dMkt .mkCartN[hidden]{display:none;}
+  #dMkt .mkCartB.mkPop .mkCartN{animation:mkCartPop .52s cubic-bezier(.2,.8,.2,1);} #dMkt .mkCartB.mkPop svg{animation:mkCartBag .52s cubic-bezier(.2,.8,.2,1);}
+  @keyframes mkCartPop{0%{transform:scale(.4);opacity:0;}45%{transform:scale(1.28);opacity:1;}100%{transform:none;}}
+  @keyframes mkCartBag{0%{transform:none;}35%{transform:translateY(-2px) scale(1.08);}100%{transform:none;}}
   #dMkt .mkSubRow{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:40px;margin-top:2px;}
   #dMkt .mkSub{margin:0;font-size:15px;line-height:20px;color:var(--mkMut);}
   #dMkt .mkArrows{display:none;gap:8px;}
@@ -8307,6 +8317,18 @@
   #dMkt .mkRc .mkPr{font-size:18px;line-height:24px;color:#fff;}
   #dMkt .mkGlass{appearance:none;flex:none;height:34px;margin:0;padding:0 16px;border:0;border-radius:999px;background:rgba(255,255,255,.16);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16);color:#fff;font-size:13px;font-weight:500;white-space:nowrap;cursor:pointer;transition:background-color .2s ease;}
   #dMkt .mkGlass:hover{background:rgba(255,255,255,.24);} #dMkt .mkRc .mkGlass:focus-visible{outline-color:#fff;}
+  /* XS ("smaller img", the mock): the picture a small rounded square at the card's top right, beside the title (two lines at the top left), the words and the chips under the title; the three values across the card under them, then the price and Learn more as before.
+     The left column's box set aside (display:contents) so its pieces sit on the card's own grid; the spacer row (s) takes the card's spare height, the values kept at its foot */
+  @container mkt (max-width: 479.98px){
+    #dMkt .mkRc{grid-template-columns:minmax(0, 1fr) clamp(96px, 34%, 112px);grid-template-rows:auto auto auto minmax(0, 1fr) auto auto;grid-template-areas:"t ph" "d ph" "c ph" "s ph" "v v" "f f";row-gap:0;column-gap:12px;}
+    #dMkt .mkRcL{display:contents;}
+    #dMkt .mkRc h3{grid-area:t;padding:4px 0 0 4px;}
+    #dMkt .mkRc p{grid-area:d;margin-left:4px;}
+    #dMkt .mkRc .mkChips{grid-area:c;margin:12px 0 0 4px;}
+    #dMkt .mkRcPh{grid-area:ph;align-self:start;width:100%;height:auto;aspect-ratio:1 / 1;contain:none;border-radius:16px;}
+    #dMkt .mkRcV{grid-area:v;margin:16px 0 0;}
+    #dMkt .mkRcFoot{grid-area:f;margin-top:14px;}
+  }
   /* chips: a category's dot and its name; the rest counted (+2). The sheet's too */
   .mkChips{display:flex;flex-wrap:wrap;gap:6px;}
   .mkChip{display:inline-flex;align-items:center;gap:6px;height:26px;box-sizing:border-box;padding:0 10px;border:1px solid var(--mkChipB, var(--tlRing));border-radius:999px;font-size:12px;line-height:1;color:var(--mkInk, var(--tlTx));white-space:nowrap;}
@@ -8375,7 +8397,7 @@
     #dMkt .mkCFoot{margin-top:16px;}
   }
   @container mkt (min-width: 640px){
-    #dMkt .mkArrows{display:flex;}
+    #dMkt .mkArrows{display:flex;} #dMkt .mkSubRow{margin-top:18px;}   /* the carousel's arrows 11 under the cart, not touching it: two rows of round buttons at the right, the page's (the cart) and the row's (its arrows) */
     #dMkt .mkRc{flex-basis:calc(100% - 96px);min-height:304px;padding:16px;gap:16px;grid-template-columns:minmax(0, 1fr) minmax(0, 1fr);}
     #dMkt .mkRcPh{grid-row:1 / span 2;}   /* the photo the card's right half, its whole height */
     #dMkt .mkRcFoot{grid-column:1;}
@@ -8391,13 +8413,13 @@
   }
   /* the service, from the marketplace ("when you click on a service, you will have the details of the service in a modal and a bottom sheet on mobile"): Design system -> Modals -> Full bottom sheet, on the Timeline's sheet (.tlSheet: its blanket, a sheet over it stacking).
      XS and S: up from the foot, the full width, 32 corners, its top under the status band; M and up: the tall floating modal, 544 wide, up to 720 high, 28 corners, rising 24 as it fades in. The picture at its top, the close over it */
-  html body.mkOn .dash > .tlSheet.mkDet{display:block;}
-  .dash > .mkDet .tlShPanel{overflow:hidden;}
-  html body:is([data-bp="xs"], [data-bp="s"]) .dash > .mkDet .tlShPanel{left:0;right:0;width:auto;top:var(--shTop, 52px);bottom:0;max-height:none;border-radius:32px 32px 0 0;transform:translateY(102%);transition:transform .4s cubic-bezier(.32,.72,0,1);}
-  html body:is([data-bp="xs"], [data-bp="s"]) .dash > .mkDet.on .tlShPanel{transform:none;}
-  html body:not([data-bp="xs"]):not([data-bp="s"]) .dash > .mkDet .tlShDim{background:rgba(0,0,0,.62);transition:opacity .3s ease;}
-  html body:not([data-bp="xs"]):not([data-bp="s"]) .dash > .mkDet .tlShPanel{left:50%;right:auto;top:50%;bottom:auto;width:min(calc(100% - 48px), 544px);max-height:min(720px, calc(100% - 48px));border-radius:28px;transform:translate(-50%, calc(-50% + 24px));opacity:0;transition:transform .45s cubic-bezier(.2,.8,.2,1), opacity .3s ease;}
-  html body:not([data-bp="xs"]):not([data-bp="s"]) .dash > .mkDet.on .tlShPanel{transform:translate(-50%, -50%);opacity:1;}
+  html body.mkOn .dash > .tlSheet:is(.mkDet, .mkCart){display:block;}
+  .dash > :is(.mkDet, .mkCart) .tlShPanel{overflow:hidden;}
+  html body:is([data-bp="xs"], [data-bp="s"]) .dash > :is(.mkDet, .mkCart) .tlShPanel{left:0;right:0;width:auto;top:var(--shTop, 52px);bottom:0;max-height:none;border-radius:32px 32px 0 0;transform:translateY(102%);transition:transform .4s cubic-bezier(.32,.72,0,1);}
+  html body:is([data-bp="xs"], [data-bp="s"]) .dash > :is(.mkDet, .mkCart).on .tlShPanel{transform:none;}
+  html body:not([data-bp="xs"]):not([data-bp="s"]) .dash > :is(.mkDet, .mkCart) .tlShDim{background:rgba(0,0,0,.62);transition:opacity .3s ease;}
+  html body:not([data-bp="xs"]):not([data-bp="s"]) .dash > :is(.mkDet, .mkCart) .tlShPanel{left:50%;right:auto;top:50%;bottom:auto;width:min(calc(100% - 48px), 544px);max-height:min(720px, calc(100% - 48px));border-radius:28px;transform:translate(-50%, calc(-50% + 24px));opacity:0;transition:transform .45s cubic-bezier(.2,.8,.2,1), opacity .3s ease;}
+  html body:not([data-bp="xs"]):not([data-bp="s"]) .dash > :is(.mkDet, .mkCart).on .tlShPanel{transform:translate(-50%, -50%);opacity:1;}
   .mkDet .tlShGrab{display:none;} .mkDet .tlShPanel:focus{outline:none;}
   .mkDet .mkDetX{position:absolute;z-index:3;top:16px;right:16px;display:grid;place-items:center;width:32px;height:32px;margin:0;padding:0;border:0;border-radius:50%;background:rgba(20,20,20,.36);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);color:#fff;cursor:pointer;}
   .mkDet .mkDetX svg{width:14px;height:14px;} .mkDet .mkDetX:focus-visible{outline:2px solid #fff;outline-offset:2px;}
@@ -8420,14 +8442,52 @@
   .mkDet .mkHow li::before{counter-increment:mkHow;content:counter(mkHow);flex:none;display:grid;place-items:center;width:24px;height:24px;margin-top:-2px;border-radius:50%;background:var(--tlGhost);font-size:12px;font-weight:500;color:var(--tlInk);}
   .mkDet .mkHow li:not(:last-child)::after{content:'';position:absolute;left:11.5px;top:26px;bottom:2px;width:1px;background:var(--tlLine);}   /* the steps joined */
   .mkDet .mkDetFoot{flex:none;display:flex;gap:8px;padding:16px 24px 24px;border-top:1px solid var(--tlLine);}
-  .mkDet .mkBtn{appearance:none;flex:1 1 0;height:56px;margin:0;padding:0 20px;border:0;border-radius:999px;font:inherit;font-size:16px;font-weight:500;white-space:nowrap;cursor:pointer;transition:opacity .2s ease;}
-  .mkDet .mkBtnP{background:var(--tlCta);color:var(--tlCtaInk);} .mkDet .mkBtnS{background:var(--tlGhost);color:var(--tlInk);} .mkDet .mkBtn:hover{opacity:.9;}
-  .mkDet .mkBtn:focus-visible{outline:2px solid var(--tlInk);outline-offset:2px;}
+  :is(.mkDet, .mkCart) .mkBtn{appearance:none;flex:1 1 0;height:56px;margin:0;padding:0 20px;border:0;border-radius:999px;font:inherit;font-size:16px;font-weight:500;white-space:nowrap;cursor:pointer;transition:opacity .2s ease;}
+  :is(.mkDet, .mkCart) .mkBtnP{background:var(--tlCta);color:var(--tlCtaInk);} :is(.mkDet, .mkCart) .mkBtnS{background:var(--tlGhost);color:var(--tlInk);} :is(.mkDet, .mkCart) .mkBtn:hover:not(:disabled){opacity:.9;}
+  :is(.mkDet, .mkCart) .mkBtn:focus-visible{outline:2px solid var(--tlInk);outline-offset:2px;}
   body:is([data-bp="xs"], [data-bp="s"]) .mkDet .mkDetPic{height:220px;}
   body:is([data-bp="xs"], [data-bp="s"]) .mkDet .mkDetBody{padding:20px 16px 24px;} body[data-bp="s"] .mkDet .mkDetBody{padding:24px 24px 28px;}
   body:is([data-bp="xs"], [data-bp="s"]) .mkDet .mkDetFoot{flex-direction:column;padding:12px 16px 34px;} body:is([data-bp="xs"], [data-bp="s"]) .mkDet .mkBtn{flex:none;}   /* stacked, primary first; the home indicator's 34 under them */
+  /* the cart: the detail's own sheet (Design system -> Modals: Full bottom sheet on XS and S, the floating modal from M), hugging its content on the desk; on the phone its grabber, a swipe down on it or the header lets it go.
+     The header (Your cart, Close 32), the services (thumbnail, name, Remove, price), then the subtotal, the note and Checkout across its foot; empty, a word and Browse services; booked, the tick and the care team's word */
+  .mkCart .tlShGrab{display:none;} .mkCart .tlShPanel:focus{outline:none;}
+  html body:is([data-bp="xs"], [data-bp="s"]) .dash > .mkCart .tlShGrab{display:block !important;flex:none;width:36px;height:4px;margin:8px auto 0;border-radius:2px;background:var(--tlRing);touch-action:none;cursor:grab;}   /* kept on layer 1 too (the sheets' stacking hides the others' there): the cart's swipe down starts on it */
+  .mkCart .mkCartHd{flex:none;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:24px 24px 8px;}
+  body:is([data-bp="xs"], [data-bp="s"]) .mkCart .mkCartHd{padding:12px 16px 8px;touch-action:none;} body[data-bp="s"] .mkCart .mkCartHd{padding:12px 24px 8px;}   /* S: the detail's 24 sides */
+  .mkCart h2{margin:0;font-size:24px;line-height:30px;font-weight:500;letter-spacing:-.01em;color:var(--tlInk);}
+  .mkCart .mkCartX{flex:none;display:grid;place-items:center;width:32px;height:32px;margin:0;padding:0;border:0;border-radius:50%;background:var(--tlGhost);-webkit-backdrop-filter:blur(32px);backdrop-filter:blur(32px);color:var(--tlInk);cursor:pointer;}
+  .mkCart .mkCartX svg{width:14px;height:14px;} .mkCart .mkCartX:focus-visible, .mkCart .mkCartRm:focus-visible{outline:2px solid var(--tlInk);outline-offset:2px;}
+  .mkCart .mkCartSc{flex:1 1 auto;display:flex;flex-direction:column;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:0 24px;scrollbar-width:none;} .mkCart .mkCartSc::-webkit-scrollbar{display:none;}
+  body:is([data-bp="xs"], [data-bp="s"]) .mkCart .mkCartSc{padding:0 16px;} body[data-bp="s"] .mkCart .mkCartSc{padding:0 24px;}
+  .mkCart .mkCartL{list-style:none;margin:0;padding:0;}
+  .mkCart .mkCartL li{display:grid;grid-template-columns:56px minmax(0, 1fr) auto;align-items:center;column-gap:14px;padding:14px 0;border-bottom:1px solid var(--tlLine);}
+  .mkCart .mkCartL li:last-child{border-bottom:0;}
+  .mkCart .mkCartTh{position:relative;display:block;width:56px;height:56px;border-radius:14px;overflow:hidden;background:var(--tlGhost);}
+  .mkCart .mkCartTh img{display:block;width:100%;height:100%;object-fit:cover;}
+  .mkCart .mkCartTh.mkStk{overflow:visible;background:none;}   /* the bundle's three photos stacked, as on its card */
+  .mkCart .mkCartTh.mkStk img{position:absolute;width:38px;height:38px;border-radius:10px;box-shadow:0 0 0 2px var(--tlShBg);}
+  .mkCart .mkCartTh.mkStk img:nth-child(1){left:0;top:18px;} .mkCart .mkCartTh.mkStk img:nth-child(2){left:9px;top:9px;} .mkCart .mkCartTh.mkStk img:nth-child(3){left:18px;top:0;}
+  .mkCart .mkCartI{display:flex;flex-direction:column;align-items:flex-start;min-width:0;}
+  .mkCart .mkCartI b{max-width:100%;font-size:15px;line-height:20px;font-weight:500;color:var(--tlInk);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .mkCart .mkCartRm{appearance:none;margin:4px 0 0;padding:0;border:0;background:none;font:inherit;font-size:13px;line-height:18px;color:var(--tlSub);text-decoration:underline;text-decoration-color:var(--tlRing);text-underline-offset:3px;cursor:pointer;transition:color .2s ease;}
+  .mkCart .mkCartRm:hover{color:var(--tlInk);}
+  .mkCart .mkCartP{align-self:start;padding-top:7px;font-size:15px;line-height:20px;font-weight:500;color:var(--tlInk);font-variant-numeric:tabular-nums;}
+  .mkCart .mkCartFt{flex:none;padding:16px 24px 24px;border-top:1px solid var(--tlLine);}
+  body:is([data-bp="xs"], [data-bp="s"]) .mkCart .mkCartFt{padding:16px 16px 34px;} body[data-bp="s"] .mkCart .mkCartFt{padding:16px 24px 34px;}   /* the home indicator's 34 under Checkout */
+  .mkCart .mkCartFt[hidden]{display:none;}
+  .mkCart .mkCartSub{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0;font-size:16px;line-height:22px;color:var(--tlTx);} .mkCart .mkCartSub b{font-size:18px;line-height:24px;font-weight:500;color:var(--tlInk);font-variant-numeric:tabular-nums;}
+  .mkCart .mkCartNote{margin:4px 0 16px;font-size:12px;line-height:16px;color:var(--tlSub);}
+  .mkCart .mkBtn{display:block;width:100%;flex:none;}
+  .mkCart .mkCartE{display:flex;flex-direction:column;align-items:center;margin:auto 0;padding:32px 8px 40px;text-align:center;}
+  .mkCart .mkCartE > i{display:grid;place-items:center;width:64px;height:64px;border-radius:50%;background:var(--tlGhost);color:var(--tlInk);} .mkCart .mkCartE > i svg{width:26px;height:26px;}
+  .mkCart .mkCartE.mkOk > i{background:rgba(111,203,159,.16);color:#6fcb9f;} body.light .mkCart .mkCartE.mkOk > i{background:rgba(31,138,87,.1);color:#1f8a57;}
+  .mkCart .mkCartE b{margin-top:16px;font-size:20px;line-height:26px;font-weight:500;color:var(--tlInk);}
+  .mkCart .mkCartE p{max-width:300px;margin:6px 0 0;font-size:14px;line-height:20px;color:var(--tlSub);text-wrap:pretty;}
+  .mkCart .mkCartE .mkBtn{width:auto;height:48px;margin-top:24px;padding:0 24px;font-size:15px;}
+  .mkCart .mkCartE.mkIn{animation:mkCartIn .4s cubic-bezier(.2,.8,.2,1);} @keyframes mkCartIn{from{opacity:0;transform:translateY(8px);}}
+  @media (prefers-reduced-motion: reduce){ .mkCart .mkCartE.mkIn{animation:none;} }
   .dash > .mkToast{top:20px;bottom:auto;width:max-content;transform:translate(-50%, -8px);} .dash > .mkToast.on{transform:translate(-50%, 0);}   /* above the sheet's buttons, not over them */
-  @media (prefers-reduced-motion: reduce){ .dash > .mkDet .tlShPanel{transition-duration:.01s !important;} #dMkt .mkMenu{animation:none;} }
+  @media (prefers-reduced-motion: reduce){ .dash > :is(.mkDet, .mkCart) .tlShPanel{transition-duration:.01s !important;} #dMkt .mkMenu{animation:none;} #dMkt .mkCartB.mkPop :is(.mkCartN, svg){animation:none;} }
   body.m9.accOn #dAcc{display:block;} body.m9.accOn #dOver, body.m9.accOn #dSvc, body.m9.accOn #dTl, body.m9.accOn #dApt, body.m9.accOn #dPlan{display:none !important;}
   body.m9.accOn .dash .side .nvOver{background:none;color:inherit;} body.m9.accOn .dash .side .nvAcc{background:#1e1e1c;color:#ececec;} body.light.m9.accOn .dash .side .nvAcc{background:#ece4d3;color:#2e241c;} body.light.m9.accOn .dash .side .nvOver{background:none;}
   .dash .side .sideFoot{position:absolute;left:20px;right:20px;bottom:20px;padding-top:12px;border-top:1px solid rgba(255,255,255,.07);} body.light .dash .side .sideFoot{border-top-color:rgba(46,31,26,.1);} .dash .side .sideFoot .nv{margin-bottom:0;}   /* the account, at the nav's foot ("display this menu at the bottom of the left nav") */
@@ -43657,7 +43717,9 @@ hairline({
     const fmt = n => '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     const ic = (d, w) => '<svg viewBox="0 0 ' + (w || 24) + ' ' + (w || 24) + '" fill="none" stroke="currentColor" stroke-width="' + (w ? 1.6 : 1.75) + '" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + d + '</svg>';
     const I = { prev: ic('<path d="M10 3.5 5.5 8l4.5 4.5"/>', 16), next: ic('<path d="m6 3.5 4.5 4.5L6 12.5"/>', 16), down: ic('<path d="m4 6 4 4 4-4"/>', 16), check: ic('<path d="m3.5 8.4 2.9 2.9 6.1-6.6"/>', 16), x: ic('<path d="M4 4l8 8M12 4l-8 8"/>', 16),
-      search: ic('<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>'), sliders: ic('<path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/>') };
+      search: ic('<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>'), sliders: ic('<path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/>'),
+      bag: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.2 7.2h11.6l-.85 8.55a1.6 1.6 0 0 1-1.6 1.45H6.65a1.6 1.6 0 0 1-1.6-1.45z"/><path d="M7.3 7.2V6a2.7 2.7 0 0 1 5.4 0v1.2"/></svg>',   /* the bag, in the bell's family (20, 1.5, round) */
+      ok: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4.5 10.4 3.6 3.6 7.4-8"/></svg>' };
     const chips = (s, n) => { const c = s.cats, k = n == null ? c.length : Math.min(n, c.length);   /* n: the most named on a card (the sheet: all); every name drawn, those past it hidden, the count a chip of its own, so fitChips can show fewer */
       return '<div class="mkChips"' + (n == null ? '' : ' data-fit="' + k + '"') + '>' + c.map((x, i) => '<span class="mkChip"' + (i >= k ? ' hidden' : '') + '><i style="--dot:' + CAT[x] + '"></i><span>' + esc(x) + '</span></span>').join('')
         + (n == null ? '' : '<span class="mkChip mkMore" aria-label="and ' + (c.length - k) + ' more"' + (c.length > k ? '' : ' hidden') + '>+' + (c.length - k) + '</span>') + '</div>'; };
@@ -43675,7 +43737,7 @@ hairline({
       return '<article class="mkRc" role="listitem" style="--mkG:' + r[1] + '" data-mk="' + s.k + '"><img class="mkRcPh" src="' + IMG[s.tall || s.big || s.img] + '" alt="" decoding="async" draggable="false"' + (s.pos ? ' style="object-position:' + s.pos + '"' : '') + '>'
         + '<div class="mkRcL"><h3>' + esc(s.t) + '</h3><p>' + esc(s.short || s.d) + '</p>' + chips(s, 2) + '<ul class="mkRcV" aria-label="What you get">' + s.v.map(v => '<li>' + esc(v) + '</li>').join('') + '</ul></div>'
         + '<div class="mkRcFoot"><b class="mkPr">' + fmt(s.p) + '</b>' + lm(s, 'mkGlass') + '</div></article>'; };
-    host.innerHTML = '<div class="mkStBar" aria-hidden="true"></div><header class="mkHead"><h1 class="mkT">Everlab Services</h1><div class="mkSubRow"><p class="mkSub" id="mkRecT">Your recommended services</p><div class="mkArrows"><button type="button" class="mkArr" data-mk-dir="-1" aria-label="Previous recommended service">' + I.prev + '</button><button type="button" class="mkArr" data-mk-dir="1" aria-label="Next recommended service">' + I.next + '</button></div></div></header>'
+    host.innerHTML = '<div class="mkStBar" aria-hidden="true"></div><header class="mkHead"><div class="mkTRow"><h1 class="mkT">Everlab Services</h1><button type="button" class="mkCartB" aria-haspopup="dialog" aria-label="Your cart, empty">' + I.bag + '<span class="mkCartN" aria-hidden="true" hidden></span></button></div><div class="mkSubRow"><p class="mkSub" id="mkRecT">Your recommended services</p><div class="mkArrows"><button type="button" class="mkArr" data-mk-dir="-1" aria-label="Previous recommended service">' + I.prev + '</button><button type="button" class="mkArr" data-mk-dir="1" aria-label="Next recommended service">' + I.next + '</button></div></div></header>'
       + '<div class="mkRec" role="list" aria-labelledby="mkRecT">' + REC.map(recCard).join('') + '</div>'
       + '<div class="mkTools"><label class="mkSearch">' + I.search + '<input type="search" placeholder="Search services" aria-label="Search services" autocomplete="off" spellcheck="false"><button type="button" class="mkClr" aria-label="Clear the search" hidden>' + I.x + '</button></label>'
       + '<div class="mkSeg" role="group" aria-label="Show">' + [['all', 'All'], ['one', 'Individual'], ['bundle', 'Bundles']].map(o => '<button type="button" data-kind="' + o[0] + '" aria-pressed="' + (o[0] === 'all') + '">' + o[1] + '</button>').join('') + '</div>'
@@ -43729,13 +43791,17 @@ hairline({
     /* the service: Full bottom sheet on XS and S, the floating modal from M (Design system -> Modals), on the Timeline's sheet, in the shell */
     const det = document.createElement('div'); det.className = 'tlSheet mkDet'; det.setAttribute('aria-hidden', 'true'); det.inert = true;
     det.innerHTML = '<div class="tlShDim"></div><div class="tlShPanel" role="dialog" aria-modal="true" aria-labelledby="mkDetT" tabindex="-1"><i class="tlShGrab" aria-hidden="true"></i><button type="button" class="mkDetX" aria-label="Close">' + I.x + '</button><div class="mkDetSc"></div>'
-      + '<div class="mkDetFoot"><button type="button" class="mkBtn mkBtnP" data-act="add">Add to my plan</button><button type="button" class="mkBtn mkBtnS" data-act="eva">Ask Eva about it</button></div></div>';
+      + '<div class="mkDetFoot"><button type="button" class="mkBtn mkBtnP" data-act="add">Add to cart</button><button type="button" class="mkBtn mkBtnS" data-act="eva">Ask Eva about it</button></div></div>';
     dash.appendChild(det);
-    const detSc = det.querySelector('.mkDetSc'), detAdd = det.querySelector('[data-act="add"]');
-    let detK = null, detFrom = null, addBack = null, addT = 0;
+    const detSc = det.querySelector('.mkDetSc'), detAdd = det.querySelector('[data-act="add"]'), det2 = det.querySelector('[data-act="eva"]');
+    let detK = null, detFrom = null, addDone = null, addT = 0;
+    const addStop = () => { clearTimeout(addT); if (addDone){ addDone(); addDone = null; } };   // a press still loading: its button as it was
+    /* the sheet's foot ("Add to cart"; once added, "In your cart" with the Simple loader's tick, and Remove in place of Ask Eva) */
+    const detFootSet = () => { const on = !!detK && inCart(detK); detAdd.classList.toggle('evOk', on); detAdd.disabled = on; detAdd.innerHTML = on ? '<span class="evBusyL"><svg class="evOkI" viewBox="0 0 16 16" aria-hidden="true"><path d="m3.5 8.4 2.9 2.9 6.1-6.6"/></svg>In your cart</span>' : 'Add to cart';
+      det2.dataset.act = on ? 'rm' : 'eva'; det2.textContent = on ? 'Remove' : 'Ask Eva about it'; };
     const toast = t => { let el = dash.querySelector(':scope > .mkToast'); if (!el){ el = document.createElement('div'); el.className = 'svToast mkToast'; el.setAttribute('role', 'status'); dash.appendChild(el); }
       el.textContent = t; el.classList.remove('on'); void el.offsetWidth; el.classList.add('on'); clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove('on'), 2600); };
-    const detOpen = (k, from) => { const s = BY[k]; if (!s) return; menuShut(); detK = k; detFrom = from || null; clearTimeout(addT); if (addBack){ addBack(); addBack = null; }
+    const detOpen = (k, from) => { const s = BY[k]; if (!s) return; menuShut(); cartShut(true); addStop(); detK = k; detFrom = from || null; detFootSet();
       const pics = s.stack ? s.stack.map(x => IMG[x]) : [IMG[s.big || s.img]];
       detSc.innerHTML = '<div class="mkDetPic">' + pics.map(src => '<img src="' + src + '" alt="" decoding="async">').join('') + '</div><div class="mkDetBody">'
         + '<div class="mkDetTags">' + (s.bundle ? '<span class="mkTag">Bundle</span>' : '') + '<span>' + esc(s.cat) + '</span></div>'
@@ -43744,16 +43810,75 @@ hairline({
         + '<h3>How it works</h3><ol class="mkHow">' + s.how.map(x => '<li><span>' + esc(x) + '</span></li>').join('') + '</ol></div>';
       detSc.scrollTop = 0; det.inert = false; det.setAttribute('aria-hidden', 'false'); requestAnimationFrame(() => det.classList.add('on'));
       setTimeout(() => { try { det.querySelector('.tlShPanel').focus({ preventScroll: true }); } catch (e) {} }, 60); };   // the dialog itself focused: Tab goes on to its close and its buttons
-    const detShut = () => { if (!det.classList.contains('on')) return; det.classList.remove('on'); det.setAttribute('aria-hidden', 'true'); det.inert = true; const f = detFrom; detFrom = null; if (f && f.isConnected && document.body.classList.contains('mkOn')) try { f.focus({ preventScroll: true }); } catch (e) {} };
+    const detShut = () => { if (!det.classList.contains('on')) return; det.classList.remove('on'); det.setAttribute('aria-hidden', 'true'); det.inert = true; const f = detFrom; detFrom = null; if (f && f.isConnected && document.body.classList.contains('mkOn')) try { f.focus({ preventScroll: true }); } catch (e) {}
+      if (popLater){ popLater = false; setTimeout(() => cartBadge(true), 320); } };   // a service added under the sheet: the badge pops once the page is back in view
     det.querySelector('.tlShDim').addEventListener('click', detShut); det.querySelector('.mkDetX').addEventListener('click', detShut);
     document.addEventListener('keydown', e => { if (e.key === 'Escape' && det.classList.contains('on') && !e.defaultPrevented){ e.preventDefault(); detShut(); } });   // Escape, wherever the focus went (the added button gives it up while it loads)
     det.addEventListener('keydown', e => { if (e.key !== 'Tab') return; const fs = [...det.querySelectorAll('button:not([disabled])')].filter(b => b.offsetParent), a = fs[0], z = fs[fs.length - 1]; if (!a) return;   // the focus kept in the sheet
       if (e.shiftKey && document.activeElement === a){ e.preventDefault(); z.focus(); } else if (!e.shiftKey && document.activeElement === z){ e.preventDefault(); a.focus(); } });
     det.querySelector('.mkDetFoot').addEventListener('click', e => { const b = e.target.closest('[data-act]'), s = BY[detK]; if (!b || !s) return;
-      if (b.dataset.act === 'add'){ if (b.disabled || b.classList.contains('evOk')) return;   // "Add to my plan": the app's Simple loader, then its tick
-        if (window.EvLoad){ const done = window.EvLoad.simple(b); addT = setTimeout(() => { addBack = done('Added to your plan'); toast(s.t + ' is in your plan.'); }, 900); } else toast(s.t + ' is in your plan.'); return; }
+      if (b.dataset.act === 'add'){ if (b.disabled || b.classList.contains('evOk') || inCart(s.k)) return;   // "Add to cart": the app's Simple loader, then "In your cart" with its tick, the badge up by one
+        const k = s.k, fin = () => { addDone = null; cartAdd(k); if (detK === k) detFootSet(); toast(s.t + ' is in your cart.'); };
+        if (window.EvLoad){ addDone = window.EvLoad.simple(b); addT = setTimeout(() => { if (addDone) addDone(); fin(); }, 900); } else fin(); return; }
+      if (b.dataset.act === 'rm'){ cartRm(s.k); detFootSet(); try { detAdd.focus({ preventScroll: true }); } catch (x) {} toast(s.t + ' is out of your cart.'); return; }   // Remove: back to Add to cart
       if (b.dataset.act === 'eva'){ detShut(); if (window._cc && window._cc.ask) setTimeout(() => window._cc.ask('Tell me about the ' + s.t + '. Is it right for me?'), 220); } });   // Ask Eva about it: the Chat over the page, the question asked
-    host.addEventListener('click', e => { const o = e.target.closest('[data-mk-open]'), c = o || e.target.closest('.mkC, .mkRc'); if (!c || !host.contains(c)) return; detOpen(o ? o.dataset.mkOpen : c.dataset.mk, o || c.querySelector('[data-mk-open]')); });
+    host.addEventListener('click', e => { if (e.target.closest('.mkCartB')) return; const o = e.target.closest('[data-mk-open]'), c = o || e.target.closest('.mkC, .mkRc'); if (!c || !host.contains(c)) return; detOpen(o ? o.dataset.mkOpen : c.dataset.mk, o || c.querySelector('[data-mk-open]')); });
+    /* the cart ("top right add a cart system"): the services added from their sheet, kept in this browser (everlab:cart) so a reload keeps them; the bag at the title's right, its count an orange badge popping as one goes in.
+       It opens as the detail does (Design system -> Modals: Full bottom sheet on XS and S, its grabber and a swipe down to let it go; the floating modal from M), on the Timeline's sheet in the shell, over the whole app.
+       Checkout: the Simple loader on the button, then the booked word, and the cart empties */
+    const CK = 'everlab:cart';
+    const cartLoad = () => { try { const a = JSON.parse(localStorage.getItem(CK) || '[]'); return Array.isArray(a) ? a.filter((k, i) => BY[k] && a.indexOf(k) === i) : []; } catch (e) { return []; } };
+    let cart = cartLoad(), popLater = false;
+    const cartSave = () => { try { localStorage.setItem(CK, JSON.stringify(cart)); } catch (e) {} };
+    const inCart = k => cart.includes(k);
+    const cartB = host.querySelector('.mkCartB'), cartN = cartB.querySelector('.mkCartN');
+    const cartBadge = pop => { const n = cart.length; cartN.hidden = !n; cartN.textContent = n > 9 ? '9+' : String(n); cartB.setAttribute('aria-label', n ? 'Your cart, ' + n + (n === 1 ? ' service' : ' services') : 'Your cart, empty');
+      if (pop && n){ cartB.classList.remove('mkPop'); void cartB.offsetWidth; cartB.classList.add('mkPop'); } };
+    cartB.addEventListener('animationend', e => { if (e.target === cartN) cartB.classList.remove('mkPop'); });
+    const cs = document.createElement('div'); cs.className = 'tlSheet mkCart'; cs.setAttribute('aria-hidden', 'true'); cs.inert = true;
+    cs.innerHTML = '<div class="tlShDim"></div><div class="tlShPanel" role="dialog" aria-modal="true" aria-labelledby="mkCartT" tabindex="-1"><i class="tlShGrab" aria-hidden="true"></i><header class="mkCartHd"><h2 id="mkCartT">Your cart</h2><button type="button" class="mkCartX" aria-label="Close">' + I.x + '</button></header><div class="mkCartSc"></div>'
+      + '<div class="mkCartFt"><p class="mkCartSub"><span>Subtotal</span><b></b></p><p class="mkCartNote">Prices are for the prototype.</p><button type="button" class="mkBtn mkBtnP" data-cart="checkout">Checkout</button></div></div>';
+    dash.appendChild(cs);
+    const csP = cs.querySelector('.tlShPanel'), csSc = cs.querySelector('.mkCartSc'), csFt = cs.querySelector('.mkCartFt'), csGo = cs.querySelector('[data-cart="checkout"]');
+    let csFrom = null, csBooked = false, csT = 0, csDone = null;
+    const cartThumb = s => s.stack ? '<span class="mkCartTh mkStk" aria-hidden="true">' + s.stack.map(k => '<img src="' + IMG[k] + '" alt="" decoding="async">').join('') + '</span>'
+      : '<span class="mkCartTh" aria-hidden="true"><img src="' + IMG[s.img] + '" alt="" decoding="async"></span>';
+    const cartDraw = () => { if (csBooked) return;   // the booked word stays up until the cart is shut
+      const items = cart.map(k => BY[k]).filter(Boolean); csFt.hidden = !items.length;
+      if (!items.length){ csSc.innerHTML = '<div class="mkCartE"><i>' + I.bag + '</i><b>Your cart is empty</b><p>Add a service from its page and it waits for you here.</p><button type="button" class="mkBtn mkBtnP" data-cart="browse">Browse services</button></div>'; return; }
+      csSc.innerHTML = '<ul class="mkCartL" aria-label="Services in your cart">' + items.map(s => '<li data-k="' + s.k + '">' + cartThumb(s) + '<span class="mkCartI"><b>' + esc(s.t) + '</b><button type="button" class="mkCartRm" data-cart="rm" aria-label="Remove ' + esc(s.t) + ' from your cart">Remove</button></span><span class="mkCartP">' + fmt(s.p) + '</span></li>').join('') + '</ul>';
+      csFt.querySelector('.mkCartSub b').textContent = fmt(items.reduce((a, s) => a + s.p, 0)); };
+    const cartAdd = k => { if (!BY[k] || inCart(k)) return; cart.push(k); cartSave(); const under = det.classList.contains('on') || cs.classList.contains('on'); if (under) popLater = det.classList.contains('on'); cartBadge(!under); cartDraw(); };
+    const cartRm = k => { const i = cart.indexOf(k); if (i < 0) return; cart.splice(i, 1); cartSave(); cartBadge(false); cartDraw(); };
+    const cartOpen = from => { if (!document.body.classList.contains('mkOn')) open(); menuShut(); detShut(); csFrom = from || cartB; csBooked = false; cartDraw(); csSc.scrollTop = 0;
+      cs.inert = false; cs.setAttribute('aria-hidden', 'false'); requestAnimationFrame(() => cs.classList.add('on'));
+      setTimeout(() => { try { csP.focus({ preventScroll: true }); } catch (e) {} }, 60); };
+    const cartShut = quiet => { if (!cs.classList.contains('on')) return; cs.classList.remove('on'); cs.setAttribute('aria-hidden', 'true'); cs.inert = true;
+      if (csBooked) setTimeout(() => { if (cs.classList.contains('on')) return; csBooked = false; cartDraw(); }, 420);   // once it has slid away, the cart its empty self again
+      const f = csFrom; csFrom = null; if (!quiet && f && f.isConnected && document.body.classList.contains('mkOn')) try { f.focus({ preventScroll: true }); } catch (e) {} };
+    const checkout = () => { if (csGo.disabled || !cart.length) return;
+      const fin = () => { csDone = null; cart = []; cartSave(); cartBadge(false);
+        if (!cs.classList.contains('on')){ cartDraw(); toast('Booked. Your care team will be in touch to schedule.'); return; }   // shut while it loaded: the word as a toast
+        csBooked = true; csFt.hidden = true; csSc.innerHTML = '<div class="mkCartE mkOk mkIn" role="status"><i>' + I.ok + '</i><b>Booked.</b><p>Your care team will be in touch to schedule.</p><button type="button" class="mkBtn mkBtnP" data-cart="done">Done</button></div>';
+        try { csP.focus({ preventScroll: true }); } catch (e) {} };   // the sheet itself focused (the word read out as a status), Tab on to Done
+      if (window.EvLoad){ csDone = window.EvLoad.simple(csGo); csT = setTimeout(() => { if (csDone) csDone(); fin(); }, 1200); } else fin(); };
+    cs.querySelector('.tlShDim').addEventListener('click', () => cartShut()); cs.querySelector('.mkCartX').addEventListener('click', () => cartShut());
+    cs.addEventListener('click', e => { const b = e.target.closest('[data-cart]'); if (!b || !cs.contains(b)) return; const a = b.dataset.cart;
+      if (a === 'rm'){ const li = b.closest('li'), rms = [...csSc.querySelectorAll('.mkCartRm')], i = rms.indexOf(b); cartRm(li && li.dataset.k);   // the focus on the next Remove, else the one before, else the sheet
+        const nx = csSc.querySelectorAll('.mkCartRm'), t = nx[Math.min(i, nx.length - 1)] || csSc.querySelector('[data-cart="browse"]') || csP; try { t.focus({ preventScroll: true }); } catch (x) {} return; }
+      if (a === 'checkout'){ checkout(); return; }
+      if (a === 'done'){ cartShut(); return; }
+      if (a === 'browse'){ cartShut(true); host.scrollTo({ top: Math.max(0, tools.offsetTop - 16), behavior: 'smooth' }); try { tools.querySelector('.mkSeg button[aria-pressed="true"]').focus({ preventScroll: true }); } catch (x) {} } });   // Browse services: down to the services
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && cs.classList.contains('on') && !e.defaultPrevented){ e.preventDefault(); cartShut(); } });
+    cs.addEventListener('keydown', e => { if (e.key !== 'Tab') return; const fs = [...cs.querySelectorAll('button:not([disabled])')].filter(b => b.offsetParent), a = fs[0], z = fs[fs.length - 1]; if (!a) return;   // the focus kept in the sheet
+      if (e.shiftKey && (document.activeElement === a || document.activeElement === csP)){ e.preventDefault(); z.focus(); } else if (!e.shiftKey && document.activeElement === z){ e.preventDefault(); a.focus(); } });
+    { let y0 = null, dy = 0; const phone = () => /^(xs|s)$/.test(document.body.dataset.bp || '');   // the phone's: a swipe down on the grabber or the header lets it go
+      csP.addEventListener('pointerdown', e => { if (!phone() || !e.target.closest('.tlShGrab, .mkCartHd') || e.target.closest('button')) return; y0 = e.clientY; dy = 0; csP.style.transition = 'none'; try { csP.setPointerCapture(e.pointerId); } catch (x) {} });
+      csP.addEventListener('pointermove', e => { if (y0 == null) return; dy = Math.max(0, e.clientY - y0); csP.style.transform = 'translateY(' + dy + 'px)'; });
+      const up = () => { if (y0 == null) return; y0 = null; csP.style.transition = ''; csP.style.transform = ''; if (dy > 80) cartShut(); dy = 0; }; csP.addEventListener('pointerup', up); csP.addEventListener('pointercancel', up); }
+    cartB.addEventListener('click', () => cartOpen(cartB));
+    addEventListener('storage', e => { if (e.key !== CK) return; cart = cartLoad(); cartBadge(false); cartDraw(); if (det.classList.contains('on')) detFootSet(); });   // another tab's cart
+    cartBadge(false); cartDraw();
     /* the page: opened by the dock's Services, the desk nav's, the page menu and #services; any other page closes it */
     const vs = () => document.getElementById('versionSel');
     const lightDock = i => document.querySelectorAll('#bpFrame .mTab').forEach((t, j) => { t.classList.toggle('on', j === i); t.setAttribute('aria-selected', String(j === i)); });
@@ -43765,7 +43890,7 @@ hairline({
       document.body.classList.add('mkOn'); host.scrollTop = 0; rec.scrollLeft = 0; lightDock(3);   // the dock's Services lit
       const v = vs(); if (v) v.value = 'svcMkt'; try { history.replaceState(null, '', '#services'); } catch (e) {}
       if (window.__tkPages) window.__tkPages(); requestAnimationFrame(() => { if (typeof resize === 'function') resize(); arrowsSet(); }); };
-    const close = () => { const b = document.body.classList; detShut(); menuShut(); if (!b.contains('mkOn')) return; b.remove('mkOn');
+    const close = () => { const b = document.body.classList; detShut(); cartShut(true); menuShut(); if (!b.contains('mkOn')) return; b.remove('mkOn');
       if (typeof version !== 'undefined' && version === 9 && !['tlOn', 'svcOn', 'aptOn', 'accOn', 'plOn'].some(k => b.contains(k))) lightDock(0);   // back on the Overview: its tab lit
       const v = vs(); if (v && v.value === 'svcMkt') v.value = '9'; if (location.hash === '#services') try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
       if (window.__tkPages) window.__tkPages(); requestAnimationFrame(() => { if (typeof resize === 'function') resize(); }); };
@@ -43774,7 +43899,7 @@ hairline({
     document.querySelectorAll('.dash .side .nv:not(.nvSvc)').forEach(x => x.addEventListener('click', () => close(), true));   // the nav's other pages
     const atHash = () => { if (location.hash === '#services' && !document.body.classList.contains('mkOn')) open(); };
     addEventListener('hashchange', atHash); if (location.hash === '#services') addEventListener('load', () => setTimeout(atHash, 700));
-    window._mkt = { open, close, has: k => !!BY[k === 'gutq' ? 'gut' : k], detail: k => { k = k === 'gutq' ? 'gut' : k; if (!document.body.classList.contains('mkOn')) open(); if (BY[k]) detOpen(k); } };   // detail: a service of the page's (the questionnaire's, its microbiome), else the page alone
+    window._mkt = { open, close, cart: { open: () => cartOpen(), close: () => cartShut(), add: cartAdd, remove: cartRm, items: () => cart.slice() }, has: k => !!BY[k === 'gutq' ? 'gut' : k], detail: k => { k = k === 'gutq' ? 'gut' : k; if (!document.body.classList.contains('mkOn')) open(); if (BY[k]) detOpen(k); } };   // detail: a service of the page's (the questionnaire's, its microbiome), else the page alone
   })();
   // a segmented tab in place of a select ("put a segmented tab instead of a select"): the select stays, hidden, as the value and its change event
   document.querySelectorAll('select.tkSegSel').forEach(sel => {
@@ -44652,7 +44777,7 @@ hairline({
               ['Layer 2 and up', 'Stacks: the sheet behind draws back (translateY −12 · scale .92 · 35 top corners · 80% · its content gone) · the page, or the sheet under that, goes, on black', 'Modals do not stack'],
               ['Status bar', 'White on the black from layer 2', 'None'], ['Header', 'Title 24/30 · Close 32 circle', 'The same'], ['Footer', 'CTA 56 pill · 34 under it (home indicator)', 'CTA 56 pill'],
               ['Enter', 'Sheet up: transform 400 ms cubic-bezier(.32, .72, 0, 1), the scrim in over 300 ms; from layer 2 the sheet behind draws back with it, its content fading 300 ms from 100 ms', 'Rises 24 and fades in: 450 ms cubic-bezier(.2, .8, .2, 1), opacity 300 ms'],
-              ['Exit', 'The sheet down; the one behind forward again, its content back at once', 'The entrance reversed'], ['Dismiss', 'Close (the top layer only), a swipe down', 'Close, the scrim, Escape'], ['Used by', 'The Async report’s detail sheets (Sources over a sheet stacks), the service sheets, the consent on the phone, a service from the Services marketplace', 'The same']]] };
+              ['Exit', 'The sheet down; the one behind forward again, its content back at once', 'The entrance reversed'], ['Dismiss', 'Close (the top layer only), a swipe down', 'Close, the scrim, Escape'], ['Used by', 'The Async report’s detail sheets (Sources over a sheet stacks), the service sheets, the consent on the phone, a service from the Services marketplace, the Services cart (with a grabber: a swipe down lets it go)', 'The same']]] };
         let part = 'full', bp = 'xs'; try { const a = localStorage.getItem('everlab:mdPart'), b = localStorage.getItem('everlab:mdBp'); if (TX[a]) part = a; if (BP[b]) bp = b; } catch (e){}
         el.innerHTML = '<aside class="ldSide"><h3 class="ldSideH">Modals</h3><p class="ldSideP">How a page opens over another. Pick a breakpoint and press Play to see it come in.</p>' +
           '<div class="ldPats" role="tablist" aria-label="Modal types"><button type="button" role="tab" data-md="full"><b>Full</b><span>Covers the viewport</span></button><button type="button" role="tab" data-md="sheet"><b>Bottom sheet · Floating</b><span>Sheet on XS, S · floating on M, L</span></button><button type="button" role="tab" data-md="stack"><b>Full bottom sheet</b><span>Overlaps, then stacks from layer 2 on XS, S · tall floating on M, L</span></button></div>' +

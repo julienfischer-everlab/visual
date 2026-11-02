@@ -19356,3 +19356,14 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 
 - Past results' Next goes on to the Concierge within the same flow, and the Flow panel kept Past results' row (its `data-jny` stayed `pr`).
 - Now the step change sets it: on the Concierge, the panel shows the Concierge and its phases (Intro, Bubble speech, Services, Specialists); back on Past results, Past results again.
+
+## Services: a smaller picture on the recommended cards (XS), and a cart
+
+- **The recommended cards at XS** ("smaller img", from the mock): the picture is a small rounded square at the card's top right (a third of the card, 96 to 112 px, 16 corners, on the card's top padding), beside the title. The words and the chips sit under the title, at the left. The three values now run across the card under them, then the price and Learn more, as before. From S up the cards keep their tall picture.
+- **A cart at the top right** ("top right add a cart system"):
+  - A 44 glass disc on the title's line, with a bag in the app's line icons (20, 1.5 stroke). Its count is a small orange badge that pops when a service goes in. On M and up, the carousel's arrows sit 11 under it, so the two never touch. In the tablet frame the title row starts 10 lower, so the badge clears the status strip.
+  - **The service's sheet**: "Add to cart" (it was "Add to my plan"). It shows the Simple loader, then "In your cart" with its tick, and Remove takes Ask Eva's place. Remove brings back Add to cart. The cards' Learn more is unchanged.
+  - **The cart opens as the detail does** (Modals › Full bottom sheet on XS and S, the floating modal from M), over the whole app. On the phone it keeps a grabber, and a swipe down on it or the header lets it go. Close, the scrim and Escape shut it, with the focus kept inside and back on the bag after.
+  - **Inside**: each service's thumbnail, name, Remove and price; the subtotal; "Prices are for the prototype."; a full-width Checkout. Checkout shows the Simple loader, then "Booked. Your care team will be in touch to schedule." with Done, and the cart empties. An empty cart says so, with Browse services, which scrolls down to the services.
+  - **Kept in this browser** (`everlab:cart`), so a reload keeps it. Another tab's changes follow.
+- Modals › Full bottom sheet's "Used by" names the cart.
