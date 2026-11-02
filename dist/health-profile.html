@@ -818,6 +818,10 @@ body { margin: 0; overflow: hidden; background: var(--pg); color: var(--pgFg); f
    Its sheets: the products' rows on the mocks' warm grey tiles, the meals as cards of tips (the My meals mock), the others an icon tile; every row's detail stacked over it */
 .arSheet .arRcHead .arRcLede { margin: 0; font-size: 16px; line-height: 22px; color: oklch(var(--ar-ink) / .56); }   /* the title and how many, centred at every width (Everything else's head) */
 .arSheet .arRcCats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }   /* two a row */
+.arSheet .arNxCards { width: 100%; } .arSheet .arNxCard { cursor: default; } .arSheet .arNxVis { display: grid; place-items: center; width: 64px; height: 64px; } .arSheet .arNxVis .evBeamStar { --bsBg: oklch(var(--ar-ink) / .04); --bsInk: oklch(var(--ar-ink)); } .arSheet .arNxAv { display: block; width: 64px; height: 64px; border-radius: 50%; object-fit: cover; }   /* the debrief's last two ways on, as cards: Eva's beam star, the doctor's photo */
+.arSheet .arPlanL { --plO: #c45a2a; padding: 24px; border-radius: 28px; border: 1.5px solid oklch(var(--ar-ink) / .1); } .arSheet.arDark .arPlanL { --plO: #f08a52; }   /* Persona #3's plan, a list ("the plan · updated 10 Oct"): its eyebrow mono and orange, a line each, New in orange, the later ones quieter */
+.arSheet .arPlanE { margin: 0 0 8px; font: 500 15px/20px var(--ar-font-mono); letter-spacing: .02em; text-transform: uppercase; color: var(--plO); }
+.arSheet .arPlanL ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; } .arSheet .arPlanL li { font-size: 20px; line-height: 28px; color: oklch(var(--ar-ink)); text-wrap: balance; } .arSheet .arPlanL li b { font-weight: 600; color: var(--plO); } .arSheet .arPlanL li.later { color: oklch(var(--ar-ink) / .56); }
 .arSheet .arRsArea.arRcCat { flex-direction: column; align-items: center; justify-content: flex-start; gap: 12px; min-height: 0; padding: 20px 12px 18px; border-radius: 20px; text-align: center; }   /* the render on top, the name and how many under it, centred (the services' Apple style) */
 .arSheet .arRcVis { position: relative; display: block; flex: none; width: 52px; height: 52px; } .arSheet .arRcVis img { position: relative; display: block; width: 100%; height: 100%; object-fit: contain; }   /* 24 smaller ("the visuals should be 24px smaller"), then 12 more ("reduce the image by 12 px") */
 .arSheet .arRcVis::before { content: ""; position: absolute; inset: calc(15% - 6px); border-radius: 50%; background: oklch(var(--ar-ink) / .1); }   /* then 12 larger and more filled, the ink at 10% (was 6%) ("the circle should be a bit more visible, increase it by 12px, a bit more filled") */   /* each render on a grey circle, 70% of it, centred behind ("a grey circle field that takes around 70% of the visual, so it feels like the visuals sit on this circle") */
@@ -1944,6 +1948,37 @@ window.__ccVid = ['data:video/webm;base64,GkXfo59ChoEBQveBAULygQRC84EIQoKEd2VibU
  *   EvLoad.multi(host, steps, { step }) Multi-step loading: over host (positioned), the page blurred under each backend step in turn (a spinner and its line, a track with a node each);
  *                                       returns { el, done (a promise, once the last step is through, as the overlay fades), stop() }
  */
+/* EvOverlap: the header overlap ("the common pattern that we use on other pages that overlap the header and have a small parallax"; "this needs to be in the design system"), once for every page.
+   The Service detail's own (its task pages and its services without a progress card), as the Appointment page copied it: the hero pinned (sticky) under the bar, the sheet sliding up over it,
+   the picture rising --hoRise (32) as it goes and dimming to --hoDim of itself, the title drifting up at a quarter of the scroll and fading out by the hero's height less 40.
+   Markup: .hoHero (sticky), .hoPic (the picture, clipped by its hero), .hoWords (the title group), .hoSheet (the sheet: --hoOverlap over the hero's foot, --hoRadius corners);
+   or the data-ov contract (data-ov="hero|img|title|sheet"), which bind() turns into those classes. bind(scroller, {hero, short, onFrame}) -> {update}: one rAF per scroller.
+   The numbers are the master's, Design system -> General layout -> Header overlap: saved there (everlab:hoMaster), every page takes them on load */
+window.EvBeamStar = function (size) { var e = document.createElement('span'); e.className = 'evBeamStar'; e.setAttribute('aria-hidden', 'true'); if (size) e.style.setProperty('--bsz', size + 'px'); e.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11 3c.4 4.6 2.4 6.6 7 7-4.6.4-6.6 2.4-7 7-.4-4.6-2.4-6.6-7-7 4.6-.4 6.6-2.4 7-7Z"/><path d="M18.5 14.5c.2 2 1 2.8 3 3-2 .2-2.8 1-3 3-.2-2-1-2.8-3-3 2-.2 2.8-1 3-3Z"/></svg>'; return e; };   // Eva's beam star (.evBeamStar), the one the debrief's last step and the Iconography doc show
+window.EvOverlap = (function () {
+  var M = { ty: .25, rise: 32, end: 40, overlap: 28, radius: 24, dim: .35, tint: .85 }, D = JSON.parse(JSON.stringify(M)), root = document.documentElement;
+  var red = function () { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
+  var tok = function () { root.style.setProperty('--hoOverlap', M.overlap + 'px'); root.style.setProperty('--hoRadius', M.radius + 'px'); root.style.setProperty('--hoRise', M.rise + 'px'); root.style.setProperty('--hoDim', String(M.dim)); root.style.setProperty('--hoTint', String(M.tint)); };
+  var apply = function (sc, hero, o) { if (!sc || !hero) return 0; var y = Math.max(0, sc.scrollTop), H = hero.offsetHeight, span = Math.max(60, H - M.end);
+    if (o && o.short) span = Math.max(60, Math.min(H - M.end, sc.scrollHeight - sc.clientHeight));
+    var k = Math.min(1, Math.max(0, y / span)), r = red();
+    hero.style.setProperty('--hy', (r ? 0 : -M.ty * y).toFixed(1) + 'px'); hero.style.setProperty('--hk', (1 - k).toFixed(3)); hero.style.setProperty('--hpy', (r ? 0 : -M.rise * k).toFixed(1) + 'px');   // reduced motion: no travel, the fade kept
+    return k; };
+  var mark = function (sc) { [['hero', 'hoHero'], ['img', 'hoPic'], ['title', 'hoWords'], ['sheet', 'hoSheet'], ['band', 'hoBand']].forEach(function (p) { [].forEach.call(sc.querySelectorAll('[data-ov="' + p[0] + '"]'), function (e) { e.classList.add(p[1]); }); });
+    [].forEach.call(sc.querySelectorAll('.hoBand'), function (b) { if (b.querySelector(':scope > .ovGround')) return; var g = document.createElement('div'); g.className = 'ovGround'; g.setAttribute('aria-hidden', 'true'); g.innerHTML = new Array(11).join('<i></i>'); b.insertBefore(g, b.firstChild); }); };   /* the bar's blur bands, the Overview bar's own (.ovGround) */
+  /* the bar's overflow state: on once the sheet's top reaches the bar's foot */
+  var touch = function (sc, band, sheet) { if (!band || !sheet) return false; var on = sheet.getBoundingClientRect().top - sc.getBoundingClientRect().top <= band.offsetHeight + .5; band.classList.toggle('on', on); return on; };
+  var bind = function (sc, o) { o = o || {}; if (!sc) return { update: function () {} }; mark(sc); var q = 0;
+    var heroOf = function () { return typeof o.hero === 'function' ? o.hero() : sc.querySelector(o.hero || '.hoHero'); };
+    var run = function () { q = 0; var k = apply(sc, heroOf(), o), on = touch(sc, o.band ? sc.querySelector(o.band) : sc.querySelector('.hoBand'), o.sheet ? sc.querySelector(o.sheet) : sc.querySelector('.hoSheet')); if (o.onFrame) o.onFrame(k, on); };
+    sc.addEventListener('scroll', function () { if (!q) q = requestAnimationFrame(run); }, { passive: true });
+    return { update: run }; };
+  var load = function () { try { var v = JSON.parse(localStorage.getItem('everlab:hoMaster') || 'null'); if (v) Object.keys(M).forEach(function (k) { if (typeof v[k] === 'number' && isFinite(v[k])) M[k] = v[k]; }); } catch (e) {} tok(); };
+  load();
+  return { M: M, D: D, apply: apply, bind: bind, mark: mark, set: function (k, v) { M[k] = v; tok(); },
+    save: function () { try { localStorage.setItem('everlab:hoMaster', JSON.stringify(M)); return true; } catch (e) { return false; } },
+    reset: function () { Object.keys(D).forEach(function (k) { M[k] = D[k]; }); try { localStorage.removeItem('everlab:hoMaster'); } catch (e) {} tok(); } };
+})();
 window.EvLoad = (function () {
   var spin = function () { var i = document.createElement('i'); i.className = 'evSpin'; i.setAttribute('aria-hidden', 'true'); return i; };
   function label(btn, text) {
@@ -2672,7 +2707,7 @@ window.EvConsent = (function () {
     function keep() { var st = S.a[A]; if (st.st !== 'done') st.i = I; save(); }
     function fwd() {   // the next step, or the area done: back to the home
       var a = AREA[A], st = S.a[A];
-      if (A === 'res') { if (opts.ov && opts.solo === 'res' && opts.onClose) { opts.onClose(); return; }   /* opened from the Overview's past results card: Got it just closes it, nothing after ("if the user comes from the Overview and clicks the past result card, Got it closes the modal") */ if (I < stepsOf('res').length - 1) { I++; step(1); return; } if (opts.onClose) opts.onClose(); else home(-1); return; }   // the past results' Got it: the Concierge's introduction; its Go to overview closes   // the past results: Go to overview, the profile closed (the standalone page: its home)
+      if (A === 'res') { if (opts.ov && opts.solo === 'res' && opts.onClose) { opts.onClose(); return; } if (stepsOf('res')[I] === 'search' && window._hp && window._hp.past) { setTimeout(function () { window._hp.past(1); }, 0); return; }   /* Past results' Next: the Concierge's own page, not a step of this one ("the past result shouldn't have the concierge; if you click on Next on the past result, you go to the concierge standalone page") */   /* opened from the Overview's past results card: Got it just closes it, nothing after ("if the user comes from the Overview and clicks the past result card, Got it closes the modal") */ if (I < stepsOf('res').length - 1) { I++; step(1); return; } if (opts.onClose) opts.onClose(); else home(-1); return; }   // the past results' Got it: the Concierge's introduction; its Go to overview closes   // the past results: Go to overview, the profile closed (the standalone page: its home)
       if (ret != null) { var r = ret; ret = null; I = r; keep(); step(1); return; }
       if (st.st === 'not' && A === 'you') st.st = 'prog';
       if (I >= stepsOf(A).length - 1) { st.st = 'done'; st.i = I; save();
