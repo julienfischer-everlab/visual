@@ -19063,6 +19063,79 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The glide is 240 ms off a quintic, the Records one. The last card stops at the row's end.
   - A drag never opens a card.
 
+## Ask Everlab: the service tiles 16 round, 14 type ("Reduce the radius on these service cards to 16px. Also reduce the font size by 14px.")
+- **The AI card's six service tiles**: 16px corners (were 28) and 14px names (were 16). Every name fits whole now: Check Symptoms, Specialist referral and Blood test referral were cut with an ellipsis.
+- "Reduce by 14px" is read as "to 14px".
+- The Overview's own service cards keep their 28px corners. They shared the 28px rule, but only the AI card's tiles were asked for.
+
+## Icons: Insights as a chart, Plan in the set ("Change this by market chart." · "Also set up the plan in the list of icon menus.")
+- **Insights** is now a chart: a rounded frame with a line rising to a marker. Filled (the tab you are on), the frame is solid and the line and its marker are cut out. Drawn like the rest of the set (24 grid, 1.75 strokes), so the motion is the same.
+- **Plan** joins the set: a clipboard and its list. Filled, the board is solid and its list is cut out, with a thin gap round the clip.
+  - It is used in the More sheet's Plan row.
+  - It is listed under Design system › Navigation › Iconography, marked as living in More rather than as a tab.
+- **Fix**: a slip in the icons' doc copy (a line comment inside a one-line statement) broke the app's main script in v1962. Fixed and republished at once.
+
+## Header overlap: one pattern, the Activity plan on it ("On swipe here, we should have the common pattern that we use on other pages that overlap the header and have a small parallax. Also, this needs to be in the design system: this header-overlap header style.")
+- **Mapped first**: every version in the app (the Service detail, its task pages, the Appointment page, the Async report welcome, the Insights header, the Plan).
+  - The master is the Service detail's own (its task pages and services without a progress card). The Appointment page already copied it on purpose.
+- **Built once (EvOverlap)**:
+  - The hero is pinned under the bar and the sheet slides up over it.
+  - The picture rises 32px as it goes and dims to 35% of itself. The title drifts up at a quarter of the scroll and fades out by the hero's height less 40.
+  - Sheet: 28 over the hero's foot, 24 corners.
+  - Each scroller gets its own frame loop. Reduced motion keeps the fade without the travel.
+  - Pages mark their parts (`.hoHero` / `.hoPic` / `.hoWords` / `.hoSheet`, or the `data-ov` attributes the new Plan subpages carry) and bind.
+- **The Activity plan** uses it.
+  - Its photo stays pinned while the sheet slides over, and the title drifts and fades as it goes.
+  - The page bar, its title and Back follow as before.
+  - The sheet is now 24 round and 28 over the photo (it was 20 and 20), the master's numbers.
+
+## More lit on its pages ("When I click on the sub, the main page (like Example Plan), if I'm on the plan page, the More needs to be highlighted because it's one of these pages and the More that is active. And the same for account, same for Contact Us, Settings, and all of the stuff page, basically.")
+- **More lights up** (its pill and its filled icon) while a page reached from More is up: the Plan and its subpages, and My account (its Settings tab included). Before, no tab was lit there.
+- **The More sheet's rows go somewhere now**:
+  - My account → My account.
+  - Settings → My account's Settings tab.
+  - Gift Everlab → the Gift page.
+  - Contact us → the chat with Care team picked.
+  - Plan and Refer a loved one went somewhere already.
+- **Fix**: opening My account from the Plan used to leave the Plan up and put My account away. My account now puts the Plan away first, as the Plan does for My account.
+
+## Async report: Persona #3 ("Create a tweak with the personal 3, with this information on the left side of this capture. What we recommended should be just a list of what the right side says here.")
+- **Tweaks › Async report › Persona** gains **#3**.
+- **Its one insight**: *Your iron pattern may reflect slow blood loss from your bowel* (10 Oct 2026), from the capture.
+  - Transferrin saturation 18 % and iron-binding capacity (TIBC) 72 µmol/L, both out of range. Haemoglobin 140 g/L and serum ferritin 171 ng/mL, both optimal. All 8 Oct 2026.
+  - What we noticed, as the capture writes it: the carrier protein, the October and June 2025 draws, the bowel referral in November 2025 and its cancelled colonoscopy.
+  - The capture's last line was cut off. It is completed with a mainstream point: ferritin also rises with inflammation, so a normal reading does not rule out iron being lost.
+- **Here's what we recommend** is just the list, from the capture's right side:
+  - An eyebrow in mono and orange: *The plan · Updated 10 Oct*.
+  - Then *New: gastroenterology review, booked*, *New: iron studies retest* ("New:" in orange), *Diagnostics review, Dec*, and *Annual bloods, 2027* (quieter).
+  - The lines sit in a rounded, outlined card.
+- **The rest borrows from Persona #1**: its welcome (doctor, assurance copy) and Everything else.
+
+## Debrief's last step: two cards; Eva's beam star in the library ("Here's the same for the recommended product. Do two cards with a visual on the top, text on the bottom, and use the "Ask Eva about what next?" visual that we have on the concierge as an introduction: just the circle, the beam border around it, and the star in the middle, with the same background opacity. This star icon with the beam circling around it should be part of the design system asset iconography library.")
+- **That wraps up your debrief**: its two ways on are now two cards side by side, as the recommendations' cards (the visual on top, the words under it).
+  - *Ask Eva about what's next* wears Eva's beam star at 64.
+  - *Discuss this result with your doctor* wears the doctor's photo at 64.
+- **Eva's beam star** (`.evBeamStar`, `EvBeamStar(size)`) is the Concierge intro's star on its own:
+  - A circle at the island star's 4% ground.
+  - The beam turning round its 1px edge every 3.2 s, with its glow spilling in.
+  - Eva's star in the middle, at 36% of the circle.
+  - Reduced motion holds the beam still.
+- **Design system › Navigation › Iconography** shows it as its own card: live at 72, then at 48 and 32.
+- **Fix**: the doc's state tiles no longer style any span inside them.
+
+## Past results without the Concierge ("The past result shouldn't have the concierge. If you click on Next on the past result, you go to the concierge standalone page.")
+- **Before**: Past results and the Concierge's introduction were two steps of one flow (the search, then the Concierge), so its Next walked into the Concierge inside Past results.
+- **Now**: Past results' Next (Got it) opens the Concierge's own page, the one the page menu's Concierge opens.
+  - The menu reads Concierge and the address is #concierge.
+  - It starts at its intro with no Back into Past results.
+- **The same from the Health profile**: after You're all set → Next, see your past results, Past results' Next goes to the Concierge page too.
+- **From the Overview's records card**: Got it still just closes.
+- **In the design system** (General layout › Header overlap, a third part beside Header and Container):
+  - **A live XS phone**: the Activity plan's own photo with the sheet over it, built from the same classes and the same code (EvOverlap) as the pages. Scroll it, or Play to run it down and back.
+  - **The master's numbers as controls**: title drift, picture rise, how far the picture dims, sheet overlap, sheet corners, fade end.
+  - The phone follows the controls live. Save setup makes the numbers every page's on load; Reset puts the defaults back.
+  - **A sizes and behaviour table**: hero, picture, title, sheet, bar, reduced motion, and where the pattern is used.
+
 ## Plan → Nutrition plan ("Does it design UI for nutrition?"; the mocks at XS, S, M, L and XL, dark and light: the salad bowl photo with "<name>'s nutrition plan / By Dr. Steven", Your daily recommendations, Key actions, My meals, Supplement stack, What this moves, Need something else?)
 - **How it opens**: the Plan's Nutrition section now has **See all** (aria "See all nutrition"), as Activity has. It, and the Nutrition card's rows, push the Nutrition plan in over the Plan, the Activity plan's way: the Plan drifts left under a dim; instant with reduced motion.
   - Back or Escape pushes it out, the Plan where it was. On the desk, the crumb's "Plan" does too.
