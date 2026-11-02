@@ -18874,3 +18874,13 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Title**: "What Dr Naidoo recommended." uses the app's header, the Suggestion's title: sans, 570, 28/32 on the phone, 32/36 on the desk, -.02em.
 - **H2s**: "Your next steps." and "Confirm, then we book." step down to 20/26 on the phone, 22/28 on the desk, 570.
 - **Footer** (the footer screenshot): the app's, as the Suggestion's. On the phone, a full-width **Confirm and book** with a plain-text **Not now** under it; on the desk, side by side. The mock's grey half-width "Not now" pill is gone.
+
+## Standalone modals: the design system's header, button and secondary cards ("Why use a blue here? It should be like a design system button…")
+- **Header**: both standalone modals (Suggestion, Doctor's suggestion) now put their title in the design system's header (the Modals master: "Title 24/30 · 500 · Close at its right"). The title and the Close share the header row, top-aligned; it stays put while the content scrolls under it, the scroller's top fading out once scrolled. On the desk the row is the column's width, the Close at its edge. The dialog is labelled by that title.
+- **Suggestion**:
+  - The eyebrow above the title ("Your health report · Last 6 weeks") is gone.
+  - The button is the design system's primary (white in dark, black in light), no longer the mock's blue. The CTA colour tweak is removed.
+  - The chart's card sits on the grey secondary ground: the ink at 6% mixed into the paper, opaque so the chart's dots ring in it. No outline.
+  - The three suggestions (01, 02, 03) are now each a card of their own on that grey ground, 8 apart, rounded 16, padding 16, with no separator lines.
+  - "What we suggest next" is an H2 (20/26 · 500), no longer an eyebrow, the same as the Doctor's suggestion's section titles.
+- **Doctor's suggestion**: "What Dr Naidoo recommended." moves into the same header. "Your next steps." and "Confirm, then we book." stay H2s, now 20/26 · 500 at every size, under the 24/30 title.
