@@ -2062,6 +2062,21 @@ window.EvLoad = (function () {
   }
   return { label: label, multi: multi, simple: simple };
 })();
+/* EvSheetSwipe (Design system -> Modals -> Full bottom sheet, its grabber option): a sheet swiped down from its grabber or its header follows the finger, and past 80 down it goes (onDismiss), else it settles back up.
+ * The same code for the master's demo and its instances (the Services cart). The drag counted in the panel's own pixels, so a scaled frame (the docs, the desk's phones) reads as the phone does.
+ *   EvSheetSwipe(panel, onDismiss, { handle: '.tlShGrab, header', can: function () { return true; }, min: 80 })  returns a function that takes it off */
+window.EvSheetSwipe = function (panel, onDismiss, o) {
+  o = o || {}; var handle = o.handle || '.tlShGrab', min = o.min || 80, y0 = null, dy = 0, k = 1, id = null;
+  var down = function (e) { if (y0 != null || (e.pointerType === 'mouse' && e.button !== 0)) return;
+    var t = e.target, h = t && t.closest ? t.closest(handle) : null; if (!h || !panel.contains(h) || t.closest('button, a, input, select, textarea, [role="button"]') || (o.can && !o.can())) return;
+    var w = panel.getBoundingClientRect().width; k = panel.offsetWidth && w ? w / panel.offsetWidth : 1;
+    y0 = e.clientY; dy = 0; id = e.pointerId; e.preventDefault(); panel.style.transition = 'none'; panel.classList.add('evSwiping'); try { panel.setPointerCapture(id); } catch (x) {} };   /* no text picked up on the way */
+  var move = function (e) { if (y0 == null || e.pointerId !== id) return; dy = Math.max(0, (e.clientY - y0) / k); panel.style.transform = dy ? 'translateY(' + dy + 'px)' : ''; };
+  var up = function (e) { if (y0 == null || e.pointerId !== id) return; var go = e.type === 'pointerup' && dy > min; y0 = null; id = null; dy = 0;
+    panel.classList.remove('evSwiping'); panel.style.transition = ''; panel.style.transform = ''; if (go) onDismiss(); };   /* from where the finger left it: down and away, or back up, on the sheet's own curve */
+  panel.addEventListener('pointerdown', down); panel.addEventListener('pointermove', move); panel.addEventListener('pointerup', up); panel.addEventListener('pointercancel', up); panel.addEventListener('lostpointercapture', up);
+  return function () { panel.removeEventListener('pointerdown', down); panel.removeEventListener('pointermove', move); panel.removeEventListener('pointerup', up); panel.removeEventListener('pointercancel', up); panel.removeEventListener('lostpointercapture', up); };
+};
 /* Consent modal (Version -> General patterns -> Consent; window.EvConsent): the design's "Consent modal" ("create the Consent modal"), and Step 1's Terms and Conditions link in the Health profile ("merge this experience
  * into step 1 when the user clicks the link: full bottom sheet"). Narrow (the phone, under 600 wide): a full bottom sheet up from the foot, its grabber, the page's identifier and a close, its marketing title over the text;
  * wider: a modal in the middle, its title and close. The text scrolls; I consent waits till it has been read to its end. I do not consent asks first, in place: a red note (Are you sure you do not wish to proceed?)
