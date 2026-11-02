@@ -19067,3 +19067,36 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **The AI card's six service tiles**: 16px corners (were 28) and 14px names (were 16). Every name fits whole now: Check Symptoms, Specialist referral and Blood test referral were cut with an ellipsis.
 - "Reduce by 14px" is read as "to 14px".
 - The Overview's own service cards keep their 28px corners. They shared the 28px rule, but only the AI card's tiles were asked for.
+
+## Plan → My Medical actions ("That's for medication.")
+- **From the breakpoint mock** (XS to XL, Dark and Light): "My Medical actions / Prescribed and monitored by your care team", then one card per health area.
+  - Each card: the area's name, its marker as a small chip with a little range, a copper square at the top right, then its medications as the Plan's rows (the product on a white tile, the name and a dose tag, how often, a chevron).
+  - Metabolic Health (HbA1c): Semaglutide 0.5 mg, weekly. Heart Health (ApoB): Atorvastatin 40 mg, daily. Hair loss management (Serum DHT): Dutasteride 0.5 mg, daily; Minoxidil 10%, twice a day, morning and night.
+  - The chips carry the member's own readings: HbA1c 5.2 % (optimal), ApoB 1.12 g/L (out of range). The Insights have no DHT result, so its range is grey with nothing on it.
+- **One list**: the Plan's Medical actions and this page read the same medications, now the mock's four (it was six: Metformin is gone, vitamin D is on My supplements). The count says 4.
+- **A medication's detail**: what it's for, how to take it (nothing past the schedule on its row), "Prescribed by your care team", and a line to message the care team before changing or stopping it.
+- **Opens from** the Plan's Medical actions (a new See all, and its rows), the page menu (Medical actions) and #medical-actions.
+
+## Plan → My supplements ("That's for a supplement.")
+- **From the mocks**: "My supplements / Selected and monitored by your care team", a plain list: the product on a rounded tile (warm grey on Light, dark on Dark), the name, the dose, a chevron.
+- **The mock's six dose lines, each a real product of the app's own kind**: Vitamin D3 + K2 Drops (1 drop), Multivitamin Gummies (2 gummies), Whey Protein Powder (1 scoop), Vitamin B12 Oral Spray, Magnesium Glycinate (2 capsules), Protein Bar (1 bar).
+  - "6 sprays daily" isn't a usual label dose for an oral spray, so the B12 spray reads 1 spray daily.
+- **A supplement's detail**: what it's for and when to take it. Where a reading applies it is the member's own: vitamin D 42 nmol/L (below range); vitamin C, selenium and B12 a little low; magnesium in range, so the glycinate is for sleep, not a shortfall.
+- **Pictures**: the Async report's renders, cut out of their grey so the tile can be dark. The spray and the bar are placeholders (the dropper toned cobalt; the pouch's black band as a wrapper). All are in the Assets library under Plan.
+- **On the Plan**: a new Supplements section after Nutrition, the first three rows and See all. Link: #my-supplements; page menu: Supplements.
+- **For the Nutrition plan's Supplement stack**: `window.__plOpen('sup', { item: 'Magnesium Glycinate' })` opens this page and that supplement's detail.
+
+## Plan → Wind-down routine ("That's for routines.")
+- **From the mocks** (the S column's "My supplements" title read as the routine's): "Wind-down routine / A short routine to help your body and mind switch off before bed", four numbered steps.
+  - The third, Take magnesium glycinate, has a chevron and opens Magnesium Glycinate's detail.
+- **What this moves**: morning cortisol 412 nmol/L, heart rate variability 48 ms and high-sensitivity CRP 0.8 mg/L, each Optimal in the Insights (Oct 2026).
+- **Opens from** the hero's Restorative sleep card (a drag along the row still opens nothing), a new Routines section on the Plan, the page menu and #wind-down-routine.
+
+## The three together
+- **Built as the Activity plan's siblings**: pushed in over the Plan; Back, Escape or the breadcrumb's Plan push it out; the Plan inert under it; Dark or Light from Tweaks → Plan → Sheet.
+- **A plain head, no photo**:
+  - Phone: Back under the status bar, then the title and its line. Once scrolled, the title sits beside Back.
+  - From M: a top line, Back and "Plan | the page". M: the content the panel's width. L and XL: a 640 column, centred.
+- **Shared bits, one helper each**: Need something else? (Adjust your plan, Recovery tips) and What this moves, using the Activity plan's tiles and rows.
+- **Details**: Modals → Bottom sheet · Floating. A sheet on the phone (its grabber, a swipe down), a floating modal from M; the scrim, Close and Escape shut it.
+- Built in a separate worktree, alongside the Nutrition plan.
