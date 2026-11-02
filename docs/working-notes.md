@@ -19073,3 +19073,18 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Plan** joins the set: a clipboard and its list. Filled, the board is solid and its list is cut out, with a thin gap round the clip.
   - It is used in the More sheet's Plan row.
   - It is listed under Design system › Navigation › Iconography, marked as living in More rather than as a tab.
+- **Fix**: a slip in the icons' doc copy (a line comment inside a one-line statement) broke the app's main script in v1962. Fixed and republished at once.
+
+## Header overlap: one pattern, the Activity plan on it ("On swipe here, we should have the common pattern that we use on other pages that overlap the header and have a small parallax. Also, this needs to be in the design system: this header-overlap header style.")
+- **Mapped first**: every version in the app (the Service detail, its task pages, the Appointment page, the Async report welcome, the Insights header, the Plan).
+  - The master is the Service detail's own (its task pages and services without a progress card). The Appointment page already copied it on purpose.
+- **Built once (EvOverlap)**:
+  - The hero is pinned under the bar and the sheet slides up over it.
+  - The picture rises 32px as it goes and dims to 35% of itself. The title drifts up at a quarter of the scroll and fades out by the hero's height less 40.
+  - Sheet: 28 over the hero's foot, 24 corners.
+  - Each scroller gets its own frame loop. Reduced motion keeps the fade without the travel.
+  - Pages mark their parts (`.hoHero` / `.hoPic` / `.hoWords` / `.hoSheet`, or the `data-ov` attributes the new Plan subpages carry) and bind.
+- **The Activity plan** uses it.
+  - Its photo stays pinned while the sheet slides over, and the title drifts and fades as it goes.
+  - The page bar, its title and Back follow as before.
+  - The sheet is now 24 round and 28 over the photo (it was 20 and 20), the master's numbers.

@@ -1944,6 +1944,33 @@ window.__ccVid = ['data:video/webm;base64,GkXfo59ChoEBQveBAULygQRC84EIQoKEd2VibU
  *   EvLoad.multi(host, steps, { step }) Multi-step loading: over host (positioned), the page blurred under each backend step in turn (a spinner and its line, a track with a node each);
  *                                       returns { el, done (a promise, once the last step is through, as the overlay fades), stop() }
  */
+/* EvOverlap: the header overlap ("the common pattern that we use on other pages that overlap the header and have a small parallax"; "this needs to be in the design system"), once for every page.
+   The Service detail's own (its task pages and its services without a progress card), as the Appointment page copied it: the hero pinned (sticky) under the bar, the sheet sliding up over it,
+   the picture rising --hoRise (32) as it goes and dimming to --hoDim of itself, the title drifting up at a quarter of the scroll and fading out by the hero's height less 40.
+   Markup: .hoHero (sticky), .hoPic (the picture, clipped by its hero), .hoWords (the title group), .hoSheet (the sheet: --hoOverlap over the hero's foot, --hoRadius corners);
+   or the data-ov contract (data-ov="hero|img|title|sheet"), which bind() turns into those classes. bind(scroller, {hero, short, onFrame}) -> {update}: one rAF per scroller.
+   The numbers are the master's, Design system -> General layout -> Header overlap: saved there (everlab:hoMaster), every page takes them on load */
+window.EvOverlap = (function () {
+  var M = { ty: .25, rise: 32, end: 40, overlap: 28, radius: 24, dim: .35 }, D = JSON.parse(JSON.stringify(M)), root = document.documentElement;
+  var red = function () { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
+  var tok = function () { root.style.setProperty('--hoOverlap', M.overlap + 'px'); root.style.setProperty('--hoRadius', M.radius + 'px'); root.style.setProperty('--hoRise', M.rise + 'px'); root.style.setProperty('--hoDim', String(M.dim)); };
+  var apply = function (sc, hero, o) { if (!sc || !hero) return 0; var y = Math.max(0, sc.scrollTop), H = hero.offsetHeight, span = Math.max(60, H - M.end);
+    if (o && o.short) span = Math.max(60, Math.min(H - M.end, sc.scrollHeight - sc.clientHeight));
+    var k = Math.min(1, Math.max(0, y / span)), r = red();
+    hero.style.setProperty('--hy', (r ? 0 : -M.ty * y).toFixed(1) + 'px'); hero.style.setProperty('--hk', (1 - k).toFixed(3)); hero.style.setProperty('--hpy', (r ? 0 : -M.rise * k).toFixed(1) + 'px');   // reduced motion: no travel, the fade kept
+    return k; };
+  var mark = function (sc) { [['hero', 'hoHero'], ['img', 'hoPic'], ['title', 'hoWords'], ['sheet', 'hoSheet']].forEach(function (p) { [].forEach.call(sc.querySelectorAll('[data-ov="' + p[0] + '"]'), function (e) { e.classList.add(p[1]); }); }); };
+  var bind = function (sc, o) { o = o || {}; if (!sc) return { update: function () {} }; mark(sc); var q = 0;
+    var heroOf = function () { return typeof o.hero === 'function' ? o.hero() : sc.querySelector(o.hero || '.hoHero'); };
+    var run = function () { q = 0; var k = apply(sc, heroOf(), o); if (o.onFrame) o.onFrame(k); };
+    sc.addEventListener('scroll', function () { if (!q) q = requestAnimationFrame(run); }, { passive: true });
+    return { update: run }; };
+  var load = function () { try { var v = JSON.parse(localStorage.getItem('everlab:hoMaster') || 'null'); if (v) Object.keys(M).forEach(function (k) { if (typeof v[k] === 'number' && isFinite(v[k])) M[k] = v[k]; }); } catch (e) {} tok(); };
+  load();
+  return { M: M, D: D, apply: apply, bind: bind, mark: mark, set: function (k, v) { M[k] = v; tok(); },
+    save: function () { try { localStorage.setItem('everlab:hoMaster', JSON.stringify(M)); return true; } catch (e) { return false; } },
+    reset: function () { Object.keys(D).forEach(function (k) { M[k] = D[k]; }); try { localStorage.removeItem('everlab:hoMaster'); } catch (e) {} tok(); } };
+})();
 window.EvLoad = (function () {
   var spin = function () { var i = document.createElement('i'); i.className = 'evSpin'; i.setAttribute('aria-hidden', 'true'); return i; };
   function label(btn, text) {
