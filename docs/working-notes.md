@@ -19274,3 +19274,65 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - With no results, the empty card sits 16px under the filters (the hidden list kept its margin).
 - The marketplace follows Light mode, as the other pages do.
 - The page (dist/index.html) is now 15.2 MB, under the 16 MB limit.
+
+## Plan → My Medical actions ("That's for medication.")
+- **From the breakpoint mock** (XS to XL, Dark and Light): "My Medical actions / Prescribed and monitored by your care team", then one card per health area.
+  - Each card: the area's name, its marker as a small chip with a little range, a copper square at the top right, then its medications as the Plan's rows (the product on a white tile, the name and a dose tag, how often, a chevron).
+  - Metabolic Health (HbA1c): Semaglutide 0.5 mg, weekly. Heart Health (ApoB): Atorvastatin 40 mg, daily. Hair loss management (Serum DHT): Dutasteride 0.5 mg, daily; Minoxidil 10%, twice a day, morning and night.
+  - The chips carry the member's own readings: HbA1c 5.2 % (optimal), ApoB 1.12 g/L (out of range). The Insights have no DHT result, so its range is grey with nothing on it.
+- **One list**: the Plan's Medical actions and this page read the same medications, now the mock's four (it was six: Metformin is gone, vitamin D is on My supplements). The count says 4.
+- **A medication's detail**: what it's for, how to take it (nothing past the schedule on its row), "Prescribed by your care team", and a line to message the care team before changing or stopping it.
+- **Opens from** the Plan's Medical actions (a new See all, and its rows) and #medical-actions.
+
+## Plan → My supplements ("That's for a supplement.")
+- **From the mocks**: "My supplements / Selected and monitored by your care team", a plain list: the product on a rounded tile (warm grey on Light, dark on Dark), the name, the dose, a chevron.
+- **The mock's six dose lines, each a real product of the app's own kind**: Vitamin D3 + K2 Drops (1 drop), Multivitamin Gummies (2 gummies), Whey Protein Powder (1 scoop), Vitamin B12 Oral Spray, Magnesium Glycinate (2 capsules), Protein Bar (1 bar).
+  - "6 sprays daily" isn't a usual label dose for an oral spray, so the B12 spray reads 1 spray daily.
+- **A supplement's detail**: what it's for and when to take it. Where a reading applies it is the member's own: vitamin D 42 nmol/L (below range); vitamin C, selenium and B12 a little low; magnesium in range, so the glycinate is for sleep, not a shortfall.
+- **Pictures**: the Async report's renders, cut out of their grey so the tile can be dark. The spray and the bar are placeholders (the dropper toned cobalt; the pouch's black band as a wrapper). All are in the Assets library under Plan.
+- **On the Plan**: a new Supplements section after Nutrition, the first three rows and See all. Link: #my-supplements.
+- **The Nutrition plan's Supplement stack** reads its two rows off this list (see the review fixes below), and a row opens this page with that supplement's detail: `window.__plOpen('sup', { item: 'Iron', from: row })`.
+
+## Plan → Wind-down routine ("That's for routines.")
+- **From the mocks** (the S column's "My supplements" title read as the routine's): "Wind-down routine / A short routine to help your body and mind switch off before bed", four numbered steps.
+  - The third, Take magnesium glycinate, has a chevron and opens Magnesium Glycinate's detail.
+- **What this moves**: morning cortisol 412 nmol/L, heart rate variability 48 ms and high-sensitivity CRP 0.8 mg/L, each Optimal in the Insights (Oct 2026).
+- **Opens from** the hero's Restorative sleep card (a drag along the row still opens nothing), a new Routines section on the Plan and #wind-down-routine.
+
+## The three together
+- **Built as the Activity plan's siblings**: pushed in over the Plan; Back, Escape or the breadcrumb's Plan push it out; the Plan inert under it; Dark or Light from Tweaks → Plan → Sheet.
+- **A plain head, no photo**:
+  - Phone: Back under the status bar, then the title and its line. Once scrolled, the title sits beside Back.
+  - From M: a top line, Back and "Plan | the page". M: the content the panel's width. L and XL: a 640 column, centred.
+- **Shared bits, one helper each**: Need something else? (Adjust your plan, Recovery tips) and What this moves, using the Activity plan's tiles and rows.
+- **Details**: Modals → Bottom sheet · Floating. A sheet on the phone (its grabber, a swipe down), a floating modal from M; the scrim, Close and Escape shut it.
+- Built in a separate worktree, alongside the Nutrition plan.
+
+## The three with the Nutrition plan (merge and review fixes)
+- **Merged onto the Nutrition plan.** Only one of the Plan's subpages is up at a time.
+  - Opening Medical actions, Supplements or the routine, from the menu, a link or a row, takes the Activity or the Nutrition plan away first, and the other way round.
+  - Back always leaves the Plan interactive again.
+  - A page opened from the Nutrition plan's stack slides back off over the Nutrition plan, which keeps its scroll. The breadcrumb's Plan goes to the Plan.
+- **One supplement list.** The Nutrition plan's stack now reads My supplements' entries, so the names and doses agree on both pages.
+  - Iron joins My supplements (1 tablet daily, 25 mg). It's there for the member's low iron stores: ferritin 22 µg/L and transferrin saturation 14 %, both out of range in the Insights. The picture is a placeholder, one of the magnesium picture's bottles.
+  - Vitamin D is "Vitamin D3 + K2 Drops", 1 drop daily, 2000 IU, on both pages. A supplement's detail shows the strength beside the dose.
+- **One Need something else?** The Activity and Nutrition plans now use the same tiles as the three pages, with the mocks' sliders for Adjust your plan (it was a numbered list).
+- **The routine's numbers** sit in a small disc, as in the mock: 24 px, ink at 6 %, full ink and semibold. The titles start 40 px in.
+- **The marker chips** show the reading as a small caret over the range, as What this moves does. Before, a bar across the range read as a plus.
+- **What this moves** takes each reading's own status (Optimal, Suboptimal or Out of range) and places the marker in that band. A reading with no status shows neither.
+- **The Suggestion's rows** go to their section by its title, not its position: 01 vitamin D to Supplements (where the vitamin D now is), 02 to Nutrition, 03 to Activity.
+- **Out of the page menu**, as the Activity and Nutrition plans now are: the three are hidden values, so the menu reads Plan while one is up.
+- **The status bar's ink** follows every theme change, the app's Light mode included, while one of the three is up on the phone.
+
+## My Medical actions, My supplements and the Wind-down routine merged
+
+- **The three Plan subpages are in** (the background build above, its review and its fixes), on top of the Services marketplace.
+  - On the Plan: Supplements (7) and Routines are new sections. The section order is Activity, Nutrition, Supplements, Routines, Medical actions.
+  - They open from each section's See all and rows, from the Restorative sleep goal card (the routine), and by their links (#medical-actions, #my-supplements, #wind-down-routine).
+  - They are not in the page menu: they are hidden values, and the menu reads Plan while one is up.
+  - The Nutrition plan's Supplement stack reads from My supplements' list, so the two never disagree. Iron is a seventh supplement.
+  - "Need something else?" is one helper on all five subpages.
+- **At the merge**:
+  - The goals carousel keeps the shared magnet (EvMagnet, from the marketplace). The new pages' logic follows it.
+  - The menu handles both the marketplace and the three pages. `__pageVal` knows both.
+  - The pages' top bar takes the header overlap's overflow ground: the page's ground as the master's gradient over the Overview bar's blur bands, once the title is under the bar. It replaces the solid band they had. There is no dark stage, as there is no photo above these pages.
