@@ -18919,7 +18919,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - **Every row opens its detail**, stacked over the sheet as a biomarker's is: the picture, "Why Dr … suggests it", and "Based on" tags naming the insights it rests on (or the questionnaire / the health profile).
 - **Each member has their own twelve**, written from their insights:
   - **Annette**: strength, sun walks, yoga for the cortisol; vitamin D drops, the B12 plan, omega-3, protein; a fibre-first and olive-oil breakfast; the CT coronary angiogram, the repeat morning cortisol, the 3-month recheck.
-  - **Stephanie**: brisk pram walks for Lp(a), pelvic floor recovery, strength; vitamin D, an iron tablet if advised, a postnatal multivitamin, omega-3; an iron-friendly breakfast; the pelvic ultrasound, the iron and vitamin D recheck, the June review.
+  - **Stephanie**: brisk pram walks for Lp(a), pelvic floor recovery, strength; vitamin D, an iron tablet if advised, a postnatal multivitamin, omega-3; an iron-friendly breakfast; the pelvic ultrasound, the iron and vitamin D recheck, the results review planned in June.
 - **Wired everywhere the steps are counted**:
   - The progress has a bar for it (7 now).
   - Next goes on to the end; Back returns from it.
@@ -18951,3 +18951,32 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Everything is listed in the Assets library under Plan.
 - **Also fixed**: the Plan's own status-bar band now shows when its sheet scrolls under the status bar. A stronger rule had always hidden it.
 - Built in the background in a separate worktree, then merged. The only conflict was the Assets library list, merged entry by entry.
+
+## Recommendations: cards two a row, a 3D visual on top ("Use more like a card, two per row, with a visual on the top and then text below", "You can centre the title here.")
+- **Title and "12 recommendations" centred** at every width, using Everything else's head.
+- **The four kinds are now cards, two a row**, following the services' Apple style: the render centred on top (88px, 104 on the desk), then the name and how many under it, centred, with no chevron. They keep Everything else's card fill, outline and hover.
+- **The renders**:
+  - Exercise: **a dumbbell**, rendered in 3D (three.js, headless) to match the services' renders: cream hex heads, sage end discs, a brass handle, soft shadow, transparent ground.
+  - Supplements & medications: **the pill bottle with its capsule and tablet**, the Script renewal service's render.
+  - Nutrition: **a glass of water with lemon slices inside**, rendered in 3D the same way.
+  - Tests, scans and care: **the Imaging referral's render**, "Scans, ultrasound, X-ray", from the services' Apple style. I took this to be "the scan 3D asset"; it is easy to swap in the Assets library.
+  - The two new renders are in the Assets library under Async report.
+
+## Recommendations: review fixes (an independent review of the step; 14 confirmed of 24 reported)
+- **Stacking on the phone**: a row's detail over a short kind sheet hid that sheet completely, with black above. The sheet behind now takes the full height while stacked, so its top shows 16 above the detail, as the biomarker list does.
+- **Persona #2 has her own Before meals card**: water while feeding, tea and coffee away from meals (iron), fibre first, a snack between feeds. Before, she got Persona #1's cholesterol and takeout tips labelled "Low iron reserves".
+  - Her breakfast tips now match its plate: iron-rich foods, leafy greens, a squeeze of vitamin C, fermented foods. The tea and coffee advice no longer sits beside a plate with a coffee on it.
+- **Each meal tip has its own "Based on"** (an insight, the questionnaire or the health profile), not its card's.
+- **Copy corrected to match the insights**:
+  - **Vitamin D, Annette**: "If Dr Goh advises it"; ask whether a daily drop suits you.
+  - **Vitamin D, Stephanie**: "Dose set by Dr Martin".
+  - **B12**: may be running low; ask the doctor who prescribes the injections.
+  - **The note**: "Dr Goh confirms each new supplement…".
+  - **Yoga**: no longer tied to low cortisol.
+  - **Strength**: protects bones already thinner than ideal.
+  - **CT angiogram**: "Ask Dr Goh about it".
+  - **Stephanie's review**: "The review planned in June", with your doctor.
+- **Smaller fixes**:
+  - The Sphere hero's "What we'll cover" also lists "What we recommend".
+  - The first row's focus ring is no longer cut.
+  - Outlined cards (Cards style: Outlined) now fill on hover and press. Everything else's area cards get this too.
