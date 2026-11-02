@@ -19002,3 +19002,15 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The onboarding consultation with optional questionnaire lists its five demo states.
 - **The Async report's panel**: Welcome, each insight by its name, Everything else we checked, Here's what we recommend, That wraps up your debrief. A click goes there. The floating step shortcuts beside the phone step aside while the panel shows.
 - **Built once for any screen**: the Gift referral's panel made general (`window.__flowPanel`). The Flow button counts any screen that has one. The Health profile, the Membership reveal and the Gift referral keep their own panels.
+
+## Concierge Services slide: 3D icons ("For the concierge service slide, we need a tweak so I can use the emoji that is the illustration 3D instead of the icon.")
+- **The Tweak**: Concierge › Service icons, Line (default) or 3D. It is live, kept by Save, and follows the Services visual (Grid, V1 Stack, V2 Star).
+- **3D**: each service shows its 3D illustration in the icon's place, with no disc behind it: 40px in the Grid, 44 on the Stack's cards, 48 in the Star's arc.
+  - The illustrations are the same renders as the Overview's services: Script renewal the pill bottle, Specialist referral the laptop consult, Blood test referral the tubes, Imaging referral the papers.
+  - Two new three.js renders in the same palette: GP consult, a stethoscope (sage tube, brass chest piece, cream tips), `assets/overview/svc-gp.webp`; Check symptoms, a rose heart with a pulse card, `assets/overview/svc-symptoms.webp`. Both are in the Assets library (Services).
+
+## Recommendations: smaller visuals, a clearer glass ("Reduce the image by 12 px (the 3D icon). Regarding the nutrition, the glass needs to be more transparent. You can see more of the lemon inside. Also, push down by 12 px the visual on the top of the cup.")
+- **Visuals**: 12px smaller again: 52 on the phone, 68 on the desk. The grey circle stays 70% of the visual.
+- **Nutrition glass**, re-rendered:
+  - The glass and the water are much fainter, so the lemon slices read through them.
+  - The water line and both slices sit lower (the top slice about 12px down at card size), clear of the rim.
