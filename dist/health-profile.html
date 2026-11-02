@@ -814,6 +814,46 @@ body { margin: 0; overflow: hidden; background: var(--pg); color: var(--pgFg); f
 .arSheet .arRsAreaN { flex: 1; min-width: 0; font-size: 16px; line-height: 22px; }
 .arSheet .arRsCount { flex: none; width: 32px; height: 24px; padding: 0;   /* every counter the same width ("the counter should have the same width") */ box-sizing: border-box; border-radius: 8px; background: oklch(var(--ar-ink) / .08); font-size: 13px; font-weight: 500; line-height: 24px; text-align: center; font-variant-numeric: tabular-nums; }
 .arSheet .arRsArea .arChev { flex: none; color: oklch(var(--ar-ink) / .4); } .arSheet .arRsArea .arChev svg { transform: rotate(-90deg); }   /* pointing on, to its sheet, not down */
+/* Here's what we recommend (the step before the end): the title and how many, then a card per kind, Everything else's area card (its fill, outline, hover, focus), 12 apart: an icon on a tile of the ink at 5%, its name, how many, the chevron.
+   Its sheets: the products' rows on the mocks' warm grey tiles, the meals as cards of tips (the My meals mock), the others an icon tile; every row's detail stacked over it */
+.arSheet .arRcHead .arLfLede { margin-top: 0; } .arSheet.arSheet .arLfHead.arRcHead { align-items: stretch; }   /* its short line the title's width, so it aligns as the title does (left on the phone, centred on the desk), not centred alone under a left title */
+.arSheet .arRcCats { display: flex; flex-direction: column; gap: 12px; }
+.arSheet .arRsArea.arRcCat { gap: 16px; min-height: 76px; padding: 14px 16px 14px 14px; border-radius: 20px; }
+.arSheet .arRcTile { flex: none; display: flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 14px; background: oklch(var(--ar-ink) / .05); color: oklch(var(--ar-ink) / .8); }
+.arSheet .arRcCatT, .arSheet .arRcRowT { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.arSheet .arRcCatN { font-size: 17px; line-height: 22px; font-weight: 500; text-wrap: pretty; }
+.arSheet .arRcCatS, .arSheet .arRcRowT > span { font-size: 14px; line-height: 20px; color: oklch(var(--ar-ink) / .56); }
+.arSheet :is(.arRcCat, .arRcRow, .arRcTip) .arChev svg { display: block; }
+.arSheet .arRcRow .arChev, .arSheet .arRcTip .arChev { flex: none; color: oklch(var(--ar-ink) / .4); } .arSheet :is(.arRcRow, .arRcTip) .arChev svg { transform: rotate(-90deg); }
+.arSheet .arQaList.arRcSheet { padding-bottom: 8px; }
+.arSheet .arRcList { display: flex; flex-direction: column; isolation: isolate; }
+.arSheet .arRcRow { position: relative; appearance: none; -webkit-appearance: none; display: flex; align-items: center; gap: 16px; width: 100%; margin: 0; padding: 12px 0; border: 0; border-top: 1px solid oklch(var(--ar-ink) / .08); background: none; color: oklch(var(--ar-ink)); font: inherit; text-align: left; cursor: pointer; }
+.arSheet .arRcRow:first-child { border-top: 0; }
+.arSheet :is(.arRcRow, .arRcTip)::before { content: ""; position: absolute; inset: 2px -10px; z-index: -1; border-radius: 12px; background: transparent; transition: background-color .15s ease; }   /* the ghost tile under it on hover, as a biomarker row's */
+@media (hover: hover) { .arSheet :is(.arRcRow, .arRcTip):hover::before { background: oklch(var(--ar-ink) / .05); } }
+.arSheet :is(.arRcRow, .arRcTip):focus-visible { outline: 2px solid oklch(var(--ar-ink)); outline-offset: 2px; border-radius: 12px; }
+.arSheet .arRcRowT b { font-size: 16px; line-height: 22px; font-weight: 500; text-wrap: pretty; }
+.arSheet .arRcPic { flex: none; display: flex; align-items: center; justify-content: center; width: 64px; height: 64px; overflow: hidden; border-radius: 16px; background: #f3efed; }   /* the mocks' warm grey under the products, in both modes (their photos' own ground) */
+.arSheet .arRcPic img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.arSheet .arRcPic.arRcIco { background: var(--ar-card-bg); color: oklch(var(--ar-ink) / .8); }
+.arSheet .arRcPic.arRcBig { width: 120px; height: 120px; border-radius: 28px; }
+.arSheet .arRcMeals { display: flex; flex-direction: column; gap: 12px; }
+.arSheet .arRcMeal { padding: 20px 20px 6px; border-radius: 24px; background: var(--ar-card-bg); isolation: isolate; }
+.arSheet:not(.arCardsFill) .arRcMeal { background: transparent; box-shadow: inset 0 0 0 1px oklch(var(--ar-ink) / .1); }
+.arSheet .arRcMealH { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 6px; }
+.arSheet .arRcMealT { margin: 0; font-size: 18px; line-height: 24px; font-weight: 500; color: oklch(var(--ar-ink)); }
+.arSheet .arRcMealS { margin: 2px 0 0; font-size: 14px; line-height: 20px; color: oklch(var(--ar-ink) / .56); text-wrap: pretty; }
+.arSheet .arRcMealH img { flex: none; display: block; width: 84px; height: 65px; object-fit: contain; }
+.arSheet .arRcTips { margin: 0; padding: 0; list-style: none; }
+.arSheet .arRcTips li + li { border-top: 1px solid oklch(var(--ar-ink) / .08); }
+.arSheet .arRcTip { position: relative; appearance: none; -webkit-appearance: none; display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; min-height: 52px; margin: 0; padding: 14px 0; border: 0; background: none; color: oklch(var(--ar-ink) / .72); font: inherit; font-size: 15px; line-height: 20px; text-align: left; cursor: pointer; }
+.arSheet .arQaList.arRcDet { display: flex; flex-direction: column; align-items: flex-start; gap: 24px; padding-top: 12px; padding-bottom: 24px; }
+.arSheet .arRcMealPic img { display: block; width: 168px; height: auto; }
+.arSheet .arRcDetSec { display: flex; flex-direction: column; gap: 8px; align-self: stretch; }
+.arSheet .arRcDetH { margin: 0; font-size: 14px; line-height: 18px; font-weight: 500; color: oklch(var(--ar-ink) / .56); }
+.arSheet .arRcDetP { margin: 0; font-size: 16px; line-height: 24px; color: oklch(var(--ar-ink)); text-wrap: pretty; }
+.arSheet .arRcTags { display: flex; flex-wrap: wrap; gap: 8px; }
+.arSheet .arRcTag { padding: 5px 12px; border-radius: 9999px; background: var(--ar-card-bg); font-size: 13px; line-height: 18px; font-weight: 500; color: oklch(var(--ar-ink) / .8); }
 .arSheet .arRsSheet .arRsMk { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 52px; padding: 10px 0; border-top: 1px solid oklch(var(--ar-ink) / .08); } .arSheet .arRsSheet .arRsMk:first-child { border-top: 0; }
 .arSheet .arRsSheet .arRsMkN { min-width: 0; font-size: 15px; line-height: 20px; }
 /* Halftone welcome: the Report visuals' image card, its sizes theirs */

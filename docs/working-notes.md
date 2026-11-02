@@ -18903,3 +18903,27 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Then October, November and Later, as before: projected and grey.
 - On the phone, Recommended sits above the name. Beside it, the name and the price each took three lines.
 - Wired like the other standalones: the Page menu, the link (#personal-recommendation), Tweaks (Replay), comments, the Chat menu restore, and closing when the page changes.
+
+## Async report: "Here's what we recommend", the step before the end ("At the end of the async, I want something like this: the last step of the flow before the conclusion, just a list of stuff like this, with the breakdown of next steps.")
+- **A new step** between Everything else and That wraps up your debrief, a paper page like Everything else:
+  - Title "Here's what we recommend", then "12 recommendations" under it (left on the phone, centred on the desk, as the title).
+  - A card for each kind, built on Everything else's area card: the grey fill, outlined with Cards style: Outlined, the same hover and focus. Each card has an icon on a tile, the kind's name, how many, and a chevron:
+    - Exercise (3)
+    - Supplements & medications (4)
+    - Nutrition (2)
+    - Tests, scans and care (3)
+- **Each kind opens its sheet**, the report's own (as tall as its content; a centred dialog on the desk):
+  - **Supplements & medications**: the products on the mock's warm grey tiles, each with its name and how often, and a note at the top that the doctor confirms each dose.
+  - **Nutrition**: the My meals mock. A card per meal, Before meals and Breakfast, each with its plate at the top right and four tips with chevrons.
+  - **Exercise** and **Tests, scans and care**: a stroke icon on a tile, then the name and when.
+  - **Every row opens its detail**, stacked over the sheet as a biomarker's is: the picture, "Why Dr … suggests it", and "Based on" tags naming the insights it rests on (or the questionnaire / the health profile).
+- **Each member has their own twelve**, written from their insights:
+  - **Annette**: strength, sun walks, yoga for the cortisol; vitamin D drops, the B12 plan, omega-3, protein; a fibre-first and olive-oil breakfast; the CT coronary angiogram, the repeat morning cortisol, the 3-month recheck.
+  - **Stephanie**: brisk pram walks for Lp(a), pelvic floor recovery, strength; vitamin D, an iron tablet if advised, a postnatal multivitamin, omega-3; an iron-friendly breakfast; the pelvic ultrasound, the iron and vitamin D recheck, the June review.
+- **Wired everywhere the steps are counted**:
+  - The progress has a bar for it (7 now).
+  - Next goes on to the end; Back returns from it.
+  - A tweak or the persona keeps you on it.
+  - The step shortcuts beside the phone list Recommendations.
+  - The reveal welcome's "What we'll cover" lists "What we recommend" last.
+- **Pictures** were cut from the mocks: four products (dropper, softgels, whey pouch, gummies) and two plates on a transparent ground. They're registered in the Assets library under Async report.
