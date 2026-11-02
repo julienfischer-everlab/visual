@@ -19357,6 +19357,79 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Past results' Next goes on to the Concierge within the same flow, and the Flow panel kept Past results' row (its `data-jny` stayed `pr`).
 - Now the step change sets it: on the Concierge, the panel shows the Concierge and its phases (Intro, Bubble speech, Services, Specialists); back on Past results, Past results again.
 
+## Services: a smaller picture on the recommended cards (XS), and a cart
+
+- **The recommended cards at XS** ("smaller img", from the mock): the picture is a small rounded square at the card's top right (a third of the card, 96 to 112 px, 16 corners, on the card's top padding), beside the title. The words and the chips sit under the title, at the left. The three values now run across the card under them, then the price and Learn more, as before. From S up the cards keep their tall picture.
+- **A cart at the top right** ("top right add a cart system"):
+  - A 44 glass disc on the title's line, with a bag in the app's line icons (20, 1.5 stroke). Its count is a small orange badge that pops when a service goes in. On M and up, the carousel's arrows sit 11 under it, so the two never touch. In the tablet frame the title row starts 10 lower, so the badge clears the status strip.
+  - **The service's sheet**: "Add to cart" (it was "Add to my plan"). It shows the Simple loader, then "In your cart" with its tick, and Remove takes Ask Eva's place. Remove brings back Add to cart. The cards' Learn more is unchanged.
+  - **The cart opens as the detail does** (Modals › Full bottom sheet on XS and S, the floating modal from M), over the whole app. On the phone it keeps a grabber, and a swipe down on it or the header lets it go. Close, the scrim and Escape shut it, with the focus kept inside and back on the bag after.
+  - **Inside**: each service's thumbnail, name, Remove and price; the subtotal; "Prices are for the prototype."; a full-width Checkout. Checkout shows the Simple loader, then "Booked. Your care team will be in touch to schedule." with Done, and the cart empties. An empty cart says so, with Browse services, which scrolls down to the services.
+  - **Kept in this browser** (`everlab:cart`), so a reload keeps it. Another tab's changes follow.
+- Modals › Full bottom sheet's "Used by" names the cart.
+
+### The cart, after review
+
+- **The header from M**: Your recommended services sits 12 under the title again, as on XS and S. Only the carousel's arrows moved down (16), so they still sit 11 under the cart.
+- **No toast on add or remove**: the button ("In your cart") and the badge say it. The toast is left only for "Booked…" when the cart was shut while Checkout loaded, and it now sits at the foot (above the dock on the phone), clear of the title and the cart.
+- **The badge** uses the app's count-badge orange and ink (#f78359 on #1a120e, as the Inbox and the hub counts), about 7:1. The filter's dot uses the same orange.
+- **In your cart** is a lasting state, not the loader's moment: the primary at full strength, with a green tick (drawn on as it goes in) and the words. It is `aria-disabled` rather than disabled, so it keeps the focus after the Simple loader and reads out. Tab goes on to Remove.
+- **The grabber is now an option of the Full bottom sheet master** (Design system › Modals): "no grabber by default", a new Grabber row (36 × 4, line colour, 8 from the top, 12 above the header, on every layer; a swipe down on it or the header, past 80, lets it go), and a Grabber button in the demo that turns it on. The swipe is one shared helper, `window.EvSheetSwipe`, used by the demo and the cart, so they run the same code. The cart opts in with `.shGrabOn` instead of an `!important` override.
+- **Smaller fixes**:
+  - Empty and booked: Browse services and Done are the foot's full-width 56 primary.
+  - Close is the master's (ink 7%, a 16 glyph).
+  - On XS and S the cart takes the filter and search buttons' fill; from M it keeps the arrows' glass and ring.
+  - Remove's hit area is 34 tall.
+  - Dragging the header no longer selects its text.
+- **Bugs fixed**:
+  - Remove during Checkout's loader no longer leads to a false "Booked": the list waits until the booking is done, and only the services booked leave the cart, so another tab's adds stay.
+  - An Add still loading when the sheet is shut and another service opened is now finished, not dropped.
+  - The badge pops only if the cart grew while the sheet was open.
+  - Leaving the page during an add or a checkout finishes it quietly, with nothing said over the next page.
+- **Not done here**: the service detail (also a Full bottom sheet) still has no swipe. Without a grabber it needs a swipe that knows about the scroll, which belongs to the swipe-down-to-dismiss master in progress (it can take `EvSheetSwipe` over).
+
+## Plan → the Lifestyle hub ("Adjust plan design based on that")
+
+- **From the Lifestyle hub mock** (Julien's board, XS to XL, Dark and Light). The subpages are untouched.
+- **Section order**: Activity, Nutrition, Medical actions, My routines, Supplements.
+  - Each header: the title, a count (Medical actions, Supplements) or a small clock (My routines), and See plan at the right (was See all). My routines has none.
+  - Sections 36 apart on the phone, 40 on the desk. Rows 56 to 64.
+- **Activity**: the protocols' photos 48, rounded 12 (were 80).
+- **Medical actions**: the picture on a white tile (40, a hairline round it on the Light sheet), the name, its dose chip, how often under it.
+- **Supplements**: My supplements' own list, iron and the vitamin D first (the readings that call for them), then the rest in the page's order.
+  - The render on its dark tile (warm grey on the Light sheet), the strength chip where the label gives one, Daily under it.
+- **Long lists**: four rows, then View N more, a 40 tall outlined pill (20 round). It opens the rest in place and reads Show less.
+  - Supplements has seven: View 3 more. Medical actions has four, so no button. Nothing was added to fill a list.
+- **My routines**: cards, not rows. Each card has a soft gradient ground (no new pictures), its icon in a white disc, the title, its line, two glass chips (steps, time) and View routine.
+  - The phone: a carousel on the goals' magnet (EvMagnet). The first card is 85 % of the row, the next one peeks.
+  - From M: two side by side, square (taller where the words need it).
+  - Wind-down routine (4 steps, 10:00pm) opens its page. The morning routine is the mock's placeholder: no page, its button disabled, Coming soon.
+  - The Restorative sleep goal still opens the Wind-down routine.
+- **The phone's top is unchanged**: the photo, the title and the goals' carousel, then the sheet.
+- **From M, two columns** (no hero across the page):
+  - At the left, My plan (28) and the sections: 520 at M, 580 from L.
+  - At the right, the photo as a card of its own (260 at M, 312 from L), sticking 24 from the top. The title is centred near its top, the goals stacked in it as white cards with dark words in either mode, and the photo fades to dark at its foot.
+  - The page's ground is the sheet's (dark, or white on the Light sheet).
+- **Kept**: every subpage's open and Back, the goals' swipe, the Supplement stack hook, More lit in the dock, Light mode, and the Suggestion's rows finding their sections by title.
+  - Supplements is now last, so its row scrolls the Plan to its end.
+
+## Plan → the Lifestyle hub: review fixes ("Adjust plan design based on that")
+
+- **Merged the main branch first** (82ad0fe): the sidebar collapse that keeps every item in place (1b562e9, "when contract the nav, the item should stay in place, its just the label that disappear"), the Plan subpages at full width, EvFullView modals, the flow panel pushing the app.
+  - This branch had been cut before it, and its build brought the old collapse back. After the merge, collapsing leaves every nav glyph where it was (checked at M and L with the Plan open).
+- **Two columns only on a real desk**: a forced M or L, or Auto on a window of 992 or more (`#dPlan.plDesk`, set by the Plan's script on resize and on a breakpoint change).
+  - Auto from 600 to 991 reads S, and keeps the one column with the photo across the top, as before. Two columns there had squeezed the sections to 190 to 320 and wrapped the headers.
+- **Routine cards**: View routine sits at the card's foot, with the icon, title, line and chips centred in the room above it. At S, the card is 400 wide at most (it was 469 by 352, the words afloat).
+  - The row reaches the sheet's edges at every width: 16 at XS, 24 at S, 40 on Auto's S-wide window.
+- **Supplements**: every row has a chip. Where the label gives no strength, the chip shows the dose's own amount (2 gummies, 1 scoop). Nothing is made up.
+- **One h1**: My plan. On the phone it is for the screen reader only, and the photo's words are an h2.
+- **Light**: on the Plan's own sheet, the Nutrition card is a light grey (#f5f5f4) on the white page. The subpages keep their token.
+- **Desk clicks**: EvMagnet leaves a row with nothing to scroll alone. From M, a click with a few px of travel on the goals or View routine opens the routine again, and the words can be selected.
+- **Cleaned**: the old Routines row's CSS and the unused 56 supplement tile size.
+- **Kept as they are**:
+  - Wind-down says 4 steps, as its page has four.
+  - At M with the sidebar open, the left column is 428, as the panel is 752. It is 520 with the sidebar collapsed, which is the room the mock's M numbers assume.
+
 ## Step flow in the Design system; a faster push; every bottom sheet swipes down
 
 "steps flow should be a pattern in the Design system, The source of truth." · "Make the left right transition 2x fast with less movement 2x" · "Bottom sheet should be able to swipe down to dismiss"
@@ -19376,3 +19449,20 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The older sheet families (the Timeline's .tlSheet: the service sheets, the steps, the booking, the marketplace's detail; the .shWrap sheets; the inbox) bind the first time they are touched, and close by their own Close. Only while they are a sheet: up, on the phone, their foot on the screen's.
   - Documented in Modals: a Swipe down note, and the Dismiss rows of Bottom sheet · Floating and Full bottom sheet.
 - The full-screen flows (Full modals: the report, the profile, Past results, the Concierge) have no swipe, as Modals › Full says.
+
+## Step flow, review fixes; merged with the Services cart's swipe
+
+"steps flow should be a pattern in the Design system, The source of truth." · "WHY this flow on concierge (from past resutl screen) . Should be the concierge flows !!!"
+
+- **The Concierge's flow**: already fixed (82ad0fe) and checked again after the merge: Past results' Next opens the Concierge, and the Flow panel shows the Concierge and its phases (Intro, Bubble speech, Services, Specialists), not Past results.
+- **Merged claude/zip-package-import-fzfsrp** (the Plan hub, the Services cart). The cart came with its own EvSheetSwipe: there is one again, the step flow's, which now also takes the cart's option names (can, min) and marks the panel .evSwiping while it is dragged. The cart's sheet lightens its scrim as it goes, as every sheet's does.
+  - Modals › Full bottom sheet keeps both: the Grabber option (off by default, on for the cart), and the swipe on every top sheet, from its header or, with the grabber on, from it too.
+- **The master is built from the report's code and settings now**, not a copy:
+  - EvSteps.look() reads the Async report's Tweaks (Fixed bar, Footer, Cards style), EvSteps.cls() turns them into the shell's classes, and EvSteps.shell() wires the grounds and the edges (Solid: the flow fading over the 24 px it scrolls under; Gradient: running on under the bar or the footer). The report and the master both call them; change Fixed bar or Footer in Tweaks and the master follows.
+  - The demo pages are an insight as the report draws it: N biomarkers and See sources over the card, the report's own rows (AsyncReport.row), the next fading under them, See 1 more, then What we noticed. They are long enough to scroll, so the fades under the header and above Next show.
+- **Next or Back pressed fast** no longer leaves two pages in the master's phone: a page still leaving goes at once, and the current page is always the one that moves. A step by hand stops Play.
+- **The phone's stage hugs the scaled phone** (no 130 px gap before the controls at 1440); on a narrow window it scales by the width (0.75 at 393, was 0.37).
+- **The bar's Save** on Step flow and General layout saves the master's setup, as its own Save setup does (it said Cannot save).
+- **Swipe fixes**: the Health profile's Medicare card example swipes away at S too (its 600 wide sheet); the service page's More at XS opens its menu sheet (its button was not wired), which swipes away; a mouse let go outside a sheet no longer leaves a drag half started.
+- **The anatomy table, measured**: the header one row 40 high from 58 (the 36 discs at 60); the step title 28/29.6 (1.2em − 4); the intro 16 under the title (its 10 and the head's 6 gap). The page says plainly what the Health profile shares: the progress (--sfBar, --sfGap, not --sfPad) and the push; its header is its own (no discs at rest, the title only with Tweaks → Step title).
+- **The Health profile's push, plainly**: it had 32 px, in 260 ms after 45, out 170, on (.2, .7, .2, 1) and (.4, 0, .6, 1). It takes the master's now: 20 px, in 220 ms after 75, out 130, on the report's curves. So it moves less and leaves sooner, but its new page lands about when it did (295 ms against 305), and its easing changed. The report's push is the one that is exactly twice as fast with half the movement. If the profile should be twice as fast too, that is a change to the master's numbers (for both).

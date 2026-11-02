@@ -1988,18 +1988,45 @@ window.EvSteps = (function () {
     if (nw && nw.animate) nw.animate([{ opacity: 0, transform: 'translateX(' + (f ? M.dist : -M.dist) + 'px)' }, { opacity: 1, transform: 'none' }], { duration: M.dur * k, delay: M.lag * k, easing: EIN, fill: 'backwards' });
     if (old && old.animate) out = old.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateX(' + (f ? -M.dist : M.dist) + 'px)' }], { duration: M.out * k, easing: EOUT, fill: 'forwards' });
     return out; };
+  /* the shell's look: the Async report's Tweaks (Fixed bar, Footer: Solid or Gradient; Cards style; the gradients' blur off), read once for the report and the master */
+  var look = function () { var v = function (id) { var e = document.getElementById(id); return e ? e.value : ''; };
+    return { bar: v('stArBar') === 'grad' ? 'grad' : 'solid', foot: v('stArFoot') === 'grad' ? 'grad' : 'solid', cards: v('stArCard') === 'outline' ? 'outline' : 'fill', blur: false }; };
+  var cls = function (o) { return (o.bar === 'grad' ? ' arBarGrad' : '') + (o.foot === 'grad' ? ' arFootGrad' : '') + (o.blur ? '' : ' arNoBlur') + (o.cards === 'fill' ? ' arCardsFill' : ''); };
+  /* the shell's grounds and edges, on an .arSheet (p.root) and its .arHead, .arStepWrap, .arBody, .arFoot and pill (p.cta), by p.o (look()):
+     a Gradient bar, its ground in the head, solid through 70% of its last section (the pinned chips, else the progress) and out 40 past it, shown once the flow has scrolled (.arScrolled);
+     a Gradient footer, its ground under the pill, solid through 70% of it, out by 40 above the footer; a Solid one, the flow fading over the 24 px it scrolls under (.arEdge: --ar-tf, --ar-bf, 0 at rest and at the end).
+     p.on and p.later: the caller's own (its teardown). Returns { fitG, edge }: the caller calls them again when its page changes */
+  var shell = function (p) { var o = p.o || look(), root = p.root, head = p.head, body = p.body, foot = p.foot, cta = p.cta, stepWrap = p.stepWrap, RO = window.ResizeObserver, fitG = null, edge = null;
+    var on = p.on || function (n, t, f, x) { n.addEventListener(t, f, x || false); }, later = p.later || function (f, ms) { return setTimeout(f, ms); };
+    var ground = function (c) { var e = document.createElement('span'); e.className = c; e.setAttribute('aria-hidden', 'true'); if (o.blur) for (var i = 0; i < 10; i++) e.appendChild(document.createElement('i')); return e; };   /* the blur's bands only when a blur is asked for */
+    if (o.foot === 'grad') { foot.insertBefore(ground('arFootGround'), foot.firstChild);
+      var fitF = function () { var f = foot.getBoundingClientRect(), b = cta.getBoundingClientRect(); root.style.setProperty('--ar-foot-h', foot.offsetHeight + 'px');
+        root.style.setProperty('--ar-fs', Math.round(f.bottom - (b.bottom - b.height * .7)) + 'px'); root.style.setProperty('--ar-cta-b', Math.round(f.bottom - b.top) + 'px'); root.style.setProperty('--ar-fe', Math.round(f.height + 40) + 'px'); };
+      if (RO) new RO(fitF).observe(foot); later(fitF, 0); }
+    if (o.bar === 'grad') { head.insertBefore(ground('arGround'), head.firstChild);
+      fitG = function () { var hd = head.getBoundingClientRect(), ch = root.classList.contains('arChipsStuck') ? body.querySelector('.arLfChips') : null, last = (ch || stepWrap).getBoundingClientRect();
+        root.style.setProperty('--ar-head-h', head.offsetHeight + 'px');
+        root.style.setProperty('--ar-gs', Math.round(last.top + last.height * .7 - hd.top) + 'px'); root.style.setProperty('--ar-ge', Math.round(last.bottom - hd.top + 40) + 'px'); };
+      if (RO) new RO(fitG).observe(head); later(fitG, 0);
+      on(body, 'scroll', function () { root.classList.toggle('arScrolled', body.scrollTop > 2); }, { passive: true }); }
+    if (o.bar !== 'grad' || o.foot !== 'grad') { root.classList.add('arEdge');   /* never cut by a hard line ("screen is clipping on scroll"); nothing fades at rest */
+      edge = function () { var t = body.scrollTop, r = body.scrollHeight - body.clientHeight - t;
+        root.style.setProperty('--ar-tf', (o.bar !== 'grad' ? Math.max(0, Math.min(24, t)) : 0) + 'px'); root.style.setProperty('--ar-bf', (o.foot !== 'grad' ? Math.max(0, Math.min(24, r)) : 0) + 'px'); };
+      on(body, 'scroll', edge, { passive: true }); on(body, 'click', function () { later(edge, 450); }); if (RO) new RO(function () { edge(); }).observe(body); later(edge, 0); }
+    return { fitG: fitG, edge: edge }; };
   var load = function () { try { var v = JSON.parse(localStorage.getItem(K) || 'null'); if (v) Object.keys(M).forEach(function (k) { if (typeof v[k] === 'number' && isFinite(v[k])) M[k] = v[k]; }); } catch (e) {} tok(); };
   load();
-  return { M: M, D: D, K: K, progress: progress, push: push, ease: { in: EIN, out: EOUT }, set: function (k, v) { M[k] = v; tok(); },
+  return { M: M, D: D, K: K, progress: progress, push: push, look: look, cls: cls, shell: shell, ease: { in: EIN, out: EOUT }, set: function (k, v) { M[k] = v; tok(); },
     save: function () { try { localStorage.setItem(K, JSON.stringify(M)); return true; } catch (e) { return false; } },
     reset: function () { Object.keys(D).forEach(function (k) { M[k] = D[k]; }); try { localStorage.removeItem(K); } catch (e) {} tok(); } };
 })();
 /* EvSheetSwipe(panel, close, opts): every bottom sheet's swipe down ("bottom sheet should be able to swipe down to dismiss"), one helper for all of them; documented in Design system -> Modals.
    On the phone (XS, S; opts.when to say otherwise) the panel follows the finger down from its grabber or its header (opts.handle), and from its body while that is scrolled to its top;
    let go past opts.threshold (80) or flicked down (over .5 px a ms), close() runs and the sheet leaves from where it was (its own exit, from there; opts.out 'slide' slides it out first, for a sheet whose exit is not a move); short of it, it springs back.
-   The scrim (opts.scrim) lightens as it goes. A drag never clicks what it started on; a field, a slider or [data-noswipe] never starts one. Returns { off() } */
+   The scrim (opts.scrim) lightens as it goes. A drag never clicks what it started on; a field, a slider or [data-noswipe] never starts one. Returns { off() }.
+   opts.can and opts.min: the same as when and threshold (the Services cart's names, Full bottom sheet's grabber option); .evSwiping on the panel while it is dragged */
 window.EvSheetSwipe = function (panel, close, o) {
-  o = o || {}; if (!panel || panel._evSw) return panel && panel._evSw; var TH = o.threshold || 80;
+  o = o || {}; if (!panel || panel._evSw) return panel && panel._evSw; var TH = o.threshold || o.min || 80; if (!o.when && o.can) o.when = o.can;
   var mv = function () { return (typeof o.move === 'function' ? o.move() : o.move) || panel; };
   var scrimOf = function () { return typeof o.scrim === 'function' ? o.scrim() : o.scrim; };
   var when = function () { if (o.when) return !!o.when(); return /^(xs|s)$/.test(document.body.dataset.bp || ''); };
@@ -2012,12 +2039,12 @@ window.EvSheetSwipe = function (panel, close, o) {
   var begin = function (t, x, y) { if (!when() || (t.closest && t.closest(SKIP))) return; var hd = inHandle(t); if (!hd && scrolled(t)) return;
     var el = mv(), r = el.getBoundingClientRect(), k = el.offsetHeight ? r.height / el.offsetHeight : 1;   /* a frame drawn smaller (the documentation's phones): the finger's pixels in the panel's own */
     S = { x: x, y: y, hd: hd, on: false, dy: 0, k: k || 1, el: el, h: el.offsetHeight || r.height, pts: [[y, performance.now()]] }; };
-  var commit = function () { S.on = true; put(S.el, 'transition', 'none'); var sc = scrimOf(); if (sc) put(sc, 'transition', 'none'); put(panel, 'user-select', 'none'); put(panel, '-webkit-user-select', 'none'); try { (panel.ownerDocument.defaultView || window).getSelection().removeAllRanges(); } catch (x) {} };   /* a mouse's drag selects no words */
+  var commit = function () { S.on = true; panel.classList.add('evSwiping'); put(S.el, 'transition', 'none'); var sc = scrimOf(); if (sc) put(sc, 'transition', 'none'); put(panel, 'user-select', 'none'); put(panel, '-webkit-user-select', 'none'); try { (panel.ownerDocument.defaultView || window).getSelection().removeAllRanges(); } catch (x) {} };   /* a mouse's drag selects no words */
   var track = function (x, y, e) { if (!S) return false; var dx = x - S.x, dy = y - S.y;
     if (!S.on) { if (Math.abs(dy) < 6 && Math.abs(dx) < 6) { if (e && e.cancelable && e.type === 'touchmove' && dy > 0 && dy >= Math.abs(dx)) e.preventDefault(); return false; }   /* a touch heading down: the page's own scroll not started under it */
       if (dy <= 0 || Math.abs(dx) > Math.abs(dy)) { S = null; return false; } commit(); }
     S.dy = Math.max(0, dy / S.k); put(S.el, 'transform', 'translateY(' + S.dy.toFixed(1) + 'px)'); var sc = scrimOf(); if (sc) put(sc, 'opacity', String(Math.max(0, 1 - S.dy / (S.h || 600)).toFixed(3))); S.pts.push([y, performance.now()]); if (S.pts.length > 5) S.pts.shift(); if (e && e.cancelable) e.preventDefault(); return true; };
-  var end = function () { if (!S) return; var s = S; S = null; if (!s.on) return; eat = true; setTimeout(function () { eat = false; }, 0); put(panel, 'user-select', ''); put(panel, '-webkit-user-select', '');
+  var end = function () { if (!S) return; var s = S; S = null; if (!s.on) return; panel.classList.remove('evSwiping'); eat = true; setTimeout(function () { eat = false; }, 0); put(panel, 'user-select', ''); put(panel, '-webkit-user-select', '');
     var a = s.pts[0], b = s.pts[s.pts.length - 1], v = b[1] > a[1] ? (b[0] - a[0]) / (b[1] - a[1]) : 0, go = s.dy > TH || (v > .5 && s.dy > 24), sc = scrimOf();
     if (go && o.out === 'slide') { put(s.el, 'transition', 'transform .24s cubic-bezier(.4, 0, 1, 1)'); put(s.el, 'transform', 'translateY(' + Math.round(s.h + 40) + 'px)'); if (sc) { put(sc, 'transition', 'opacity .24s ease'); put(sc, 'opacity', '0'); }
       setTimeout(function () { close(); setTimeout(function () { put(s.el, 'transition', ''); put(s.el, 'transform', ''); if (sc) { put(sc, 'transition', ''); put(sc, 'opacity', ''); } }, 700); }, 200); return; }
@@ -2025,7 +2052,8 @@ window.EvSheetSwipe = function (panel, close, o) {
     put(s.el, 'transition', 'transform .32s cubic-bezier(.16, 1, .3, 1)'); put(s.el, 'transform', ''); if (sc) { put(sc, 'transition', 'opacity .32s ease'); put(sc, 'opacity', ''); }   /* back up */
     setTimeout(function () { if (!S) { put(s.el, 'transition', ''); if (sc) put(sc, 'transition', ''); } }, 340); };
   var pd = function (e) { if (e.pointerType === 'touch' || e.button) return; begin(e.target, e.clientX, e.clientY); };
-  var pm = function (e) { if (!S || e.pointerType === 'touch') return; var was = S.on; if (track(e.clientX, e.clientY, e) && !was) try { panel.setPointerCapture(e.pointerId); } catch (x) {} };
+  var pm = function (e) { if (!S || e.pointerType === 'touch') return; if (!(e.buttons & 1)) { if (S.on) end(); else S = null; return; }   /* the button let go outside the panel: no drag left half started */
+    var was = S.on; if (track(e.clientX, e.clientY, e) && !was) try { panel.setPointerCapture(e.pointerId); } catch (x) {} };
   var pu = function (e) { if (e.pointerType !== 'touch') end(); };
   var ts = function (e) { if (e.touches.length === 1) begin(e.target, e.touches[0].clientX, e.touches[0].clientY); else S = null; };
   var tm = function (e) { if (S && e.touches.length === 1) track(e.touches[0].clientX, e.touches[0].clientY, e); };
@@ -2091,7 +2119,7 @@ window.EvMagnet = (function () {
     var glide = function (to) { if (an) cancelAnimationFrame(an); var from = row.scrollLeft, d = to - from, t0 = performance.now(); if (Math.abs(d) < .5 || red()) { row.scrollLeft = to; row.style.scrollSnapType = ''; return; }
       row.style.scrollSnapType = 'none';   // a glide the arrows start too: no snap pulling at it frame by frame
       var st = function (now) { var k = Math.min(1, (now - t0) / 240); row.scrollLeft = from + d * (1 - Math.pow(1 - k, 5)); if (k < 1) an = requestAnimationFrame(st); else { an = 0; row.style.scrollSnapType = ''; } }; an = requestAnimationFrame(st); };
-    row.addEventListener('pointerdown', function (e) { if (e.button) return; if (an) { cancelAnimationFrame(an); an = 0; } d0 = { x: e.clientX, y: e.clientY, left: row.scrollLeft, dx: 0, i: near(), moved: false, pid: e.pointerId }; });
+    row.addEventListener('pointerdown', function (e) { if (e.button || row.scrollWidth <= row.clientWidth + 1) return; if (an) { cancelAnimationFrame(an); an = 0; } d0 = { x: e.clientX, y: e.clientY, left: row.scrollLeft, dx: 0, i: near(), moved: false, pid: e.pointerId }; });   /* nothing to scroll (the Plan's goals and routines from M, stacked or side by side): a click is a click, never a drag */
     row.addEventListener('pointermove', function (e) { if (!d0) return; d0.dx = e.clientX - d0.x;
       if (!d0.moved) { if (Math.abs(d0.dx) < 6) return; if (Math.abs(e.clientY - d0.y) > Math.abs(d0.dx)) { d0 = null; return; }   // more down than across: the page's scroll, not the row's
         d0.moved = true; row.style.scrollSnapType = 'none'; if (o.drag) row.classList.add(o.drag); try { row.setPointerCapture(d0.pid); } catch (x) {} }
@@ -2988,7 +3016,7 @@ window.EvConsent = (function () {
       var mcDim = h('div', { class: 'hpConfDim', on: { click: shut } }), mcP = h('div', { class: 'hpConfP hpMcP' + (phone ? ' hpPkP' : ''), role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': tid }, phone ? h('span', { class: 'hpPkGrab', 'aria-hidden': 'true' }) : null,
           h('div', { class: 'hpMcH' }, h('h2', { class: phone ? 'hpMcT hpMcTBig' : 'hpMcT', id: tid, text: 'Medicare card example' }), x), art);
       ov = h('div', { class: 'hpConf hpMc' + (phone ? ' hpPk' : '') }, mcDim, mcP);
-      if (phone && window.EvSheetSwipe) window.EvSheetSwipe(mcP, shut, { handle: '.hpPkGrab, .hpMcH', scrim: mcDim, skip: '.hpPkX', when: function () { return !!ov; } });   /* the phone's sheet: a swipe down lets it go */
+      if (window.EvSheetSwipe) window.EvSheetSwipe(mcP, shut, { handle: '.hpPkGrab, .hpMcH', scrim: mcDim, skip: '.hpPkX', when: function () { return !!ov && (phone || !!host.closest('.aqWrap.aqBpXS, .aqWrap.aqBpS')); } });   /* a sheet wherever it is drawn as one (the phone, and S's 600 wide sheet): a swipe down lets it go */
       host.appendChild(ov); void ov.offsetWidth; ov.classList.add('on'); document.addEventListener('keydown', esc, true);
       setTimeout(function () { try { x.focus({ preventScroll: true }); } catch (e) {} }, 60);
     }
