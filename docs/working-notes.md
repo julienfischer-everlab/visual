@@ -19230,3 +19230,47 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Coming back to them**: they are kept as hidden values, as the Async report's old page is, so a page opened over a subpage (the Concierge, say) comes back to that subpage when closed.
 - **Picking Plan** from the menu while a subpage is up goes back to the Plan itself.
 - The Plan's other subpages, as they land (Medical actions, Supplements, Wind-down routine), stay out of the menu too.
+
+## Services: the marketplace, a skeleton ("We need to create a page, services, which is the marketplace, so you can start with just a skeleton of a marketplace. When you click on a service, you will have the details of the service in a modal and a bottom sheet on mobile. The service detail triggers only from the timeline view. On the bottom navigation, Services redirects to the service marketplace.")
+- **A page of its own** in the shell, as the Plan is: *Services marketplace* in the page menu, `#services`.
+  - The dock's Services opens it and stays lit while it is up. The desk nav's Services opens it too. From a phone page, it opens in the XS device, as the Timeline does.
+  - Neither opens the Service detail any more. The Service detail is the Timeline's: its rows still open it. The page menu keeps its Service detail entry, for the prototype.
+- **The mock's Version #1 (Grid 3 columns)**, XS to XL, dark and light:
+  - *Everlab Services*, then *Your recommended services*. From M, two arrows sit at its right.
+  - The recommended row has three cards: Longevity Essentials (olive), Heart Health Check (deep maroon) and Gut microbiome (deep teal).
+  - Each card has its words, two chips with the rest counted, three values in an inset panel, the price and a glass Learn more. The photo fills its right half.
+  - One card and a peek at XS to M, about two at L and XL.
+  - The row swipes by hand with the Plan's magnet. The magnet is now one helper, `EvMagnet`, used by both.
+  - All | Individual | Bundles, the search, Price and Category all work.
+    - XS and S: two icons at the row's right open the search and the Price / Category row.
+    - M: the search runs across above the row. L, XL: everything on one row.
+  - The services are a list at XS, two columns of cards at S and M, and three at L and XL.
+  - The bundle is highlighted: a warm brown ground (pale yellow in light), three stacked photos, its Learn more filled.
+  - The prices are samples, and the page says so.
+  - The page's own width picks the layout (S from 480, M from 640, L from 1000), so Auto reads right at any window.
+- **A service** opens in Design system › Modals › Full bottom sheet: a bottom sheet at XS and S, the floating modal (544 wide, up to 720) from M.
+  - The picture (the bundle's three), its category, title, price, description, chips, What's included and How it works.
+  - *Add to my plan* shows the Simple loader, then its tick. *Ask Eva about it* opens the Chat with the question asked.
+  - Close, the scrim or Escape dismiss it. The Modals doc lists it under Used by.
+- **Pictures**: the app's own, as placeholders. The microbiome's two are cut small for the page (Assets library › Services).
+- **The Service detail is the Timeline's** ("the service detail triggers only from the timeline view"), after review:
+  - It lights My journey (the dock's tab, the desk nav's entry), no longer Services. Services means the marketplace.
+  - The Overview's bookings (the hero's Book, the plan rows, the More services rows), Overview V5's Book tasks and the Standalone's progress rows open it as the Timeline's page: My journey under it, Back to it. The old phone (`#m6`) goes to the XS device's Timeline first, as More services does.
+  - Overview V5's service cards and the Standalone's *Your doctor suggested* open the marketplace instead: the service's sheet where the marketplace sells it (DEXA, MRI), else the page.
+  - Prototype shortcuts kept as they were: the page menu's Service detail and Task detail, the Home mosaic's tiles and a reload on the page.
+- **At S**, a band of the page's ground sits under the tablet's 9:41, as on the Plan and the Timeline. Nothing scrolls under the status any more, and nothing shows above the sheet.
+- **The chips stay on one line**, as in the mock: two named where both fit beside the count, else one, with the rest counted (+N). A name too long for the room is shortened. The cards no longer grow, and the sheet still lists every chip.
+
+## Services marketplace merged
+
+- **In the app**: the bottom bar's Services, the desk nav's Services, the page menu ("Services marketplace") and #services.
+  - The Service detail now opens only as a Timeline page, so it lights My journey, not Services.
+  - The Overview's booking rows and cards open it as a Timeline page, so Back lands on My journey.
+  - Overview V5's consult and pathology cards, and the Standalone doctor's suggestions, open the marketplace (with the service's sheet where the marketplace has it).
+- **Small fixes at the merge**:
+  - Home lights itself when tapped. After Services → Insights → Home, Services stayed lit, because the marketplace had closed while Insights was up and nothing re-lit Home.
+  - The "added to your plan" toast keeps to one line, up to its cap.
+  - The detail's close is 32px, as Design system › Modals › Full bottom sheet says (it was 36).
+  - With no results, the empty card sits 16px under the filters (the hidden list kept its margin).
+- The marketplace follows Light mode, as the other pages do.
+- The page (dist/index.html) is now 15.2 MB, under the 16 MB limit.
