@@ -1956,18 +1956,21 @@ window.__ccVid = ['data:video/webm;base64,GkXfo59ChoEBQveBAULygQRC84EIQoKEd2VibU
    The numbers are the master's, Design system -> General layout -> Header overlap: saved there (everlab:hoMaster), every page takes them on load */
 window.EvBeamStar = function (size) { var e = document.createElement('span'); e.className = 'evBeamStar'; e.setAttribute('aria-hidden', 'true'); if (size) e.style.setProperty('--bsz', size + 'px'); e.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11 3c.4 4.6 2.4 6.6 7 7-4.6.4-6.6 2.4-7 7-.4-4.6-2.4-6.6-7-7 4.6-.4 6.6-2.4 7-7Z"/><path d="M18.5 14.5c.2 2 1 2.8 3 3-2 .2-2.8 1-3 3-.2-2-1-2.8-3-3 2-.2 2.8-1 3-3Z"/></svg>'; return e; };   // Eva's beam star (.evBeamStar), the one the debrief's last step and the Iconography doc show
 window.EvOverlap = (function () {
-  var M = { ty: .25, rise: 32, end: 40, overlap: 28, radius: 24, dim: .35 }, D = JSON.parse(JSON.stringify(M)), root = document.documentElement;
+  var M = { ty: .25, rise: 32, end: 40, overlap: 28, radius: 24, dim: .35, tint: .85 }, D = JSON.parse(JSON.stringify(M)), root = document.documentElement;
   var red = function () { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
-  var tok = function () { root.style.setProperty('--hoOverlap', M.overlap + 'px'); root.style.setProperty('--hoRadius', M.radius + 'px'); root.style.setProperty('--hoRise', M.rise + 'px'); root.style.setProperty('--hoDim', String(M.dim)); };
+  var tok = function () { root.style.setProperty('--hoOverlap', M.overlap + 'px'); root.style.setProperty('--hoRadius', M.radius + 'px'); root.style.setProperty('--hoRise', M.rise + 'px'); root.style.setProperty('--hoDim', String(M.dim)); root.style.setProperty('--hoTint', String(M.tint)); };
   var apply = function (sc, hero, o) { if (!sc || !hero) return 0; var y = Math.max(0, sc.scrollTop), H = hero.offsetHeight, span = Math.max(60, H - M.end);
     if (o && o.short) span = Math.max(60, Math.min(H - M.end, sc.scrollHeight - sc.clientHeight));
     var k = Math.min(1, Math.max(0, y / span)), r = red();
     hero.style.setProperty('--hy', (r ? 0 : -M.ty * y).toFixed(1) + 'px'); hero.style.setProperty('--hk', (1 - k).toFixed(3)); hero.style.setProperty('--hpy', (r ? 0 : -M.rise * k).toFixed(1) + 'px');   // reduced motion: no travel, the fade kept
     return k; };
-  var mark = function (sc) { [['hero', 'hoHero'], ['img', 'hoPic'], ['title', 'hoWords'], ['sheet', 'hoSheet']].forEach(function (p) { [].forEach.call(sc.querySelectorAll('[data-ov="' + p[0] + '"]'), function (e) { e.classList.add(p[1]); }); }); };
+  var mark = function (sc) { [['hero', 'hoHero'], ['img', 'hoPic'], ['title', 'hoWords'], ['sheet', 'hoSheet'], ['band', 'hoBand']].forEach(function (p) { [].forEach.call(sc.querySelectorAll('[data-ov="' + p[0] + '"]'), function (e) { e.classList.add(p[1]); }); });
+    [].forEach.call(sc.querySelectorAll('.hoBand'), function (b) { if (b.querySelector(':scope > .ovGround')) return; var g = document.createElement('div'); g.className = 'ovGround'; g.setAttribute('aria-hidden', 'true'); g.innerHTML = new Array(11).join('<i></i>'); b.insertBefore(g, b.firstChild); }); };   /* the bar's blur bands, the Overview bar's own (.ovGround) */
+  /* the bar's overflow state: on once the sheet's top reaches the bar's foot */
+  var touch = function (sc, band, sheet) { if (!band || !sheet) return false; var on = sheet.getBoundingClientRect().top - sc.getBoundingClientRect().top <= band.offsetHeight + .5; band.classList.toggle('on', on); return on; };
   var bind = function (sc, o) { o = o || {}; if (!sc) return { update: function () {} }; mark(sc); var q = 0;
     var heroOf = function () { return typeof o.hero === 'function' ? o.hero() : sc.querySelector(o.hero || '.hoHero'); };
-    var run = function () { q = 0; var k = apply(sc, heroOf(), o); if (o.onFrame) o.onFrame(k); };
+    var run = function () { q = 0; var k = apply(sc, heroOf(), o), on = touch(sc, o.band ? sc.querySelector(o.band) : sc.querySelector('.hoBand'), o.sheet ? sc.querySelector(o.sheet) : sc.querySelector('.hoSheet')); if (o.onFrame) o.onFrame(k, on); };
     sc.addEventListener('scroll', function () { if (!q) q = requestAnimationFrame(run); }, { passive: true });
     return { update: run }; };
   var load = function () { try { var v = JSON.parse(localStorage.getItem('everlab:hoMaster') || 'null'); if (v) Object.keys(M).forEach(function (k) { if (typeof v[k] === 'number' && isFinite(v[k])) M[k] = v[k]; }); } catch (e) {} tok(); };

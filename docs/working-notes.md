@@ -19145,3 +19145,21 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Each is a still of the figure at rest: its stage only, no name or read-out, 2x, saved as WebP (480 wide, 3 to 22 KB each) under assets/hairline.
 - **Open in Hairline instead of Replace**: the figures are live code that answers the pointer, so a picture put in here would change nothing. The card's main button (and the sheet's) opens the Hairline page scrolled to that figure.
 - **How it is built**: the library lists the stills from a registry in its own code (the paths, so the build inlines them with their names), plus a name, a group, the section it is in, and a note.
+
+## Header overlap: the bar's overflow state
+
+"When the card and the body start to touch the top header, the top header should take the overflow state with a gradient on the background and the blur effect."
+
+- **When**: the moment the sheet's top touches the bar's foot. That is 130 on the phone (the 54 status bar and the 76 nav bar) and 64 on the desk. Scroll back above it and the bar clears.
+- **What the bar takes**: the Overview bar's own overflow ground.
+  - The ten progressive blur bands, 14px at the top stepping down to 1.5 at the foot.
+  - Under a gradient of the page's own ground (the sheet's colour, so dark or light with the Plan), 85% at the top easing to nothing 38px under the bar.
+  - The page's title beside Back on the phone. Back turns to the sheet's ink at 7%, as before.
+  - The blur, the tint and the title each ease in and out over .28s. The bar itself never fades: a faded parent would cut the blur off from the page under it.
+- **Built once (EvOverlap)**:
+  - The bar is `.hoBand` (or `data-ov="band"`). EvOverlap adds the blur bands and lights it on the same frame as the parallax.
+  - The Activity plan's bar is now this band, replacing the solid ground that appeared before.
+- **In the design system** (General layout › Header overlap):
+  - The XS phone has the bar too: scroll it or Play to see it light at the touch.
+  - A new control, Bar tint, sets how strong the gradient is at the top; Save setup makes it every page's.
+  - The table's Bar row describes the state.
