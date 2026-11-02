@@ -18980,3 +18980,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The Sphere hero's "What we'll cover" also lists "What we recommend".
   - The first row's focus ring is no longer cut.
   - Outlined cards (Cards style: Outlined) now fill on hover and press. Everything else's area cards get this too.
+
+## Standalone modals: no more Overview behind them while scrolling ("Most of the screen is still clipping, and then I see the overview behind. It's basically every standalone modal. When I scroll, I see the overview clipping behind.")
+- **What I could reproduce, and fixed**: with the Flow panel docked and a forced M or L breakpoint, the full modals were pinned to the Flow panel's edge while the page stays centred. The modal sat 16px off the page, and a strip of the Overview showed at its left edge (the Health profile, which docks the Flow panel). The docked-column rules for full modals now apply to Auto only, as the page's own rules do, so the modal and the page line up exactly.
+- **What I could not reproduce here**: in Chromium, the wheel stays in each modal's own scroller and nothing scrolls behind it, at XS, M and Auto. Each modal's ground is opaque wherever its content is hidden, and a GPU-composited video of fast scrolling showed no frame with the Overview in it. What remains is the browser drawing a scrolling layer late on a real machine (checkerboarding), which shows whatever is painted underneath.
+- **So the page under a full modal is no longer painted.** About 0.7s after a full modal is up (the report, the Health profile, the Suggestion, the Doctor's suggestion, the Personal recommendation; on the desk and in the XS / S device) and covering the page whole, the page's layers (.dash and the other pages) are hidden. Nothing of the Overview can show through, and its own motion (particles, videos, carousels) no longer costs the scroll.
+  - The page comes back the instant the modal starts to close, so the close dip still shows it.
+  - A bottom sheet over a page (Past results or the Concierge from the Overview at XS) keeps the page under its blanket.
