@@ -18838,3 +18838,33 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Its tweaks show alone while it is up, over the Timeline and service pages too.
 - **Wired into**: the menu handler, Tweaks, hash routing, every page that puts the report away, the comments system and the Modals doc's "Used by".
 - **Async report close fixed** (the "clipping"): its close kept the full modal's `on` class, so the solid ground faded at once and the Overview showed through the report as it faded. It now closes like the Health profile: the screen fades over its ground, then the ground goes. Checked on video at XS and M with the Overview painted magenta: no frame shows both.
+
+## Doctor's suggestion: a standalone full modal ("a doctor suggestion of checkout"; the timeline in the rail style)
+- **Where**: version menu → Standalone flow → **Doctor's suggestion** (link `#doctors-suggestion`). Like the Suggestion, it opens over whatever page is showing.
+- **From the light mock**:
+  - "What Dr Naidoo recommended." with the **Everlab Diagnostics Membership** card (thumbnail, two-line description, chevron). Tap it to open what it includes: advanced bloods, the DEXA scan, the diagnostics review, the action plan.
+  - **Plan total $1,199**, "Before any credit on your account."
+  - "Your next steps.", then "Confirm, then we book.".
+  - Footer side by side, also on the phone: **Confirm and book** (the app's primary; it shows the master CTA loader "Processing" for 2s, then closes) and **Not now** (grey).
+- **Timeline, in the rail style of the second mock**: the consult with Dr Naidoo is the one step done (green node and rail, green card, **Completed**, "Completed on 12 Oct"). Everything after it is a projection, nothing completed, by month:
+  - October: Blood test, DEXA scan;
+  - November: Diagnostics review with Dr Naidoo;
+  - Later: Your action plan.
+  - Each projected step has an empty node, the grey rail and card, and a **Suggested** pill.
+- **Themes**:
+  - dark uses the rail style's greens and greys;
+  - light uses the mock's warm paper (#f7f6f2) under white cards, with the black Confirm and grey Not now.
+  - Titles use the mock's serif when it is installed (named, never embedded), with a Georgia-style fallback. Tweaks → Doctor's suggestion → Titles → **Sans** gives the app's own titles.
+- **Thumbnail**: a placeholder sage-green leaf I made for the mock's photo (`doctor~membership.webp`). It is listed in the Assets library under "Doctor's suggestion" so the real photo can replace it.
+- **One shell for both standalone modals**: the Suggestion and the Doctor's suggestion now come from the same code. It covers open and close (the dip), the device frame and breakpoints, the close over the content's top right, the pinned footer, Escape, Tweaks, the menu and link, comments and the page closers. The Modals doc lists both as Full modal users.
+- **Fixed from an independent review of the Suggestion** (each finding confirmed by a second reviewer, then re-checked in the browser after the fix):
+  - **Tweaks**: opening it right after the Async report no longer swaps its Tweaks for the page's (the report's close timer now asks for whatever is up, and waits as long as its dip).
+  - **Plan hand-off**: after a row or "View your recommendations", picking another page within 0.6s no longer lands on the Plan anyway.
+  - **Chat**: a Chat opened over it hands the menu back to it when it closes (the page-under lookup knows the standalones, Service detail and the Appointment page).
+  - **Escape**: it no longer closes the modal while the Screenshot menu or a Chat over it takes the key.
+  - **Contrast**: the dark-mode blue CTA's label is white (the mock's near-black read 3.6:1).
+  - **Docked Tweaks**: with Tweaks docked at M or L, the closing modal no longer jumps 32 or 80px sideways (the Async report did too).
+  - **Status bar**: on the phone in light mode it stays dark while the modal closes.
+  - **Overlays**: the report's step navigator and the floating "+" tweak button hide while a standalone modal is up.
+  - **Keyboard**: Tab stays inside the dialog, and focus goes back where it was on close.
+  - **Scrollbars**: none in the centred column on the desk either.
