@@ -19110,3 +19110,15 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Then *New: gastroenterology review, booked*, *New: iron studies retest* ("New:" in orange), *Diagnostics review, Dec*, and *Annual bloods, 2027* (quieter).
   - The lines sit in a rounded, outlined card.
 - **The rest borrows from Persona #1**: its welcome (doctor, assurance copy) and Everything else.
+
+## Debrief's last step: two cards; Eva's beam star in the library ("Here's the same for the recommended product. Do two cards with a visual on the top, text on the bottom, and use the "Ask Eva about what next?" visual that we have on the concierge as an introduction: just the circle, the beam border around it, and the star in the middle, with the same background opacity. This star icon with the beam circling around it should be part of the design system asset iconography library.")
+- **That wraps up your debrief**: its two ways on are now two cards side by side, as the recommendations' cards (the visual on top, the words under it).
+  - *Ask Eva about what's next* wears Eva's beam star at 64.
+  - *Discuss this result with your doctor* wears the doctor's photo at 64.
+- **Eva's beam star** (`.evBeamStar`, `EvBeamStar(size)`) is the Concierge intro's star on its own:
+  - A circle at the island star's 4% ground.
+  - The beam turning round its 1px edge every 3.2 s, with its glow spilling in.
+  - Eva's star in the middle, at 36% of the circle.
+  - Reduced motion holds the beam still.
+- **Design system › Navigation › Iconography** shows it as its own card: live at 72, then at 48 and 32.
+- **Fix**: the doc's state tiles no longer style any span inside them.
