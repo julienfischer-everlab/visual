@@ -18927,3 +18927,27 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The step shortcuts beside the phone list Recommendations.
   - The reveal welcome's "What we'll cover" lists "What we recommend" last.
 - **Pictures** were cut from the mocks: four products (dropper, softgels, whey pouch, gummies) and two plates on a transparent ground. They're registered in the Assets library under Async report.
+
+## Plan → Activity plan ("Continue the plan page design by the subpage activity. When I do 'See all' from the plan page, 'See all activity'")
+- **How it opens**: the Plan's Activity section now has **See all** (aria "See all activity"). It, and the Activity rows, push the Activity plan in over the Plan, iOS style: the Plan drifts left under a dim; instant with reduced motion.
+  - Back or Escape pushes it out, the Plan where it was.
+  - Link: #activity-plan. Page menu: Activity plan, right after Plan.
+  - It follows Tweaks → Plan → Sheet (Dark / Light).
+- **From the mocks (Activity - My programs, Activity - Week)**:
+  - The hero photo with Back, then "Activity plan / By Dr. Steven".
+  - Stats: 5 active days · 2 protocols · 3h30.
+  - My programs | My week, using the Service detail's line tabs.
+  - What this moves, using the Insights phone's biomarker rows: HbA1c, Triglycerides, HDL cholesterol, all Optimal.
+  - Need something else?: Adjust your plan, Recovery tips.
+  - Once the photo scrolls away, General layout's nav bar (Back and the title) appears.
+- **The mock's numbers made to agree, the week as the source**:
+  - Pelvic Floor Health is in no protocol, so it became Zone 2 (Intermediate) on Mon and Fri.
+  - Each program's days are read from the week.
+  - Sessions of 40, 50, 20 and 30 min add up to the 3h30.
+  - "Strenght" is spelled Strength.
+- **Pictures**:
+  - The hero is the trail-run photo, enlarged from the Plan's protocol photo. It's soft at desk width, so the original photo would help.
+  - The tiles reuse the app's own exercise photos. The rest days are a moon icon.
+  - Everything is listed in the Assets library under Plan.
+- **Also fixed**: the Plan's own status-bar band now shows when its sheet scrolls under the status bar. A stronger rule had always hidden it.
+- Built in the background in a separate worktree, then merged. The only conflict was the Assets library list, merged entry by entry.
