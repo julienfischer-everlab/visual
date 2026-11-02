@@ -19067,3 +19067,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **The AI card's six service tiles**: 16px corners (were 28) and 14px names (were 16). Every name fits whole now: Check Symptoms, Specialist referral and Blood test referral were cut with an ellipsis.
 - "Reduce by 14px" is read as "to 14px".
 - The Overview's own service cards keep their 28px corners. They shared the 28px rule, but only the AI card's tiles were asked for.
+
+## Icons: Insights as a chart, Plan in the set ("Change this by market chart." · "Also set up the plan in the list of icon menus.")
+- **Insights** is now a chart: a rounded frame with a line rising to a marker. Filled (the tab you are on), the frame is solid and the line and its marker are cut out. Drawn like the rest of the set (24 grid, 1.75 strokes), so the motion is the same.
+- **Plan** joins the set: a clipboard and its list. Filled, the board is solid and its list is cut out, with a thin gap round the clip.
+  - It is used in the More sheet's Plan row.
+  - It is listed under Design system › Navigation › Iconography, marked as living in More rather than as a tab.
