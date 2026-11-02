@@ -281,7 +281,7 @@
   var GROUPS = [
     ['You gifted a Diagnostic membership', [], ''],   /* the title says it, no badge ("You gifted a {product name}") */   // no purchase date ("remove this"); titled "Gifted product" (was What did I buy?); the product a badge at its right, no row ("just put a right side badge with $productname")
     ['Recipient', [['for', 'Name', 'Olive Martin'], ['mail', 'Email', 'olive.martin@example.com'], ['when', 'Delivery', ['As soon as your payment is confirmed', '14 Nov 2026']]]],   /* Delivery, a property again ("replace that into Recipient"): Now, as soon as the payment is confirmed; Later, the gifting date */
-    ['Occasion', [['occ', 'Occasion', 'Birthday'], ['msg', 'Message', '“Happy Birthday. I want you around for a long time.”', 'msg']]]
+    ['Gift details', [['occ', 'Occasion', 'Birthday'], ['msg', 'Message', '“Happy Birthday. I want you around for a long time.”', 'msg']]]
   ];
   var esc = function(t){ return String(t).replace(/[&<>"]/g, function(c){ return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
   var row = function(r){ return '<div class="row' + (r[3] ? ' ' + r[3] : '') + '"><dt>' + esc(r[1]) + '</dt><dd>' + (r[0] === 'mail' ? esc(r[2]).replace('@', '@<wbr>') : Array.isArray(r[2]) ? '<span class="ifNow">' + esc(r[2][0]) + '</span><span class="ifSch">' + esc(r[2][1]) + '</span>' : esc(r[2])) + '</dd></div>'; };   // a value of two: sent now, or scheduled   // an address breaks after its @ when it must (2 columns)
@@ -292,7 +292,7 @@
   var SHOW = 4;
   (function(){ var g = $('grps').querySelector('.grp'); if (!g) return;
     var box = document.createElement('div'); box.className = 'inc' + (INC.length > SHOW ? ' shut' : '');
-    box.innerHTML = '<p class="incH" id="incH">Gift details</p><ul class="incL" id="incL" aria-labelledby="incH">' + INC.map(function(t){ return '<li><i class="incSq" aria-hidden="true"></i><span>' + esc(t) + '</span></li>'; }).join('') + '</ul>'
+    box.innerHTML = '<p class="incH" id="incH">What\u2019s included</p><ul class="incL" id="incL" aria-labelledby="incH">' + INC.map(function(t){ return '<li><i class="incSq" aria-hidden="true"></i><span>' + esc(t) + '</span></li>'; }).join('') + '</ul>'
       + (INC.length > SHOW ? '<button type="button" class="incMore" aria-expanded="false" aria-controls="incL"><span>See more</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></button>' : '');
     g.appendChild(box);
     var L = box.querySelector('.incL'), b = box.querySelector('.incMore'); if (!b) return;
