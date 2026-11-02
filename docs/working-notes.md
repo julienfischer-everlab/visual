@@ -18884,3 +18884,22 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The three suggestions (01, 02, 03) are now each a card of their own on that grey ground, 8 apart, rounded 16, padding 16, with no separator lines.
   - "What we suggest next" is an H2 (20/26 · 500), no longer an eyebrow, the same as the Doctor's suggestion's section titles.
 - **Doctor's suggestion**: "What Dr Naidoo recommended." moves into the same header. "Your next steps." and "Confirm, then we book." stay H2s, now 20/26 · 500 at every size, under the 24/30 title.
+
+## Capture tool: no stray line breaks ("There's some font issue when I capture the screens. There's some line break sometimes.")
+- **Cause**: the capture clones every node with its computed width pinned to three decimals. Text that sat exactly at its line's width could re-wrap in the clone, from a rounding gap or a slightly different glyph advance, and a one-line label broke onto two lines.
+- **Fix**: before it draws, the capture marks every element that holds text in the captured area as one line or several, measured from its live line boxes.
+  - In the clone, one-line text gets `white-space: nowrap`, so it can't break.
+  - Text on several lines gets 2px of slack on its width, taken back from its right margin so nothing moves.
+  - The marks are removed when the capture ends. The live page is never changed.
+- Covers the page and the same-origin frames inside the captured area.
+
+## Personal recommendation (Standalone flow → Personal recommendation, #personal-recommendation; "Can you create a timeline with this item on the timeline? You can create a version like 'personal recommendation.'")
+- A third standalone modal, built by the same code as the Doctor's suggestion, with the same header, title, timeline, footer and Replay tweak.
+- **The membership is an item on the timeline.** There is no plan card or total above it. Right after the completed consult comes a **Now** separator, then the membership card:
+  - its picture, "Everlab Diagnostics Membership", "$1,199 · before any credit on your account";
+  - a **Recommended** pill, solid ink (the one to act on), with its node marked by a dot;
+  - a slightly stronger outline;
+  - tap to open what it includes underneath: the blood panel, the DEXA, the review and the action plan.
+- Then October, November and Later, as before: projected and grey.
+- On the phone, Recommended sits above the name. Beside it, the name and the price each took three lines.
+- Wired like the other standalones: the Page menu, the link (#personal-recommendation), Tweaks (Replay), comments, the Chat menu restore, and closing when the page changes.
