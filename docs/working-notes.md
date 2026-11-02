@@ -19130,3 +19130,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - It starts at its intro with no Back into Past results.
 - **The same from the Health profile**: after You're all set → Next, see your past results, Past results' Next goes to the Concierge page too.
 - **From the Overview's records card**: Got it still just closes.
+- **In the design system** (General layout › Header overlap, a third part beside Header and Container):
+  - **A live XS phone**: the Activity plan's own photo with the sheet over it, built from the same classes and the same code (EvOverlap) as the pages. Scroll it, or Play to run it down and back.
+  - **The master's numbers as controls**: title drift, picture rise, how far the picture dims, sheet overlap, sheet corners, fade end.
+  - The phone follows the controls live. Save setup makes the numbers every page's on load; Reset puts the defaults back.
+  - **A sizes and behaviour table**: hero, picture, title, sheet, bar, reduced motion, and where the pattern is used.
