@@ -19349,3 +19349,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Nav icons**:
   - A new Beam motion, the default ("add a beam effect on the active icon... start with bg opacity 16% to end up fully filled; beam between these 2 states"): the filled icon at 16%, a warm light running once round its outline, then fully filled. It is in Tweaks (Icon motion) and in Navigation › Iconography. A setup saved with the old default (Pop) now gets the beam.
   - The Insights phone's dock lit More after a page that More opens. The phones' docks now name their own screen again on every page change ("why insight dont have an icon active").
+
+## Past results → Concierge: the Flow panel follows
+
+"WHY this flow on concierge (from past result screen). Should be the concierge flows !!!"
+
+- Past results' Next goes on to the Concierge within the same flow, and the Flow panel kept Past results' row (its `data-jny` stayed `pr`).
+- Now the step change sets it: on the Concierge, the panel shows the Concierge and its phases (Intro, Bubble speech, Services, Specialists); back on Past results, Past results again.
