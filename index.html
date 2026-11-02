@@ -46,7 +46,7 @@
   .topbar, .topbar *{box-shadow:none !important;filter:none !important;}
   .tweaks{display:flex;align-items:center;gap:16px;flex-wrap:nowrap;flex:1;}
   .tweaks > #tkRvSave, .tweaks > #tkDocSave{order:1;}
-  .tweaks > .tkGrow{order:1;flex:1;min-width:0;} .tweaks > #tkDocsGo{order:2;} .tweaks > .evcBtn{order:3;} .tweaks > .tkDiv{order:4;} .tweaks > #tkBpSave, .tweaks > #tkRvSave, .tweaks > #tkDocSave{order:5;} .tweaks > #tkReload{order:6;}   /* Docs, Comments, | Save, Refresh */
+  .tweaks > .tkGrow{order:1;flex:1;min-width:0;} .tweaks > #tkDocsGo{order:2;} .tweaks > #tkShot{order:3;} #tkShot.tkShotBusy{pointer-events:none;} #tkShot.tkShotBusy svg{animation:tkShotPulse .9s ease-in-out infinite;} @keyframes tkShotPulse{50%{opacity:.25;}} .tkShotT{position:fixed;top:calc(var(--barH,45px) + 10px);right:12px;z-index:2147483003;max-width:min(320px,calc(100vw - 24px));padding:9px 12px;border-radius:10px;background:#1c1c1f;color:#f4f4f5;font:500 12px/1.35 var(--ar-font,ui-sans-serif,system-ui,sans-serif);box-shadow:0 0 0 1px rgba(255,255,255,.1);opacity:0;transform:translateY(-4px);transition:opacity .2s ease,transform .2s ease;pointer-events:none;} .tkShotT.on{opacity:1;transform:none;} .tweaks > .evcBtn{order:3;} .tweaks > .tkDiv{order:4;} .tweaks > #tkBpSave, .tweaks > #tkRvSave, .tweaks > #tkDocSave{order:5;} .tweaks > #tkReload{order:6;}   /* Docs, Comments, | Save, Refresh */
   .tweaks > .tkDiv{flex:none;width:1px;height:20px;margin:0 -4px;background:#2a2a2e;} .topbar .tkBtn.tkIcoBtn{display:inline-grid;place-items:center;width:30px;height:30px;padding:0;position:relative;} .topbar .tweaks > #tkBpSave{padding:6px 12px;font-size:12px;}   /* one size along the cluster */ .topbar .tkIcoBtn .evcBadge{position:absolute;top:-5px;right:-6px;} .topbar .tkModeIc{display:inline-grid;place-items:center;color:#a1a1aa;} .topbar .tkModeIc svg{grid-area:1/1;} body:not(.light) .topbar .tkModeIc .tkSun, body.light .topbar .tkModeIc .tkMoon{display:none;}
   .tweaks > .tkVerNav{display:inline-flex;align-items:center;gap:4px;margin-right:-4px;} .tweaks > .tkVerNav .tkStepB:disabled{opacity:.35;cursor:default;}   /* back and forward through the pages seen, at the bar's left before Version ("based on nav history"; "the arrow group before the version, on the left side") */   /* a page's Save always the last on the bar, at the far right ("save always on far right"): after Comments and Refresh */
   .tweaks .lbl{
@@ -13129,7 +13129,9 @@
     <!-- the report pop-up's illustration drafts, a page of their own in the artifact ("treat these inside a page of the main artifact") -->
     <!-- Report visuals: every card's settings saved as a preset at once ("add Save presets action") -->
     <span class="tkGrow" aria-hidden="true"></span>
-    <button class="tkBtn" id="tkDocsGo" type="button" title="Open the Documentation">Docs</button>   <!-- the right cluster ("Docs, Comments (icon), divider, Save, Refresh (icon)") -->
+    <button class="tkBtn" id="tkDocsGo" type="button" title="Open the Documentation">Docs</button>
+    <!-- Screenshot: the frame as a 3x JPG ("need a CTA in the top nav controller to take a screenshot of the frame, 3x jpg") -->
+    <button class="tkBtn tkIcoBtn" id="tkShot" type="button" title="Screenshot of the frame (3x JPG)" aria-label="Save a screenshot of the frame as a 3x JPG"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M1.8 5.6c0-.8.7-1.5 1.5-1.5h1.9l1.1-1.6h3.4l1.1 1.6h1.9c.8 0 1.5.7 1.5 1.5v6.1c0 .8-.7 1.5-1.5 1.5H3.3c-.8 0-1.5-.7-1.5-1.5z"/><circle cx="8" cy="8.5" r="2.5"/></svg></button>   <!-- the right cluster ("Docs, Comments (icon), divider, Save, Refresh (icon)") -->
     <span class="tkDiv" aria-hidden="true"></span>   <!-- Save, Comments and Refresh pushed to the bar's far right, always ("Save Refresh on the far right always, with comment") -->
     <button class="tkBtn tkPreBtn" id="tkBpSave" type="button" title="Open the prototype at this viewport">Save</button>
     <button class="tkBtn" id="tkRvSave" type="button">Save presets</button>
@@ -27612,6 +27614,70 @@ hairline({
   [['stHpLtrFs', '--ltrFs'], ['stHpLtrLh', '--ltrLh']].forEach(([id, v]) => { const r = document.getElementById(id), o = document.getElementById(id + 'V'); if (!r) return; const set = () => { document.documentElement.style.setProperty(v, r.value + 'px'); if (o) o.textContent = r.value + 'px'; }; r.addEventListener('input', set); r.addEventListener('change', set); set(); setTimeout(set, 800); });   /* the Letter's font size and line height, live */
   { const s = document.getElementById('stHpRecShow'), b = document.getElementById('stHpRecTgl'), set = () => { const on = !s || s.value !== 'hide'; document.body.classList.toggle('hpRecHide', !on); if (b) b.setAttribute('aria-checked', String(on)); };   /* the past results card shown or not */
     if (s){ s.addEventListener('change', set); if (b) b.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); s.value = s.value === 'hide' ? 'show' : 'hide'; s.dispatchEvent(new Event('change', { bubbles: true })); }); set(); setTimeout(set, 800); } }
+  /* Screenshot ("need a CTA in the top nav controller to take a screenshot of the frame, 3x jpg"): the screen of the device at the bar's breakpoint (the phone at XS, the tablet at S, an overlay's own device), or the page under the bar where nothing is framed; as the phone would save it: square corners, the status bar in, no bezel, at 3x (1179 x 2556 for the 393 x 852 phone). A page cannot take a screenshot of itself, so the page is drawn again from its own DOM by modern-screenshot (fetched on first use; frames' pages, same-origin iframes, drawn in their place; scroll positions kept); the prototype's own controls (this bar, comments) left out. Saved through the viewer's downloads (they confirm), else a plain download */
+  (function shotCta(){
+    const btn = document.getElementById('tkShot'); if (!btn) return;
+    const LIB = 'https://cdn.jsdelivr.net/npm/modern-screenshot@4.7.0/dist/index.js', SC = 3;
+    let lib = null;
+    const load = () => lib || (lib = new Promise((res, rej) => { if (window.modernScreenshot) return res(window.modernScreenshot); const s = document.createElement('script'); s.src = LIB; s.async = true; s.onload = () => window.modernScreenshot ? res(window.modernScreenshot) : rej(new Error('lib')); s.onerror = () => rej(new Error('load')); document.head.appendChild(s); }).catch(e => { lib = null; throw e; }));
+    let tT = 0; const toast = (msg) => { let t = document.querySelector('.tkShotT'); if (!t) { t = document.createElement('div'); t.className = 'tkShotT'; t.setAttribute('role', 'status'); document.body.appendChild(t); } t.textContent = msg; requestAnimationFrame(() => t.classList.add('on')); clearTimeout(tT); tT = setTimeout(() => t.classList.remove('on'), 3200); };
+    const shown = el => { if (!el) return null; const r = el.getBoundingClientRect(); if (r.width < 120 || r.height < 120) return null; const cs = getComputedStyle(el); return cs.display === 'none' || cs.visibility === 'hidden' || +cs.opacity === 0 ? null : r; };
+    /* the frame: an overlay's device first (the Async report, the Health profile), then the breakpoint's device (the master frame's place: centred at --vwC, --bpW wide, --bpTop to --bpBot), else the page under the bar */
+    const frame = () => {
+      const bd = document.body, de = document.documentElement, bar = document.querySelector('.topbar'), barB = bar ? Math.round(bar.getBoundingClientRect().bottom) : 0;
+      const aq = [...document.querySelectorAll('.aqWrap.on .aqFrame')].map(f => shown(f)).find(Boolean);
+      if (aq) return { x: aq.left, y: aq.top, w: aq.width, h: aq.height, dev: true };
+      if (!de.classList.contains('bpAuto') && /^(xs|s)$/.test(bd.dataset.bp || '') && !/\b(homeOn|docOn|alOn|hlOn|rvOn)\b/.test(bd.className)) {
+        const p = document.createElement('div'); p.style.cssText = 'position:fixed;visibility:hidden;pointer-events:none;left:calc(var(--vwC, 50vw) - var(--bpW) / 2);width:var(--bpW);top:var(--bpTop, calc(var(--barH,57px) + 48px));bottom:var(--bpBot, 48px);';
+        bd.appendChild(p); const r = p.getBoundingClientRect(); p.remove();
+        if (r.width > 120 && r.height > 120) return { x: r.left, y: r.top, w: r.width, h: r.height, dev: true };
+      }
+      return { x: 0, y: barB, w: innerWidth, h: innerHeight - barB, dev: false };
+    };
+    const SKIP = '.topbar, .tkShotT, .evcLayer, .evcPanel, .evcPop, .evcToast, .evcCatch, .evcAt, script, noscript, template';
+    const KEEP = /^(STYLE|LINK|SOURCE|TRACK|BR|WBR|OPTION|OPTGROUP|AREA|MAP|PARAM|META|TITLE|HEAD)$/;
+    const keep = n => { if (n.nodeType !== 1) return true; if (n.matches && n.matches(SKIP)) return false; const W = n.ownerDocument && n.ownerDocument.defaultView;
+      if (W && n instanceof W.HTMLElement && !KEEP.test(n.tagName) && !n.getClientRects().length && W.getComputedStyle(n).display !== 'contents') return false;   // not drawn (display none, or in something that is): left out, its whole branch with it
+      return true; };
+    const save = async (blob, name) => { let ns = null; try { ns = window.claude && typeof window.claude.use === 'function' ? await window.claude.use('downloads') : null; } catch (e) { ns = null; }
+      if (ns && ns.save) { await ns.save({ filename: name, data: blob }); return; }
+      const u = URL.createObjectURL(blob), a = document.createElement('a'); a.href = u; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000); };
+    const nameOf = () => { const v = document.getElementById('versionSel'), o = v && v.selectedOptions && v.selectedOptions[0], pg = (o ? o.textContent : 'Everlab').trim().replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'Everlab', bp = (document.body.dataset.bp || 'desk').toUpperCase(), d = new Date(), z = n => String(n).padStart(2, '0');
+      return 'Everlab-' + pg + '-' + bp + '-' + d.getFullYear() + z(d.getMonth() + 1) + z(d.getDate()) + '-' + z(d.getHours()) + z(d.getMinutes()) + z(d.getSeconds()) + '@3x.jpg'; };
+    btn.addEventListener('click', async () => {
+      if (btn.classList.contains('tkShotBusy')) return;
+      const f = frame(), marked = [];
+      btn.classList.add('tkShotBusy'); btn.setAttribute('aria-busy', 'true');
+      try {
+        const ms = await load();
+        /* the device's own shell (its rounded corners, its bezel): marked, then taken off in the copy, so the screen comes out square */
+        if (f.dev) { const cx = f.x + f.w / 2, cy = f.y + f.h / 2, near = (a, b) => Math.abs(a - b) <= 2;
+          new Set([...document.elementsFromPoint(cx, cy), ...document.querySelectorAll('#bpFrame, .aqWrap.on .aqFrame, .clDev, .rfDev, .grDev, .cnDev, .ccPage, .gfPage iframe')]).forEach(el => { if (!el.getBoundingClientRect) return; const r = el.getBoundingClientRect();
+            if (near(r.left, f.x) && near(r.top, f.y) && near(r.width, f.w) && near(r.height, f.h)) { el.setAttribute('data-shot-dev', ''); marked.push(el); } }); }
+        /* what is pinned (position: sticky, the report's anchors under its bar) is drawn where it was in the flow: each one's pinned offset measured (against itself unpinned, the scroll put back) and kept in the copy */
+        const scs = []; for (let el of document.body.querySelectorAll('*')) { if (el.closest(SKIP) || !el.getClientRects().length || getComputedStyle(el).position !== 'sticky') continue; const r1 = el.getBoundingClientRect(); if (r1.right < f.x || r1.left > f.x + f.w || r1.bottom < f.y || r1.top > f.y + f.h) continue;
+          const back = []; for (let q = el.parentElement; q; q = q.parentElement) if (q.scrollTop || q.scrollLeft) back.push([q, q.scrollTop, q.scrollLeft]);
+          const pv = el.style.getPropertyValue('position'), pp = el.style.getPropertyPriority('position'); el.style.setProperty('position', 'static', 'important'); const r0 = el.getBoundingClientRect(); if (pv) el.style.setProperty('position', pv, pp); else el.style.removeProperty('position');
+          back.forEach(b => { b[0].scrollTop = b[1]; b[0].scrollLeft = b[2]; });
+          const dx = r1.left - r0.left, dy = r1.top - r0.top; if (Math.abs(dx) > .5 || Math.abs(dy) > .5) { el.setAttribute('data-shot-st', dx.toFixed(2) + ',' + dy.toFixed(2)); scs.push(el); marked.push(el); } }
+        /* the faces: the page's own are the system's; a framed page's (an iframe's: Geist, Newsreader, inlined by the build) handed over as they are, so its text is drawn in them */
+        let faces = ''; const facesOf = d => { try { [...d.styleSheets].forEach(sh => { let rs = null; try { rs = sh.cssRules; } catch (e) { rs = null; } if (rs) [...rs].forEach(ru => { if (ru.type === 5 && ru.cssText.indexOf('data:') >= 0) faces += ru.cssText + '\n'; }); }); } catch (e) {} };
+        facesOf(document); document.querySelectorAll('iframe').forEach(fr => { const r = fr.getBoundingClientRect(); if (!r.width || r.right < f.x || r.left > f.x + f.w || r.bottom < f.y || r.top > f.y + f.h) return; let d = null; try { d = fr.contentDocument; } catch (e) { d = null; } if (d) facesOf(d); });
+        const cv = await ms.domToCanvas(document.body, { width: innerWidth, height: innerHeight, scale: SC, backgroundColor: getComputedStyle(document.body).backgroundColor || '#111', font: faces ? { cssText: faces } : false, filter: keep, timeout: 30000,
+          features: { restoreScrollPosition: true },
+          onCloneEachNode: c => { if (c.nodeType === 1 && c.hasAttribute && c.hasAttribute('data-shot-dev')) { c.style.setProperty('border-radius', '0', 'important'); c.style.setProperty('box-shadow', 'none', 'important'); c.style.setProperty('clip-path', 'none', 'important'); c.removeAttribute('data-shot-dev'); }
+            if (c.nodeType === 1 && c.hasAttribute && c.hasAttribute('data-shot-st')) { const d = c.getAttribute('data-shot-st').split(','); c.style.setProperty('position', 'relative', 'important'); c.style.setProperty('left', d[0] + 'px', 'important'); c.style.setProperty('top', d[1] + 'px', 'important'); c.style.setProperty('right', 'auto', 'important'); c.style.setProperty('bottom', 'auto', 'important'); c.removeAttribute('data-shot-st'); } } });
+        const out = document.createElement('canvas'), W = Math.round(f.w * SC), H = Math.round(f.h * SC); out.width = W; out.height = H;
+        const g = out.getContext('2d'); g.fillStyle = getComputedStyle(document.body).backgroundColor || '#111'; g.fillRect(0, 0, W, H);
+        const kx = cv.width / innerWidth, ky = cv.height / innerHeight; g.drawImage(cv, f.x * kx, f.y * ky, f.w * kx, f.h * ky, 0, 0, W, H);
+        const blob = await new Promise(r => out.toBlob(r, 'image/jpeg', .92)); if (!blob) throw new Error('encode');
+        await save(blob, nameOf());
+        toast('Screenshot saved: ' + W + ' × ' + H + ' JPG');
+      } catch (e) { const c = e && e.code; toast(c === 'declined' ? 'Screenshot not saved' : c === 'rate_limited' ? 'A save is already waiting for you' : e && e.message === 'load' ? 'Couldn’t load the screenshot tool' : 'Couldn’t take the screenshot'); }
+      finally { marked.forEach(el => { el.removeAttribute('data-shot-dev'); el.removeAttribute('data-shot-st'); }); btn.classList.remove('tkShotBusy'); btn.removeAttribute('aria-busy'); }
+    });
+    window._shot = { frame: frame };
+  })();
   { const d = document.getElementById('tkDocsGo'); if (d) d.addEventListener('click', () => { const v = document.getElementById('versionSel'); if (!v) return; v.value = 'doc'; v.dispatchEvent(new Event('change', { bubbles: true })); }); }   /* Docs: the Documentation page */
   { const c = document.getElementById('stHpLtrCard'), set = () => document.documentElement.classList.toggle('hpLtrNoCard', !!c && c.value === 'no'); if (c){ c.addEventListener('change', set); set(); setTimeout(set, 800); } }   /* the Letter's Card tweak, live */
   /* the Health profile at a forced XS: the journey's rows (Step 1, 2, 3 pages, Past results) in a panel beside the phone, at its left, from its top; back in Tweaks otherwise, or with no room */
