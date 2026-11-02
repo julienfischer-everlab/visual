@@ -19014,3 +19014,22 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Nutrition glass**, re-rendered:
   - The glass and the water are much fainter, so the lemon slices read through them.
   - The water line and both slices sit lower (the top slice about 12px down at card size), clear of the rim.
+
+## Bottom navigation iconography ("On the bottom navigation in the design system, I would like to create iconography for each menu. Can you externalise this iconography a little bit so I can see it outside of the frame? Also, for each, I need an active state as well. The active state will be filled, like an icon field, and it will be good if there is a small animation between the inactive and the active.")
+- **The icons**: a new set, one per tab, drawn as geometry on a 24 grid with 1.75 strokes and round ends. The filled version is built from the same shape as the outline, so the fill lands exactly inside it.
+  - Home: a house; filled, its door left open.
+  - Insights: two orbits round a dot; filled, the four petals, the middle left open round the dot.
+  - Timeline / My journey: a calendar with one day marked; filled, its header line and the day cut out.
+  - Services: a cube; filled, its three inner edges cut out.
+  - More: three dots in a ring; filled, a disc with the dots cut out.
+- **States**: at rest, the outline. On the page you are on, the filled version.
+- **Motion** (Tweaks › Dock › Icon motion; the Navigation doc's choice is the master once saved):
+  - Pop, the default: the fill grows out of the middle with a little overshoot as the outline fades, and the icon dips and springs back.
+  - Rise: the fill rises from the foot like water.
+  - Fade: a crossfade.
+  - It plays whenever a tab lights, including when a page mounts its dock. It goes back to the outline in 200 ms.
+- **Design system › Navigation › Iconography**: a new section under the phone, with a second entry in the side list that scrolls to it.
+  - Each icon is shown large and live outside the frame; tap it to switch states.
+  - Under each, its Inactive and Active states, a line on how it is drawn, and the Pop / Rise / Fade choice with Play all.
+  - Save setup stores the motion with the labels. The sizes table gains the Icons and Icon motion rows.
+- **One source**: the dock and the doc both draw from `window.EvNavIc`, so a change to an icon lands everywhere.
