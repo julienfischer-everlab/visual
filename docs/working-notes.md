@@ -19054,3 +19054,11 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - On dark, its head is white-hot with an orange tail. On light, the head is the accent (#f26b3a) with a peach tail.
   - With reduced motion, a short fade with no travel.
 - **Concierge components › Field**: a new section first in the gallery, the field with a *Switch to Eva* button that plays the beam. It uses the same code as the chat.
+
+## Plan: the goals' carousel swipes ("On the plan, the top carousel should be swippable, and the same magnets apply: if you swipe more than 50%, you go to the second card. If not, you come back to the normal card.")
+- **Dragged by hand**, a mouse as a finger: before, a press-and-pull on the row only selected the cards' text.
+  - A finger's sideways pan is the row's (touch-action: pan-y). A drag that starts more downwards than across is left to the page's scroll.
+  - The words are never selected, and the cursor is a grab hand.
+- **The magnet**, the Records carousel's rule: let go past half a card (and its gap: 176 of 352 on the phone) and it goes on to the next one, or back to the one before. Less than that and it springs back to its own card.
+  - The glide is 240 ms off a quintic, the Records one. The last card stops at the row's end.
+  - A drag never opens a card.
