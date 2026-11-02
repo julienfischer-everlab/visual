@@ -19381,3 +19381,20 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The page's ground is the sheet's (dark, or white on the Light sheet).
 - **Kept**: every subpage's open and Back, the goals' swipe, the Supplement stack hook, More lit in the dock, Light mode, and the Suggestion's rows finding their sections by title.
   - Supplements is now last, so its row scrolls the Plan to its end.
+
+## Plan → the Lifestyle hub: review fixes ("Adjust plan design based on that")
+
+- **Merged the main branch first** (82ad0fe): the sidebar collapse that keeps every item in place (1b562e9, "when contract the nav, the item should stay in place, its just the label that disappear"), the Plan subpages at full width, EvFullView modals, the flow panel pushing the app.
+  - This branch had been cut before it, and its build brought the old collapse back. After the merge, collapsing leaves every nav glyph where it was (checked at M and L with the Plan open).
+- **Two columns only on a real desk**: a forced M or L, or Auto on a window of 992 or more (`#dPlan.plDesk`, set by the Plan's script on resize and on a breakpoint change).
+  - Auto from 600 to 991 reads S, and keeps the one column with the photo across the top, as before. Two columns there had squeezed the sections to 190 to 320 and wrapped the headers.
+- **Routine cards**: View routine sits at the card's foot, with the icon, title, line and chips centred in the room above it. At S, the card is 400 wide at most (it was 469 by 352, the words afloat).
+  - The row reaches the sheet's edges at every width: 16 at XS, 24 at S, 40 on Auto's S-wide window.
+- **Supplements**: every row has a chip. Where the label gives no strength, the chip shows the dose's own amount (2 gummies, 1 scoop). Nothing is made up.
+- **One h1**: My plan. On the phone it is for the screen reader only, and the photo's words are an h2.
+- **Light**: on the Plan's own sheet, the Nutrition card is a light grey (#f5f5f4) on the white page. The subpages keep their token.
+- **Desk clicks**: EvMagnet leaves a row with nothing to scroll alone. From M, a click with a few px of travel on the goals or View routine opens the routine again, and the words can be selected.
+- **Cleaned**: the old Routines row's CSS and the unused 56 supplement tile size.
+- **Kept as they are**:
+  - Wind-down says 4 steps, as its page has four.
+  - At M with the sidebar open, the left column is 428, as the panel is 752. It is 520 with the sidebar collapsed, which is the room the mock's M numbers assume.

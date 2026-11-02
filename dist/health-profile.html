@@ -2002,7 +2002,7 @@ window.EvMagnet = (function () {
     var glide = function (to) { if (an) cancelAnimationFrame(an); var from = row.scrollLeft, d = to - from, t0 = performance.now(); if (Math.abs(d) < .5 || red()) { row.scrollLeft = to; row.style.scrollSnapType = ''; return; }
       row.style.scrollSnapType = 'none';   // a glide the arrows start too: no snap pulling at it frame by frame
       var st = function (now) { var k = Math.min(1, (now - t0) / 240); row.scrollLeft = from + d * (1 - Math.pow(1 - k, 5)); if (k < 1) an = requestAnimationFrame(st); else { an = 0; row.style.scrollSnapType = ''; } }; an = requestAnimationFrame(st); };
-    row.addEventListener('pointerdown', function (e) { if (e.button) return; if (an) { cancelAnimationFrame(an); an = 0; } d0 = { x: e.clientX, y: e.clientY, left: row.scrollLeft, dx: 0, i: near(), moved: false, pid: e.pointerId }; });
+    row.addEventListener('pointerdown', function (e) { if (e.button || row.scrollWidth <= row.clientWidth + 1) return; if (an) { cancelAnimationFrame(an); an = 0; } d0 = { x: e.clientX, y: e.clientY, left: row.scrollLeft, dx: 0, i: near(), moved: false, pid: e.pointerId }; });   /* nothing to scroll (the Plan's goals and routines from M, stacked or side by side): a click is a click, never a drag */
     row.addEventListener('pointermove', function (e) { if (!d0) return; d0.dx = e.clientX - d0.x;
       if (!d0.moved) { if (Math.abs(d0.dx) < 6) return; if (Math.abs(e.clientY - d0.y) > Math.abs(d0.dx)) { d0 = null; return; }   // more down than across: the page's scroll, not the row's
         d0.moved = true; row.style.scrollSnapType = 'none'; if (o.drag) row.classList.add(o.drag); try { row.setPointerCapture(d0.pid); } catch (x) {} }
