@@ -18792,3 +18792,23 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
     - The page never shows through a half-faded screen. The desk's centred modals (`hpBs`) keep their dim; with reduced motion, no delays.
   - **The phone no longer recentres mid-close**: the profile's Flow panel (the journey beside the phone) went away the moment the close began, so the phone jumped 160px under a screen still fading. The panel now stays until the profile has gone. When a Flow panel comes or goes, the phone and whatever is over it slide back together (0.45s) instead of jumping.
   - Checked on a recorded close and reopen at XS: profile → its background → Overview, and Overview → background → profile, with no frame showing both.
+
+## No scrollbar strip down the phone's edge ("Clippign still")
+- **Cause**: the grey bar down the right edge of the phone in the "You're all set" screenshot was a desktop scrollbar. The Health profile's scroller (and Past results', and the Chat's thread) drew a 15px scrollbar wherever the computer shows scrollbars (Windows, or a Mac with a mouse plugged in). It also pushed the content 7px off-centre. My earlier test browser hid scrollbars, so it never showed there.
+- **Fix**: nothing inside the phone draws a scrollbar any more, as on a real phone:
+  - the app's own screens;
+  - every modal over the phone;
+  - the website pages' phones (Consent, Testing locations, Gift receipt, Referral);
+  - the pages framed in it (Chat, Gift, Gift receipt, Referral, Testing locations). These get a small style on load, active only while the phone is forced (XS or S). At M and L they keep their normal scrollbars.
+  - Scrolling itself is unchanged.
+- **Checked**: every page and overlay at XS, with scrollbars on, against the published build. The published build had strips on the Health profile, Past results, Chat, Gift (15px) and Consent (10px); the new build has none inside the phone.
+- **Also re-checked the transitions** at real speed with the Overview painted magenta, so any leak would stand out:
+  - opening and closing the profile from its card;
+  - each Flow-panel Home row;
+  - Next, see your past results, then Got it;
+  - Past results;
+  - Concierge;
+  - the report;
+  - the Past results tile.
+  No frame shows the Overview through a full-screen experience. The bottom sheets show it above the sheet, as designed.
+- **Page switch fix**: picking Testing locations, Gift or Gift receipt after Consent (or Referral) left that page switched on underneath. On Testing locations, the Consent page was still displayed. The menu now closes every other website page first, and each page's own show does too.

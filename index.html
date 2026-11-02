@@ -5715,6 +5715,9 @@
   #stArSrcRow[hidden], #stArAssRow[hidden], #stArLbgRow[hidden], #stArMhlRow[hidden], #stArCdnRow[hidden], #stArAmtRow[hidden]{display:none !important;}
   .aqWrap.aqDesk.aqFull .aqFrame{left:0;width:100%;height:100%;border-radius:0;box-shadow:none;transform:translateY(64px);opacity:0;transition:transform .5s cubic-bezier(.2,.8,.2,1), opacity .35s ease;}   /* XS and S: up 64 as it fades in, not the whole screen's height ("full modal 64px go up with fade in, not the full screen movement") */
   .aqWrap.aqDesk.aqFull.on .aqFrame{transform:none;opacity:1;} .aqWrap.aqDesk.aqFull.shut .aqFrame{transform:translateY(64px);opacity:0;}
+  /* no scrollbars inside the devices (a phone or a tablet never draws one): the profile's, the report's and every other scroller over the phone, and the app's own under it; the grey strip down the phone's right edge on a desktop that shows scrollbars ("clipping") */
+  .aqWrap.aqDev *, html:not(.bpAuto) body:is([data-bp="xs"], [data-bp="s"]) :is(.dash, .cnDev, .clDev, .grDev, .rfDev) *{scrollbar-width:none !important;}   /* the website's pages' phones too (the Consent's body kept a thin one); the pages framed in them get theirs from devBars, below */
+  .aqWrap.aqDev *::-webkit-scrollbar, html:not(.bpAuto) body:is([data-bp="xs"], [data-bp="s"]) :is(.dash, .cnDev, .clDev, .grDev, .rfDev) *::-webkit-scrollbar{display:none !important;width:0 !important;height:0 !important;}
   /* full modals dip through their own ground ("still some clipping issues when the Overview is behind an experience"): the scrim under a full modal is the screen's own paper, not a 45% dim, so the page under never shows through a half-faded screen. Opening, the ground covers the page first (0.2 s) and the screen rises in over it 0.12 s later; closing, the screen fades and drops over the ground, and only then the ground fades (from 0.3 s) to give the page back */
   .aqWrap.aqDesk.aqFull:not(.hpBs) .aqDim{background:#fff;transition:opacity .26s ease .3s;}
   .aqWrap.aqDesk.aqFull:not(.hpBs):has(.arSheet.arDark) .aqDim{background:oklch(16.84% 0 263.28);}
@@ -27487,18 +27490,9 @@ hairline({
     if (v === 'cc'){ if (window._cc) window._cc.show(); return; }   // the standalones: over the page that is showing, which stays
     if (v === 'ar'){ if (window._ar) window._ar.open(); return; }
     if (window._cc) window._cc.hide(); if (window._ar) window._ar.close();   // another page: they go
-    if (v === 'al'){ if (window._al) window._al.show(); return; }   // the Assets library
-    if (window._al) window._al.hide();
-    if (v === 'rf'){ if (window._rf) window._rf.show(); return; }
-    if (window._rf) window._rf.hide();
-    if (v === 'gf'){ if (window._gf) window._gf.show(); return; }
-    if (window._gf) window._gf.hide();
-    if (v === 'cl'){ if (window._cl) window._cl.show(); return; }
-    if (window._cl) window._cl.hide();
-    if (v === 'gr'){ if (window._gr) window._gr.show(); return; }
-    if (window._gr) window._gr.hide();
-    if (v === 'cn'){ if (window._cn) window._cn.show(); return; }
-    if (window._cn) window._cn.hide();
+    { const SA = { al: '_al', rf: '_rf', gf: '_gf', cl: '_cl', gr: '_gr', cn: '_cn' };   // the Assets library and the website's pages: every other one gone first, then the picked one (Testing locations left the Consent on under it: only the pages before it in this list went)
+      Object.keys(SA).forEach(k => { if (k !== v && window[SA[k]]) window[SA[k]].hide(); });
+      if (SA[v]){ if (window[SA[v]]) window[SA[v]].show(); return; } }
     if (v === 'doc' || v === 'ds'){ if (window._doc) window._doc.show(null, v); return; }   // Documentation, or Design system: the tab last open on it
     if (window._doc) window._doc.hide();
     if (v === 'hl'){ if (window._ig) window._ig.hide(); if (window._hl) window._hl.show(); return; }
@@ -42436,7 +42430,7 @@ hairline({
       const gfSync = () => { const f = document.getElementById('gfFrame'); try { const d = f && f.contentDocument, w = f.contentWindow; if (!d || !d.getElementById('stage')) return;
         gfVals().forEach(([to, , v]) => { const el = d.getElementById(to); if (!el || !v || el.value === v) return; el.value = v; el.dispatchEvent(new w.Event(el.tagName === 'INPUT' ? 'input' : 'change', { bubbles: true })); }); } catch (e){} };
       const gfHide = () => { if (!document.body.classList.contains('gfOn')) return; document.body.classList.remove('gfOn'); if (versionSel && versionSel.value === 'gf') versionSel.value = String(version); if (window.__tkPages) window.__tkPages(); };
-      const gfShow = () => { if (!gf) return; hide(); hlHide(); igHide(); rvHide(); if (window._gr) window._gr.hide(); if (window._cl) window._cl.hide(); if (window._doc) window._doc.hide(); if (window._cc) window._cc.hide();
+      const gfShow = () => { if (!gf) return; hide(); hlHide(); igHide(); rvHide(); if (window._gr) window._gr.hide(); if (window._cl) window._cl.hide(); if (window._rf) window._rf.hide(); if (window._cn) window._cn.hide(); if (window._doc) window._doc.hide(); if (window._cc) window._cc.hide();
         if (window._hp) window._hp.close(true); if (window._ar && window._ar.isOpen()) window._ar.close();   // the reveal, the profile, the report: not over it
         if (!gf.firstChild){ const f = document.createElement('iframe'); f.id = 'gfFrame'; f.src = 'gift.html#embed&' + gfVals().map(([, k, v]) => k + '=' + encodeURIComponent(v)).join('&'); f.title = 'Gift'; f.addEventListener('load', gfSync); gf.appendChild(f); }   // opened with the tweaks as they are, so its first run is theirs
         gfSync(); document.body.classList.add('gfOn'); if (versionSel) versionSel.value = 'gf'; if (window.__tkPages) window.__tkPages(); try { history.replaceState(null, '', '#gift'); } catch (e){} };
@@ -42452,7 +42446,7 @@ hairline({
       // Tweaks -> Clinic -> Frame indicator: the logo zones' red fill on the page, or not
       const clFrame = () => { const f = document.getElementById('clFrame'), t = document.getElementById('stClFrame'); try { const r = f && f.contentDocument && f.contentDocument.documentElement; if (r){ r.classList.toggle('noFrame', !!t && t.value === 'off'); const ly = document.getElementById('stClLay'); r.classList.toggle('rows', !!ly && ly.value === 'rows'); } } catch (e){} };   // and Layout: Grid or Rows
       ['stClFrame', 'stClLay'].forEach(id => { const t = document.getElementById(id); if (t) t.addEventListener('change', clFrame); });
-      const clShow = () => { if (!cl) return; hide(); hlHide(); igHide(); rvHide(); gfHide(); if (window._gr) window._gr.hide(); if (window._doc) window._doc.hide(); if (window._cc) window._cc.hide();
+      const clShow = () => { if (!cl) return; hide(); hlHide(); igHide(); rvHide(); gfHide(); if (window._gr) window._gr.hide(); if (window._rf) window._rf.hide(); if (window._cn) window._cn.hide(); if (window._doc) window._doc.hide(); if (window._cc) window._cc.hide();
         if (window._hp) window._hp.close(true); if (window._ar && window._ar.isOpen()) window._ar.close();
         const dev = cl.querySelector('.clDev'); if (dev && !dev.firstChild){ const f = document.createElement('iframe'); f.id = 'clFrame'; f.src = 'clinic.html'; f.title = 'Testing locations'; f.addEventListener('load', clFrame); dev.appendChild(f); }
         clFrame(); document.body.classList.add('clOn'); if (versionSel) versionSel.value = 'cl'; if (window.__tkPages) window.__tkPages(); try { history.replaceState(null, '', '#clinic'); } catch (e){} };
@@ -42463,7 +42457,7 @@ hairline({
       const grTheme = () => { const f = document.getElementById('grFrame'), t = document.getElementById('themeSel'), bg = document.getElementById('stGrBg'); try { const r = f && f.contentDocument && f.contentDocument.documentElement; if (r){ r.dataset.theme = t && t.value === 'light' ? 'light' : 'dark'; r.classList.toggle('noBg', !!bg && bg.value !== 'photo'); r.classList.toggle('warmBg', !!bg && bg.value === 'warm'); const ia = document.getElementById('stGrApp'); r.classList.toggle('inApp', !ia || ia.value !== 'off'); const sp = document.getElementById('stGrSplit'); r.classList.toggle('split', !!sp && sp.value === 'on'); const co = document.getElementById('stGrCols'); r.classList.toggle('cols', !!co && co.value === 'cols'); const sc = document.getElementById('stGrSched'); r.classList.toggle('sched', !!sc && sc.value === 'sched'); const cvis = document.getElementById('stGrVis'); r.classList.toggle('cardVis', !cvis || cvis.value === 'on'); const lg = document.getElementById('stGrLogo'), w = f.contentWindow; if (w && w.grLogo) w.grLogo(!lg || lg.value === 'anim'); } } catch (e){} };   // Header: the logo animated plays once it is picked   // the theme, and Tweaks -> Gift receipt -> Background, Delivery, Properties, Split cards, In app
       { const t = document.getElementById('themeSel'); if (t) t.addEventListener('change', grTheme); ['stGrBg', 'stGrApp', 'stGrSplit', 'stGrCols', 'stGrSched', 'stGrLogo', 'stGrVis'].forEach(id => { const x = document.getElementById(id); if (x) x.addEventListener('change', grTheme); }); }
       addEventListener('message', e => { const f = document.getElementById('grFrame'); if (!f || e.source !== f.contentWindow || !e.data || e.data.everlab !== 'gr:overview') return; if (versionSel){ versionSel.value = '9'; versionSel.dispatchEvent(new Event('change', { bubbles: true })); } });   // its Back to overview: the Overview
-      const grShow = () => { if (!gr) return; hide(); hlHide(); igHide(); rvHide(); gfHide(); clHide(); if (window._doc) window._doc.hide(); if (window._cc) window._cc.hide();
+      const grShow = () => { if (!gr) return; hide(); hlHide(); igHide(); rvHide(); gfHide(); clHide(); if (window._rf) window._rf.hide(); if (window._cn) window._cn.hide(); if (window._doc) window._doc.hide(); if (window._cc) window._cc.hide();
         if (window._hp) window._hp.close(true); if (window._ar && window._ar.isOpen()) window._ar.close();
         const dev = gr.querySelector('.grDev'); if (dev && !dev.firstChild){ const f = document.createElement('iframe'); f.id = 'grFrame'; { const lg = document.getElementById('stGrLogo'); f.src = 'gift-receipt.html' + (!lg || lg.value === 'anim' ? '#logoanim' : ''); }   /* Header animated from its first frame: nothing shown before it */ f.title = 'Gift receipt'; f.addEventListener('load', grTheme); dev.appendChild(f); }
         grTheme(); { const f = document.getElementById('grFrame'), lg = document.getElementById('stGrLogo'); try { if (f && f.contentWindow && f.contentWindow.grLogo && (!lg || lg.value === 'anim')) f.contentWindow.grLogo(true, true); } catch (e){} }   /* the page opened again: its logo plays again */
@@ -42516,11 +42510,20 @@ hairline({
       const cnKey = () => { const dev = cn && cn.querySelector('.cnDev'); return [document.documentElement.classList.contains('bpAuto'), document.body.dataset.bp, cnLight(), !!dev && dev.clientWidth < 600].join(); };   // what the modal is drawn for
       const cnPaint = () => { if (cn) cn.classList.toggle('cnLight', cnLight()); };
       const cnHide = () => { if (!document.body.classList.contains('cnOn')) return; if (cnM){ cnM.kill(); cnM = null; } cnOpenNow = false; document.body.classList.remove('cnOn'); if (versionSel && versionSel.value === 'cn') versionSel.value = String(version); if (window.__tkPages) window.__tkPages(); };
-      const cnShow = () => { if (!cn) return; hide(); hlHide(); igHide(); rvHide(); gfHide(); clHide(); grHide(); if (window._doc) window._doc.hide(); if (window._cc) window._cc.hide();
+      const cnShow = () => { if (!cn) return; hide(); hlHide(); igHide(); rvHide(); gfHide(); clHide(); grHide(); if (window._rf) window._rf.hide(); if (window._doc) window._doc.hide(); if (window._cc) window._cc.hide();
         if (window._hp) window._hp.close(true); if (window._ar && window._ar.isOpen()) window._ar.close();
         const was = document.body.classList.contains('cnOn'); cnPaint(); document.body.classList.add('cnOn'); if (versionSel) versionSel.value = 'cn'; if (window.__tkPages) window.__tkPages(); try { history.replaceState(null, '', '#consent'); } catch (e){}
         if (!was) requestAnimationFrame(cnOpen); };   // laid out first: its width picks the sheet or the modal
       window._cn = { show: cnShow, hide: cnHide };
+      /* the pages framed in the phone (the Chat, the Gift, its receipt, the referral, the clinics) draw no scrollbar there either, as the app's own screens (see the CSS by the full modals): a style put in each as it loads, on while the window's phone is forced (XS, S) */
+      (function devBars(){ const IDS = ['ccFrame', 'gfFrame', 'grFrame', 'rfFrame', 'clFrame'], CSS = 'html.evNoBar, html.evNoBar *{scrollbar-width:none !important;} html.evNoBar::-webkit-scrollbar, html.evNoBar *::-webkit-scrollbar{display:none !important;width:0 !important;height:0 !important;}';
+        const on = () => !document.documentElement.classList.contains('bpAuto') && /^(xs|s)$/.test(document.body.dataset.bp || '');
+        const sync = f => { try { const d = f.contentDocument; if (!d || !d.documentElement) return; if (!d.getElementById('evNoBarCss')){ const s = d.createElement('style'); s.id = 'evNoBarCss'; s.textContent = CSS; (d.head || d.documentElement).appendChild(s); } d.documentElement.classList.toggle('evNoBar', on()); } catch (e){} };
+        let last = null; const all = () => { const k = on(); IDS.forEach(id => { const f = document.getElementById(id); if (f) sync(f); }); last = k; };
+        document.addEventListener('load', e => { if (e.target && IDS.includes(e.target.id)) sync(e.target); }, true);   // an iframe's load reaches the document only on the way down
+        new MutationObserver(all).observe(document.body, { attributes: true, attributeFilter: ['data-bp'] });
+        new MutationObserver(() => { if (on() !== last) all(); }).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });   // Auto on or off
+        all(); })();
       { const b = document.getElementById('cnGo'); if (b) b.addEventListener('click', cnOpen); }
       /* the Mode or the Viewport changed while it shows: the page repainted, the modal (if up) drawn again for it, the sheet or the modal as the new width says */
       const cnRe = () => { if (!document.body.classList.contains('cnOn')) return; cnPaint(); if (cnOpenNow) requestAnimationFrame(() => { if (cnOpenNow && cnKey() !== cnK) cnOpen(); }); };
