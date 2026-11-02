@@ -19220,3 +19220,13 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
      - The page's title beside Back. Back and the status bar take the sheet's ink.
 - Each change eases over .28s. At rest, at the very top, there is no bar at all.
 - The design system's table (General layout › Header overlap › Bar) says the same.
+
+## Plan subpages out of the page menu
+
+"The nutrition plan is a subpage of the plan, so it doesn't need to be in the page dropdown." / "Same for activity plan."
+
+- **Out of the menu**: Activity plan and Nutrition plan are no longer listed. Only Plan is, and the menu reads Plan while either subpage is up.
+- **Opening them**: from the Plan (See all, the cards' rows), and by their links (#activity-plan, #nutrition-plan), as before.
+- **Coming back to them**: they are kept as hidden values, as the Async report's old page is, so a page opened over a subpage (the Concierge, say) comes back to that subpage when closed.
+- **Picking Plan** from the menu while a subpage is up goes back to the Plan itself.
+- The Plan's other subpages, as they land (Medical actions, Supplements, Wind-down routine), stay out of the menu too.
