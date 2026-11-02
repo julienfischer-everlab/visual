@@ -19136,6 +19136,16 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The phone follows the controls live. Save setup makes the numbers every page's on load; Reset puts the defaults back.
   - **A sizes and behaviour table**: hero, picture, title, sheet, bar, reduced motion, and where the pattern is used.
 
+## Assets library: the Hairline figures
+
+"Put the harline's asset inside the asset library."
+
+- **A Hairline group** in the Assets library: the 27 figures of the Hairline page.
+  - Report pop-up (8), Health checks (6), Particles (5), V2 report cards (4) and Services (4).
+  - Each is a still of the figure at rest: its stage only, no name or read-out, 2x, saved as WebP (480 wide, 3 to 22 KB each) under assets/hairline.
+- **Open in Hairline instead of Replace**: the figures are live code that answers the pointer, so a picture put in here would change nothing. The card's main button (and the sheet's) opens the Hairline page scrolled to that figure.
+- **How it is built**: the library lists the stills from a registry in its own code (the paths, so the build inlines them with their names), plus a name, a group, the section it is in, and a note.
+
 ## Plan → Nutrition plan ("Does it design UI for nutrition?"; the mocks at XS, S, M, L and XL, dark and light: the salad bowl photo with "<name>'s nutrition plan / By Dr. Steven", Your daily recommendations, Key actions, My meals, Supplement stack, What this moves, Need something else?)
 - **How it opens**: the Plan's Nutrition section now has **See all** (aria "See all nutrition"), as Activity has. It, and the Nutrition card's rows, push the Nutrition plan in over the Plan, the Activity plan's way: the Plan drifts left under a dim; instant with reduced motion.
   - Back or Escape pushes it out, the Plan where it was. On the desk, the crumb's "Plan" does too.
