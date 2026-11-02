@@ -18772,3 +18772,16 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - **Desk**: the same page in the card; the hero across the top, the three goals side by side, the sheet's content a centred 720 column.
   - **Images**: the hero (a clean strip of the mock, stretched and blurred), the two protocol photos, the plate (one per sheet colour) and the three product shots are cut from the mock (low resolution), in `assets/plan/`. They're in the Assets library's new **Plan** group, ready to be replaced with the originals.
   - **Copy**: the mock's words. The 2nd and 3rd goal cards are new, in its voice ("Stronger heart", "Steady energy"). Medical actions lists six, as its count says; the last three (Metformin, Vitamin D3, Omega-3) reuse the bottle shots.
+- **Plan page: review pass** (an independent check against the mock and the code):
+  - **Hero**: re-cut at the mock's framing (the crease at the upper right, 273pt tall on the phone). It's clear at the top and darkens from the headline, reaching the ground by 235pt, as measured down the mock's edge.
+  - **Spacing**: 24 between sections (was 36), 16 under each header.
+  - **Nutrition**: 12 above the swaps; rows 48 tall, text 14.
+  - **Medical actions**: rows 88 apart with no dividers, names 14, the pill 10 from the name.
+  - **Dark sheet**: chevrons at 15%, dividers at 3.5% (4.5% on Light), the count badge at 6% (19 × 18, 10 from the title).
+  - **Other**: the sheet's top radius is 14; the plate 26 from the card's edge; a larger sleep glyph (cloud lower left, small moon top right); one-line text on the next cards.
+  - **State fixes**:
+    - The dock's Home tab now leaves Plan.
+    - The page menu is never left on "Plan" after another page takes over.
+    - Opening Plan over Gift, Docs and the like puts that page away first, so it no longer closes itself.
+    - More → Plan from the old phone pages lands in the XS device.
+    - The status strip doesn't appear in Auto.
