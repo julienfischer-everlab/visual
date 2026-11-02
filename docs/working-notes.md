@@ -19122,3 +19122,11 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Reduced motion holds the beam still.
 - **Design system › Navigation › Iconography** shows it as its own card: live at 72, then at 48 and 32.
 - **Fix**: the doc's state tiles no longer style any span inside them.
+
+## Past results without the Concierge ("The past result shouldn't have the concierge. If you click on Next on the past result, you go to the concierge standalone page.")
+- **Before**: Past results and the Concierge's introduction were two steps of one flow (the search, then the Concierge), so its Next walked into the Concierge inside Past results.
+- **Now**: Past results' Next (Got it) opens the Concierge's own page, the one the page menu's Concierge opens.
+  - The menu reads Concierge and the address is #concierge.
+  - It starts at its intro with no Back into Past results.
+- **The same from the Health profile**: after You're all set → Next, see your past results, Past results' Next goes to the Concierge page too.
+- **From the Overview's records card**: Got it still just closes.
