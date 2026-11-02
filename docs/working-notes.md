@@ -19153,7 +19153,11 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Need something else?: the Activity plan's two tiles.
 - **Details**: every row with a chevron, and the (i), opens a short detail in a sheet built to Modals' "Bottom sheet · Floating". On the phone it rises from the foot over the dock, with a grabber, and a swipe down closes it. On the desk it is a floating modal. Close, the scrim or Escape closes either one.
   - The words are new: one or two plain sentences for each tip, in second person, Australian spelling and mainstream advice. They say nothing about the member's data that the page does not show.
-- **Header overlap contract**: the phone parts carry data-ov (scroller, hero, img, title, sheet) for the shared header overlap pattern being built alongside. The Activity plan's matching parts carry them too, with no change in behaviour. No parallax of its own.
+- **Header overlap**: on the shared pattern (EvOverlap), as the Activity plan is. Its phone parts carry data-ov (scroller, hero, img, title, sheet) and the same classes as the Activity plan's.
+  - XS / S: the photo is pinned and the sheet slides up over it. The picture rises and dims, and the title drifts up and fades. There is no parallax code of its own.
+  - The sheet's overlap and corners, the title's place and the picture's rise come from the Header overlap master (Design system › General layout), 28 and 24 by default, so a saved setup reaches this page too. Before, the page had its own 20 and 20.
+  - M, L and XL have no photo above the page, so the sheet takes no overlap or corners there. The title sits whole under the back line.
+  - Merged with the branch that brought the pattern in. The Activity plan keeps that branch's code.
 - **Pictures are placeholders**, all in the Assets library under a new Nutrition plan group, each noted "to replace":
   - The hero is a crop of the celery juice photo, as there is no salad bowl.
   - Lunch and Nutrition tips are crops of the same photo (the juice glass, the lemons). Dinner is the plate of figs. After meals is the runner's shoe.

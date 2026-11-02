@@ -8007,7 +8007,7 @@
   #dPlan .plNCrumb > span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--plInk);}
   #dPlan .plNCrumbP{appearance:none;margin:0;padding:0;border:0;background:none;font:inherit;color:inherit;cursor:pointer;} #dPlan .plNCrumbP:hover{color:var(--plInk);} #dPlan .plNCrumbP:focus-visible{outline:2px solid var(--plChev);outline-offset:2px;border-radius:4px;}
   #dPlan .plNTop{display:none;}   /* the photo with the title on it: the phone's alone */
-  #dPlan .plNSheet{position:relative;padding:4px 0 120px;background:var(--plSh);color:var(--plInk);transition:background-color .3s ease, color .3s ease;}
+  #dPlan .plNSheet{position:relative;margin-top:0;border-radius:0;padding:4px 0 120px;background:var(--plSh);color:var(--plInk);transition:background-color .3s ease, color .3s ease;}   /* the desk's page: no hero to overlap, so the header overlap's sheet (.hoSheet) stays off it */
   #dPlan .plNHd{margin:0 0 24px;}
   #dPlan .plNHdT{margin:0;font-size:28px;line-height:34px;font-weight:500;letter-spacing:-.01em;color:var(--plInk);}
   #dPlan .plNNm{color:inherit;}   /* the name in the title's own ink (the shell greys a heading's span) */
@@ -8102,15 +8102,15 @@
   body:is([data-bp="xs"], [data-bp="s"]) #dPlan .plNBack{position:absolute;top:70px;left:var(--plNPad);width:44px;height:44px;background:rgba(20,20,20,.32);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);color:#fff;}   /* glass over the photo, as the Activity plan's */
   body:is([data-bp="xs"], [data-bp="s"]) #dPlan .plNBack:focus-visible{outline-color:#fff;}
   body.plNutOn.plUnder:is([data-bp="xs"], [data-bp="s"]) #dPlan .plNBack{background:color-mix(in srgb, var(--plInk) 7%, var(--plSh));color:var(--plInk);} body.plNutOn.plUnder #dPlan .plNBack:focus-visible{outline-color:var(--plInk);}
-  body:is([data-bp="xs"], [data-bp="s"]) #dPlan .plNTop{display:block;position:relative;height:265px;} body[data-bp="s"] #dPlan .plNTop{height:320px;}
+  body:is([data-bp="xs"], [data-bp="s"]) #dPlan .plNTop{display:block;position:sticky;top:0;z-index:0;height:265px;} body[data-bp="s"] #dPlan .plNTop{height:320px;}   /* the header overlap (EvOverlap), as the Activity plan's: pinned, the sheet sliding over it */
   #dPlan .plNTopIn{position:relative;height:100%;max-width:720px;margin:0 auto;padding:0 var(--plNPad);}
   #dPlan .plNHero{position:absolute;inset:0;overflow:hidden;background:#181818;}
-  #dPlan .plNHero img{display:block;width:100%;height:100%;object-fit:cover;object-position:62% 50%;}   /* the bowl right of the title */
+  #dPlan .plNHero img{display:block;width:100%;height:calc(100% + var(--hoRise));object-fit:cover;object-position:62% 50%;}   /* the bowl right of the title; --hoRise taller than its hero, to rise into */
   #dPlan .plNHero::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg, rgba(0,0,0,.34) 0, rgba(0,0,0,0) 30%, rgba(0,0,0,.1) 50%, rgba(0,0,0,.66) 100%);}   /* the Activity plan's: the status bar legible at the top, the title at the foot */
-  #dPlan .plNHead{position:absolute;left:var(--plNPad);right:var(--plNPad);bottom:44px;}
+  #dPlan .plNHead{position:absolute;left:var(--plNPad);right:var(--plNPad);bottom:calc(var(--hoOverlap) + 24px);}   /* 24 clear of the sheet's edge */
   #dPlan .plNT{margin:0;font-size:24px;line-height:30px;font-weight:500;letter-spacing:-.01em;color:#fff;}
   #dPlan .plNHead .plNBy{color:rgba(255,255,255,.6);}
-  body:is([data-bp="xs"], [data-bp="s"]) #dPlan .plNSheet{margin-top:-20px;border-radius:20px 20px 0 0;padding:24px 0 132px;}   /* over the photo's foot; room under the last tile for the dock */
+  body:is([data-bp="xs"], [data-bp="s"]) #dPlan .plNSheet{z-index:1;margin-top:calc(-1 * var(--hoOverlap));border-radius:var(--hoRadius) var(--hoRadius) 0 0;padding:24px 0 132px;}   /* over the photo's foot by the header overlap master's numbers; room under the last tile for the dock */
   body:is([data-bp="xs"], [data-bp="s"]) #dPlan :is(.plNHd, .plNPic){display:none;}
   body:is([data-bp="xs"], [data-bp="s"]) #dPlan .plNSide{display:block;}
   body:is([data-bp="xs"], [data-bp="s"]) #dPlan .plNDuo{display:block;border-radius:0;background:none;}
@@ -42993,8 +42993,8 @@ hairline({
       return '<div class="plNStage" hidden><div class="plNDim" aria-hidden="true"></div><section class="plN" data-ov="scroller" aria-labelledby="plNT">'
         + '<div class="plNBand" aria-hidden="true"><div class="plNBarIn"><span class="plNBandT">' + T + '</span></div></div>'
         + '<div class="plNBar"><div class="plNBarIn"><button type="button" class="plNBack" aria-label="Back to Plan">' + BACK + '</button><nav class="plNCrumb" aria-label="Breadcrumb"><button type="button" class="plNCrumbP">Plan</button><span aria-hidden="true">/</span><span aria-current="page">' + T + '</span></nav></div></div>'
-        + '<div class="plNTop" data-ov="hero"><div class="plNHero" aria-hidden="true"><img data-ov="img" src="' + NIMG.nh + '" alt="" decoding="async"></div><div class="plNTopIn"><div class="plNHead" data-ov="title"><h1 class="plNT" id="plNT">' + T + '</h1><p class="plNBy">By Dr. Steven</p></div></div></div>'
-        + '<div class="plNSheet" data-ov="sheet"><div class="plNIn">'
+        + '<div class="plNTop hoHero" data-ov="hero"><div class="plNHero" aria-hidden="true"><img class="hoPic" data-ov="img" src="' + NIMG.nh + '" alt="" decoding="async"></div><div class="plNTopIn"><div class="plNHead hoWords" data-ov="title"><h1 class="plNT" id="plNT">' + T + '</h1><p class="plNBy">By Dr. Steven</p></div></div></div>'
+        + '<div class="plNSheet hoSheet" data-ov="sheet"><div class="plNIn">'
         + '<div class="plNHd"><h1 class="plNHdT">' + T + '</h1><p class="plNBy">By Dr. Steven</p></div>'   // the desk's: the title on the page (the phone's on its photo)
         + '<div class="plNSide"><div class="plNPic"><img src="' + NIMG.nh + '" alt="" decoding="async" loading="lazy"></div><div class="plNDuo">' + recs + keys + '</div></div>'
         + meals + supp + moves + more
@@ -43072,7 +43072,7 @@ hairline({
       [detGrab, det.querySelector('.plNShHd')].forEach(el => { el.addEventListener('pointerdown', down); el.addEventListener('pointermove', move); el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up); }); }
     /* up: over the Plan where it stands, at its top, pushed in from the right (now: at once, for a link or the page menu); the Activity plan, if up, away first */
     const nutShow = (now, from) => { clearTimeout(nutT); if (from) nutFrom = from; if (actOn) actHide(true);
-      if (nStage.hidden){ const nm = nameOf(); nut.querySelectorAll('.plNNm').forEach(x => { x.textContent = nm; }); nStage.style.setProperty('--plNY', host.scrollTop + 'px'); nStage.hidden = false; nut.scrollTop = 0; host.classList.add('plNUp'); }
+      if (nStage.hidden){ const nm = nameOf(); nut.querySelectorAll('.plNNm').forEach(x => { x.textContent = nm; }); nStage.style.setProperty('--plNY', host.scrollTop + 'px'); nStage.hidden = false; nut.scrollTop = 0; host.classList.add('plNUp'); } nutFx.update();
       nutOn = true; planInert(true); document.body.classList.add('plNutOn');
       void nut.offsetWidth; if (now || reduced()) host.classList.add('plNNow');
       host.classList.add('plNSub'); if (host.classList.contains('plNNow')){ void nut.offsetWidth; host.classList.remove('plNNow'); }
@@ -43087,8 +43087,8 @@ hairline({
     const nutBackTo = () => { if (!nutOn) return; nutHide(); const v = vs(); if (v) v.value = 'plan'; try { history.replaceState(null, '', '#plan'); } catch (e) {} if (nutFrom && nutFrom.isConnected) try { nutFrom.focus({ preventScroll: true }); } catch (e) {} };
     nutBack.addEventListener('click', nutBackTo); nut.querySelector('.plNCrumbP').addEventListener('click', nutBackTo);   // Back, and the crumb's Plan
     nut.addEventListener('keydown', e => { if (e.key === 'Escape' && !e.defaultPrevented){ e.preventDefault(); nutBackTo(); } });
-    nut.addEventListener('scroll', under, { passive: true });
-    if (window.ResizeObserver){ const ro = new ResizeObserver(() => { if (nutOn) nutHold(); }); ro.observe(nut); if (nutSide) ro.observe(nutSide); }   // a new width, a picture in: the right column's hold again
+    const nutFx = window.EvOverlap ? window.EvOverlap.bind(nut, { hero: '.plNTop', onFrame: under }) : (nut.addEventListener('scroll', under, { passive: true }), { update: under });   // the header overlap, as the Activity plan's: the photo pinned, the sheet over it, the parallax; under() on the same frame
+    if (window.ResizeObserver){ const ro = new ResizeObserver(() => { nutFx.update(); if (nutOn) nutHold(); }); ro.observe(nut); if (nutSide) ro.observe(nutSide); }   // a new width, a picture in: the right column's hold again
     host.querySelectorAll('.plSee[data-pl-sub="nut"], .plNut .plRow').forEach(b => b.addEventListener('click', () => nutShow(false, b)));   // the Nutrition section's See all, and its card's rows
     /* the goals' carousel, swiped ("the top carousel should be swipeable, and the same magnets as on Records: if you swipe more than 50%, you go on to the second card; if not, you come back to the card"):
        dragged by hand, a mouse as a finger (a mouse cannot pan a scroller, and a press-and-pull only selected the text), the row's snapping off while it moves;
