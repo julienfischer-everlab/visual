@@ -18868,3 +18868,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - **Overlays**: the report's step navigator and the floating "+" tweak button hide while a standalone modal is up.
   - **Keyboard**: Tab stays inside the dialog, and focus goes back where it was on close.
   - **Scrollbars**: none in the centred column on the desk either.
+
+## Doctor's suggestion: the app's headers and footer ("Follow the header style here. Why use a serif"; "Same here should be an H2")
+- **Why there was a serif**: the mock's titles are set in Tobias, and it rendered because Tobias is installed on that computer. It's gone now, along with the Titles tweak.
+- **Title**: "What Dr Naidoo recommended." uses the app's header, the Suggestion's title: sans, 570, 28/32 on the phone, 32/36 on the desk, -.02em.
+- **H2s**: "Your next steps." and "Confirm, then we book." step down to 20/26 on the phone, 22/28 on the desk, 570.
+- **Footer** (the footer screenshot): the app's, as the Suggestion's. On the phone, a full-width **Confirm and book** with a plain-text **Not now** under it; on the desk, side by side. The mock's grey half-width "Not now" pill is gone.
