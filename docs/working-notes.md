@@ -19356,3 +19356,23 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 
 - Past results' Next goes on to the Concierge within the same flow, and the Flow panel kept Past results' row (its `data-jny` stayed `pr`).
 - Now the step change sets it: on the Concierge, the panel shows the Concierge and its phases (Intro, Bubble speech, Services, Specialists); back on Past results, Past results again.
+
+## Step flow in the Design system; a faster push; every bottom sheet swipes down
+
+"steps flow should be a pattern in the Design system, The source of truth." · "Make the left right transition 2x fast with less movement 2x" · "Bottom sheet should be able to swipe down to dismiss"
+
+- **Design system › Step flow** (a page of its own, after General layout; #step-flow): the master of every step flow.
+  - A live XS phone in the app's frame runs it with the flows' own classes and code: Back, the two-line title ("Advanced blood test" over its date), Close, a bar a step, the step's title, its intro and a card of biomarkers, then Next. Back, Next, Play and Slow (four times slower) step through four demo pages; the progress fills as they go.
+  - Controls for its numbers: the push's distance, its in and out durations and the in's start; the progress segments' height and gap and the padding round them. Save setup makes them every page's (everlab:sfMaster, read on load), Reset goes back.
+  - Its anatomy and sizes in a table (frame, header, Back · Close 36, title 14/18 over 12/16, progress, step title 28/30, intro 16/22, footer pill 56, the push, reduced motion, the Health profile's stage variant), then its tokens.
+- **One module, EvSteps**: the progress (a segment a step, or k stages and a share of the next) and the push between steps. The Async report and the Health profile's step pages take both from it; the copies they had are gone. The progress's sizes are tokens now (--sfBar 3, --sfGap 4, --sfPad 12).
+- **The push, twice as fast, half the movement**, measured in the code first:
+  - Async report: 40 px, in 440 ms after 150, out 260 ms. Now 20 px, in 220 ms after 75, out 130 ms, the same curves (out .4, 0, 1, 1; in .16, 1, .3, 1).
+  - The Health profile had its own (32 px, in 260 ms after 45, out 170 ms): it takes the master's now.
+  - The welcome's and the last page's rise (up and out, the next from below) is not this push and is unchanged.
+- **Swipe down to dismiss, one helper (EvSheetSwipe)** for every bottom sheet on the phone (XS, S):
+  - From the grabber or the header, or from the content once it is scrolled to its top. The sheet follows the finger (or the mouse) and the scrim lightens with it. Past 80 px or a flick it closes the way its Close does; short of it, it springs back. A field never starts a drag, and the click under a drag is dropped.
+  - Bound to: the Async report's sheets (See sources, the biomarkers, See more, What we recommend's, a biomarker's detail), the Health profile's (the leave question, the pickers, the Medicare example), the Consent (EvConsent), the Plan subpages' detail and the Nutrition plan's (their own drag code replaced), the More sheet, the Insights biomarker detail, the reports' sheet (its old drag replaced), the service menu sheet, the Gift referral's two sheets, and Design system › Modals' demos.
+  - The older sheet families (the Timeline's .tlSheet: the service sheets, the steps, the booking, the marketplace's detail; the .shWrap sheets; the inbox) bind the first time they are touched, and close by their own Close. Only while they are a sheet: up, on the phone, their foot on the screen's.
+  - Documented in Modals: a Swipe down note, and the Dismiss rows of Bottom sheet · Floating and Full bottom sheet.
+- The full-screen flows (Full modals: the report, the profile, Past results, the Concierge) have no swipe, as Modals › Full says.

@@ -187,7 +187,7 @@ body { margin: 0; overflow: hidden; background: var(--pg); color: var(--pgFg); f
 }
 .arSheet.arIsWelcome .arHead { position: absolute; }
 .arSheet .arHeadRow { display: flex; align-items: center; gap: 10px; min-height: 40px; }
-.arSheet .arHead { gap: 0; } .arSheet .arStepWrap { padding: 12px 0; }   /* the progress 12 above and below ("progress padding top 12, bottom 12") */
+.arSheet .arHead { gap: 0; } .arSheet .arStepWrap { padding: var(--sfPad, 12px) 0; }   /* the progress 12 above and below ("progress padding top 12, bottom 12") */
 /* Fixed bar Gradient (the Insights' sticky): past the welcome the body runs up under the head (its height, --ar-head-h, measured), the flow scrolling beneath; once it has, the paper fades down from .55 at the head's top to nothing 32 under it, over ten bands of blur, the softest the tallest */
 .arSheet.arBarGrad:not(.arIsWelcome) .arBody { margin-top: calc(-1 * var(--ar-head-h, 0px)); padding-top: calc(var(--ar-head-h, 0px) + 24px); scroll-padding-top: var(--ar-head-h, 0px); }
 /* Solid bar / foot: the flow fades out over the last 24px under the bar and above the foot (--ar-tf / --ar-bf, set from the scroll: 0 at rest and at the end); once the anchors are pinned, the fade hangs under them instead */
@@ -291,14 +291,14 @@ body { margin: 0; overflow: hidden; background: var(--pg); color: var(--pgFg); f
   outline-offset: 2px;
 }
 
-/* FlowStepIndicator */
+/* FlowStepIndicator: the step flow's progress (EvSteps.progress), its sizes the master's tokens (Design system -> Step flow): --sfBar a segment's height, --sfGap between them */
 .arSheet .arSteps {
   position: relative;
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: minmax(0, 1fr);
-  grid-template-rows: 3px;
-  column-gap: 4px;
+  grid-template-rows: var(--sfBar, 3px);
+  column-gap: var(--sfGap, 4px);
 }
 .arSheet .arStepsBar { border-radius: 4px; background: oklch(var(--ar-ink)); }
 .arSheet .arStepsBase { opacity: .12; }
@@ -308,8 +308,8 @@ body { margin: 0; overflow: hidden; background: var(--pg); color: var(--pgFg); f
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: minmax(0, 1fr);
-  grid-template-rows: 3px;
-  column-gap: 4px;
+  grid-template-rows: var(--sfBar, 3px);
+  column-gap: var(--sfGap, 4px);
   transition: clip-path .5s cubic-bezier(0, 0, .2, 1);
 }
 
@@ -1963,6 +1963,95 @@ window.EvFullView = (function () {
   addEventListener('resize', function () { held = held.filter(function (el) { return el.isConnected && !el.hidden; }); held.forEach(fit); });
   return { cover: function (el) { if (held.indexOf(el) < 0) held.push(el); fit(el); }, fit: fit };
 })();
+/* EvSteps: the step flow, one code for every flow that steps ("steps flow should be a pattern in the Design system, the source of truth"); the master is Design system -> Step flow.
+   The shell's classes are the Async report's (.arHead: Back, the two-line title, Close; .arStepWrap > .arSteps: the segmented progress; .arBody; .arFoot: the full-width pill), its sizes tokens: --sfBar (a segment's height), --sfGap (between segments), --sfPad (above and below the progress).
+   progress(n) -> { el, set(i[, n]), part(k, f[, n, text]) }: a segment per step, the current one and those before it lit (set), or k whole and the next by f (part: the Health profile's stages).
+   push(old, nw, dir) -> the leaving page's animation: going on (dir > 0) the old page drifts dist to the left as it fades out, the new one comes dist from the right as it fades in, lag after; going back, mirrored. The easing the Async report's (out .4, 0, 1, 1; in .16, 1, .3, 1).
+   Its numbers halve the Async report's ("make the left right transition 2x fast with less movement 2x": 40 px, in 440 ms after 150, out 260 ms -> 20 px, 220 after 75, 130). Saved on the master (everlab:sfMaster), every page takes them on load */
+window.EvSteps = (function () {
+  var M = { dist: 20, dur: 220, out: 130, lag: 75, bar: 3, gap: 4, pad: 12 }, D = JSON.parse(JSON.stringify(M)), K = 'everlab:sfMaster', root = document.documentElement;
+  var EIN = 'cubic-bezier(.16, 1, .3, 1)', EOUT = 'cubic-bezier(.4, 0, 1, 1)';
+  var tok = function () { root.style.setProperty('--sfBar', M.bar + 'px'); root.style.setProperty('--sfGap', M.gap + 'px'); root.style.setProperty('--sfPad', M.pad + 'px'); };
+  var mk = function (cls) { var e = document.createElement('div'); e.className = cls; return e; };
+  var progress = function (n) {
+    var el = mk('arSteps'), fill = null, N = 0; el.setAttribute('role', 'progressbar'); el.setAttribute('aria-valuemin', '1');
+    var build = function (m) { if (m === N && fill) return; N = m; el.textContent = ''; fill = mk('arStepsFill'); fill.setAttribute('aria-hidden', 'true');
+      for (var i = 0; i < m; i++) { el.appendChild(mk('arStepsBar arStepsBase')); fill.appendChild(mk('arStepsBar')); } el.appendChild(fill); el.setAttribute('aria-valuemax', String(m)); };
+    /* the fill clipped to v segments and g gaps: the gap read from its token, so a change to it moves the fill too */
+    var to = function (v, g) { fill.style.clipPath = 'inset(0 calc(100% - (' + v + ' * ((100% - ' + (N - 1) + ' * var(--sfGap, 4px)) / ' + N + ') + ' + g + ' * var(--sfGap, 4px))) 0 0)'; };
+    build(Math.max(1, n || 1));
+    return { el: el, n: function () { return N; },
+      set: function (i, m) { if (m) build(m); i = Math.max(1, Math.min(N, i)); el.setAttribute('aria-valuenow', String(i)); el.setAttribute('aria-valuetext', 'Step ' + i + ' of ' + N); to(i, i - 1); },
+      part: function (k, f, m, txt) { if (m) build(m); f = Math.max(0, Math.min(1, f || 0)); el.setAttribute('aria-valuenow', String(Math.min(N, k + 1))); if (txt) el.setAttribute('aria-valuetext', txt); to((k + f).toFixed(4), k); } };
+  };
+  var push = function (old, nw, dir, k) { var f = dir > 0, out = null; k = k > 0 ? k : 1;   /* k: slower by k (the master's Slow) */
+    if (nw && nw.animate) nw.animate([{ opacity: 0, transform: 'translateX(' + (f ? M.dist : -M.dist) + 'px)' }, { opacity: 1, transform: 'none' }], { duration: M.dur * k, delay: M.lag * k, easing: EIN, fill: 'backwards' });
+    if (old && old.animate) out = old.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateX(' + (f ? -M.dist : M.dist) + 'px)' }], { duration: M.out * k, easing: EOUT, fill: 'forwards' });
+    return out; };
+  var load = function () { try { var v = JSON.parse(localStorage.getItem(K) || 'null'); if (v) Object.keys(M).forEach(function (k) { if (typeof v[k] === 'number' && isFinite(v[k])) M[k] = v[k]; }); } catch (e) {} tok(); };
+  load();
+  return { M: M, D: D, K: K, progress: progress, push: push, ease: { in: EIN, out: EOUT }, set: function (k, v) { M[k] = v; tok(); },
+    save: function () { try { localStorage.setItem(K, JSON.stringify(M)); return true; } catch (e) { return false; } },
+    reset: function () { Object.keys(D).forEach(function (k) { M[k] = D[k]; }); try { localStorage.removeItem(K); } catch (e) {} tok(); } };
+})();
+/* EvSheetSwipe(panel, close, opts): every bottom sheet's swipe down ("bottom sheet should be able to swipe down to dismiss"), one helper for all of them; documented in Design system -> Modals.
+   On the phone (XS, S; opts.when to say otherwise) the panel follows the finger down from its grabber or its header (opts.handle), and from its body while that is scrolled to its top;
+   let go past opts.threshold (80) or flicked down (over .5 px a ms), close() runs and the sheet leaves from where it was (its own exit, from there; opts.out 'slide' slides it out first, for a sheet whose exit is not a move); short of it, it springs back.
+   The scrim (opts.scrim) lightens as it goes. A drag never clicks what it started on; a field, a slider or [data-noswipe] never starts one. Returns { off() } */
+window.EvSheetSwipe = function (panel, close, o) {
+  o = o || {}; if (!panel || panel._evSw) return panel && panel._evSw; var TH = o.threshold || 80;
+  var mv = function () { return (typeof o.move === 'function' ? o.move() : o.move) || panel; };
+  var scrimOf = function () { return typeof o.scrim === 'function' ? o.scrim() : o.scrim; };
+  var when = function () { if (o.when) return !!o.when(); return /^(xs|s)$/.test(document.body.dataset.bp || ''); };
+  var SKIP = 'input, textarea, select, [contenteditable="true"], [data-noswipe], .evNoSwipe' + (o.skip ? ', ' + o.skip : '');
+  var inHandle = function (t) { var h = o.handle && t.closest && t.closest(o.handle); return !!(h && panel.contains(h)); };
+  var scrolled = function (t) { for (var e = t; e && e !== panel.parentNode; e = e.parentElement) { if (e.scrollHeight > e.clientHeight + 1) { var oy = getComputedStyle(e).overflowY; if ((oy === 'auto' || oy === 'scroll') && e.scrollTop > 0) return true; } if (e === panel) break; } return false; };
+  /* written !important: some sheets hold their transform with !important (the service sheets) */
+  var put = function (el, k, v) { if (v) el.style.setProperty(k, v, 'important'); else el.style.removeProperty(k); };
+  var S = null, eat = false;
+  var begin = function (t, x, y) { if (!when() || (t.closest && t.closest(SKIP))) return; var hd = inHandle(t); if (!hd && scrolled(t)) return;
+    var el = mv(), r = el.getBoundingClientRect(), k = el.offsetHeight ? r.height / el.offsetHeight : 1;   /* a frame drawn smaller (the documentation's phones): the finger's pixels in the panel's own */
+    S = { x: x, y: y, hd: hd, on: false, dy: 0, k: k || 1, el: el, h: el.offsetHeight || r.height, pts: [[y, performance.now()]] }; };
+  var commit = function () { S.on = true; put(S.el, 'transition', 'none'); var sc = scrimOf(); if (sc) put(sc, 'transition', 'none'); put(panel, 'user-select', 'none'); put(panel, '-webkit-user-select', 'none'); try { (panel.ownerDocument.defaultView || window).getSelection().removeAllRanges(); } catch (x) {} };   /* a mouse's drag selects no words */
+  var track = function (x, y, e) { if (!S) return false; var dx = x - S.x, dy = y - S.y;
+    if (!S.on) { if (Math.abs(dy) < 6 && Math.abs(dx) < 6) { if (e && e.cancelable && e.type === 'touchmove' && dy > 0 && dy >= Math.abs(dx)) e.preventDefault(); return false; }   /* a touch heading down: the page's own scroll not started under it */
+      if (dy <= 0 || Math.abs(dx) > Math.abs(dy)) { S = null; return false; } commit(); }
+    S.dy = Math.max(0, dy / S.k); put(S.el, 'transform', 'translateY(' + S.dy.toFixed(1) + 'px)'); var sc = scrimOf(); if (sc) put(sc, 'opacity', String(Math.max(0, 1 - S.dy / (S.h || 600)).toFixed(3))); S.pts.push([y, performance.now()]); if (S.pts.length > 5) S.pts.shift(); if (e && e.cancelable) e.preventDefault(); return true; };
+  var end = function () { if (!S) return; var s = S; S = null; if (!s.on) return; eat = true; setTimeout(function () { eat = false; }, 0); put(panel, 'user-select', ''); put(panel, '-webkit-user-select', '');
+    var a = s.pts[0], b = s.pts[s.pts.length - 1], v = b[1] > a[1] ? (b[0] - a[0]) / (b[1] - a[1]) : 0, go = s.dy > TH || (v > .5 && s.dy > 24), sc = scrimOf();
+    if (go && o.out === 'slide') { put(s.el, 'transition', 'transform .24s cubic-bezier(.4, 0, 1, 1)'); put(s.el, 'transform', 'translateY(' + Math.round(s.h + 40) + 'px)'); if (sc) { put(sc, 'transition', 'opacity .24s ease'); put(sc, 'opacity', '0'); }
+      setTimeout(function () { close(); setTimeout(function () { put(s.el, 'transition', ''); put(s.el, 'transform', ''); if (sc) { put(sc, 'transition', ''); put(sc, 'opacity', ''); } }, 700); }, 200); return; }
+    if (go) { put(s.el, 'transition', ''); put(s.el, 'transform', ''); if (sc) { put(sc, 'transition', ''); put(sc, 'opacity', ''); } close(); return; }   /* the sheet's own exit, from where the finger left it */
+    put(s.el, 'transition', 'transform .32s cubic-bezier(.16, 1, .3, 1)'); put(s.el, 'transform', ''); if (sc) { put(sc, 'transition', 'opacity .32s ease'); put(sc, 'opacity', ''); }   /* back up */
+    setTimeout(function () { if (!S) { put(s.el, 'transition', ''); if (sc) put(sc, 'transition', ''); } }, 340); };
+  var pd = function (e) { if (e.pointerType === 'touch' || e.button) return; begin(e.target, e.clientX, e.clientY); };
+  var pm = function (e) { if (!S || e.pointerType === 'touch') return; var was = S.on; if (track(e.clientX, e.clientY, e) && !was) try { panel.setPointerCapture(e.pointerId); } catch (x) {} };
+  var pu = function (e) { if (e.pointerType !== 'touch') end(); };
+  var ts = function (e) { if (e.touches.length === 1) begin(e.target, e.touches[0].clientX, e.touches[0].clientY); else S = null; };
+  var tm = function (e) { if (S && e.touches.length === 1) track(e.touches[0].clientX, e.touches[0].clientY, e); };
+  var te = function () { end(); };
+  var ck = function (e) { if (eat && e.isTrusted) { e.preventDefault(); e.stopPropagation(); eat = false; } };   /* the finger's own click, not the close the swipe presses */
+  panel.addEventListener('pointerdown', pd); panel.addEventListener('pointermove', pm); panel.addEventListener('pointerup', pu); panel.addEventListener('pointercancel', pu);
+  panel.addEventListener('touchstart', ts, { passive: true }); panel.addEventListener('touchmove', tm, { passive: false }); panel.addEventListener('touchend', te); panel.addEventListener('touchcancel', te);
+  var dg = function (e) { if (S) e.preventDefault(); };   /* a picture under the mouse would start the browser's own drag (and cancel this one) */
+  panel.addEventListener('click', ck, true); panel.addEventListener('dragstart', dg);
+  return (panel._evSw = { off: function () { panel.removeEventListener('dragstart', dg); ['pointerdown', pd, 'pointermove', pm, 'pointerup', pu, 'pointercancel', pu, 'touchstart', ts, 'touchmove', tm, 'touchend', te, 'touchcancel', te].forEach(function (x, i, a) { if (i % 2 === 0) panel.removeEventListener(x, a[i + 1]); }); panel.removeEventListener('click', ck, true); panel._evSw = null; } });
+};
+/* the sheet families built before the helper, each by its own code (the Timeline's .tlSheet: the service sheets, the steps, the booking, the marketplace's detail; the .shWrap sheets: the reports, the info, the organ ages;
+   the inbox's .ibWrap): bound the first time a finger or the mouse comes down on one, closed the way each already closes, by its own scrim. A sheet only while it is one: up (.on), on the phone, its foot on the screen's
+   (geo: anchored at the bottom, its lower corners square; a desk modal or drawer never) */
+window.EvSheetSwipe.auto = function (fams) {
+  var phone = function (w) { return /^(xs|s)$/.test(document.body.dataset.bp || '') || !!w.closest('#phone2, #phone'); };
+  var atFoot = function (p, w) { var r = p.getBoundingClientRect(), b = w.getBoundingClientRect(); return r.height > 0 && Math.abs(r.bottom - b.bottom) < 6 && parseFloat(getComputedStyle(p).borderBottomLeftRadius) < 1; };
+  var bind = function (e) { var t = e.target; if (!t || !t.closest) return;
+    fams.forEach(function (f) { var p = t.closest(f.panel); if (!p || p._evSw) return; var w = p.closest(f.wrap); if (!w) return;
+      window.EvSheetSwipe(p, function () { var c = f.x && p.querySelector(f.x), d = w.querySelector(f.dim); if (c) c.click(); else if (d) d.click(); }, { handle: f.handle, skip: f.skip, scrim: function () { return w.querySelector(f.dim); },
+        when: function () { return w.classList.contains('on') && phone(w) && (f.geo ? atFoot(p, w) : true); } }); }); };
+  document.addEventListener('pointerdown', bind, true); document.addEventListener('touchstart', bind, { capture: true, passive: true });
+};
+window.EvSheetSwipe.auto([{ wrap: '.tlSheet', panel: '.tlShPanel', dim: '.tlShDim', x: '.tlShX, .mkDetX', handle: '.tlShGrab, .tlShHead', skip: '.tlShX, .mkDetX', geo: true },
+  { wrap: '.shWrap', panel: '.sheet', dim: '.shDim', x: '.shClose', handle: '.shHandle, .rsTop, .oaTop', skip: '.shClose', geo: true },
+  { wrap: '.ibWrap', panel: '.ibCard', dim: '.ibDim', x: '.ibX', handle: '.ibHandle, .ibHead', skip: '.ibX' }]);
 window.EvOverlap = (function () {
   var M = { ty: .25, rise: 32, end: 40, overlap: 28, radius: 24, dim: .35, tint: .85 }, D = JSON.parse(JSON.stringify(M)), root = document.documentElement;
   var red = function () { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
@@ -2109,6 +2198,7 @@ window.EvConsent = (function () {
       var end = function () { if (w.parentNode) w.parentNode.removeChild(w); try { if (prev && prev.focus && prev.isConnected) prev.focus({ preventScroll: true }); } catch (e) {} if (cb) cb(); };
       if (still || reduced()) { end(); return; } w.classList.remove('ecOn'); setTimeout(end, narrow ? 380 : 240); };   // down (or out) first
     x.addEventListener('click', function () { close(o.onClose); }); sc.addEventListener('click', function () { close(o.onClose); });
+    if (narrow && !still && window.EvSheetSwipe) window.EvSheetSwipe(p, function () { close(o.onClose); }, { handle: '.ecGrab, .ecHead', when: function () { return !gone; }, scrim: sc, skip: '.ecX' });   /* the sheet's swipe down (Modals -> Bottom sheet): from its grabber or header, or its text at its top */
     b2.addEventListener('click', function () { if (o.readonly) { close(o.onClose); return; } asking = !asking; paint(); (asking ? b1 : b2).focus(); });   // I do not consent: the question; Cancel: back
     b1.addEventListener('click', function () { if (asking) close(o.onDecline); else if (read) close(o.onConsent); });
     bd.addEventListener('scroll', mark, { passive: true }); paint();
@@ -2481,7 +2571,7 @@ window.EvConsent = (function () {
     var backBtn = h('button', { type: 'button', class: 'arIconBtn arBack', 'aria-label': 'Back' }, ic(18, P.back, 1.8));
     var closeBtn = h('button', { type: 'button', class: 'arIconBtn arClose', 'aria-label': 'Close' }, ic(16, P.close, 1.8));
     var navT = h('span', { class: 'arNavTt' }), navS = h('span', { class: 'arNavTs' });
-    var stepsEl = h('div', { class: 'arSteps', role: 'progressbar', 'aria-valuemin': '1' }), fill = h('div', { class: 'arStepsFill', 'aria-hidden': 'true' });
+    var prog = window.EvSteps.progress(3), stepsEl = prog.el;   // the three stages' bars: the step flow's progress, the master's (EvSteps, Design system -> Step flow)
     var head = h('div', { class: 'arHead' }, h('div', { class: 'arHeadRow' }, backBtn, h('div', { class: 'hpMid' }, h('div', { class: 'arHeadLabel arNavT hpSrT' }, navT, navS), h('div', { class: 'arStepWrap hpStepMid' }, stepsEl)), closeBtn));   // the steps in the bar's middle, between back and close ("merge step indicator with centred title"); the title over them, 8 above, with Tweaks -> Step title on, else read out only   // the steps in the bar's middle, between back and close, in the title's place ("merge step indicator with centred title", desktop and mobile); the title read out, not shown
     var view = h('div', { class: 'hpView' }), rail = h('nav', { class: 'hpRail', 'aria-label': 'Your health profile' }), mainEl = h('div', { class: 'hpMain' }, rail, view);   // the desk's rail: the stages, the one open its steps
     var cta = h('button', { type: 'button', class: 'arBtn arBtnPrimary arBtnLg' }, h('span', { class: 'arBtnLabel' })), sec = h('button', { type: 'button', class: 'hpSec', hidden: true });
@@ -2504,7 +2594,9 @@ window.EvConsent = (function () {
         h('h2', { class: 'hpH', id: id, text: 'Are you sure you want to go?' }),
         h('p', { class: 'hpD', text: 'Your answers so far are saved, so you can pick up where you left off any time.' }),
         h('div', { class: 'hpConfA' }, leave, keep));
-      conf = h('div', { class: 'hpConf' }, h('div', { class: 'hpConfDim', on: { click: function () { shutConf(); } } }), panel);
+      var cDim = h('div', { class: 'hpConfDim', on: { click: function () { shutConf(); } } });
+      conf = h('div', { class: 'hpConf' }, cDim, panel);
+      if (window.EvSheetSwipe) window.EvSheetSwipe(panel, function () { shutConf(); }, { scrim: cDim, handle: '.hpH', when: function () { var w = root.closest('.aqWrap'); return !!conf && !!(w && (w.classList.contains('aqBpXS') || w.classList.contains('aqBpS'))); } });   /* a bottom sheet on the phone (XS, S): a swipe down is Keep going; the desk's modal none */
       root.appendChild(conf); void conf.offsetWidth; conf.classList.add('on');
       keep.addEventListener('click', function () { shutConf(); });
       leave.addEventListener('click', function () { shutConf(function () { if (opts.onClose) opts.onClose(); else home(-1); }); });
@@ -2533,15 +2625,8 @@ window.EvConsent = (function () {
     root.firstChild.appendChild(kp);
     root.addEventListener('focusin', function (e) { root.classList.toggle('hpKpOn', kpFor(e.target)); if (kpFor(e.target)) setTimeout(function () { try { e.target.scrollIntoView({ block: 'nearest', behavior: reduced() ? 'auto' : 'smooth' }); } catch (x) {} }, 320); });
     root.addEventListener('focusout', function () { setTimeout(function () { if (!kpFor(document.activeElement)) root.classList.remove('hpKpOn'); }, 0); });
-    var bars = function (n, k) {   // the area's bars, the async report's: k of n lit
-      if (stepsEl.childElementCount - 1 !== n) { stepsEl.textContent = ''; fill = h('div', { class: 'arStepsFill', 'aria-hidden': 'true' }); for (var i = 0; i < n; i++) { stepsEl.appendChild(h('div', { class: 'arStepsBar arStepsBase' })); fill.appendChild(h('div', { class: 'arStepsBar' })); } stepsEl.appendChild(fill); }
-      stepsEl.setAttribute('aria-valuemax', String(n)); stepsEl.setAttribute('aria-valuenow', String(k)); stepsEl.setAttribute('aria-valuetext', 'Step ' + k + ' of ' + n);
-      var px = Math.max(0, k - 1) * 4;   /* the current step the last bar lit, whole; no start of the next ("remove the small field on the third step") */ fill.style.clipPath = 'inset(0 calc(100% - (' + k + ' * ((100% - ' + ((n - 1) * 4) + 'px) / ' + n + ') + ' + px + 'px)) 0 0)';
-    };
     var stageBars = function (k, frac) {   // the stages done whole, the one on (k) filled by frac of its steps
-      bars(3, k + 1); var f = Math.max(0, Math.min(1, frac));
-      fill.style.clipPath = 'inset(0 calc(100% - (' + (k + f).toFixed(4) + ' * ((100% - 8px) / 3) + ' + (k * 4) + 'px)) 0 0)';
-      stepsEl.setAttribute('aria-valuetext', AREAS[k].t + ', ' + Math.round(f * 100) + '% done');
+      prog.part(k, frac, 3, AREAS[k].t + ', ' + Math.round(Math.max(0, Math.min(1, frac)) * 100) + '% done');
     };
     var ctaFx = null;   // the Continue's own fade in (the search page's), stopped by the next page
     var foot2 = function (label, ok, fn, sl, sfn) { cta.firstChild.textContent = label; cta.disabled = !ok; onCta = fn; sec.hidden = !sl; sec.textContent = sl || ''; onSec = sfn || null; };
@@ -2574,10 +2659,9 @@ window.EvConsent = (function () {
           var vd = function () { old.remove(); scr.style.zIndex = ''; }; vo.onfinish = vd; vo.oncancel = vd;
         }
         else {
-          var f = dir > 0, X = f ? 32 : -32;   /* 32 and twice as quick ("2x faster, 2x less movement": was 64, 520 / 340 ms) */   /* a soft cross: the old page fading out as it drifts 64 the way it goes, the new fading in from 64 the other side ("left right content transition smoother: fade in/out, -64px +64px") */
+          /* a soft cross, the old page fading out as it drifts the way it goes, the new fading in from the other side ("left right content transition smoother"): the step flow's push, the master's (EvSteps, Design system -> Step flow), 20 px, in 220 ms after 75, out 130 ms (was 32 px, in 260 after 45, out 170: its own numbers, now the one master's) */
           scr.style.zIndex = '2'; old.style.zIndex = '1'; old.setAttribute('inert', ''); old.setAttribute('aria-hidden', 'true');
-          scr.animate([{ transform: 'translateX(' + X + 'px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 260, delay: 45, easing: 'cubic-bezier(.2, .7, .2, 1)', fill: 'backwards' });
-          var out = old.animate([{ transform: 'none', opacity: 1 }, { transform: 'translateX(' + (-X) + 'px)', opacity: 0 }], { duration: 170, easing: 'cubic-bezier(.4, 0, .6, 1)', fill: 'forwards' });
+          var out = window.EvSteps.push(old, scr, dir);
           var done = function () { old.remove(); scr.style.zIndex = ''; }; out.onfinish = done; out.oncancel = done;
         }
       }
@@ -2845,9 +2929,10 @@ window.EvConsent = (function () {
         } else {   // the phone: the sheet from the foot, a tap picks and closes it
           var tid = id + 'T', list = h('div', { class: 'hpPkL', role: 'listbox', 'aria-labelledby': tid, tabindex: '-1' }, o.opts.map(item));
           var x = h('button', { type: 'button', class: 'hpPkX', 'aria-label': 'Close', on: { click: function () { shut(true); } } }, ic(12, P.close, 1.8));
-          sheet = h('div', { class: 'hpConf hpPk' }, h('div', { class: 'hpConfDim', on: { click: function () { shut(true); } } }),
-            h('div', { class: 'hpConfP hpPkP', role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': tid }, h('span', { class: 'hpPkGrab', 'aria-hidden': 'true' }),
-              h('div', { class: 'hpPkH' }, h('h2', { class: 'hpPkT', id: tid, text: o.title }), x), list));
+          var pkDim = h('div', { class: 'hpConfDim', on: { click: function () { shut(true); } } }), pkP = h('div', { class: 'hpConfP hpPkP', role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': tid }, h('span', { class: 'hpPkGrab', 'aria-hidden': 'true' }),
+              h('div', { class: 'hpPkH' }, h('h2', { class: 'hpPkT', id: tid, text: o.title }), x), list);
+          sheet = h('div', { class: 'hpConf hpPk' }, pkDim, pkP);
+          if (window.EvSheetSwipe) window.EvSheetSwipe(pkP, function () { shut(true); }, { handle: '.hpPkGrab, .hpPkH', scrim: pkDim, skip: '.hpPkX', when: function () { return !!sheet; } });   /* a swipe down lets it go (Modals -> Bottom sheet) */
           host.appendChild(sheet); void sheet.offsetWidth; sheet.classList.add('on');
           var s1 = list.querySelector('[aria-selected="true"]') || list; setTimeout(function () { try { s1.focus({ preventScroll: true }); if (s1 !== list) s1.scrollIntoView({ block: 'nearest' }); } catch (e) {} }, 60);
         }
@@ -2900,9 +2985,10 @@ window.EvConsent = (function () {
       var esc = function (e) { if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); shut(); } };
       var x = h('button', { type: 'button', class: 'hpPkX', 'aria-label': 'Close', on: { click: shut } }, ic(12, P.close, 1.8));
       var art = h('div', { class: 'hpMcArt' }); art.innerHTML = MCX;
-      ov = h('div', { class: 'hpConf hpMc' + (phone ? ' hpPk' : '') }, h('div', { class: 'hpConfDim', on: { click: shut } }),
-        h('div', { class: 'hpConfP hpMcP' + (phone ? ' hpPkP' : ''), role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': tid }, phone ? h('span', { class: 'hpPkGrab', 'aria-hidden': 'true' }) : null,
-          h('div', { class: 'hpMcH' }, h('h2', { class: phone ? 'hpMcT hpMcTBig' : 'hpMcT', id: tid, text: 'Medicare card example' }), x), art));
+      var mcDim = h('div', { class: 'hpConfDim', on: { click: shut } }), mcP = h('div', { class: 'hpConfP hpMcP' + (phone ? ' hpPkP' : ''), role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': tid }, phone ? h('span', { class: 'hpPkGrab', 'aria-hidden': 'true' }) : null,
+          h('div', { class: 'hpMcH' }, h('h2', { class: phone ? 'hpMcT hpMcTBig' : 'hpMcT', id: tid, text: 'Medicare card example' }), x), art);
+      ov = h('div', { class: 'hpConf hpMc' + (phone ? ' hpPk' : '') }, mcDim, mcP);
+      if (phone && window.EvSheetSwipe) window.EvSheetSwipe(mcP, shut, { handle: '.hpPkGrab, .hpMcH', scrim: mcDim, skip: '.hpPkX', when: function () { return !!ov; } });   /* the phone's sheet: a swipe down lets it go */
       host.appendChild(ov); void ov.offsetWidth; ov.classList.add('on'); document.addEventListener('keydown', esc, true);
       setTimeout(function () { try { x.focus({ preventScroll: true }); } catch (e) {} }, 60);
     }
