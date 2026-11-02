@@ -19042,3 +19042,15 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Persona #1: water within reach, more on training days, water as the everyday drink, alcohol kept light.
   - Persona #2: a drink at every feed, a bottle where she feeds, the colour check, water as the everyday drink.
   - The category now counts 3, and each report 13 recommendations.
+- **Reviewed** (clinical accuracy, each persona's own data, voice and duplication). Four fixes made:
+  - Persona #1, *Keep alcohol light*: it now rests on the cholesterol insight, which holds the blood pressure she told her doctor about in September. It no longer cites the blood-vessel insight, which never mentions it. It opens "If you drink", since nothing says she does.
+  - Persona #2: *Have a drink at every feed* repeated her Before meals glass word for word. It is now *Sip through the day*, on tiredness and broken sleep. The sip at each feed moves into *Keep a bottle where you feed*.
+  - Persona #2, *Check your urine colour*: the title says what to check. It adds that her multivitamin can turn it bright yellow, which is harmless.
+  - The subtitle is *Keep your fluids up all day*. The meal plates in the Assets library carry the new category name.
+
+## Chat: a beam round the field on switching to Eva ("On the chat, when you switch the care team to Eva, we should have this border beam around that float one turn around.")
+- **When it runs**: choosing Eva in the field's pill, coming from Care team, sends a light once round the field's edge. It does not run when Eva is chosen again.
+- **The light**: a 96px streak along the field's 1.5px rounded outline, at an even speed, 1.9 s, fading in and out.
+  - On dark, its head is white-hot with an orange tail. On light, the head is the accent (#f26b3a) with a peach tail.
+  - With reduced motion, a short fade with no travel.
+- **Concierge components › Field**: a new section first in the gallery, the field with a *Switch to Eva* button that plays the beam. It uses the same code as the chat.
