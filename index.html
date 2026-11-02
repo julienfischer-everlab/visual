@@ -157,7 +157,11 @@
   /* the Health profile at a forced XS: its journey beside the phone, Tweaks' panel as it is ("the XS view deserves the journey tweak up front visible, to jump between the steps without opening the Tweaks panel") */
   .topbar .hpJny{position:fixed;z-index:29;display:flex;flex-direction:column;gap:2px;width:280px;box-sizing:border-box;padding:6px;overflow-y:auto;background:#131316;border:1px solid #232326;border-radius:12px;} .topbar .hpJny[hidden]{display:none;}
   .topbar .hpWtl .tkOrd{display:flex;flex-direction:column;gap:2px;margin:0;padding:0;list-style:none;} .topbar .hpWtl .tkOrd li{height:auto;min-height:0;padding:8px;cursor:pointer;} .topbar .hpWtl .tkOrd li .nm{display:flex;flex-wrap:wrap;align-items:baseline;row-gap:1px;} .topbar .hpWtl .tkOrd li .nm small{flex-basis:100%;padding-left:20px;font-size:11.5px;color:#8b8b86;} .topbar .hpWtl .tkOrd li.now .nm small{color:#b5b5b0;}   /* the reveal's timeline: each moment and a line of what it is, numbered */
-  .topbar .hpJny > .tkSub{padding:4px 10px 3px;} .topbar .hpJny .tkJnyRows{display:flex;flex-direction:column;gap:2px;}
+  .topbar .hpJny > .tkSub{padding:4px 10px 3px;}
+  .topbar .hpFl > .tkSub:first-child{color:#e4e4e7;}   /* a service's (or the report's) name heading its steps */
+  .topbar .hpFl .hpFlG{margin-top:8px;} .topbar .hpFl .hpFlG[data-go]{display:flex;align-items:center;justify-content:space-between;margin-top:2px;padding:8px 10px;border-radius:8px;cursor:pointer;color:#a1a1aa;} .topbar .hpFl .hpFlG[data-go]::after{content:"›";font-size:13px;opacity:.6;}
+  .topbar .hpFl .hpFlG[data-go]:hover{background:rgba(255,255,255,.06);color:#fff;} .topbar .hpFl .hpFlG[data-go]:focus-visible{outline:2px solid #71717a;outline-offset:-2px;}   /* another service of the journey: a row that opens it */
+  .topbar .hpFl li.hpFlDoc .nm{color:#a1a1aa;font-style:normal;} .topbar .hpFl li.hpFlDoc.now .nm{color:#fff;}   /* a document among the steps, quieter */ .topbar .hpJny .tkJnyRows{display:flex;flex-direction:column;gap:2px;}
   .topbar .tkRow .lbl{color:#e4e4e7;white-space:nowrap;}
   .topbar .tkRow .tkBuild{margin-left:auto;font-size:10.5px;color:#8b8b90;white-space:nowrap;font-variant-numeric:tabular-nums;}
   .topbar .tkRow .tkPerRef{display:flex;flex-direction:column;align-items:flex-end;gap:2px;white-space:normal;text-align:right;user-select:text;-webkit-user-select:text;} .topbar .tkRow .tkPerRef b{font-weight:500;color:#c9c9cc;} .topbar .tkRow .tkPerRef code{font-family:var(--ar-font-mono, ui-monospace, monospace);font-size:10px;user-select:all;-webkit-user-select:all;}   /* the persona's member, name over ID, the ID selected whole on a click */
@@ -17737,7 +17741,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
     return {
       el: root,
       go: go,
-      steps: function () { return { n: NEWI.length, rest: REST, rec: REC, next: NEXT, at: step }; },   // for the step navigator beside the phone
+      steps: function () { return { n: NEWI.length, rest: REST, rec: REC, next: NEXT, at: step, names: NEWI.map(function (L) { return L.short || L.headline; }), report: REPORT.name }; },   // names: each insight's, for the Flow panel   // for the step navigator beside the phone
       reset: function () { go(0, true); },
       /* where it stands, and back there in a new mount ("when I change a tweak don't reload the experience from the beginning, stay on the current screen"): the step by what it is (the list, the nth insight...), so the list on or off still lands on the same screen; its scroll kept when the screen is the same, and its entrance not played again */
       where: function () { return { t: step === 0 ? 'w' : step <= NEWI.length ? 'i' + (step - 1) : step === REST ? 'r' : step === REC ? 'c' : 'n', y: body.scrollTop }; },
@@ -28064,10 +28068,35 @@ hairline({
   }
   /* Flow, in the top bar: there while a screen has its flow panel at the left (the reveal's timeline, the profile's journey), pressed to fold the panel away and back; remembered */
   { const av = {}, b = document.getElementById('tkFlowBtn'), H = document.documentElement; try { if (localStorage.getItem('evFlowOff') === '1') H.classList.add('flowOff'); } catch (x){}
-    const sync = () => { if (!b) return; b.hidden = !(av.jny || av.wtl || av.rf); b.setAttribute('aria-pressed', String(!H.classList.contains('flowOff'))); };
+    const sync = () => { if (!b) return; b.hidden = !Object.keys(av).some(k => av[k]); b.setAttribute('aria-pressed', String(!H.classList.contains('flowOff'))); };   // any screen with a flow panel (the profile's, the reveal's, the referral's, a service's, the report's)
     window.__flowAv = (k, on) => { if (av[k] !== on){ av[k] = on; sync(); } };
     window.__flowDock = () => { const on = !!document.querySelector('.topbar .hpJny:not([hidden])'); if (on){ const t = Math.round(document.querySelector('.topbar').getBoundingClientRect().bottom) + 'px'; if (H.style.getPropertyValue('--flTop') !== t) H.style.setProperty('--flTop', t); } if (H.classList.contains('flowDocked') !== on){ if (!matchMedia('(prefers-reduced-motion: reduce)').matches){ H.classList.add('tkFlMove'); clearTimeout(window.__flMvT); window.__flMvT = setTimeout(() => H.classList.remove('tkFlMove'), 520); } H.classList.toggle('flowDocked', on); dispatchEvent(new Event('resize')); } };   /* a slide (0.45 s), the phone and the screen over it together, not a jump */   /* docked while a flow panel shows; the screens re-centre */
-    if (b) b.addEventListener('click', () => { const off = H.classList.toggle('flowOff'); try { localStorage.setItem('evFlowOff', off ? '1' : '0'); } catch (x){} sync(); if (typeof jny === 'function') jny(); if (typeof wtl === 'function') wtl(); window.__flowDock(); }); sync(); }
+    if (b) b.addEventListener('click', () => { const off = H.classList.toggle('flowOff'); try { localStorage.setItem('evFlowOff', off ? '1' : '0'); } catch (x){} sync(); if (typeof jny === 'function') jny(); if (typeof wtl === 'function') wtl(); window.__flowDock(); }); sync();
+    /* a flow panel for any screen with steps ("for all of the services that have steps, we should be able to select the flow controller so I can see it on the left and I can jump into steps quickly"): the referral's panel made general.
+       cfg: on() (its screen is up), model() -> { title, now, groups: [{ name, go, rows: [{ t, go, doc }] }] } (a group's name a row too when it has a go: another service of the journey), go(id). The rows rebuilt when the steps change, the one it stands on lit; docked at the left as the others, folded by Flow */
+    window.__flowPanel = (key, cfg) => { let el = null, sig = '', busy = false;
+      const esc = v => String(v == null ? '' : v).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+      const upd = () => { if (busy) return; busy = true; try {
+        const on = !!cfg.on(), m = on ? cfg.model() : null; window.__flowAv(key, !!m);
+        if (!m || H.classList.contains('flowOff')){ if (el && !el.hidden) el.hidden = true; window.__flowDock(); return; }
+        const bar = document.querySelector('.topbar'); if (!bar) return;
+        if (!el){ el = document.createElement('aside'); el.className = 'hpJny hpWtl hpFl'; el.dataset.fl = key;
+          const go = x => { cfg.go(x.dataset.go); setTimeout(upd, 80); setTimeout(upd, 500); };
+          el.addEventListener('click', e => { const x = e.target.closest('[data-go]'); if (x) go(x); });
+          el.addEventListener('keydown', e => { const x = e.target.closest('[data-go]'); if (x && (e.key === 'Enter' || e.key === ' ')){ e.preventDefault(); go(x); } });
+          bar.appendChild(el); }
+        el.setAttribute('aria-label', (m.title || 'Flow') + ' steps');
+        const sg = JSON.stringify([m.title, m.groups.map(g => [g.name, g.go, (g.rows || []).map(r => [r.t, r.go, !!r.doc])])]);
+        if (sg !== sig){ sig = sg; el.innerHTML = '<div class="tkSub">' + esc(m.title) + '</div>' + m.groups.map(g => (g.name ? '<div class="tkSub hpWtlHp hpFlG"' + (g.go != null ? ' role="button" tabindex="0" data-go="' + esc(g.go) + '"' : '') + '>' + esc(g.name) + '</div>' : '')
+          + ((g.rows || []).length ? '<ol class="tkOrd tkOrdN tkOrdFix">' + g.rows.map(r => '<li tabindex="0" role="button" data-go="' + esc(r.go) + '"' + (r.doc ? ' class="hpFlDoc"' : '') + '><span class="nm">' + esc(r.t) + '</span><i class="tkNowDot" aria-hidden="true"></i></li>').join('') + '</ol>' : '')).join(''); }
+        const bb = bar.getBoundingClientRect().bottom + 16; el.style.left = '16px'; el.style.top = Math.round(bb) + 'px'; el.style.maxHeight = Math.round(Math.max(200, innerHeight - bb - 24)) + 'px'; el.hidden = false;
+        let lit = null; el.querySelectorAll('li[data-go]').forEach(x => { const now = x.dataset.go === String(m.now); x.classList.toggle('now', now); if (now){ x.setAttribute('aria-current', 'step'); lit = x; } else x.removeAttribute('aria-current'); });
+        if (lit && lit.dataset.go !== el.dataset.lit){ el.dataset.lit = lit.dataset.go; const r = lit.getBoundingClientRect(), q = el.getBoundingClientRect(); if (r.top < q.top || r.bottom > q.bottom) lit.scrollIntoView({ block: 'nearest' }); }   // the lit one in view
+        window.__flowDock(); } finally { busy = false; } };
+      new MutationObserver(upd).observe(H, { attributes: true, attributeFilter: ['class'] });   // Flow folded or unfolded
+      new MutationObserver(upd).observe(document.body, { attributes: true, attributeFilter: ['class', 'data-bp'] });   // its screen up or gone
+      addEventListener('resize', upd); setInterval(upd, 400);   // and its steps moving, from wherever they move
+      return upd; }; }
   [['stHpLtrFs', '--ltrFs'], ['stHpLtrLh', '--ltrLh']].forEach(([id, v]) => { const r = document.getElementById(id), o = document.getElementById(id + 'V'); if (!r) return; const set = () => { document.documentElement.style.setProperty(v, r.value + 'px'); if (o) o.textContent = r.value + 'px'; }; r.addEventListener('input', set); r.addEventListener('change', set); set(); setTimeout(set, 800); });   /* the Letter's font size and line height, live */
   { const s = document.getElementById('stHpRecShow'), b = document.getElementById('stHpRecTgl'), set = () => { const on = !s || s.value !== 'hide'; document.body.classList.toggle('hpRecHide', !on); if (b) b.setAttribute('aria-checked', String(on)); };   /* the past results card shown or not */
     if (s){ s.addEventListener('change', set); if (b) b.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); s.value = s.value === 'hide' ? 'show' : 'hide'; s.dispatchEvent(new Event('change', { bubbles: true })); }); set(); setTimeout(set, 800); } }
@@ -35367,7 +35396,7 @@ hairline({
     const nav = document.createElement('nav'); nav.className = 'aqNav'; nav.setAttribute('aria-label', 'Debrief steps'); document.body.appendChild(nav);
     let navKey = '';
     const navTick = () => {
-      const r = frame.getBoundingClientRect(), s = inst && inst.steps ? inst.steps() : null, show = !!s && opt('stArNav') !== 'off' && wrap.getClientRects().length > 0 && wrap.classList.contains('on') && r.width > 0 && r.right + 40 + 170 < innerWidth - (document.documentElement.classList.contains('tkDocked') ? 320 : 0);
+      const r = frame.getBoundingClientRect(), s = inst && inst.steps ? inst.steps() : null, show = !!s && opt('stArNav') !== 'off' && !document.querySelector('.topbar .hpJny[data-fl="ar"]:not([hidden])') && wrap.getClientRects().length > 0 && wrap.classList.contains('on') && r.width > 0 && r.right + 40 + 170 < innerWidth - (document.documentElement.classList.contains('tkDocked') ? 320 : 0);
       nav.classList.toggle('on', show); if (!show) return;
       nav.classList.toggle('lt', document.body.classList.contains('light'));
       nav.style.left = Math.round(r.right + 40) + 'px'; nav.style.top = Math.round(r.top + 72) + 'px';
@@ -35380,7 +35409,7 @@ hairline({
     };
     setInterval(navTick, 250); addEventListener('resize', navTick);
     vary(); mount(); raise(); navTick();
-    return { reset: () => { if (inst) inst.reset(); raise(); }, remount: () => { mount(true); navTick(); }, vary: () => { vary(); raise(); }, shut: () => { wrap.classList.remove('on'); wrap.classList.add('shut'); } };   // its close: the screen fades over its own ground, then the ground goes (it kept .on, so the ground faded at once and the page showed through the fading report: "clipping")   // a tweak: remounted where it was, the sheet not risen again
+    return { reset: () => { if (inst) inst.reset(); raise(); }, remount: () => { mount(true); navTick(); }, vary: () => { vary(); raise(); }, shut: () => { wrap.classList.remove('on'); wrap.classList.add('shut'); }, inst: () => inst, wrap };   // its close: the screen fades over its own ground, then the ground goes (it kept .on, so the ground faded at once and the page showed through the fading report: "clipping")   // a tweak: remounted where it was, the sheet not risen again
   }
   {
     const arD = asyncReport(document.body, true), arM = asyncReport(document.getElementById('phone2'), false);
@@ -35390,6 +35419,12 @@ hairline({
       const open = () => { if (!arD) return; const b = document.body; clearTimeout(t); if (!b.classList.contains('arOpen')){ under = window.__pageVal ? window.__pageVal() : String(version); hash = location.hash !== '#async-report' ? location.hash : ''; } b.classList.add('arOpen'); arD.reset(); tkPages(version, 'ar'); if (versionSel) versionSel.value = 'ar'; try { history.replaceState(null, '', '#async-report'); } catch (e){} };
       const close = () => { const b = document.body; if (!b.classList.contains('arOpen')) return; if (arD) arD.shut(); clearTimeout(t); t = setTimeout(() => { b.classList.remove('arOpen'); if (window.__tkPages) window.__tkPages(); else tkPages(version); }, 580);   /* as long as its dip (the screen, then the ground); the tweaks of whatever is up then (a standalone opened meanwhile kept its own) */ if (versionSel && versionSel.value === 'ar') versionSel.value = under && under !== 'ar' ? under : String(version); if (location.hash === '#async-report') try { history.replaceState(null, '', hash || location.pathname + location.search); } catch (e){} };
       return { open, close, isOpen: () => document.body.classList.contains('arOpen') }; })();
+    /* the report's steps in the Flow panel, as the services' ("all of the services that have steps"): the welcome, each insight by its name, everything else, the recommendations, the end; the one it is on lit, a click goes there (the floating shortcuts beside the phone step aside while it shows) */
+    if (window.__flowPanel && arD){ const vis = () => getComputedStyle(arD.wrap).display !== 'none' && arD.wrap.getBoundingClientRect().width > 0;
+      window.__flowPanel('ar', { on: () => vis() && !!arD.inst() && !document.body.matches('.hpOn, .sugOn, .dsgOn, .prcOn, .docOn, .ccOn'),
+        model: () => { const I = arD.inst(), s = I && I.steps ? I.steps() : null; if (!s) return null;
+          return { title: 'Async report', now: String(s.at), groups: [{ rows: [{ t: 'Welcome', go: '0' }].concat((s.names || []).map((t, i) => ({ t, go: String(i + 1) })), [{ t: 'Everything else we checked', go: String(s.rest) }, { t: 'Here’s what we recommend', go: String(s.rec) }, { t: 'That wraps up your debrief', go: String(s.next) }]) }] }; },
+        go: id => { const I = arD.inst(); if (I && I.go) I.go(+id); } }); }
     /* ---- standalone full modals (the Suggestion, the Doctor's suggestion): one shell, the report's and the profile's (.aqWrap.aqDesk.aqFull: its ground, its device, its breakpoints, its close dip), each its own sheet on the report's paper and type (.arSheet.sgmSheet: the close over the content's top right, the scroller, the pinned footer);
        cfg: on (the body's class while it is up), cls (its wrap's), key (its menu value), hash, label, sheet (its sheet's class), body() / foot() (its markup), and its own mount, unmount, paint, enter, still, click; tweaks (ids repainting it), replay (the id of its Replay) */
     const evSolo = cfg => {
@@ -38186,9 +38221,12 @@ hairline({
     const simGo = (k, state, extra, quiet) => { if (!SIM0[k]) SIM0[k] = { state: cur.state, o: cur.o }; SIM[k] = { state, o: Object.assign({}, SIM[k] && SIM[k].o, extra) };
       paint(k, state, Object.assign({}, cur.o, SIM[k].o)); document.dispatchEvent(new Event('everlab:sim'));   /* the Timeline's row follows (booked, done) */ if (!quiet) requestAnimationFrame(() => document.querySelectorAll('#dSvc .svPend, #svcMob .svPend').forEach(x => { x.classList.remove('svFlash'); void x.offsetWidth; x.classList.add('svFlash'); })); };
     // the skipper walks one sequence: the steps before Book, the documents (when the Documents tweak is on), then Book and the rest ("when I click next I go to the next step")
-    const simStep = dir => { const k = cur.key, st = cur.steps || [], n = cur.n - (st.length && DONE_ST.test(st[st.length - 1][0]) ? 1 : 0), bookFirst = st[0] && /^book/i.test(st[0][0]), bI = cur.bI || 0, dn = cur.docs || [], L = dn.length;
+    // where the skipper stands in that sequence (0 the first step, then the documents, Book and the rest; n + L done)
+    const simPos = () => { const st = cur.steps || [], n = cur.n - (st.length && DONE_ST.test(st[st.length - 1][0]) ? 1 : 0), bI = cur.bI || 0, dn = cur.docs || [], L = dn.length;
       let from; if (cur.state === 'done') from = n + L; else { const a = Math.max(0, cur.at); if (L && a <= bI){ const fp = dn.findIndex(t => !DOCDONE.has(t)); from = fp < 0 ? bI + L : bI + fp; } else from = a < bI ? a : a + L; }
-      const to = Math.max(0, Math.min(n + L, from + dir)); if (to === from) return;
+      return { from, n, bI, dn, L, st }; };
+    const simStep = dir => { const P = simPos(), to = Math.max(0, Math.min(P.n + P.L, P.from + dir)); if (to === P.from) return; simAt(to, dir); };
+    const simAt = (to, dir) => { dir = dir || 1; const k = cur.key, { n, bI, dn, L, st } = simPos(), bookFirst = st[0] && /^book/i.test(st[0][0]); to = Math.max(0, Math.min(n + L, to));   // straight to one place in it (the Flow panel), as that many presses would
       if (L) dn.forEach((t, i) => { if (to > bI + i) DOCDONE.add(t); else DOCDONE.delete(t); });
       const si0 = to < bI ? to : to < bI + L ? bI : to - L, si = k === 'consult' && si0 === n - 1 ? (dir > 0 ? n : n - 2) : si0;   // the onboarding: from the call straight to its plan, and back
       if (si >= n) simGo(k, 'done', {}, 1); else if (si === 0 && bookFirst) simGo(k, 'book', {}, 1);
@@ -38225,6 +38263,26 @@ hairline({
       { const dir = +b.dataset.sim, J = cur.J; if (J && ((dir < 0 && cur.state !== 'done' && cur.at <= 0 && !DOCDONE.size))){ const j = J.i + dir, z = J.items[j];   // past this service's own steps: the one before or after it in the group
         if (z){ const mb = !!b.closest('#svcMob, #phone2, [data-mb]'), o2 = { from: backTo, t: z.t, tag: z.tag, d: z.d, at: z.at, need: z.need, steps: z.steps, journey: Object.assign({}, J, { i: j }) }; const sh = b.closest('.svSheet'); if (sh && sh.shut) sh.shut(); fadeSwap(() => (mb ? openMob : openDesk)(z.svc, z.state, o2)); return; } } }
       fadeSwap(() => simStep(+b.dataset.sim)); const sh = b.closest('.svSheet'); if (sh && sh._fill) setTimeout(() => sh._fill(), 450); }, true);   // in the phone's sheet, the sheet follows
+    /* the service pages' steps in the Flow panel ("for all of the services that have steps … I can see it on the left and I can jump into steps quickly"): the sequence the arrows walk (the steps before Book, the documents when they are steps,
+       Book and the rest, then done), the one the page stands on lit; in a journey (Everlab Protocol, the Microbiome, the stress test), every service of it, the others a row each that opens it. A click goes straight there */
+    { const visEl = el => el && getComputedStyle(el).display !== 'none' && el.getBoundingClientRect().width > 0;
+      const mob = () => visEl(document.getElementById('svcMob')) && !visEl(document.getElementById('dSvc'));
+      const up = () => (visEl(document.getElementById('dSvc')) || visEl(document.getElementById('svcMob'))) && !document.body.matches('.hpOn, .arOpen, .sugOn, .dsgOn, .prcOn, .docOn, .ccOn') && !!cur.key;
+      const rowsOf = () => { if (cur.key === 'consultopt') return { rows: coN().map((t, j) => ({ t, go: 'p' + j })), now: 'p' + coIdx(cur.state, cur.o) };
+        const { from, n, bI, dn, L, st } = simPos(), rows = [], lastDone = st.length && DONE_ST.test(st[st.length - 1][0]);
+        for (let q = 0; q <= n + L; q++){ if (cur.key === 'consult' && q === n - 1 + L) continue;   // the onboarding: its plan is its done
+          const t = q < bI ? st[q][0] : q < bI + L ? dn[q - bI] : q < n + L ? st[q - L][0] : lastDone ? st[st.length - 1][0] : cur.key === 'consult' && st[n - 1] ? st[n - 1][0] : 'Completed';
+          rows.push({ t, go: 'p' + q, doc: q >= bI && q < bI + L }); }
+        return { rows, now: cur.state === 'done' || cur.at >= 0 || L ? 'p' + from : '' }; };   // not begun (requested, suggested…): nothing lit yet
+      const model = () => { const J = cur.J, R = rowsOf();
+        if (!J || !J.items || J.items.length < 2) return { title: cur.svcT || (SVC[cur.key] || {}).t || 'Service', now: R.now, groups: [{ rows: R.rows }] };
+        return { title: J.name || 'Journey', now: R.now, groups: J.items.map((z, j) => j === J.i ? { name: z.t || (SVC[z.svc] || {}).t || z.svc, rows: R.rows } : { name: z.t || (SVC[z.svc] || {}).t || z.svc, go: 's' + j, rows: [] }) }; };
+      const go = id => { if (!cur.key) return; const sh = document.querySelector('#svcMob .svSheet, #phone2 .svSheet');
+        if (id[0] === 's'){ const J = cur.J, j = +id.slice(1), z = J && J.items[j]; if (!z) return; const o2 = { from: backTo, t: z.t, tag: z.tag, d: z.d, at: z.at, need: z.need, steps: z.steps, journey: Object.assign({}, J, { i: j }) }; fadeSwap(() => (mob() ? openMob : openDesk)(z.svc, z.state, o2)); return; }
+        const q = +id.slice(1); if (!isFinite(q)) return;
+        if (cur.key === 'consultopt'){ if (q !== coIdx(cur.state, cur.o)) fadeSwap(() => coGo(q)); return; }
+        fadeSwap(() => simAt(q, q >= simPos().from ? 1 : -1)); if (sh && sh._fill) setTimeout(() => sh._fill(), 450); };
+      if (window.__flowPanel){ const upd = window.__flowPanel('svc', { on: up, model, go }); document.addEventListener('everlab:sim', () => setTimeout(upd, 0)); } }
     document.addEventListener('change', e => { const sl = e.target.closest && e.target.closest('.svSimSel'); if (!sl || cur.key !== 'consultopt') return; const j = +sl.value; if (j !== coIdx(cur.state, cur.o)) fadeSwap(() => coGo(j)); }, true);   // the select: straight to a state
     const simNext = mobile => { const k = cur.key, n = cur.n, at = cur.at;
       if (/^book/i.test(cur.stepName || '')) { bkOpen(mobile); return; }

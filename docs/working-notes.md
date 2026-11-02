@@ -18992,3 +18992,13 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Title**: "Here's what / we recommend" breaks after "what" at every width, the desk too.
 - **Visuals**: 24px smaller: 64 on the phone, 80 on the desk.
 - **The circle**: each visual now sits on a grey circle (the ink at 6%), 70% of the visual's size and centred behind it, so the renders sit on it.
+
+## Flow panel for every service with steps ("For all of the services that have steps, we should be able to select the flow controller so I can see it on the left and I can jump into steps quickly.")
+- **Where it shows**: the Flow button in the top bar now appears on every Service detail page (DEXA, the Onboarding consultation, MRI, Whole Body MRI and CT, the Microbiome, the blood test, the stress test…) and on the Async report, as it does on the Health profile. Its panel docks as the column at the left; Flow folds it away (remembered).
+- **A service's panel**:
+  - Its steps in the order the step arrows walk: the steps before Book, the documents when they count as steps (quieter), Book and the rest, then its last state. The one the page stands on is lit with the orange dot.
+  - A click goes straight there, as that many arrow presses would; the page and the lit row follow.
+  - In a journey (Everlab Protocol: DEXA Scan › Diagnostics Review › Member Check-In; the Microbiome: questionnaire › assessment › report; the stress test), the panel is headed by the journey. Each other service is a row (›) that opens it.
+  - The onboarding consultation with optional questionnaire lists its five demo states.
+- **The Async report's panel**: Welcome, each insight by its name, Everything else we checked, Here's what we recommend, That wraps up your debrief. A click goes there. The floating step shortcuts beside the phone step aside while the panel shows.
+- **Built once for any screen**: the Gift referral's panel made general (`window.__flowPanel`). The Flow button counts any screen that has one. The Health profile, the Membership reveal and the Gift referral keep their own panels.
