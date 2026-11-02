@@ -19062,3 +19062,8 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **The magnet**, the Records carousel's rule: let go past half a card (and its gap: 176 of 352 on the phone) and it goes on to the next one, or back to the one before. Less than that and it springs back to its own card.
   - The glide is 240 ms off a quintic, the Records one. The last card stops at the row's end.
   - A drag never opens a card.
+
+## Ask Everlab: the service tiles 16 round, 14 type ("Reduce the radius on these service cards to 16px. Also reduce the font size by 14px.")
+- **The AI card's six service tiles**: 16px corners (were 28) and 14px names (were 16). Every name fits whole now: Check Symptoms, Specialist referral and Blood test referral were cut with an ellipsis.
+- "Reduce by 14px" is read as "to 14px".
+- The Overview's own service cards keep their 28px corners. They shared the 28px rule, but only the AI card's tiles were asked for.
