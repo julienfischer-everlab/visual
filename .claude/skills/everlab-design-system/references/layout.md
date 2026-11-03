@@ -88,7 +88,7 @@ Flow pages cap at 544 on the desk (`width 544; max-width calc(100% - 48px)`).
 
 ## Header (General layout > Header; `--hdr*`)
 
-**What.** The documented head every page shares. Phone (XS/S): status bar, nav bar (Back, modal title, Close), page title (questionnaire 32 or page 24). Desk (M/L): no status bar, smaller Back/Close at the column's edges, 20 page title. Drawn live from `--hdr*`, with Show sizes labels, demo frames and a Sizes table.
+**What.** The documented head every page shares. Phone (XS/S): status bar, nav bar (Back, modal title, Close), page title (questionnaire 32 or page 24). Desk (M/L): no status bar, Back/Close (36, as the phone's) at the column's edges, 20 page title. Drawn live from `--hdr*`, with Show sizes labels, demo frames and a Sizes table.
 
 **Where.** `grep -n -- "--hdrSb:54px"` (~7245); doc CSS `.gl*`; builder `grep -n "const glDoc"` (`nav()`, `phone()`, `demo(k)`). Tab `data-gl="hdr"` (default), link `#general-layout`.
 
@@ -98,7 +98,7 @@ Flow pages cap at 544 on the desk (`width 544; max-width calc(100% - 48px)`).
 | Row | XS · S | M · L |
 |---|---|---|
 | Status bar | The device's: 54 · time left, island, signals right | None |
-| Nav bar | 76 Hug · 16 sides · 16 between | 64 · 76 sides (the page's column) |
+| Nav bar | 68 Hug (16 + 36 + 16) · 16 sides · 16 between | 64 · 76 sides (the page's column) |
 | Back · Close | 36 circle · ink 7% · 16 icon | 36 circle · ink 7% · 16 icon |
 | Nav title | 18/24 · 500 · left, after Back | None |
 | Title · questionnaire | 32/40 · 500 · −0.4 · 12 above, 32 below: 84 Hug | Same as Title · page |
