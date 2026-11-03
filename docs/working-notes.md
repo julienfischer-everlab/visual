@@ -19475,6 +19475,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 ## "right padding not consistent" (the retracted rail)
 - The page panels' cap is now 1360 open and 1512 retracted (1584 less the rail): retracting gives the rail's 152 to the panel, so it stays 8 off the rail and the rail's right gap (20) matches its left (20) at every width up to 1600; past that both states centre alike.
 - The Plan's panel now sits 8 off the rail and the window like every page (it was flush against the rail: a 12 gap).
+
 ## Suggestion: a Plan change variation, from the screenshot
 
 "I need a tweak variation of the the suggestion based on this screenshot"
@@ -19500,6 +19501,131 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Ask Dr Chen puts the question in through the Concierge's own `Concierge.draft(text)` (new: fills the field, sizes it, lights the send), not by reaching into its page.
   - Left as they are: the app's orange (#f78359; the mock reads #e88962, likely its colour profile), the shell's 36 px back disc and its chevron's ink, and the Ask pill at 48 (the mock's is 44).
   - Without the Saans font (as in the checks here, Inter in its place) the 28 px title takes two lines at XS; in Saans it should hold one, as in the mock.
+
+## "Also need active filled icon WHEN menu desktop is contracted. Put this in icon lib"
+- **Menu, in the icon library** (Documentation › Navigation › Iconography, after Plan): the desk sidebar's retract drawn as the dock's icons are, on the 24 grid with the 1.75 line. A window 18 × 15.5 with 3.5 corners, a divider 6.5 in from its left. Filled: the sidebar column solid, the rest of the frame still the outline.
+- **The retract draws it** from the library: the outline while the menu is open, the filled one while it is contracted. It switches with the dock's own motion (Beam by default, or whatever Tweaks › Dock › Icon motion and the Navigation doc say).
+- **The sidebar's entries draw the library too**: Overview (home), Insights, Timeline, Services, Plan are the phone dock's drawings now, at 20 as before. The account keeps its own icon.
+  - Open: every entry is its outline and the plate marks the lit one, as before.
+  - Contracted: the lit entry shows its filled icon. It plays the motion when the rail folds, and again when you go to another page (Overview, the Timeline or a service detail, the Plan, the marketplace or a booking, Insights).
+  - Nothing moves: the glyphs keep their x (40) in both states, and so do the plates, labels and hover.
+- **The Beam was dropped on every page change**: each page writes the body's class list whole, and that had wiped the icon motion's class. After the first page, every icon (the dock's too) lit with Pop. The class is kept now.
+- **Review fixes**:
+  - My account's ring is at the library's weight now: 18.5 across with the 1.75 line (it was 16.5 with a 1.5 line, smaller and lighter than the column above it). Its box (20) and place (x 40) are unchanged.
+  - Documentation › Navigation › Sizes and behaviour has a Desk sidebar row (the same drawings at 20, Menu at 18; open all outline; contracted the retract and the lit entry filled; My account its own). The Iconography intro names the Menu and says the sidebar fills only while contracted.
+  - The sidebar's markup keeps empty svgs where the icons go: the old stroked drawings are gone, so nothing there pretends to own them.
+  - The icon motion is part of the class list each page writes (kept by Tweaks › Dock › Icon motion), not put back after it. The phone dock now lights with Beam on every page; it fell back to Pop after the first page before.
+  - The plates' CSS and the sidebar's lit() point at each other: a page that lights a plate needs its entry lit there too.
+  - Left as it is: on My account with the menu contracted, its entry has no filled state (the library has no account pair yet).
+## "Need All break points" (Design system → Step flow)
+- **A breakpoint switch over the preview**, the Modals doc's own control: XS · S · M · L · XL, and All. The section title follows it ("Step flow · M · live"); the choice is the viewer's own (kept in this browser), XS by default.
+- **Each breakpoint is the app's own at that width**: the master's shell sits in the Async report's full modal with the classes the report wears there (aqFull, aqBpXS to aqBpL, aqDev on the phone and the tablet), so the app's rules for that width apply as they do in the app. XS: the phone, header from 58, title left, Next over the home indicator. S: the tablet, no island, header from 44, Next 478 at most. M: the desk's full modal, the column 536, the title centred. L: the column 568. XL: the app has no XL rule of its own and draws a wide window as L; shown at 1920.
+- **In the master frames**: XS the app's phone, S its tablet, M to XL the desk's page as General layout draws it. Each is scaled to fit the column (never over 100%, and never past the page), with the scale written under it ("M · 992 · 75%").
+- **Every control drives what is shown**: Back, Next, Play and Slow step every frame together; the sliders move the bars and the push everywhere; Save setup and Reset are the same single master as before. Switching breakpoint keeps the step you are on.
+- **All**: every breakpoint side by side at one scale (so their widths read true against each other), in a row that scrolls sideways. They step together.
+- Back, Next, Play and Slow moved up beside the switch, so they stay over a wide frame; the sliders sit beside a phone, or under a desk frame. A new table, "At each breakpoint", lists the frame, the column, the step title and Next per width. The sidebar says the flow is shown at every breakpoint.
+- **Back and Close on the desk, fixed in the app**: at M and L the report's header row reaches out of its 536/568 column to the frame, but the stage clipped it at the column, so Back and Close never showed. The stage is now let out to the frame's sides (held to its height, as the sphere pages already were). They show in the app's Async report at M and L, and in the doc's M, L and XL frames (24 from the frame's edges at M, 32 at L). Nothing else moved: the Health profile and the Suggestion modals look the same, and the push stays inside the column.
+- **A short insight title sits at the left on the phone and the tablet, in the app too**: the full modal centred the title's box, so a one-line title stood in the middle (131 in at S). That is now the app's own XS and S rule, not one only the doc had, so the master and the app match.
+- **Sliders in sight on the desk**: a desk frame goes beside the controls when that draws it as large or larger (M at 1370 × 852: 71%, the sliders beside it); otherwise it sits across the column with a row of sliders still above the fold under it (L, XL, and All).
+- **The anatomy table, per width**: the Header row gives 58 down on XS, 44 on S, 16 on the desk, and Back and Close 16 in on the phone and the tablet, 24 from the frame's edges at M, 32 at L and XL. "At each breakpoint" has a Header column.
+
+
+## Chat: Persona #2, Eva checks in ("Chat New persona")
+
+"Chat New persona" (a phone chat that opens on Eva's own message, no question before it)
+
+- **Tweaks → Chat → Persona** (#stCcPer, #1 / #2, as the Async report's Persona): shown while the Chat is up, alone (the Chat no longer hides the Tweaks). Saved with the setup, put back on load, put in the Chat's frame as it loads and whenever it changes; the Chat stays up. `Concierge.persona('p1' | 'p2')`, the current one with no argument; `concierge.html#persona-2` opens straight on it.
+  - Persona #1: everything as before (opens on the home).
+  - Persona #2: her chat afresh, opened on the check-in, played in ("Eva is checking in…", the words written out, then the cards).
+- **Persona #2's chat**, ApoB only, nothing else invented: 1.12 g/L in October, Suboptimal, up from 0.94 in March and 1.03 in July; her Everlab doctor reviewed it and recommends a retest this month.
+  - Recent: ApoB retest (newest, unread until opened), What ApoB measures, My October results. Inbox: Eva's check-in (unread), Everlab's results ready (read). For your attention starts with Eva · Check-in. Her three ways in ask about ApoB, the retest and her results; Medical requests are everyone's.
+  - Typing works as usual: her questions go to her answers (what ApoB measures, how it changed, fasting, booking, her results), anything else to what Eva can help her with. Persona #1's ferritin and iron story is not hers.
+- **The check-in**: "Eva · checked in just now" with her spark; the message; the ApoB trend card; the booking card (ApoB retest, Included in membership; Thu 12 Nov · 7:30am · fasting, as 14 Nov 2026 is a Saturday; Pathology collection, Bondi Junction · 1.2 km; Book this time / Other times); "Recommended by your Everlab doctor" with a green check.
+  - Book this time: Booking (the Loading states' loader with label), 1.3 s, then Booked with a check, the details kept, Add to calendar / Reschedule; Eva confirms in a turn of her own ("You're booked for Thu 12 Nov at 7:30am at Bondi Junction. Fast from 10pm the night before; water is fine.").
+  - Other times: Thu 12 Nov 7:30am, Fri 13 Nov 7:15am, Mon 16 Nov 8:00am, Tue 17 Nov 7:45am inline; one picked shows in the time row (a green flash), then Book this time books it. Reschedule opens them again.
+- **Four BLOCK components** (concierge.html: BLOCK.checkin, BLOCK.trend, BLOCK.booking, BLOCK.drNote), in Components → Proactive check-ins with each state from the same renderers: the header line; the trend card Optimal / Suboptimal / Out of range (the app's status tags, the last point and segment in the status's colour); the booking card offered, other times, booking, booked (they work there too, Eva's confirmation a toast); the footnote; the whole check-in as the chat draws it.
+- **One shape for a conversation**: an ordered list of turns, `{ r: 'u' | 'a', text, who: 'eva' | 'doctor', when, blocks: [{ t, ...data }], time, k }`. Answers by intent become such turns with their blocks copied, so a booking made stays with its turn; the doctor's card is `who: 'doctor'`. Ready for an editor over it.
+- **Sizes**: on the phone the cards take the message column (16 at the sides), 16 between the words and the cards and between the cards, 12 to the footnote; on the desk 470 wide at most. Both themes; the booking card white with a hairline and a soft shadow on light, a raised dark ground on dark.
+
+## Chat: the conversation, edited from Tweaks ("Need to control the copy of the Question, Answer and widget below answer. And also a way to add Question or Answer and reorder them")
+
+"Need few tweak for conversation. Example. Need to control the copy of the Question, Answer and widget below answer. And also a way to add Question or Answer and reorder them."
+
+- **Tweaks → Chat → Conversation**: the conversation open in the Chat (Persona #2's check-in by default; any seeded or new chat of either persona). The select names the persona's chats ("· edited" on the ones changed) and opens the one picked; on the home it says None open.
+- **Each turn a small card**, in order: its grip, its number, its role (Question; Answer · Eva; Answer · Care team), Move up / Move down, Delete; its copy in a field that wraps and grows with it; a care-team answer also has its Reply line.
+  - **An answer's widgets**: each a Widget select (None, Appointment card / rows / group, Goals, Goal, Attachments, Report, Reports, Citation, Image, Images, Suggestions, Check-in header, Biomarker trend, Booking card, Doctor's footnote), each with real content; × takes one away, + Widget adds another.
+  - **Their own copy**: Biomarker trend (Marker, Value with its unit, Date, Status), Booking card (Title, Note, Time, Place with its distance, State: Offered / Other times / Booked), Doctor's footnote (Text), Check-in header (Checked in), Suggestions (one question a line).
+- **Reorder**: drag a card by its grip (mouse or finger; it passes a neighbour once past half of it, the list scrolls at its edges), or Move up / Move down. **+ Question / + Answer** add a turn after the one selected (pressed or typed in), else at the end, its copy selected to type over; Escape lets the selection go.
+- **Live**: every keystroke and choice is in the Chat on the next frame, drawn again where it was (the scroll kept, the turn edited brought into view). The Chat's own actions keep working on an edited conversation (Book this time, Other times, Reschedule, typing a question) and the editor follows them.
+- **Kept**: every edit, per persona and conversation, is in #stCcConv (hidden), which the Tweaks' Save keeps and the load puts back before the persona opens its chat (so Persona #2 arrives on her check-in as edited). A new chat that was edited comes back in Recent. **Reset conversation** puts back the original (a seeded chat's own, a new chat's as it was asked); the panel's Reset clears every edit.
+- **One API, in concierge.html** next to the renderers: `Concierge.getConv(id?)`, `setConv(id, turns, { at, persona, title })`, `onConv(fn)`, `edits(map?)`, `convs()`, and the widget catalogue `widgets()`, `preset(t)`, `field(block, k, v?)`. The Tweaks only talk to the frame through it; the widgets are the chat's BLOCK renderers, so the Chat, Components and the editor draw the same thing. New: BLOCK.aptRows (the rows alone below an answer), in Components → Appointments → Rows · below an answer.
+- **The desk Chat stops at the docked Tweaks** (Auto, M, L): it covered the panel, so its group could not be used there.
+- Not kept: what the Chat does after an edit (a booking made, a question typed) stays in the Chat until the next edit or reload; Save keeps the conversation as edited.
+
+## In-app chat: under the status bar, a home indicator, sending, Eva or the care team; the switch beam is the intro's
+
+"top header issue on chat" · "Chat missing home indicator bottom" · "Also need to be able to submit messages" · "and switch Eva to doctor" · "this switch should be a dropdiown same as the chat screen uI . Also keep the exat same beam obrder effect as the concierge onboarding intro"
+
+- **The head under the status bar**, on every drawn device. On the desk's shell at XS and S the frame draws its status bar over the page. On a page that runs up under it (Services, Appointment, Plan) and on the tablet, the chat's Menu disc and title sat under 9:41. On open, the chat measures how much of the frame's strip (47 on the phone, the tablet's own) stands over it and pads its head down by that (--chSb). Under the XS band nothing moves.
+  - While the chat is open, the XS band takes the chat's ground (#121211, #f6ece6 on light). The status bar takes the theme's ink, whatever the page under it had made it (the Plan photo's white).
+  - The desk's centred card (M, L) is unchanged.
+- **A home indicator under the composer**: at XS and S the composer sits 16 above the 34 home space, with the home bar (134 × 5) in it, as every footer on the drawn phone does. On the phones and the Navigation doc's phone the composer stands on the keys, and their keyboard carries the bar.
+- **Sending**: typing lights the send disc (the Overview field's ink disc). Enter, the disc, or the drawn keyboard's go key sends. The member's bubble joins the thread with its time, copy and edit (copy copies, edit puts the words back in the field). Then "Thinking · Looking at your records", then the answer word by word, the thread keeping the new turn in view. Any number of turns; the field clears; the title stays the first question. Sending while Eva is still writing finishes her answer at once.
+  - The phones' drawn keys never took a tap under the chat (its layer covered them); they do now.
+- **Answers fit the question** ("What's my next step?" had the protein answer). A small bank in this member's record as the app shows it: the next step (the consultation from the Health profile card, then the open pathology request), booking a test or a consult, the care team, biological age (40, from 142 biomarkers), supplements and sleep (the Plan's), protein (the old answer), results (vitamin D 42 nmol/L, ferritin 22 µg/L, as the Plan says) and the plan. Otherwise she says what she can help with. The service tiles keep their own openings.
+- **Eva or the care team**: the "Eva ˅" pill opens the Concierge chat's own model menu (its popover and rows, the mark and the team icon, a check on the one chosen): Eva, "Answers from your Everlab record"; Care team, "A clinician replies within a business day". Care team sets the pill and the placeholder ("Message your care team…"). What is sent then gets Dr Steven's typing bubble, then a short reply: he has it and will answer properly within a business day. These are the Chat bubbles master's own classes (.bbB.bbAi.bbDr, his face .bbDrAv, .bbTyp), in the ink on light. The menu closes on a tap outside it or Escape (a second Escape closes the chat). Every new chat starts on Eva.
+- **The beam is the onboarding intro's**, one master: EvBeam (window.EvBeam.run(field)) builds the intro field's own layers into the field and turns them once round. Those layers are the edge line (1 wide, 42%), the light spilling inward (a 9 band, blur 7, 25%), a faint halo outside (an 8 band 4 out, blur 12, 9%), and one warm conic (#FF9F4A, #FFB866, #FF8A3D) turned by --hpBm.
+  - It plays once round in 1.9 s at an even pace, fading in and out. With reduced motion it is a brief glow where it stands.
+  - It plays on the in-app composer when switching back to Eva, and on the Concierge's field (modelSet) and its Components demo. visuals/concierge.html carries the same rules, since it is its own document. The old streak (.boxBeam) and its tokens are gone.
+- **Concierge › Components › Field**: the demo's switch is the chat's own model dropdown (the same menu code). It starts on Care team, so picking Eva plays the beam; Care team then Eva plays it again. Its field reads "Message your care team…" or "Ask Eva…" with it, and the chat's own choice is left alone.
+
+## More: the row of the page you are on takes its active icon ("When a menu is active inside the dropdown MORE, the item should have the active icon")
+- **The row lights**: open More on a page it leads to and that page's row shows its active (filled) icon, with the dock's own motion (Tweaks › Dock › Icon motion; Beam by default) played as its card lands, 300 ms after the sheet opens plus that card's 50 ms step. The other rows are unchanged. Every label was already at full ink, so the lit row's label is too.
+  - Plan: the Plan and all its subpages (Activity, Nutrition, Medical actions, Supplements, Wind-down).
+  - My account and Settings: My account's page, Settings when its Settings tab is up.
+  - Gift Everlab: the Gift page. Refer a loved one: the Gift referral.
+  - Contact us: the chat it opens, while Care team is picked. With Eva picked, no row lights.
+- **The same truth as More's highlight**: `window.__morePage()` reads the body's page classes (plOn, accOn with My account's tab, gfOn, rfOn, ccOn with the chat's model). My account now tells its tab (`window._acc.tab()`).
+- **Four new icons, drawn like the tabs'** (24 grid shown through 2..22, 1.75 strokes, round ends): outline at rest; filled is the silhouette solid with its details cut out.
+  - Contact us: a speech bubble with a question; filled, the question is cut out.
+  - Settings: a cog and its hub; filled, the hub is a hole.
+  - Gift Everlab: box, lid, ribbon and bow; filled, the ribbon and the lid's seam are cut out.
+  - Refer a loved one: a person and a plus; filled, the person is solid.
+  - They live in `NAV_IC` / `window.EvNavIc`, beside the tabs'. Every row of the sheet is drawn from there now; the sheet's old stroked icons are gone.
+  - Where the filled shape is in pieces (Gift, Refer), the beam runs round the whole silhouette.
+- **My account keeps the member's photo**. On its page, a ring goes round the photo: 2 clear of it, 1.75 of ink. It is drawn as an icon, so the same motion plays on it: the beam round the ring, then the ring from 16% to full (`EvNavIc.me`).
+- **Design system › Navigation**:
+  - Iconography lists the four new icons and My account's photo and ring, each live with its Inactive and Active states.
+  - The doc's phone keeps its own page: tap a row in its More and that row becomes the phone's page, with More lit in its dock. Open More again and the row lights. The doc's sheet no longer sends the app away to My account, the Gift page or the chat.
+  - The sizes table's More row is corrected: the real rows, and the lit row.
+- **Fix: Icon motion kept across a page change**. Changing page rebuilt the body's classes and dropped the motion's, so the dock played Pop while the select said Beam. Changing page now keeps the motion's class.
+- Both themes; checked on the XS frame (Overview, Plan, the Activity plan, My account, Settings, the care chat), the Insights phone and the Navigation doc's phone.
+
+## Merged: Persona #2 and the conversation editor, the in-app chat with its dropdown and the intro's beam, the More sheet's active icons ("this switch should be a dropdiown same as the chat screen uI . Also keep the exat same beam obrder effect as the concierge onboarding intro")
+
+- **Three branches in one**, each from cec9079, plus the main branch's own since then (the Suggestion's Plan change, EvTl, Concierge.draft, the Overview field's dot, the rail's padding).
+- **Conflicts**: only the working notes (every section kept, the main branch's first) and the built dist (rebuilt). In visuals/concierge.html the Concierge API's tail kept both sides: Concierge.draft beside persona, getConv / setConv / onConv, edits, convs, widgets, preset, field. index.html merged without a conflict.
+- **Kept together**: the Chat's Tweaks group (Persona, Conversation) with the docked panel beside it; the chat's model menu and the intro's beam (EvBeam) in the in-app chat, the Concierge and its Field demo; the More sheet's lit row, its Contact us still read from the Concierge's #modelName (unchanged by the merge).
+- **Checked** (Playwright, no page errors): concierge.html Persona #1 / #2, the check-in booked, its model menu and beam, Components (Proactive check-ins, Appointment rows, the Field dropdown and its beam); the app's Chat with Persona #2 and the editor typing live; the in-app chat at XS in both themes (head under the status bar, home indicator, sending, Eva / Care team, the doctor's reply, the beam back on Eva); More on the Plan at XS, the Plan row filled with the Beam motion.
+
+## Review fixes on the merge, and the main branch's desk sidebar merged in ("this switch should be a dropdiown same as the chat screen uI . Also keep the exat same beam obrder effect as the concierge onboarding intro")
+
+- **Merged the main branch again** (3bab3e7: the desk sidebar draws the icon library's icons, the Menu icon, `.icLit`, the icon motion kept by `CARD_STATE.navIcM`). The lit rules now take both hosts: the sidebar's `.icLit` and the More sheet's `.mvOn` row.
+- **In-app chat**:
+  - The home bar under the composer is dark in light theme (it was white at 26% on the light ground, beaten by a more specific rule). XS and S.
+  - The Eva / Care team menu stays open while Eva writes. It closes on the member's own scroll (wheel, touch), a tap outside or Escape; the thread following the answer no longer closes it.
+  - The field reads "Ask Eva…" as the Concierge does (it was "Ask Eva …"), and "Message your care team…" with Care team.
+  - The field's words, +, pill and send sit above the beam, as the intro's field keeps its words over its light.
+  - Answers: "Hello" gets a greeting and what Eva can help with; rescheduling goes to the care team; "Is my iron low?" gets the ferritin answer; cholesterol points to Heart Health in Insights; the biological age reads 124 biomarkers, as the Overview's chip.
+- **Concierge (the master)**:
+  - Its field follows the model too: "Message your care team…" with Care team, the view's own words back with Eva (also through `Concierge.model`).
+  - Persona #2 saved, then a door that asks at once (Services › Ask Eva): the question is answered. Opening another view frees the field; only the turn that holds it lets it go.
+  - The check-in opens unread: "ApoB retest" keeps its dot in Recent and the Inbox its 1 until the member answers it, acts on the card or leaves it.
+  - "Book this time" then a persona flip, Reset or an edit: no stale "You're booked…" any more. A slot with no time confirms without the empty "at".
+  - The booking's place keeps "Junction · 1.2 km" together, so no dot is left at a line's end. The doctor's footnote sits 16 under the card, as the other blocks. The sparkline sits in the middle of the trend card.
+  - Components › Field: the demo row is the composer's own (+, the pill, the send).
+- **Tweaks › Chat › Conversation**: an edited conversation keeps what the chat adds to it (a booking made, Eva's confirmation, a question asked), so Save keeps exactly the turns the editor lists. The list's foot fades while there is more below.
+- Checked with Playwright: concierge.html at desk and 390 (both themes), the app's Chat page with the editor, Save and reload, the in-app chat at XS (both themes) and S light, the desk sidebar contracted.
 
 ## "img on parallax so laggy! also use this image"
 
