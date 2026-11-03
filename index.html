@@ -3073,14 +3073,12 @@
   .chTurn.in{animation:chRise .42s cubic-bezier(.22,1,.36,1) both;} @keyframes chRise{from{transform:translateY(16px);}}
   .chTurn.in > .chUser{animation:chFade .2s linear .12s both;} @keyframes chFade{from{opacity:0;}}
   .chMeta button.on{color:#ececec;} body.light .chMeta button.on{color:#2e1f1a;}
-  /* the care team's answers, as the Chat bubbles master draws the clinician's: a bubble at the left with his face (36, round) at its top in the 44 before it;
-     his typing bubble first, the dots moving, then his words in its place */
-  .chDr{position:relative;box-sizing:border-box;width:fit-content;max-width:min(100% - 44px, 320px);margin:0 0 16px 44px;padding:12px 18px;border-radius:24px;background:rgba(255,255,255,.22);color:#f2f2f2;font-size:15px;line-height:1.34;text-wrap:pretty;}
-  .chDr img{position:absolute;left:-44px;top:0;width:36px;height:36px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 1px rgb(255 255 255 / .12);}
-  .chDr.chTyp{display:flex;align-items:center;gap:4px;min-height:42px;} .chDr.chTyp > i{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.35;animation:ccTypD 1.2s ease-in-out infinite;} .chDr.chTyp > i:nth-of-type(2){animation-delay:.15s;} .chDr.chTyp > i:nth-of-type(3){animation-delay:.3s;}
-  .chDr.in{animation:chRise .42s cubic-bezier(.22,1,.36,1) both, chFade .2s linear .12s both;}
-  body.light .chDr{background:rgba(46,31,26,.16);color:#2e1f1a;} body.light .chDr img{box-shadow:0 0 0 1px rgba(46,31,26,.12);}
-  @media (prefers-reduced-motion: reduce){ .chTurn.in, .chTurn.in > .chUser, .chDr.in{animation:none;} .chDr.chTyp > i{animation:none;} }
+  /* the care team's answers are the Chat bubbles master's clinician bubbles, its own classes (Design system -> Chat bubbles: .bbB.bbAi.bbDr, his face .bbDrAv (36, round) at its top in the 44 before it;
+     his typing bubble .bbTyp first, the dots moving, then his words in its place), set in the thread: hugging their words, 16 under, coming up as the master's new bubble; the ink's on light */
+  .chTurn .bbB{width:fit-content;margin-bottom:16px;}
+  .chTurn .bbB.in{animation:chRise .42s cubic-bezier(.22,1,.36,1) both, chFade .2s linear .12s both;}
+  body.light .chTurn .bbAi{background:rgba(46,31,26,.16);color:#2e1f1a;} body.light .chTurn .bbDrAv{box-shadow:0 0 0 1px rgba(46,31,26,.12);}
+  @media (prefers-reduced-motion: reduce){ .chTurn.in, .chTurn.in > .chUser, .chTurn .bbB.in{animation:none;} }
   /* who the message goes to ("switch Eva to doctor"): the pill opens the Concierge chat's own model menu (its popover and rows: the icon, the name, its line, a check on the one chosen),
      above the pill, right-aligned to it; Eva, or the care team, the field's words changing with it */
   .chModel[aria-expanded="true"]{background:rgba(255,255,255,.14);} body.light .chModel[aria-expanded="true"]{background:rgba(46,31,26,.12);}
@@ -32952,8 +32950,8 @@ hairline({
       // The thread keeps the newest exchange in view as it grows: its top never
       // above the view's, its foot pulled up into it while there is room.
       const follow = (turn, smooth) => {
-        const tr = thread.getBoundingClientRect(), r = turn.getBoundingClientRect();
-        const top = r.top - tr.top + thread.scrollTop - 6, foot = r.bottom - tr.top + thread.scrollTop + 16 - thread.clientHeight;
+        const tr = thread.getBoundingClientRect(), r = turn.getBoundingClientRect(), k = (tr.height / thread.offsetHeight) || 1;   // k: a phone drawn at a scale (the docs')
+        const top = (r.top - tr.top) / k + thread.scrollTop - 6, foot = (r.bottom - tr.top) / k + thread.scrollTop + 16 - thread.clientHeight;
         const want = Math.max(0, Math.min(top, foot));
         if (want > thread.scrollTop + 1) thread.scrollTo({ top: want, behavior: smooth && !reduced() ? 'smooth' : 'auto' });
       };
@@ -32994,8 +32992,8 @@ hairline({
       // the care team: the doctor's typing bubble, the dots moving, then his
       // words in its place, his face beside them (the Chat bubbles master's)
       const drBubble = (typing, rise) => {
-        const b = document.createElement('div'); b.className = 'chDr' + (typing ? ' chTyp' : '') + (rise ? ' in' : '');
-        const av = document.createElement('img'); av.src = DR_AV; av.alt = ''; av.width = 36; av.height = 36; av.decoding = 'async'; b.appendChild(av);
+        const b = document.createElement('div'); b.className = 'bbB bbAi bbDr' + (typing ? ' bbTyp' : '') + (rise ? ' in' : '');
+        const av = document.createElement('img'); av.className = 'bbDrAv'; av.src = DR_AV; av.alt = ''; av.width = 36; av.height = 36; av.decoding = 'async'; b.appendChild(av);
         if (typing){ b.setAttribute('aria-label', 'Dr Steven Lu is typing'); b.insertAdjacentHTML('beforeend', '<i></i><i></i><i></i>'); }
         else b.appendChild(document.createTextNode(DR_REPLY));
         return b;
@@ -33003,7 +33001,7 @@ hairline({
       const care = turn => {
         stopStream(true);
         let typ = null;
-        const say = rise => { if (typ){ typ.remove(); typ = null; } if (!turn.querySelector('.chDr:not(.chTyp)')) turn.appendChild(drBubble(false, rise)); };
+        const say = rise => { if (typ){ typ.remove(); typ = null; } if (!turn.querySelector('.bbDr:not(.bbTyp)')) turn.appendChild(drBubble(false, rise)); };
         streamT.push(setTimeout(() => { typ = drBubble(true, true); turn.appendChild(typ); follow(turn, true); }, 450));
         streamT.push(setTimeout(() => { finish = null; say(true); follow(turn, true); }, 2250));
         finish = () => say(false);
@@ -33042,9 +33040,9 @@ hairline({
       const openMenu = () => {
         pop.innerHTML = MODELS.map(m => '<button class="chMi" type="button" role="menuitemradio" aria-checked="' + (model === m[0]) + '" data-m="' + m[0] + '">' + m[1] + '<span>' + m[2] + '<small>' + m[3] + '</small></span>' + ICON.check + '</button>').join('');
         pop.hidden = false; mPill.setAttribute('aria-expanded', 'true');
-        const M = modal.getBoundingClientRect(), r = mPill.getBoundingClientRect(), w = pop.offsetWidth, h = pop.offsetHeight;
-        pop.style.left = Math.max(8, Math.min(M.width - w - 8, r.right - M.left - w)) + 'px';   // its right edge on the pill's, as the Concierge's
-        pop.style.top = Math.max(8, r.top - M.top - h - 8) + 'px';                             // 8 above it
+        const M = modal.getBoundingClientRect(), r = mPill.getBoundingClientRect(), w = pop.offsetWidth, h = pop.offsetHeight, k = (M.width / modal.offsetWidth) || 1;   // k: a phone drawn at a scale (the docs')
+        pop.style.left = Math.max(8, Math.min(modal.offsetWidth - w - 8, (r.right - M.left) / k - w)) + 'px';   // its right edge on the pill's, as the Concierge's
+        pop.style.top = Math.max(8, (r.top - M.top) / k - h - 8) + 'px';                                         // 8 above it
       };
       const setModel = (m, beam) => {
         const was = model; model = m === 'care' ? 'care' : 'eva';
