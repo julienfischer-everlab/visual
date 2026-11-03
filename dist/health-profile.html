@@ -14,7 +14,7 @@ body { margin: 0; overflow: hidden; background: var(--pg); color: var(--pgFg); f
 #hp > .arSheet { position: relative; display: flex; flex-direction: column; width: 100%; height: 100%; min-height: 0; overflow: hidden; }
 .bpStatus { display: none; }
 @media (min-width: 1100px) { #stage[data-bp="auto"] #dev { height: calc(100% - 48px); border-radius: 24px; box-shadow: 0 30px 80px rgba(0, 0, 0, .3); } }
-#stage[data-bp="xs"] #dev { width: 393px; max-width: none; height: calc(100% - 96px); max-height: 900px; border-radius: 56px; box-shadow: 0 0 0 5px #000, 0 0 0 11px #3b3b40, 0 0 0 12px rgba(255, 255, 255, .14); }   /* the prototype's XS frame (--evPhBz), no drop shadow ("the SAME iPhone frame all the time, meaning NO shadow") */
+#stage[data-bp="xs"] #dev { flex: none; width: 393px; max-width: none; height: 852px; max-height: none; scale: var(--devS, 1); border-radius: 56px; box-shadow: 0 0 0 5px #000, 0 0 0 11px #3b3b40, 0 0 0 12px rgba(255, 255, 255, .14); }   /* the prototype's XS frame (--evPhBz), no drop shadow ("the SAME iPhone frame all the time, meaning NO shadow"); 393 x 852 minimum ("All XS need a minimum height 852px"): a window too short for it draws it smaller (--devS), never a shorter screen */
 #stage[data-bp="s"] #dev { width: 600px; max-width: calc(100% - 64px); height: calc(100% - 96px); border-radius: 28px; box-shadow: 0 0 0 9px #000, 0 0 0 16px #3b3b40, 0 0 0 17px rgba(255, 255, 255, .14); }
 #stage[data-bp="m"] #dev { width: 992px; max-width: 100%; }
 #stage[data-bp="l"] #dev { width: 1440px; max-width: 100%; }
@@ -1064,6 +1064,63 @@ html:not(#_m):not(#_d) :is(.imClose, .aiX, .chX, .shClose, .prX, .ibX, .dbX, .tl
 html:not(#_m):not(#_d) .aiX { top: -52px; }   /* still 16 above Ask Eva's card */
 html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18px) !important; right: calc(var(--rvSqR, 8cqw) + 4px - 18px) !important; } html:not(#_m):not(#_d) :is(#phone2, body[data-bp="xs"] .dash, body[data-bp="s"] .dash) > .dbM.v9 .dbX { right: calc(var(--rvSqR, 7cqw) + 4px - 18px) !important; } html:not(#_m):not(#_d) .dbM.v9 .dbX::before { left: 14px; top: 14px; }   /* the review's square-corner cross: its centre where it was */
 
+/* ---- Top nav, the master (Design system -> General layout -> Top nav; window.EvTopNav builds it): one bar for every modal, sheet, standalone page and flow with a Back and / or a Close.
+   A, a page title in the bar: 76 hug, 16 all round, the title (20/28, 500, one line) at the left, Close 44 at the right. B: Back 44, the title 16 after it (x 76), Close.
+   C, no title in the bar ("IF no h1 title, keep a safe space at the top. h1 is then part of the Body"): the bar is a 32 safe space only; its controls keep their place (16 down, 16 in, 44) and float over the band's foot
+   and the top of the body; the page's H1 is the first thing in the body, its lines clear of the controls (.evTnH1). Scrolled up under the bar, the H1 comes into it (.evTnFt, centred between the controls, 17/22 600: the Service detail's bar, "fixed gradient blur with title appearing").
+   The ground is always the gradient blur ("Top nav always gradient blur by default"): the screen's own colour (--evTnGnd) fading to nothing by a mask (--hoTint at the top, the Header overlap's), over ten backdrop-blur bands (the Overview bar's .ovGround: 14 px at the top to 1.5 at the foot);
+   at rest it ends at the bar's foot (nothing under it veiled), and once the content scrolls under it (.evTnOn) it reaches --evTnBleed further, so what passes under fades and blurs in, never a hard cut.
+   Type in longhands, the family on its own (a var() falling back to inherit inside a font shorthand voids the whole shorthand).
+   Host tokens: --evTnTop (the status bar / safe area above the bar: 0 on the desk), --evTnX (the page's padding/left-right), --evTnGnd (the screen's colour), --evTnInk (its ink) */
+.evTn { --evTnD: 44px; position: sticky; top: 0; z-index: 6; display: flex; align-items: center; gap: 16px; box-sizing: border-box; min-height: calc(var(--evTnTop, 0px) + 76px); margin: 0; padding: calc(var(--evTnTop, 0px) + 16px) var(--evTnX, 16px) 16px; color: var(--evTnInk, currentColor); isolation: isolate; pointer-events: none; }
+.evTn > :not(.evTnG) { pointer-events: auto; }
+.evTn.evTnC { height: calc(var(--evTnTop, 0px) + 32px); min-height: 0; padding: 0; }
+.evTnBtn { appearance: none; position: relative; flex: none; display: flex; align-items: center; justify-content: center; width: var(--evTnD); height: var(--evTnD); margin: 0; padding: 0; border: 0; border-radius: 50%; background: var(--evTnDisc, color-mix(in srgb, var(--evTnInk, currentColor) 6%, transparent)); color: inherit; cursor: pointer; -webkit-backdrop-filter: var(--evTnDiscBlur, none); backdrop-filter: var(--evTnDiscBlur, none); transition: box-shadow .15s ease, background-color .28s ease, color .28s ease; }
+.evTnBtn svg { width: 16px; height: 16px; }
+.evTnBtn:hover { box-shadow: inset 0 0 0 40px color-mix(in srgb, var(--evTnInk, currentColor) 4%, transparent); }
+.evTnBtn:focus-visible { outline: 2px solid #4b7bec; outline-offset: 2px; }
+.evTnT { flex: 1 1 auto; min-width: 0; margin: 0; overflow: hidden; font-weight: 500; font-size: 20px; line-height: 28px; font-family: var(--ar-font, "Saans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif); letter-spacing: -.1px; color: inherit; white-space: nowrap; text-overflow: ellipsis; }
+.evTn:not(.evTnC) > .evTnT ~ .evTnBtn, .evTn:not(.evTnC) > .evTnFt ~ .evTnBtn { margin-left: auto; }
+.evTnC > .evTnBtn { position: absolute; top: calc(var(--evTnTop, 0px) + 16px); }
+.evTnC > .evTnBk { left: var(--evTnX, 16px); } .evTnC > :is(.evTnX, .evTnMore) { right: var(--evTnX, 16px); }
+.evTnFt { position: absolute; top: calc(var(--evTnTop, 0px) + 16px); left: calc(var(--evTnX, 16px) + var(--evTnD) + 12px); right: calc(var(--evTnX, 16px) + var(--evTnD) + 12px); height: var(--evTnD); display: flex; align-items: center; justify-content: center; pointer-events: none !important; opacity: 0; transform: translateY(6px); transition: opacity .25s ease, transform .25s ease; }
+.evTnFt span { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-weight: 600; font-size: 17px; line-height: 22px; font-family: var(--ar-font, "Saans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif); letter-spacing: -.2px; color: inherit; }
+.evTn.evTnTitled > .evTnFt { opacity: 1; transform: none; }
+.evTn:not(.evTnC) > .evTnFt { display: none; }
+/* the body's H1 under a C bar: its lines clear of the floating Close (the disc and 12), and under a floating Back it starts below the disc (its foot and 12) */
+.evTnC.evTnHasX ~ .evTnH1, .evTnC.evTnHasX ~ * .evTnH1 { padding-right: calc(var(--evTnD, 44px) + 12px); box-sizing: border-box; }
+.evTnC.evTnHasBk ~ .evTnH1, .evTnC.evTnHasBk ~ * .evTnH1, .evTnC.evTnHasBk + .evTnClr, .evTnC.evTnHasBk + * > .evTnClr:first-child { margin-top: calc(var(--evTnD, 44px) - 16px + 12px); }
+/* no clearance where there is nothing to clear: both discs (the H1 already starts below them), or the column far from the controls (.evTnFar, set by watch(): the desk's 2xs column) */
+.evTnC.evTnHasBk.evTnHasX ~ .evTnH1, .evTnC.evTnHasBk.evTnHasX ~ * .evTnH1, .evTnC.evTnFar ~ .evTnH1, .evTnC.evTnFar ~ * .evTnH1 { padding-right: 0; }
+.evTnC.evTnFar.evTnHasBk ~ .evTnH1, .evTnC.evTnFar.evTnHasBk ~ * .evTnH1, .evTnC.evTnFar.evTnHasBk + .evTnClr, .evTnC.evTnFar.evTnHasBk + * > .evTnClr:first-child { margin-top: 0; }
+/* the ground */
+.evTnG { position: absolute; left: 0; right: 0; top: 0; bottom: 0; z-index: -1; pointer-events: none; transition: bottom .28s ease; }
+.evTn.evTnOn > .evTnG { bottom: calc(-1 * var(--evTnBleed, 24px)); }
+.evTnC.evTnOn > .evTnG { bottom: calc(-1 * (var(--evTnD) - 16px) - var(--evTnBleed, 24px)); }   /* C: down to the floating controls' foot, then the bleed */
+.evTnG::before { content: ""; position: absolute; inset: 0; background: var(--evTnGnd, var(--ar-paper, #0f0f0f)); opacity: var(--hoTint, .85); transition: background-color .28s ease; -webkit-mask-image: linear-gradient(180deg, #000 0%, rgba(0,0,0,.91) 18%, rgba(0,0,0,.78) 36%, rgba(0,0,0,.6) 54%, rgba(0,0,0,.38) 72%, rgba(0,0,0,.18) 88%, transparent 100%); mask-image: linear-gradient(180deg, #000 0%, rgba(0,0,0,.91) 18%, rgba(0,0,0,.78) 36%, rgba(0,0,0,.6) 54%, rgba(0,0,0,.38) 72%, rgba(0,0,0,.18) 88%, transparent 100%); }
+.evTnG i { position: absolute; left: 0; right: 0; top: 0; display: block; -webkit-mask-image: linear-gradient(#000 82%, transparent); mask-image: linear-gradient(#000 82%, transparent); }
+.evTnG i:nth-child(1) { height: 100%; -webkit-backdrop-filter: blur(1.5px); backdrop-filter: blur(1.5px); }
+.evTnG i:nth-child(2) { height: 92%; -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); }
+.evTnG i:nth-child(3) { height: 84%; -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
+.evTnG i:nth-child(4) { height: 76%; -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+.evTnG i:nth-child(5) { height: 68%; -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px); }
+.evTnG i:nth-child(6) { height: 60%; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.evTnG i:nth-child(7) { height: 52%; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+.evTnG i:nth-child(8) { height: 44%; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+.evTnG i:nth-child(9) { height: 36%; -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+.evTnG i:nth-child(10) { height: 28%; -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
+@media (prefers-reduced-motion: reduce) { .evTnG, .evTnFt, .evTnBtn { transition: none; } }
+/* the page container (General layout -> Container; "the max width container is on the body content, not the viewport"): the page keeps its padding at the viewport, the top nav and the footer span it, only the body's content sits in the container, centred, the footer's CTA held to the same column.
+   A page names its container (data-container="2xs" | "xs" | "sm" | "md" | "lg") instead of a max-width of its own: layout/container/max-width, 2xs per breakpoint (the screen's on XS, 512 S, 544 M, 576 L), the others the same at every one (800, 1080, 1280, 1440) */
+:root { --ct2xs: 100%; --ctXs: 800px; --ctSm: 1080px; --ctMd: 1280px; --ctLg: 1440px; }
+@media (min-width: 600px) { :root { --ct2xs: 512px; } }
+@media (min-width: 992px) { :root { --ct2xs: 544px; } }
+@media (min-width: 1440px) { :root { --ct2xs: 576px; } }
+body[data-bp="xs"], [data-ct-bp="xs"], .aqWrap.aqBpXS { --ct2xs: 100%; } body[data-bp="s"], [data-ct-bp="s"], .aqWrap.aqBpS { --ct2xs: 512px; } body[data-bp="m"], [data-ct-bp="m"], .aqWrap.aqBpM { --ct2xs: 544px; } body[data-bp="l"], body[data-bp="xl"], [data-ct-bp="l"], .aqWrap.aqBpL { --ct2xs: 576px; }   /* [data-ct-bp]: the Container doc reads a breakpoint's tokens off these very rules */
+[data-container] { box-sizing: border-box; width: 100%; margin-left: auto; margin-right: auto; }
+[data-container="2xs"] { max-width: var(--ct2xs); } [data-container="xs"] { max-width: var(--ctXs); } [data-container="sm"] { max-width: var(--ctSm); } [data-container="md"] { max-width: var(--ctMd); } [data-container="lg"] { max-width: var(--ctLg); }
+html:not(#_m):not(#_d) .arSheet .arHead .arHeadRow > .arIconBtn.arIconBtn { width: 44px !important; height: 44px !important; min-width: 44px !important; min-height: 44px !important; }   /* the flows' heads (the Async report, the Health profile, the Step flow master): the Top nav master's 44 discs; their bars keep their own markup for the progress riding in them */
+html:not(#_m):not(#_d) .evTn .evTnBtn.evTnBtn { width: var(--evTnD) !important; height: var(--evTnD) !important; min-width: var(--evTnD) !important; min-height: var(--evTnD) !important; }   /* the master's 44 over the every-dismiss 36 (above), for a control that keeps an old class (.arClose, .prX ...) for its handler */
 
 </style>
 <style>
@@ -1396,17 +1453,17 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
 .arSheet.hpSheet .hpMain { position: relative; flex: 1 1 auto; min-height: 0; display: flex; }   /* the rail (the desk) beside the view */
 .arSheet.hpSheet .hpMain > .hpView { flex: 1 1 auto; min-width: 0; }
 .arSheet.hpSheet .hpRail { display: none; }
-.aqWrap.aqFull:is(.aqBpM, .aqBpL) .aqFrame > .arSheet.arSheet.arSheet.arSheet.hpSheet { max-width: 1040px; }   /* the desk: room for the rail beside the page ("a system that shows the progress on the left side") */
+.aqWrap.aqFull:is(.aqBpM, .aqBpL) .aqFrame > .arSheet.arSheet.arSheet.arSheet.hpSheet { max-width: none; }   /* the desk: the page the viewport's width ("the max width container is on the body content, not the viewport"): its top nav spans it, its step and its CTA in the 2xs container */   /* the desk: room for the rail beside the page ("a system that shows the progress on the left side") */
 .arSheet.hpSheet.hpWide .hpMain { width: 100%; max-width: 980px; margin: 0 auto; }
 .arSheet.hpSheet.hpWide:not(.hpAtHome) .hpRail { display: flex; flex-direction: column; gap: 6px; flex: none; width: 300px; padding: 24px 32px 24px var(--hpSide); overflow-y: auto; }
 .arSheet.hpSheet.hpWide:not(.hpAtHome) .hpScr { padding-left: 32px; padding-right: 32px; } .arSheet.hpSheet.hpWide .hpScr > * { width: 100%; max-width: 560px; }
 .arSheet.hpSheet.hpWide.hpAtHome .hpScr { align-items: center; } .arSheet.hpSheet.hpWide.hpAtHome .hpHome { max-width: 520px; }
 /* its bar and its foot in the page's own column, not out at the frame's edges ("the full modal needs its dismiss in the top nav, in the same container as below; the footer follows the container as well"): 520, the intro's steps and every step's page; the back and the cross at its edges, the progress and the button its width */
 /* the desk's steps as the phone's ("no need for that (the rail); keep it easy, as the mobile view"): no rail beside the page; the page one column in the middle */
-.arSheet.hpSheet.hpWide:not(.hpAtHome) .hpRail { display: none; } .arSheet.hpSheet.hpWide:not(.hpAtHome) .hpScr { align-items: center; } .arSheet.hpSheet.hpWide:not(.hpAtHome) .hpScr > * { max-width: 520px; }
-.aqWrap.aqFull:is(.aqBpM, .aqBpL) .arSheet.hpSheet.hpWide .arHeadRow { margin-inline: auto; width: 100%; max-width: 520px; }
-.aqWrap.aqFull:is(.aqBpM, .aqBpL) .arSheet.hpSheet.hpWide .arFoot { padding-left: max(var(--hpSide), calc((100% - 520px) / 2)); padding-right: max(var(--hpSide), calc((100% - 520px) / 2)); } .aqWrap.aqFull:is(.aqBpM, .aqBpL) .arSheet.hpSheet.hpWide.hpAtHome.hpAtHome .arFoot { padding-left: max(var(--hpSide), calc((100% - 520px) / 2)); padding-right: max(var(--hpSide), calc((100% - 520px) / 2)); }
-.aqWrap.aqFull:is(.aqBpM, .aqBpL) .arSheet.hpSheet.hpWide .arStepWrap { width: 100%; max-width: 520px; margin-inline: auto; padding-inline: 0; box-sizing: border-box; }   /* the steps' bars the column's width too */
+.arSheet.hpSheet.hpWide:not(.hpAtHome) .hpRail { display: none; } .arSheet.hpSheet.hpWide:not(.hpAtHome) .hpScr { align-items: center; } .arSheet.hpSheet.hpWide:not(.hpAtHome) .hpScr > * { max-width: var(--ct2xs, 544px); }   /* a step's page: the 2xs container (544 M, 576 L) */
+.aqWrap.aqFull:is(.aqBpM, .aqBpL) .arSheet.hpSheet.hpWide .arHead { padding-left: var(--ctPadX, 24px); padding-right: var(--ctPadX, 24px); } .aqWrap.aqFull:is(.aqBpM, .aqBpL) .arSheet.hpSheet.hpWide .arHeadRow { margin-inline: 0; width: auto; max-width: none; }   /* the top nav spans the viewport inside the page's padding: Back at its left, Close at its right (the Top nav master's rule) */ .aqWrap.aqFull:is(.aqBpM, .aqBpL) .arSheet.hpSheet.hpWide .hpMid { max-width: var(--ct2xs, 544px); margin-inline: auto; }   /* its title and step bars held to the body's column, centred */
+.aqWrap.aqFull:is(.aqBpM, .aqBpL) .arSheet.hpSheet.hpWide:not(.hpAtHome) .arFoot { padding-left: max(var(--hpSide), calc((100% - var(--ct2xs, 544px)) / 2)); padding-right: max(var(--hpSide), calc((100% - var(--ct2xs, 544px)) / 2)); }   /* the footer spans the viewport, its CTA the 2xs column under the step */ .aqWrap.aqFull:is(.aqBpM, .aqBpL) .arSheet.hpSheet.hpWide.hpAtHome.hpAtHome .arFoot { padding-left: max(var(--hpSide), calc((100% - 520px) / 2)); padding-right: max(var(--hpSide), calc((100% - 520px) / 2)); }
+.aqWrap.aqFull:is(.aqBpM, .aqBpL) .arSheet.hpSheet.hpWide .arStepWrap { width: 100%; max-width: var(--ct2xs, 544px); margin-inline: auto; padding-inline: 0; box-sizing: border-box; }   /* the steps' bars the column's width too */
 .arSheet.hpSheet .hpRailI { display: flex; flex-direction: column; }
 .arSheet.hpSheet .hpRailH { appearance: none; display: flex; align-items: center; gap: 14px; width: 100%; margin: 0; padding: 12px 14px; border: 0; border-radius: 12px; background: none; color: oklch(var(--ar-ink) / .48); font: inherit; font-family: var(--ar-font); font-size: 16px; line-height: 20px; text-align: left; cursor: pointer; transition: background-color .15s ease, color .15s ease; }
 .arSheet.hpSheet button.hpRailH:hover { color: oklch(var(--ar-ink)); } .arSheet.hpSheet .hpRailH.hpRailStill { cursor: default; }   /* only a stage done opens (to edit) */
@@ -2050,6 +2107,8 @@ window.EvSteps = (function () {
     save: function () { try { localStorage.setItem(K, JSON.stringify(M)); return true; } catch (e) { return false; } },
     reset: function () { Object.keys(D).forEach(function (k) { M[k] = D[k]; }); try { localStorage.removeItem(K); } catch (e) {} tok(); } };
 })();
+/* evK(el): how much smaller el is drawn than its own CSS pixels (an XS device scaled to fit a short window, html.bpFit; a documentation phone scaled to its column): a drag's screen pixels over it are divided by it, so what the finger holds moves with the finger */
+window.evK = function (el) { var r = el && el.getBoundingClientRect && el.getBoundingClientRect(); return r && el.offsetWidth && r.width ? r.width / el.offsetWidth : 1; };
 /* EvSheetSwipe(panel, close, opts): every bottom sheet's swipe down ("bottom sheet should be able to swipe down to dismiss"), one helper for all of them; documented in Design system -> Modals.
    On the phone (XS, S; opts.when to say otherwise) the panel follows the finger down from its grabber or its header (opts.handle), and from its body while that is scrolled to its top;
    let go past opts.threshold (80) or flicked down (over .5 px a ms), close() runs and the sheet leaves from where it was (its own exit, from there; opts.out 'slide' slides it out first, for a sheet whose exit is not a move); short of it, it springs back.
@@ -2164,6 +2223,49 @@ window.EvOverlap = (function () {
   return { M: M, D: D, sda: SDA, apply: apply, bind: bind, mark: mark, set: function (k, v) { M[k] = v; tok(); },
     save: function () { try { localStorage.setItem('everlab:hoMaster', JSON.stringify(M)); return true; } catch (e) { return false; } },
     reset: function () { Object.keys(D).forEach(function (k) { M[k] = D[k]; }); try { localStorage.removeItem('everlab:hoMaster'); } catch (e) {} tok(); } };
+})();
+/* EvTopNav: the Top nav master (Design system -> General layout -> Top nav; its CSS .evTn in the report sheet's styles). One bar for every modal, sheet, standalone page and flow that has a Back and / or a Close:
+   html({ back, title, close, more, reveal, cls, backCls, closeCls, tag, titleId, backLabel, closeLabel }) -> its markup:
+     a title: A (Close) or B (Back, then the title) -- 76 hug, 16 all round, 44 discs, the title 20/28 500 one line;
+     no title: C -- a 32 safe space, the controls floating at their place (16 down, 16 in), the page's H1 the first thing in the body (give it .evTnH1: clear of the controls); reveal: the H1's words, faded into the bar once the H1 has gone under it.
+   mount(el, o) -> the bar, drawn into el. watch(scroller, nav, h1) -> { update }: the ground's overflow (.evTnOn, the content under it) and, on C, the bar's title (.evTnTitled) once the page has moved and the H1's middle has passed the controls' foot (the Service detail's own rule, titled(), gated on the scroll); .evTnFar when the H1's column is clear of the controls (no clearance).
+   The ground (.evTnG) is in every bar: always the gradient blur. Host tokens: --evTnTop, --evTnX, --evTnGnd, --evTnInk */
+window.EvTopNav = (function () {
+  var IB = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3.5 5.5 8l4.5 4.5"/></svg>';
+  var IX = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9"/></svg>';
+  var IM = '<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><circle cx="3.5" cy="8" r="1.4"/><circle cx="8" cy="8" r="1.4"/><circle cx="12.5" cy="8" r="1.4"/></svg>';
+  var G = '<div class="evTnG" aria-hidden="true">' + new Array(11).join('<i></i>') + '</div>';
+  var esc = function (t) { return String(t == null ? '' : t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); };
+  var btn = function (k, cls, lab, ic) { return '<button type="button" class="evTnBtn evTn' + k + (cls ? ' ' + cls : '') + '" aria-label="' + esc(lab) + '">' + ic + '</button>'; };
+  function variant(o) { return o && o.title ? (o.back ? 'b' : 'a') : 'c'; }
+  function html(o) {
+    o = o || {}; var v = variant(o), tag = o.tag || 'div', trail = !!(o.close || o.more);
+    var lead = o.back ? btn('Bk', o.backCls, o.backLabel || 'Back', o.backIcon || IB) : '';
+    var tail = o.close ? btn('X', o.closeCls, o.closeLabel || 'Close', o.closeIcon || IX) : o.more ? btn('More', o.moreCls, o.moreLabel || 'More', IM) : '';
+    var mid = o.title ? '<' + tag + ' class="evTnT"' + (o.titleId ? ' id="' + esc(o.titleId) + '"' : '') + '>' + o.title + '</' + tag + '>' : '<div class="evTnFt" aria-hidden="true"><span>' + esc(o.reveal || '') + '</span></div>';
+    return '<div class="evTn evTn' + v.toUpperCase() + (o.back ? ' evTnHasBk' : '') + (trail ? ' evTnHasX' : '') + (o.cls ? ' ' + o.cls : '') + '" data-tn="' + v + '"' + (o.attr ? ' ' + o.attr : '') + '>' + G + lead + mid + tail + '</div>';
+  }
+  function mount(el, o) { if (!el) return null; el.innerHTML = html(o); return el.firstChild; }
+  /* the Service detail's rule, shared: the title is in the bar once the H1's middle is above the bar's controls' foot, or the sheet under it has come over the H1 */
+  function titled(h1, bar, sheet) { if (!h1 || !bar) return false; var r = h1.getBoundingClientRect(); if (!r.height) return false; return r.top + r.height / 2 < bar.getBoundingClientRect().bottom || (!!sheet && sheet.getBoundingClientRect().top < r.bottom); }
+  function foot(nav) { var b = nav.querySelector(':scope > .evTnBtn') || nav, r = nav.getBoundingClientRect(); return nav.classList.contains('evTnC') ? b.getBoundingClientRect().bottom : r.bottom; }
+  /* the H1's column clear of the controls' x-range (the desk: a 2xs column far from the discs at the viewport's edges): .evTnFar, and the H1 keeps its full width and its place (no clearance) */
+  function far(nav, h1) { if (!h1 || !nav.classList.contains('evTnC')) return false; var r = h1.getBoundingClientRect(); if (!r.width) return nav.classList.contains('evTnFar');
+    var x = nav.querySelector(':scope > :is(.evTnX, .evTnMore)'), b = nav.querySelector(':scope > .evTnBk');
+    if (x && r.right > x.getBoundingClientRect().left - 12) return false; if (b && r.left < b.getBoundingClientRect().right + 12) return false; return true; }
+  function watch(sc, nav, h1, o) {
+    o = o || {}; if (!sc || !nav) return { update: function () {} }; var q = 0;
+    var ft = nav.querySelector(':scope > .evTnFt span'); if (ft && !ft.textContent && h1) ft.textContent = h1.textContent.trim();
+    var run = function () { q = 0; nav.classList.toggle('evTnOn', sc.scrollTop > 0);
+      if (nav.classList.contains('evTnC') && h1) { nav.classList.toggle('evTnFar', far(nav, h1));
+        /* the Service detail's rule (its middle past the controls' foot), once the page has moved: at rest on the desk the H1 sits level with the Close and stays in the body */
+        var r = h1.getBoundingClientRect(), f = nav.classList.contains('evTnFar') ? nav.getBoundingClientRect().bottom : foot(nav);   /* a column clear of the controls: its H1 is under the bar once its middle passes the 32 band's foot, not the discs' */
+        nav.classList.toggle('evTnTitled', sc.scrollTop > 0 && !!r.height && r.top + r.height / 2 < f); } };
+    sc.addEventListener('scroll', function () { if (!q) q = requestAnimationFrame(run); }, { passive: true });
+    if (window.ResizeObserver) new ResizeObserver(function () { if (!q) q = requestAnimationFrame(run); }).observe(sc);
+    run(); return { update: run };
+  }
+  return { html: html, mount: mount, watch: watch, titled: titled, variant: variant, IB: IB, IX: IX, IM: IM };
 })();
 /* EvMagnet: a row of cards swiped by hand, the magnet one ("if you swipe more than 50%, you go to the second card. If not, you come back to the normal card"), once for every carousel: the Plan's goals, the Services' recommended row.
    Dragged by hand, a mouse as a finger (a mouse cannot pan a scroller, and a press-and-pull only selected the text); a drag more down than across is left to the page's scroll; the row's snapping off while it moves.
@@ -3585,13 +3687,13 @@ window.EvConsent = (function () {
           var sx = null, nbEl = null, tW = function () { return ccTg ? ccTg.offsetWidth || 320 : 320; }, cT = function () { return ccTg && ccTg.querySelector(':scope > .hpCcT:nth-child(' + (+ccTg.dataset.s || 1) + ')'); }, nbOf = function (dir) { var k = VAL.indexOf(ccTg ? +ccTg.dataset.s || 1 : 1), n = VAL[(k + dir + VAL.length) % VAL.length]; return ccTg && ccTg.querySelector(':scope > .hpCcT:nth-child(' + n + ')'); };
           var clr = function (el) { if (el){ el.style.translate = ''; el.style.opacity = ''; el.style.filter = ''; } }, unDrag = function () { if (ccTg) ccTg.classList.remove('drag'); clr(cT()); clr(nbEl); nbEl = null; };
           scr.style.touchAction = 'pan-y';   /* a horizontal drag is the carousel's, not the page's */
-          scr.addEventListener('pointerdown', function (e) { if (e.target.closest('button, a, input') || root.classList.contains('hpCcIntroOn')) return; if (e.pointerType === 'mouse') e.preventDefault(); sx = { x: e.clientX, y: e.clientY, on: false }; });   /* no text selected, so no native drag cancelling the swipe */
-          scr.addEventListener('pointermove', function (e) { if (!sx || !ccTg) return; var dx = e.clientX - sx.x, dy = e.clientY - sx.y; if (!sx.on){ if (Math.abs(dx) < 6 || Math.abs(dx) < Math.abs(dy)) return; sx.on = true; try { scr.setPointerCapture(e.pointerId); } catch (x){} }
+          scr.addEventListener('pointerdown', function (e) { if (e.target.closest('button, a, input') || root.classList.contains('hpCcIntroOn')) return; if (e.pointerType === 'mouse') e.preventDefault(); sx = { x: e.clientX, y: e.clientY, on: false, k: window.evK ? evK(scr) : 1 }; });   /* no text selected, so no native drag cancelling the swipe */
+          scr.addEventListener('pointermove', function (e) { if (!sx || !ccTg) return; var dx = (e.clientX - sx.x) / sx.k, dy = (e.clientY - sx.y) / sx.k;   /* in the screen's own pixels (a device drawn smaller: evK) */ if (!sx.on){ if (Math.abs(dx) < 6 || Math.abs(dx) < Math.abs(dy)) return; sx.on = true; try { scr.setPointerCapture(e.pointerId); } catch (x){} }
             var t = cT(), W = tW(), nb = nbOf(dx < 0 ? 1 : -1); if (!t) return; ccTg.classList.add('drag', 'edge'); clearTimeout(ccTg._eT); if (nbEl && nbEl !== nb) clr(nbEl); nbEl = nb;
             t.style.translate = dx + 'px 0'; t.style.opacity = String(Math.max(0, 1 - Math.abs(dx) / 64));   /* gone by 64 of drag ("swipe the carousel 64px will fade out totally the title group"; was 40% of its width) */ t.style.filter = 'none'; var vo = Math.max(.25, 1 - Math.abs(dx) / (W * .7)); chat.dataset.vo = vo; vOp(vo);   /* the visual fading with the finger too, so it is already on its way out when let go */
             if (nb && nb !== t){ nb.style.translate = (dx + (dx < 0 ? W : -W)) + 'px 0'; nb.style.opacity = String(Math.min(1, Math.max(0, (Math.abs(dx) - W * .2) / (W * .5)))); nb.style.filter = 'none'; } });   /* the titles move with the finger, 1:1: the showing one out, the next (or the one before) coming in beside it, each fading */
           var settle = function (el, x, op) { if (!el) return; el.style.transition = 'translate .62s cubic-bezier(.25, .75, .3, 1), opacity .5s cubic-bezier(.4, 0, .3, 1), filter .5s ease'; el.style.transitionDelay = '0s'; el.style.translate = x + 'px 0'; el.style.opacity = String(op); clearTimeout(el._st); el._st = setTimeout(function () { el.style.transition = ''; el.style.transitionDelay = ''; clr(el); }, 700); };   /* a softer glide on release ("smooth transition on release"): starting at about the finger's pace, easing long into place */   /* from where the finger left it, straight to its place, no wait */
-          var sEnd = function (e) { if (!sx) return; var dx = e.clientX - sx.x, dy = e.clientY - sx.y, was = sx.on, W = tW(); sx = null; if (!was) return;
+          var sEnd = function (e) { if (!sx) return; var dx = (e.clientX - sx.x) / sx.k, dy = (e.clientY - sx.y) / sx.k, was = sx.on, W = tW(); sx = null; if (!was) return;
             var t = cT(), nb = nbEl; nbEl = null; if (ccTg){ ccTg.classList.remove('drag'); clearTimeout(ccTg._eT); ccTg._eT = setTimeout(function () { ccTg.classList.remove('edge'); }, 720); }   /* the edges' fade kept while the titles settle */
             if (Math.abs(dx) < 48 || Math.abs(dx) < Math.abs(dy)){ delete chat.dataset.vo; vOp(1, 'opacity .4s ease'); setTimeout(function () { vOp(null); }, 420); settle(t, 0, 1); if (nb && nb !== t) settle(nb, dx < 0 ? W : -W, 0); return; }   /* short of it: back in place, the neighbour back out */
             var n = ccTg ? +ccTg.dataset.s || 1 : 1, gi = VAL.indexOf(n) + (dx < 0 ? 1 : -1), gb = dx > 0;
@@ -4434,7 +4536,8 @@ window.EvConsent = (function () {
   var stage = document.getElementById('stage'), dev = document.getElementById('dev'), demo = document.querySelector('.demo'), KEY = 'everlab.hp.bp';
   var paint = function () { if (inst) inst.theme(dark() ? 'dark' : 'light'); stage.classList.toggle('lt', !dark()); [].forEach.call(document.querySelectorAll('.demo [data-th]'), function (b) { b.setAttribute('aria-pressed', String((b.getAttribute('data-th') === 'dark') === dark())); }); };
   /* the Demo button beside the screen when it fits (28 right of the device, or in a wide Auto's gutter); else the pill under the sheet's button */
-  var place = function () { var r = dev.getBoundingClientRect(), x = r.right + 28; demo.classList.toggle('side', x + 36 + 12 <= innerWidth); if (demo.classList.contains('side')) { demo.style.left = Math.round(x) + 'px'; } else demo.style.left = ''; };
+  var place = function () { stage.style.setProperty('--devS', String(Math.max(.2, Math.min(1, (innerHeight - 96) / 852, (innerWidth - 32) / 393)))); var r = dev.getBoundingClientRect(), x = r.right + 28;   /* the XS phone's scale, 48 above and below it as before */
+    demo.classList.toggle('side', x + 36 + 12 <= innerWidth); if (demo.classList.contains('side')) { demo.style.left = Math.round(x) + 'px'; } else demo.style.left = ''; };
   var setBp = function (b) { stage.setAttribute('data-bp', b); [].forEach.call(document.querySelectorAll('.demo [data-bp]'), function (x) { x.setAttribute('aria-pressed', String(x.getAttribute('data-bp') === b)); }); try { localStorage.setItem(KEY, b); } catch (e) {} requestAnimationFrame(place); };
   var mount = function () { if (inst) inst.destroy(); host.textContent = ''; inst = HP.mount(host, { theme: dark() ? 'dark' : 'light', name: 'Julien', onClose: function () { if (inst) inst.home(); } }); paint(); };
   var stateOf = function () { var sm = HP.store.summary(), nx = ['wear', 'past', 'you'].filter(function (k) { return sm.st[k] !== 'done'; })[0]; return sm.n === 3 ? 'all' : ['none', 'one', 'two'][sm.n] + (nx === 'you' && sm.st.you === 'prog' ? '_d' : ''); };   // only step 3 has a dropped-off state
