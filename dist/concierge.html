@@ -19,7 +19,6 @@
     --pri: #2e1f1a; --priFg: #fdfaf3; --acc: #f26b3a; --accFg: #ffffff; --ok: #2f8f57; --bad: #c8463f; --badge: #4a4a4a; --badgeFg: #ffffff;
     --pop: #fdfaf3; --popLine: rgba(46, 31, 26, .1); --stage: #e9e1d2; --scrim: rgba(20, 14, 10, .32); --ring: rgba(46, 31, 26, .55);
     --note: #f4a067; --noteFg: #2e1f1a; --edge: rgba(46, 31, 26, .16);
-    --kbBg: #d1d3d9; --kKey: #ffffff; --kFn: #acb0bb; --kInk: #000000; --kSel: rgba(0, 0, 0, .08);
     --shadow: none; --popShadow: 0 2px 6px rgba(46, 31, 26, .06), 0 16px 40px rgba(46, 31, 26, .14);
     --sans: "Suisse Intl", SuisseIntl, "Suisse Int'l", "Helvetica Neue", Helvetica, Arial, sans-serif;
     --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
@@ -33,7 +32,6 @@
       --pri: #ffffff; --priFg: #111111; --ok: #4cc27e; --bad: #f06a6a; --badge: #4a4a4a; --badgeFg: #ffffff;
       --pop: #232322; --popLine: rgba(255, 255, 255, .08); --stage: #050505; --scrim: rgba(0, 0, 0, .5); --ring: rgba(255, 255, 255, .3);
       --note: #f7b58b; --noteFg: #1c1410; --edge: rgba(255, 255, 255, .16);
-      --kbBg: #5a5a5c; --kKey: #7c7c7f; --kFn: #464648; --kInk: #ffffff; --kSel: rgba(0, 0, 0, .16);
       --shadow: none; --popShadow: 0 16px 40px rgba(0, 0, 0, .5);
       color-scheme: dark;
     }
@@ -45,7 +43,6 @@
     --pri: #ffffff; --priFg: #111111; --ok: #4cc27e; --bad: #f06a6a; --badge: #4a4a4a; --badgeFg: #ffffff;
     --pop: #232322; --popLine: rgba(255, 255, 255, .08); --stage: #050505; --scrim: rgba(0, 0, 0, .5); --ring: rgba(255, 255, 255, .3);
     --note: #f7b58b; --noteFg: #1c1410; --edge: rgba(255, 255, 255, .16);
-    --kbBg: #5a5a5c; --kKey: #7c7c7f; --kFn: #464648; --kInk: #ffffff; --kSel: rgba(0, 0, 0, .16);
     --shadow: none; --popShadow: 0 16px 40px rgba(0, 0, 0, .5);
     color-scheme: dark;
   }
@@ -125,7 +122,7 @@
   .col { width: 100%; max-width: 688px; margin: 0 auto; padding: 12px 24px 40px; }
   .dock { flex: none; width: 100%; max-width: 688px; margin: 0 auto; padding: 0 24px 24px; }
   .box { border-radius: 24px; background: var(--input); padding: 14px 10px 10px 18px; box-shadow: inset 0 0 0 1.5px transparent; transition: box-shadow .16s ease, background .16s ease; }
-  .box:focus-within { box-shadow: inset 0 0 0 1.5px var(--ring); }
+  /* no ring while it has the focus ("NO border on focus state chat field"): the field keeps its resting look, focused or not */
   /* the beam: switching the field from Care team to Eva sends a light once round its edge ("when you switch the care team to Eva, we should have this border beam around that float, one turn around"),
      the Concierge onboarding intro's own ("keep the exact same beam border effect as the concierge onboarding intro"): the prototype's EvBeam, its rules here to the letter. The intro field's layers
      and numbers: the edge line (1 wide, 42%), the lights spilling inward (a 9 band, blur 7, 25%, held inside), a faint halo outside (an 8 band 4 out, blur 12, 9%), all one warm conic turned
@@ -196,7 +193,6 @@
   .app.atHome .box { padding: 20px 12px 12px; }
   .app.atHome .box textarea { padding-inline: 8px; }
   .app.atHome .boxRow { margin-top: 18px; }
-  .app.atHome .box:focus-within { box-shadow: inset 0 0 0 1.5px transparent; }
   .app.atHome .send { width: 36px; height: 36px; margin-left: 0; opacity: 1; transform: none; }   /* there from the start, faint until a character is typed */
   .cats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 12px; }
   .cat { display: flex; align-items: center; gap: 12px; min-width: 0; height: 52px; padding: 0 14px 0 16px; border-radius: 16px; background: var(--input); font-size: 15px; line-height: 1.3; text-align: left; transition: background .15s ease; }
@@ -495,7 +491,7 @@
   .app.mob .hd .mobOnly { display: inline-grid; }
   .app.mob .hd .ttl { color: var(--fg); font-weight: 500; }
   .app.mob .col { padding: 8px 16px 28px; }
-  .app.mob .dock { padding: 0 12px 12px; }
+  .app.mob { --dockP: 12px; } .app.mob .dock { padding: 0 var(--dockP) var(--dockP); }   /* the field's inset, one number: left, right and below ("same padding bottom than the left right around the chat field") */
   .app.mob .meta { opacity: 1; }
   .app.mob .msg.u .bub { max-width: 86%; }
   .app.mob .apt:not(.cmp), .app.mob .grp, .app.mob .clin { width: 100%; }
@@ -540,37 +536,15 @@
   .emb .app.mob .hd .iconBtn { width: 44px; height: 44px; } .emb .app.mob .hd .iconBtn svg, .emb .app.mob .hdInbox .ic { width: 20px; height: 20px; }
   .emb .app.mob .hdInbox { height: 44px; padding: 0 10px 0 14px; font-size: 15px; }
   .app.mob .side { padding-top: calc(14px + var(--safeT)); }
-  .app.mob .dock { padding-bottom: calc(12px + var(--safeB)); }
+  .app.mob .dock { padding-bottom: calc(var(--dockP, 12px) + var(--safeB)); }
   .lb { padding-top: calc(56px + var(--safeT)); } .lbX { top: calc(14px + var(--safeT)); }
   .launch { bottom: calc(24px + var(--safeB)); }
-  /* the phone's keyboard, drawn in the XS frame while the field is focused ("make sure keyboard version on focus"): the predictions, four rows, the emoji and the dictation;
-     its keys type into the field, return sends; the chat stands on it (the dock above it, the thread shortened) */
-  .kbd { display: none; position: absolute; left: 0; right: 0; bottom: 0; z-index: 9; background: var(--kbBg); color: var(--kInk); user-select: none; -webkit-user-select: none; touch-action: manipulation;
-    font-family: -apple-system, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif; transform: translateY(100%); visibility: hidden; transition: transform .32s cubic-bezier(.2, .8, .2, 1), visibility 0s linear .32s; }
-  .embPhone .kbd { display: block; }
-  .kbd.on { transform: none; visibility: visible; transition-delay: 0s; }
-  .kPred { display: flex; align-items: center; height: 48px; padding: 0 4px; }
-  .kPred span { flex: 1; display: grid; place-items: center; height: 38px; margin: 0 2px; border-radius: 6px; font-size: 17px; cursor: pointer; position: relative; }
-  .kPred span + span::before { content: ""; position: absolute; left: -3px; top: 9px; bottom: 9px; border-left: 1px solid rgba(128, 128, 128, .4); }
-  .kPred span.cur { background: var(--kSel); }
-  .kPred span.cur + span::before { display: none; }
-  .kRows { padding: 6px 3px 0; }
-  .kr { display: flex; gap: 6px; margin-bottom: 11px; padding: 0 3px; }
-  .kr:last-child { margin-bottom: 0; }
-  .kr.r2 { padding: 0 22px; }
-  .k { flex: 1 1 0; min-width: 0; height: 42px; display: flex; align-items: center; justify-content: center; border-radius: 5px; background: var(--kKey); font-size: 22px; line-height: 1; box-shadow: 0 1px 0 rgba(0, 0, 0, .35); cursor: pointer; }
-  .k:active { filter: brightness(1.18); }
-  .k.fn { flex: 1.45 1 0; background: var(--kFn); font-size: 16px; }
-  .k.ab, .k.rt { flex: 2.3 1 0; background: var(--kFn); font-size: 16px; }
-  .k.sp { flex: 4.8 1 0; font-size: 16px; }
-  .k svg { width: 22px; height: 22px; display: block; }
-  .kbd.shift .k.ch { text-transform: uppercase; }
-  .kbd.shift .k.shift { background: var(--kKey); }
-  .kFoot { position: relative; height: 79px; }
-  .kFoot svg { position: absolute; top: 20px; width: 28px; height: 28px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
-  .kFoot .kEmo { left: 22px; } .kFoot .kMic { right: 26px; }
-  .app.kb .main { padding-bottom: var(--kbH, 334px); }
-  .app.kb .dock { padding-bottom: 8px; }
+  /* the phone's keyboard, up in the XS frame while the field has the focus: the app's own, the Overview top field's (the EvKbd master, its CSS and keys put in by tools/build.js:
+     "Use same keyboard as the overview top chat field"); it rises and drops as it does there, its foot rounded with the screen; its keys type into the field, search sends; the chat stands on it */
+  .embPhone .mKbd { display: block; z-index: 9; --kbR: 56px; }
+  .app.kb .main { padding-bottom: var(--kbH, 254px); }
+  .app.kb .dock { padding-bottom: var(--dockP, 12px); }   /* the field as far over the keys as from the sides */
+  .app.kb ~ .homeInd { opacity: 0; }   /* the keys draw their own home bar: the page's (a sibling after #app in #stage, not inside it) steps aside, as the Overview's dock and its bar go while its keys are up */
   .homeInd { display: none; position: absolute; left: 50%; bottom: 8px; z-index: 45; width: 134px; height: 5px; border-radius: 3px; transform: translateX(-50%); background: var(--fg); opacity: .32; pointer-events: none; }
   .embPhone .homeInd { display: block; }
   @media (max-width: 560px) {
@@ -603,6 +577,51 @@
   .evTnG i:nth-child(10) { height: 28%; -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
   .hd.evTnOn > .evTnG { bottom: calc(-1 * var(--evTnBleed, 24px)); }   /* the master's scrolled state too: once the thread is under the head, the ground reaches 24 further (toggled by the one listener at the page's foot) */
   @media (prefers-reduced-motion: reduce) { .evTnG { transition: none; } }
+</style>
+<style data-master="EvKbd">/* from index.html (tools/build.js): Design system -> the phone keyboard */
+  /* ---- Phone keyboard (EvKbd; Design system master: the one drawn keyboard -- the Overview's top field, the frame's fields, the in-app chat, and the Chat page (visuals/concierge.html), which tools/build.js gives this section and window.EvKbd: "Use same keyboard as the overview top chat field") ---- */
+  /* An iOS keyboard, drawn in the frame while the field is focused -- the
+     device brings its own, so the viewport version shows none. The keys type
+     into the field (the script), so the demo can be worked from a desktop. */
+  .mKbd{
+    display:none;position:absolute;left:0;right:0;bottom:0;z-index:7;
+    padding:8px 3px 0;background:#1d1d1f;
+    user-select:none;-webkit-user-select:none;touch-action:manipulation;
+    font-family:-apple-system,"SF Pro Text","Helvetica Neue",Helvetica,Arial,sans-serif;
+    /* rises from the bottom edge as the device's does, and drops back the
+       same way; hidden to touch and to the eye once it is down */
+    transform:translateY(100%);visibility:hidden;pointer-events:none;
+    transition:transform .32s cubic-bezier(.2,.8,.2,1),clip-path .32s cubic-bezier(.2,.8,.2,1),visibility 0s linear .32s;
+    /* ...and only ever seen inside the screen ("the keyboard should come inside the screen; it comes from outside it"): cut at the screen's foot as it moves -- the cut, in the keys' own height, runs with the slide on the
+       same curve, so what is past the foot is never drawn; its corners the screen's (--kbR) */
+    clip-path:inset(0 0 100% 0 round 0 0 var(--kbR,0px) var(--kbR,0px));
+  }
+  .mKbd.on{transform:none;visibility:visible;pointer-events:auto;transition-delay:0s;clip-path:inset(0 0 0 0 round 0 0 var(--kbR,0px) var(--kbR,0px));}   /* up, for a host that raises it by its own class (the Chat page) rather than the body's */
+  .mKbd .kr{display:flex;justify-content:center;gap:6px;margin:0 0 11px;padding:0 3px;}
+  .mKbd .kr.r2{padding:0 22px;}
+  .mKbd .k{
+    flex:1 1 0;min-width:0;height:42px;border-radius:5px;background:#6b6b6f;color:#fff;
+    font-size:22px;font-weight:400;line-height:1;display:flex;align-items:center;justify-content:center;
+    box-shadow:0 1px 0 rgba(0,0,0,.45);cursor:pointer;
+  }
+  .mKbd .k:active{background:#8a8a8e;}
+  .mKbd.shift .k.ch{text-transform:uppercase;}
+  .mKbd .k.fn{flex:1.45 1 0;background:#464649;font-size:16px;}
+  .mKbd.shift .k.shift{background:#fff;color:#000;}
+  .mKbd .k.sp{flex:5.2 1 0;font-size:16px;}
+  .mKbd .k.n{flex:1.3 1 0;background:#464649;font-size:16px;}
+  .mKbd .k.go{flex:2.2 1 0;background:#0a84ff;font-size:16px;}
+  .mKbd .k svg{width:22px;height:22px;display:block;}
+  .mKbd .kHome{height:34px;position:relative;}
+  .mKbd .kHome i{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);width:134px;height:5px;border-radius:3px;background:rgba(255,255,255,.26);}
+  body.light .mKbd, .mKbd.kbL{background:#d1d3d9;}   /* light: the app's body.light, or .kbL where the page has no body.light (the Chat page sets it from its own theme) */
+  body.light .mKbd .k, .mKbd.kbL .k{background:#fff;color:#000;box-shadow:0 1px 0 rgba(0,0,0,.3);}
+  body.light .mKbd .k:active, .mKbd.kbL .k:active{background:#e6e7eb;}
+  body.light .mKbd .k.fn, body.light .mKbd .k.n, .mKbd.kbL .k.fn, .mKbd.kbL .k.n{background:#acb0bb;color:#000;}
+  body.light .mKbd.shift .k.shift, .mKbd.kbL.shift .k.shift{background:#fff;}
+  body.light .mKbd .k.go, .mKbd.kbL .k.go{background:#0a7aff;color:#fff;}
+  body.light .mKbd .kHome i, .mKbd.kbL .kHome i{background:rgba(0,0,0,.24);}
+  
 </style>
 </head>
 <body>
@@ -657,11 +676,44 @@
   <div class="cmpPage" id="cmpPage" hidden></div>
   <div class="lb" id="lb" hidden></div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <div class="kbd" id="kbd" aria-hidden="true"></div>
+  <div class="mKbd" id="kbd" aria-hidden="true"></div>
   <i class="homeInd" aria-hidden="true"></i>
 </div>
 <div class="pop" id="pop" role="menu" hidden></div>
 
+<script data-master="EvKbd">/* from index.html (tools/build.js): the phone keyboard master */
+window.EvKbd = (function () {
+  var key = function (label, cls, val) { return '<div class="k ' + cls + '" data-k="' + (val === undefined ? label : val) + '">' + label + '</div>'; };
+  var row = function (keys, cls) { return '<div class="kr ' + (cls || '') + '">' + keys + '</div>'; };
+  var chars = function (t) { return t.split('').map(function (c) { return key(c, 'ch'); }).join(''); };
+  var html = function () {
+    return row(chars('qwertyuiop')) + row(chars('asdfghjkl'), 'r2') +
+      row(key('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 4 4.5 12h4.2v7h6.6v-7h4.2z"/></svg>', 'fn shift', 'shift') + chars('zxcvbnm') +
+          key('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"><path d="M9 5h11a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H9l-6-7z"/><path d="M12 10l5 5M17 10l-5 5"/></svg>', 'fn', 'del')) +
+      row(key('123', 'n', 'num') + key('space', 'sp', ' ') + key('search', 'go', 'go')) +
+      '<div class="kHome"><i></i></div>';
+  };
+  var wire = function (el, target) {
+    el.addEventListener('pointerdown', function (e) {
+      e.preventDefault();
+      var k = e.target.closest('.k'); if (!k) return;
+      var v = k.dataset.k;
+      if (v === 'shift'){ el.classList.toggle('shift'); return; }
+      if (v === 'num') return;
+      var f = typeof target === 'function' ? target() : target; if (!f) return;
+      if (v === 'go'){ f.dispatchEvent(new CustomEvent('everlab:go', { bubbles: true })); f.blur(); return; }
+      var val = f.value, on = document.activeElement === f, a = val.length, b = a;
+      try { if (on && typeof f.selectionStart === 'number'){ a = f.selectionStart; b = f.selectionEnd; } } catch (x) {}
+      if (v === 'del'){ if (a === b && a > 0) a--; f.value = val.slice(0, a) + val.slice(b); }
+      else { var c = el.classList.contains('shift') && v !== ' ' ? v.toUpperCase() : v; f.value = val.slice(0, a) + c + val.slice(b); a += c.length; el.classList.remove('shift'); }
+      try { if (on) f.setSelectionRange(a, a); } catch (x) {}
+      f.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+    return el;
+  };
+  return { html: html, wire: wire };
+})();
+</script>
 <script>
 (function () {
   'use strict';
@@ -1363,40 +1415,16 @@
   };
   var setDev = function (d) { S.dev = d; $$('#devSeg button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.dev === d)); }); layout(); };
 
-  /* the phone's keyboard: up while the field has the focus in the XS frame; pointerdown kept off the field's focus, its keys typed at the caret */
+  /* the phone's keyboard: the app's own (window.EvKbd, put in by tools/build.js), up while the field has the focus in the XS frame; its keys typed at the caret; search sends, and the keys drop as the Overview's do */
   var kbd = $('#kbd');
-  var KSVG = function (d, extra) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"' + (extra || '') + '>' + d + '</svg>'; };
-  var kKey = function (label, cls, v) { return '<div class="k ' + cls + '" data-k="' + (v === undefined ? label : v) + '">' + label + '</div>'; };
-  var kRow = function (keys, cls) { return '<div class="kr ' + (cls || '') + '">' + keys + '</div>'; };
-  kbd.innerHTML = '<div class="kPred"><span class="cur" data-w="The">“The”</span><span data-w="the">the</span><span data-w="to">to</span></div><div class="kRows">' +
-    kRow('qwertyuiop'.split('').map(function (c) { return kKey(c, 'ch'); }).join('')) +
-    kRow('asdfghjkl'.split('').map(function (c) { return kKey(c, 'ch'); }).join(''), 'r2') +
-    kRow(kKey(KSVG('<path d="M12 4 4.5 12h4.2v7h6.6v-7h4.2z"/>'), 'fn shift', 'shift') + 'zxcvbnm'.split('').map(function (c) { return kKey(c, 'ch'); }).join('') +
-      kKey(KSVG('<path d="M9 5h11a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H9l-6-7z"/><path d="M12 10l5 5M17 10l-5 5"/>'), 'fn', 'del')) +
-    kRow(kKey('ABC', 'ab', 'num') + kKey('space', 'sp', ' ') + kKey('return', 'rt', 'ret')) + '</div>' +
-    '<div class="kFoot"><svg class="kEmo" viewBox="0 0 28 28"><circle cx="14" cy="14" r="11"/><path d="M9.5 16.5a5.5 5.5 0 0 0 9 0"/><circle cx="10.5" cy="11.5" r=".6" fill="currentColor"/><circle cx="17.5" cy="11.5" r=".6" fill="currentColor"/></svg><svg class="kMic" viewBox="0 0 28 28"><rect x="10.5" y="4" width="7" height="13" rx="3.5"/><path d="M6.5 13.5a7.5 7.5 0 0 0 15 0M14 21v3.5"/></svg></div>';
-  var kType = function (v) {
-    var a = q.selectionStart, b = q.selectionEnd, val = q.value;
-    if (v === 'del'){ if (a === b && a > 0) a--; q.value = val.slice(0, a) + val.slice(b); q.setSelectionRange(a, a); }
-    else { q.value = val.slice(0, a) + v + val.slice(b); q.setSelectionRange(a + v.length, a + v.length); }
-    q.dispatchEvent(new Event('input', { bubbles: true }));
-  };
-  var kAuto = function () { var v = q.value.slice(0, q.selectionStart); kbd.classList.toggle('shift', !v.trim() || /[.?!]\s$/.test(v)); };   // a capital to begin a sentence, as the phone's does
-  kbd.addEventListener('pointerdown', function (e) {
-    e.preventDefault();
-    var w = e.target.closest('[data-w]');
-    if (w){ var before = q.value.slice(0, q.selectionStart); kType((before && !/\s$/.test(before) ? ' ' : '') + w.dataset.w + ' '); kAuto(); return; }
-    var k = e.target.closest('.k'); if (!k) return;
-    var v = k.dataset.k;
-    if (v === 'shift'){ kbd.classList.toggle('shift'); return; }
-    if (v === 'num') return;
-    if (v === 'ret'){ if (q.value.trim()) ask(q.value); kAuto(); return; }
-    kType(v === 'del' || v === ' ' || !kbd.classList.contains('shift') ? v : v.toUpperCase());
-    if (v !== 'del' || !q.value) kAuto();
-  });
-  var kbOn = function () { return document.documentElement.classList.contains('embPhone'); };
-  q.addEventListener('focus', function () { if (!kbOn()) return; kAuto(); kbd.classList.add('on'); app.classList.add('kb'); app.style.setProperty('--kbH', kbd.offsetHeight + 'px'); if (S.view === 'chat') requestAnimationFrame(function () { toBottom(false); }); });
+  if (window.EvKbd){ kbd.innerHTML = window.EvKbd.html(); window.EvKbd.wire(kbd, q); }
+  q.addEventListener('everlab:go', function () { if (q.value.trim()) ask(q.value); });
+  var kbOn = function () { return !!window.EvKbd && document.documentElement.classList.contains('embPhone'); };
+  var kbLight = function () { var t = document.documentElement.dataset.theme; return t ? t === 'light' : !(window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches); };   /* the master's light keys (.kbL): this page has no body.light */
+  q.addEventListener('focus', function () { if (!kbOn()) return; kbd.classList.toggle('kbL', kbLight()); kbd.classList.add('on'); app.classList.add('kb'); app.style.setProperty('--kbH', kbd.offsetHeight + 'px'); if (S.view === 'chat') requestAnimationFrame(function () { toBottom(false); }); });
   q.addEventListener('blur', function () { kbd.classList.remove('on'); app.classList.remove('kb'); });
+  /* the field's own buttons (+, Eva / Care team, send) and the model menu keep the focus while the keys are up, as a phone's do: a tap there no longer drops the keys (and the field) from under the finger */
+  [box, pop].forEach(function (el) { el.addEventListener('pointerdown', function (e) { if (app.classList.contains('kb') && e.target.closest('button')) e.preventDefault(); }); });
 
   /* every click, by what it asks for */
   document.addEventListener('click', function (e) {
