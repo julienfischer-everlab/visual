@@ -20141,3 +20141,10 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 ## Gift intro: the H1 alone ("Treat someone you love to a year of Everlab", "h1 no sub")
 
 - The title is now "Treat someone you love / to a year of Everlab" (broken at its phrase), and the line under it is gone. The entrance writes the H1 only, holds 2 s, then moves; about 2 s shorter than with the line.
+
+## Gift intro Detail: 44 circles, a signature for Customise, tighter items, CTA +12
+
+- Detail's icon circles 44 (12 padding), the icon still 20; Customise a message drawn as a signature over its line (P.sign, the set's 16 line style), in all three Intro variants.
+- Each item's line 4 closer to its name.
+- Choose a gift 44 under the items (+12), in List, Cards and Detail.
+- The phone's header shrinks (to 300 at least) when the body needs the room: Detail's rows kept the CTA 12 under them with the header held at 400.
