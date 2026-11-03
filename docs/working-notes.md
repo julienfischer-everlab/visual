@@ -20059,3 +20059,10 @@ Julien, on the flow's last screen ("This is the Receipt! already designed"), the
 - Items: "Pick a plan to gift." / "Customise a message." / "Choose when to send." (the middle one given a full stop to match).
 - Cards: icon in a 40 circle (8 padding, the ink at 4%: white 4% in dark), corners 18 (+4).
 - "Takes about two minutes" 16 under Choose a gift (was 8).
+
+## Gift intro entrance ("The title should appear first with the sub, THEN move up while the body bottom appear and the video fade in in the background header")
+
+- On opening Send a gift only (`ent`: no screen before it; Back from step 1 and a Tweak's redraw land on it as it was): the sheet `.hpGfPre`, #111, the picture, the body and the foot out; the title group held at the screen's centre (`translate`, so EvOverlap's own `transform` keeps the scroll) while the title and its line write (the Concierge's letters).
+- At `tUp` (80 + the whole cascade + 150): the title glides up into the header (1.1s, ease in-out), the picture fades in (1.2s), the video starts with it and fades in once playing, the body rises 72 and fades (from .2s), Choose a gift and its line 48 (from .34s); the sheet's ground eases from #111 to its own.
+- The header unclipped (`.hpGfMv`) while the title is held and moving: the desk's 400 header ends above the screen's centre. The header's grey placeholder dropped at the intro (the sheet's ground behind the picture).
+- Still (Documentation) and reduced motion: the end state.

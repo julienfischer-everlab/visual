@@ -19756,6 +19756,13 @@ html .arSheet.hpSheet.hpGfSolo.hpGfAtIn:not(.hpGfOnSheet) .arHead .arIconBtn.arI
 .arSheet.hpSheet .hpGfH1 { margin: 0; font-family: 'Tobias', 'Tobias Light', 'Tobias Regular', Georgia, 'Times New Roman', serif; font-size: 36px; line-height: 40px; font-weight: 400; letter-spacing: -.5px; color: #fff; text-wrap: balance; }   /* Payment received's title (.hpGfH1Ink): Tobias by name, as the landing's: shown where it is installed, a serif where not */
 /* the Concierge's video in the photo's place once the words are written: in over .9s, settling from 1.05 to 1 (the Concierge's rules, :is(.hpCcVid, .hpGfVid) with its own) */
 .arSheet.hpSheet .hpGfVidOn .hpGfVidW { opacity: 1; }
+/* the entrance (.hpGfPre on the sheet till the move up): the screen #111, the picture, the body and the foot out; the title group held at the screen's centre (its translate set by the script), then each to its place */
+.arSheet.hpSheet.hpGfAtIn { transition: background-color .9s ease; } .arSheet.hpSheet.hpGfPre { background-color: #111; }
+.arSheet.hpSheet .hpGfHeroT { transition: translate 1.1s cubic-bezier(.65, 0, .35, 1); } .arSheet.hpSheet.hpGfPre .hpGfHeroT { transition: none; }
+.arSheet.hpSheet.hpGfAtIn .hpGfPic { transition: opacity 1.2s ease .15s; } .arSheet.hpSheet.hpGfPre .hpGfPic { opacity: 0; transition: none; }
+.arSheet.hpSheet.hpGfAtIn .hpGfHero { background: transparent; } .arSheet.hpSheet:is(.hpGfPre, .hpGfMv) .hpGfHero { overflow: visible; }   /* the sheet's own ground behind the picture as it comes in (no grey slab); the title free of the header's clip while it is held lower and while it moves up (the desk's 400 header ends above the screen's centre) */
+.arSheet.hpSheet.hpGfAtIn .hpGfBody { transition: translate .9s cubic-bezier(.16, 1, .3, 1) .2s, opacity .6s ease .2s; } .arSheet.hpSheet.hpGfPre .hpGfBody { translate: 0 72px; opacity: 0; transition: none; }
+.arSheet.hpSheet.hpGfAtIn .arFoot { transition: translate .9s cubic-bezier(.16, 1, .3, 1) .34s, opacity .6s ease .34s; } .arSheet.hpSheet.hpGfPre .arFoot { translate: 0 48px; opacity: 0; transition: none; pointer-events: none; }
 .arSheet.hpSheet .hpGfVidW::after { content: ''; position: absolute; inset: 0; background: #111; opacity: var(--gfVidBl, .3); pointer-events: none; }   /* a #111 blanket over the video, 30% unless Tweaks says (Send a gift -> Video overlay: "Overlay video tweak, default 30% #111 blanket") */
 .arSheet.hpSheet .hpGfBody { flex: none; padding: 28px var(--hpSide) 8px; background: var(--ar-paper); box-sizing: border-box; }   /* hugs its words ("Hug content"); the header no taller than 400 ("max height of 400px for the head"), what is left the sheet's paper, down to Choose a gift */
 .arSheet.hpSheet .hpScr.hpGfIn, .arSheet.hpSheet.hpWide:not(.hpAtHome) .hpScr.hpGfIn { display: flex; flex-direction: column; }
@@ -21901,7 +21908,7 @@ window.EvConsent = (function () {
       root.classList.toggle('hpGfAtIn', id === 'intro'); root.classList.remove('hpGfOnSheet'); root.classList.toggle('hpNoBars', !form);
       if (form) prog.set(k, GF_FORM);
       navT.textContent = form ? GFN[id] : GFN[id] || ''; navS.textContent = form ? k + ' of ' + GF_FORM : '';
-      backBtn.classList.toggle('hpNoBack', id === 'intro' || id === 'done'); gfHold(false);
+      backBtn.classList.toggle('hpNoBack', id === 'intro' || id === 'done'); gfHold(false); if (id !== 'intro') root.classList.remove('hpGfPre', 'hpGfMv');
       if (gfNote) gfNote.hidden = id !== 'intro';
     };
     BUILD['gift.intro'] = function (scr) {
@@ -21909,13 +21916,13 @@ window.EvConsent = (function () {
          The title in the header's centre in the app's own type, the Concierge introduction's ("in the centre of the header with the normal font, in the same style as the concierge introduction, and the text appears"), its line under it at 14 ("put the subtext below the title"),
          both written by the Concierge's writing (ltrW); then the Concierge's video behind them ("include the video to complete the behind-the-scenes of the demo"), the photo till it plays (and if it cannot). A still (Documentation) or reduced motion: the words shown, the photo */
       scr.classList.add('hpGfIn');
-      var still = !!opts.snap || reduced(), LW = ltrW(), T1a = 'Give the best gift', T1b = 'of all time', T1 = T1a + ' ' + T1b, T2 = 'Treat someone you love to a year of Everlab, with a note from you.';   /* two lines ("Give the best gift / of all time") */
+      var still = !!opts.snap || reduced(), ent = !still && !shown, LW = ltrW(), T1a = 'Give the best gift', T1b = 'of all time', T1 = T1a + ' ' + T1b, T2 = 'Treat someone you love to a year of Everlab, with a note from you.';   /* two lines ("Give the best gift / of all time") */
       var wr = function (t) { return still ? t : [h('span', { class: 'hpSr', text: t }), h('span', { 'aria-hidden': 'true' }, LW.sp(t))]; };   /* the letters hidden from a reader, the words read whole */
-      var hT = h('h1', { class: 'hpH hpLtrT hpCcIntroT hpGfH' }, still ? [T1a, h('br'), T1b] : [h('span', { class: 'hpSr', text: T1 }), h('span', { 'aria-hidden': 'true' }, LW.sp(T1a).concat([h('br')], LW.sp(T1b)))]), tEnd = LW.end(), hS = h('p', { class: 'hpLtrT hpGfSub' }, wr(T2));   /* the Concierge intro's title classes: its size, weight, line height and tracking at every breakpoint; the line carrying the cascade on */
+      var hT = h('h1', { class: 'hpH hpLtrT hpCcIntroT hpGfH' }, still ? [T1a, h('br'), T1b] : [h('span', { class: 'hpSr', text: T1 }), h('span', { 'aria-hidden': 'true' }, LW.sp(T1a).concat([h('br')], LW.sp(T1b)))]), tEnd = LW.end(), hS = h('p', { class: 'hpLtrT hpGfSub' }, wr(T2)), tUp = 80 + LW.end() + 150;   /* tUp: the sub's last letter fully in, the title and its line settled: the move up ("the title should appear first with the sub, THEN move up while the body appears and the video fades in") */   /* the Concierge intro's title classes: its size, weight, line height and tracking at every breakpoint; the line carrying the cascade on */
       var pic = h('i', { class: 'hoPic hpGfPicI' });
       var band = h('div', { class: 'hoBand hpGfBand', 'aria-hidden': 'true' });
       var hero = h('div', { class: 'hpGfHero hoHero' }, h('div', { class: 'hpGfPic', 'aria-hidden': 'true' }, pic),   /* the photo the Gift page's own (two people at home, at ease: "Time"), the sheet's token --hpLivPic; the video laid in it (the parallax and the dim its too) */
-        h('div', { class: 'hpGfHeroT hoWords' }, hT, hS));
+        h('div', { class: 'hpGfHeroT hoWords' }, hT, hS)), heroT = hero.lastChild;
       /* its three items: the ticked list, or three cards side by side, each its icon over its words (Tweaks -> Send a gift -> Intro: "three cards next to each other, with the icon on top and the text at the bottom centre") */
       var ITEMS = [['Pick a plan to gift.', P.gift], ['Customise a message.', P.pen], ['Choose when to send.', P.cal]], cards = (document.getElementById('stGfIntro') || {}).value === 'cards';
       var items = cards ? h('ul', { class: 'hpGfCards' }, ITEMS.map(function (t) { return h('li', { class: 'hpGfCard' }, h('span', { class: 'hpGfCardI', 'aria-hidden': 'true' }, ic(24, t[1], 1)), h('span', { class: 'hpGfCardT', text: t[0] })); }))
@@ -21930,12 +21937,17 @@ window.EvConsent = (function () {
           pic.appendChild(h('span', { class: 'hpGfVidW' }, vid));
           var due = false, vOn = function () { if (due && scr.isConnected && !vid.paused) hero.classList.add('hpGfVidOn'); };   /* in once it is due and really playing: the photo stays under it till then, and for good if it cannot play */
           vid.addEventListener('playing', vOn);
-          setTimeout(function () { if (!scr.isConnected) return; due = true; try { vid.currentTime = 0; var pr = vid.play(); if (pr && pr.catch) pr.catch(function () {}); } catch (e) {} vOn(); }, 80 + tEnd);   /* once the title is written (the Concierge's: the video once the intro's words are done) */
+          setTimeout(function () { if (!scr.isConnected) return; due = true; try { vid.currentTime = 0; var pr = vid.play(); if (pr && pr.catch) pr.catch(function () {}); } catch (e) {} vOn(); }, ent ? tUp : 80 + tEnd);   /* opening: with the move up; else once the title is written */   /* once the title is written (the Concierge's: the video once the intro's words are done) */
         }
       }
       foot2('Choose a gift', true, fwd);
       if (window.EvOverlap && !opts.snap) { var ov = window.EvOverlap.bind(scr, { hero: '.hpGfHero', band: '.hpGfBand', sheet: '.hpGfBody', onFrame: function (k, on) { if (shown === scr) root.classList.toggle('hpGfOnSheet', !!on); } }); setTimeout(ov.update, 0); }
-      if (!opts.snap && !reduced() && body.animate) { body.firstChild.animate([{ opacity: 0, transform: 'translateY(16px)' }, { opacity: 1, transform: 'none' }], { duration: 640, delay: 180, easing: 'cubic-bezier(.16, 1, .3, 1)', fill: 'backwards' }); }
+      /* the entrance, on opening only (Back from the first step, a Tweak's redraw: as it was): a dark screen, the title and its line written at its centre; then the title up into the header (translate, so the overlap's own transform keeps the scroll), the body and Choose a gift up from the foot, the picture and its video in behind */
+      if (ent) {
+        root.classList.add('hpGfPre');
+        requestAnimationFrame(function () { if (!scr.isConnected || !root.classList.contains('hpGfPre')) return; var sr = root.getBoundingClientRect(), tr = heroT.getBoundingClientRect(); heroT.style.translate = '0 ' + Math.round(sr.top + sr.height / 2 - (tr.top + tr.height / 2)) + 'px'; });
+        setTimeout(function () { if (!scr.isConnected) return; root.classList.add('hpGfMv'); root.classList.remove('hpGfPre'); heroT.style.translate = ''; setTimeout(function () { root.classList.remove('hpGfMv'); }, 1200); }, tUp);
+      } else if (!still && body.animate) { body.firstChild.animate([{ opacity: 0, transform: 'translateY(16px)' }, { opacity: 1, transform: 'none' }], { duration: 640, delay: 180, easing: 'cubic-bezier(.16, 1, .3, 1)', fill: 'backwards' }); }
     };
     BUILD['gift.where'] = function (scr, ans) {
       scr.appendChild(q('', 'Where do they live?', 'Their tests happen at Everlab clinics and partner sites near them.'));
