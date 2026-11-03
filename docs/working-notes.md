@@ -19466,3 +19466,12 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Swipe fixes**: the Health profile's Medicare card example swipes away at S too (its 600 wide sheet); the service page's More at XS opens its menu sheet (its button was not wired), which swipes away; a mouse let go outside a sheet no longer leaves a drag half started.
 - **The anatomy table, measured**: the header one row 40 high from 58 (the 36 discs at 60); the step title 28/29.6 (1.2em − 4); the intro 16 under the title (its 10 and the head's 6 gap). The page says plainly what the Health profile shares: the progress (--sfBar, --sfGap, not --sfPad) and the push; its header is its own (no discs at rest, the title only with Tweaks → Step title).
 - **The Health profile's push, plainly**: it had 32 px, in 260 ms after 45, out 170, on (.2, .7, .2, 1) and (.4, 0, .6, 1). It takes the master's now: 20 px, in 220 ms after 75, out 130, on the report's curves. So it moves less and leaves sooner, but its new page lands about when it did (295 ms against 305), and its easing changed. The report's push is the one that is exactly twice as fast with half the movement. If the profile should be twice as fast too, that is a change to the master's numbers (for both).
+
+## "The overview chat field visual should turn into a dot, not like a big circle filled. the dot should have 16% opacity with beam turning around."
+- The field's stars still morph every 5 s, but into a dot 12 across (r 6 of 20), the ink at 16%, no disc behind it (the 30px filled circle is gone).
+- The orange beam now rides the dot's own edge and turns round it twice while it is a dot (was once, round the big disc); on light the beam's pale head is a deeper orange so it reads.
+- The Ask Everlab card's field (built from SPARK, star only) gets the same dot and beam.
+
+## "right padding not consistent" (the retracted rail)
+- The page panels' cap is now 1360 open and 1512 retracted (1584 less the rail): retracting gives the rail's 152 to the panel, so it stays 8 off the rail and the rail's right gap (20) matches its left (20) at every width up to 1600; past that both states centre alike.
+- The Plan's panel now sits 8 off the rail and the window like every page (it was flush against the rail: a 12 gap).

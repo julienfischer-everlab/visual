@@ -593,7 +593,8 @@
      cap centred on its own left the main 20 further in at 1440 and flush
      against the rail at 1363. Retracted, the rail's 152 go to the page, and
      the edge holds ("nav inconsistent"). */
-  #dMain{max-width:min(1360px, calc(var(--bpW,100vw) - var(--sideW,224px) - 16px));}   /* 1280 in the 40s, as the Overview's */
+  #dMain{max-width:min(calc(1584px - var(--sideW,224px)), calc(var(--bpW,100vw) - var(--sideW,224px) - 16px));}   /* 1280 in the 40s, as the Overview's */
+  /* the cap 1360 open, 1512 retracted (1584 less the rail): retracting the rail gives its 152 to the panel, so the panel stays 8 off the rail and the rail's right gap matches its left 20 at every width up to 1600 ("right padding not consistent"); past that both states centre alike */
   /* Sticks flush with #dMain's own rounded top the same way .dFilters
      sticks flush with it lower down (top:-32px cancels the same 32px
      padding, for the same reason: sticky's `top` reads off the padding
@@ -6560,18 +6561,16 @@
   .ovChatSpark{width:18px;height:18px;flex:none;color:#ececec;}
   /* the field's stars morph to an 8px dot every 5s, held 3s, then back ("stars should morph to an 8px dot every 5 seconds for 3 sec then go back to stars"): one 8s loop */
   .ovChatSpark{overflow:visible;border-radius:50%;}   /* its ground now drawn in the SVG (the disc), no blur box behind it */
-  /* while the dot and its orb show, a ground behind it: white 12%, 12px blur ("when orb active, bg 12% blur 12px"), a 30px disc (the icon's box and 6px of spread) */
-  @keyframes ovSpBg{0%,60%{background-color:rgba(255,255,255,0);box-shadow:0 0 0 0 rgba(255,255,255,0);}66%,92%{background-color:rgba(255,255,255,.12);box-shadow:0 0 0 6px rgba(255,255,255,.12);}98%,100%{background-color:rgba(255,255,255,0);box-shadow:0 0 0 0 rgba(255,255,255,0);}} .ovChatSpark path, .ovChatSpark .ovSpDot{transform-box:view-box;transform-origin:10px 10px;}
+  /* (no ground behind the dot any more: the dot is its own faint disc, "not like a big circle filled") */ .ovChatSpark path, .ovChatSpark .ovSpDot{transform-box:view-box;transform-origin:10px 10px;}
   .ovChatSpark path{animation:ovSpStar 8.8s cubic-bezier(.65,0,.35,1) infinite;}
-  .ovChatSpark .ovSpDot{transform:scale(0);opacity:0;animation:ovSpDot 8.8s cubic-bezier(.65,0,.35,1) infinite;}   /* 8.8 s: the stars 5 s, the dot held 3 s ("dot should stay 3sec") */
+  .ovChatSpark .ovSpDot{fill-opacity:.16;transform:scale(0);opacity:0;animation:ovSpDot 8.8s cubic-bezier(.65,0,.35,1) infinite;}   /* 8.8 s: the stars 5 s, the dot held 3 s ("dot should stay 3sec"); the dot the ink at 16% ("the dot should have 16% opacity with beam turning around") */
   @keyframes ovSpStar{0%,56.8%{transform:none;opacity:1;}61.4%,95.5%{transform:rotate(45deg) scale(.15);opacity:0;}100%{transform:none;opacity:1;}}
   @keyframes ovSpDot{0%,57.4%{transform:scale(0);opacity:0;}61.4%,95.5%{transform:scale(1);opacity:1;}99.6%,100%{transform:scale(0);opacity:0;}}
   /* while it is a dot, an orange light goes once round it ("when dot, add orange orb one round") */
-  .ovChatSpark .ovSpBgC{fill:#fff;fill-opacity:.2;opacity:0;transform-box:view-box;transform-origin:10px 10px;animation:ovSpBgC 8.8s cubic-bezier(.65,0,.35,1) infinite;}   /* while it is a dot: a disc behind it, white at 20% ("a dot with bg 20% opacity"), 30 across at 18 */
-  @keyframes ovSpBgC{0%,57%{opacity:0;transform:scale(.6);}61.4%,95.5%{opacity:1;transform:none;}99.6%,100%{opacity:0;transform:scale(.6);}}
-  .ovChatSpark .ovSpOrb{stroke-width:1.1;stroke-linecap:round;stroke-dasharray:32 68;opacity:0;transform-box:view-box;transform-origin:10px 10px;transform:rotate(-90deg);animation:ovSpOrb 8.8s linear infinite;}   /* the disc's border: a beam running round it, as the island star's, no halo or glow ("remove this halo, just need the beam border") */
-  @keyframes ovSpOrb{0%,59%{opacity:0;transform:rotate(-90deg);}62%{opacity:1;}93%{opacity:1;}96%,100%{opacity:0;transform:rotate(330deg);}}
-  @media (prefers-reduced-motion:reduce){ .ovChatSpark, .ovChatSpark path, .ovChatSpark .ovSpDot, .ovChatSpark .ovSpOrb, .ovChatSpark .ovSpBgC{animation:none;} }
+  .ovChatSpark .ovSpOrb{stroke-width:1.3;stroke-linecap:round;stroke-dasharray:32 68;opacity:0;transform-box:view-box;transform-origin:10px 10px;transform:rotate(-90deg);animation:ovSpOrb 8.8s linear infinite;}   /* the disc's border: a beam running round it, as the island star's, no halo or glow ("remove this halo, just need the beam border") */
+  @keyframes ovSpOrb{0%,59%{opacity:0;transform:rotate(-90deg);}62%{opacity:1;}93%{opacity:1;}96%,100%{opacity:0;transform:rotate(630deg);}}   /* the beam on the dot's own edge, turning round it twice while it is a dot */
+  body.light .ovChatSpark .ovSpOrb stop:nth-child(2){stop-color:#F07A2E;} body.light .ovChatSpark .ovSpOrb stop:nth-child(3), body.light .ovChatSpark stop:nth-child(3){stop-color:#E8691C;} body.light .ovChatSpark stop:nth-child(2){stop-color:#F07A2E;}   /* on the light field the beam's pale head (cream) is lost: warmer, deeper orange there */
+  @media (prefers-reduced-motion:reduce){ .ovChatSpark, .ovChatSpark path, .ovChatSpark .ovSpDot, .ovChatSpark .ovSpOrb{animation:none;} }
   .ovChatBox input{
     flex:1;min-width:0;border:0;background:none;font:inherit;font-size:15px;color:#ececec;outline:none;
   }
@@ -7827,10 +7826,10 @@
   /* ---- the appointment page (#dApt on the desk, .aptMob on the phone): the booking as the app shows it ("add the appointment page") ---- */
   .apPg{--apInk:#f4f4f4;--apTx:#e6e6e3;--apSub:#8b8b86;--apLine:rgba(255,255,255,.08);--apTile:rgba(255,255,255,.07);--apSoft:rgba(255,255,255,.045);--apBd:rgba(255,255,255,.18);--apPri:#fff;--apPriInk:#111;--apBg:#0d0d0c;--apLink:#8fb0ff;color:var(--apTx);}
   body.light .apPg{--apInk:#111;--apTx:#1a1a1a;--apSub:#8a8a86;--apLine:rgba(0,0,0,.08);--apTile:#f2f2f2;--apSoft:#f5f5f4;--apBd:rgba(0,0,0,.14);--apPri:#000;--apPriInk:#fff;--apBg:#fff;--apLink:#3b6fd4;}
-  #dApt{display:none;padding:32px 40px 80px;max-width:min(1360px, calc(var(--bpW,100vw) - var(--sideW,224px) - 16px));container:apt / inline-size;}
+  #dApt{display:none;padding:32px 40px 80px;max-width:min(calc(1584px - var(--sideW,224px)), calc(var(--bpW,100vw) - var(--sideW,224px) - 16px));container:apt / inline-size;}
   body.m9.aptOn #dApt{display:block;} body.m9.aptOn #dOver, body.m9.aptOn #dSvc, body.m9.aptOn #dTl{display:none !important;}
   /* ---- My account (#dAcc): a desk page in the shell; its own width picks its layout (the phone's under 760: the sub nav a chip row, the rows stacked); the export's health-record palette carried to both themes ---- */
-  #dAcc{display:none;padding:32px 40px 0;max-width:min(1360px, calc(var(--bpW,100vw) - var(--sideW,224px) - 16px));container:acc / inline-size;
+  #dAcc{display:none;padding:32px 40px 0;max-width:min(calc(1584px - var(--sideW,224px)), calc(var(--bpW,100vw) - var(--sideW,224px) - 16px));container:acc / inline-size;
     --acInk:#f4f4f4;--acTx:#ececec;--acMut:#a39f98;--acSoft:#8b8b86;--acEb:#7d7a74;--acLine:rgba(255,255,255,.07);--acEdge:rgba(255,255,255,.1);--acEdge2:rgba(255,255,255,.16);
     --acPanel:rgba(255,255,255,.035);--acTile:rgba(255,255,255,.06);--acPill:rgba(255,255,255,.08);--acPillH:rgba(255,255,255,.12);--acSegT:rgba(255,255,255,.06);--acSegOn:#3a3a38;--acField:rgba(255,255,255,.05);
     --acAcc:#f78359;--acAccBg:rgba(247,131,89,.07);--acAccLn:rgba(247,131,89,.35);--acOk:#5fae78;--acOkTx:#86c99a;--acOkBg:rgba(95,174,120,.14);--acCta:#f4f4f4;--acCtaInk:#111;color:var(--acTx);}
@@ -7838,7 +7837,7 @@
     --acPanel:#FBF8F3;--acTile:#F4F1EC;--acPill:#F0EDE7;--acPillH:#E8E3DA;--acSegT:#EEEEEF;--acSegOn:#fff;--acField:#fff;
     --acAcc:#C6531B;--acAccBg:#FDF6F1;--acAccLn:rgba(198,83,27,.35);--acOk:#3F7D4E;--acOkTx:#2E6B3E;--acOkBg:rgba(63,125,78,.12);--acCta:#20180F;--acCtaInk:#fff;}
   /* ---- Plan (#dPlan, "edit the plan page; listen to this UI"): a page in the shell, as My account. The top on its own dark ground in either sheet (the hero photo, its title, the goals' cards in a row); the sheet over it, rounded, Dark or Light (Tweaks -> Plan -> Sheet), with Activity, Nutrition and Medical actions. Sizes from the mock, the XS phone's points */
-  #dPlan{display:none;padding:0 0 0;background:#181818;color:#fff;max-width:none;
+  #dPlan{display:none;padding:0 0 0;background:#181818;color:#fff;max-width:calc(var(--bpW,100vw) - var(--sideW,224px) - 16px);   /* the whole width, 8 off the rail and the window as every page (it was flush against the rail) */
     --plSh:#0f0f0f;--plInk:#fff;--plMut:rgba(255,255,255,.56);--plTx2:rgba(255,255,255,.72);--plCard:#181818;--plLine:rgba(255,255,255,.035);--plChev:rgba(255,255,255,.15);--plPill:rgba(255,255,255,.2);--plCnt:rgba(255,255,255,.06);--plTile:#fff;}
   #dPlan.plLight{--plSh:#fff;--plInk:#141414;--plMut:rgba(20,20,20,.56);--plTx2:rgba(20,20,20,.7);--plCard:#fafafa;--plLine:rgba(0,0,0,.045);--plChev:rgba(0,0,0,.3);--plPill:rgba(0,0,0,.16);--plCnt:rgba(0,0,0,.04);}
   #dPlan > :is(.plTop, .plSheet){max-width:min(1360px, 100%);margin-left:auto;margin-right:auto;}   /* the cap on the Plan's own page, not on the Plan: its subpages (and their breadcrumb bar) take the whole panel ("breadcrumb always full width") */
@@ -8341,7 +8340,7 @@
   /* ---- Services (#dMkt, "we need to create a page, services, which is the marketplace, so you can start with just a skeleton of a marketplace"): a page in the shell as the Plan is (body.mkOn); the dock's Services, the desk nav's Services, the page menu and #services.
      The mock's Version #1 (Grid 3 columns): the title, Your recommended services and its carousel (swiped with the Plan's magnet, EvMagnet; its arrows from M), then All | Individual | Bundles with the search, Price and Category,
      and the services: a list at XS, two columns of cards at S and M, three at L and XL. The page's own width picks the layout (a container: S from 480, M from 640, L from 1000), so Auto at any window reads as its breakpoint */
-  #dMkt{display:none;container:mkt / inline-size;--mkPx:40px;padding:32px var(--mkPx) 60px;max-width:min(1360px, calc(var(--bpW,100vw) - var(--sideW,224px) - 16px));color:var(--mkInk);
+  #dMkt{display:none;container:mkt / inline-size;--mkPx:40px;padding:32px var(--mkPx) 60px;max-width:min(calc(1584px - var(--sideW,224px)), calc(var(--bpW,100vw) - var(--sideW,224px) - 16px));color:var(--mkInk);
     --mkInk:#f4f4f4;--mkMut:rgba(255,255,255,.56);--mkTx2:rgba(255,255,255,.72);--mkCard:#1a1a1a;--mkCardH:#202020;--mkLine:rgba(255,255,255,.08);--mkChipB:rgba(255,255,255,.14);--mkField:rgba(255,255,255,.07);--mkFieldH:rgba(255,255,255,.11);
     --mkSegBg:rgba(255,255,255,.07);--mkSegOn:#fff;--mkSegOnInk:#111;--mkSegSh:none;--mkGhost:rgba(255,255,255,.08);--mkGhostH:rgba(255,255,255,.14);--mkBun:#3a2a1c;--mkBunH:#422f20;--mkBunEdge:rgba(255,214,160,.14);--mkBunBtn:#fff;--mkBunBtnInk:#111;
     --mkTag:#f3cf5e;--mkTagInk:#2a2104;--mkMenu:#222;--mkMenuSh:0 18px 44px -12px rgba(0,0,0,.6), inset 0 0 0 1px rgba(255,255,255,.07);}
@@ -8994,7 +8993,7 @@
      picks its layout (a container query), so a breakpoint's view is that
      breakpoint's page: the rail of months with the rows beside it from S up,
      the phone's stacked rows and the suggestions as a carousel at XS. */
-  #dTl{display:none;padding:32px 40px 80px;max-width:min(1360px, calc(var(--bpW,100vw) - var(--sideW,224px) - 16px));container:tl / inline-size;
+  #dTl{display:none;padding:32px 40px 80px;max-width:min(calc(1584px - var(--sideW,224px)), calc(var(--bpW,100vw) - var(--sideW,224px) - 16px));container:tl / inline-size;
     /* dark, read off the dark captures ("adjust dark mode"): View and
        Purchase on a light grey plate (#484848 on the page), the ⋯ on a faint
        one (#1d1d1d), the suggestions a #1d1d1d tray round a solid #2a2a2a
@@ -9987,7 +9986,7 @@
   body[data-bp="s"] #dOver, body[data-bp="xs"] #dOver, body[data-bp="s"] #dSvc, body[data-bp="xs"] #dSvc, body[data-bp="s"] #dTl, body[data-bp="xs"] #dTl, body[data-bp="s"] #dApt, body[data-bp="xs"] #dApt, body[data-bp="s"] #dAcc, body[data-bp="xs"] #dAcc, body[data-bp="s"] #dPlan, body[data-bp="xs"] #dPlan, body[data-bp="s"] #dMkt, body[data-bp="xs"] #dMkt{left:0;top:0;border-radius:0;max-width:none;scrollbar-width:none;}   /* in a device the page is the screen: no 16 band above, no 16 gutter at the right, no card corners, no scrollbar ("remove unnecessary padding on tablet S") */
   body[data-bp="s"] #dOver::-webkit-scrollbar, body[data-bp="xs"] #dOver::-webkit-scrollbar, body[data-bp="s"] #dSvc::-webkit-scrollbar, body[data-bp="xs"] #dSvc::-webkit-scrollbar, body[data-bp="s"] #dTl::-webkit-scrollbar, body[data-bp="xs"] #dTl::-webkit-scrollbar{display:none;}
   body:not([data-bp="xs"]):not([data-bp="s"]) #dOver{--ctPadY:32px;--ctPadX:40px;}   /* the Insights desk's body padding, 32 above and 40 at the sides ("body padding: keep this structure for Overview"); the bar and the caps read the same tokens */
-  #dOver{padding:var(--ctPadY) max(var(--ctPadX), calc((min(1360px, 100% - var(--sideW, 224px) - 16px) - 1080px) / 2)) 60px;max-width:min(1360px, calc(var(--bpW,100vw) - var(--sideW,224px) - 16px));}   /* the body where every other page has it: 8 off the side bar and the window's edge, 1360 at most ("Overview body positioned differently than the other pages, make it consistent"); the padding's % is the whole dash's, so less the side bar and the 16 it is the body's own width */   /* the body fills the room; its content a 1080 container, centred ("the black body section fills the horizontal space; the container is the content inside, max width; layout overview: container 1080px centered") */   /* --sideW: 224, 72 retracted, 0 at S and XS */
+  #dOver{padding:var(--ctPadY) max(var(--ctPadX), calc((min(1584px - var(--sideW, 224px), 100% - var(--sideW, 224px) - 16px) - 1080px) / 2)) 60px;max-width:min(calc(1584px - var(--sideW,224px)), calc(var(--bpW,100vw) - var(--sideW,224px) - 16px));}   /* the body where every other page has it: 8 off the side bar and the window's edge, 1360 at most ("Overview body positioned differently than the other pages, make it consistent"); the padding's % is the whole dash's, so less the side bar and the 16 it is the body's own width */   /* the body fills the room; its content a 1080 container, centred ("the black body section fills the horizontal space; the container is the content inside, max width; layout overview: container 1080px centered") */   /* --sideW: 224, 72 retracted, 0 at S and XS */
   /* and the page reflows at S and XS -- forced, or a window that narrow --
      so a breakpoint's view is that breakpoint's layout, not the desk's
      two columns squeezed: the top band stacks, the services go three
@@ -14772,7 +14771,7 @@
         <button class="ovHist" type="button" aria-label="Your conversations" tabindex="-1"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.6 10a6.4 6.4 0 1 0 1.9-4.55"/><path d="M3.3 3.6v2.6h2.6"/><path d="M10 6.7V10l2.3 1.5"/></svg></button>   <!-- the conversations, at the field's left while typing ("a left icon-only CTA to the general chat, its past conversations") -->
         <div class="ovChat">
           <div class="ovChatBox">
-            <svg class="ovChatSpark" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5c.3 3.9 2.6 6.2 6.5 6.5-3.9.3-6.2 2.6-6.5 6.5-.3-3.9-2.6-6.2-6.5-6.5 3.9-.3 6.2-2.6 6.5-6.5ZM16 12.5c.15 1.6 1.05 2.5 2.65 2.65-1.6.15-2.5 1.05-2.65 2.65-.15-1.6-1.05-2.5-2.65-2.65 1.6-.15 2.5-1.05 2.65-2.65Z"/><defs><linearGradient id="ovSpBm1" x1="1" y1=".25" x2=".2" y2="1"><stop offset="0" stop-color="#FF8A3D" stop-opacity="0"/><stop offset=".55" stop-color="#FFB866" stop-opacity=".85"/><stop offset=".85" stop-color="#FFE7CC"/><stop offset="1" stop-color="#FF8A3D"/></linearGradient></defs><circle class="ovSpBgC" cx="10" cy="10" r="16.4"/><circle class="ovSpOrb" cx="10" cy="10" r="16.4" fill="none" stroke="url(#ovSpBm1)" pathLength="100"/><circle class="ovSpDot" cx="10" cy="10" r="4.6"/></svg>
+            <svg class="ovChatSpark" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5c.3 3.9 2.6 6.2 6.5 6.5-3.9.3-6.2 2.6-6.5 6.5-.3-3.9-2.6-6.2-6.5-6.5 3.9-.3 6.2-2.6 6.5-6.5ZM16 12.5c.15 1.6 1.05 2.5 2.65 2.65-1.6.15-2.5 1.05-2.65 2.65-.15-1.6-1.05-2.5-2.65-2.65 1.6-.15 2.5-1.05 2.65-2.65Z"/><defs><linearGradient id="ovSpBm1" x1="1" y1=".25" x2=".2" y2="1"><stop offset="0" stop-color="#FF8A3D" stop-opacity="0"/><stop offset=".55" stop-color="#FFB866" stop-opacity=".85"/><stop offset=".85" stop-color="#FFE7CC"/><stop offset="1" stop-color="#FF8A3D"/></linearGradient></defs><circle class="ovSpDot" cx="10" cy="10" r="6"/><circle class="ovSpOrb" cx="10" cy="10" r="6" fill="none" stroke="url(#ovSpBm1)" pathLength="100"/></svg>
             <input type="text" placeholder="Ask Everlab anything" autocomplete="off" autocorrect="off" spellcheck="false" aria-label="Ask Everlab">
           </div>
         </div>
@@ -15140,7 +15139,7 @@
       <button class="ovHist" type="button" aria-label="Your conversations" tabindex="-1"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.6 10a6.4 6.4 0 1 0 1.9-4.55"/><path d="M3.3 3.6v2.6h2.6"/><path d="M10 6.7V10l2.3 1.5"/></svg></button>
       <div class="ovChat">
         <div class="ovChatBox">
-          <svg class="ovChatSpark" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5c.3 3.9 2.6 6.2 6.5 6.5-3.9.3-6.2 2.6-6.5 6.5-.3-3.9-2.6-6.2-6.5-6.5 3.9-.3 6.2-2.6 6.5-6.5ZM16 12.5c.15 1.6 1.05 2.5 2.65 2.65-1.6.15-2.5 1.05-2.65 2.65-.15-1.6-1.05-2.5-2.65-2.65 1.6-.15 2.5-1.05 2.65-2.65Z"/><defs><linearGradient id="ovSpBm2" x1="1" y1=".25" x2=".2" y2="1"><stop offset="0" stop-color="#FF8A3D" stop-opacity="0"/><stop offset=".55" stop-color="#FFB866" stop-opacity=".85"/><stop offset=".85" stop-color="#FFE7CC"/><stop offset="1" stop-color="#FF8A3D"/></linearGradient></defs><circle class="ovSpBgC" cx="10" cy="10" r="16.4"/><circle class="ovSpOrb" cx="10" cy="10" r="16.4" fill="none" stroke="url(#ovSpBm2)" pathLength="100"/><circle class="ovSpDot" cx="10" cy="10" r="4.6"/></svg>
+          <svg class="ovChatSpark" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5c.3 3.9 2.6 6.2 6.5 6.5-3.9.3-6.2 2.6-6.5 6.5-.3-3.9-2.6-6.2-6.5-6.5 3.9-.3 6.2-2.6 6.5-6.5ZM16 12.5c.15 1.6 1.05 2.5 2.65 2.65-1.6.15-2.5 1.05-2.65 2.65-.15-1.6-1.05-2.5-2.65-2.65 1.6-.15 2.5-1.05 2.65-2.65Z"/><defs><linearGradient id="ovSpBm2" x1="1" y1=".25" x2=".2" y2="1"><stop offset="0" stop-color="#FF8A3D" stop-opacity="0"/><stop offset=".55" stop-color="#FFB866" stop-opacity=".85"/><stop offset=".85" stop-color="#FFE7CC"/><stop offset="1" stop-color="#FF8A3D"/></linearGradient></defs><circle class="ovSpDot" cx="10" cy="10" r="6"/><circle class="ovSpOrb" cx="10" cy="10" r="6" fill="none" stroke="url(#ovSpBm2)" pathLength="100"/></svg>
           <input type="text" placeholder="Ask Everlab anything" autocomplete="off" spellcheck="false" aria-label="Ask Everlab">
           <button class="ovChatGo" type="button" aria-label="Send"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 13V3M3.5 7.5 8 3l4.5 4.5"/></svg></button>
         </div>
@@ -32601,7 +32600,7 @@ hairline({
           // the field, and beside it the cross that dismisses the card back
           // to the screen ("add a cross top right next to the AI field")
           '<div class="aiRowTop">' +
-            '<div class="ovChatBox aiField">' + SPARK.replace('<svg ', '<svg class="ovChatSpark" ') +
+            '<div class="ovChatBox aiField">' + SPARK.replace('<svg ', '<svg class="ovChatSpark" ').replace('</svg>', '<defs><linearGradient id="ovSpBm3" x1="1" y1=".25" x2=".2" y2="1"><stop offset="0" stop-color="#FF8A3D" stop-opacity="0"/><stop offset=".55" stop-color="#FFB866" stop-opacity=".85"/><stop offset=".85" stop-color="#FFE7CC"/><stop offset="1" stop-color="#FF8A3D"/></linearGradient></defs><circle class="ovSpDot" cx="10" cy="10" r="6"/><circle class="ovSpOrb" cx="10" cy="10" r="6" fill="none" stroke="url(#ovSpBm3)" pathLength="100"/></svg>') +   /* the Overview field's star: to a faint dot with its beam, as the field's */
               '<input type="text" placeholder="Ask Everlab anything" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="send" aria-label="Ask Everlab">' +
               '<button class="ovChatGo" type="button" aria-label="Send"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 13V3M3.5 7.5 8 3l4.5 4.5"/></svg></button>' +
             '</div>' +
