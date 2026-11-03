@@ -20103,3 +20103,12 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - **Merged twice more** with claude/zip-package-import-fzfsrp (Title group EvTitle, Send a gift, Header overlap ramp, BioDetail from the Plan's What this moves): the biomarker sheet keeps the sheet header master's classes with the newest base's `tabindex` and `bmdFloat`; its floating desk modal's row 24 down (`--evShPt: 24px`, was 28).
 - **Not changed** (not top navs, and never 44): the desk's in-page Backs (Service detail `.svBack` 28, the Plan's desk Back 32, the Page types doc's desk panel 32).
 - Checked with Playwright (dark and light, XS and L, S where it has its own placement): every top bar button above 44; titled bars 76; the sheets still 24 down, 24/30, close 32, notch 8; dist/health-profile.html's flow head 44; no console errors.
+
+## Gift: entrance hold + push, bullets, Where cards, plan cards, two new tweaks
+
+- Entrance: the title and its line written on an empty screen (the wordmark hidden too; Close stays), held 2 s once fully written, then the body and Choose a gift slide up from the screen's foot as one block (`--gfUpY`, measured where the body lands) and push the title group up into the header (a beat after, the same 1.1 s ease) while the picture and video fade in. Fixed: the slide distance was measured with the body already parked, so it read 0.
+- Intro List: white bullets (the ink, the tick in the paper), full width from the body's left edge; Choose a gift 32 under the items (List and Cards). The foot's fade gradient off at the intro (it dimmed the last item).
+- Where do they live: the profile's option cards (as Is Everlab right for them? and the Concierge's), no radio, the white outline when picked, the flag at the right.
+- Choose the gift, Tabs: What's included on the page (no card), an H2 in the ink (20/26), items 16/22. The plan cards in the reference's style: a dark glass ground, a hairline and a lit top edge, a tint glowing from the top-left (Protocol orange, Diagnostics silver), a faint ring top-right, a glossy chip in the tint carrying the plan's icon; picked: the white outline and the glow full.
+- New: Plans -> Stack: one ghost card, a row a plan (radio, name, line, price at the right), the picked row on a lighter plate, What's included under it as Tabs'.
+- New: Intro -> Detail: each item its icon and name, a line under it ("List item with sub").
