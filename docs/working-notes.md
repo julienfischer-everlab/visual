@@ -20244,3 +20244,17 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
   - Open: keys visible, composer on them (modal bottom 254).
   - Blur: keys hidden, modal bottom 0, composer 46 from the frame's foot.
   - Focus again: keys back. No console errors.
+
+## Gift note card: the note's size fitted to its words; line in secondary ink; no line under the card
+
+- **Fitted size** (`gfNcFit`, "the fewer words, the larger; the more, the smaller"). It replaces the stepped length classes.
+  - The note takes the largest size from 9.5cqw down to 3.3cqw (34 to 12 px at the step's 361) at which the card's column fits its height. The column is the line, the note and the signature's place.
+  - Found in halves (8 tries), in cqw, so the same size holds at any card width.
+  - It runs as you write, and once each card has its size (a ResizeObserver: the step, the envelope, the merge's flight, the Documentation's stills).
+  - Empty, the field is measured with its placeholder in it.
+  - Note line height 1.22.
+  - Measured at 361: 9 characters 34, 30 → 24, 76 → 20, 120 → 15, 180 → 13 px.
+- **The signature's place** (`.hpGfNcSlot`, 10.55cqw tall, 12 above) is in both cards: Add your signature on the step, the signature when signed, empty in the envelope. The note therefore fits to the same size in both (the same 30 characters: 6.65cqw on the step, 6.76cqw in the envelope).
+- **"Sam got something special for you"** in the secondary ink (56%), 16 to the note under it.
+- **The line under the card** ("It's the first thing they'll see…") removed ("no need").
+- **Checked** (Playwright, dist, XS): the sizes above; the column never past the card (138 to 146 of 145, with 1 of tolerance); the envelope's card at the same size; no console errors.
