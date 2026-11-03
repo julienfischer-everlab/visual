@@ -635,6 +635,8 @@
   .dash h1{font-size:26px;font-weight:500;letter-spacing:-0.5px;margin:0 0 22px;}
   .dash{--pgH1Fs:var(--tgH2FsL, 24px);--pgH1Lh:var(--tgH2LhL, 30px);--pgH1Ls:var(--tgH2LsL, -.3px);}   /* the desk page title, the Overview's ("need to follow the setup on overview"): one size for every main desk page; the Title group master's H2 at M·L (EvTitle, everlab:tgMaster) */
   body:not([data-bp="xs"]):not([data-bp="s"]):not(.tabM) :is(#dOver .dvH1, #dMain > h1, #dMkt .mkT, #dTl .tlH1, #dPlan.plDesk .plPgT, #dAcc .acHead h1){font-size:var(--pgH1Fs);line-height:var(--pgH1Lh);letter-spacing:var(--pgH1Ls);font-weight:500;}   /* Overview, Insights, Services, My journey, My plan, My account; the sub pages (Service detail, Appointment, the Plan's subpages) keep their hero titles */
+  body:is([data-bp="xs"], [data-bp="s"]) :is(#dMkt .mkT, #dTl .tlH1){font-size:var(--tgH2FsS, 24px);line-height:var(--tgH2LhS, 30px);letter-spacing:var(--tgH2LsS, -.2px);font-weight:var(--tgH2W, 500);}   /* the phone's and the tablet's main page title: the Title group master's H2 at XS·S, Services' ("services is good, take that as ref"), My journey on it too (was 26 and 28) */
+  :root{--mainBtn:rgba(255,255,255,.07);--mainBtnH:rgba(255,255,255,.11);} body.light{--mainBtn:#f2f2f2;--mainBtnH:#ebebeb;}   /* a main page's header disc (Services' cart, My journey's Past and search): one fill, Services' */
   .dash h1 span{color:#8b8b86;}
   .dash .dgrid{display:grid;grid-template-columns:1fr 1.26fr;gap:16px;align-items:stretch;height:400px;}
   .dash .dleft{display:flex;flex-direction:column;gap:16px;min-height:0;}
@@ -5806,7 +5808,7 @@
   body:is(.asyncD, .asyncM) .topbar{z-index:61;}   /* the step navigator (50) under it too ("the tweaks should always be above everything") */   /* the bar, and its Tweaks panel, over the report, the desk's (40) and the phone's (60) ("tweak should go above screen") */
   body.asyncM #phone2 .aqWrap.aqPhone{display:block;position:absolute;inset:0;z-index:60;pointer-events:auto;border-radius:inherit;overflow:hidden;}
   .aqDim{position:absolute;inset:0;background:rgba(0,0,0,.45);opacity:0;transition:opacity .35s ease;}
-  html.evCover body :is(.dash, .ccPage, .gfPage, .clPage, .cnPage, .grPage, .rfPage){visibility:hidden !important;}   /* the page under a full modal that covers it, once the modal is up: not painted, so it can never show through it (see the script by evSolo) */
+  html.evCover body :is(.dash, .gfPage, .clPage, .cnPage, .grPage, .rfPage), html.evCover:not([data-tk="cc"]) body .ccPage{visibility:hidden !important;}   /* the Chat opened over the modal (EvCtx: the Chat on top) shows over it, as its Tweaks say; under it, not painted */   /* the page under a full modal that covers it, once the modal is up: not painted, so it can never show through it (see the script by evSolo) */
   .aqWrap.on .aqDim{opacity:1;} .aqWrap.hpBs:is(.aqBpXS, .aqBpS) .aqDim{background:rgba(0,0,0,.72);}   /* the full bottom sheets over a page (Past results, the Concierge, the welcome as a sheet): a first layer, the page only under the blanket at 72%, as the master ("first layer just overlap the screen, no stacked effect"; at 45% the page's top read as a card behind) */
   .aqFrame{position:absolute;left:50%;bottom:0;width:min(100%, 480px);height:calc(100% - 24px);transform:translate(-50%, 104%);transition:transform .5s cubic-bezier(.2,.8,.2,1);border-radius:24px 24px 0 0;overflow:hidden;box-shadow:0 -20px 80px rgba(0,0,0,.45);}
   .aqPhone .aqFrame{left:0;width:100%;height:calc(100% - 52px);transform:translateY(104%);}
@@ -8562,28 +8564,32 @@
   #dPlan :is(.plGoal, .plRtn), #dPlan .plABack, body:is([data-bp="xs"], [data-bp="s"]) #dPlan .plNBack{--plHov:rgba(255,255,255,.1);--plPrs:rgba(255,255,255,.18);--plRing:#fff;}   /* over a photo or a card of its own ground */
   body.plActOn.plUnder #dPlan .plABack, body.plNutOn.plUnder:is([data-bp="xs"], [data-bp="s"]) #dPlan .plNBack{--plHov:color-mix(in srgb, var(--plInk) 5%, transparent);--plPrs:color-mix(in srgb, var(--plInk) 9%, transparent);--plRing:var(--plInk);}   /* Back once it is over the sheet: the sheet's ink again */
   body #dPlan.plDesk .plGoal{--plHov:rgba(20,20,20,.04);--plPrs:rgba(20,20,20,.08);--plRing:#141414;}
-  #dPlan :is(button.plRow, button.plPStep, .plNTip, .plSee, .plPCrumbA, .plNCrumbP, .plNMac, .plA .svCTab, .plRtnGo, .plMore, .plATileB, .plPBack, .plNBack, .plABack, .plPMdX, .plNShX, .plPGoalGo){isolation:isolate;-webkit-tap-highlight-color:transparent;transition:transform .15s ease, background-color .3s ease, border-color .3s ease, color .2s ease;}
-  #dPlan :is(button.plRow, button.plPStep, .plSee, .plPCrumbA, .plNCrumbP, .plNMac, .plRtnGo, .plMore, .plATileB, .plPBack, .plNBack, .plPMdX, .plNShX){position:relative;}   /* the plate's box (Back on the phone and the goal's cover stay absolute) */
-  #dPlan :where(button.plRow, button.plPStep, .plNTip, .plSee, .plPCrumbA, .plNCrumbP, .plNMac, .plA .svCTab, .plRtnGo, .plMore, .plATileB, .plPBack, .plNBack, .plABack, .plPMdX, .plNShX, .plPGoalGo)::before{content:'';position:absolute;z-index:-1;inset:0;border-radius:inherit;background:var(--plHov);opacity:0;pointer-events:none;transition:opacity .2s ease, background-color .2s ease, box-shadow .2s ease;}   /* :where, so each kind's inset and radius below win */
+  #dPlan :is(button.plRow, button.plPStep, .plNTip, .plSee, .plPCrumbA, .plNCrumbP, .plNMac, .plA .svCTab, .plRtnGo, .plMore, .plATileB, .plPBack, .plNBack, .plABack, .plPMdX, .plNShX, .plPGoalGo, .mbrow.plBio){isolation:isolate;-webkit-tap-highlight-color:transparent;transition:transform .15s ease, background-color .3s ease, border-color .3s ease, color .2s ease;}
+  #dPlan :is(button.plRow, button.plPStep, .plSee, .plPCrumbA, .plNCrumbP, .plNMac, .plRtnGo, .plMore, .plATileB, .plPBack, .plNBack, .plPMdX, .plNShX, .mbrow.plBio){position:relative;}   /* the plate's box (Back on the phone and the goal's cover stay absolute) */
+  #dPlan :where(button.plRow, button.plPStep, .plNTip, .plSee, .plPCrumbA, .plNCrumbP, .plNMac, .plA .svCTab, .plRtnGo, .plMore, .plATileB, .plPBack, .plNBack, .plABack, .plPMdX, .plNShX, .plPGoalGo, .mbrow.plBio)::before{content:'';position:absolute;z-index:-1;inset:0;border-radius:inherit;background:var(--plHov);opacity:0;pointer-events:none;transition:opacity .2s ease, background-color .2s ease, box-shadow .2s ease;}   /* :where, so each kind's inset and radius below win */
   #dPlan :is(button.plRow, button.plPStep, .plNTip)::before{inset:0 -8px;border-radius:var(--plPlateR, 12px);}   /* a row: 8 past its column */
   #dPlan .plProt button.plRow, #dPlan button.plRow:has(> :is(.plATile, .plPSupImg, .plNSupI)){--plPlateR:28px;}   /* round an 80 tile: 20 + 8 */
   #dPlan button.plRow:has(> .plMedImg){--plPlateR:22px;}   /* round a 56 tile: 14 + 8 */
   #dPlan :is(.plSee, .plPCrumbA, .plNCrumbP)::before{inset:-4px -8px;border-radius:8px;}
   #dPlan .plA .svCTab::before{inset:6px -10px;border-radius:8px;}
+  /* What this moves' rows ("Item need to be clickable (card ghost), trigger the same biomarker bottom sheet as used every where else"): each opens the biomarker detail (BioDetail); its plate 8 past its column into the card's 16, 4 in from the row's top and foot, 12 round, so the rule between the rows still reads */
+  #dPlan .mbrow.plBio{cursor:pointer;} #dPlan .mbrow.plBio::before{inset:4px -8px;border-radius:12px;}
+  html:has(#dPlan .plBioHost) #bpFrame > .mTabs{opacity:0;pointer-events:none;}   /* over the dock, as every sheet */
+  #dPlan .plBioHost{position:absolute;inset:0;z-index:20;}   /* the detail's host: the subpage's screen on the phone, the app's window on the desk (EvFullView) */
   @media (hover:hover){
-    #dPlan :is(button.plRow, button.plPStep, .plNTip, .plSee, .plPCrumbA, .plNCrumbP, .plNMac, .plA .svCTab, .plRtnGo, .plMore, .plATileB, .plPBack, .plNBack, .plABack, .plPMdX, .plNShX, .plPGoalGo):not(:disabled):hover::before{opacity:1;}
+    #dPlan :is(button.plRow, button.plPStep, .plNTip, .plSee, .plPCrumbA, .plNCrumbP, .plNMac, .plA .svCTab, .plRtnGo, .plMore, .plATileB, .plPBack, .plNBack, .plABack, .plPMdX, .plNShX, .plPGoalGo, .mbrow.plBio):not(:disabled):hover::before{opacity:1;}
     #dPlan li:has(> button:is(.plRow, .plPStep):hover) > :is(.plRow, .plPStep), #dPlan li:has(+ li > button:is(.plRow, .plPStep):hover) > :is(.plRow, .plPStep){border-bottom-color:transparent;}
     #dPlan .plNTips li:has(> .plNTip:hover), #dPlan .plNTips li:has(> .plNTip:hover) + li{border-top-color:transparent;}
   }
-  #dPlan :is(button.plRow, button.plPStep, .plNTip, .plSee, .plPCrumbA, .plNCrumbP, .plNMac, .plA .svCTab, .plRtnGo, .plMore, .plATileB, .plPBack, .plNBack, .plABack, .plPMdX, .plNShX, .plPGoalGo):not(:disabled):is(:active, .plPress)::before{opacity:1;background:var(--plPrs);}
-  #dPlan :is(button.plRow, button.plPStep, .plNTip, .plSee, .plPCrumbA, .plNCrumbP, .plNMac, .plA .svCTab, .plRtnGo, .plMore, .plATileB, .plPBack, .plNBack, .plABack, .plPMdX, .plNShX):not(:disabled):is(:active, .plPress){transform:scale(var(--plPrsS, .985));}
+  #dPlan :is(button.plRow, button.plPStep, .plNTip, .plSee, .plPCrumbA, .plNCrumbP, .plNMac, .plA .svCTab, .plRtnGo, .plMore, .plATileB, .plPBack, .plNBack, .plABack, .plPMdX, .plNShX, .plPGoalGo, .mbrow.plBio):not(:disabled):is(:active, .plPress)::before{opacity:1;background:var(--plPrs);}
+  #dPlan :is(button.plRow, button.plPStep, .plNTip, .plSee, .plPCrumbA, .plNCrumbP, .plNMac, .plA .svCTab, .plRtnGo, .plMore, .plATileB, .plPBack, .plNBack, .plABack, .plPMdX, .plNShX, .mbrow.plBio):not(:disabled):is(:active, .plPress){transform:scale(var(--plPrsS, .985));}
   #dPlan :is(.plPBack, .plNBack, .plABack, .plPMdX, .plNShX){--plPrsS:.94;}   /* a 32 / 44 round button: 1.5% would not show */
   #dPlan .plGoal{transition:transform .15s ease;} #dPlan .plGoal:has(> .plPGoalGo:is(:active, .plPress)){transform:scale(.985);}   /* the goal's cover presses its whole card */
   #dPlan li:has(> button:is(.plRow, .plPStep):is(:active, .plPress)) > :is(.plRow, .plPStep), #dPlan li:has(+ li > button:is(.plRow, .plPStep):is(:active, .plPress)) > :is(.plRow, .plPStep){border-bottom-color:transparent;}
   #dPlan .plNTips li:has(> .plNTip:is(:active, .plPress)), #dPlan .plNTips li:has(> .plNTip:is(:active, .plPress)) + li{border-top-color:transparent;}
-  #dPlan :is(button.plRow, button.plPStep, .plNTip, .plSee, .plPCrumbA, .plNCrumbP, .plNMac, .plA .svCTab, .plRtnGo, .plMore, .plATileB, .plPBack, .plNBack, .plABack, .plPMdX, .plNShX, .plPGoalGo):focus-visible{outline:none;}
-  #dPlan :is(button.plRow, button.plPStep, .plNTip, .plSee, .plPCrumbA, .plNCrumbP, .plNMac, .plA .svCTab, .plRtnGo, .plMore, .plATileB, .plPBack, .plNBack, .plABack, .plPMdX, .plNShX, .plPGoalGo):focus-visible::before{opacity:1;box-shadow:inset 0 0 0 2px var(--plRing);}
-  @media (prefers-reduced-motion: reduce){ #dPlan :is(button.plRow, button.plPStep, .plNTip, .plSee, .plPCrumbA, .plNCrumbP, .plNMac, .plA .svCTab, .plRtnGo, .plMore, .plATileB, .plPBack, .plNBack, .plABack, .plPMdX, .plNShX):is(:active, .plPress), #dPlan .plGoal:has(> .plPGoalGo:is(:active, .plPress)){transform:none;} }
+  #dPlan :is(button.plRow, button.plPStep, .plNTip, .plSee, .plPCrumbA, .plNCrumbP, .plNMac, .plA .svCTab, .plRtnGo, .plMore, .plATileB, .plPBack, .plNBack, .plABack, .plPMdX, .plNShX, .plPGoalGo, .mbrow.plBio):focus-visible{outline:none;}
+  #dPlan :is(button.plRow, button.plPStep, .plNTip, .plSee, .plPCrumbA, .plNCrumbP, .plNMac, .plA .svCTab, .plRtnGo, .plMore, .plATileB, .plPBack, .plNBack, .plABack, .plPMdX, .plNShX, .plPGoalGo, .mbrow.plBio):focus-visible::before{opacity:1;box-shadow:inset 0 0 0 2px var(--plRing);}
+  @media (prefers-reduced-motion: reduce){ #dPlan :is(button.plRow, button.plPStep, .plNTip, .plSee, .plPCrumbA, .plNCrumbP, .plNMac, .plA .svCTab, .plRtnGo, .plMore, .plATileB, .plPBack, .plNBack, .plABack, .plPMdX, .plNShX, .mbrow.plBio):is(:active, .plPress), #dPlan .plGoal:has(> .plPGoalGo:is(:active, .plPress)){transform:none;} }
   /* ---- Services (#dMkt, "we need to create a page, services, which is the marketplace, so you can start with just a skeleton of a marketplace"): a page in the shell as the Plan is (body.mkOn); the dock's Services, the desk nav's Services, the page menu and #services.
      The mock's Version #1 (Grid 3 columns): the title, Your recommended services and its carousel (swiped with the Plan's magnet, EvMagnet; its arrows from M), then All | Individual | Bundles with the search, Price and Category,
      and the services: a list at XS, two columns of cards at S and M, three at L and XL. The page's own width picks the layout (a container: S from 480, M from 640, L from 1000), so Auto at any window reads as its breakpoint */
@@ -8606,8 +8612,8 @@
   /* the cart ("top right add a cart system"): a 44 glass disc at the title's right, centred on its line (its 7 above and below the line's 30 given back, so the page keeps its rhythm), the bag in the app's line icons; the count a small orange badge, popping as a service goes in */
   #dMkt .mkTRow{display:flex;align-items:center;justify-content:space-between;gap:12px;} #dMkt .mkTRow .mkT{min-width:0;}
   html:not(.bpAuto) body[data-bp="s"] #dMkt .mkTRow{margin-top:10px;}   /* the tablet: the disc and its badge clear of the status strip above (the strip stays over whatever scrolls under it) */
-  #dMkt .mkCartB{position:relative;flex:none;display:grid;place-items:center;width:44px;height:44px;margin:-7px 0;padding:0;border:0;border-radius:50%;background:var(--mkField);-webkit-backdrop-filter:blur(32px);backdrop-filter:blur(32px);color:var(--mkInk);cursor:pointer;transition:background-color .2s ease;}   /* XS, S: the filter's and the search's fill (a white disc on the white page read fainter than they); from M the carousel arrows' glass and ring */
-  #dMkt .mkCartB:hover{background:var(--mkFieldH);} #dMkt .mkCartB svg{width:20px;height:20px;}
+  #dMkt .mkCartB{position:relative;flex:none;display:grid;place-items:center;width:44px;height:44px;margin:-7px 0;padding:0;border:0;border-radius:50%;background:var(--mainBtn);-webkit-backdrop-filter:blur(32px);backdrop-filter:blur(32px);color:var(--mkInk);cursor:pointer;transition:background-color .2s ease;}   /* XS, S: the filter's and the search's fill (a white disc on the white page read fainter than they); from M the carousel arrows' glass and ring */
+  #dMkt .mkCartB:hover{background:var(--mainBtnH);} #dMkt .mkCartB svg{width:20px;height:20px;}
   #dMkt .mkCartN{position:absolute;top:-3px;right:-3px;box-sizing:border-box;min-width:20px;height:20px;padding:0 5px;border-radius:10px;background:#f78359;color:#1a120e;font-size:11px;line-height:20px;font-weight:600;text-align:center;font-variant-numeric:tabular-nums;box-shadow:0 0 0 2px var(--pageBg, #0f0f0f);pointer-events:none;}
   #dMkt .mkCartN[hidden]{display:none;}
   #dMkt .mkCartB.mkPop .mkCartN{animation:mkCartPop .52s cubic-bezier(.2,.8,.2,1);} #dMkt .mkCartB.mkPop svg{animation:mkCartBag .52s cubic-bezier(.2,.8,.2,1);}
@@ -9296,7 +9302,7 @@
   body.m9.tlOn .dash .side .nvOver{background:none;color:inherit;}
   body.m9.tlOn .dash .side .nvTl{background:#1e1e1c;color:#ececec;}   /* the page lights Timeline */
   body.light.m9.tlOn .dash .side .nvTl{background:#ece4d3;color:#2e241c;} body.light.m9.tlOn .dash .side .nvOver{background:none;}
-  #tkMenu [data-tl], #tkMenu [data-svc]{display:none !important;} body.tlOn:not(.svcOn) #tkMenu [data-tl], body.svcOn #tkMenu [data-svc], body.aptOn #tkMenu [data-svc], body:has(#phone2.svcOn) #tkMenu [data-svc], body:has(#phone2.aptOn) #tkMenu [data-svc]{display:flex !important;} body.tlOn #tkMenu [data-pages], body.svcOn #tkMenu [data-pages], body.aptOn #tkMenu [data-pages], body:has(#phone2.svcOn) #tkMenu [data-pages], body:has(#phone2.aptOn) #tkMenu [data-pages]{display:none !important;} html body:is(.sugOn, .dsgOn, .prcOn):not(#sg_) #tkMenu :is([data-tl], [data-svc]){display:none !important;} html body.sugOn:not(#sg_) #tkMenu .tkGroup[data-pages~="sug"]:not([hidden]), html body.dsgOn:not(#sg_) #tkMenu .tkGroup[data-pages~="dsg"]:not([hidden]), html body.prcOn:not(#sg_) #tkMenu .tkGroup[data-pages~="prc"]:not([hidden]){display:block !important;}   /* the Suggestion over them: its own tweaks only */   /* the phone's service and appointment screens too ("no need the Overview tweak here") */   /* on the Timeline, only its own tweaks */
+  #tkMenu [data-tl], #tkMenu [data-svc]{display:none !important;} #tkMenu :is([data-tl], [data-svc]):not([hidden]){display:flex !important;}   /* the Timeline's own groups on the Timeline, a service's on a service or appointment screen (the phone's too: "no need the Overview tweak here"), the Overview's none there: tkPages shows them by the context up (EvCtx: tl, svc), and never under a modal over them (the Suggestion, the Chat...: its own tweaks only) */
   /* one rule for every sticky top bar ("the total height of the sticky is 100: 50% full black, the other 50% a black gradient, plus 32px bleeding
      outside; the blur the same, over the remaining 50% + 32"): the tint and the blur both run the bar's height + 32px; the top half solid,
      then an eased fade to nothing at 32px under the bar; the blur in ten stacked bands (no mask: a masked backdrop blur drew a hard line in
@@ -9368,6 +9374,8 @@
      no status on its items ("no need status for past item"); the months pinned at the top; at XS and S no dock, as the other sub pages */
   #dTl .tlSubTop{display:none;} #dTl.tlPastOn .tlSubTop{display:flex;z-index:7;}   /* over the months as they slide out under it (theirs is 6) */ #dTl .tlSubTop > .tlCol{flex:1 1 auto;display:flex;align-items:center;min-width:0;}   /* the master bar; its column holds the title and the search at XS */
   #dTl.tlPastOn .tlBar, #dTl.tlPastOn .tlPastBtn, #dTl.tlPastOn .tlThB{display:none;} #dTl.tlPastOn .tlHead{margin-top:8px;}
+  body[data-bp="s"] #dTl .tlHead > .tlPastBtn{width:44px;height:44px;margin-block:-7px;border-radius:50%;background:var(--mainBtn);color:var(--tlInk);} body[data-bp="s"] #dTl .tlHead > .tlPastBtn:not(.on):hover{background:var(--mainBtnH);} body[data-bp="s"] #dTl .tlHead > .tlSearch{margin-block:-5px;}   /* the tablet: Services' head ("services is good, take that as ref"): the 44 disc in the main page fill, 7 above and below the title's 30, the row the title's line */
+  body[data-bp="s"] #dTl:not(.tlPastOn) .tlHead{margin-bottom:24px;} html:not(.bpAuto) body[data-bp="s"] #dTl:not(.tlPastOn) .tlHead{margin-top:10px;}   /* clear of the disc below; under the drawn tablet strip, Services' 10 */
   #dTl.tlPastOn{--tlHTop:48px;} body[data-bp="s"] #dTl.tlPastOn{--tlHTop:20px;} body[data-bp="xs"] #dTl.tlPastOn{--tlHTop:55px;} @media (max-width:991px){ body:not([data-bp]) #dTl.tlPastOn{--tlHTop:40px;} }   /* the months pinned under the bar (80 tall at M and L, 72 at S and XS) */
   /* XS: the search in the bar, at its right, the back's disc ("on XS search in top nav right"); opened, a field across the bar beside the back -- the bar pins it, so the head never does */
   body[data-bp="xs"] #dTl .tlSubTop > .tlCol{position:relative;align-self:stretch;justify-content:space-between;}   /* the bar's full 44: the field opens level with the back */
@@ -10178,9 +10186,9 @@
     .tlTabs{box-shadow:inset 0 -1px 0 rgba(255,255,255,.06);} body.light .tlTabs{box-shadow:inset 0 -1px 0 rgba(46,31,26,.09);}
     .tlTabs{gap:0;align-self:stretch;} .tlTab{flex:1 1 0;padding:12px 0 13px;font-size:15px;}
     .tlHead{margin-bottom:10px;}
-    .tlSearch{flex:none;width:44px;height:44px;padding:0;justify-content:center;border-radius:50%;cursor:pointer;background:rgba(255,255,255,.04);color:#fff;box-shadow:none;transition:background .16s ease;} .tlSearch:not(.open):hover{background:rgba(255,255,255,.08);} body.light .tlSearch:not(.open){background:rgba(46,31,26,.04);color:#2e1f1a;} body.light .tlSearch:not(.open):hover{background:rgba(46,31,26,.08);}   /* a full circle, the icon alone ("use full circle CTA icon only"), as the top nav's actions: 44, 4% */   /* ghost, 44 ("ghost 44") */   /* closed, the Insights search's collapsed box at 44 ("44"), round 12, a 1.5 edge, no ground ("timeline search icon this style") */ body.light .tlSearch{--msEdge:#ddd3bf;color:#9b8a75;} .tlSearch input{display:none;font-size:15px;}   /* just its icon ("on XS just a search icon CTA") */
+    .tlSearch{flex:none;width:44px;height:44px;padding:0;justify-content:center;border-radius:50%;cursor:pointer;background:var(--mainBtn);color:#fff;box-shadow:none;transition:background .16s ease;} .tlSearch:not(.open):hover{background:var(--mainBtnH);} body.light .tlSearch:not(.open){background:var(--mainBtn);color:#2e1f1a;} body.light .tlSearch:not(.open):hover{background:var(--mainBtnH);}   /* a full circle, the icon alone ("use full circle CTA icon only"), as the top nav's actions: 44, 4% */   /* ghost, 44 ("ghost 44") */   /* closed, the Insights search's collapsed box at 44 ("44"), round 12, a 1.5 edge, no ground ("timeline search icon this style") */ body.light .tlSearch{--msEdge:#ddd3bf;color:#9b8a75;} .tlSearch input{display:none;font-size:15px;}   /* just its icon ("on XS just a search icon CTA") */
     .tlSearch > svg{width:20px;height:20px;}
-    .tlPastBtn{width:44px;height:44px;margin-left:-8px;border-radius:50%;background:rgba(255,255,255,.04);color:#fff;box-shadow:none;} .tlPastBtn:not(.on):hover{background:rgba(255,255,255,.08);} body.light .tlPastBtn{background:rgba(46,31,26,.04);color:#2e1f1a;} body.light .tlPastBtn:not(.on):hover{background:rgba(46,31,26,.08);}   /* ghost, 8 from the search ("button group 8px gap") */ .tlPastBtn svg{width:20px;height:20px;} body.light .tlPastBtn{--msEdge:#ddd3bf;}   /* XS: the search's box beside it, the field opening to its left */
+    .tlPastBtn{width:44px;height:44px;margin-left:-8px;border-radius:50%;background:var(--mainBtn);color:#fff;box-shadow:none;} .tlPastBtn:not(.on):hover{background:var(--mainBtnH);} body.light .tlPastBtn{background:var(--mainBtn);color:#2e1f1a;} body.light .tlPastBtn:not(.on):hover{background:var(--mainBtnH);}   /* ghost, 8 from the search ("button group 8px gap") */ .tlPastBtn svg{width:20px;height:20px;} body.light .tlPastBtn{--msEdge:#ddd3bf;}   /* XS: the search's box beside it, the field opening to its left */
     .tlSearch.open + .tlPastBtn{margin-left:auto;}   /* the field out of the flow, the disc keeps the row's right end */
     #dTl.tlPastOn .tlSearch.open{right:0;}   /* Past: no Past button beside it, the field to the row's end */
     .tlHead > .tlPastBtn{order:1;margin-left:auto;} .tlHead > .tlSearch{order:2;margin-left:-8px;}   /* the other way round: Past, then the search at the row's end ("inverse order"), still 8 apart */
@@ -10188,7 +10196,7 @@
     .tlSearch.open{position:absolute;left:0;right:52px;top:50%;margin-top:-22px;width:auto;height:44px;justify-content:flex-start;gap:9px;padding:0 10px 0 14px;border-radius:12px;background:transparent;color:#8b8b86;box-shadow:inset 0 0 0 1.5px var(--msEdge, #2a2a28);transition:box-shadow .16s ease;cursor:text;} .tlSearch.open input{display:block;}   /* tapped: the field over the title's line -- the Insights search's field ("same search behaviour as the Biomarker insight search ... with keyboard / styles") */
     .tlSearch.open:focus-within{--msEdge:#fff;} .tlSearch.open > svg{width:20px;height:20px;} .tlSearch.open input{font-size:15px;color:#ececec;} .tlSearch.open input::placeholder{color:#8b8b86;} .tlSearch:not(.open) .msClear{display:none !important;} .tlSearch .msClear{margin-right:0;}
     body.light .tlSearch.open{--msEdge:#ddd3bf;color:#9b8a75;} body.light .tlSearch.open:focus-within{--msEdge:#2e241c;} body.light .tlSearch.open input{color:#2e1f1a;} body.light .tlSearch.open input::placeholder{color:#9b8a75;}
-    .tlHead{min-height:44px;} .tlHead:has(.tlSearch.open) .tlH1{visibility:hidden;}
+    .tlHead{min-height:44px;margin-top:-7px;} .tlHead:has(.tlSearch.open) .tlH1{visibility:hidden;}   /* the row on Services' line ("uncosnsitent with overview header"): its discs 7 above the title's 30, level with the Services cart and the Overview's discs, the title where Services' sits */
     .jvH2Row{min-height:44px;} .jvH2Row > .tlSearch.open{right:0;} .jvH2Row:has(> .tlSearch.open) > .jvH2{visibility:hidden;}   /* at the heading: opened, the field over the heading's row */   /* the row holds the box's 56 when the field opens over it (no jump; the field the box's height), and the title stays out of sight under the open field */
     .tlSkel .tlTh.skb{border-radius:12px;}
     .tlList{padding:0;} .tlList::before, .tlDot{display:none;}
@@ -10259,6 +10267,7 @@
   body[data-bp="s"], [data-ct-bp="s"], .aqWrap.aqBpS{--ctPadY:28px;--ctPadX:16px;--ctGap:28px;--bpW:600px;}
   body[data-bp="m"], [data-ct-bp="m"], .aqWrap.aqBpM{--ctPadY:32px;--ctPadX:24px;--ctGap:32px;--bpW:992px;}
   body[data-bp="l"], [data-ct-bp="l"], .aqWrap.aqBpL{--ctPadY:36px;--ctPadX:24px;--ctGap:36px;--bpW:1440px;}
+  html:not(.bpAuto) body[data-bp="m"], html:not(.bpAuto) .aqWrap.aqBpM{--bpW:min(992px, calc(100vw - var(--flDockW, 0px) - var(--tkDockW, 0px)));} html:not(.bpAuto) body[data-bp="l"], html:not(.bpAuto) .aqWrap.aqBpL{--bpW:min(1440px, calc(100vw - var(--flDockW, 0px) - var(--tkDockW, 0px)));}   /* a forced M or L: the frame never wider than the room beside a docked Flow or Tweaks column ("where are all cta on buy gift exp": the 1440 frame beside the 320 Flow ran 160 past each side, a full modal's Back under the panel, its Close off the window); the phone sizes keep their device */
   /* ...and the whole shell is the viewport ("the viewport should vary, not
      just the body"): forced, the desk -- sidebar and card -- is framed at
      the breakpoint's width and centred in the window, a hairline round it,
@@ -12935,7 +12944,7 @@
         <!-- each group is a card of its own inside the panel ("use the cards
              style for the grouping inside the dropdown"): heading and rows
              on one tinted, rounded ground -->
-        <div class="tkGroup" data-pages="ov"><div class="tkSub">Top Chat AI</div><div class="tkRow"><span class="lbl">Full modal</span><select id="stTopChat" class="tkSegSel" aria-label="The top chat field on the phone"><option value="full" selected>On</option><option value="kb">Off</option></select></div></div>   <!-- first in Tweaks ("modal tweak?": easy to find); the top chat field on the phone: the desk's search as a full modal, or the keyboard and chips ("top bar: add a tweak group Top Chat AI; same structure as desktop, suggestions and past conversations; a full modal") -->
+        <div class="tkGroup" data-pages="ov srch"><div class="tkSub">Top Chat AI</div><div class="tkRow"><span class="lbl">Full modal</span><select id="stTopChat" class="tkSegSel" aria-label="The top chat field on the phone"><option value="full" selected>On</option><option value="kb">Off</option></select></div></div>   <!-- first in Tweaks ("modal tweak?": easy to find); the top chat field on the phone: the desk's search as a full modal, or the keyboard and chips ("top bar: add a tweak group Top Chat AI; same structure as desktop, suggestions and past conversations; a full modal") -->
         <div class="tkGroup" data-pages="ins">
         <div class="tkSub">Biomarkers tab</div>
         <!-- the desk's page tabs: a line with an underline, or the phone's segmented pill ("insights desktop need a tweak for chip: inline / segmented tab as the mobile view") -->
@@ -13740,7 +13749,7 @@
         <div class="tkRow"><span class="lbl">Style</span><select id="stSvcSty" class="tkSegSel" aria-label="The Overview's services: pills, or Apple's cards (the picture on top, the title under it)"><option value="pill" selected>Pills</option><option value="apple">Apple</option></select></div>   <!-- "the same style as Apple, with the image on the top and the title below" -->
         </div>
         <!-- the Ask Everlab sheet (the dock's assistant button): its Services tiles, the names alone, or each with its 3D render at the left and two lines of name at least ("add tweak with 3d icon on the left of each label") -->
-        <div class="tkGroup" data-pages="ov ins"><div class="tkSub">Ask sheet</div>
+        <div class="tkGroup" data-pages="ov ins ask"><div class="tkSub">Ask sheet</div>   <!-- and alone while the sheet is up (EvCtx: ask) -->
         <div class="tkRow"><span class="lbl">Icons</span><select id="stAskIc" class="tkSegSel" aria-label="The Ask Everlab sheet's services: the names alone, or each with its 3D render at the left"><option value="off" selected>Off</option><option value="3d">3D</option></select></div>
         </div>
         <!-- the Health profile ("add a Health Profile card to the Overview"): its card's section, and the profile's demo states ("include examples of the not-started, in-progress and completed states"); Saved, what was last done in it here -->
@@ -16653,13 +16662,21 @@
 .bmdOvDim { position: absolute; inset: 0; background: rgba(0, 0, 0, .72); opacity: 0; transition: opacity .3s ease; }   /* the screen kept, under the blanket at 72% (layer 1 overlaps) */
 .bmdOvP { position: relative; display: flex; flex-direction: column; height: calc(100% - 68px); padding-top: 20px; border-radius: 32px 32px 0 0; background: #fff; color: #111; box-shadow: 0 -12px 40px rgba(0, 0, 0, .16); transform: translateY(100%); transition: transform .4s cubic-bezier(.2, .8, .2, 1); }
 .bmdOv.bmdDark .bmdOvP { background: #181818; color: #fff; }
+.bmdOvP:focus { outline: none; }   /* focusable (-1), so a click on its words keeps the focus in it (Escape, Tab) */
 .bmdOv.bmdOn .bmdOvDim { opacity: 1; } .bmdOv.bmdOn .bmdOvP { transform: none; }
 .bmdOvG { display: none; flex: none; width: 36px; height: 5px; margin: 8px auto 12px; border-radius: 3px; background: rgba(127, 127, 127, .35); }
 .bmdOvH { flex: none; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 16px 16px; --evShPt: 20px; }   /* the sheet header master's row (.evShHd): 24 down (the panel's 20 + 4) */
 .bmdOvT { margin: 0; font-size: 20px; line-height: 24px; font-weight: 500; }
 .bmdOvX { appearance: none; -webkit-appearance: none; flex: none; display: grid; place-items: center; width: 36px; height: 36px; padding: 0; border: 0; border-radius: 50%; background: rgba(0, 0, 0, .06); color: inherit; cursor: pointer; } .bmdOv.bmdDark .bmdOvX { background: rgba(255, 255, 255, .1); } .bmdOvX:focus-visible { outline: 2px solid #4b7bec; outline-offset: 2px; }
 .bmdOvB { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 0 16px; scrollbar-width: none; } .bmdOvB::-webkit-scrollbar { display: none; }
-@media (prefers-reduced-motion: reduce) { .bmdOvDim, .bmdOvP { transition: none; } }
+/* on the desk (opts.float, the Plan's What this moves): the Full bottom sheet floating, as Modals draws it from M: centred, min(544) wide, up to 720 high, 28 round, the scrim at 62%, rising 24 as it fades in (450 / 300 ms); no notch, no swipe */
+.bmdOv.bmdFloat { justify-content: center; align-items: center; padding: 24px; box-sizing: border-box; }
+.bmdOv.bmdFloat .bmdOvDim { background: rgba(0, 0, 0, .62); }
+.bmdOv.bmdFloat .bmdOvP { width: min(100%, 544px); height: min(720px, 100%); padding-top: 24px; border-radius: 28px; box-shadow: 0 30px 80px rgba(0, 0, 0, .35); opacity: 0; transform: translateY(24px); transition: transform .45s cubic-bezier(.2, .8, .2, 1), opacity .3s ease; }
+.bmdOv.bmdFloat.bmdOn .bmdOvP { opacity: 1; transform: none; }
+.bmdOv.bmdFloat .bmdOvG { display: none !important; }
+.bmdOv.bmdFloat .bmdOvH { padding: 0 24px 16px; --evShPt: 24px; }   /* the sheet header master's row 24 down: the floating modal's own 24 padding brings it (not the sheet's 20 + 4) */ .bmdOv.bmdFloat .bmdOvB { padding: 0 24px; }
+@media (prefers-reduced-motion: reduce) { .bmdOvDim, .bmdOvP, .bmdOv.bmdFloat .bmdOvP { transition: none; } }
 /* the screen behind, drawn back as iOS does: 8% smaller, rounded, on black, its top just under the status bar; the status bar kept, white, over the scrim */
 .bmdStkHost { background: #000 !important; transition: background .3s ease; }
 .bmdBack { transition: transform .4s cubic-bezier(.2, .8, .2, 1), border-radius .4s ease; will-change: transform; }
@@ -19830,6 +19847,49 @@ html .arSheet.hpSheet.hpGfSolo.hpGfAtIn:not(.hpGfOnSheet) .arHead .arIconBtn.arI
 .arSheet.hpSheet .hpGfPvMk { color: #fff; opacity: .8; } .arSheet.hpSheet .hpGfPvMk svg { height: 16px; }
 .arSheet.hpSheet .hpGfPvT { font-size: 14px; line-height: 18px; font-weight: 500; color: rgba(243, 237, 230, .72); }
 .arSheet.hpSheet .hpGfPvN { margin: 0; font-family: 'Tobias', 'Tobias Light', 'Tobias Regular', Georgia, 'Times New Roman', serif; font-size: 22px; line-height: 28px; text-wrap: balance; overflow-wrap: anywhere; }
+/* Send a gift: the envelope ("a screen that merge the note into a enveloppe that will sit on top of the section check and pay"; the board's black envelope). One builder (gfEnv): Check and pay's, the merge moment's, the Documentation's stills.
+   Matte black paper (a breath of light from the top left, a fine grain), black in Light too (a thing, not a surface: a soft shadow there). Its back: the flap with the mark blind-debossed, the two lines at its foot; its front: the wordmark, For <name>, the logo's connectors pressed in, off its right edge.
+   Sized from its column (container hpGfEvW, cqw): 5:3, the corners 12 to 16. Inside: the turning body (hpGfEvT, preserve-3d) with its front (hpGfEvF) and back (hpGfEvB: the flap over the card over the pocket, their order the envelope's) */
+.arSheet.hpSheet .hpGfEvW { position: relative; container-type: inline-size; width: 100%; margin: 0 0 28px; }
+.arSheet.hpSheet .hpGfEv { appearance: none; position: relative; display: block; width: 100%; height: 60cqw; margin: 0; padding: 0; border: 0; border-radius: var(--evR); background: none; color: #f4f2ee; font: inherit; text-align: left; perspective: 420cqw; cursor: pointer; -webkit-tap-highlight-color: transparent; --evR: clamp(12px, 3.8cqw, 16px); }
+.arSheet.hpSheet :is(.hpGfEv, .hpGfFxC) { --evInk: #f4f2ee; --evGrey: rgba(244, 242, 238, .5);
+  --evSh: inset 0 0 0 .5px rgba(255, 255, 255, .06), 0 1px 2px rgba(0, 0, 0, .2), 0 3.2cqw 7cqw -2.6cqw rgba(0, 0, 0, .44);
+  --evGrain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 .16 0 0 0 -.055'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  --evFlap: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 25' preserveAspectRatio='none'%3E%3Cpath d='M0 0H100L97.3 14.2C96.5 21.4 93.4 25 87.4 25H12.6C6.6 25 3.5 21.4 2.7 14.2Z'/%3E%3C/svg%3E"); }
+.arSheet.hpSheet.arDark :is(.hpGfEv, .hpGfFxC) { --evSh: inset 0 0 0 .5px rgba(255, 255, 255, .09), 0 1px 2px rgba(0, 0, 0, .5), 0 3.2cqw 7cqw -2.6cqw rgba(0, 0, 0, .8); }
+.arSheet.hpSheet div.hpGfEv { cursor: default; }
+.arSheet.hpSheet .hpGfEv:focus-visible { outline: 2px solid var(--ar-blue-fg); outline-offset: 3px; }
+.arSheet.hpSheet .hpGfEvT { position: absolute; left: 0; right: 0; bottom: 0; height: 60cqw; transform-style: preserve-3d; }
+.arSheet.hpSheet :is(.hpGfEvF, .hpGfEvB) { position: absolute; inset: 0; -webkit-backface-visibility: hidden; backface-visibility: hidden; }
+.arSheet.hpSheet .hpGfEvB { transform: rotateY(180deg); }
+.arSheet.hpSheet :is(.hpGfEvF, .hpGfEvPk, .hpGfEvFlO, .hpGfEvCd) { background: var(--evGrain) 0 0 / 160px 160px, linear-gradient(158deg, #212120 0%, #181818 44%, #121212 100%); }
+/* its front: the wordmark, For <name> under it; the connectors from the logo's own paths, pressed in */
+.arSheet.hpSheet .hpGfEvF { overflow: hidden; border-radius: var(--evR); box-shadow: var(--evSh); }
+.arSheet.hpSheet .hpGfEvId { position: absolute; left: 8.6cqw; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; align-items: flex-start; gap: 2.4cqw; color: var(--evInk); }
+.arSheet.hpSheet .hpGfEvLogo { display: block; line-height: 0; } .arSheet.hpSheet .hpGfEvLogo svg { display: block; width: auto; height: 5.4cqw; } .arSheet.hpSheet .hpGfEvLogo .hpGfLogoT { font-size: 6.4cqw; line-height: 1; }
+.arSheet.hpSheet .hpGfEvTo { font-family: var(--ar-font); font-size: 3.4cqw; line-height: 1.2; font-weight: 500; letter-spacing: .01em; color: var(--evInk); white-space: nowrap; }
+.arSheet.hpSheet .hpGfEvCn { position: absolute; left: 57%; top: 7%; width: 200%; height: 86%; overflow: visible; }
+/* its back: the pocket and the two lines at its foot; the flap over it (its inside, a shade darker, seen open); the mark on the flap */
+.arSheet.hpSheet .hpGfEvPk { position: absolute; inset: 0; z-index: 3; border-radius: var(--evR); box-shadow: var(--evSh); }
+.arSheet.hpSheet .hpGfEvLn { position: absolute; left: 0; right: 0; bottom: 9.2cqw; display: flex; flex-direction: column; align-items: center; margin: 0; font-family: var(--ar-font); font-size: 2.9cqw; line-height: 1.34; letter-spacing: .005em; text-align: center; }
+.arSheet.hpSheet .hpGfEvLn b { font-weight: 400; color: var(--evInk); } .arSheet.hpSheet .hpGfEvLn span { color: var(--evGrey); }
+.arSheet.hpSheet .hpGfEvFl { position: absolute; left: 0; right: 0; top: 0; z-index: 4; height: 25cqw; transform-origin: 50% 0; filter: drop-shadow(0 .45cqw .7cqw rgba(0, 0, 0, .6)); }
+.arSheet.hpSheet :is(.hpGfEvFlO, .hpGfEvFlI) { position: absolute; inset: 0; border-radius: var(--evR) var(--evR) 0 0; -webkit-mask: var(--evFlap) 0 0 / 100% 100% no-repeat; mask: var(--evFlap) 0 0 / 100% 100% no-repeat; }
+.arSheet.hpSheet .hpGfEvFlI { opacity: 0; background: var(--evGrain) 0 0 / 160px 160px, linear-gradient(0deg, #222221 0%, #191919 55%, #121212 100%); }   /* seen open (turned up): lighter at its tip, in the pocket's shade at its fold */
+.arSheet.hpSheet .hpGfEvMk { position: absolute; left: 50%; top: 47%; width: 10.4cqw; height: 10.4cqw; transform: translate(-50%, -50%); overflow: visible; }
+/* the card inside, the board's: black, the thin line ending in a small square with its dot, the note in Tobias, white, From in grey; the longer the note, the smaller */
+.arSheet.hpSheet .hpGfEvCd { position: absolute; left: 7cqw; top: 4.5cqw; z-index: 2; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 86cqw; height: 52cqw; padding: 13.5cqw 7cqw 4.5cqw; border-radius: 1.2cqw; box-shadow: inset 0 0 0 .5px rgba(255, 255, 255, .07), 0 .8cqw 2.4cqw rgba(0, 0, 0, .38); color: var(--evInk); text-align: center; }
+.arSheet.hpSheet .hpGfEvCdK { position: absolute; left: 50%; top: 2cqw; width: 2.6cqw; height: 10cqw; transform: translateX(-50%); }
+.arSheet.hpSheet .hpGfEvCdK::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 2.6cqw; width: 1px; margin-left: -.5px; background: rgba(244, 242, 238, .72); }
+.arSheet.hpSheet .hpGfEvCdK::after { content: ''; position: absolute; left: 0; bottom: 0; box-sizing: border-box; width: 2.6cqw; height: 2.6cqw; border: 1px solid rgba(244, 242, 238, .82); background: radial-gradient(circle, rgba(244, 242, 238, .92) 0 .36cqw, transparent .44cqw); }
+.arSheet.hpSheet :is(.hpGfEvCdN, .hpGfEvCdF) { margin: 0; font-family: 'Tobias', 'Tobias Light', 'Tobias Regular', Georgia, 'Times New Roman', serif; font-size: 4.6cqw; line-height: 1.17; font-weight: 400; letter-spacing: -.01em; text-wrap: balance; overflow-wrap: anywhere; }
+.arSheet.hpSheet .hpGfEvCdF { color: var(--evGrey); }
+.arSheet.hpSheet .hpGfEvCdL :is(.hpGfEvCdN, .hpGfEvCdF) { font-size: 5.4cqw; } .arSheet.hpSheet .hpGfEvCdM :is(.hpGfEvCdN, .hpGfEvCdF) { font-size: 3.9cqw; } .arSheet.hpSheet .hpGfEvCdS :is(.hpGfEvCdN, .hpGfEvCdF) { font-size: 3.4cqw; }
+/* the merge moment's layer over the page: the note's card in flight, the step's preview giving way to it */
+.arSheet.hpSheet .hpScr > .hpGfFx { position: absolute; left: 0; top: 0; right: 0; bottom: 0; z-index: 5; width: auto !important; max-width: none !important; overflow: hidden; pointer-events: none; }
+.arSheet.hpSheet .hpGfFx > * { position: absolute; margin: 0; box-sizing: border-box; }
+.arSheet.hpSheet .hpGfFxC { container-type: inline-size; }
+.arSheet.hpSheet .hpGfEvW.hpGfSealing { z-index: 3; }
 /* Check and pay: the plan over the rows, each its Change */
 .arSheet.hpSheet .hpGfSum { padding: 0 16px; }
 /* the checkout's Recipient and Gift details: the Gift receipt's cards (its .grp, .grpH, .row): 24 corners, the title inside at 18/24 500, rows of a 9em label and its value, 14/20, no rules, 8 between the cards */
@@ -20729,7 +20789,7 @@ window.EvConsent = (function () {
     try {
       S = build(o.state || 'none');
       (o.fill || []).forEach(function (k) { if (S.a[k] && DEMO[k]) S.a[k].ans = JSON.parse(JSON.stringify(DEMO[k])); });
-      inst = mount(host, { theme: o.theme, name: o.name, snap: true, dism: true, wide: o.wide, note: !!o.note, greet: o.greet || 0, solo: o.solo || null, soloI: o.solo ? o.i || 0 : 0, ccPh: o.ccPh || null, gfFill: (o.fill || []).indexOf('gift') >= 0 });   // ccPh: a Concierge phase still (Docs' Concierge row)   // greet: the note's greeting, its first or second title (Docs' stills)   // wide: the desk's layout (the canvas's Desktop), told rather than measured: the still is drawn zoomed
+      inst = mount(host, { theme: o.theme, name: o.name, snap: true, dism: true, wide: o.wide, note: !!o.note, greet: o.greet || 0, solo: o.solo || null, soloI: o.solo ? o.i || 0 : 0, ccPh: o.ccPh || null, gfFill: (o.fill || []).indexOf('gift') >= 0, gfSeal: o.gfSeal || 0 });   // gfSeal: Send a gift's merge held at that time (ms), Docs' still of it   // ccPh: a Concierge phase still (Docs' Concierge row)   // greet: the note's greeting, its first or second title (Docs' stills)   // wide: the desk's layout (the canvas's Desktop), told rather than measured: the still is drawn zoomed
       if (o.area && !o.solo) inst.go(o.area, o.i || 0);
     } finally { S = keepS; INST = keepI; SNAP = false; }
     return inst;
@@ -20864,7 +20924,8 @@ window.EvConsent = (function () {
       build(scr); view.appendChild(scr); shown = scr;
       root.classList.toggle('hpScrolled', false); scr.addEventListener('scroll', function () { if (shown === scr) root.classList.toggle('hpScrolled', scr.scrollTop > 2); }, { passive: true });   /* the page scrolled under the bar: its back and close take their grounds then only ("no bg, only when it's fixed on scroll") */
       if (old) {
-        if (!dir || reduced() || !scr.animate) { old.remove(); }
+        if (scr._gfFx && dir > 0 && !reduced() && scr.animate) { var gfx = scr._gfFx; scr._gfFx = null; old.setAttribute('inert', ''); gfx(old); }   /* Send a gift: Their note on to Check and pay, the envelope's merge in place of the push (gfSealFx; it owns the old page) */
+        else if (!dir || reduced() || !scr.animate) { old.remove(); }
         else if (v) {
           var ost = old.scrollTop; old.style.overflow = 'visible'; old.scrollTop = 0;   /* the leaving page unclipped, its scroll kept in the move: rising, its own box took its foot with it and left an empty band over the CTA ("a dark rectangle overlaps the bottom of the screen"); the view still clips it */
           var up = dir > 0, dy = v.top - old.getBoundingClientRect().top - ost, rise = Math.max(160, Math.round((view.clientHeight || 600) * .34));
@@ -21054,6 +21115,7 @@ window.EvConsent = (function () {
     function keep() { var st = S.a[A]; if (st.st !== 'done') st.i = I; save(); }
     function fwd() {   // the next step, or the area done: back to the home
       var a = AREA[A], st = S.a[A];
+      gfSeal = A === 'gift' && stepsOf(A)[I] === 'note' && !opts.snap && !reduced();   /* Send a gift: Their note's Continue (on, or back to Check and pay after a Change) seals it in its envelope */
       if (A === 'res') { if (opts.ov && opts.solo === 'res' && opts.onClose) { opts.onClose(); return; } if (stepsOf('res')[I] === 'search' && window._hp && window._hp.past) { setTimeout(function () { window._hp.past(1); }, 0); return; }   /* Past results' Next: the Concierge's own page, not a step of this one ("the past result shouldn't have the concierge; if you click on Next on the past result, you go to the concierge standalone page") */   /* opened from the Overview's past results card: Got it just closes it, nothing after ("if the user comes from the Overview and clicks the past result card, Got it closes the modal") */ if (I < stepsOf('res').length - 1) { I++; step(1); return; } if (opts.onClose) opts.onClose(); else home(-1); return; }   // the past results' Got it: the Concierge's introduction; its Go to overview closes   // the past results: Go to overview, the profile closed (the standalone page: its home)
       if (ret != null) { var r = ret; ret = null; I = r; keep(); step(1); return; }
       if (A === 'gift') { if (I < stepsOf(A).length - 1) { I++; keep(); step(1); } else if (opts.onClose) opts.onClose(); return; }   /* Send a gift: page after page; Done closes it */
@@ -21069,7 +21131,7 @@ window.EvConsent = (function () {
       root.classList.toggle('hpW1', !!(S.a.wear && S.a.wear.st === 'done'));
       var a = AREA[A], L = stepsOf(A), id = L[I], ans = S.a[A].ans; tell(A, id, I); step0Back();
       navT.textContent = a.t; navS.textContent = ''; root.classList.toggle('hpNoBars', A === 'res'); if (A !== 'res' && A !== 'gift') stageBars(a.i, (I + 1) / L.length); paintRail(); if (A === 'gift') gfHead(id);   /* three bars, the three stages, the one on filling as its steps go ("only three increments, each filled inside by the progression"); no "1 of 4" ("we don't need the subtitle") */
-      var scr = show(function (scr) { (BUILD[A + '.' + id] || function () {})(scr, ans); }, dir);
+      var scr = show(function (scr) { (BUILD[A + '.' + id] || function () {})(scr, ans); }, dir); gfSeal = false;
       var f = scr.querySelector('[data-focus]'); if (f && !opts.snap && !('ontouchstart' in window)) setTimeout(function () { try { f.focus({ preventScroll: true }); } catch (e) {} }, dir ? 460 : 0);
     }
 
@@ -21981,11 +22043,109 @@ window.EvConsent = (function () {
         h('div', { class: 'hpF' }, h('span', { class: 'hpLbl', text: 'What they’ll see' }), pv)));
       live(); foot2('Continue', true, fwd);
     };
+    /* Send a gift: the envelope (CSS "Send a gift: the envelope"), one builder for Check and pay's, the merge moment's and the Documentation's stills. The mark and the connectors are the logo's own paths (the sidebar's svg, as wordmark()), never redrawn */
+    var gfEvN = 0, gfSeal = false;   /* gfSeal: Continue on Their note, so Check and pay opens on the merge */
+    var gfMarkD = function () { var s0 = document.querySelector('.sideLogo'); return s0 ? [].map.call(s0.querySelectorAll('path'), function (p) { return p.getAttribute('d') || ''; }).filter(function (d) { return parseFloat(d.slice(1)) < 24; }) : []; };   /* the mark's five connectors: the paths that start inside its 24 wide glyph (the letters start past 27) */
+    /* a blind deboss, as the board's envelope: the shapes pressed into the black paper, no ink; their edge in shade above, catching the light below, the recess a shade darker (k: about a pixel, in the drawing's units) */
+    var gfDeb = function (cls, vb, ar, defs, body, k) {
+      var id = 'hpGfEv' + (++gfEvN), w = h('span');
+      w.innerHTML = '<svg class="' + cls + '" viewBox="' + vb + '" preserveAspectRatio="' + ar + '" aria-hidden="true" focusable="false"><defs>' + defs(id) + '<g id="' + id + 'g">' + body(id) + '</g>'
+        + '<mask id="' + id + 'm" maskUnits="userSpaceOnUse" x="-100" y="-100" width="400" height="400"><rect x="-100" y="-100" width="400" height="400" fill="#fff"/><use href="#' + id + 'g" fill="#000"/></mask></defs>'
+        + '<g mask="url(#' + id + 'm)"><use href="#' + id + 'g" fill="rgba(255,255,255,.13)" transform="translate(0 ' + k + ')"/><use href="#' + id + 'g" fill="rgba(0,0,0,.85)" transform="translate(0 ' + (-k) + ')"/></g><use href="#' + id + 'g" fill="rgba(0,0,0,.22)"/></svg>';
+      return w.firstChild;
+    };
+    /* the card inside, the board's: the thin line ending in a small square with its dot, their note in Tobias, From in grey under it */
+    var gfCardEl = function (ans) { var nt = gfNoteT(ans) || 'Someone wanted you to have this.', n = nt.length;
+      return h('div', { class: 'hpGfEvCd' + (n <= 40 ? ' hpGfEvCdL' : n > 130 ? ' hpGfEvCdS' : n > 84 ? ' hpGfEvCdM' : '') }, h('i', { class: 'hpGfEvCdK', 'aria-hidden': 'true' }), h('p', { class: 'hpGfEvCdN', text: nt }), h('p', { class: 'hpGfEvCdF', text: 'From ' + gfFrom(ans) })); };
+    var gfEnv = function (ans, btn) {
+      var D = gfMarkD(), nm = gfName(ans, ''), P = D.map(function (d) { return '<path d="' + d + '"/>'; }).join('');
+      /* the front's connectors: each of the mark's five rows, its left node and neck as drawn (clipped at 10.6), its straight line carried on off the envelope's edge (the strip 10.4 to 11.5, straight in all five, stretched) */
+      var cn = D.length ? gfDeb('hpGfEvCn', '-0.6 2.2 70 22.4', 'xMinYMid meet', function (id) { return '<clipPath id="' + id + 'l"><rect x="-2" y="0" width="12.6" height="27"/></clipPath><clipPath id="' + id + 's"><rect x="10.4" y="0" width="1.1" height="27"/></clipPath>'; },
+        function (id) { return '<g clip-path="url(#' + id + 'l)">' + P + '</g><g transform="matrix(80 0 0 1 -821.6 0)"><g clip-path="url(#' + id + 's)">' + P + '</g></g>'; }, .12) : null;
+      var mk = D.length ? gfDeb('hpGfEvMk', '-0.8 2 22.8 22.8', 'xMidYMid meet', function () { return ''; }, function () { return P; }, .4) : null;
+      var front = h('div', { class: 'hpGfEvF' }, cn, h('div', { class: 'hpGfEvId' }, h('span', { class: 'hpGfEvLogo' }, wordmark()), nm ? h('span', { class: 'hpGfEvTo', text: 'For ' + nm }) : null));
+      var flap = h('div', { class: 'hpGfEvFl' }, h('div', { class: 'hpGfEvFlI' }), h('div', { class: 'hpGfEvFlO' }, mk));
+      var card = gfCardEl(ans), pocket = h('div', { class: 'hpGfEvPk' }, h('p', { class: 'hpGfEvLn' }, h('b', { text: 'Your health. Your future.' }), h('span', { text: 'We’re here when you’re ready.' })));
+      var turn = h('div', { class: 'hpGfEvT', 'aria-hidden': 'true' }, front, h('div', { class: 'hpGfEvB' }, flap, card, pocket));
+      var box = h(btn ? 'button' : 'div', btn ? { type: 'button', class: 'hpGfEv', 'aria-expanded': 'false' } : { class: 'hpGfEv' }, turn);
+      return { el: h('div', { class: 'hpGfEvW' }, box), box: box, turn: turn, flap: flap, fi: flap.firstChild, fo: flap.lastChild, card: card };
+    };
+    var gfT = function (o) { var r = { fill: 'both' }; for (var x in o) r[x] = o[x]; return r; };
+    /* the flap shut (opened: the same keyframes run back), over the card from behind it half way, its inside giving way to its outside there */
+    var gfFlapA = function (ev, t, shut) {
+      var P = 'perspective(' + Math.round(ev.box.offsetWidth * 3.2) + 'px) rotateX(', o = gfT(t); o.direction = shut ? 'normal' : 'reverse';
+      return [ev.flap.animate([{ transform: P + '180deg)', zIndex: 1 }, { transform: P + '90deg)', zIndex: 1, offset: .5 }, { transform: P + '90deg)', zIndex: 4, offset: .5 }, { transform: P + '0deg)', zIndex: 4 }], o),
+        ev.fi.animate([{ opacity: 1 }, { opacity: 1, offset: .5 }, { opacity: 0, offset: .5 }, { opacity: 0 }], o),
+        ev.fo.animate([{ opacity: 0 }, { opacity: 0, offset: .5 }, { opacity: 1, offset: .5 }, { opacity: 1 }], o)];
+    };
+    /* Check and pay's envelope tapped ("tapping the envelope opens it to show the note card inside, then closes again"): turned to its back, the flap up, the card drawn out of it, the board's card in its envelope (the page under it eased down);
+       tapped again, the same back: in, sealed, its front. Every part ends together, so running it back is the closing, from wherever it is. Reduced motion: at once */
+    var gfEvTap = function (ev, ans) {
+      var on = false, an = null, nm = gfName(ans, 'them');
+      var lab = function () { ev.box.setAttribute('aria-expanded', String(on)); ev.box.setAttribute('aria-label', on ? 'Your note for ' + nm + ': ' + (gfNoteT(ans) || 'Someone wanted you to have this.') + ' From ' + gfFrom(ans) + '. Close the envelope' : 'The envelope for ' + nm + ', your note sealed inside. Open it'); };
+      lab();
+      ev.box.addEventListener('click', function () {
+        if (ev.sealing) return; on = !on; lab();
+        if (!an) { var W = ev.box.offsetWidth, D = 1250, E = 'cubic-bezier(.45, 0, .2, 1)', t = function (dl, du, e) { return { delay: dl, duration: du, endDelay: D - dl - du, easing: e || E }; };
+          an = [ev.turn.animate([{ transform: 'rotateY(0deg)' }, { transform: 'rotateY(180deg)' }], gfT(t(0, 520)))].concat(gfFlapA(ev, t(460, 380, 'cubic-bezier(.4, 0, .2, 1)'), false),
+            [ev.card.animate([{ transform: 'none' }, { transform: 'translateY(' + (-.5 * W).toFixed(1) + 'px)' }], gfT(t(800, 450))), ev.box.animate([{ height: '60cqw' }, { height: '107.5cqw' }], gfT(t(780, 470)))]);
+          an.forEach(function (a) { a.pause(); }); }
+        var mine = an; an.forEach(function (a) { a.updatePlaybackRate(on ? 1 : -1); a.play(); if (reduced()) a.finish(); });
+        an[0].finished.then(function () { if (!on && an === mine) { mine.forEach(function (a) { a.cancel(); }); an = null; } }, function () {});   /* shut again: its own resting state, crisp */
+      });
+    };
+    /* the merge ("after their note, a screen that merge the note into an envelope that will sit on top of Check and pay"), Check and pay's first beat, no tap: the note's card lifts from its preview, the envelope (its back, the flap open) rises from below, the card slides down into it,
+       the flap folds over it, then it turns to its front, smaller, up to its place at the top of the page, the page coming in round it. About 2.2 s, eased, no bounce. still: the Documentation's frame of it, held at that time. Reduced motion: none (the envelope there at once) */
+    var gfSealFx = function (scr, ev, ans, old, still) {
+      var sr = scr.getBoundingClientRect(), k = (sr.width / scr.offsetWidth) || 1, er = ev.el.getBoundingClientRect();
+      var Vw = scr.clientWidth, Vh = scr.clientHeight, W = ev.el.offsetWidth, H = .6 * W, sx = (er.left - sr.left) / k, sy = (er.top - sr.top) / k;
+      if (!W || !Vh) { if (old) old.remove(); return; }
+      /* its place in the middle of the moment: as wide as the room allows (up to 1.12 its own), the card out over it and the envelope, both, centred a touch high */
+      var m = Math.max(.6, Math.min(1.12, (Vw - 32) / W, (Vh - 56) / (1.165 * W))), Wm = m * W, top0 = Math.max(12, (Vh - 1.165 * Wm) / 2 - Vh * .02);
+      var Ox = sx + W / 2, Oy = sy + H / 2, dx = Vw / 2 - Ox, dy = top0 + .865 * Wm - Oy, low = Vh + .55 * Wm + 12 - Oy, lift = -.565 * W;
+      var tr = function (x, y, s) { return 'translate(' + x.toFixed(2) + 'px, ' + y.toFixed(2) + 'px) scale(' + s.toFixed(4) + ')'; };
+      var fx = h('div', { class: 'hpGfFx', 'aria-hidden': 'true' }), cw = h('div', { class: 'hpGfFxC', style: 'left:' + sx.toFixed(2) + 'px;top:' + sy.toFixed(2) + 'px;width:' + W + 'px;height:' + H.toFixed(2) + 'px' }, gfCardEl(ans));
+      var pv = old && old.querySelector('.hpGfPv'), pr = pv && pv.getBoundingClientRect(), pin = !!(pr && pr.width && pr.bottom > sr.top + 8 && pr.top < sr.bottom - 8);
+      var Pc = pin ? { x: (pr.left + pr.width / 2 - sr.left) / k, y: (pr.top + pr.height / 2 - sr.top) / k, w: pr.width / k } : { x: Vw / 2, y: Vh * .8, w: .8 * W };   /* from the preview card where it stood; not in view, from low in the screen */
+      var s0 = Pc.w / (.86 * W), Cy = sy + .305 * W, Lx = Ox + dx, Ly = Oy + m * (Cy - Oy) + dy + lift * m;   /* L: the card's middle once out over the envelope */
+      var cl = pin ? pv.cloneNode(true) : null; if (cl) cl.style.cssText = 'left:' + ((pr.left - sr.left) / k).toFixed(2) + 'px;top:' + ((pr.top - sr.top) / k).toFixed(2) + 'px;width:' + (pr.width / k).toFixed(2) + 'px;height:' + (pr.height / k).toFixed(2) + 'px';
+      fx.appendChild(cw); if (cl) fx.appendChild(cl); scr.appendChild(fx);
+      var A = [], E1 = 'cubic-bezier(.4, 0, .1, 1)', E2 = 'cubic-bezier(.16, 1, .3, 1)', E3 = 'cubic-bezier(.45, 0, .2, 1)', E4 = 'cubic-bezier(.55, 0, .15, 1)';
+      var go = function (el, kf, o) { var a = el.animate(kf, gfT(o)); A.push(a); return a; };
+      /* the card lifts (0 to 480), out of the preview (its copy giving way in the first 200), then waits over the mouth */
+      go(cw, [{ transform: tr(Pc.x - Ox, Pc.y - Oy - s0 * (Cy - Oy), s0) }, { transform: tr(dx, dy + lift * m, m) }], { duration: 480, easing: E1 });
+      go(cw, [{ opacity: 0 }, { opacity: 1, offset: .25 }, { opacity: 1, offset: .999 }, { opacity: 0 }], { duration: 800, easing: 'linear' });
+      if (cl) { go(cl, [{ transform: 'none' }, { transform: 'translate(' + (Lx - Pc.x).toFixed(2) + 'px, ' + (Ly - Pc.y).toFixed(2) + 'px) scale(' + (.86 * W * m / Pc.w).toFixed(4) + ')' }], { duration: 480, easing: E1 }); go(cl, [{ opacity: 1 }, { opacity: 0 }], { duration: 200, easing: 'linear' }); }
+      /* the envelope, its back, the flap open behind the card, rises from below the screen's foot (220 to 800; no fade: a grey ghost on Light) */
+      go(ev.el, [{ transform: tr(dx, low, m) }, { transform: tr(dx, dy, m) }], { delay: 220, duration: 580, easing: E2 });
+      /* the card handed to the envelope's own, the same place (800), and down into it, behind its pocket (800 to 1180) */
+      go(ev.card, [{ opacity: 0 }, { opacity: 0, offset: .999 }, { opacity: 1 }], { duration: 800, easing: 'linear' });
+      go(ev.card, [{ transform: 'translateY(' + lift.toFixed(2) + 'px)' }, { transform: 'none' }], { delay: 800, duration: 380, easing: E3 });
+      /* the flap folds over it (1140 to 1500), the mark on it */
+      A = A.concat(gfFlapA(ev, { delay: 1140, duration: 360, easing: 'cubic-bezier(.4, 0, .2, 1)' }, true));
+      /* turned to its front as it goes up to its place, its own size (1520 to 2120) */
+      go(ev.turn, [{ transform: 'rotateY(180deg)' }, { transform: 'rotateY(0deg)' }], { delay: 1520, duration: 600, easing: E4 });
+      go(ev.el, [{ transform: tr(dx, dy, m) }, { transform: tr(0, 0, 1) }], { delay: 1520, duration: 600, easing: E4, fill: 'forwards' });
+      /* the page round it: the title, the plan, the rows, one after another as it lands */
+      [].filter.call(scr.children, function (c) { return c !== ev.el && c !== fx; }).forEach(function (c, i) { go(c, [{ opacity: 0, transform: 'translateY(12px)' }, { opacity: 1, transform: 'none' }], { delay: 1780 + i * 70, duration: 480, easing: E2 }); });
+      /* Continue to payment out with the note's page, back with Check and pay's */
+      if (ctaFx) ctaFx.cancel(); ctaFx = go(cta, [{ opacity: 1 }, { opacity: 0, offset: .09 }, { opacity: 0, offset: .8 }, { opacity: 1 }], { duration: 2240, easing: 'linear', fill: 'none' });
+      var ovY = scr.style.overflowY; scr.style.overflowY = 'hidden'; ev.el.classList.add('hpGfSealing'); ev.sealing = true;
+      if (still != null) { A.forEach(function (a) { a.pause(); a.currentTime = still; }); return; }
+      /* the note's page gives way (its preview stays: the copy over it) */
+      if (old) { old.style.zIndex = '1'; scr.style.zIndex = '2'; scr.style.background = 'transparent'; old.setAttribute('inert', ''); old.setAttribute('aria-hidden', 'true');
+        var oa = old.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 260, easing: 'ease', fill: 'forwards' }); oa.onfinish = oa.oncancel = function () { old.remove(); scr.style.background = ''; scr.style.zIndex = ''; }; }
+      var end = A.reduce(function (t, a) { var e = a.effect.getTiming(); return Math.max(t, (e.delay || 0) + (+e.duration || 0)); }, 0);
+      setTimeout(function () { A.forEach(function (a) { a.cancel(); }); fx.remove(); scr.style.overflowY = ovY; ev.el.classList.remove('hpGfSealing'); ev.sealing = false; }, end + 40);   /* landed: at rest, its own (crisp) */
+    };
     var gfRow = function (lab, val, sub, go) { return h('div', { class: 'hpSumR' }, h('div', null, h('span', { text: lab }), h('b', { text: val || '—' }), sub ? h('small', { class: 'hpGfSub', text: sub }) : null), go ? h('button', { type: 'button', class: 'hpEdit', text: 'Change', 'aria-label': 'Change ' + lab.toLowerCase(), on: { click: editTo(go) } }) : null); };
     var gfArrive = function (ans) { var d = gfDate(ans.date); return ans.dlv === 'date' && d ? gfDay(d) + ', 8am' : 'As soon as you pay'; };
     BUILD['gift.pay'] = function (scr, ans) {
       /* Check and pay: the plan and its price, To, Arrives and the note, each its Change back to its step (and Continue there straight back here) */
       var k = ans.plan || 'prot', p = GF_PLAN[k], occ = name(GF_OCC, ans.occ), nt = gfNoteT(ans);
+      var ev = gfEnv(ans, true); gfEvTap(ev, ans); scr.appendChild(ev.el);   /* their note sealed in its envelope, on top of the page ("an enveloppe that will sit on top of the section check and pay"); tapped, it opens on the card */
+      if (gfSeal && !opts.snap) scr._gfFx = function (old) { gfSealFx(scr, ev, ans, old); };   /* from Their note's Continue: the merge first (show() runs it in place of the push) */
+      else if (opts.snap && opts.gfSeal) { var gw = 0, wait = function () { if (!alive) return; if (!scr.isConnected || !scr.offsetWidth) { if (++gw < 90) requestAnimationFrame(wait); return; } gfSealFx(scr, ev, ans, null, opts.gfSeal); }; requestAnimationFrame(wait); }   /* the Documentation's frame of the merge, held */
       scr.appendChild(q('', 'Check and pay', 'You’ll add your details and pay on Everlab’s secure checkout next.'));
       scr.appendChild(h('div', { class: 'hpGfSumW' },   /* the plan in a card of its own ("this needs to have a dedicated card"), the rows in theirs under it */
         h('div', { class: 'hpCard hpGfSum hpGfSumPlan' }, h('div', { class: 'hpGfSumTop' }, h('div', null, h('b', { text: p.full }), h('span', { text: '12-month membership for ' + gfName(ans, 'them') })), h('div', { class: 'hpGfSumP' }, h('b', { text: gfMoney(ans.ctry, k) }), h('span', { text: 'Includes GST' })))),
@@ -22941,12 +23101,16 @@ window.EvPush = (function () {
 <script>
 /* ---- Biomarker detail ("create the bottom sheet biomarker detail (click on biomarker item); use it also for the insight page"):
  *   BioDetail.body(m, { dark })              the detail itself, for a sheet that already has a frame (the Async report's)
- *   BioDetail.sheet(host, m, { dark, from })  the detail in its own bottom sheet over host (the Insights phone)
+ *   BioDetail.sheet(host, m, { dark, from })  the detail in its own bottom sheet over host (the Insights phone, the Plan's What this moves)
+ *     opts.float: on the desk, the Full bottom sheet's floating modal (Modals: centred, min(544) wide, up to 720 high, 28 round, rising 24 as it fades in; no notch, no swipe)
+ *     opts.onClose(): called as it starts to close, before focus goes back to opts.from (the caller lifts its inert, takes its host away after)
+ *   BioDetail.read(row)   a biomarker row (the Insights phone's .mbrow, the Plan's What this moves) read into m: its bar and caret set on the marker's own range (BAR: worse higher, lower, or either way)
+ *   BioDetail.find(name)  the member's own row for that marker (#mRecs, the Insights'), by its name with or without its brackets: the Plan opens that one, so a marker opens the same detail wherever it is tapped
  * m: { name, value: '38.5 g/L', date: '15 Mar 2026', status: 'Optimal' | 'Suboptimal' | 'Out of range' | '', bar: 'hi' | 'lo' | 'both' | 'xsosx'..., pos: 0..1, trend: { pts } }
  * The range's edges are drawn from where the reading sits on its bar, the history from the reading back (its last readings when the row has them), steady on every open: a prototype's numbers, not a lab's. */
 window.BioDetail = (function () {
   'use strict';
-  var NS = 'http://www.w3.org/2000/svg', seq = 0;
+  var NS = 'http://www.w3.org/2000/svg', seq = 0, live = [];   // live: the sheets open, the last on top
   function el(tag, a, kids) {
     var n = document.createElement(tag);
     if (a) Object.keys(a).forEach(function (k) { if (a[k] == null) return; if (k === 'text') n.textContent = a[k]; else if (k === 'style') n.style.cssText = a[k]; else n.setAttribute(k, a[k]); });
@@ -23009,9 +23173,9 @@ window.BioDetail = (function () {
   function fmt(v, dec) { return (Math.round(v * Math.pow(10, dec)) / Math.pow(10, dec)).toFixed(dec).replace(/\.?0+$/, function (z) { return dec ? z.replace(/0+$/, '').replace(/\.$/, '') : z; }); }
   // the marker read into what the sheet draws
   function model(m) {
-    var r = rng(hash(m.name || '')), st = ST[m.status] || 'n';
-    var mv = /^\s*(-?\d+(?:\.\d+)?)\s*(.*)$/.exec(String(m.value || ''));
-    var d = { name: m.name || '', value: String(m.value || ''), date: m.date || '', st: st, desc: DESC[(m.name || '').toLowerCase()] || ((m.name || 'This marker') + ' is one of the markers in your results. Your doctor reads it with your other results and your history; the range below shows where your latest reading sits.') };
+    var r = rng(hash(m.name || '')), st = ST[m.status] || 'n', val = String(m.value || '').replace(/(\d\s*)u(g|mol)\//g, '$1µ$2/');   // the Insights' plain "ug/L", "umol/L" as a lab writes them (µ)
+    var mv = /^\s*(-?\d+(?:\.\d+)?)\s*(.*)$/.exec(val);
+    var d = { name: m.name || '', value: val, date: m.date || '', st: st, desc: descOf(m.name) || ((m.name || 'This marker') + ' is one of the markers in your results. Your doctor reads it with your other results and your history; the range below shows where your latest reading sits.') };
     if (!mv || mv[2].length > 16 || /\s\S+\s/.test(mv[2])) { d.text = true; return d; }   // a questionnaire's answer ("2 serves per day from eggs..."): its words, no range, no chart
     d.num = +mv[1]; d.numStr = mv[1]; d.unit = mv[2].trim();
     var seg = { hi: 'osx', lo: 'xso', both: 'xsosx' }[m.bar] || (/^[osx]{2,6}$/.test(m.bar || '') ? m.bar : st === 'n' ? '' : 'sos');
@@ -23034,6 +23198,38 @@ window.BioDetail = (function () {
     d.hist = vals.map(function (v, i) { var back = cnt - 1 - i; return { t: i === cnt - 1 ? t1 : t1 - back + (r() - .5) * .3, v: v }; });
     return d;
   }
+  // a marker's words: its own name's, else the entry that names the same test: the same words before any brackets ("HbA1c", "Apolipoprotein B (ApoB)", "Lipoprotein(a)"; a sample's word, serum, aside: "Morning cortisol"),
+  // or the same words in all ("Gamma-glutamyl transferase (GGT)", "Cortisol (morning)"). Never a name that is only part of an entry's ("Vitamin B12" is not Active B12's, "Globulin" not SHBG's), nor an abbreviation alone ("LH": the entry's words are a man's)
+  function descOf(name) {
+    var wd = function (t) { return t.split(/[\s()]+/).filter(function (x) { return x && x !== 'serum'; }); }, same = function (a, b) { return a.length === b.length && a.every(function (x) { return b.indexOf(x) >= 0; }); };
+    var parts = function (t) { var m = /^(.*?)\s*\((.*)\)\s*$/.exec(t); return m ? [wd(m[1]), wd(m[2])] : [wd(t), []]; };
+    var k = (name || '').toLowerCase().trim(); if (!k) return ''; if (DESC[k]) return DESC[k]; var n = parts(k), all = n[0].concat(n[1]); if (!all.length) return '';
+    var hit = Object.keys(DESC).filter(function (d) { var e = parts(d); return (n[0].length && same(n[0], e[0])) || same(all, e[0].concat(e[1])); })[0];
+    return hit ? DESC[hit] : ''; }
+  /* ---- a biomarker row read into its marker (the Insights phone's rows, the Plan's What this moves): one reader, so the same marker opens the same detail wherever it is tapped.
+     Such a row draws only its status: three bands, optimal, suboptimal, out of range, left to right (34, 26 and 26 wide, 4 apart; its caret 8 wide), the caret somewhere in its status's band.
+     BAR sets that on the marker's own range: worse higher unless named; lo, worse lower; mid, worse either way (a reading off it above); mid<, worse either way, the member's reading off it below (the Insights' Ferritin 22, Transferrin saturation 14 %) */
+  var BAND = [[0, 34], [38, 26], [68, 26]], SK = { ok: 0, sub: 1, out: 2 }, SW = ['Optimal', 'Suboptimal', 'Out of range'];
+  var BAR = { 'hdl cholesterol': 'lo', 'apolipoprotein a1': 'lo', 'vitamin d': 'lo', 'vitamin b12': 'lo', 'active vitamin b12': 'lo', 'folate': 'lo', 'vitamin c': 'lo', 'selenium': 'lo', 'zinc': 'lo', 'adiponectin': 'lo', 'albumin': 'lo', 'serum albumin': 'lo', 'egfr': 'lo',
+    'heart rate variability': 'lo', 'vo2 max': 'lo', 'insulin sensitivity index': 'lo', 'omega-3 index': 'lo', 'blood oxygen': 'lo', 'lowest overnight spo2': 'lo', 'sleep score': 'lo', 'readiness score': 'lo', 'sleep efficiency': 'lo', 'activity score': 'lo', 'lumbar spine t-score': 'lo', 'femoral neck t-score': 'lo', 'urine iodine': 'lo',
+    'ferritin': 'mid<', 'transferrin saturation': 'mid<', 'dhea-s': 'mid<', 'immunoglobulin m': 'mid<', 'fasting glucose': 'mid', 'tsh': 'mid', 'free t4': 'mid', 'free t3': 'mid', 'total t4': 'mid', 'total t3': 'mid', 'haemoglobin': 'mid', 'haematocrit': 'mid', 'red cell count': 'mid',
+    'mean corpuscular volume': 'mid', 'mean corpuscular haemoglobin': 'mid', 'mchc': 'mid', 'white cell count': 'mid', 'neutrophils': 'mid', 'lymphocytes': 'mid', 'platelet count': 'mid', 'serum iron': 'mid', 'transferrin': 'mid', 'total iron-binding capacity': 'mid', 'sodium': 'mid', 'potassium': 'mid',
+    'calcium': 'mid', 'phosphate': 'mid', 'magnesium': 'mid', 'creatinine': 'mid', 'total testosterone': 'mid', 'oestradiol': 'mid', 'shbg': 'mid', 'lh': 'mid', 'fsh': 'mid', 'prolactin': 'mid', 'morning cortisol': 'mid', 'immunoglobulin g': 'mid', 'immunoglobulin a': 'mid', 'respiratory rate': 'mid' };
+  function key(n) { return String(n || '').toLowerCase().replace(/\([^)]*\)/g, ' ').replace(/\s+/g, ' ').trim(); }   // a name without its brackets: "Apolipoprotein B (ApoB)" is the Plan's "Apolipoprotein B"
+  function read(row) {
+    var ds = row.dataset || {}, g = row.querySelector('.g'), st = row.querySelector('.st'), mk = row.querySelector('.rng .mk');
+    var s = ds.bioS != null ? ds.bioS : st ? ['ok', 'sub', 'out'].filter(function (c) { return st.classList.contains(c); })[0] || '' : '', k = SK[s];
+    var m = { name: ds.bioN || (row.firstElementChild || row).textContent.trim(), value: ds.bioV || (g && g.dataset.v) || '', date: ds.bioD || (g ? (g.textContent.split('|')[1] || '').trim() : ''), status: k == null ? '' : SW[k], bar: '', pos: null };
+    if (k == null) return m;   // unclassified: no bar
+    var c = mk ? parseFloat(mk.style.left) + 4 : NaN, f = isNaN(c) ? .5 : Math.max(.1, Math.min(.9, (c - BAND[k][0]) / BAND[k][1])), b = BAR[key(m.name)] || 'hi';
+    if (b === 'lo') { m.bar = 'xso'; m.pos = (3 - k - f) / 3; }   // mirrored: out of range at the left
+    else if (b === 'mid<') { m.bar = 'xsosx'; m.pos = (2 - k + (k ? 1 - f : f)) / 5; }
+    else if (b === 'mid') { m.bar = 'xsosx'; m.pos = (2 + k + f) / 5; }
+    else { m.bar = 'osx'; m.pos = (k + f) / 3; }
+    return m;
+  }
+  // the member's own row for a marker, as the Insights list it (#mRecs), by its name with or without its brackets
+  function find(name) { var n = key(name), rows = n ? document.querySelectorAll('#mRecs .mbrow') : []; for (var i = 0; i < rows.length; i++) if (key((rows[i].firstElementChild || rows[i]).textContent) === n) return rows[i]; return null; }
   function zoneOf(d, v) { if (!d.zones) return 'n'; var k = 0; while (k < d.cuts.length && v >= d.cuts[k]) k++; return d.zones[k]; }
   function pill(st) { return el('span', { class: 'bmdPill bmd-' + st, text: WORD[st] }); }
   // the chart, drawn to its box's width: the line coloured by the range it runs through, a dot a reading, the one picked told in a card
@@ -23112,8 +23308,8 @@ window.BioDetail = (function () {
   function sheet(host, m, opts) {
     opts = opts || {};
     var x = el('button', { type: 'button', class: 'bmdOvX evShX', 'aria-label': 'Close' }, [icon(IC.x)]);
-    var panel = el('div', { class: 'bmdOvP', role: 'dialog', 'aria-modal': 'true', 'aria-label': m.name }, [el('div', { class: 'bmdOvG', 'aria-hidden': 'true' }), el('div', { class: 'bmdOvH evShHd' }, [el('h2', { class: 'bmdOvT evShT', text: m.name }), x]), el('div', { class: 'bmdOvB' }, [body(m, opts)])]);
-    var dim = el('div', { class: 'bmdOvDim' }), ov = el('div', { class: 'bmdOv' + (opts.dark ? ' bmdDark' : '') }, [dim, panel]);
+    var panel = el('div', { class: 'bmdOvP', role: 'dialog', 'aria-modal': 'true', 'aria-label': m.name, tabindex: '-1' }, [el('div', { class: 'bmdOvG', 'aria-hidden': 'true' }), el('div', { class: 'bmdOvH evShHd' }, [el('h2', { class: 'bmdOvT evShT', text: m.name }), x]), el('div', { class: 'bmdOvB' }, [body(m, opts)])]);
+    var dim = el('div', { class: 'bmdOvDim' }), ov = el('div', { class: 'bmdOv' + (opts.dark ? ' bmdDark' : '') + (opts.float ? ' bmdFloat' : '') }, [dim, panel]);
     // the screen behind drawn back, as iOS: opts.back (what scrolls and floats), each scaled about the screen's own top centre so they move as one, on black; opts.keep (the status bar) stays, white, over it all
     var back = opts.stack ? opts.back || [] : [], keep = opts.stack ? opts.keep || [] : [], bg = getComputedStyle(host).backgroundColor;   /* only a sheet opened from another draws what is behind it back; the first overlaps the screen, under its blanket ("card stacking should happen after the first layer") */
     var push = function (on) {
@@ -23123,28 +23319,27 @@ window.BioDetail = (function () {
       back.forEach(function (b) { if (!b) return; if (on) { b.style.transformOrigin = '50% ' + (-b.offsetTop) + 'px'; b.classList.add('bmdBack'); } b.classList.toggle('bmdBackOn', on); });
       keep.forEach(function (k) { if (k) k.classList.toggle('bmdKeep', on); });
     };
-    var shut = false, close = function () { if (shut) return; shut = true; ov.classList.remove('bmdOn'); push(false); setTimeout(function () { if (ov.parentNode) ov.parentNode.removeChild(ov); back.forEach(function (b) { if (b && !host.classList.contains('bmdStkHost')) { b.classList.remove('bmdBack'); b.style.transformOrigin = ''; } }); }, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 400); if (opts.from && opts.from.isConnected) opts.from.focus({ preventScroll: true }); };
+    var shut = false, close = function () { if (shut) return; shut = true; document.removeEventListener('keydown', keys, true); var i = live.indexOf(ov); if (i >= 0) live.splice(i, 1); ov.classList.remove('bmdOn'); push(false); setTimeout(function () { if (ov.parentNode) ov.parentNode.removeChild(ov); back.forEach(function (b) { if (b && !host.classList.contains('bmdStkHost')) { b.classList.remove('bmdBack'); b.style.transformOrigin = ''; } }); }, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 400); if (opts.onClose) opts.onClose(); if (opts.from && opts.from.isConnected) opts.from.focus({ preventScroll: true }); };
     x.addEventListener('click', close); dim.addEventListener('click', close);
-    if (window.EvSheetSwipe) window.EvSheetSwipe(panel, close, { handle: '.bmdOvG, .bmdOvH', scrim: dim, skip: '.bmdOvX', when: function () { return !shut; } });   /* a swipe down lets it go (Modals -> Full bottom sheet) */
-    panel.addEventListener('keydown', function (e) { if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); close(); return; } if (e.key === 'Tab') { var f = [].slice.call(panel.querySelectorAll('button, [tabindex="0"]')), i = f.indexOf(document.activeElement); e.preventDefault(); f[(i + (e.shiftKey ? f.length - 1 : 1)) % f.length].focus(); } });
+    if (window.EvSheetSwipe) window.EvSheetSwipe(panel, close, { handle: '.bmdOvG, .bmdOvH', scrim: dim, skip: '.bmdOvX', when: function () { return !shut && !opts.float; } });   /* a swipe down lets it go (Modals -> Full bottom sheet) */
+    /* Escape and Tab wherever the focus went (a click on its words leaves it on the panel, or on the page's body), as the Plan's own sheets: on the document while it is open, the topmost sheet only */
+    function keys(e) { if (shut || live[live.length - 1] !== ov || !ov.getClientRects().length) return;   // a sheet left in a screen that is hidden (another breakpoint) keeps no keys
+      if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); close(); return; }
+      if (e.key === 'Tab') { var f = [].slice.call(panel.querySelectorAll('button, [tabindex="0"]')), i = f.indexOf(document.activeElement); e.preventDefault(); if (f.length) f[i < 0 ? (e.shiftKey ? f.length - 1 : 0) : (i + (e.shiftKey ? f.length - 1 : 1)) % f.length].focus(); } }
+    document.addEventListener('keydown', keys, true); live.push(ov);
     host.appendChild(ov); push(true); void ov.offsetWidth; ov.classList.add('bmdOn'); x.focus({ preventScroll: true });
     return { close: close, el: ov };
   }
-  return { body: body, sheet: sheet, model: model, zoneOf: zoneOf };   // model / zoneOf: a marker's readings and their ranges, for the report's biomarker carousel
+  return { body: body, sheet: sheet, model: model, zoneOf: zoneOf, read: read, find: find };   // model / zoneOf: a marker's readings and their ranges, for the report's biomarker carousel; read / find: a row's marker, the member's row for a name (the Insights')
 })();
 
 /* the Insights phone's biomarker rows open their detail: the row's name, reading, date, status, and where its marker sits on its three-band bar (optimal, suboptimal, out of range) */
 (function () {
   var host = document.getElementById('mRecs'), phone = document.getElementById('phone');
   if (!host || !phone || !window.BioDetail) return;
-  var ST = { ok: 'Optimal', sub: 'Suboptimal', out: 'Out of range' };
   document.addEventListener('DOMContentLoaded', function () { host.querySelectorAll('.mbrow').forEach(function (r) { r.tabIndex = 0; r.setAttribute('role', 'button'); }); });   // the rows are drawn by a later script
   var open = function (row) {
-    var st = row.querySelector('.st'), g = row.querySelector('.g'), mk = row.querySelector('.rng .mk'), rng = row.querySelector('.rng');
-    var key = st ? (['ok', 'sub', 'out'].filter(function (k) { return st.classList.contains(k); })[0] || '') : '';
-    var when = g ? (g.textContent.split('|')[1] || '').trim() : '';
-    var pos = mk && rng && rng.offsetWidth ? (parseFloat(mk.style.left) + 3) / rng.offsetWidth : null;
-    window.BioDetail.sheet(phone, { name: (row.firstElementChild || row).textContent.trim(), value: g ? g.dataset.v : '', date: when, status: ST[key] || '', bar: key ? 'osx' : '', pos: pos }, { dark: !document.body.classList.contains('light'), from: row, back: [document.getElementById('mScroll'), document.getElementById('mTabs')], keep: [phone.querySelector(':scope > .mstatus')] });   // the screen behind drawn back, the status bar kept
+    window.BioDetail.sheet(phone, window.BioDetail.read(row), { dark: !document.body.classList.contains('light'), from: row, back: [document.getElementById('mScroll'), document.getElementById('mTabs')], keep: [phone.querySelector(':scope > .mstatus')] });   // the screen behind drawn back, the status bar kept
   };
   host.addEventListener('click', function (e) { var row = e.target.closest('.mbrow'); if (row && host.contains(row)) open(row); });
   host.addEventListener('keydown', function (e) { if (e.key !== 'Enter' && e.key !== ' ') return; var row = e.target.closest && e.target.closest('.mbrow'); if (row) { e.preventDefault(); open(row); } });
@@ -30143,6 +30338,65 @@ hairline({
     // than rolling like a drum, so it is a strip of its own.
     v4Take(document.getElementById('arcA'), document.getElementById('v4Gauge'));
   }
+  /* ---- EvCtx, the master of what Tweaks and Flow speak to ("When a modal take over the page, the tweak should be related to the active modal!!!!!! and flow as well if any") ----
+     every page laid over the app and every modal that takes it over is a context: { key, label, tweaks: the data-pages keys of its groups ([] none: the Tweaks button goes),
+     flow: its Flow panel's key(s) (none: the Flow button goes), on() }. The context up that came up last decides (a sheet over a modal over a page: the sheet; two up at once, the later in this list);
+     none up, the page's own (its mode's groups, its own flows). A modal's tweaks are the ones its own page shows from the Page menu. Read again one frame after any open or close (a class on the html,
+     the body or an overlay, an overlay put in or taken out, a page change), at every tkPages, and twice a second besides. window.EvCtx = { add(ctx), top(), cur(), key(), flow(k), kick(), list() };
+     'everlab:ctx' on the document when it changes. The table of contexts: docs/working-notes.md */
+  window.EvCtx = (() => {
+    const L = [], at = {}; let n = 0, sig = null, q = 0, last = null;
+    const read = () => { let t = null; L.forEach(d => { let on = false; try { on = !!d.on(); } catch (e){} if (!on){ delete at[d.key]; return; } if (!at[d.key]) at[d.key] = ++n; if (!t || at[d.key] > at[t.key]) t = d; }); return (last = t); };   // each one's moment up, kept while it stays up: the latest up on top
+    const fl = d => d && d.flow ? [].concat(d.flow) : [];
+    const tw = d => { let v = d && d.tweaks; if (typeof v === 'function') try { v = v(); } catch (e){ v = []; } return (v || []).slice(); };   // its keys, or a function of its step (Send a gift's receipt)
+    const run = () => { q = 0; const t = read(), k = t ? t.key : '', s = t ? k + ':' + tw(t).join(' ') : ''; if (s === sig) return; sig = s; document.documentElement.dataset.tk = k;
+      if (window.__tkPages) try { window.__tkPages(); } catch (e){}
+      document.dispatchEvent(new CustomEvent('everlab:ctx', { detail: { key: k, tweaks: t ? tw(t) : null, flow: t ? fl(t) : null } })); };
+    const kick = () => { if (!q) q = requestAnimationFrame(run); };
+    const api = { add: d => { L.push(d); kick(); return api; }, top: read, cur: () => last, key: () => { const t = read(); return t ? t.key : ''; }, tweaks: tw,
+      flow: k => { const t = read(); return !t || fl(t).indexOf(k) >= 0; },   // a Flow panel may show: nothing over the page (the page's own), or the context's own
+      kick, list: () => L.map(d => ({ key: d.key, label: d.label, tweaks: tw(d), flow: fl(d), up: !!at[d.key] })) };
+    /* what opens and closes them: the html's and the body's classes (the pages, the standalones), an overlay's own (.on, .hpOpen, .shut), one put in or taken out (the Ask search, a standalone's wrap) */
+    const W = '.hpWrap, .aqWrap, .chWrap, .evSrch, .aiWrap, .tlSheet, .shWrap, .siWrap, .ibWrap, .mvWrap, .ccPage, #phone, #phone2, .hpGfSolo, .hpAtLtr';
+    const hit = x => x.nodeType === 1 && x.matches(W);
+    new MutationObserver(rs => { for (const r of rs){ if (r.type === 'attributes'){ if (r.target === document.body || r.target === document.documentElement || hit(r.target)) return kick(); continue; }
+      for (const x of r.addedNodes) if (hit(x)) return kick(); for (const x of r.removedNodes) if (hit(x)) return kick(); } })
+      .observe(document.documentElement, { subtree: true, childList: true, attributes: true, attributeFilter: ['class', 'data-bp'] });
+    document.addEventListener('everlab:mode', kick); document.addEventListener('everlab:hpstep', kick); setInterval(run, 500);   // a step of the profile's sheet (a context's tweaks by its step)
+    return api; })();
+  { const B = c => document.body.classList.contains(c), Q = s => !!document.querySelector(s);
+    const up = s => { for (const e of document.querySelectorAll(s)) if (!e.closest('#docPage') && e.getClientRects().length) return true; return false; };   // drawn, in the app (not a Documentation demo phone's)
+    const gift = () => Q('.hpWrap.hpOpen .hpGfSolo'), hp = () => !gift() && B('hpOn') && Q('.hpWrap.hpOpen:not(.hpWelF)') && !Q('.hpWrap.hpOpen .hpAtLtr');
+    [ /* pages laid over the app, reached from inside it too (a dock tab, a card, a More row, a link) */
+      { key: 'plan', label: 'Plan', tweaks: ['plan'], on: () => B('plOn') },   // its Sub pages (Activity, Nutrition, Medical actions, Supplements, Wind-down) and their sheets its own
+      { key: 'mk', label: 'Services marketplace', on: () => B('mkOn') },
+      { key: 'acc', label: 'My account', on: () => B('accOn') },
+      { key: 'tl', label: 'Timeline', tweaks: ['tl'], on: () => B('tlOn') },   // its groups: .tkGroup[data-tl]
+      { key: 'svc', label: 'Service detail', tweaks: ['svc'], flow: 'svc', on: () => B('svcOn') || B('aptOn') || Q('#phone2.svcOn, #phone2.aptOn') },   // .tkGroup[data-svc]; an appointment's too; its steps' sheets its own
+      { key: 'gift', label: 'Gift', tweaks: ['gift'], on: () => B('gfOn') },
+      { key: 'clinic', label: 'Testing locations', tweaks: ['clinic'], on: () => B('clOn') },
+      { key: 'gr', label: 'Gift receipt', tweaks: ['gr'], on: () => B('grOn') },
+      { key: 'rf', label: 'Gift referral', flow: 'rf', on: () => B('rfOn') },
+      { key: 'cn', label: 'Consent', on: () => B('cnOn') },
+      /* the modals that take over: full modals, full bottom sheets, the chats */
+      { key: 'ar', label: 'Async report', tweaks: ['ar'], flow: 'ar', on: () => B('arOpen') },
+      { key: 'hp', label: 'Health profile', tweaks: ['hp'], flow: ['jny', 'wtl'], on: hp },   // Past results and the Concierge's introduction its screens; its consent and pickers its own (the journey stays)
+      { key: 'wel', label: 'Membership reveal', tweaks: ['wel'], flow: 'wtl', on: () => !gift() && !hp() && Q('.hpWrap.hpOpen.hpWelF, .hpWrap.hpOpen .hpAtLtr') },   // to the note from Steven
+      { key: 'sgf', label: 'Send a gift', flow: 'sgf', on: gift,   // its own group (.tkGroup[data-pages="sgf"]: Intro), the profile's none; its pages in the Flow panel
+        tweaks: () => { try { const s = window.HealthProfile.gift.steps[window._hp.giftAt()]; if (s === 'done' || /receipt/i.test(s + ' ' + ((window.HealthProfile.gift.names || {})[s] || ''))) return ['gr']; } catch (e){} return ['sgf']; } },   // and the Gift receipt's (data-pages="gr") on its receipt step, the flow's last
+      { key: 'sug', label: 'Suggestion', tweaks: ['sug'], on: () => B('sugOn') },
+      { key: 'dsg', label: 'Doctor’s suggestion', tweaks: ['dsg'], on: () => B('dsgOn') },
+      { key: 'prc', label: 'Personal recommendation', tweaks: ['prc'], on: () => B('prcOn') },
+      { key: 'mkDet', label: 'Marketplace service', on: () => up('.tlSheet.mkDet.on') },   // the marketplace's: none
+      { key: 'mkCart', label: 'Cart', on: () => up('.tlSheet.mkCart.on') },
+      { key: 'insSheet', label: 'Insights sheet', on: () => up('.shWrap.on:not(.recSheetWrap):not(.prWrap), .siWrap.on') },   // a report, every report, a finding, a section's explainer, a signal (the records' menu a menu, Results received's message its page)
+      { key: 'inbox', label: 'Inbox', on: () => up('.ibWrap.on:not(.bkSh)') },   // (Booked in: a service's last step, its flow's)
+      { key: 'more', label: 'More', on: () => up('.mvWrap.on') },
+      { key: 'ask', label: 'Ask sheet', tweaks: ['ask'], on: () => up('.aiWrap.on') },   // the dock's spark
+      { key: 'srch', label: 'Ask Everlab', tweaks: ['srch'], on: () => up('.evSrch.on') },   // the top chat field's search (Tweaks -> Top Chat AI -> Full modal)
+      { key: 'chat', label: 'Chat (in the app)', tweaks: ['cc'], on: () => up('.chWrap.on') },   // the chat a question opens over the page (EvChat: the top field's Enter, a service chip, Contact care team): the Chat page's tweaks ("this should be chat page, when come from overview")
+      { key: 'cc', label: 'Chat', tweaks: ['cc'], on: () => B('ccOn') && !B('ccOut') }
+    ].forEach(d => window.EvCtx.add(d)); }
   // Tweaks shows only what concerns the page: its groups, and a standalone's over it (the Async report's while it is up)
   // the profile's rows: into the Health profile group while the profile is showing, back to the Primary card's $299 part after
   const tkHp = on => { const part = document.querySelector('.pcPart[data-pc="hp"]'), grp = document.getElementById('tkHpGrp'); if (!part || !grp) return;
@@ -30150,25 +30404,23 @@ hairline({
     if (tkHp.home && part.parentNode === grp){ tkHp.home.p.insertBefore(part, tkHp.home.n); const ty = document.getElementById('stPcType'); part.hidden = (ty ? ty.value : 'member') !== 'member'; } };
   function tkPages(m, extra){
     const g = MODES[m] && MODES[m].group, key = g === 'Insights' ? 'ins' : (g === 'Overview page' || g === 'Results received') ? 'ov' : g === 'Landing page' ? 'lp' : g === 'Async report' ? 'ar' : '';
-    const sgPg = !!document.querySelector('.hpWrap.hpOpen .hpGfSolo');   // Send a gift: its own group alone (its own flow, not the profile's)
-    const sgRc = sgPg && !!(window._hp && window._hp.giftAt && window.HealthProfile && window.HealthProfile.gift.steps[window._hp.giftAt()] === 'done'); document.documentElement.classList.toggle('grInFlow', sgRc);   /* on its Receipt step, the Gift receipt's own tweaks (the page it frames; "keep the receipt's own Tweaks"); Scheduled and In app not shown there, the gift says them */
-    const hpPg = !sgPg && document.body.classList.contains('hpOn') && !!document.querySelector('.hpWrap.hpOpen:not(.hpWelF)') && !document.querySelector('.hpWrap.hpOpen .hpAtLtr');   // the note from Steven up: the reveal's last screen, not the profile ("not health profile")   // the profile showing (not its reveal): its tweaks alone
-    const gfPg = document.body.classList.contains('gfOn');   // the Gift page: its own group alone
-    const clPg = document.body.classList.contains('clOn');   // the Clinic's page: its own group alone
-    const grPg = document.body.classList.contains('grOn');   // the Gift receipt: its own group alone (Background)
-    const cnPg = document.body.classList.contains('cnOn') || document.body.classList.contains('rfOn') || document.body.classList.contains('mkOn');   // and the Services marketplace: no tweaks   // and the Gift referral: no tweaks yet   // General patterns -> Consent: no tweaks
-    const plPg = document.body.classList.contains('plOn');   // the Plan page: its own group alone
-    const ccPg = document.body.classList.contains('ccOn') && !document.body.classList.contains('ccOut');   // the Chat up, over whatever page: its own group alone (Chat -> Persona)
-    const welPg = !hpPg && !!document.querySelector('.hpWrap.hpOpen.hpWelF, .hpWrap.hpOpen .hpAtLtr');   // the Membership reveal up (its page, or played over the Overview): First-time user alone ("shouldn't have the Overview tweak here")
-    tkHp(hpPg);
-    const keys = ccPg ? ['cc'] : (extra === 'sug' || extra === 'dsg' || extra === 'prc') ? [extra] : plPg && extra !== 'ar' ? ['plan'] : sgRc ? ['gr'] : sgPg ? ['sgf'] : cnPg ? [] : grPg ? ['gr'] : gfPg ? ['gift'] : clPg ? ['clinic'] : hpPg ? ['hp'] : welPg ? ['wel'] : extra === 'ar' ? ['ar'] : [key, extra].filter(Boolean), tk = document.getElementById('tkMenu');   // a standalone up, its own tweaks alone ("Async report shouldn't have all the tweaks from the Overview, just the async ones")
-    if (tk){ tk.querySelectorAll('[data-pages]').forEach(el => { const p = el.dataset.pages.split(' '); el.hidden = !keys.some(k => p.indexOf(k) >= 0); }); tk.hidden = !keys.length; if (!keys.length) tk.open = false; }
+    /* a page over the app or a modal taking it over (EvCtx, the latest up): its own tweaks alone, the page's none ("Async report shouldn't have all the tweaks from the Overview, just the async ones";
+       the Chat over any page: Chat -> Persona; the profile, not its reveal: Health profile; the reveal to the note from Steven: First-time user; Send a gift, the marketplace, the referral, Consent: none); nothing over it, the page's */
+    const c = window.EvCtx ? window.EvCtx.top() : null;
+    tkHp(!!c && c.key === 'hp');
+    const sgRc = !!c && c.key === 'sgf' && window.EvCtx.tweaks(c)[0] === 'gr'; document.documentElement.classList.toggle('grInFlow', sgRc);   /* Send a gift on its Receipt step: the Gift receipt's own tweaks (EvCtx), Scheduled and In app not shown there, the gift says them */
+    const keys = c ? window.EvCtx.tweaks(c) : [key, extra].filter(Boolean), tk = document.getElementById('tkMenu');
+    if (tk){ tk.querySelectorAll('[data-pages], [data-tl], [data-svc]').forEach(el => { const p = el.dataset.pages ? el.dataset.pages.split(' ') : el.hasAttribute('data-tl') ? ['tl'] : ['svc']; el.hidden = !keys.some(k => p.indexOf(k) >= 0); }); tk.hidden = !keys.length;
+      if (!keys.length){ if (tk.open) tk._held = true; tk.open = false; } else if (tk._held){ tk._held = false; tk.open = true; } }   // the Timeline's groups [data-tl] (key tl), a service's [data-svc] (key svc); the panel shut under a modal with none, open again as it goes (Closing restores the page's own tweaks)
+    document.documentElement.dataset.tk = c ? c.key : '';
     if (typeof jny === 'function'){ jny(); requestAnimationFrame(jny); setTimeout(jny, 500); }   // the journey beside the phone, once the profile's frame is placed
   }
   /* Flow, in the top bar: there while a screen has its flow panel at the left (the reveal's timeline, the profile's journey), pressed to fold the panel away and back; remembered */
   { const av = {}, b = document.getElementById('tkFlowBtn'), H = document.documentElement; try { if (localStorage.getItem('evFlowOff') === '1') H.classList.add('flowOff'); } catch (x){}
-    const sync = () => { if (!b) return; b.hidden = !Object.keys(av).some(k => av[k]); b.setAttribute('aria-pressed', String(!H.classList.contains('flowOff'))); };   // any screen with a flow panel (the profile's, the reveal's, the referral's, a service's, the report's)
+    const sync = () => { if (!b) return; b.hidden = !Object.keys(av).some(k => av[k] && window.__flowOk(k)); b.setAttribute('aria-pressed', String(!H.classList.contains('flowOff'))); };   // any screen with a flow panel (the profile's, the reveal's, the referral's, a service's, the report's)
+    window.__flowOk = k => !window.EvCtx || window.EvCtx.flow(k);   /* a modal over the page: its own flow alone, the page's none; no flow of its own, no Flow ("and flow as well if any"): EvCtx */
     window.__flowAv = (k, on) => { if (av[k] !== on){ av[k] = on; sync(); } };
+    const fUp = []; document.addEventListener('everlab:ctx', () => { sync(); fUp.forEach(u => { try { u(); } catch (e){} }); if (window.__flowDock) window.__flowDock(); });   // a modal up or gone: the panels and the button at once
     /* a panel shown or hidden by anything at all re-docks: a panel gone with the app still pushed left the page 320 off the menu ("why this right gap?") */
     { let fq = 0; const tb = document.querySelector('.topbar'); if (tb) new MutationObserver(() => { if (!fq) fq = requestAnimationFrame(() => { fq = 0; if (window.__flowDock) window.__flowDock(); }); }).observe(tb, { subtree: true, childList: true, attributes: true, attributeFilter: ['hidden'] }); }
     window.__flowDock = () => { const on = !!document.querySelector('.topbar .hpJny:not([hidden])');
@@ -30179,7 +30431,7 @@ hairline({
     window.__flowPanel = (key, cfg) => { let el = null, sig = '', busy = false;
       const esc = v => String(v == null ? '' : v).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
       const upd = () => { if (busy) return; busy = true; try {
-        const on = !!cfg.on(), m = on ? cfg.model() : null; window.__flowAv(key, !!m);
+        const on = !!cfg.on() && window.__flowOk(key), m = on ? cfg.model() : null; window.__flowAv(key, !!m);
         if (!m || H.classList.contains('flowOff')){ if (el && !el.hidden) el.hidden = true; window.__flowDock(); return; }
         const bar = document.querySelector('.topbar'); if (!bar) return;
         if (!el){ el = document.createElement('aside'); el.className = 'hpJny hpWtl hpFl'; el.dataset.fl = key;
@@ -30197,7 +30449,7 @@ hairline({
         window.__flowDock(); } finally { busy = false; } };
       new MutationObserver(upd).observe(H, { attributes: true, attributeFilter: ['class'] });   // Flow folded or unfolded
       new MutationObserver(upd).observe(document.body, { attributes: true, attributeFilter: ['class', 'data-bp'] });   // its screen up or gone
-      addEventListener('resize', upd); setInterval(upd, 400);   // and its steps moving, from wherever they move
+      addEventListener('resize', upd); setInterval(upd, 400); fUp.push(upd);   // and its steps moving, from wherever they move; a modal over it up or gone
       return upd; }; }
   [['stHpLtrFs', '--ltrFs'], ['stHpLtrLh', '--ltrLh']].forEach(([id, v]) => { const r = document.getElementById(id), o = document.getElementById(id + 'V'); if (!r) return; const set = () => { document.documentElement.style.setProperty(v, r.value + 'px'); if (o) o.textContent = r.value + 'px'; }; r.addEventListener('input', set); r.addEventListener('change', set); set(); setTimeout(set, 800); });   /* the Letter's font size and line height, live */
   { const s = document.getElementById('stHpRecShow'), b = document.getElementById('stHpRecTgl'), set = () => { const on = !s || s.value !== 'hide'; document.body.classList.toggle('hpRecHide', !on); if (b) b.setAttribute('aria-checked', String(on)); };   /* the past results card shown or not */
@@ -30316,7 +30568,7 @@ hairline({
     return () => { const rows = document.getElementById('stHpJnyRows'), mk = document.getElementById('stHpJnyMk'); if (!rows || !mk) return;
       if ((document.getElementById('versionSel') || {}).value === 'welc'){ if (el) el.hidden = true; if (window.__flowAv) window.__flowAv('jny', false); return; }   // Membership onboarding: its timeline holds the profile's rows (see wtl)
       const fr = document.querySelector('.hpWrap.hpOpen:not(.hpWelF) .aqFrame'), r = fr && fr.getBoundingClientRect(), W = 280, G = 40;
-      const on = !!r && r.width > 0 && (document.body.classList.contains('hpOn') || !!document.querySelector('.hpWrap.hpOpen.shut')) && !document.querySelector('.hpWrap.hpOpen .hpAtLtr') && !document.querySelector('.hpWrap.hpOpen .hpGfSolo');   /* Send a gift: its own Flow panel, below */   /* closing too: kept till the profile has gone, or the phone recentred under it mid-fade and the Overview showed through ("clipping when the Overview is behind an experience") */   /* opened from the Overview too (its card, Past results, Concierge, as a modal): the flow inside it gets its Flow panel ("I need to see the Flow because the page inside the modal has a flow; same for all modals with a flow inside") */ void G; void W;   /* at every viewport, Tweaks open or not: the flow its own panel, no longer in Tweaks ("Flow and Tweaks can live together"; "remove the flow inside Tweaks") */
+      const on = !!r && r.width > 0 && (document.body.classList.contains('hpOn') || !!document.querySelector('.hpWrap.hpOpen.shut')) && !document.querySelector('.hpWrap.hpOpen .hpAtLtr') && !document.querySelector('.hpWrap.hpOpen .hpGfSolo') && window.__flowOk('jny');   /* Send a gift: its own Flow panel, below */   /* a modal over the profile (the Chat): its own flow, not the journey (EvCtx) */   /* closing too: kept till the profile has gone, or the phone recentred under it mid-fade and the Overview showed through ("clipping when the Overview is behind an experience") */   /* opened from the Overview too (its card, Past results, Concierge, as a modal): the flow inside it gets its Flow panel ("I need to see the Flow because the page inside the modal has a flow; same for all modals with a flow inside") */ void G; void W;   /* at every viewport, Tweaks open or not: the flow its own panel, no longer in Tweaks ("Flow and Tweaks can live together"; "remove the flow inside Tweaks") */
       if (window.__flowAv) window.__flowAv('jny', on); const shw = on && !document.documentElement.classList.contains('flowOff'), p = shw ? make() : el; if (shw && !p) return;
       if (shw){ if (rows.parentNode !== p) p.appendChild(rows); const bar = document.querySelector('.topbar'), top = (bar ? bar.getBoundingClientRect().bottom : 56) + 16; p.style.left = '16px'; p.style.top = Math.round(top) + 'px'; p.style.maxHeight = Math.round(Math.max(200, innerHeight - top - 24)) + 'px'; p.hidden = false; }   /* the window's left panel, as the reveal's timeline */
       else { if (rows.parentNode !== mk.parentNode) mk.parentNode.insertBefore(rows, mk.nextSibling); if (p) p.hidden = true; } }; })();
@@ -30334,14 +30586,15 @@ hairline({
     const tick = () => { const welc = (document.getElementById('versionSel') || {}).value === 'welc'; if (window.__flowDock) window.__flowDock();
       const at = window._hpBack && window._hpBack.at ? window._hpBack.at() : -1, fr = (at >= 0 || (welc && document.body.classList.contains('hpOn'))) && document.querySelector('.hpWrap.hpOpen .aqFrame'), r = fr && fr.getBoundingClientRect(), W = 280, G = 40;   /* the profile's pages too, in Membership onboarding ("also include the health profile pages, with the timeline on the left") */
       const k = at + ':' + !!document.querySelector('.hpWrap.hpOpen .hpAtLtr'); if (k !== last){ last = k; if (window.__tkPages) window.__tkPages(); }   // the tweaks and the journey as the note comes and goes
-      if (window.__flowAv) window.__flowAv('wtl', !!(r && r.width > 0)); if (!(r && r.width > 0) || document.documentElement.classList.contains('flowOff')){ if (el) el.hidden = true; return; }
+      const ok = !!(r && r.width > 0) && window.__flowOk('wtl');   /* a modal over the reveal (the Chat): its own flow, not the timeline (EvCtx) */
+      if (window.__flowAv) window.__flowAv('wtl', ok); if (!ok || document.documentElement.classList.contains('flowOff')){ if (el) el.hidden = true; return; }
       const p = make(); if (!p) return; const side = r.left - G - W >= 16, bar = document.querySelector('.topbar'), bb = bar ? bar.getBoundingClientRect().bottom : 56;
       const top = bb + 16; p.style.left = '16px';   /* always the window's left panel, under the top bar ("the timeline flow like this always put as left panel") */ void side; p.style.top = Math.round(top) + 'px'; p.style.maxHeight = Math.round(Math.max(200, innerHeight - top - 24)) + 'px'; p.hidden = false;
       { const rows = document.getElementById('stHpJnyRows'); if (rows && welc && rows.parentNode !== p){ const h = document.createElement('div'); h.className = 'tkSub hpWtlHp'; h.textContent = 'Health profile'; if (!p.querySelector('.hpWtlHp')) p.appendChild(h); p.appendChild(rows); } }   // the profile's own rows under the reveal's: Step 1, 2, 3 pages and their Homes, Past results, Concierge
       const at2 = at === 4 && document.querySelector('.hpWrap.hpOpen .hpLtrS2') ? 5 : at;   /* Note from Steven the entrance; Letter view from the moment the avatar goes up ("note from Steven should be the entrance, letter is the moment the avatar goes on top") */   // the note as a letter lights Letter view
       p.querySelectorAll(':scope > ol > li').forEach((li, i) => { li.classList.toggle('now', i === at2); if (i === at2) li.setAttribute('aria-current', 'step'); else li.removeAttribute('aria-current'); });   /* the reveal's own rows only */
       if (at >= 0 || !document.body.classList.contains('hpOn')) document.querySelectorAll('#stHpJnyRows .tkHpHome.now, #stHpJnyRows li.now, #stHpPastRow.now, #stHpCcRow.now').forEach(e => { e.classList.remove('now'); e.removeAttribute('aria-current'); }); };   /* a reveal moment showing (or no profile up): no profile page lit ("why is step 2's Health profile home active here?") */
-    setInterval(tick, 250); addEventListener('resize', () => requestAnimationFrame(tick)); return tick; })();
+    setInterval(tick, 250); addEventListener('resize', () => requestAnimationFrame(tick)); document.addEventListener('everlab:ctx', () => tick()); return tick; })();   /* a modal over it up or gone (EvCtx): at once */
   /* the Tweaks for the moment of the Membership reveal showing, only ("I should ONLY see the tweak based on the current screen"): its groups marked with the moments they shape (data-at: 0, 1 the titles, 2 the dot, 3 the card, 4 the note from Steven), the rest folded away; nothing up, all of them */
   setInterval(() => { const at = window._hpBack && window._hpBack.at ? window._hpBack.at() : -1; document.querySelectorAll('.tkGroup[data-at]').forEach(g => g.classList.toggle('tkAtOff', at >= 0 && !g.dataset.at.split(' ').includes(String(at)))); }, 300);
   /* the Health profile's tweaks by its screen ("I should ONLY see the tweak based on the current screen"): the home its State, Documentation, records card and sphere; a step's pages Step title; Past results its map; and, any screen with none, said so in the panel ("if screen has no tweak, mention it in the panel") */
@@ -38395,7 +38648,7 @@ hairline({
     document.addEventListener('keydown', e => { if (e.key === 'Escape' && openK){ shut(); } });
     const tick = () => {
       const over = document.getElementById('dOver'), room = innerWidth - (document.documentElement.classList.contains('tkDocked') ? 320 : 0);
-      const live = over && over.offsetParent && !document.body.classList.contains('hpOn') && !document.body.matches('.sugOn, .dsgOn, .prcOn');   // not over a standalone full modal either
+      const live = over && over.offsetParent && !document.body.classList.contains('hpOn') && !document.body.matches('.sugOn, .dsgOn, .prcOn') && !(window.EvCtx && window.EvCtx.cur());   /* nor under any modal or page over it (EvCtx): its tweaks, not the Overview's sections' */   // not over a standalone full modal either
       const fe = document.getElementById('bpFrame'), fr = fe && getComputedStyle(fe).display !== 'none' ? fe.getBoundingClientRect() : null, orr = over ? over.getBoundingClientRect() : null;
       const top = Math.max(fr ? fr.top : (orr ? orr.top : 0), (bar.getBoundingClientRect().bottom || 0)) + 8, bot = Math.min(fr ? fr.bottom : innerHeight, innerHeight) - 44;
       const edge = fr ? fr.right : (orr ? orr.right : innerWidth), x = Math.min(edge + 32, room - 48);   // 32 off the screen ("detach the plus from the viewport by 32px")
@@ -45002,9 +45255,11 @@ hairline({
     /* the shared bits, one helper each, for every subpage that ends with them: Need something else? (two tiles; the Activity and Nutrition plans' too, so the four draw one set, the mocks' sliders) and What this moves (a card of the member's readings), the Activity plan's markup and look (.plATiles, .plACard, .mbrow) */
     const plNeedHTML = () => '<section class="plSec"><header class="plSecH"><h2>Need something else?</h2></header><div class="plATiles"><button type="button" class="plATileB">' + PI.sliders + '<b>Adjust your plan</b><span>Change the difficulty, frequency or focus</span></button><button type="button" class="plATileB">' + PI.doc + '<b>Recovery tips</b><span>How to recover between sessions</span></button></div></section>';
     const MKB = { ok: [6, 30], sub: [40, 60], out: [70, 88] }, STW = { ok: 'Optimal', sub: 'Suboptimal', out: 'Out of range' };   // the Insights phone's bands and words, as the Nutrition plan's
+    /* What this moves' rows open their biomarker's detail (BioDetail, the Insights' and the Async report's): each a button of its own, its marker in its data (name, reading with its unit, date, status ok | sub | out), the Plan's ghost on it (.plBio) */
+    const bioAt = (n, v, d, st) => ' class="mbrow plBio" role="button" tabindex="0" aria-haspopup="dialog" data-bio-n="' + esc(n) + '" data-bio-v="' + esc(v) + '" data-bio-d="' + esc(d) + '" data-bio-s="' + (STW[st] ? st : '') + '" aria-label="' + esc(n + ', ' + v + (STW[st] ? ', ' + STW[st] : '') + ', ' + d) + '"';
     const plMovesHTML = rows => { const at = (n, st) => { let h = 0; for (let i = 0; i < n.length; i++) h = (h * 31 + n.charCodeAt(i)) & 0xffff; return MKB[st][0] + h % (MKB[st][1] - MKB[st][0]); };   // rows [name, value, date, status ok | sub | out]: the marker in its band, off the name, as the Insights phone places it
       return '<section class="plSec"><header class="plSecH"><h2>What this moves</h2></header><div class="plACard">' + rows.map(m => { const st = MKB[m[3]] ? m[3] : '';   // no status given, none claimed: the range bare, no tag
-        return '<div class="mbrow"><span>' + esc(m[0]) + '</span><span class="rng" aria-hidden="true">' + (st ? '<i class="mk" style="left:' + at(m[0], st) + 'px"></i>' : '') + '<i class="s1"></i><i class="s2"></i><i class="s3"></i></span><span class="g">' + esc(m[1]) + '<i class="plASep" aria-hidden="true">|</i>' + esc(m[2] || 'Oct 2026') + '</span>' + (st ? '<span class="st ' + st + '">' + STW[st] + '</span>' : '<span></span>') + '</div>'; }).join('') + '</div></section>'; };
+        return '<div' + bioAt(m[0], m[1], m[2] || 'Oct 2026', st) + '><span>' + esc(m[0]) + '</span><span class="rng" aria-hidden="true">' + (st ? '<i class="mk" style="left:' + at(m[0], st) + 'px"></i>' : '') + '<i class="s1"></i><i class="s2"></i><i class="s3"></i></span><span class="g">' + esc(m[1]) + '<i class="plASep" aria-hidden="true">|</i>' + esc(m[2] || 'Oct 2026') + '</span>' + (st ? '<span class="st ' + st + '">' + STW[st] + '</span>' : '<span></span>') + '</div>'; }).join('') + '</div></section>'; };
     const plPageHTML = (k, t, by, body) => '<section class="plPPg" data-p="' + k + '" aria-labelledby="plPT' + k + '" hidden>'   // a subpage's frame: the top (Back, the breadcrumb, the title it takes once scrolled on the phone), the title and its line, then the page
       + '<div class="plPBar"><div class="ovGround" aria-hidden="true">' + '<i></i>'.repeat(10) + '</div><button type="button" class="plPBack" aria-label="Back to Plan">' + PI.back + '</button><nav class="plPCrumb" aria-label="Breadcrumb"><button type="button" class="plPCrumbA">Plan</button><i aria-hidden="true"></i><span aria-current="page">' + esc(t) + '</span></nav><span class="plPBarT" aria-hidden="true">' + esc(t) + '</span></div>'
       + '<div class="plPIn"><header class="plPHd"><h1 class="plPT" id="plPT' + k + '">' + esc(t) + '</h1><p class="plPBy">' + esc(by) + '</p></header><div class="plPBody">' + body + '</div></div></section>';
@@ -45066,7 +45321,7 @@ hairline({
         + '<div class="svCTabs plATabs" role="tablist" aria-label="Activity plan">' + tab('P', 'My programs', true) + tab('W', 'My week', false) + '</div>'
         + '<div class="svCPane plAPane" role="tabpanel" id="plAPaneP" data-pa="P" aria-labelledby="plATabP">' + APROT.map(p => '<section class="plSec">' + h2(p[0]) + '<ul class="plList">' + p[1].map(k => row(k)).join('') + '</ul></section>').join('') + '</div>'
         + '<div class="svCPane plAPane" role="tabpanel" id="plAPaneW" data-pa="W" aria-labelledby="plATabW" hidden><ol class="plAWk">' + WEEK.map(d => '<li class="plADay"><span class="plADayL"><abbr title="' + d[1] + '">' + d[0] + '</abbr></span><ul class="plList">' + (d[2].length ? d[2].map(k => row(k, true)).join('') : rest) + '</ul></li>').join('') + '</ol></div>'
-        + '<section class="plSec">' + h2('What this moves') + '<div class="plACard">' + AMB.map(m => '<div class="mbrow"><span>' + esc(m[0]) + '</span><span class="rng" aria-hidden="true"><i class="mk" style="left:' + mkAt(m[0]) + 'px"></i><i class="s1"></i><i class="s2"></i><i class="s3"></i></span><span class="g">' + esc(m[1]) + '<i class="plASep" aria-hidden="true">|</i>Oct 2026</span><span class="st ok">Optimal</span></div>').join('') + '</div></section>'
+        + '<section class="plSec">' + h2('What this moves') + '<div class="plACard">' + AMB.map(m => '<div' + bioAt(m[0], m[1], 'Oct 2026', 'ok') + '><span>' + esc(m[0]) + '</span><span class="rng" aria-hidden="true"><i class="mk" style="left:' + mkAt(m[0]) + 'px"></i><i class="s1"></i><i class="s2"></i><i class="s3"></i></span><span class="g">' + esc(m[1]) + '<i class="plASep" aria-hidden="true">|</i>Oct 2026</span><span class="st ok">Optimal</span></div>').join('') + '</div></section>'
         + plNeedHTML()   // the Plan's subpages' one Need something else?
         + '</div></div></section></div>'; };
     /* ---- the Nutrition plan ("Does it design UI for nutrition?"): the mocks' words. Its numbers agree (150g protein, 200g carbs, 67g fat: 600 + 800 + 603, the 2,000 kcal); what it moves the Insights' own readings
@@ -45109,7 +45364,7 @@ hairline({
         + '<img' + (m.ph ? ' class="plNPh"' : '') + ' src="' + NIMG[m.img] + '" alt="" width="84" height="65" decoding="async" loading="lazy" draggable="false"></div>'
         + '<ul class="plNTips">' + m.tips.map((t, j) => '<li><button type="button" class="plNTip" data-pn="m' + i + '-' + j + '" aria-haspopup="dialog"><span>' + esc(t[0]) + '</span>' + CHEV + '</button></li>').join('') + '</ul></section>').join('') + '</div></section>';
       const supp = '<section class="plSec plNSupp">' + h2('Supplement stack') + '<div class="plNCard"><ul class="plList">' + NP.supp.map(r => '<li><button type="button" class="plRow plNSup" data-pl-sup="' + esc(r.t) + '"><span class="plNSupI"><img src="' + r.img + '" alt="" width="80" height="80" decoding="async" loading="lazy"></span><span class="plRowT"><span class="plMedN"><b>' + esc(r.t) + '</b><span class="plDose">' + esc(r.str) + '</span></span><span>' + esc(r.d) + '</span></span>' + CHEV + '</button></li>').join('') + '</ul></div></section>';
-      const moves = '<section class="plSec plNMoves">' + h2('What this moves') + '<div class="plNCard">' + NP.moves.map(m => '<div class="mbrow"><span>' + esc(m[0]) + '</span><span class="rng" aria-hidden="true"><i class="mk" style="left:' + mkAt(m[0], m[2]) + 'px"></i><i class="s1"></i><i class="s2"></i><i class="s3"></i></span><span class="g">' + esc(m[1]) + '<i aria-hidden="true">·</i>Oct 2026</span><span class="st ' + m[2] + '">' + ST[m[2]] + '</span></div>').join('') + '</div></section>';
+      const moves = '<section class="plSec plNMoves">' + h2('What this moves') + '<div class="plNCard">' + NP.moves.map(m => '<div' + bioAt(m[0], m[1], 'Oct 2026', m[2]) + '><span>' + esc(m[0]) + '</span><span class="rng" aria-hidden="true"><i class="mk" style="left:' + mkAt(m[0], m[2]) + 'px"></i><i class="s1"></i><i class="s2"></i><i class="s3"></i></span><span class="g">' + esc(m[1]) + '<i aria-hidden="true">·</i>Oct 2026</span><span class="st ' + m[2] + '">' + ST[m[2]] + '</span></div>').join('') + '</div></section>';
       return '<div class="plNStage" hidden><section class="plN" data-ov="scroller" aria-labelledby="plNT">'
         + '<div class="plNBand hoBand" data-ov="band" aria-hidden="true"><div class="plNBarIn"><span class="plNBandT">' + T + '</span></div></div>'
         + '<div class="plNBar"><div class="plNBarIn"><button type="button" class="plNBack" aria-label="Back to Plan">' + BACK + '</button><nav class="plNCrumb" aria-label="Breadcrumb"><button type="button" class="plNCrumbP">Plan</button><span aria-hidden="true">/</span><span aria-current="page">' + T + '</span></nav></div></div>'
@@ -45132,13 +45387,30 @@ hairline({
     const shEl = host.querySelector('.plSheet');
     /* the press under a finger (the Plan's interaction states, its CSS after the Nutrition plan's sheet): :active alone does not hold on every phone browser, so the control pressed takes .plPress from pointerdown
        until the finger lifts (held 90 ms, so a quick tap still shows it), slides 10 px (a scroll or a carousel's swipe) or a scroller round it really moves (more than 4 px from where it stood at the press: a carousel's own settling scroll keeps it). The same list as the CSS's */
-    (() => { const SEL = 'button.plRow, button.plPStep, .plNTip, .plSee, .plPCrumbA, .plNCrumbP, .plNMac, .plA .svCTab, .plRtnGo, .plMore, .plATileB, .plPBack, .plNBack, .plABack, .plPMdX, .plNShX, .plPGoalGo';
+    (() => { const SEL = 'button.plRow, button.plPStep, .plNTip, .plSee, .plPCrumbA, .plNCrumbP, .plNMac, .plA .svCTab, .plRtnGo, .plMore, .plATileB, .plPBack, .plNBack, .plABack, .plPMdX, .plNShX, .plPGoalGo, .mbrow.plBio';
       let on = null, x0 = 0, y0 = 0, tm = 0, at = null;
       const off = now => { const b = on; on = null; if (!b) return; clearTimeout(tm); if (now) b.classList.remove('plPress'); else tm = setTimeout(() => b.classList.remove('plPress'), 90); };
       host.addEventListener('pointerdown', e => { off(true); if (e.button) return; const b = e.target.closest(SEL); if (!b || !host.contains(b) || b.disabled) return; on = b; x0 = e.clientX; y0 = e.clientY; at = new Map(); for (let p = b.parentElement; p; p = p === host ? null : p.parentElement) at.set(p, [p.scrollLeft, p.scrollTop]); b.classList.add('plPress'); }, { passive: true });
       host.addEventListener('pointermove', e => { if (on && Math.hypot(e.clientX - x0, e.clientY - y0) > 10) off(true); }, { passive: true });
       window.addEventListener('pointerup', () => off(false), { passive: true }); window.addEventListener('pointercancel', () => off(true), { passive: true });
       host.addEventListener('scroll', e => { const p = on && at && at.get(e.target); if (p && Math.max(Math.abs(e.target.scrollLeft - p[0]), Math.abs(e.target.scrollTop - p[1])) > 4) off(true); }, { passive: true, capture: true }); })();
+    /* What this moves: a row opens its biomarker's detail, the one sheet the Insights' rows open (BioDetail.sheet): over the subpage's screen on the phone (its notch, a swipe down, the scrim, Close),
+       over the app's window on the desk as the Plan's other details (EvFullView), floating there (Modals' Full bottom sheet from M); Close, the scrim and Escape put it away, focus back on its row.
+       The marker the member's own, the row the Insights list for it (BioDetail.find; the row's own data where they have none): the same marker opens the same detail wherever it is tapped, its reading, date and range.
+       Each row takes that row's date and caret once the Insights' rows are drawn (a later script), so the row and its detail agree */
+    let bio = null;
+    const bioShut = () => { if (bio) bio.close(); };
+    const bioTwin = row => window.BioDetail && window.BioDetail.find ? window.BioDetail.find(row.dataset.bioN) : null;
+    const bioSync = () => host.querySelectorAll('.mbrow.plBio').forEach(row => { const tw = bioTwin(row); if (!tw) return; const m = window.BioDetail.read(tw), d = row.dataset, g = row.querySelector('.g'), t = g && g.lastChild, a = row.querySelector('.rng .mk'), b = tw.querySelector('.rng .mk');
+      if (m.date){ d.bioD = m.date; if (t && t.nodeType === 3) t.nodeValue = m.date; } if (a && b) a.style.left = b.style.left;
+      row.setAttribute('aria-label', d.bioN + ', ' + d.bioV + (STW[d.bioS] ? ', ' + STW[d.bioS] : '') + ', ' + d.bioD); });
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bioSync, { once: true }); else setTimeout(bioSync, 0);
+    const bioOpen = row => { if (bio || !window.BioDetail) return; const stg = row.closest('.plAStage, .plNStage, .plPStage'), sc = stg && stg.querySelector(':scope > :is(.plA, .plN, .plPSc)'); if (!sc) return;
+      const wrap = document.createElement('div'); wrap.className = 'plBioHost'; stg.appendChild(wrap); if (window.EvFullView) window.EvFullView.cover(wrap); sc.inert = true;
+      bio = window.BioDetail.sheet(wrap, window.BioDetail.read(bioTwin(row) || row),
+        { dark: !host.classList.contains('plLight'), from: row, float: !/^(xs|s)$/.test(document.body.dataset.bp || ''), onClose: () => { sc.inert = false; bio = null; setTimeout(() => wrap.remove(), reduced() ? 0 : 450); } }); };   // dark with the Plan's sheet (Light with the app's Light mode)
+    host.addEventListener('click', e => { const r = e.target.closest('.mbrow.plBio'); if (r && host.contains(r)) bioOpen(r); });
+    host.addEventListener('keydown', e => { if ((e.key !== 'Enter' && e.key !== ' ') || !e.target.matches || !e.target.matches('.mbrow.plBio')) return; e.preventDefault(); bioOpen(e.target); });
     /* the Activity plan, over the Plan: its stage (where the Plan stands), its page, its sheet, its tabs */
     const stage = host.querySelector('.plAStage'), act = stage.querySelector('.plA'), actSh = act.querySelector('.plASheet'), actBand = act.querySelector('.plABand'), actBack = act.querySelector('.plABack'), actBar = act.querySelector('.plATabs'), actTabs = [...actBar.querySelectorAll('.svCTab')], actPanes = [...act.querySelectorAll('.plAPane')];
     let actOn = false, actFrom = null;
@@ -45163,7 +45435,7 @@ hairline({
       under(); const v = vs(); if (v) v.value = 'planAct'; try { history.replaceState(null, '', '#activity-plan'); } catch (e) {}
       if (!now) try { actBack.focus({ preventScroll: true }); } catch (e) {} };
     /* away: pushed back out, the Plan back where it was */
-    const actHide = () => { if (!actOn && stage.hidden) return; actOn = false; planInert(false); document.body.classList.remove('plActOn');
+    const actHide = () => { if (!actOn && stage.hidden) return; bioShut(); actOn = false; planInert(false); document.body.classList.remove('plActOn');
       stage.hidden = true; host.classList.remove('plAUp'); under(); };   /* at once: the pop, when there is one, is the master's (EvPush) */
     const actBackTo = () => { if (actOn) pgP(actBackTo0, 'pop'); };
     const actBackTo0 = () => { if (!actOn) return; actHide(); const v = vs(); if (v) v.value = 'plan'; try { history.replaceState(null, '', '#plan'); } catch (e) {} if (actFrom && actFrom.isConnected) try { actFrom.focus({ preventScroll: true }); } catch (e) {} };
@@ -45203,7 +45475,7 @@ hairline({
       nutHold(); under(); const v = vs(); if (v) v.value = 'planNut'; try { history.replaceState(null, '', '#nutrition-plan'); } catch (e) {}
       if (!now) try { nutBack.focus({ preventScroll: true }); } catch (e) {} };
     /* away: pushed back out, the Plan back where it was */
-    const nutHide = () => { if (!nutOn && nStage.hidden) return; detHide(true); nutOn = false; planInert(false); document.body.classList.remove('plNutOn');
+    const nutHide = () => { if (!nutOn && nStage.hidden) return; detHide(true); bioShut(); nutOn = false; planInert(false); document.body.classList.remove('plNutOn');
       nStage.hidden = true; host.classList.remove('plNUp'); under(); };   /* at once: the pop is the master's */
     const nutBackTo = () => { if (nutOn) pgP(nutBackTo0, 'pop'); };
     const nutBackTo0 = () => { if (!nutOn) return; nutHide(); const v = vs(); if (v) v.value = 'plan'; try { history.replaceState(null, '', '#plan'); } catch (e) {} if (nutFrom && nutFrom.isConnected) try { nutFrom.focus({ preventScroll: true }); } catch (e) {} };
@@ -45237,7 +45509,7 @@ hairline({
     pSc.addEventListener('scroll', pUnder, { passive: true });
     /* up: over the Plan where it stands, at its top, pushed in from the right (now: at once, for a link or the page menu); from one of the three to another, in place */
     const pShow = (k, now, from) => now ? pShow0(k, true, from) : pgP(() => pShow0(k, false, from));
-    const pShow0 = (k, now, from) => { k = PKEY[k]; if (!k) return; mdClose(true); if (from) pFrom = from;
+    const pShow0 = (k, now, from) => { k = PKEY[k]; if (!k) return; mdClose(true); bioShut(); if (from) pFrom = from;
       if (actOn || !stage.hidden) actHide(true); if (nutOn || !nStage.hidden) nutHide(true);   // the Activity or the Nutrition plan away first, at once
       const fresh = !pOn; pK = k; pRet = null; pPages.forEach(p => { p.hidden = p.dataset.p !== k; });
       if (pStage.hidden){ pStage.style.setProperty('--plPY', host.scrollTop + 'px'); pStage.hidden = false; host.classList.add('plPUp'); }
@@ -45246,7 +45518,7 @@ hairline({
       pUnder(); const v = vs(); if (v) v.value = PG[k][0]; try { history.replaceState(null, '', PG[k][1]); } catch (e) {}
       if (!now) try { pPg().querySelector('.plPBack').focus({ preventScroll: true }); } catch (e) {} };
     /* away: pushed back out, the Plan back where it was; quit: the Plan itself closing (its close() below), the menu and the link let go of the page */
-    const pHide = (now, quit) => { if (!pOn && pStage.hidden) return; const was = pOn; mdClose(true); pOn = false; if (was) planInert(false); host.classList.remove('plPHid');
+    const pHide = (now, quit) => { if (!pOn && pStage.hidden) return; const was = pOn; mdClose(true); bioShut(); pOn = false; if (was) planInert(false); host.classList.remove('plPHid');
       const b = document.body; b.classList.remove('plPOn', 'plPUnder', 'plPInk'); delete b.dataset.plPage;
       pStage.hidden = true; host.classList.remove('plPUp');
       if (quit){ pRet = null; const v = vs(); if (v && PKEY[v.value]) v.value = '9'; if (PKEY[location.hash]) try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {} } };
@@ -45987,7 +46259,7 @@ hairline({
       const rfLight = () => document.body.classList.contains('light');   // the bar's Colour mode (body.light), as the Gift receipt follows it
       const rfSync = () => { const f = document.getElementById('rfFrame'); try { const r = f && f.contentDocument && f.contentDocument.documentElement; if (r){ r.classList.toggle('xs', rfXs()); r.dataset.theme = rfLight() ? 'light' : 'dark'; } } catch (e){} };   /* its frame (XS) and its theme: dark or light as the app ("Need to work on dark mode as well!") */
       const rfGo = i => { rfAt = i; const f = document.getElementById('rfFrame'); try { if (f && f.contentWindow && f.contentWindow.rfGo) f.contentWindow.rfGo(i); } catch (e){} rfTl(); };
-      const rfTl = () => { const on = document.body.classList.contains('rfOn'); if (window.__flowAv) window.__flowAv('rf', on); if (window.__flowDock) window.__flowDock();
+      const rfTl = () => { const on = document.body.classList.contains('rfOn') && (!window.__flowOk || window.__flowOk('rf')); if (window.__flowAv) window.__flowAv('rf', on); if (window.__flowDock) window.__flowDock();
         if (!on || document.documentElement.classList.contains('flowOff')){ if (rfEl) rfEl.hidden = true; if (window.__flowDock) window.__flowDock(); return; }
         if (!rfEl){ const bar = document.querySelector('.topbar'); if (!bar) return; rfEl = document.createElement('aside'); rfEl.className = 'hpJny hpWtl'; rfEl.setAttribute('aria-label', 'Gift referral steps');
           rfEl.innerHTML = '<div class="tkSub">Member</div><ol class="tkOrd tkOrdN tkOrdFix">' + RF.map((m, i) => '<li tabindex="0" role="button" data-i="' + i + '"><span class="nm">' + m[0] + '</span><i class="tkNowDot" aria-hidden="true"></i></li>').join('') + '</ol>';
@@ -46003,7 +46275,7 @@ hairline({
         const dev = rf.querySelector('.rfDev'); if (dev && !dev.firstChild){ const f = document.createElement('iframe'); f.id = 'rfFrame'; f.src = 'referral.html#s=' + (at || 0) + (rfXs() ? '&xs' : '') + (rfLight() ? '&light' : '&dark'); f.title = 'Gift referral'; f.addEventListener('load', rfSync); f.addEventListener('load', () => { try { f.contentDocument.querySelectorAll('.bs').forEach(bs => { if (window.EvSheetSwipe) window.EvSheetSwipe(bs, () => { const x = bs.querySelector('.x'); if (x) x.click(); }, { handle: '.grab, .bsH', skip: '.x', when: () => !!bs.parentElement.closest('.on') }); }); } catch (e){} }); dev.appendChild(f); rfAt = at || 0; }   /* its two sheets (Send an invitation, Invitation sent) swipe down as every sheet does, with the app's own helper (EvSheetSwipe): its Close, back to Refer */
         else if (at != null) rfGo(at);
         rfSync(); document.body.classList.add('rfOn'); if (versionSel) versionSel.value = 'rf'; rfTl(); if (window.__tkPages) window.__tkPages(); try { history.replaceState(null, '', '#gift-referral'); } catch (e){} };
-      window._rf = { show: rfShow, hide: rfHide, go: rfGo };
+      window._rf = { show: rfShow, hide: rfHide, go: rfGo }; document.addEventListener('everlab:ctx', rfTl);   /* a modal over the referral up or gone (EvCtx): its steps at once */
       addEventListener('message', e => { const f = document.getElementById('rfFrame'); if (!f || e.source !== f.contentWindow || !e.data || e.data.everlab !== 'rf:at') return; rfAt = +e.data.i || 0; rfTl(); });   // a CTA in the page moved it on: its step lit
       { const mo = new MutationObserver(() => { if (document.body.classList.contains('rfOn')){ rfSync(); rfTl(); } }); mo.observe(document.body, { attributes: true, attributeFilter: ['data-bp'] }); mo.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] }); }
       { const t = document.getElementById('themeSel'); if (t) t.addEventListener('change', () => setTimeout(rfSync, 0)); }   // the Colour mode changed: the page's theme with it (body.light is set by the bar's own listener first)
@@ -46586,7 +46858,7 @@ hairline({
         const EMPTY = (() => { try { return JSON.parse(localStorage.getItem('everlab:hcEmpty') || '{}') || {}; } catch (e){ return {}; } })();
         /* each screen's way into the prototype ("on each screen a hover that displays a circle CTA, arrow up right, that redirects to the screen in its page"): the button over its top right, its target with it */
         const OPEN = g => '<button type="button" class="hcOpen" data-go="' + JSON.stringify(g).replace(/"/g, '&quot;') + '" aria-label="Open this screen in the prototype" title="Open in the prototype"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9"/></svg></button>';
-        const goOf = o => o.area === 'gift' ? { v: 'sgf', i: o.i || 0 } : o.ccPh ? { v: 'ci' } : o.note ? { v: 'welc', st: 'none', note: 1 } : o.solo ? { v: 'pr', st: o.state } : o.area ? { v: 'hp', st: o.state, a: o.area, id: o.area === 'res' ? 'search' : (HPm.store.areas.find(a => a.k === o.area) || { steps: [] }).steps[o.i] } : { v: 'hp', st: o.state };   // the note; a page in its state; the home
+        const goOf = o => o.area === 'gift' ? { v: 'sgf', i: o.gfSeal ? Math.max(0, (o.i || 0) - 1) : o.i || 0 } : o.ccPh ? { v: 'ci' } : o.note ? { v: 'welc', st: 'none', note: 1 } : o.solo ? { v: 'pr', st: o.state } : o.area ? { v: 'hp', st: o.state, a: o.area, id: o.area === 'res' ? 'search' : (HPm.store.areas.find(a => a.k === o.area) || { steps: [] }).steps[o.i] } : { v: 'hp', st: o.state };   // the note; a page in its state; the home
         const shot = (lab, sub, o, fk) => { const f = document.createElement('figure'); f.className = 'hcShot'; const light = document.body.classList.contains('light'), fon = () => !fk || !EMPTY[fk];
           f.innerHTML = wrapOf(false) + OPEN(goOf(o)) + '<figcaption' + (fk ? ' class="hcCapF"' : '') + '>' + (fk ? '<span class="hcCapT">' : '') + '<b>' + lab + '</b>' + (sub ? '<span>' + sub + '</span>' : '') + (fk ? '</span><button type="button" class="hcFill" role="switch" aria-checked="' + fon() + '" aria-label="' + lab + ': filled"><i aria-hidden="true"></i>Filled</button>' : '') + '</figcaption>';
           const fr = f.querySelector('.aqFrame'); let me = null;
@@ -46632,6 +46904,7 @@ hairline({
             if (R.area){ const A = HPm.store.areas.find(a => a.k === R.area); A.steps.forEach((id, j) => { strip.insertAdjacentHTML('beforeend', ARR); strip.appendChild(shot((j + 1) + ' · ' + A.sub[j], R.t + ' page ' + (j + 1) + ' of ' + A.steps.length, { state: R.st, area: R.area, i: j, fill: [R.area] }, R.k + ':' + id)); }); }   // each page filled with the demo's answers ("use the filled screen for the sake of demo"), its own switch to show it empty
             if (R.cc) [['Intro', 'The title, AI in its outlined tag', 'intro'], ['Star', 'The title drawn into a dot, grown into the star alone, its beam turning', 'star'], ['Island', 'The menu and its star, the orb turning round it', 'island'], ['Meet Concierge', 'Intro V3: under the island, a title and a line', 'meet'], ['Chat field', 'The star opened into the field; a question typed', 'field'], ['Bubble speech', 'The question, Eva’s answer, the doctor', 'chat'], ['Services', ({ v1: 'The stack of services turning', v2: 'The star tapped, the four services out in an arc' })[(document.getElementById('stHpCcSvcV') || {}).value] || 'Six services, two a row, in one after another', 'svc'], ['Specialists', 'The team in an arc, Everlab specialists', 'team']].forEach((x, j) => { if (j) strip.insertAdjacentHTML('beforeend', ARR); strip.appendChild(shot(x[0], x[1], { state: 'all', area: 'res', solo: 'res', i: 1, ccPh: x[2] })); });   // each phase still, in its order
             if (R.gift && HPm.gift){ const G = HPm.gift; G.steps.forEach((id, j) => { if (strip.childElementCount) strip.insertAdjacentHTML('beforeend', ARR); strip.appendChild(shot((j >= 1 && j <= 7 ? j + ' of 7 \u00b7 ' : '') + G.names[id], j === 0 ? 'The header overlap, Choose a gift' : j === 8 ? 'The giver\u2019s details and card' : j === 9 ? 'The Gift receipt page, this gift in it; Back to overview ends the flow' : '', { area: 'gift', solo: 'gift', i: j, fill: ['gift'] }, 'gift:' + id)); }); }   /* Send a gift, page by page, the flow itself drawn still */
+            if (R.gift && HPm.gift){ const pi = HPm.gift.steps.indexOf('pay'), ps = [...strip.querySelectorAll(':scope > .hcShot')][pi]; if (ps){ strip.insertBefore(shot('Their note, sealed', 'Continue on Their note: the card into its envelope, the flap over it, turned to its front up to Check and pay', { area: 'gift', solo: 'gift', i: pi, fill: ['gift'], gfSeal: 930 }), ps); ps.insertAdjacentHTML('beforebegin', ARR); } }   /* the merge, Check and pay's first beat, held half way: the card going into the envelope */
             if (R.note) strip.insertAdjacentHTML('beforeend', ARR + '<p class="hcNote">' + R.note + '</p>');
             /* (no screen count: "remove X screen for each group") */
             if (R.grp){ let g = rows.lastElementChild; if (!g || !g.classList.contains('hcGrp') || g.dataset.grp !== R.grp){ g = document.createElement('section'); g.className = 'hcGrp'; g.dataset.grp = R.grp; g.innerHTML = '<header class="hcGrpH"><span class="hcGrpT">' + R.grp + '</span></header>'; rows.appendChild(g); } g.appendChild(row); }   // steps 1 to 3 and All complete under one title ("need to have a title group: Health profile")
