@@ -16614,6 +16614,7 @@
 .bmdOvDim { position: absolute; inset: 0; background: rgba(0, 0, 0, .72); opacity: 0; transition: opacity .3s ease; }   /* the screen kept, under the blanket at 72% (layer 1 overlaps) */
 .bmdOvP { position: relative; display: flex; flex-direction: column; height: calc(100% - 68px); padding-top: 20px; border-radius: 32px 32px 0 0; background: #fff; color: #111; box-shadow: 0 -12px 40px rgba(0, 0, 0, .16); transform: translateY(100%); transition: transform .4s cubic-bezier(.2, .8, .2, 1); }
 .bmdOv.bmdDark .bmdOvP { background: #181818; color: #fff; }
+.bmdOvP:focus { outline: none; }   /* focusable (-1), so a click on its words keeps the focus in it (Escape, Tab) */
 .bmdOv.bmdOn .bmdOvDim { opacity: 1; } .bmdOv.bmdOn .bmdOvP { transform: none; }
 .bmdOvG { display: none; flex: none; width: 36px; height: 5px; margin: 8px auto 12px; border-radius: 3px; background: rgba(127, 127, 127, .35); }
 .bmdOvH { flex: none; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 16px 16px; }
@@ -22157,12 +22158,14 @@ window.EvConsent = (function () {
  *   BioDetail.body(m, { dark })              the detail itself, for a sheet that already has a frame (the Async report's)
  *   BioDetail.sheet(host, m, { dark, from })  the detail in its own bottom sheet over host (the Insights phone, the Plan's What this moves)
  *     opts.float: on the desk, the Full bottom sheet's floating modal (Modals: centred, min(544) wide, up to 720 high, 28 round, rising 24 as it fades in; no notch, no swipe)
- *     opts.onClose(): called as it starts to close, before focus goes back to opts.from (the caller lifts its inert, takes its host away after) 
+ *     opts.onClose(): called as it starts to close, before focus goes back to opts.from (the caller lifts its inert, takes its host away after)
+ *   BioDetail.read(row)   a biomarker row (the Insights phone's .mbrow, the Plan's What this moves) read into m: its bar and caret set on the marker's own range (BAR: worse higher, lower, or either way)
+ *   BioDetail.find(name)  the member's own row for that marker (#mRecs, the Insights'), by its name with or without its brackets: the Plan opens that one, so a marker opens the same detail wherever it is tapped
  * m: { name, value: '38.5 g/L', date: '15 Mar 2026', status: 'Optimal' | 'Suboptimal' | 'Out of range' | '', bar: 'hi' | 'lo' | 'both' | 'xsosx'..., pos: 0..1, trend: { pts } }
  * The range's edges are drawn from where the reading sits on its bar, the history from the reading back (its last readings when the row has them), steady on every open: a prototype's numbers, not a lab's. */
 window.BioDetail = (function () {
   'use strict';
-  var NS = 'http://www.w3.org/2000/svg', seq = 0;
+  var NS = 'http://www.w3.org/2000/svg', seq = 0, live = [];   // live: the sheets open, the last on top
   function el(tag, a, kids) {
     var n = document.createElement(tag);
     if (a) Object.keys(a).forEach(function (k) { if (a[k] == null) return; if (k === 'text') n.textContent = a[k]; else if (k === 'style') n.style.cssText = a[k]; else n.setAttribute(k, a[k]); });
@@ -22225,9 +22228,9 @@ window.BioDetail = (function () {
   function fmt(v, dec) { return (Math.round(v * Math.pow(10, dec)) / Math.pow(10, dec)).toFixed(dec).replace(/\.?0+$/, function (z) { return dec ? z.replace(/0+$/, '').replace(/\.$/, '') : z; }); }
   // the marker read into what the sheet draws
   function model(m) {
-    var r = rng(hash(m.name || '')), st = ST[m.status] || 'n';
-    var mv = /^\s*(-?\d+(?:\.\d+)?)\s*(.*)$/.exec(String(m.value || ''));
-    var d = { name: m.name || '', value: String(m.value || ''), date: m.date || '', st: st, desc: descOf(m.name) || ((m.name || 'This marker') + ' is one of the markers in your results. Your doctor reads it with your other results and your history; the range below shows where your latest reading sits.') };
+    var r = rng(hash(m.name || '')), st = ST[m.status] || 'n', val = String(m.value || '').replace(/(\d\s*)u(g|mol)\//g, '$1µ$2/');   // the Insights' plain "ug/L", "umol/L" as a lab writes them (µ)
+    var mv = /^\s*(-?\d+(?:\.\d+)?)\s*(.*)$/.exec(val);
+    var d = { name: m.name || '', value: val, date: m.date || '', st: st, desc: descOf(m.name) || ((m.name || 'This marker') + ' is one of the markers in your results. Your doctor reads it with your other results and your history; the range below shows where your latest reading sits.') };
     if (!mv || mv[2].length > 16 || /\s\S+\s/.test(mv[2])) { d.text = true; return d; }   // a questionnaire's answer ("2 serves per day from eggs..."): its words, no range, no chart
     d.num = +mv[1]; d.numStr = mv[1]; d.unit = mv[2].trim();
     var seg = { hi: 'osx', lo: 'xso', both: 'xsosx' }[m.bar] || (/^[osx]{2,6}$/.test(m.bar || '') ? m.bar : st === 'n' ? '' : 'sos');
@@ -22250,13 +22253,38 @@ window.BioDetail = (function () {
     d.hist = vals.map(function (v, i) { var back = cnt - 1 - i; return { t: i === cnt - 1 ? t1 : t1 - back + (r() - .5) * .3, v: v }; });
     return d;
   }
-  // a marker's words: its own name's, else the entry it names: all its words in the entry's name ("HbA1c", "Morning cortisol"), the entry's name and its abbreviation ("Gamma-glutamyl transferase (GGT)", "Lipoprotein(a)"), or the abbreviation alone ("LH"); a word only in an entry's long form never ("Globulin" is not SHBG's)
+  // a marker's words: its own name's, else the entry that names the same test: the same words before any brackets ("HbA1c", "Apolipoprotein B (ApoB)", "Lipoprotein(a)"; a sample's word, serum, aside: "Morning cortisol"),
+  // or the same words in all ("Gamma-glutamyl transferase (GGT)", "Cortisol (morning)"). Never a name that is only part of an entry's ("Vitamin B12" is not Active B12's, "Globulin" not SHBG's), nor an abbreviation alone ("LH": the entry's words are a man's)
   function descOf(name) {
-    var wd = function (t) { return t.split(/[\s()]+/).filter(Boolean); }, sub = function (a, b) { return a.every(function (x) { return b.indexOf(x) >= 0; }); };
-    var k = (name || '').toLowerCase().trim(); if (!k) return ''; if (DESC[k]) return DESC[k]; var w = wd(k); if (!w.length) return '';
-    var hit = Object.keys(DESC).filter(function (d) { var m = /^(.*?)\s*\((.*)\)\s*$/.exec(d), main = wd(m ? m[1] : d), par = m ? wd(m[2]) : [];
-      return sub(w, main) || (sub(main, w) && sub(w, main.concat(par))) || (par.length > 0 && sub(w, par) && sub(par, w)); })[0];
+    var wd = function (t) { return t.split(/[\s()]+/).filter(function (x) { return x && x !== 'serum'; }); }, same = function (a, b) { return a.length === b.length && a.every(function (x) { return b.indexOf(x) >= 0; }); };
+    var parts = function (t) { var m = /^(.*?)\s*\((.*)\)\s*$/.exec(t); return m ? [wd(m[1]), wd(m[2])] : [wd(t), []]; };
+    var k = (name || '').toLowerCase().trim(); if (!k) return ''; if (DESC[k]) return DESC[k]; var n = parts(k), all = n[0].concat(n[1]); if (!all.length) return '';
+    var hit = Object.keys(DESC).filter(function (d) { var e = parts(d); return (n[0].length && same(n[0], e[0])) || same(all, e[0].concat(e[1])); })[0];
     return hit ? DESC[hit] : ''; }
+  /* ---- a biomarker row read into its marker (the Insights phone's rows, the Plan's What this moves): one reader, so the same marker opens the same detail wherever it is tapped.
+     Such a row draws only its status: three bands, optimal, suboptimal, out of range, left to right (34, 26 and 26 wide, 4 apart; its caret 8 wide), the caret somewhere in its status's band.
+     BAR sets that on the marker's own range: worse higher unless named; lo, worse lower; mid, worse either way (a reading off it above); mid<, worse either way, the member's reading off it below (the Insights' Ferritin 22, Transferrin saturation 14 %) */
+  var BAND = [[0, 34], [38, 26], [68, 26]], SK = { ok: 0, sub: 1, out: 2 }, SW = ['Optimal', 'Suboptimal', 'Out of range'];
+  var BAR = { 'hdl cholesterol': 'lo', 'apolipoprotein a1': 'lo', 'vitamin d': 'lo', 'vitamin b12': 'lo', 'active vitamin b12': 'lo', 'folate': 'lo', 'vitamin c': 'lo', 'selenium': 'lo', 'zinc': 'lo', 'adiponectin': 'lo', 'albumin': 'lo', 'serum albumin': 'lo', 'egfr': 'lo',
+    'heart rate variability': 'lo', 'vo2 max': 'lo', 'insulin sensitivity index': 'lo', 'omega-3 index': 'lo', 'blood oxygen': 'lo', 'lowest overnight spo2': 'lo', 'sleep score': 'lo', 'readiness score': 'lo', 'sleep efficiency': 'lo', 'activity score': 'lo', 'lumbar spine t-score': 'lo', 'femoral neck t-score': 'lo', 'urine iodine': 'lo',
+    'ferritin': 'mid<', 'transferrin saturation': 'mid<', 'dhea-s': 'mid<', 'immunoglobulin m': 'mid<', 'fasting glucose': 'mid', 'tsh': 'mid', 'free t4': 'mid', 'free t3': 'mid', 'total t4': 'mid', 'total t3': 'mid', 'haemoglobin': 'mid', 'haematocrit': 'mid', 'red cell count': 'mid',
+    'mean corpuscular volume': 'mid', 'mean corpuscular haemoglobin': 'mid', 'mchc': 'mid', 'white cell count': 'mid', 'neutrophils': 'mid', 'lymphocytes': 'mid', 'platelet count': 'mid', 'serum iron': 'mid', 'transferrin': 'mid', 'total iron-binding capacity': 'mid', 'sodium': 'mid', 'potassium': 'mid',
+    'calcium': 'mid', 'phosphate': 'mid', 'magnesium': 'mid', 'creatinine': 'mid', 'total testosterone': 'mid', 'oestradiol': 'mid', 'shbg': 'mid', 'lh': 'mid', 'fsh': 'mid', 'prolactin': 'mid', 'morning cortisol': 'mid', 'immunoglobulin g': 'mid', 'immunoglobulin a': 'mid', 'respiratory rate': 'mid' };
+  function key(n) { return String(n || '').toLowerCase().replace(/\([^)]*\)/g, ' ').replace(/\s+/g, ' ').trim(); }   // a name without its brackets: "Apolipoprotein B (ApoB)" is the Plan's "Apolipoprotein B"
+  function read(row) {
+    var ds = row.dataset || {}, g = row.querySelector('.g'), st = row.querySelector('.st'), mk = row.querySelector('.rng .mk');
+    var s = ds.bioS != null ? ds.bioS : st ? ['ok', 'sub', 'out'].filter(function (c) { return st.classList.contains(c); })[0] || '' : '', k = SK[s];
+    var m = { name: ds.bioN || (row.firstElementChild || row).textContent.trim(), value: ds.bioV || (g && g.dataset.v) || '', date: ds.bioD || (g ? (g.textContent.split('|')[1] || '').trim() : ''), status: k == null ? '' : SW[k], bar: '', pos: null };
+    if (k == null) return m;   // unclassified: no bar
+    var c = mk ? parseFloat(mk.style.left) + 4 : NaN, f = isNaN(c) ? .5 : Math.max(.1, Math.min(.9, (c - BAND[k][0]) / BAND[k][1])), b = BAR[key(m.name)] || 'hi';
+    if (b === 'lo') { m.bar = 'xso'; m.pos = (3 - k - f) / 3; }   // mirrored: out of range at the left
+    else if (b === 'mid<') { m.bar = 'xsosx'; m.pos = (2 - k + (k ? 1 - f : f)) / 5; }
+    else if (b === 'mid') { m.bar = 'xsosx'; m.pos = (2 + k + f) / 5; }
+    else { m.bar = 'osx'; m.pos = (k + f) / 3; }
+    return m;
+  }
+  // the member's own row for a marker, as the Insights list it (#mRecs), by its name with or without its brackets
+  function find(name) { var n = key(name), rows = n ? document.querySelectorAll('#mRecs .mbrow') : []; for (var i = 0; i < rows.length; i++) if (key((rows[i].firstElementChild || rows[i]).textContent) === n) return rows[i]; return null; }
   function zoneOf(d, v) { if (!d.zones) return 'n'; var k = 0; while (k < d.cuts.length && v >= d.cuts[k]) k++; return d.zones[k]; }
   function pill(st) { return el('span', { class: 'bmdPill bmd-' + st, text: WORD[st] }); }
   // the chart, drawn to its box's width: the line coloured by the range it runs through, a dot a reading, the one picked told in a card
@@ -22335,7 +22363,7 @@ window.BioDetail = (function () {
   function sheet(host, m, opts) {
     opts = opts || {};
     var x = el('button', { type: 'button', class: 'bmdOvX', 'aria-label': 'Close' }, [icon(IC.x)]);
-    var panel = el('div', { class: 'bmdOvP', role: 'dialog', 'aria-modal': 'true', 'aria-label': m.name }, [el('div', { class: 'bmdOvG', 'aria-hidden': 'true' }), el('div', { class: 'bmdOvH' }, [el('h2', { class: 'bmdOvT', text: m.name }), x]), el('div', { class: 'bmdOvB' }, [body(m, opts)])]);
+    var panel = el('div', { class: 'bmdOvP', role: 'dialog', 'aria-modal': 'true', 'aria-label': m.name, tabindex: '-1' }, [el('div', { class: 'bmdOvG', 'aria-hidden': 'true' }), el('div', { class: 'bmdOvH' }, [el('h2', { class: 'bmdOvT', text: m.name }), x]), el('div', { class: 'bmdOvB' }, [body(m, opts)])]);
     var dim = el('div', { class: 'bmdOvDim' }), ov = el('div', { class: 'bmdOv' + (opts.dark ? ' bmdDark' : '') + (opts.float ? ' bmdFloat' : '') }, [dim, panel]);
     // the screen behind drawn back, as iOS: opts.back (what scrolls and floats), each scaled about the screen's own top centre so they move as one, on black; opts.keep (the status bar) stays, white, over it all
     var back = opts.stack ? opts.back || [] : [], keep = opts.stack ? opts.keep || [] : [], bg = getComputedStyle(host).backgroundColor;   /* only a sheet opened from another draws what is behind it back; the first overlaps the screen, under its blanket ("card stacking should happen after the first layer") */
@@ -22346,28 +22374,27 @@ window.BioDetail = (function () {
       back.forEach(function (b) { if (!b) return; if (on) { b.style.transformOrigin = '50% ' + (-b.offsetTop) + 'px'; b.classList.add('bmdBack'); } b.classList.toggle('bmdBackOn', on); });
       keep.forEach(function (k) { if (k) k.classList.toggle('bmdKeep', on); });
     };
-    var shut = false, close = function () { if (shut) return; shut = true; ov.classList.remove('bmdOn'); push(false); setTimeout(function () { if (ov.parentNode) ov.parentNode.removeChild(ov); back.forEach(function (b) { if (b && !host.classList.contains('bmdStkHost')) { b.classList.remove('bmdBack'); b.style.transformOrigin = ''; } }); }, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 400); if (opts.onClose) opts.onClose(); if (opts.from && opts.from.isConnected) opts.from.focus({ preventScroll: true }); };
+    var shut = false, close = function () { if (shut) return; shut = true; document.removeEventListener('keydown', keys, true); var i = live.indexOf(ov); if (i >= 0) live.splice(i, 1); ov.classList.remove('bmdOn'); push(false); setTimeout(function () { if (ov.parentNode) ov.parentNode.removeChild(ov); back.forEach(function (b) { if (b && !host.classList.contains('bmdStkHost')) { b.classList.remove('bmdBack'); b.style.transformOrigin = ''; } }); }, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 400); if (opts.onClose) opts.onClose(); if (opts.from && opts.from.isConnected) opts.from.focus({ preventScroll: true }); };
     x.addEventListener('click', close); dim.addEventListener('click', close);
     if (window.EvSheetSwipe) window.EvSheetSwipe(panel, close, { handle: '.bmdOvG, .bmdOvH', scrim: dim, skip: '.bmdOvX', when: function () { return !shut && !opts.float; } });   /* a swipe down lets it go (Modals -> Full bottom sheet) */
-    panel.addEventListener('keydown', function (e) { if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); close(); return; } if (e.key === 'Tab') { var f = [].slice.call(panel.querySelectorAll('button, [tabindex="0"]')), i = f.indexOf(document.activeElement); e.preventDefault(); f[(i + (e.shiftKey ? f.length - 1 : 1)) % f.length].focus(); } });
+    /* Escape and Tab wherever the focus went (a click on its words leaves it on the panel, or on the page's body), as the Plan's own sheets: on the document while it is open, the topmost sheet only */
+    function keys(e) { if (shut || live[live.length - 1] !== ov || !ov.getClientRects().length) return;   // a sheet left in a screen that is hidden (another breakpoint) keeps no keys
+      if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); close(); return; }
+      if (e.key === 'Tab') { var f = [].slice.call(panel.querySelectorAll('button, [tabindex="0"]')), i = f.indexOf(document.activeElement); e.preventDefault(); if (f.length) f[i < 0 ? (e.shiftKey ? f.length - 1 : 0) : (i + (e.shiftKey ? f.length - 1 : 1)) % f.length].focus(); } }
+    document.addEventListener('keydown', keys, true); live.push(ov);
     host.appendChild(ov); push(true); void ov.offsetWidth; ov.classList.add('bmdOn'); x.focus({ preventScroll: true });
     return { close: close, el: ov };
   }
-  return { body: body, sheet: sheet, model: model, zoneOf: zoneOf };   // model / zoneOf: a marker's readings and their ranges, for the report's biomarker carousel
+  return { body: body, sheet: sheet, model: model, zoneOf: zoneOf, read: read, find: find };   // model / zoneOf: a marker's readings and their ranges, for the report's biomarker carousel; read / find: a row's marker, the member's row for a name (the Insights')
 })();
 
 /* the Insights phone's biomarker rows open their detail: the row's name, reading, date, status, and where its marker sits on its three-band bar (optimal, suboptimal, out of range) */
 (function () {
   var host = document.getElementById('mRecs'), phone = document.getElementById('phone');
   if (!host || !phone || !window.BioDetail) return;
-  var ST = { ok: 'Optimal', sub: 'Suboptimal', out: 'Out of range' };
   document.addEventListener('DOMContentLoaded', function () { host.querySelectorAll('.mbrow').forEach(function (r) { r.tabIndex = 0; r.setAttribute('role', 'button'); }); });   // the rows are drawn by a later script
   var open = function (row) {
-    var st = row.querySelector('.st'), g = row.querySelector('.g'), mk = row.querySelector('.rng .mk'), rng = row.querySelector('.rng');
-    var key = st ? (['ok', 'sub', 'out'].filter(function (k) { return st.classList.contains(k); })[0] || '') : '';
-    var when = g ? (g.textContent.split('|')[1] || '').trim() : '';
-    var pos = mk && rng && rng.offsetWidth ? (parseFloat(mk.style.left) + 3) / rng.offsetWidth : null;
-    window.BioDetail.sheet(phone, { name: (row.firstElementChild || row).textContent.trim(), value: g ? g.dataset.v : '', date: when, status: ST[key] || '', bar: key ? 'osx' : '', pos: pos }, { dark: !document.body.classList.contains('light'), from: row, back: [document.getElementById('mScroll'), document.getElementById('mTabs')], keep: [phone.querySelector(':scope > .mstatus')] });   // the screen behind drawn back, the status bar kept
+    window.BioDetail.sheet(phone, window.BioDetail.read(row), { dark: !document.body.classList.contains('light'), from: row, back: [document.getElementById('mScroll'), document.getElementById('mTabs')], keep: [phone.querySelector(':scope > .mstatus')] });   // the screen behind drawn back, the status bar kept
   };
   host.addEventListener('click', function (e) { var row = e.target.closest('.mbrow'); if (row && host.contains(row)) open(row); });
   host.addEventListener('keydown', function (e) { if (e.key !== 'Enter' && e.key !== ' ') return; var row = e.target.closest && e.target.closest('.mbrow'); if (row) { e.preventDefault(); open(row); } });
@@ -44395,14 +44422,18 @@ hairline({
       host.addEventListener('scroll', e => { const p = on && at && at.get(e.target); if (p && Math.max(Math.abs(e.target.scrollLeft - p[0]), Math.abs(e.target.scrollTop - p[1])) > 4) off(true); }, { passive: true, capture: true }); })();
     /* What this moves: a row opens its biomarker's detail, the one sheet the Insights' rows open (BioDetail.sheet): over the subpage's screen on the phone (its notch, a swipe down, the scrim, Close),
        over the app's window on the desk as the Plan's other details (EvFullView), floating there (Modals' Full bottom sheet from M); Close, the scrim and Escape put it away, focus back on its row.
-       The marker read off the row: its name, reading, date and status from its data, where it sits from its drawn marker (in its own band, so the detail's bar agrees with its tag) */
+       The marker the member's own, the row the Insights list for it (BioDetail.find; the row's own data where they have none): the same marker opens the same detail wherever it is tapped, its reading, date and range.
+       Each row takes that row's date and caret once the Insights' rows are drawn (a later script), so the row and its detail agree */
     let bio = null;
     const bioShut = () => { if (bio) bio.close(); };
+    const bioTwin = row => window.BioDetail && window.BioDetail.find ? window.BioDetail.find(row.dataset.bioN) : null;
+    const bioSync = () => host.querySelectorAll('.mbrow.plBio').forEach(row => { const tw = bioTwin(row); if (!tw) return; const m = window.BioDetail.read(tw), d = row.dataset, g = row.querySelector('.g'), t = g && g.lastChild, a = row.querySelector('.rng .mk'), b = tw.querySelector('.rng .mk');
+      if (m.date){ d.bioD = m.date; if (t && t.nodeType === 3) t.nodeValue = m.date; } if (a && b) a.style.left = b.style.left;
+      row.setAttribute('aria-label', d.bioN + ', ' + d.bioV + (STW[d.bioS] ? ', ' + STW[d.bioS] : '') + ', ' + d.bioD); });
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bioSync, { once: true }); else setTimeout(bioSync, 0);
     const bioOpen = row => { if (bio || !window.BioDetail) return; const stg = row.closest('.plAStage, .plNStage, .plPStage'), sc = stg && stg.querySelector(':scope > :is(.plA, .plN, .plPSc)'); if (!sc) return;
-      const d = row.dataset, k = { ok: 0, sub: 1, out: 2 }[d.bioS], mk = row.querySelector('.rng .mk'), seg = k == null ? null : row.querySelectorAll('.rng > :is(.s1, .s2, .s3)')[k];
-      const pos = mk && seg && seg.offsetWidth ? (k + Math.max(.1, Math.min(.9, (mk.offsetLeft + mk.offsetWidth / 2 - seg.offsetLeft) / seg.offsetWidth))) / 3 : null;
       const wrap = document.createElement('div'); wrap.className = 'plBioHost'; stg.appendChild(wrap); if (window.EvFullView) window.EvFullView.cover(wrap); sc.inert = true;
-      bio = window.BioDetail.sheet(wrap, { name: d.bioN, value: d.bioV, date: d.bioD, status: STW[d.bioS] || '', bar: k == null ? '' : 'osx', pos: pos },
+      bio = window.BioDetail.sheet(wrap, window.BioDetail.read(bioTwin(row) || row),
         { dark: !host.classList.contains('plLight'), from: row, float: !/^(xs|s)$/.test(document.body.dataset.bp || ''), onClose: () => { sc.inert = false; bio = null; setTimeout(() => wrap.remove(), reduced() ? 0 : 450); } }); };   // dark with the Plan's sheet (Light with the app's Light mode)
     host.addEventListener('click', e => { const r = e.target.closest('.mbrow.plBio'); if (r && host.contains(r)) bioOpen(r); });
     host.addEventListener('keydown', e => { if ((e.key !== 'Enter' && e.key !== ' ') || !e.target.matches || !e.target.matches('.mbrow.plBio')) return; e.preventDefault(); bioOpen(e.target); });
