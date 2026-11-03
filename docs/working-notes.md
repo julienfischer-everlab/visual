@@ -19842,3 +19842,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **The Plan's padding**: 32 above and 40 at the sides at every desk width (was 24 at the sides under L), as every panel.
 - Kept: each page's own inner container (Overview's 1080, the Plan's two columns, Services' full width, Account's and Timeline's), and each page's H1 (size and the Overview's header bar are the Top nav rule's work).
 - Measured (Playwright) at Auto 1280 / 1440 / 1600 / 1920, forced M and L, rail open and retracted, the flow docked, Dark and Light: every panel 8 | 16 | 8 (168 either side at 1920 open), 12 corners visible, ground `--pageBg`, padding-top 32.
+- **Review fixes** (after merging the main branch's Top nav master, XS 852 and Plan states):
+  - **The Plan's subpages pad 40 on desk** (Medical actions, Supplements, Wind-down routine: `--plPPad` 40, 16 at S/XS as before; the 640 column kept). Their back bar reads the same padding, so Back sits at 40 as on the Nutrition plan.
+  - **One desk page title**: `--pgH1Fs` 24 / `--pgH1Lh` 30 / `--pgH1Ls` -.3 on `.dash`, the Overview's, applied to Overview, Insights, Services, My journey, My plan and My account at M and up (was 24 / 26 / 24 / 26 / 28 / 32). Each head still starts at the panel's 32; the H1 is centred in its row against the page's controls, so it reads 32 to 37 from the panel top. The sub pages (Service detail, Appointment, the Plan's subpages) keep their hero titles.
+  - **The Overview's centring reads `--pnCap`** (with the container token `--ctSm`) instead of repeating the cap's sum.
+  - **The shell strip slides with the retract**: `--sideW` is registered (`@property`) and eased with `.dash`, so the top-left corner stays on the sidebar's ground for the whole 0.32s.
+  - The merge kept main's `.dash` scroll listener for the scaled XS device (`--dSt`); `shellEdge()` stays removed. The design-system skill's Desk page panels reference now describes `--pnCap`.
+  - Left as it is: Insights on the tablet (Auto 600-991, `body.tabM`) keeps its own 200 rail flush with the panel and 28 padding.
