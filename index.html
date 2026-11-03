@@ -5846,13 +5846,13 @@
      the timeline (EvTl, below) on the card ground, then the cost on the same ground; Got it (the primary) over Ask Dr Chen (the secondary pill, tinted), side by side on the desk as the Signals' */
   .arSheet.sgmSheet{--sgmOchre:#94602a;} .arSheet.sgmSheet.arDark{--sgmOchre:#f6c28a;}
   .sgmSheet .sgmPcEy{margin:0;font:500 12px/16px var(--ar-font);letter-spacing:.1em;text-transform:uppercase;color:var(--sgmOchre);}
-  .sgmSheet .sgmT.sgmPcT{margin:8px 0 0;padding:0;}
-  .sgmSheet .sgmPcSub{margin:8px 0 0;font:400 16px/22px var(--ar-font);color:oklch(var(--ar-ink) / .56);text-wrap:pretty;}
+  .sgmSheet .sgmT.sgmPcT{margin:6px 0 0;padding:0;font-size:28px;line-height:34px;letter-spacing:-.4px;}   /* the mock's title, 28 (the Signals' and the other modals' stay 24) */
+  .sgmSheet .sgmPcSub{margin:8px 0 0;font:400 16px/20px var(--ar-font);color:oklch(var(--ar-ink) / .56);text-wrap:pretty;}
   .sgmSheet .sgmCard.sgmPcTl, .sgmSheet .sgmCard.sgmPcCost{margin-top:20px;}
   .sgmSheet .sgmPcRow{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0;}
   .sgmSheet .sgmPcRow span{flex:none;font:400 15px/22px var(--ar-font);color:oklch(var(--ar-ink) / .56);}
   .sgmSheet .sgmPcRow b{min-width:0;font:500 16px/22px var(--ar-font);color:oklch(var(--ar-ink) / 1);text-align:right;}
-  .sgmSheet .sgmPcNote{margin:6px 0 0;font:400 15px/20px var(--ar-font);color:oklch(var(--ar-ink) / .56);}
+  .sgmSheet .sgmPcNote{margin:6px 0 0;font:400 14px/20px var(--ar-font);color:oklch(var(--ar-ink) / .56);}
   .aqWrap.evSolo .arSheet.sgmSheet.sgmPc .arFoot.sgmFoot{gap:8px;}
   .sgmSheet .sgmAsk{appearance:none;width:100%;height:48px;margin:0;padding:0 20px;border:0;border-radius:9999px;background:oklch(var(--ar-ink) / .07);color:oklch(var(--ar-ink) / 1);font:570 16px/18px var(--ar-font);cursor:pointer;transition:background-color .15s ease;-webkit-backdrop-filter:blur(32px);backdrop-filter:blur(32px);}   /* the secondary pill: tinted, on the glass blur every secondary CTA has */
   .aqWrap.evSolo:is(.aqBpM, .aqBpL) .sgmSheet .sgmAsk{flex:none;width:auto;height:56px;padding:0 28px;}
@@ -5865,6 +5865,8 @@
   .evTl > .evTlSt{position:relative;display:grid;grid-template-columns:24px minmax(0,1fr);column-gap:12px;align-items:start;margin:0;padding:0 0 16px;}
   .evTl .evTlNode{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;width:24px;height:24px;margin-top:-1px;border-radius:50%;background:var(--evTlNode);color:oklch(var(--ar-ink) / .64);font-style:normal;}
   .evTl .evTlNode svg{display:block;width:12px;height:12px;}
+  .evTl .evTl_done .evTlNode{color:oklch(var(--ar-ink) / .9);} .evTl .evTl_done .evTlNode svg{width:15px;height:15px;}   /* the check as the mock's: near-white, 15 (its stroke 1.4 there) */
+  .evTl .evTlVh{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0;}   /* the step's state, for a screen reader */
   .evTl .evTl_flag .evTlNode{background:var(--evTlEmber);color:var(--evTlEmberInk);} .evTl .evTl_flag .evTlNode svg{width:16px;height:16px;}
   .evTl .evTl_next .evTlNode{background:none;color:var(--evTlEmber);} .evTl .evTl_next .evTlNode svg{width:24px;height:24px;}
   .evTl .evTlLn{position:absolute;left:11.25px;top:23px;bottom:1px;width:1.5px;background:var(--evTlLine);transform-origin:50% 0;}
@@ -36316,18 +36318,20 @@ hairline({
           return { title: 'Async report', now: String(s.at), groups: [{ rows: [{ t: 'Welcome', go: '0' }].concat((s.names || []).map((t, i) => ({ t, go: String(i + 1) })), [{ t: 'Everything else we checked', go: String(s.rest) }, { t: 'Here’s what we recommend', go: String(s.rec) }, { t: 'That wraps up your debrief', go: String(s.next) }]) }] }; },
         go: id => { const I = arD.inst(); if (I && I.go) I.go(+id); } }); }
     /* ---- EvTl, the vertical timeline (first in the Suggestion's Plan change, "Why your heart scan moved"): a step list on a thin connector, one node a step, its title (when · what) and its line beside it.
-       EvTl.html(steps, label) its markup (an ol.evTl); a step { s, t, d }: s 'done' (a grey disc and a check: it happened), 'flag' (the ember disc and a sparkle: what the plan raised), 'next' (an empty dashed ember ring: planned, not yet sure).
+       EvTl.html(steps, label) its markup (an ol.evTl); a step { s, t, d }: s 'done' (a grey disc and a check: it happened), 'flag' (the ember disc and a sparkle: what the plan raised), 'next' (an empty dashed ember ring: planned, not yet sure);
+       label, t and d plain text (escaped here, no markup), each step's state said in words too (Done, Flagged, Planned: a hidden word before its title, the node only drawn).
        EvTl.enter(list, a, d) its entrance on a standalone modal's api (a.rise, a.push): each step in turn, its words rising, its node popping, the connector drawing down to the next, the next node popping as it lands, the dashed ring turning in last;
-       it returns the time the last node lands. Its look in the CSS by the Suggestion's (.evTl). The Doctor's suggestion's timeline (.dsgTl) is another kind: a card a step, a pill, months between */
+       it returns the delay the last node (the dashed ring) starts turning in at: what follows the timeline starts after it. Its look in the CSS by the Suggestion's (.evTl). The Doctor's suggestion's timeline (.dsgTl) is another kind: a card a step, a pill, months between */
     window.EvTl = (() => {
-      const OK = '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.75 6.25 5 8.5l4.25-4.75"/></svg>';
-      const SP = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M8.6 3.2c.3 3.3 2.1 5.1 5.4 5.4-3.3.3-5.1 2.1-5.4 5.4-.3-3.3-2.1-5.1-5.4-5.4 3.3-.3 5.1-2.1 5.4-5.4Z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M14.6 12.2c.13 1.25.85 1.97 2.1 2.1-1.25.13-1.97.85-2.1 2.1-.13-1.25-.85-1.97-2.1-2.1 1.25-.13 1.97-.85 2.1-2.1Z" fill="currentColor"/></svg>';
+      const OK = '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.75 6.25 5 8.5l4.25-4.75"/></svg>';
+      const SP = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M8.6 4.82c.21 2.31 1.47 3.57 3.78 3.78-2.31.21-3.57 1.47-3.78 3.78-.21-2.31-1.47-3.57-3.78-3.78 2.31-.21 3.57-1.47 3.78-3.78Z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M14.6 11.25c.19 1.81 1.24 2.86 3.05 3.05-1.81.19-2.86 1.24-3.05 3.05-.19-1.81-1.24-2.86-3.05-3.05 1.81-.19 2.86-1.24 3.05-3.05Z" fill="currentColor"/></svg>';
       const RING = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11.25" fill="none" stroke="currentColor" stroke-width="1.5" pathLength="70" stroke-dasharray="4 3"/></svg>';
-      const NODE = { done: OK, flag: SP, next: RING };
-      const html = (steps, label) => '<ol class="evTl"' + (label ? ' aria-label="' + label + '"' : '') + '>' + steps.map((s, i) => '<li class="evTlSt evTl_' + s.s + '"><i class="evTlNode" aria-hidden="true">' + (NODE[s.s] || '') + '</i>'
-        + (i < steps.length - 1 ? '<i class="evTlLn" aria-hidden="true"></i>' : '') + '<div class="evTlTx"><b class="evTlT">' + s.t + '</b><span class="evTlD">' + s.d + '</span></div></li>').join('') + '</ol>';
+      const NODE = { done: OK, flag: SP, next: RING }, SAY = { done: 'Done: ', flag: 'Flagged: ', next: 'Planned: ' };
+      const esc = v => String(v == null ? '' : v).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+      const html = (steps, label) => '<ol class="evTl"' + (label ? ' aria-label="' + esc(label) + '"' : '') + '>' + steps.map((s, i) => '<li class="evTlSt evTl_' + esc(s.s) + '"><i class="evTlNode" aria-hidden="true">' + (NODE[s.s] || '') + '</i>'
+        + (i < steps.length - 1 ? '<i class="evTlLn" aria-hidden="true"></i>' : '') + '<div class="evTlTx"><b class="evTlT">' + (SAY[s.s] ? '<span class="evTlVh">' + SAY[s.s] + '</span>' : '') + esc(s.t) + '</b><span class="evTlD">' + esc(s.d) + '</span></div></li>').join('') + '</ol>';
       const POP = 'cubic-bezier(.34, 1.56, .64, 1)';
-      const enter = (list, a, d0) => { let t = d0; if (!list) return t; const SEG = 260, LAG = 120;
+      const enter = (list, a, d0) => { let t = d0; if (!list) return t; const SEG = 200, LAG = 80;
         [...list.children].forEach(li => { const n = li.querySelector('.evTlNode'), ln = li.querySelector('.evTlLn'), nx = li.classList.contains('evTl_next');
           a.rise(li.querySelector('.evTlTx'), 12, Math.max(0, t - 60), 640);
           if (n && n.animate) a.push(n.animate([{ transform: nx ? 'scale(.4) rotate(-120deg)' : 'scale(.4)', opacity: 0 }, { transform: nx ? 'scale(1) rotate(0deg)' : 'scale(1)', opacity: 1 }], { duration: nx ? 640 : 460, delay: t, easing: nx ? 'cubic-bezier(.16, 1, .3, 1)' : POP, fill: 'backwards' }));
@@ -36432,10 +36436,10 @@ hairline({
         { s: 'done', t: 'Today · Dr Chen agreed', d: 'Repeat bloods in February first. If they still show rising risk, do the scan in May.' }, { s: 'next', t: 'May 2027 · Heart Risk Snapshot', d: 'Dashed until your February results are in.' }];
       const ASK = 'Why did my heart scan move to May?';
       const pc = () => !!m && m.optV('stSgmVar') === 'plan';
-      // Ask Dr Chen about this: the modal goes, then the Concierge on the care team, a new chat, the question in its field ready to send (the Concierge's own field: its input event sizes it and lights its send), focused
+      // Ask Dr Chen about this: the modal goes, then the Concierge on the care team, a new chat, the question in its field ready to send (Concierge.draft: its field sized, its send lit), focused
       const toChen = () => { m.close(); clearTimeout(goT); const v0 = versionSel ? versionSel.value : ''; goT = setTimeout(() => { if (m.isOpen() || (versionSel && versionSel.value !== v0) || !window._cc || !window._cc.run) return;
         window._cc.run(c => { if (c.model) c.model('care'); if (c.go) c.go('new');
-          try { const f = document.getElementById('ccFrame'), q = f && f.contentDocument && f.contentDocument.getElementById('q'); if (q){ q.value = ASK; q.dispatchEvent(new Event('input', { bubbles: true })); } } catch (e){}
+          if (c.draft) c.draft(ASK);
           if (c.focus) c.focus(); }); }, 600); };
       m = evSolo({ on: 'sugOn', cls: 'sugWrap', key: 'sug', hash: '#suggestion', label: 'Your health report: what we suggest next', sheet: 'sgmSug', title: () => pc() ? '' : 'We’ve noticed a few changes worth acting on.', back: pc, tweaks: ['stSgmLines'], replay: 'stSgmReplay',
         body: () => pc() ? '<p class="sgmPcEy">Moved · was 2029</p><h2 class="sgmT sgmPcT" id="sugT">Why your heart scan moved</h2><p class="sgmPcSub">Your plan changes when new results come in. Here’s what changed this one.</p>'
@@ -36456,8 +36460,8 @@ hairline({
         // the Plan change's: the eyebrow and the title, the line, the timeline's card, its steps one after another (EvTl.enter: the connector drawing down, each node popping as it lands, the dashed ring last), the cost, the footer
         enter: (sh, a) => { let d = 280;
           if (sh.classList.contains('sgmPc')){ a.rise(sh.querySelector('.sgmPcEy'), 16, d); a.rise(sh.querySelector('.sgmPcT'), 16, d); d += 120; a.rise(sh.querySelector('.sgmPcSub'), 16, d); d += 120;
-            const tl = sh.querySelector('.sgmPcTl'); a.rise(tl, 24, d); const end = EvTl.enter(tl && tl.querySelector('.evTl'), a, d + 200);
-            d = Math.max(d + 240, end - 240); a.rise(sh.querySelector('.sgmPcCost'), 24, d); a.rise(sh.querySelector('.sgmFoot'), 16, d + 120); return; }
+            const tl = sh.querySelector('.sgmPcTl'); a.rise(tl, 24, d); const ring = EvTl.enter(tl && tl.querySelector('.evTl'), a, d + 160);   /* ring: the dashed ring's start, the last step's */
+            d = Math.max(d + 240, ring + 120); a.rise(sh.querySelector('.sgmPcCost'), 24, d); a.rise(sh.querySelector('.sgmFoot'), 16, d + 120); return; }
           a.rise(sh.querySelector('.sgmT'), 16, d); d += 120; a.rise(sh.querySelector('.sgmCard'), 24, d); draw(d + 260); d += 120;
           [sh.querySelector('.sgmRule'), sh.querySelector('.sgmNext > .sgmH2'), sh.querySelector('.sgmLede')].forEach(el => a.rise(el, 24, d)); d += 120;
           sh.querySelectorAll('.sgmList > li').forEach(li => { a.rise(li, 24, d); d += 120; }); a.rise(sh.querySelector('.sgmFoot'), 16, d); },
