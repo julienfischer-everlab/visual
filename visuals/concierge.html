@@ -371,6 +371,56 @@
   .cite:hover { background: var(--secH); }
   .cite .ic { width: 14px; height: 14px; color: var(--muted); }
 
+  /* proactive check-ins ("Chat New persona", Persona #2): Eva opens the conversation herself. Four BLOCK components (Components -> Proactive check-ins): the header line
+     (her spark, who and when), a biomarker's trend card (its status the app's tags: Optimal, Suboptimal, Out of range), a booking she found (offered, its other times,
+     booking, booked) and the doctor's footnote. On the phone the cards take the message column's width; 16 between blocks */
+  :root { --tOptBg: #e5efdb; --tOptFg: #55763f; --tOptDot: #4f9a5e; --tSubBg: #f3ead0; --tSubFg: #8f7327; --tSubDot: #d39b1f; --tOutBg: #f7dcda; --tOutFg: #a33c39; --tOutDot: #d2504a;
+    --spLine: #d3cbc6; --spDot: #ada39d; --bkBg: #ffffff; --bkLine: rgba(46, 31, 26, .1); --bkShadow: 0 1px 2px rgba(46, 31, 26, .05), 0 8px 24px rgba(46, 31, 26, .07); --busy: rgba(29, 26, 23, .34); }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --tOptBg: #17251a; --tOptFg: #9fc98f; --tOptDot: #9fc98f; --tSubBg: #272113; --tSubFg: #f2c744; --tSubDot: #f2c744; --tOutBg: #2b1416; --tOutFg: #fe8087; --tOutDot: #fe8087;
+    --spLine: #474745; --spDot: #74746f; --bkBg: #171716; --bkLine: rgba(255, 255, 255, .09); --bkShadow: 0 12px 32px rgba(0, 0, 0, .35); --busy: rgba(255, 255, 255, .2); } }
+  :root[data-theme="dark"] { --tOptBg: #17251a; --tOptFg: #9fc98f; --tOptDot: #9fc98f; --tSubBg: #272113; --tSubFg: #f2c744; --tSubDot: #f2c744; --tOutBg: #2b1416; --tOutFg: #fe8087; --tOutDot: #fe8087;
+    --spLine: #474745; --spDot: #74746f; --bkBg: #171716; --bkLine: rgba(255, 255, 255, .09); --bkShadow: 0 12px 32px rgba(0, 0, 0, .35); --busy: rgba(255, 255, 255, .2); }
+  .ckHd { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; color: var(--muted); font-size: 13px; line-height: 18px; }
+  .ckHd .ic { width: 14px; height: 14px; }
+  .trend, .bk { width: min(100%, 470px); border-radius: 20px; }
+  .trend { display: flex; align-items: center; gap: 14px; padding: 16px 16px 16px 20px; background: var(--card); }
+  .tdTx { flex: 1; min-width: 0; }
+  .tdTx b { display: block; font-size: 15px; font-weight: 500; line-height: 20px; }
+  .tdTx span { display: block; margin-top: 2px; color: var(--muted); font-size: 13px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .spark { flex: none; width: 64px; height: 28px; overflow: visible; }
+  .spark .spL { fill: none; stroke: var(--spLine); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+  .spark .spD { fill: var(--spDot); }
+  .spark.sp-opt { --spA: var(--tOptDot); } .spark.sp-sub { --spA: var(--tSubDot); } .spark.sp-out { --spA: var(--tOutDot); }
+  .spark .spL.spA { stroke: var(--spA); } .spark .spE { fill: var(--spA); } .spark .spH { fill: var(--spA); opacity: .2; }
+  .tdTag { flex: none; padding: 5px 11px; border-radius: 8px; font-size: 12.5px; font-weight: 500; line-height: 16px; white-space: nowrap; }   /* the app's status tag (the Insights' .st) */
+  .tdTag.opt { background: var(--tOptBg); color: var(--tOptFg); } .tdTag.sub { background: var(--tSubBg); color: var(--tSubFg); } .tdTag.out { background: var(--tOutBg); color: var(--tOutFg); }
+  .bk { padding: 18px 20px 20px; background: var(--bkBg); border: 1px solid var(--bkLine); box-shadow: var(--bkShadow); }
+  .bkTop { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+  .bkTop b { min-width: 0; font-size: 15px; font-weight: 500; line-height: 20px; }
+  .bkIncl { flex: none; display: inline-flex; align-items: center; gap: 4px; color: var(--ok); font-size: 13px; font-weight: 500; }
+  .bkIncl .ic { width: 15px; height: 15px; stroke-width: 2; align-self: center; }
+  .bkRows { display: grid; gap: 10px; margin-top: 14px; }
+  .bkRow { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; line-height: 20px; }
+  .bkRow .ic { width: 18px; height: 18px; margin-top: 1px; color: var(--muted); }
+  .bkRow.flash span { animation: bkFlash 1.2s ease; } @keyframes bkFlash { 0%, 35% { color: var(--ok); } }
+  .bkTimes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 16px; animation: rise .32s cubic-bezier(.2, .8, .2, 1) both; }
+  .bkSlot { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-width: 0; padding: 10px 14px; border-radius: 14px; background: var(--input); text-align: left; font-size: 14px; font-weight: 500; line-height: 18px; box-shadow: inset 0 0 0 1px transparent; transition: box-shadow .15s ease, background .15s ease; }
+  .bkSlot small { color: var(--muted); font-size: 13px; font-weight: 400; font-variant-numeric: tabular-nums; }
+  .bkSlot:hover { background: linear-gradient(var(--hover), var(--hover)), var(--input); }
+  .bkSlot[aria-checked="true"] { box-shadow: inset 0 0 0 1.5px var(--fg); }
+  .bkBtns { display: flex; gap: 8px; margin-top: 18px; }
+  .bkBtns .btn { flex: 1 1 0; min-width: 0; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 0 14px; }
+  .bkBtns .btn:disabled { cursor: default; }
+  .bkBtns .btn.busy { cursor: progress; background: var(--busy); color: #fff; opacity: 1; }   /* Loading states -> Loader with label: the button quieter, a spinner and its action */
+  .bkSpin { flex: none; box-sizing: border-box; width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid currentColor; border-right-color: transparent; animation: bkSpin .8s linear infinite; }
+  @keyframes bkSpin { to { transform: rotate(360deg); } }
+  .bk.done { animation: bkDone 1s ease; } @keyframes bkDone { 30% { border-color: var(--ok); } }
+  .drNote { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 13px; line-height: 18px; }
+  .drNote .ic { width: 16px; height: 16px; color: var(--ok); }
+  .blk + .blk.b-booking { margin-top: 16px; } .blk + .blk.b-trend { margin-top: 16px; }
+  .app.mob .trend, .app.mob .bk { width: 100%; }
+  .cmpStack { display: grid; gap: 12px; max-width: 470px; }
+
   /* imaging: a report sheet, a slice, a comparison; on their own or as a group */
   .imgs { display: flex; gap: 8px; }
   .im { position: relative; display: block; height: 176px; border-radius: 14px; overflow: hidden; background: #000; flex: none; }
@@ -750,8 +800,47 @@
     cite: function (b) { return cite(b.r); },
     img: function (b) { return '<div class="imgs">' + imTile(b.k) + '</div>'; },
     imgGroup: imGroup,
-    sugs: function () { return '<div class="sugRow">' + SUGS.map(function (s) { return '<button class="sug" type="button" data-act="sug" data-q="' + esc(s.q) + '">' + esc(s.q) + '</button>'; }).join('') + '</div>'; }
+    sugs: function (b) { var qs = b && b.qs ? b.qs : SUGS.map(function (s) { return s.q; }); return '<div class="sugRow">' + qs.map(function (q) { return '<button class="sug" type="button" data-act="sug" data-q="' + esc(q) + '">' + esc(q) + '</button>'; }).join('') + '</div>'; }   // its own questions (b.qs), else the member's usual ones
   };
+
+  /* ---------- proactive check-ins ("Chat New persona"): Eva's own message. Its header line, a biomarker's trend, a booking she found, the doctor's footnote; plain data in the turn's
+     blocks, so the chat, the Components tab and an editor of the conversation all draw them from these renderers:
+       { t: 'checkin', who: 'Eva', when: 'just now' }   drawn over the message's words (HEAD)
+       { t: 'trend', name: 'ApoB', unit: 'g/L', date: 'Oct 2026', st: 'opt' | 'sub' | 'out', pts: [['Mar', 0.94], ['Jul', 1.03], ['Oct', 1.12]] }
+       { t: 'booking', title, incl, slots: [[day, time], ...], at: the slot shown, prep, place, area, dist, after: what Eva adds once booked, st: 'offer' | 'times' | 'loading' | 'booked' }
+       { t: 'drNote', text } ---------- */
+  IC.cal = '<rect x="4" y="5.5" width="16" height="14.5" rx="2.5"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"/>';
+  IC.pin = '<path d="M12 20.5s-6.5-5.6-6.5-10.6a6.5 6.5 0 0 1 13 0c0 5-6.5 10.6-6.5 10.6z"/><circle cx="12" cy="9.9" r="2.4"/>';
+  IC.checkCircle = '<circle cx="12" cy="12" r="8.5"/><path d="m8.4 12.2 2.4 2.4 4.8-4.9"/>';
+  var HEAD = { checkin: 1 };
+  var TREND_ST = { opt: 'Optimal', sub: 'Suboptimal', out: 'Out of range' };
+  var REG = [], reg = function (b) { var n = REG.indexOf(b); return n < 0 ? REG.push(b) - 1 : n; };   // a stateful block's data, found again from its card (data-reg)
+  var sparkSvg = function (b) {   /* the points, grey, left to right; the last one larger in the status's colour, the segment into it too */
+    var v = b.pts.map(function (p) { return +p[1]; }), lo = Math.min.apply(null, v), hi = Math.max.apply(null, v), W = 64, H = 28, PX = 5, PY = 6, n = v.length - 1;
+    var xy = v.map(function (y, i) { return [PX + (W - 2 * PX) * (n ? i / n : .5), hi === lo ? H / 2 : H - PY - (H - 2 * PY) * (y - lo) / (hi - lo)]; });
+    var f = function (p) { return p[0].toFixed(1) + ' ' + p[1].toFixed(1); }, c = function (p, r, cls) { return '<circle cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="' + r + '" class="' + cls + '"/>'; };
+    return '<svg class="spark sp-' + b.st + '" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + esc(b.name + ', ' + b.pts.map(function (p) { return p[0] + ' ' + p[1]; }).join(', ') + ' ' + b.unit) + '">' +
+      (n > 1 ? '<path class="spL" d="M' + xy.slice(0, n).map(f).join(' L') + '"/>' : '') + (n ? '<path class="spL spA" d="M' + f(xy[n - 1]) + ' L' + f(xy[n]) + '"/>' : '') +
+      xy.slice(0, n).map(function (p) { return c(p, 2.25, 'spD'); }).join('') + c(xy[n], 7, 'spH') + c(xy[n], 4, 'spE') + '</svg>';
+  };
+  var slotTx = function (b) { var s = b.slots[b.at || 0]; return s[0] + ' · ' + s[1] + (b.prep ? ' · ' + b.prep : ''); };
+  BLOCK.checkin = function (b) { return '<div class="ckHd">' + ic('spark') + '<span>' + esc((b.who || 'Eva') + ' · checked in ' + (b.when || 'just now')) + '</span></div>'; };
+  BLOCK.trend = function (b) {
+    var last = b.pts[b.pts.length - 1];
+    return '<div class="trend"><div class="tdTx"><b>' + esc(b.name) + '</b><span>' + esc(last[1] + ' ' + b.unit + ' · ' + b.date) + '</span></div>' + sparkSvg(b) + '<span class="tdTag ' + b.st + '">' + TREND_ST[b.st] + '</span></div>';
+  };
+  BLOCK.booking = function (b) {
+    var st = b.st || 'offer', booked = st === 'booked', busy = st === 'loading';
+    var btns = booked ? '<button class="btn" type="button" data-act="bkCal">Add to calendar</button><button class="btn" type="button" data-act="bkRe">Reschedule</button>'
+      : '<button class="btn pri' + (busy ? ' busy' : '') + '" type="button" data-act="bkBook"' + (busy ? ' disabled aria-busy="true"' : '') + '>' + (busy ? '<i class="bkSpin" aria-hidden="true"></i>Booking' : 'Book this time') + '</button>' +
+        '<button class="btn" type="button" data-act="bkTimes" aria-expanded="' + (st === 'times') + '"' + (busy ? ' disabled' : '') + '>Other times</button>';
+    return '<div class="bk" data-reg="' + reg(b) + '" data-st="' + st + '">' +
+      '<div class="bkTop"><b>' + esc(b.title) + '</b>' + (booked ? '<span class="bkIncl">' + ic('check') + 'Booked</span>' : b.incl ? '<span class="bkIncl">' + esc(b.incl) + '</span>' : '') + '</div>' +
+      '<div class="bkRows"><div class="bkRow bkWhen">' + ic('cal') + '<span>' + esc(slotTx(b)) + '</span></div><div class="bkRow">' + ic('pin') + '<span>' + esc(b.place + (b.dist ? ' · ' + b.dist : '')) + '</span></div></div>' +
+      (st === 'times' ? '<div class="bkTimes" role="radiogroup" aria-label="Other times">' + b.slots.map(function (s, i) { return '<button class="bkSlot" type="button" role="radio" aria-checked="' + (i === (b.at || 0)) + '" data-act="bkSlot" data-s="' + i + '">' + esc(s[0]) + '<small>' + esc(s[1]) + '</small></button>'; }).join('') + '</div>' : '') +
+      '<div class="bkBtns">' + btns + '</div></div>';
+  };
+  BLOCK.drNote = function (b) { return '<div class="drNote">' + ic('checkCircle') + '<span>' + esc(b.text || 'Recommended by your Everlab doctor') + '</span></div>'; };
 
   /* ---------- the conversations ---------- */
   var A = {
@@ -806,6 +895,7 @@
     var s = q.toLowerCase();
     if (/renew|script|prescription/.test(s)) return 'script';   // the requests first: "blood test referral" is not the blood test's PDF, nor "imaging referral" the MRI
     if (/refer/.test(s)) return /blood|pathology/.test(s) ? 'refBlood' : /imaging|scan|x-?ray|ultrasound|mri|ct\b/.test(s) ? 'refImg' : 'refSpec';
+    if (P && P.match) return P.match(s);   // the persona's own answers (Persona #2: her ApoB), not Persona #1's
     if (/starting|join|call now/.test(s)) return 'aptSoon';
     if (/next appointment|next booking/.test(s)) return 'aptNext';
     if (/appointments|coming up|upcoming|schedule|booked/.test(s)) return 'aptGroup';
@@ -836,22 +926,80 @@
     ['nutrition', 'Nutrition review', '21 Oct', '1:30 PM', [['Is my nutrition review ready?', 'nutri']]],
     ['mri', 'Brain MRI images', '20 Oct', '5:44 PM', [['Can I see the images from my brain MRI?', 'mri'], ['Compare it with last year’s scan', 'mriCmp'], ['Show me all the images from the scan', 'mriAll'], ['Send me the full study with the report', 'mriStudy']]]
   ];
-  var chats = {}, order = [];
-  SEED.forEach(function (c) {
-    var msgs = [];
-    c[4].forEach(function (t, i) {
-      var tm = c[2] + ', ' + c[3];
-      msgs.push({ r: 'u', text: t[0], time: tm });
-      msgs.push({ r: 'a', k: t[1], time: tm });
-    });
-    chats[c[0]] = { id: c[0], title: c[1], msgs: msgs };
-    order.push(c[0]);
-  });
+  var chats = {}, order = [];   // the persona's conversations (loadPersona), newest first
   var INBOX = [
     { id: 'ferritin', who: 'Dr Steven Lu', av: IMG.steven, line: 'Your ferritin is low for where you are in your plan. I’ve attached a note and an iron protocol.', when: 'Today', read: false },
     { id: 'nutrition', who: 'Everlab', icon: 'leaf', line: 'Your nutrition review is ready: your targets and a two-week meal structure.', when: '2 Oct', read: false },
     { id: 'next', who: 'Everlab', icon: 'mark', line: 'Your diagnostic review call with Dr Steven Lu is booked for Tue 27 Oct, 2:30 PM.', when: '19 Oct', read: true }
   ];
+
+  /* ---------- a conversation: an ordered list of turns, the one shape the chat draws (and an editor would write)
+       { r: 'u' | 'a', text, who?: 'eva' | 'doctor' (the clinician's card), when?: the doctor's reply line, blocks: [{ t: <BLOCK type>, ...its data }], time, k?: the intent it answers }
+     an answer by intent (A) becomes such a turn, its blocks copied, so a turn's own state (a booking made) stays with it ---------- */
+  var copy = function (o) { return JSON.parse(JSON.stringify(o)); };
+  var turnOf = function (k) {
+    var a = A[k], t = a.clin ? { r: 'a', who: 'doctor', text: a.clin.text, when: a.clin.when } : { r: 'a', who: 'eva', text: a.text };
+    t.blocks = copy(a.blocks || []); t.k = k; return t;
+  };
+
+  /* ---------- personas ("Chat New persona"): whose chat it is (Tweaks -> Chat -> Persona; Concierge.persona). Persona #1, the member as ever; Persona #2, a member whose
+     chat opens on Eva's own check-in: her ApoB, 1.12 g/L in October, Suboptimal, up from 0.94 in March and 1.03 in July; a retest her Everlab doctor recommends, a time found near her.
+     Each persona: its conversations, its Inbox, its For your attention, its three ways in; the chat it opens on ---------- */
+  var APOB = { t: 'trend', name: 'ApoB', unit: 'g/L', date: 'Oct 2026', st: 'sub', pts: [['Mar', 0.94], ['Jul', 1.03], ['Oct', 1.12]] };
+  var RETEST = { t: 'booking', title: 'ApoB retest', incl: 'Included in membership', slots: [['Thu 12 Nov', '7:30am'], ['Fri 13 Nov', '7:15am'], ['Mon 16 Nov', '8:00am'], ['Tue 17 Nov', '7:45am']], at: 0, prep: 'fasting',
+    place: 'Pathology collection, Bondi Junction', area: 'Bondi Junction', dist: '1.2 km', after: 'Fast from 10pm the night before; water is fine.', st: 'offer' };
+  var CHECKIN = { r: 'a', who: 'eva', text: 'Your ApoB has crept up since March. Your Everlab doctor has reviewed it and recommends a retest this month. I found a time near you.',
+    blocks: [{ t: 'checkin', who: 'Eva', when: 'just now' }, APOB, RETEST, { t: 'drNote', text: 'Recommended by your Everlab doctor' }] };
+  A.apobWhat = { text: 'ApoB is the protein on every particle that carries cholesterol through your blood, so it counts those particles directly. The more of them there are, the more chances they have to settle in your artery walls, which is why your Everlab doctor watches it alongside your cholesterol.', blocks: [APOB] };
+  A.apobTrend = { text: 'It was 0.94 g/L in March, 1.03 in July and 1.12 in October: a steady rise, and October’s result sits in the Suboptimal range. Your Everlab doctor has recommended a retest this month.', blocks: [APOB] };
+  A.apobFast = { text: 'Yes, the retest is a fasting blood test. Fast from 10pm the night before; water is fine.', blocks: [] };
+  A.apobBook = { text: 'Here’s the time I found for your ApoB retest, near you at Bondi Junction. It’s included in your membership.', blocks: [RETEST, { t: 'drNote', text: 'Recommended by your Everlab doctor' }] };
+  A.p2Results = { text: 'Your October blood results are in. Your ApoB was 1.12 g/L, up from 1.03 in July. Here’s the full report.', blocks: [{ t: 'atts', f: ['blood'] }] };
+  A.p2Help = { text: 'I can help with your results, your ApoB retest and your bookings. Here are a few things you can ask.', blocks: [{ t: 'sugs', qs: ['What does ApoB measure?', 'How has my ApoB changed this year?', 'Do I need to fast for the retest?', 'Can you share my October blood results?'] }] };
+  TITLES.apobWhat = 'What ApoB measures'; TITLES.apobTrend = 'My ApoB this year'; TITLES.apobFast = 'Fasting for the retest'; TITLES.apobBook = 'ApoB retest'; TITLES.p2Results = 'My October results'; TITLES.p2Help = 'New chat';
+  var PERSONA = {
+    p1: { id: 'p1', inbox: INBOX, attn: ATTN, cats: CATS,
+      convs: function () { return SEED.map(function (c) { var tm = c[2] + ', ' + c[3], turns = []; c[4].forEach(function (t) { var a = turnOf(t[1]); a.time = tm; turns.push({ r: 'u', text: t[0], time: tm }, a); }); return { id: c[0], title: c[1], turns: turns }; }); } },
+    p2: { id: 'p2', open: 'apob',
+      convs: function () {
+        var ck = copy(CHECKIN); ck.time = now();
+        var qa = function (q, k, tm) { var a = turnOf(k); a.time = tm; return [{ r: 'u', text: q, time: tm }, a]; };
+        return [
+          { id: 'apob', title: 'ApoB retest', turns: [ck] },   // opened by Eva: no question before it
+          { id: 'apobWhat', title: 'What ApoB measures', turns: qa('What does ApoB measure?', 'apobWhat', '22 Oct, 7:40 PM') },
+          { id: 'results', title: 'My October results', turns: qa('Are my October blood results back?', 'p2Results', '16 Oct, 9:05 AM') }
+        ];
+      },
+      inbox: [
+        { id: 'apob', who: 'Eva', icon: 'spark', line: 'Your ApoB has crept up since March. Your Everlab doctor recommends a retest this month.', when: 'Today', read: false },
+        { id: 'results', who: 'Everlab', icon: 'mark', line: 'Your October blood results are ready.', when: '14 Oct', read: true }
+      ],
+      attn: [
+        { k: 'msg', n: 0, who: 'Eva', role: 'Check-in', icon: 'spark', line: 'Your ApoB has crept up since March. A retest is recommended this month' },
+        { k: 'msg', n: 1, who: 'Everlab', role: 'Results', icon: 'mark', line: 'Your October blood results are ready' },
+        { k: 'sug', who: 'Suggestion', role: 'Your results', icon: 'spark', line: 'What does ApoB measure?', q: 'What does ApoB measure?' }
+      ],
+      cats: [
+        { k: 'health', t: ['Understand', 'my health'], ic: 'userSearch', qs: ['What does ApoB measure?', 'How has my ApoB changed this year?', 'Can you share my October blood results?'] },
+        CATS[1],   // Medical requests: the same for every member
+        { k: 'acc', t: ['Manage', 'my account'], ic: 'userCircle', qs: ['Book my ApoB retest', 'Do I need to fast for the retest?', 'Can you share the PDF report of my blood test results?'] }
+      ],
+      match: function (s) {   /* her questions to her answers; anything else, what Eva can help her with */
+        if (/fast|water|prepare/.test(s)) return 'apobFast';
+        if (/book|retest|other time|reschedul|appointment/.test(s)) return 'apobBook';
+        if (/why|chang|trend|since|went up|gone up|crept|rise|risen|higher|this year/.test(s)) return 'apobTrend';
+        if (/apob|cholesterol|lipid|measure|mean|flag|serious|worr|concern/.test(s)) return 'apobWhat';
+        if (/result|report|pdf|blood|share/.test(s)) return 'p2Results';
+        return 'p2Help';
+      } }
+  };
+  var P = null;
+  var loadPersona = function (id) {   /* a persona's data afresh: its conversations, Inbox (read or not), attention list and ways in */
+    P = PERSONA[id] || PERSONA.p1; chats = {}; order = [];
+    P.convs().forEach(function (c) { chats[c.id] = { id: c.id, title: c.title, msgs: c.turns }; order.push(c.id); });
+    INBOX = copy(P.inbox); ATTN = P.attn; CATS = P.cats;
+  };
+  loadPersona('p1');
 
   /* ---------- state ---------- */
   var app = $('#app'), stage = $('#stage'), col = $('#col'), thread = $('#thread'), q = $('#q'), ttl = $('#ttl');
@@ -887,15 +1035,15 @@
     var b = function (a, n, l) { return '<button type="button" data-act="' + a + '" aria-label="' + l + '" title="' + l + '">' + ic(n) + '</button>'; };
     return '<div class="meta"><time>' + esc(m.time) + '</time>' + (m.r === 'u' ? b('copy', 'copy', 'Copy') + b('edit', 'edit', 'Edit') : b('copy', 'copy', 'Copy') + b('up', 'up', 'Good answer') + b('down', 'down', 'Bad answer') + b('regen', 'regen', 'Regenerate')) + '</div>';
   };
-  var answerHtml = function (a) {
-    var h = '';
-    if (a.clin) h += '<div class="clin"><div class="txt">' + esc(a.clin.text) + '</div><div class="doc"><img src="' + DOCTOR.av + '" alt=""><div><b>' + DOCTOR.n + ' <em>· ' + DOCTOR.r + '</em></b><span>' + esc(a.clin.when) + '</span></div></div></div>';
-    else h += '<div class="txt">' + esc(a.text) + '</div>';
-    return h + a.blocks.map(function (b) { return '<div class="blk">' + BLOCK[b.t](b) + '</div>'; }).join('');
+  var answerHtml = function (t) {   /* a turn: its header blocks (HEAD), its words (Eva's, or the doctor's card), then its blocks */
+    var bs = t.blocks || [], h = bs.map(function (b) { return HEAD[b.t] ? BLOCK[b.t](b) : ''; }).join('');
+    if (t.who === 'doctor') h += '<div class="clin"><div class="txt">' + esc(t.text) + '</div><div class="doc"><img src="' + DOCTOR.av + '" alt=""><div><b>' + DOCTOR.n + ' <em>· ' + DOCTOR.r + '</em></b><span>' + esc(t.when || '') + '</span></div></div></div>';
+    else h += '<div class="txt">' + esc(t.text || '') + '</div>';
+    return h + bs.map(function (b, j) { return HEAD[b.t] || !BLOCK[b.t] ? '' : '<div class="blk b-' + b.t + '" data-b="' + j + '">' + BLOCK[b.t](b) + '</div>'; }).join('');
   };
   var msgEl = function (m, i) {
     if (m.r === 'u') return el('<div class="msg u" data-i="' + i + '"><div class="bub">' + esc(m.text) + '</div>' + metaHtml(m) + '</div>');
-    return el('<div class="msg a" data-i="' + i + '" data-k="' + m.k + '">' + answerHtml(A[m.k]) + metaHtml(m) + '</div>');
+    return el('<div class="msg a" data-i="' + i + '"' + (m.k ? ' data-k="' + m.k + '"' : '') + '>' + answerHtml(m) + metaHtml(m) + '</div>');
   };
   var markLast = function () { $$('.msg.a', col).forEach(function (m, i, all) { m.classList.toggle('last', i === all.length - 1); }); };
   var carSync = function (root) {
@@ -973,13 +1121,13 @@
     c.msgs.push({ r: 'u', text: text, time: t });
     var u = msgEl(c.msgs[c.msgs.length - 1], c.msgs.length - 1); u.classList.add('in'); col.appendChild(u);
     q.value = ''; grow(); sendState(); toBottom(true);
-    c.msgs.push({ r: 'a', k: k, time: t });
+    var a = turnOf(k); a.time = t; c.msgs.push(a);   // the answer as a turn of its own (its blocks copied: a booking made stays with it)
     play(c.msgs.length - 1, null);
   };
-  var THINK = { aptNext: 'Checking your bookings', aptSoon: 'Checking your bookings', aptGroup: 'Checking your bookings', goals: 'Reading your plan', goalOne: 'Weighing your goals against your results', attach: 'Finding your files', clin: 'Asking your care team', care: 'Sending to your care team', reports: 'Gathering your reports', nutri: 'Checking your reports', protein: 'Reading your nutrition review', mri: 'Opening your imaging', mriCmp: 'Lining up both scans', mriAll: 'Opening your imaging', mriStudy: 'Preparing the study', script: 'Checking your scripts', refSpec: 'Opening a referral request', refBlood: 'Opening a referral request', refImg: 'Opening a referral request', reqSent: 'Sending to Dr Lu', help: 'Thinking' };
-  var play = function (i, into) {
-    var c = chats[S.id], m = c.msgs[i], a = A[m.k], chatId = S.id; S.busy = true; sendState();
-    var th = el('<div class="think in">' + (THINK[m.k] || 'Thinking') + '…</div>');
+  var THINK = { aptNext: 'Checking your bookings', aptSoon: 'Checking your bookings', aptGroup: 'Checking your bookings', goals: 'Reading your plan', goalOne: 'Weighing your goals against your results', attach: 'Finding your files', clin: 'Asking your care team', care: 'Sending to your care team', reports: 'Gathering your reports', nutri: 'Checking your reports', protein: 'Reading your nutrition review', mri: 'Opening your imaging', mriCmp: 'Lining up both scans', mriAll: 'Opening your imaging', mriStudy: 'Preparing the study', script: 'Checking your scripts', refSpec: 'Opening a referral request', refBlood: 'Opening a referral request', refImg: 'Opening a referral request', reqSent: 'Sending to Dr Lu', help: 'Thinking', apobWhat: 'Reading your results', apobTrend: 'Reading your results', apobFast: 'Checking your booking', apobBook: 'Finding a time near you', p2Results: 'Finding your results', p2Help: 'Thinking', bkDone: 'Confirming your booking' };
+  var play = function (i, into, say) {   /* say: the shimmer's words, if not the intent's (Eva checking in) */
+    var c = chats[S.id], m = c.msgs[i], chatId = S.id; S.busy = true; sendState();
+    var th = el('<div class="think in">' + (say || THINK[m.k] || 'Thinking') + '…</div>');
     if (into) into.replaceWith(th); else col.appendChild(th);
     toBottom(true);
     setTimeout(function () {
@@ -998,7 +1146,7 @@
         setTimeout(function () { meta.style.display = ''; S.busy = false; sendState(); toBottom(true); }, 160 + rest.length * 160);
       };
       tick();
-    }, 700 + Math.min(500, (A[m.k].blocks.length) * 160));
+    }, 700 + Math.min(500, (m.blocks || []).length * 160));
   };
 
   /* the input */
@@ -1034,6 +1182,31 @@
 
   var toastT; var toast = function (s) { var t = $('#toast'); t.textContent = s; t.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(function () { t.classList.remove('on'); }, 1800); };
 
+  /* the booking card: its data changed, the card drawn again from it (in the chat, the turn keeps its state). Book this time: Booking, then Booked and Eva's confirmation;
+     Other times: the slots inline, one picked shows in its time row; Reschedule: the slots again */
+  var bkCard = function (d) { return document.querySelector('.bk[data-reg="' + reg(d) + '"]'); };
+  var bkDraw = function (d) { var c = bkCard(d); if (c) c.replaceWith(el(BLOCK.booking(d))); return bkCard(d); };
+  var confirmTurn = function (chatId, text) {   /* Eva's words once it is booked: a turn of the conversation, played in if it is open */
+    var c = chats[chatId], t = { r: 'a', who: 'eva', k: 'bkDone', text: text, blocks: [], time: now() };
+    var put = function () { if (c !== chats[chatId]) return; if (S.busy){ setTimeout(put, 250); return; } c.msgs.push(t); if (S.view === 'chat' && S.id === chatId) play(c.msgs.length - 1, null); };
+    put();
+  };
+  var bkAct = function (act, b) {
+    var card = b.closest('.bk'), d = card && REG[+card.dataset.reg]; if (!d) return;
+    if (act === 'bkTimes'){ d.st = d.st === 'times' ? 'offer' : 'times'; bkDraw(d); return; }
+    if (act === 'bkSlot'){ d.at = +b.dataset.s; d.st = 'offer'; var nc = bkDraw(d), w = nc && $('.bkWhen', nc); if (w) w.classList.add('flash'); return; }
+    if (act === 'bkCal'){ toast('Added to your calendar'); return; }
+    if (act === 'bkRe'){ d.st = 'times'; bkDraw(d); return; }
+    if (act !== 'bkBook' || d.st === 'loading' || d.st === 'booked') return;
+    var chatId = card.closest('#col') && S.view === 'chat' ? S.id : null;
+    d.st = 'loading'; bkDraw(d);
+    setTimeout(function () {
+      d.st = 'booked'; var nc = bkDraw(d); if (nc) nc.classList.add('done');
+      var s = d.slots[d.at || 0], say = 'You’re booked for ' + s[0] + ' at ' + s[1] + ' at ' + (d.area || d.place) + '.' + (d.after ? ' ' + d.after : '');
+      if (chatId && chats[chatId]) confirmTurn(chatId, say); else toast('Booked for ' + s[0] + ', ' + s[1]);
+    }, 1300);
+  };
+
   /* the lightbox: a picture, a report, a file's first page */
   var lb = $('#lb'), lbSet = null, lbI = 0;
   var lbShow = function (html, cap, set, i) {
@@ -1067,6 +1240,17 @@
   try { matchMedia('(prefers-color-scheme: dark)').addEventListener('change', themeIcon); } catch (e) {}
 
   /* the Components tab */
+  /* Proactive check-ins: each block in each of its states, from the chat's renderers and data; the booking cards work here as in the chat (Eva's confirmation a toast) */
+  var cmpCheckins = function (sec, sub) {
+    var tr = function (st, pts) { var d = copy(APOB); d.st = st; d.pts = pts; return BLOCK.trend(d); };
+    var bk = function (st) { var d = copy(RETEST); d.st = st; return BLOCK.booking(d); };
+    return sec('Proactive check-ins',
+      sub('Header line · Eva opens the conversation herself', BLOCK.checkin({ who: 'Eva', when: 'just now' })) +
+      sub('Biomarker trend · Optimal, Suboptimal, Out of range', '<div class="cmpStack">' + tr('opt', [['Mar', 0.84], ['Jul', 0.81], ['Oct', 0.78]]) + tr('sub', APOB.pts) + tr('out', [['Mar', 1.18], ['Jul', 1.27], ['Oct', 1.36]]) + '</div>') +
+      sub('Booking suggestion · Offered, Other times, Booking, Booked', '<div class="wrapRow">' + bk('offer') + bk('times') + bk('loading') + bk('booked') + '</div>') +
+      sub('Doctor’s footnote', BLOCK.drNote({ text: 'Recommended by your Everlab doctor' })) +
+      sub('The check-in, as the chat draws it', '<div class="msg a" style="margin:0;max-width:470px">' + answerHtml(copy(CHECKIN)) + '</div>'));
+  };
   var cmpBuilt = false;
   var buildCmp = function () {
     var states = [['booked', 'Fri 30 Oct, 2:30 PM AEDT'], ['open'], ['done'], ['blocked'], ['soon', 'Today, 2:30 PM AEDT'], ['review', 'Requested 20 Oct']];
@@ -1084,11 +1268,12 @@
       sec('Attachments',
         sub('Single', atts(['blood'])) + sub('Wrapping', '<div style="max-width:340px">' + atts(['blood', 'bio', 'ferritin']) + '</div>') +
         sub('Menu', '<div class="pop menuStatic" role="menu">' + fileMenu('blood') + '</div>')) +
-      sec('Clinician fallback', sub('Message, doctor and files', '<div style="max-width:470px">' + answerHtml(A.clin) + '</div>')) +
+      sec('Clinician fallback', sub('Message, doctor and files', '<div style="max-width:470px">' + answerHtml(turnOf('clin')) + '</div>')) +
       sec('Reports', sub('Single', '<div class="imgs">' + repCard('diag') + '</div>') + sub('Carousel', BLOCK.reports({ r: ['diag', 'nutri', 'mri', 'phys'] })) + sub('Citation', '<div class="msg a" style="margin:0"><div class="txt">' + esc(A.protein.text) + '</div><div class="blk">' + cite('nutri') + '</div></div>')) +
       sec('Imaging',
         '<div class="wrapRow">' + sub('Single · report sheet', '<div class="imgs">' + imTile('sheet') + '</div>') + sub('Single · slice', '<div class="imgs">' + imTile('neuro') + '</div>') + sub('Comparison', '<div class="imgs">' + imTile('cmp') + '</div>') + '</div>' +
         sub('Group', imGroup()) + sub('Group with attachments', '<div>' + atts(['mriRep', 'study']) + '<div class="blk">' + imGroup() + '</div></div>')) +
+      cmpCheckins(sec, sub) +
       '</div>';
     cmpBuilt = true; carSync($('#cmpPage'));
   };
@@ -1173,6 +1358,7 @@
       case 'beamDemo': beamRun(b.closest('.box')); break;   // Components -> Field
       case 'plus': openPop(b, plusMenu()); break;
       case 'plusDo': closePop(); toast(b.dataset.do + ' from your device'); break;
+      case 'bkBook': case 'bkTimes': case 'bkSlot': case 'bkCal': case 'bkRe': bkAct(act, b); break;   // the booking card (Proactive check-ins)
       case 'aptBtn': {
         var card = b.closest('.apt'), label = b.dataset.b, key = card.dataset.apt;
         if (label === 'Book'){ var nc = el(aptCard(key, 'booked', 'Thu 5 Nov, 9:00 AM AEDT', card.classList.contains('cmp'))); nc.classList.add('flash'); card.replaceWith(nc); toast(APT[key].t + ' booked for Thu 5 Nov'); }
@@ -1212,6 +1398,18 @@
   /* the field, ready to type in: the prototype's way into a new chat (its Overview field) lands here, the caret in it */
   var focusQ = function () { try { window.focus(); } catch (e){} q.focus({ preventScroll: true }); var n = q.value.length; try { q.setSelectionRange(n, n); } catch (e){} };
   window.Concierge = { ask: ask, go: go, setDev: setDev, setTab: setTab, embed: embed, model: setModel, focus: focusQ, drawer: function () { app.classList.add('drawer'); } };   // drawer: the sidebar opened on the phone, the conversations in it (the Overview's history button)
+  /* whose chat (Tweaks -> Chat -> Persona; Concierge.persona('p1' | 'p2'), the current one with no argument): that persona's chat afresh, opened where it opens
+     (Persona #2 on Eva's check-in, played in as it arrives; Persona #1 on the home). The same persona again changes nothing */
+  var setPersona = function (id) {
+    if (!PERSONA[id] || id === P.id) return P.id;
+    loadPersona(id); S.hist = []; S.busy = false; attnF = 'all'; closePop(); lbClose();
+    if (S.tab !== 'chat' && /\bemb/.test(document.documentElement.className)) setTab('chat');
+    if (P.open && chats[P.open]){ go('chat', P.open, false); var i = chats[P.open].msgs.length - 1, node = col.querySelector('.msg[data-i="' + i + '"]'); if (node) play(i, node, 'Eva is checking in'); }
+    else go('new', null, false);
+    return P.id;
+  };
+  window.Concierge.persona = function (id) { return id ? setPersona(id) : P.id; };
+  if (hs === 'persona-2') setPersona('p2');   // a link straight to Persona #2's chat
 })();
 </script>
 </body>
