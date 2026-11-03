@@ -76,6 +76,7 @@ The page menu `#versionSel` has Documentation (`'doc'`) and Design system (`'ds'
 | Chat bubbles master | `bbDoc`, `.bbB` | references/chat.md |
 | Concierge intro bubbles | `.hpCc*`, `bub()`, `flip()` | references/chat.md |
 | In-app chat | `window.EvChat` | references/chat.md |
+| Phone keyboard (the one drawn keyboard) | `window.EvKbd`, `.mKbd`, CSS "Phone keyboard (EvKbd;" | references/chat.md |
 | Eva / Care team menu and switch beam | `setModel`, `EvBeam.run`, `beamRun` | references/chat.md |
 | Concierge page | `visuals/concierge.html` | references/chat.md |
 | BLOCK widgets | `var BLOCK` (concierge.html) | references/chat.md |

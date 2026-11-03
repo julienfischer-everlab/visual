@@ -2306,6 +2306,41 @@ window.EvSheetSwipe.auto([{ wrap: '.tlSheet', panel: '.tlShPanel', dim: '.tlShDi
    On (the default, as the app always was): every bottom sheet on the phone wears the notch (.evNotch, or its own grabber) and lets go on a swipe down (EvSheetSwipe).
    Off: html.evDisOff hides every notch and EvSheetSwipe starts no drag: Close and the scrim only. The doc's Save setup keeps it (everlab:mdMaster), read here on every load; set() is live.
    notch(el): the shared notch, put in a sheet that has none of its own (the More sheet, the Health profile's leave question) */
+/* The phone's drawn keyboard (Design system master, EvKbd): four rows, the third with shift and delete, the fourth with 123, space and search; the home space under them.
+   EvKbd.html() its keys (in an element of class mKbd, CSS "Phone keyboard"); EvKbd.wire(el, field | () => field) its typing: pointerdown kept off the field's focus, the key's character
+   at the caret (at the end when the field is not focused) and the input event the real keyboard raises; shift caps the next letter and drops; search raises everlab:go and drops the keys (blur);
+   123 is drawn with nothing to switch to. Every drawn keyboard is this one: the frame's (the Overview's top field), the phones', the in-app chat's, and the Chat page's (tools/build.js) */
+window.EvKbd = (function () {
+  var key = function (label, cls, val) { return '<div class="k ' + cls + '" data-k="' + (val === undefined ? label : val) + '">' + label + '</div>'; };
+  var row = function (keys, cls) { return '<div class="kr ' + (cls || '') + '">' + keys + '</div>'; };
+  var chars = function (t) { return t.split('').map(function (c) { return key(c, 'ch'); }).join(''); };
+  var html = function () {
+    return row(chars('qwertyuiop')) + row(chars('asdfghjkl'), 'r2') +
+      row(key('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 4 4.5 12h4.2v7h6.6v-7h4.2z"/></svg>', 'fn shift', 'shift') + chars('zxcvbnm') +
+          key('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"><path d="M9 5h11a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H9l-6-7z"/><path d="M12 10l5 5M17 10l-5 5"/></svg>', 'fn', 'del')) +
+      row(key('123', 'n', 'num') + key('space', 'sp', ' ') + key('search', 'go', 'go')) +
+      '<div class="kHome"><i></i></div>';
+  };
+  var wire = function (el, target) {
+    el.addEventListener('pointerdown', function (e) {
+      e.preventDefault();
+      var k = e.target.closest('.k'); if (!k) return;
+      var v = k.dataset.k;
+      if (v === 'shift'){ el.classList.toggle('shift'); return; }
+      if (v === 'num') return;
+      var f = typeof target === 'function' ? target() : target; if (!f) return;
+      if (v === 'go'){ f.dispatchEvent(new CustomEvent('everlab:go', { bubbles: true })); f.blur(); return; }
+      var val = f.value, on = document.activeElement === f, a = val.length, b = a;
+      try { if (on && typeof f.selectionStart === 'number'){ a = f.selectionStart; b = f.selectionEnd; } } catch (x) {}
+      if (v === 'del'){ if (a === b && a > 0) a--; f.value = val.slice(0, a) + val.slice(b); }
+      else { var c = el.classList.contains('shift') && v !== ' ' ? v.toUpperCase() : v; f.value = val.slice(0, a) + c + val.slice(b); a += c.length; el.classList.remove('shift'); }
+      try { if (on) f.setSelectionRange(a, a); } catch (x) {}
+      f.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+    return el;
+  };
+  return { html: html, wire: wire };
+})();
 window.EvDismiss = (function () {
   var K = 'everlab:mdMaster', on = true, root = document.documentElement;
   var paint = function () { root.classList.toggle('evDisOff', !on); [].forEach.call(document.querySelectorAll('iframe'), function (f) { try { f.contentDocument.documentElement.classList.toggle('evDisOff', !on); } catch (e) {} }); };   /* and the pages in frames (the Gift referral's sheets) */
