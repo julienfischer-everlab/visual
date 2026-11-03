@@ -19658,3 +19658,23 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Phone dark 9:16, phone light 16:9 on a blurred picture, floating dark 1:1 on a cropped picture, and floating light 4:3, each with 7 items.
   - `seek(t)` twice gives the same DOM and pixels. Forward then back and frame by frame land on the same frame. The thread scrolls with the last item in view.
   - `frame(t)` is the right size and stable. All 30 widgets draw, with no page errors.
+
+## The Chat video builder and the Marketing page ("Create a 'Marketing' page in assets. Chat builder will be the first test here.")
+
+- **Marketing**: a new page in the page menu's Asset group, after Assets library (`#marketing`). It is also on Home, in the comments' page list and in `__pageVal`. A slim header names the page and its tools, with the Chat video builder first; the tool's own page is in a frame under it. Any other page opening makes it give way.
+- **The builder** is `visuals/chat-video.html`, built to `dist/chat-video.html` (125 KB). It is React 18.3.1 and htm from cdnjs and jsdelivr, with no build step. The app's `index.html` only gained the shell (about 5 KB).
+  - The canvas is the Concierge's stage in an iframe, so there is no second chat UI. The builder edits the composition and the stage draws it.
+  - The widget library's thumbnails are the real components, captured from a second, hidden stage.
+- **Layout per the brief**:
+  - Left, Composition: Sequence (add buttons, drag by the handle with mouse or touch, Edit, Duplicate, Delete, duration and delay per row), Widgets (search, Health, Services, Actions), Saved (list, Rename, Duplicate, Delete, five templates).
+  - Centre: the canvas in the format's frame, with its resolution.
+  - Foot: play, pause, restart, loop, 1× and 0.5×, a scrubber with a mark per item, the time.
+  - Right: the item's or the canvas's settings.
+- **Storage**: the team's compositions in the artifact's db (`chatVideos`), pictures in its assets, files through downloads. Each one falls back to this browser or a plain link outside the artifact.
+- **Code export**: one `.tsx` (the `<ChatVideo>` tree, typed, driving the stage by postMessage), the composition JSON, and Import JSON. Export → MP4 video waits for `window.ChatVideo.exportMp4` (the next step).
+- **Checked** with Playwright inside the app's Marketing page (dist), 63 checks, no page errors:
+  - Seven items built from scratch with the real mouse and keyboard (emoji, multiline, biomarker fields, specialist picker). Duplicate, delete, reorder by mouse drag and by touch drag, undo and redo.
+  - Play, pause, scrub, jump to an item, 0.5×, loop, Space, Delete, Ctrl+D.
+  - Phone and floating, the five formats and a custom size, a DS colour, a hex and an uploaded picture with crop, scale, blur and overlay, and an avatar picture.
+  - Save, rename, duplicate, delete, a template, the unsaved-draft prompt, the TSX and JSON (copy and download), import, light theme, and leaving and coming back by the menu.
+  - The exported `.tsx` passes `tsc --strict` and runs: on another origin it loads and plays the composition in the stage.

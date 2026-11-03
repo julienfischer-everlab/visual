@@ -28,7 +28,7 @@
     color-scheme: light;
   }
   * { box-sizing: border-box; }
-  html, body { height: 100%; margin: 0; }
+  html, body { height: 100%; margin: 0; overflow: hidden; }   /* a focused field never scrolls the frame: the panels scroll, the page does not */
   body { background: var(--ground); color: var(--text); font: 12.5px/1.45 var(--sans); -webkit-font-smoothing: antialiased; overflow: hidden; }
   button, input, select, textarea { font: inherit; color: inherit; }
   button { cursor: pointer; }
@@ -39,7 +39,7 @@
   .ic { width: 16px; height: 16px; flex: none; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
 
   /* ---------- the frame: top bar, Composition (left), the canvas (centre), playback (foot), settings (right) ---------- */
-  .cvb { height: 100%; display: grid; grid-template-columns: 300px minmax(0, 1fr) 320px; grid-template-rows: auto minmax(0, 1fr) 54px; }
+  .cvb { position: fixed; inset: 0; display: grid; grid-template-columns: 300px minmax(0, 1fr) 320px; grid-template-rows: auto minmax(0, 1fr) 54px; }
   .tb { grid-column: 1 / -1; display: flex; align-items: center; gap: 8px; padding: 8px 12px 8px 14px; border-bottom: 1px solid var(--line); background: var(--panel); min-width: 0; }
   .brand { display: flex; align-items: center; gap: 7px; font-weight: 600; white-space: nowrap; color: var(--label); }
   .brand .ic { color: var(--text); }
@@ -247,7 +247,7 @@
   .dlgHd { display: flex; align-items: center; gap: 10px; padding: 12px 12px 8px 18px; }
   .dlgHd h2 { margin: 0; font-size: 14px; font-weight: 600; flex: 1; }
   .dlgTabs { padding: 0 18px 10px; display: flex; gap: 10px; align-items: center; }
-  .dlgTabs .seg { width: 380px; }
+  .dlgTabs .seg { width: 470px; flex: none; }
   .code { margin: 0 18px; min-height: 0; overflow: auto; padding: 12px 14px; border-radius: 10px; background: var(--ground); box-shadow: inset 0 0 0 1px var(--line); font: 11.5px/1.55 var(--mono); white-space: pre; tab-size: 2; color: var(--text); }
   .imp { margin: 0 18px; display: grid; gap: 10px; grid-template-rows: auto minmax(0, 1fr); min-height: 0; }
   .imp textarea { width: 100%; height: 100%; min-height: 160px; padding: 12px; border: 0; border-radius: 10px; background: var(--ground); box-shadow: inset 0 0 0 1px var(--line); font: 11.5px/1.5 var(--mono); resize: none; outline: none; }
@@ -259,8 +259,8 @@
 
   @media (max-width: 1180px) { .cvb { grid-template-columns: 268px minmax(0, 1fr) 288px; } .nm { width: 170px; } .brand b { display: none; } }
   @media (max-width: 860px) {
-    body { overflow: auto; }
-    .cvb { height: auto; min-height: 100%; grid-template-columns: 1fr; grid-template-rows: auto 56vh 54px auto auto; }
+    html, body { overflow: auto; }
+    .cvb { position: static; height: auto; min-height: 100%; grid-template-columns: 1fr; grid-template-rows: auto 56vh 54px auto auto; }
     .left, .right { grid-column: 1; grid-row: auto; border: 0; border-top: 1px solid var(--line); max-height: 70vh; }
     .centre { grid-row: 2; grid-column: 1; } .tp { grid-row: 3; grid-column: 1; }
     .tb { flex-wrap: wrap; } .nm { width: 140px; }
@@ -643,6 +643,13 @@
       onFocus=${function () { foc.current = true; }} onBlur=${function () { foc.current = false; setTxt(show(p.ms)); }}
       onChange=${function (e) { var v = e.target.value; setTxt(v); if (v === '') p.onChange(undefined); else if (!isNaN(parseFloat(v))) p.onChange(Math.round(clamp(parseFloat(v), 0, max) * 1000)); }} />`;
   }
+  function LooseIn(p) {   /* a field whose text may be invalid while it is typed (a hex, a size): its own text, the model's value written only when valid */
+    var st = useState(String(p.value == null ? '' : p.value)), txt = st[0], setTxt = st[1], foc = useRef(false);
+    useEffect(function () { if (!foc.current) setTxt(String(p.value == null ? '' : p.value)); }, [p.value]);
+    return html`<input className="in" type=${p.type || 'text'} aria-label=${p.label} min=${p.min} max=${p.max} disabled=${p.disabled || false} value=${txt}
+      onFocus=${function () { foc.current = true; }} onBlur=${function () { foc.current = false; setTxt(String(p.value == null ? '' : p.value)); }}
+      onChange=${function (e) { var v = e.target.value; setTxt(v); var o = p.parse(v); if (o != null) p.onChange(o); }} />`;
+  }
   var EMO = ['😊', '🙂', '👋', '👍', '🙏', '❤️', '💪', '🎉', '✅', '⚠️', '📅', '🩺', '💊', '🧪', '🫀', '🧠', '🏃', '🥗', '😴', '💧', '📈', '📉', '🤔', '✨'];
   function TextIn(p) {   /* multiline, emoji, grows with its text */
     var ref = useRef(null), st = useState(false), emo = st[0], setEmo = st[1];
@@ -823,8 +830,8 @@
       <div className="fs"><h3>Format</h3>
         <div className="seg" role="group" aria-label="Aspect ratio" style=${{ flexWrap: 'wrap' }}>${fmts.map(function (x) { return html`<button type="button" key=${x.ratio} aria-pressed=${String(f.ratio === x.ratio)} title=${x.w + ' × ' + x.h} onClick=${function () { ed(function (y) { y.format = { ratio: x.ratio, w: x.w, h: x.h }; return y; }); }}>${x.ratio}</button>`; }).concat(html`<button type="button" key="custom" aria-pressed=${String(f.ratio === 'custom')} onClick=${function () { ed(function (y) { y.format = { ratio: 'custom', w: f.w || 1080, h: f.h || 1350 }; return y; }); }}>Custom</button>`)}</div>
         <div className="f2" style=${{ marginTop: '8px' }}>
-          <${Field} label="Width"><input className="in" type="number" aria-label="Width in pixels" min="16" max="7680" value=${f.w} disabled=${f.ratio !== 'custom'} onChange=${function (e) { var v = Math.round(+e.target.value); if (v >= 16) ed(function (y) { y.format = { ratio: 'custom', w: Math.min(7680, v), h: y.format.h }; return y; }, 'fw'); }} /><//>
-          <${Field} label="Height"><input className="in" type="number" aria-label="Height in pixels" min="16" max="7680" value=${f.h} disabled=${f.ratio !== 'custom'} onChange=${function (e) { var v = Math.round(+e.target.value); if (v >= 16) ed(function (y) { y.format = { ratio: 'custom', w: y.format.w, h: Math.min(7680, v) }; return y; }, 'fh'); }} /><//></div>
+          <${Field} label="Width"><${LooseIn} type="number" label="Width in pixels" min="16" max="7680" value=${f.w} disabled=${f.ratio !== 'custom'} parse=${function (v) { v = Math.round(+v); return v >= 16 && v <= 7680 ? v : null; }} onChange=${function (v) { ed(function (y) { y.format = { ratio: 'custom', w: v, h: y.format.h }; return y; }, 'fw'); }} /><//>
+          <${Field} label="Height"><${LooseIn} type="number" label="Height in pixels" min="16" max="7680" value=${f.h} disabled=${f.ratio !== 'custom'} parse=${function (v) { v = Math.round(+v); return v >= 16 && v <= 7680 ? v : null; }} onChange=${function (v) { ed(function (y) { y.format = { ratio: 'custom', w: y.format.w, h: v }; return y; }, 'fh'); }} /><//></div>
         <p className="hint">${f.w} × ${f.h} px, exported at this size.</p></div>
       <div className="fs"><h3>Layout</h3>
         <${Toggle} label="Show iPhone frame" on=${c.device !== false} onChange=${function (v) { ed(function (y) { y.device = v; return y; }); }} />
@@ -840,7 +847,7 @@
         <div style=${{ height: '10px' }}></div>
         ${!isPic ? html`<div>
             <div className="sw" role="group" aria-label="Design system colours">${colors.map(function (x) { return html`<button type="button" key=${x.value} aria-label=${x.name} title=${x.name + ' ' + x.value} aria-pressed=${String(bgColor.toLowerCase() === x.value.toLowerCase())} style=${{ background: x.value }} onClick=${function () { setBg({ color: x.value }); }}></button>`; })}</div>
-            <div className="hexRow"><input type="color" aria-label="Pick a colour" value=${hex} onChange=${function (e) { setBg({ color: e.target.value }, 'hex'); }} /><input className="in" aria-label="Hex colour" value=${bgColor} onChange=${function (e) { var v = e.target.value.trim(); if (/^#?[0-9a-f]{3}([0-9a-f]{3})?$/i.test(v)) setBg({ color: v[0] === '#' ? v : '#' + v }, 'hex'); }} /></div></div>`
+            <div className="hexRow"><input type="color" aria-label="Pick a colour" value=${hex} onChange=${function (e) { setBg({ color: e.target.value }, 'hex'); }} /><${LooseIn} label="Hex colour" value=${bgColor} parse=${function (v) { v = v.trim(); return /^#?[0-9a-f]{3}([0-9a-f]{3})?$/i.test(v) ? (v[0] === '#' ? v : '#' + v).toLowerCase() : null; }} onChange=${function (v) { setBg({ color: v }, 'hex'); }} /></div></div>`
           : html`<div>
             <div className="bgPrev"><span className="th" style=${{ backgroundImage: picKey ? null : 'url("' + bg.src + '")' }}>${picKey ? bg.src : null}</span>
               <div className="acts"><span className="btn sm upl"><${Ic} n="upload" />Replace<input type="file" accept="image/*" aria-label="Upload a background image" onChange=${function (e) { var fl = e.target.files && e.target.files[0]; e.target.value = ''; if (fl) p.uploadBg(fl); }} /></span><button type="button" className="btn sm" onClick=${function () { ed(function (y) { y.background = { kind: 'color', color: bg.color || '#0d0d0c' }; return y; }); }}>Remove</button></div></div>
@@ -1084,7 +1091,7 @@
           ${ltab === 'seq' ? html`<${SeqList} items=${items} sched=${sched} lead=${comp.lead == null ? 500 : comp.lead} sel=${sel} S=${S} wById=${wById} specById=${specById} onSelect=${select} onMove=${move} onDup=${dup} onDel=${del} />`
             : ltab === 'widgets' ? html`<${WidgetsPanel} cat=${cat} theme=${comp.theme || 'dark'} onAdd=${function (k) { add('widget', k); setLtab('seq'); toast('Added ' + ((wById[k] || {}).label || k)); }} />`
             : html`<${SavedPanel} curId=${doc.id} pending=${!!pending} onNew=${newDoc} onSave=${function () { saveNow().catch(function () {}); }} onOpen=${function (r) { guard(function () { openDoc(r); }); }}
-                onRename=${function (r, n) { n = (n || '').trim(); if (!n || n === r.name) return; if (r.id === doc.id) edit(function (y) { y.name = n; return y; }); else Store.save({ id: r.id, name: n, comp: Object.assign({}, r.comp, { name: n }), shared: r.shared ? undefined : false }).catch(function (e) { toast(e.message, 'warn'); }); }}
+                onRename=${function (r, n) { n = (n || '').trim(); if (!n || n === r.name) return; if (r.id === doc.id) { edit(function (y) { y.name = n; return y; }); setTimeout(function () { saveNow({ quiet: true }).catch(function () {}); }, 0); } else Store.save({ id: r.id, name: n, comp: Object.assign({}, r.comp, { name: n }), shared: r.shared ? undefined : false }).catch(function (e) { toast(e.message, 'warn'); }); }}
                 onDup=${function (r) { var cc = clone(r.comp); cc.name = (r.name || 'Untitled video') + ' copy'; Store.save({ name: cc.name, comp: cc, shared: r.shared ? undefined : false }).then(function () { toast('Duplicated “' + r.name + '”'); }, function (e) { toast(e.message, 'warn'); }); }}
                 onDelete=${function (r) { Store.remove(r).then(function () { if (r.id === doc.id) setD(Object.assign({}, docRef.current, { id: null, dirty: true })); toast('Deleted “' + r.name + '”'); }, function (e) { toast((e && e.message) || 'Could not delete', 'warn'); }); }}
                 onTemplate=${fromTemplate}

@@ -1,8 +1,8 @@
-# AI Chat Video Builder: the stage (renderer)
+# AI Chat Video Builder: the stage (renderer) and the builder
 
 Marketing → AI Chat Video Builder. Julien's brief: "I write the conversation and choose the components. The tool handles the design and animation."
 
-This page documents the **renderer**: the stage mode of `visuals/concierge.html` (built to `dist/concierge.html`). It is the only thing that draws a composition, for the builder's live preview and for every frame of the MP4. The builder (`visuals/chat-video.html`) is a composition layer around it: it edits the JSON, and it never draws a bubble itself.
+This page documents the **renderer**: the stage mode of `visuals/concierge.html` (built to `dist/concierge.html`). The **builder** is documented at the end. It is the only thing that draws a composition, for the builder's live preview and for every frame of the MP4. The builder (`visuals/chat-video.html`) is a composition layer around it: it edits the JSON, and it never draws a bubble itself.
 
 ## Why the Concierge draws it
 
@@ -138,3 +138,47 @@ type Item =
 - At the end the thread has scrolled and the last item is in view.
 - `frame(t)` returns the composition's size and the same pixels twice.
 - All 30 widgets draw, and the page throws no errors.
+
+# The builder: Marketing → Chat video builder
+
+- **Where**: the page menu's Asset group → **Marketing** (`#marketing`, also on Home). A slim header names the page and its tools (Chat video builder first; `TOOLS` in the Marketing script takes more). The tool is its own page, `visuals/chat-video.html`, built to `dist/chat-video.html` (about 125 KB, no pictures) and framed by the app. Only the shell, the menu entry and the frame are in `index.html`.
+- **Publishing**: the Everlab App - Latest `files` map needs `"chat-video.html": "dist/chat-video.html"` beside concierge.html.
+- **Stack**: React 18.3.1 UMD (cdnjs) and htm 3.1.1 (jsdelivr), no build step. Without them the page says so instead of drawing.
+- **No second chat UI**: the canvas is `concierge.html#stage` in an iframe, scaled to the chosen format; the builder only edits the composition and calls `Concierge.stage` (`load`, `seek`, `play`, `schedule`, `widgets`, `specialists`, `colors`, `formats`, `field`, `preset`, `normalize`). The widget library's thumbnails come from a second, hidden stage: each widget is drawn floating on a clear ground, `frame()` captures it, and the capture is cropped.
+
+## Layout (the brief's section 12)
+
+| Area | What it holds |
+|---|---|
+| Top bar | The composition's name, its save state, Undo / Redo, New, Save, Export (MP4 video, Code, Composition JSON, Import JSON), the builder's light / dark |
+| Left: Composition | **Sequence**: + Question, + EVA, + Specialist, + Widget, then the rows. Each row has a drag handle (mouse, pen and touch, by pointer events), the type, a preview, its duration and delay, and Edit, Duplicate and Delete. A dot marks the item on screen. **Widgets**: search and Health / Services / Actions, each widget drawn by the real component. **Saved**: the saved compositions (open, Rename, Duplicate, Delete) and the five templates |
+| Centre: canvas | The stage in the format's frame, with the resolution, the ratio, phone or floating, and the ground under it. With no items, the templates and "Add a question" |
+| Foot: playback | Play / pause, Restart, Loop, 1× / 0.5×, the scrubber with a mark per item (click to jump), the time and the total |
+| Right: settings | **Item**: its text (multiline, emoji), name, avatar, typing style, think time, thinking line, reveal, specialist and overrides, the widget's fields, delay, hold, bubble width. **Canvas**: the format (5 and custom), iPhone frame, chat theme, padding, header title or the floating column, zoom and anchor; the background (DS colours, hex, image with Fill / Fit / Crop, X, Y, scale, blur and overlay); lead and tail |
+
+- Selecting a row jumps the playhead to the moment it is fully in. Editing an item redraws the canvas and holds it there.
+- Empty timing fields are **Auto**: the stage's motion defaults, shown as the hint ("Auto · 0.4 s").
+- **Keyboard**: Space play / pause, Delete removes, Cmd/Ctrl+D duplicates, Cmd/Ctrl+Z undo, Shift+Cmd/Ctrl+Z redo, Cmd/Ctrl+S save, ↑ / ↓ select, Alt+↑ / ↓ move, Esc deselect.
+
+## Storage (the app's capabilities, each null outside the artifact)
+
+| What | In the artifact | Elsewhere |
+|---|---|---|
+| Saved compositions | `db`, collection `chatVideos`, one document `{ v, name, updated, comp }` each, shared by the team (live) | `localStorage` `everlab:chatVideos` |
+| Background pictures | `assets.upload`, kept as `/_blob/<id>` in the composition | a data URL, scaled to 1920 px |
+| Files (code, JSON; the MP4 next) | `downloads.save` (the viewer confirms) | a plain download link |
+| The draft being edited, the builder's theme | `localStorage` (`everlab:chatVideoDraft`, `everlab:chatVideoTheme`) | the same |
+
+- A composition over 240 KB (a large picture kept as a data URL) is saved in this browser, with a note. A viewer who cannot write to the artifact cannot upload pictures.
+- The downloads capability takes `.txt`, not `.tsx`: in the app the module comes as `<name>.tsx.txt`.
+
+## Code export (section 17)
+
+- **React + TypeScript**: one self-contained `.tsx`. It holds the model's types; `UserMessage`, `EvaMessage`, `SpecialistMessage`, `Widget` and a named component for each widget used (`BiomarkerWidget`, `CtaWidget`, ...); `compositionOf(props)`, which turns the tree into the composition; and `ChatVideo`, which loads it in the Everlab stage by `postMessage`, so it works across origins (`stageSrc`, default `concierge.html#stage`). The default export is the composition as a tree. It type-checks under `tsc --strict` with `@types/react`.
+- **Composition JSON**: the composition itself, to import here again or to load in the stage.
+- **Import JSON**: paste or open a file; the stage makes it whole (`normalize`), and it opens as a draft.
+
+## The MP4 hook
+
+- Export → **MP4 video** is disabled until `window.ChatVideo.exportMp4` exists. When it does, it is called with `{ comp, stage, saveFile, toast }`.
+- `window.ChatVideo` also has `comp()`, `setComp(c)`, `stage()`, `schedule()`, `saveFile(name, data, mime)`, `cap(name)`, `toast(msg)` and `toTsx(c?)`.
