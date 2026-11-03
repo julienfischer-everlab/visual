@@ -19921,3 +19921,6 @@ Julien, on the Chat page at XS ("Use Same keyboard as the overview top chat fiel
 
 ## Send a gift › Check and pay: the plan in its own card
 - The plan (name, "12-month membership for Alex", price, "Includes GST") is a card of its own (.hpGfSumPlan, no rule under it), 12 above the rows' card (To, Arrives, Their note, each with Change) ("this needs to have a dedicated card"). Wrapper .hpGfSumW.
+
+## Concierge introduction: title group 32 higher
+- res.cc place(): the title groups' --ccTgY lands their tops 16 under the screen's middle (was 48): "push up the title, pager, the cards by 32". The pager (.hpCcVDots) is placed from the title group's foot, so it rises with it; the cards in a title group move with it.
