@@ -19924,3 +19924,7 @@ Julien, on the Chat page at XS ("Use Same keyboard as the overview top chat fiel
 
 ## Concierge introduction: title group 32 higher
 - res.cc place(): the title groups' --ccTgY lands their tops 16 under the screen's middle (was 48): "push up the title, pager, the cards by 32". The pager (.hpCcVDots) is placed from the title group's foot, so it rises with it; the cards in a title group move with it.
+
+## Step flow master: Transition Linear | Fade
+- EvSteps.M.fade (0 Linear, the default: the 20 px drift; 1 Fade: the pages cross in place, no travel, ease curves, same in/out/lag timings). Saved in everlab:sfMaster with the rest, so every step flow (Async report, Health profile, Send a gift) takes the chosen one on load; Reset back to Linear.
+- Design system › Step flow: a "Transition" switch (Linear / Fade) above the sliders; Distance dims while Fade is on. Play / Back / Next show the chosen one.

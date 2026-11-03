@@ -2178,7 +2178,7 @@ window.EvFullView = (function () {
    push(old, nw, dir) -> the leaving page's animation: going on (dir > 0) the old page drifts dist to the left as it fades out, the new one comes dist from the right as it fades in, lag after; going back, mirrored. The easing the Async report's (out .4, 0, 1, 1; in .16, 1, .3, 1).
    Its numbers halve the Async report's ("make the left right transition 2x fast with less movement 2x": 40 px, in 440 ms after 150, out 260 ms -> 20 px, 220 after 75, 130). Saved on the master (everlab:sfMaster), every page takes them on load */
 window.EvSteps = (function () {
-  var M = { dist: 20, dur: 220, out: 130, lag: 75, bar: 3, gap: 4, pad: 12 }, D = JSON.parse(JSON.stringify(M)), K = 'everlab:sfMaster', root = document.documentElement;
+  var M = { dist: 20, dur: 220, out: 130, lag: 75, bar: 3, gap: 4, pad: 12, fade: 0 }, D = JSON.parse(JSON.stringify(M)), K = 'everlab:sfMaster', root = document.documentElement;
   var EIN = 'cubic-bezier(.16, 1, .3, 1)', EOUT = 'cubic-bezier(.4, 0, 1, 1)';
   var tok = function () { root.style.setProperty('--sfBar', M.bar + 'px'); root.style.setProperty('--sfGap', M.gap + 'px'); root.style.setProperty('--sfPad', M.pad + 'px'); };
   var mk = function (cls) { var e = document.createElement('div'); e.className = cls; return e; };
@@ -2193,9 +2193,9 @@ window.EvSteps = (function () {
       set: function (i, m) { if (m) build(m); i = Math.max(1, Math.min(N, i)); el.setAttribute('aria-valuenow', String(i)); el.setAttribute('aria-valuetext', 'Step ' + i + ' of ' + N); to(i, i - 1); },
       part: function (k, f, m, txt) { if (m) build(m); f = Math.max(0, Math.min(1, f || 0)); el.setAttribute('aria-valuenow', String(Math.min(N, k + 1))); if (txt) el.setAttribute('aria-valuetext', txt); to((k + f).toFixed(4), k); } };
   };
-  var push = function (old, nw, dir, k) { var f = dir > 0, out = null; k = k > 0 ? k : 1;   /* k: slower by k (the master's Slow) */
-    if (nw && nw.animate) nw.animate([{ opacity: 0, transform: 'translateX(' + (f ? M.dist : -M.dist) + 'px)' }, { opacity: 1, transform: 'none' }], { duration: M.dur * k, delay: M.lag * k, easing: EIN, fill: 'backwards' });
-    if (old && old.animate) out = old.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateX(' + (f ? -M.dist : M.dist) + 'px)' }], { duration: M.out * k, easing: EOUT, fill: 'forwards' });
+  var push = function (old, nw, dir, k) { var f = dir > 0, out = null, d = M.fade ? 0 : M.dist; k = k > 0 ? k : 1;   /* k: slower by k (the master's Slow) */   /* M.fade 1: Fade, the pages cross in place, no travel ("transition as an option: linear or fade"); 0: Linear, the drift */
+    if (nw && nw.animate) nw.animate([{ opacity: 0, transform: 'translateX(' + (f ? d : -d) + 'px)' }, { opacity: 1, transform: 'none' }], { duration: M.dur * k, delay: M.lag * k, easing: M.fade ? 'ease' : EIN, fill: 'backwards' });
+    if (old && old.animate) out = old.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateX(' + (f ? -d : d) + 'px)' }], { duration: M.out * k, easing: M.fade ? 'ease' : EOUT, fill: 'forwards' });
     return out; };
   /* the shell's look: the Async report's Tweaks (Fixed bar, Footer: Solid or Gradient; Cards style; the gradients' blur off), read once for the report and the master */
   var look = function () { var v = function (id) { var e = document.getElementById(id); return e ? e.value : ''; };
