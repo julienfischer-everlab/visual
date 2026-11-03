@@ -20127,3 +20127,9 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - Intro Detail: +32 at the right of each row; each icon in a 28 circle (4 padding, the ink at 4%).
 - "Takes about two minutes": 14/18, 24 under Choose a gift (+8).
 - Desk: the header a banner at the md container (min(1280, the window less 48)), 400 tall, 24 corners, under the bar; the body below it on the page (no overlap sheet); the wordmark in the ink. The entrance still writes the title at the screen's centre and moves it into the banner.
+
+## Gift: Intro replays from the Flow panel; Tweaks per step; plan cards flatter
+
+- Flow panel -> Intro: the entrance again from the blank screen (also when already on it): the panel's jump to 0 marks a replay (`window.__gfReplay`), read once by the intro's builder. Back from the first step and a Tweak's redraw still land on it at rest.
+- Tweaks follow the active step ("Tweak should be related to the active step"): the Send a gift group split per step (data-pages "sgf sgfIn" Intro, Header, Video overlay; "sgf sgfPl" Plans; "sgf sgfEv" Envelope); EvCtx's sgf tweaks: intro -> sgfIn, plan -> sgfPl, note and pay -> sgfEv, the receipt -> gr, the other steps none (the Tweaks button hides).
+- Plan cards (Tabs): no border, no ring, no outline when picked; the one not picked at 50% (72% on hover); the chip without its glow or shine.
