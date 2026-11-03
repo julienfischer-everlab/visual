@@ -20112,3 +20112,10 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - Choose the gift, Tabs: What's included on the page (no card), an H2 in the ink (20/26), items 16/22. The plan cards in the reference's style: a dark glass ground, a hairline and a lit top edge, a tint glowing from the top-left (Protocol orange, Diagnostics silver), a faint ring top-right, a glossy chip in the tint carrying the plan's icon; picked: the white outline and the glow full.
 - New: Plans -> Stack: one ghost card, a row a plan (radio, name, line, price at the right), the picked row on a lighter plate, What's included under it as Tabs'.
 - New: Intro -> Detail: each item its icon and name, a line under it ("List item with sub").
+
+## Send a gift: envelope Format tweak ("Enveloppe format tweak", the reference's DL envelope)
+
+- Tweaks -> Send a gift -> Envelope: Classic (the board's 5:3, at rest on its front: the wordmark, For <name>, the connectors) or Long.
+- Long: 55% as tall as wide, at rest on its back; a V flap to just under its middle (its own mask), "FOR ALEX" in gold foil on the flap (a warm gold text clip, a sheen across it); the back's two lines left out; the card inside 46 tall.
+- One builder still (gfEnv: `long`, `R` its height over its width): the tap opens it without turning (already on its back), its open height from R; the merge (gfSealFx) takes its geometry from R and ends on its back. The Documentation's "Their note, sealed" still follows the Tweak.
+- Fixed in passing: the foil's text clip showed through the open flap (a layer of its own in the turning flap): it takes its flap's opacity.

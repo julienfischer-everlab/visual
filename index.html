@@ -14264,6 +14264,7 @@
         <div class="tkSub">Send a gift</div>
         <div class="tkRow"><span class="lbl">Intro</span><select id="stGfIntro" class="tkSegSel" aria-label="The intro's three items: a ticked list, or three cards side by side, each its icon over its words"><option value="list" selected>List</option><option value="cards">Cards</option><option value="detail">Detail</option></select></div>
         <div class="tkRow"><span class="lbl">Video overlay</span><span class="tkSlide"><input type="range" id="stGfVidBl" min="0" max="100" step="1" value="30" aria-label="The intro video's #111 blanket, percent"><i class="tkVal" id="stGfVidBlV">30%</i></span></div>
+        <div class="tkRow"><span class="lbl">Envelope</span><select id="stGfEnv" class="tkSegSel" aria-label="The envelope on Check and pay: Classic (5:3, its front) or Long (a DL envelope on its back, a V flap and a foil label)"><option value="classic" selected>Classic</option><option value="long">Long</option></select></div>
         <div class="tkRow"><span class="lbl">Plans</span><select id="stGfPlans" class="tkSegSel" aria-label="Choose the gift: the plans as cards stacked (List) or two tabs side by side with the chosen one's list below (Tabs)"><option value="list" selected>List</option><option value="tabs">Tabs</option><option value="stack">Stack</option></select></div>
         </div>
         <!-- the Clinic's Testing locations: the logo zone's red fill, shown or not ("tweak frame indicator (red): on, off"); the zone keeps its place either way -->
@@ -19918,6 +19919,14 @@ html .arSheet.hpSheet.hpGfSolo.hpGfAtIn:not(.hpGfOnSheet) .arHead .arIconBtn.arI
 .arSheet.hpSheet :is(.hpGfEvCdN, .hpGfEvCdF) { margin: 0; font-family: 'Tobias', 'Tobias Light', 'Tobias Regular', Georgia, 'Times New Roman', serif; font-size: 4.6cqw; line-height: 1.17; font-weight: 400; letter-spacing: -.01em; text-wrap: balance; overflow-wrap: anywhere; }
 .arSheet.hpSheet .hpGfEvCdF { color: var(--evGrey); }
 .arSheet.hpSheet .hpGfEvCdL :is(.hpGfEvCdN, .hpGfEvCdF) { font-size: 5.4cqw; } .arSheet.hpSheet .hpGfEvCdM :is(.hpGfEvCdN, .hpGfEvCdF) { font-size: 3.9cqw; } .arSheet.hpSheet .hpGfEvCdS :is(.hpGfEvCdN, .hpGfEvCdF) { font-size: 3.4cqw; }
+/* Envelope: Long (Tweaks -> Send a gift -> Envelope; the reference's DL envelope): 55% as tall as wide, at rest on its back, a V flap to just under its middle with For <name> in gold foil on it, the back's lines left out; the card inside its height less */
+.arSheet.hpSheet .hpGfEv.hpGfEvL, .arSheet.hpSheet .hpGfEvL .hpGfEvT { height: 55cqw; } .arSheet.hpSheet .hpGfEvL .hpGfEvT { transform: rotateY(180deg); }
+.arSheet.hpSheet .hpGfEvL { --evFlap: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 33' preserveAspectRatio='none'%3E%3Cpath d='M0 0H100L99.2 2.6L53.6 31Q50 33.4 46.4 31L.8 2.6Z'/%3E%3C/svg%3E"); }
+.arSheet.hpSheet .hpGfEvL .hpGfEvFl { height: 30cqw; filter: drop-shadow(0 .5cqw .9cqw rgba(0, 0, 0, .55)); }
+.arSheet.hpSheet .hpGfEvL .hpGfEvLn { display: none; }
+.arSheet.hpSheet .hpGfEvL .hpGfEvPk { background: var(--evGrain) 0 0 / 160px 160px, linear-gradient(200deg, #202020 0%, #171717 50%, #111 100%); }
+.arSheet.hpSheet .hpGfEvLb { position: absolute; left: 50%; top: 46%; transform: translate(-50%, -50%); font-family: var(--ar-font); font-size: 2.9cqw; line-height: 1; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; white-space: nowrap; color: #d9b36a; background: linear-gradient(100deg, #a77c35 0%, #f3d98f 38%, #c69445 62%, #f6e2a8 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; opacity: inherit; }   /* the foil: a warm gold, a sheen across it; its flap's opacity taken as its own (the text clip is a layer of its own in the turning flap, and showed through it open) */
+.arSheet.hpSheet .hpGfEvL .hpGfEvCd { height: 46cqw; padding: 11cqw 7cqw 4cqw; }
 /* the merge moment's layer over the page: the note's card in flight, the step's preview giving way to it */
 .arSheet.hpSheet .hpScr > .hpGfFx { position: absolute; left: 0; top: 0; right: 0; bottom: 0; z-index: 5; width: auto !important; max-width: none !important; overflow: hidden; pointer-events: none; }
 .arSheet.hpSheet .hpGfFx > * { position: absolute; margin: 0; box-sizing: border-box; }
@@ -22108,17 +22117,18 @@ window.EvConsent = (function () {
     var gfCardEl = function (ans) { var nt = gfNoteT(ans) || 'Someone wanted you to have this.', n = nt.length;
       return h('div', { class: 'hpGfEvCd' + (n <= 40 ? ' hpGfEvCdL' : n > 130 ? ' hpGfEvCdS' : n > 84 ? ' hpGfEvCdM' : '') }, h('i', { class: 'hpGfEvCdK', 'aria-hidden': 'true' }), h('p', { class: 'hpGfEvCdN', text: nt }), h('p', { class: 'hpGfEvCdF', text: 'From ' + gfFrom(ans) })); };
     var gfEnv = function (ans, btn) {
+      var LONG = (document.getElementById('stGfEnv') || {}).value === 'long';   /* Tweaks -> Send a gift -> Envelope ("Enveloppe format tweak"): Classic, the board's 5:3 at rest on its front; Long, the reference's DL (55%), at rest on its back, a V flap, For <name> in gold foil on it */
       var D = gfMarkD(), nm = gfName(ans, ''), P = D.map(function (d) { return '<path d="' + d + '"/>'; }).join('');
       /* the front's connectors: each of the mark's five rows, its left node and neck as drawn (clipped at 10.6), its straight line carried on off the envelope's edge (the strip 10.4 to 11.5, straight in all five, stretched) */
       var cn = D.length ? gfDeb('hpGfEvCn', '-0.6 2.2 70 22.4', 'xMinYMid meet', function (id) { return '<clipPath id="' + id + 'l"><rect x="-2" y="0" width="12.6" height="27"/></clipPath><clipPath id="' + id + 's"><rect x="10.4" y="0" width="1.1" height="27"/></clipPath>'; },
         function (id) { return '<g clip-path="url(#' + id + 'l)">' + P + '</g><g transform="matrix(80 0 0 1 -821.6 0)"><g clip-path="url(#' + id + 's)">' + P + '</g></g>'; }, .12) : null;
       var mk = D.length ? gfDeb('hpGfEvMk', '-0.8 2 22.8 22.8', 'xMidYMid meet', function () { return ''; }, function () { return P; }, .4) : null;
       var front = h('div', { class: 'hpGfEvF' }, cn, h('div', { class: 'hpGfEvId' }, h('span', { class: 'hpGfEvLogo' }, wordmark()), nm ? h('span', { class: 'hpGfEvTo', text: 'For ' + nm }) : null));
-      var flap = h('div', { class: 'hpGfEvFl' }, h('div', { class: 'hpGfEvFlI' }), h('div', { class: 'hpGfEvFlO' }, mk));
+      var flap = h('div', { class: 'hpGfEvFl' }, h('div', { class: 'hpGfEvFlI' }), h('div', { class: 'hpGfEvFlO' }, LONG ? h('span', { class: 'hpGfEvLb', text: nm ? 'For ' + nm : 'For you' }) : mk));
       var card = gfCardEl(ans), pocket = h('div', { class: 'hpGfEvPk' }, h('p', { class: 'hpGfEvLn' }, h('b', { text: 'Your health. Your future.' }), h('span', { text: 'We’re here when you’re ready.' })));
       var turn = h('div', { class: 'hpGfEvT', 'aria-hidden': 'true' }, front, h('div', { class: 'hpGfEvB' }, flap, card, pocket));
-      var box = h(btn ? 'button' : 'div', btn ? { type: 'button', class: 'hpGfEv', 'aria-expanded': 'false' } : { class: 'hpGfEv' }, turn);
-      return { el: h('div', { class: 'hpGfEvW' }, box), box: box, turn: turn, flap: flap, fi: flap.firstChild, fo: flap.lastChild, card: card };
+      var box = h(btn ? 'button' : 'div', btn ? { type: 'button', class: 'hpGfEv' + (LONG ? ' hpGfEvL' : ''), 'aria-expanded': 'false' } : { class: 'hpGfEv' + (LONG ? ' hpGfEvL' : '') }, turn);
+      return { el: h('div', { class: 'hpGfEvW' }, box), box: box, turn: turn, flap: flap, fi: flap.firstChild, fo: flap.lastChild, card: card, long: LONG, R: LONG ? .55 : .6 };   /* R: its height over its width */
     };
     var gfT = function (o) { var r = { fill: 'both' }; for (var x in o) r[x] = o[x]; return r; };
     /* the flap shut (opened: the same keyframes run back), over the card from behind it half way, its inside giving way to its outside there */
@@ -22137,8 +22147,8 @@ window.EvConsent = (function () {
       ev.box.addEventListener('click', function () {
         if (ev.sealing) return; on = !on; lab();
         if (!an) { var W = ev.box.offsetWidth, D = 1250, E = 'cubic-bezier(.45, 0, .2, 1)', t = function (dl, du, e) { return { delay: dl, duration: du, endDelay: D - dl - du, easing: e || E }; };
-          an = [ev.turn.animate([{ transform: 'rotateY(0deg)' }, { transform: 'rotateY(180deg)' }], gfT(t(0, 520)))].concat(gfFlapA(ev, t(460, 380, 'cubic-bezier(.4, 0, .2, 1)'), false),
-            [ev.card.animate([{ transform: 'none' }, { transform: 'translateY(' + (-.5 * W).toFixed(1) + 'px)' }], gfT(t(800, 450))), ev.box.animate([{ height: '60cqw' }, { height: '107.5cqw' }], gfT(t(780, 470)))]);
+          an = [ev.turn.animate([{ transform: 'rotateY(' + (ev.long ? 180 : 0) + 'deg)' }, { transform: 'rotateY(180deg)' }], gfT(t(0, 520)))].concat(gfFlapA(ev, t(460, 380, 'cubic-bezier(.4, 0, .2, 1)'), false),   /* Long: already on its back, no turn */
+            [ev.card.animate([{ transform: 'none' }, { transform: 'translateY(' + (-.5 * W).toFixed(1) + 'px)' }], gfT(t(800, 450))), ev.box.animate([{ height: (ev.R * 100) + 'cqw' }, { height: (ev.R * 100 + 47.5) + 'cqw' }], gfT(t(780, 470)))]);
           an.forEach(function (a) { a.pause(); }); }
         var mine = an; an.forEach(function (a) { a.updatePlaybackRate(on ? 1 : -1); a.play(); if (reduced()) a.finish(); });
         an[0].finished.then(function () { if (!on && an === mine) { mine.forEach(function (a) { a.cancel(); }); an = null; } }, function () {});   /* shut again: its own resting state, crisp */
@@ -22148,7 +22158,7 @@ window.EvConsent = (function () {
        the flap folds over it, then it turns to its front, smaller, up to its place at the top of the page, the page coming in round it. About 2.2 s, eased, no bounce. still: the Documentation's frame of it, held at that time. Reduced motion: none (the envelope there at once) */
     var gfSealFx = function (scr, ev, ans, old, still) {
       var sr = scr.getBoundingClientRect(), k = (sr.width / scr.offsetWidth) || 1, er = ev.el.getBoundingClientRect();
-      var Vw = scr.clientWidth, Vh = scr.clientHeight, W = ev.el.offsetWidth, H = .6 * W, sx = (er.left - sr.left) / k, sy = (er.top - sr.top) / k;
+      var Vw = scr.clientWidth, Vh = scr.clientHeight, W = ev.el.offsetWidth, H = ev.R * W, sx = (er.left - sr.left) / k, sy = (er.top - sr.top) / k;
       if (!W || !Vh) { if (old) old.remove(); return; }
       /* its place in the middle of the moment: as wide as the room allows (up to 1.12 its own), the card out over it and the envelope, both, centred a touch high */
       var m = Math.max(.6, Math.min(1.12, (Vw - 32) / W, (Vh - 56) / (1.165 * W))), Wm = m * W, top0 = Math.max(12, (Vh - 1.165 * Wm) / 2 - Vh * .02);
@@ -22157,7 +22167,7 @@ window.EvConsent = (function () {
       var fx = h('div', { class: 'hpGfFx', 'aria-hidden': 'true' }), cw = h('div', { class: 'hpGfFxC', style: 'left:' + sx.toFixed(2) + 'px;top:' + sy.toFixed(2) + 'px;width:' + W + 'px;height:' + H.toFixed(2) + 'px' }, gfCardEl(ans));
       var pv = old && old.querySelector('.hpGfPv'), pr = pv && pv.getBoundingClientRect(), pin = !!(pr && pr.width && pr.bottom > sr.top + 8 && pr.top < sr.bottom - 8);
       var Pc = pin ? { x: (pr.left + pr.width / 2 - sr.left) / k, y: (pr.top + pr.height / 2 - sr.top) / k, w: pr.width / k } : { x: Vw / 2, y: Vh * .8, w: .8 * W };   /* from the preview card where it stood; not in view, from low in the screen */
-      var s0 = Pc.w / (.86 * W), Cy = sy + .305 * W, Lx = Ox + dx, Ly = Oy + m * (Cy - Oy) + dy + lift * m;   /* L: the card's middle once out over the envelope */
+      var s0 = Pc.w / (.86 * W), Cy = sy + (ev.long ? .275 : .305) * W, Lx = Ox + dx, Ly = Oy + m * (Cy - Oy) + dy + lift * m;   /* L: the card's middle once out over the envelope */
       var cl = pin ? pv.cloneNode(true) : null; if (cl) cl.style.cssText = 'left:' + ((pr.left - sr.left) / k).toFixed(2) + 'px;top:' + ((pr.top - sr.top) / k).toFixed(2) + 'px;width:' + (pr.width / k).toFixed(2) + 'px;height:' + (pr.height / k).toFixed(2) + 'px';
       fx.appendChild(cw); if (cl) fx.appendChild(cl); scr.appendChild(fx);
       var A = [], E1 = 'cubic-bezier(.4, 0, .1, 1)', E2 = 'cubic-bezier(.16, 1, .3, 1)', E3 = 'cubic-bezier(.45, 0, .2, 1)', E4 = 'cubic-bezier(.55, 0, .15, 1)';
@@ -22174,7 +22184,7 @@ window.EvConsent = (function () {
       /* the flap folds over it (1140 to 1500), the mark on it */
       A = A.concat(gfFlapA(ev, { delay: 1140, duration: 360, easing: 'cubic-bezier(.4, 0, .2, 1)' }, true));
       /* turned to its front as it goes up to its place, its own size (1520 to 2120) */
-      go(ev.turn, [{ transform: 'rotateY(180deg)' }, { transform: 'rotateY(0deg)' }], { delay: 1520, duration: 600, easing: E4 });
+      go(ev.turn, [{ transform: 'rotateY(180deg)' }, { transform: 'rotateY(' + (ev.long ? 180 : 0) + 'deg)' }], { delay: 1520, duration: 600, easing: E4 });   /* Long: it stays on its back, the flap and its foil up */
       go(ev.el, [{ transform: tr(dx, dy, m) }, { transform: tr(0, 0, 1) }], { delay: 1520, duration: 600, easing: E4, fill: 'forwards' });
       /* the page round it: the title, the plan, the rows, one after another as it lands */
       [].filter.call(scr.children, function (c) { return c !== ev.el && c !== fx; }).forEach(function (c, i) { go(c, [{ opacity: 0, transform: 'translateY(12px)' }, { opacity: 1, transform: 'none' }], { delay: 1780 + i * 70, duration: 480, easing: E2 }); });
@@ -38589,6 +38599,7 @@ hairline({
     ['stHpCcLay', 'stHpCcSvcV', 'stHpCcIntro', 'stHpCcT1t', 'stHpCcT1s', 'stHpCcT2t', 'stHpCcT2s', 'stHpCcT3t', 'stHpCcT3s', 'stHpCcQ1', 'stHpCcA1', 'stHpCcQ2On', 'stHpCcQ2', 'stHpCcHi', 'stHpCcA2'].forEach(id => { const e = document.getElementById(id); if (e) e.addEventListener('change', () => { if (window._hp && window._hp.go) window._hp.go('res', 'cc'); }); });   // a bubble's words changed: the Concierge played again with them   /* the Concierge: the visual first, kept ("keep that setup and remove tweak") */   // the Concierge's layout, live
     { const t = document.getElementById('stGfIntro'); if (t) t.addEventListener('change', () => { if (window._hp && window._hp.giftIntro) window._hp.giftIntro(); }); }
     { const r = document.getElementById('stGfVidBl'), o = document.getElementById('stGfVidBlV'), set = () => { document.documentElement.style.setProperty('--gfVidBl', (r.value / 100).toFixed(2)); if (o) o.textContent = r.value + '%'; }; if (r){ r.addEventListener('input', set); r.addEventListener('change', set); set(); setTimeout(set, 800); } }   // Send a gift: the intro video's blanket, live
+    { const t = document.getElementById('stGfEnv'); if (t) t.addEventListener('change', () => { const H = window.HealthProfile, i = window._hp && window._hp.giftAt ? window._hp.giftAt() : -1; if (H && i >= 0 && H.gift.steps[i] === 'pay') window._hp.giftGo(i); }); }   /* Send a gift -> Envelope (Classic / Long): Check and pay drawn again in place */
     { const t = document.getElementById('stGfPlans'); if (t) t.addEventListener('change', () => { const H = window.HealthProfile, i = window._hp && window._hp.giftAt ? window._hp.giftAt() : -1; if (H && i >= 0 && H.gift.steps[i] === 'plan') window._hp.giftGo(i); }); }   /* Send a gift -> Plans (List / Tabs): Choose the gift drawn again in place, live */   /* Send a gift -> Intro (List / Cards): its intro drawn again in place, live, nothing restarted */
     { const stt = () => { if (HP.stepTitle) HP.stepTitle(opt('stHpStepT')); }; stt(); const t = document.getElementById('stHpStepT'); if (t) t.addEventListener('change', stt); }   // the step's title over the dashes, or not
     /* (the Dismiss flow tweak removed: "remove the Dismiss tweak set previously"; leaving mid-way still asks first when something is filled) */   // the dismiss flow, on or off
@@ -46964,8 +46975,8 @@ hairline({
         window.__hpDocStep = st => { if (view !== 'flows') setView('flows'); fpick(ROWOF[st] || '*'); };   // from Tweaks -> Primary card -> Documentation: the step the card's State is at (none of them: every step)
         window.__hpDocFlow = () => { built = ''; if (view === 'flows' && el.isConnected && !el.hidden) flowsDraw(); };   // step 1's order changed (Tweaks)
         /* the reveal's stills follow its tweaks ("colour doesn't reflect what we have on the page"): what they were drawn with is part of the key, and a change there draws them again */
-        const WSIG = () => { let pk = ''; try { pk = localStorage.getItem('everlab:w2CardPre') || ''; } catch (e){} return '|' + [...document.querySelectorAll('.tkPanel :is([id^="stHpW"], [id^="stHpMap"], #stHpRecP, #stHpRecC, #stHpRecL, #stHpCtry, #stGfIntro, #stGfPlans)')].map(x => x.id + '=' + x.value).join('|') + pk; };   /* and Send a gift's Intro (List / Cards): its still as the Tweak has it */
-        { let wT = 0; document.addEventListener('change', e => { if (!e.target || !/^(stHp(W|Rec)|stGfIntro$|stGfPlans$)/.test(e.target.id || '')) return; clearTimeout(wT); wT = setTimeout(() => { if (view === 'flows' && el.isConnected && !el.hidden) flowsDraw(); }, 250); }); }
+        const WSIG = () => { let pk = ''; try { pk = localStorage.getItem('everlab:w2CardPre') || ''; } catch (e){} return '|' + [...document.querySelectorAll('.tkPanel :is([id^="stHpW"], [id^="stHpMap"], #stHpRecP, #stHpRecC, #stHpRecL, #stHpCtry, #stGfIntro, #stGfPlans, #stGfEnv)')].map(x => x.id + '=' + x.value).join('|') + pk; };   /* and Send a gift's Intro (List / Cards): its still as the Tweak has it */
+        { let wT = 0; document.addEventListener('change', e => { if (!e.target || !/^(stHp(W|Rec)|stGfIntro$|stGfPlans$|stGfEnv$)/.test(e.target.id || '')) return; clearTimeout(wT); wT = setTimeout(() => { if (view === 'flows' && el.isConnected && !el.hidden) flowsDraw(); }, 250); }); }
         new MutationObserver(() => { if (view === 'flows' && el.isConnected && !el.hidden) flowsDraw(); else built = ''; }).observe(document.body, { attributes: true, attributeFilter: ['class'] });
         const zoom = () => { flows.style.setProperty('--hcZ', ZS[zi]); $('.hcZoom b').textContent = Math.round(ZS[zi] * 100) + '%'; try { localStorage.setItem('everlab:hcZoom2', String(ZS[zi])); } catch (e){} };
         $('.hcZoom').addEventListener('click', e => { const b = e.target.closest('[data-z]'); if (!b) return; zi = Math.max(0, Math.min(ZS.length - 1, zi + +b.dataset.z)); zoom(); });
