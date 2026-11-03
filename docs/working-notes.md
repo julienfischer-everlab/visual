@@ -19626,3 +19626,34 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Components › Field: the demo row is the composer's own (+, the pill, the send).
 - **Tweaks › Chat › Conversation**: an edited conversation keeps what the chat adds to it (a booking made, Eva's confirmation, a question asked), so Save keeps exactly the turns the editor lists. The list's foot fades while there is more below.
 - Checked with Playwright: concierge.html at desk and 390 (both themes), the app's Chat page with the editor, Save and reload, the in-app chat at XS (both themes) and S light, the desk sidebar contracted.
+
+## "General TOP NAV rule (DS). IF no h1 title, keep a safe space at the top. h1 is then part of the Body" · "Top nav always gradient blur by default" · "The max width container is on the body content! Not the viewport." · "The container and the breakpoint need to be combined"
+
+- **The master**: Design system › General layout › Top nav. One code, `window.EvTopNav` (`html({ back, title, close, more, reveal })`, `mount(el, opts)`, `watch(scroller, nav, h1)`, `titled(h1, bar, sheet)`) and the `.evTn` CSS. Both sit in the blocks `tools/build-hp.js` copies, so the standalone Health Profile has them too.
+  - **A** (title and Close) and **B** (Back, title, Close): 76 hug, 16 all round, 44 discs at ink 6%, the title 20/28 500 on one line (at x 76 after Back).
+  - **C**, no title: "No title in the nav: the nav keeps a 32px safe space, its controls float, and the H1 is the first thing in the body." The discs stay at 16 down and 16 in, hanging over the band's foot. The body's H1 (`.evTnH1`) keeps 12 clear of a Close (56 at its right) and starts 12 below a Back.
+  - Once the H1 has gone under the controls, its words fade into the bar (17/22 600, centred). This is the Service detail's bar ("fixed gradient blur with title appearing"), and its rule is now `EvTopNav.titled`, which both of its hosts call.
+  - **The ground is always the gradient blur**: the screen's colour at 85% fading to nothing (the Header overlap's mask) over ten backdrop-blur bands (14 to 1.5 px). At rest it ends at the bar's foot. Once content is under it, it reaches 24 further (for C, from the controls' foot). There is no hard edge and no slab.
+  - The global "every dismiss 36" rule gives way to the master's 44 (`.evTn .evTnBtn`), so a control can keep its old class (.arClose, .prX) for its handler.
+- **Applied**:
+  - Standalone modals (evSolo: Suggestion, Doctor's suggestion, Personal recommendation): variant C. The title is the body's H1, the Close (or the Plan change's Back) floats, and the title comes into the bar on scroll. The entrances still find `.sgmT`.
+  - The close-only sheets (Results received, the info sheet): C, the bar inside the scroller. The filter sheet: C in CSS.
+  - The Service detail bar's ground now shows at rest.
+  - The Concierge chat's head (visuals/concierge.html): the master's ground copied there, marked so, with the thread running up under the head.
+- **Container**:
+  - The rule: "the container centres the body content; the top nav and the footer span the screen". The page keeps its padding at the viewport. On the desk the standalone modals' bar and footer span the screen; the body and the CTA keep the 2xs column (544 M, 576 L; it was a 536/568 sheet).
+  - The live demo has a **Breakpoint** AND a **Container** picker, and any pair works. The column is the token's width at that breakpoint, capped by the screen less its padding. The labels read padding · viewport, max-width/name · px, Top nav · spans and Footer · CTA.
+  - The Tokens table now matches the design file's.
+  - New tokens `--ct2xs` (Full / 512 / 544 / 576), `--ctXs` 800, `--ctSm` 1080, `--ctMd` 1280, `--ctLg` 1440, plus `data-container="2xs|xs|sm|md|lg"`. `--ctPadY`/`--ctPadX` already matched.
+  - The Overview's content, the Service detail's grid and My journey V2 read `--ctSm`.
+  - These match no token: My journey V1's 760, and the report and profile sheets' 536 / 568 / 560 columns (desk M / L / default).
+- **Not yet on the master** (each keeps its own bar):
+  - The Async report and Health profile heads (EvSteps bars in the nav, the hp state logic).
+  - The Plan subpages and the Header overlap pages (EvOverlap's dark-until-the-sheet logic).
+  - The titled sheets (arQa, .plPMd, .plNSh, .mkCart, .tlSheet, .ibCard, bmdOv, hpPk; the sheet header is still the Modals doc's 24/30 + 32).
+  - The marketplace detail, the consent sheet, Gift and Referral (iframes).
+  - The Step flow doc's phone.
+- Checked with Playwright:
+  - The Suggestion at XS (rest and scrolled, both themes), S, M and L.
+  - The Design system's Top nav tab (variants, both themes, the XS phones, the desk) and the Container's pairs (L·2xs, XS·sm, M·xs).
+  - The Service detail at XS, Results received at XS, and the Concierge chat at XS scrolled in both themes.
