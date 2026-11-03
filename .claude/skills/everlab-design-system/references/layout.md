@@ -168,7 +168,7 @@ Sites: Activity plan (hero `.plATop`, `data-ov` markup), Nutrition plan (`.plNTo
 
 **Pitfalls.** (1) A missed selector list shows a scrollbar, a square corner or the wrong left after retracting. (2) Padding is inconsistent (32 40 vs tokens). (3) A per-page `max-width` or a different cap sum breaks the strip: the gap and the top-left corner show only while the panel's left matches `--pnCap`'s sum. (4) The scrollbar must never take width.
 
-**Out of scope here.** The Insights tablet (`body.tabM #dMain`, Auto 600-991) keeps its own 200 rail, flush, 28 padding. Page titles still differ in size (Overview 24, Insights / Timeline 26, Plan 28, Account / Appointment 32).
+**Out of scope here.** The Insights tablet (`body.tabM #dMain`, Auto 600-991) keeps its own 200 rail, flush, 28 padding. Page titles: one desk size for the main pages, `--pgH1Fs` 24 / `--pgH1Lh` 30 / `--pgH1Ls` -.3 on `.dash` (Overview, Insights, Services, My journey, My plan, My account at M and up; `grep -n -- "--pgH1Fs"`); a new main desk page adds its title to that `:is()` list. Sub pages (Service detail, Appointment, the Plan's subpages) keep their hero titles.
 
 ---
 
