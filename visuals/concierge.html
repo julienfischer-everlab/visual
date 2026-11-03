@@ -601,6 +601,7 @@
   .evTnG i:nth-child(8) { height: 44%; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
   .evTnG i:nth-child(9) { height: 36%; -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
   .evTnG i:nth-child(10) { height: 28%; -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
+  .hd.evTnOn > .evTnG { bottom: calc(-1 * var(--evTnBleed, 24px)); }   /* the master's scrolled state too: once the thread is under the head, the ground reaches 24 further (toggled by the one listener at the page's foot) */
   @media (prefers-reduced-motion: reduce) { .evTnG { transition: none; } }
 </style>
 </head>
@@ -1589,6 +1590,8 @@
   if (hs === 'persona-2') setPersona('p2');   // a link straight to Persona #2's chat
   window.Concierge.draft = function (t) { q.value = t == null ? '' : String(t); grow(); sendState(); };   /* a question put in the field, ready to send (sized, its send lit): the Suggestion's Ask Dr Chen */
 })();
+/* the head's ground, its scrolled state (the Top nav master's .evTnOn): on while the thread has moved under the head */
+(function(){ var hd = document.querySelector('.main > .hd'), th = document.querySelector('.main > .thread'); if (!hd || !th) return; var on = function(){ hd.classList.toggle('evTnOn', th.scrollTop > 0); }; th.addEventListener('scroll', on, { passive: true }); on(); })();
 </script>
 </body>
 </html>

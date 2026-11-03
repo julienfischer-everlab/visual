@@ -487,6 +487,7 @@
   .app.mob .recHd { margin: 26px 10px 6px; font-size: 12px; }
   .app.mob .rec .item { color: var(--fg); }
   .app.mob.drawer .side { transform: none; }
+  .app.noSlide .side, .app.noSlide .scrim { transition: none !important; }   /* layout() turning the panel mobile: the drawer placed closed at once */
   .scrim { position: absolute; inset: 0; z-index: 7; background: var(--scrim); opacity: 0; pointer-events: none; transition: opacity .3s; }
   .app.mob.drawer .scrim { opacity: 1; pointer-events: auto; }
   .app.mob .hd { height: 48px; padding: 0 8px; }
@@ -600,6 +601,7 @@
   .evTnG i:nth-child(8) { height: 44%; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
   .evTnG i:nth-child(9) { height: 36%; -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
   .evTnG i:nth-child(10) { height: 28%; -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
+  .hd.evTnOn > .evTnG { bottom: calc(-1 * var(--evTnBleed, 24px)); }   /* the master's scrolled state too: once the thread is under the head, the ground reaches 24 further (toggled by the one listener at the page's foot) */
   @media (prefers-reduced-motion: reduce) { .evTnG { transition: none; } }
 </style>
 </head>
@@ -1300,7 +1302,9 @@
   var layout = function () {
     phone = stage.clientWidth < 720;
     var mob = phone || S.dev === 'mob';
-    app.classList.toggle('mob', mob); stage.classList.toggle('dvMob', !phone && S.dev === 'mob'); document.body.classList.toggle('phoneMode', phone);
+    var was = app.classList.contains('mob');
+    app.classList.toggle('mob', mob); stage.classList.toggle('dvMob', !phone && S.dev === 'mob');
+    if (mob !== was){ app.classList.add('noSlide'); getComputedStyle($('.side')).transform; requestAnimationFrame(function () { app.classList.remove('noSlide'); }); }   /* the panel turning mobile (on load, embed('phone'), a narrower window): the sidebar goes straight to its closed drawer place, not sliding out across the chat on arrival ("Chat page shouldn't show the drawer when we land on the page"); only the menu button slides it in */ document.body.classList.toggle('phoneMode', phone);
     if (!mob) app.classList.remove('drawer');
     placeholder();
     carSync();
@@ -1586,6 +1590,8 @@
   if (hs === 'persona-2') setPersona('p2');   // a link straight to Persona #2's chat
   window.Concierge.draft = function (t) { q.value = t == null ? '' : String(t); grow(); sendState(); };   /* a question put in the field, ready to send (sized, its send lit): the Suggestion's Ask Dr Chen */
 })();
+/* the head's ground, its scrolled state (the Top nav master's .evTnOn): on while the thread has moved under the head */
+(function(){ var hd = document.querySelector('.main > .hd'), th = document.querySelector('.main > .thread'); if (!hd || !th) return; var on = function(){ hd.classList.toggle('evTnOn', th.scrollTop > 0); }; th.addEventListener('scroll', on, { passive: true }); on(); })();
 </script>
 </body>
 </html>

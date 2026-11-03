@@ -1070,6 +1070,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
    and the top of the body; the page's H1 is the first thing in the body, its lines clear of the controls (.evTnH1). Scrolled up under the bar, the H1 comes into it (.evTnFt, centred between the controls, 17/22 600: the Service detail's bar, "fixed gradient blur with title appearing").
    The ground is always the gradient blur ("Top nav always gradient blur by default"): the screen's own colour (--evTnGnd) fading to nothing by a mask (--hoTint at the top, the Header overlap's), over ten backdrop-blur bands (the Overview bar's .ovGround: 14 px at the top to 1.5 at the foot);
    at rest it ends at the bar's foot (nothing under it veiled), and once the content scrolls under it (.evTnOn) it reaches --evTnBleed further, so what passes under fades and blurs in, never a hard cut.
+   Type in longhands, the family on its own (a var() falling back to inherit inside a font shorthand voids the whole shorthand).
    Host tokens: --evTnTop (the status bar / safe area above the bar: 0 on the desk), --evTnX (the page's padding/left-right), --evTnGnd (the screen's colour), --evTnInk (its ink) */
 .evTn { --evTnD: 44px; position: sticky; top: 0; z-index: 6; display: flex; align-items: center; gap: 16px; box-sizing: border-box; min-height: calc(var(--evTnTop, 0px) + 76px); margin: 0; padding: calc(var(--evTnTop, 0px) + 16px) var(--evTnX, 16px) 16px; color: var(--evTnInk, currentColor); isolation: isolate; pointer-events: none; }
 .evTn > :not(.evTnG) { pointer-events: auto; }
@@ -1078,17 +1079,20 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
 .evTnBtn svg { width: 16px; height: 16px; }
 .evTnBtn:hover { box-shadow: inset 0 0 0 40px color-mix(in srgb, var(--evTnInk, currentColor) 4%, transparent); }
 .evTnBtn:focus-visible { outline: 2px solid #4b7bec; outline-offset: 2px; }
-.evTnT { flex: 1 1 auto; min-width: 0; margin: 0; overflow: hidden; font: 500 20px/28px var(--ar-font, inherit); letter-spacing: -.1px; color: inherit; white-space: nowrap; text-overflow: ellipsis; }
+.evTnT { flex: 1 1 auto; min-width: 0; margin: 0; overflow: hidden; font-weight: 500; font-size: 20px; line-height: 28px; font-family: var(--ar-font, "Saans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif); letter-spacing: -.1px; color: inherit; white-space: nowrap; text-overflow: ellipsis; }
 .evTn:not(.evTnC) > .evTnT ~ .evTnBtn, .evTn:not(.evTnC) > .evTnFt ~ .evTnBtn { margin-left: auto; }
 .evTnC > .evTnBtn { position: absolute; top: calc(var(--evTnTop, 0px) + 16px); }
 .evTnC > .evTnBk { left: var(--evTnX, 16px); } .evTnC > :is(.evTnX, .evTnMore) { right: var(--evTnX, 16px); }
 .evTnFt { position: absolute; top: calc(var(--evTnTop, 0px) + 16px); left: calc(var(--evTnX, 16px) + var(--evTnD) + 12px); right: calc(var(--evTnX, 16px) + var(--evTnD) + 12px); height: var(--evTnD); display: flex; align-items: center; justify-content: center; pointer-events: none !important; opacity: 0; transform: translateY(6px); transition: opacity .25s ease, transform .25s ease; }
-.evTnFt span { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font: 600 17px/22px var(--ar-font, inherit); letter-spacing: -.2px; color: inherit; }
+.evTnFt span { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-weight: 600; font-size: 17px; line-height: 22px; font-family: var(--ar-font, "Saans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif); letter-spacing: -.2px; color: inherit; }
 .evTn.evTnTitled > .evTnFt { opacity: 1; transform: none; }
 .evTn:not(.evTnC) > .evTnFt { display: none; }
 /* the body's H1 under a C bar: its lines clear of the floating Close (the disc and 12), and under a floating Back it starts below the disc (its foot and 12) */
 .evTnC.evTnHasX ~ .evTnH1, .evTnC.evTnHasX ~ * .evTnH1 { padding-right: calc(var(--evTnD, 44px) + 12px); box-sizing: border-box; }
 .evTnC.evTnHasBk ~ .evTnH1, .evTnC.evTnHasBk ~ * .evTnH1, .evTnC.evTnHasBk + .evTnClr, .evTnC.evTnHasBk + * > .evTnClr:first-child { margin-top: calc(var(--evTnD, 44px) - 16px + 12px); }
+/* no clearance where there is nothing to clear: both discs (the H1 already starts below them), or the column far from the controls (.evTnFar, set by watch(): the desk's 2xs column) */
+.evTnC.evTnHasBk.evTnHasX ~ .evTnH1, .evTnC.evTnHasBk.evTnHasX ~ * .evTnH1, .evTnC.evTnFar ~ .evTnH1, .evTnC.evTnFar ~ * .evTnH1 { padding-right: 0; }
+.evTnC.evTnFar.evTnHasBk ~ .evTnH1, .evTnC.evTnFar.evTnHasBk ~ * .evTnH1, .evTnC.evTnFar.evTnHasBk + .evTnClr, .evTnC.evTnFar.evTnHasBk + * > .evTnClr:first-child { margin-top: 0; }
 /* the ground */
 .evTnG { position: absolute; left: 0; right: 0; top: 0; bottom: 0; z-index: -1; pointer-events: none; transition: bottom .28s ease; }
 .evTn.evTnOn > .evTnG { bottom: calc(-1 * var(--evTnBleed, 24px)); }
@@ -1112,7 +1116,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
 @media (min-width: 600px) { :root { --ct2xs: 512px; } }
 @media (min-width: 992px) { :root { --ct2xs: 544px; } }
 @media (min-width: 1440px) { :root { --ct2xs: 576px; } }
-body[data-bp="xs"] { --ct2xs: 100%; } body[data-bp="s"] { --ct2xs: 512px; } body[data-bp="m"] { --ct2xs: 544px; } body[data-bp="l"], body[data-bp="xl"] { --ct2xs: 576px; }
+body[data-bp="xs"], [data-ct-bp="xs"] { --ct2xs: 100%; } body[data-bp="s"], [data-ct-bp="s"] { --ct2xs: 512px; } body[data-bp="m"], [data-ct-bp="m"] { --ct2xs: 544px; } body[data-bp="l"], body[data-bp="xl"], [data-ct-bp="l"] { --ct2xs: 576px; }   /* [data-ct-bp]: the Container doc reads a breakpoint's tokens off these very rules */
 [data-container] { box-sizing: border-box; width: 100%; margin-left: auto; margin-right: auto; }
 [data-container="2xs"] { max-width: var(--ct2xs); } [data-container="xs"] { max-width: var(--ctXs); } [data-container="sm"] { max-width: var(--ctSm); } [data-container="md"] { max-width: var(--ctMd); } [data-container="lg"] { max-width: var(--ctLg); }
 html:not(#_m):not(#_d) .evTn .evTnBtn.evTnBtn { width: var(--evTnD) !important; height: var(--evTnD) !important; min-width: var(--evTnD) !important; min-height: var(--evTnD) !important; }   /* the master's 44 over the every-dismiss 36 (above), for a control that keeps an old class (.arClose, .prX ...) for its handler */
@@ -1848,6 +1852,7 @@ html.tkFlMove :is(body[data-bp] .dash, body[data-bp] .dash .side, body[data-bp] 
 .tkFlBack { position: fixed; z-index: 77; display: none; align-items: center; gap: 6px; height: 36px; padding: 0 14px 0 10px; border: 1px solid #2a2a2e; border-radius: 18px; background: #131316; color: #e4e4e7; font: 500 13px/1 system-ui, -apple-system, 'Segoe UI', sans-serif; cursor: pointer; box-shadow: 0 6px 18px rgba(0, 0, 0, .35); transition: background .15s ease; } .tkFlBack.vis { display: flex; } .tkFlBack:hover { background: #1d1d21; } .tkFlBack:focus-visible { outline: 2px solid #4b7bec; outline-offset: 2px; }   /* Back to the intro, under the Welcome's +, the + its look */
 .tkFlPlus.vis { display: flex; } .tkFlPlus:hover { background: #1d1d21; } .tkFlPlus.on { background: #fafafa; color: #111; border-color: #fafafa; } .tkFlPlus.on svg { transform: rotate(45deg); } .tkFlPlus svg { transition: transform .2s ease; } .tkFlPlus:focus-visible { outline: 2px solid #4b7bec; outline-offset: 2px; }
 body:is(.docOn, .hlOn) .tkFlPlus, body:is(.docOn, .hlOn) .tkFlPanel { display: none !important; }
+.tkFlBack, .tkFlBack.vis { display: none !important; }   /* no Back pill beside the phone ("remove that, dont need as we have the flow panel"): the Flow panel steps back */
 html.tkDocked .tkFlPlus, html.tkDocked .tkFlPanel { display: none !important; }   /* Tweaks open, the + shortcuts to each screen's own tweaks gone ("if Tweaks general is on, hide all plus shortcuts") */   /* the floating Tweaks beside the phone gone on the pages without one (Documentation, Hairline): its + stood over the documents */
 .topbar .tkPanel.tkFlPanel { position: fixed; z-index: 76; width: 380px; max-height: min(70vh, 560px); box-shadow: 0 18px 50px rgba(0, 0, 0, .5); } .topbar .tkPanel.tkFlPanel[hidden] { display: none; }   /* the open section's group, borrowed from the Tweaks list */
 .hpSim.lt .hpSimB { background: rgba(0, 0, 0, .07); color: #111; }
@@ -2008,6 +2013,28 @@ window.__ccVid = ['data:video/webm;base64,GkXfo59ChoEBQveBAULygQRC84EIQoKEd2VibU
    or the data-ov contract (data-ov="hero|img|title|sheet"), which bind() turns into those classes. bind(scroller, {hero, short, onFrame}) -> {update}: one rAF per scroller; hero a selector or a function, short true or a function, onFrame(k, on, hero). Every page with it binds here: the Plan's, the Service detail, the Appointment page.
    The numbers are the master's, Design system -> General layout -> Header overlap: saved there (everlab:hoMaster), every page takes them on load */
 window.EvBeamStar = function (size) { var e = document.createElement('span'); e.className = 'evBeamStar'; e.setAttribute('aria-hidden', 'true'); if (size) e.style.setProperty('--bsz', size + 'px'); e.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11 3c.4 4.6 2.4 6.6 7 7-4.6.4-6.6 2.4-7 7-.4-4.6-2.4-6.6-7-7 4.6-.4 6.6-2.4 7-7Z"/><path d="M18.5 14.5c.2 2 1 2.8 3 3-2 .2-2.8 1-3 3-.2-2-1-2.8-3-3 2-.2 2.8-1 3-3Z"/></svg>'; return e; };   // Eva's beam star (.evBeamStar), the one the debrief's last step and the Iconography doc show
+/* EvBeamStar.press: the dock's AI button (.mChat), on press, Eva's beam star's ring once round its edge ("On press, the beam should be there"; Design system -> Navigation -> AI button). One place for every dock (#bpFrame, #phone, #phone2, the Navigation doc's phone): delegated from the document.
+   pointerdown: a fresh ring (so the beam starts at the top), turning while held; let go: it finishes the round it is on (at least one), then fades. then(btn, fn): the button's own action once that round is done (a key press plays one round first) */
+window.EvBeamStar.press = (function () {
+  var RND = 700, live = function (b) { return b && b.querySelector(':scope > .evBsPress:not(.out)'); };
+  var drop = function (r) { r.classList.add('out'); setTimeout(function () { r.remove(); }, 320); };
+  var start = function (b) { var o = live(b); if (o) { clearTimeout(o._t); drop(o); }
+    var r = window.EvBeamStar(); r.innerHTML = ''; r.classList.add('evBsPress'); b.prepend(r); void r.offsetWidth; r.classList.add('on'); r._t0 = performance.now(); r._end = 0; return r; };
+  var end = function (b) { var r = live(b); if (!r) return 0;
+    if (!r._end) { r._end = r._t0 + Math.max(1, Math.ceil((performance.now() - r._t0) / RND)) * RND; r._t = setTimeout(function () { drop(r); }, r._end - performance.now()); }
+    return Math.max(0, r._end - performance.now()); };
+  var held = null;
+  document.addEventListener('pointerdown', function (e) { var b = e.button === 0 && e.target.closest && e.target.closest('.mChat'); if (!b) return; held = b; start(b); }, true);
+  ['pointerup', 'pointercancel'].forEach(function (t) { document.addEventListener(t, function () { if (held) { end(held); held = null; } }, true); });
+  /* the deferred open is the button's own (b._bsOpen): a new one replaces it, cancel(b) drops it (EvAsk's close: Escape, the breakpoint, the mode), and any press elsewhere (a tab, the page) drops every one waiting */
+  var waiting = [], cancel = function (b) { if (!b) { waiting.slice().forEach(cancel); return; } clearTimeout(b._bsOpen); b._bsOpen = 0; waiting = waiting.filter(function (x) { return x !== b; }); };
+  document.addEventListener('pointerdown', function (e) { waiting.slice().forEach(function (b) { if (!b.contains(e.target)) cancel(b); }); }, true);
+  var still = matchMedia('(prefers-reduced-motion: reduce)');
+  return { start: start, end: end, cancel: cancel, then: function (b, fn) { cancel(b);
+    if (still.matches) { var o = live(b); if (o) drop(o); return fn(); }   /* the ring does not turn: no round to wait for */
+    if (!live(b)) start(b); var w = end(b); if (w <= 0) return fn();
+    waiting.push(b); b._bsOpen = setTimeout(function () { b._bsOpen = 0; waiting = waiting.filter(function (x) { return x !== b; }); fn(); }, w); } };
+})();
 /* EvFullView: a modal over the whole app, never only the page it opened from ("modal should ALWAYS cover the full viewport, not just the body"): on the desk, fixed over the app's own window (.dash: the sidebar too), re-fitted on resize; on the phone (XS, S) it already covers the screen */
 window.EvFullView = (function () {
   var held = []; var phone = function () { return /^(xs|s)$/.test(document.body.dataset.bp || ''); };
@@ -2192,7 +2219,7 @@ window.EvOverlap = (function () {
    html({ back, title, close, more, reveal, cls, backCls, closeCls, tag, titleId, backLabel, closeLabel }) -> its markup:
      a title: A (Close) or B (Back, then the title) -- 76 hug, 16 all round, 44 discs, the title 20/28 500 one line;
      no title: C -- a 32 safe space, the controls floating at their place (16 down, 16 in), the page's H1 the first thing in the body (give it .evTnH1: clear of the controls); reveal: the H1's words, faded into the bar once the H1 has gone under it.
-   mount(el, o) -> the bar, drawn into el. watch(scroller, nav, h1) -> { update }: the ground's overflow (.evTnOn, the content under it) and, on C, the bar's title (.evTnTitled) the moment the H1's middle passes the controls' foot or the sheet covers it (the Service detail's own rule, titled()).
+   mount(el, o) -> the bar, drawn into el. watch(scroller, nav, h1) -> { update }: the ground's overflow (.evTnOn, the content under it) and, on C, the bar's title (.evTnTitled) once the page has moved and the H1's middle has passed the controls' foot (the Service detail's own rule, titled(), gated on the scroll); .evTnFar when the H1's column is clear of the controls (no clearance).
    The ground (.evTnG) is in every bar: always the gradient blur. Host tokens: --evTnTop, --evTnX, --evTnGnd, --evTnInk */
 window.EvTopNav = (function () {
   var IB = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3.5 5.5 8l4.5 4.5"/></svg>';
@@ -2213,12 +2240,20 @@ window.EvTopNav = (function () {
   /* the Service detail's rule, shared: the title is in the bar once the H1's middle is above the bar's controls' foot, or the sheet under it has come over the H1 */
   function titled(h1, bar, sheet) { if (!h1 || !bar) return false; var r = h1.getBoundingClientRect(); if (!r.height) return false; return r.top + r.height / 2 < bar.getBoundingClientRect().bottom || (!!sheet && sheet.getBoundingClientRect().top < r.bottom); }
   function foot(nav) { var b = nav.querySelector(':scope > .evTnBtn') || nav, r = nav.getBoundingClientRect(); return nav.classList.contains('evTnC') ? b.getBoundingClientRect().bottom : r.bottom; }
+  /* the H1's column clear of the controls' x-range (the desk: a 2xs column far from the discs at the viewport's edges): .evTnFar, and the H1 keeps its full width and its place (no clearance) */
+  function far(nav, h1) { if (!h1 || !nav.classList.contains('evTnC')) return false; var r = h1.getBoundingClientRect(); if (!r.width) return nav.classList.contains('evTnFar');
+    var x = nav.querySelector(':scope > :is(.evTnX, .evTnMore)'), b = nav.querySelector(':scope > .evTnBk');
+    if (x && r.right > x.getBoundingClientRect().left - 12) return false; if (b && r.left < b.getBoundingClientRect().right + 12) return false; return true; }
   function watch(sc, nav, h1, o) {
     o = o || {}; if (!sc || !nav) return { update: function () {} }; var q = 0;
     var ft = nav.querySelector(':scope > .evTnFt span'); if (ft && !ft.textContent && h1) ft.textContent = h1.textContent.trim();
     var run = function () { q = 0; nav.classList.toggle('evTnOn', sc.scrollTop > 0);
-      if (nav.classList.contains('evTnC') && h1) { var r = h1.getBoundingClientRect(); nav.classList.toggle('evTnTitled', !!r.height && r.bottom < foot(nav)); } };
+      if (nav.classList.contains('evTnC') && h1) { nav.classList.toggle('evTnFar', far(nav, h1));
+        /* the Service detail's rule (its middle past the controls' foot), once the page has moved: at rest on the desk the H1 sits level with the Close and stays in the body */
+        var r = h1.getBoundingClientRect(), f = nav.classList.contains('evTnFar') ? nav.getBoundingClientRect().bottom : foot(nav);   /* a column clear of the controls: its H1 is under the bar once its middle passes the 32 band's foot, not the discs' */
+        nav.classList.toggle('evTnTitled', sc.scrollTop > 0 && !!r.height && r.top + r.height / 2 < f); } };
     sc.addEventListener('scroll', function () { if (!q) q = requestAnimationFrame(run); }, { passive: true });
+    if (window.ResizeObserver) new ResizeObserver(function () { if (!q) q = requestAnimationFrame(run); }).observe(sc);
     run(); return { update: run };
   }
   return { html: html, mount: mount, watch: watch, titled: titled, variant: variant, IB: IB, IX: IX, IM: IM };
