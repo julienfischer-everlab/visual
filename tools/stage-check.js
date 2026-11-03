@@ -48,7 +48,9 @@ const ok = (c, m) => { console.log((c ? 'ok   ' : 'FAIL ') + m); if (!c) fails++
     /* forward and back, and frame by frame against a jump */
     const t0 = 15200; await S('seek', t0); const ref = await html(), refS = await p.screenshot();
     await S('seek', info.duration); await S('seek', 3000); await S('seek', t0);
-    const backH = await html() === ref, backS = (await p.screenshot()).equals(refS);
+    const backH = await html() === ref; let backS = (await p.screenshot()).equals(refS);
+    if (!backS){ const sb = await p.screenshot(); fs.writeFileSync(path.join(SH, 'fail-' + k + '-a.png'), refS); fs.writeFileSync(path.join(SH, 'fail-' + k + '-b.png'), sb);
+      const st = await p.evaluate(() => [...window.Concierge.stage.node().querySelectorAll('*')].filter(e => e.scrollTop || e.scrollLeft).map(e => e.className + ' ' + e.scrollTop + ',' + e.scrollLeft)); console.log('     scrolled:', JSON.stringify(st)); }
     ok(backH && backS, k + ': seek forward then back lands on the same frame' + (backH ? '' : ' (DOM differs)') + (backS ? '' : ' (pixels differ)'));
     const walked = await p.evaluate(([t0]) => { const s = window.Concierge.stage; for (let t = 0; t <= t0; t += 1000 / 30) s.seek(t); s.seek(t0); return s.node().outerHTML; }, [t0]);
     ok(walked === ref, k + ': every frame from 0 to ' + t0 + ' at 30 fps, then ' + t0 + ', equals jumping to it');
