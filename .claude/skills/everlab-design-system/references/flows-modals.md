@@ -194,3 +194,16 @@ L.multi(dev, x.steps, { step: 1100 });                                          
 ```
 
 **Pitfalls.** Keep the button's width and emphasis; never swap its text by hand. Always call the restore (also on teardown). HP Book uses the label loader "Processing" 2 s (no multi-step, no Booking confirmed page). Stale: ldDoc's Simple "Not used in a flow yet" (it is: Plan add, cart checkout); some comments say "Documentation -> Loading states" though it's a Design system tab. Multi needs a positioned host.
+
+---
+
+## Biomarker detail (`window.BioDetail`)
+
+**What.** The one biomarker detail every biomarker row opens: what it is, the latest result on its range, the history chart. The Insights phone's rows (`#mRecs .mbrow`), the Async report's (`bioOpen`, the body in the report's own sheet) and the Plan's What this moves rows (`.mbrow.plBio` on the Activity plan, the Nutrition plan and the Wind-down routine).
+
+**Where.** `grep -n "window.BioDetail = "`; CSS `grep -n "\.bmdOv\b\|\.bmdFloat"`; the Plan's opener `grep -n "const bioOpen"`.
+
+**API.** `BioDetail.sheet(host, m, { dark, from, float, onClose, stack, back, keep })` → `{ close(), el }`; `BioDetail.body(m, { dark })`; `model(m)`, `zoneOf(d, v)`. m: `{ name, value: '5.2 %', date: 'Oct 2026', status: 'Optimal'|'Suboptimal'|'Out of range'|'', bar: 'osx', pos: 0..1 }`. `float`: the desk's floating Full bottom sheet (centred, min(544) wide, up to 720 high, 28 round, scrim 62%, rise 24 + fade 450/300 ms; no notch, no swipe). `onClose()`: called as it starts closing, before focus returns to `from`. A short name finds its description by its words ("HbA1c" the HbA1c (glycated haemoglobin)'s).
+
+**How to use (the Plan).** A row is `bioAt(name, value, date, st)`'s attributes (`role=button`, `tabindex=0`, `data-bio-n/v/d/s`, aria-label) and joins the Plan's interaction states (plate inset 4 / -8, 12 round, the hairlines kept). The opener puts a `.plBioHost` in the subpage's stage (`EvFullView.cover` on the desk), makes the page inert, calls `sheet(... { float: desk, dark: !plLight })`; the subpage's hide closes it (`bioShut`).
+

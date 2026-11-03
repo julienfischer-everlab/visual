@@ -19834,3 +19834,11 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 
 ## Container doc: labelled switches
 - General layout › Container · live: the two switches now carry labels above them, "Breakpoints" (XS · 393 … L · 1440) and "Container size" (2xs … lg) (.glCtGrp / .glCtLbl, 12px muted, 8 above the switch; the groups 20 apart).
+
+## "Item need to be clickable (card ghost), trigger the same biomarker bottom sheet as used every where else." (the Plan's What this moves)
+- **Every What this moves row is a button**: the Activity plan's (HbA1c, Triglycerides, HDL cholesterol), the Nutrition plan's (LDL cholesterol, ApoB, Ferritin) and the Wind-down routine's (plMovesHTML: Morning cortisol, HRV, hs-CRP). One helper, `bioAt`, gives each `role=button`, `tabindex=0`, `aria-haspopup=dialog`, an aria-label naming the marker, and its marker in data (`data-bio-n/v/d/s`). Enter and Space open it.
+- **The card ghost is the Plan's**: the rows join the Plan's interaction states (the CSS lists and the `.plPress` script's SEL): the plate 4 in from the row's top and foot, 8 past its column into the card's 16, 12 round, so the rule between the rows still reads; 5% hover, 9% pressed and 1.5% smaller, the focus ring.
+- **The same sheet**: a row opens `BioDetail.sheet`, the Insights' own (no second sheet). On the phone (XS, S) over the subpage's screen with its notch, a swipe down, the scrim and Close; on the desk (M, L) over the app's window as the Plan's other details (EvFullView), floating (BioDetail's new `float`: the Modals doc's Full bottom sheet from M, 544 wide, up to 720 high, 28 round). Escape, the scrim and Close shut it, focus goes back to the row; the page under is inert meanwhile, the dock hidden. Dark with the Plan's sheet (Light in Light mode).
+- **The marker's place on its bar** is read from its drawn marker inside its own band, so the detail's bar agrees with its tag. A short name finds its description by its words in BioDetail (HbA1c, High-sensitivity CRP, Morning cortisol now have theirs; the Insights' rows get the same).
+- The Health profile's dist changed only by BioDetail's CSS (carried with its style block).
+
