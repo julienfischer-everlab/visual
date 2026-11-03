@@ -1450,7 +1450,7 @@
        Concierge.onConv(fn)              fn({ id, persona, why: 'open' | 'chat' | 'edits' }) whenever another conversation opens or the chat changes this one; returns the way to stop
        Concierge.edits(map?)             every edit, { '<persona>:<id>': { title, turns, base? } } (what the Tweaks' Save keeps); with a map, those put in place of the current ones
        Concierge.convs()                 the persona's conversations, newest first: [{ id, title, edited }]
-       Concierge.widgets()               what an answer can show (the BLOCK renderers): [{ t, l, fields: [{ k, l, kind: 'text' | 'area' | 'seg', opts }] }], in the editor's order
+       Concierge.widgets()               what an answer can show (the BLOCK renderers): [{ t, l, fields: [{ k, l, kind: 'text' | 'area' | 'select', opts }] }], in the editor's order
        Concierge.preset(t)               a widget with real content in it, ready to add
        Concierge.field(block, k, v?)     a widget's field read (as the editor shows it) or, with v, a copy of the widget with it written ---------- */
   var WIDGETS = [
@@ -1472,8 +1472,8 @@
     ['drNote', 'Doctor\u2019s footnote', function () { return { t: 'drNote', text: 'Recommended by your Everlab doctor' }; }]
   ];
   var FIELDS = {   /* the copy a widget carries of its own, as few fields as say it */
-    trend: [['name', 'Marker'], ['value', 'Value'], ['date', 'Date'], ['st', 'Status', 'seg', [['opt', 'Optimal'], ['sub', 'Suboptimal'], ['out', 'Out of range']]]],
-    booking: [['title', 'Title'], ['incl', 'Note'], ['time', 'Time'], ['place', 'Place'], ['st', 'State', 'seg', [['offer', 'Offered'], ['times', 'Times'], ['booked', 'Booked']]]],
+    trend: [['name', 'Marker'], ['value', 'Value'], ['date', 'Date'], ['st', 'Status', 'select', [['opt', 'Optimal'], ['sub', 'Suboptimal'], ['out', 'Out of range']]]],
+    booking: [['title', 'Title'], ['incl', 'Note'], ['time', 'Time'], ['place', 'Place'], ['st', 'State', 'select', [['offer', 'Offered'], ['times', 'Other times'], ['booked', 'Booked']]]],
     drNote: [['text', 'Text', 'area']],
     checkin: [['when', 'Checked in']],
     sugs: [['qs', 'Questions', 'area']]
@@ -1489,7 +1489,7 @@
   };
   var fieldSet = function (b, k, v) {
     b = copy(b); v = String(v == null ? '' : v); var m, cut;
-    if (b.t === 'trend' && k === 'value'){ m = /^\s*(-?\d+(?:[.,]\d+)?)\s*(.*)$/.exec(v); if (m && b.pts && b.pts.length){ b.pts[b.pts.length - 1][1] = +m[1].replace(',', '.'); if (m[2].trim()) b.unit = m[2].trim(); } return b; }   // the latest point (the sparkline's end) and its unit
+    if (b.t === 'trend' && k === 'value'){ m = /^\s*(-?\d+(?:[.,]\d*)?)\s*(.*)$/.exec(v); if (m && b.pts && b.pts.length){ b.pts[b.pts.length - 1][1] = +m[1].replace(',', '.'); if (m[2].trim()) b.unit = m[2].trim(); } return b; }   // the latest point (the sparkline's end) and its unit
     if (b.t === 'booking' && k === 'time'){ cut = v.split(/\s*[·|]\s*|,\s*(?=\d{1,2}[:.]?\d{0,2}\s*(?:am|pm))/i); b.slots = b.slots && b.slots.length ? b.slots : [['', '']]; b.slots[b.at || 0] = [cut[0] || '', cut.slice(1).join(' ')]; return b; }   // the slot shown: its day · its time
     if (b.t === 'booking' && k === 'place'){ cut = v.lastIndexOf('·'); b.place = (cut < 0 ? v : v.slice(0, cut)).trim(); b.dist = cut < 0 ? '' : v.slice(cut + 1).trim(); b.area = b.place.split(',').pop().trim(); return b; }   // its place · how far; the area (Eva's "at Bondi Junction") the place's last part
     if (b.t === 'sugs' && k === 'qs'){ b.qs = v.split('\n').map(function (x) { return x.trim(); }).filter(Boolean); return b; }
