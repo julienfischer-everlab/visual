@@ -58,7 +58,7 @@ All anchors are in `index.html` unless named. Line numbers drift; grep the patte
 
 **Where.** `grep -n -- "--hdrSb:54px"`, `grep -n -- "--ctPadY:24px"`, `grep -n -- "--evPhR:"`; General layout > Header (Sizes) and > Container (tokens table, `glCt`). Full detail in references/layout.md.
 
-**API / rules.** Header 54 status bar; nav 68 phone / 64 desk; Back/Close 36 / 36, ink 7%, 16 icon; nav title 18/24 500; questionnaire 32/40 500 −0.4 (84 Hug); page title 24/30 (54 Hug) phone, 20/26 desk (48 Hug). Container XS/S/M/L padding top-bottom 24/28/32/36, sides 16/16/24/24, gap 24/28/32/36; max-width 2xs none/512/544/576, xs 800, sm 1080, md 1280, lg 1440. Prototype breakpoints XS 393, S 600, M 992, L 1440. Radii in use: `--ar-radius-card` 12; `.sgmCard` 20; rows/areas 16; bottom-sheet and floating modals 28; full bottom sheet 32; CTAs 9999; phone frame 56 (`--evPhR`); desk panels 12. Secondary text ink .56.
+**API / rules.** Header 54 status bar; nav 76 phone / 64 desk; Back/Close 44 / 44 ("CTA top nav always 44px"), ink 7%, 16 icon; nav title 18/24 500; questionnaire 32/40 500 −0.4 (84 Hug); page title 24/30 (54 Hug) phone, 20/26 desk (48 Hug). Container XS/S/M/L padding top-bottom 24/28/32/36, sides 16/16/24/24, gap 24/28/32/36; max-width 2xs none/512/544/576, xs 800, sm 1080, md 1280, lg 1440. Prototype breakpoints XS 393, S 600, M 992, L 1440. Radii in use: `--ar-radius-card` 12; `.sgmCard` 20; rows/areas 16; bottom-sheet and floating modals 28; full bottom sheet 32; CTAs 9999; phone frame 56 (`--evPhR`); desk panels 12. Secondary text ink .56.
 
 **How to use.** `var(--hdr*)` for a header, `var(--ctPadX/--ctPadY/--ctGap)` for a page container, `--evPhR/--evPhBz` (`--evTbR/--evTbBz`) for any device: never new numbers.
 

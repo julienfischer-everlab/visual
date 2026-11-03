@@ -102,7 +102,7 @@ The page menu `#versionSel` has Documentation (`'doc'`) and Design system (`'ds'
 - **Desk panels follow the Overview** (#270): gap, top, 12 px corners, ground, padding, title on every panel.
 - **DS "Page types" rule** (#274): Main / Sub pages, every Sub page pushes in and pops out from one master.
 - **Chat video builder** (#268) on the Concierge chat.
-- Merged on this branch already: **XS 852 minimum** (#266), **Ask sheet icons** (#271), **Plan hover/press on every clickable** (#269, the Plan's interaction states) and the **Top nav master + container tokens** (#260: `EvTopNav`, `--ct2xs`..`--ctLg`, `data-container`; evSolo's head is Top nav C). Places still on their own heads after #260: EvChat `.chHead` and the Concierge `.hd` (36 controls, the master's insets: #273), the flows' `.arHeadRow` (the master's 36 discs only), the Header tab's `--hdr*` (doc only). Top bar discs are 36 everywhere; titled sheets wear the sheet header master (EvSheetHead).
+- Merged on this branch already: **XS 852 minimum** (#266), **Ask sheet icons** (#271), **Plan hover/press on every clickable** (#269, the Plan's interaction states) and the **Top nav master + container tokens** (#260: `EvTopNav`, `--ct2xs`..`--ctLg`, `data-container`; evSolo's head is Top nav C). Places still on their own heads after #260: EvChat `.chHead` and the Concierge `.hd` (44 controls: #273), the flows' `.arHeadRow` (the master's 44 discs only), the Header tab's `--hdr*` (doc only). Top bar CTAs are 44 everywhere ("CTA top nav always 44px"); titled sheets wear the sheet header master (EvSheetHead).
 
 ## Checklist before you ship
 
