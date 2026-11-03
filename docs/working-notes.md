@@ -19595,3 +19595,22 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Conflicts**: only the working notes (every section kept, the main branch's first) and the built dist (rebuilt). In visuals/concierge.html the Concierge API's tail kept both sides: Concierge.draft beside persona, getConv / setConv / onConv, edits, convs, widgets, preset, field. index.html merged without a conflict.
 - **Kept together**: the Chat's Tweaks group (Persona, Conversation) with the docked panel beside it; the chat's model menu and the intro's beam (EvBeam) in the in-app chat, the Concierge and its Field demo; the More sheet's lit row, its Contact us still read from the Concierge's #modelName (unchanged by the merge).
 - **Checked** (Playwright, no page errors): concierge.html Persona #1 / #2, the check-in booked, its model menu and beam, Components (Proactive check-ins, Appointment rows, the Field dropdown and its beam); the app's Chat with Persona #2 and the editor typing live; the in-app chat at XS in both themes (head under the status bar, home indicator, sending, Eva / Care team, the doctor's reply, the beam back on Eva); More on the Plan at XS, the Plan row filled with the Beam motion.
+
+## Review fixes on the merge, and the main branch's desk sidebar merged in ("this switch should be a dropdiown same as the chat screen uI . Also keep the exat same beam obrder effect as the concierge onboarding intro")
+
+- **Merged the main branch again** (3bab3e7: the desk sidebar draws the icon library's icons, the Menu icon, `.icLit`, the icon motion kept by `CARD_STATE.navIcM`). The lit rules now take both hosts: the sidebar's `.icLit` and the More sheet's `.mvOn` row.
+- **In-app chat**:
+  - The home bar under the composer is dark in light theme (it was white at 26% on the light ground, beaten by a more specific rule). XS and S.
+  - The Eva / Care team menu stays open while Eva writes. It closes on the member's own scroll (wheel, touch), a tap outside or Escape; the thread following the answer no longer closes it.
+  - The field reads "Ask Eva…" as the Concierge does (it was "Ask Eva …"), and "Message your care team…" with Care team.
+  - The field's words, +, pill and send sit above the beam, as the intro's field keeps its words over its light.
+  - Answers: "Hello" gets a greeting and what Eva can help with; rescheduling goes to the care team; "Is my iron low?" gets the ferritin answer; cholesterol points to Heart Health in Insights; the biological age reads 124 biomarkers, as the Overview's chip.
+- **Concierge (the master)**:
+  - Its field follows the model too: "Message your care team…" with Care team, the view's own words back with Eva (also through `Concierge.model`).
+  - Persona #2 saved, then a door that asks at once (Services › Ask Eva): the question is answered. Opening another view frees the field; only the turn that holds it lets it go.
+  - The check-in opens unread: "ApoB retest" keeps its dot in Recent and the Inbox its 1 until the member answers it, acts on the card or leaves it.
+  - "Book this time" then a persona flip, Reset or an edit: no stale "You're booked…" any more. A slot with no time confirms without the empty "at".
+  - The booking's place keeps "Junction · 1.2 km" together, so no dot is left at a line's end. The doctor's footnote sits 16 under the card, as the other blocks. The sparkline sits in the middle of the trend card.
+  - Components › Field: the demo row is the composer's own (+, the pill, the send).
+- **Tweaks › Chat › Conversation**: an edited conversation keeps what the chat adds to it (a booking made, Eva's confirmation, a question asked), so Save keeps exactly the turns the editor lists. The list's foot fades while there is more below.
+- Checked with Playwright: concierge.html at desk and 390 (both themes), the app's Chat page with the editor, Save and reload, the in-app chat at XS (both themes) and S light, the desk sidebar contracted.
