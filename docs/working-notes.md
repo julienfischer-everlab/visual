@@ -19571,3 +19571,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The sizes table's More row is corrected: the real rows, and the lit row.
 - **Fix: Icon motion kept across a page change**. Changing page rebuilt the body's classes and dropped the motion's, so the dock played Pop while the select said Beam. Changing page now keeps the motion's class.
 - Both themes; checked on the XS frame (Overview, Plan, the Activity plan, My account, Settings, the care chat), the Insights phone and the Navigation doc's phone.
+
+## Merged: Persona #2 and the conversation editor, the in-app chat with its dropdown and the intro's beam, the More sheet's active icons ("this switch should be a dropdiown same as the chat screen uI . Also keep the exat same beam obrder effect as the concierge onboarding intro")
+
+- **Three branches in one**, each from cec9079, plus the main branch's own since then (the Suggestion's Plan change, EvTl, Concierge.draft, the Overview field's dot, the rail's padding).
+- **Conflicts**: only the working notes (every section kept, the main branch's first) and the built dist (rebuilt). In visuals/concierge.html the Concierge API's tail kept both sides: Concierge.draft beside persona, getConv / setConv / onConv, edits, convs, widgets, preset, field. index.html merged without a conflict.
+- **Kept together**: the Chat's Tweaks group (Persona, Conversation) with the docked panel beside it; the chat's model menu and the intro's beam (EvBeam) in the in-app chat, the Concierge and its Field demo; the More sheet's lit row, its Contact us still read from the Concierge's #modelName (unchanged by the merge).
+- **Checked** (Playwright, no page errors): concierge.html Persona #1 / #2, the check-in booked, its model menu and beam, Components (Proactive check-ins, Appointment rows, the Field dropdown and its beam); the app's Chat with Persona #2 and the editor typing live; the in-app chat at XS in both themes (head under the status bar, home indicator, sending, Eva / Care team, the doctor's reply, the beam back on Eva); More on the Plan at XS, the Plan row filled with the Beam motion.
