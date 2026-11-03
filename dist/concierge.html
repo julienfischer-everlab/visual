@@ -19,7 +19,6 @@
     --pri: #2e1f1a; --priFg: #fdfaf3; --acc: #f26b3a; --accFg: #ffffff; --ok: #2f8f57; --bad: #c8463f; --badge: #4a4a4a; --badgeFg: #ffffff;
     --pop: #fdfaf3; --popLine: rgba(46, 31, 26, .1); --stage: #e9e1d2; --scrim: rgba(20, 14, 10, .32); --ring: rgba(46, 31, 26, .55);
     --note: #f4a067; --noteFg: #2e1f1a; --edge: rgba(46, 31, 26, .16);
-    --beamHead: #f26b3a; --beamTail: rgba(247, 181, 139, .9);   /* the field's beam on switching to Eva: the accent on light */
     --kbBg: #d1d3d9; --kKey: #ffffff; --kFn: #acb0bb; --kInk: #000000; --kSel: rgba(0, 0, 0, .08);
     --shadow: none; --popShadow: 0 2px 6px rgba(46, 31, 26, .06), 0 16px 40px rgba(46, 31, 26, .14);
     --sans: "Suisse Intl", SuisseIntl, "Suisse Int'l", "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -34,7 +33,6 @@
       --pri: #ffffff; --priFg: #111111; --ok: #4cc27e; --bad: #f06a6a; --badge: #4a4a4a; --badgeFg: #ffffff;
       --pop: #232322; --popLine: rgba(255, 255, 255, .08); --stage: #050505; --scrim: rgba(0, 0, 0, .5); --ring: rgba(255, 255, 255, .3);
       --note: #f7b58b; --noteFg: #1c1410; --edge: rgba(255, 255, 255, .16);
-      --beamHead: #ffffff; --beamTail: rgba(255, 178, 122, .95);   /* white-hot, an orange tail on dark */
       --kbBg: #5a5a5c; --kKey: #7c7c7f; --kFn: #464648; --kInk: #ffffff; --kSel: rgba(0, 0, 0, .16);
       --shadow: none; --popShadow: 0 16px 40px rgba(0, 0, 0, .5);
       color-scheme: dark;
@@ -47,7 +45,6 @@
     --pri: #ffffff; --priFg: #111111; --ok: #4cc27e; --bad: #f06a6a; --badge: #4a4a4a; --badgeFg: #ffffff;
     --pop: #232322; --popLine: rgba(255, 255, 255, .08); --stage: #050505; --scrim: rgba(0, 0, 0, .5); --ring: rgba(255, 255, 255, .3);
     --note: #f7b58b; --noteFg: #1c1410; --edge: rgba(255, 255, 255, .16);
-    --beamHead: #ffffff; --beamTail: rgba(255, 178, 122, .95);
     --kbBg: #5a5a5c; --kKey: #7c7c7f; --kFn: #464648; --kInk: #ffffff; --kSel: rgba(0, 0, 0, .16);
     --shadow: none; --popShadow: 0 16px 40px rgba(0, 0, 0, .5);
     color-scheme: dark;
@@ -129,17 +126,23 @@
   .dock { flex: none; width: 100%; max-width: 688px; margin: 0 auto; padding: 0 24px 24px; }
   .box { border-radius: 24px; background: var(--input); padding: 14px 10px 10px 18px; box-shadow: inset 0 0 0 1.5px transparent; transition: box-shadow .16s ease, background .16s ease; }
   .box:focus-within { box-shadow: inset 0 0 0 1.5px var(--ring); }
-  /* the beam: switching the field from Care team to Eva sends a light once round its edge ("when you switch the care team to Eva, we should have this border beam around that float, one turn around").
-     A ring the field's own 1.5px edge, masked; in it a 96px streak (its head white-hot on dark, the accent on light, an orange tail) carried along the field's rounded outline at an even speed, 1.9 s, fading in and out */
+  /* the beam: switching the field from Care team to Eva sends a light once round its edge ("when you switch the care team to Eva, we should have this border beam around that float, one turn around"),
+     the Concierge onboarding intro's own ("keep the exact same beam border effect as the concierge onboarding intro"): the prototype's EvBeam, its rules here to the letter. The intro field's layers
+     and numbers: the edge line (1 wide, 42%), the lights spilling inward (a 9 band, blur 7, 25%, held inside), a faint halo outside (an 8 band 4 out, blur 12, 9%), all one warm conic turned
+     by --hpBm; once round in 1.9 s at an even pace, as the intro turns, fading in and out; reduced motion: a brief glow where it stands. beamRun builds the layers into the field as its first child */
   .box { position: relative; }
-  .boxBeam { position: absolute; inset: 0; z-index: 1; border-radius: inherit; padding: 1.5px; pointer-events: none; opacity: 0;
-    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); }
-  .boxBeam i { position: absolute; top: 0; left: 0; width: 96px; aspect-ratio: 1; offset-path: rect(0 auto auto 0 round 24px); offset-anchor: 90% 50%; offset-distance: 0%; background: linear-gradient(to left, var(--beamHead), var(--beamTail) 28%, transparent); }
-  .boxBeam.run { animation: boxBeamFade 1.9s ease forwards; } .boxBeam.run i { animation: boxBeamRun 1.9s cubic-bezier(.4, .1, .3, 1) forwards; }
-  @keyframes boxBeamRun { to { offset-distance: 100%; } }
-  @keyframes boxBeamFade { 0% { opacity: 0; } 8% { opacity: 1; } 86% { opacity: 1; } 100% { opacity: 0; } }
-  @media (prefers-reduced-motion: reduce) { .boxBeam.run { animation: boxBeamFade 1.2s ease forwards; } .boxBeam.run i { animation: none; offset-distance: 25%; } }
-  .boxDemo { max-width: 420px; } .boxDemo .box { padding: 16px 12px 12px 18px; } .boxDemo .boxPh { display: block; min-height: 24px; color: var(--muted); font: 15px/1.5 var(--sans); padding: 2px 0 14px; }   /* Components -> Field: the field as the chat draws it, its beam on a tap */
+  @property --hpBm { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+  .evBeam { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; }
+  .evBeam .evBm, .evBeam .evBmG, .evBeam .evBmIn, .evBeam .evBmIn > span { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; }
+  .evBeam .evBm { background: conic-gradient(from var(--hpBm), transparent 0deg 55deg, #FF9F4A 92deg, #FFB866 118deg, #FF8A3D 146deg, transparent 185deg 360deg); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; }
+  .evBeam .evBmL { inset: -.5px; padding: 1px; opacity: .42; }
+  .evBeam .evBmIn { overflow: hidden; } .evBeam .evBmIn > span { filter: blur(7px); opacity: .25; } .evBeam .evBmIn .evBm { padding: 9px; }
+  .evBeam .evBmG { inset: -4px; filter: blur(12px); opacity: .09; } .evBeam .evBmG .evBm { inset: 0; padding: 8px; }
+  .evBeam.run { animation: evBmFade 1.9s ease forwards; } .evBeam.run .evBm { animation: evBmTurn 1.9s linear forwards; }
+  @keyframes evBmTurn { from { --hpBm: 0deg; } to { --hpBm: 360deg; } }
+  @keyframes evBmFade { 0% { opacity: 0; } 8% { opacity: 1; } 86% { opacity: 1; } 100% { opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) { .evBeam.run { animation-duration: 1.2s; } .evBeam.run .evBm { animation: none; } }
+  .boxDemo { max-width: 420px; } .boxDemo .box { padding: 16px 12px 12px 18px; } .boxDemo .boxPh { display: block; min-height: 24px; color: var(--muted); font: 15px/1.5 var(--sans); padding: 2px 0 14px; }   /* Components -> Field: the field as the chat draws it, with the chat's own model menu; picking Eva from Care team plays the beam */
   .box textarea { display: block; width: 100%; min-height: 24px; max-height: 160px; resize: none; border: 0; outline: 0; background: none; color: var(--fg); font: 15px/1.5 var(--sans); padding: 2px 0; }
   .box textarea::placeholder { color: var(--muted); }
   .boxRow { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
@@ -1203,12 +1206,13 @@
   var fileMenu = function (k) {
     return [['share', 'Share'], ['eye', 'Preview'], ['download', 'Download']].map(function (it) { return '<button class="menuIt" type="button" role="menuitem" data-act="fileDo" data-do="' + it[1] + '" data-file="' + k + '">' + ic(it[0]) + it[1] + '</button>'; }).join('');
   };
-  var beamRun = function (bx) {   /* the field's beam, once round (CSS .boxBeam); played again from the start if it is already running */
-    if (!bx) return; var e = bx.querySelector(':scope > .boxBeam'); if (!e){ e = document.createElement('span'); e.className = 'boxBeam'; e.setAttribute('aria-hidden', 'true'); e.appendChild(document.createElement('i')); bx.appendChild(e); }
+  var beamRun = function (bx) {   /* the field's beam, once round (CSS .evBeam: the intro's layers, the prototype's EvBeam), built in as the field's first child; played again from the start if it is already running */
+    if (!bx) return; var e = bx.querySelector(':scope > .evBeam'); if (!e){ e = document.createElement('span'); e.className = 'evBeam'; e.setAttribute('aria-hidden', 'true'); e.innerHTML = '<span class="evBmIn"><span><i class="evBm"></i></span></span><i class="evBm evBmL"></i><span class="evBmG"><i class="evBm"></i></span>'; bx.insertBefore(e, bx.firstChild); }
     e.classList.remove('run'); void e.offsetWidth; e.classList.add('run'); clearTimeout(e._t); e._t = setTimeout(function () { e.classList.remove('run'); }, 2100); };
-  var modelMenu = function () {
+  var modelMenu = function (cur) {   /* cur: the model the pill that opened it stands on (the chat's, or the Components demo's own) */
+    cur = cur || S.model;
     return [['eva', 'mark', 'Eva', 'Answers from your Everlab record'], ['care', 'team', 'Care team', 'A clinician replies within a business day']].map(function (m) {
-      return '<button class="menuIt' + (S.model === m[0] ? ' sel' : '') + '" type="button" role="menuitemradio" data-act="modelSet" data-m="' + m[0] + '">' + ic(m[1]) + '<span>' + m[2] + '<small>' + m[3] + '</small></span>' + ic('check', 'ck') + '</button>';
+      return '<button class="menuIt' + (cur === m[0] ? ' sel' : '') + '" type="button" role="menuitemradio" aria-checked="' + (cur === m[0]) + '" data-act="modelSet" data-m="' + m[0] + '">' + ic(m[1]) + '<span>' + m[2] + '<small>' + m[3] + '</small></span>' + ic('check', 'ck') + '</button>';
     }).join('');
   };
   var plusMenu = function () { return [['doc', 'Upload a file'], ['image', 'Add a photo']].map(function (it) { return '<button class="menuIt" type="button" role="menuitem" data-act="plusDo" data-do="' + it[1] + '">' + ic(it[0]) + it[1] + '</button>'; }).join(''); };
@@ -1292,7 +1296,7 @@
     var sec = function (t, body) { return '<section class="sec"><h3>' + t + '</h3>' + body + '</section>'; };
     var sub = function (t, body) { return '<div class="sub"><span>' + t + '</span>' + body + '</div>'; };
     $('#cmpPage').innerHTML = '<div class="cmpIn"><header><h2>Concierge components</h2><p>Everything Eva can answer with, in each of its states. Every one of them works here as it does in the chat.</p></header>' +
-      sec('Field', sub('Switching from Care team to Eva: a beam once round its edge, 1.9 s', '<div class="boxDemo"><div class="box"><span class="boxPh">Ask Eva…</span><div class="boxRow"><span class="sp"></span><button class="pill" type="button" data-act="beamDemo">Switch to Eva</button></div></div></div>')) +
+      sec('Field', sub('The chat\u2019s model menu: from Care team to Eva, the Concierge intro\u2019s beam once round the field, 1.9 s', '<div class="boxDemo"><div class="box"><span class="boxPh">Message your care team…</span><div class="boxRow"><span class="sp"></span><button class="pill" type="button" data-act="model" data-demo="care" aria-haspopup="menu" aria-expanded="false"><span>Care team</span>' + ic('chevD') + '</button></div></div></div>')) +
       sec('Appointments',
         sub('Card · wide', '<div class="wrapRow">' + states.map(function (s, i) { return aptCard(keys[i], s[0], s[1]); }).join('') + '</div>') +
         sub('Card · compact', '<div class="wrapRow">' + states.map(function (s, i) { return aptCard(keys[i], s[0], s[1], true); }).join('') + '</div>') +
@@ -1388,9 +1392,13 @@
       case 'grpMore': { var g = b.closest('.grp'), o = g.classList.toggle('open'); $('span', b).textContent = o ? 'Show less' : 'Show more'; break; }
       case 'attMenu': openPop(b, fileMenu(b.closest('.att').dataset.file)); break;
       case 'fileDo': { var f = FILES[b.dataset.file]; closePop(); if (b.dataset.do === 'Preview') lbShow('<div class="im sheet"></div>', [f.n, f.m]); else toast((b.dataset.do === 'Share' ? 'Share link copied for ' : 'Downloading ') + f.n); break; }
-      case 'model': openPop(b, modelMenu(), true); break;
-      case 'modelSet': { var was = S.model; S.model = b.dataset.m; $('#modelName').textContent = S.model === 'care' ? 'Care team' : 'Eva'; closePop(); if (S.model === 'eva' && was !== 'eva') beamRun(document.getElementById('q').closest('.box')); break; }   // Care team -> Eva: the beam once round the field
-      case 'beamDemo': beamRun(b.closest('.box')); break;   // Components -> Field
+      case 'model': openPop(b, modelMenu(b.dataset.demo), true); break;
+      case 'modelSet': {   /* Care team -> Eva: the beam once round the field. The Components demo's pill (data-demo) keeps its own choice, the chat's untouched */
+        var src = popFor, demo = src && src.dataset.demo ? src : null, was = demo ? demo.dataset.demo : S.model, m = b.dataset.m; closePop();
+        if (demo){ demo.dataset.demo = m; demo.firstElementChild.textContent = m === 'care' ? 'Care team' : 'Eva'; $('.boxPh', demo.closest('.box')).textContent = m === 'care' ? 'Message your care team…' : 'Ask Eva…'; }
+        else { S.model = m; $('#modelName').textContent = m === 'care' ? 'Care team' : 'Eva'; }
+        if (m === 'eva' && was !== 'eva') beamRun((demo || document.getElementById('q')).closest('.box'));
+        break; }
       case 'plus': openPop(b, plusMenu()); break;
       case 'plusDo': closePop(); toast(b.dataset.do + ' from your device'); break;
       case 'bkBook': case 'bkTimes': case 'bkSlot': case 'bkCal': case 'bkRe': bkAct(act, b); break;   // the booking card (Proactive check-ins)
