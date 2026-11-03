@@ -1119,6 +1119,52 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
 body[data-bp="xs"], [data-ct-bp="xs"], .aqWrap.aqBpXS { --ct2xs: 100%; } body[data-bp="s"], [data-ct-bp="s"], .aqWrap.aqBpS { --ct2xs: 512px; } body[data-bp="m"], [data-ct-bp="m"], .aqWrap.aqBpM { --ct2xs: 544px; } body[data-bp="l"], body[data-bp="xl"], [data-ct-bp="l"], .aqWrap.aqBpL { --ct2xs: 576px; }   /* [data-ct-bp]: the Container doc reads a breakpoint's tokens off these very rules */
 [data-container] { box-sizing: border-box; width: 100%; margin-left: auto; margin-right: auto; }
 [data-container="2xs"] { max-width: var(--ct2xs); } [data-container="xs"] { max-width: var(--ctXs); } [data-container="sm"] { max-width: var(--ctSm); } [data-container="md"] { max-width: var(--ctMd); } [data-container="lg"] { max-width: var(--ctLg); }
+/* ---- Title group, the master (Design system -> General layout -> Title group; window.EvTitle builds it, its numbers saved as everlab:tgMaster). One title block for every page, each part an option ("some titles don't need that. That's just an option"):
+   a level and its type (Display hero, Display, H1 and its Short hero, H2 to H6); the title, on H1 in two tones (the muted part on its own line; the Short hero's inline after the comma, wrapping on); a slot (an icon, a visual, a badge)
+   above the group or at its right, vertically centred (the right one with left alignment only); a support line above the title (support top) and one under it (support bottom); an icon at either side of the words, its size the level's.
+   Left or centred. The type: raw tokens per level and per breakpoint pair, XS·S and M·L (--tg<Lv>Fs|Lh|Ls<S|L>, the weight --tg<Lv>W, the support line --tg<Lv>Sf|Sl; EvTitle writes its numbers over these defaults),
+   the pair picked by --tgL (0 XS·S, 1 M·L): the window's (992 and up), a forced body[data-bp], a frame's [data-ct-bp], a modal's .aqWrap.aqBp*. The gaps are tokens too (support top -> title --tgGapT, title -> support bottom --tgGapB,
+   both halved from H3 down; slot -> group --tgGapS; group -> the right slot --tgGapR), carried as padding by the parts, so a host's margin reset keeps them. Ink: the title the host's own; the muted part and the support lines
+   the secondary ink, 56% of it (--tgMute). The face is the host's (its surface's family: Saans in the sheets, the shell's on the desk); the master sets the size, line height, weight and tracking */
+:root { --tgL: 0;
+  --tgDhFsS: 40px; --tgDhLhS: 44px; --tgDhLsS: -1px; --tgDhFsL: 52px; --tgDhLhL: 56px; --tgDhLsL: -1.4px; --tgDhW: 300; --tgDhSf: 16px; --tgDhSl: 22px;
+  --tgDsFsS: 32px; --tgDsLhS: 38px; --tgDsLsS: -.3px; --tgDsFsL: 40px; --tgDsLhL: 46px; --tgDsLsL: -.6px; --tgDsW: 500; --tgDsSf: 16px; --tgDsSl: 22px;
+  --tgH1FsS: 26px; --tgH1LhS: 30px; --tgH1LsS: -.2px; --tgH1FsL: 28px; --tgH1LhL: 32px; --tgH1LsL: -.2px; --tgH1W: 570; --tgH1Sf: 16px; --tgH1Sl: 22px;
+  --tgH2FsS: 24px; --tgH2LhS: 30px; --tgH2LsS: -.2px; --tgH2FsL: 24px; --tgH2LhL: 30px; --tgH2LsL: -.3px; --tgH2W: 500; --tgH2Sf: 15px; --tgH2Sl: 22px;
+  --tgH3FsS: 20px; --tgH3LhS: 26px; --tgH3LsS: -.2px; --tgH3FsL: 20px; --tgH3LhL: 26px; --tgH3LsL: -.2px; --tgH3W: 500; --tgH3Sf: 14px; --tgH3Sl: 20px;
+  --tgH4FsS: 17px; --tgH4LhS: 24px; --tgH4LsS: 0px; --tgH4FsL: 17px; --tgH4LhL: 24px; --tgH4LsL: 0px; --tgH4W: 400; --tgH4Sf: 14px; --tgH4Sl: 20px;
+  --tgH5FsS: 12px; --tgH5LhS: 16px; --tgH5LsS: 1px; --tgH5FsL: 12px; --tgH5LhL: 16px; --tgH5LsL: 1px; --tgH5W: 600; --tgH5Sf: 13px; --tgH5Sl: 18px;
+  --tgH6FsS: 12px; --tgH6LhS: 16px; --tgH6LsS: 0px; --tgH6FsL: 12px; --tgH6LhL: 16px; --tgH6LsL: 0px; --tgH6W: 500; --tgH6Sf: 13px; --tgH6Sl: 18px;
+  --tgGapT: 8px; --tgGapB: 8px; --tgGapS: 16px; --tgGapR: 16px; }
+@media (min-width: 992px) { :root { --tgL: 1; } }
+body[data-bp="xs"], body[data-bp="s"], [data-ct-bp="xs"], [data-ct-bp="s"], .aqWrap.aqBpXS, .aqWrap.aqBpS { --tgL: 0; }
+body[data-bp="m"], body[data-bp="l"], body[data-bp="xl"], [data-ct-bp="m"], [data-ct-bp="l"], .aqWrap.aqBpM, .aqWrap.aqBpL { --tgL: 1; }
+.evTg { --tgFs: calc(var(--tgFsS) * (1 - var(--tgL, 0)) + var(--tgFsL) * var(--tgL, 0)); --tgLh: calc(var(--tgLhS) * (1 - var(--tgL, 0)) + var(--tgLhL) * var(--tgL, 0)); --tgLs: calc(var(--tgLsS) * (1 - var(--tgL, 0)) + var(--tgLsL) * var(--tgL, 0));
+  --tgGT: var(--tgGapT, 8px); --tgGB: var(--tgGapB, 8px); --tgMute: color-mix(in srgb, currentColor 56%, transparent); display: flex; flex-direction: column; align-items: stretch; min-width: 0; text-align: left; }
+.evTg.evTgC { align-items: center; text-align: center; }
+.evTg[data-lv="display-hero"] { --tgFsS: var(--tgDhFsS); --tgFsL: var(--tgDhFsL); --tgLhS: var(--tgDhLhS); --tgLhL: var(--tgDhLhL); --tgLsS: var(--tgDhLsS); --tgLsL: var(--tgDhLsL); --tgW: var(--tgDhW); --tgSf: var(--tgDhSf); --tgSl: var(--tgDhSl); }
+.evTg[data-lv="display"] { --tgFsS: var(--tgDsFsS); --tgFsL: var(--tgDsFsL); --tgLhS: var(--tgDsLhS); --tgLhL: var(--tgDsLhL); --tgLsS: var(--tgDsLsS); --tgLsL: var(--tgDsLsL); --tgW: var(--tgDsW); --tgSf: var(--tgDsSf); --tgSl: var(--tgDsSl); }
+.evTg[data-lv="h1"] { --tgFsS: var(--tgH1FsS); --tgFsL: var(--tgH1FsL); --tgLhS: var(--tgH1LhS); --tgLhL: var(--tgH1LhL); --tgLsS: var(--tgH1LsS); --tgLsL: var(--tgH1LsL); --tgW: var(--tgH1W); --tgSf: var(--tgH1Sf); --tgSl: var(--tgH1Sl); }
+.evTg[data-lv="h1-short"] { --tgFsS: var(--tgH1FsS); --tgFsL: var(--tgH1FsL); --tgLhS: var(--tgH1LhS); --tgLhL: var(--tgH1LhL); --tgLsS: var(--tgH1LsS); --tgLsL: var(--tgH1LsL); --tgW: var(--tgH1W); --tgSf: var(--tgH1Sf); --tgSl: var(--tgH1Sl); }
+.evTg[data-lv="h2"] { --tgFsS: var(--tgH2FsS); --tgFsL: var(--tgH2FsL); --tgLhS: var(--tgH2LhS); --tgLhL: var(--tgH2LhL); --tgLsS: var(--tgH2LsS); --tgLsL: var(--tgH2LsL); --tgW: var(--tgH2W); --tgSf: var(--tgH2Sf); --tgSl: var(--tgH2Sl); }
+.evTg[data-lv="h3"] { --tgFsS: var(--tgH3FsS); --tgFsL: var(--tgH3FsL); --tgLhS: var(--tgH3LhS); --tgLhL: var(--tgH3LhL); --tgLsS: var(--tgH3LsS); --tgLsL: var(--tgH3LsL); --tgW: var(--tgH3W); --tgSf: var(--tgH3Sf); --tgSl: var(--tgH3Sl); }
+.evTg[data-lv="h4"] { --tgFsS: var(--tgH4FsS); --tgFsL: var(--tgH4FsL); --tgLhS: var(--tgH4LhS); --tgLhL: var(--tgH4LhL); --tgLsS: var(--tgH4LsS); --tgLsL: var(--tgH4LsL); --tgW: var(--tgH4W); --tgSf: var(--tgH4Sf); --tgSl: var(--tgH4Sl); }
+.evTg[data-lv="h5"] { --tgFsS: var(--tgH5FsS); --tgFsL: var(--tgH5FsL); --tgLhS: var(--tgH5LhS); --tgLhL: var(--tgH5LhL); --tgLsS: var(--tgH5LsS); --tgLsL: var(--tgH5LsL); --tgW: var(--tgH5W); --tgSf: var(--tgH5Sf); --tgSl: var(--tgH5Sl); }
+.evTg[data-lv="h6"] { --tgFsS: var(--tgH6FsS); --tgFsL: var(--tgH6FsL); --tgLhS: var(--tgH6LhS); --tgLhL: var(--tgH6LhL); --tgLsS: var(--tgH6LsS); --tgLsL: var(--tgH6LsL); --tgW: var(--tgH6W); --tgSf: var(--tgH6Sf); --tgSl: var(--tgH6Sl); }
+.evTg:is([data-lv="h3"], [data-lv="h4"], [data-lv="h5"], [data-lv="h6"]) { --tgGT: calc(var(--tgGapT, 8px) / 2); --tgGB: calc(var(--tgGapB, 8px) / 2); }
+.evTg .evTgT { margin: 0; padding: 0; font-size: var(--tgFs); line-height: var(--tgLh); font-weight: var(--tgW); letter-spacing: var(--tgLs); color: inherit; text-wrap: pretty; }
+.evTg:is([data-lv="display-hero"], [data-lv="display"], [data-lv="h1"], [data-lv="h1-short"]) .evTgT { text-wrap: balance; }
+.evTg[data-lv="h5"] .evTgT { text-transform: uppercase; }
+.evTg .evTgM { color: var(--tgMute); }
+.evTg[data-lv="h1"] .evTgM::before { content: "\A"; white-space: pre; }   /* H1: the second tone on a line of its own (a break, so an icon after it follows its last word), up to two lines; the Short hero's inline after the comma */
+.evTg .evTgTop, .evTg .evTgBot { margin: 0; font-size: var(--tgSf); line-height: var(--tgSl); font-weight: 400; letter-spacing: 0; text-transform: none; color: var(--tgMute); text-wrap: pretty; }
+.evTg .evTgTop { padding-bottom: var(--tgGT); } .evTg .evTgBot { padding-top: var(--tgGB); }   /* the parts' rules one class above a host's element rules (.dash h1) */
+.evTgIc { display: inline-flex; align-items: center; height: 1lh; vertical-align: top; }   /* in the words' flow, hugging the first word and the last (a wrapped title too), each centred on its line */ .evTgIcL { margin-right: .5em; } .evTgIcR { margin-left: .5em; }
+.evTgIc svg { display: block; width: .875em; height: .875em; }   /* the level's size: 7/8 of its type */
+.evTgSlot { flex: none; display: flex; max-width: 100%; }
+.evTgSlotT { align-self: flex-start; padding-bottom: var(--tgGapS, 16px); } .evTgC .evTgSlotT { align-self: center; }
+.evTg.evTgSlR { flex-direction: row; align-items: center; gap: var(--tgGapR, 16px); }
+.evTgSlR > .evTgCol { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; align-items: stretch; }
 html:not(#_m):not(#_d) .arSheet .arHead .arHeadRow > .arIconBtn.arIconBtn { width: 44px !important; height: 44px !important; min-width: 44px !important; min-height: 44px !important; }   /* the flows' heads (the Async report, the Health profile, the Step flow master): the Top nav master's 44 discs; their bars keep their own markup for the progress riding in them */
 html:not(#_m):not(#_d) .evTn .evTnBtn.evTnBtn { width: var(--evTnD) !important; height: var(--evTnD) !important; min-width: var(--evTnD) !important; min-height: var(--evTnD) !important; }   /* the master's 44 over the every-dismiss 36 (above), for a control that keeps an old class (.arClose, .prX ...) for its handler */
 
@@ -1147,11 +1193,11 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
 .arSheet.hpSheet :is(.hpSec, .hpOpt, .hpTile, .hpArea, .hpEdit, .hpRowB, .hpStepB, .hpIn):focus-visible { outline: 2px solid var(--ar-blue-fg); outline-offset: 2px; }
 /* type: the questionnaire's ("question titles, descriptions and supporting information") */
 .arSheet.hpSheet .hpEy { font-family: var(--ar-font-mono); font-size: 12px; line-height: 16px; font-weight: 570; letter-spacing: 1px; text-transform: uppercase; color: oklch(var(--ar-ink) / .5); }
-.arSheet.hpSheet .hpH { margin: 0; font-family: var(--ar-font); font-size: 28px; line-height: 32px; font-weight: 570; letter-spacing: -.2px; text-wrap: balance; color: oklch(var(--ar-ink)); }
-.aqWrap:is(.aqBpXS, .aqBpS) .arSheet.hpSheet .hpH { font-size: 26px; line-height: 30px; }
+.arSheet.hpSheet .hpH { margin: 0; font-family: var(--ar-font); font-size: var(--tgH1FsL, 28px); line-height: var(--tgH1LhL, 32px); font-weight: var(--tgH1W, 570); letter-spacing: var(--tgH1LsL, -.2px); text-wrap: balance; color: oklch(var(--ar-ink)); }   /* the Title group master's H1 (EvTitle; its numbers, saved as everlab:tgMaster): M·L here, */
+.aqWrap:is(.aqBpXS, .aqBpS) .arSheet.hpSheet .hpH { font-size: var(--tgH1FsS, 26px); line-height: var(--tgH1LhS, 30px); }   /* XS·S in the phone's and the tablet's modal */
 .aqWrap .arSheet.hpSheet .hpHome .hpH, .arSheet.hpSheet .hpHome .hpH { font-size: 32px; line-height: 32px; font-weight: 570; letter-spacing: -.01em; }   /* the intro's title as the Async report's intro title (.arRvT: "same font style as the Async intro title") */
 .arSheet.hpSheet .hpD { margin: 0; font-size: 16px; line-height: 22px; color: oklch(var(--ar-ink) / .64); text-wrap: pretty; }
-.arSheet.hpSheet .hpQ { display: flex; flex-direction: column; gap: 8px; margin-bottom: 28px; }
+.arSheet.hpSheet .hpQ { display: flex; flex-direction: column; margin-bottom: 28px; } .arSheet.hpSheet .hpQ:not(.evTg) { gap: 8px; }   /* a title group drawn by the master (q()) takes the master's gaps (--tgGapT, --tgGapB: 8) */
 .arSheet.hpSheet .hpQ.hpC { align-items: center; text-align: center; }
 /* the dotted circle: rings of dots, a third lit per area done, clockwise from twelve */
 .arSheet.hpSheet .hpDots, .hpDots { display: block; flex: none; color: oklch(var(--ar-ink, 0% 0 0)); }
@@ -2431,6 +2477,65 @@ window.EvTopNav = (function () {
   }
   return { html: html, mount: mount, watch: watch, titled: titled, variant: variant, IB: IB, IX: IX, IM: IM };
 })();
+/* EvTitle: the Title group master (Design system -> General layout -> Title group; its CSS .evTg beside the Top nav's). One title block for every page, each part an option ("some titles don't need that. That's just an option"):
+   html({ level, title, muted, align, top, bottom, slot, iconL, iconR, tag, cls, id, titleCls, titleId, topCls, bottomCls, attr }) -> its markup.
+     level: 'display-hero' | 'display' | 'h1' | 'h1-short' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' (h1: the muted part on its own line; h1-short: the H1's type, the muted part inline after the comma);
+     title, muted (the second tone), top (support top), bottom (support bottom): text, escaped, or { html } for markup; slot: { at: 'top' | 'right', html } (or both, a list): an icon, a visual, a badge;
+     the right one with left alignment only (centred, it goes on top); iconL, iconR: an svg at either side of the words, the level's size, in their flow (hugging the first and the last word); align 'left' (default) | 'center';
+     tag: the title's element (h1-h6 or p; by default the level's: Display and H1 an h1); cls, id, attr on the group; titleCls, titleId on the title; topCls, bottomCls on the support lines (a host's own hooks).
+   Markup: div.evTg.evTgL|C[.evTgSlT][.evTgSlR][data-lv] > [div.evTgSlot.evTgSlotT] + [p.evTgTop] + <tag>.evTgT ([span.evTgIc] [span.evTgW] words [span.evTgM] [span.evTgIc]) + [p.evTgBot]; with a right slot the column in div.evTgCol, then div.evTgSlot.evTgSlotR.
+   node(o) -> the element; mount(el, o) -> drawn into el. Its numbers (M, D; set, save, reset): every level's type at XS·S and M·L (size, line height, tracking), its weight, its support line, the gaps;
+   written as the --tg* tokens on <html>, saved as everlab:tgMaster, read here at parse on every page (the doc's Save setup), over the CSS defaults and older saves */
+window.EvTitle = (function () {
+  var LV = [
+    ["display-hero", "Display hero", "Dh", "h1", "One big statement a page opens on: a welcome, a landing hero, an empty state"],
+    ["display", "Display", "Ds", "h1", "A standalone page’s own title (the Concierge page’s, 32/38 on the phone)"],
+    ["h1", "H1 · Hero", "H1", "h1", "A flow’s step title and a marketing title in two tones, the muted part on its own line (the Health profile’s steps, Send a gift’s, the Concierge phases)"],
+    ["h1-short", "H1 · Short hero", "H1", "h1", "The H1 with its muted part inline after a comma, wrapping on"],
+    ["h2", "H2", "H2", "h2", "A page title: the desk’s main pages (Overview, Insights, Services, My journey, My plan, My account), a modal’s or a sheet’s H1 under the Top nav"],
+    ["h3", "H3", "H3", "h3", "A section’s title, a small card’s or a variant’s H1 (the Top nav A and B bar title’s size)"],
+    ["h4", "H4", "H4", "h4", "A card’s or a group’s title, in the text’s weight"],
+    ["h5", "H5", "H5", "h5", "An overline: a label over a list or a section, uppercase, letter-spaced"],
+    ["h6", "H6", "H6", "h6", "The smallest heading: a caption’s title, a meta label"]
+  ];
+  var KEY = {}, TAG = {}; LV.forEach(function (l) { KEY[l[0]] = l[2]; TAG[l[0]] = l[3]; });
+  var D = {   /* the defaults (the CSS :root ones): per level, XS·S size / line height / tracking (…S), M·L (…L), weight (W), support line size / line height (Sf, Sl); the gaps */
+    DhFsS: 40, DhLhS: 44, DhLsS: -1, DhFsL: 52, DhLhL: 56, DhLsL: -1.4, DhW: 300, DhSf: 16, DhSl: 22,
+    DsFsS: 32, DsLhS: 38, DsLsS: -.3, DsFsL: 40, DsLhL: 46, DsLsL: -.6, DsW: 500, DsSf: 16, DsSl: 22,
+    H1FsS: 26, H1LhS: 30, H1LsS: -.2, H1FsL: 28, H1LhL: 32, H1LsL: -.2, H1W: 570, H1Sf: 16, H1Sl: 22,
+    H2FsS: 24, H2LhS: 30, H2LsS: -.2, H2FsL: 24, H2LhL: 30, H2LsL: -.3, H2W: 500, H2Sf: 15, H2Sl: 22,
+    H3FsS: 20, H3LhS: 26, H3LsS: -.2, H3FsL: 20, H3LhL: 26, H3LsL: -.2, H3W: 500, H3Sf: 14, H3Sl: 20,
+    H4FsS: 17, H4LhS: 24, H4LsS: 0, H4FsL: 17, H4LhL: 24, H4LsL: 0, H4W: 400, H4Sf: 14, H4Sl: 20,
+    H5FsS: 12, H5LhS: 16, H5LsS: 1, H5FsL: 12, H5LhL: 16, H5LsL: 1, H5W: 600, H5Sf: 13, H5Sl: 18,
+    H6FsS: 12, H6LhS: 16, H6LsS: 0, H6FsL: 12, H6LhL: 16, H6LsL: 0, H6W: 500, H6Sf: 13, H6Sl: 18,
+    GapT: 8, GapB: 8, GapS: 16, GapR: 16 },
+    M = JSON.parse(JSON.stringify(D)), K = 'everlab:tgMaster', root = document.documentElement;
+  var unit = function (k) { return /W$/.test(k) ? '' : 'px'; };
+  var put = function (k) { root.style.setProperty('--tg' + k, M[k] + unit(k)); };
+  var tok = function () { Object.keys(M).forEach(put); };
+  var esc = function (t) { return String(t == null ? '' : t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); };
+  var has = function (v) { return v != null && v !== false && (typeof v === 'object' ? v.html != null && v.html !== '' : String(v) !== ''); };
+  var txt = function (v) { return v && typeof v === 'object' ? String(v.html) : esc(v); };
+  function html(o) {
+    o = o || {}; var lv = KEY[o.level] ? o.level : 'h2', al = o.align === 'center' ? 'C' : 'L', tag = /^(h[1-6]|p)$/.test(o.tag || '') ? o.tag : TAG[lv], sT = null, sR = null, ic = !!(o.iconL || o.iconR);
+    [].concat(o.slot || []).forEach(function (x) { if (!x || !has(x.html)) return; if (x.at === 'right' && al === 'L') { if (!sR) sR = x; } else if (!sT) sT = x; });
+    var w = txt(o.title) + (has(o.muted) ? ' <span class="evTgM">' + txt(o.muted) + '</span>' : '');
+    var t = '<' + tag + ' class="evTgT' + (ic ? ' evTgHasIc' : '') + (o.titleCls ? ' ' + o.titleCls : '') + '"' + (o.titleId ? ' id="' + esc(o.titleId) + '"' : '') + '>' +
+      (o.iconL ? '<span class="evTgIc evTgIcL" aria-hidden="true">' + o.iconL + '</span>' : '') + (ic ? '<span class="evTgW">' + w + '</span>' : w) + (o.iconR ? '<span class="evTgIc evTgIcR" aria-hidden="true">' + o.iconR + '</span>' : '') + '</' + tag + '>';
+    var col = (sT ? '<div class="evTgSlot evTgSlotT">' + sT.html + '</div>' : '') + (has(o.top) ? '<p class="evTgTop' + (o.topCls ? ' ' + o.topCls : '') + '">' + txt(o.top) + '</p>' : '') + t +
+      (has(o.bottom) ? '<p class="evTgBot' + (o.bottomCls ? ' ' + o.bottomCls : '') + '">' + txt(o.bottom) + '</p>' : '');
+    return '<div class="evTg evTg' + al + (sT ? ' evTgSlT' : '') + (sR ? ' evTgSlR' : '') + (o.cls ? ' ' + o.cls : '') + '" data-lv="' + lv + '"' + (o.id ? ' id="' + esc(o.id) + '"' : '') + (o.attr ? ' ' + o.attr : '') + '>' +
+      (sR ? '<div class="evTgCol">' + col + '</div><div class="evTgSlot evTgSlotR">' + sR.html + '</div>' : col) + '</div>';
+  }
+  function node(o) { var t = document.createElement('template'); t.innerHTML = html(o); return t.content.firstElementChild; }
+  function mount(el, o) { if (!el) return null; el.innerHTML = html(o); return el.firstElementChild; }
+  var load = function () { try { var v = JSON.parse(localStorage.getItem(K) || 'null'); if (v && typeof v === 'object') Object.keys(M).forEach(function (k) { if (typeof v[k] === 'number' && isFinite(v[k])) M[k] = v[k]; }); } catch (e) {} tok(); };
+  load();
+  return { LV: LV, M: M, D: D, K: K, key: function (lv) { return KEY[lv] || 'H2'; }, html: html, node: node, mount: mount,
+    set: function (k, v) { if (!(k in D) || typeof v !== 'number' || !isFinite(v)) return; M[k] = v; put(k); },
+    save: function () { try { localStorage.setItem(K, JSON.stringify(M)); return true; } catch (e) { return false; } },
+    reset: function () { Object.keys(D).forEach(function (k) { M[k] = D[k]; }); try { localStorage.removeItem(K); } catch (e) {} tok(); } };
+})();
 /* EvMagnet: a row of cards swiped by hand, the magnet one ("if you swipe more than 50%, you go to the second card. If not, you come back to the normal card"), once for every carousel: the Plan's goals, the Services' recommended row.
    Dragged by hand, a mouse as a finger (a mouse cannot pan a scroller, and a press-and-pull only selected the text); a drag more down than across is left to the page's scroll; the row's snapping off while it moves.
    Let go: half a card's travel (and its gap) or more goes on to the next, or back to the one before; less springs back to its own. The glide 240 ms off a quintic, as the Records carousel's; the last card stops at the row's end. A drag never opens a card.
@@ -3280,7 +3385,9 @@ window.EvConsent = (function () {
     }
 
     /* parts */
-    var q = function (ey, t, d, c) { return h('div', { class: 'hpQ' + (c ? ' hpC' : '') }, ey ? h('span', { class: 'hpEy', text: ey }) : null, h('h2', { class: 'hpH', text: t }), d ? h('p', { class: 'hpD', text: d }) : null); };
+    var q = function (ey, t, d, c) {   /* a step's title group: the Title group master (EvTitle, Design system -> General layout -> Title group), H1, its title an h2; the HP's hooks kept for its context rules (hpQ, hpC, hpEy, hpH, hpD) */
+      if (window.EvTitle) return window.EvTitle.node({ level: 'h1', tag: 'h2', top: ey, title: t, bottom: d, align: c ? 'center' : 'left', cls: 'hpQ' + (c ? ' hpC' : ''), topCls: 'hpEy', titleCls: 'hpH', bottomCls: 'hpD' });
+      return h('div', { class: 'hpQ' + (c ? ' hpC' : '') }, ey ? h('span', { class: 'hpEy', text: ey }) : null, h('h2', { class: 'hpH', text: t }), d ? h('p', { class: 'hpD', text: d }) : null); };
     var err = function (t) { return h('span', { class: 'hpErr', role: 'alert', hidden: !t }, ic(14, P.err, 1.5), h('span', { text: t || '' })); };
     var setErr = function (f, t) { var e = f.querySelector('.hpErr'); f.classList.toggle('hpBad', !!t); if (e) { e.hidden = !t; e.lastChild.textContent = t || ''; } };
     function choice(L, get, set, multi, onChange) {   // option cards: one, or as many as wanted ('none' alone)
@@ -4112,7 +4219,7 @@ window.EvConsent = (function () {
     BUILD['gift.when'] = function (scr, ans) {
       /* the occasion (optional, its chips; tapped again, none) and the delivery: Send now, or On a date with the calendar (from tomorrow to 12 months ahead); Christmas suggests the 25th */
       if (ans.occ === undefined) ans.occ = '';   /* seen: no occasion is an answer (a later jump keeps it) */
-      var nm = gfName(ans, 'them'), sub = h('p', { class: 'hpD' }), Q = q('', 'When should it arrive?', ''), calOpen = ans.dlv === 'date' && !ans.date;
+      var nm = gfName(ans, 'them'), sub = h('p', { class: 'evTgBot hpD' }), Q = q('', 'When should it arrive?', ''), calOpen = ans.dlv === 'date' && !ans.date;
       Q.appendChild(sub); scr.appendChild(Q);
       var min = new Date(GF_TODAY.getFullYear(), GF_TODAY.getMonth(), GF_TODAY.getDate() + 1), max = new Date(GF_TODAY.getFullYear() + 1, GF_TODAY.getMonth(), GF_TODAY.getDate());
       var xmas = function () { if (ans.occ === 'xmas' && ans.dlv === 'date' && !ans.date) ans.date = '2026-12-25'; };
