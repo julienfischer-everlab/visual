@@ -217,13 +217,17 @@
   @media (prefers-reduced-motion:reduce){
     .sky .img, .top, .rc > *{transition:none;animation:none !important;opacity:1;transform:none;filter:none;}
   }
+  /* a still (#still on the page's link: the Documentation's picture of Send a gift's last page): the page at rest from its first frame, no entrance, no scrollbar */
+  :root.still *, :root.still *::after{transition:none !important;animation:none !important;}
+  :root.still .top, :root.still .rc > *{opacity:1;transform:none;filter:none;}
+  :root.still, :root.still *{scrollbar-width:none;} :root.still::-webkit-scrollbar, :root.still *::-webkit-scrollbar{display:none;width:0;height:0;}
 
 /* Secondary CTAs always on a 32px glass blur ("CTA secondary always blur bg 32px") */
 .btn.sec { -webkit-backdrop-filter: blur(32px) !important; backdrop-filter: blur(32px) !important; }
 </style>
 </head>
 <body>
-<script>if (location.hash === '#nobg') document.documentElement.classList.add('noBg'); if (/(^|[#&])warm(&|$)/.test(location.hash)) document.documentElement.classList.add('noBg', 'warmBg');</script>
+<script>if (/(^|[#&])nobg(&|$)/.test(location.hash)) document.documentElement.classList.add('noBg'); if (/(^|[#&])warm(&|$)/.test(location.hash)) document.documentElement.classList.add('noBg', 'warmBg');</script>
 <div class="skyClip" aria-hidden="true"><div class="sky" id="sky"><div class="img"></div></div></div>
 <header class="top"><a class="logo" href="#" data-inert aria-label="Everlab"><svg aria-hidden="true" focusable="false" viewBox="0 0 124 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g clip-path="url(#grLogoClip)">
@@ -265,6 +269,13 @@
   var $ = function(id){ return document.getElementById(id); };
   var root = document.documentElement;
   if (/(^|[#&])light(&|$)/.test(location.hash)) root.dataset.theme = 'light';
+  if (/(^|[#&])still(&|$)/.test(location.hash)) root.classList.add('still', 'on');   // a still: at rest at once (the Documentation's picture)
+  /* a gift's own data (#gift=<JSON> on the page's link): the prototype's Send a gift ends on this page, filled with the gift just paid for ("This is the Receipt! already designed").
+     { first, last, email, product, items: [...], dlv: 'now' | 'date', date: 'YYYY-MM-DD', occ, msg, pEmail }. None given: the page's own story (Marc's gift to Olive) */
+  var G = (function(){ var m = /(?:^#|&)gift=([^&]*)/.exec(location.hash); if (!m) return null; try { var d = JSON.parse(decodeURIComponent(m[1])); return d && typeof d === 'object' ? d : null; } catch (e){ return null; } })();
+  var MON = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  var gDay = (function(){ var m = G && /^(\d{4})-(\d\d)-(\d\d)$/.exec(G.date || ''); return m ? { long: +m[3] + ' ' + MON[+m[2] - 1], short: +m[3] + ' ' + MON[+m[2] - 1].slice(0, 3) + ' ' + m[1] } : null; })();   // on 25 December (the line under the title); 25 Dec 2026 (Delivery)
+  if (G) root.classList.toggle('sched', G.dlv === 'date' && !!gDay);   // sent now, or on the gifting date: the title, the line and Delivery follow it
   // the rows: the label, the value; no icons ("remove icons"; IC kept for reference)
   var IC = {
     paid: '<path d="M4 2.5h8v11l-1.6-1-1.2 1-1.2-1-1.2 1-1.2-1L4 13.5z"/><path d="M6 5.8h4M6 8.3h4"/>',
@@ -284,11 +295,22 @@
     ['Gift details', [['occ', 'Occasion', 'Birthday'], ['msg', 'Message', '“Happy Birthday. I want you around for a long time.”', 'msg']]]
   ];
   var esc = function(t){ return String(t).replace(/[&<>"]/g, function(c){ return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  if (G){   /* the gift given: the same three cards, its words in them; no occasion picked, no Occasion row */
+    var gNm = String(G.first || '').trim() || 'them', gFull = (String(G.first || '') + ' ' + String(G.last || '')).trim();
+    GROUPS = [
+      ['You gifted a ' + (G.product || 'Everlab membership'), [], ''],
+      ['Recipient', [['for', 'Name', gFull || '—'], ['mail', 'Email', String(G.email || '').trim() || '—'], ['when', 'Delivery', ['As soon as your payment is confirmed', gDay ? gDay.short : '']]]],
+      ['Gift details', (G.occ ? [['occ', 'Occasion', G.occ]] : []).concat([['msg', 'Message', G.msg || '—', 'msg']])]
+    ];
+    var sub = document.querySelector('.rc .sub');
+    if (sub) sub.innerHTML = 'Thank you for giving ' + esc(gNm) + ' the gift of health.<br>We’ll let ' + esc(gNm) + ' know <span class="ifNow">shortly</span><span class="ifSch">on ' + esc(gDay ? gDay.long : '') + '</span>, and your receipt is on its way to <b>' + esc(String(G.pEmail || '').trim() || 'your inbox') + '</b>.';
+  }
   var row = function(r){ return '<div class="row' + (r[3] ? ' ' + r[3] : '') + '"><dt>' + esc(r[1]) + '</dt><dd>' + (r[0] === 'mail' ? esc(r[2]).replace('@', '@<wbr>') : Array.isArray(r[2]) ? '<span class="ifNow">' + esc(r[2][0]) + '</span><span class="ifSch">' + esc(r[2][1]) + '</span>' : esc(r[2])) + '</dd></div>'; };   // a value of two: sent now, or scheduled   // an address breaks after its @ when it must (2 columns)
   $('grps').innerHTML = GROUPS.map(function(g, i){ return '<div class="grp' + (i === 0 ? ' grpVis' : '') + '"><div class="grpTop"><h3 class="grpH" id="grpH' + i + '">' + esc(g[0]) + '</h3>' + (g[2] ? '<span class="grpBadge">' + esc(g[2]) + '</span>' : '') + (i === 0 ? '<i class="grpImg" aria-hidden="true"></i>' : '') + '</div>' + (g[1].length ? '<dl class="rows" aria-labelledby="grpH' + i + '">' + g[1].map(row).join('') + '</dl>' : '') + '</div>'; }).join('');
   // Gifted product: what the gift includes (the Gift page's list and its icons), four then the rest behind Show all
   var INC = ['A 45-minute onboarding consult with an Everlab doctor', 'Advanced blood panel \u2014 100+ biomarkers across 50 health areas', 'DEXA scan for body composition and bone density', 'A 90-minute physical assessment, including VO\u2082 max', 'Nutrition assessment with an Everlab nutritionist', 'Re-testing part-way through, plus a full 12-month review'];
   var INC_IC = ['<path d="M4 5.5h12a1.5 1.5 0 0 1 1.5 1.5v6A1.5 1.5 0 0 1 16 14.5H9l-4 3v-3H4A1.5 1.5 0 0 1 2.5 13V7A1.5 1.5 0 0 1 4 5.5z"/>', '<path d="M10 2.5s5.5 6 5.5 10a5.5 5.5 0 0 1-11 0c0-4 5.5-10 5.5-10z"/>', '<rect x="3.5" y="3.5" width="13" height="13" rx="2"/><path d="M6.5 10h7M10 6.5v7"/>', '<path d="M2.5 10h4l1.8-4.5 3.4 9 1.8-4.5h4"/>', '<path d="M3.5 16.5C3.5 9 8 4.5 16.5 3.5c1 8.5-3.5 13-13 13z"/><path d="M3.5 16.5 12 8"/>', '<path d="M16 8.5a6 6 0 0 0-10.9-2M4 11.5a6 6 0 0 0 10.9 2"/><path d="M16 3.5v5h-5M4 16.5v-5h5"/>'];
+  if (G && Array.isArray(G.items) && G.items.length) INC = G.items.map(String);   // the plan given: its own list (four, then See more when it has more)
   var SHOW = 4;
   (function(){ var g = $('grps').querySelector('.grp'); if (!g) return;
     var box = document.createElement('div'); box.className = 'inc' + (INC.length > SHOW ? ' shut' : '');
@@ -306,7 +328,7 @@
   if (/(^|[#&])web(&|$)/.test(location.hash)) root.classList.remove('inApp');
   if (/(^|[#&])split(&|$)/.test(location.hash)) root.classList.add('split');   // the page's own link, the groups as three cards   // the page's own link, bought on the web: no CTA
   if (/(^|[#&])cols(&|$)/.test(location.hash)) root.classList.add('cols');   // the page's own link, the properties in 2 columns
-  if (/(^|[#&])sched(&|$)/.test(location.hash)) root.classList.add('sched');
+  if (!G && /(^|[#&])sched(&|$)/.test(location.hash)) root.classList.add('sched');   // a gift given says it itself
   if (/(^|[#&])vis(&|$)/.test(location.hash)) root.classList.add('cardVis');   // the page's own link, the product card's picture   // the page's own link, the gift scheduled
   document.addEventListener('click', function(e){ var a = e.target.closest('[data-inert]'); if (!a) return; e.preventDefault();   // the links lead nowhere in the prototype
     if (a.dataset.go === 'overview' && window.parent !== window) try { window.parent.postMessage({ everlab: 'gr:overview' }, '*'); } catch (x) {} });   // Back to overview: the app shows its Overview
