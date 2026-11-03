@@ -19626,3 +19626,14 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Components › Field: the demo row is the composer's own (+, the pill, the send).
 - **Tweaks › Chat › Conversation**: an edited conversation keeps what the chat adds to it (a booking made, Eva's confirmation, a question asked), so Save keeps exactly the turns the editor lists. The list's foot fades while there is more below.
 - Checked with Playwright: concierge.html at desk and 390 (both themes), the app's Chat page with the editor, Save and reload, the in-app chat at XS (both themes) and S light, the desk sidebar contracted.
+## "cant click on CTA anymore" (the blood test's Complete your test)
+
+- **The screen**: Advanced Blood Testing as the Timeline's "Foundational blood testing (40+ biomarkers)" row opens it (its own two steps, Complete your test then Get your results, at the first). Opened from the row its button reads Continue; stepped there with the Flow panel or the Next arrow it reads Complete your test, as in the screenshot. XS, M and L alike.
+- **Not a swallowed tap**: tapped with the real mouse, pointerdown, pointerup and click all land on the button (nothing over it: no sheet, no overlap band, no Flow panel), no error, no preventDefault. The click reached the status CTA's handler, and the handler had nothing for it: it only knew the tasks, the stress test, a Book step, the microbiome and the MRI. Every other step's button did nothing, the blood test's Find a centre too.
+- **Fix, in that one handler**: a button with no action of its own now walks the demo a step on, as the MRI's, the kit's and the stress test's buttons and the Next arrow already did. Complete your test (or Continue) goes to Get your results (Waiting for results), Find a centre to Your sample is with the lab.
+  - A **Book** label opens the booking, even on a step that is not named Book.
+  - **Add to calendar** says "Added to your calendar." and leaves the booking where it is. The MRI's own Add to calendar still walks its stages.
+  - **See first results** scrolls down to the results, as See results does.
+  - Pages that are not under way (request, suggested, purchase, claim, later, soon, locked, done) are left as they were.
+- **Also live now** (every service page's CTA tapped step by step, before and after): Join the call and Join your review (Briefing, Nutrition, Diagnostics Review, Results review), Go to your appointment or assessment (MRI, Skin, Physical), View report (Diagnostics Review, intake), Complete your intake, Confirm delivery and Collect sample (Genetic test), and Add to calendar on every booked page. 30 dead buttons before, none after.
+- **Checked on the same screen**: Back, More (…), the Instructions and Documents tabs and the step card (Your progress) all respond. The referral's **Show** still does nothing: it shares the report and video items' "no action needed on click".
