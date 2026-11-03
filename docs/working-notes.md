@@ -19646,6 +19646,12 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **The Chat's drawer on landing**: at XS the conversations drawer was showing at x=0 on arrival and sliding out over 340 ms. Root cause in concierge.html: the panel's first style is the desk's (sidebar in place), then `layout()` adds `.mob` and the sidebar's transform transition plays it out to its closed place. `layout()` now sets `.mob` with the drawer's transition off for that frame (`.app.noSlide`), so it is closed from the first frame; only the menu button slides it in.
 - **Checked** (rAF-sampled, the drawer's x every frame for 3 s): Page menu at XS and S (drawer closed from the first frame), M and L (the desk's sidebar is the page's column, at x=0, no animation), the hash change to #concierge, the Overview's ask (`_cc.ask`, `_cc.fresh`), Contact us (`_cc.run` with Care team), Persona #2 switched on the Chat, and a saved setup (XS, Persona #2, an edited conversation) reloaded then the Chat opened. The beam: held and quick tap, dark and light, at XS.
 - **Not the Chat**: landing on the URL #concierge opens the Concierge intro flow (the Past results' Concierge, page "Concierge"), not the Chat page; left as is.
+- **Review fixes (beam on press)**:
+  - The open that waits on the beam's round can be stopped: EvAsk's close cancels it (Escape, a change of breakpoint, everlab:mode), a press anywhere else (a tab, the page) cancels it, a double tap opens once, and it only opens on a button still on screen. Before, a tap then Insights opened the card over Insights.
+  - Reduced motion: the ring doesn't turn, so the card opens at once.
+  - The ring is turned so its bright head starts at the top (it started at the lower right).
+  - Light theme: the head was cream on white glass, barely there. The press ring now uses a deeper orange and a slightly wider line on light, as the Overview's field star does. The shared Eva beam star is unchanged.
+  - Still to decide: a quick tap opens Ask Everlab up to 700 ms after the press, while the round finishes. A shorter wait is a one-number change.
 
 
 
