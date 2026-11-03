@@ -20186,3 +20186,8 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - **Gift intro.** The body's rise 1.5× faster: .73 s (was 1.1); the title's push .73 s after .08 (was 1.1 after .12); the picture still comes in at the body's half way (.37 s), the video then too.
 - **Fix: the keyboard stayed up over Check and pay.** Two causes: a page's focused field leaving the screen never says focusout (show() now lets it go first, so the letters keyboard or number pad goes down with the page; a page that wants one focuses its own), and the merge's picture of the note card carried the note's `data-focus` textarea, which the page's focus pass then focused (the copy is inert now).
 - **Checked** (Playwright, dist, XS 1440 × 1000): Check and pay order H1, envelope, H2 24/500 + line, plan; the envelope's card 310 × 188, mark 34 at 10/10, 20.6 corners, its children mark / line / note / signature; the merge and the opened envelope show the same card as the note step; keyboard up on Their note (254), down on Check and pay (0), up again back on Their note; Occasion's sub title 14 px, 8 under its label; intro body 950 → 630 in about .7 s; no console errors.
+
+## Gift intro, Detail: icon to text gap 16
+
+- The gap between each row's icon circle and its title and line is now 16, up from 12 ("icon content gap +4px").
+- **Checked** (Playwright, dist, XS, Intro = Detail): all three rows measure 16 from the icon circle's right edge to the text. No console errors.
