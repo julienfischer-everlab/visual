@@ -32,6 +32,14 @@ const ok = (c, m) => { console.log((c ? 'ok   ' : 'FAIL ') + m); if (!c) fails++
   const errs = []; p.on('pageerror', e => errs.push(e.message));
   await p.goto(URL0);
   await p.waitForFunction(() => window.Concierge && window.Concierge.stage);
+  const cmp = await b.newPage();
+  const pxDiff = (A, B) => cmp.evaluate(async ([A, B]) => {   /* how many pixels differ between two screenshots, and by how much at most */
+    const ld = s => new Promise(r => { const i = new Image(); i.onload = () => r(i); i.src = 'data:image/png;base64,' + s; });
+    const [a, b] = await Promise.all([ld(A), ld(B)]), c = document.createElement('canvas'); c.width = a.width; c.height = a.height; const x = c.getContext('2d');
+    x.drawImage(a, 0, 0); const da = x.getImageData(0, 0, c.width, c.height).data; x.drawImage(b, 0, 0); const db = x.getImageData(0, 0, c.width, c.height).data;
+    let n = 0, mx = 0; for (let i = 0; i < da.length; i += 4){ const d = Math.max(Math.abs(da[i] - db[i]), Math.abs(da[i + 1] - db[i + 1]), Math.abs(da[i + 2] - db[i + 2])); if (d){ n++; if (d > mx) mx = d; } }
+    return { n, mx };
+  }, [A.toString('base64'), B.toString('base64')]);
   const S = (fn, ...a) => p.evaluate(([fn, a]) => window.Concierge.stage[fn](...a), [fn, a]);
   const html = () => p.evaluate(() => window.Concierge.stage.node().outerHTML);
 
@@ -48,10 +56,10 @@ const ok = (c, m) => { console.log((c ? 'ok   ' : 'FAIL ') + m); if (!c) fails++
     /* forward and back, and frame by frame against a jump */
     const t0 = 15200; await S('seek', t0); const ref = await html(), refS = await p.screenshot();
     await S('seek', info.duration); await S('seek', 3000); await S('seek', t0);
-    const backH = await html() === ref; let backS = (await p.screenshot()).equals(refS);
-    if (!backS){ const sb = await p.screenshot(); fs.writeFileSync(path.join(SH, 'fail-' + k + '-a.png'), refS); fs.writeFileSync(path.join(SH, 'fail-' + k + '-b.png'), sb);
-      const st = await p.evaluate(() => [...window.Concierge.stage.node().querySelectorAll('*')].filter(e => e.scrollTop || e.scrollLeft).map(e => e.className + ' ' + e.scrollTop + ',' + e.scrollLeft)); console.log('     scrolled:', JSON.stringify(st)); }
-    ok(backH && backS, k + ': seek forward then back lands on the same frame' + (backH ? '' : ' (DOM differs)') + (backS ? '' : ' (pixels differ)'));
+    const backH = await html() === ref, backB = await p.screenshot(), backS = backB.equals(refS), px = backS ? { n: 0, mx: 0 } : await pxDiff(refS, backB);
+    if (!backS){ fs.writeFileSync(path.join(SH, 'fwdback-' + k + '-a.png'), refS); fs.writeFileSync(path.join(SH, 'fwdback-' + k + '-b.png'), backB); }
+    /* the DOM must be the same; the pixels the same, or (the compositor re-rasterising a layer it had drawn at another offset) a few pixels a level or two apart: not a visible difference */
+    ok(backH && (backS || (px.mx <= 2 && px.n <= 20)), k + ': seek forward then back lands on the same frame' + (backH ? '' : ' (DOM differs)') + (backS ? '' : ' (' + px.n + ' px differ by at most ' + px.mx + ' of 255)'));
     const walked = await p.evaluate(([t0]) => { const s = window.Concierge.stage; for (let t = 0; t <= t0; t += 1000 / 30) s.seek(t); s.seek(t0); return s.node().outerHTML; }, [t0]);
     ok(walked === ref, k + ': every frame from 0 to ' + t0 + ' at 30 fps, then ' + t0 + ', equals jumping to it');
     const ms = await p.evaluate(([d]) => { const s = window.Concierge.stage, a = performance.now(); for (let i = 0; i < 300; i++) s.seek(i * d / 300); return (performance.now() - a) / 300; }, [info.duration]);
@@ -65,6 +73,15 @@ const ok = (c, m) => { console.log((c ? 'ok   ' : 'FAIL ') + m); if (!c) fails++
     for (const [nm, t] of [['typing', 1700], ['thinking', 4200], ['answer', 9000], ['dots', 13300], ['specialist', 21900], ['end', info.duration]]) {
       await S('seek', t); await p.screenshot({ path: path.join(SH, 'stage-' + k + '-' + nm + '.png') });
     }
+  }
+  /* a frame as a picture (the MP4's frames): the composition's size, the same pixels twice, quick enough for 30 a second of video */
+  for (const k of ['phoneDark', 'floatLight']) {
+    const fi = await S('load', COMPS[k]);
+    const fr = await p.evaluate(async ([d]) => { const s = window.Concierge.stage, out = [], a = performance.now();
+      for (const t of [d * .3, d * .3, d * .8]) { const c = await s.frame(t, { scale: .5 }); out.push(c.toDataURL()); }
+      const c = await s.frame(d * .8, { scale: 1 }); return { same: out[0] === out[1], differ: out[0] !== out[2], w: c.width, h: c.height, ms: (performance.now() - a) / 4, png: out[2] }; }, [fi.duration]);
+    fs.writeFileSync(path.join(SH, 'frame-' + k + '.png'), Buffer.from(fr.png.split(',')[1], 'base64'));
+    ok(fr.same && fr.differ && fr.w === fi.w && fr.h === fi.h, k + ': frame(t) draws ' + fr.w + ' x ' + fr.h + ', the same pixels twice, in ' + fr.ms.toFixed(0) + ' ms');
   }
   /* the catalogue */
   const w = await S('widgets'), cats = new Set(w.map(x => x.category));

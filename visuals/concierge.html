@@ -710,6 +710,9 @@
   .stgFloat .msg.a > .txt { width: fit-content; max-width: min(100%, 560px); padding: 12px 18px; border-radius: 22px; background: var(--card); }
   .stgFloat .stgThW { width: fit-content; padding: 10px 16px; border-radius: 22px; background: var(--card); }
   .stgFloat .msg.u .bub { box-shadow: 0 1px 2px rgba(0, 0, 0, .04); }
+  /* light: the washes vanish on a light ground, so the cards take the chat's raised surface (the booking card's white and its shadow) */
+  html[data-theme="light"] .stgFloat { --card: var(--bkBg); }
+  html[data-theme="light"] .stgFloat :is(.wc, .apt, .grp, .clin, .goal, .sug, .note, .trend), html[data-theme="light"] .stgFloat .msg.a > .txt, html[data-theme="light"] .stgFloat .stgThW { box-shadow: var(--bkShadow); }
 </style>
 </head>
 <body>
@@ -2117,8 +2120,42 @@
     var specialists = function () { return SPECS.map(function (s) { return { key: s.key, name: s.n, role: s.r, avatar: s.av || '', initials: s.ini || iniOf(s.n) }; }); };
     var colors = function () { return [['Ink', '#0d0d0c'], ['Sidebar', '#181818'], ['Paper', '#ffffff'], ['Sand', '#efe7d8'], ['Stage', '#e9e1d2'], ['Warm white', '#f4f2ed'], ['Brown', '#2e1f1a'], ['Orange', '#f26b3a'], ['Peach', '#f4a067']].map(function (c) { return { name: c[0], value: c[1] }; }); };
 
+    /* ---------- a frame as a picture (the MP4's frames): seek(t), then this very DOM with this page's own CSS drawn into a canvas through an SVG foreignObject, the composition's size
+       (times o.scale). Pictures become data URLs first (once each), so the frame needs nothing from outside. Nothing is laid out again: it is the preview's own markup ---------- */
+    var CSSF = null, DURL = {};
+    var cssAll = function () { return CSSF || (CSSF = $$('style').map(function (s) { return s.textContent; }).join('\n').replace(/:root\b/g, 'html').replace(/\]\]>/g, ']] >')); };
+    var toData = function (u) {
+      if (!u || /^data:/.test(u)) return Promise.resolve(u);
+      if (!DURL[u]) DURL[u] = fetch(new URL(u, location.href).href).then(function (r) { return r.blob(); }).then(function (b) { return new Promise(function (res) { var fr = new FileReader(); fr.onload = function () { res(fr.result); }; fr.onerror = function () { res(''); }; fr.readAsDataURL(b); }); }).catch(function () { return ''; });
+      return DURL[u];
+    };
+    var frame = function (ms, o) {
+      o = o || {}; if (!C) return Promise.reject(new Error('Nothing loaded'));
+      return ready.then(function () {
+        seek(ms);
+        var W = geo.W, H = geo.H, sc = Math.max(.1, +o.scale || 1), x = new XMLSerializer().serializeToString(host), urls = {};
+        x.replace(/\ssrc="([^"]+)"/g, function (m, u) { urls[u.replace(/&amp;/g, '&')] = 1; return m; }).replace(/url\((?:&quot;|["'])?([^"')&]+)(?:&quot;|["'])?\)/g, function (m, u) { urls[u] = 1; return m; });
+        var keys = Object.keys(urls).filter(function (u) { return !/^data:/.test(u); });
+        return Promise.all(keys.map(toData)).then(function (ds) {
+          keys.forEach(function (u, i) { if (ds[i]) x = x.split(u.replace(/&/g, '&amp;')).join(ds[i]); });
+          var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + W + '" height="' + H + '"><foreignObject x="0" y="0" width="' + W + '" height="' + H + '">' +
+            '<html xmlns="http://www.w3.org/1999/xhtml" class="stg emb" data-theme="' + C.theme + '"><head><style><![CDATA[' + cssAll() +
+            '\n#stg{position:absolute!important;left:0!important;top:0!important;transform:none!important;display:block!important}]]></style></head><body style="margin:0;background:transparent">' + x + '</body></html></foreignObject></svg>';
+          return new Promise(function (res, rej) {
+            var im = new Image(); im.decoding = 'sync';
+            im.onload = function () {
+              var cv = o.canvas || D.createElement('canvas'); cv.width = Math.round(W * sc); cv.height = Math.round(H * sc);
+              var g = cv.getContext('2d'); g.clearRect(0, 0, cv.width, cv.height); g.drawImage(im, 0, 0, cv.width, cv.height); res(cv);
+            };
+            im.onerror = function () { rej(new Error('The frame could not be drawn')); };
+            im.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+          });
+        });
+      });
+    };
+
     var API = {
-      load: load, seek: seek, play: play, pause: pause,
+      load: load, seek: seek, play: play, pause: pause, frame: frame,
       rate: function (x) { if (x != null && +x > 0) rateV = +x; return rateV; },
       loop: function (b) { if (b != null) loopV = !!b; return loopV; },
       duration: function () { return SCH ? SCH.duration : 0; },
