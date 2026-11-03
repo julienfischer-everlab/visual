@@ -1,4 +1,4 @@
-# Tokens and components: colour modes, --ar-* tokens, range colours and pills, size tokens, cards, buttons, EvTl, Assets, Tweaks, saved setups, house rules
+# Tokens and components: colour modes, --ar-* tokens, range colours and pills, size tokens, the Title group, cards, buttons, EvTl, Assets, Tweaks, saved setups, house rules
 
 All anchors are in `index.html` unless named. Line numbers drift; grep the pattern. None of these has a Design system tab of its own except where stated.
 
@@ -54,7 +54,7 @@ All anchors are in `index.html` unless named. Line numbers drift; grep the patte
 
 ## Type, spacing and radius tokens (`--hdr*`, `--ct*`, `--evPh*`)
 
-**What.** The size tokens that exist as custom properties. No global type scale or radius tokens: type sizes are per component; header and container tokens are the closest thing to a scale.
+**What.** The size tokens that exist as custom properties. No global radius tokens. Titles have a type scale: the Title group master's levels (`--tg*`, next section); other text sizes are per component; header and container tokens are the rest of the scale.
 
 **Where.** `grep -n -- "--hdrSb:54px"`, `grep -n -- "--ctPadY:24px"`, `grep -n -- "--evPhR:"`; General layout > Header (Sizes) and > Container (tokens table, `glCt`). Full detail in references/layout.md.
 
@@ -63,6 +63,57 @@ All anchors are in `index.html` unless named. Line numbers drift; grep the patte
 **How to use.** `var(--hdr*)` for a header, `var(--ctPadX/--ctPadY/--ctGap)` for a page container, `--evPhR/--evPhBz` (`--evTbR/--evTbBz`) for any device: never new numbers.
 
 **Pitfalls.** The Container doc reads the tokens off the CSS (`ctRead`), so change the CSS rules. `--hdr*` are read only by the doc; app bars use the Top nav master (`--evTn*`). A forced breakpoint has its own token overrides after the media queries: a new token needs both. Container max widths are tokens too: `--ct2xs` (100% / 512 / 544 / 576), `--ctXs` 800, `--ctSm` 1080, `--ctMd` 1280, `--ctLg` 1440, used through `data-container` (merged #260). **Being reworked**: desk panels (#270), DS "Page types" rule (#274).
+
+---
+
+## Title group (`window.EvTitle`, `.evTg`; General layout > Title group)
+
+**What.** One title block for every page ("some titles don't need that. That's just an option"): a level (its type), the title and, each only where it is needed, a slot above the group or at its right (an icon, a visual, a badge), a support line above the title (support top) and one under it (support bottom), an icon at either side of the words, and on the H1 a second tone (the muted part). Left or centred. A bare title (just the words) is the same master with nothing on.
+
+**Where.** `grep -n "window.EvTitle = "` (in the Health profile's script block, after EvTopNav: health-profile.html gets it too); CSS `grep -n -- "---- Title group, the master"` (in the report sheet's style block after the container rules: the `:root` defaults, `--tgL`, `.evTg*`); doc `grep -n "const glTg = \|const glTgWire = \|TG_TXT\|TG_C = "`. Tab `data-gl="tg"` (General layout, after Top nav), hash `#title-group`.
+
+**API.** `EvTitle.html(o)` → markup; `EvTitle.node(o)` → the element; `EvTitle.mount(el, o)`. `o = { level, title, muted, align, top, bottom, slot, iconL, iconR, tag, cls, id, titleCls, titleId, topCls, bottomCls, attr }`:
+- `level`: `'display-hero' | 'display' | 'h1' | 'h1-short' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'` (unknown → h2).
+- `title`, `muted`, `top`, `bottom`: plain text (escaped), or `{ html }` for markup. Empty = the part is off.
+- `slot`: `{ at: 'top' | 'right', html }`, or a list of both. Right only with `align: 'left'`; centred, it goes on top.
+- `iconL`, `iconR`: svg strings, drawn at 7/8 of the level's size, half its size from the words, in the words' flow (inline: the first before the first word, the last after the last, a wrapped title too), each centred on its line (`height: 1lh`).
+- `align`: `'left'` (default) | `'center'`. `tag`: the title's element, `h1`-`h6` or `p` (default: Display hero, Display, H1 → `h1`; H2-H6 their own).
+- `cls`, `id`, `attr` go on the group; `titleCls`, `titleId` on the title; `topCls`, `bottomCls` on the support lines (a host's own hooks for its context rules).
+- Markup: `div.evTg.evTgL|evTgC[.evTgSlT][.evTgSlR][data-lv] > [div.evTgSlot.evTgSlotT] + [p.evTgTop] + <tag>.evTgT ([span.evTgIc] [span.evTgW] words [span.evTgM] [span.evTgIc]) + [p.evTgBot]`; with a right slot the column is in `div.evTgCol`, then `div.evTgSlot.evTgSlotR`. No wrapper inside the title when it has no icons.
+- Numbers: `EvTitle.M` / `D` (flat keys `<Lv><Fs|Lh|Ls><S|L>`, `<Lv>W`, `<Lv>Sf`, `<Lv>Sl`, `GapT GapB GapS GapR`; `<Lv>` = `Dh Ds H1 H2 H3 H4 H5 H6`, h1-short shares H1), `set(k, v)`, `save()`, `reset()`, `key(level)`, `LV` (the levels: id, name, key, default tag, use).
+
+**Rules (the levels; XS · S under 992, M · L from 992).**
+
+| Level | XS · S | M · L | Weight | Tracking XS·S · M·L | Support | Use for |
+|---|---|---|---|---|---|---|
+| `display-hero` | 40/44 | 52/56 | 300 | −1 · −1.4 | 16/22 | One big statement a page opens on: a welcome, a landing hero, an empty state |
+| `display` | 32/38 | 40/46 | 500 | −.3 · −.6 | 16/22 | A standalone page's own title (the Concierge page's `.cnT` is 32/38) |
+| `h1` | 26/30 | 28/32 | 570 | −.2 · −.2 | 16/22 | A flow's step title (the HP's, Send a gift's), a marketing title in two tones: the muted part on its own line |
+| `h1-short` | as H1 | as H1 | 570 | as H1 | 16/22 | The H1 with its muted part inline after the comma, wrapping on |
+| `h2` | 24/30 | 24/30 | 500 | −.2 · −.3 | 15/22 | A page title: the desk's main pages (`--pgH1Fs`), a modal's or a sheet's H1 under the Top nav (`.sgmT`) |
+| `h3` | 20/26 | 20/26 | 500 | −.2 · −.2 | 14/20 | A section's title, a small card's H1 (the Top nav A/B bar title's size) |
+| `h4` | 17/24 | 17/24 | 400 | 0 | 14/20 | A card's or a group's title, in the text's weight |
+| `h5` | 12/16 | 12/16 | 600, uppercase | 1px | 13/18 | An overline over a list or a section |
+| `h6` | 12/16 | 12/16 | 500 | 0 | 13/18 | The smallest heading: a caption's title, a meta label |
+
+- Gaps: support top → title `--tgGapT` 8, title → support bottom `--tgGapB` 8 (both halved from H3 down: 4), slot → group `--tgGapS` 16, group → right slot `--tgGapR` 16. Carried as padding by the parts (`.evTgTop` padding-bottom, `.evTgBot` padding-top, `.evTgSlotT` padding-bottom), so a host's `margin: 0` keeps them; the group sets no margin of its own (the host's).
+- Ink: the title takes the host's colour; the muted part and the support lines are the secondary ink, 56% of it (`--tgMute: color-mix(in srgb, currentColor 56%, transparent)`), so it works on every surface, dark and light. Display hero, Display and H1 balance their lines, the rest wrap pretty. The face is the host's (its surface's family: Saans in the sheets, the shell's on the desk); the master sets size, line height, weight, tracking, in longhands. The parts' rules are `.evTg .evTgT` (one class above a host's element rule such as `.dash h1`); a host's class rule on the same element (the HP's `.arSheet.hpSheet .hpH`) still wins, so it must read the tokens.
+- Breakpoint: the raw tokens (`--tgH1FsS`, `--tgH1FsL`, ...) are on `:root` (CSS defaults; EvTitle writes them all on `<html>` at parse); `--tgL` picks the pair (0 XS·S, 1 M·L): the window (`@media (min-width: 992px)`), a forced `body[data-bp]`, a frame's `[data-ct-bp]`, a modal's `.aqWrap.aqBp*`. A doc frame shows a breakpoint by wearing `data-ct-bp`.
+- Saved setup: `everlab:tgMaster` (JSON of M), read at parse on every page (index.html and health-profile.html), over the CSS defaults; `reset()` removes it. The doc's own state (level, alignment, words, breakpoint) is `everlab:tgDoc` (UI only). The top bar's Save on General layout saves the shown part's master: Title group → `EvTitle.save()`.
+
+**How to use.**
+```js
+el.innerHTML = EvTitle.html({ level: 'h2', tag: 'h1', title: 'My plan', cls: 'plPgT' });                    /* a bare page title */
+const g = EvTitle.node({ level: 'h1', tag: 'h2', title: t, bottom: d, align: 'center', cls: 'hpQ hpC', titleCls: 'hpH', bottomCls: 'hpD' });   /* the HP's q() */
+EvTitle.html({ level: 'h1', title: 'Your results are in,', muted: 'three things to act on.', slot: { at: 'top', html: badge } });
+```
+A host stylesheet that must keep its own selector (e.g. the HP's `.hpH`) reads the master's tokens: `font-size: var(--tgH1FsL)` (and `var(--tgH1FsS)` under its XS/S rule), never a copied number.
+
+**Adopted.** The Health profile's step titles and Send a gift's (`q()`, H1; their `.hpH` numbers are `--tgH1*S/L`; the date step's line is the group's `.evTgBot`); every `.hpH` takes the H1 tokens; the desk's main page titles (`.dash --pgH1Fs/Lh/Ls` = `--tgH2FsL/LhL/LsL`); the Plan's page title (H2, an h1); the Top nav doc's H1s (H2 in the phones (`data-ct-bp="xs"`) and on the desk (`"m"`), with the line under it as support bottom; H3 in the 400 variants).
+
+**Candidates (not yet on it).** The standalone modals' title `.sgmT` (24/30 500 −.2 = H2 XS·S) and the Plan change's `.sgmPcT` (28/34); the Concierge page's `.cnT` (32/38 = Display XS·S) and its eyebrow `.cnEy` (H5-like); My journey's `.jpHt` (32/38); the Plan's section titles `.plSecH h2` (18, 16 on the phone) and its sheet title `.plNShT`; the info sheets' `.siTitle` (22 500); the Container doc's `.glCtH` (26/30) and the Header doc's `.glTtl`; the HP home's `.hpHome .hpH` (32/32), the Concierge intro `.hpCcIntroT` (28/36), the Async report intro `.arRvT` (32/32); the phone sizes of the desk page titles (`.dvH1` 20, `.tlH1`, `.mkT`, `.acHead h1`).
+
+**Pitfalls.** (1) The HP's context rules (`.hpQ`, `.hpH`, `.hpD`, `.hpCcT > .hpH`) still win over the master's own rules inside `.arSheet.hpSheet`; they read the master's tokens, so the numbers still come from it; the HP's description keeps its own ink (.64), not the master's .56. (2) A frame drawn at a breakpoint must carry `data-ct-bp` (or sit in an `.aqWrap.aqBp*`), else it takes the window's pair. (3) The standalone health-profile.html has no `data-bp`: its `.hpH` stays on the M·L tokens, as before (only an `.aqWrap.aqBpXS/S` takes XS·S). (4) The muted part is inline on every level; on H1 a break before it (`.evTgM::before { content: "\A" }`) puts it on a line of its own, so a right icon still follows its last word. (5) Never copy a level's numbers into a new rule: `var(--tg<Lv>FsS|L)`.
 
 ---
 
@@ -154,9 +205,9 @@ const ring = EvTl.enter(sheet.querySelector('.evTl'), a, d);   /* in evSolo ente
 
 **What.** Each DS tab with live controls has Save setup writing the master's numbers; every page reads them on load, over Tweaks and older saves.
 
-**Where.** EvOverlap `everlab:hoMaster` (doc Header overlap, `HO_C`); EvSteps `everlab:sfMaster` (`SF_C`); EvDismiss `everlab:mdMaster` (Modals `.mdSave`); `window._navMaster` `everlab:navMaster` (Navigation `.nvSave`). Shell: `const DOCS`, `DSET`; top bar `#tkDocSave` mapping (`grep -n "docCur === 'sf'"`).
+**Where.** EvOverlap `everlab:hoMaster` (doc Header overlap, `HO_C`); EvTitle `everlab:tgMaster` (doc Title group, `TG_C`/`TG_G`); EvPush `everlab:pushMaster` (doc Page types, `PT_C`); EvSteps `everlab:sfMaster` (`SF_C`); EvDismiss `everlab:mdMaster` (Modals `.mdSave`); `window._navMaster` `everlab:navMaster` (Navigation `.nvSave`). Shell: `const DOCS`, `DSET`; top bar `#tkDocSave` mapping (`grep -n "docCur === 'sf'"`).
 
-**API.** EvOverlap and EvSteps expose `M`, `D`, `set(k, v)`, `save()` (true on success), `reset()`, plus their own bind/update. EvDismiss has `K`, `on()`, `set(v)`, `save()`, `notch(el)` (no `M`/`reset`). The dock's is the `window._navMaster()` loader; its Save is the doc's `.nvSave`. Doc buttons `.mdBtn` Save setup / Reset / Play (read "Saved" for 1400 ms). View state keys `everlab:glPart glBp mdPart mdBp mdLay sfBp bbPart` (not masters).
+**API.** EvOverlap, EvTitle, EvPush and EvSteps expose `M`, `D`, `set(k, v)`, `save()` (true on success), `reset()`, plus their own bind/update/html. EvDismiss has `K`, `on()`, `set(v)`, `save()`, `notch(el)` (no `M`/`reset`). The dock's is the `window._navMaster()` loader; its Save is the doc's `.nvSave`. Doc buttons `.mdBtn` Save setup / Reset / Play (read "Saved" for 1400 ms). View state keys `everlab:glPart glBp tgDoc mdPart mdBp mdLay sfBp bbPart` (not masters).
 
 **Rules.** Read on every page load, applied over Tweaks and older saves. localStorage only (this browser), unlike Tweaks (shared store).
 

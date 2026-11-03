@@ -11,14 +11,14 @@ The prototype is `index.html` (about 47k lines: never read it whole; `grep -n` a
 
 Every Documentation / Design system page is the master component. The app's instances are built from the same code or settings, never from copied numbers. When a doc page has a saved setup, every page applies it on load, over Tweaks and older saves (CLAUDE.md).
 
-The page menu `#versionSel` has Documentation (`'doc'`) and Design system (`'ds'`). Design system tabs (`DSET = ['gl','sf','md','bb','nv','ld']`): General layout (Header, Top nav, Container, Header overlap), Step flow, Modals (Full, Bottom sheet · Floating, Full bottom sheet), Chat bubbles, Navigation (Island and Iconography: dock, desk sidebar, More, Ask Everlab), Loading states. Documentation tabs: Service timeline (`'pt'`, `components/progress-timeline/demo.html`), Concierge components (`'cc'`, references/chat.md), Membership onboarding (`'hp'`, `hcDoc`, Health profile card states and flows, Concierge phases). Grep `DSET` and `const DOCS` for the shell.
+The page menu `#versionSel` has Documentation (`'doc'`) and Design system (`'ds'`). Design system tabs (`DSET = ['gl','sf','md','bb','nv','ld']`): General layout (Header, Top nav, Title group, Container, Header overlap, Page types), Step flow, Modals (Full, Bottom sheet · Floating, Full bottom sheet), Chat bubbles, Navigation (Island and Iconography: dock, desk sidebar, More, Ask Everlab), Loading states. Documentation tabs: Service timeline (`'pt'`, `components/progress-timeline/demo.html`), Concierge components (`'cc'`, references/chat.md), Membership onboarding (`'hp'`, `hcDoc`, Health profile card states and flows, Concierge phases). Grep `DSET` and `const DOCS` for the shell.
 
 ## How to work
 
 1. **Find the master first.** Look the element up in the table below and read its reference. Grep its anchor (`grep -n "window.EvSteps = " index.html`). Line numbers in the references drift: trust the grep pattern.
-2. **Build the instance from the master.** Call the module (`EvSteps.progress`, `EvSheetSwipe`, `EvLoad.label`, `evSolo`, `EvTopNav.html`, `EvNavIc.svg`, ...) or read its tokens (`var(--ctPadX)`, `var(--evPhR)`, `--ar-*`). Never re-implement a push, a swipe, a notch, a frame, a loader or an icon. If no master fits, make one (below) rather than a one-off.
+2. **Build the instance from the master.** Call the module (`EvSteps.progress`, `EvSheetSwipe`, `EvLoad.label`, `evSolo`, `EvTopNav.html`, `EvTitle.html`, `EvNavIc.svg`, ...) or read its tokens (`var(--ctPadX)`, `var(--evPhR)`, `--ar-*`). Never re-implement a push, a swipe, a notch, a frame, a loader or an icon. If no master fits, make one (below) rather than a one-off.
 3. **Document it on its doc page.** A new pattern or state goes on its Design system tab (or the Concierge Components tab), drawn by the same code. Update the doc's hand-written tables when numbers change.
-4. **Saved setups.** A master with live controls has `M` defaults, `set(k, v)`, `save()`, `reset()`, a key `everlab:<x>Master` read at parse on every page, and the top bar's Save (`#tkDocSave`) mapped to it. Existing: `everlab:hoMaster` (EvOverlap), `everlab:sfMaster` (EvSteps), `everlab:mdMaster` (EvDismiss: `on()`, `set(v)`, `save()`, no `M`/`reset`), `everlab:navMaster` (dock: the `window._navMaster()` loader and the doc's `.nvSave`, not `#tkDocSave`). They are localStorage only (this browser).
+4. **Saved setups.** A master with live controls has `M` defaults, `set(k, v)`, `save()`, `reset()`, a key `everlab:<x>Master` read at parse on every page, and the top bar's Save (`#tkDocSave`) mapped to it. Existing: `everlab:hoMaster` (EvOverlap), `everlab:sfMaster` (EvSteps), `everlab:tgMaster` (EvTitle, the Title group), `everlab:pushMaster` (EvPush, Page types), `everlab:mdMaster` (EvDismiss: `on()`, `set(v)`, `save()`, no `M`/`reset`), `everlab:navMaster` (dock: the `window._navMaster()` loader and the doc's `.nvSave`, not `#tkDocSave`). They are localStorage only (this browser).
 5. **Page state.** `setMode` rewrites `body.className` whole: put new state on `<html>` or in `CARD_STATE` (written back in the class rebuild), never a hand-toggled body class.
 
 ## House rules
@@ -44,6 +44,7 @@ The page menu `#versionSel` has Documentation (`'doc'`) and Design system (`'ds'
 | Breakpoints, Viewport select (XS/S/M/L, Auto) | `#stBp`, `body[data-bp]`, `html.bpAuto` | references/layout.md |
 | XS phone / S tablet frame (852 device, fit-scaling) | `#bpFrame`, `--evPh*`, `--evTb*`, `--bpS` | references/layout.md |
 | Top nav master (A / B / C, General layout > Top nav) | `window.EvTopNav`, `.evTn`, `glTn` | references/layout.md |
+| Title group (a title's level, its slots, support lines, icons; General layout > Title group) | `window.EvTitle`, `.evTg`, `--tg*`, `glTg` | references/tokens-components.md |
 | Container tokens, General layout > Container | `--ctPadY/X`, `--ctGap`, `--ct2xs`..`--ctLg`, `data-container` | references/layout.md |
 | Header (status bar, nav bar, titles) | `--hdr*`, `glDoc` | references/layout.md |
 | Header overlap | `window.EvOverlap` | references/layout.md |
