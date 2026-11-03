@@ -204,6 +204,20 @@ Sites: Activity plan (hero `.plATop`, `data-ov` markup), Nutrition plan (`.plNTo
 
 ---
 
+## Doc pages' controls panel (`window.EvDocPanel`)
+
+**What.** Every Design system and Documentation page puts all its controls (actions, choices, sliders, fields, switches) in one right panel laid out as Tweaks ("ALL controllers need to be on a right panel, similar as tweak layout"): a 320 column docked at the doc's right, full height, a pinned header with the actions, groups as Tweaks' cards (small caps titles), a row a control (label left, control right; a slider: label and value on one line, the bar full width under it). The preview keeps the column on the left with its title and description.
+
+**Where.** `grep -n "window.EvDocPanel = "` (just before `const glDoc`); CSS block "Doc panel (EvDocPanel;" (its own `<style>`, first rule `.dpRail`); every builder's tags (`data-dp`, `data-dpa`); the Service timeline's frame mounted from `ptPanel` (docShow) with the tags in `components/progress-timeline/demo.html`.
+
+**API.** Tags on the controls where the builder draws them: `data-dpa` an action (the header; `data-dpa="Label"` a row of buttons in the group), `data-dp="Label"` a control on its own row, `data-dp=""` a block of rows kept as it is (a `.hoCtl` slider stack), `data-dpg="Title"` a group from that control on, `data-dpk="raw"` keep its own dress, `data-dpx` a wrapper left empty (hidden). `EvDocPanel.mount(host, { root, before, after, fixed, wide, label })` → `{ el, head, group(t), row(label, ctl, group), put(node, group), sync() }` (also `rail._dp`); `EvDocPanel.room(el, foot)`: the height under an element in its scroller (the phones' fits). Classes: `.dpRail` (`.dpLive` docked), `.dpHead`, `.dpGroup` / `.dpSub`, `.dpRow` / `.dpL`, `.dpBtn`, `.dpSeg`, `.dpField`, `.dpSw`, `.dpBlock`; `.dpDock` on the doc (`.ldDoc`) while docked.
+
+**Rules.** mount moves the very nodes (no copies): listeners and lookups keep working; a listener delegated to a wrapper means tag the wrapper (`.hoCtl`), or point the lookup at the control (Step flow's Transition). Docked while the doc is at least 1140 wide (o.wide; the frame's 900): absolute in the `.ldDoc` (`position:relative`, `padding-right:320`), so nothing between it and the doc may be positioned; narrower, it stands where the controls were, under the preview's header (max 520). A row hides with its controls (`hidden`), a group with its rows, the panel when empty (Chat bubbles' Style: none). Colours from the doc's tokens (`--ld*` → `--dp*`), Light follows. General layout: a panel per part; Show sizes moves into the shown part's panel (View group) where it has sizes (Header, Top nav, Container). Doc tables sit in `.glTabW` (scroll on their own).
+
+**How to use.** A new control on a doc page: draw it where it belongs and tag it; a new doc page: tag its controls and call `EvDocPanel.mount(host)` at the end of its builder. Fit a phone with `room(stage, foot)`, not `innerHeight`.
+
+**Pitfalls.** Not converted: the Membership onboarding canvas's per-screen Filled switches, Go to prototype and Open (they belong to their screen), the Concierge components' Field model menu (the specimen itself). A positioned ancestor between the panel and the `.ldDoc` breaks the docking.
+
 ## Viewport centring with docked panels (`--vwC`, `html.tkDocked`, `html.flowDocked`)
 
 **What.** A forced frame and the Auto desk centre in the room left by Tweaks (docked right, 320), the Flow panel (docked left, 320) and an open + section panel.

@@ -211,7 +211,7 @@ const ring = EvTl.enter(sheet.querySelector('.evTl'), a, d);   /* in evSolo ente
 
 **Rules.** Read on every page load, applied over Tweaks and older saves. localStorage only (this browser), unlike Tweaks (shared store).
 
-**How to use.** New master: a module with `M` defaults, a key `everlab:<x>Master` read at parse, `set/save/reset`; a doc tab whose controls call `set()` live and whose Save calls `save()`; add it to the `#tkDocSave` mapping; app instances bind through the module.
+**How to use.** New master: a module with `M` defaults, a key `everlab:<x>Master` read at parse, `set/save/reset`; a doc tab whose controls call `set()` live and whose Save calls `save()` (the controls tagged for the right panel, `EvDocPanel`, layout.md); add it to the `#tkDocSave` mapping; app instances bind through the module.
 
 **Pitfalls.** Saved setups don't reach other viewers. A setup saved before a default changed keeps the old value unless the loader migrates it (navMaster maps `pop` → `beam`). Docs drawn from hand-written copies (Container table) are not masters.
 
