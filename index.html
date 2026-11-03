@@ -14253,6 +14253,7 @@
         <div class="tkGroup" data-pages="sgf">
         <div class="tkSub">Send a gift</div>
         <div class="tkRow"><span class="lbl">Intro</span><select id="stGfIntro" class="tkSegSel" aria-label="The intro's three items: a ticked list, or three cards side by side, each its icon over its words"><option value="list" selected>List</option><option value="cards">Cards</option></select></div>
+        <div class="tkRow"><span class="lbl">Plans</span><select id="stGfPlans" class="tkSegSel" aria-label="Choose the gift: the plans as cards stacked (List) or two tabs side by side with the chosen one's list below (Tabs)"><option value="list" selected>List</option><option value="tabs">Tabs</option></select></div>
         </div>
         <!-- the Clinic's Testing locations: the logo zone's red fill, shown or not ("tweak frame indicator (red): on, off"); the zone keeps its place either way -->
         <div class="tkGroup" data-pages="clinic">
@@ -19776,6 +19777,21 @@ html .arSheet.hpSheet.hpGfSolo.hpGfAtIn:not(.hpGfOnSheet) .arHead .arIconBtn.arI
 .arSheet.hpSheet .hpPlanD { margin: 0; font-size: 14px; line-height: 20px; opacity: .72; }
 .arSheet.hpSheet .hpPlanL { display: flex; flex-direction: column; gap: 10px; margin: 2px 0 0; padding: 14px 0 0; list-style: none; box-shadow: inset 0 1px 0 color-mix(in srgb, currentColor 16%, transparent); }
 .arSheet.hpSheet .hpPlanL[hidden] { display: none; }
+/* Plans: Tabs (Tweaks -> Send a gift -> Plans): two cards side by side, each a tab (icon at the top centre, name, price, a line of introduction); the chosen one's list in a card under them */
+.arSheet.hpSheet .hpPlansT { display: flex; flex-direction: column; gap: 12px; }
+.arSheet.hpSheet .hpPlTabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.arSheet.hpSheet .hpPlTab { appearance: none; display: flex; flex-direction: column; align-items: center; gap: 4px; margin: 0; padding: 16px 12px 18px; border: 0; border-radius: 20px; background: var(--ar-card-bg); color: oklch(var(--ar-ink)); font: inherit; font-family: var(--ar-font); text-align: center; cursor: pointer; transition: background .22s ease, color .22s ease; }
+.arSheet.hpSheet .hpPlTab[aria-selected="true"] { background: oklch(var(--ar-ink)); color: var(--ar-paper); }
+.arSheet.hpSheet .hpPlTabI { display: grid; place-items: center; width: 40px; height: 40px; margin: 0 0 6px; border-radius: 50%; background: color-mix(in srgb, currentColor 9%, transparent); }
+.arSheet.hpSheet .hpPlTabN { font-size: 16px; line-height: 20px; font-weight: 570; }
+.arSheet.hpSheet .hpPlTabP { font-size: 15px; line-height: 20px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.arSheet.hpSheet .hpPlTabD { margin-top: 4px; font-size: 13px; line-height: 17px; opacity: .64; text-wrap: balance; }
+.arSheet.hpSheet .hpPlTab:focus-visible { outline: 2px solid var(--ar-blue-fg); outline-offset: 2px; }
+@media (hover: hover) { .arSheet.hpSheet .hpPlTab:not([aria-selected="true"]):hover { background: color-mix(in srgb, oklch(var(--ar-ink)) 9%, var(--ar-card-bg)); } }
+.arSheet.hpSheet .hpPlPanel { padding: 16px 20px 18px; border-radius: 20px; background: var(--ar-card-bg); color: oklch(var(--ar-ink)); }
+.arSheet.hpSheet .hpPlPanelH { margin: 0 0 12px; font-size: 14px; line-height: 18px; font-weight: 500; color: oklch(var(--ar-ink) / .56); }
+.arSheet.hpSheet .hpPlPanelL { margin: 0; padding: 0; box-shadow: none; animation: hpPlanIn .32s cubic-bezier(.2, .7, .2, 1) both; }
+@media (prefers-reduced-motion: reduce) { .arSheet.hpSheet .hpPlTab, .arSheet.hpSheet .hpPlPanelL { transition: none; animation: none; } }
 /* See more with the gradient (the Async report's biomarker module, .arMbMore): folded, two items, the third fading to nothing under the button; open, all of them */
 .arSheet.hpSheet .hpPlanFold:not(.hpPlanOpen *) > li:nth-child(n+4) { display: none; }
 .arSheet.hpSheet .hpPlan:not(.hpPlanOpen) .hpPlanFold > li:nth-child(3) { max-height: 36px; overflow: hidden; -webkit-mask-image: linear-gradient(180deg, #000 0%, rgba(0,0,0,.35) 45%, transparent 100%); mask-image: linear-gradient(180deg, #000 0%, rgba(0,0,0,.35) 45%, transparent 100%); pointer-events: none; }
@@ -19804,6 +19820,14 @@ html .arSheet.hpSheet.hpGfSolo.hpGfAtIn:not(.hpGfOnSheet) .arHead .arIconBtn.arI
 .arSheet.hpSheet .hpGfPvN { margin: 0; font-family: 'Tobias', 'Tobias Light', 'Tobias Regular', Georgia, 'Times New Roman', serif; font-size: 22px; line-height: 28px; text-wrap: balance; overflow-wrap: anywhere; }
 /* Check and pay: the plan over the rows, each its Change */
 .arSheet.hpSheet .hpGfSum { padding: 0 16px; }
+/* the checkout's Recipient and Gift details: the Gift receipt's cards (its .grp, .grpH, .row): 24 corners, the title inside at 18/24 500, rows of a 9em label and its value, 14/20, no rules, 8 between the cards */
+.arSheet.hpSheet .hpGfRcW { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+.arSheet.hpSheet .hpGfRc { padding: 14px 24px 12px; border-radius: 24px; background: var(--ar-card-bg); }
+.arSheet.hpSheet .hpGfRcH { margin: 0; padding: 8px 0 4px; font-family: var(--ar-font); font-size: 18px; line-height: 24px; font-weight: 500; letter-spacing: -.005em; color: oklch(var(--ar-ink)); }
+.arSheet.hpSheet .hpGfRcL { margin: 0; padding: 4px 0 0; }
+.arSheet.hpSheet .hpGfRcR { display: grid; grid-template-columns: minmax(0, 9em) minmax(0, 1fr); column-gap: 16px; padding: 5px 0; font-size: 14px; line-height: 20px; }
+.arSheet.hpSheet .hpGfRcR dt { color: oklch(var(--ar-ink) / .56); } .arSheet.hpSheet .hpGfRcR dd { margin: 0; color: oklch(var(--ar-ink)); overflow-wrap: anywhere; } .arSheet.hpSheet .hpGfRcMsg dd { font-style: italic; }
+.arSheet:not(.hpWide).hpSheet .hpGfRc { padding: 14px 20px 12px; } .arSheet:not(.hpWide).hpSheet .hpGfRcR { grid-template-columns: minmax(0, 8.4em) minmax(0, 1fr); column-gap: 12px; padding: 4px 0; }   /* the phone: the receipt's own narrower label column */
 .arSheet.hpSheet .hpGfSumW { display: flex; flex-direction: column; gap: 12px; } .arSheet.hpSheet .hpGfSumPlan .hpGfSumTop { box-shadow: none; }   /* the plan's card on its own, 12 over the rows' card */
 .arSheet.hpSheet .hpGfSumTop { display: flex; justify-content: space-between; gap: 12px; padding: 16px 0; box-shadow: inset 0 -1px 0 oklch(var(--ar-ink) / .08); }
 .arSheet.hpSheet .hpGfSumTop b { display: block; font-size: 16px; line-height: 21px; font-weight: 570; } .arSheet.hpSheet .hpGfSumTop span { display: block; margin-top: 2px; font-size: 13px; line-height: 17px; color: oklch(var(--ar-ink) / .56); }
@@ -20353,6 +20377,7 @@ window.EvConsent = (function () {
   function ic(w, d, sw) { return s('svg', { width: w, height: w, viewBox: '0 0 16 16', fill: 'none', stroke: 'currentColor', 'stroke-width': sw || 1.6, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'aria-hidden': 'true' }, [].concat(d).map(function (p) { return s('path', { d: p }); })); }
   function ic24(d) { return s('svg', { width: 20, height: 20, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', 'stroke-width': 1.6, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'aria-hidden': 'true' }, [].concat(d).map(function (p) { return s('path', { d: p }); })); }
   var P = { back: 'M10 3.5 5.5 8l4.5 4.5', close: 'M3.5 3.5l9 9M12.5 3.5l-9 9', check: 'm3.8 8.3 2.6 2.6 5.8-6', pen: ['m11.2 2.6 2.2 2.2-8.2 8.2H3v-2.2z', 'm9.6 4.2 2.2 2.2'], chev: 'm4 6 4 4 4-4', plus: 'M8 3.5v9M3.5 8h9', minus: 'M3.5 8h9', err: ['M8 1.8a6.2 6.2 0 1 1 0 12.4A6.2 6.2 0 0 1 8 1.8Z', 'M8 5v3.4', 'M8 10.8v.1'],
+    shield: ['M8 1.8 13 3.6v4.2c0 3-2.1 5.4-5 6.4-2.9-1-5-3.4-5-6.4V3.6Z', 'm5.8 8 1.6 1.6 3-3.2'], tube: ['M5.6 1.8h4.8', 'M6.6 1.8v8.9a1.4 1.4 0 0 0 2.8 0V1.8', 'M6.6 6.6h2.8'],   /* the plans' tabs: Protocol, Diagnostics */
     gift: ['M3.6 6h8.8a.8.8 0 0 1 .8.8v1.2a.8.8 0 0 1-.8.8H3.6a.8.8 0 0 1-.8-.8V6.8a.8.8 0 0 1 .8-.8Z', 'M3.6 8.8v4.4h8.8V8.8', 'M8 6v7.2', 'M8 6S7.12 3.04 5.52 3.36c-1.2.24-1.04 2.08.56 2.64', 'M8 6s.88-2.96 2.48-2.64c1.2.24 1.04 2.08-.56 2.64'],   /* the app's gift and calendar (the Timeline's group icons, JG), on this set's 16 grid */
     cal: ['M4.4 3.6h7.2a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H4.4a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2Z', 'M2.4 6.8h11.2', 'M5.6 2.24v2.56M10.4 2.24v2.56'] };
   var DI = {   // the devices' kinds, 24 square
@@ -20614,8 +20639,8 @@ window.EvConsent = (function () {
   var GFN = { intro: 'Intro', where: 'Where they live', fit: 'Is Everlab right for them?', who: 'Who it’s for', plan: 'Choose the gift', when: 'Occasion and date', note: 'Their note', pay: 'Check and pay', checkout: 'Checkout', done: 'Receipt' };   /* the last page the Gift receipt itself (visuals/gift-receipt.html): "This is the Receipt! already designed" */
   AREA.gift = { k: 'gift', t: 'Send a gift', s: 'About two minutes', steps: GF.slice(), sub: GF.map(function (k) { return GFN[k]; }), i: 0 };
   var GF_PLAN = {   /* the two plans a gift can be, the board's words ("Protocol A$2,999", "Diagnostics A$1,199"); New Zealand's prices a draft ("New: New Zealand with NZ prices") */
-    prot: { n: 'Protocol', full: 'Everlab Protocol Plan', d: 'Our most advanced health assessment, designed to detect, prevent and reverse risk of disease.', L: ['10 consultations across the plan', '90+ blood biomarkers incl. OrganAge, a DEXA body composition scan and a heart health assessment', 'Full physical assessment including strength, stability and VO2 max', 'A personalised health and performance program built around their lifestyle', 'Structured re-testing of key biomarkers to track progress'] },
-    diag: { n: 'Diagnostics', full: 'Everlab Diagnostics Plan', d: 'Full body diagnostics and doctor-led insights, including advanced bloods, DEXA and heart health.', L: ['90+ blood biomarkers covering hormones, metabolic function, lipids and more', 'A DEXA body composition scan', 'A heart health assessment', 'A doctor-led consultation on their results'] } };
+    prot: { s: 'Our most advanced assessment, with a year of doctor-led care.', n: 'Protocol', full: 'Everlab Protocol Plan', d: 'Our most advanced health assessment, designed to detect, prevent and reverse risk of disease.', L: ['10 consultations across the plan', '90+ blood biomarkers incl. OrganAge, a DEXA body composition scan and a heart health assessment', 'Full physical assessment including strength, stability and VO2 max', 'A personalised health and performance program built around their lifestyle', 'Structured re-testing of key biomarkers to track progress'] },
+    diag: { s: 'Full body diagnostics and doctor-led insights.', n: 'Diagnostics', full: 'Everlab Diagnostics Plan', d: 'Full body diagnostics and doctor-led insights, including advanced bloods, DEXA and heart health.', L: ['90+ blood biomarkers covering hormones, metabolic function, lipids and more', 'A DEXA body composition scan', 'A heart health assessment', 'A doctor-led consultation on their results'] } };
   var GF_PRICE = { AU: { cur: 'A$', prot: 2999, diag: 1199 }, NZ: { cur: 'NZ$', prot: 3299, diag: 1299 }, UK: { cur: '£', prot: 1999, diag: 799 } };   /* the UK's a draft too ("Add UK") */
   var GF_FIT = [['u18', 'They’re under 18'], ['canc', 'They’re having cancer treatment'], ['preg', 'They’re pregnant'], ['none', 'None of these']];
   var GF_OCC = [['bday', 'Birthday'], ['xmas', 'Christmas'], ['anniv', 'Anniversary'], ['thanks', 'Thank you'], ['just', 'Just because']];
@@ -21773,6 +21798,16 @@ window.EvConsent = (function () {
     /* the plan card ("the plan cards (expandable details)"): a radio card a plan, its name and price, its line, What's included opening its list; the one picked inked (the board's black card), opened with it.
        plans(keys, get, set, country, onChange) -> the radiogroup; arrows move between the cards, Enter or Space picks, the toggle opens or closes a card's list without picking it */
     function plans(ks, get, set, ctry, onChange) {
+      if ((document.getElementById('stGfPlans') || {}).value === 'tabs') {   /* Tweaks -> Send a gift -> Plans: Tabs ("two cards next to each other, each a tab; the list of all its values below; the card: an icon at the top centre, the name, the price, a small introduction") */
+        var tb = h('div', { class: 'hpPlansT' }), row = h('div', { class: 'hpPlTabs', role: 'tablist', 'aria-label': 'Choose a plan' }), pnl = h('div', { class: 'hpPlPanel', role: 'tabpanel' }), ICO = { prot: P.shield, diag: P.tube };
+        var paintT = function () { var cur = GF_PLAN[get()] ? get() : ks[0]; [].forEach.call(row.children, function (c) { var on = c.dataset.v === cur; c.setAttribute('aria-selected', String(on)); c.tabIndex = on ? 0 : -1; });
+          pnl.textContent = ''; pnl.appendChild(h('p', { class: 'hpPlPanelH', text: 'What\u2019s included in ' + GF_PLAN[cur].n })); pnl.appendChild(h('ul', { class: 'hpPlanL hpPlPanelL' }, GF_PLAN[cur].L.map(function (t) { return h('li', null, ic(12, P.check, 2.2), h('span', { text: t })); }))); };
+        var pickT = function (k) { if (get() !== k) { set(k); save(true); } paintT(); if (onChange) onChange(); };
+        ks.forEach(function (k, i) { var p = GF_PLAN[k];
+          row.appendChild(h('button', { type: 'button', role: 'tab', class: 'hpPlTab', 'data-v': k, on: { click: function () { pickT(k); }, keydown: function (e) { var d = e.key === 'ArrowRight' || e.key === 'ArrowDown' ? 1 : e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? -1 : 0; if (!d) return; e.preventDefault(); var n = ks[(i + d + ks.length) % ks.length]; pickT(n); var nb = row.querySelector('[data-v="' + n + '"]'); if (nb) nb.focus(); } } },
+            h('span', { class: 'hpPlTabI', 'aria-hidden': 'true' }, ic(20, ICO[k] || P.gift, 1.4)), h('b', { class: 'hpPlTabN', text: p.n }), h('span', { class: 'hpPlTabP', text: gfMoney(ctry, k) }), h('span', { class: 'hpPlTabD', text: p.s || '' }))); });
+        tb.appendChild(row); tb.appendChild(pnl); paintT(); return tb;
+      }
       var box = h('div', { class: 'hpPlans', role: 'radiogroup', 'aria-label': 'Choose a plan' }), openK = {};
       /* what's included as the Async report's biomarker module ("a See more with gradient, same as Async Biomarker module"): two shown, the third fading under a full-width See n more, the rest opening in place, then Show less */
       var paint = function () { [].forEach.call(box.children, function (c, i) { var k = c.dataset.v, on = get() === k, op = !!openK[k], tg = c.querySelector('.hpPlanMore');
@@ -21951,8 +21986,11 @@ window.EvConsent = (function () {
       var detB = h('button', { type: 'button', class: 'hpLinkIn hpGfDet', 'aria-expanded': 'false', on: { click: function () { det.hidden = !det.hidden; detB.setAttribute('aria-expanded', String(!det.hidden)); detB.textContent = det.hidden ? 'Details' : 'Hide details'; } } }, 'Details');
       scr.appendChild(h('div', { class: 'hpCard hpGfItem' }, h('div', { class: 'hpGfItemR' }, h('i', { class: 'hpGfThumb', 'aria-hidden': 'true' }), h('div', { class: 'hpGfItemT' }, h('b', { text: p.full }), h('span', { text: '12-month membership, a gift for ' + nm }), detB), h('b', { class: 'hpGfItemP', text: tot })), det,
         h('div', { class: 'hpGfTot' }, h('span', { text: 'Total due (GST inclusive)' }), h('b', { text: tot }))));
-      scr.appendChild(gfSec('Gift details', [h('p', { class: 'hpHelp', text: 'This gift will be sent to the person below.' }), h('div', { class: 'hpCard hpGfKvs' },
-        gfKv('To', ((ans.first || '') + ' ' + (ans.last || '')).trim() + ' · ' + (ans.email || '').trim()), gfKv('From', gfFrom(ans)), gfKv('Occasion', occ || 'None'), gfKv('Message', nt || 'Someone wanted you to have this.'), gfKv('Delivery', gfArrive(ans)))]));
+      /* the receipt's cards ("checkout should use same style list item as the receipt gift page cards with list items inside"): a title inside each, label and value rows, no rules, the message in italics */
+      var rcRow = function (l, v, cls) { return h('div', { class: 'hpGfRcR' + (cls ? ' ' + cls : '') }, h('dt', { text: l }), h('dd', { text: v || '—' })); };
+      scr.appendChild(h('div', { class: 'hpGfRcW' },
+        h('section', { class: 'hpGfRc' }, h('h3', { class: 'hpGfRcH', text: 'Recipient' }), h('dl', { class: 'hpGfRcL' }, rcRow('Name', ((ans.first || '') + ' ' + (ans.last || '')).trim()), rcRow('Email', (ans.email || '').trim()), rcRow('Delivery', gfArrive(ans)))),
+        h('section', { class: 'hpGfRc' }, h('h3', { class: 'hpGfRcH', text: 'Gift details' }), h('dl', { class: 'hpGfRcL' }, occ ? rcRow('Occasion', occ) : null, rcRow('Message', '\u201c' + (nt || 'Someone wanted you to have this.') + '\u201d', 'hpGfRcMsg'), rcRow('From', gfFrom(ans))))));
       var ok = function () { var e = /^(\d\d) \/ (\d\d)$/.exec(GP.exp || ''), okE = !!e && +e[1] >= 1 && +e[1] <= 12 && (2000 + +e[2]) * 12 + +e[1] >= GF_TODAY.getFullYear() * 12 + GF_TODAY.getMonth() + 1;
         foot2('Pay ' + tot, gfComplete(ans) && !!((ans.pName || '').trim() && EMAIL.test((ans.pEmail || '').trim()) && digits(GP.card, 16).length === 16 && okE && digits(GP.cvc, 4).length >= 3), pay); };
       var pay = function () { if (!window.EvLoad || opts.snap) { GP = {}; fwd(); return; } cta.disabled = true; var t = tick; gfHold(true);   /* paying: Back and Close held till it is through (a payment never dropped half way) */
@@ -38226,7 +38264,8 @@ hairline({
     { const r = document.getElementById('stHpCcSvcIc'), set = () => document.documentElement.classList.toggle('ccSvc3d', !!r && r.value === '3d'); if (r){ r.addEventListener('change', set); r.addEventListener('input', set); set(); setTimeout(set, 800); } }   // the services' icons: Line, or the 3D illustrations, live
     { const r = document.getElementById('stHpCcVidOp'), o = document.getElementById('stHpCcVidOpV'), set = () => { document.documentElement.style.setProperty('--ccVidOp', (r.value / 100).toFixed(2)); if (o) o.textContent = r.value + '%'; }; if (r){ r.addEventListener('input', set); r.addEventListener('change', set); set(); setTimeout(set, 800); } }   // the video's opacity, live
     ['stHpCcLay', 'stHpCcSvcV', 'stHpCcIntro', 'stHpCcT1t', 'stHpCcT1s', 'stHpCcT2t', 'stHpCcT2s', 'stHpCcT3t', 'stHpCcT3s', 'stHpCcQ1', 'stHpCcA1', 'stHpCcQ2On', 'stHpCcQ2', 'stHpCcHi', 'stHpCcA2'].forEach(id => { const e = document.getElementById(id); if (e) e.addEventListener('change', () => { if (window._hp && window._hp.go) window._hp.go('res', 'cc'); }); });   // a bubble's words changed: the Concierge played again with them   /* the Concierge: the visual first, kept ("keep that setup and remove tweak") */   // the Concierge's layout, live
-    { const t = document.getElementById('stGfIntro'); if (t) t.addEventListener('change', () => { if (window._hp && window._hp.giftIntro) window._hp.giftIntro(); }); }   /* Send a gift -> Intro (List / Cards): its intro drawn again in place, live, nothing restarted */
+    { const t = document.getElementById('stGfIntro'); if (t) t.addEventListener('change', () => { if (window._hp && window._hp.giftIntro) window._hp.giftIntro(); }); }
+    { const t = document.getElementById('stGfPlans'); if (t) t.addEventListener('change', () => { const H = window.HealthProfile, i = window._hp && window._hp.giftAt ? window._hp.giftAt() : -1; if (H && i >= 0 && H.gift.steps[i] === 'plan') window._hp.giftGo(i); }); }   /* Send a gift -> Plans (List / Tabs): Choose the gift drawn again in place, live */   /* Send a gift -> Intro (List / Cards): its intro drawn again in place, live, nothing restarted */
     { const stt = () => { if (HP.stepTitle) HP.stepTitle(opt('stHpStepT')); }; stt(); const t = document.getElementById('stHpStepT'); if (t) t.addEventListener('change', stt); }   // the step's title over the dashes, or not
     /* (the Dismiss flow tweak removed: "remove the Dismiss tweak set previously"; leaving mid-way still asks first when something is filled) */   // the dismiss flow, on or off
     { const lk = () => { const sv = document.getElementById('stHpSat'), v = sv ? +sv.value : 100, lb = document.getElementById('stHpSatV'); if (lb) lb.textContent = v + '%'; if (HP.look) HP.look({ dim: '1.2', feed: 'neutral', card: 'glow', sat: v / 100 }); }; lk(); ['stHpSat'].forEach(id => { const t = document.getElementById(id); if (t) { t.addEventListener('change', lk); t.addEventListener('input', lk); } }); }   // with the filled particles' saturation (as it slides)   // the sphere's look (Tweaks -> Health profile), on every sphere at once
@@ -46579,8 +46618,8 @@ hairline({
         window.__hpDocStep = st => { if (view !== 'flows') setView('flows'); fpick(ROWOF[st] || '*'); };   // from Tweaks -> Primary card -> Documentation: the step the card's State is at (none of them: every step)
         window.__hpDocFlow = () => { built = ''; if (view === 'flows' && el.isConnected && !el.hidden) flowsDraw(); };   // step 1's order changed (Tweaks)
         /* the reveal's stills follow its tweaks ("colour doesn't reflect what we have on the page"): what they were drawn with is part of the key, and a change there draws them again */
-        const WSIG = () => { let pk = ''; try { pk = localStorage.getItem('everlab:w2CardPre') || ''; } catch (e){} return '|' + [...document.querySelectorAll('.tkPanel :is([id^="stHpW"], [id^="stHpMap"], #stHpRecP, #stHpRecC, #stHpRecL, #stHpCtry, #stGfIntro)')].map(x => x.id + '=' + x.value).join('|') + pk; };   /* and Send a gift's Intro (List / Cards): its still as the Tweak has it */
-        { let wT = 0; document.addEventListener('change', e => { if (!e.target || !/^(stHp(W|Rec)|stGfIntro$)/.test(e.target.id || '')) return; clearTimeout(wT); wT = setTimeout(() => { if (view === 'flows' && el.isConnected && !el.hidden) flowsDraw(); }, 250); }); }
+        const WSIG = () => { let pk = ''; try { pk = localStorage.getItem('everlab:w2CardPre') || ''; } catch (e){} return '|' + [...document.querySelectorAll('.tkPanel :is([id^="stHpW"], [id^="stHpMap"], #stHpRecP, #stHpRecC, #stHpRecL, #stHpCtry, #stGfIntro, #stGfPlans)')].map(x => x.id + '=' + x.value).join('|') + pk; };   /* and Send a gift's Intro (List / Cards): its still as the Tweak has it */
+        { let wT = 0; document.addEventListener('change', e => { if (!e.target || !/^(stHp(W|Rec)|stGfIntro$|stGfPlans$)/.test(e.target.id || '')) return; clearTimeout(wT); wT = setTimeout(() => { if (view === 'flows' && el.isConnected && !el.hidden) flowsDraw(); }, 250); }); }
         new MutationObserver(() => { if (view === 'flows' && el.isConnected && !el.hidden) flowsDraw(); else built = ''; }).observe(document.body, { attributes: true, attributeFilter: ['class'] });
         const zoom = () => { flows.style.setProperty('--hcZ', ZS[zi]); $('.hcZoom b').textContent = Math.round(ZS[zi] * 100) + '%'; try { localStorage.setItem('everlab:hcZoom2', String(ZS[zi])); } catch (e){} };
         $('.hcZoom').addEventListener('click', e => { const b = e.target.closest('[data-z]'); if (!b) return; zi = Math.max(0, Math.min(ZS.length - 1, zi + +b.dataset.z)); zoom(); });
