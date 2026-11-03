@@ -7206,13 +7206,21 @@
   .mdStack .mdPage .mdSb{visibility:hidden;} .mdStack .mdSbTop, .mdStack:not(.on) .mdSbTop{display:flex;opacity:1;color:var(--sInk);transition:color .12s linear .4s;} .mdStack.l2 .mdSbTop{color:#fff;} .mdStack:not(.on) .mdSbTop{transition:color .2s ease;}   /* the phone's status bar and island stay put, only the page draws back ("top home phone should stay, no move with the stack") */
   .nvFr{--kbR:56px;} .nvFr .mKbd{display:block;} .nvFr:is(.kbdOn, .chatOn) .mKbd{transform:none;visibility:visible;pointer-events:auto;transition-delay:0s;clip-path:inset(0 0 0 0 round 0 0 var(--kbR,0px) var(--kbR,0px));} .nvFr:is(.aiOpen, .chatOn) .mTabs{pointer-events:none;}   /* the doc's phone: its keys up while its field or chat is live, as the app's phones */
   .hoCtl{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px 20px;max-width:900px;margin:0 0 20px;} .hoC{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center;font-size:12.5px;color:var(--ldMut);} .hoC input{grid-column:1 / -1;width:100%;accent-color:var(--ldAcc);} .hoC b{font-weight:500;color:var(--ldFg);font-variant-numeric:tabular-nums;}
-  /* Design system -> Step flow: the master's phone, the app's XS frame (--evPhR, --evPhBz), the step flow's own shell in it (.arSheet, its XS rules shared above), scaled to fit; its status bar in the sheet's ink */
+  /* Design system -> Step flow: the master at every breakpoint ("Need All break points"). Each the step flow's own shell (.arSheet) in the Async report's own full modal (.aqWrap.aqDesk.aqFull.aqBp*, with .aqDev on XS and S: the classes the report wears, so the app's rules for that width apply as they do in the app; XL wears L's, as the app does on a wide window),
+     in the master frames (XS the app's phone, --evPhR/--evPhBz; S its tablet, --evTbR/--evTbBz; M, L, XL the desk's page, as General layout draws it), scaled to fit (fit), the scale under it. All: every one side by side, one scale, a row that scrolls */
   .sfLive{display:flex;flex-wrap:wrap;align-items:flex-start;gap:24px 40px;} .sfSide{flex:1 1 280px;max-width:480px;} .sfSide .hoCtl{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));margin:0 0 16px;}
-  .sfStage{position:relative;order:-1;flex:none;width:441px;max-width:100%;}   /* its width the scaled phone's (fit): no room left between it and the controls */ .sfScale{width:417px;transform-origin:0 0;}
-  .sfPh{--evHome:34px;--sInk:#fff;position:relative;width:393px;height:852px;margin:12px;overflow:hidden;border-radius:var(--evPhR);box-shadow:var(--evPhBz);background:#000;} .sfPh.sfLt{--sInk:#000;}
-  .sfPh.mdPhone .sfSb{position:absolute;left:0;right:0;top:0;z-index:8;color:var(--sInk);pointer-events:none;} .sfPh.sfLt .sfSb svg{filter:invert(1);}
-  .sfPh .sfStg{display:flex;flex-direction:column;height:100%;min-height:0;} .sfPh .sfBody{position:relative;} .sfPh .sfOld{position:absolute;left:16px;right:16px;pointer-events:none;}
-  .sfPh .arLfHead{align-items:stretch;} .sfPh .arLfHead .arH700{margin:0;}
+  .sfLive.sfWide .sfSide, .sfLive.sfWide .sfSide .hoCtl{max-width:none;}   /* under a desk frame or the row: the controls the column's width */
+  .sfStage{position:relative;flex:none;display:flex;align-items:flex-start;gap:32px;max-width:100%;min-width:0;} .sfLive.sfWide .sfStage{flex:1 1 100%;}
+  .sfStage.sfRow{overflow-x:auto;overflow-y:hidden;padding-bottom:12px;overscroll-behavior-x:contain;}
+  .sfFig{flex:none;display:flex;flex-direction:column;gap:10px;margin:0;} .sfFit{position:relative;flex:none;} .sfSc{position:absolute;left:0;top:0;transform-origin:0 0;}
+  .sfDev{--sfBz:1px;position:relative;margin:var(--sfBz);overflow:hidden;border-radius:16px;box-shadow:0 0 0 1px var(--ldLine);background:var(--ldBg);}   /* the desk's page: General layout's desk frame (16 round, a hairline) */
+  .sfDev.sfDevXS{--sfBz:12px;border-radius:var(--evPhR);box-shadow:var(--evPhBz);background:#000;} .sfDev.sfDevS{--sfBz:17px;border-radius:var(--evTbR);box-shadow:var(--evTbBz);background:#000;}   /* the bezel's rings the margin round it (12, 17), counted in the scale */
+  .sfCap{display:flex;flex-direction:column;gap:2px;font-size:12px;line-height:1.35;color:var(--ldMut);} .sfCap b{color:var(--ldFg);font-weight:500;font-variant-numeric:tabular-nums;}
+  .sfAq.sfAq.sfAq.aqWrap.aqWrap.aqFull{display:block !important;position:absolute !important;inset:0 !important;width:auto !important;height:auto !important;max-width:none !important;border-radius:inherit !important;overflow:hidden !important;pointer-events:auto;}   /* in its frame, never the overlay's fixed place (asyncD, a forced breakpoint, the docked panels: those rules are !important or 0,4,2) */
+  .sfAq .aqFrame{position:absolute;inset:0;width:100%;height:100%;transform:none !important;opacity:1 !important;transition:none !important;border-radius:0;box-shadow:none;}
+  .sfAq.aqInk .aqStat{color:#141413;}   /* no .on on these (the bar's screenshot looks for an open overlay's frame): the status bar's ink on the light paper, as .on gives the app's */
+  .sfAq .sfStg{min-height:0;} .sfAq .sfBody{position:relative;} .sfAq .sfOld{position:absolute;pointer-events:none;}   /* the leaving page held where it stood, the body's sides (go) */
+  .sfAq.aqWrap:is(.aqBpXS, .aqBpS) .arSheet .arLfHead{align-items:stretch;} .sfAq .arLfHead .arH700{margin:0;}   /* the phone's title at the left, a short one too (over the full modal's centring, 0,4,0) */
   .hoStage{position:relative;max-width:420px;} .hoScale{width:393px;transform-origin:0 0;} .hoPh{position:relative;width:393px;height:760px;overflow:hidden;border-radius:48px;background:var(--sBg, #111);box-shadow:inset 0 0 0 1px var(--ldLine, rgba(255,255,255,.08));}
   .hoSb{position:absolute;left:0;right:0;top:0;height:54px;z-index:8;display:flex;align-items:center;justify-content:space-between;padding:0 30px;color:#fff;font-size:15px;pointer-events:none;} .hoBack{position:absolute;top:62px;left:16px;z-index:7;display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:rgba(20,20,20,.32);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);color:#fff;}
   .hoSc{position:absolute;inset:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none;} .hoSc::-webkit-scrollbar{display:none;}
@@ -45022,7 +45030,7 @@ hairline({
             if (p[2].length > MB){ const f = mk(p[2][MB]); f.classList.add('arMbFade'); f.removeAttribute('tabindex'); f.setAttribute('aria-hidden', 'true'); list.appendChild(f);
               list.insertAdjacentHTML('beforeend', '<button type="button" class="arBtn arMbMore" tabindex="-1"><span class="arBtnLabel"><span>See ' + (p[2].length - MB) + ' more</span>' + ic(16, 'M4 6l4 4 4-4', 1.6) + '</span></button>'); } }
           return d; };
-        const rows = [['Frame', 'Full: the whole screen, its own page over the one it came from, the status bar (54) over it; on the desk (M, L) a full-page modal, the column centred'],
+        const rows = [['Frame', 'Full: the whole screen, its own page over the one it came from, the status bar (54) over it; on the desk (M, L, XL) a full-page modal, the column centred'],
           ['Header', 'Back · the title · Close, one row 40 high, from 58 down (the 36 discs at 60), clear of the status bar; 16 at its sides (20 on the desk). Back hidden on a flow’s first page'],
           ['Back · Close', '36 circles · ink 6% · the icons 18 and 16, ink 64% · Close blurred 12 · every modal’s dismiss, the same 36'],
           ['Title', 'Centred between them, on two lines: the flow’s name 14/18 · 500 · ink; under it its date or step 12/16 · ink 50%'],
@@ -45036,39 +45044,71 @@ hairline({
           ['Reduced motion', 'No push: the page swaps'],
           ['Variant · stages', 'The Health profile: its own header (Back and Close without discs at rest, the title shown only with Tweaks → Step title), the bars in its middle (28 a segment, the progress unpadded: --sfBar and --sfGap, not --sfPad), a stage each, filling by its pages; the same push'],
           ['Where', 'The Async report (its insights, Everything else, What we recommend) and the Health profile’s step pages, from EvSteps. A welcome or a last page on a picture rises instead (up and out, the next up from below): not this push']];
+        /* every breakpoint the app has ("Need All break points"): [width, height, the bezel round it, what it is]. XS 393, S 600, M 992, L 1440 (the app's floors, General layout's); XL a wide window, which the app draws as L (its .aqBpL), here at 1920 */
+        const BPS = { xs: [393, 852, 12, 'The app’s phone: the whole screen, its status bar and home indicator'], s: [600, 860, 17, 'The app’s tablet: the whole screen, its status bar'], m: [992, 720, 1, 'The desk: a full modal, its column 536, centred'], l: [1440, 900, 1, 'The desk: a full modal, its column 568, centred'], xl: [1920, 1080, 1, 'A wide window, drawn as L: the column 568, centred'] }, BK = Object.keys(BPS);
+        const bpRows = [['XS · 393', 'The app’s phone, the whole screen: the status bar (54) over the header, the home indicator (34) under Next', 'The screen’s, 16 at its sides', 'Left', 'The screen’s width, 16 over the home indicator'],
+          ['S · 600', 'The app’s tablet, the whole screen: its status bar, no island; the header higher (44 down)', 'The screen’s, 16 at its sides', 'Left', '478 at most, centred, 40 under'],
+          ['M · 992', 'The desk: a full modal over the page, no status bar; the header 16 down', '536, centred (496 inside its 20 sides)', 'Centred', 'The column’s, 40 under'],
+          ['L · 1440', 'The desk, as M', '568, centred (528 inside)', 'Centred', 'The column’s'],
+          ['XL · 1920', 'A wide window: the app has no XL rule of its own and draws it as L', '568, centred', 'Centred', 'The column’s']];
         el.innerHTML = '<aside class="ldSide"><h3 class="ldSideH">Step flow</h3><p class="ldSideP">A flow taken a page at a time: a header with Back, the flow’s name and Close, a bar a step, the step, then Next.</p>' +
-          '<div class="ldNotes"><p class="ldD">The master of every step flow (EvSteps): the Async report takes the shell (its edges by the same Tweaks), the progress and the push from here; the Health profile takes the progress (its stages variant: --sfBar and --sfGap, not --sfPad) and the push. Change a number and the phone follows; Save setup makes it every page’s, on its next load too.</p>' +
+          '<div class="ldNotes"><p class="ldD">The master of every step flow (EvSteps): the Async report takes the shell (its edges by the same Tweaks), the progress and the push from here; the Health profile takes the progress (its stages variant: --sfBar and --sfGap, not --sfPad) and the push. Change a number and the flow follows; Save setup makes it every page’s, on its next load too.</p>' +
+          '<p class="ldD">Shown at every breakpoint: XS, S, M, L and XL, or All side by side. Each is the app’s own at that width (the report’s full modal and its rules), in the master frames: the phone, the tablet, the desk’s page.</p>' +
           '<h3>Transition</h3><p>The report’s push, twice as fast and half the movement: 20 px (was 40), in over 220 ms after 75 (was 440 after 150), out over 130 ms (was 260), the same curves.</p><p>The Health profile had its own (32 px, in 260 ms after 45, out 170, curves (.2, .7, .2, 1) and (.4, 0, .6, 1)) and takes these now: it moves 20 px instead of 32 and leaves in 130 ms instead of 170, but its new page lands about when it did (295 ms against 305), on the report’s curves.</p></div></aside>' +
-          '<div class="ldMain glMain"><section class="glSec"><h4>Step flow · XS · live</h4><p>Back and Next step through it, or Play. Slow plays the push four times slower. Scroll a page to see its edges.</p>' +
-          '<div class="sfLive"><div class="sfSide"><div class="mdBar"><button type="button" class="mdBtn sfBk">Back</button><button type="button" class="mdBtn sfNx">Next</button><button type="button" class="mdBtn sfPlay">Play</button><button type="button" class="mdBtn sfSlow" aria-pressed="false">Slow</button></div>' +
-          '<div class="hoCtl">' + SF_C.map(c => '<label class="hoC"><span>' + c[1] + '</span><input type="range" data-sfk="' + c[0] + '" min="' + c[2] + '" max="' + c[3] + '" step="' + c[4] + '"><b data-sfv="' + c[0] + '"></b></label>').join('') + '</div>' +
-          '<div class="mdBar"><button type="button" class="mdBtn sfSave">Save setup</button><button type="button" class="mdBtn sfReset">Reset</button></div></div>' +
-          '<div class="sfStage"><div class="sfScale"><div class="sfPh mdPhone"><div class="mdSb sfSb">' + sb + '</div><i class="mdHome" aria-hidden="true"></i></div></div></div></div></section>' +
-          '<section class="glSec"><h4>Anatomy and sizes · XS</h4><table class="glTab"><thead><tr><th>Part</th><th>The pattern</th></tr></thead><tbody>' + rows.map(r => '<tr><th>' + r[0] + '</th><td>' + r[1] + '</td></tr>').join('') + '</tbody></table></section>' +
+          '<div class="ldMain glMain"><section class="glSec"><h4 class="sfH">Step flow · XS · live</h4><p>Pick a breakpoint: the flow as the app draws it at that width, in its frame, scaled to fit (the scale under it); All lays them side by side. Back and Next step through it, or Play. Slow plays the push four times slower. Scroll a page to see its edges.</p>' +
+          '<div class="mdBar"><div class="glCtBps" role="group" aria-label="Breakpoint">' + BK.concat('all').map(k => '<button type="button" data-sfbp="' + k + '" aria-pressed="false">' + (k === 'all' ? 'All' : k.toUpperCase()) + '</button>').join('') + '</div><button type="button" class="mdBtn sfBk">Back</button><button type="button" class="mdBtn sfNx">Next</button><button type="button" class="mdBtn sfPlay">Play</button><button type="button" class="mdBtn sfSlow" aria-pressed="false">Slow</button></div>' +
+          '<div class="sfLive"><div class="sfStage"></div><div class="sfSide"><div class="hoCtl">' + SF_C.map(c => '<label class="hoC"><span>' + c[1] + '</span><input type="range" data-sfk="' + c[0] + '" min="' + c[2] + '" max="' + c[3] + '" step="' + c[4] + '"><b data-sfv="' + c[0] + '"></b></label>').join('') + '</div>' +
+          '<div class="mdBar"><button type="button" class="mdBtn sfSave">Save setup</button><button type="button" class="mdBtn sfReset">Reset</button></div></div></div></section>' +
+          '<section class="glSec"><h4>At each breakpoint</h4><table class="glTab"><thead><tr><th>Breakpoint</th><th>Frame</th><th>Column</th><th>Step title</th><th>Next</th></tr></thead><tbody>' + bpRows.map(r => '<tr><th>' + r[0] + '</th><td>' + r.slice(1).join('</td><td>') + '</td></tr>').join('') + '</tbody></table></section>' +
+          '<section class="glSec"><h4>Anatomy and sizes</h4><table class="glTab"><thead><tr><th>Part</th><th>The pattern</th></tr></thead><tbody>' + rows.map(r => '<tr><th>' + r[0] + '</th><td>' + r[1] + '</td></tr>').join('') + '</tbody></table></section>' +
           '<section class="glSec"><h4>Tokens</h4><table class="glTab"><thead><tr><th>Token</th><th>Default</th><th>What</th></tr></thead><tbody class="sfTk"></tbody></table></section></div>';
-        const ph = el.querySelector('.sfPh'), st = el.querySelector('.sfStage'), scl = el.querySelector('.sfScale'), N = SF_P.length;
-        let at = 0, slow = false, tm = [], sh = null, body = null, bk = null, lab = null, prog = null, sw = null;
+        const live = el.querySelector('.sfLive'), stg = el.querySelector('.sfStage'), N = SF_P.length;
+        let at = 0, slow = false, tm = [], views = [], bp = 'xs';
+        try { const b = localStorage.getItem('everlab:sfBp'); if (BPS[b] || b === 'all') bp = b; } catch (e){}   /* the breakpoint shown, the viewer's own */
         const red = () => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e){ return false; } };
         const stop = () => { tm.forEach(clearTimeout); tm = []; };
-        const edge = () => { if (sw && sw.edge){ sw.edge(); setTimeout(sw.edge, 60); } if (sw && sw.fitG) sw.fitG(); };
-        /* a step: a page still leaving goes at once, the current one (never a leaving one) drifts out as the new comes in, the step flow's push (EvSteps.push) */
-        const go = (i, dir) => { if (!body) return; i = Math.max(0, Math.min(N - 1, i));
+        const edge = v => { const s = v.sw; if (s && s.edge){ s.edge(); setTimeout(s.edge, 60); } if (s && s.fitG) s.fitG(); };
+        /* a view: the flow at one breakpoint, its frame (the master's for that width) round the report's full modal, the classes the app gives it there; XL takes L's */
+        const view = k => { const d = BPS[k], ph = k === 'xs' || k === 's', f = document.createElement('figure'); f.className = 'sfFig'; f.dataset.bp = k;
+          f.innerHTML = '<div class="sfFit"><div class="sfSc"><div class="sfDev sfDev' + k.toUpperCase() + '" style="width:' + d[0] + 'px;height:' + d[1] + 'px"><div class="aqWrap aqDesk aqFull' + (ph ? ' aqDev' : '') + ' aqBp' + (k === 'xl' ? 'L' : k.toUpperCase()) + ' sfAq"><div class="aqFrame"></div>' + (ph ? '<div class="aqStat" aria-hidden="true">' + sb + '</div>' : '') + '</div></div></div></div><figcaption class="sfCap"></figcaption>';
+          return { k: k, f: f, fit: f.querySelector('.sfFit'), sc: f.querySelector('.sfSc'), wrap: f.querySelector('.sfAq'), frame: f.querySelector('.aqFrame'), cap: f.querySelector('.sfCap'), sh: null, body: null, bk: null, lab: null, prog: null, sw: null }; };
+        /* a step, on every view shown: a page still leaving goes at once, the current one (never a leaving one) drifts out as the new comes in, the step flow's push (EvSteps.push) */
+        const go1 = (v, i, dir) => { const body = v.body; if (!body) return;
           body.querySelectorAll('.sfOld').forEach(o => { o.getAnimations().forEach(a => a.cancel()); o.remove(); });
           const old = body.querySelector('.sfPg:not(.sfOld)'), nw = pg(i);
-          if (old && dir && !red()){ old.getAnimations().forEach(a => a.cancel()); const y = old.offsetTop - body.scrollTop; old.classList.add('sfOld'); old.style.top = y + 'px';   /* where it stood, whatever the bar (Gradient: the body under the head) */ body.appendChild(nw); body.scrollTop = 0;
+          if (old && dir && !red()){ old.getAnimations().forEach(a => a.cancel()); const cs = getComputedStyle(body), y = old.offsetTop - body.scrollTop; old.classList.add('sfOld'); old.style.top = y + 'px'; old.style.left = cs.paddingLeft; old.style.right = cs.paddingRight;   /* where it stood, whatever the bar (Gradient: the body under the head), between the body's sides at this width */ body.appendChild(nw); body.scrollTop = 0;
             const out = E.push(old, nw, dir, slow ? 4 : 1); const done = () => old.remove(); if (out){ out.onfinish = done; out.oncancel = done; } else done(); }
           else { body.textContent = ''; body.appendChild(nw); body.scrollTop = 0; }
-          at = i; prog.set(i + 1); bk.style.visibility = i ? '' : 'hidden'; lab.textContent = i === N - 1 ? 'Done' : 'Next'; edge(); setTimeout(edge, 700); };
+          v.prog.set(i + 1); v.bk.style.visibility = i ? '' : 'hidden'; v.lab.textContent = i === N - 1 ? 'Done' : 'Next'; edge(v); setTimeout(() => edge(v), 700); };
+        const go = (i, dir) => { i = Math.max(0, Math.min(N - 1, i)); views.forEach(v => go1(v, i, dir)); at = i; };
         const next = () => { if (at === N - 1) go(0, -1); else go(at + 1, 1); }, back = () => { if (at) go(at - 1, -1); };
-        /* the shell, the report's: its classes and edges from the same Tweaks (EvSteps.look, EvSteps.cls, EvSteps.shell), rebuilt when they or the theme change */
-        const build = () => { const lk = E.look(), lt = document.body.classList.contains('light'), w = document.createElement('div');
+        /* the shell, the report's: its classes and edges from the same Tweaks (EvSteps.look, EvSteps.cls, EvSteps.shell), rebuilt when they or the theme change; the frame in the sheet's paper, as the app paints it */
+        const build1 = v => { const lk = E.look(), lt = document.body.classList.contains('light'), w = document.createElement('div');
           w.innerHTML = '<div class="arSheet' + (lt ? '' : ' arDark') + E.cls(lk) + '"><div class="arStage sfStg"><div class="arHead"><div class="arHeadRow"><button type="button" class="arIconBtn arBack" aria-label="Back">' + ic(18, 'M10 3.5 5.5 8l4.5 4.5') + '</button><div class="arHeadLabel arNavT"><span class="arNavTt">Advanced blood test</span><span class="arNavTs">15 Oct 2026</span></div><button type="button" class="arIconBtn arClose" aria-label="Close">' + ic(16, 'M3.5 3.5l9 9M12.5 3.5l-9 9') + '</button></div><div class="arStepWrap"></div></div>' +
             '<div class="arBody sfBody"></div><div class="arFoot"><button type="button" class="arBtn arBtnPrimary arBtnLg"><span class="arBtnLabel">Next</span></button></div></div></div>';
-          const nsh = w.firstElementChild; if (sh) sh.replaceWith(nsh); else ph.insertBefore(nsh, ph.querySelector('.mdHome')); sh = nsh; ph.classList.toggle('sfLt', lt);
+          const sh = w.firstElementChild; v.frame.textContent = ''; v.frame.appendChild(sh); v.sh = sh; v.wrap.classList.toggle('aqInk', lt); v.frame.style.background = sh.isConnected ? getComputedStyle(sh).backgroundColor : '';
           const head = sh.querySelector('.arHead'), wrap = sh.querySelector('.arStepWrap'), foot = sh.querySelector('.arFoot'), cta = foot.querySelector('.arBtn');
-          body = sh.querySelector('.sfBody'); bk = sh.querySelector('.arBack'); lab = cta.querySelector('.arBtnLabel'); prog = E.progress(N); wrap.appendChild(prog.el);
-          sw = E.shell({ root: sh, head: head, stepWrap: wrap, body: body, foot: foot, cta: cta, o: lk });
-          cta.addEventListener('click', () => { stop(); next(); }); bk.addEventListener('click', () => { stop(); back(); }); go(at, 0); };
+          v.body = sh.querySelector('.sfBody'); v.bk = sh.querySelector('.arBack'); v.lab = cta.querySelector('.arBtnLabel'); v.prog = E.progress(N); wrap.appendChild(v.prog.el);
+          v.sw = E.shell({ root: sh, head: head, stepWrap: wrap, body: v.body, foot: foot, cta: cta, o: lk });
+          cta.addEventListener('click', () => { stop(); next(); }); v.bk.addEventListener('click', () => { stop(); back(); }); };
+        const rebuild = () => { views.forEach(build1); go(at, 0); fit(); };
+        /* each frame at its width, scaled to fit (never over 100%), the scale written under it: one alone as large as the column allows (a phone beside the controls, by the height too; a desk frame across the column, by the height too, so it shows whole);
+           All: one scale for the row (the tallest, XL, by the height), so the widths read true against each other; the row scrolls */
+        const size = (v, k) => { const d = BPS[v.k], ow = d[0] + 2 * d[2], oh = d[1] + 2 * d[2]; v.sc.style.transform = 'scale(' + k.toFixed(4) + ')'; v.fit.style.width = Math.round(ow * k) + 'px'; v.fit.style.height = Math.round(oh * k) + 'px';
+          v.cap.style.width = Math.max(180, Math.round(ow * k)) + 'px'; v.cap.innerHTML = '<b>' + v.k.toUpperCase() + ' · ' + d[0] + ' · ' + Math.round(k * 100) + '%</b><span>' + d[3] + '</span>';
+          if (!v.frame.style.background && v.sh && v.sh.isConnected) v.frame.style.background = getComputedStyle(v.sh).backgroundColor; };
+        const kOf = (k, aw, ah) => { const d = BPS[k]; return Math.min(1, aw / (d[0] + 2 * d[2]), ah / (d[1] + 2 * d[2])); };
+        const fit = () => { if (!live.offsetWidth || !views.length) return; const mn = el.querySelector('.glMain'), W = live.clientWidth;
+          let room = 760; if (mn){ const top = stg.getBoundingClientRect().top - mn.getBoundingClientRect().top + mn.scrollTop; room = mn.clientHeight - top - 36; }   /* the height left under the bar, the caption's first line (the scale) under the frame */
+          if (bp === 'all'){ const k = kOf('xl', Infinity, Math.max(300, Math.min(640, room))); views.forEach(v => size(v, k)); return; }
+          const ph = bp === 'xs' || bp === 's', side = ph && W >= 700; size(views[0], kOf(bp, side ? W - 320 : W, side || !ph ? Math.max(320, room) : Infinity)); };
+        /* the breakpoint ("the same control as the Modals doc's"): the title follows it, the step kept */
+        const setBp = k => { bp = BPS[k] || k === 'all' ? k : 'xs'; try { localStorage.setItem('everlab:sfBp', bp); } catch (e){}
+          el.querySelectorAll('[data-sfbp]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.sfbp === bp)));
+          el.querySelector('.sfH').textContent = 'Step flow · ' + (bp === 'all' ? 'XS to XL' : bp.toUpperCase()) + ' · live';
+          views.forEach(v => v.f.remove()); views = (bp === 'all' ? BK : [bp]).map(view); views.forEach(v => stg.appendChild(v.f));
+          stg.classList.toggle('sfRow', bp === 'all'); live.classList.toggle('sfWide', bp !== 'xs' && bp !== 's'); rebuild(); };
+        el.querySelector('.glCtBps').addEventListener('click', e => { const b = e.target.closest('[data-sfbp]'); if (b && b.dataset.sfbp !== bp) setBp(b.dataset.sfbp); });
         el.querySelector('.sfNx').addEventListener('click', () => { stop(); next(); }); el.querySelector('.sfBk').addEventListener('click', () => { stop(); back(); });   /* a step by hand stops Play */
         el.querySelector('.sfPlay').addEventListener('click', () => { stop(); go(0, at ? -1 : 0); const g = slow ? 2600 : 1100; for (let k = 1; k < N; k++) tm.push(setTimeout(() => go(k, 1), k * g)); for (let k = 1; k < N; k++) tm.push(setTimeout(() => go(N - 1 - k, -1), (N - 1 + k) * g)); });   /* on to the last, then back to the first */
         el.querySelector('.sfSlow').addEventListener('click', e => { slow = !slow; e.currentTarget.setAttribute('aria-pressed', String(slow)); });
@@ -45077,13 +45117,11 @@ hairline({
         el.querySelector('.hoCtl').addEventListener('input', e => { const r = e.target.closest('[data-sfk]'); if (!r) return; E.set(r.dataset.sfk, +r.value); paint(); });
         el.querySelector('.sfSave').addEventListener('click', e => { const b = e.currentTarget; if (E.save()){ b.textContent = 'Saved'; b.disabled = true; setTimeout(() => { b.textContent = 'Save setup'; b.disabled = false; }, 1400); } });
         el.querySelector('.sfReset').addEventListener('click', () => { E.reset(); paint(); });
-        /* the phone as large as the room allows: by the width, and side by side by the height too (stacked, the page scrolls); the stage hugging the scaled phone */
-        const fit = () => { const box = st.parentNode; if (!box || !box.offsetWidth) return; const mn = el.querySelector('.glMain'), side = box.clientWidth >= 700, wd = Math.min(box.clientWidth, 441) - 2;
-          const k = Math.min(1, wd / 417, side ? Math.max(320, (mn ? mn.clientHeight : 900) - 150) / 876 : 1); scl.style.transform = 'scale(' + k + ')'; st.style.width = Math.round(417 * k) + 'px'; st.style.height = Math.round(876 * k) + 'px'; };
-        if (window.ResizeObserver) new ResizeObserver(fit).observe(el.querySelector('.sfLive'));
-        { const t = document.getElementById('themeSel'); if (t) t.addEventListener('change', () => setTimeout(build, 30)); }
-        ['stArBar', 'stArFoot', 'stArCard'].forEach(id => { const s = document.getElementById(id); if (s) s.addEventListener('change', () => setTimeout(build, 0)); });   /* the report's Tweaks: the master follows them as the report does */
-        build(); paint(); requestAnimationFrame(fit);
+        if (window.ResizeObserver) new ResizeObserver(() => fit()).observe(live);
+        addEventListener('resize', () => { if (el.isConnected && !el.hidden) fit(); });   /* the window's height: the frames' room */
+        { const t = document.getElementById('themeSel'); if (t) t.addEventListener('change', () => setTimeout(rebuild, 30)); }
+        ['stArBar', 'stArFoot', 'stArCard'].forEach(id => { const s = document.getElementById(id); if (s) s.addEventListener('change', () => setTimeout(rebuild, 0)); });   /* the report's Tweaks: the master follows them as the report does */
+        setBp(bp); paint(); requestAnimationFrame(fit);
         return el; };
       /* Documentation -> Chat bubbles: the Concierge's bubbles ("add the bubble speech style and animation inside documentation"): their style, and their motion played with the code the Concierge runs
          (the stack up together over 420 ms on (.22, 1, .36, 1); the new one up 16 on the same curve, faded in over 200 ms from 120 ms; the two latest shown, the ones before faded and blurred away) */
