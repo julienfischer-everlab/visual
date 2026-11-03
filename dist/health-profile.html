@@ -1087,8 +1087,8 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
 .evTn.evTnTitled > .evTnFt { opacity: 1; transform: none; }
 .evTn:not(.evTnC) > .evTnFt { display: none; }
 /* the body's H1 under a C bar: its lines clear of the floating Close (the disc and 12), and under a floating Back it starts below the disc (its foot and 12) */
-.evTnC.evTnHasX ~ .evTnH1, .evTnC.evTnHasX ~ * .evTnH1 { padding-right: calc(var(--evTnD) + 12px); box-sizing: border-box; }
-.evTnC.evTnHasBk ~ .evTnH1, .evTnC.evTnHasBk ~ * .evTnH1, .evTnC.evTnHasBk + .evTnClr, .evTnC.evTnHasBk + * > .evTnClr:first-child { margin-top: calc(var(--evTnD) - 16px + 12px); }
+.evTnC.evTnHasX ~ .evTnH1, .evTnC.evTnHasX ~ * .evTnH1 { padding-right: calc(var(--evTnD, 44px) + 12px); box-sizing: border-box; }
+.evTnC.evTnHasBk ~ .evTnH1, .evTnC.evTnHasBk ~ * .evTnH1, .evTnC.evTnHasBk + .evTnClr, .evTnC.evTnHasBk + * > .evTnClr:first-child { margin-top: calc(var(--evTnD, 44px) - 16px + 12px); }
 /* the ground */
 .evTnG { position: absolute; left: 0; right: 0; top: 0; bottom: 0; z-index: -1; pointer-events: none; transition: bottom .28s ease; }
 .evTn.evTnOn > .evTnG { bottom: calc(-1 * var(--evTnBleed, 24px)); }
@@ -2175,7 +2175,7 @@ window.EvTopNav = (function () {
     var lead = o.back ? btn('Bk', o.backCls, o.backLabel || 'Back', o.backIcon || IB) : '';
     var tail = o.close ? btn('X', o.closeCls, o.closeLabel || 'Close', o.closeIcon || IX) : o.more ? btn('More', o.moreCls, o.moreLabel || 'More', IM) : '';
     var mid = o.title ? '<' + tag + ' class="evTnT"' + (o.titleId ? ' id="' + esc(o.titleId) + '"' : '') + '>' + o.title + '</' + tag + '>' : '<div class="evTnFt" aria-hidden="true"><span>' + esc(o.reveal || '') + '</span></div>';
-    return '<div class="evTn evTn' + v.toUpperCase() + (o.back ? ' evTnHasBk' : '') + (trail ? ' evTnHasX' : '') + (o.cls ? ' ' + o.cls : '') + '" data-tn="' + v + '">' + G + lead + mid + tail + '</div>';
+    return '<div class="evTn evTn' + v.toUpperCase() + (o.back ? ' evTnHasBk' : '') + (trail ? ' evTnHasX' : '') + (o.cls ? ' ' + o.cls : '') + '" data-tn="' + v + '"' + (o.attr ? ' ' + o.attr : '') + '>' + G + lead + mid + tail + '</div>';
   }
   function mount(el, o) { if (!el) return null; el.innerHTML = html(o); return el.firstChild; }
   /* the Service detail's rule, shared: the title is in the bar once the H1's middle is above the bar's controls' foot, or the sheet under it has come over the H1 */
@@ -2185,7 +2185,7 @@ window.EvTopNav = (function () {
     o = o || {}; if (!sc || !nav) return { update: function () {} }; var q = 0;
     var ft = nav.querySelector(':scope > .evTnFt span'); if (ft && !ft.textContent && h1) ft.textContent = h1.textContent.trim();
     var run = function () { q = 0; nav.classList.toggle('evTnOn', sc.scrollTop > 0);
-      if (nav.classList.contains('evTnC') && h1) { var r = h1.getBoundingClientRect(); nav.classList.toggle('evTnTitled', !!r.height && r.top + r.height / 2 < foot(nav)); } };
+      if (nav.classList.contains('evTnC') && h1) { var r = h1.getBoundingClientRect(); nav.classList.toggle('evTnTitled', !!r.height && r.bottom < foot(nav)); } };
     sc.addEventListener('scroll', function () { if (!q) q = requestAnimationFrame(run); }, { passive: true });
     run(); return { update: run };
   }
