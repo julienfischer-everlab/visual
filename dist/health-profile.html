@@ -1987,6 +1987,9 @@ body.hdrV4[data-bp="xs"] #dOver .dvTop > .hpOvCard { margin-top: 6px; margin-bot
 .arSheet.hpSheet .hpGfLogoT { font-size: 20px; line-height: 20px; font-weight: 570; letter-spacing: -.02em; }
 .arSheet.hpSheet.hpGfAtIn:not(.hpGfOnSheet) .arHead { --ar-ink: 100% 0 0; color: #fff; }
 .arSheet.hpSheet.hpGfAtIn:not(.hpGfOnSheet) .arHead .arIconBtn { background: rgba(20, 20, 20, .32); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); color: #fff; }
+/* the flow's secondary CTAs (Back, Close) always on their blurred disc ("CTA secondary always blur bg"), at rest too: over the profile's bare-at-the-top rule (.hpScrolled) */
+html .arSheet.hpSheet.hpGfSolo .arHead .arIconBtn.arIconBtn { background-color: oklch(var(--ar-ink) / .08) !important; -webkit-backdrop-filter: blur(14px) !important; backdrop-filter: blur(14px) !important; }
+html .arSheet.hpSheet.hpGfSolo.hpGfAtIn:not(.hpGfOnSheet) .arHead .arIconBtn.arIconBtn { background-color: rgba(20, 20, 20, .32) !important; color: #fff; }
 .arSheet.hpSheet.hpGfAtIn.hpGfOnSheet .hpGfMark { color: oklch(var(--ar-ink)); }
 .aqWrap.aqDev.aqInk:is(.aqFull, .aqPhone).on:has(.arSheet.hpGfAtIn:not(.hpGfOnSheet)) .aqStat { color: #fff; }   /* the status bar white over the photo, in Light too */
 .arSheet.hpSheet .hpScr.hpGfIn, .arSheet.hpSheet.hpWide:not(.hpAtHome) .hpScr.hpGfIn { display: block; padding: 0; }
@@ -2001,7 +2004,9 @@ body.hdrV4[data-bp="xs"] #dOver .dvTop > .hpOvCard { margin-top: 6px; margin-bot
 .arSheet.hpSheet .hpGfHeroT { position: absolute; left: var(--hpSide); right: var(--hpSide); bottom: calc(var(--hoOverlap, 28px) + 28px); text-align: center; }
 .arSheet.hpSheet .hpGfH1 { margin: 0; font-family: 'Tobias', 'Tobias Light', 'Tobias Regular', Georgia, 'Times New Roman', serif; font-size: 36px; line-height: 40px; font-weight: 400; letter-spacing: -.5px; color: #fff; text-wrap: balance; }   /* Tobias by name, as the landing's: shown where it is installed, a serif where not */
 .arSheet.hpSheet.hpWide .hpGfHeroT .hpGfH1 { font-size: 48px; line-height: 52px; }
-.arSheet.hpSheet .hpGfBody { min-height: calc(38% + var(--hoOverlap, 28px) + 80px); padding: 28px var(--hpSide) 32px; background: var(--ar-paper); box-sizing: border-box; }
+.arSheet.hpSheet .hpGfBody { flex: none; padding: 28px var(--hpSide) 8px; background: var(--ar-paper); box-sizing: border-box; }   /* hugs its words ("Hug content"): the CTA under the ticks, the photo taking what is left above */
+.arSheet.hpSheet .hpScr.hpGfIn, .arSheet.hpSheet.hpWide:not(.hpAtHome) .hpScr.hpGfIn { display: flex; flex-direction: column; }
+.arSheet.hpSheet .hpGfHero, .arSheet.hpSheet.hpWide .hpGfHero { flex: 1 0 auto; height: auto; min-height: 340px; }
 .arSheet.hpSheet .hpGfBodyIn { display: flex; flex-direction: column; align-items: center; gap: 24px; max-width: 520px; margin: 0 auto; }
 .arSheet.hpSheet .hpGfLead { margin: 0; font-size: 18px; line-height: 24px; text-align: center; text-wrap: balance; color: oklch(var(--ar-ink)); }
 .arSheet.hpSheet .hpGfTicks { display: flex; flex-direction: column; gap: 14px; margin: 0; padding: 0; list-style: none; }
@@ -2032,10 +2037,19 @@ body.hdrV4[data-bp="xs"] #dOver .dvTop > .hpOvCard { margin-top: 6px; margin-bot
 .arSheet.hpSheet .hpPlanH b { font-size: 20px; line-height: 24px; font-weight: 570; }
 .arSheet.hpSheet .hpPlanP { font-size: 18px; line-height: 24px; font-weight: 500; font-variant-numeric: tabular-nums; }
 .arSheet.hpSheet .hpPlanD { margin: 0; font-size: 14px; line-height: 20px; opacity: .72; }
-.arSheet.hpSheet .hpPlanX { appearance: none; align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; margin: 0; padding: 4px 0; border: 0; background: none; color: inherit; font: inherit; font-family: var(--ar-font); font-size: 14px; line-height: 18px; font-weight: 500; cursor: pointer; }
-.arSheet.hpSheet .hpPlanX span { text-decoration: underline; text-underline-offset: 3px; } .arSheet.hpSheet .hpPlanX svg { transition: transform .2s ease; } .arSheet.hpSheet .hpPlanOpen .hpPlanX svg { transform: rotate(180deg); }
 .arSheet.hpSheet .hpPlanL { display: flex; flex-direction: column; gap: 10px; margin: 2px 0 0; padding: 14px 0 0; list-style: none; box-shadow: inset 0 1px 0 color-mix(in srgb, currentColor 16%, transparent); }
 .arSheet.hpSheet .hpPlanL[hidden] { display: none; }
+/* See more with the gradient (the Async report's biomarker module, .arMbMore): folded, two items, the third fading to nothing under the button; open, all of them */
+.arSheet.hpSheet .hpPlanFold:not(.hpPlanOpen *) > li:nth-child(n+4) { display: none; }
+.arSheet.hpSheet .hpPlan:not(.hpPlanOpen) .hpPlanFold > li:nth-child(3) { max-height: 36px; overflow: hidden; -webkit-mask-image: linear-gradient(180deg, #000 0%, rgba(0,0,0,.35) 45%, transparent 100%); mask-image: linear-gradient(180deg, #000 0%, rgba(0,0,0,.35) 45%, transparent 100%); pointer-events: none; }
+.arSheet.hpSheet .hpPlanOpen .hpPlanFold > li:nth-child(n+3) { animation: hpPlanIn .32s cubic-bezier(.2, .7, .2, 1) both; }
+@keyframes hpPlanIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+.arSheet.hpSheet .hpPlanMore { appearance: none; position: relative; z-index: 1; display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; height: 44px; margin: -14px 0 0; padding: 0 20px; border: 0; border-radius: 12px; background: color-mix(in srgb, currentColor 8%, transparent); color: inherit; font: inherit; font-family: var(--ar-font); font-size: 14px; line-height: 18px; font-weight: 500; cursor: pointer; }
+.arSheet.hpSheet .hpPlanOpen .hpPlanMore { margin-top: 8px; }
+@media (hover: hover) { .arSheet.hpSheet .hpPlanMore:hover { background: color-mix(in srgb, currentColor 13%, transparent); } }
+.arSheet.hpSheet .hpPlanMore:focus-visible { outline: 2px solid var(--ar-blue-fg); outline-offset: 2px; }
+.arSheet.hpSheet .hpPlanMore svg { transition: transform .32s cubic-bezier(.2, .7, .2, 1); } .arSheet.hpSheet .hpPlanOpen .hpPlanMore svg { transform: rotate(180deg); }
+@media (prefers-reduced-motion: reduce) { .arSheet.hpSheet .hpPlanMore svg, .arSheet.hpSheet .hpPlanOpen .hpPlanFold > li { transition: none; animation: none; } }
 .arSheet.hpSheet .hpPlanL li { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; line-height: 20px; } .arSheet.hpSheet .hpPlanL li svg { flex: none; margin-top: 4px; }
 /* the note: its count, the hint, and what they'll see (a dark card on both themes, the gift's own) */
 .arSheet.hpSheet .hpGfCntR { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: -2px; }
@@ -2293,7 +2307,7 @@ window.EvDismiss = (function () {
     notch: function (el) { if (!el || el.querySelector(':scope > .evNotch')) return null; var n = document.createElement('i'); n.className = 'evNotch'; n.setAttribute('aria-hidden', 'true'); el.insertBefore(n, el.firstChild); return n; } };
 })();
 window.EvOverlap = (function () {
-  var M = { ty: .25, rise: 32, end: 40, overlap: 28, radius: 24, dim: .35, tint: .85 }, D = JSON.parse(JSON.stringify(M)), root = document.documentElement;
+  var M = { ty: .25, rise: 32, end: 40, overlap: 28, radius: 24, dim: .35, tint: .85, delay: 48 }, D = JSON.parse(JSON.stringify(M)), root = document.documentElement;
   var red = function () { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
   var tok = function () { root.style.setProperty('--hoOverlap', M.overlap + 'px'); root.style.setProperty('--hoRadius', M.radius + 'px'); root.style.setProperty('--hoRise', M.rise + 'px'); root.style.setProperty('--hoDim', String(M.dim)); root.style.setProperty('--hoTint', String(M.tint)); };
   /* the span: the scroll over which the picture rises and the title fades (the hero's height less the fade end; 'short', a page that cannot scroll that far: its own scroll) */
@@ -2311,7 +2325,7 @@ window.EvOverlap = (function () {
   var mark = function (sc) { [['hero', 'hoHero'], ['img', 'hoPic'], ['title', 'hoWords'], ['sheet', 'hoSheet'], ['band', 'hoBand']].forEach(function (p) { [].forEach.call(sc.querySelectorAll('[data-ov="' + p[0] + '"]'), function (e) { e.classList.add(p[1]); }); });
     [].forEach.call(sc.querySelectorAll('.hoBand'), function (b) { if (b.querySelector(':scope > .ovGround')) return; var g = document.createElement('div'); g.className = 'ovGround'; g.setAttribute('aria-hidden', 'true'); g.innerHTML = new Array(11).join('<i></i>'); b.insertBefore(g, b.firstChild); }); };   /* the bar's blur bands, the Overview bar's own (.ovGround) */
   /* the bar's overflow state: on once the sheet's top reaches the bar's foot */
-  var touch = function (sc, band, sheet) { if (!band) return false; var r = sc.getBoundingClientRect(), z = sc.offsetHeight ? r.height / sc.offsetHeight : 1, over = !!sheet && sheet.getBoundingClientRect().top - r.top <= band.offsetHeight * z + .5;   /* z: a frame drawn smaller (the doc's phone, scaled to a narrow window): the bar's height on screen */ band.classList.toggle('on', over || sc.scrollTop > 0); band.classList.toggle('hoOnSheet', over); return over; };   /* lit (.on, dark over the photo) from the first pixel of scroll; .hoOnSheet once the sheet's top reaches the bar's foot: the screen's mode */
+  var touch = function (sc, band, sheet) { if (!band) return false; var r = sc.getBoundingClientRect(), z = sc.offsetHeight ? r.height / sc.offsetHeight : 1, over = !!sheet && sheet.getBoundingClientRect().top - r.top <= band.offsetHeight * z + .5;   /* z: a frame drawn smaller (the doc's phone, scaled to a narrow window): the bar's height on screen */ band.classList.toggle('on', over || sc.scrollTop > M.delay); band.classList.toggle('hoOnSheet', over); return over; };   /* lit (.on, dark over the photo) once the scroll passes the ground delay (M.delay, 48: "a 48px delay when the bg gradient and blur start to appear"); .hoOnSheet once the sheet's top reaches the bar's foot: the screen's mode */
   var bind = function (sc, o) { o = o || {}; if (!sc) return { update: function () {} }; mark(sc); var q = 0, sp = 0, hz = null, ro = null;
     if (SDA) sc.classList.add('hoTl');   /* its timeline, for its picture and title */
     var heroOf = function () { return typeof o.hero === 'function' ? o.hero() : sc.querySelector(o.hero || '.hoHero'); };
@@ -2982,6 +2996,16 @@ window.EvConsent = (function () {
       ['paddingTop', 'paddingRight', 'paddingLeft', 'alignItems'].forEach(function (k) { shown.style[k] = cs[k]; });   /* the old page held as it stood while it leaves: on the desk a step's page has its own side padding and column (32, 520), the intro's not; going back, they changed under it the moment the intro's class came on, and it jumped 17 px ("padding jump when I click back on desktop step") */
       [].forEach.call(shown.children, function (c) { var cc = getComputedStyle(c); c.style.maxWidth = cc.maxWidth; c.style.width = cc.width; });
       return { top: r.top }; };
+    /* the Page types push (Design system -> General layout -> Page types, EvPush): on, the new page in from the right over the old, the old drifting a share left and dimming; back, the other way */
+    function pagePush(old, scr, dir) {
+      var P = (window.EvPush && window.EvPush.M) || { dur: 340, dist: 28, dim: .4 }, E = (window.EvPush && typeof window.EvPush.ease === 'string' && window.EvPush.ease) || 'cubic-bezier(.2, .8, .2, 1)', on = dir > 0, dim = 'brightness(' + (1 - P.dim * (document.body.classList.contains('light') ? .5 : 1)) + ')';
+      var top = on ? scr : old, under = on ? old : scr, o = { duration: P.dur, easing: E, fill: 'both' };
+      top.style.zIndex = '2'; under.style.zIndex = '1'; top.style.boxShadow = '-12px 0 32px rgba(0, 0, 0, .28)';
+      var a1 = top.animate(on ? [{ transform: 'translateX(100%)' }, { transform: 'none' }] : [{ transform: 'none' }, { transform: 'translateX(100%)' }], o);
+      var a2 = under.animate(on ? [{ transform: 'none', filter: 'none' }, { transform: 'translateX(-' + P.dist + '%)', filter: dim }] : [{ transform: 'translateX(-' + P.dist + '%)', filter: dim }, { transform: 'none', filter: 'none' }], o);
+      var end = function () { a1.cancel(); a2.cancel(); scr.style.boxShadow = ''; old.style.boxShadow = ''; };
+      a1.addEventListener('finish', function () { requestAnimationFrame(end); });
+      return on ? a2 : a1; }
     function show(build, dir) {
       var scr = h('div', { class: 'hpScr' }), old = shown, v = vFrom; vFrom = null; tick++; if (ctaFx) { ctaFx.cancel(); ctaFx = null; }
       build(scr); view.appendChild(scr); shown = scr;
@@ -3005,7 +3029,8 @@ window.EvConsent = (function () {
         else {
           /* a soft cross, the old page fading out as it drifts the way it goes, the new fading in from the other side ("left right content transition smoother"): the step flow's push, the master's (EvSteps, Design system -> Step flow), 20 px, in 220 ms after 75, out 130 ms (was 32 px, in 260 after 45, out 170: its own numbers, now the one master's) */
           scr.style.zIndex = '2'; old.style.zIndex = '1'; old.setAttribute('inert', ''); old.setAttribute('aria-hidden', 'true');
-          var out = window.EvSteps.push(old, scr, dir);
+          var gfIntro = A === 'gift' && (old.classList.contains('hpGfIn') || scr.classList.contains('hpGfIn'));   /* the gift's intro to its first step and back: the page push, the next screen in from the right ("Choose a gift next page push left"), the Page types master's numbers (EvPush) */
+          var out = gfIntro ? pagePush(old, scr, dir) : window.EvSteps.push(old, scr, dir);
           var done = function () { old.remove(); scr.style.zIndex = ''; }; out.onfinish = done; out.oncancel = done;
         }
       }
@@ -3932,19 +3957,20 @@ window.EvConsent = (function () {
        plans(keys, get, set, country, onChange) -> the radiogroup; arrows move between the cards, Enter or Space picks, the toggle opens or closes a card's list without picking it */
     function plans(ks, get, set, ctry, onChange) {
       var box = h('div', { class: 'hpPlans', role: 'radiogroup', 'aria-label': 'Choose a plan' }), openK = {};
-      var paint = function () { [].forEach.call(box.children, function (c, i) { var k = c.dataset.v, on = get() === k, op = !!openK[k], tg = c.querySelector('.hpPlanX');
-        c.setAttribute('aria-checked', String(on)); c.tabIndex = on || (!get() && i === 0) ? 0 : -1; c.classList.toggle('hpPlanOpen', op); c.querySelector('.hpPlanL').hidden = !op;
-        tg.setAttribute('aria-expanded', String(op)); tg.firstChild.textContent = op ? 'Hide what’s included' : 'What’s included'; }); };
-      var pick = function (k) { if (get() === k) return; set(k); openK[k] = true; save(true); paint(); if (onChange) onChange(); };
+      /* what's included as the Async report's biomarker module ("a See more with gradient, same as Async Biomarker module"): two shown, the third fading under a full-width See n more, the rest opening in place, then Show less */
+      var paint = function () { [].forEach.call(box.children, function (c, i) { var k = c.dataset.v, on = get() === k, op = !!openK[k], tg = c.querySelector('.hpPlanMore');
+        c.setAttribute('aria-checked', String(on)); c.tabIndex = on || (!get() && i === 0) ? 0 : -1; c.classList.toggle('hpPlanOpen', op);
+        if (tg) { tg.setAttribute('aria-expanded', String(op)); tg.firstChild.textContent = op ? 'Show less' : 'See ' + (GF_PLAN[k].L.length - 2) + ' more'; } }); };
+      var pick = function (k) { if (get() === k) return; set(k); save(true); paint(); if (onChange) onChange(); };
       ks.forEach(function (k, i) {
         var p = GF_PLAN[k], id = 'hpPl' + k + Math.random().toString(36).slice(2, 6);
-        var tg = h('button', { type: 'button', class: 'hpPlanX', 'aria-controls': id, on: { click: function (e) { e.stopPropagation(); openK[k] = !openK[k]; paint(); } } }, h('span'), ic(14, P.chev, 1.6));
+        var tg = p.L.length > 3 ? h('button', { type: 'button', class: 'hpPlanMore', 'aria-controls': id, on: { click: function (e) { e.stopPropagation(); openK[k] = !openK[k]; paint(); } } }, h('span'), ic(16, P.chev, 1.6)) : null;
         var c = h('div', { class: 'hpPlan', role: 'radio', 'data-v': k, 'aria-labelledby': id + 'n', on: { click: function () { pick(k); },
           keydown: function (e) { if (e.target !== c) return; if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(k); return; }
             var d = e.key === 'ArrowDown' || e.key === 'ArrowRight' ? 1 : e.key === 'ArrowUp' || e.key === 'ArrowLeft' ? -1 : 0; if (!d) return; e.preventDefault(); var n = ks[(i + d + ks.length) % ks.length]; pick(n); var nc = box.querySelector('[data-v="' + n + '"]'); if (nc) nc.focus(); } } },
           h('div', { class: 'hpPlanH' }, h('b', { id: id + 'n', text: p.n }), h('span', { class: 'hpPlanP', text: gfMoney(ctry, k) })),
-          h('p', { class: 'hpPlanD', text: p.d }), tg,
-          h('ul', { class: 'hpPlanL', id: id }, p.L.map(function (t) { return h('li', null, ic(12, P.check, 2.2), h('span', { text: t })); })));
+          h('p', { class: 'hpPlanD', text: p.d }),
+          h('ul', { class: 'hpPlanL' + (tg ? ' hpPlanFold' : ''), id: id }, p.L.map(function (t) { return h('li', null, ic(12, P.check, 2.2), h('span', { text: t })); })), tg);
         box.appendChild(c);
       });
       if (get()) openK[get()] = true; paint();
@@ -4122,12 +4148,14 @@ window.EvConsent = (function () {
     };
     /* the demo: a tap in a form fills it ("when I click whatever field, simulate all the fields completed so I can continue"): its empty answers from the demo member's, the page drawn again with them; once filled, the fields edit as usual */
     var FILL = { 'wear.promise': ['tc', 'find'], 'wear.details': ['first', 'last', 'sex', 'dob', 'occ', 'state'], 'wear.address': ['addr'], 'wear.emergency': ['ecn', 'ece', 'ecp', 'ecr'], 'wear.mobile': ['mob'], 'wear.otp': ['otp'], 'wear.medicare': ['mc', 'mcn', 'irn', 'exp'], 'wear.declare': ['hdC', 'hdM', 'hdA', 'hdAT', 'hdS', 'hdF', 'hdFT'], 'wear.health': ['country', 'eth', 'goals'], 'past.time': ['day', 'time', 'tz'], 'you.about': ['country', 'goals', 'occ'] };
+    /* Send a gift, as the profile ("click on one input: auto fill the entire screen, same as the health profile"): the board's gift (Alex, Christmas, Protocol, Sam), the card a demo one */
+    FILL['gift.where'] = ['ctry']; FILL['gift.fit'] = ['fit']; FILL['gift.who'] = ['first', 'last', 'email', 'mob']; FILL['gift.plan'] = ['plan']; FILL['gift.when'] = ['occ', 'dlv', 'date']; FILL['gift.note'] = ['note', 'from']; FILL['gift.checkout'] = ['pName', 'pEmail', 'card'];
     var empty = function (v) { return v == null || v === '' || v === false && false || (Array.isArray(v) && !v.length); };
     root.addEventListener('pointerdown', function (e) {
-      if (!A || !e.target.closest('.hpScr :is(.hpIn, .hpSel, .hpOpt, .hpChk, .hpDay, .hpSlot)') || e.target.closest('.hpPop, .hpPk, .hpSug, .hpFLock')) return;   // not inside a dropdown's menu or sheet, the suggestions, a held field
+      if (!A || !e.target.closest('.hpScr :is(.hpIn, .hpSel, .hpOpt, .hpChk, .hpDay, .hpSlot, .hpGfChip, .hpGfDateB, input, textarea)') || e.target.closest('.hpPop, .hpPk, .hpSug, .hpFLock')) return;   // not inside a dropdown's menu or sheet, the suggestions, a held field
       var id = A + '.' + stepsOf(A)[I], keys = FILL[id], ans = S.a[A].ans, src = DEMO[A]; if (!keys) return;
-      var miss = keys.filter(function (k) { return k === 'tc' ? !ans.tc : empty(ans[k]); }); if (!miss.length) return;
-      miss.forEach(function (k) { ans[k] = JSON.parse(JSON.stringify(src[k])); });
+      var miss = keys.filter(function (k) { return k === 'tc' ? !ans.tc : k === 'card' ? !(GP.card && GP.exp && GP.cvc) : empty(ans[k]); }); if (!miss.length) return;
+      miss.forEach(function (k) { if (k === 'card') { GP = { card: '4242 4242 4242 4242', exp: '08 / 29', cvc: '123' }; return; } if (k === 'mob' && ans.ctry === 'NZ') { ans.mob = '21 234 5678'; return; } ans[k] = JSON.parse(JSON.stringify(src[k])); });
       if (id === 'wear.details' && opts.name) ans.first = opts.name;
       e.preventDefault(); save(true); step(0);
     }, true);

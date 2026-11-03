@@ -19879,3 +19879,11 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - **The board's first views**: Protocol picked on arrival, its list open, "Continue with Protocol"; under the note, one line: From and the name (a tap edits it) at the left, the count at the right (the box's label read out only); the checkout's lines in $ ($2,999.00), A$ / NZ$ kept on the cards and the summary.
   - **Small ones**: the expiry says why Pay stays off (a month past 12, a card expired against 3 Nov 2026); paying holds Back and Close till it is through; Sign in on Payment received closes to the Overview; a mobile typed the local way (0498 765 432, 021...) drops its 0 (the profile's phone fields too).
   - **Kept, and named in the Documentation note**: n of 7 over the bars with Close at the right (the Health profile's head, the master); the photo a placeholder until one of an older man is supplied; Choose a gift the sheet's primary, not the board's white; NZ prices and Diagnostics' extra lines drafts.
+
+## Header overlap ground delay; Send a gift polish
+- EvOverlap master: `M.delay` (48 px, saved with everlab:hoMaster): the bar's gradient and blur (.hoBand.on) come on only once the scroll passes it (was the first pixel). Design system › General layout › Header overlap: a "Ground delay" slider (0–160, step 4); the Bar row says so.
+- Send a gift intro: the sheet hugs its words (no min-height); the photo takes the rest (hero flex 1, min 340), so the CTA sits under the ticks.
+- The flow's Back and Close always on their blurred disc (dark glass over the photo, ink 8% + blur on the page), over the profile's bare-at-the-top rule — this flow only.
+- Intro ⇄ first step: the Page types push (EvPush numbers: 340 ms, the old page 28% aside and dimmed, the new one in from the right; back the other way) instead of the soft cross. Other steps keep the step flow's cross.
+- Tap-to-fill as the Health profile: FILL entries for every gift step (where, fit, who, plan, when, note, checkout incl. the demo card 4242…); NZ gets an NZ mobile. Targets widened to chips, the date button, inputs and textareas.
+- Plan cards: "What's included" link replaced by the Async biomarker module's See more: two items, the third fading under a full-width "See n more" (44, radius 12, currentColor 8%), opening in place, then "Show less" with the chevron turned.
