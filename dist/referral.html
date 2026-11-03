@@ -34,6 +34,11 @@
   prototype; #light / #dark in the hash for the first paint; the system's
   when opened alone).
 -->
+<script>
+/* the theme before the first paint: the prototype's Colour mode in the hash (it sets data-theme on the root after too); opened alone, the system's, live. One dark token set (:root[data-theme="dark"]) */
+(function () { var r = document.documentElement, th = /(?:^|[#&])(light|dark)(?:&|$)/.exec(location.hash); if (th) { r.dataset.theme = th[1]; return; }
+  try { var mq = matchMedia('(prefers-color-scheme: dark)'), set = function () { r.dataset.theme = mq.matches ? 'dark' : 'light'; }; set(); if (mq.addEventListener) mq.addEventListener('change', set); } catch (e) { r.dataset.theme = 'light'; } })();
+</script>
 <style data-master="EvOverlap">/* from index.html (tools/build.js): Design system -> General layout -> Header overlap, and the Overview bar blur bands it draws on */
   .ovGround{position:absolute;left:0;right:0;top:0;z-index:-1;pointer-events:none;opacity:0;transition:opacity .28s ease;}   /* at rest, no ground: the greeting under the bar was blurring ("on rest the top bar gradient / blur"); it comes in as the page scrolls under */
   .ovGround i{position:absolute;left:0;right:0;top:0;display:block;}
@@ -151,7 +156,7 @@
 <style>
   :root{
     --paper:#f6f3ef; --card:#ece8e3; --ink:#1d1a17; --ink2:rgba(29,26,23,.62); --ink3:rgba(29,26,23,.44); --line:rgba(29,26,23,.14);
-    --app:#0e0e0f; --sheet:#1c1c1e; --appInk:#f2f2f2; --appInk2:rgba(242,242,242,.6); --appLine:rgba(255,255,255,.08);
+    --app:#0e0e0f; --sheet:#1c1c1e; --appInk:#f2f2f2; --appInk2:rgba(242,242,242,.6); --appLine:rgba(255,255,255,.08); --appFill:rgba(255,255,255,.08); --appHov:rgba(255,255,255,.04); --appGo:rgba(255,255,255,.06); --appGrab:rgba(255,255,255,.22); --appAv:#f2f2f2; --appAvInk:#111; --appCard:radial-gradient(120% 90% at 20% 30%,#2c3a1c,#141812 60%,#101010);
     --ok:#1e8a4c; --okBg:#e7f6ec;
     --sans:'Saans','Geist','Helvetica Neue',Helvetica,Arial,sans-serif;
     --serif:'Tobias','Tobias Regular','Newsreader',Georgia,'Times New Roman',serif;
@@ -159,19 +164,17 @@
     --desk:#e9e5e0; --btn:#0d0d0d; --btnInk:#fff; --btnHover:#262422; --fill:rgba(29,26,23,.05); --fillHi:rgba(29,26,23,.09); --modal:#fff; --field:#fff; --focus:rgba(29,26,23,.55); --ring:rgba(29,26,23,.06); --dimBg:rgba(20,18,16,.3); --grabBg:rgba(0,0,0,.12); --nRing:rgba(29,26,23,.4);
     color-scheme:light;
   }
-  /* dark, as the app's Dark mode and the Activity plan's dark sheet (#0f0f0f, cards #181818, modals #181818): the prototype sets data-theme; alone, the system's */
+  /* dark, as the app's Dark mode and the Activity plan's dark sheet (#0f0f0f, cards #181818, modals #181818): the prototype sets data-theme; alone, the system's (the script in the head) */
   :root[data-theme="dark"]{
     --paper:#0f0f0f; --card:#181818; --ink:#fff; --ink2:rgba(255,255,255,.56); --ink3:rgba(255,255,255,.4); --line:rgba(255,255,255,.12);
     --ok:#6fd39a; --okBg:rgba(30,138,76,.18);
     --desk:#000; --btn:#fff; --btnInk:#0d0d0d; --btnHover:#e6e6e6; --fill:rgba(255,255,255,.08); --fillHi:rgba(255,255,255,.13); --modal:#181818; --field:rgba(255,255,255,.04); --focus:rgba(255,255,255,.5); --ring:rgba(255,255,255,.08); --dimBg:rgba(0,0,0,.55); --grabBg:rgba(255,255,255,.2); --nRing:rgba(255,255,255,.4);
     color-scheme:dark;
   }
-  @media (prefers-color-scheme: dark){ :root:not([data-theme]){
-    --paper:#0f0f0f; --card:#181818; --ink:#fff; --ink2:rgba(255,255,255,.56); --ink3:rgba(255,255,255,.4); --line:rgba(255,255,255,.12);
-    --ok:#6fd39a; --okBg:rgba(30,138,76,.18);
-    --desk:#000; --btn:#fff; --btnInk:#0d0d0d; --btnHover:#e6e6e6; --fill:rgba(255,255,255,.08); --fillHi:rgba(255,255,255,.13); --modal:#181818; --field:rgba(255,255,255,.04); --focus:rgba(255,255,255,.5); --ring:rgba(255,255,255,.08); --dimBg:rgba(0,0,0,.55); --grabBg:rgba(255,255,255,.2); --nRing:rgba(255,255,255,.4);
-    color-scheme:dark;
-  } }
+  /* 00 (the app's More over the Overview) in the app's Light: the light ground, the white sheet, the dark ink, as the dock's More in body.light */
+  :root[data-theme="light"]{
+    --app:#efe7d8; --sheet:#fff; --appInk:#141414; --appInk2:rgba(20,20,20,.6); --appLine:rgba(46,31,26,.08); --appFill:rgba(46,31,26,.08); --appHov:rgba(46,31,26,.05); --appGo:rgba(46,31,26,.06); --appGrab:rgba(17,17,17,.1); --appAv:#141414; --appAvInk:#fff; --appCard:radial-gradient(120% 90% at 20% 30%,#d9e3c6,#e8e4d8 60%,#efe7d8);
+  }
   *{box-sizing:border-box;}
   html,body{height:100%;}
   body{margin:0;background:var(--paper);color:var(--ink);font:400 15px/1.4 var(--sans);-webkit-font-smoothing:antialiased;overflow:hidden;transition:background-color .3s ease, color .3s ease;}
@@ -189,14 +192,14 @@
   :root.xs .sb{display:flex;}
   .sb i{display:flex;gap:6px;align-items:center;} .sb svg{display:block;}
   :root.xs .s0{padding-top:54px;}   /* the app's More; the referral's own screens run their photo up under the status bar, as the Activity plan's */
-  .sb{color:#fff;transition:color .28s ease;} :root[data-at="0"] .sb{color:#f2f2f2;} :root.rfUnder[data-at="1"] .sb{color:var(--ink);}   /* white over the photo; the screen's ink once the sheet is under the bar */
+  .sb{color:#fff;transition:color .28s ease;} :root[data-at="0"] .sb{color:var(--appInk);} :root.rfUnder[data-at="1"] .sb{color:var(--ink);}   /* white over the photo; the screen's ink once the sheet is under the bar */
 
   /* 00, the app: the Overview dimmed behind the More sheet */
   .s0{background:var(--app);color:var(--appInk);}
   .s0 .ov{padding:28px 24px 0;opacity:.42;}
   .s0 .ovH{display:flex;justify-content:space-between;align-items:center;font-size:24px;letter-spacing:-.01em;}
-  .s0 .ovH b{font-weight:400;} .s0 .bell{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.08);display:grid;place-items:center;}
-  .s0 .ovC{margin-top:22px;height:180px;border-radius:20px;background:radial-gradient(120% 90% at 20% 30%,#2c3a1c,#141812 60%,#101010);}
+  .s0 .ovH b{font-weight:400;} .s0 .bell{width:36px;height:36px;border-radius:50%;background:var(--appFill);display:grid;place-items:center;}
+  .s0 .ovC{margin-top:22px;height:180px;border-radius:20px;background:var(--appCard);}
   .s0 .sheet{position:absolute;left:0;right:0;bottom:0;padding:10px 16px 34px;border-radius:32px 32px 0 0;background:var(--sheet);transform:translateY(100%);transition:transform .55s var(--ease);}
   .s0.on .sheet{transform:none;}
   .grab{display:block;width:36px;height:5px;margin:0 auto 14px;border-radius:3px;background:rgba(255,255,255,.22);}
@@ -208,10 +211,10 @@
   .s0 li + li{margin-top:2px;}
   .s0 .grp + .grp{margin-top:8px;padding-top:8px;border-top:1px solid var(--appLine);}
   .s0 .it{display:flex;align-items:center;gap:14px;width:100%;padding:14px 8px;border:0;border-radius:14px;background:none;text-align:left;font-size:16px;cursor:pointer;}
-  .s0 .it:hover{background:rgba(255,255,255,.04);}
+  .s0 .it:hover{background:var(--appHov);}
   .s0 .it svg{flex:none;width:22px;height:22px;}
-  .s0 .it .av{flex:none;width:22px;height:22px;border-radius:50%;background:#f2f2f2;color:#111;font-size:11px;font-weight:500;display:grid;place-items:center;}
-  .s0 .it.go{background:rgba(255,255,255,.06);}
+  .s0 .it .av{flex:none;width:22px;height:22px;border-radius:50%;background:var(--appAv);color:var(--appAvInk);font-size:11px;font-weight:500;display:grid;place-items:center;}
+  .s0 .it.go{background:var(--appGo);} .s0 .x{background:var(--appFill);} .s0 .grab{background:var(--appGrab);}
 
   /* 01, the referral page: the Activity plan's header. The hero pinned (.hoHero), the photo --hoRise taller to rise into (.hoPic), the H1 centred at its foot (.hoWords),
      the sheet over its foot (.hoSheet), the bar's overflow state (.hoBand): the master's classes and numbers (EvOverlap); the sizes the Activity plan's (265 XS, 320 the column) */
@@ -454,21 +457,20 @@ window.EvOverlap = (function () {
 <script>
 (function () {
   var root = document.documentElement, scs = [].slice.call(document.querySelectorAll('.sc')), at = -1;
-  /* the theme first, before anything paints: the prototype's Colour mode in the hash (it sets data-theme on the root after too) */
-  var th = /(?:^|[#&])(light|dark)(?:&|$)/.exec(location.hash); if (th) root.dataset.theme = th[1];
   // the referral page once, under 01, 02 and 03
   var t = document.getElementById('tPg');
   ['.s1', '.s2', '.s3'].forEach(function (s) { var sc = document.querySelector(s); sc.insertBefore(t.content.cloneNode(true), sc.firstChild); });
   [].forEach.call(document.querySelectorAll('.s2 .pw button, .s3 .pw button, .s2 .pw a, .s3 .pw a'), function (b) { b.tabIndex = -1; });
   [].forEach.call(document.querySelectorAll('.s2 .pw, .s3 .pw'), function (p) { p.setAttribute('aria-hidden', 'true'); });
   /* the header overlap, by its master (EvOverlap): the photo pinned, the sheet over it, the photo rising and dimming, the title drifting and fading, the bar's overflow state; the master's numbers.
-     Refer scrolls; under Contact capture and Sent the page rests at its top (their bars marked so they draw as Refer's at rest). onFrame: the sheet under the bar (the status bar and the logo in the screen's ink) */
+     Refer scrolls (short: the span its own scroll, so the photo and title finish however short the page, as the Service detail's); under Contact capture and Sent the page rests at its top (their bars marked so they draw as Refer's at rest). onFrame: the sheet under the bar (the status bar and the logo in the screen's ink) */
   var E = window.EvOverlap;
-  if (E) { E.bind(document.querySelector('.s1'), { hero: '.rfTop', onFrame: function (k, on) { root.classList.toggle('rfUnder', !!on); } }); E.mark(document.querySelector('.s2')); E.mark(document.querySelector('.s3')); }
+  if (E) { E.bind(document.querySelector('.s1'), { hero: '.rfTop', short: true, onFrame: function (k, on) { root.classList.toggle('rfUnder', !!on); } }); E.mark(document.querySelector('.s2')); E.mark(document.querySelector('.s3')); }
   // the status bar's ink follows the screen (CSS, by data-at): light on the app, white over the photo, the page's ink once the sheet is under it
   function go(i, quiet) {
     i = Math.max(0, Math.min(scs.length - 1, +i || 0));
     if (i === at) return;
+    var s1 = scs[1]; if (at === 1 && i > 1 && s1 && s1.scrollTop) { try { s1.scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); } catch (e) { s1.scrollTop = 0; } }   /* Contact capture and Sent show the page at rest: Refer meets them there */
     at = i;
     scs.forEach(function (s, k) { s.classList.toggle('on', k === i); s.setAttribute('aria-hidden', String(k !== i)); s.inert = k !== i; });
     root.dataset.at = String(i);

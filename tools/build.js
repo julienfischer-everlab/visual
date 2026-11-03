@@ -131,6 +131,8 @@ src = src.replace(/assets\/[A-Za-z0-9_\-./]+?\.(webp|png|jpe?g|gif|svg|mp4|webm|
     const ovCss = cut('/* ---- Header overlap (EvOverlap;', '\n  /* ---- ', 'the header overlap CSS'), gnd = ix.match(/^[ \t]*\.ovGround(?:\{| i\{| i:nth-child\(\d+\)\{)[^\n]*$/gm) || [];
     if (gnd.length !== 12) throw new Error('build: the Overview bar blur bands (.ovGround: the ground, its bands, ten of them: 12 rules) not found, ' + gnd.length);
     const ovJs = cut('window.EvOverlap = (function () {', '\n})();', 'the EvOverlap script') + '\n})();';
+    try { new Function(ovJs); } catch (e) { throw new Error('build: the EvOverlap script cut from index.html does not parse (cut short at an inner line-start IIFE end?): ' + e.message); }   /* a cut that ends early must fail the build, not the page */
+    if (!/\bbind\s*[:=]/.test(ovJs) || !/\bmark\s*[:=]/.test(ovJs)) throw new Error('build: the EvOverlap script cut from index.html has no bind / mark');
     return { 'EvOverlap css': '<style data-master="EvOverlap">/* from index.html (tools/build.js): Design system -> General layout -> Header overlap, and the Overview bar blur bands it draws on */\n' + gnd.join('\n') + '\n  ' + ovCss + '\n</style>',
              'EvOverlap js': '<script data-master="EvOverlap">/* from index.html (tools/build.js): the header overlap master, its saved setup (everlab:hoMaster) applied on load */\n' + ovJs + '\n</script>' }; })();
   const withMasters = (txt, n) => txt.replace(/<!--ev:master ([A-Za-z]+ (?:css|js))-->/g, (m, k) => { if (!masters[k]) throw new Error('build: no master ' + k + ' for ' + n); return masters[k]; });
