@@ -1301,22 +1301,23 @@
      optical size the stroked set had. */
   .mTab svg{width:18px;height:18px;fill:currentColor;stroke:none;}
   /* the tabs' icons (window.EvNavIc): the outline at rest, the same shape filled on the page you're on, and a small motion between ("the active state will be filled, like an icon field, and a small animation between the inactive and the active").
-     Pop (the master's default): the fill grows out of the middle with a little overshoot as the outline fades, the icon dipping and springing back; Rise: the fill rises from the foot like water; Fade: a crossfade. Tweaks -> Dock -> Icon motion, saved by the Navigation doc */
+     Pop (the master's default): the fill grows out of the middle with a little overshoot as the outline fades, the icon dipping and springing back; Rise: the fill rises from the foot like water; Fade: a crossfade. Tweaks -> Dock -> Icon motion, saved by the Navigation doc.
+     .icLit: any other host of a library icon, lit the same way (the desk sidebar's retract while the menu is contracted, and then its lit entry) */
   svg.evIc{fill:currentColor;fill-rule:evenodd;stroke:none;overflow:visible;} svg.evIc path{transform-box:view-box;transform-origin:50% 50%;}
   svg.evIc .f{opacity:0;transform:scale(.4);transition:transform .2s ease,opacity .16s ease;} svg.evIc .o{transition:opacity .16s ease;}   /* back to the outline: 200 ms */
-  :is(.mTab.on, .nvIcLive[aria-pressed="true"]) > svg.evIc .f, svg.evIc.on .f{opacity:1;transform:none;} :is(.mTab.on, .nvIcLive[aria-pressed="true"]) > svg.evIc .o, svg.evIc.on .o{opacity:0;}
+  :is(.mTab.on, .nvIcLive[aria-pressed="true"], .icLit) > svg.evIc .f, svg.evIc.on .f{opacity:1;transform:none;} :is(.mTab.on, .nvIcLive[aria-pressed="true"], .icLit) > svg.evIc .o, svg.evIc.on .o{opacity:0;}
   /* lit: as keyframes, not transitions, so it plays too when a page mounts its dock with the tab already lit */
-  :is(.mTab.on, .nvIcLive[aria-pressed="true"]) > svg.evIc{animation:evIcPop .44s cubic-bezier(.3,.7,.4,1);} :is(.mTab.on, .nvIcLive[aria-pressed="true"]) > svg.evIc .f{animation:evIcGrow .42s cubic-bezier(.34,1.56,.64,1) both;} :is(.mTab.on, .nvIcLive[aria-pressed="true"]) > svg.evIc .o{animation:evIcOut .16s ease .1s both;}
+  :is(.mTab.on, .nvIcLive[aria-pressed="true"], .icLit) > svg.evIc{animation:evIcPop .44s cubic-bezier(.3,.7,.4,1);} :is(.mTab.on, .nvIcLive[aria-pressed="true"], .icLit) > svg.evIc .f{animation:evIcGrow .42s cubic-bezier(.34,1.56,.64,1) both;} :is(.mTab.on, .nvIcLive[aria-pressed="true"], .icLit) > svg.evIc .o{animation:evIcOut .16s ease .1s both;}
   @keyframes evIcPop{0%{transform:scale(1);}30%{transform:scale(.88);}65%{transform:scale(1.06);}100%{transform:scale(1);}}
   @keyframes evIcGrow{0%{opacity:0;transform:scale(.4);}35%{opacity:1;}100%{opacity:1;transform:none;}}
   @keyframes evIcOut{from{opacity:1;}to{opacity:0;}} @keyframes evIcIn{from{opacity:0;}to{opacity:1;}}
   @keyframes evIcRise{from{opacity:1;clip-path:inset(100% 0 0 0);}to{opacity:1;clip-path:inset(0 0 0 0);}}
-  body.navIcRise svg.evIc .f{transform:none;} body.navIcRise :is(.mTab.on, .nvIcLive[aria-pressed="true"]) > svg.evIc{animation:none;} body.navIcRise :is(.mTab.on, .nvIcLive[aria-pressed="true"]) > svg.evIc .f{animation:evIcRise .38s cubic-bezier(.45,0,.2,1) both;} body.navIcRise :is(.mTab.on, .nvIcLive[aria-pressed="true"]) > svg.evIc .o{animation:evIcOut .14s ease .26s both;}   /* Rise: the fill rises from the foot, the outline gone once it is full */
-  body.navIcFade svg.evIc .f{transform:none;} body.navIcFade :is(.mTab.on, .nvIcLive[aria-pressed="true"]) > svg.evIc{animation:none;} body.navIcFade :is(.mTab.on, .nvIcLive[aria-pressed="true"]) > svg.evIc .f{animation:evIcIn .2s ease both;} body.navIcFade :is(.mTab.on, .nvIcLive[aria-pressed="true"]) > svg.evIc .o{animation:evIcOut .2s ease both;}   /* Fade: a crossfade */
+  body.navIcRise svg.evIc .f{transform:none;} body.navIcRise :is(.mTab.on, .nvIcLive[aria-pressed="true"], .icLit) > svg.evIc{animation:none;} body.navIcRise :is(.mTab.on, .nvIcLive[aria-pressed="true"], .icLit) > svg.evIc .f{animation:evIcRise .38s cubic-bezier(.45,0,.2,1) both;} body.navIcRise :is(.mTab.on, .nvIcLive[aria-pressed="true"], .icLit) > svg.evIc .o{animation:evIcOut .14s ease .26s both;}   /* Rise: the fill rises from the foot, the outline gone once it is full */
+  body.navIcFade svg.evIc .f{transform:none;} body.navIcFade :is(.mTab.on, .nvIcLive[aria-pressed="true"], .icLit) > svg.evIc{animation:none;} body.navIcFade :is(.mTab.on, .nvIcLive[aria-pressed="true"], .icLit) > svg.evIc .f{animation:evIcIn .2s ease both;} body.navIcFade :is(.mTab.on, .nvIcLive[aria-pressed="true"], .icLit) > svg.evIc .o{animation:evIcOut .2s ease both;}   /* Fade: a crossfade */
   /* Beam ("add a beam effect on the active icon menu nav when it becomes active: start with bg opacity 16% to end up fully filled; the beam between these 2 states"): the filled icon at 16%,
      a short light running once round its outline (the app's beam, the chat field's and Eva's star's warm light), then the fill to the full */
   svg.evIc .bm{fill:none;stroke:var(--evIcBeam, #FFB866);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:26 74;stroke-dashoffset:100;opacity:0;pointer-events:none;}
-  body.navIcBeam svg.evIc .f{transform:none;} body.navIcBeam :is(.mTab.on, .nvIcLive[aria-pressed="true"]) > svg.evIc{animation:none;} body.navIcBeam :is(.mTab.on, .nvIcLive[aria-pressed="true"]) > svg.evIc .f{animation:evIcFill .74s cubic-bezier(.4,0,.2,1) both;} body.navIcBeam :is(.mTab.on, .nvIcLive[aria-pressed="true"]) > svg.evIc .bm{animation:evIcBeam .62s cubic-bezier(.45,0,.25,1) .04s both;} body.navIcBeam :is(.mTab.on, .nvIcLive[aria-pressed="true"]) > svg.evIc .o{animation:evIcOut .14s ease both;}
+  body.navIcBeam svg.evIc .f{transform:none;} body.navIcBeam :is(.mTab.on, .nvIcLive[aria-pressed="true"], .icLit) > svg.evIc{animation:none;} body.navIcBeam :is(.mTab.on, .nvIcLive[aria-pressed="true"], .icLit) > svg.evIc .f{animation:evIcFill .74s cubic-bezier(.4,0,.2,1) both;} body.navIcBeam :is(.mTab.on, .nvIcLive[aria-pressed="true"], .icLit) > svg.evIc .bm{animation:evIcBeam .62s cubic-bezier(.45,0,.25,1) .04s both;} body.navIcBeam :is(.mTab.on, .nvIcLive[aria-pressed="true"], .icLit) > svg.evIc .o{animation:evIcOut .14s ease both;}
   @keyframes evIcFill{0%{opacity:.16;}60%{opacity:.16;}100%{opacity:1;}} @keyframes evIcBeam{0%{stroke-dashoffset:100;opacity:0;}12%{opacity:1;}82%{opacity:1;}100%{stroke-dashoffset:0;opacity:0;}}
   svg.evIc.still, svg.evIc.still path{animation:none !important;transition:none !important;}
   @media (prefers-reduced-motion: reduce){ svg.evIc, svg.evIc path{animation:none !important;transition-duration:0s !important;transition-delay:0s !important;} }
@@ -37670,6 +37671,14 @@ hairline({
   // ---- one organ-age modal, opened from anywhere on the desktop ----
   const organModal = makeSheet(document.body, { desktop: true, overlay: true });
   organSheets.push(organModal);
+  /* the icon library's Menu ("also need active filled icon when menu desktop is contracted. Put this in icon lib"): the desk sidebar's retract, drawn as the dock's icons are (the 24 grid shown through 2..22, the 1.75 line as a filled evenodd outline):
+     a window 18 x 15.5, its corners 3.5 on the line's middle, a divider 6.5 in from its left (the sidebar); filled, that sidebar column solid and the rest of the frame still the outline, as the menu is contracted.
+     Added beside the sidebar that wears it; NAV_IC is the same object (window.EvNavIc.IC), so navIc() and Documentation -> Navigation -> Iconography both have it */
+  if (window.EvNavIc && !window.EvNavIc.IC.side){
+    window.EvNavIc.IC.side = { o: 'M7.375 4.25H16.625A4.375 4.375 0 0 1 21 8.625V15.375A4.375 4.375 0 0 1 16.625 19.75H7.375A4.375 4.375 0 0 1 3 15.375V8.625A4.375 4.375 0 0 1 7.375 4.25ZM8.625 6H7.375A2.625 2.625 0 0 0 4.75 8.625V15.375A2.625 2.625 0 0 0 7.375 18H8.625ZM10.375 6V18H16.625A2.625 2.625 0 0 0 19.25 15.375V8.625A2.625 2.625 0 0 0 16.625 6Z',
+                               f: 'M7.375 4.25H16.625A4.375 4.375 0 0 1 21 8.625V15.375A4.375 4.375 0 0 1 16.625 19.75H7.375A4.375 4.375 0 0 1 3 15.375V8.625A4.375 4.375 0 0 1 7.375 4.25ZM10.375 6V18H16.625A2.625 2.625 0 0 0 19.25 15.375V8.625A2.625 2.625 0 0 0 16.625 6Z' };
+    window.EvNavIc.list.push(['side', 'Menu', 'The desk sidebar’s retract: a window with its sidebar. Filled: the sidebar solid, as the menu is contracted']);
+  }
   (function desktopOverview(){
     if (!document.getElementById('dOver')) return;
     // the organ card that used to lead the rail (gone with the phone's
@@ -37701,6 +37710,20 @@ hairline({
       if (to == null) return;
       a2.addEventListener('click', () => setMode(to));
     });
+    /* the sidebar's icons from the library (window.EvNavIc), the phone dock's own drawings: Overview, Insights, Timeline, Services, Plan, and the retract (Menu) ("also need active filled icon when menu desktop is contracted").
+       Open, every entry its outline and the plate marks the lit one; contracted (body.sideMin), the retract and the lit entry filled, with the dock's motion (.icLit: Beam unless the Navigation doc says otherwise), as the rail folds and as the page changes. The account keeps its own */
+    { const L = window.EvNavIc, side = document.querySelector('.dash .side');
+      if (L && side){
+        const KEY = { Overview: 'home', Insights: 'insights', Timeline: 'timeline', Services: 'services', Plan: 'plan' };
+        side.querySelectorAll('.nv').forEach(nv => { const k = KEY[nv.textContent.trim()], g = nv.querySelector(':scope > svg'); if (k && g && L.IC[k]) g.outerHTML = L.svg(k); });
+        const tg = side.querySelector('.sideTgl > svg'); if (tg && L.IC.side) tg.outerHTML = L.svg('side');
+        /* the lit entry, as the plates have it: on the Overview's shell (body.m9) the Overview, or the page over it (the service detail and the Timeline light Timeline, the Plan the Plan, the marketplace and a booking Services); elsewhere Insights' .on */
+        const lit = () => { const b = document.body.classList, min = b.contains('sideMin'), m9 = b.contains('m9'), has = c => b.contains(c), over = !['svcOn', 'tlOn', 'plOn', 'mkOn', 'aptOn', 'accOn'].some(has);
+          side.querySelectorAll('.nv').forEach(nv => { const c = nv.classList, on = !m9 ? c.contains('on') : (c.contains('nvOver') && over) || (c.contains('nvTl') && (has('svcOn') || has('tlOn'))) || (c.contains('nvPlan') && has('plOn')) || (c.contains('nvSvc') && (has('mkOn') || has('aptOn')));
+            c.toggle('icLit', min && on && !c.contains('nvAcc')); });
+          const t = side.querySelector('.sideTgl'); if (t) t.classList.toggle('icLit', min); };
+        lit(); requestAnimationFrame(lit); new MutationObserver(lit).observe(document.body, { attributes: true, attributeFilter: ['class'] });   /* again once boot has named the entries (nvTl, nvSvc, nvPlan) */
+      } }
     // the retract, top right of the navigation: the rail folds to its glyphs
     // and back; the card follows, and the engine re-measures it
     { const tgl = document.querySelector('.dash .side .sideTgl');
