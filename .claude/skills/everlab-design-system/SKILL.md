@@ -62,6 +62,7 @@ The page menu `#versionSel` has Documentation (`'doc'`) and Design system (`'ds'
 | A modal that takes over owns Tweaks and Flow while it is up | `window.EvCtx`, `html[data-tk]`, `__flowOk` | references/flows-modals.md |
 | Consent | `window.EvConsent` | references/flows-modals.md |
 | Loading states | `window.EvLoad` | references/flows-modals.md |
+| Biomarker detail sheet (Insights rows, Async report, Plan's What this moves) | `window.BioDetail` | references/flows-modals.md |
 | Desk sidebar (and its icons) | `.dash .side`, `body.sideMin`, `lit()` | references/navigation-icons-motion.md |
 | Phone dock | `MOBILE_NAV`, `mountNav` | references/navigation-icons-motion.md |
 | Dock active pill | `navPill`, `.mPill` | references/navigation-icons-motion.md |
