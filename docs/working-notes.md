@@ -19649,3 +19649,12 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Framed 50% 22% so both faces stay in frame on the wide desk hero. At XS it fits by height, so both runners are in.
 - **The doc's phone**: no transform over it at full size (it had scale(1)), its photo decodes off the main thread, and the table has a Performance row.
 - dist/index.html is 15.45 MB.
+- **Review fixes** (merged with the main branch first; notes kept from both sides):
+  - The doc's phone no longer gets stuck on the wrong span. With Header overlap remembered and the Design system opened, the span was measured while the phone was hidden (0 high, so 60 px), and the rise, dim and fade all ended in the first 60 px of scroll. EvOverlap now measures the span itself: never from a hidden hero, on every frame it runs (reads only, written only when it changes) and whenever the scroller, its content or its hero changes size. A hero painted again is watched in place of the old one. Checked: 260 px, the picture at -12.3 px at scroll 100, as the old code.
+  - The Service detail and the Appointment page now bind through EvOverlap as well, with the master's numbers (no hard-coded 32 and .25) and on the compositor. Their picture (the hero's ::before) and words run off the same timeline. A task's short page fades the whole hero, and a hero with a progress card keeps its .4 lag, now scroll-driven too. No inline style is written per frame on any of them. The unused per-frame ground colour (--svG) is gone.
+  - Locked to the scroll, every drawn frame, before and after: Appointment 2.4 px on average / 14.7 at worst (99 of 142 frames over 1 px) down to 0.46 / 0.89 (none); Service detail 5.2 / 17.5 (74 of 78) down to 0.30 / 0.68 (none); Activity plan still 0.17 / 0.42.
+  - The doc's phone scaled down for a narrow window: the bar turns to the sheet's colours at the right scroll (142, it was 66).
+  - The doc's photo framing is the page's: one token, --hoPicPos (50% 22%).
+  - Smooth in Chrome, Edge and Safari 26 on. Firefox and older Safari take the old script, with its slight lag (said in the doc's Performance row).
+  - The desk hero at L on a Retina screen draws the 1200 px photo about 2x up, so it is a little soft there; a second, wider desk file would fix it at about 200 KB more.
+- dist/index.html is 15.52 MB.
