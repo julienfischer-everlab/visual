@@ -20197,3 +20197,16 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - The picked card gets a 1.5 px white edge (ink, `::after` over its glow and texture). The other card has none.
 - Each card has the Stack rows' radio in its top-right corner, 14 px in (`.hpPlRowR` reused as `.hpPlTabR`): an empty ring, filled with its dot when picked. One rule now covers both checked states (Stack `aria-checked`, Tabs `aria-selected`).
 - **Checked** (Playwright, dist, XS, Plans = Tabs): Protocol picked shows the white edge and the filled radio; picking Diagnostics moves both to it. No console errors.
+
+## Gift plans: Tabs cards as the membership card; Stack ground 5%
+
+- **Tabs cards.** Same ground and glow as before ("keep the same bg style"), now:
+  - The Everlab mark at the top left, turning into its dot and back. This is the membership card's own `.hpW2Mk` rule (its sprite mask and keyframes), shared by adding the plan card to its selectors, not copied.
+  - The plan's name in the membership card's foil badge over the price (`.hpW2Tag`, the Solid card's warm look; its rules shared the same way). The bold name is gone.
+  - The icon in a 44 circle of 8% ink, no gradient chip.
+  - No radio.
+  - Padding +4 (22 / 16 / 24).
+  - The dot texture on the picked card only: it fades out on the other, and its drawing stops there.
+  - A hyphenated word in the line under the price is kept whole ("doctor-led", never "doctor- / led").
+- **Stack.** The group card's ground goes to 5% ink (+4).
+- **Checked** (Playwright, dist, XS, Plans = Tabs): the mark animates logo → dot, the badge reads PROTOCOL / DIAGNOSTICS, the icon circles, the white edge, and the texture all follow the pick. dist/index.html is 15.5 MB (the mark's strip is not inlined twice). No console errors.
