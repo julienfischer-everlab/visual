@@ -5854,13 +5854,19 @@
   .arSheet.sgmSheet.arDark{--sgmPink:#e493be;--sgmGreen:#8ad490;--sgmBlue:#9fb8f2;}
   .aqWrap.evSolo:is(.aqBpXS, .aqBpS) .arSheet.sgmSheet{--sgmSide:16px;}
   .sgmSheet .sgmMain{position:relative;flex:1 1 auto;min-height:0;}
-  .aqWrap.evSolo .arSheet.sgmSheet .arHead.sgmHead{position:relative;z-index:3;flex:none;padding:var(--ar-head-top) var(--sgmSide) 12px;background:var(--ar-paper);}   /* the design system's header (Modals: "Title 24/30 · 500 · Close at its right"): the title in it, the content scrolling under it ("the title should be part of the design system header") */
+  .arSheet.sgmSheet{--evTnTop:calc(var(--ar-head-top) - 16px);--evTnX:var(--sgmSide);--evTnGnd:var(--ar-paper);--evTnInk:oklch(var(--ar-ink) / 1);}   /* the Top nav master's tokens: its controls where the head's were (58 XS, 44 S, 16 desk), at the page's padding, on the modal's paper */
+  .aqWrap.evSolo:is(.aqBpM, .aqBpL) .arSheet.sgmSheet{--evTnX:24px;}   /* the desk: the page's padding/left-right at the viewport */
+  .sgmSheet .sgmCol{max-width:calc(var(--ct2xs) + 2 * var(--sgmSide));padding:0 var(--sgmSide);}   /* the body in the 2xs container, its padding the column's own */
+  .sgmSheet .sgmCol > .sgmT.evTnH1{margin-bottom:20px;}   /* the title, then the content as under the old head (its 12 and the scroller's 8) */
+  .sgmSheet .sgmScr > .evTnHasBk + .sgmCol > :first-child{margin-top:calc(var(--evTnD, 44px) - 16px + 12px);}   /* a Back floating (the Plan change): the content's first line under it */
+  .aqWrap.aqFull.evSolo:is(.aqBpM, .aqBpL) .aqFrame > .arSheet.arSheet.arSheet.arSheet.arSheet.sgmSheet{max-width:none;}   /* the desk: the modal the viewport's width, its bar spanning it; the column is the body's (.sgmCol) */
+  .aqWrap.evSolo:is(.aqBpM, .aqBpL) .arSheet.sgmSheet .arFoot.sgmFoot.sgmFoot{padding-left:max(var(--evTnX), calc((100% - var(--ct2xs)) / 2));padding-right:max(var(--evTnX), calc((100% - var(--ct2xs)) / 2));}   /* the footer spans it too, its buttons held to the body's column, centred under it */   /* the design system's header (Modals: "Title 24/30 · 500 · Close at its right"): the title in it, the content scrolling under it ("the title should be part of the design system header") */
   .aqWrap.aqFull.evSolo .arSheet.sgmSheet .arHeadRow{margin-inline:0;justify-content:space-between;align-items:flex-start;gap:12px;}   /* the column's width on the desk, the close at its edge */
   .sgmSheet .sgmT{flex:1 1 auto;min-width:0;margin:0;padding-top:3px;font:500 24px/30px var(--ar-font);letter-spacing:-.2px;color:oklch(var(--ar-ink) / 1);text-wrap:pretty;}
   .sgmSheet .sgmHead .arClose{flex:none;}
-  .sgmSheet .sgmScr{position:absolute;left:0;right:0;bottom:0;top:0;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;padding:8px var(--sgmSide) 32px;}   /* under the header */
+  .sgmSheet .sgmScr{position:absolute;left:0;right:0;bottom:0;top:0;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;padding:0 0 32px;}   /* the whole page: the Top nav pinned at its top (sticky), the content scrolling under its gradient blur */
   .aqWrap.evSolo .sgmSheet .sgmScr{scrollbar-width:none;} .aqWrap.evSolo .sgmSheet .sgmScr::-webkit-scrollbar{display:none;width:0;height:0;}   /* no scrollbar on the desk either: one drew inside the centred column, mid-page (the wheel and the trackpad still scroll) */
-  .sgmSheet.sgmScrolled .sgmScr{-webkit-mask-image:linear-gradient(to bottom, transparent 0, #000 20px);mask-image:linear-gradient(to bottom, transparent 0, #000 20px);}   /* scrolled: its top fades out under the header */
+  /* scrolled: the content fades and blurs under the Top nav's ground (its own mask gone) */
   .sgmSheet .sgmH2{margin:0;font:500 20px/26px var(--ar-font);letter-spacing:-.1px;color:oklch(var(--ar-ink) / 1);}   /* What we suggest next: an H2 (it was an eyebrow), as the Doctor's suggestion's */
   .sgmSheet .sgmCard{margin-top:8px;padding:20px;border-radius:20px;background:var(--sgmCardBg);}   /* the chart's card on the secondary ground ("put the secondary colour on the background of the card of the graph") */
   .aqWrap.evSolo:is(.aqBpM, .aqBpL) .sgmSheet .sgmCard{padding:24px;}
@@ -16528,8 +16534,8 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
 .evTn.evTnTitled > .evTnFt { opacity: 1; transform: none; }
 .evTn:not(.evTnC) > .evTnFt { display: none; }
 /* the body's H1 under a C bar: its lines clear of the floating Close (the disc and 12), and under a floating Back it starts below the disc (its foot and 12) */
-.evTnC.evTnHasX ~ .evTnH1, .evTnC.evTnHasX ~ * .evTnH1 { padding-right: calc(var(--evTnD) + 12px); box-sizing: border-box; }
-.evTnC.evTnHasBk ~ .evTnH1, .evTnC.evTnHasBk ~ * .evTnH1, .evTnC.evTnHasBk + .evTnClr, .evTnC.evTnHasBk + * > .evTnClr:first-child { margin-top: calc(var(--evTnD) - 16px + 12px); }
+.evTnC.evTnHasX ~ .evTnH1, .evTnC.evTnHasX ~ * .evTnH1 { padding-right: calc(var(--evTnD, 44px) + 12px); box-sizing: border-box; }
+.evTnC.evTnHasBk ~ .evTnH1, .evTnC.evTnHasBk ~ * .evTnH1, .evTnC.evTnHasBk + .evTnClr, .evTnC.evTnHasBk + * > .evTnClr:first-child { margin-top: calc(var(--evTnD, 44px) - 16px + 12px); }
 /* the ground */
 .evTnG { position: absolute; left: 0; right: 0; top: 0; bottom: 0; z-index: -1; pointer-events: none; transition: bottom .28s ease; }
 .evTn.evTnOn > .evTnG { bottom: calc(-1 * var(--evTnBleed, 24px)); }
@@ -19673,7 +19679,7 @@ window.EvTopNav = (function () {
     o = o || {}; if (!sc || !nav) return { update: function () {} }; var q = 0;
     var ft = nav.querySelector(':scope > .evTnFt span'); if (ft && !ft.textContent && h1) ft.textContent = h1.textContent.trim();
     var run = function () { q = 0; nav.classList.toggle('evTnOn', sc.scrollTop > 0);
-      if (nav.classList.contains('evTnC') && h1) { var r = h1.getBoundingClientRect(); nav.classList.toggle('evTnTitled', !!r.height && r.top + r.height / 2 < foot(nav)); } };
+      if (nav.classList.contains('evTnC') && h1) { var r = h1.getBoundingClientRect(); nav.classList.toggle('evTnTitled', !!r.height && r.bottom < foot(nav)); } };
     sc.addEventListener('scroll', function () { if (!q) q = requestAnimationFrame(run); }, { passive: true });
     run(); return { update: run };
   }
@@ -36761,9 +36767,12 @@ hairline({
       const mount = () => { unmount();
         sheet = document.createElement('div'); sheet.className = 'arSheet sgmSheet ' + cfg.sheet; sheet.tabIndex = -1;
         const ttl = typeof cfg.title === 'function' ? cfg.title() : cfg.title, bk = !!(cfg.back && cfg.back());   /* a title '' : the content carries it (its own h2, id key + 'T'); back: the same control at the head's left, its chevron (the Suggestion's Plan change) */
-        sheet.innerHTML = '<div class="arStage"><div class="arHead sgmHead"><div class="arHeadRow">' + (ttl ? '<h2 class="sgmT" id="' + cfg.key + 'T">' + ttl + '</h2>' : '') + '<button class="arIconBtn arClose" type="button" aria-label="' + (bk ? 'Back' : 'Close') + '">' + (bk ? BI : XI) + '</button></div></div><div class="sgmMain"><div class="sgmScr">' + cfg.body() + '</div></div><div class="arFoot sgmFoot">' + cfg.foot() + '</div></div>';
+        /* the head is the Top nav master (Design system -> General layout -> Top nav): no title in the bar, so variant C, a 32 safe space with its control floating (Close, or the Plan change's Back), the title the body's first thing (.evTnH1: clear of the control), coming into the bar as it scrolls under it.
+           The bar spans the modal; the body sits in the 2xs container, centred (General layout -> Container: "the max width container is on the body content, not the viewport") */
+        const TN = window.EvTopNav, nav = TN ? TN.html({ back: bk, close: !bk, backCls: 'arClose', closeCls: 'arClose', cls: 'sgmNav' }) : '<div class="arHead sgmHead"><div class="arHeadRow"><button class="arIconBtn arClose" type="button" aria-label="' + (bk ? 'Back' : 'Close') + '">' + (bk ? BI : XI) + '</button></div></div>';
+        sheet.innerHTML = '<div class="arStage"><div class="sgmMain"><div class="sgmScr">' + nav + '<div class="sgmCol" data-container="2xs">' + (ttl ? '<h2 class="sgmT evTnH1" id="' + cfg.key + 'T">' + ttl + '</h2>' : '') + cfg.body() + '</div></div></div><div class="arFoot sgmFoot">' + cfg.foot() + '</div></div>';
         frame.appendChild(sheet); paint();
-        { const sc = sheet.querySelector('.sgmScr'), sh = sheet; sc.addEventListener('scroll', () => sh.classList.toggle('sgmScrolled', sc.scrollTop > 2), { passive: true }); }   // scrolled: its top fades under the close
+        { const sc = sheet.querySelector('.sgmScr'), nv = sheet.querySelector('.sgmNav'); if (TN && nv) TN.watch(sc, nv, sheet.querySelector('#' + cfg.key + 'T')); }   // the ground's overflow, the title into the bar
         if (cfg.mount) cfg.mount(sheet, api); };
       const build = () => { wrap = document.createElement('div'); wrap.className = 'aqWrap aqDesk aqFull evSolo ' + cfg.cls; wrap.setAttribute('role', 'dialog'); wrap.setAttribute('aria-modal', 'true'); wrap.setAttribute('aria-label', cfg.label); wrap.setAttribute('aria-labelledby', cfg.key + 'T');
         wrap.innerHTML = '<div class="aqDim"></div><div class="aqFrame"></div><div class="aqStat" aria-hidden="true"></div>'; document.body.appendChild(wrap); frame = wrap.querySelector('.aqFrame');
