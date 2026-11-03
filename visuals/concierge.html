@@ -690,7 +690,7 @@
   .stgFi { flex: none; min-width: 100%; display: inline-flex; align-items: center; }
   .stgField.ph .stgCaret { order: -1; margin: 0 1px 0 0; }
   .stgField.ph .stgTx { color: var(--muted); }
-  .stgCaret { display: inline-block; width: 2px; height: 19px; margin-left: 1px; border-radius: 1px; vertical-align: -4px; background: var(--acc); }
+  .stgCaret { opacity: 0; display: inline-block; width: 2px; height: 19px; margin-left: 1px; border-radius: 1px; vertical-align: -4px; background: var(--acc); }
   .stgWho { margin: 0 4px 6px; color: var(--muted); font-size: 12.5px; line-height: 16px; }
   .msg.a > .stgWho { margin-inline: 0; }
   .stgURow { display: flex; align-items: flex-end; justify-content: flex-end; gap: 8px; width: 100%; }
@@ -1878,7 +1878,7 @@
     var GRIDT = [[-300, 1300], [500, 1700], [100, 1500], [800, 1400], [-600, 1900], [650, 1300], [400, 1600], [-950, 1500], [0, 1800]];   /* each dot's delay and length, the master's */
     var enter = function () { root.classList.add('stg', 'emb'); if (!host){ host = D.createElement('div'); host.id = 'stg'; host.setAttribute('aria-hidden', 'true'); D.body.appendChild(host); } };
     var avHtml = function (a, cls) { var s = imgSrc(a); return s ? '<img class="' + cls + '" src="' + s + '" alt="">' : '<span class="' + cls + ' wcIni">' + esc(String(a).slice(0, 3).toUpperCase()) + '</span>'; };
-    var node = function (html) { return el(html); };
+    var node = function (html) { return D.adoptNode(el(html)); };   /* out of the template's inert document, so its pictures load before it is shown */
     var build = function () {
       var c = C, bg = c.background;
       host.innerHTML = '';
@@ -1898,7 +1898,7 @@
         view = node('<div class="stgDev"><div class="stgPhone"><div class="app mob stgApp"><section class="main"><div class="hd">' +
           '<button class="iconBtn" type="button" tabindex="-1">' + ic('menu') + '</button><div class="ttl">' + esc(c.title || 'Eva') + '</div><span class="sp"></span>' +
           '<button class="iconBtn" type="button" tabindex="-1">' + ic('minus') + '</button><button class="iconBtn" type="button" tabindex="-1">' + ic('close') + '</button></div>' +
-          '<div class="thread"><div class="col"></div></div><div class="dock"><div class="box"><div class="stgField ph"><span class="stgFi"><span class="stgTx">Ask Eva…</span><i class="stgCaret" style="opacity:0"></i></span></div>' +
+          '<div class="thread"><div class="col"></div></div><div class="dock"><div class="box"><div class="stgField ph"><span class="stgFi"><span class="stgTx">Ask Eva…</span><i class="stgCaret"></i></span></div>' +
           '<div class="boxRow"><button class="round" type="button" tabindex="-1">' + ic('plus') + '</button><span class="sp"></span><button class="pill" type="button" tabindex="-1"><span>Eva</span>' + ic('chevD') + '</button><button class="send" type="button" tabindex="-1">' + ic('send') + '</button></div></div></div>' +
           '</section></div><div class="stgSb">' + SB + '</div><i class="homeInd"></i></div></div>');
         thread = $('.thread', view); field = $('.stgField', view); send = $('.send', view);
@@ -2016,8 +2016,13 @@
     };
 
     /* ---------- painting a time: the entrances, the loaders and dots, the composer, the scroll ---------- */
-    var put = function (x, k, v) { if (x._st[k] !== v){ x._st[k] = v; x.style[k] = v; } };
-    var putE = function (x, k, v) { var st = x._st || (x._st = {}); if (st[k] !== v){ st[k] = v; x.style[k] = v; } };
+    var kebab = function (k) { return k.replace(/[A-Z]/g, function (m) { return '-' + m.toLowerCase(); }); };
+    var put = function (x, k, v) {   /* the styles the time sets, kept per node and written as one attribute (in a fixed order, none left: no attribute), so the same time is the same DOM however it was reached */
+      var st = x._st || (x._st = {}); if (st[k] === v) return; st[k] = v;
+      var css = Object.keys(st).sort().filter(function (q) { return st[q] !== ''; }).map(function (q) { return kebab(q) + ':' + st[q]; }).join(';');
+      if (css) x.setAttribute('style', css); else x.removeAttribute('style');
+    };
+    var putE = put;
     var rise = function (x, t0, t, dur, dy) {
       var q = EIN(clamp((t - t0) / dur, 0, 1));
       put(x, 'opacity', q >= 1 ? '' : q.toFixed(4)); put(x, 'transform', q >= 1 ? '' : 'translateY(' + (dy * (1 - q)).toFixed(3) + 'px)');
@@ -2087,7 +2092,8 @@
       build(); place(); measure(); carSync(host);
       cur = clamp(cur, 0, SCH.duration); seek(cur);
       var c0 = C;
-      var imgs = $$('img', host).map(function (im) { return im.decode ? im.decode().catch(function () {}) : Promise.resolve(); });
+      var all = $$('img', host); N.forEach(function (n) { [n.msg, n.typ, n.think, n.pres, n.blk].forEach(function (x) { if (x) all = all.concat($$('img', x)); }); });   /* every picture, shown yet or not */
+      var imgs = all.filter(function (im, i) { return all.indexOf(im) === i; }).map(function (im) { return im.decode ? im.decode().catch(function () {}) : Promise.resolve(); });
       ready = Promise.all([D.fonts && D.fonts.ready ? D.fonts.ready.catch(function () {}) : Promise.resolve()].concat(imgs)).then(function () {
         if (C !== c0) return info();
         measure(); carSync(host); seek(cur); return info();
