@@ -19928,3 +19928,7 @@ Julien, on the Chat page at XS ("Use Same keyboard as the overview top chat fiel
 ## Step flow master: Transition Linear | Fade
 - EvSteps.M.fade (0 Linear, the default: the 20 px drift; 1 Fade: the pages cross in place, no travel, ease curves, same in/out/lag timings). Saved in everlab:sfMaster with the rest, so every step flow (Async report, Health profile, Send a gift) takes the chosen one on load; Reset back to Linear.
 - Design system › Step flow: a "Transition" switch (Linear / Fade) above the sliders; Distance dims while Fade is on. Play / Back / Next show the chosen one.
+
+## Chat page: no minus; top CTAs 44
+- visuals/concierge.html: the header's Minimise (−, #hdMin, which only closed the chat like the X) is gone ("remove this minus icon"); the header keeps the menu, the title and the close.
+- Its top-nav buttons are 44 on the phone whether embedded or not (was 44 only embedded, 36 bare): "CTA top nav always 44px".
