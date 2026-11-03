@@ -19832,6 +19832,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - **Leaving Refer for its sheets**: Refer glides back to its top under the cross-fade, so it meets Contact capture and Sent, which show the page at rest.
   - **The build checks the master it cuts**: tools/build.js parses the EvOverlap script it takes from index.html and checks it has bind and mark; a cut that ends early fails the build.
 
+## Container doc: labelled switches
+- General layout › Container · live: the two switches now carry labels above them, "Breakpoints" (XS · 393 … L · 1440) and "Container size" (2xs … lg) (.glCtGrp / .glCtLbl, 12px muted, 8 above the switch; the groups 20 apart).
+
 ## "SUB PAGE SHOULD TRANSITION WITH A PUSH effect" / "Add this rule in design system: Page type: main, sub, + demo"
 - **Design system › General layout › Page types** (a fourth part, after Header overlap; the Navigation doc links to it, a row and a link): Main pages are the dock's and the sidebar's destinations (Overview, Insights, My journey, Services, the Plan, More's own: My account, Settings, Contact us, Gift, Refer), switched in place as before. Sub pages are opened from a page to go deeper: they push in, and Back pops them. Modals and sheets are not pages (their own motion).
   - The live demo: the app's XS frame (--evPhR / --evPhBz) and a desk page panel beside it, each a My journey list with View; View pushes the Service detail, Back pops; Play (both, then back), Slow (x4), Duration / Drift / Dim sliders, Save setup, Reset; the numbers written under them and in "The motion" table. The status bar, dock and home indicator stay put over the phone; the sidebar beside the panel.
