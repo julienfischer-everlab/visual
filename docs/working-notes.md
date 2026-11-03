@@ -19510,3 +19510,10 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Contracted: the lit entry shows its filled icon. It plays the motion when the rail folds, and again when you go to another page (Overview, the Timeline or a service detail, the Plan, the marketplace or a booking, Insights).
   - Nothing moves: the glyphs keep their x (40) in both states, and so do the plates, labels and hover.
 - **The Beam was dropped on every page change**: each page writes the body's class list whole, and that had wiped the icon motion's class. After the first page, every icon (the dock's too) lit with Pop. The class is kept now.
+- **Review fixes**:
+  - My account's ring is at the library's weight now: 18.5 across with the 1.75 line (it was 16.5 with a 1.5 line, smaller and lighter than the column above it). Its box (20) and place (x 40) are unchanged.
+  - Documentation › Navigation › Sizes and behaviour has a Desk sidebar row (the same drawings at 20, Menu at 18; open all outline; contracted the retract and the lit entry filled; My account its own). The Iconography intro names the Menu and says the sidebar fills only while contracted.
+  - The sidebar's markup keeps empty svgs where the icons go: the old stroked drawings are gone, so nothing there pretends to own them.
+  - The icon motion is part of the class list each page writes (kept by Tweaks › Dock › Icon motion), not put back after it. The phone dock now lights with Beam on every page; it fell back to Pop after the first page before.
+  - The plates' CSS and the sidebar's lit() point at each other: a page that lights a plate needs its entry lit there too.
+  - Left as it is: on My account with the menu contracted, its entry has no filled state (the library has no account pair yet).
