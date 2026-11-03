@@ -41,6 +41,8 @@ Two documents: `index.html` (the app, the Chat bubbles master, EvChat, the Conci
 
 **Pitfalls.** Duplicated by hand (gap, padding, transition): keep both in step. Fade each bubble, never the thread (a fading parent cuts the backdrop blur: "bg disappears first, then the text"). The phases are listed in the Flow panel.
 
+**The intro's title writing and video are shared with Send a gift.** The letter-by-letter reveal is one helper in the hp module, `ltrW()` (`grep -n "var ltrW = "`): `{ w(word), sp(words), at(), end() }`, spans `.hpWelC` 34 ms apart, 1300 ms each, played by `.on` on an `.hpLtrT` title (keyframes `hpWelRes` / `hpWelEmb`). The Send a gift intro (`BUILD['gift.intro']`) writes its header title with it (classes `hpH hpLtrT hpCcIntroT hpGfH`, so its type is this title's at every breakpoint: 26/30 on XS/S, 28/36 on M/L, 570, -.01em), its line after it (`.hpGfSub`, 14/20 at 80%), then plays `window.__ccVid` in its `.hoPic` (`.hpGfVidW > .hpGfVid`, on `.hpGfVidOn` once the title is written and the video is playing; the CSS rules are joined with `:is(.hpCcVid, .hpGfVid)`). A still or reduced motion: the words as text, the photo, no video.
+
 ---
 
 ## In-app chat (`window.EvChat`)
