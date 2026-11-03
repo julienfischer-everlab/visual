@@ -2741,6 +2741,11 @@
   .aiSvcT{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;} .aiSvcVis{flex:none;display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.08);color:#ececec;} .aiSvcVis img{width:22px;height:22px;object-fit:contain;filter:saturate(.8);} .aiSvcVis svg{width:15px;height:15px;}
   body.light .aiSvcVis{background:rgba(46,31,26,.08);color:#2e1f1a;}
   html body .aiBento.aiSvcGrid{grid-template-columns:repeat(2,minmax(0,1fr));} html body .aiTile.aiSvc.aiSvc{height:auto;padding:18px 20px;border-radius:20px;font-size:16px;letter-spacing:normal;justify-content:flex-start;} html body .aiTile.aiSvc .aiSvcVis{display:none;} html.svcIc body .aiTile.aiSvc.aiSvc{flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:10px;} html.svcIc body .aiTile.aiSvc .aiSvcVis{display:flex;order:-1;width:32px;height:32px;border-radius:0;background:none;} html.svcIc body .aiTile.aiSvc .aiSvcVis img{width:32px;height:32px;} html.svcIc body .aiTile.aiSvc .aiSvcVis svg{width:22px;height:22px;} html.svcIc body .aiTile.aiSvc .aiSvcT{white-space:normal;text-wrap:balance;}   /* Tweaks -> Services -> Icons On: the AI card's services with their 3D render top-left, the name under it, wrapping, not cut */   /* the Overview's service cards: the name alone, 16, 20 round and 20 in ("same style of service card as the overview service section") */
+  /* Tweaks -> Ask sheet -> Icons 3D (html.askIc3d): each service's 3D render at the left of its name, centred, 40 square, 12 to the name; the name on two lines at least (rows even, padding kept) ("add tweak with 3d icon on the left of each label; consider 2 lines of text a min, when icons are there"). Over Services -> Icons (its render on top) while on */
+  .aiSvc3d{display:none;}
+  html.askIc3d body .aiTile.aiSvc.aiSvc.aiSvc{flex-direction:row;align-items:center;justify-content:flex-start;gap:12px;} html.askIc3d body .aiTile.aiSvc.aiSvc .aiSvcVis{display:none;}
+  html.askIc3d body .aiTile.aiSvc .aiSvc3d{display:flex;flex:none;align-items:center;justify-content:center;width:40px;height:40px;} .aiSvc3d img{width:100%;height:100%;object-fit:contain;filter:saturate(.8);}
+  html.askIc3d body .aiTile.aiSvc.aiSvc .aiSvcT{flex:1 1 auto;min-width:0;display:flex;align-items:center;min-height:2.5em;line-height:1.25;white-space:normal;overflow:visible;text-overflow:clip;text-wrap:balance;}
   .aiTile:hover{background:rgba(255,255,255,.08);}
   .aiIc{display:flex;width:26px;height:26px;color:#ececec;}
   .aiIc svg{width:26px;height:26px;}
@@ -13578,6 +13583,10 @@
         <!-- (its Cards tweak, Tiles / Condensed / Large, retired: "kill that tweak") its Icons and Style here, the section's own group, so the + beside the services opens them ("why no plus tweak on the right for services") -->
         <div class="tkRow"><span class="lbl">Icons</span><select id="stSvcIc" class="tkSegSel" aria-label="The services' 3D renders on the Overview and in the AI card: on, or the names alone"><option value="on">On</option><option value="off" selected>Off</option></select></div>
         <div class="tkRow"><span class="lbl">Style</span><select id="stSvcSty" class="tkSegSel" aria-label="The Overview's services: pills, or Apple's cards (the picture on top, the title under it)"><option value="pill" selected>Pills</option><option value="apple">Apple</option></select></div>   <!-- "the same style as Apple, with the image on the top and the title below" -->
+        </div>
+        <!-- the Ask Everlab sheet (the dock's assistant button): its Services tiles, the names alone, or each with its 3D render at the left and two lines of name at least ("add tweak with 3d icon on the left of each label") -->
+        <div class="tkGroup" data-pages="ov ins"><div class="tkSub">Ask sheet</div>
+        <div class="tkRow"><span class="lbl">Icons</span><select id="stAskIc" class="tkSegSel" aria-label="The Ask Everlab sheet's services: the names alone, or each with its 3D render at the left"><option value="off" selected>Off</option><option value="3d">3D</option></select></div>
         </div>
         <!-- the Health profile ("add a Health Profile card to the Overview"): its card's section, and the profile's demo states ("include examples of the not-started, in-progress and completed states"); Saved, what was last done in it here -->
         <!-- the Primary card, the Overview's first card: its Type, a $299 member's card (Health profile, or Plan to purchase) or Next step (the hero and its action) ("this part of Primary card: Type: $299 purchased: Health profile, Plan to purchase; Next step: Dexa, etc.") -->
@@ -32702,7 +32711,8 @@ hairline({
     // where it can read its path in the source.
     const SVC_IMG = {
       concierge: 'assets/overview/svc-concierge.webp', tele: 'assets/overview/svc-tele.webp', cert: 'assets/overview/svc-cert.webp',
-      treat: 'assets/overview/svc-treat.webp', path: 'assets/overview/svc-path.webp'
+      treat: 'assets/overview/svc-treat.webp', path: 'assets/overview/svc-path.webp',
+      symp: 'assets/overview/svc-symptoms.webp'   /* Check Symptoms' render (the heart with its pulse card, the Concierge Services slide's): the sheet's tiles only, with Tweaks -> Ask sheet -> Icons on 3D */
     };
     const SVC_ROW = [
       { l: 'Concierge', img: 'concierge', d: 'Your care team, one message away', extra: ' ovSvcNew' },
@@ -32784,7 +32794,7 @@ hairline({
             '<div class="aiEyebrow">Services</div>' +
             // the same cards as the Overview's services row: the name at the left, the render on a grey disc at the right ("keep same visual in bottom menu sheet for actions")
             '<div class="aiBento aiSvcGrid">' + SHEET_SVC.map(s =>
-              '<button class="aiTile aiSvc" type="button"><span class="aiSvcT">' + s.l + '</span><span class="aiSvcVis">' + (s.img ? '<img src="' + SVC_IMG[s.img] + '" alt="" width="360" height="360">' : IC[s.ic]) + '</span></button>').join('') + '</div>' +
+              '<button class="aiTile aiSvc" type="button"><span class="aiSvc3d" aria-hidden="true"><img src="' + SVC_IMG[s.img || 'symp'] + '" alt="" width="360" height="360" decoding="async"></span><span class="aiSvcT">' + s.l + '</span><span class="aiSvcVis">' + (s.img ? '<img src="' + SVC_IMG[s.img] + '" alt="" width="360" height="360">' : IC[s.ic]) + '</span></button>').join('') + '</div>' +
             '<div class="shHome" aria-hidden="true"></div>' +
           '</div></div>' +
         '</div>' +
@@ -33298,6 +33308,7 @@ hairline({
     const sec = document.querySelector('#dOver > .ov5'); if (!sec) return;
     { const t = document.getElementById('stCcAct'), on = () => document.body.classList.toggle('ccActOff', !!t && t.value === 'off'); if (t){ t.addEventListener('change', on); on(); } }   // Tweaks -> Concierge card -> Activation cards
     { const t = document.getElementById('stSvcIc'), on = () => document.documentElement.classList.toggle('svcIc', !!t && t.value === 'on'); if (t){ t.addEventListener('change', on); on(); } }
+    { const t = document.getElementById('stAskIc'), on = () => document.documentElement.classList.toggle('askIc3d', !!t && t.value === '3d'); if (t){ t.addEventListener('change', on); on(); } }   /* Tweaks -> Ask sheet -> Icons: 3D (html.askIc3d), the sheet's tiles with their render at the left */
     { const t = document.getElementById('stSvcSty'), on = () => document.documentElement.classList.toggle('svcApple', !!t && t.value === 'apple'); if (t){ t.addEventListener('change', on); on(); } }   // Tweaks -> Services -> Style: Apple's cards (html.svcApple)   // Tweaks -> Services -> Icons: the 3D renders back on the services (html.svcIc)
     { const dv = document.getElementById('dOver'); if (window.ResizeObserver) new ResizeObserver(() => { const w = dv.clientWidth; document.body.classList.toggle('ov5Wide', w >= 740); document.body.classList.toggle('ov5Cc2', w >= 1000); }).observe(dv); }   // the desk's two columns wherever the Overview is wide enough (forced M and L, and Auto at a desk-wide window)
     const NS = 'http://www.w3.org/2000/svg', A0 = 150, SW = 240, R = 48, C = 60;   // the dial: 240 degrees, open at the foot

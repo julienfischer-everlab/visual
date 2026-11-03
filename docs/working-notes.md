@@ -19637,3 +19637,12 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Pages that are not under way (request, suggested, purchase, claim, later, soon, locked, done) are left as they were.
 - **Also live now** (every service page's CTA tapped step by step, before and after): Join the call and Join your review (Briefing, Nutrition, Diagnostics Review, Results review), Go to your appointment or assessment (MRI, Skin, Physical), View report (Diagnostics Review, intake), Complete your intake, Confirm delivery and Collect sample (Genetic test), and Add to calendar on every booked page. 30 dead buttons before, none after.
 - **Checked on the same screen**: Back, More (…), the Instructions and Documents tabs and the step card (Your progress) all respond. The referral's **Show** still does nothing: it shares the report and video items' "no action needed on click".
+
+## "add tweak with 3d icon on the left of each label. consider 2 line of text a min, when icon are there"
+
+- **Tweaks › Ask sheet › Icons** (`#stAskIc`, Off / 3D, Off by default): a group of its own under the Overview's Services, shown on the Overview and Insights (the pages whose dock opens the sheet). Saved with Save and put back on load like the others (`html.askIc3d`).
+- **3D**: each Services tile in the Ask Everlab sheet carries its 3D render at the left of its name, 40 square, centred, 12 to the name. Same renders as the Overview's services (one map, `SVC_IMG`): Concierge the bell, Script renewal the pill bottle, Specialist referral the laptop with the doctor, Blood test referral the tubes, Imaging referral the signed sheets. Check Symptoms had none in the sheet: it takes the heart with its pulse card, the Concierge Services slide's render (one more inline of that 9 KB file).
+- **Two lines at least**: with icons on, every name block is two lines tall (2.5em at 14px). "Concierge" sits centred in it, the others wrap to two lines on XS (tile 165 wide); every tile 76 tall (padding kept, 18/20), rows even. S has room for one line each, the tiles keep the two-line height.
+- Over Services › Icons On (render on top): 3D wins while it is on (the disc hidden, the row layout).
+- **Off**: the tiles as before (165 x 54 on XS, measured before and after).
+- Checked with Playwright: the sheet from the dock's assistant button on XS and S, dark and light, Off and 3D, and with Services › Icons On. No desk version (the sheet shows only in the XS/S frame).
