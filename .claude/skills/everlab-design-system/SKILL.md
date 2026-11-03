@@ -51,6 +51,7 @@ The page menu `#versionSel` has Documentation (`'doc'`) and Design system (`'ds'
 | Desk page panels | `#dMain #dOver #dSvc #dTl #dApt #dAcc #dPlan #dMkt` | references/layout.md |
 | Home indicator and safe areas | `--evHome`, `.mHome` | references/layout.md |
 | Design system page shell, General layout tab | `window._doc`, `DSET`, `glDoc` | references/layout.md |
+| Doc pages' controls panel (every control in a Tweaks-style right panel) | `window.EvDocPanel`, `data-dp*`, `.dpRail` | references/layout.md |
 | Viewport centring with docked panels | `--vwC`, `html.tkDocked/flowDocked` | references/layout.md |
 | Step flow | `window.EvSteps` | references/flows-modals.md |
 | Modals doc | `mdDoc` | references/flows-modals.md |
