@@ -19475,3 +19475,12 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 ## "right padding not consistent" (the retracted rail)
 - The page panels' cap is now 1360 open and 1512 retracted (1584 less the rail): retracting gives the rail's 152 to the panel, so it stays 8 off the rail and the rail's right gap (20) matches its left (20) at every width up to 1600; past that both states centre alike.
 - The Plan's panel now sits 8 off the rail and the window like every page (it was flush against the rail: a 12 gap).
+
+## "Also need active filled icon WHEN menu desktop is contracted. Put this in icon lib"
+- **Menu, in the icon library** (Documentation › Navigation › Iconography, after Plan): the desk sidebar's retract drawn as the dock's icons are, on the 24 grid with the 1.75 line. A window 18 × 15.5 with 3.5 corners, a divider 6.5 in from its left. Filled: the sidebar column solid, the rest of the frame still the outline.
+- **The retract draws it** from the library: the outline while the menu is open, the filled one while it is contracted. It switches with the dock's own motion (Beam by default, or whatever Tweaks › Dock › Icon motion and the Navigation doc say).
+- **The sidebar's entries draw the library too**: Overview (home), Insights, Timeline, Services, Plan are the phone dock's drawings now, at 20 as before. The account keeps its own icon.
+  - Open: every entry is its outline and the plate marks the lit one, as before.
+  - Contracted: the lit entry shows its filled icon. It plays the motion when the rail folds, and again when you go to another page (Overview, the Timeline or a service detail, the Plan, the marketplace or a booking, Insights).
+  - Nothing moves: the glyphs keep their x (40) in both states, and so do the plates, labels and hover.
+- **The Beam was dropped on every page change**: each page writes the body's class list whole, and that had wiped the icon motion's class. After the first page, every icon (the dock's too) lit with Pop. The class is kept now.
