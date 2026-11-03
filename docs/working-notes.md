@@ -19647,6 +19647,11 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Over Services › Icons On (render on top): 3D wins while it is on (the disc hidden, the row layout).
 - **Off**: the tiles as before (165 x 54 on XS, measured before and after).
 - Checked with Playwright: the sheet from the dock's assistant button on XS and S, dark and light, Off and 3D, and with Services › Icons On. No desk version (the sheet shows only in the XS/S frame).
+- **Review fixes**:
+  - **Each render inlined once**: the services' render paths are written once, in a shared map at the top of the scripts (`window.EvSvcImg`: concierge, treat, symp, tele, path, cert, gp). The Overview's services and the sheet (`SVC_IMG`), the Concierge Services slide (`CIMG`) and the Async report's recommendation kinds (`RC_IMG`) all read from it. Check Symptoms' heart is no longer in the page twice, and the older doubles (the bottle and the signed sheets 3x, the laptop and the tubes 2x) are gone too.
+  - **Navigation doc**: a new row, "Ask Everlab · icons": Off / 3D, the 40 square render 12 from the name, two lines at least (2.5em), tiles 76 high, padding 18/20, over Services › Icons, and each tile's render.
+  - **Assets library**: svc-symptoms lists the sheet's Check Symptoms tile (Overview and Insights), set by Tweaks › Ask sheet › Icons: 3D.
+  - **Check Symptoms' heart** is drawn 15% larger in its 40 box: its render has more empty margin, so it read smaller than the bell and the bottle.
 
 ## "On press, the beam should be there." / "Chat page shouldn't show the drawer when we land on the page"
 
