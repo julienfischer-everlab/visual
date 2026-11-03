@@ -19976,3 +19976,8 @@ Julien, on the flow's last screen ("This is the Receipt! already designed"), the
 ## Send a gift: checkout cards as the receipt's; Plans tweak (List | Tabs)
 - Checkout: "Gift details" (title outside, help line, a ruled key-value card) replaced by the Gift receipt's cards: "Recipient" (Name, Email, Delivery) and "Gift details" (Occasion when one was picked, Message in italics with quotes, From), each its title inside (18/24 500), rows of a 9em label (56% ink) and the value, 14/20, no rules, 24 corners, 14/24 padding (20 on the phone, label 8.4em), 8 between (.hpGfRc*).
 - Tweaks › Send a gift › Plans: List (the stacked plan cards) | Tabs: two cards side by side, each a tab (role tab, arrows move): an icon at the top centre in a 40 disc (Protocol a shield, Diagnostics a tube, P.shield / P.tube), the name 16/20 570, the price 15/20, a line of introduction 13/17 (GF_PLAN.s); the chosen one inverted (ink ground, paper type); under them one card "What's included in {plan}" with its list. Live (Choose the gift redrawn in place), saved, and the Documentation still follows it.
+
+## Gift date field: no Close while open; Header overlap demo fits the window
+
+- "no close needed": the When step's date field drops its right label while the calendar is open (the field itself folds it); "Change" shows again once it is closed.
+- "height viewport ??": the Header overlap doc phone scales by the smaller of the column width and the window height (innerHeight - 140 over the 876 frame), re-fitting on resize; 1400x720 now shows the whole phone (564 tall).

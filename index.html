@@ -21930,7 +21930,7 @@ window.EvConsent = (function () {
         if (ans.dlv === 'date') {
           var d = gfDate(ans.date), id = 'hpGfD' + Math.random().toString(36).slice(2, 6);
           var btn = h('button', { type: 'button', class: 'hpIn hpPickB hpGfDateB' + (d ? '' : ' hpEmpty'), id: id, 'aria-expanded': String(calOpen), on: { click: function () { calOpen = !calOpen; paint(); } } },
-            h('span', { class: 'hpPickV', text: d ? gfDay(d) : 'Choose a date' }), h('span', { class: 'hpGfDateA', text: calOpen ? 'Close' : 'Change' }));
+            h('span', { class: 'hpPickV', text: d ? gfDay(d) : 'Choose a date' }), calOpen ? null : h('span', { class: 'hpGfDateA', text: 'Change' }));   /* no Close while the calendar is open ("no close needed"): the field itself folds it */
           dateBox.appendChild(h('div', { class: 'hpF' }, h('label', { for: id, text: 'Date' }), btn));
           if (calOpen) dateBox.appendChild(cal({ month: d || min, min: min, max: max, today: GF_TODAY, value: d, onPick: function (x) { ans.date = gfIso(x); save(true); paint(); } }).el);
         }
@@ -46276,13 +46276,14 @@ hairline({
         if (window.ResizeObserver) new ResizeObserver(fitP).observe(st); fitP(); paint(); };
       const glHoWire = el => { const E = window.EvOverlap, sc = el.querySelector('.hoSc'), st = el.querySelector('.hoStage'), scl = el.querySelector('.hoScale'); if (!E || !sc) return;
         const ph = el.querySelector('.hoPh'), fx = E.bind(sc, { hero: '.hoDHero', onFrame: (k, on) => { if (ph) ph.classList.toggle('hoUnder', !!on); } }), paint = () => el.querySelectorAll('[data-hok]').forEach(r => { const c = HO_C.find(x => x[0] === r.dataset.hok); r.value = E.M[c[0]]; el.querySelector('[data-hov="' + c[0] + '"]').textContent = c[5](E.M[c[0]]); });
-        const fitH = () => { if (!st.offsetWidth) return; const k = Math.min(1, (st.clientWidth - 2) / 417); scl.style.transform = k < 1 ? 'scale(' + k + ')' : ''; st.style.height = Math.round(876 * k) + 'px'; };   /* the frame's bezel 12 round the 393 x 852 screen */   /* at full size no transform over the phone at all (its photo and its blur drawn at the screen's own scale); the phone 852, XS's minimum */
+        const fitH = () => { if (!st.offsetWidth) return; const k = Math.max(.3, Math.min(1, (st.clientWidth - 2) / 417, (innerHeight - 140) / 876)); scl.style.transform = k < 1 ? 'scale(' + k + ')' : ''; st.style.height = Math.round(876 * k) + 'px'; };   /* the whole phone in the window's height too ("height viewport"): the XS frame scaled to fit, never cut */   /* the frame's bezel 12 round the 393 x 852 screen */   /* at full size no transform over the phone at all (its photo and its blur drawn at the screen's own scale); the phone 852, XS's minimum */
         el._hoUp = () => { fitH(); fx.update(); paint(); };
         el.querySelector('.hoCtl').addEventListener('input', e => { const r = e.target.closest('[data-hok]'); if (!r) return; E.set(r.dataset.hok, +r.value); paint(); fx.update(); });
         el.querySelector('.hoSave').addEventListener('click', e => { const b = e.currentTarget; if (E.save()){ b.textContent = 'Saved'; b.disabled = true; setTimeout(() => { b.textContent = 'Save setup'; b.disabled = false; }, 1400); } });
         el.querySelector('.hoReset').addEventListener('click', () => { E.reset(); paint(); fx.update(); });
         let pa = 0; el.querySelector('.hoPlay').addEventListener('click', () => { cancelAnimationFrame(pa); const max = Math.min(420, sc.scrollHeight - sc.clientHeight), t0 = performance.now(), D = 3200;   // down and back, eased
           const f = now => { const t = Math.min(1, (now - t0) / D), u = t < .5 ? t * 2 : 2 - t * 2, e2 = u < .5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2; sc.scrollTop = max * e2; if (t < 1) pa = requestAnimationFrame(f); }; pa = requestAnimationFrame(f); });
+        addEventListener('resize', () => { fitH(); fx.update(); });
         if (window.ResizeObserver) new ResizeObserver(() => { fitH(); fx.update(); }).observe(st); paint(); };   /* shown (the Design system opened on a remembered Header overlap), resized: the scale, then the span */
       /* General layout -> Container ("the container and the breakpoint need to be combined: XS can have container 2xs xs s sm md lg, same for all breakpoints"): a Breakpoint AND a Container picker, any pair.
          The live page (a questionnaire) at the breakpoint's width and padding; the top nav (the Top nav master, C) and the footer span the viewport inside that padding, only the body's content sits in the picked container,

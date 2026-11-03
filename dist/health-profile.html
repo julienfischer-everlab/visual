@@ -4275,7 +4275,7 @@ window.EvConsent = (function () {
         if (ans.dlv === 'date') {
           var d = gfDate(ans.date), id = 'hpGfD' + Math.random().toString(36).slice(2, 6);
           var btn = h('button', { type: 'button', class: 'hpIn hpPickB hpGfDateB' + (d ? '' : ' hpEmpty'), id: id, 'aria-expanded': String(calOpen), on: { click: function () { calOpen = !calOpen; paint(); } } },
-            h('span', { class: 'hpPickV', text: d ? gfDay(d) : 'Choose a date' }), h('span', { class: 'hpGfDateA', text: calOpen ? 'Close' : 'Change' }));
+            h('span', { class: 'hpPickV', text: d ? gfDay(d) : 'Choose a date' }), calOpen ? null : h('span', { class: 'hpGfDateA', text: 'Change' }));   /* no Close while the calendar is open ("no close needed"): the field itself folds it */
           dateBox.appendChild(h('div', { class: 'hpF' }, h('label', { for: id, text: 'Date' }), btn));
           if (calOpen) dateBox.appendChild(cal({ month: d || min, min: min, max: max, today: GF_TODAY, value: d, onPick: function (x) { ans.date = gfIso(x); save(true); paint(); } }).el);
         }
