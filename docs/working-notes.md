@@ -20231,3 +20231,16 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
   - Note card 361 × 218: mark 28 at 20/20, dashed button with no fill and 12 margin, sub padding 32, no From line.
   - Long: tap 1 front, tap 2 open on the card, tap 3 closed on its back. The Card envelope opens on the same card, 310 × 188.
   - H1 centred; the rows read To / Arrives / Note. No console errors.
+
+## Chat: the keys only while the field is focused
+
+- The in-app chat (Eva / Care team) kept the keys up for as long as it was open, focused or not. Now ("unfocus: no keyboard"):
+  - The keys are up while the composer's field is focused (`.chKbd` on the chat's host, next to `.chatOn`).
+  - Let go, the keys go down and the composer slides to the screen's foot, 12 over the 34 home space, with the home bar back. The modal's foot follows the keys at their pace (.32 s).
+  - It opens focused, as before; if focus does not take, no keys.
+  - Send keeps the focus, as before.
+- One rule everywhere: the desk's XS frame (`:has(.dash.chatOn.chKbd)`), the phones (`#phone`, `#phone2`), and the Navigation doc's phone (`.nvFr`, the master).
+- **Checked** (Playwright, dist, desk XS):
+  - Open: keys visible, composer on them (modal bottom 254).
+  - Blur: keys hidden, modal bottom 0, composer 46 from the frame's foot.
+  - Focus again: keys back. No console errors.

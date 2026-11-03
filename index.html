@@ -2670,7 +2670,7 @@
   /* ---- end Phone keyboard ---- */
   body:not(.fullscr) :is(#phone,#phone2) .mKbd{display:block;}   /* the Overview phone has a copy, for the assistant's field */
   body.mSearchOn:not(.fullscr) :is(#phone,#phone2) .mKbd,
-  body:not(.fullscr) :is(#phone,#phone2).chatOn .mKbd{   /* the full chat always stands on the keys, focused or not */
+  body:not(.fullscr) :is(#phone,#phone2).chatOn.chKbd .mKbd{   /* the chat stands on the keys while its field is focused; let go, the keys go down ("unfocus: no keyboard"; they used to stay up, focused or not) */
     transform:none;visibility:visible;pointer-events:auto;transition-delay:0s;clip-path:inset(0 0 0 0 round 0 0 var(--kbR,0px) var(--kbR,0px));
   }
   body.mSearchOn:not(.fullscr) #phone .mscroll{padding-bottom:280px;}   /* the list can rise above the keys */
@@ -3041,11 +3041,11 @@
   html:not(.bpAuto) body:is([data-bp="xs"], [data-bp="s"]) .dash .chComposer{margin-bottom:12px;}   /* as far over the home space as from the sides ("same padding bottom than the left right around the chat field") */
   html:not(.bpAuto) body:is([data-bp="xs"], [data-bp="s"]) .dash .chHome{display:block;position:absolute;left:50%;bottom:8px;width:134px;height:5px;margin-left:-67px;border-radius:3px;background:rgba(255,255,255,.26);pointer-events:none;}
   html:not(.bpAuto) body.light:is([data-bp="xs"], [data-bp="s"]) .dash .chHome{background:rgba(0,0,0,.24);}   /* light: the frame's own bar ink (.mHome), as specific as the rule it beats */
-  html:not(.bpAuto) body[data-bp="xs"] .dash.chatOn .chBody{padding-bottom:0;} html:not(.bpAuto) body[data-bp="xs"] .dash.chatOn .chHome{display:none;}   /* at XS the chat stands on the frame's keys (the Overview top field's, up while the chat is, as the Navigation doc's master): the composer 12 over them, as from the sides; the keys draw the home bar */
+  html:not(.bpAuto) body[data-bp="xs"] .dash.chatOn.chKbd .chBody{padding-bottom:0;} html:not(.bpAuto) body[data-bp="xs"] .dash.chatOn.chKbd .chHome{display:none;}   /* at XS the chat stands on the frame's keys (the Overview top field's, up while the chat is, as the Navigation doc's master): the composer 12 over them, as from the sides; the keys draw the home bar */
   /* a plain cut ("a full-screen modal over the page with the full chat, no
      fancy transition"): the modal is simply there, and simply gone. It used
      to grow out of the field on a half-second morph. */
-  .chModal{position:absolute;left:0;right:0;top:0;bottom:0;background:#121211;overflow:hidden;opacity:0;transition:opacity .22s ease;}
+  .chModal{position:absolute;left:0;right:0;top:0;bottom:0;background:#121211;overflow:hidden;opacity:0;transition:opacity .22s ease,bottom .32s cubic-bezier(.2,.8,.2,1);}   /* its foot follows the keys up and down, at their pace */
   .chWrap.on .chModal{opacity:1;}   /* a fade over the screen where it stands ("no movement entrance") */
   .chBody{position:absolute;inset:0;display:flex;flex-direction:column;}
   .chHead{flex:none;display:flex;align-items:center;gap:10px;padding:16px;}   /* the full modals' top nav: the Top nav master's insets, 16 down, 16 in, 16 under its 44 discs ("CTA top nav always 44px"): 76 (was 10 12 8 round 40s, 58) */
@@ -7364,7 +7364,7 @@
   .mdSp{margin:0 0 20px;color:var(--sMut);} .mdBtns{display:grid;gap:8px;} .mdDk .mdBtns{grid-template-columns:1fr 1fr;}
   .mdNote{margin:12px 0 0;font-size:12px;color:var(--ldMut);}
   .mdStack .mdPage .mdSb{visibility:hidden;} .mdStack .mdSbTop, .mdStack:not(.on) .mdSbTop{display:flex;opacity:1;color:var(--sInk);transition:color .12s linear .4s;} .mdStack.l2 .mdSbTop{color:#fff;} .mdStack:not(.on) .mdSbTop{transition:color .2s ease;}   /* the phone's status bar and island stay put, only the page draws back ("top home phone should stay, no move with the stack") */
-  .nvFr{--kbR:56px;} .nvFr .mKbd{display:block;} .nvFr:is(.kbdOn, .chatOn) .mKbd{transform:none;visibility:visible;pointer-events:auto;transition-delay:0s;clip-path:inset(0 0 0 0 round 0 0 var(--kbR,0px) var(--kbR,0px));} .nvFr:is(.aiOpen, .chatOn) .mTabs{pointer-events:none;}   /* the doc's phone: its keys up while its field or chat is live, as the app's phones */
+  .nvFr{--kbR:56px;} .nvFr .mKbd{display:block;} .nvFr:is(.kbdOn, .chatOn.chKbd) .mKbd{transform:none;visibility:visible;pointer-events:auto;transition-delay:0s;clip-path:inset(0 0 0 0 round 0 0 var(--kbR,0px) var(--kbR,0px));} .nvFr:is(.aiOpen, .chatOn) .mTabs{pointer-events:none;}   /* the doc's phone: its keys up while its field or chat is live, as the app's phones */
   .hoCtl{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px 20px;max-width:900px;margin:0 0 20px;} .hoC{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center;font-size:12.5px;color:var(--ldMut);} .hoC input{grid-column:1 / -1;width:100%;accent-color:var(--ldAcc);} .hoC b{font-weight:500;color:var(--ldFg);font-variant-numeric:tabular-nums;}
   /* Design system -> Step flow: the master at every breakpoint ("Need All break points"). Each the step flow's own shell (.arSheet) in the Async report's own full modal (.aqWrap.aqDesk.aqFull.aqBp*, with .aqDev on XS and S: the classes the report wears, so the app's rules for that width apply as they do in the app; XL wears L's, as the app does on a wide window),
      in the master frames (XS the app's phone, --evPhR/--evPhBz; S its tablet, --evTbR/--evTbBz; M, L, XL the desk's page, as General layout draws it), scaled to fit (fit), the scale under it. All: every one side by side, one scale, a row that scrolls */
@@ -10456,7 +10456,7 @@
   body.light #bpFrame > .ovSug .aiChip.aiChipPri:hover{background:#2c2c2e;color:#f2f2f2;} body.light #bpFrame > .ovSug .aiChip:not(.aiChipPri):hover{background:rgba(46,31,26,.1);}
   body.light[data-bp="xs"] #bpFrame > .ovSug{background:linear-gradient(to bottom,rgba(247,242,233,0) 0%,rgba(247,242,233,.86) 46%,#f7f2e9 100%);}   /* 16 under the chips ("bottom padding 16"), and a ground fading in behind them from above, the page's own, so what scrolls under them never reads through ("backdrop fade gradient bg") */
   body.light #bpFrame > .ovSug .aiChip{background:rgba(255,255,255,.94);box-shadow:none;color:#2e1f1a;}
-  body[data-bp="xs"]:is(.ovKbd, .frKbd) #bpFrame > .mKbd, html:not(.bpAuto) body[data-bp="xs"]:has(.dash.chatOn) #bpFrame > .mKbd{transform:none;visibility:visible;pointer-events:auto;transition-delay:0s;clip-path:inset(0 0 0 0 round 0 0 var(--kbR,0px) var(--kbR,0px));} body[data-bp="xs"].ovKbd #bpFrame > .mTabs{display:none;}
+  body[data-bp="xs"]:is(.ovKbd, .frKbd) #bpFrame > .mKbd, html:not(.bpAuto) body[data-bp="xs"]:has(.dash.chatOn.chKbd) #bpFrame > .mKbd{transform:none;visibility:visible;pointer-events:auto;transition-delay:0s;clip-path:inset(0 0 0 0 round 0 0 var(--kbR,0px) var(--kbR,0px));} body[data-bp="xs"].ovKbd #bpFrame > .mTabs{display:none;}
   #bpFrame > .aiWrap{pointer-events:auto;border-radius:inherit;overflow:hidden;} body:not([data-bp="xs"]):not([data-bp="s"]) #bpFrame > .aiWrap{display:none;}   /* the assistant's sheet in the XS frame, over the desk's Overview, its corners the screen's */
   body.hdrV3[data-bp="xs"] #dOver .ovAvatar{display:block;}
   body[data-bp="xs"] #dOver .ovInbox, body[data-bp="xs"] #dOver .ovBell{width:44px;height:44px;}
@@ -34618,6 +34618,8 @@ hairline({
         return k;
       };
       if (!isDesk && !isDoc){ inp.addEventListener('focus', () => document.body.classList.add('mSearchOn')); inp.addEventListener('blur', () => document.body.classList.remove('mSearchOn')); }
+      inp.addEventListener('focus', () => { if (!ph.classList.contains('chatOn')) return; ph.classList.add('chKbd'); seat(); });   // focused: the keys up, the composer on them
+      inp.addEventListener('blur', () => setTimeout(() => { if (document.activeElement === inp || !ph.classList.contains('chatOn')) return; ph.classList.remove('chKbd'); seat(); }, 0));   // let go ("unfocus: no keyboard"): the keys down, the composer back to the foot
       // The thread keeps the newest exchange in view as it grows: its top never
       // above the view's, its foot pulled up into it while there is room.
       const follow = (turn, smooth) => {
@@ -34741,7 +34743,8 @@ hairline({
       };
       const frame = () => isDesk ? document.getElementById('bpFrame') : null;
       const keysH = () => { const k = keyboard(); return k ? k.offsetHeight : 0; };   // the composer stands on the keys (none: 0)
-      const place = () => { wrap.style.setProperty('--chSb', frameStrip() + 'px'); if (isDesk) modal.style.bottom = keysH() + 'px'; };   // the desk's, again on a breakpoint change: the frame's keys at XS only
+      const seat = () => { modal.style.bottom = (ph.classList.contains('chKbd') ? keysH() : 0) + 'px'; };   // on the keys while the field is focused, at the screen's foot (its home space) when not
+      const place = () => { wrap.style.setProperty('--chSb', frameStrip() + 'px'); if (isDesk) seat(); };   // the desk's, again on a breakpoint change: the frame's keys at XS only
       if (isDesk){ addEventListener('resize', () => { if (wrap.classList.contains('on')) place(); }); const bs = document.getElementById('stBp'); if (bs) bs.addEventListener('change', () => setTimeout(() => { if (wrap.classList.contains('on')) place(); }, 60)); }
       // A plain cut, both ways ("no fancy transition"). The modal fills the
       // screen: where the status strip floats over the page (the Overview
@@ -34759,7 +34762,7 @@ hairline({
         inp.value = ''; sendState();
         const st = ph.querySelector('.mstatus') || ph.querySelector('.mdPage > .mdSb');
         const stH = st ? st.offsetHeight : 0, floating = st && getComputedStyle(st).position === 'absolute';
-        modal.style.bottom = keysH() + 'px';           // the composer stands on the keys
+        ph.classList.add('chKbd'); seat();           // the composer stands on the keys (it opens focused)
         modal.style.top = (floating ? 0 : stH) + 'px';
         body.style.paddingTop = (floating ? stH : 0) + 'px';
         place();
@@ -34768,13 +34771,14 @@ hairline({
         modal.getBoundingClientRect();        // lay it out at 0 first, so the fade has somewhere to start
         wrap.classList.add('on');
         inp.focus({ preventScroll: true });   // in the tap, so a device opens its keyboard
+        if (document.activeElement !== inp){ ph.classList.remove('chKbd'); seat(); }   // not focused after all: no keys
         eva(turn, ans);
       };
       const close = () => {
         if (!wrap.classList.contains('on')) return;
         stopStream(false); closeMenu(); inp.blur();
         wrap.classList.remove('on');
-        ph.classList.remove('chatOn'); ph._kbdTarget = null; { const fr = frame(); if (fr && fr._kbdTarget === inp) fr._kbdTarget = null; }
+        ph.classList.remove('chatOn', 'chKbd'); ph._kbdTarget = null; { const fr = frame(); if (fr && fr._kbdTarget === inp) fr._kbdTarget = null; }
         setTimeout(() => { if (!wrap.classList.contains('on')) wrap.classList.remove('show'); }, 240);
       };
       ph._chat = { open, close, send: q => { inp.value = q; sendState(); send(); }, model: m => setModel(m, true) };
