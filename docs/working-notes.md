@@ -19466,3 +19466,20 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Swipe fixes**: the Health profile's Medicare card example swipes away at S too (its 600 wide sheet); the service page's More at XS opens its menu sheet (its button was not wired), which swipes away; a mouse let go outside a sheet no longer leaves a drag half started.
 - **The anatomy table, measured**: the header one row 40 high from 58 (the 36 discs at 60); the step title 28/29.6 (1.2em − 4); the intro 16 under the title (its 10 and the head's 6 gap). The page says plainly what the Health profile shares: the progress (--sfBar, --sfGap, not --sfPad) and the push; its header is its own (no discs at rest, the title only with Tweaks → Step title).
 - **The Health profile's push, plainly**: it had 32 px, in 260 ms after 45, out 170, on (.2, .7, .2, 1) and (.4, 0, .6, 1). It takes the master's now: 20 px, in 220 ms after 75, out 130, on the report's curves. So it moves less and leaves sooner, but its new page lands about when it did (295 ms against 305), and its easing changed. The report's push is the one that is exactly twice as fast with half the movement. If the profile should be twice as fast too, that is a change to the master's numbers (for both).
+
+## Suggestion: a Plan change variation, from the screenshot
+
+"I need a tweak variation of the the suggestion based on this screenshot"
+
+- **Tweaks → Suggestion → Variation** (first row, `stSgmVar`): **Signals** (as it was, the default) or **Plan change** ("Why your heart scan moved"). Saved with the Tweaks' Save and put back on load, even while the modal opens from its link. Switching redraws the open modal where it stands and plays its entrance. **Chart** is the Signals' alone, so it is hidden on Plan change.
+- **Plan change, the mock's copy word for word**: MOVED · WAS 2029 (ochre: #f6c28a on dark, #94602a on light for contrast), Why your heart scan moved (the modal's title, 24/30), its line, then two cards on the Suggestion's own card ground:
+  - the timeline: 28 Oct, the bloods (done); 29 Oct, the plan flagged it (the orange disc, a sparkle); Today, Dr Chen agreed (done); May 2027, Heart Risk Snapshot (an empty dashed orange ring, dashed until February);
+  - the cost: $349, only if you need it; Nothing to pay now.
+- **The head is the shell's own**: the same disc, at the head's left with the back chevron, as the mock has it. The title sits in the content under it, so the head holds the disc alone. The shell takes a title of '' and a `back` option for this; the other standalone modals are unchanged.
+- **Got it** (the primary) closes it. **Ask Dr Chen about this** (the secondary pill, tinted, on the glass blur) closes it, then opens the Concierge on the Care team in a new chat, with "Why did my heart scan move to May?" in its field, the send lit and the field focused. It is not sent: the care team's canned answer names Dr Lu.
+- **Desk (M, L, XL)**: the Signals' column (496 at M, 528 at L and up), nothing stretched; Got it and Ask Dr Chen side by side, as the Signals' buttons are.
+- **Entrance**: the eyebrow and title, the line, the timeline's card, then its steps one after another. The connector draws down from each node, the next node pops as it lands, and the dashed ring turns in last. Then the cost, then the footer. Replay plays it again; with reduced motion nothing moves.
+- **EvTl, a reusable vertical timeline**: `EvTl.html(steps)` and `EvTl.enter(list, api, delay)`, with steps `{ s: 'done' | 'flag' | 'next', t, d }` and CSS `.evTl`.
+  - The node sits on the title's first line, and the connector runs from node to node, never under one, so the dashed ring stays empty.
+  - The Doctor's suggestion's timeline (a card per step, pills, months between) is another kind and is left as it was.
+  - No Design system page names the Suggestion, so EvTl is documented in the code only.
