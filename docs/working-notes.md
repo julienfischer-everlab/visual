@@ -19952,3 +19952,7 @@ Julien, on the Chat page at XS ("Use Same keyboard as the overview top chat fiel
 - **Consent's desk dialog**: keeps its 800 reading width. The Modals doc's Shape row records it as the one exception to 544.
 - **Skill**: layout.md (Nav bar 68, flows' and bars' insets), tokens-components.md (nav 68, Back/Close 36 / 36), flows-modals.md (sheet header sites, Medicare, locked, 8 to the content, consent width), chat.md (`--chSb`).
 - Checked with Playwright (both themes, XS / S / L): chat 70 / 44; flows 58 / 44 / 16; Medicare and pickers 24 down, 24/30, close 32, notch 8; report sheet 24 at XS and L; locked modal the same as the base at XS and L; Service detail and Plan sub page 70 / 16; Plan sheets 8 to the content; inbox and old sheets' glyph 16; Page types doc Back 36 at 70. No console errors.
+
+## Chat page: no minus; top CTAs 44
+- visuals/concierge.html: the header's Minimise (−, #hdMin, which only closed the chat like the X) is gone ("remove this minus icon"); the header keeps the menu, the title and the close.
+- Its top-nav buttons are 44 on the phone whether embedded or not (was 44 only embedded, 36 bare): "CTA top nav always 44px".

@@ -117,7 +117,6 @@
   .hdInbox .badge { margin-left: 0; min-width: 22px; height: 20px; padding: 0 6px; font-size: 12px; border-radius: 6px; }
   .app.atHome .hd .ttl, .app.atHome #hdBack { visibility: hidden; }
   .app.mob.atHome .hd .hdInbox { display: inline-flex; }
-  .app.mob.atHome #hdMin { display: none; }
   .thread { flex: 1; min-height: 0; overflow-y: auto; scroll-behavior: smooth; }
   .col { width: 100%; max-width: 688px; margin: 0 auto; padding: 12px 24px 40px; }
   .dock { flex: none; width: 100%; max-width: 688px; margin: 0 auto; padding: 0 24px 24px; }
@@ -532,11 +531,9 @@
   .emb .stage, .embDesk .stage, .embDoc .stage { top: 0; }
   .embDesk .devSeg { display: none; }
   .app.mob .hd { height: calc(48px + var(--safeT)); padding-top: var(--safeT); }
-  /* the full modals' top nav ("Reduce CTA top nav on chat following the other modal full style"; index.html: Design system -> General layout -> Top nav, window.EvTopNav): its 36 discs (--evTnD), 16 down under the status bar, 16 in, 16 under them: 68 hug (A / B's), 10 between the controls;
-     the Inbox pill 36 tall to match, its words 14, its icon 18, its count 20 (was the Overview's 58 bar with 44 buttons, "match this nav with the overview nav") */
-  .emb .app.mob .hd { --evTnD: 36px; height: calc(68px + var(--safeT)); padding: calc(16px + var(--safeT)) 16px 16px; gap: 10px; }
-  .emb .app.mob .hd .iconBtn { width: var(--evTnD); height: var(--evTnD); } .emb .app.mob .hd .iconBtn svg { width: 16px; height: 16px; } .emb .app.mob .hdInbox .ic { width: 18px; height: 18px; }
-  .emb .app.mob .hdInbox { height: var(--evTnD); padding: 0 8px 0 12px; font-size: 14px; } .emb .app.mob .hdInbox .badge { min-width: 22px; height: 20px; padding: 0 6px; font-size: 12px; border-radius: 6px; }
+  .emb .app.mob .hd { height: calc(58px + var(--safeT)); padding: calc(1px + var(--safeT)) 16px 9px; gap: 10px; }   /* the Overview's top bar: 16 at the sides, 10 between, 44 round buttons on the same line ("match this nav with the overview nav") */
+  .app.mob .hd .iconBtn { width: 44px; height: 44px; } .app.mob .hd .iconBtn svg, .emb .app.mob .hdInbox .ic { width: 20px; height: 20px; }   /* the top nav's CTAs always 44 ("CTA top nav always 44px"), embedded or not */
+  .emb .app.mob .hdInbox { height: 44px; padding: 0 10px 0 14px; font-size: 15px; }
   .app.mob .side { padding-top: calc(14px + var(--safeT)); }
   .app.mob .dock { padding-bottom: calc(var(--dockP, 12px) + var(--safeB)); }
   .lb { padding-top: calc(56px + var(--safeT)); } .lbX { top: calc(14px + var(--safeT)); }
@@ -561,7 +558,7 @@
 .hd .iconBtn { -webkit-backdrop-filter: blur(32px) !important; backdrop-filter: blur(32px) !important; } .hdInbox { -webkit-backdrop-filter: blur(32px) !important; backdrop-filter: blur(32px) !important; } .btn:not(.pri) { -webkit-backdrop-filter: blur(32px) !important; backdrop-filter: blur(32px) !important; } .carHd .arw { -webkit-backdrop-filter: blur(32px) !important; backdrop-filter: blur(32px) !important; } .lbX { -webkit-backdrop-filter: blur(32px) !important; backdrop-filter: blur(32px) !important; } .lbNav { -webkit-backdrop-filter: blur(32px) !important; backdrop-filter: blur(32px) !important; }
   /* ---- the head's ground ("Top nav always gradient blur by default"): the Top nav master's (index.html: Design system -> General layout -> Top nav, .evTnG), COPIED here exactly as this page is a document of its own -- change both together.
      The chat scrolls under the head (the thread runs up behind it by the head's height, --hdH) and fades and blurs into it: the page's colour fading to nothing by a mask (85% at the top), over ten backdrop-blur bands (14 px at the top to 1.5 at the foot); never a hard cut */
-  .main { --hdH: 52px; } .app.mob .main { --hdH: calc(48px + var(--safeT)); } .emb .app.mob .main { --hdH: calc(68px + var(--safeT)); }
+  .main { --hdH: 52px; } .app.mob .main { --hdH: calc(48px + var(--safeT)); } .emb .app.mob .main { --hdH: calc(58px + var(--safeT)); }
   .main > .hd { position: relative; z-index: 3; isolation: isolate; --evTnGnd: var(--bg); }
   .main > .thread { margin-top: calc(-1 * var(--hdH)); padding-top: var(--hdH); scroll-padding-top: var(--hdH); }
   .evTnG { position: absolute; left: 0; right: 0; top: 0; bottom: 0; z-index: -1; pointer-events: none; transition: bottom .28s ease; }
@@ -613,7 +610,6 @@
         <button class="hdInbox" type="button" data-act="inbox" id="hdInbox"></button>
         <div class="ttl" id="ttl">New chat</div>
         <span class="sp"></span>
-        <button class="iconBtn mobOnly" type="button" data-act="close" aria-label="Minimise" id="hdMin"></button>
         <button class="iconBtn" type="button" data-act="close" aria-label="Close" id="hdX"></button>
       </div>
       <div class="thread" id="thread"><div class="col" id="col"></div></div>
@@ -1044,7 +1040,7 @@
   $('#navNew').innerHTML = ic('chats') + '<span>New chat</span>';
   $('#navInbox').innerHTML = ic('inbox') + '<span>Inbox</span><b class="badge" data-badge></b>';
   $('#hdInbox').innerHTML = ic('inbox') + '<span>Inbox</span><b class="badge" data-badge></b>';
-  $('#hdSide').innerHTML = ic('menu'); $('#hdBack').innerHTML = ic('back'); $('#hdMin').innerHTML = ic('minus'); $('#hdX').innerHTML = ic('close');
+  $('#hdSide').innerHTML = ic('menu'); $('#hdBack').innerHTML = ic('back'); $('#hdX').innerHTML = ic('close');
   $('#plusBtn').innerHTML = ic('plus'); $('#modelBtn').insertAdjacentHTML('beforeend', ic('chevD')); $('#sendBtn').innerHTML = ic('send');
   $('#launch').insertAdjacentHTML('afterbegin', ic('mark'));
 
