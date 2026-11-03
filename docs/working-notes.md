@@ -19638,6 +19638,21 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Pages that are not under way (request, suggested, purchase, claim, later, soon, locked, done) are left as they were.
 - **Also live now** (every service page's CTA tapped step by step, before and after): Join the call and Join your review (Briefing, Nutrition, Diagnostics Review, Results review), Go to your appointment or assessment (MRI, Skin, Physical), View report (Diagnostics Review, intake), Complete your intake, Confirm delivery and Collect sample (Genetic test), and Add to calendar on every booked page. 30 dead buttons before, none after.
 - **Checked on the same screen**: Back, More (…), the Instructions and Documents tabs and the step card (Your progress) all respond. The referral's **Show** still does nothing: it shares the report and video items' "no action needed on click".
+
+## "add tweak with 3d icon on the left of each label. consider 2 line of text a min, when icon are there"
+
+- **Tweaks › Ask sheet › Icons** (`#stAskIc`, Off / 3D, Off by default): a group of its own under the Overview's Services, shown on the Overview and Insights (the pages whose dock opens the sheet). Saved with Save and put back on load like the others (`html.askIc3d`).
+- **3D**: each Services tile in the Ask Everlab sheet carries its 3D render at the left of its name, 40 square, centred, 12 to the name. Same renders as the Overview's services (one map, `SVC_IMG`): Concierge the bell, Script renewal the pill bottle, Specialist referral the laptop with the doctor, Blood test referral the tubes, Imaging referral the signed sheets. Check Symptoms had none in the sheet: it takes the heart with its pulse card, the Concierge Services slide's render (one more inline of that 9 KB file).
+- **Two lines at least**: with icons on, every name block is two lines tall (2.5em at 14px). "Concierge" sits centred in it, the others wrap to two lines on XS (tile 165 wide); every tile 76 tall (padding kept, 18/20), rows even. S has room for one line each, the tiles keep the two-line height.
+- Over Services › Icons On (render on top): 3D wins while it is on (the disc hidden, the row layout).
+- **Off**: the tiles as before (165 x 54 on XS, measured before and after).
+- Checked with Playwright: the sheet from the dock's assistant button on XS and S, dark and light, Off and 3D, and with Services › Icons On. No desk version (the sheet shows only in the XS/S frame).
+- **Review fixes**:
+  - **Each render inlined once**: the services' render paths are written once, in a shared map at the top of the scripts (`window.EvSvcImg`: concierge, treat, symp, tele, path, cert, gp). The Overview's services and the sheet (`SVC_IMG`), the Concierge Services slide (`CIMG`) and the Async report's recommendation kinds (`RC_IMG`) all read from it. Check Symptoms' heart is no longer in the page twice, and the older doubles (the bottle and the signed sheets 3x, the laptop and the tubes 2x) are gone too.
+  - **Navigation doc**: a new row, "Ask Everlab · icons": Off / 3D, the 40 square render 12 from the name, two lines at least (2.5em), tiles 76 high, padding 18/20, over Services › Icons, and each tile's render.
+  - **Assets library**: svc-symptoms lists the sheet's Check Symptoms tile (Overview and Insights), set by Tweaks › Ask sheet › Icons: 3D.
+  - **Check Symptoms' heart** is drawn 15% larger in its 40 box: its render has more empty margin, so it read smaller than the bell and the bottle.
+
 ## "On press, the beam should be there." / "Chat page shouldn't show the drawer when we land on the page"
 
 - **The dock's AI button** (the sparkle beside the island): on press, Eva's beam star's ring and glow (`.evBeamStar`, the Iconography's beam star, not a copy) round its edge. A fresh ring per press, starting at the top, a round in 700 ms, turning while held; let go, it finishes its round (at least one, even on a quick tap), fades in 300 ms, then Ask Everlab opens as before. A key press plays one round first.
@@ -19714,6 +19729,49 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 
 ## "remove that, dont need as we have the flow panel" (the Back pill beside the phone)
 - The floating "‹ Back" pill outside the XS phone (.tkFlBack, shown on the profile reached from the welcome) is hidden everywhere; the Flow panel does the stepping back.
+
+## "Create pages (archives) group at the very end of the select Page. Put inside these 2"
+- The page menu ends with a new group "Pages (archives)": Appointment (OLD) and Insights (archives), moved out of Main pages. Both still open as before.
+
+## "All XS need a minimum height 852px"
+- **XS: 393 x 852 minimum**, written in Design system › General layout › Demo frames (and the XS demo's caption). Every XS phone is the iPhone's screen, never shorter.
+- **The app's XS device (forced XS)**: always 852 tall, centred under the bar as before. A window too short for 852 and 16 above and below no longer cuts the screen shorter (it was 821 at 1440 x 900, 641 at 1280 x 720). The whole device is drawn smaller instead.
+  - resize() writes `--bpS` (the scale) and `html.bpFit`. `--bpTop` / `--bpBot` stay the 852 frame's own top and foot, so the foot can sit past the window's while scaled.
+  - One `scale` on every layer laid in the frame's rect: .dash, #bpFrame (dock, keys, status bar, sheets in it), .lp, the overlays' device (.aqWrap.aqDesk), the Chat page, the Gift / Clinic / Referral / Gift receipt / Consent devices, and the Insights / Overview shells. All scale about their own centre, which is the frame's centre, so they stay one device.
+  - Scale, not a scrolling stage: every layer is position: fixed on the same vars, so a scrolling stage would have left the dock and home indicator off screen. A transform keeps hit-testing exact (taps land where they are drawn: checked on the dock and Health profile's CTA).
+  - A scaled .dash holds its fixed children as its own: the Overview's dim and the results notice are placed inside it while scaled.
+  - The width counts too: a window narrower than 393 + 32 scales it as well (with Tweaks or the flow panel docked, the room beside them: the window less 320 each).
+  - The screenshot CTA measures the scaled device as drawn and renders it back at 393 x 852 @3x.
+  - Tall windows (1440 x 1100, 1920 x 1080) are unchanged: s = 1, no class, no transform.
+- **Doc phones at 852**: Header overlap (.hoPh, was 760), Navigation's island phone (was 760), Modals XS (was 800), General layout › Container XS (was 760). Their fit-scaling uses the new height. Step flow, Demo frames, Loading states and the Health profile card docs were already 852.
+- **Standalone Health Profile (dist/health-profile.html)**: its XS device is 393 x 852 (it was the window less 96, at most 900), scaled to fit a short window.
+- Unchanged: Auto on a phone-width window (the window is the phone). The Gift page's own iPhone mode (its screen is already 398 x 852 and fit-scaled).
+- **Review fixes** (after merging the main branch's sheet Dismiss master, the scroll-driven Header overlap and Step flow at every breakpoint):
+  - **Merged**: Header overlap keeps the main branch's fitH (no transform at full size) with the phone at 852; Container and Modals XS come out at 852; Step flow's XS frame was already 852.
+  - **Drags follow the finger in a scaled device**: `evK(el)` (one helper, beside EvSheetSwipe) is how much smaller an element is drawn than its CSS pixels. Without it, content moved slower than the finger (by --bpS: 0.75 at 1280 x 720) and distance thresholds needed more travel. Now divided by it: the Overview's services row, the carousels (insights, rails, services cards, avatars, booked), the organ ages' sheet (its swipe and its 140 pull-down), the Concierge's title carousel (its 64 fade) and the hero carousels. EvSheetSwipe already measured its own scale, so every sheet's swipe was right.
+  - **The light carried from the card screen to the Health profile** (Membership onboarding → Get started): placed in the frame's own pixels. On a short window it was 133% of the frame and sat too low; now the same as on a tall one. The frame's clip-path opening from the sheet, and the sphere's hand-over, are in the frame's pixels too.
+  - **`--dSt`** is written by resize() as well, not only on .dash's scroll.
+  - **Merged the main branch again** (9d4a84f: the Ask sheet icons, the Back pill beside the phone hidden, the Pages (archives) group): no clash with the frame; dist rebuilt, the XS checks run again (drags follow the finger at 0.75, the More sheet swipe, the carried light, the doc phones at 852).
+
+## "In plan, ALL items clickable need a hover / press state. Also 80 80px visual for activity module and 56 for medical action, 80 for supplement visual"
+
+- **One rule set for the Plan** (after the Nutrition plan's sheet in the CSS): every control on the Plan, its subpages and their sheets takes the same plate, its ::before under its words (isolation, so nothing moves): ink 5% on hover (pointers only, `@media (hover:hover)`), 9% pressed and 1.5% smaller (a round 32 button 6%), no spring; focus-visible the plate and a 2px ring. The feel of the dock's More rows (.mvRow).
+  - **Per surface** (--plHov, --plPrs, --plRing): the sheet's ink in either sheet; white over the photo, a routine's card and the phone's goal cards; dark on the desk's white goal cards; Back takes the sheet's ink once it is over the sheet.
+  - **Shape**: a row's plate 8 past its column, round its tile (the tile's radius + 8: 28 round an 80, 22 round a 56), the hairlines either side of it hidden; links 4 x 8 round their words; buttons and cards on their own box and radius.
+  - **Phones**: :active does not hold on every phone browser, so the control pressed takes .plPress from pointerdown until the finger lifts (held 90 ms, so a quick tap shows it), slides 10 px, or a scroller round it really moves (more than 4 px; a carousel's own settling scroll no longer drops the goal card's press).
+  - **Covered**: the hub's rows (Activity, Nutrition, medications, supplements), See plan, Show more, View routine, the goal card; the Activity plan's programs, My week's rows, its tabs, its need tiles, Back; the Nutrition plan's tips, supplement stack, macros link, crumb, Back, its sheet's close; My Medical actions and My supplements rows, Back, crumb, the detail's close; the Wind-down routine's steps.
+- **Tiles**: the Activity's program photos 80 (the hub's section, My programs and My week; were 48 / 72 / 56), medications 56 (the hub's were 40), supplements 80 (the hub's were 40, My supplements' 72, the Nutrition plan's stack 56, the detail's 56). Radius a quarter of the side (80: 20, 56: 14), cover and centred, text centred on the tile, the gap 16 by an 80 and 12 by a 56.
+- Checked with Playwright at XS dark and L light (and earlier XS light, L dark): 98 / 102 controls hovered, plate on, no box moved; pressed by a held mouse, scale and plate on each kind; tiles measured on every page and both modals.
+- **Review fixes** (after merging the main branch, 9d4a84f):
+  - **The Activity plan's first tab** keeps its whole plate: the tab bar takes 10 of room each side (the plate's own overhang), and its hairline is drawn on the content box only, so the line still runs the column's width.
+  - **Light sheet, supplement tiles**: a hairline round the warm-grey bottle tile in every state, as the medications' have, so its edge shows on the pressed plate.
+  - Merged the main branch (Ask sheet icons, EvSvcImg, Pages archives), dist rebuilt from the merge; sweep again at XS dark and L light: 98 / 102 controls, plate on, no box moved; tiles 80 / 56 / 80 on every page and both modals.
+
+## "Create a skill for all Design system element"
+- **Project skill `.claude/skills/everlab-design-system/`**: SKILL.md (the master principle, how to work, house rules with the parse-check and build commands, a table of every element to its reference, a checklist before shipping) and five references: layout.md, flows-modals.md, navigation-icons-motion.md, chat.md, tokens-components.md.
+- 53 elements, each with what, where (grep anchors, since lines move), API, rules and numbers, how to use from a real call site, pitfalls.
+- Written from this branch: XS 852 (fit-scaling, --bpS / html.bpFit, evK) and the Ask sheet icons are documented as merged.
+- Marked "being reworked", to refresh after they merge: Top nav + container tokens (#260), desk panels follow the Overview (#270), Plan hover/press (#269), Chat top bar (#273), Chat video builder (#268), Page types (#274).
 
 ## "General TOP NAV rule (DS). IF no h1 title, keep a safe space at the top. h1 is then part of the Body" · "Top nav always gradient blur by default" · "The max width container is on the body content! Not the viewport." · "The container and the breakpoint need to be combined"
 
