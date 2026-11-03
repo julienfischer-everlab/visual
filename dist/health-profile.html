@@ -2084,8 +2084,14 @@ window.EvOverlap = (function () {
   var M = { ty: .25, rise: 32, end: 40, overlap: 28, radius: 24, dim: .35, tint: .85 }, D = JSON.parse(JSON.stringify(M)), root = document.documentElement;
   var red = function () { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
   var tok = function () { root.style.setProperty('--hoOverlap', M.overlap + 'px'); root.style.setProperty('--hoRadius', M.radius + 'px'); root.style.setProperty('--hoRise', M.rise + 'px'); root.style.setProperty('--hoDim', String(M.dim)); root.style.setProperty('--hoTint', String(M.tint)); };
-  var apply = function (sc, hero, o) { if (!sc || !hero) return 0; var y = Math.max(0, sc.scrollTop), H = hero.offsetHeight, span = Math.max(60, H - M.end);
-    if (o && o.short) span = Math.max(60, Math.min(H - M.end, sc.scrollHeight - sc.clientHeight));
+  /* the span: the scroll over which the picture rises and the title fades (the hero's height less the fade end; 'short', a page that cannot scroll that far: its own scroll) */
+  var spanOf = function (sc, hero, o) { var H = hero.offsetHeight, s = Math.max(60, H - M.end); if (o && o.short) s = Math.max(60, Math.min(H - M.end, sc.scrollHeight - sc.clientHeight)); return s; };
+  /* scroll-driven animations ("img on parallax so laggy!"): where the browser has them, the picture and the title run on the compositor off the scroller's timeline (.hoTl, CSS above), locked to the scroll;
+     the script only sets their range (--hoSpan) and the title's drift at its end (--hoWy) on the hero, once per resize or content change (update), never per frame. Elsewhere apply(), once a frame, as before */
+  var SDA = (function () { try { return !!(window.CSS && CSS.supports && CSS.supports('animation-timeline: scroll()')); } catch (e) { return false; } })();
+  var range = function (sc, hero, o) { var s = spanOf(sc, hero, o), v = s + 'px', w = (-M.ty * s).toFixed(1) + 'px';
+    if (hero.style.getPropertyValue('--hoSpan') !== v) hero.style.setProperty('--hoSpan', v); if (hero.style.getPropertyValue('--hoWy') !== w) hero.style.setProperty('--hoWy', w); return s; };
+  var apply = function (sc, hero, o) { if (!sc || !hero) return 0; var y = Math.max(0, sc.scrollTop), span = spanOf(sc, hero, o);
     var k = Math.min(1, Math.max(0, y / span)), r = red();
     hero.style.setProperty('--hy', (r ? 0 : -M.ty * y).toFixed(1) + 'px'); hero.style.setProperty('--hk', (1 - k).toFixed(3)); hero.style.setProperty('--hpy', (r ? 0 : -M.rise * k).toFixed(1) + 'px');   // reduced motion: no travel, the fade kept
     return k; };
@@ -2093,14 +2099,18 @@ window.EvOverlap = (function () {
     [].forEach.call(sc.querySelectorAll('.hoBand'), function (b) { if (b.querySelector(':scope > .ovGround')) return; var g = document.createElement('div'); g.className = 'ovGround'; g.setAttribute('aria-hidden', 'true'); g.innerHTML = new Array(11).join('<i></i>'); b.insertBefore(g, b.firstChild); }); };   /* the bar's blur bands, the Overview bar's own (.ovGround) */
   /* the bar's overflow state: on once the sheet's top reaches the bar's foot */
   var touch = function (sc, band, sheet) { if (!band) return false; var over = !!sheet && sheet.getBoundingClientRect().top - sc.getBoundingClientRect().top <= band.offsetHeight + .5; band.classList.toggle('on', over || sc.scrollTop > 0); band.classList.toggle('hoOnSheet', over); return over; };   /* lit (.on, dark over the photo) from the first pixel of scroll; .hoOnSheet once the sheet's top reaches the bar's foot: the screen's mode */
-  var bind = function (sc, o) { o = o || {}; if (!sc) return { update: function () {} }; mark(sc); var q = 0;
+  var bind = function (sc, o) { o = o || {}; if (!sc) return { update: function () {} }; mark(sc); var q = 0, sp = 0;
+    if (SDA) sc.classList.add('hoTl');   /* its timeline, for its picture and title */
     var heroOf = function () { return typeof o.hero === 'function' ? o.hero() : sc.querySelector(o.hero || '.hoHero'); };
-    var run = function () { q = 0; var k = apply(sc, heroOf(), o), on = touch(sc, o.band ? sc.querySelector(o.band) : sc.querySelector('.hoBand'), o.sheet ? sc.querySelector(o.sheet) : sc.querySelector('.hoSheet')); if (o.onFrame) o.onFrame(k, on); };
+    var run = function () { q = 0; var hero = heroOf(), k;
+      if (SDA) { if (hero && !sp) sp = range(sc, hero, o); k = sp ? Math.min(1, Math.max(0, sc.scrollTop / sp)) : 0; }   /* the compositor moves them: here only the progress, for onFrame (the range read once, then kept) */
+      else k = apply(sc, hero, o);
+      var on = touch(sc, o.band ? sc.querySelector(o.band) : sc.querySelector('.hoBand'), o.sheet ? sc.querySelector(o.sheet) : sc.querySelector('.hoSheet')); if (o.onFrame) o.onFrame(k, on); };
     sc.addEventListener('scroll', function () { if (!q) q = requestAnimationFrame(run); }, { passive: true });
-    return { update: run }; };
+    return { update: function () { var hero = heroOf(); if (SDA && hero) sp = range(sc, hero, o); run(); } }; };   /* a resize, a tab, a new number: the range again */
   var load = function () { try { var v = JSON.parse(localStorage.getItem('everlab:hoMaster') || 'null'); if (v) Object.keys(M).forEach(function (k) { if (typeof v[k] === 'number' && isFinite(v[k])) M[k] = v[k]; }); } catch (e) {} tok(); };
   load();
-  return { M: M, D: D, apply: apply, bind: bind, mark: mark, set: function (k, v) { M[k] = v; tok(); },
+  return { M: M, D: D, sda: SDA, apply: apply, bind: bind, mark: mark, set: function (k, v) { M[k] = v; tok(); },
     save: function () { try { localStorage.setItem('everlab:hoMaster', JSON.stringify(M)); return true; } catch (e) { return false; } },
     reset: function () { Object.keys(D).forEach(function (k) { M[k] = D[k]; }); try { localStorage.removeItem('everlab:hoMaster'); } catch (e) {} tok(); } };
 })();

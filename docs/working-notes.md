@@ -19500,3 +19500,26 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Ask Dr Chen puts the question in through the Concierge's own `Concierge.draft(text)` (new: fills the field, sizes it, lights the send), not by reaching into its page.
   - Left as they are: the app's orange (#f78359; the mock reads #e88962, likely its colour profile), the shell's 36 px back disc and its chevron's ink, and the Ask pill at 48 (the mock's is 44).
   - Without the Saans font (as in the checks here, Inter in its place) the 28 px title takes two lines at XS; in Saans it should hold one, as in the mock.
+
+## "img on parallax so laggy! also use this image"
+
+- **Why it lagged, measured** (Playwright on the built page, the Activity plan at XS, DPR 2, scripted wheel scrolls, every drawn frame read back):
+  - The picture trailed the scroll. Its rise and the title's drift were written by script once a frame (--hy, --hk, --hpy on the hero), while the page scrolls on the compositor, so the drawn frame showed the new scroll with an old picture. Picture off its place: 4.3 px on average, up to 18.6 px; 48 of 55 drawn frames off by more than 1 px. The title moves 1.8 times as far, so it was off by about twice that.
+  - Every one of those frames restyled the hero (42 inline writes over six scrolls), then read layout straight after the writes (a forced style pass).
+  - The bar's ten blur bands come on at the first pixel of scroll and blurred the moving photo again every frame: 26 ms of compositor work per drawn frame while the photo was under them, in the test browser.
+  - The rest of the app keeps the main thread busy even with nothing moving: a third of it on the idle Activity plan, in whole-page restyles (17 to 108 ms each, set off by other pages' animations through `html:has()` / `body:has()` rules), and the Overview's video still playing behind the Plan. That is outside this change, and it is why the picture could not keep up from script.
+- **The picture and the title now run on the compositor, off the scroll itself** (scroll-driven animations; EvOverlap, the master, so the Activity plan, the Nutrition plan and the doc's phone all have it):
+  - Same curves and numbers as before: linear over the span (the hero's height less the fade end, or the page's own scroll with 'short'), the picture rising and dimming to its share, the title drifting at its share and fading. Checked against the old formula at XS, L and in the doc: within 0.05 px.
+  - The script only sets the span (and the title's drift at its end) when the page resizes, a tab changes or a number changes. Nothing per frame. The bar's states still flip from the scroll, once a frame.
+  - Measured after: the picture is off by 0.17 px on average, 0.42 px at most, and no frame is off by more than 1 px.
+  - A browser without scroll-driven animations takes the old script path. With reduced motion only the fades stay (both paths).
+  - The doc's sliders, Save setup and Reset drive it live. A saved setup applies on every page after a reload (checked on the Activity and Nutrition plans).
+- **The bar over the moving photo: four blur bands instead of ten**, their radii set so the four blur like the ten (2.5, 7, 14 and 18.5 px). All ten come back, easing in, once the sheet reaches the bar.
+  - Looks the same: 1 level in 255 on average across the bar, both themes.
+  - Compositor work per frame while the photo moves: 26 ms down to 17 ms, and a third more frames drawn.
+  - Once the sheet is under the bar, the ten bands over a moving sheet cost what they did: that is the Overview bar's own ground.
+- **The runners on the autumn road are the Activity plan's photo** (and so the doc's phone, which shows the Activity plan's own picture):
+  - 1200x810 WebP, 118 KB, sharp at 2x on the phone and at the desk hero's width. The old soft 1080x727 enlargement is gone (same file, replaced).
+  - Framed 50% 22% so both faces stay in frame on the wide desk hero. At XS it fits by height, so both runners are in.
+- **The doc's phone**: no transform over it at full size (it had scale(1)), its photo decodes off the main thread, and the table has a Performance row.
+- dist/index.html is 15.45 MB.
