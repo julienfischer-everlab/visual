@@ -124,7 +124,19 @@ src = src.replace(/assets\/[A-Za-z0-9_\-./]+?\.(webp|png|jpe?g|gif|svg|mp4|webm|
       const faces = keep.map(face => face.replace(/url\((https:\/\/fonts\.gstatic\.com\/[^)]+)\)/g, (m, u) => { nf++; const ext = (u.split('.').pop() || 'woff2').toLowerCase(); return 'url(data:font/' + (ext === 'ttf' ? 'ttf' : ext === 'woff' ? 'woff' : 'woff2') + ';base64,' + getC(u, true).toString('base64') + ')'; }));
       return '<style>' + faces.join('\n') + '</style>'; } catch (e) { console.warn('fonts left as a link (' + (e.message || e).toString().slice(0, 60) + '): ' + href.slice(0, 80)); return tag; } });
     return [t2, nf]; };
-  for (const n of ['gift', 'clinic', 'gift-receipt', 'referral']){ const [t0, k] = inline(fs.readFileSync(path.join(root, 'visuals', n + '.html'), 'utf8')), [t, nf] = inlineFonts(t0);   // the Clinic's logos (assets/clinic/) inlined; the fonts too
+  /* the Design system's masters, for a page of its own (an iframe, its own document): where it says <!--ev:master EvOverlap css--> and <!--ev:master EvOverlap js-->, the header overlap's
+     own CSS and script, taken from index.html as they are on every build ("Documentation is the master": the Gift referral's hero runs the very code the Activity plan's does), never a copy kept by hand.
+     Found by what they hold: the CSS from the Header overlap section's heading to the next section's, with the Overview bar's blur bands (.ovGround) the bar draws on; the script window.EvOverlap's IIFE */
+  const masters = (() => { const ix = fs.readFileSync(path.join(root, 'index.html'), 'utf8'), cut = (a, b, what) => { const i = ix.indexOf(a); if (i < 0) throw new Error('build: ' + what + ' not found in index.html'); const j = ix.indexOf(b, i + a.length); if (j < 0) throw new Error('build: the end of ' + what + ' not found'); return ix.slice(i, j); };
+    const ovCss = cut('/* ---- Header overlap (EvOverlap;', '\n  /* ---- ', 'the header overlap CSS'), gnd = ix.match(/^[ \t]*\.ovGround(?:\{| i\{| i:nth-child\(\d+\)\{)[^\n]*$/gm) || [];
+    if (gnd.length !== 12) throw new Error('build: the Overview bar blur bands (.ovGround: the ground, its bands, ten of them: 12 rules) not found, ' + gnd.length);
+    const ovJs = cut('window.EvOverlap = (function () {', '\n})();', 'the EvOverlap script') + '\n})();';
+    try { new Function(ovJs); } catch (e) { throw new Error('build: the EvOverlap script cut from index.html does not parse (cut short at an inner line-start IIFE end?): ' + e.message); }   /* a cut that ends early must fail the build, not the page */
+    if (!/\bbind\s*[:=]/.test(ovJs) || !/\bmark\s*[:=]/.test(ovJs)) throw new Error('build: the EvOverlap script cut from index.html has no bind / mark');
+    return { 'EvOverlap css': '<style data-master="EvOverlap">/* from index.html (tools/build.js): Design system -> General layout -> Header overlap, and the Overview bar blur bands it draws on */\n' + gnd.join('\n') + '\n  ' + ovCss + '\n</style>',
+             'EvOverlap js': '<script data-master="EvOverlap">/* from index.html (tools/build.js): the header overlap master, its saved setup (everlab:hoMaster) applied on load */\n' + ovJs + '\n</script>' }; })();
+  const withMasters = (txt, n) => txt.replace(/<!--ev:master ([A-Za-z]+ (?:css|js))-->/g, (m, k) => { if (!masters[k]) throw new Error('build: no master ' + k + ' for ' + n); return masters[k]; });
+  for (const n of ['gift', 'clinic', 'gift-receipt', 'referral']){ const [t0, k] = inline(withMasters(fs.readFileSync(path.join(root, 'visuals', n + '.html'), 'utf8'), n)), [t, nf] = inlineFonts(t0);   // the Clinic's logos (assets/clinic/) inlined; the fonts too; a master where a page asks for one
     fs.writeFileSync(path.join(root, 'dist', n + '.html'), t);
     console.log(n + ' ' + kb(t.length) + '  (' + k + ' pictures, ' + nf + ' font files inlined, dist/' + n + '.html)'); }
   require('./build-hp.js');   // the Health profile on its own page, from the same source: every build makes both

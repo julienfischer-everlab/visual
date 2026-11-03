@@ -19638,6 +19638,21 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Pages that are not under way (request, suggested, purchase, claim, later, soon, locked, done) are left as they were.
 - **Also live now** (every service page's CTA tapped step by step, before and after): Join the call and Join your review (Briefing, Nutrition, Diagnostics Review, Results review), Go to your appointment or assessment (MRI, Skin, Physical), View report (Diagnostics Review, intake), Complete your intake, Confirm delivery and Collect sample (Genetic test), and Add to calendar on every booked page. 30 dead buttons before, none after.
 - **Checked on the same screen**: Back, More (…), the Instructions and Documents tabs and the step card (Your progress) all respond. The referral's **Show** still does nothing: it shares the report and video items' "no action needed on click".
+
+## "add tweak with 3d icon on the left of each label. consider 2 line of text a min, when icon are there"
+
+- **Tweaks › Ask sheet › Icons** (`#stAskIc`, Off / 3D, Off by default): a group of its own under the Overview's Services, shown on the Overview and Insights (the pages whose dock opens the sheet). Saved with Save and put back on load like the others (`html.askIc3d`).
+- **3D**: each Services tile in the Ask Everlab sheet carries its 3D render at the left of its name, 40 square, centred, 12 to the name. Same renders as the Overview's services (one map, `SVC_IMG`): Concierge the bell, Script renewal the pill bottle, Specialist referral the laptop with the doctor, Blood test referral the tubes, Imaging referral the signed sheets. Check Symptoms had none in the sheet: it takes the heart with its pulse card, the Concierge Services slide's render (one more inline of that 9 KB file).
+- **Two lines at least**: with icons on, every name block is two lines tall (2.5em at 14px). "Concierge" sits centred in it, the others wrap to two lines on XS (tile 165 wide); every tile 76 tall (padding kept, 18/20), rows even. S has room for one line each, the tiles keep the two-line height.
+- Over Services › Icons On (render on top): 3D wins while it is on (the disc hidden, the row layout).
+- **Off**: the tiles as before (165 x 54 on XS, measured before and after).
+- Checked with Playwright: the sheet from the dock's assistant button on XS and S, dark and light, Off and 3D, and with Services › Icons On. No desk version (the sheet shows only in the XS/S frame).
+- **Review fixes**:
+  - **Each render inlined once**: the services' render paths are written once, in a shared map at the top of the scripts (`window.EvSvcImg`: concierge, treat, symp, tele, path, cert, gp). The Overview's services and the sheet (`SVC_IMG`), the Concierge Services slide (`CIMG`) and the Async report's recommendation kinds (`RC_IMG`) all read from it. Check Symptoms' heart is no longer in the page twice, and the older doubles (the bottle and the signed sheets 3x, the laptop and the tubes 2x) are gone too.
+  - **Navigation doc**: a new row, "Ask Everlab · icons": Off / 3D, the 40 square render 12 from the name, two lines at least (2.5em), tiles 76 high, padding 18/20, over Services › Icons, and each tile's render.
+  - **Assets library**: svc-symptoms lists the sheet's Check Symptoms tile (Overview and Insights), set by Tweaks › Ask sheet › Icons: 3D.
+  - **Check Symptoms' heart** is drawn 15% larger in its 40 box: its render has more empty margin, so it read smaller than the bell and the bottle.
+
 ## "On press, the beam should be there." / "Chat page shouldn't show the drawer when we land on the page"
 
 - **The dock's AI button** (the sparkle beside the island): on press, Eva's beam star's ring and glow (`.evBeamStar`, the Iconography's beam star, not a copy) round its edge. A fresh ring per press, starting at the top, a round in 700 ms, turning while held; let go, it finishes its round (at least one, even on a quick tap), fades in 300 ms, then Ask Everlab opens as before. A key press plays one round first.
@@ -19711,6 +19726,114 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - **The scrim above the top sheet closes it in the doc too**: the stack's status bar lets a tap through, so "Close and the scrim" is true at 1, 2 and 3 layers, On and Off.
   - **The leave question**: 24 above its title on the phone, so the notch sits 12 above the header.
   - **The Health profile's own page** (its standalone link) lives on its own, so a saved Off never reaches it: it keeps the default, On. The Modals doc says so.
+
+## "remove that, dont need as we have the flow panel" (the Back pill beside the phone)
+- The floating "‹ Back" pill outside the XS phone (.tkFlBack, shown on the profile reached from the welcome) is hidden everywhere; the Flow panel does the stepping back.
+
+## "Create pages (archives) group at the very end of the select Page. Put inside these 2"
+- The page menu ends with a new group "Pages (archives)": Appointment (OLD) and Insights (archives), moved out of Main pages. Both still open as before.
+
+## "All XS need a minimum height 852px"
+- **XS: 393 x 852 minimum**, written in Design system › General layout › Demo frames (and the XS demo's caption). Every XS phone is the iPhone's screen, never shorter.
+- **The app's XS device (forced XS)**: always 852 tall, centred under the bar as before. A window too short for 852 and 16 above and below no longer cuts the screen shorter (it was 821 at 1440 x 900, 641 at 1280 x 720). The whole device is drawn smaller instead.
+  - resize() writes `--bpS` (the scale) and `html.bpFit`. `--bpTop` / `--bpBot` stay the 852 frame's own top and foot, so the foot can sit past the window's while scaled.
+  - One `scale` on every layer laid in the frame's rect: .dash, #bpFrame (dock, keys, status bar, sheets in it), .lp, the overlays' device (.aqWrap.aqDesk), the Chat page, the Gift / Clinic / Referral / Gift receipt / Consent devices, and the Insights / Overview shells. All scale about their own centre, which is the frame's centre, so they stay one device.
+  - Scale, not a scrolling stage: every layer is position: fixed on the same vars, so a scrolling stage would have left the dock and home indicator off screen. A transform keeps hit-testing exact (taps land where they are drawn: checked on the dock and Health profile's CTA).
+  - A scaled .dash holds its fixed children as its own: the Overview's dim and the results notice are placed inside it while scaled.
+  - The width counts too: a window narrower than 393 + 32 scales it as well (with Tweaks or the flow panel docked, the room beside them: the window less 320 each).
+  - The screenshot CTA measures the scaled device as drawn and renders it back at 393 x 852 @3x.
+  - Tall windows (1440 x 1100, 1920 x 1080) are unchanged: s = 1, no class, no transform.
+- **Doc phones at 852**: Header overlap (.hoPh, was 760), Navigation's island phone (was 760), Modals XS (was 800), General layout › Container XS (was 760). Their fit-scaling uses the new height. Step flow, Demo frames, Loading states and the Health profile card docs were already 852.
+- **Standalone Health Profile (dist/health-profile.html)**: its XS device is 393 x 852 (it was the window less 96, at most 900), scaled to fit a short window.
+- Unchanged: Auto on a phone-width window (the window is the phone). The Gift page's own iPhone mode (its screen is already 398 x 852 and fit-scaled).
+- **Review fixes** (after merging the main branch's sheet Dismiss master, the scroll-driven Header overlap and Step flow at every breakpoint):
+  - **Merged**: Header overlap keeps the main branch's fitH (no transform at full size) with the phone at 852; Container and Modals XS come out at 852; Step flow's XS frame was already 852.
+  - **Drags follow the finger in a scaled device**: `evK(el)` (one helper, beside EvSheetSwipe) is how much smaller an element is drawn than its CSS pixels. Without it, content moved slower than the finger (by --bpS: 0.75 at 1280 x 720) and distance thresholds needed more travel. Now divided by it: the Overview's services row, the carousels (insights, rails, services cards, avatars, booked), the organ ages' sheet (its swipe and its 140 pull-down), the Concierge's title carousel (its 64 fade) and the hero carousels. EvSheetSwipe already measured its own scale, so every sheet's swipe was right.
+  - **The light carried from the card screen to the Health profile** (Membership onboarding → Get started): placed in the frame's own pixels. On a short window it was 133% of the frame and sat too low; now the same as on a tall one. The frame's clip-path opening from the sheet, and the sphere's hand-over, are in the frame's pixels too.
+  - **`--dSt`** is written by resize() as well, not only on .dash's scroll.
+  - **Merged the main branch again** (9d4a84f: the Ask sheet icons, the Back pill beside the phone hidden, the Pages (archives) group): no clash with the frame; dist rebuilt, the XS checks run again (drags follow the finger at 0.75, the More sheet swipe, the carried light, the doc phones at 852).
+
+## "In plan, ALL items clickable need a hover / press state. Also 80 80px visual for activity module and 56 for medical action, 80 for supplement visual"
+
+- **One rule set for the Plan** (after the Nutrition plan's sheet in the CSS): every control on the Plan, its subpages and their sheets takes the same plate, its ::before under its words (isolation, so nothing moves): ink 5% on hover (pointers only, `@media (hover:hover)`), 9% pressed and 1.5% smaller (a round 32 button 6%), no spring; focus-visible the plate and a 2px ring. The feel of the dock's More rows (.mvRow).
+  - **Per surface** (--plHov, --plPrs, --plRing): the sheet's ink in either sheet; white over the photo, a routine's card and the phone's goal cards; dark on the desk's white goal cards; Back takes the sheet's ink once it is over the sheet.
+  - **Shape**: a row's plate 8 past its column, round its tile (the tile's radius + 8: 28 round an 80, 22 round a 56), the hairlines either side of it hidden; links 4 x 8 round their words; buttons and cards on their own box and radius.
+  - **Phones**: :active does not hold on every phone browser, so the control pressed takes .plPress from pointerdown until the finger lifts (held 90 ms, so a quick tap shows it), slides 10 px, or a scroller round it really moves (more than 4 px; a carousel's own settling scroll no longer drops the goal card's press).
+  - **Covered**: the hub's rows (Activity, Nutrition, medications, supplements), See plan, Show more, View routine, the goal card; the Activity plan's programs, My week's rows, its tabs, its need tiles, Back; the Nutrition plan's tips, supplement stack, macros link, crumb, Back, its sheet's close; My Medical actions and My supplements rows, Back, crumb, the detail's close; the Wind-down routine's steps.
+- **Tiles**: the Activity's program photos 80 (the hub's section, My programs and My week; were 48 / 72 / 56), medications 56 (the hub's were 40), supplements 80 (the hub's were 40, My supplements' 72, the Nutrition plan's stack 56, the detail's 56). Radius a quarter of the side (80: 20, 56: 14), cover and centred, text centred on the tile, the gap 16 by an 80 and 12 by a 56.
+- Checked with Playwright at XS dark and L light (and earlier XS light, L dark): 98 / 102 controls hovered, plate on, no box moved; pressed by a held mouse, scale and plate on each kind; tiles measured on every page and both modals.
+- **Review fixes** (after merging the main branch, 9d4a84f):
+  - **The Activity plan's first tab** keeps its whole plate: the tab bar takes 10 of room each side (the plate's own overhang), and its hairline is drawn on the content box only, so the line still runs the column's width.
+  - **Light sheet, supplement tiles**: a hairline round the warm-grey bottle tile in every state, as the medications' have, so its edge shows on the pressed plate.
+  - Merged the main branch (Ask sheet icons, EvSvcImg, Pages archives), dist rebuilt from the merge; sweep again at XS dark and L light: 98 / 102 controls, plate on, no box moved; tiles 80 / 56 / 80 on every page and both modals.
+
+## "Create a skill for all Design system element"
+- **Project skill `.claude/skills/everlab-design-system/`**: SKILL.md (the master principle, how to work, house rules with the parse-check and build commands, a table of every element to its reference, a checklist before shipping) and five references: layout.md, flows-modals.md, navigation-icons-motion.md, chat.md, tokens-components.md.
+- 53 elements, each with what, where (grep anchors, since lines move), API, rules and numbers, how to use from a real call site, pitfalls.
+- Written from this branch: XS 852 (fit-scaling, --bpS / html.bpFit, evK) and the Ask sheet icons are documented as merged.
+- Marked "being reworked", to refresh after they merge: Top nav + container tokens (#260), desk panels follow the Overview (#270), Plan hover/press (#269), Chat top bar (#273), Chat video builder (#268), Page types (#274).
+
+## "General TOP NAV rule (DS). IF no h1 title, keep a safe space at the top. h1 is then part of the Body" · "Top nav always gradient blur by default" · "The max width container is on the body content! Not the viewport." · "The container and the breakpoint need to be combined"
+
+- **The master**: Design system › General layout › Top nav. One code, `window.EvTopNav` (`html({ back, title, close, more, reveal })`, `mount(el, opts)`, `watch(scroller, nav, h1)`, `titled(h1, bar, sheet)`) and the `.evTn` CSS. Both sit in the blocks `tools/build-hp.js` copies, so the standalone Health Profile has them too.
+  - **A** (title and Close) and **B** (Back, title, Close): 76 hug, 16 all round, 44 discs at ink 6%, the title 20/28 500 on one line (at x 76 after Back).
+  - **C**, no title: "No title in the nav: the nav keeps a 32px safe space, its controls float, and the H1 is the first thing in the body." The discs stay at 16 down and 16 in, hanging over the band's foot. The body's H1 (`.evTnH1`) keeps 12 clear of a Close (56 at its right) and starts 12 below a Back.
+  - Once the H1 has gone under the controls, its words fade into the bar (17/22 600, centred). This is the Service detail's bar ("fixed gradient blur with title appearing"), and its rule is now `EvTopNav.titled`, which both of its hosts call.
+  - **The ground is always the gradient blur**: the screen's colour at 85% fading to nothing (the Header overlap's mask) over ten backdrop-blur bands (14 to 1.5 px). At rest it ends at the bar's foot. Once content is under it, it reaches 24 further (for C, from the controls' foot). There is no hard edge and no slab.
+  - The global "every dismiss 36" rule gives way to the master's 44 (`.evTn .evTnBtn`), so a control can keep its old class (.arClose, .prX) for its handler.
+- **Applied**:
+  - Standalone modals (evSolo: Suggestion, Doctor's suggestion, Personal recommendation): variant C. The title is the body's H1, the Close (or the Plan change's Back) floats, and the title comes into the bar on scroll. The entrances still find `.sgmT`.
+  - The close-only sheets (Results received, the info sheet): C, the bar inside the scroller. The filter sheet: C in CSS.
+  - The Service detail bar's ground now shows at rest.
+  - The Concierge chat's head (visuals/concierge.html): the master's ground copied there, marked so, with the thread running up under the head.
+- **Container**:
+  - The rule: "the container centres the body content; the top nav and the footer span the screen". The page keeps its padding at the viewport. On the desk the standalone modals' bar and footer span the screen; the body and the CTA keep the 2xs column (544 M, 576 L; it was a 536/568 sheet).
+  - The live demo has a **Breakpoint** AND a **Container** picker, and any pair works. The column is the token's width at that breakpoint, capped by the screen less its padding. The labels read padding · viewport, max-width/name · px, Top nav · spans and Footer · CTA.
+  - The Tokens table now matches the design file's.
+  - New tokens `--ct2xs` (Full / 512 / 544 / 576), `--ctXs` 800, `--ctSm` 1080, `--ctMd` 1280, `--ctLg` 1440, plus `data-container="2xs|xs|sm|md|lg"`. `--ctPadY`/`--ctPadX` already matched.
+  - The Overview's content, the Service detail's grid and My journey V2 read `--ctSm`.
+  - These match no token: My journey V1's 760, and the report and profile sheets' 536 / 568 / 560 columns (desk M / L / default).
+- **Not yet on the master** (each keeps its own bar):
+  - The Async report and Health profile heads (EvSteps bars in the nav, the hp state logic).
+  - The Plan subpages and the Header overlap pages (EvOverlap's dark-until-the-sheet logic).
+  - The titled sheets (arQa, .plPMd, .plNSh, .mkCart, .tlSheet, .ibCard, bmdOv, hpPk; the sheet header is still the Modals doc's 24/30 + 32).
+  - The marketplace detail, the consent sheet, Gift and Referral (iframes).
+  - The Step flow doc's phone.
+- Checked with Playwright:
+  - The Suggestion at XS (rest and scrolled, both themes), S, M and L.
+  - The Design system's Top nav tab (variants, both themes, the XS phones, the desk) and the Container's pairs (L·2xs, XS·sm, M·xs).
+  - The Service detail at XS, Results received at XS, and the Concierge chat at XS scrolled in both themes.
+- **Review fixes** (after merging the main branch's beam on press, the Chat drawer and the hidden Back pill):
+  - **Type**: the master's titles in longhands, the family on its own (`var(--ar-font, inherit)` inside a `font:` shorthand voided it everywhere outside the report's sheet). The doc's A and B titles are 20/28 500 now, the title appearing 17/22 600, the doc phones' H1 24/30.
+  - **The close-only sheets watch their scroller**: Results received, the info sheet and the records filter (now the master's markup, its Close 44). Scrolled, the ground reaches 24 past the controls and the title comes into the bar, in both themes.
+  - **Title appearing**: once the page has moved and the H1's middle has passed the controls' foot (the Service detail's rule, gated on the scroll). The Plan change at XS now gets its title. A desk column clear of the controls (`.evTnFar`) uses the 32 band's foot instead, so a short desk page never titles while its H1 is in view.
+  - **No clearance where there is nothing to clear**: with both Back and Close, the H1 drops its right 56. On the desk's 2xs column (`.evTnFar`, set by `watch()`), the H1 keeps its full width and its place, and the Plan change has no 40 drop.
+  - **XS controls at 70** (General layout's 54 status bar + 16), the Plan subpages' height: the standalone modals and the doc's phones. The Service detail keeps its own bar (47 + 14).
+  - **Desk rule, one for the docs and the app**: the top nav sits at the viewport's top (controls 16 down) and its band takes the top padding's place; padding/left-right holds the controls at the sides. The Container demo's nav moved up to match; the Top nav "Fixed" row says so.
+  - **The flows on desk** (FOLLOW-UP 2): the Health profile's steps, the Async report and the Step flow master. The top nav spans the viewport inside padding/left-right: Back and Close 24 from the edges, 44 discs (the master's). The step body and its CTA sit in the 2xs container: 544 M, 576 L (were 520 / 496 / 528). Their bars keep their own markup, because the progress rides in them.
+  - **The standalone modals at S**: the CTA is the body's 512 column, not the sheet's 478.
+  - **Tokens, one source**: the Container doc reads padding, gap and every max-width off the app's CSS (`[data-ct-bp]` beside `body[data-bp]`, and `.aqWrap.aqBp*` for the flows' frames). Its Tokens table is drawn from those values. The Use column is corrected: sm is the Overview, the Service detail and My journey V2, read as `--ctSm`; md, xs and lg are none yet. Off-token widths are listed: My journey V1 760, the profile sheet's 560.
+  - **Labels**: the padding badge is in the foot's padding, and C's size badge sits inside its band, clear of the H1.
+  - **Service detail, light, at rest over the photo**: the ground keeps its blur but takes a dark tint, so the white glass Back and More read. Once scrolled, it is the cream again.
+  - **The Concierge head** gets the master's scrolled state too (`.evTnOn`, one scroll listener), so its ground reaches 24 further once the thread is under it.
+- **Still not on the master**: the titled sheets (arQa, .tlSheet, .plPMd, .plNSh, .mkCart, .mkDet, .ibCard, bmdOv, hpPk, .shClose, EvConsent, Referral), waiting on one choice: the sheet header as the Modals doc's (24/30 title, 32 Close) or the master's A (76, 44). Also the Plan subpages and EvOverlap's bar, and the Service detail's markup (its title rule and ground are the master's).
+## "Use a header same as Activity with Visual and h1 centered. Put sub inside the body. Everlab logo part of the top nav center slot." / "Need to work on dark mode as well!" (the Gift referral)
+- **The Refer page's top is the Activity plan's**: the photo full bleed under the status bar (265 on the phone, 320 in the column), the Activity plan's gradient over it, the H1 "Good health is worth passing on." centred at its foot (serif, white), the sheet over its foot with its rounded top. Contact capture and Sent show the same page under their sheets, at rest.
+- **The header overlap is the master's, not a copy**: tools/build.js puts EvOverlap's own CSS (the Header overlap section, with the Overview bar's blur bands it draws on) and its script (window.EvOverlap) from index.html into dist/referral.html where the page says `<!--ev:master EvOverlap css/js-->`, on every build; it throws if it cannot find them. The page binds it (`EvOverlap.bind`, the hero `.rfTop`): the photo rises and dims, the title drifts and fades, the bar takes its overflow state, all on the scroll timeline; the doc's saved numbers (everlab:hoMaster) apply on load. The source page opened alone has no master (a still hero).
+- **The sub in the body**: first in the sheet, centred, before "How the referral works".
+- **The logo in the top nav's centre slot**: a fixed bar (sticky, the phone's 54 + 76, 64 in the column), the header overlap's bar ground (its gradient and blur) behind it; white over the photo, the screen's ink once the sheet is under the bar, the status bar with it. No Back or Close (the page had none). The Design system's Top nav master (EvTopNav) is not in this branch yet: the bar follows the Service detail's (fixed, gradient blur, centred title slot).
+- **The picture**: the Gift page's couple on the sofa (the Gift receipt's radial photo), already in assets; dist/referral.html 280 KB to 414 KB (the photo once, the master's code).
+- **Dark mode**: the page follows the app's Colour mode (body.light, as the Gift receipt): the prototype sets data-theme on its root on load and on every change, and puts it in the frame's hash for the first paint; opened alone it takes the system's. Dark: the Activity plan's dark sheet (#0f0f0f), cards #181818, ink white, the white primary, the sheets #181818 (the modal ground), dark fields, the green Sent card on dark, the desk round the column black; the photo and its header stay dark in both modes. Light as before.
+- **The sheet is at least the screen less the bar**, so it always reaches the bar however short the page.
+- **Review fixes** (after merging the main branch: XS 852, the Plan hover/press states, the design-system skill; dist rebuilt from the merge):
+  - **The overlap finishes on a short page**: Refer binds EvOverlap with `short: true` (the master's own option, as the Service detail's), so its span is the page's own scroll (107 at XS, 228 in the column) and the title is gone and the photo at .35 at the foot of the scroll, light and dark. No ghost of the title under the logo.
+  - **Step 0 follows the Colour mode too**: in Light, the More sheet is white over the light ground (#efe7d8), the ink dark, its fills and notch in ink, as the dock's More in body.light; Dark as before.
+  - **One dark token set**: `:root[data-theme="dark"]` only. A small script in the head sets the theme before the first paint: the hash's (the prototype's), else the system's, live.
+  - **Leaving Refer for its sheets**: Refer glides back to its top under the cross-fade, so it meets Contact capture and Sent, which show the page at rest.
+  - **The build checks the master it cuts**: tools/build.js parses the EvOverlap script it takes from index.html and checks it has bind and mark; a cut that ends early fails the build.
+
+## Container doc: labelled switches
+- General layout › Container · live: the two switches now carry labels above them, "Breakpoints" (XS · 393 … L · 1440) and "Container size" (2xs … lg) (.glCtGrp / .glCtLbl, 12px muted, 8 above the switch; the groups 20 apart).
 
 ## "Service and plan desktop, layout issue on body (black area rounded corner + padding / spacing) need to follow the setup on overview!!!!!!"
 - **The cause**: every desk panel already had the Overview's box (8 off the rail, 16 under the bar, 12 top corners), but the shell strip that lets the top-left corner and the gap show (`.dash`'s first background layer) was sized by `--dMainLeft`, measured in `resize()` by `shellEdge()` off whichever card it knew. It did not know Services (`mkOn`) or the Plan (`plOn`): it measured a hidden card, the strip stopped at the rail, and the 8 gap and the rounded corner filled with the page's own ground (both themes, every width, rail open or retracted).
