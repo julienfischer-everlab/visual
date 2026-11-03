@@ -511,14 +511,19 @@
        the gradient there, so both corners cut into shell instead of into
        more of the card's own colour; past it, the gradient alone still
        governs, which is what keeps the flanks matching the card.
-       --dMainLeft (set in resize(), since margin:auto centring puts that
-       edge at a different x for every viewport width and every sidebar
-       width) is that edge; a fixed pixel number here would only ever be
-       right at the one width it was measured against. */
+       That edge is worked out here from the one cap every desk page shares
+       (the rail, then half of what the 1584 cap leaves, 8 at least), the
+       same sum the panels lay themselves out by, so it is right on every
+       page at every width, rail open or retracted, a column docked or not:
+       measured off one page in resize(), it stopped at the rail on the
+       pages it did not know (Services, Plan), and their gap and rounded
+       corner went ("Service and plan desktop ... need to follow the setup
+       on overview"). */
     --shellBg:#181818;
+    --pnCap:min(1584px - var(--sideW, 224px), 100% - var(--sideW, 224px) - 16px);   /* the desk page panel's cap (see #dMain, #dOver ...): kept as tokens, so its 100% is read where it is used -- the shell's own width, in the panel's max-width as here */
     background:
       linear-gradient(var(--shellBg), var(--shellBg))
-        left/calc(var(--dMainLeft, 224px) + 40px) 100% no-repeat,
+        left/calc(var(--sideW, 224px) + max(0px, (100% - var(--sideW, 224px) - var(--pnCap)) / 2) + 40px) 100% no-repeat,
       linear-gradient(var(--shellBg) 16px, var(--pageBg) 16px);
     color:#ececec;
   }
@@ -561,7 +566,8 @@
   body.sideMin .dash .side .nv span{max-width:0;opacity:0;}
   body.sideMin .dash{padding-left:60px;--sideW:60px;}   /* the rail 60: the 44 plates 8 off either side, every glyph where it was open */
   body.sideMin #dMain, body.sideMin #dOver, body.sideMin #dSvc, body.sideMin #dTl, body.sideMin #dApt, body.sideMin #dAcc, body.sideMin #dPlan, body.sideMin #dMkt{left:60px;}
-  .dash{transition:padding-left .32s cubic-bezier(.2,.8,.2,1);}
+  @property --sideW{syntax:'<length>';inherits:true;initial-value:224px;}   /* registered so it can slide: the shell's strip and the panels' cap (--pnCap) follow the retract on the panels' own curve, so the top-left corner never lands on page ground mid-slide */
+  .dash{transition:padding-left .32s cubic-bezier(.2,.8,.2,1),--sideW .32s cubic-bezier(.2,.8,.2,1);}
   #dMain, #dOver, #dSvc, #dTl, #dApt, #dAcc, #dPlan, #dMkt{transition:left .32s cubic-bezier(.2,.8,.2,1);}
   /* ---- The content pane: a card that owns its own scroll -----------------
      Fixed over the sidebar's ground -- which is what the card floats over,
@@ -581,7 +587,7 @@
        at the top, so bottom-left rounds too. Bottom-right stays square --
        it meets the browser's own corner, with nothing to ease away from. */
     border-radius:12px 12px 0 0;background:var(--pageBg);   /* 12 at the top ("top left rounded corner for body content 12px"), square at the bottom left ("no radius at the bottom left"); was 24 24 0 24 */
-    margin:0 auto;max-width:1160px;
+    margin:0 auto;max-width:var(--pnCap, 1160px);   /* every desk page the Overview's box ("need to follow the setup on overview"): 8 off the rail and the frame's right edge, 1360 at most (1512 retracted), centred past that; 100% is the shell's own width, so a docked Flow or Tweaks column and a forced breakpoint's frame are already out of it (100vw counted them, and the service page sat flush against the rail with the flow docked) */
     /* 32px clears the rounded corner with room to spare now that the bar
        above it is gone and the corner sits close behind the h1; the 64/60
        either side is the page's own established rhythm, untouched */
@@ -594,7 +600,6 @@
      cap centred on its own left the main 20 further in at 1440 and flush
      against the rail at 1363. Retracted, the rail's 152 go to the page, and
      the edge holds ("nav inconsistent"). */
-  #dMain{max-width:min(calc(1584px - var(--sideW,224px)), calc(var(--bpW,100vw) - var(--sideW,224px) - 16px));}   /* 1280 in the 40s, as the Overview's */
   /* the cap 1360 open, 1512 retracted (1584 less the rail): retracting the rail gives its 152 to the panel, so the panel stays 8 off the rail and the rail's right gap matches its left 20 at every width up to 1600 ("right padding not consistent"); past that both states centre alike */
   /* Sticks flush with #dMain's own rounded top the same way .dFilters
      sticks flush with it lower down (top:-32px cancels the same 32px
@@ -627,6 +632,8 @@
   }
   .dash .dTopFade.stuck{opacity:1;}
   .dash h1{font-size:26px;font-weight:500;letter-spacing:-0.5px;margin:0 0 22px;}
+  .dash{--pgH1Fs:24px;--pgH1Lh:30px;--pgH1Ls:-.3px;}   /* the desk page title, the Overview's ("need to follow the setup on overview"): one size for every main desk page */
+  body:not([data-bp="xs"]):not([data-bp="s"]):not(.tabM) :is(#dOver .dvH1, #dMain > h1, #dMkt .mkT, #dTl .tlH1, #dPlan.plDesk .plPgT, #dAcc .acHead h1){font-size:var(--pgH1Fs);line-height:var(--pgH1Lh);letter-spacing:var(--pgH1Ls);font-weight:500;}   /* Overview, Insights, Services, My journey, My plan, My account; the sub pages (Service detail, Appointment, the Plan's subpages) keep their hero titles */
   .dash h1 span{color:#8b8b86;}
   .dash .dgrid{display:grid;grid-template-columns:1fr 1.26fr;gap:16px;align-items:stretch;height:400px;}
   .dash .dleft{display:flex;flex-direction:column;gap:16px;min-height:0;}
@@ -7497,7 +7504,7 @@
   @media (max-width:800px){ .homeIn{padding:40px 20px 60px;} }
   @media (max-width:520px){ .hmRowCards{grid-template-columns:1fr;} .homeHead h1{font-size:32px;} }
   /* ---- The service detail page (desk #dSvc, phone .svcMob) ---- */
-  #dSvc{display:none;padding:32px 40px 60px;max-width:calc(var(--bpW,100vw) - var(--sideW,224px) - 16px);color:#ececec;}   /* the panel the full width, its content held to 1080 below ('container max width is 1080px') */
+  #dSvc{display:none;padding:32px 40px 60px;color:#ececec;}   /* the panel the full width, its content held to 1080 below ('container max width is 1080px') */
   body.m9.svcOn #dSvc{display:block;} body.m9.svcOn #dOver{display:none;}
   /* the back button rides a bar like every top bar ("same behaviour as all
      top nav, with gradient, blur, fixed on scroll"): sticky at the card's
@@ -7992,10 +7999,10 @@
   /* ---- the appointment page (#dApt on the desk, .aptMob on the phone): the booking as the app shows it ("add the appointment page") ---- */
   .apPg{--apInk:#f4f4f4;--apTx:#e6e6e3;--apSub:#8b8b86;--apLine:rgba(255,255,255,.08);--apTile:rgba(255,255,255,.07);--apSoft:rgba(255,255,255,.045);--apBd:rgba(255,255,255,.18);--apPri:#fff;--apPriInk:#111;--apBg:#0d0d0c;--apLink:#8fb0ff;color:var(--apTx);}
   body.light .apPg{--apInk:#111;--apTx:#1a1a1a;--apSub:#8a8a86;--apLine:rgba(0,0,0,.08);--apTile:#f2f2f2;--apSoft:#f5f5f4;--apBd:rgba(0,0,0,.14);--apPri:#000;--apPriInk:#fff;--apBg:#fff;--apLink:#3b6fd4;}
-  #dApt{display:none;padding:32px 40px 80px;max-width:min(calc(1584px - var(--sideW,224px)), calc(var(--bpW,100vw) - var(--sideW,224px) - 16px));container:apt / inline-size;}
+  #dApt{display:none;padding:32px 40px 80px;container:apt / inline-size;}
   body.m9.aptOn #dApt{display:block;} body.m9.aptOn #dOver, body.m9.aptOn #dSvc, body.m9.aptOn #dTl{display:none !important;}
   /* ---- My account (#dAcc): a desk page in the shell; its own width picks its layout (the phone's under 760: the sub nav a chip row, the rows stacked); the export's health-record palette carried to both themes ---- */
-  #dAcc{display:none;padding:32px 40px 0;max-width:min(calc(1584px - var(--sideW,224px)), calc(var(--bpW,100vw) - var(--sideW,224px) - 16px));container:acc / inline-size;
+  #dAcc{display:none;padding:32px 40px 0;container:acc / inline-size;
     --acInk:#f4f4f4;--acTx:#ececec;--acMut:#a39f98;--acSoft:#8b8b86;--acEb:#7d7a74;--acLine:rgba(255,255,255,.07);--acEdge:rgba(255,255,255,.1);--acEdge2:rgba(255,255,255,.16);
     --acPanel:rgba(255,255,255,.035);--acTile:rgba(255,255,255,.06);--acPill:rgba(255,255,255,.08);--acPillH:rgba(255,255,255,.12);--acSegT:rgba(255,255,255,.06);--acSegOn:#3a3a38;--acField:rgba(255,255,255,.05);
     --acAcc:#f78359;--acAccBg:rgba(247,131,89,.07);--acAccLn:rgba(247,131,89,.35);--acOk:#5fae78;--acOkTx:#86c99a;--acOkBg:rgba(95,174,120,.14);--acCta:#f4f4f4;--acCtaInk:#111;color:var(--acTx);}
@@ -8003,7 +8010,7 @@
     --acPanel:#FBF8F3;--acTile:#F4F1EC;--acPill:#F0EDE7;--acPillH:#E8E3DA;--acSegT:#EEEEEF;--acSegOn:#fff;--acField:#fff;
     --acAcc:#C6531B;--acAccBg:#FDF6F1;--acAccLn:rgba(198,83,27,.35);--acOk:#3F7D4E;--acOkTx:#2E6B3E;--acOkBg:rgba(63,125,78,.12);--acCta:#20180F;--acCtaInk:#fff;}
   /* ---- Plan (#dPlan, "edit the plan page; listen to this UI"): a page in the shell, as My account. The top on its own dark ground in either sheet (the hero photo, its title, the goals' cards in a row); the sheet over it, rounded, Dark or Light (Tweaks -> Plan -> Sheet), with Activity, Nutrition and Medical actions. Sizes from the mock, the XS phone's points */
-  #dPlan{display:none;padding:0 0 0;background:#181818;color:#fff;max-width:calc(var(--bpW,100vw) - var(--sideW,224px) - 16px);   /* the whole width, 8 off the rail and the window as every page (it was flush against the rail) */
+  #dPlan{display:none;padding:0 0 0;background:#181818;color:#fff;   /* the whole width, 8 off the rail and the window as every page (it was flush against the rail) */
     --plSh:#0f0f0f;--plInk:#fff;--plMut:rgba(255,255,255,.56);--plTx2:rgba(255,255,255,.72);--plCard:#181818;--plLine:rgba(255,255,255,.035);--plChev:rgba(255,255,255,.15);--plPill:rgba(255,255,255,.2);--plCnt:rgba(255,255,255,.06);--plTile:#fff;}
   #dPlan.plLight{--plSh:#fff;--plInk:#141414;--plMut:rgba(20,20,20,.56);--plTx2:rgba(20,20,20,.7);--plCard:#fafafa;--plLine:rgba(0,0,0,.045);--plChev:rgba(0,0,0,.3);--plPill:rgba(0,0,0,.16);--plCnt:rgba(0,0,0,.04);}
   #dPlan > :is(.plTop, .plSheet){max-width:min(1360px, 100%);margin-left:auto;margin-right:auto;}   /* the cap on the Plan's own page, not on the Plan: its subpages (and their breadcrumb bar) take the whole panel ("breadcrumb always full width") */
@@ -8114,9 +8121,9 @@
      its title centred near its top and the goals stacked in it, white cards with dark words in either mode, the photo fading to dark at its foot. The pair centred in the page; the page's ground the sheet's own.
      #dPlan.plDesk (the Plan's script, deskFit): a forced M or L, or Auto on a window of 992 or more. Auto from 600 to 991 reads S: the one column, the photo across the top, as before (two columns there squeezed the sections to 190 to 320) */
   body.m9.plOn #dPlan.plDesk{display:grid;}
-  body #dPlan.plDesk{grid-template-columns:minmax(0, 520px) 260px;align-items:start;justify-content:center;column-gap:32px;padding:32px 24px 0;background:var(--plSh);transition:left .32s cubic-bezier(.2,.8,.2,1), background-color .3s ease;}
-  body[data-bp="l"] #dPlan.plDesk{grid-template-columns:minmax(0, 580px) 312px;column-gap:48px;padding:32px 40px 0;}
-  @media (min-width: 1440px){ body:not([data-bp]) #dPlan.plDesk{grid-template-columns:minmax(0, 580px) 312px;column-gap:48px;padding:32px 40px 0;} }   /* Auto on a wide window (XL), as L */
+  body #dPlan.plDesk{grid-template-columns:minmax(0, 520px) 260px;align-items:start;justify-content:center;column-gap:32px;padding:32px 40px 0;background:var(--plSh);transition:left .32s cubic-bezier(.2,.8,.2,1), background-color .3s ease;}   /* the panel's own 32 above and 40 at the sides at every desk width, as the Overview's ("service and plan desktop ... need to follow the setup on overview"); was 24 at the sides below L */
+  body[data-bp="l"] #dPlan.plDesk{grid-template-columns:minmax(0, 580px) 312px;column-gap:48px;}
+  @media (min-width: 1440px){ body:not([data-bp]) #dPlan.plDesk{grid-template-columns:minmax(0, 580px) 312px;column-gap:48px;} }   /* Auto on a wide window (XL), as L */
   body #dPlan.plDesk > .plSheet{grid-column:1;grid-row:1;margin:0;padding:0 0 96px;border-radius:0;background:none;min-height:0;}   /* the room at the foot the sheet's own: a grid's padding at its end is no part of what the page scrolls */
   body #dPlan.plDesk .plSheetIn{max-width:none;margin:0;}
   body #dPlan.plDesk .plPgT{position:static;width:auto;height:auto;overflow:visible;clip-path:none;white-space:normal;margin:0 0 28px;font-size:28px;line-height:34px;font-weight:500;letter-spacing:-.01em;color:var(--plInk);}
@@ -8201,7 +8208,7 @@
      (their own stage, dim and push, the same curve), Dark or Light by Tweaks -> Plan -> Sheet. A plain head, no photo: on the phone Back under the status bar, then the title 24/30 and its line; from M a top line, Back and the breadcrumb
      (Plan | the page), the content under it, one column (M: the panel's width, 24 in; L and up: 640, centred). What this moves and Need something else? are the Activity plan's own (.plACard and its .mbrow, .plATiles) */
   #dPlan{--plPTileBg:#1d1d1d;} #dPlan.plLight{--plPTileBg:#f4f1ee;}   /* a supplement's tile: dark on the dark sheet, the renders' warm grey on the light ("warm grey on light, dark tile on dark") */
-  #dPlan .plPStage{--plPPad:24px;--plPHair:rgba(255,255,255,.08);--plPMdBg:#181818;--plPOptBg:oklch(22.53% .048 151.72);--plPOptFg:oklch(89.2% .091 155.76);--plPSubBg:oklch(28.58% .042 87.79);--plPSubFg:oklch(92.15% .09 87.17);--plPOutBg:oklch(22.67% .092 25.82);--plPOutFg:oklch(83.95% .089 15.62);--rgOpt:#aaeec2;--rgSub:#ffe29f;--rgOut:#fe8087;
+  #dPlan .plPStage{--plPPad:40px;--plPHair:rgba(255,255,255,.08);--plPMdBg:#181818;--plPOptBg:oklch(22.53% .048 151.72);--plPOptFg:oklch(89.2% .091 155.76);--plPSubBg:oklch(28.58% .042 87.79);--plPSubFg:oklch(92.15% .09 87.17);--plPOutBg:oklch(22.67% .092 25.82);--plPOutFg:oklch(83.95% .089 15.62);--rgOpt:#aaeec2;--rgSub:#ffe29f;--rgOut:#fe8087;
     position:absolute;left:0;top:var(--plPY, 0px);width:100%;height:100%;z-index:8;overflow:hidden;}   /* over the Plan where it stands, as the Activity plan's */
   #dPlan.plLight .plPStage{--plPHair:rgba(20,20,20,.08);--plPMdBg:#fff;--plPOptBg:oklch(97.25% .023 157.81);--plPOptFg:oklch(52.53% .134 149.79);--plPSubBg:oklch(97.14% .034 88.79);--plPSubFg:oklch(52.36% .085 85.78);--plPOutBg:oklch(94.54% .027 14.72);--plPOutFg:oklch(52.95% .216 28.17);--rgOpt:#6fcb7c;--rgSub:#f2c550;--rgOut:#e5514f;}
   #dPlan .plPStage[hidden]{display:none;}
@@ -8211,7 +8218,7 @@
   /* no motion of their own (the Plan's three subpages, the Activity and the Nutrition plan): up and away at once, the push and the pop the master's picture of them (EvPush, General layout -> Page types) */
   #dPlan.plPHid > .plTop, #dPlan.plPHid > .plSheet{visibility:hidden;}   /* once it is in, the Plan under it drawn no more: its photo's edge showed through the panel's round corner over a plain page */
   /* the top: Back and the breadcrumb, 80 tall, sticking; the page's ground behind it once the title has gone under it */
-  #dPlan .plPBar{position:sticky;top:0;z-index:7;display:flex;align-items:center;gap:12px;height:80px;box-sizing:border-box;padding:0 24px;isolation:isolate;}
+  #dPlan .plPBar{position:sticky;top:0;z-index:7;display:flex;align-items:center;gap:12px;height:80px;box-sizing:border-box;padding:0 var(--plPPad);isolation:isolate;}   /* the back button on the page's 40, as the Nutrition plan's bar and every desk panel's side padding */
   #dPlan .plPBar::before{content:'';position:absolute;left:0;right:0;top:0;bottom:calc(-1 * var(--hoBleed, 38px));z-index:-1;background:var(--plSh);opacity:0;transition:opacity .28s ease, background-color .3s ease;-webkit-mask-image:linear-gradient(180deg,#000 0%,rgba(0,0,0,.91) 18%,rgba(0,0,0,.78) 36%,rgba(0,0,0,.6) 54%,rgba(0,0,0,.38) 72%,rgba(0,0,0,.18) 88%,transparent 100%);mask-image:linear-gradient(180deg,#000 0%,rgba(0,0,0,.91) 18%,rgba(0,0,0,.78) 36%,rgba(0,0,0,.6) 54%,rgba(0,0,0,.38) 72%,rgba(0,0,0,.18) 88%,transparent 100%);pointer-events:none;}
   body.plPUnder #dPlan .plPBar::before{opacity:var(--hoTint, .85);}
   #dPlan .plPBar > .ovGround{opacity:1;z-index:-2;bottom:calc(-1 * var(--hoBleed, 38px));transition:none;} #dPlan .plPBar > .ovGround i{transition:-webkit-backdrop-filter .28s ease, backdrop-filter .28s ease;} body:not(.plPUnder) #dPlan .plPBar > .ovGround i{-webkit-backdrop-filter:blur(0px);backdrop-filter:blur(0px);}   /* the header overlap's bar in its overflow state, in the screen's mode only (no photo above these pages): the page's ground as the master's gradient (--hoTint at the top, easing to nothing --hoBleed under the bar) over the Overview bar's blur bands, once the title is under the bar */
@@ -8563,7 +8570,7 @@
   /* ---- Services (#dMkt, "we need to create a page, services, which is the marketplace, so you can start with just a skeleton of a marketplace"): a page in the shell as the Plan is (body.mkOn); the dock's Services, the desk nav's Services, the page menu and #services.
      The mock's Version #1 (Grid 3 columns): the title, Your recommended services and its carousel (swiped with the Plan's magnet, EvMagnet; its arrows from M), then All | Individual | Bundles with the search, Price and Category,
      and the services: a list at XS, two columns of cards at S and M, three at L and XL. The page's own width picks the layout (a container: S from 480, M from 640, L from 1000), so Auto at any window reads as its breakpoint */
-  #dMkt{display:none;container:mkt / inline-size;--mkPx:40px;padding:32px var(--mkPx) 60px;max-width:min(calc(1584px - var(--sideW,224px)), calc(var(--bpW,100vw) - var(--sideW,224px) - 16px));color:var(--mkInk);
+  #dMkt{display:none;container:mkt / inline-size;--mkPx:40px;padding:32px var(--mkPx) 60px;color:var(--mkInk);
     --mkInk:#f4f4f4;--mkMut:rgba(255,255,255,.56);--mkTx2:rgba(255,255,255,.72);--mkCard:#1a1a1a;--mkCardH:#202020;--mkLine:rgba(255,255,255,.08);--mkChipB:rgba(255,255,255,.14);--mkField:rgba(255,255,255,.07);--mkFieldH:rgba(255,255,255,.11);
     --mkSegBg:rgba(255,255,255,.07);--mkSegOn:#fff;--mkSegOnInk:#111;--mkSegSh:none;--mkGhost:rgba(255,255,255,.08);--mkGhostH:rgba(255,255,255,.14);--mkBun:#3a2a1c;--mkBunH:#422f20;--mkBunEdge:rgba(255,214,160,.14);--mkBunBtn:#fff;--mkBunBtnInk:#111;
     --mkTag:#f3cf5e;--mkTagInk:#2a2104;--mkMenu:#222;--mkMenuSh:0 18px 44px -12px rgba(0,0,0,.6), inset 0 0 0 1px rgba(255,255,255,.07);}
@@ -9254,7 +9261,7 @@
      picks its layout (a container query), so a breakpoint's view is that
      breakpoint's page: the rail of months with the rows beside it from S up,
      the phone's stacked rows and the suggestions as a carousel at XS. */
-  #dTl{display:none;padding:32px 40px 80px;max-width:min(calc(1584px - var(--sideW,224px)), calc(var(--bpW,100vw) - var(--sideW,224px) - 16px));container:tl / inline-size;
+  #dTl{display:none;padding:32px 40px 80px;container:tl / inline-size;
     /* dark, read off the dark captures ("adjust dark mode"): View and
        Purchase on a light grey plate (#484848 on the page), the ⋯ on a faint
        one (#1d1d1d), the suggestions a #1d1d1d tray round a solid #2a2a2a
@@ -10244,11 +10251,11 @@
   body[data-bp] .dash{left:calc(var(--vwC, 50vw) - var(--bpW) / 2);right:auto;width:var(--bpW);box-sizing:border-box;box-shadow:0 0 0 1px rgba(255,255,255,.08);}   /* border-box: the sidebar's padding is inside the frame's width */
   body[data-bp] .dash .side{left:calc(var(--vwC, 50vw) - var(--bpW) / 2);}
   body[data-bp="s"] .dash .side, body[data-bp="xs"] .dash .side{display:none;}
-  body[data-bp="s"] .dash, body[data-bp="xs"] .dash{padding-left:0;--sideW:0px;--dMainLeft:0px !important;}
+  body[data-bp="s"] .dash, body[data-bp="xs"] .dash{padding-left:0;--sideW:0px;}
   body[data-bp="s"] #dOver, body[data-bp="xs"] #dOver, body[data-bp="s"] #dSvc, body[data-bp="xs"] #dSvc, body[data-bp="s"] #dTl, body[data-bp="xs"] #dTl, body[data-bp="s"] #dApt, body[data-bp="xs"] #dApt, body[data-bp="s"] #dAcc, body[data-bp="xs"] #dAcc, body[data-bp="s"] #dPlan, body[data-bp="xs"] #dPlan, body[data-bp="s"] #dMkt, body[data-bp="xs"] #dMkt{left:0;top:0;border-radius:0;max-width:none;scrollbar-width:none;}   /* in a device the page is the screen: no 16 band above, no 16 gutter at the right, no card corners, no scrollbar ("remove unnecessary padding on tablet S") */
   body[data-bp="s"] #dOver::-webkit-scrollbar, body[data-bp="xs"] #dOver::-webkit-scrollbar, body[data-bp="s"] #dSvc::-webkit-scrollbar, body[data-bp="xs"] #dSvc::-webkit-scrollbar, body[data-bp="s"] #dTl::-webkit-scrollbar, body[data-bp="xs"] #dTl::-webkit-scrollbar{display:none;}
   body:not([data-bp="xs"]):not([data-bp="s"]) #dOver{--ctPadY:32px;--ctPadX:40px;}   /* the Insights desk's body padding, 32 above and 40 at the sides ("body padding: keep this structure for Overview"); the bar and the caps read the same tokens */
-  #dOver{padding:var(--ctPadY) max(var(--ctPadX), calc((min(1584px - var(--sideW, 224px), 100% - var(--sideW, 224px) - 16px) - var(--ctSm, 1080px)) / 2)) 60px;max-width:min(calc(1584px - var(--sideW,224px)), calc(var(--bpW,100vw) - var(--sideW,224px) - 16px));}   /* the body where every other page has it: 8 off the side bar and the window's edge, 1360 at most ("Overview body positioned differently than the other pages, make it consistent"); the padding's % is the whole dash's, so less the side bar and the 16 it is the body's own width */   /* the body fills the room; its content a 1080 container, centred ("the black body section fills the horizontal space; the container is the content inside, max width; layout overview: container 1080px centered") */   /* --sideW: 224, 72 retracted, 0 at S and XS */
+  #dOver{padding:var(--ctPadY) max(var(--ctPadX), calc((var(--pnCap) - var(--ctSm, 1080px)) / 2)) 60px;}   /* the body where every other page has it: 8 off the side bar and the window's edge, 1360 at most ("Overview body positioned differently than the other pages, make it consistent"); the padding's % is the whole dash's, so less the side bar and the 16 it is the body's own width */   /* the body fills the room; its content a 1080 container, centred ("the black body section fills the horizontal space; the container is the content inside, max width; layout overview: container 1080px centered") */   /* --sideW: 224, 72 retracted, 0 at S and XS */
   /* and the page reflows at S and XS -- forced, or a window that narrow --
      so a breakpoint's view is that breakpoint's layout, not the desk's
      two columns squeezed: the top band stacks, the services go three
@@ -11423,7 +11430,7 @@
      Everything else is the same page tightened -- a narrower rail, a shorter
      page margin, and the left column stacked one-up because half of a narrower
      page is not two cards wide. */
-  body.tabM .dash{padding-left:200px;}
+  body.tabM .dash{padding-left:200px;--sideW:200px;--pnCap:1020px;}   /* the tablet: its rail and its card's cap, so the shell's strip (see .dash) reaches its card's edge */
   body.tabM .dash .side{width:200px;padding:22px 16px;font-size:13px;}
   body.tabM .dash .side .logo{font-size:16px;margin-bottom:26px;}
   body.tabM #dMain{left:200px;padding:44px 28px 52px;padding-top:32px;max-width:1020px;}
@@ -30431,12 +30438,7 @@ hairline({
   // that happens to be narrow: the shader clamps the point size itself now,
   // and the scale here is what it says it is on every surface.
   const pixScale = () => effDim / 700;
-  // the shell's strip reaches to the showing card's left edge (see .dash): measured off it
-  function shellEdge(){
-    const dm = document.body.classList.contains('accOn') && document.body.classList.contains('m9') ? document.getElementById('dAcc') : document.body.classList.contains('aptOn') && document.body.classList.contains('m9') ? document.getElementById('dApt') : document.body.classList.contains('tlOn') ? document.getElementById('dTl') : document.body.classList.contains('svcOn') ? document.getElementById('dSvc') : document.body.classList.contains('m9') ? document.getElementById('dOver') : document.getElementById('dMain');   // the service page too: measured off a hidden card, the shell's corner block went to the wrong edge and the page's top-left corner showed square
-    if (dm){ const dash = document.querySelector('.dash'); dash.style.setProperty('--dMainLeft', (dm.getBoundingClientRect().left - dash.getBoundingClientRect().left) + 'px'); }   // off the shell's own left: a forced breakpoint frames the shell away from the window's edge
-  }
-  { const dash = document.querySelector('.dash'); if (dash) dash.addEventListener('transitionend', e => { if (e.target === dash || e.target.parentElement === dash) shellEdge(); }); }   // whatever slid the shell or a card, the strip follows when it lands
+  // the shell's strip beside the showing card (see .dash) is worked out in CSS from the one cap every desk page shares: nothing measured here, so no page it misses
   { const dash = document.querySelector('.dash'); if (dash) dash.addEventListener('scroll', () => { if (document.documentElement.classList.contains('bpFit')) dash.style.setProperty('--dSt', dash.scrollTop + 'px'); }, { passive: true }); }   /* a scaled XS device (html.bpFit) is a transformed .dash, which holds its fixed layers (the Overview's dim, the results notice) as its own: they ride its scroll, so they read it back (--dSt) to stay on the screen */
   function resize(){
     dpr = Math.min(devicePixelRatio || 1, 2);
@@ -30456,19 +30458,6 @@ hairline({
     document.querySelector('.dash').style.top = fTop + 'px';
     document.querySelector('.dash .side').style.top = tbH + 'px';
     document.getElementById('grid').style.top = tbH + 'px';
-    // #dMain's own left edge, measured rather than assumed: the sidebar's
-    // width plus whatever margin:auto adds once the viewport is wide enough
-    // to centre the capped card, which is a different number on the tablet
-    // (200px sidebar, 1020px cap) than the desk (224px, 1160px) and changes
-    // again at every width in between. .dash's shell-coloured strip -- the
-    // one that gives #dMain's rounded left corners something other than
-    // more of the card's own colour to cut into -- has to reach exactly
-    // that far, or a viewport width the fixed number wasn't tuned for
-    // leaves the curve cutting into flank-matched --pageBg again.
-    // ...measured off whichever card is showing: #dOver stands in for #dMain
-    // on the Overview, and a hidden #dMain measures left:0
-    shellEdge();
-    setTimeout(shellEdge, 520);   // and again once the sidebar and the shell have moved (a breakpoint or the docked Tweaks slide them, .45 s): measured mid-slide, the strip stopped short of the card and its rounded corner cut into the card's own colour ("body radius is missing")
     // the hero's width, for the legend that hangs off the number (see .v4BioLeg)
     { const ho = document.getElementById('mHeroOrgan');
       if (ho && ho.clientWidth) ho.style.setProperty('--heroW', ho.clientWidth + 'px'); }
