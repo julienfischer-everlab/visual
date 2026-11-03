@@ -19517,6 +19517,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The icon motion is part of the class list each page writes (kept by Tweaks › Dock › Icon motion), not put back after it. The phone dock now lights with Beam on every page; it fell back to Pop after the first page before.
   - The plates' CSS and the sidebar's lit() point at each other: a page that lights a plate needs its entry lit there too.
   - Left as it is: on My account with the menu contracted, its entry has no filled state (the library has no account pair yet).
+
 ## "Need All break points" (Design system → Step flow)
 - **A breakpoint switch over the preview**, the Modals doc's own control: XS · S · M · L · XL, and All. The section title follows it ("Step flow · M · live"); the choice is the viewer's own (kept in this browser), XS by default.
 - **Each breakpoint is the app's own at that width**: the master's shell sits in the Async report's full modal with the classes the report wears there (aqFull, aqBpXS to aqBpL, aqDev on the phone and the tablet), so the app's rules for that width apply as they do in the app. XS: the phone, header from 58, title left, Next over the home indicator. S: the tablet, no island, header from 44, Next 478 at most. M: the desk's full modal, the column 536, the title centred. L: the column 568. XL: the app has no XL rule of its own and draws a wide window as L; shown at 1920.
@@ -19637,6 +19638,121 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Pages that are not under way (request, suggested, purchase, claim, later, soon, locked, done) are left as they were.
 - **Also live now** (every service page's CTA tapped step by step, before and after): Join the call and Join your review (Briefing, Nutrition, Diagnostics Review, Results review), Go to your appointment or assessment (MRI, Skin, Physical), View report (Diagnostics Review, intake), Complete your intake, Confirm delivery and Collect sample (Genetic test), and Add to calendar on every booked page. 30 dead buttons before, none after.
 - **Checked on the same screen**: Back, More (…), the Instructions and Documents tabs and the step card (Your progress) all respond. The referral's **Show** still does nothing: it shares the report and video items' "no action needed on click".
+
+## "add tweak with 3d icon on the left of each label. consider 2 line of text a min, when icon are there"
+
+- **Tweaks › Ask sheet › Icons** (`#stAskIc`, Off / 3D, Off by default): a group of its own under the Overview's Services, shown on the Overview and Insights (the pages whose dock opens the sheet). Saved with Save and put back on load like the others (`html.askIc3d`).
+- **3D**: each Services tile in the Ask Everlab sheet carries its 3D render at the left of its name, 40 square, centred, 12 to the name. Same renders as the Overview's services (one map, `SVC_IMG`): Concierge the bell, Script renewal the pill bottle, Specialist referral the laptop with the doctor, Blood test referral the tubes, Imaging referral the signed sheets. Check Symptoms had none in the sheet: it takes the heart with its pulse card, the Concierge Services slide's render (one more inline of that 9 KB file).
+- **Two lines at least**: with icons on, every name block is two lines tall (2.5em at 14px). "Concierge" sits centred in it, the others wrap to two lines on XS (tile 165 wide); every tile 76 tall (padding kept, 18/20), rows even. S has room for one line each, the tiles keep the two-line height.
+- Over Services › Icons On (render on top): 3D wins while it is on (the disc hidden, the row layout).
+- **Off**: the tiles as before (165 x 54 on XS, measured before and after).
+- Checked with Playwright: the sheet from the dock's assistant button on XS and S, dark and light, Off and 3D, and with Services › Icons On. No desk version (the sheet shows only in the XS/S frame).
+- **Review fixes**:
+  - **Each render inlined once**: the services' render paths are written once, in a shared map at the top of the scripts (`window.EvSvcImg`: concierge, treat, symp, tele, path, cert, gp). The Overview's services and the sheet (`SVC_IMG`), the Concierge Services slide (`CIMG`) and the Async report's recommendation kinds (`RC_IMG`) all read from it. Check Symptoms' heart is no longer in the page twice, and the older doubles (the bottle and the signed sheets 3x, the laptop and the tubes 2x) are gone too.
+  - **Navigation doc**: a new row, "Ask Everlab · icons": Off / 3D, the 40 square render 12 from the name, two lines at least (2.5em), tiles 76 high, padding 18/20, over Services › Icons, and each tile's render.
+  - **Assets library**: svc-symptoms lists the sheet's Check Symptoms tile (Overview and Insights), set by Tweaks › Ask sheet › Icons: 3D.
+  - **Check Symptoms' heart** is drawn 15% larger in its 40 box: its render has more empty margin, so it read smaller than the bell and the bottle.
+
+## "On press, the beam should be there." / "Chat page shouldn't show the drawer when we land on the page"
+
+- **The dock's AI button** (the sparkle beside the island): on press, Eva's beam star's ring and glow (`.evBeamStar`, the Iconography's beam star, not a copy) round its edge. A fresh ring per press, starting at the top, a round in 700 ms, turning while held; let go, it finishes its round (at least one, even on a quick tap), fades in 300 ms, then Ask Everlab opens as before. A key press plays one round first.
+- **One place**: `EvBeamStar.press`, delegated from the document's pointerdown on `.mChat`, so every dock has it (#bpFrame, #phone, #phone2, the Navigation doc's phone); EvAsk's click hands its open to `press.then`. The button's glass sheen keeps its own ::before (the ring is a child span).
+- **Navigation doc**: a new row, "AI button · press": the beam once round its edge.
+- **The Chat's drawer on landing**: at XS the conversations drawer was showing at x=0 on arrival and sliding out over 340 ms. Root cause in concierge.html: the panel's first style is the desk's (sidebar in place), then `layout()` adds `.mob` and the sidebar's transform transition plays it out to its closed place. `layout()` now sets `.mob` with the drawer's transition off for that frame (`.app.noSlide`), so it is closed from the first frame; only the menu button slides it in.
+- **Checked** (rAF-sampled, the drawer's x every frame for 3 s): Page menu at XS and S (drawer closed from the first frame), M and L (the desk's sidebar is the page's column, at x=0, no animation), the hash change to #concierge, the Overview's ask (`_cc.ask`, `_cc.fresh`), Contact us (`_cc.run` with Care team), Persona #2 switched on the Chat, and a saved setup (XS, Persona #2, an edited conversation) reloaded then the Chat opened. The beam: held and quick tap, dark and light, at XS.
+- **Not the Chat**: landing on the URL #concierge opens the Concierge intro flow (the Past results' Concierge, page "Concierge"), not the Chat page; left as is.
+- **Review fixes (beam on press)**:
+  - The open that waits on the beam's round can be stopped: EvAsk's close cancels it (Escape, a change of breakpoint, everlab:mode), a press anywhere else (a tab, the page) cancels it, a double tap opens once, and it only opens on a button still on screen. Before, a tap then Insights opened the card over Insights.
+  - Reduced motion: the ring doesn't turn, so the card opens at once.
+  - The ring is turned so its bright head starts at the top (it started at the lower right).
+  - Light theme: the head was cream on white glass, barely there. The press ring now uses a deeper orange and a slightly wider line on light, as the Overview's field star does. The shared Eva beam star is unchanged.
+  - Still to decide: a quick tap opens Ask Everlab up to 700 ms after the press, while the round finishes. A shorter wait is a one-number change.
+
+
+
+## "img on parallax so laggy! also use this image"
+
+- **Why it lagged, measured** (Playwright on the built page, the Activity plan at XS, DPR 2, scripted wheel scrolls, every drawn frame read back):
+  - The picture trailed the scroll. Its rise and the title's drift were written by script once a frame (--hy, --hk, --hpy on the hero), while the page scrolls on the compositor, so the drawn frame showed the new scroll with an old picture. Picture off its place: 4.3 px on average, up to 18.6 px; 48 of 55 drawn frames off by more than 1 px. The title moves 1.8 times as far, so it was off by about twice that.
+  - Every one of those frames restyled the hero (42 inline writes over six scrolls), then read layout straight after the writes (a forced style pass).
+  - The bar's ten blur bands come on at the first pixel of scroll and blurred the moving photo again every frame: 26 ms of compositor work per drawn frame while the photo was under them, in the test browser.
+  - The rest of the app keeps the main thread busy even with nothing moving: a third of it on the idle Activity plan, in whole-page restyles (17 to 108 ms each, set off by other pages' animations through `html:has()` / `body:has()` rules), and the Overview's video still playing behind the Plan. That is outside this change, and it is why the picture could not keep up from script.
+- **The picture and the title now run on the compositor, off the scroll itself** (scroll-driven animations; EvOverlap, the master, so the Activity plan, the Nutrition plan and the doc's phone all have it):
+  - Same curves and numbers as before: linear over the span (the hero's height less the fade end, or the page's own scroll with 'short'), the picture rising and dimming to its share, the title drifting at its share and fading. Checked against the old formula at XS, L and in the doc: within 0.05 px.
+  - The script only sets the span (and the title's drift at its end) when the page resizes, a tab changes or a number changes. Nothing per frame. The bar's states still flip from the scroll, once a frame.
+  - Measured after: the picture is off by 0.17 px on average, 0.42 px at most, and no frame is off by more than 1 px.
+  - A browser without scroll-driven animations takes the old script path. With reduced motion only the fades stay (both paths).
+  - The doc's sliders, Save setup and Reset drive it live. A saved setup applies on every page after a reload (checked on the Activity and Nutrition plans).
+- **The bar over the moving photo: four blur bands instead of ten**, their radii set so the four blur like the ten (2.5, 7, 14 and 18.5 px). All ten come back, easing in, once the sheet reaches the bar.
+  - Looks the same: 1 level in 255 on average across the bar, both themes.
+  - Compositor work per frame while the photo moves: 26 ms down to 17 ms, and a third more frames drawn.
+  - Once the sheet is under the bar, the ten bands over a moving sheet cost what they did: that is the Overview bar's own ground.
+- **The runners on the autumn road are the Activity plan's photo** (and so the doc's phone, which shows the Activity plan's own picture):
+  - 1200x810 WebP, 118 KB, sharp at 2x on the phone and at the desk hero's width. The old soft 1080x727 enlargement is gone (same file, replaced).
+  - Framed 50% 22% so both faces stay in frame on the wide desk hero. At XS it fits by height, so both runners are in.
+- **The doc's phone**: no transform over it at full size (it had scale(1)), its photo decodes off the main thread, and the table has a Performance row.
+- dist/index.html is 15.45 MB.
+- **Review fixes** (merged with the main branch first; notes kept from both sides):
+  - The doc's phone no longer gets stuck on the wrong span. With Header overlap remembered and the Design system opened, the span was measured while the phone was hidden (0 high, so 60 px), and the rise, dim and fade all ended in the first 60 px of scroll. EvOverlap now measures the span itself: never from a hidden hero, on every frame it runs (reads only, written only when it changes) and whenever the scroller, its content or its hero changes size. A hero painted again is watched in place of the old one. Checked: 260 px, the picture at -12.3 px at scroll 100, as the old code.
+  - The Service detail and the Appointment page now bind through EvOverlap as well, with the master's numbers (no hard-coded 32 and .25) and on the compositor. Their picture (the hero's ::before) and words run off the same timeline. A task's short page fades the whole hero, and a hero with a progress card keeps its .4 lag, now scroll-driven too. No inline style is written per frame on any of them. The unused per-frame ground colour (--svG) is gone.
+  - Locked to the scroll, every drawn frame, before and after: Appointment 2.4 px on average / 14.7 at worst (99 of 142 frames over 1 px) down to 0.46 / 0.89 (none); Service detail 5.2 / 17.5 (74 of 78) down to 0.30 / 0.68 (none); Activity plan still 0.17 / 0.42.
+  - The doc's phone scaled down for a narrow window: the bar turns to the sheet's colours at the right scroll (142, it was 66).
+  - The doc's photo framing is the page's: one token, --hoPicPos (50% 22%).
+  - Smooth in Chrome, Edge and Safari 26 on. Firefox and older Safari take the old script, with its slight lag (said in the doc's Performance row).
+  - The desk hero at L on a Retina screen draws the 1200 px photo about 2x up, so it is a little soft there; a second, wider desk file would fix it at about 200 KB more.
+- dist/index.html is 15.52 MB.
+## "Need a tweak dismiss ON OFF. If yes need a small notch at the top to indicate the action."
+- **Design system › Modals: Dismiss On / Off** replaces the Grabber toggle, a segmented pair in the bar (the doc's own control, labelled Dismiss), shown on Bottom sheet · Floating and Full bottom sheet at XS and S (the desk's modals have neither, so it hides at M and L). **Save setup** (new, in the bar; the top bar's Save does the same on this tab) keeps it.
+  - **On** (the default, as the app always was): every layer of the Full bottom sheet wears the notch (36 × 4, 2 corners, the line colour, 8 from the top, 12 above the header), and a swipe down on the top layer (its notch or header, past 80) lets it go, the one behind coming forward; Close and the scrim too. 1, 2 and 3 layers each get it.
+  - **Off**: no notch and no swipe: Close and the scrim only.
+  - The text says so: the side notes' Swipe down is now Dismiss, the Sizes rows Grabber become Dismiss (On = notch + swipe; Off = close only) on both sheet kinds, the old Dismiss rows folded in; the note under the phone follows the setting.
+- **The master** (`window.EvDismiss`, saved as `everlab:mdMaster` `{ dismiss: 'on' | 'off' }`): read on every load, live on a change (no reload). Off puts `evDisOff` on the page's `<html>` (and on same-origin frames: the Gift referral).
+  - **One gate in EvSheetSwipe**: its `when` asks the master first, so no sheet starts a drag while Dismiss is off. The pointer handling is untouched.
+  - **One notch**: `.evNotch` (absolute, 8 from the top, over the sheet, nothing under it moves) for a sheet with no grabber of its own, put in by `EvDismiss.notch(el)`; the grabbers the almost full sheets hid are drawn as it while Dismiss is on.
+  - **Off hides every sheet's notch** with its room kept (no header jumps): .evNotch, .tlShGrab, .shHandle, .ibHandle, .arQaGrab, .ecGrab, .hpPkGrab, .bmdOvG, .plPMdGrab, .plNShGrab, .mdGrab, and the referral's .grab.
+- **The sheets it governs** (on the phone, XS and S):
+  - The More sheet: a notch on its top card now (it had none).
+  - The Services cart (its own notch, as before) and a service's detail from the marketplace (its notch shown now, white over the picture).
+  - The Plan's sheets: a medication or supplement (plPMd), a nutrition row (plNSh).
+  - Every .tlSheet (the service sheets, the steps, the booking, Add to your plan, the service page's More menu); every .shWrap (the reports, the info, the organ ages); every .ibWrap (the inbox, Booked in). The almost full ones (layer 1, and the stack from layer 2) wear the notch now; they had none ("no notch at the top" before, with the swipe already on).
+  - The Async report's See more sheets (Questions and answers, every biomarker): the notch now. The Insights phone's biomarker sheet: the notch now.
+  - The consent sheet (EvConsent), the Health profile's leave question (a notch now), its pickers and the Medicare card example, the Gift referral's two sheets, and the Modals doc's own demo.
+  - Left as they are: the desk's floating modals (no notch, no swipe, either way) and the Activity plan's sheet-shaped page body (its grabber is not a dismiss).
+- **Tweaks**: the Design system pages have no Tweaks group (the panel is hidden on them), so the doc is the one place to set it; nothing in Tweaks can override it.
+- **The Health profile's own page** (dist/health-profile.html) changes too: it carries EvSheetSwipe and EvDismiss, so its leave question wears the notch on the phone (drawn by the Health profile's own styles, in its pickers' ink); with no doc there, Dismiss stays on.
+- **Review fixes** (after merging the main branch's Step flow at every breakpoint and the dead-CTA fix):
+  - **One notch colour, the master's**: `--evNotchC`, the line colour the doc's notch already wore (white 8% in dark, ink 10% in light), on `:root` / `body.light`; the Plan's sheets follow their own Dark / Light (`#dPlan.plLight`), the Async report's and the Health profile's sheets theirs (`.arSheet.arDark`), the consent its own (`.ecDark`). The doc's `.mdGrab`, `.evNotch` and every sheet's own grabber (the cart's, the inbox's, the Plan's two, the consent's, the pickers', the service sheets', the reports') draw from it, 36 × 4 with 2 corners (the inbox's was 44 × 5). Over a picture it stays white 60%.
+  - **The doc's Full bottom sheet keeps its header still**: the notch is on every layer either way, hidden with its room kept while Off (as the app does), so the title sits 28 under the sheet's top in both settings.
+  - **The scrim above the top sheet closes it in the doc too**: the stack's status bar lets a tap through, so "Close and the scrim" is true at 1, 2 and 3 layers, On and Off.
+  - **The leave question**: 24 above its title on the phone, so the notch sits 12 above the header.
+  - **The Health profile's own page** (its standalone link) lives on its own, so a saved Off never reaches it: it keeps the default, On. The Modals doc says so.
+
+## "remove that, dont need as we have the flow panel" (the Back pill beside the phone)
+- The floating "‹ Back" pill outside the XS phone (.tkFlBack, shown on the profile reached from the welcome) is hidden everywhere; the Flow panel does the stepping back.
+
+## "Create pages (archives) group at the very end of the select Page. Put inside these 2"
+- The page menu ends with a new group "Pages (archives)": Appointment (OLD) and Insights (archives), moved out of Main pages. Both still open as before.
+
+## "All XS need a minimum height 852px"
+- **XS: 393 x 852 minimum**, written in Design system › General layout › Demo frames (and the XS demo's caption). Every XS phone is the iPhone's screen, never shorter.
+- **The app's XS device (forced XS)**: always 852 tall, centred under the bar as before. A window too short for 852 and 16 above and below no longer cuts the screen shorter (it was 821 at 1440 x 900, 641 at 1280 x 720). The whole device is drawn smaller instead.
+  - resize() writes `--bpS` (the scale) and `html.bpFit`. `--bpTop` / `--bpBot` stay the 852 frame's own top and foot, so the foot can sit past the window's while scaled.
+  - One `scale` on every layer laid in the frame's rect: .dash, #bpFrame (dock, keys, status bar, sheets in it), .lp, the overlays' device (.aqWrap.aqDesk), the Chat page, the Gift / Clinic / Referral / Gift receipt / Consent devices, and the Insights / Overview shells. All scale about their own centre, which is the frame's centre, so they stay one device.
+  - Scale, not a scrolling stage: every layer is position: fixed on the same vars, so a scrolling stage would have left the dock and home indicator off screen. A transform keeps hit-testing exact (taps land where they are drawn: checked on the dock and Health profile's CTA).
+  - A scaled .dash holds its fixed children as its own: the Overview's dim and the results notice are placed inside it while scaled.
+  - The width counts too: a window narrower than 393 + 32 scales it as well (with Tweaks or the flow panel docked, the room beside them: the window less 320 each).
+  - The screenshot CTA measures the scaled device as drawn and renders it back at 393 x 852 @3x.
+  - Tall windows (1440 x 1100, 1920 x 1080) are unchanged: s = 1, no class, no transform.
+- **Doc phones at 852**: Header overlap (.hoPh, was 760), Navigation's island phone (was 760), Modals XS (was 800), General layout › Container XS (was 760). Their fit-scaling uses the new height. Step flow, Demo frames, Loading states and the Health profile card docs were already 852.
+- **Standalone Health Profile (dist/health-profile.html)**: its XS device is 393 x 852 (it was the window less 96, at most 900), scaled to fit a short window.
+- Unchanged: Auto on a phone-width window (the window is the phone). The Gift page's own iPhone mode (its screen is already 398 x 852 and fit-scaled).
+- **Review fixes** (after merging the main branch's sheet Dismiss master, the scroll-driven Header overlap and Step flow at every breakpoint):
+  - **Merged**: Header overlap keeps the main branch's fitH (no transform at full size) with the phone at 852; Container and Modals XS come out at 852; Step flow's XS frame was already 852.
+  - **Drags follow the finger in a scaled device**: `evK(el)` (one helper, beside EvSheetSwipe) is how much smaller an element is drawn than its CSS pixels. Without it, content moved slower than the finger (by --bpS: 0.75 at 1280 x 720) and distance thresholds needed more travel. Now divided by it: the Overview's services row, the carousels (insights, rails, services cards, avatars, booked), the organ ages' sheet (its swipe and its 140 pull-down), the Concierge's title carousel (its 64 fade) and the hero carousels. EvSheetSwipe already measured its own scale, so every sheet's swipe was right.
+  - **The light carried from the card screen to the Health profile** (Membership onboarding → Get started): placed in the frame's own pixels. On a short window it was 133% of the frame and sat too low; now the same as on a tall one. The frame's clip-path opening from the sheet, and the sphere's hand-over, are in the frame's pixels too.
+  - **`--dSt`** is written by resize() as well, not only on .dash's scroll.
+  - **Merged the main branch again** (9d4a84f: the Ask sheet icons, the Back pill beside the phone hidden, the Pages (archives) group): no clash with the frame; dist rebuilt, the XS checks run again (drags follow the finger at 0.75, the More sheet swipe, the carried light, the doc phones at 852).
+
 ## "In plan, ALL items clickable need a hover / press state. Also 80 80px visual for activity module and 56 for medical action, 80 for supplement visual"
 
 - **One rule set for the Plan** (after the Nutrition plan's sheet in the CSS): every control on the Plan, its subpages and their sheets takes the same plate, its ::before under its words (isolation, so nothing moves): ink 5% on hover (pointers only, `@media (hover:hover)`), 9% pressed and 1.5% smaller (a round 32 button 6%), no spring; focus-visible the plate and a 2px ring. The feel of the dock's More rows (.mvRow).
@@ -19646,3 +19762,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - **Covered**: the hub's rows (Activity, Nutrition, medications, supplements), See plan, Show more, View routine, the goal card; the Activity plan's programs, My week's rows, its tabs, its need tiles, Back; the Nutrition plan's tips, supplement stack, macros link, crumb, Back, its sheet's close; My Medical actions and My supplements rows, Back, crumb, the detail's close; the Wind-down routine's steps.
 - **Tiles**: the Activity's program photos 80 (the hub's section, My programs and My week; were 48 / 72 / 56), medications 56 (the hub's were 40), supplements 80 (the hub's were 40, My supplements' 72, the Nutrition plan's stack 56, the detail's 56). Radius a quarter of the side (80: 20, 56: 14), cover and centred, text centred on the tile, the gap 16 by an 80 and 12 by a 56.
 - Checked with Playwright at XS dark and L light (and earlier XS light, L dark): 98 / 102 controls hovered, plate on, no box moved; pressed by a held mouse, scale and plate on each kind; tiles measured on every page and both modals.
+- **Review fixes** (after merging the main branch, 9d4a84f):
+  - **The Activity plan's first tab** keeps its whole plate: the tab bar takes 10 of room each side (the plate's own overhang), and its hairline is drawn on the content box only, so the line still runs the column's width.
+  - **Light sheet, supplement tiles**: a hairline round the warm-grey bottle tile in every state, as the medications' have, so its edge shows on the pressed plate.
+  - Merged the main branch (Ask sheet icons, EvSvcImg, Pages archives), dist rebuilt from the merge; sweep again at XS dark and L light: 98 / 102 controls, plate on, no box moved; tiles 80 / 56 / 80 on every page and both modals.
