@@ -2852,7 +2852,7 @@ window.EvConsent = (function () {
   var GF_PLAN = {   /* the two plans a gift can be, the board's words ("Protocol A$2,999", "Diagnostics A$1,199"); New Zealand's prices a draft ("New: New Zealand with NZ prices") */
     prot: { n: 'Protocol', full: 'Everlab Protocol Plan', d: 'Our most advanced health assessment, designed to detect, prevent and reverse risk of disease.', L: ['10 consultations across the plan', '90+ blood biomarkers incl. OrganAge, a DEXA body composition scan and a heart health assessment', 'Full physical assessment including strength, stability and VO2 max', 'A personalised health and performance program built around their lifestyle', 'Structured re-testing of key biomarkers to track progress'] },
     diag: { n: 'Diagnostics', full: 'Everlab Diagnostics Plan', d: 'Full body diagnostics and doctor-led insights, including advanced bloods, DEXA and heart health.', L: ['90+ blood biomarkers covering hormones, metabolic function, lipids and more', 'A DEXA body composition scan', 'A heart health assessment', 'A doctor-led consultation on their results'] } };
-  var GF_PRICE = { AU: { cur: 'A$', prot: 2999, diag: 1199 }, NZ: { cur: 'NZ$', prot: 3299, diag: 1299 } };
+  var GF_PRICE = { AU: { cur: 'A$', prot: 2999, diag: 1199 }, NZ: { cur: 'NZ$', prot: 3299, diag: 1299 }, UK: { cur: '£', prot: 1999, diag: 799 } };   /* the UK's a draft too ("Add UK") */
   var GF_FIT = [['u18', 'They’re under 18'], ['canc', 'They’re having cancer treatment'], ['preg', 'They’re pregnant'], ['none', 'None of these']];
   var GF_OCC = [['bday', 'Birthday'], ['xmas', 'Christmas'], ['anniv', 'Anniversary'], ['thanks', 'Thank you'], ['just', 'Just because']];
   var GF_TODAY = new Date(2026, 10, 3), GF_MAX = 180;   /* the prototype's today (early November 2026, "up to 12 months ahead" from it); the note's length */
@@ -3313,6 +3313,7 @@ window.EvConsent = (function () {
     /* the State dropdown (the designs' "Dropdown, State selection"): the states in the designs' order, the territories after; see pickF */
     var SO = ['NSW', 'VIC', 'QLD', 'WA', 'SA', 'TAS', 'ACT', 'NT'];
     var AUF = '<svg viewBox="0 0 24 24" aria-hidden="true"><clipPath id="hpAuC"><circle cx="12" cy="12" r="12"/></clipPath><g clip-path="url(#hpAuC)"><rect width="24" height="24" fill="#012169"/><path d="M0 0l12 8M12 0 0 8" stroke="#fff" stroke-width="2.4"/><path d="M0 0l12 8M12 0 0 8" stroke="#c8102e" stroke-width="1"/><path d="M6 0v8M0 4h12" stroke="#fff" stroke-width="3"/><path d="M6 0v8M0 4h12" stroke="#c8102e" stroke-width="1.6"/><g fill="#fff"><circle cx="6" cy="16.5" r="2"/><circle cx="17.5" cy="6" r="1.1"/><circle cx="14.5" cy="11.5" r="1.1"/><circle cx="19.5" cy="12" r=".9"/><circle cx="17.5" cy="18.5" r="1.2"/></g></g></svg>';   // Australia's flag in a circle, for the phone's +61
+    var UKF = '<svg viewBox="0 0 24 24" aria-hidden="true"><clipPath id="hpUkC"><circle cx="12" cy="12" r="12"/></clipPath><g clip-path="url(#hpUkC)"><rect width="24" height="24" fill="#012169"/><path d="M0 0l24 24M24 0 0 24" stroke="#fff" stroke-width="4.8"/><path d="M0 0l24 24M24 0 0 24" stroke="#c8102e" stroke-width="1.6"/><path d="M12 0v24M0 12h24" stroke="#fff" stroke-width="6"/><path d="M12 0v24M0 12h24" stroke="#c8102e" stroke-width="3.4"/></g></svg>';   // the United Kingdom's flag in a circle, for +44 ("Add UK")
     var NZF = '<svg viewBox="0 0 24 24" aria-hidden="true"><clipPath id="hpNzC"><circle cx="12" cy="12" r="12"/></clipPath><g clip-path="url(#hpNzC)"><rect width="24" height="24" fill="#012169"/><path d="M0 0l12 8M12 0 0 8" stroke="#fff" stroke-width="2.4"/><path d="M0 0l12 8M12 0 0 8" stroke="#c8102e" stroke-width="1"/><path d="M6 0v8M0 4h12" stroke="#fff" stroke-width="3"/><path d="M6 0v8M0 4h12" stroke="#c8102e" stroke-width="1.6"/><g fill="#c8102e" stroke="#fff" stroke-width=".6"><circle cx="17.5" cy="6.5" r="1.2"/><circle cx="14.6" cy="11.8" r="1.1"/><circle cx="20.2" cy="11.2" r="1"/><circle cx="17.5" cy="18" r="1.3"/></g></g></svg>';   // New Zealand's flag in a circle, for a gift's +64
     /* a dropdown field (State, Country of birth): the value (or its placeholder) and a chevron; the phone (the sheet narrow): a sheet from the foot, its title and close, the options,
        the one picked with a filled tick; the desk: a menu under the field. A tap on an option picks it and closes ("no confirm / cancel: tapping a state closes the modal and changes the select") */
@@ -3377,9 +3378,9 @@ window.EvConsent = (function () {
     }
     /* a phone number: Australia's flag and +61 at its left, a rule, then the number (3 3 3) */
     function telF(o) {   /* o.cc 'NZ': New Zealand's flag and +64, its mobiles 2 3 4 (a gift's New Zealand: "New: New Zealand with NZ prices") */
-      var nz = o.cc === 'NZ', cc = nz ? '+64' : '+61', f = field({ label: o.label, ph: o.ph || '412 345 678', mode: 'tel', max: nz ? 12 : 11, value: o.value, set: o.set }), inp = f._in;
-      inp.addEventListener('input', function () { var d = digits(inp.value, 11).replace(/^0/, '').slice(0, nz ? 10 : 9), t = nz ? d.slice(0, 2) + (d.length > 2 ? ' ' + d.slice(2, 5) : '') + (d.length > 5 ? ' ' + d.slice(5) : '') : d.slice(0, 3) + (d.length > 3 ? ' ' + d.slice(3, 6) : '') + (d.length > 6 ? ' ' + d.slice(6) : ''); if (t !== inp.value) inp.value = t; o.set(t); });
-      var fl = h('span', { class: 'hpTelF' }); fl.innerHTML = nz ? NZF : AUF; var box = h('div', { class: 'hpTel' }, h('span', { class: 'hpTelC', 'aria-hidden': 'true' }, fl, h('span', { text: cc })));
+      var nz = o.cc === 'NZ', uk = o.cc === 'UK', cc = uk ? '+44' : nz ? '+64' : '+61', f = field({ label: o.label, ph: o.ph || '412 345 678', mode: 'tel', max: nz || uk ? 12 : 11, value: o.value, set: o.set }), inp = f._in;   /* the UK: 10 digits after +44, 7400 123 456 */
+      inp.addEventListener('input', function () { var d = digits(inp.value, 11).replace(/^0/, '').slice(0, nz || uk ? 10 : 9), t = uk ? d.slice(0, 4) + (d.length > 4 ? ' ' + d.slice(4, 7) : '') + (d.length > 7 ? ' ' + d.slice(7) : '') : nz ? d.slice(0, 2) + (d.length > 2 ? ' ' + d.slice(2, 5) : '') + (d.length > 5 ? ' ' + d.slice(5) : '') : d.slice(0, 3) + (d.length > 3 ? ' ' + d.slice(3, 6) : '') + (d.length > 6 ? ' ' + d.slice(6) : ''); if (t !== inp.value) inp.value = t; o.set(t); });
+      var fl = h('span', { class: 'hpTelF' }); fl.innerHTML = uk ? UKF : nz ? NZF : AUF; var box = h('div', { class: 'hpTel' }, h('span', { class: 'hpTelC', 'aria-hidden': 'true' }, fl, h('span', { text: cc })));
       inp.parentNode.insertBefore(box, inp); box.appendChild(inp); inp.setAttribute('aria-label', o.label + ', after ' + cc); return f;
     }
     var ADDR = ['12 Bayview Street, Bondi NSW 2026', '12 Bay Street, Double Bay NSW 2028', '8 Ocean Street, Bondi NSW 2026', '220 George Street, Sydney NSW 2000', '75 Crown Street, Surry Hills NSW 2010', '1/19 Palmer Street, Woolloomooloo NSW 2011', '30 Bourke Street, Melbourne VIC 3000', '41 Queen Street, Brisbane City QLD 4000'];   // the demo's addresses (made up)
@@ -3985,7 +3986,7 @@ window.EvConsent = (function () {
        on the step system: the intro, then where, fit, who, plan, when, note, pay (1 to 7 of 7), the checkout and payment received. The board's words; its orange tags notes, not words on screen ---------- */
     var EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/, GP = {};   /* GP: the checkout's card, this page's only, never saved */
     var gfName = function (ans, dflt) { return (ans.first || '').trim() || dflt; };
-    var gfMobOk = function (ans) { var d = digits(ans.mob, 10); return ans.ctry === 'NZ' ? d[0] === '2' && d.length >= 8 && d.length <= 10 : d.length === 9 && d[0] === '4'; };
+    var gfMobOk = function (ans) { var d = digits(ans.mob, 10); return ans.ctry === 'UK' ? d.length === 10 && d[0] === '7' : ans.ctry === 'NZ' ? d[0] === '2' && d.length >= 8 && d.length <= 10 : d.length === 9 && d[0] === '4'; };
     var gfNoteT = function (ans) { return (ans.note || '').trim(); };
     var gfFrom = function (ans) { var f = ans.from == null ? DEMO.gift.from : ans.from; return (f || '').trim() || 'Someone'; };   /* one giver, the board's (Sam): the From the note starts with and the name Log in fills come from DEMO.gift; theirs once they write another (none: Someone) */
     var gfComplete = function (ans) { return !!(ans.ctry && (ans.fit || []).indexOf('none') >= 0 && (ans.first || '').trim() && (ans.last || '').trim() && EMAIL.test((ans.email || '').trim()) && gfMobOk(ans) && GF_PLAN[ans.plan] && (ans.dlv === 'now' || (ans.dlv === 'date' && gfDate(ans.date)))); };   /* every required answer in: Check and pay's Continue and the checkout's Pay */
@@ -3996,7 +3997,7 @@ window.EvConsent = (function () {
       var ans = S.a.gift.ans, D = DEMO.gift, cp = function (k) { ans[k] = JSON.parse(JSON.stringify(D[k])); };
       stepsOf('gift').slice(0, i).forEach(function (id) {
         if (!gfOk[id] || gfOk[id](ans)) return;
-        if (id === 'who') { if (!(ans.first || '').trim()) cp('first'); if (!(ans.last || '').trim()) cp('last'); if (!EMAIL.test((ans.email || '').trim())) cp('email'); if (!gfMobOk(ans)) ans.mob = ans.ctry === 'NZ' ? '21 234 5678' : D.mob; return; }
+        if (id === 'who') { if (!(ans.first || '').trim()) cp('first'); if (!(ans.last || '').trim()) cp('last'); if (!EMAIL.test((ans.email || '').trim())) cp('email'); if (!gfMobOk(ans)) ans.mob = ans.ctry === 'NZ' ? '21 234 5678' : ans.ctry === 'UK' ? '7400 123 456' : D.mob; return; }
         if (id === 'when') { if (ans.occ === undefined) cp('occ'); if (!(ans.dlv === 'now' || (ans.dlv === 'date' && gfDate(ans.date)))) { cp('dlv'); cp('date'); } return; }
         if (id === 'note') { cp('note'); if (ans.from == null) cp('from'); return; }
         if (id === 'checkout') { if (!(ans.pName || '').trim()) cp('pName'); if (!EMAIL.test((ans.pEmail || '').trim())) cp('pEmail'); return; }
@@ -4073,9 +4074,9 @@ window.EvConsent = (function () {
     BUILD['gift.where'] = function (scr, ans) {
       scr.appendChild(q('', 'Where do they live?', 'Their tests happen at Everlab clinics and partner sites near them.'));
       var ok = function () { foot2('Continue', !!ans.ctry, fwd); };
-      var box = choice([['AU', 'Australia'], ['NZ', 'New Zealand']], function () { return ans.ctry; }, function (v) { if (v !== ans.ctry) ans.mob = ''; ans.ctry = v; }, false, ok);   /* a number kept for the other country is not theirs */
+      var box = choice([['AU', 'Australia'], ['NZ', 'New Zealand'], ['UK', 'United Kingdom']], function () { return ans.ctry; }, function (v) { if (v !== ans.ctry) ans.mob = ''; ans.ctry = v; }, false, ok);   /* a number kept for the other country is not theirs */
       box.classList.add('hpOptsRow', 'hpGfOne');
-      [].forEach.call(box.children, function (b) { var f = h('span', { class: 'hpTelF hpGfFlag', 'aria-hidden': 'true' }); f.innerHTML = b.dataset.v === 'NZ' ? NZF : AUF; b.appendChild(f); });
+      [].forEach.call(box.children, function (b) { var f = h('span', { class: 'hpTelF hpGfFlag', 'aria-hidden': 'true' }); f.innerHTML = b.dataset.v === 'UK' ? UKF : b.dataset.v === 'NZ' ? NZF : AUF; b.appendChild(f); });
       scr.appendChild(box); ok();
     };
     BUILD['gift.fit'] = function (scr, ans) {
@@ -4095,9 +4096,9 @@ window.EvConsent = (function () {
       var ln = field({ label: 'Surname', ph: 'Taylor', value: ans.last, set: function (v) { ans.last = v; ok(); } });
       var em = field({ label: 'Their email', ph: 'alex@example.com', mode: 'email', help: 'Their gift arrives here. Use the address they’ll sign in with.', value: ans.email, set: function (v) { ans.email = v; ok(); } });
       em._in.setAttribute('type', 'email');
-      var mb = telF({ label: 'Their mobile', cc: ans.ctry, ph: ans.ctry === 'NZ' ? '21 234 5678' : '498 765 432', value: ans.mob, set: function (v) { ans.mob = v; ok(); } });
+      var mb = telF({ label: 'Their mobile', cc: ans.ctry, ph: ans.ctry === 'UK' ? '7400 123 456' : ans.ctry === 'NZ' ? '21 234 5678' : '498 765 432', value: ans.mob, set: function (v) { ans.mob = v; ok(); } });
       em._in.addEventListener('blur', function () { var v = (ans.email || '').trim(); if (v && !EMAIL.test(v)) setErr(em, 'Enter an email like name@example.com'); });
-      mb._in.addEventListener('blur', function () { if (digits(ans.mob, 10) && !gfMobOk(ans)) setErr(mb, ans.ctry === 'NZ' ? 'Enter their mobile, 8 to 10 digits after +64, starting with 2' : 'Enter their mobile, 9 digits after +61, starting with 4'); });
+      mb._in.addEventListener('blur', function () { if (digits(ans.mob, 10) && !gfMobOk(ans)) setErr(mb, ans.ctry === 'UK' ? 'Enter their mobile, 10 digits after +44, starting with 7' : ans.ctry === 'NZ' ? 'Enter their mobile, 8 to 10 digits after +64, starting with 2' : 'Enter their mobile, 9 digits after +61, starting with 4'); });
       fn._in.setAttribute('data-focus', '');
       scr.appendChild(h('div', { class: 'hpFields' }, two(fn, ln, 'hpTwoNm'), em, mb)); ok();
     };
@@ -4226,7 +4227,7 @@ window.EvConsent = (function () {
       if (!A || !e.target.closest('.hpScr :is(.hpIn, .hpSel, .hpOpt, .hpChk, .hpDay, .hpSlot, .hpGfChip, .hpGfDateB, input, textarea)') || e.target.closest('.hpPop, .hpPk, .hpSug, .hpFLock')) return;   // not inside a dropdown's menu or sheet, the suggestions, a held field
       var id = A + '.' + stepsOf(A)[I], keys = FILL[id], ans = S.a[A].ans, src = DEMO[A]; if (!keys) return;
       var miss = keys.filter(function (k) { return k === 'tc' ? !ans.tc : k === 'card' ? !(GP.card && GP.exp && GP.cvc) : empty(ans[k]); }); if (!miss.length) return;
-      miss.forEach(function (k) { if (k === 'card') { GP = { card: '4242 4242 4242 4242', exp: '08 / 29', cvc: '123' }; return; } if (k === 'mob' && ans.ctry === 'NZ') { ans.mob = '21 234 5678'; return; } ans[k] = JSON.parse(JSON.stringify(src[k])); });
+      miss.forEach(function (k) { if (k === 'card') { GP = { card: '4242 4242 4242 4242', exp: '08 / 29', cvc: '123' }; return; } if (k === 'mob' && ans.ctry === 'NZ') { ans.mob = '21 234 5678'; return; } if (k === 'mob' && ans.ctry === 'UK') { ans.mob = '7400 123 456'; return; } ans[k] = JSON.parse(JSON.stringify(src[k])); });
       if (id === 'wear.details' && opts.name) ans.first = opts.name;
       e.preventDefault(); save(true); step(0);
     }, true);
