@@ -19475,6 +19475,7 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 ## "right padding not consistent" (the retracted rail)
 - The page panels' cap is now 1360 open and 1512 retracted (1584 less the rail): retracting gives the rail's 152 to the panel, so it stays 8 off the rail and the rail's right gap (20) matches its left (20) at every width up to 1600; past that both states centre alike.
 - The Plan's panel now sits 8 off the rail and the window like every page (it was flush against the rail: a 12 gap).
+
 ## Suggestion: a Plan change variation, from the screenshot
 
 "I need a tweak variation of the the suggestion based on this screenshot"
@@ -19500,6 +19501,22 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Ask Dr Chen puts the question in through the Concierge's own `Concierge.draft(text)` (new: fills the field, sizes it, lights the send), not by reaching into its page.
   - Left as they are: the app's orange (#f78359; the mock reads #e88962, likely its colour profile), the shell's 36 px back disc and its chevron's ink, and the Ask pill at 48 (the mock's is 44).
   - Without the Saans font (as in the checks here, Inter in its place) the 28 px title takes two lines at XS; in Saans it should hold one, as in the mock.
+
+## "Also need active filled icon WHEN menu desktop is contracted. Put this in icon lib"
+- **Menu, in the icon library** (Documentation › Navigation › Iconography, after Plan): the desk sidebar's retract drawn as the dock's icons are, on the 24 grid with the 1.75 line. A window 18 × 15.5 with 3.5 corners, a divider 6.5 in from its left. Filled: the sidebar column solid, the rest of the frame still the outline.
+- **The retract draws it** from the library: the outline while the menu is open, the filled one while it is contracted. It switches with the dock's own motion (Beam by default, or whatever Tweaks › Dock › Icon motion and the Navigation doc say).
+- **The sidebar's entries draw the library too**: Overview (home), Insights, Timeline, Services, Plan are the phone dock's drawings now, at 20 as before. The account keeps its own icon.
+  - Open: every entry is its outline and the plate marks the lit one, as before.
+  - Contracted: the lit entry shows its filled icon. It plays the motion when the rail folds, and again when you go to another page (Overview, the Timeline or a service detail, the Plan, the marketplace or a booking, Insights).
+  - Nothing moves: the glyphs keep their x (40) in both states, and so do the plates, labels and hover.
+- **The Beam was dropped on every page change**: each page writes the body's class list whole, and that had wiped the icon motion's class. After the first page, every icon (the dock's too) lit with Pop. The class is kept now.
+- **Review fixes**:
+  - My account's ring is at the library's weight now: 18.5 across with the 1.75 line (it was 16.5 with a 1.5 line, smaller and lighter than the column above it). Its box (20) and place (x 40) are unchanged.
+  - Documentation › Navigation › Sizes and behaviour has a Desk sidebar row (the same drawings at 20, Menu at 18; open all outline; contracted the retract and the lit entry filled; My account its own). The Iconography intro names the Menu and says the sidebar fills only while contracted.
+  - The sidebar's markup keeps empty svgs where the icons go: the old stroked drawings are gone, so nothing there pretends to own them.
+  - The icon motion is part of the class list each page writes (kept by Tweaks › Dock › Icon motion), not put back after it. The phone dock now lights with Beam on every page; it fell back to Pop after the first page before.
+  - The plates' CSS and the sidebar's lit() point at each other: a page that lights a plate needs its entry lit there too.
+  - Left as it is: on My account with the menu contracted, its entry has no filled state (the library has no account pair yet).
 
 ## Chat: Persona #2, Eva checks in ("Chat New persona")
 
