@@ -20191,3 +20191,9 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 
 - The gap between each row's icon circle and its title and line is now 16, up from 12 ("icon content gap +4px").
 - **Checked** (Playwright, dist, XS, Intro = Detail): all three rows measure 16 from the icon circle's right edge to the text. No console errors.
+
+## Gift plans, Tabs: white edge on the picked card, radio top right
+
+- The picked card gets a 1.5 px white edge (ink, `::after` over its glow and texture). The other card has none.
+- Each card has the Stack rows' radio in its top-right corner, 14 px in (`.hpPlRowR` reused as `.hpPlTabR`): an empty ring, filled with its dot when picked. One rule now covers both checked states (Stack `aria-checked`, Tabs `aria-selected`).
+- **Checked** (Playwright, dist, XS, Plans = Tabs): Protocol picked shows the white edge and the filled radio; picking Diagnostics moves both to it. No console errors.
