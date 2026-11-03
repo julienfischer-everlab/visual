@@ -20119,3 +20119,11 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - Long: 55% as tall as wide, at rest on its back; a V flap to just under its middle (its own mask), "FOR ALEX" in gold foil on the flap (a warm gold text clip, a sheen across it); the back's two lines left out; the card inside 46 tall.
 - One builder still (gfEnv: `long`, `R` its height over its width): the tap opens it without turning (already on its back), its open height from R; the merge (gfSealFx) takes its geometry from R and ends on its back. The Documentation's "Their note, sealed" still follows the Tweak.
 - Fixed in passing: the foil's text clip showed through the open flap (a layer of its own in the turning flap): it takes its flap's opacity.
+
+## Gift: the note in the card; intro header Photo; Detail circles; desk banner
+
+- Their note: the note typed in the grey card itself ("merge the input text inside the card, no need to have 2 places for the custom message"): the wordmark, <From> got something special for you, then a textarea in the card's Tobias, centred, growing with the note, its placeholder the line they get with none; the card's edge lit while writing; From and the count under it; the hint after. The card keeps .hpGfPv (the envelope moment lifts the note from it). Tap-to-fill still fills it.
+- Intro header: the gift's own photo by default. The Concierge's video that faded in after the move read as the flow moving to the Concierge ("After the intro it move to concierge"); it is now Tweaks -> Send a gift -> Header: Video. Nothing in the intro advances by itself (checked 26 s via the menu, the #send-gift link, More > Gift Everlab, and at L).
+- Intro Detail: +32 at the right of each row; each icon in a 28 circle (4 padding, the ink at 4%).
+- "Takes about two minutes": 14/18, 24 under Choose a gift (+8).
+- Desk: the header a banner at the md container (min(1280, the window less 48)), 400 tall, 24 corners, under the bar; the body below it on the page (no overlap sheet); the wordmark in the ink. The entrance still writes the title at the screen's centre and moves it into the banner.
