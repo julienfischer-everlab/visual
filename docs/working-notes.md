@@ -19846,3 +19846,14 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - My journey's Past activity: the Past button pushes, its Back pops.
   - Left as they were: main pages, the page menu and links (instant), Past results / Async report / Health profile / Chat / Suggestion (full modals), the marketplace item (a sheet).
 - Checked at XS (in the scaled phone), M and L, dark and light, with reduced motion; frames in the scratchpad (push/). When a service with steps opens, the Flow panel docks and the whole app moves aside under the same 340 ms move (the page group glides with it).
+- Review fixes (after merging the Top nav, container tokens and XS 852 work; the push checked inside the scaled XS device):
+  - `EvPush.cancel()`: an instant switch made while a push still waits for its picture (the page menu, the dock, the sidebar, More, Tweaks, the docs) drops it, so the switch wins (was: the menu's Overview lost under the Service detail). Not for the tap that started the push.
+  - Slow (x4) is the demo's alone, passed per run (`go({ slow })`); it no longer slows the app's push. `EvPush.slow` is gone.
+  - The flow panel docks after the push (`EvPush.after`, html.flWait hides it meanwhile): the push plays in a still frame, then the app moves aside; no more diagonal glide at XS or the page group running over the sidebar at M / L. A frame that still moves under a push snaps to its place (its group not animated) so only the pages slide.
+  - The frames' own corner is off while pictured (the group clips to it): square leading edge on the incoming page, as iOS.
+  - Escape on the Service detail pops (forced, the focus is often on the body by then).
+  - The phone's edge swipe on a touch screen: the horizontal drag from the edge is kept from the browser (touchmove preventDefault), so it ends in pointerup, not pointercancel. Checked with Chrome touch emulation, not on a device.
+  - Reduced motion keeps the UA's plus-lighter crossfade (no dark dip); light theme dims half as much (M.dim x .5, written in the doc's numbers).
+  - The Plan's old push code removed (drift, dim layers, shadow, translateX(100%) start, the 460 ms timers, plXNow / plXSub). One implementation.
+  - A supplement row over the Nutrition plan pushes My supplements first, then its detail sheet rises (its own motion), via `go({ done })` / `page(.., { done })`.
+  - The doc demo: a desk-only View moves only the desk frame (3 animations, was 21); the phone up to .8 (334 wide), the desk frame 620 tall.
