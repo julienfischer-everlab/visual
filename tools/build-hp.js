@@ -24,6 +24,7 @@ const pick = (list, test, what) => {
 const arCss = pick(blocks('style'), b => b.includes('--ar-paper:') && b.includes('.arSheet .arStage'), 'report sheet style block');
 const hpCss = pick(blocks('style'), b => b.includes('.arSheet.hpSheet') && !b.includes('--ar-paper:'), 'Health profile style block');
 const hpJs = pick(blocks('script'), b => b.includes('window.HealthProfile = {'), 'Health profile script');
+const svcImgJs = pick(blocks('script'), b => b.includes('window.EvSvcImg = {'), 'services renders map');   /* the services' 3D render paths (one map, written once in index.html): the Concierge's Services slide reads it */
 const bar = (src.match(/<div id="bpFrame"[^>]*>\s*<div class="bpStatus">([\s\S]*?)<\/div>/) || [])[1];   // the device's status bar (time, island, signal), as the prototype draws it
 if (!bar) throw new Error('build-hp: the device status bar (#bpFrame .bpStatus) not found');
 
@@ -90,6 +91,9 @@ ${hpCss}
     <button type="button" class="go" id="dmReset">Start over</button>
   </div>
 </details>
+<script>
+${svcImgJs}
+</script>
 <script>
 ${hpJs}
 </script>
