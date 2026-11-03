@@ -19517,3 +19517,17 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The icon motion is part of the class list each page writes (kept by Tweaks › Dock › Icon motion), not put back after it. The phone dock now lights with Beam on every page; it fell back to Pop after the first page before.
   - The plates' CSS and the sidebar's lit() point at each other: a page that lights a plate needs its entry lit there too.
   - Left as it is: on My account with the menu contracted, its entry has no filled state (the library has no account pair yet).
+
+## "All XS need a minimum height 852px"
+- **XS: 393 x 852 minimum**, written in Design system › General layout › Demo frames (and the XS demo's caption). Every XS phone is the iPhone's screen, never shorter.
+- **The app's XS device (forced XS)**: always 852 tall, centred under the bar as before. A window too short for 852 and 16 above and below no longer cuts the screen shorter (it was 821 at 1440 x 900, 641 at 1280 x 720). The whole device is drawn smaller instead.
+  - resize() writes `--bpS` (the scale) and `html.bpFit`. `--bpTop` / `--bpBot` stay the 852 frame's own top and foot, so the foot can sit past the window's while scaled.
+  - One `scale` on every layer laid in the frame's rect: .dash, #bpFrame (dock, keys, status bar, sheets in it), .lp, the overlays' device (.aqWrap.aqDesk), the Chat page, the Gift / Clinic / Referral / Gift receipt / Consent devices, and the Insights / Overview shells. All scale about their own centre, which is the frame's centre, so they stay one device.
+  - Scale, not a scrolling stage: every layer is position: fixed on the same vars, so a scrolling stage would have left the dock and home indicator off screen. A transform keeps hit-testing exact (taps land where they are drawn: checked on the dock and Health profile's CTA).
+  - A scaled .dash holds its fixed children as its own: the Overview's dim and the results notice are placed inside it while scaled.
+  - The width counts too: a window narrower than 393 + 32 scales it as well.
+  - The screenshot CTA measures the scaled device as drawn and renders it back at 393 x 852 @3x.
+  - Tall windows (1440 x 1100, 1920 x 1080) are unchanged: s = 1, no class, no transform.
+- **Doc phones at 852**: Header overlap (.hoPh, was 760), Navigation's island phone (was 760), Modals XS (was 800), General layout › Container XS (was 760). Their fit-scaling uses the new height. Step flow, Demo frames, Loading states and the Health profile card docs were already 852.
+- **Standalone Health Profile (dist/health-profile.html)**: its XS device is 393 x 852 (it was the window less 96, at most 900), scaled to fit a short window.
+- Unchanged: Auto on a phone-width window (the window is the phone). The Gift page's own iPhone mode (its screen is already 398 x 852 and fit-scaled).
