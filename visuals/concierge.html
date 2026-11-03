@@ -395,13 +395,14 @@
   .tdTag { flex: none; padding: 5px 11px; border-radius: 8px; font-size: 12.5px; font-weight: 500; line-height: 16px; white-space: nowrap; }   /* the app's status tag (the Insights' .st) */
   .tdTag.opt { background: var(--tOptBg); color: var(--tOptFg); } .tdTag.sub { background: var(--tSubBg); color: var(--tSubFg); } .tdTag.out { background: var(--tOutBg); color: var(--tOutFg); }
   .bk { padding: 18px 20px 20px; background: var(--bkBg); border: 1px solid var(--bkLine); box-shadow: var(--bkShadow); }
-  .bkTop { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+  .bkTop { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
   .bkTop b { min-width: 0; font-size: 15px; font-weight: 500; line-height: 20px; }
   .bkIncl { flex: none; display: inline-flex; align-items: center; gap: 4px; color: var(--ok); font-size: 13px; font-weight: 500; }
-  .bkIncl .ic { width: 15px; height: 15px; stroke-width: 2; align-self: center; }
+  .bkIncl .ic { width: 15px; height: 15px; stroke-width: 2; }
   .bkRows { display: grid; gap: 10px; margin-top: 14px; }
   .bkRow { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; line-height: 20px; }
   .bkRow .ic { width: 18px; height: 18px; margin-top: 1px; color: var(--muted); }
+  .bkNw { white-space: nowrap; }   /* 1.2 km kept on one line */
   .bkRow.flash span { animation: bkFlash 1.2s ease; } @keyframes bkFlash { 0%, 35% { color: var(--ok); } }
   .bkTimes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 16px; animation: rise .32s cubic-bezier(.2, .8, .2, 1) both; }
   .bkSlot { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-width: 0; padding: 10px 14px; border-radius: 14px; background: var(--input); text-align: left; font-size: 14px; font-weight: 500; line-height: 18px; box-shadow: inset 0 0 0 1px transparent; transition: box-shadow .15s ease, background .15s ease; }
@@ -836,7 +837,7 @@
         '<button class="btn" type="button" data-act="bkTimes" aria-expanded="' + (st === 'times') + '"' + (busy ? ' disabled' : '') + '>Other times</button>';
     return '<div class="bk" data-reg="' + reg(b) + '" data-st="' + st + '">' +
       '<div class="bkTop"><b>' + esc(b.title) + '</b>' + (booked ? '<span class="bkIncl">' + ic('check') + 'Booked</span>' : b.incl ? '<span class="bkIncl">' + esc(b.incl) + '</span>' : '') + '</div>' +
-      '<div class="bkRows"><div class="bkRow bkWhen">' + ic('cal') + '<span>' + esc(slotTx(b)) + '</span></div><div class="bkRow">' + ic('pin') + '<span>' + esc(b.place + (b.dist ? ' · ' + b.dist : '')) + '</span></div></div>' +
+      '<div class="bkRows"><div class="bkRow bkWhen">' + ic('cal') + '<span>' + esc(slotTx(b)) + '</span></div><div class="bkRow">' + ic('pin') + '<span>' + esc(b.place) + (b.dist ? ' · <span class="bkNw">' + esc(b.dist) + '</span>' : '') + '</span></div></div>' +
       (st === 'times' ? '<div class="bkTimes" role="radiogroup" aria-label="Other times">' + b.slots.map(function (s, i) { return '<button class="bkSlot" type="button" role="radio" aria-checked="' + (i === (b.at || 0)) + '" data-act="bkSlot" data-s="' + i + '">' + esc(s[0]) + '<small>' + esc(s[1]) + '</small></button>'; }).join('') + '</div>' : '') +
       '<div class="bkBtns">' + btns + '</div></div>';
   };
