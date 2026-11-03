@@ -19476,6 +19476,32 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - The page panels' cap is now 1360 open and 1512 retracted (1584 less the rail): retracting gives the rail's 152 to the panel, so it stays 8 off the rail and the rail's right gap (20) matches its left (20) at every width up to 1600; past that both states centre alike.
 - The Plan's panel now sits 8 off the rail and the window like every page (it was flush against the rail: a 12 gap).
 
+## Suggestion: a Plan change variation, from the screenshot
+
+"I need a tweak variation of the the suggestion based on this screenshot"
+
+- **Tweaks → Suggestion → Variation** (first row, `stSgmVar`): **Signals** (as it was, the default) or **Plan change** ("Why your heart scan moved"). Saved with the Tweaks' Save and put back on load, even while the modal opens from its link. Switching redraws the open modal where it stands and plays its entrance. **Chart** is the Signals' alone, so it is hidden on Plan change.
+- **Plan change, the mock's copy word for word**: MOVED · WAS 2029 (ochre: #f6c28a on dark, #94602a on light for contrast), Why your heart scan moved (the mock's 28/34; the Signals and the other modals stay 24), its line, then two cards on the Suggestion's own card ground:
+  - the timeline: 28 Oct, the bloods (done); 29 Oct, the plan flagged it (the orange disc, a sparkle); Today, Dr Chen agreed (done); May 2027, Heart Risk Snapshot (an empty dashed orange ring, dashed until February);
+  - the cost: $349, only if you need it; Nothing to pay now.
+- **The head is the shell's own**: the same disc, at the head's left with the back chevron, as the mock has it. The title sits in the content under it, so the head holds the disc alone. The shell takes a title of '' and a `back` option for this; the other standalone modals are unchanged.
+- **Got it** (the primary) closes it. **Ask Dr Chen about this** (the secondary pill, tinted, on the glass blur) closes it, then opens the Concierge on the Care team in a new chat, with "Why did my heart scan move to May?" in its field, the send lit and the field focused. It is not sent: the care team's canned answer names Dr Lu.
+- **Desk (M, L, XL)**: the Signals' column (496 at M, 528 at L and up), nothing stretched; Got it and Ask Dr Chen side by side, as the Signals' buttons are.
+- **Entrance**: the eyebrow and title, the line, the timeline's card, then its steps one after another. The connector draws down from each node, the next node pops as it lands, and the dashed ring turns in last. Then the cost, then the footer. Replay plays it again; with reduced motion nothing moves.
+  - Measured: eyebrow and title 280 ms, line 400, card 520, nodes 680, 960, 1240, the dashed ring 1520, the cost 1640, the footer 1760. A node every 280 ms (its line drawn in 200 after 80).
+- **EvTl, a reusable vertical timeline**: `EvTl.html(steps)` and `EvTl.enter(list, api, delay)`, with steps `{ s: 'done' | 'flag' | 'next', t, d }` and CSS `.evTl`.
+  - The node sits on the title's first line, and the connector runs from node to node, never under one, so the dashed ring stays empty.
+  - The Doctor's suggestion's timeline (a card per step, pills, months between) is another kind and is left as it was.
+  - No Design system page names the Suggestion, so EvTl is documented in the code only.
+  - Its words are plain text (escaped), and each step says its state to a screen reader: Done, Flagged, Planned.
+- **Review fixes**:
+  - The cost and the footer came up before the last step and the dashed ring (EvTl.enter returns the ring's start, and the cost started 240 ms before it). They now follow the ring.
+  - The checks on the grey discs: near-white (ink 90%), 15 px, a thinner stroke, as the mock's. The sparkle: the big star smaller, the small one bigger.
+  - Nothing to pay now at 14; the line under the title on a 20 px pitch.
+  - Ask Dr Chen puts the question in through the Concierge's own `Concierge.draft(text)` (new: fills the field, sizes it, lights the send), not by reaching into its page.
+  - Left as they are: the app's orange (#f78359; the mock reads #e88962, likely its colour profile), the shell's 36 px back disc and its chevron's ink, and the Ask pill at 48 (the mock's is 44).
+  - Without the Saans font (as in the checks here, Inter in its place) the 28 px title takes two lines at XS; in Saans it should hold one, as in the mock.
+
 ## "Also need active filled icon WHEN menu desktop is contracted. Put this in icon lib"
 - **Menu, in the icon library** (Documentation › Navigation › Iconography, after Plan): the desk sidebar's retract drawn as the dock's icons are, on the 24 grid with the 1.75 line. A window 18 × 15.5 with 3.5 corners, a divider 6.5 in from its left. Filled: the sidebar column solid, the rest of the frame still the outline.
 - **The retract draws it** from the library: the outline while the menu is open, the filled one while it is contracted. It switches with the dock's own motion (Beam by default, or whatever Tweaks › Dock › Icon motion and the Navigation doc say).
