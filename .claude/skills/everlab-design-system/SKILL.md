@@ -59,6 +59,7 @@ The page menu `#versionSel` has Documentation (`'doc'`) and Design system (`'ds'
 | Swipe down to dismiss | `window.EvSheetSwipe`, `window.evK` | references/flows-modals.md |
 | Dismiss master and notch | `window.EvDismiss`, `.evNotch` | references/flows-modals.md |
 | Modals cover the full viewport | `window.EvFullView` | references/flows-modals.md |
+| A modal that takes over owns Tweaks and Flow while it is up | `window.EvCtx`, `html[data-tk]`, `__flowOk` | references/flows-modals.md |
 | Consent | `window.EvConsent` | references/flows-modals.md |
 | Loading states | `window.EvLoad` | references/flows-modals.md |
 | Desk sidebar (and its icons) | `.dash .side`, `body.sideMin`, `lit()` | references/navigation-icons-motion.md |
