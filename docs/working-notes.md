@@ -20137,3 +20137,7 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 ## Gift intro Detail: icon circles 8% and 8 padding ("opacity +4%, padding +4px")
 
 - Each icon's circle the ink at 8% (was 4%), 8 round the 20 icon: 36 across (was 28); the icon column 36.
+
+## Gift intro: the H1 alone ("Treat someone you love to a year of Everlab", "h1 no sub")
+
+- The title is now "Treat someone you love / to a year of Everlab" (broken at its phrase), and the line under it is gone. The entrance writes the H1 only, holds 2 s, then moves; about 2 s shorter than with the line.
