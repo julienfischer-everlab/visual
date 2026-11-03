@@ -19831,3 +19831,6 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - **One dark token set**: `:root[data-theme="dark"]` only. A small script in the head sets the theme before the first paint: the hash's (the prototype's), else the system's, live.
   - **Leaving Refer for its sheets**: Refer glides back to its top under the cross-fade, so it meets Contact capture and Sent, which show the page at rest.
   - **The build checks the master it cuts**: tools/build.js parses the EvOverlap script it takes from index.html and checks it has bind and mark; a cut that ends early fails the build.
+
+## Container doc: labelled switches
+- General layout › Container · live: the two switches now carry labels above them, "Breakpoints" (XS · 393 … L · 1440) and "Container size" (2xs … lg) (.glCtGrp / .glCtLbl, 12px muted, 8 above the switch; the groups 20 apart).
