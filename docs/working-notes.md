@@ -19711,3 +19711,6 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - **The scrim above the top sheet closes it in the doc too**: the stack's status bar lets a tap through, so "Close and the scrim" is true at 1, 2 and 3 layers, On and Off.
   - **The leave question**: 24 above its title on the phone, so the notch sits 12 above the header.
   - **The Health profile's own page** (its standalone link) lives on its own, so a saved Off never reaches it: it keeps the default, On. The Modals doc says so.
+
+## "remove that, dont need as we have the flow panel" (the Back pill beside the phone)
+- The floating "‹ Back" pill outside the XS phone (.tkFlBack, shown on the profile reached from the welcome) is hidden everywhere; the Flow panel does the stepping back.
