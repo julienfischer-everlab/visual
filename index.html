@@ -28908,11 +28908,9 @@ hairline({
   { const mg = document.createElement('optgroup'); mg.label = 'Main pages';
     modesOf('Insights').forEach(([v, i]) => addTo(mg, i, v.name === 'Desktop' ? 'Insights' : v.name));
     [[20, 'Insights'], [24, 'Results received'], [25, 'Results received']].forEach(([i, t]) => addTo(mg, i, t, true));   // its phone and its Results received pages: named in the select while showing, not offered in it
-    if (ARCHIVED.length) addTo(mg, ARCHIVE_VAL, 'Insights (archives)');   // the archive after the design that superseded it
     modesOf('Overview page').forEach(([v, i]) => addTo(mg, i, v.name === 'Desktop' ? 'Overview' : v.name));
     addTo(mg, 'svcMkt', 'Services marketplace');   // the marketplace ("a page, services, which is the marketplace"), its own page in the shell (#services)
     addTo(mg, 'svcD', 'Service detail');   // a page over the Overview's, opening its Overview and the page over it
-    addTo(mg, 'aptD', 'Appointment (OLD)');
     addTo(mg, 'tl', 'Timeline');
     addTo(mg, 'plan', 'Plan');   // the member's plan ('edit the plan page'), its own page in the shell
     addTo(mg, 'planAct', 'Plan', true); addTo(mg, 'planNut', 'Plan', true);   // the Plan's subpages (Activity plan #activity-plan, Nutrition plan #nutrition-plan): not in the menu ("the nutrition plan is a subpage of the plan, so it doesn't need to be in the page dropdown"; "same for activity plan"), the menu reading Plan while one is up; kept as values so a page closed over one comes back to it
@@ -28946,6 +28944,11 @@ hairline({
   { const cg = document.createElement('optgroup'); cg.label = 'OrganAge concept';
     ['Concept', 'Video', 'Landing page'].forEach(g => modesOf(g).forEach(([v, i]) => addTo(cg, i, v.name)));
     versionSel.appendChild(cg); }
+  /* the retired pages, together at the very end ("create pages (archives) group at the very end of the select Page; put inside these 2") */
+  { const ag = document.createElement('optgroup'); ag.label = 'Pages (archives)';
+    addTo(ag, 'aptD', 'Appointment (OLD)');
+    if (ARCHIVED.length) addTo(ag, ARCHIVE_VAL, 'Insights (archives)');   /* the Insights archive (its own sub-select picks the design) */
+    versionSel.appendChild(ag); }
   // the opening mode is never an archived one, but the pair is set the way
   // setMode sets it so there is one rule for it rather than two
   if (isArchived(version)){ versionSel.value = ARCHIVE_VAL; arcSel.value = String(version); }

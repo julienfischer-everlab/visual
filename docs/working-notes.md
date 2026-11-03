@@ -19714,3 +19714,6 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 
 ## "remove that, dont need as we have the flow panel" (the Back pill beside the phone)
 - The floating "‹ Back" pill outside the XS phone (.tkFlBack, shown on the profile reached from the welcome) is hidden everywhere; the Flow panel does the stepping back.
+
+## "Create pages (archives) group at the very end of the select Page. Put inside these 2"
+- The page menu ends with a new group "Pages (archives)": Appointment (OLD) and Insights (archives), moved out of Main pages. Both still open as before.
