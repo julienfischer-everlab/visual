@@ -19733,6 +19733,7 @@ html .arSheet.hpSheet.hpGfSolo.hpGfAtIn:not(.hpGfOnSheet) .arHead .arIconBtn.arI
 .arSheet.hpSheet .hpGfPvN { margin: 0; font-family: 'Tobias', 'Tobias Light', 'Tobias Regular', Georgia, 'Times New Roman', serif; font-size: 22px; line-height: 28px; text-wrap: balance; overflow-wrap: anywhere; }
 /* Check and pay: the plan over the rows, each its Change */
 .arSheet.hpSheet .hpGfSum { padding: 0 16px; }
+.arSheet.hpSheet .hpGfSumW { display: flex; flex-direction: column; gap: 12px; } .arSheet.hpSheet .hpGfSumPlan .hpGfSumTop { box-shadow: none; }   /* the plan's card on its own, 12 over the rows' card */
 .arSheet.hpSheet .hpGfSumTop { display: flex; justify-content: space-between; gap: 12px; padding: 16px 0; box-shadow: inset 0 -1px 0 oklch(var(--ar-ink) / .08); }
 .arSheet.hpSheet .hpGfSumTop b { display: block; font-size: 16px; line-height: 21px; font-weight: 570; } .arSheet.hpSheet .hpGfSumTop span { display: block; margin-top: 2px; font-size: 13px; line-height: 17px; color: oklch(var(--ar-ink) / .56); }
 .arSheet.hpSheet .hpGfSumP { flex: none; text-align: right; font-variant-numeric: tabular-nums; }
@@ -21765,11 +21766,12 @@ window.EvConsent = (function () {
       /* Check and pay: the plan and its price, To, Arrives and the note, each its Change back to its step (and Continue there straight back here) */
       var k = ans.plan || 'prot', p = GF_PLAN[k], occ = name(GF_OCC, ans.occ), nt = gfNoteT(ans);
       scr.appendChild(q('', 'Check and pay', 'You’ll add your details and pay on Everlab’s secure checkout next.'));
-      scr.appendChild(h('div', { class: 'hpCard hpGfSum' },
-        h('div', { class: 'hpGfSumTop' }, h('div', null, h('b', { text: p.full }), h('span', { text: '12-month membership for ' + gfName(ans, 'them') })), h('div', { class: 'hpGfSumP' }, h('b', { text: gfMoney(ans.ctry, k) }), h('span', { text: 'Includes GST' }))),
+      scr.appendChild(h('div', { class: 'hpGfSumW' },   /* the plan in a card of its own ("this needs to have a dedicated card"), the rows in theirs under it */
+        h('div', { class: 'hpCard hpGfSum hpGfSumPlan' }, h('div', { class: 'hpGfSumTop' }, h('div', null, h('b', { text: p.full }), h('span', { text: '12-month membership for ' + gfName(ans, 'them') })), h('div', { class: 'hpGfSumP' }, h('b', { text: gfMoney(ans.ctry, k) }), h('span', { text: 'Includes GST' })))),
+        h('div', { class: 'hpCard hpGfSum' },
         gfRow('To', ((ans.first || '') + ' ' + (ans.last || '')).trim(), (ans.email || '').trim(), 'who'),
         gfRow('Arrives', gfArrive(ans), occ ? occ + ' gift' : '', 'when'),
-        gfRow('Their note', nt ? '“' + nt + '”' : 'Someone wanted you to have this.', 'From ' + gfFrom(ans), 'note')));
+        gfRow('Their note', nt ? '“' + nt + '”' : 'Someone wanted you to have this.', 'From ' + gfFrom(ans), 'note'))));
       scr.appendChild(h('p', { class: 'hpHelp hpGfQ' }, 'Questions? Email ', h('a', { class: 'hpLink', href: 'mailto:support@everlab.com.au', text: 'support@everlab.com.au' })));
       foot2('Continue to payment', gfComplete(ans), fwd);   /* a gift with no recipient, plan or day never reaches Pay */
     };
