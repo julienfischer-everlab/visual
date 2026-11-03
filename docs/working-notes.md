@@ -19515,3 +19515,25 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - It plays once round in 1.9 s at an even pace, fading in and out. With reduced motion it is a brief glow where it stands.
   - It plays on the in-app composer when switching back to Eva, and on the Concierge's field (modelSet) and its Components demo. visuals/concierge.html carries the same rules, since it is its own document. The old streak (.boxBeam) and its tokens are gone.
 - **Concierge › Components › Field**: the demo's switch is the chat's own model dropdown (the same menu code). It starts on Care team, so picking Eva plays the beam; Care team then Eva plays it again. Its field reads "Message your care team…" or "Ask Eva…" with it, and the chat's own choice is left alone.
+
+## More: the row of the page you are on takes its active icon ("When a menu is active inside the dropdown MORE, the item should have the active icon")
+- **The row lights**: open More on a page it leads to and that page's row shows its active (filled) icon, with the dock's own motion (Tweaks › Dock › Icon motion; Beam by default) played as its card lands, 300 ms after the sheet opens plus that card's 50 ms step. The other rows are unchanged. Every label was already at full ink, so the lit row's label is too.
+  - Plan: the Plan and all its subpages (Activity, Nutrition, Medical actions, Supplements, Wind-down).
+  - My account and Settings: My account's page, Settings when its Settings tab is up.
+  - Gift Everlab: the Gift page. Refer a loved one: the Gift referral.
+  - Contact us: the chat it opens, while Care team is picked. With Eva picked, no row lights.
+- **The same truth as More's highlight**: `window.__morePage()` reads the body's page classes (plOn, accOn with My account's tab, gfOn, rfOn, ccOn with the chat's model). My account now tells its tab (`window._acc.tab()`).
+- **Four new icons, drawn like the tabs'** (24 grid shown through 2..22, 1.75 strokes, round ends): outline at rest; filled is the silhouette solid with its details cut out.
+  - Contact us: a speech bubble with a question; filled, the question is cut out.
+  - Settings: a cog and its hub; filled, the hub is a hole.
+  - Gift Everlab: box, lid, ribbon and bow; filled, the ribbon and the lid's seam are cut out.
+  - Refer a loved one: a person and a plus; filled, the person is solid.
+  - They live in `NAV_IC` / `window.EvNavIc`, beside the tabs'. Every row of the sheet is drawn from there now; the sheet's old stroked icons are gone.
+  - Where the filled shape is in pieces (Gift, Refer), the beam runs round the whole silhouette.
+- **My account keeps the member's photo**. On its page, a ring goes round the photo: 2 clear of it, 1.75 of ink. It is drawn as an icon, so the same motion plays on it: the beam round the ring, then the ring from 16% to full (`EvNavIc.me`).
+- **Design system › Navigation**:
+  - Iconography lists the four new icons and My account's photo and ring, each live with its Inactive and Active states.
+  - The doc's phone keeps its own page: tap a row in its More and that row becomes the phone's page, with More lit in its dock. Open More again and the row lights. The doc's sheet no longer sends the app away to My account, the Gift page or the chat.
+  - The sizes table's More row is corrected: the real rows, and the lit row.
+- **Fix: Icon motion kept across a page change**. Changing page rebuilt the body's classes and dropped the motion's, so the dock played Pop while the select said Beam. Changing page now keeps the motion's class.
+- Both themes; checked on the XS frame (Overview, Plan, the Activity plan, My account, Settings, the care chat), the Insights phone and the Navigation doc's phone.
