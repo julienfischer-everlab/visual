@@ -20133,3 +20133,7 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - Flow panel -> Intro: the entrance again from the blank screen (also when already on it): the panel's jump to 0 marks a replay (`window.__gfReplay`), read once by the intro's builder. Back from the first step and a Tweak's redraw still land on it at rest.
 - Tweaks follow the active step ("Tweak should be related to the active step"): the Send a gift group split per step (data-pages "sgf sgfIn" Intro, Header, Video overlay; "sgf sgfPl" Plans; "sgf sgfEv" Envelope); EvCtx's sgf tweaks: intro -> sgfIn, plan -> sgfPl, note and pay -> sgfEv, the receipt -> gr, the other steps none (the Tweaks button hides).
 - Plan cards (Tabs): no border, no ring, no outline when picked; the one not picked at 50% (72% on hover); the chip without its glow or shine.
+
+## Gift intro Detail: icon circles 8% and 8 padding ("opacity +4%, padding +4px")
+
+- Each icon's circle the ink at 8% (was 4%), 8 round the 20 icon: 36 across (was 28); the icon column 36.
