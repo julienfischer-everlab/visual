@@ -5783,6 +5783,7 @@
   .aqWrap:is(.aqFull, .aqPhone):is(.aqBpXS, .aqBpS) .aqFrame > .arSheet.arSheet.arSheet.arSheet{max-width:none;}
   .aqWrap:is(.aqFull, .aqPhone):is(.aqBpXS, .aqBpS) .arSheet :is(.arHead, .arBody, .arFoot), .sfPh .arSheet :is(.arHead, .arBody, .arFoot){padding-left:16px;padding-right:16px;}
   .aqWrap:is(.aqFull, .aqPhone):is(.aqBpXS, .aqBpS) .arSheet :is(.arH700, .arLede, .arLfLede), .sfPh .arSheet :is(.arH700, .arLede, .arLfLede){text-align:left;}
+  .aqWrap:is(.aqFull, .aqPhone):is(.aqBpXS, .aqBpS) .arSheet .arLfHead{align-items:stretch;}   /* the insight's head the column's width, so a short title (one line) sits at the left too, not centred as a box (the full modal's centring, 0,4,0) */
   .aqWrap.aqFull.aqBpS .arSheet .arFoot{align-items:center;} .aqWrap.aqFull.aqBpS .arSheet .arFoot > *{width:100%;max-width:478px;}
   /* M and L: a centred column, the title centred (above); 496 wide at M, 528 at L, the back and close at its edges */
   .aqWrap.aqFull.aqBpM .aqFrame > .arSheet.arSheet.arSheet.arSheet{max-width:536px;}
@@ -5951,6 +5952,7 @@
   @media (prefers-reduced-motion: reduce){ .aqWrap.aqDesk:is(.aqBpM, .aqBpL) .arSheet .arQa .arQaPanel{transition:none;} }
   .aqWrap.aqFull.aqBpM{--aqNavX:24px;}
   .aqWrap.aqFull:is(.aqBpM, .aqBpL) .arSheet .arHeadRow{margin-inline:calc((100% - 100cqw) / 2 + var(--aqNavX, 32px));}
+  .aqWrap.aqFull:is(.aqBpM, .aqBpL) .arSheet > .arStage{overflow:visible;clip-path:inset(0 calc((100% - 100cqw) / 2));}   /* the stage let out to the frame's sides (the sphere pages' way, above), held to its height: the row above reaches out of the column, and the stage's own clip at 536 / 568 hid its Back and Close */
   /* desktop (M, L): the step bars ride in the top nav, between back and close, at the column's width ("replace inside top nav on top, desktop") */
   /* the progress under the report's name at every width, the column's width (the name in the row's middle: "replace 20 Oct 2026 in top nav centered") */ .aqWrap.aqFull .arSheet .arH700 + .arLede, .aqWrap.aqFull .arSheet .arLede{text-align:center;text-wrap:balance;} .aqWrap:is(.aqFull, .aqPhone):is(.aqBpXS, .aqBpS) .arSheet .arH700 + .arLede{text-align:left;}   /* on the phone, under its left-set title: the line above, as specific, had it centred under a title on the left (Everything else, Your insights) */
   .prWrap{display:none;}
@@ -7209,9 +7211,9 @@
   /* Design system -> Step flow: the master at every breakpoint ("Need All break points"). Each the step flow's own shell (.arSheet) in the Async report's own full modal (.aqWrap.aqDesk.aqFull.aqBp*, with .aqDev on XS and S: the classes the report wears, so the app's rules for that width apply as they do in the app; XL wears L's, as the app does on a wide window),
      in the master frames (XS the app's phone, --evPhR/--evPhBz; S its tablet, --evTbR/--evTbBz; M, L, XL the desk's page, as General layout draws it), scaled to fit (fit), the scale under it. All: every one side by side, one scale, a row that scrolls */
   .sfLive{display:flex;flex-wrap:wrap;align-items:flex-start;gap:24px 40px;} .sfSide{flex:1 1 280px;max-width:480px;} .sfSide .hoCtl{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));margin:0 0 16px;}
-  .sfLive.sfWide .sfSide, .sfLive.sfWide .sfSide .hoCtl{max-width:none;}   /* under a desk frame or the row: the controls the column's width */
+  .sfLive.sfWide:not(.sfBeside) .sfSide, .sfLive.sfWide:not(.sfBeside) .sfSide .hoCtl{max-width:none;}   /* under a desk frame or the row: the controls the column's width (beside a desk frame, sfBeside: as beside the phone) */
   .sfSide{min-width:0;} .sfSide .hoCtl{grid-template-columns:repeat(auto-fill,minmax(min(200px, 100%),1fr));} .sfTabW{max-width:100%;overflow-x:auto;}   /* a narrow window: the controls and the breakpoints' table within the column (the table scrolls) */
-  .sfStage{position:relative;flex:none;display:flex;align-items:flex-start;gap:32px;max-width:100%;min-width:0;} .sfLive.sfWide .sfStage{flex:1 1 100%;}
+  .sfStage{position:relative;flex:none;display:flex;align-items:flex-start;gap:32px;max-width:100%;min-width:0;} .sfLive.sfWide:not(.sfBeside) .sfStage{flex:1 1 100%;}
   .sfStage.sfRow{overflow-x:auto;overflow-y:hidden;padding-bottom:12px;overscroll-behavior-x:contain;}
   .sfFig{flex:none;display:flex;flex-direction:column;gap:10px;margin:0;} .sfFit{position:relative;flex:none;} .sfSc{position:absolute;left:0;top:0;transform-origin:0 0;}
   .sfDev{--sfBz:1px;position:relative;margin:var(--sfBz);overflow:hidden;border-radius:16px;box-shadow:0 0 0 1px var(--ldLine);background:var(--ldBg);}   /* the desk's page: General layout's desk frame (16 round, a hairline) */
@@ -7221,7 +7223,6 @@
   .sfAq .aqFrame{position:absolute;inset:0;width:100%;height:100%;transform:none !important;opacity:1 !important;transition:none !important;border-radius:0;box-shadow:none;}
   .sfAq.aqInk .aqStat{color:#141413;}   /* no .on on these (the bar's screenshot looks for an open overlay's frame): the status bar's ink on the light paper, as .on gives the app's */
   .sfAq .sfStg{min-height:0;} .sfAq .sfBody{position:relative;} .sfAq .sfOld{position:absolute;pointer-events:none;}   /* the leaving page held where it stood, the body's sides (go) */
-  .sfAq.aqWrap:is(.aqBpXS, .aqBpS) .arSheet .arLfHead{align-items:stretch;} .sfAq .arLfHead .arH700{margin:0;}   /* the phone's title at the left, a short one too (over the full modal's centring, 0,4,0) */
   .hoStage{position:relative;max-width:420px;} .hoScale{width:393px;transform-origin:0 0;} .hoPh{position:relative;width:393px;height:760px;overflow:hidden;border-radius:48px;background:var(--sBg, #111);box-shadow:inset 0 0 0 1px var(--ldLine, rgba(255,255,255,.08));}
   .hoSb{position:absolute;left:0;right:0;top:0;height:54px;z-index:8;display:flex;align-items:center;justify-content:space-between;padding:0 30px;color:#fff;font-size:15px;pointer-events:none;} .hoBack{position:absolute;top:62px;left:16px;z-index:7;display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:rgba(20,20,20,.32);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);color:#fff;}
   .hoSc{position:absolute;inset:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none;} .hoSc::-webkit-scrollbar{display:none;}
@@ -45032,7 +45033,7 @@ hairline({
               list.insertAdjacentHTML('beforeend', '<button type="button" class="arBtn arMbMore" tabindex="-1"><span class="arBtnLabel"><span>See ' + (p[2].length - MB) + ' more</span>' + ic(16, 'M4 6l4 4 4-4', 1.6) + '</span></button>'); } }
           return d; };
         const rows = [['Frame', 'Full: the whole screen, its own page over the one it came from, the status bar (54) over it; on the desk (M, L, XL) a full-page modal, the column centred'],
-          ['Header', 'Back · the title · Close, one row 40 high, from 58 down (the 36 discs at 60), clear of the status bar; 16 at its sides (20 on the desk). Back hidden on a flow’s first page'],
+          ['Header', 'Back · the title · Close, one row 40 high (the 36 discs 2 into it): 58 down on XS, clear of the status bar (the discs at 60); 44 down on S; 16 down on the desk. Back and Close 16 in on the phone and the tablet; on the desk the row reaches out of the column to the frame, Back and Close 24 from its edges at M, 32 at L and XL (At each breakpoint, above). Back hidden on a flow’s first page'],
           ['Back · Close', '36 circles · ink 6% · the icons 18 and 16, ink 64% · Close blurred 12 · every modal’s dismiss, the same 36'],
           ['Title', 'Centred between them, on two lines: the flow’s name 14/18 · 500 · ink; under it its date or step 12/16 · ink 50%'],
           ['Progress', 'A segment per step, the width shared out · --sfBar high (3) · --sfGap apart (4) · 4 corners · done and current ink, the rest ink 12% · --sfPad above and below (12) · the fill moves .5 s cubic-bezier(0, 0, .2, 1)'],
@@ -45047,11 +45048,11 @@ hairline({
           ['Where', 'The Async report (its insights, Everything else, What we recommend) and the Health profile’s step pages, from EvSteps. A welcome or a last page on a picture rises instead (up and out, the next up from below): not this push']];
         /* every breakpoint the app has ("Need All break points"): [width, height, the bezel round it, what it is]. XS 393, S 600, M 992, L 1440 (the app's floors, General layout's); XL a wide window, which the app draws as L (its .aqBpL), here at 1920 */
         const BPS = { xs: [393, 852, 12, 'The app’s phone: the whole screen, its status bar and home indicator'], s: [600, 860, 17, 'The app’s tablet: the whole screen, its status bar'], m: [992, 720, 1, 'The desk: a full modal, its column 536, centred'], l: [1440, 900, 1, 'The desk: a full modal, its column 568, centred'], xl: [1920, 1080, 1, 'A wide window, drawn as L: the column 568, centred'] }, BK = Object.keys(BPS);
-        const bpRows = [['XS · 393', 'The app’s phone, the whole screen: the status bar (54) over the header, the home indicator (34) under Next', 'The screen’s, 16 at its sides', 'Left', 'The screen’s width, 16 over the home indicator'],
-          ['S · 600', 'The app’s tablet, the whole screen: its status bar, no island; the header higher (44 down)', 'The screen’s, 16 at its sides', 'Left', '478 at most, centred, 40 under'],
-          ['M · 992', 'The desk: a full modal over the page, no status bar; the header 16 down', '536, centred (496 inside its 20 sides)', 'Centred', 'The column’s, 40 under'],
-          ['L · 1440', 'The desk, as M', '568, centred (528 inside)', 'Centred', 'The column’s'],
-          ['XL · 1920', 'A wide window: the app has no XL rule of its own and draws it as L', '568, centred', 'Centred', 'The column’s']];
+        const bpRows = [['XS · 393', 'The app’s phone, the whole screen: the status bar (54) over the header, the home indicator (34) under Next', '58 down · Back and Close 16 in', 'The screen’s, 16 at its sides', 'Left', 'The screen’s width, 16 over the home indicator'],
+          ['S · 600', 'The app’s tablet, the whole screen: its status bar, no island; the header higher', '44 down · 16 in', 'The screen’s, 16 at its sides', 'Left', '478 at most, centred, 40 under'],
+          ['M · 992', 'The desk: a full modal over the page, no status bar', '16 down · out of the column, Back and Close 24 from the frame’s edges', '536, centred (496 inside its 20 sides)', 'Centred', 'The column’s, 40 under'],
+          ['L · 1440', 'The desk, as M', '16 down · 32 from the frame’s edges', '568, centred (528 inside)', 'Centred', 'The column’s'],
+          ['XL · 1920', 'A wide window: the app has no XL rule of its own and draws it as L', 'As L: 32 from the edges', '568, centred', 'Centred', 'The column’s']];
         el.innerHTML = '<aside class="ldSide"><h3 class="ldSideH">Step flow</h3><p class="ldSideP">A flow taken a page at a time: a header with Back, the flow’s name and Close, a bar a step, the step, then Next.</p>' +
           '<div class="ldNotes"><p class="ldD">The master of every step flow (EvSteps): the Async report takes the shell (its edges by the same Tweaks), the progress and the push from here; the Health profile takes the progress (its stages variant: --sfBar and --sfGap, not --sfPad) and the push. Change a number and the flow follows; Save setup makes it every page’s, on its next load too.</p>' +
           '<p class="ldD">Shown at every breakpoint: XS, S, M, L and XL, or All side by side. Each is the app’s own at that width (the report’s full modal and its rules), in the master frames: the phone, the tablet, the desk’s page.</p>' +
@@ -45060,7 +45061,7 @@ hairline({
           '<div class="mdBar"><div class="glCtBps" role="group" aria-label="Breakpoint">' + BK.concat('all').map(k => '<button type="button" data-sfbp="' + k + '" aria-pressed="false">' + (k === 'all' ? 'All' : k.toUpperCase()) + '</button>').join('') + '</div><button type="button" class="mdBtn sfBk">Back</button><button type="button" class="mdBtn sfNx">Next</button><button type="button" class="mdBtn sfPlay">Play</button><button type="button" class="mdBtn sfSlow" aria-pressed="false">Slow</button></div>' +
           '<div class="sfLive"><div class="sfStage"></div><div class="sfSide"><div class="hoCtl">' + SF_C.map(c => '<label class="hoC"><span>' + c[1] + '</span><input type="range" data-sfk="' + c[0] + '" min="' + c[2] + '" max="' + c[3] + '" step="' + c[4] + '"><b data-sfv="' + c[0] + '"></b></label>').join('') + '</div>' +
           '<div class="mdBar"><button type="button" class="mdBtn sfSave">Save setup</button><button type="button" class="mdBtn sfReset">Reset</button></div></div></div></section>' +
-          '<section class="glSec"><h4>At each breakpoint</h4><div class="sfTabW"><table class="glTab"><thead><tr><th>Breakpoint</th><th>Frame</th><th>Column</th><th>Step title</th><th>Next</th></tr></thead><tbody>' + bpRows.map(r => '<tr><th>' + r[0] + '</th><td>' + r.slice(1).join('</td><td>') + '</td></tr>').join('') + '</tbody></table></div></section>' +
+          '<section class="glSec"><h4>At each breakpoint</h4><div class="sfTabW"><table class="glTab"><thead><tr><th>Breakpoint</th><th>Frame</th><th>Header</th><th>Column</th><th>Step title</th><th>Next</th></tr></thead><tbody>' + bpRows.map(r => '<tr><th>' + r[0] + '</th><td>' + r.slice(1).join('</td><td>') + '</td></tr>').join('') + '</tbody></table></div></section>' +
           '<section class="glSec"><h4>Anatomy and sizes</h4><table class="glTab"><thead><tr><th>Part</th><th>The pattern</th></tr></thead><tbody>' + rows.map(r => '<tr><th>' + r[0] + '</th><td>' + r[1] + '</td></tr>').join('') + '</tbody></table></section>' +
           '<section class="glSec"><h4>Tokens</h4><table class="glTab"><thead><tr><th>Token</th><th>Default</th><th>What</th></tr></thead><tbody class="sfTk"></tbody></table></section></div>';
         const live = el.querySelector('.sfLive'), stg = el.querySelector('.sfStage'), N = SF_P.length;
@@ -45101,8 +45102,11 @@ hairline({
         const kOf = (k, aw, ah) => { const d = BPS[k]; return Math.min(1, aw / (d[0] + 2 * d[2]), ah / (d[1] + 2 * d[2])); };
         const fit = () => { if (!live.offsetWidth || !views.length) return; const mn = el.querySelector('.glMain'), W = live.clientWidth;
           let room = 760; if (mn){ const top = stg.getBoundingClientRect().top - mn.getBoundingClientRect().top + mn.scrollTop; room = mn.clientHeight - top - 28; }   /* the height left under the bar, the caption's first line (the scale) under the frame */
-          if (bp === 'all'){ const k = kOf('xl', Infinity, Math.max(300, Math.min(640, room))); views.forEach(v => size(v, k)); return; }
-          const ph = bp === 'xs' || bp === 's', side = ph && W >= 700; size(views[0], kOf(bp, side ? W - 320 : W, side || !ph ? Math.max(320, room) : Infinity)); };
+          const ROW = 110;   /* under a desk frame or the row: the caption's second line, the gap and a row of sliders in sight, to drag one and watch the bar at the frame's top */
+          if (bp === 'all'){ live.classList.remove('sfBeside'); const k = kOf('xl', Infinity, Math.max(300, Math.min(640, room - ROW - 12)));   /* and the row's own 12 under it (its scrollbar) */ views.forEach(v => size(v, k)); return; }
+          if (bp === 'xs' || bp === 's'){ live.classList.remove('sfBeside'); const side = W >= 700; size(views[0], kOf(bp, side ? W - 320 : W, side ? Math.max(320, room) : Infinity)); return; }
+          const kB = W >= 700 ? kOf(bp, W - 321, Math.max(320, room)) : 0, kU = kOf(bp, W, Math.max(320, room - ROW)), by = kB >= kU;   /* a desk frame beside the controls (280 at least, 40 apart) when that draws it as large as across the column with the sliders under it, or larger */
+          live.classList.toggle('sfBeside', by); size(views[0], by ? kB : kU); };
         /* the breakpoint ("the same control as the Modals doc's"): the title follows it, the step kept */
         const setBp = k => { bp = BPS[k] || k === 'all' ? k : 'xs'; try { localStorage.setItem('everlab:sfBp', bp); } catch (e){}
           el.querySelectorAll('[data-sfbp]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.sfbp === bp)));
