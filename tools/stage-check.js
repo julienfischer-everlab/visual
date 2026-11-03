@@ -59,7 +59,7 @@ const ok = (c, m) => { console.log((c ? 'ok   ' : 'FAIL ') + m); if (!c) fails++
     /* the scroll: at the end the last item in view, above the composer (phone) or inside the canvas (floating) */
     await S('seek', info.duration);
     const sc = await p.evaluate(() => { const n = window.Concierge.stage.node(), col = n.querySelector('.col'), v = n.querySelector('.thread') || n.querySelector('.stgFlV'), last = col.lastElementChild;
-      const m = /translateY\((-?[\d.]+)px\)/.exec(col.style.transform || ''), vr = v.getBoundingClientRect(), lr = last.getBoundingClientRect();
+      const m = /(-?[\d.]+)px/.exec(col.style.top || ''), vr = v.getBoundingClientRect(), lr = last.getBoundingClientRect();
       return { off: m ? +m[1] : 0, inView: lr.bottom <= vr.bottom + 1 && lr.top >= vr.top - 1, lb: lr.bottom, vb: vr.bottom }; });
     ok(sc.off < 0 && sc.inView, k + ': the thread scrolled ' + (-sc.off).toFixed(0) + ' px, the last item in view (' + sc.lb.toFixed(0) + ' <= ' + sc.vb.toFixed(0) + ')');
     for (const [nm, t] of [['typing', 1700], ['thinking', 4200], ['answer', 9000], ['dots', 13300], ['specialist', 21900], ['end', info.duration]]) {
