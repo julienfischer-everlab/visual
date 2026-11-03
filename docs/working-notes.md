@@ -19639,6 +19639,36 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - **Also live now** (every service page's CTA tapped step by step, before and after): Join the call and Join your review (Briefing, Nutrition, Diagnostics Review, Results review), Go to your appointment or assessment (MRI, Skin, Physical), View report (Diagnostics Review, intake), Complete your intake, Confirm delivery and Collect sample (Genetic test), and Add to calendar on every booked page. 30 dead buttons before, none after.
 - **Checked on the same screen**: Back, More (…), the Instructions and Documents tabs and the step card (Your progress) all respond. The referral's **Show** still does nothing: it shares the report and video items' "no action needed on click".
 
+## "add tweak with 3d icon on the left of each label. consider 2 line of text a min, when icon are there"
+
+- **Tweaks › Ask sheet › Icons** (`#stAskIc`, Off / 3D, Off by default): a group of its own under the Overview's Services, shown on the Overview and Insights (the pages whose dock opens the sheet). Saved with Save and put back on load like the others (`html.askIc3d`).
+- **3D**: each Services tile in the Ask Everlab sheet carries its 3D render at the left of its name, 40 square, centred, 12 to the name. Same renders as the Overview's services (one map, `SVC_IMG`): Concierge the bell, Script renewal the pill bottle, Specialist referral the laptop with the doctor, Blood test referral the tubes, Imaging referral the signed sheets. Check Symptoms had none in the sheet: it takes the heart with its pulse card, the Concierge Services slide's render (one more inline of that 9 KB file).
+- **Two lines at least**: with icons on, every name block is two lines tall (2.5em at 14px). "Concierge" sits centred in it, the others wrap to two lines on XS (tile 165 wide); every tile 76 tall (padding kept, 18/20), rows even. S has room for one line each, the tiles keep the two-line height.
+- Over Services › Icons On (render on top): 3D wins while it is on (the disc hidden, the row layout).
+- **Off**: the tiles as before (165 x 54 on XS, measured before and after).
+- Checked with Playwright: the sheet from the dock's assistant button on XS and S, dark and light, Off and 3D, and with Services › Icons On. No desk version (the sheet shows only in the XS/S frame).
+- **Review fixes**:
+  - **Each render inlined once**: the services' render paths are written once, in a shared map at the top of the scripts (`window.EvSvcImg`: concierge, treat, symp, tele, path, cert, gp). The Overview's services and the sheet (`SVC_IMG`), the Concierge Services slide (`CIMG`) and the Async report's recommendation kinds (`RC_IMG`) all read from it. Check Symptoms' heart is no longer in the page twice, and the older doubles (the bottle and the signed sheets 3x, the laptop and the tubes 2x) are gone too.
+  - **Navigation doc**: a new row, "Ask Everlab · icons": Off / 3D, the 40 square render 12 from the name, two lines at least (2.5em), tiles 76 high, padding 18/20, over Services › Icons, and each tile's render.
+  - **Assets library**: svc-symptoms lists the sheet's Check Symptoms tile (Overview and Insights), set by Tweaks › Ask sheet › Icons: 3D.
+  - **Check Symptoms' heart** is drawn 15% larger in its 40 box: its render has more empty margin, so it read smaller than the bell and the bottle.
+
+## "On press, the beam should be there." / "Chat page shouldn't show the drawer when we land on the page"
+
+- **The dock's AI button** (the sparkle beside the island): on press, Eva's beam star's ring and glow (`.evBeamStar`, the Iconography's beam star, not a copy) round its edge. A fresh ring per press, starting at the top, a round in 700 ms, turning while held; let go, it finishes its round (at least one, even on a quick tap), fades in 300 ms, then Ask Everlab opens as before. A key press plays one round first.
+- **One place**: `EvBeamStar.press`, delegated from the document's pointerdown on `.mChat`, so every dock has it (#bpFrame, #phone, #phone2, the Navigation doc's phone); EvAsk's click hands its open to `press.then`. The button's glass sheen keeps its own ::before (the ring is a child span).
+- **Navigation doc**: a new row, "AI button · press": the beam once round its edge.
+- **The Chat's drawer on landing**: at XS the conversations drawer was showing at x=0 on arrival and sliding out over 340 ms. Root cause in concierge.html: the panel's first style is the desk's (sidebar in place), then `layout()` adds `.mob` and the sidebar's transform transition plays it out to its closed place. `layout()` now sets `.mob` with the drawer's transition off for that frame (`.app.noSlide`), so it is closed from the first frame; only the menu button slides it in.
+- **Checked** (rAF-sampled, the drawer's x every frame for 3 s): Page menu at XS and S (drawer closed from the first frame), M and L (the desk's sidebar is the page's column, at x=0, no animation), the hash change to #concierge, the Overview's ask (`_cc.ask`, `_cc.fresh`), Contact us (`_cc.run` with Care team), Persona #2 switched on the Chat, and a saved setup (XS, Persona #2, an edited conversation) reloaded then the Chat opened. The beam: held and quick tap, dark and light, at XS.
+- **Not the Chat**: landing on the URL #concierge opens the Concierge intro flow (the Past results' Concierge, page "Concierge"), not the Chat page; left as is.
+- **Review fixes (beam on press)**:
+  - The open that waits on the beam's round can be stopped: EvAsk's close cancels it (Escape, a change of breakpoint, everlab:mode), a press anywhere else (a tab, the page) cancels it, a double tap opens once, and it only opens on a button still on screen. Before, a tap then Insights opened the card over Insights.
+  - Reduced motion: the ring doesn't turn, so the card opens at once.
+  - The ring is turned so its bright head starts at the top (it started at the lower right).
+  - Light theme: the head was cream on white glass, barely there. The press ring now uses a deeper orange and a slightly wider line on light, as the Overview's field star does. The shared Eva beam star is unchanged.
+  - Still to decide: a quick tap opens Ask Everlab up to 700 ms after the press, while the round finishes. A shorter wait is a one-number change.
+
+
 
 ## "img on parallax so laggy! also use this image"
 
@@ -19697,6 +19727,12 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - **The leave question**: 24 above its title on the phone, so the notch sits 12 above the header.
   - **The Health profile's own page** (its standalone link) lives on its own, so a saved Off never reaches it: it keeps the default, On. The Modals doc says so.
 
+## "remove that, dont need as we have the flow panel" (the Back pill beside the phone)
+- The floating "‹ Back" pill outside the XS phone (.tkFlBack, shown on the profile reached from the welcome) is hidden everywhere; the Flow panel does the stepping back.
+
+## "Create pages (archives) group at the very end of the select Page. Put inside these 2"
+- The page menu ends with a new group "Pages (archives)": Appointment (OLD) and Insights (archives), moved out of Main pages. Both still open as before.
+
 ## "All XS need a minimum height 852px"
 - **XS: 393 x 852 minimum**, written in Design system › General layout › Demo frames (and the XS demo's caption). Every XS phone is the iPhone's screen, never shorter.
 - **The app's XS device (forced XS)**: always 852 tall, centred under the bar as before. A window too short for 852 and 16 above and below no longer cuts the screen shorter (it was 821 at 1440 x 900, 641 at 1280 x 720). The whole device is drawn smaller instead.
@@ -19715,3 +19751,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - **Drags follow the finger in a scaled device**: `evK(el)` (one helper, beside EvSheetSwipe) is how much smaller an element is drawn than its CSS pixels. Without it, content moved slower than the finger (by --bpS: 0.75 at 1280 x 720) and distance thresholds needed more travel. Now divided by it: the Overview's services row, the carousels (insights, rails, services cards, avatars, booked), the organ ages' sheet (its swipe and its 140 pull-down), the Concierge's title carousel (its 64 fade) and the hero carousels. EvSheetSwipe already measured its own scale, so every sheet's swipe was right.
   - **The light carried from the card screen to the Health profile** (Membership onboarding → Get started): placed in the frame's own pixels. On a short window it was 133% of the frame and sat too low; now the same as on a tall one. The frame's clip-path opening from the sheet, and the sphere's hand-over, are in the frame's pixels too.
   - **`--dSt`** is written by resize() as well, not only on .dash's scroll.
+  - **Merged the main branch again** (9d4a84f: the Ask sheet icons, the Back pill beside the phone hidden, the Pages (archives) group): no clash with the frame; dist rebuilt, the XS checks run again (drags follow the finger at 0.75, the More sheet swipe, the carried light, the doc phones at 852).
