@@ -19746,4 +19746,4 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The Plan's Activity plan, Nutrition plan, Medical actions, My supplements, Wind-down routine, and My supplements over the Nutrition plan (__plOpen): their own transform / dim transitions removed, the stage set at once inside the master's move; Back, the crumb, Escape pop.
   - My journey's Past activity: the Past button pushes, its Back pops.
   - Left as they were: main pages, the page menu and links (instant), Past results / Async report / Health profile / Chat / Suggestion (full modals), the marketplace item (a sheet).
-- Checked at XS (in the scaled phone), M and L, dark and light, with reduced motion; frames in the scratchpad (push/). When a service with steps opens, the Flow panel docks and the whole app glides aside over the same 340 ms (it was a jump).
+- Checked at XS (in the scaled phone), M and L, dark and light, with reduced motion; frames in the scratchpad (push/). When a service with steps opens, the Flow panel docks and the whole app moves aside under the same 340 ms move (the page group glides with it).
