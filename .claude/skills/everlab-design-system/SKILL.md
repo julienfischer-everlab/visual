@@ -55,6 +55,7 @@ The page menu `#versionSel` has Documentation (`'doc'`) and Design system (`'ds'
 | Modals doc | `mdDoc` | references/flows-modals.md |
 | Full modal, standalone modals | `.aqWrap.aqDesk.aqFull`, `evSolo` | references/flows-modals.md |
 | Full bottom sheet stacking | `iosLay1` / `iosStk` script | references/flows-modals.md |
+| Sheet header (titled sheets: 24/30 title, compact 32 Close) | `window.EvSheetHead`, `.evShHd/.evShT/.evShX` | references/flows-modals.md |
 | Swipe down to dismiss | `window.EvSheetSwipe`, `window.evK` | references/flows-modals.md |
 | Dismiss master and notch | `window.EvDismiss`, `.evNotch` | references/flows-modals.md |
 | Modals cover the full viewport | `window.EvFullView` | references/flows-modals.md |
@@ -99,8 +100,8 @@ The page menu `#versionSel` has Documentation (`'doc'`) and Design system (`'ds'
 
 - **Desk panels follow the Overview** (#270): gap, top, 12 px corners, ground, padding, title on every panel.
 - **DS "Page types" rule** (#274): Main / Sub pages, every Sub page pushes in and pops out from one master.
-- **Chat top bar controls to full-modal top nav size** (#273) and the **Chat video builder** (#268) on the Concierge chat.
-- Merged on this branch already: **XS 852 minimum** (#266), **Ask sheet icons** (#271), **Plan hover/press on every clickable** (#269, the Plan's interaction states) and the **Top nav master + container tokens** (#260: `EvTopNav`, `--ct2xs`..`--ctLg`, `data-container`; evSolo's head is Top nav C). Places still on their own heads after #260: EvChat `.chHead`, the flows' `.arHeadRow` (44 discs only), the Header tab's `--hdr*` (doc only).
+- **Chat video builder** (#268) on the Concierge chat.
+- Merged on this branch already: **XS 852 minimum** (#266), **Ask sheet icons** (#271), **Plan hover/press on every clickable** (#269, the Plan's interaction states) and the **Top nav master + container tokens** (#260: `EvTopNav`, `--ct2xs`..`--ctLg`, `data-container`; evSolo's head is Top nav C). Places still on their own heads after #260: EvChat `.chHead` and the Concierge `.hd` (36 controls, the master's insets: #273), the flows' `.arHeadRow` (the master's 36 discs only), the Header tab's `--hdr*` (doc only). Top bar discs are 36 everywhere; titled sheets wear the sheet header master (EvSheetHead).
 
 ## Checklist before you ship
 

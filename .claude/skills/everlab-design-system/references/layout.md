@@ -92,21 +92,21 @@ Flow pages cap at 544 on the desk (`width 544; max-width calc(100% - 48px)`).
 
 **Where.** `grep -n -- "--hdrSb:54px"` (~7245); doc CSS `.gl*`; builder `grep -n "const glDoc"` (`nav()`, `phone()`, `demo(k)`). Tab `data-gl="hdr"` (default), link `#general-layout`.
 
-**API.** `--hdrSb:54px; --hdrNav:76px; --hdrSide:16px; --hdrGap:16px; --hdrBtn:44px; --hdrNavT:18px; --hdrNavTL:24px; --hdrQ:32px; --hdrQL:40px; --hdrPg:24px; --hdrPgL:30px; --hdrNavDk:64px; --hdrSideDk:76px; --hdrBtnDk:32px; --hdrPgDk:20px; --hdrPgDkL:26px`. Doc classes `.glFr` (`.glDk`), `.glPart[data-sz]`, `.glSb`, `.glNav`, `.glBtn`, `.glNavT`, `.glTtl` (`.glPg`), `.glBody`, `.glDemo` (`.glDemoxs/.glDemos/.glDemodk`), `.glDemoFoot`, `.glDemoCta`, `.glRed`.
+**API.** `--hdrSb:54px; --hdrNav:68px; --hdrSide:16px; --hdrGap:16px; --hdrBtn:36px; --hdrNavT:18px; --hdrNavTL:24px; --hdrQ:32px; --hdrQL:40px; --hdrPg:24px; --hdrPgL:30px; --hdrNavDk:64px; --hdrSideDk:76px; --hdrBtnDk:36px; --hdrPgDk:20px; --hdrPgDkL:26px`. Doc classes `.glFr` (`.glDk`), `.glPart[data-sz]`, `.glSb`, `.glNav`, `.glBtn`, `.glNavT`, `.glTtl` (`.glPg`), `.glBody`, `.glDemo` (`.glDemoxs/.glDemos/.glDemodk`), `.glDemoFoot`, `.glDemoCta`, `.glRed`.
 
 **Rules (Sizes table).**
 | Row | XS · S | M · L |
 |---|---|---|
 | Status bar | The device's: 54 · time left, island, signals right | None |
 | Nav bar | 76 Hug · 16 sides · 16 between | 64 · 76 sides (the page's column) |
-| Back · Close | 44 circle · ink 7% · 16 icon | 32 circle · ink 7% · 16 icon |
+| Back · Close | 36 circle · ink 7% · 16 icon | 36 circle · ink 7% · 16 icon |
 | Nav title | 18/24 · 500 · left, after Back | None |
 | Title · questionnaire | 32/40 · 500 · −0.4 · 12 above, 32 below: 84 Hug | Same as Title · page |
 | Title · page | 24/30 · 500 · 8 above, 16 below: 54 Hug | 20/26 · 500 · 11 above and below: 48 Hug |
 
 Demo frames: XS 393 x 852, S 600 x 860, desk 720 tall with a 544 column (max-width `calc(100% - 48px)`). Foot: 16 16 34 on the phone (CTA 52, radius 26), 20 0 32 on desk (CTA 48). No saved setup.
 
-**How to use.** For a modal's, sheet's, standalone page's or flow's bar use the Top nav master (next section), not these numbers. Real copies of this tab: Modals doc `.mdNav` (76/64, 16/76 sides, `.mdIc` 44/32), Plan subpages' 24/30 title.
+**How to use.** For a modal's, sheet's, standalone page's or flow's bar use the Top nav master (next section), not these numbers. Real copies of this tab: Modals doc `.mdNav` (68/64, 16/76 sides, `.mdIc` 36 phone and desk), Plan subpages' 24/30 title.
 
 **Pitfalls.** (1) `--hdr*` are read ONLY by the doc's `.gl*`: changing a token changes the doc, not the app. (2) The documented status bar is 54, but forced XS draws a 47 px band and the strip at padding 18 34 4; EvOverlap's bar foot is 130 (54 + 76). (3) Step flow and Modals docs carry their own header rows (e.g. "one row 40 high ... 58 down on XS") that differ; check both.
 
@@ -114,13 +114,13 @@ Demo frames: XS 393 x 852, S 600 x 860, desk 720 tall with a 544 column (max-wid
 
 ## Top nav (`window.EvTopNav`, `.evTn`; General layout > Top nav, merged #260)
 
-**What.** One bar for every modal, sheet, standalone page and flow with a Back and / or a Close. A (title, Close) and B (Back, title, Close): 76 hug. C (no title): a 32 safe space, the controls floating at their place, the page's H1 the first thing in the body, its words faded into the bar once the H1 has gone under it. The ground is always the gradient blur.
+**What.** One bar for every modal, sheet, standalone page and flow with a Back and / or a Close. A (title, Close) and B (Back, title, Close): 68 hug (16 + 36 + 16; was 76). C (no title): a 32 safe space, the controls floating at their place, the page's H1 the first thing in the body, its words faded into the bar once the H1 has gone under it. The ground is always the gradient blur.
 
 **Where.** `grep -n "window.EvTopNav = "` (~19846, header comment); CSS `grep -n "^\.evTn"` (~16643-16680, after the report sheet's styles); doc `grep -n "const glTn\|const glTnWire"` (variants, XS phones at rest / scrolled, desk, rules table). Tab `data-gl="tn"`. concierge.html copies the ground (`.evTnG`) for its head: change both.
 
-**API.** `window.EvTopNav = { html(o), mount(el, o), watch(scroller, nav, h1, o) -> { update }, titled(h1, bar, sheet), variant(o), IB, IX, IM }`. `o = { back, title, close, more, reveal, cls, backCls, closeCls, tag, titleId, backLabel, closeLabel, attr }`; `variant`: title → `'a'` (or `'b'` with back), else `'c'`. Markup `div.evTn.evTnA|B|C[data-tn] > .evTnG (10 <i>) + button.evTnBtn.evTnBk + .evTnT | .evTnFt > span + button.evTnBtn.evTnX|.evTnMore`; `.evTnHasBk`, `.evTnHasX`. The body's H1 gets `.evTnH1` (clearance from the controls). `watch` sets `.evTnOn` (scrollTop > 0: the ground bleeds 24 further), on C `.evTnTitled` (the H1's middle past the controls' foot, once the page has moved) and `.evTnFar` (the H1's column clear of the controls: no clearance). Host tokens `--evTnTop` (54 under the XS status bar, else 0), `--evTnX` (16 phone, 24 desk), `--evTnGnd`, `--evTnInk`; `--evTnD` 44.
+**API.** `window.EvTopNav = { html(o), mount(el, o), watch(scroller, nav, h1, o) -> { update }, titled(h1, bar, sheet), variant(o), IB, IX, IM }`. `o = { back, title, close, more, reveal, cls, backCls, closeCls, tag, titleId, backLabel, closeLabel, attr }`; `variant`: title → `'a'` (or `'b'` with back), else `'c'`. Markup `div.evTn.evTnA|B|C[data-tn] > .evTnG (10 <i>) + button.evTnBtn.evTnBk + .evTnT | .evTnFt > span + button.evTnBtn.evTnX|.evTnMore`; `.evTnHasBk`, `.evTnHasX`. The body's H1 gets `.evTnH1` (clearance from the controls). `watch` sets `.evTnOn` (scrollTop > 0: the ground bleeds 24 further), on C `.evTnTitled` (the H1's middle past the controls' foot, once the page has moved) and `.evTnFar` (the H1's column clear of the controls: no clearance). Host tokens `--evTnTop` (54 under the XS status bar, else 0), `--evTnX` (16 phone, 24 desk), `--evTnGnd`, `--evTnInk`; `--evTnD` 36 (also on `:root`, read by bars with their own markup: the Service detail's, the chats').
 
-**Rules.** A/B: min-height 76 (+ `--evTnTop`), padding 16, gap 16, title 20/28 500 one line. C: height 32 (+ `--evTnTop`), controls absolute 16 down, `--evTnX` in. Discs 44, ink 6%, 16 icon, hover ink 4%, focus 2px #4b7bec. Title appearing 17/22 600, centred between the controls, fade + 6 px rise .25 s. H1 under C: 12 clear of a Close (padding-right 56), 40 lower under a Back. Ground: `--evTnGnd` at `--hoTint` (.85) masked to nothing over 10 backdrop-blur bands (14 px top to 1.5 foot); sticky at its scroller's top. Reduced motion: no transitions.
+**Rules.** A/B: min-height 68 (+ `--evTnTop`), padding 16, gap 16, title 20/28 500 one line. C: height 32 (+ `--evTnTop`), controls absolute 16 down, `--evTnX` in. Discs 36 ("top bar buttons = 36px everywhere", the Suggestion's look before the master; was 44), ink 6%, 16 icon, hover ink 4%, focus 2px #4b7bec. Title appearing 17/22 600, centred between the controls, fade + 6 px rise .25 s. H1 under C: 12 clear of a Close (padding-right 48), 32 lower under a Back. Ground: `--evTnGnd` at `--hoTint` (.85) masked to nothing over 10 backdrop-blur bands (14 px top to 1.5 foot); sticky at its scroller's top. Reduced motion: no transitions.
 
 **How to use.**
 ```js
@@ -129,7 +129,7 @@ EvTopNav.watch(wrap.querySelector('.siScroll'), wrap.querySelector('.prNav'), wr
 ```
 Sites: evSolo (`cls: 'sgmNav'`, Back or Close, title `#<key>T`), Results received / info sheets (`.prNav`), the records filter, the Service detail (`titled()` rule), the Container and Header docs. A control that keeps an old class (`.arClose`, `.prX`) for its handler passes it as `closeCls`/`backCls`.
 
-**Pitfalls.** Never a hand-made head with its own discs or ground. The flows (Async report, Health profile, Step flow) keep their `.arHeadRow` markup (progress rides in it) with the 44 discs only. EvChat's `.chHead` is not on it yet (#273). The old `.sgmHead` is only the fallback when `EvTopNav` is missing.
+**Pitfalls.** Never a hand-made head with its own discs or ground. The flows (Async report, Health profile, Step flow) keep their `.arHeadRow` markup (progress rides in it) with the master's 36 discs only (`.arHeadRow > .arIconBtn` 36 !important). Bars with their own markup take the 36 and the insets: the Service detail (`.svmNav` 72 tall, 18 above and below), the Plan sub pages' Back, EvChat's `.chHead` (16 padding, 36 `.chIcon`), the Concierge's head (concierge.html `.emb .app.mob .hd`: 68 + `--safeT`, 16 down and in, Inbox pill 36). A titled bottom sheet is not a top nav: it wears the sheet header master (references/flows-modals.md). The old `.sgmHead` is only the fallback when `EvTopNav` is missing.
 
 ---
 

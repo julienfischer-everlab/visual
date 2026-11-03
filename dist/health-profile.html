@@ -705,7 +705,7 @@ body { margin: 0; overflow: hidden; background: var(--pg); color: var(--pgFg); f
 .arSheet.arDark .arQaPanel { --ar-paper: #181818; background: #181818; } .arSheet.arDark .arQa:not(.arQaFit) .arQaPanel { background: #181818; }   /* every modal on #181818 in dark ("BG modal dark mode 181818"), the full ones too (they were the page's own); the paper token with it, so what sits on it matches */   /* a full sheet on the page's own colour ("for full modal, use normal body colour"); a sheet that fits its content keeps the lighter grey */
 .arSheet .arQa.arOn .arQaPanel { transform: none; }
 .arSheet .arQaGrab { display: none; } .arSheet .arQaPanel { padding-top: 20px; border-radius: 32px 32px 0 0; }   /* 32 round ("rounded 32px") */   /* no handle at the top ("almost full modal, no notch at the top") */
-.arSheet .arQaHead { flex: none; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 20px 8px; }   /* the title on the close's centre line */
+.arSheet .arQaHead { flex: none; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 20px 8px; --evShPt: 20px; }   /* the sheet header master's row (.evShHd): 24 down (its panel's 20 + 4), the 24/30 title, the 32 close */
 .arSheet .arQaHd { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 .arSheet .arQaT { font-family: var(--ar-font); font-size: 20px; line-height: 24px; font-weight: 570; font-variant-ligatures: no-contextual; color: oklch(var(--ar-ink)); }
 .arSheet .arQaList { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 0 20px; outline-offset: -2px; }
@@ -1044,7 +1044,7 @@ body { margin: 0; overflow: hidden; background: var(--pg); color: var(--pgFg); f
 .bmdOv.bmdDark .bmdOvP { background: #181818; color: #fff; }
 .bmdOv.bmdOn .bmdOvDim { opacity: 1; } .bmdOv.bmdOn .bmdOvP { transform: none; }
 .bmdOvG { display: none; flex: none; width: 36px; height: 5px; margin: 8px auto 12px; border-radius: 3px; background: rgba(127, 127, 127, .35); }
-.bmdOvH { flex: none; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 16px 16px; }
+.bmdOvH { flex: none; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 16px 16px; --evShPt: 20px; }   /* the sheet header master's row (.evShHd): 24 down (the panel's 20 + 4) */
 .bmdOvT { margin: 0; font-size: 20px; line-height: 24px; font-weight: 500; }
 .bmdOvX { appearance: none; -webkit-appearance: none; flex: none; display: grid; place-items: center; width: 36px; height: 36px; padding: 0; border: 0; border-radius: 50%; background: rgba(0, 0, 0, .06); color: inherit; cursor: pointer; } .bmdOv.bmdDark .bmdOvX { background: rgba(255, 255, 255, .1); } .bmdOvX:focus-visible { outline: 2px solid #4b7bec; outline-offset: 2px; }
 .bmdOvB { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 0 16px; scrollbar-width: none; } .bmdOvB::-webkit-scrollbar { display: none; }
@@ -1065,14 +1065,16 @@ html:not(#_m):not(#_d) .aiX { top: -52px; }   /* still 16 above Ask Eva's card *
 html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18px) !important; right: calc(var(--rvSqR, 8cqw) + 4px - 18px) !important; } html:not(#_m):not(#_d) :is(#phone2, body[data-bp="xs"] .dash, body[data-bp="s"] .dash) > .dbM.v9 .dbX { right: calc(var(--rvSqR, 7cqw) + 4px - 18px) !important; } html:not(#_m):not(#_d) .dbM.v9 .dbX::before { left: 14px; top: 14px; }   /* the review's square-corner cross: its centre where it was */
 
 /* ---- Top nav, the master (Design system -> General layout -> Top nav; window.EvTopNav builds it): one bar for every modal, sheet, standalone page and flow with a Back and / or a Close.
-   A, a page title in the bar: 76 hug, 16 all round, the title (20/28, 500, one line) at the left, Close 44 at the right. B: Back 44, the title 16 after it (x 76), Close.
-   C, no title in the bar ("IF no h1 title, keep a safe space at the top. h1 is then part of the Body"): the bar is a 32 safe space only; its controls keep their place (16 down, 16 in, 44) and float over the band's foot
+   A, a page title in the bar: 68 hug (16 + 36 + 16), 16 all round, the title (20/28, 500, one line) at the left, Close 36 at the right. B: Back 36, the title 16 after it (x 68), Close.
+   Discs 36 ("Match the full modals as they looked before": the Suggestion's 36 close beside its H1; was 44).
+   C, no title in the bar ("IF no h1 title, keep a safe space at the top. h1 is then part of the Body"): the bar is a 32 safe space only; its controls keep their place (16 down, 16 in, 36) and float over the band's foot
    and the top of the body; the page's H1 is the first thing in the body, its lines clear of the controls (.evTnH1). Scrolled up under the bar, the H1 comes into it (.evTnFt, centred between the controls, 17/22 600: the Service detail's bar, "fixed gradient blur with title appearing").
    The ground is always the gradient blur ("Top nav always gradient blur by default"): the screen's own colour (--evTnGnd) fading to nothing by a mask (--hoTint at the top, the Header overlap's), over ten backdrop-blur bands (the Overview bar's .ovGround: 14 px at the top to 1.5 at the foot);
    at rest it ends at the bar's foot (nothing under it veiled), and once the content scrolls under it (.evTnOn) it reaches --evTnBleed further, so what passes under fades and blurs in, never a hard cut.
    Type in longhands, the family on its own (a var() falling back to inherit inside a font shorthand voids the whole shorthand).
    Host tokens: --evTnTop (the status bar / safe area above the bar: 0 on the desk), --evTnX (the page's padding/left-right), --evTnGnd (the screen's colour), --evTnInk (its ink) */
-.evTn { --evTnD: 44px; position: sticky; top: 0; z-index: 6; display: flex; align-items: center; gap: 16px; box-sizing: border-box; min-height: calc(var(--evTnTop, 0px) + 76px); margin: 0; padding: calc(var(--evTnTop, 0px) + 16px) var(--evTnX, 16px) 16px; color: var(--evTnInk, currentColor); isolation: isolate; pointer-events: none; }
+:root { --evTnD: 36px; }   /* the Top nav master's disc, read by the bars that keep their own markup (the Service detail's, the chats') */
+.evTn { --evTnD: 36px; position: sticky; top: 0; z-index: 6; display: flex; align-items: center; gap: 16px; box-sizing: border-box; min-height: calc(var(--evTnTop, 0px) + 68px); margin: 0; padding: calc(var(--evTnTop, 0px) + 16px) var(--evTnX, 16px) 16px; color: var(--evTnInk, currentColor); isolation: isolate; pointer-events: none; }
 .evTn > :not(.evTnG) { pointer-events: auto; }
 .evTn.evTnC { height: calc(var(--evTnTop, 0px) + 32px); min-height: 0; padding: 0; }
 .evTnBtn { appearance: none; position: relative; flex: none; display: flex; align-items: center; justify-content: center; width: var(--evTnD); height: var(--evTnD); margin: 0; padding: 0; border: 0; border-radius: 50%; background: var(--evTnDisc, color-mix(in srgb, var(--evTnInk, currentColor) 6%, transparent)); color: inherit; cursor: pointer; -webkit-backdrop-filter: var(--evTnDiscBlur, none); backdrop-filter: var(--evTnDiscBlur, none); transition: box-shadow .15s ease, background-color .28s ease, color .28s ease; }
@@ -1088,8 +1090,8 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
 .evTn.evTnTitled > .evTnFt { opacity: 1; transform: none; }
 .evTn:not(.evTnC) > .evTnFt { display: none; }
 /* the body's H1 under a C bar: its lines clear of the floating Close (the disc and 12), and under a floating Back it starts below the disc (its foot and 12) */
-.evTnC.evTnHasX ~ .evTnH1, .evTnC.evTnHasX ~ * .evTnH1 { padding-right: calc(var(--evTnD, 44px) + 12px); box-sizing: border-box; }
-.evTnC.evTnHasBk ~ .evTnH1, .evTnC.evTnHasBk ~ * .evTnH1, .evTnC.evTnHasBk + .evTnClr, .evTnC.evTnHasBk + * > .evTnClr:first-child { margin-top: calc(var(--evTnD, 44px) - 16px + 12px); }
+.evTnC.evTnHasX ~ .evTnH1, .evTnC.evTnHasX ~ * .evTnH1 { padding-right: calc(var(--evTnD, 36px) + 12px); box-sizing: border-box; }
+.evTnC.evTnHasBk ~ .evTnH1, .evTnC.evTnHasBk ~ * .evTnH1, .evTnC.evTnHasBk + .evTnClr, .evTnC.evTnHasBk + * > .evTnClr:first-child { margin-top: calc(var(--evTnD, 36px) - 16px + 12px); }
 /* no clearance where there is nothing to clear: both discs (the H1 already starts below them), or the column far from the controls (.evTnFar, set by watch(): the desk's 2xs column) */
 .evTnC.evTnHasBk.evTnHasX ~ .evTnH1, .evTnC.evTnHasBk.evTnHasX ~ * .evTnH1, .evTnC.evTnFar ~ .evTnH1, .evTnC.evTnFar ~ * .evTnH1 { padding-right: 0; }
 .evTnC.evTnFar.evTnHasBk ~ .evTnH1, .evTnC.evTnFar.evTnHasBk ~ * .evTnH1, .evTnC.evTnFar.evTnHasBk + .evTnClr, .evTnC.evTnFar.evTnHasBk + * > .evTnClr:first-child { margin-top: 0; }
@@ -1119,8 +1121,17 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
 body[data-bp="xs"], [data-ct-bp="xs"], .aqWrap.aqBpXS { --ct2xs: 100%; } body[data-bp="s"], [data-ct-bp="s"], .aqWrap.aqBpS { --ct2xs: 512px; } body[data-bp="m"], [data-ct-bp="m"], .aqWrap.aqBpM { --ct2xs: 544px; } body[data-bp="l"], body[data-bp="xl"], [data-ct-bp="l"], .aqWrap.aqBpL { --ct2xs: 576px; }   /* [data-ct-bp]: the Container doc reads a breakpoint's tokens off these very rules */
 [data-container] { box-sizing: border-box; width: 100%; margin-left: auto; margin-right: auto; }
 [data-container="2xs"] { max-width: var(--ct2xs); } [data-container="xs"] { max-width: var(--ctXs); } [data-container="sm"] { max-width: var(--ctSm); } [data-container="md"] { max-width: var(--ctMd); } [data-container="lg"] { max-width: var(--ctLg); }
-html:not(#_m):not(#_d) .arSheet .arHead .arHeadRow > .arIconBtn.arIconBtn { width: 44px !important; height: 44px !important; min-width: 44px !important; min-height: 44px !important; }   /* the flows' heads (the Async report, the Health profile, the Step flow master): the Top nav master's 44 discs; their bars keep their own markup for the progress riding in them */
-html:not(#_m):not(#_d) .evTn .evTnBtn.evTnBtn { width: var(--evTnD) !important; height: var(--evTnD) !important; min-width: var(--evTnD) !important; min-height: var(--evTnD) !important; }   /* the master's 44 over the every-dismiss 36 (above), for a control that keeps an old class (.arClose, .prX ...) for its handler */
+html:not(#_m):not(#_d) .arSheet .arHead .arHeadRow > .arIconBtn.arIconBtn { width: 36px !important; height: 36px !important; min-width: 36px !important; min-height: 36px !important; }   /* the flows' heads (the Async report, the Health profile, the Step flow master): the Top nav master's 36 discs; their bars keep their own markup for the progress riding in them */
+html:not(#_m):not(#_d) .evTn .evTnBtn.evTnBtn { width: var(--evTnD) !important; height: var(--evTnD) !important; min-width: var(--evTnD) !important; min-height: var(--evTnD) !important; }   /* the master's disc (--evTnD, 36) for a control that keeps an old class (.arClose, .prX ...) for its handler, whatever that class sizes it */
+/* ---- Sheet header, the master (Design system -> Modals -> Bottom sheet: "titled bottom sheets = the Modals doc's sheet header (24/30 title with a compact close, as the Modals page documents for sheets)"; the doc draws its sheets with these very classes, window.EvSheetHead.html builds them):
+   .evShHd the row: the title at the left, the compact close at the right, 12 apart, both from the row's top (the title 4 lower), 8 to the content under it; its top 24 below the sheet's top, on the phone (the Dismiss master's notch at 8, 4 tall, 12 above the header) and on the desk's centred modal (its 24 padding).
+   --evShPt: what the sheet already gives above the row (its own padding-top, an in-flow grabber): the row adds the rest up to 24. The row keeps the sheet's sides (padding-left/right are the sheet's own).
+   .evShT the title 24/30 500, -0.2, balanced. .evShX the compact close: a 32 circle, ink 7%, its glyph 16 (the every-dismiss 36 above is for the top bars' and the floating closes). A top nav (Back / Close bar) is the Top nav master, never this. */
+html:not(#_s) .evShHd { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; box-sizing: border-box; margin: 0 0 8px; padding-top: max(0px, calc(24px - var(--evShPt, 0px))); padding-bottom: 0; }
+html:not(#_s) .evShHd > .evShT, html:not(#_s) .evShHd > * > .evShT { flex: 1 1 auto; min-width: 0; margin: 4px 0 0; font-size: 24px; line-height: 30px; font-weight: 500; letter-spacing: -.2px; text-wrap: balance; }
+html:not(#_s) .evShHd > div:has(> .evShT) { flex: 1 1 auto; min-width: 0; }
+html:not(#_m):not(#_d) .evShHd .evShX.evShX { appearance: none; -webkit-appearance: none; position: static; flex: none; display: grid; place-items: center; width: 32px !important; height: 32px !important; min-width: 32px !important; min-height: 32px !important; margin: 0; padding: 0; border: 0; border-radius: 50%; background: color-mix(in srgb, currentColor 7%, transparent); color: inherit; cursor: pointer; }
+html:not(#_s) .evShHd .evShX svg { width: 16px; height: 16px; } .evShHd .evShX:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
 
 </style>
 <style>
@@ -1493,7 +1504,7 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
 .arSheet.hpSheet .hpPkCk { display: none; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: oklch(var(--ar-ink)); color: var(--ar-paper); } .arSheet.hpSheet .hpPkI[aria-selected="true"] .hpPkCk { display: grid; }   /* the one picked: a filled round tick */
 .arSheet.hpSheet .hpPop { position: absolute; left: 0; z-index: 25; width: min(100%, 300px); max-height: 320px; overflow-y: auto; box-sizing: border-box; padding: 6px; border-radius: 14px; background: var(--ar-paper); box-shadow: 0 0 0 1px oklch(var(--ar-ink) / .08), 0 18px 44px oklch(0% 0 0 / .2); } .arSheet.hpSheet.arDark .hpPop { background: oklch(21% 0 263.28); }   /* the desk's menu under the field */
 .arSheet.hpSheet .hpConf.hpPk { align-items: flex-end; padding: 0; } .arSheet.hpSheet .hpConf.hpPk .hpConfP { max-width: none; gap: 0; padding: 10px var(--hpSide, 16px) 28px; border-radius: 28px 28px 0 0; box-shadow: 0 -12px 40px oklch(0% 0 0 / .18); opacity: 1; transform: translateY(100%); transition: transform .34s cubic-bezier(.2, .8, .2, 1); } .arSheet.hpSheet .hpConf.hpPk.on .hpConfP { transform: none; }   /* the phone's sheet from the foot, whatever the frame */
-.arSheet.hpSheet .hpPkGrab { align-self: center; width: 36px; height: 4px; margin-bottom: 14px; border-radius: 2px; background: var(--evNotch, var(--evNotchC)); } .arSheet.hpSheet .hpPkH { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; } .arSheet.hpSheet .hpPkT { margin: 0; font-size: 17px; line-height: 22px; font-weight: 500; } .arSheet.hpSheet .hpPkX { appearance: none; display: grid; place-items: center; width: 28px; height: 28px; margin: 0; padding: 0; border: 0; border-radius: 50%; background: oklch(var(--ar-ink) / .1); color: oklch(var(--ar-ink)); cursor: pointer; }
+.arSheet.hpSheet .hpPkGrab { align-self: center; width: 36px; height: 4px; margin-bottom: 14px; border-radius: 2px; background: var(--evNotch, var(--evNotchC)); } .arSheet.hpSheet .hpPk .hpPkP > .hpPkGrab { position: absolute; z-index: 6; top: 8px; left: 50%; margin: 0 0 0 -18px; } .arSheet.hpSheet .hpPkP > .hpPkH { --evShPt: 10px; }   /* the picker's header: the sheet header master's row (.evShHd), 24 down (its 10 + 14), the notch the Dismiss master's, over it (8 down) */ .arSheet.hpSheet .hpPkH { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; } .arSheet.hpSheet .hpPkT { margin: 0; font-size: 17px; line-height: 22px; font-weight: 500; } .arSheet.hpSheet .hpPkX { appearance: none; display: grid; place-items: center; width: 28px; height: 28px; margin: 0; padding: 0; border: 0; border-radius: 50%; background: oklch(var(--ar-ink) / .1); color: oklch(var(--ar-ink)); cursor: pointer; }
 .arSheet.hpSheet .hpPkL { display: flex; flex-direction: column; max-height: min(56vh, 440px); margin: 0 -12px; padding-bottom: 4px; overflow-y: auto; overscroll-behavior: contain; }   /* a tap on one picks it and closes the sheet: no Confirm or Cancel ("tapping a state closes the modal and changes the select"); a long list (the countries) scrolls in it */
 /* step 1's newer fields: Country held (Australia), the address and the ethnicity searched (a magnifier, the matches in a menu under), the six boxes of the code, the declaration's questions each a block */
 .arSheet.hpSheet .hpFLock .hpIn { color: oklch(var(--ar-ink) / .56); box-shadow: inset 0 0 0 1.5px oklch(var(--ar-ink) / .08) !important; cursor: default; }
@@ -1955,7 +1966,7 @@ body.hdrV4[data-bp="xs"] #dOver .dvTop > .hpOvCard { margin-top: 6px; margin-bot
 .ecSheet { align-items: flex-end; } .ecSheet .ecPanel { width: 100%; height: calc(100% - var(--ecTop, 64px)); padding: 8px 16px calc(16px + max(var(--evHome, 0px), env(safe-area-inset-bottom, 0px))); border-radius: 20px 20px 0 0; transform: translateY(100%); transition: transform .42s cubic-bezier(.32, .72, 0, 1); } .ecWrap.ecSheet.ecOn .ecPanel { transform: none; }   /* its actions 16 over the phone's home space (34 on the drawn XS phone: --evHome), or a real phone's own inset */
 .ecDlg { align-items: center; justify-content: center; padding: 32px; } .ecDlg .ecPanel { width: min(800px, 100%); height: min(720px, 100%); padding: 20px 24px 24px; border-radius: 20px; box-shadow: 0 30px 80px rgba(0, 0, 0, .35); opacity: 0; transform: scale(.96); transition: opacity .22s ease, transform .3s cubic-bezier(.2, .8, .2, 1); } .ecWrap.ecDlg.ecOn .ecPanel { opacity: 1; transform: none; }
 .ecStill :is(.ecScrim, .ecPanel) { transition: none; }
-.ecGrab { align-self: center; flex: none; width: 36px; height: 4px; margin: 0 0 10px; border-radius: 2px; background: var(--evNotch, var(--evNotchC)); } .ecWrap { --evNotchC: rgba(17, 17, 17, .1); } .ecWrap.ecDark { --evNotchC: rgba(255, 255, 255, .08); }
+.ecGrab { align-self: center; flex: none; width: 36px; height: 4px; margin: 0 0 10px; border-radius: 2px; background: var(--evNotch, var(--evNotchC)); } .ecSheet .ecGrab { position: absolute; z-index: 6; top: 8px; left: 50%; margin: 0 0 0 -18px; } .ecSheet .ecHead { --evShPt: 8px; } .ecDlg .ecHead { --evShPt: 20px; } .ecSheet .ecHt { margin-top: 6px; }   /* the notch the Dismiss master's (over the sheet, 8 down); the header the sheet header master's row, 24 down (the sheet's 8 + 16, the modal's 20 + 4); the identifier on the close's middle */ .ecWrap { --evNotchC: rgba(17, 17, 17, .1); } .ecWrap.ecDark { --evNotchC: rgba(255, 255, 255, .08); }
 .ecHead { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex: none; padding: 2px 0 12px; } .ecHt { font-size: 16px; line-height: 20px; font-weight: 570; } .ecDlg .ecHt { font-size: 26px; line-height: 30px; letter-spacing: -.2px; }   /* the desk's modal: its header is the title */
 .ecX { display: grid; place-items: center; flex: none; width: 32px; height: 32px; padding: 0; border: 0; border-radius: 50%; background: var(--ecChip); color: var(--ecInk); cursor: pointer; } .ecX svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
 .ecBody { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; outline: none; font-size: 14px; line-height: 21px; color: var(--ecMut); scrollbar-width: thin; } .ecBody p { margin: 0 0 12px; } .ecTitle { margin: 6px 0 12px; font-size: 26px; line-height: 30px; font-weight: 570; letter-spacing: -.2px; color: var(--ecInk); text-wrap: balance; }
@@ -2226,7 +2237,7 @@ window.EvOverlap = (function () {
 })();
 /* EvTopNav: the Top nav master (Design system -> General layout -> Top nav; its CSS .evTn in the report sheet's styles). One bar for every modal, sheet, standalone page and flow that has a Back and / or a Close:
    html({ back, title, close, more, reveal, cls, backCls, closeCls, tag, titleId, backLabel, closeLabel }) -> its markup:
-     a title: A (Close) or B (Back, then the title) -- 76 hug, 16 all round, 44 discs, the title 20/28 500 one line;
+     a title: A (Close) or B (Back, then the title) -- 68 hug, 16 all round, 36 discs, the title 20/28 500 one line;
      no title: C -- a 32 safe space, the controls floating at their place (16 down, 16 in), the page's H1 the first thing in the body (give it .evTnH1: clear of the controls); reveal: the H1's words, faded into the bar once the H1 has gone under it.
    mount(el, o) -> the bar, drawn into el. watch(scroller, nav, h1) -> { update }: the ground's overflow (.evTnOn, the content under it) and, on C, the bar's title (.evTnTitled) once the page has moved and the H1's middle has passed the controls' foot (the Service detail's own rule, titled(), gated on the scroll); .evTnFar when the H1's column is clear of the controls (no clearance).
    The ground (.evTnG) is in every bar: always the gradient blur. Host tokens: --evTnTop, --evTnX, --evTnGnd, --evTnInk */
@@ -2266,6 +2277,14 @@ window.EvTopNav = (function () {
     run(); return { update: run };
   }
   return { html: html, mount: mount, watch: watch, titled: titled, variant: variant, IB: IB, IX: IX, IM: IM };
+})();
+/* EvSheetHead: the sheet header master (Design system -> Modals -> Bottom sheet; its CSS .evShHd in the report sheet's styles, after the Top nav's): a titled bottom sheet's header, the 24/30 title and the compact 32 close.
+   html({ title, tag, id, cls, titleCls, close, closeCls, closeLabel, closeIcon, pre }) -> its markup (pre: what goes above the title in its column, an eyebrow). A sheet built elsewhere wears the classes: .evShHd on its row, .evShT on its title, .evShX on its close. */
+window.EvSheetHead = (function () {
+  var IX = window.EvTopNav.IX;
+  function html(o) { o = o || {}; var tag = o.tag || 'h2', t = '<' + tag + ' class="evShT' + (o.titleCls ? ' ' + o.titleCls : '') + '"' + (o.id ? ' id="' + o.id + '"' : '') + '>' + (o.title || '') + '</' + tag + '>';
+    return '<div class="evShHd' + (o.cls ? ' ' + o.cls : '') + '">' + (o.pre ? '<div>' + o.pre + t + '</div>' : t) + (o.close === false ? '' : '<button type="button" class="evShX' + (o.closeCls ? ' ' + o.closeCls : '') + '" aria-label="' + (o.closeLabel || 'Close') + '">' + (o.closeIcon || IX) + '</button>') + '</div>'; }
+  return { html: html, IX: IX };
 })();
 /* EvMagnet: a row of cards swiped by hand, the magnet one ("if you swipe more than 50%, you go to the second card. If not, you come back to the normal card"), once for every carousel: the Plan's goals, the Services' recommended row.
    Dragged by hand, a mouse as a finger (a mouse cannot pan a scroller, and a press-and-pull only selected the text); a drag more down than across is left to the page's scroll; the row's snapping off while it moves.
@@ -2367,7 +2386,7 @@ window.EvConsent = (function () {
     if (o.top) w.style.setProperty('--ecTop', o.top);   // the sheet's top: under the device's status bar
     p.setAttribute('role', 'dialog'); p.setAttribute('aria-modal', 'true'); p.setAttribute('aria-labelledby', uid); p.tabIndex = -1;
     if (narrow) { var g = mk('i', 'ecGrab'); g.setAttribute('aria-hidden', 'true'); p.appendChild(g); }
-    var hd = mk('div', 'ecHead'), ht = mk('b', 'ecHt', narrow ? (o.id || 'Terms and Conditions') : title), x = mk('button', 'ecX'); ht.id = uid; x.type = 'button'; x.setAttribute('aria-label', 'Close'); x.innerHTML = ICX;
+    var hd = mk('div', 'ecHead evShHd'), ht = mk('b', narrow ? 'ecHt' : 'ecHt evShT', narrow ? (o.id || 'Terms and Conditions') : title), x = mk('button', 'ecX evShX');   /* the sheet header master's row and close (Design system -> Modals: .evShHd); the desk's modal, whose header is its title, its 24/30 title too; the phone's keeps the page's identifier there (its title in the text, the Health profile's 26/30) */ ht.id = uid; x.type = 'button'; x.setAttribute('aria-label', 'Close'); x.innerHTML = ICX;
     hd.appendChild(ht); hd.appendChild(x); p.appendChild(hd);
     var bd = mk('div', 'ecBody'); bd.tabIndex = 0; bd.setAttribute('aria-label', 'The terms, to read');   // its own scroll: the keys move it too
     if (narrow) bd.appendChild(mk('h2', 'ecTitle', title));   // the phone: the page's identifier above, its marketing title over the text
@@ -3120,9 +3139,9 @@ window.EvConsent = (function () {
           var sel = pop.querySelector('[aria-selected="true"]') || pop; try { sel.focus({ preventScroll: true }); } catch (e) {}   // the one picked, else the list itself: no first option ringed as if chosen
         } else {   // the phone: the sheet from the foot, a tap picks and closes it
           var tid = id + 'T', list = h('div', { class: 'hpPkL', role: 'listbox', 'aria-labelledby': tid, tabindex: '-1' }, o.opts.map(item));
-          var x = h('button', { type: 'button', class: 'hpPkX', 'aria-label': 'Close', on: { click: function () { shut(true); } } }, ic(12, P.close, 1.8));
+          var x = h('button', { type: 'button', class: 'hpPkX evShX', 'aria-label': 'Close', on: { click: function () { shut(true); } } }, ic(12, P.close, 1.8));
           var pkDim = h('div', { class: 'hpConfDim', on: { click: function () { shut(true); } } }), pkP = h('div', { class: 'hpConfP hpPkP', role: 'dialog', 'aria-modal': 'true', 'aria-labelledby': tid }, h('span', { class: 'hpPkGrab', 'aria-hidden': 'true' }),
-              h('div', { class: 'hpPkH' }, h('h2', { class: 'hpPkT', id: tid, text: o.title }), x), list);
+              h('div', { class: 'hpPkH evShHd' }, h('h2', { class: 'hpPkT evShT', id: tid, text: o.title }), x), list);
           sheet = h('div', { class: 'hpConf hpPk' }, pkDim, pkP);
           if (window.EvSheetSwipe) window.EvSheetSwipe(pkP, function () { shut(true); }, { handle: '.hpPkGrab, .hpPkH', scrim: pkDim, skip: '.hpPkX', when: function () { return !!sheet; } });   /* a swipe down lets it go (Modals -> Bottom sheet) */
           host.appendChild(sheet); void sheet.offsetWidth; sheet.classList.add('on');
