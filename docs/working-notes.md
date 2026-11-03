@@ -19637,3 +19637,24 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Pages that are not under way (request, suggested, purchase, claim, later, soon, locked, done) are left as they were.
 - **Also live now** (every service page's CTA tapped step by step, before and after): Join the call and Join your review (Briefing, Nutrition, Diagnostics Review, Results review), Go to your appointment or assessment (MRI, Skin, Physical), View report (Diagnostics Review, intake), Complete your intake, Confirm delivery and Collect sample (Genetic test), and Add to calendar on every booked page. 30 dead buttons before, none after.
 - **Checked on the same screen**: Back, More (…), the Instructions and Documents tabs and the step card (Your progress) all respond. The referral's **Show** still does nothing: it shares the report and video items' "no action needed on click".
+
+## The chat video stage: the Concierge draws the AI Chat Video Builder's preview and its MP4 ("Create a 'Marketing' page in assets. Chat builder will be the first test here.")
+
+- **One renderer**: `visuals/concierge.html#stage` (built to `dist/concierge.html`) draws a composition, a conversation over a background, in the phone or floating, with the chat's own CSS and renderers. The builder only edits the JSON. The whole API and model are in docs/chat-video.md.
+- **Composition v1**: `{ v, name, format, background, device, padding, theme, sequence }`. Items are `user` (typing none, dots or text in the composer), `eva` (the thinking line for `think` ms, then the answer, never typed), `specialist` (the card with the avatar first, then the words) and `widget` (a BLOCK, joined to the answer before it).
+- **Time sets everything**: `Concierge.stage.seek(ms)` draws the exact state at ms. That covers the entrances (8 px over 240 ms, widgets 10 px over 300 ms), the 3 x 3 thinking grid and its shimmer, the typing dots, the caret, the send disc and the scroll (500 ms, eased, measured once per load).
+  - No CSS animation or transition runs in the stage. The same ms always gives the same DOM, whether it is reached forward, back or frame by frame. About 0.04 ms per seek.
+  - The scroll moves the column with `top`, not a transform, so a frame reached either way rasterises alike.
+- **The MP4's frames**: `stage.frame(ms, { scale })` returns that same DOM and CSS drawn into a canvas through an SVG foreignObject, with pictures as data URLs. It renders 1080 x 1920 in about 60 ms.
+- **Phone**: the stage draws the master XS frame itself (393 x 852, `--evPhR`, `--evPhBz`, no shadow) with the status bar, the chat's head, the thread, the composer and the home indicator, so the builder draws no frame.
+- **Floating**: the thread alone in a 440 column, anchored at the foot, its top edge faded. In light theme the cards take the booking card's white and shadow so they read on a light ground.
+- **Specialists**: Dr Steven Lu (Preventative Health Doctor, his photo), Dr Sarah Chen (her photo), and Drs Goh, Kerr, Martin, Lim and Okafor by their initials. The clinician card now takes any doctor (`t.dr`).
+- **Widgets**: 30 in `stage.widgets()` by Health, Services and Actions, each with fields and mock data.
+  - New BLOCKs from the chat's own card, type, buttons and tags: Biomarker, Chart, Insight, Results, Protocol, Recommendation, Specialist, Diagnostic, Screening, Referral, CTA, Questionnaire, Upload and Connect wearable.
+  - The appointment card takes its own title, description and picture.
+  - All are in the Components tab under Thinking and typing, Specialists, and Video widgets.
+- **Fix**: the Components tab opened straight from a link (`#components`, the Documentation's gallery) threw an error because the widget list was read before the editor's fields existed. The list is now kept only once the fields are there.
+- **Checked** with `tools/stage-check.js` (Playwright) on visuals/ and dist/:
+  - Phone dark 9:16, phone light 16:9 on a blurred picture, floating dark 1:1 on a cropped picture, and floating light 4:3, each with 7 items.
+  - `seek(t)` twice gives the same DOM and pixels. Forward then back and frame by frame land on the same frame. The thread scrolls with the last item in view.
+  - `frame(t)` is the right size and stable. All 30 widgets draw, with no page errors.

@@ -1698,8 +1698,8 @@
     var repO = Object.keys(REPORTS).map(function (k) { return [k, REPORTS[k].t]; }), imO = Object.keys(IMGS).map(function (k) { return [k, IMGS[k].t]; });
     var specO = SPECS.map(function (s) { return [s.key, s.n]; });
     var T = function (k, l) { return [k, l, 'text']; }, Ar = function (k, l) { return [k, l, 'area']; }, Li = function (k, l) { return [k, l, 'lines']; }, Se = function (k, l, o) { return [k, l, 'select', o]; };
-    var own = function (t) { return (FIELDS[t] || []).map(function (f) { return [f[0], f[1], f[2] || 'text', f[3]]; }); };
-    WCAT = [
+    var own = function (t) { return ((FIELDS || {})[t] || []).map(function (f) { return [f[0], f[1], f[2] || 'text', f[3]]; }); };
+    var cat = [
       ['biomarker', 'Biomarker', 'Health', [T('name', 'Marker'), T('value', 'Value'), T('unit', 'Unit'), Se('st', 'Status', STO), T('date', 'Date'), Ar('d', 'Description'), Li('pts', 'Readings (month value)')],
         { t: 'biomarker', name: 'LDL Cholesterol', value: '3.4', unit: 'mmol/L', st: 'out', date: 'Oct 2026', d: 'Above the optimal range of under 2.6 mmol/L. Worth acting on alongside your ApoB.', pts: ['Mar 2.9', 'Jul 3.1', 'Oct 3.4'] }],
       ['trend', 'Biomarker trend', 'Health', own('trend'), copy(APOB)],
@@ -1747,7 +1747,8 @@
     ].map(function (w) {
       return { key: w[0], label: w[1], category: w[2], fields: w[3].map(function (f) { return { key: f[0], label: f[1], type: f[2] === 'select' || f[2] === 'specialist' ? f[2] : f[2] === 'lines' ? 'lines' : f[2] === 'area' ? 'area' : 'text', options: f[3] ? f[3].map(function (o) { return { value: o[0], label: o[1] }; }) : undefined }; }), preset: w[4] };
     });
-    return WCAT;
+    if (FIELDS) WCAT = cat;   /* kept once the chat's editor fields exist: the Components tab opened at first paint (#components) draws before they are set */
+    return cat;
   };
   var widgetCat = function () { return copy(widgetCat0()); };
   var widgetPreset = function (k) { var w = widgetCat0().filter(function (x) { return x.key === k; })[0]; return w ? copy(w.preset) : null; };
