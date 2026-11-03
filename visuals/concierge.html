@@ -790,6 +790,7 @@
     return '<button class="im cmp"' + at + '><figure><img src="' + IMG.brain + '" alt=""><span class="lab">SEP 2025</span></figure><figure><img src="' + IMG.brain + '" alt=""><span class="lab">SEP 2026</span></figure></button>';
   };
   var GROUP = ['sheet', 'neuro', 'cmp', 'sheet2'];
+  var ROWS = [['review', 'booked', 'Tue 27 Oct, 2:30 PM'], ['dexa', 'open'], ['nutri', 'blocked']];   // the rows widget's own (Components, Tweaks -> Chat -> Conversation)
   var imGroup = function () { return carousel('Images', GROUP.map(function (k, i) { return imTile(k, i); })); };
   var cite = function (k) { return '<button class="cite" type="button" data-act="rep" data-rep="' + k + '">' + ic('doc') + REPORTS[k].t + '</button>'; };
   var BLOCK = {
@@ -1296,6 +1297,7 @@
         sub('Card · wide', '<div class="wrapRow">' + states.map(function (s, i) { return aptCard(keys[i], s[0], s[1]); }).join('') + '</div>') +
         sub('Card · compact', '<div class="wrapRow">' + states.map(function (s, i) { return aptCard(keys[i], s[0], s[1], true); }).join('') + '</div>') +
         sub('Rows', '<div class="rowList">' + states.map(function (s, i) { return aptRow(keys[i], s[0], s[1]); }).join('') + '</div>') +
+        sub('Rows · below an answer', BLOCK.aptRows({ rows: ROWS })) +   // the widget as the chat (and Tweaks -> Chat -> Conversation) draws it
         sub('Group', aptGroup([['review', 'booked', 'Tue 27 Oct, 2:30 PM'], ['dexa', 'open'], ['nutri', 'blocked'], ['mri', 'review', 'Requested 20 Oct'], ['physical', 'done']], 3))) +
       sec('Goals', sub('Single', goalCard(GOALS[0], true)) + sub('Carousel', BLOCK.goals())) +
       sec('Attachments',
@@ -1455,7 +1457,7 @@
        Concierge.field(block, k, v?)     a widget's field read (as the editor shows it) or, with v, a copy of the widget with it written ---------- */
   var WIDGETS = [
     ['apt', 'Appointment card', function () { return { t: 'apt', k: 'review', st: 'booked', date: 'Tue 27 Oct, 2:30 PM AEDT' }; }],
-    ['aptRows', 'Appointment rows', function () { return { t: 'aptRows', rows: [['review', 'booked', 'Tue 27 Oct, 2:30 PM'], ['dexa', 'open'], ['nutri', 'blocked']] }; }],
+    ['aptRows', 'Appointment rows', function () { return { t: 'aptRows', rows: copy(ROWS) }; }],
     ['aptGroup', 'Appointment group', function () { return copy(A.aptGroup.blocks[0]); }],
     ['goals', 'Goals', function () { return { t: 'goals' }; }],
     ['goal', 'Goal', function () { return { t: 'goal', i: 0 }; }],

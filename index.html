@@ -8942,7 +8942,7 @@
   .ccEdW{display:flex;flex-direction:column;gap:5px;} .ccEdWh{display:flex;align-items:center;gap:6px;min-width:0;} .ccEdWh select{flex:1 1 auto;}
   .ccEdL, .ccEdF > span{flex:none;font-size:11px;color:#8b8b90;white-space:nowrap;} .ccEdL{width:44px;}
   .ccEdFs{display:flex;flex-direction:column;gap:4px;}
-  .ccEdF{display:grid;grid-template-columns:62px minmax(0,1fr);align-items:center;gap:6px;margin:0;} .ccEdF.top{align-items:start;} .ccEdF.top > span{padding-top:6px;} .ccEdF input[type="text"]{padding:4px 8px;}
+  .ccEdF{display:grid;grid-template-columns:62px minmax(0,1fr);align-items:center;gap:6px;margin:0;} .ccEdF{align-items:start;} .ccEdF > span{padding-top:5px;} .ccEd textarea.one{min-height:26px;padding:4px 8px;resize:none;}
   .ccEdAddW{align-self:flex-start;padding:2px 6px;border:0;border-radius:6px;background:none;color:#a1a1aa;font:inherit;font-size:11.5px;cursor:pointer;} .ccEdAddW:hover{background:rgba(255,255,255,.08);color:#fafafa;}
   .ccEdFoot{display:flex;flex-wrap:wrap;align-items:center;gap:6px;} .ccEdFoot .ccEdRst{margin-left:auto;} .topbar .ccEdFoot .tkBtn{padding:5px 10px;font-size:11.5px;} .topbar .ccEdFoot .tkBtn:disabled{opacity:.4;cursor:default;}
   .ccEdHint, .ccEdNone{margin:0;font-size:11px;line-height:1.4;color:#8b8b90;} .ccEdNone{padding:2px 4px 4px;}
@@ -44636,8 +44636,8 @@ hairline({
         const rowsFor = v => { let n = 0; String(v || '').split('\n').forEach(l => { n += Math.max(1, Math.ceil(l.length / 38)); }); return Math.max(2, Math.min(9, n)); };   // the field's height where field-sizing is not had
         const fieldHtml = (C, b, f, i, j) => { let v = ''; try { v = C.field(b, f.k); } catch (e){} const p = i + ':f:' + j + ':' + f.k, al = ' aria-label="' + esc(f.l) + '"';
           if (f.kind === 'select') return '<label class="ccEdF"><span>' + esc(f.l) + '</span><select data-p="' + p + '"' + al + '>' + (f.opts || []).map(o => '<option value="' + esc(o[0]) + '"' + (o[0] === v ? ' selected' : '') + '>' + esc(o[1]) + '</option>').join('') + '</select></label>';
-          if (f.kind === 'area') return '<label class="ccEdF top"><span>' + esc(f.l) + '</span><textarea data-p="' + p + '" rows="' + rowsFor(v) + '"' + al + '>' + esc(v) + '</textarea></label>';
-          return '<label class="ccEdF"><span>' + esc(f.l) + '</span><input type="text" data-p="' + p + '" value="' + esc(v) + '"' + al + '></label>'; };
+          if (f.kind === 'area') return '<label class="ccEdF"><span>' + esc(f.l) + '</span><textarea data-p="' + p + '" rows="' + rowsFor(v) + '"' + al + '>' + esc(v) + '</textarea></label>';
+          return '<label class="ccEdF"><span>' + esc(f.l) + '</span><textarea class="one" data-p="' + p + '" rows="1"' + al + '>' + esc(v) + '</textarea></label>'; };   // one line of copy, wrapped when long (Return adds no line)
         const widgetHtml = (C, b, i, j) => { const WS = widgets(), w = WS.find(x => x.t === b.t);
           return '<div class="ccEdW"><div class="ccEdWh"><span class="ccEdL">Widget</span><select data-p="' + i + ':w:' + j + '" aria-label="Widget below this answer"><option value=""' + (w ? '' : ' selected') + '>None</option>' +
             WS.map(x => '<option value="' + x.t + '"' + (w && x.t === w.t ? ' selected' : '') + '>' + esc(x.l) + '</option>').join('') + '</select>' +
@@ -44651,7 +44651,7 @@ hairline({
             '<button type="button" class="ccEdIc" data-a="down" data-p="' + i + ':down" aria-label="Move ' + nm + ' down" title="Move down"' + (i < n - 1 ? '' : ' disabled') + '>' + ICO.down + '</button>' +
             '<button type="button" class="ccEdIc" data-a="del" data-p="' + i + ':del" aria-label="Delete ' + nm + '" title="Delete">' + ICO.del + '</button></div>' +
             '<textarea data-p="' + i + ':text" rows="' + rowsFor(t.text) + '" aria-label="' + nm + ': ' + (r === 'u' ? 'the question' : r === 'doctor' ? 'the care team’s answer' : 'Eva’s answer') + '">' + esc(t.text) + '</textarea>' +
-            (r === 'doctor' ? '<label class="ccEdF"><span>Reply line</span><input type="text" data-p="' + i + ':when" value="' + esc(t.when || '') + '" aria-label="The care team’s reply line"></label>' : '') +
+            (r === 'doctor' ? '<label class="ccEdF"><span>Reply line</span><textarea class="one" data-p="' + i + ':when" rows="1" aria-label="The care team’s reply line">' + esc(t.when || '') + '</textarea></label>' : '') +
             (bs ? '<div class="ccEdWg">' + (bs.length ? bs.map((b, j) => widgetHtml(C, b, i, j)).join('') + '<button type="button" class="ccEdAddW" data-a="wAdd" data-p="' + i + ':wAdd">+ Widget</button>' : widgetHtml(C, { t: '' }, i, -1)) + '</div>' : '') + '</div>'; };
         const marks = () => { if (!host) return; const r = host.querySelector('.ccEdRst'); if (r) r.disabled = !(ED && ED.edited); if (pick && ED){ const o = [...pick.options].find(x => x.value === ED.id); if (o && !/ · edited$/.test(o.textContent) && ED.edited) o.textContent += ' · edited'; }
           const s = SEL >= 0 && ED && ED.turns[SEL] ? ' after turn ' + (SEL + 1) : ' at the end'; host.querySelectorAll('[data-a="addQ"], [data-a="addA"]').forEach(b => { b.title = (b.dataset.a === 'addQ' ? 'Add a question' : 'Add an answer') + s; }); };
@@ -44674,8 +44674,9 @@ hairline({
         const preset = t => { const C = CC(); try { return C && C.preset ? X(C.preset(t)) : null; } catch (e){ return null; } };
         /* typing: its turn's copy, a reply line, a widget's field; drawn in the Chat, the editor left as it is (the caret where it was) */
         if (host) host.addEventListener('input', e => { const el = e.target; if (!ED || !el.dataset || !el.dataset.p || el.tagName === 'SELECT') return; const p = pp(el.dataset.p), t = ED.turns[p.i]; if (!t) return;
-          if (p.k === 'text') t.text = el.value; else if (p.k === 'when') t.when = el.value;
-          else if (p.k === 'f'){ const C = CC(), b = t.blocks && t.blocks[p.j]; if (!C || !b) return; try { t.blocks[p.j] = X(C.field(b, p.f, el.value)); } catch (x){} }
+          const val = el.classList.contains('one') ? el.value.replace(/\s*\n\s*/g, ' ') : el.value;   // a one-line field keeps to one line, pasted or not
+          if (p.k === 'text') t.text = val; else if (p.k === 'when') t.when = val;
+          else if (p.k === 'f'){ const C = CC(), b = t.blocks && t.blocks[p.j]; if (!C || !b) return; try { t.blocks[p.j] = X(C.field(b, p.f, val)); } catch (x){} }
           if (el.tagName === 'TEXTAREA' && !(window.CSS && CSS.supports && CSS.supports('field-sizing', 'content'))){ el.style.height = 'auto'; el.style.height = Math.min(220, el.scrollHeight + 2) + 'px'; }
           push(p.i); });
         /* a choice: a role, a widget, a field's option; drawn in the Chat and here */
@@ -44697,7 +44698,8 @@ hairline({
         if (pick) pick.addEventListener('change', () => { const C = CC(); if (C && pick.value) try { C.go('chat', pick.value); } catch (e){} });   // the Chat opens it, the editor follows (onConv)
         /* selected: the turn pressed or typed in; Escape lets it go (the next one added goes at the end) */
         if (host){ host.addEventListener('focusin', e => { const r = e.target.closest('.ccEdT'); if (r && +r.dataset.i !== SEL) select(+r.dataset.i); });
-          host.addEventListener('keydown', e => { if (e.key === 'Escape' && SEL >= 0){ e.stopPropagation(); select(-1); if (document.activeElement && host.contains(document.activeElement)) document.activeElement.blur(); } }); }
+          host.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.classList && e.target.classList.contains('one')){ e.preventDefault(); return; }
+            if (e.key === 'Escape' && SEL >= 0){ e.stopPropagation(); select(-1); if (document.activeElement && host.contains(document.activeElement)) document.activeElement.blur(); } }); }
         /* dragged by its grip (a mouse in the desk prototype, or a finger): it follows the pointer, passing a neighbour once past half of it, the list scrolling at its edges; dropped, the order the Chat takes */
         if (host){ host.addEventListener('pointerdown', e => { const row = e.target.closest('.ccEdT'); if (!row || !ED) return; if (+row.dataset.i !== SEL) select(+row.dataset.i);
             const gr = e.target.closest('.ccEdGr'); if (!gr || e.button > 0) return; e.preventDefault(); try { gr.setPointerCapture(e.pointerId); } catch (x){}
