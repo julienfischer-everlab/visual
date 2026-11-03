@@ -7168,7 +7168,7 @@
   /* the Gift referral, framed as the Gift receipt: full on a desk (right of the Flow panel), the phone at a forced XS or S */
   .rfPage{display:none;position:fixed;left:0;right:0;bottom:0;top:var(--barH,45px);z-index:9;background:#141414;--evCanvas:#000;}
   body.rfOn .rfPage{display:block;} html.flowDocked body.rfOn .rfPage{left:var(--flDockW,320px);}
-  .rfDev{position:absolute;inset:0;background:#e9e5e0;} .rfDev iframe{display:block;width:100%;height:100%;border:0;}
+  .rfDev{position:absolute;inset:0;background:#e9e5e0;} body:not(.light) .rfDev{background:#000;}   /* the page's desk ground before it loads, as its own (light #e9e5e0, dark #000) */ .rfDev iframe{display:block;width:100%;height:100%;border:0;}
   body.rfOn #inkMenu, body.rfOn .svFloatNav, body.rfOn .tbLay, body.rfOn #tkVisuals, body.rfOn .tkFl, body.rfOn #bpFrame{display:none !important;}
   html:not(.bpAuto) body.rfOn:is([data-bp="xs"], [data-bp="s"]) .rfPage{left:0;background:var(--evCanvas) !important;}
   html:not(.bpAuto) body.rfOn:is([data-bp="xs"], [data-bp="s"]) .rfDev{position:fixed;inset:auto;left:calc(var(--vwC, 50vw) - var(--bpW) / 2);width:var(--bpW);top:var(--bpTop, calc(var(--barH,57px) + 48px));bottom:var(--bpBot, 48px);overflow:hidden;border-radius:var(--evTbR);box-shadow:var(--evTbBz);}
@@ -45213,7 +45213,8 @@ hairline({
       const rf = document.getElementById('rfPage'), RF = [['In the app · More', 'Member'], ['Refer'], ['Contact capture'], ['Sent']];
       let rfAt = 0, rfEl = null;
       const rfXs = () => !document.documentElement.classList.contains('bpAuto') && document.body.dataset.bp === 'xs';
-      const rfSync = () => { const f = document.getElementById('rfFrame'); try { const r = f && f.contentDocument && f.contentDocument.documentElement; if (r) r.classList.toggle('xs', rfXs()); } catch (e){} };
+      const rfLight = () => document.body.classList.contains('light');   // the bar's Colour mode (body.light), as the Gift receipt follows it
+      const rfSync = () => { const f = document.getElementById('rfFrame'); try { const r = f && f.contentDocument && f.contentDocument.documentElement; if (r){ r.classList.toggle('xs', rfXs()); r.dataset.theme = rfLight() ? 'light' : 'dark'; } } catch (e){} };   /* its frame (XS) and its theme: dark or light as the app ("Need to work on dark mode as well!") */
       const rfGo = i => { rfAt = i; const f = document.getElementById('rfFrame'); try { if (f && f.contentWindow && f.contentWindow.rfGo) f.contentWindow.rfGo(i); } catch (e){} rfTl(); };
       const rfTl = () => { const on = document.body.classList.contains('rfOn'); if (window.__flowAv) window.__flowAv('rf', on); if (window.__flowDock) window.__flowDock();
         if (!on || document.documentElement.classList.contains('flowOff')){ if (rfEl) rfEl.hidden = true; if (window.__flowDock) window.__flowDock(); return; }
@@ -45228,12 +45229,13 @@ hairline({
       const rfHide = () => { if (!document.body.classList.contains('rfOn')) return; document.body.classList.remove('rfOn'); if (versionSel && versionSel.value === 'rf') versionSel.value = String(version); rfTl(); if (window.__tkPages) window.__tkPages(); };
       const rfShow = at => { if (!rf) return; hide(); hlHide(); igHide(); rvHide(); gfHide(); clHide(); grHide(); if (window._cn) window._cn.hide(); if (window._doc) window._doc.hide(); if (window._cc) window._cc.hide();
         if (window._hp) window._hp.close(true); if (window._ar && window._ar.isOpen()) window._ar.close(); if (window.__soloClose) window.__soloClose();
-        const dev = rf.querySelector('.rfDev'); if (dev && !dev.firstChild){ const f = document.createElement('iframe'); f.id = 'rfFrame'; f.src = 'referral.html#s=' + (at || 0) + (rfXs() ? '&xs' : ''); f.title = 'Gift referral'; f.addEventListener('load', rfSync); f.addEventListener('load', () => { try { f.contentDocument.querySelectorAll('.bs').forEach(bs => { if (window.EvSheetSwipe) window.EvSheetSwipe(bs, () => { const x = bs.querySelector('.x'); if (x) x.click(); }, { handle: '.grab, .bsH', skip: '.x', when: () => !!bs.parentElement.closest('.on') }); }); } catch (e){} }); dev.appendChild(f); rfAt = at || 0; }   /* its two sheets (Send an invitation, Invitation sent) swipe down as every sheet does, with the app's own helper (EvSheetSwipe): its Close, back to Refer */
+        const dev = rf.querySelector('.rfDev'); if (dev && !dev.firstChild){ const f = document.createElement('iframe'); f.id = 'rfFrame'; f.src = 'referral.html#s=' + (at || 0) + (rfXs() ? '&xs' : '') + (rfLight() ? '&light' : '&dark'); f.title = 'Gift referral'; f.addEventListener('load', rfSync); f.addEventListener('load', () => { try { f.contentDocument.querySelectorAll('.bs').forEach(bs => { if (window.EvSheetSwipe) window.EvSheetSwipe(bs, () => { const x = bs.querySelector('.x'); if (x) x.click(); }, { handle: '.grab, .bsH', skip: '.x', when: () => !!bs.parentElement.closest('.on') }); }); } catch (e){} }); dev.appendChild(f); rfAt = at || 0; }   /* its two sheets (Send an invitation, Invitation sent) swipe down as every sheet does, with the app's own helper (EvSheetSwipe): its Close, back to Refer */
         else if (at != null) rfGo(at);
         rfSync(); document.body.classList.add('rfOn'); if (versionSel) versionSel.value = 'rf'; rfTl(); if (window.__tkPages) window.__tkPages(); try { history.replaceState(null, '', '#gift-referral'); } catch (e){} };
       window._rf = { show: rfShow, hide: rfHide, go: rfGo };
       addEventListener('message', e => { const f = document.getElementById('rfFrame'); if (!f || e.source !== f.contentWindow || !e.data || e.data.everlab !== 'rf:at') return; rfAt = +e.data.i || 0; rfTl(); });   // a CTA in the page moved it on: its step lit
       { const mo = new MutationObserver(() => { if (document.body.classList.contains('rfOn')){ rfSync(); rfTl(); } }); mo.observe(document.body, { attributes: true, attributeFilter: ['data-bp'] }); mo.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] }); }
+      { const t = document.getElementById('themeSel'); if (t) t.addEventListener('change', () => setTimeout(rfSync, 0)); }   // the Colour mode changed: the page's theme with it (body.light is set by the bar's own listener first)
       addEventListener('resize', () => { if (document.body.classList.contains('rfOn')) rfTl(); });
       if (location.hash === '#gift-referral') rfShow();
       addEventListener('hashchange', () => { if (location.hash === '#gift-referral') rfShow(); else rfHide(); });
