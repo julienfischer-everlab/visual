@@ -1387,6 +1387,7 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
 /* the phone: a bottom sheet ("this modal should be a bottom sheet, obviously"), the buttons still side by side; the desk keeps the modal in the middle */
 .aqWrap:is(.aqBpXS, .aqBpS) .arSheet.hpSheet .hpConf { align-items: flex-end; padding: 0; } .aqWrap:is(.aqBpXS, .aqBpS) .arSheet.hpSheet .hpConfP { max-width: none; padding: 28px var(--hpSide) 40px; border-radius: 28px 28px 0 0; box-shadow: 0 -12px 40px oklch(0% 0 0 / .18); opacity: 1; transform: translateY(100%); transition: transform .34s cubic-bezier(.2, .8, .2, 1); } .aqWrap:is(.aqBpXS, .aqBpS) .arSheet.hpSheet .hpConf.on .hpConfP { transform: none; }
 .arSheet.hpSheet .hpConfP .hpH { font-size: 24px; line-height: 28px; } .arSheet.hpSheet .hpConfA { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 18px; } .arSheet.hpSheet .hpConfA .hpBkBtn { height: 52px; }
+.arSheet.hpSheet .hpConfP { --evNotch: oklch(var(--ar-ink) / .2); } .arSheet.hpSheet .hpConfP > .evNotch { display: none; position: absolute; z-index: 6; top: 8px; left: 50%; width: 36px; height: 4px; margin-left: -18px; border-radius: 2px; background: var(--evNotch); } .aqWrap:is(.aqBpXS, .aqBpS) .arSheet.hpSheet .hpConfP > .evNotch { display: block; } html.evDisOff .arSheet.hpSheet .hpConfP > .evNotch, html.evDisOff .aqWrap .arSheet.hpSheet .hpConfP > .evNotch { display: none; }   /* the leave question's notch on the phone (Design system -> Modals -> Dismiss, window.EvDismiss), the pickers' ink; here as well as with the app's .evNotch, so the Health profile's own page draws it too */
 .arSheet.hpSheet .hpLeave { appearance: none; height: 48px; margin: 0; border: 0; border-radius: 9999px; background: none; color: oklch(var(--ar-ink)); font: inherit; font-family: var(--ar-font); font-size: 16px; font-weight: 500; cursor: pointer; } .arSheet.hpSheet .hpLeave:hover { background: var(--ar-card-bg); } .arSheet.hpSheet .hpLeave:focus-visible { outline: 2px solid var(--ar-blue-fg); outline-offset: 2px; }
 @media (prefers-reduced-motion: reduce) { .arSheet.hpSheet :is(.hpConfDim, .hpConfP) { transition: none; } }
 .arSheet.hpSheet.hpAtHome .arHead { position: absolute; left: 0; right: 0; top: 0; z-index: 3; background: transparent; pointer-events: none; } .arSheet.hpSheet.hpAtHome .arHead button { pointer-events: auto; }   /* the intro: the bar over the page, the sphere over it (see .hpScr below) */
@@ -2029,7 +2030,8 @@ window.EvSheetSwipe = function (panel, close, o) {
   o = o || {}; if (!panel || panel._evSw) return panel && panel._evSw; var TH = o.threshold || o.min || 80; if (!o.when && o.can) o.when = o.can;
   var mv = function () { return (typeof o.move === 'function' ? o.move() : o.move) || panel; };
   var scrimOf = function () { return typeof o.scrim === 'function' ? o.scrim() : o.scrim; };
-  var when = function () { if (o.when) return !!o.when(); return /^(xs|s)$/.test(document.body.dataset.bp || ''); };
+  var when = function () { if (window.EvDismiss && !window.EvDismiss.on()) return false;   /* the master's Dismiss off (Design system -> Modals): no swipe on any sheet */
+    if (o.when) return !!o.when(); return /^(xs|s)$/.test(document.body.dataset.bp || ''); };
   var SKIP = 'input, textarea, select, [contenteditable="true"], [data-noswipe], .evNoSwipe' + (o.skip ? ', ' + o.skip : '');
   var inHandle = function (t) { var h = o.handle && t.closest && t.closest(o.handle); return !!(h && panel.contains(h)); };
   var scrolled = function (t) { for (var e = t; e && e !== panel.parentNode; e = e.parentElement) { if (e.scrollHeight > e.clientHeight + 1) { var oy = getComputedStyle(e).overflowY; if ((oy === 'auto' || oy === 'scroll') && e.scrollTop > 0) return true; } if (e === panel) break; } return false; };
@@ -2080,6 +2082,20 @@ window.EvSheetSwipe.auto = function (fams) {
 window.EvSheetSwipe.auto([{ wrap: '.tlSheet', panel: '.tlShPanel', dim: '.tlShDim', x: '.tlShX, .mkDetX', handle: '.tlShGrab, .tlShHead', skip: '.tlShX, .mkDetX', geo: true },
   { wrap: '.shWrap', panel: '.sheet', dim: '.shDim', x: '.shClose', handle: '.shHandle, .rsTop, .oaTop', skip: '.shClose', geo: true },
   { wrap: '.ibWrap', panel: '.ibCard', dim: '.ibDim', x: '.ibX', handle: '.ibHandle, .ibHead', skip: '.ibX' }]);
+/* EvDismiss: the bottom sheets' Dismiss, master in Design system -> Modals ("need a tweak dismiss ON OFF; if yes need a small notch at the top to indicate the action").
+   On (the default, as the app always was): every bottom sheet on the phone wears the notch (.evNotch, or its own grabber) and lets go on a swipe down (EvSheetSwipe).
+   Off: html.evDisOff hides every notch and EvSheetSwipe starts no drag: Close and the scrim only. The doc's Save setup keeps it (everlab:mdMaster), read here on every load; set() is live.
+   notch(el): the shared notch, put in a sheet that has none of its own (the More sheet, the Health profile's leave question) */
+window.EvDismiss = (function () {
+  var K = 'everlab:mdMaster', on = true, root = document.documentElement;
+  var paint = function () { root.classList.toggle('evDisOff', !on); [].forEach.call(document.querySelectorAll('iframe'), function (f) { try { f.contentDocument.documentElement.classList.toggle('evDisOff', !on); } catch (e) {} }); };   /* and the pages in frames (the Gift referral's sheets) */
+  try { var m = JSON.parse(localStorage.getItem(K) || 'null'); if (m && (m.dismiss === 'on' || m.dismiss === 'off')) on = m.dismiss === 'on'; } catch (e) {}
+  paint(); document.addEventListener('load', function (e) { if (e.target && e.target.tagName === 'IFRAME') paint(); }, true);
+  return { K: K, on: function () { return on; },
+    set: function (v) { v = !!v; if (v === on) return; on = v; paint(); try { window.dispatchEvent(new CustomEvent('evdismiss', { detail: on })); } catch (e) {} },
+    save: function () { try { var m = JSON.parse(localStorage.getItem(K) || 'null'); if (!m || typeof m !== 'object') m = {}; m.dismiss = on ? 'on' : 'off'; localStorage.setItem(K, JSON.stringify(m)); return true; } catch (e) { return false; } },
+    notch: function (el) { if (!el || el.querySelector(':scope > .evNotch')) return null; var n = document.createElement('i'); n.className = 'evNotch'; n.setAttribute('aria-hidden', 'true'); el.insertBefore(n, el.firstChild); return n; } };
+})();
 window.EvOverlap = (function () {
   var M = { ty: .25, rise: 32, end: 40, overlap: 28, radius: 24, dim: .35, tint: .85 }, D = JSON.parse(JSON.stringify(M)), root = document.documentElement;
   var red = function () { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
@@ -2625,6 +2641,7 @@ window.EvConsent = (function () {
       var cDim = h('div', { class: 'hpConfDim', on: { click: function () { shutConf(); } } });
       conf = h('div', { class: 'hpConf' }, cDim, panel);
       if (window.EvSheetSwipe) window.EvSheetSwipe(panel, function () { shutConf(); }, { scrim: cDim, handle: '.hpH', when: function () { var w = root.closest('.aqWrap'); return !!conf && !!(w && (w.classList.contains('aqBpXS') || w.classList.contains('aqBpS'))); } });   /* a bottom sheet on the phone (XS, S): a swipe down is Keep going; the desk's modal none */
+      if (window.EvSheetSwipe && window.EvDismiss) window.EvDismiss.notch(panel);   /* its notch, on the phone, while Dismiss is on (Design system -> Modals) */
       root.appendChild(conf); void conf.offsetWidth; conf.classList.add('on');
       keep.addEventListener('click', function () { shutConf(); });
       leave.addEventListener('click', function () { shutConf(function () { if (opts.onClose) opts.onClose(); else home(-1); }); });

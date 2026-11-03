@@ -19517,3 +19517,23 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - The icon motion is part of the class list each page writes (kept by Tweaks › Dock › Icon motion), not put back after it. The phone dock now lights with Beam on every page; it fell back to Pop after the first page before.
   - The plates' CSS and the sidebar's lit() point at each other: a page that lights a plate needs its entry lit there too.
   - Left as it is: on My account with the menu contracted, its entry has no filled state (the library has no account pair yet).
+
+## "Need a tweak dismiss ON OFF. If yes need a small notch at the top to indicate the action."
+- **Design system › Modals: Dismiss On / Off** replaces the Grabber toggle, a segmented pair in the bar (the doc's own control, labelled Dismiss), shown on Bottom sheet · Floating and Full bottom sheet at XS and S (the desk's modals have neither, so it hides at M and L). **Save setup** (new, in the bar; the top bar's Save does the same on this tab) keeps it.
+  - **On** (the default, as the app always was): every layer of the Full bottom sheet wears the notch (36 × 4, 2 corners, the line colour, 8 from the top, 12 above the header), and a swipe down on the top layer (its notch or header, past 80) lets it go, the one behind coming forward; Close and the scrim too. 1, 2 and 3 layers each get it.
+  - **Off**: no notch and no swipe: Close and the scrim only.
+  - The text says so: the side notes' Swipe down is now Dismiss, the Sizes rows Grabber become Dismiss (On = notch + swipe; Off = close only) on both sheet kinds, the old Dismiss rows folded in; the note under the phone follows the setting.
+- **The master** (`window.EvDismiss`, saved as `everlab:mdMaster` `{ dismiss: 'on' | 'off' }`): read on every load, live on a change (no reload). Off puts `evDisOff` on the page's `<html>` (and on same-origin frames: the Gift referral).
+  - **One gate in EvSheetSwipe**: its `when` asks the master first, so no sheet starts a drag while Dismiss is off. The pointer handling is untouched.
+  - **One notch**: `.evNotch` (absolute, 8 from the top, over the sheet, nothing under it moves) for a sheet with no grabber of its own, put in by `EvDismiss.notch(el)`; the grabbers the almost full sheets hid are drawn as it while Dismiss is on.
+  - **Off hides every sheet's notch** with its room kept (no header jumps): .evNotch, .tlShGrab, .shHandle, .ibHandle, .arQaGrab, .ecGrab, .hpPkGrab, .bmdOvG, .plPMdGrab, .plNShGrab, .mdGrab, and the referral's .grab.
+- **The sheets it governs** (on the phone, XS and S):
+  - The More sheet: a notch on its top card now (it had none).
+  - The Services cart (its own notch, as before) and a service's detail from the marketplace (its notch shown now, white over the picture).
+  - The Plan's sheets: a medication or supplement (plPMd), a nutrition row (plNSh).
+  - Every .tlSheet (the service sheets, the steps, the booking, Add to your plan, the service page's More menu); every .shWrap (the reports, the info, the organ ages); every .ibWrap (the inbox, Booked in). The almost full ones (layer 1, and the stack from layer 2) wear the notch now; they had none ("no notch at the top" before, with the swipe already on).
+  - The Async report's See more sheets (Questions and answers, every biomarker): the notch now. The Insights phone's biomarker sheet: the notch now.
+  - The consent sheet (EvConsent), the Health profile's leave question (a notch now), its pickers and the Medicare card example, the Gift referral's two sheets, and the Modals doc's own demo.
+  - Left as they are: the desk's floating modals (no notch, no swipe, either way) and the Activity plan's sheet-shaped page body (its grabber is not a dismiss).
+- **Tweaks**: the Design system pages have no Tweaks group (the panel is hidden on them), so the doc is the one place to set it; nothing in Tweaks can override it.
+- **The Health profile's own page** (dist/health-profile.html) changes too: it carries EvSheetSwipe and EvDismiss, so its leave question wears the notch on the phone (drawn by the Health profile's own styles, in its pickers' ink); with no doc there, Dismiss stays on.
