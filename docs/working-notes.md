@@ -19638,6 +19638,21 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - Pages that are not under way (request, suggested, purchase, claim, later, soon, locked, done) are left as they were.
 - **Also live now** (every service page's CTA tapped step by step, before and after): Join the call and Join your review (Briefing, Nutrition, Diagnostics Review, Results review), Go to your appointment or assessment (MRI, Skin, Physical), View report (Diagnostics Review, intake), Complete your intake, Confirm delivery and Collect sample (Genetic test), and Add to calendar on every booked page. 30 dead buttons before, none after.
 - **Checked on the same screen**: Back, More (…), the Instructions and Documents tabs and the step card (Your progress) all respond. The referral's **Show** still does nothing: it shares the report and video items' "no action needed on click".
+## "On press, the beam should be there." / "Chat page shouldn't show the drawer when we land on the page"
+
+- **The dock's AI button** (the sparkle beside the island): on press, Eva's beam star's ring and glow (`.evBeamStar`, the Iconography's beam star, not a copy) round its edge. A fresh ring per press, starting at the top, a round in 700 ms, turning while held; let go, it finishes its round (at least one, even on a quick tap), fades in 300 ms, then Ask Everlab opens as before. A key press plays one round first.
+- **One place**: `EvBeamStar.press`, delegated from the document's pointerdown on `.mChat`, so every dock has it (#bpFrame, #phone, #phone2, the Navigation doc's phone); EvAsk's click hands its open to `press.then`. The button's glass sheen keeps its own ::before (the ring is a child span).
+- **Navigation doc**: a new row, "AI button · press": the beam once round its edge.
+- **The Chat's drawer on landing**: at XS the conversations drawer was showing at x=0 on arrival and sliding out over 340 ms. Root cause in concierge.html: the panel's first style is the desk's (sidebar in place), then `layout()` adds `.mob` and the sidebar's transform transition plays it out to its closed place. `layout()` now sets `.mob` with the drawer's transition off for that frame (`.app.noSlide`), so it is closed from the first frame; only the menu button slides it in.
+- **Checked** (rAF-sampled, the drawer's x every frame for 3 s): Page menu at XS and S (drawer closed from the first frame), M and L (the desk's sidebar is the page's column, at x=0, no animation), the hash change to #concierge, the Overview's ask (`_cc.ask`, `_cc.fresh`), Contact us (`_cc.run` with Care team), Persona #2 switched on the Chat, and a saved setup (XS, Persona #2, an edited conversation) reloaded then the Chat opened. The beam: held and quick tap, dark and light, at XS.
+- **Not the Chat**: landing on the URL #concierge opens the Concierge intro flow (the Past results' Concierge, page "Concierge"), not the Chat page; left as is.
+- **Review fixes (beam on press)**:
+  - The open that waits on the beam's round can be stopped: EvAsk's close cancels it (Escape, a change of breakpoint, everlab:mode), a press anywhere else (a tab, the page) cancels it, a double tap opens once, and it only opens on a button still on screen. Before, a tap then Insights opened the card over Insights.
+  - Reduced motion: the ring doesn't turn, so the card opens at once.
+  - The ring is turned so its bright head starts at the top (it started at the lower right).
+  - Light theme: the head was cream on white glass, barely there. The press ring now uses a deeper orange and a slightly wider line on light, as the Overview's field star does. The shared Eva beam star is unchanged.
+  - Still to decide: a quick tap opens Ask Everlab up to 700 ms after the press, while the round finishes. A shorter wait is a one-number change.
+
 
 
 ## "img on parallax so laggy! also use this image"
@@ -19696,6 +19711,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - **The scrim above the top sheet closes it in the doc too**: the stack's status bar lets a tap through, so "Close and the scrim" is true at 1, 2 and 3 layers, On and Off.
   - **The leave question**: 24 above its title on the phone, so the notch sits 12 above the header.
   - **The Health profile's own page** (its standalone link) lives on its own, so a saved Off never reaches it: it keeps the default, On. The Modals doc says so.
+
+## "remove that, dont need as we have the flow panel" (the Back pill beside the phone)
+- The floating "‹ Back" pill outside the XS phone (.tkFlBack, shown on the profile reached from the welcome) is hidden everywhere; the Flow panel does the stepping back.
 
 ## "General TOP NAV rule (DS). IF no h1 title, keep a safe space at the top. h1 is then part of the Body" · "Top nav always gradient blur by default" · "The max width container is on the body content! Not the viewport." · "The container and the breakpoint need to be combined"
 

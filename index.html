@@ -8112,6 +8112,9 @@
   .evBeamStar::after{content:'';position:absolute;inset:0;z-index:-1;border-radius:50%;background:conic-gradient(from var(--hpBm), transparent 0deg 50deg, rgb(255 150 70 / .5) 115deg, rgb(255 184 102 / .42) 150deg, rgb(255 150 70 / .2) 185deg, transparent 230deg 360deg);-webkit-mask:radial-gradient(closest-side, transparent 30%, #000 100%);mask:radial-gradient(closest-side, transparent 30%, #000 100%);filter:blur(calc(var(--bsz) / 7));opacity:.55;animation:hpBeam 3.2s linear infinite;pointer-events:none;}
   .evBeamStar svg{width:calc(var(--bsz) * .36);height:calc(var(--bsz) * .36);}
   @media (prefers-reduced-motion: reduce){ .evBeamStar::before, .evBeamStar::after{animation:none;} }
+  .mChat > .evBeamStar.evBsPress{--bsz:var(--navH, 56px);position:absolute;inset:0;width:auto;height:auto;background:transparent;pointer-events:none;opacity:0;transition:opacity .08s ease;} .mChat > .evBsPress.on{opacity:1;} .mChat > .evBsPress.out{opacity:0;transition-duration:.3s;} .mChat > .evBsPress::before, .mChat > .evBsPress::after{animation-duration:.7s;}   /* the dock's AI button pressed (EvBeamStar.press): Eva's beam star's ring and glow on its edge, a round in 700 ms, fading out once let go; the button's glass sheen keeps its own ::before */
+  .mChat > .evBsPress{transform:rotate(-142deg);}   /* the ring's bright head (142deg on its conic) turned to the top, so a press starts there */
+  body.light .mChat > .evBsPress::before{padding:1.5px;opacity:1;background:conic-gradient(from var(--hpBm), transparent 0deg 40deg, rgb(232 105 28 / .6) 90deg, #F07A2E 128deg, #E8691C 142deg, #F07A2E 160deg, transparent 205deg 360deg);} body.light .mChat > .evBsPress::after{opacity:.85;}   /* on the light glass the cream head is lost: warmer, deeper orange and a touch wider (as .ovChatSpark on light) */
   /* ---- Header overlap (EvOverlap; Design system -> General layout -> Header overlap): the hero pinned, the sheet over it, a small parallax. The numbers are tokens the master sets */
   :root{--hoOverlap:28px;--hoRadius:24px;--hoRise:32px;--hoDim:.35;--hoPicPos:50% 22%;}   /* --hoPicPos: the Activity plan photo's framing (the two runners' faces), the page's and the doc's phone alike */
   .hoHero{position:sticky;top:0;z-index:0;}
@@ -19438,6 +19441,7 @@ html.tkFlMove :is(body[data-bp] .dash, body[data-bp] .dash .side, body[data-bp] 
 .tkFlBack { position: fixed; z-index: 77; display: none; align-items: center; gap: 6px; height: 36px; padding: 0 14px 0 10px; border: 1px solid #2a2a2e; border-radius: 18px; background: #131316; color: #e4e4e7; font: 500 13px/1 system-ui, -apple-system, 'Segoe UI', sans-serif; cursor: pointer; box-shadow: 0 6px 18px rgba(0, 0, 0, .35); transition: background .15s ease; } .tkFlBack.vis { display: flex; } .tkFlBack:hover { background: #1d1d21; } .tkFlBack:focus-visible { outline: 2px solid #4b7bec; outline-offset: 2px; }   /* Back to the intro, under the Welcome's +, the + its look */
 .tkFlPlus.vis { display: flex; } .tkFlPlus:hover { background: #1d1d21; } .tkFlPlus.on { background: #fafafa; color: #111; border-color: #fafafa; } .tkFlPlus.on svg { transform: rotate(45deg); } .tkFlPlus svg { transition: transform .2s ease; } .tkFlPlus:focus-visible { outline: 2px solid #4b7bec; outline-offset: 2px; }
 body:is(.docOn, .hlOn) .tkFlPlus, body:is(.docOn, .hlOn) .tkFlPanel { display: none !important; }
+.tkFlBack, .tkFlBack.vis { display: none !important; }   /* no Back pill beside the phone ("remove that, dont need as we have the flow panel"): the Flow panel steps back */
 html.tkDocked .tkFlPlus, html.tkDocked .tkFlPanel { display: none !important; }   /* Tweaks open, the + shortcuts to each screen's own tweaks gone ("if Tweaks general is on, hide all plus shortcuts") */   /* the floating Tweaks beside the phone gone on the pages without one (Documentation, Hairline): its + stood over the documents */
 .topbar .tkPanel.tkFlPanel { position: fixed; z-index: 76; width: 380px; max-height: min(70vh, 560px); box-shadow: 0 18px 50px rgba(0, 0, 0, .5); } .topbar .tkPanel.tkFlPanel[hidden] { display: none; }   /* the open section's group, borrowed from the Tweaks list */
 .hpSim.lt .hpSimB { background: rgba(0, 0, 0, .07); color: #111; }
@@ -19574,6 +19578,28 @@ window.__ccVid = ['assets/hp/concierge.webm', 'assets/hp/concierge.mp4'];   /* t
    or the data-ov contract (data-ov="hero|img|title|sheet"), which bind() turns into those classes. bind(scroller, {hero, short, onFrame}) -> {update}: one rAF per scroller; hero a selector or a function, short true or a function, onFrame(k, on, hero). Every page with it binds here: the Plan's, the Service detail, the Appointment page.
    The numbers are the master's, Design system -> General layout -> Header overlap: saved there (everlab:hoMaster), every page takes them on load */
 window.EvBeamStar = function (size) { var e = document.createElement('span'); e.className = 'evBeamStar'; e.setAttribute('aria-hidden', 'true'); if (size) e.style.setProperty('--bsz', size + 'px'); e.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11 3c.4 4.6 2.4 6.6 7 7-4.6.4-6.6 2.4-7 7-.4-4.6-2.4-6.6-7-7 4.6-.4 6.6-2.4 7-7Z"/><path d="M18.5 14.5c.2 2 1 2.8 3 3-2 .2-2.8 1-3 3-.2-2-1-2.8-3-3 2-.2 2.8-1 3-3Z"/></svg>'; return e; };   // Eva's beam star (.evBeamStar), the one the debrief's last step and the Iconography doc show
+/* EvBeamStar.press: the dock's AI button (.mChat), on press, Eva's beam star's ring once round its edge ("On press, the beam should be there"; Design system -> Navigation -> AI button). One place for every dock (#bpFrame, #phone, #phone2, the Navigation doc's phone): delegated from the document.
+   pointerdown: a fresh ring (so the beam starts at the top), turning while held; let go: it finishes the round it is on (at least one), then fades. then(btn, fn): the button's own action once that round is done (a key press plays one round first) */
+window.EvBeamStar.press = (function () {
+  var RND = 700, live = function (b) { return b && b.querySelector(':scope > .evBsPress:not(.out)'); };
+  var drop = function (r) { r.classList.add('out'); setTimeout(function () { r.remove(); }, 320); };
+  var start = function (b) { var o = live(b); if (o) { clearTimeout(o._t); drop(o); }
+    var r = window.EvBeamStar(); r.innerHTML = ''; r.classList.add('evBsPress'); b.prepend(r); void r.offsetWidth; r.classList.add('on'); r._t0 = performance.now(); r._end = 0; return r; };
+  var end = function (b) { var r = live(b); if (!r) return 0;
+    if (!r._end) { r._end = r._t0 + Math.max(1, Math.ceil((performance.now() - r._t0) / RND)) * RND; r._t = setTimeout(function () { drop(r); }, r._end - performance.now()); }
+    return Math.max(0, r._end - performance.now()); };
+  var held = null;
+  document.addEventListener('pointerdown', function (e) { var b = e.button === 0 && e.target.closest && e.target.closest('.mChat'); if (!b) return; held = b; start(b); }, true);
+  ['pointerup', 'pointercancel'].forEach(function (t) { document.addEventListener(t, function () { if (held) { end(held); held = null; } }, true); });
+  /* the deferred open is the button's own (b._bsOpen): a new one replaces it, cancel(b) drops it (EvAsk's close: Escape, the breakpoint, the mode), and any press elsewhere (a tab, the page) drops every one waiting */
+  var waiting = [], cancel = function (b) { if (!b) { waiting.slice().forEach(cancel); return; } clearTimeout(b._bsOpen); b._bsOpen = 0; waiting = waiting.filter(function (x) { return x !== b; }); };
+  document.addEventListener('pointerdown', function (e) { waiting.slice().forEach(function (b) { if (!b.contains(e.target)) cancel(b); }); }, true);
+  var still = matchMedia('(prefers-reduced-motion: reduce)');
+  return { start: start, end: end, cancel: cancel, then: function (b, fn) { cancel(b);
+    if (still.matches) { var o = live(b); if (o) drop(o); return fn(); }   /* the ring does not turn: no round to wait for */
+    if (!live(b)) start(b); var w = end(b); if (w <= 0) return fn();
+    waiting.push(b); b._bsOpen = setTimeout(function () { b._bsOpen = 0; waiting = waiting.filter(function (x) { return x !== b; }); fn(); }, w); } };
+})();
 /* EvFullView: a modal over the whole app, never only the page it opened from ("modal should ALWAYS cover the full viewport, not just the body"): on the desk, fixed over the app's own window (.dash: the sidebar too), re-fitted on resize; on the phone (XS, S) it already covers the screen */
 window.EvFullView = (function () {
   var held = []; var phone = function () { return /^(xs|s)$/.test(document.body.dataset.bp || ''); };
@@ -33095,6 +33121,7 @@ hairline({
         requestAnimationFrame(() => { wrap.classList.add('on'); card.style.transform = ''; });
       };
       const close = () => {
+        if (window.EvBeamStar && window.EvBeamStar.press) window.EvBeamStar.press.cancel(btn);   /* a tap's open still waiting on its beam round goes too */
         if (!wrap.classList.contains('on')) return;
         inp.blur();
         ph.classList.remove('aiOpen');
@@ -33102,7 +33129,7 @@ hairline({
         wrap.classList.remove('on');
         setTimeout(() => { if (!wrap.classList.contains('on')){ wrap.classList.remove('show'); card.style.transform = ''; } }, 480);
       };
-      btn.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); open(); });
+      btn.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); const bp = window.EvBeamStar && window.EvBeamStar.press; if (bp) bp.then(btn, () => { if (btn.isConnected && btn.getClientRects().length && !btn.closest('[hidden]')) open(); }); else open(); });   /* the beam once round its edge first (EvBeamStar.press), then the card */
       const hubSvc = ph.querySelector('.ovHubSvc');   // Header V2's Services row opens the same sheet
       if (hubSvc) hubSvc.addEventListener('click', e => { e.preventDefault(); open(); });
       wrap.querySelector('.aiDim').addEventListener('click', close);
@@ -45949,6 +45976,7 @@ hairline({
         const T = [['Where', 'Every main page on XS and S: Overview, Insights, My journey, Services. Not on a flow, a modal or a detail page'], ['Island', 'Four tabs and More in one pill · 60 high (--navH) · 30 corners · 4 inside · the glass: blur, a dark plate, a sheen along its top'],
           ['Tab', 'An equal share of the island each (12px labels: as wide as its label) · 52 high · 26 corners · icon 18 (20 with 12px labels, 21 icons only) · label 9 (or 12), 4 under the icon · inactive at 63%'], ['Active', 'The tab lit by a brighter layer of the same glass that slides to the tab tapped · 230 ms cubic-bezier(.2, 1, .3, 1)'],
           ['AI button', '60 circle beside the island · the same glass, a little brighter · the sparkle 20 · a tap opens Ask Everlab, below'],
+          ['AI button · press', 'On press, the beam once round its edge: Eva’s beam star’s ring and its glow (Iconography, below), a round in 700 ms from the top, turning while held · let go, it finishes its round (at least one, even on a quick tap), fades in 300 ms, and Ask Everlab opens (a tap elsewhere, Escape or a change of breakpoint before then: it doesn’t; reduced motion: at once). On light, a deeper orange. Every dock (the phones, the XS frame, this one) from the one place (EvBeamStar.press) · dark and light'],
           ['Ask Everlab · open', 'A card grown out of the AI button: it starts as the button (its rect, as a translate and a scale, round) and opens to its place, 12 off the screen’s sides and foot · 460 ms cubic-bezier(.2, .8, .2, 1) · corners 26 at the top, 44 at the foot (concentric with the screen) · its contents in after 180 ms · the blanket 67%, 350 ms'],
           ['Ask Everlab · card', '#181818 · 16 inside · the field (Ask Everlab anything, the sparkle at its left) and a Close 44 floating 16 above the card · Services under it: the six service tiles as a bento'],
           ['Ask Everlab · typing', 'A tap in the field: the services fold away (their row 1fr → 0fr), the suggestions unfold (four chips for the page behind), a bento button slides in beside the field (56), the keyboard comes up and the card stands on it, 12 above · 320 ms. Let go empty: all back'],

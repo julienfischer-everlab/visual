@@ -487,6 +487,7 @@
   .app.mob .recHd { margin: 26px 10px 6px; font-size: 12px; }
   .app.mob .rec .item { color: var(--fg); }
   .app.mob.drawer .side { transform: none; }
+  .app.noSlide .side, .app.noSlide .scrim { transition: none !important; }   /* layout() turning the panel mobile: the drawer placed closed at once */
   .scrim { position: absolute; inset: 0; z-index: 7; background: var(--scrim); opacity: 0; pointer-events: none; transition: opacity .3s; }
   .app.mob.drawer .scrim { opacity: 1; pointer-events: auto; }
   .app.mob .hd { height: 48px; padding: 0 8px; }
@@ -1300,7 +1301,9 @@
   var layout = function () {
     phone = stage.clientWidth < 720;
     var mob = phone || S.dev === 'mob';
-    app.classList.toggle('mob', mob); stage.classList.toggle('dvMob', !phone && S.dev === 'mob'); document.body.classList.toggle('phoneMode', phone);
+    var was = app.classList.contains('mob');
+    app.classList.toggle('mob', mob); stage.classList.toggle('dvMob', !phone && S.dev === 'mob');
+    if (mob !== was){ app.classList.add('noSlide'); getComputedStyle($('.side')).transform; requestAnimationFrame(function () { app.classList.remove('noSlide'); }); }   /* the panel turning mobile (on load, embed('phone'), a narrower window): the sidebar goes straight to its closed drawer place, not sliding out across the chat on arrival ("Chat page shouldn't show the drawer when we land on the page"); only the menu button slides it in */ document.body.classList.toggle('phoneMode', phone);
     if (!mob) app.classList.remove('drawer');
     placeholder();
     carSync();
