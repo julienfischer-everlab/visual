@@ -109,9 +109,6 @@ src = src.replace(/assets\/[A-Za-z0-9_\-./]+?\.(webp|png|jpe?g|gif|svg|mp4|webm|
   // the Concierge page (visuals/concierge.html), built beside it with its pictures inlined, as the prototype opens it: concierge.html
   // a page's pictures (assets/…, or ../assets/… from visuals/), inlined as data: URIs; how many
   const inline = txt => { let n = 0; const out = txt.replace(/(?:\.\.\/)?assets\/[A-Za-z0-9_\-./]+?\.(webp|png|jpe?g|gif|svg)\b/g, ref => { const f = path.join(root, ref.replace(/^\.\.\//, '')); if (!fs.existsSync(f)){ console.warn('missing asset, left as a path: ' + ref); return ref; } n++; return 'data:' + MIME[ref.split('.').pop().toLowerCase()] + tagOf(ref) + ';base64,' + fs.readFileSync(f).toString('base64'); }); return [out, n]; };
-  { const [cc, n] = inline(fs.readFileSync(path.join(root, 'visuals', 'concierge.html'), 'utf8'));
-    fs.writeFileSync(path.join(root, 'dist', 'concierge.html'), cc);
-    console.log('concierge ' + kb(cc.length) + '  (' + n + ' pictures inlined, dist/concierge.html)'); }
   // the Gift page (visuals/gift.html, the "Unwrap gift-FINAL" page, its pictures already inside it), the Clinic's Testing locations (visuals/clinic.html) and the Gift receipt (visuals/gift-receipt.html), beside it as the prototype opens them: gift.html, clinic.html, gift-receipt.html; and the Gift referral (visuals/referral.html): referral.html
   /* a page's Google Fonts (Geist, Newsreader, ...: open-licence faces only; the brand's own faces are never put in a page) inlined as data: URIs, latin and latin-ext only, so the page needs no font host and the top bar's Screenshot can draw its text in its own faces (a picture drawn from the page cannot fetch a font in the artifact). Fetched once with curl (the proxy's), kept in tools/.fontcache (not committed); no network and no cache: the link is left as it was */
   const fontCache = path.join(__dirname, '.fontcache'), UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36';
@@ -134,8 +131,16 @@ src = src.replace(/assets\/[A-Za-z0-9_\-./]+?\.(webp|png|jpe?g|gif|svg|mp4|webm|
     try { new Function(ovJs); } catch (e) { throw new Error('build: the EvOverlap script cut from index.html does not parse (cut short at an inner line-start IIFE end?): ' + e.message); }   /* a cut that ends early must fail the build, not the page */
     if (!/\bbind\s*[:=]/.test(ovJs) || !/\bmark\s*[:=]/.test(ovJs)) throw new Error('build: the EvOverlap script cut from index.html has no bind / mark');
     return { 'EvOverlap css': '<style data-master="EvOverlap">/* from index.html (tools/build.js): Design system -> General layout -> Header overlap, and the Overview bar blur bands it draws on */\n' + gnd.join('\n') + '\n  ' + ovCss + '\n</style>',
-             'EvOverlap js': '<script data-master="EvOverlap">/* from index.html (tools/build.js): the header overlap master, its saved setup (everlab:hoMaster) applied on load */\n' + ovJs + '\n</script>' }; })();
+             'EvOverlap js': '<script data-master="EvOverlap">/* from index.html (tools/build.js): the header overlap master, its saved setup (everlab:hoMaster) applied on load */\n' + ovJs + '\n</script>',
+             /* the phone's drawn keyboard (EvKbd), for the Chat page: the Overview's own keys, not a second keyboard ("Use same keyboard as the overview top chat field"); its CSS section "Phone keyboard" and the window.EvKbd IIFE */
+             'EvKbd css': '<style data-master="EvKbd">/* from index.html (tools/build.js): Design system -> the phone keyboard */\n  ' + cut('/* ---- Phone keyboard (EvKbd;', '/* ---- end Phone keyboard ---- */', 'the phone keyboard CSS') + '\n</style>',
+             'EvKbd js': (() => { const j = cut('window.EvKbd = (function () {', '\n})();', 'the EvKbd script') + '\n})();'; try { new Function(j); } catch (e) { throw new Error('build: the EvKbd script cut from index.html does not parse: ' + e.message); } if (!/\bhtml\s*:/.test(j) || !/\bwire\s*:/.test(j)) throw new Error('build: the EvKbd script cut from index.html has no html / wire'); return '<script data-master="EvKbd">/* from index.html (tools/build.js): the phone keyboard master */\n' + j + '\n</script>'; })() }; })();
   const withMasters = (txt, n) => txt.replace(/<!--ev:master ([A-Za-z]+ (?:css|js))-->/g, (m, k) => { if (!masters[k]) throw new Error('build: no master ' + k + ' for ' + n); return masters[k]; });
+  /* the Concierge page, its pictures inlined and its masters put in (the phone keyboard, EvKbd: <!--ev:master EvKbd css--> / js) */
+  { const [cc, n] = inline(withMasters(fs.readFileSync(path.join(root, 'visuals', 'concierge.html'), 'utf8'), 'concierge'));
+    if (!cc.includes('data-master="EvKbd"')) throw new Error('build: the Concierge page did not get the EvKbd master');
+    fs.writeFileSync(path.join(root, 'dist', 'concierge.html'), cc);
+    console.log('concierge ' + kb(cc.length) + '  (' + n + ' pictures inlined, the EvKbd master put in, dist/concierge.html)'); }
   for (const n of ['gift', 'clinic', 'gift-receipt', 'referral']){ const [t0, k] = inline(withMasters(fs.readFileSync(path.join(root, 'visuals', n + '.html'), 'utf8'), n)), [t, nf] = inlineFonts(t0);   // the Clinic's logos (assets/clinic/) inlined; the fonts too; a master where a page asks for one
     fs.writeFileSync(path.join(root, 'dist', n + '.html'), t);
     console.log(n + ' ' + kb(t.length) + '  (' + k + ' pictures, ' + nf + ' font files inlined, dist/' + n + '.html)'); }
