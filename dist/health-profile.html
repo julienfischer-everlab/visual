@@ -2074,7 +2074,7 @@ html .arSheet.hpSheet.hpGfSolo.hpGfAtIn:not(.hpGfOnSheet) .arHead .arIconBtn.arI
 .arSheet.hpSheet .hpGfSum .hpSumR:last-child { box-shadow: none; }
 .arSheet.hpSheet .hpGfSub { display: block; margin-top: 2px; font-size: 13px; line-height: 17px; color: oklch(var(--ar-ink) / .56); overflow-wrap: anywhere; }
 .arSheet.hpSheet .hpGfQ { margin-top: 20px; text-align: center; }
-/* the checkout and payment received: the order's card, the sections' titles, the key-value rows */
+/* the checkout: the order's card, the sections' titles, the key-value rows */
 .arSheet.hpSheet .hpGfItem { gap: 12px; padding: 16px; }
 .arSheet.hpSheet .hpGfItemR { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; align-items: start; gap: 12px; }
 .arSheet.hpSheet .hpGfThumb { display: block; width: 56px; height: 56px; border-radius: 12px; background: var(--hpLivPic) 50% 40% / cover no-repeat; }
@@ -2088,12 +2088,17 @@ html .arSheet.hpSheet.hpGfSolo.hpGfAtIn:not(.hpGfOnSheet) .arHead .arIconBtn.arI
 .arSheet.hpSheet .hpGfKvs { padding: 0 16px; }
 .arSheet.hpSheet .hpGfKv { display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 12px; padding: 12px 0; box-shadow: inset 0 -1px 0 oklch(var(--ar-ink) / .08); font-size: 14px; line-height: 20px; }
 .arSheet.hpSheet .hpGfKv:last-child { box-shadow: none; } .arSheet.hpSheet .hpGfKv span { color: oklch(var(--ar-ink) / .56); } .arSheet.hpSheet .hpGfKv b { font-weight: 400; color: oklch(var(--ar-ink)); overflow-wrap: anywhere; }
-.arSheet.hpSheet .hpGfTagW { display: flex; justify-content: flex-start; }   /* the tag in the column, at its left, on the desk too (the page's children take the column; the pill alone kept its width) */
 .arSheet.hpSheet.hpGfPaying .arHead .arIconBtn { opacity: .32; pointer-events: none; }   /* paying: Back and Close held */
-.arSheet.hpSheet .hpGfTag { display: inline-flex; width: auto; padding: 4px 10px; border-radius: 9999px; background: color-mix(in srgb, var(--hpOk) 14%, transparent); color: var(--hpOk); font-family: var(--ar-font-mono); font-size: 11px; line-height: 16px; font-weight: 570; letter-spacing: 1px; text-transform: uppercase; }
 .arSheet.hpSheet .hpGfH1.hpGfH1Ink { margin: 16px 0 12px; font-size: 34px; line-height: 38px; color: oklch(var(--ar-ink)); }
-.arSheet.hpSheet .hpGfDone .hpGfIn2 { margin-top: 12px; }
-.arSheet.hpSheet .hpGfMsg { gap: 8px; padding: 20px; } .arSheet.hpSheet .hpGfMsgT { margin: 0; font-family: 'Tobias', 'Tobias Light', 'Tobias Regular', Georgia, 'Times New Roman', serif; font-size: 20px; line-height: 26px; color: oklch(var(--ar-ink)); overflow-wrap: anywhere; } .arSheet.hpSheet .hpGfMsg > span { font-size: 13px; line-height: 17px; color: oklch(var(--ar-ink) / .56); }
+/* the last page, the Gift receipt itself (gift-receipt.html in a frame, its master; "This is the Receipt! already designed"): the whole sheet, the bar over it holding the Close alone (no ground, as on the intro), no foot (its own Back to overview);
+   the frame faded in once loaded. Without the page beside it (the Health profile published alone), its words on the sheet (.hpGfDone) and Done */
+.arSheet.hpSheet:has(.hpView > .hpScr.hpGfRc:last-child) .arHead { position: absolute; left: 0; right: 0; top: 0; z-index: 7; background: none; }
+.arSheet.hpSheet:has(.hpView > .hpScr.hpGfRc:last-child) .arHead::before, .arSheet.hpSheet:has(.hpView > .hpScr.hpGfRc:last-child) .arHead::after { display: none; }
+.arSheet.hpSheet:has(.hpView > .hpScr.hpGfRc:last-child) .arFoot { display: none; }
+.arSheet.hpSheet .hpScr.hpGfRc, .arSheet.hpSheet.hpWide:not(.hpAtHome) .hpScr.hpGfRc { display: block; padding: 0; overflow: hidden; }
+.arSheet.hpSheet .hpScr.hpGfRc > .hpGfRcF, .arSheet.hpSheet.hpWide:not(.hpAtHome) .hpScr.hpGfRc > .hpGfRcF { position: absolute; inset: 0; display: block; width: 100%; max-width: none; height: 100%; margin: 0; border: 0; background: none; }
+.arSheet.hpSheet .hpGfRcF { opacity: 0; transition: opacity .32s ease; } .arSheet.hpSheet .hpGfRcF.hpGfRcOn { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .arSheet.hpSheet .hpGfRcF { transition: none; } }
 @media (prefers-reduced-motion: reduce) { .arSheet.hpSheet :is(.hpPlan, .hpGfChip, .hpPlanX svg, .hpGfMark) { transition: none; } }
 
 </style>
@@ -2836,9 +2841,9 @@ window.EvConsent = (function () {
   var AREA = {}; AREAS.forEach(function (a, i) { a.i = i; AREA[a.k] = a; });
   AREA.res = { k: 'res', t: 'Your past results', s: '', steps: ['search', 'cc'], sub: ['Past results', 'Concierge'], i: 2 };   /* then the Concierge's introduction ("next screen needs to be a Concierge intro, with CTA Go to overview") */   /* the past results search, after the three ("You're all set" -> "Next: your past results", the capture): a page of its own, not a step; the bar's three dashes full (i: the last) */
   /* Send a gift ("Create the Send Gift Page flow in standalone flow"; Standalone flow -> Send a gift, #send-gift): a standalone flow on the profile's own step system ("use the same step system layout as the Health profile promise and detail"):
-     the intro (the header overlap's hero, EvOverlap), seven form steps ("n of 7", EvSteps.progress), the checkout, then payment received. Opened on its own (mount's solo 'gift'), never one of the profile's stages; its answers this sitting's only */
+     the intro (the header overlap's hero, EvOverlap), seven form steps ("n of 7", EvSteps.progress), the checkout, then the Gift receipt (the page itself, this gift in it). Opened on its own (mount's solo 'gift'), never one of the profile's stages; its answers this sitting's only */
   var GF = ['intro', 'where', 'fit', 'who', 'plan', 'when', 'note', 'pay', 'checkout', 'done'], GF_FORM = 7;   /* where..pay: the seven form steps, 1 of 7 to 7 of 7 */
-  var GFN = { intro: 'Intro', where: 'Where they live', fit: 'Is Everlab right for them?', who: 'Who it’s for', plan: 'Choose the gift', when: 'Occasion and date', note: 'Their note', pay: 'Check and pay', checkout: 'Checkout', done: 'Payment received' };
+  var GFN = { intro: 'Intro', where: 'Where they live', fit: 'Is Everlab right for them?', who: 'Who it’s for', plan: 'Choose the gift', when: 'Occasion and date', note: 'Their note', pay: 'Check and pay', checkout: 'Checkout', done: 'Receipt' };   /* the last page the Gift receipt itself (visuals/gift-receipt.html): "This is the Receipt! already designed" */
   AREA.gift = { k: 'gift', t: 'Send a gift', s: 'About two minutes', steps: GF.slice(), sub: GF.map(function (k) { return GFN[k]; }), i: 0 };
   var GF_PLAN = {   /* the two plans a gift can be, the board's words ("Protocol A$2,999", "Diagnostics A$1,199"); New Zealand's prices a draft ("New: New Zealand with NZ prices") */
     prot: { n: 'Protocol', full: 'Everlab Protocol Plan', d: 'Our most advanced health assessment, designed to detect, prevent and reverse risk of disease.', L: ['10 consultations across the plan', '90+ blood biomarkers incl. OrganAge, a DEXA body composition scan and a heart health assessment', 'Full physical assessment including strength, stability and VO2 max', 'A personalised health and performance program built around their lifestyle', 'Structured re-testing of key biomarkers to track progress'] },
@@ -3967,7 +3972,7 @@ window.EvConsent = (function () {
     };
 
     /* ---------- Send a gift (solo 'gift'; "Create the Send Gift Page flow in standalone flow"): its pages, each built here from the profile's own parts (q, choice, field, telF, lbl, two, the summary rows, the calendar),
-       on the step system: the intro, then where, fit, who, plan, when, note, pay (1 to 7 of 7), the checkout and payment received. The board's words; its orange tags notes, not words on screen ---------- */
+       on the step system: the intro, then where, fit, who, plan, when, note, pay (1 to 7 of 7), the checkout and the Gift receipt. The board's words; its orange tags notes, not words on screen ---------- */
     var EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/, GP = {};   /* GP: the checkout's card, this page's only, never saved */
     var gfName = function (ans, dflt) { return (ans.first || '').trim() || dflt; };
     var gfMobOk = function (ans) { var d = digits(ans.mob, 10); return ans.ctry === 'NZ' ? d[0] === '2' && d.length >= 8 && d.length <= 10 : d.length === 9 && d[0] === '4'; };
@@ -4172,15 +4177,26 @@ window.EvConsent = (function () {
       ok();
     };
     BUILD['gift.done'] = function (scr, ans) {
-      /* payment received: the giver's page once they've paid (the Gift receipt's words): the tag, the title, when it goes and where the receipt went, their message, the gift's summary; Done closes */
-      var d = gfDate(ans.date), nm = gfName(ans, 'them'), occ = name(GF_OCC, ans.occ), nt = gfNoteT(ans), k = ans.plan || 'prot';
-      scr.classList.add('hpGfDone');
-      add(scr, [h('div', { class: 'hpGfTagW' }, h('span', { class: 'hpGfTag', text: 'Payment received' })), h('h2', { class: 'hpGfH1 hpGfH1Ink', text: 'Your gift for ' + nm + ' is all set' }),
-        h('p', { class: 'hpD', text: (ans.dlv === 'date' && d ? 'We’ll email it to them on ' + gfDay(d, false) + '.' : 'We’ve emailed it to them just now.') + ' Your receipt is on its way to ' + ((ans.pEmail || '').trim() || 'your inbox') + '.' }),
-        h('p', { class: 'hpHelp hpGfIn2' }, 'Already an Everlab member? ', link('Sign in', function () { if (opts.onClose) opts.onClose(); })),   /* the member's app: the flow closed, the Overview under it */
-        gfSec('Your message', h('div', { class: 'hpCard hpGfMsg' }, h('p', { class: 'hpGfMsgT', text: nt || 'Someone wanted you to have this.' }), h('span', { text: 'From ' + gfFrom(ans) }))),
-        gfSec('Gift summary', h('div', { class: 'hpCard hpGfKvs' }, gfKv('Gift', GF_PLAN[k].full), gfKv('For', ((ans.first || '') + ' ' + (ans.last || '')).trim()), gfKv('Sent to', (ans.email || '').trim()), gfKv('From', gfFrom(ans)), gfKv('Occasion', occ || 'None'), gfKv('Delivery', ans.dlv === 'date' && d ? gfDay(d, false) : 'Sent at once')))]);
+      /* the Gift receipt, the page itself (visuals/gift-receipt.html, the master; "This is the Receipt! already designed"), not a page of its own: framed full in the sheet, this gift on its link (#gift=), dressed by the Gift receipt's settings
+         (Tweaks -> Gift receipt, the app's window._gr: Background, Header, Card visual, Properties, Split cards; Delivery this gift's; In app on, the flow being the app's). Its Back to overview ends the flow, the Overview under it; the bar's Close too, never asking.
+         The flow's own foot not shown (CSS). Where the page is not beside this one (the Health profile published alone: no window._gr), its words alone on the sheet, and Done */
+      var d = gfDate(ans.date), sch = ans.dlv === 'date' && !!d, nm = gfName(ans, 'them'), k = GF_PLAN[ans.plan] ? ans.plan : 'prot', occ = name(GF_OCC, ans.occ), nt = gfNoteT(ans), gr = window._gr;
       foot2('Done', true, fwd);
+      if (!gr || !gr.src) {
+        scr.classList.add('hpGfDone');
+        add(scr, [h('h2', { class: 'hpGfH1 hpGfH1Ink', text: sch ? 'Your gift is all set' : 'Your gift is on its way' }),
+          h('p', { class: 'hpD', text: 'Thank you for giving ' + nm + ' the gift of health. We’ll let ' + nm + ' know ' + (sch ? 'on ' + d.getDate() + ' ' + MON[d.getMonth()] : 'shortly') + ', and your receipt is on its way to ' + ((ans.pEmail || '').trim() || 'your inbox') + '.' })]);
+        return;
+      }
+      scr.classList.add('hpGfRc');
+      var gift = { first: (ans.first || '').trim(), last: (ans.last || '').trim(), email: (ans.email || '').trim(), product: GF_PLAN[k].n + ' membership', items: GF_PLAN[k].L.slice(), dlv: sch ? 'date' : 'now', date: sch ? ans.date : '', occ: occ || '', msg: nt ? '“' + nt + '”' : 'Someone wanted you to have this.', pEmail: (ans.pEmail || '').trim() };
+      var th = function () { return root.classList.contains('arDark') ? 'dark' : 'light'; };
+      var f = h('iframe', { class: 'hpGfRcF', title: 'Gift receipt', src: gr.src({ theme: th(), still: !!opts.snap, gift: gift }) });
+      f._dress = function () { if (gr.dress) gr.dress(f, { theme: th(), sched: sch, inApp: true, still: !!opts.snap }); };   /* again on a theme change (INST.theme) */
+      f.addEventListener('load', function () { f._dress(); f.classList.add('hpGfRcOn'); });
+      if (opts.snap) f.setAttribute('tabindex', '-1');
+      else { var onMsg = function (e) { if (!f.isConnected) { removeEventListener('message', onMsg); return; } if (e.source !== f.contentWindow || !e.data || e.data.everlab !== 'gr:overview') return; removeEventListener('message', onMsg); if (alive && A === 'gift') fwd(); }; addEventListener('message', onMsg); }   /* its Back to overview: the flow's end (fwd, the last page: onClose) */
+      scr.appendChild(f);
     };
     /* the demo: a tap in a form fills it ("when I click whatever field, simulate all the fields completed so I can continue"): its empty answers from the demo member's, the page drawn again with them; once filled, the fields edit as usual */
     var FILL = { 'wear.promise': ['tc', 'find'], 'wear.details': ['first', 'last', 'sex', 'dob', 'occ', 'state'], 'wear.address': ['addr'], 'wear.emergency': ['ecn', 'ece', 'ecp', 'ecr'], 'wear.mobile': ['mob'], 'wear.otp': ['otp'], 'wear.medicare': ['mc', 'mcn', 'irn', 'exp'], 'wear.declare': ['hdC', 'hdM', 'hdA', 'hdAT', 'hdS', 'hdF', 'hdFT'], 'wear.health': ['country', 'eth', 'goals'], 'past.time': ['day', 'time', 'tz'], 'you.about': ['country', 'goals', 'occ'] };
@@ -4208,7 +4224,7 @@ window.EvConsent = (function () {
       goId: function (k, id) { if (!AREA[k]) return false; var i = stepsOf(k).indexOf(id); if (i < 0) return false; if (k !== 'res' && root.classList.contains('hpSolo')) { root.classList.remove('hpSolo'); landAt = null; if (opts.onUnsolo) opts.onUnsolo(); } if (ORD.indexOf(k) > 0) { linear(k); save(true); } area(k, 0, i); return true; },   // a later step's page: the steps before it done (linear)   // a step's page from Past results on its own: the profile again round it   // a stage at a named page (Tweaks' page lists), wherever its order puts it
       where: function () { return { a: A, i: I }; },
       note: function () { noteBack(); },   // the note from Steven (the prototype's Back from the home), Let's begin played backwards
-      theme: function (t) { root.classList.toggle('arDark', t === 'dark'); },
+      theme: function (t) { root.classList.toggle('arDark', t === 'dark'); [].forEach.call(root.querySelectorAll('iframe.hpGfRcF'), function (x) { if (x._dress) x._dress(); }); },   // Send a gift's receipt with it
       destroy: function () { if (alive) tell(null); alive = false; clearInterval(pt); if (opts.solo === 'gift' && !opts.snap && S.a.gift) { delete S.a.gift; save(true); } if (root.parentNode) root.parentNode.removeChild(root); },   /* a gift's answers this sitting's only */
       refresh: function () { if (!alive) return; if (!A) home(0); else if (A === 'wear') { I = Math.min(I, stepsOf('wear').length - 1); step(0); } }   // step 1's order changed: the home's lines, or the page now at this place
     };
