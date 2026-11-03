@@ -19766,3 +19766,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
   - **The Activity plan's first tab** keeps its whole plate: the tab bar takes 10 of room each side (the plate's own overhang), and its hairline is drawn on the content box only, so the line still runs the column's width.
   - **Light sheet, supplement tiles**: a hairline round the warm-grey bottle tile in every state, as the medications' have, so its edge shows on the pressed plate.
   - Merged the main branch (Ask sheet icons, EvSvcImg, Pages archives), dist rebuilt from the merge; sweep again at XS dark and L light: 98 / 102 controls, plate on, no box moved; tiles 80 / 56 / 80 on every page and both modals.
+
+## "Create a skill for all Design system element"
+- **Project skill `.claude/skills/everlab-design-system/`**: SKILL.md (the master principle, how to work, house rules with the parse-check and build commands, a table of every element to its reference, a checklist before shipping) and five references: layout.md, flows-modals.md, navigation-icons-motion.md, chat.md, tokens-components.md.
+- 53 elements, each with what, where (grep anchors, since lines move), API, rules and numbers, how to use from a real call site, pitfalls.
+- Written from this branch: XS 852 (fit-scaling, --bpS / html.bpFit, evK) and the Ask sheet icons are documented as merged.
+- Marked "being reworked", to refresh after they merge: Top nav + container tokens (#260), desk panels follow the Overview (#270), Plan hover/press (#269), Chat top bar (#273), Chat video builder (#268), Page types (#274).
