@@ -53,6 +53,16 @@ const arLk = window.EvSteps.look();
 
 ---
 
+## Modal context: a modal that takes over owns Tweaks and Flow while it is up (`window.EvCtx`)
+
+**Rule.** While a page over the app or a modal that takes it over is up, Tweaks shows only its groups (none: the Tweaks button hides, and the panel opens again as it goes if it was open) and Flow only its flow panel (none: the Flow button hides); the page's come back when it closes. Its tweaks are the ones its own page shows from the Page menu. The latest up wins (a sheet over a modal over a page: the sheet).
+
+**Where / API.** `grep -n "window.EvCtx = "` (just before `tkPages`); the table of contexts in the `EvCtx.add` list under it and in docs/working-notes.md. `EvCtx.add({ key, label, tweaks: [data-pages keys] or a function of its step, flow: flow-panel key(s), on() })`, `top()`, `cur()`, `key()`, `tweaks(ctx)`, `flow(k)`, `kick()`, `list()`; `html[data-tk]` = the key up; `everlab:ctx` on change. `tkPages` reads `top()` (`[data-tl]` groups are key `tl`, `[data-svc]` key `svc`); every Flow panel asks `window.__flowOk(key)` (`__flowPanel`, the journey, the reveal's timeline, the referral).
+
+**How to use.** A new modal or page over the app: one `EvCtx.add` entry (its `on()` from its open class), its Tweaks group's `data-pages` carrying its key, its flow panel's key in `flow`. A sheet that is a step of a flow (the profile's pickers and consent, a service's steps and Booked in, the Timeline's row sheet, the Plan's Sub pages) is not registered: it keeps its flow's. Re-reads on class changes of the html, the body and the overlays (one frame later) and every 500 ms; no call needed on open or close.
+
+---
+
 ## Full modal shell (`.aqWrap.aqDesk.aqFull`) and `evSolo`
 
 **What.** The Full modal: a page of its own over the app (Health profile, Async report, Concierge, Suggestion, Doctor's suggestion, Personal recommendation). `evSolo` is the shell factory for the standalone full modals: `.aqWrap.aqDesk.aqFull.evSolo` with an `.arSheet.sgmSheet` (head with title + close/back, scroller `.sgmScr`, pinned footer `.arFoot.sgmFoot`).

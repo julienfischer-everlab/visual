@@ -138,7 +138,7 @@ const ring = EvTl.enter(sheet.querySelector('.evTl'), a, d);   /* in evSolo ente
 
 **What.** The prototype's control panel: per-page groups of controls, saved together and shared with everyone through the artifact's store.
 
-**Where.** `grep -n 'id="tkMenu"'` (`.tkPanel`, `.tkHead`: `.stTkSave`, `.stTkReset`, `.tkX`); groups after it; `tkPages` (which groups show); two-option select → `.tgl` switch (exclusion list); `select.tkSegSel` → `.tkSegT`; Save/Reset `grep -n "tweaks/shared\|everlab:tkPages"`; `.tkGroup[data-sec]` Overview section cards.
+**Where.** `grep -n 'id="tkMenu"'` (`.tkPanel`, `.tkHead`: `.stTkSave`, `.stTkReset`, `.tkX`); groups after it; `tkPages` (which groups show: the page's, or only those of the page or modal over it, `window.EvCtx`, flows-modals.md); two-option select → `.tgl` switch (exclusion list); `select.tkSegSel` → `.tkSegT`; Save/Reset `grep -n "tweaks/shared\|everlab:tkPages"`; `.tkGroup[data-sec]` Overview section cards.
 
 **API.** `<div class="tkGroup" data-pages="ov"><div class="tkSub">Heading</div><div class="tkRow"><span class="lbl">Label</span><select id="stXxx" aria-label="...">...</select></div></div>`. `data-pages` keys: ov, ins, lp, ar, hp, wel, plan, cc, sug, dsg, prc, gift, gr, clinic (space-separated). Also `data-tl`, `data-sec`, `data-fl`. `tkPages(m, extra)`, `window.__tkPages()`. Ids `st*` (dock `dk*`); `tkSegSel`; `.tkProxy` and `.inkHex` not saved; hidden input + `button.tgl[role=switch]` for custom switches.
 

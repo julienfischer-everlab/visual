@@ -5794,7 +5794,7 @@
   body:is(.asyncD, .asyncM) .topbar{z-index:61;}   /* the step navigator (50) under it too ("the tweaks should always be above everything") */   /* the bar, and its Tweaks panel, over the report, the desk's (40) and the phone's (60) ("tweak should go above screen") */
   body.asyncM #phone2 .aqWrap.aqPhone{display:block;position:absolute;inset:0;z-index:60;pointer-events:auto;border-radius:inherit;overflow:hidden;}
   .aqDim{position:absolute;inset:0;background:rgba(0,0,0,.45);opacity:0;transition:opacity .35s ease;}
-  html.evCover body :is(.dash, .ccPage, .gfPage, .clPage, .cnPage, .grPage, .rfPage){visibility:hidden !important;}   /* the page under a full modal that covers it, once the modal is up: not painted, so it can never show through it (see the script by evSolo) */
+  html.evCover body :is(.dash, .gfPage, .clPage, .cnPage, .grPage, .rfPage), html.evCover:not([data-tk="cc"]) body .ccPage{visibility:hidden !important;}   /* the Chat opened over the modal (EvCtx: the Chat on top) shows over it, as its Tweaks say; under it, not painted */   /* the page under a full modal that covers it, once the modal is up: not painted, so it can never show through it (see the script by evSolo) */
   .aqWrap.on .aqDim{opacity:1;} .aqWrap.hpBs:is(.aqBpXS, .aqBpS) .aqDim{background:rgba(0,0,0,.72);}   /* the full bottom sheets over a page (Past results, the Concierge, the welcome as a sheet): a first layer, the page only under the blanket at 72%, as the master ("first layer just overlap the screen, no stacked effect"; at 45% the page's top read as a card behind) */
   .aqFrame{position:absolute;left:50%;bottom:0;width:min(100%, 480px);height:calc(100% - 24px);transform:translate(-50%, 104%);transition:transform .5s cubic-bezier(.2,.8,.2,1);border-radius:24px 24px 0 0;overflow:hidden;box-shadow:0 -20px 80px rgba(0,0,0,.45);}
   .aqPhone .aqFrame{left:0;width:100%;height:calc(100% - 52px);transform:translateY(104%);}
@@ -9272,7 +9272,7 @@
   body.m9.tlOn .dash .side .nvOver{background:none;color:inherit;}
   body.m9.tlOn .dash .side .nvTl{background:#1e1e1c;color:#ececec;}   /* the page lights Timeline */
   body.light.m9.tlOn .dash .side .nvTl{background:#ece4d3;color:#2e241c;} body.light.m9.tlOn .dash .side .nvOver{background:none;}
-  #tkMenu [data-tl], #tkMenu [data-svc]{display:none !important;} body.tlOn:not(.svcOn) #tkMenu [data-tl], body.svcOn #tkMenu [data-svc], body.aptOn #tkMenu [data-svc], body:has(#phone2.svcOn) #tkMenu [data-svc], body:has(#phone2.aptOn) #tkMenu [data-svc]{display:flex !important;} body.tlOn #tkMenu [data-pages], body.svcOn #tkMenu [data-pages], body.aptOn #tkMenu [data-pages], body:has(#phone2.svcOn) #tkMenu [data-pages], body:has(#phone2.aptOn) #tkMenu [data-pages]{display:none !important;} html body:is(.sugOn, .dsgOn, .prcOn):not(#sg_) #tkMenu :is([data-tl], [data-svc]){display:none !important;} html body.sugOn:not(#sg_) #tkMenu .tkGroup[data-pages~="sug"]:not([hidden]), html body.dsgOn:not(#sg_) #tkMenu .tkGroup[data-pages~="dsg"]:not([hidden]), html body.prcOn:not(#sg_) #tkMenu .tkGroup[data-pages~="prc"]:not([hidden]){display:block !important;}   /* the Suggestion over them: its own tweaks only */   /* the phone's service and appointment screens too ("no need the Overview tweak here") */   /* on the Timeline, only its own tweaks */
+  #tkMenu [data-tl], #tkMenu [data-svc]{display:none !important;} #tkMenu :is([data-tl], [data-svc]):not([hidden]){display:flex !important;}   /* the Timeline's own groups on the Timeline, a service's on a service or appointment screen (the phone's too: "no need the Overview tweak here"), the Overview's none there: tkPages shows them by the context up (EvCtx: tl, svc), and never under a modal over them (the Suggestion, the Chat...: its own tweaks only) */
   /* one rule for every sticky top bar ("the total height of the sticky is 100: 50% full black, the other 50% a black gradient, plus 32px bleeding
      outside; the blur the same, over the remaining 50% + 32"): the tint and the blur both run the bar's height + 32px; the top half solid,
      then an eased fade to nothing at 32px under the bar; the blur in ten stacked bands (no mask: a masked backdrop blur drew a hard line in
@@ -12910,7 +12910,7 @@
         <!-- each group is a card of its own inside the panel ("use the cards
              style for the grouping inside the dropdown"): heading and rows
              on one tinted, rounded ground -->
-        <div class="tkGroup" data-pages="ov"><div class="tkSub">Top Chat AI</div><div class="tkRow"><span class="lbl">Full modal</span><select id="stTopChat" class="tkSegSel" aria-label="The top chat field on the phone"><option value="full" selected>On</option><option value="kb">Off</option></select></div></div>   <!-- first in Tweaks ("modal tweak?": easy to find); the top chat field on the phone: the desk's search as a full modal, or the keyboard and chips ("top bar: add a tweak group Top Chat AI; same structure as desktop, suggestions and past conversations; a full modal") -->
+        <div class="tkGroup" data-pages="ov srch"><div class="tkSub">Top Chat AI</div><div class="tkRow"><span class="lbl">Full modal</span><select id="stTopChat" class="tkSegSel" aria-label="The top chat field on the phone"><option value="full" selected>On</option><option value="kb">Off</option></select></div></div>   <!-- first in Tweaks ("modal tweak?": easy to find); the top chat field on the phone: the desk's search as a full modal, or the keyboard and chips ("top bar: add a tweak group Top Chat AI; same structure as desktop, suggestions and past conversations; a full modal") -->
         <div class="tkGroup" data-pages="ins">
         <div class="tkSub">Biomarkers tab</div>
         <!-- the desk's page tabs: a line with an underline, or the phone's segmented pill ("insights desktop need a tweak for chip: inline / segmented tab as the mobile view") -->
@@ -13715,7 +13715,7 @@
         <div class="tkRow"><span class="lbl">Style</span><select id="stSvcSty" class="tkSegSel" aria-label="The Overview's services: pills, or Apple's cards (the picture on top, the title under it)"><option value="pill" selected>Pills</option><option value="apple">Apple</option></select></div>   <!-- "the same style as Apple, with the image on the top and the title below" -->
         </div>
         <!-- the Ask Everlab sheet (the dock's assistant button): its Services tiles, the names alone, or each with its 3D render at the left and two lines of name at least ("add tweak with 3d icon on the left of each label") -->
-        <div class="tkGroup" data-pages="ov ins"><div class="tkSub">Ask sheet</div>
+        <div class="tkGroup" data-pages="ov ins ask"><div class="tkSub">Ask sheet</div>   <!-- and alone while the sheet is up (EvCtx: ask) -->
         <div class="tkRow"><span class="lbl">Icons</span><select id="stAskIc" class="tkSegSel" aria-label="The Ask Everlab sheet's services: the names alone, or each with its 3D render at the left"><option value="off" selected>Off</option><option value="3d">3D</option></select></div>
         </div>
         <!-- the Health profile ("add a Health Profile card to the Overview"): its card's section, and the profile's demo states ("include examples of the not-started, in-progress and completed states"); Saved, what was last done in it here -->
@@ -29834,6 +29834,65 @@ hairline({
     // than rolling like a drum, so it is a strip of its own.
     v4Take(document.getElementById('arcA'), document.getElementById('v4Gauge'));
   }
+  /* ---- EvCtx, the master of what Tweaks and Flow speak to ("When a modal take over the page, the tweak should be related to the active modal!!!!!! and flow as well if any") ----
+     every page laid over the app and every modal that takes it over is a context: { key, label, tweaks: the data-pages keys of its groups ([] none: the Tweaks button goes),
+     flow: its Flow panel's key(s) (none: the Flow button goes), on() }. The context up that came up last decides (a sheet over a modal over a page: the sheet; two up at once, the later in this list);
+     none up, the page's own (its mode's groups, its own flows). A modal's tweaks are the ones its own page shows from the Page menu. Read again one frame after any open or close (a class on the html,
+     the body or an overlay, an overlay put in or taken out, a page change), at every tkPages, and twice a second besides. window.EvCtx = { add(ctx), top(), cur(), key(), flow(k), kick(), list() };
+     'everlab:ctx' on the document when it changes. The table of contexts: docs/working-notes.md */
+  window.EvCtx = (() => {
+    const L = [], at = {}; let n = 0, sig = null, q = 0, last = null;
+    const read = () => { let t = null; L.forEach(d => { let on = false; try { on = !!d.on(); } catch (e){} if (!on){ delete at[d.key]; return; } if (!at[d.key]) at[d.key] = ++n; if (!t || at[d.key] > at[t.key]) t = d; }); return (last = t); };   // each one's moment up, kept while it stays up: the latest up on top
+    const fl = d => d && d.flow ? [].concat(d.flow) : [];
+    const tw = d => { let v = d && d.tweaks; if (typeof v === 'function') try { v = v(); } catch (e){ v = []; } return (v || []).slice(); };   // its keys, or a function of its step (Send a gift's receipt)
+    const run = () => { q = 0; const t = read(), k = t ? t.key : '', s = t ? k + ':' + tw(t).join(' ') : ''; if (s === sig) return; sig = s; document.documentElement.dataset.tk = k;
+      if (window.__tkPages) try { window.__tkPages(); } catch (e){}
+      document.dispatchEvent(new CustomEvent('everlab:ctx', { detail: { key: k, tweaks: t ? tw(t) : null, flow: t ? fl(t) : null } })); };
+    const kick = () => { if (!q) q = requestAnimationFrame(run); };
+    const api = { add: d => { L.push(d); kick(); return api; }, top: read, cur: () => last, key: () => { const t = read(); return t ? t.key : ''; }, tweaks: tw,
+      flow: k => { const t = read(); return !t || fl(t).indexOf(k) >= 0; },   // a Flow panel may show: nothing over the page (the page's own), or the context's own
+      kick, list: () => L.map(d => ({ key: d.key, label: d.label, tweaks: tw(d), flow: fl(d), up: !!at[d.key] })) };
+    /* what opens and closes them: the html's and the body's classes (the pages, the standalones), an overlay's own (.on, .hpOpen, .shut), one put in or taken out (the Ask search, a standalone's wrap) */
+    const W = '.hpWrap, .aqWrap, .chWrap, .evSrch, .aiWrap, .tlSheet, .shWrap, .siWrap, .ibWrap, .mvWrap, .ccPage, #phone, #phone2, .hpGfSolo, .hpAtLtr';
+    const hit = x => x.nodeType === 1 && x.matches(W);
+    new MutationObserver(rs => { for (const r of rs){ if (r.type === 'attributes'){ if (r.target === document.body || r.target === document.documentElement || hit(r.target)) return kick(); continue; }
+      for (const x of r.addedNodes) if (hit(x)) return kick(); for (const x of r.removedNodes) if (hit(x)) return kick(); } })
+      .observe(document.documentElement, { subtree: true, childList: true, attributes: true, attributeFilter: ['class', 'data-bp'] });
+    document.addEventListener('everlab:mode', kick); document.addEventListener('everlab:hpstep', kick); setInterval(run, 500);   // a step of the profile's sheet (a context's tweaks by its step)
+    return api; })();
+  { const B = c => document.body.classList.contains(c), Q = s => !!document.querySelector(s);
+    const up = s => { for (const e of document.querySelectorAll(s)) if (!e.closest('#docPage') && e.getClientRects().length) return true; return false; };   // drawn, in the app (not a Documentation demo phone's)
+    const gift = () => Q('.hpWrap.hpOpen .hpGfSolo'), hp = () => !gift() && B('hpOn') && Q('.hpWrap.hpOpen:not(.hpWelF)') && !Q('.hpWrap.hpOpen .hpAtLtr');
+    [ /* pages laid over the app, reached from inside it too (a dock tab, a card, a More row, a link) */
+      { key: 'plan', label: 'Plan', tweaks: ['plan'], on: () => B('plOn') },   // its Sub pages (Activity, Nutrition, Medical actions, Supplements, Wind-down) and their sheets its own
+      { key: 'mk', label: 'Services marketplace', on: () => B('mkOn') },
+      { key: 'acc', label: 'My account', on: () => B('accOn') },
+      { key: 'tl', label: 'Timeline', tweaks: ['tl'], on: () => B('tlOn') },   // its groups: .tkGroup[data-tl]
+      { key: 'svc', label: 'Service detail', tweaks: ['svc'], flow: 'svc', on: () => B('svcOn') || B('aptOn') || Q('#phone2.svcOn, #phone2.aptOn') },   // .tkGroup[data-svc]; an appointment's too; its steps' sheets its own
+      { key: 'gift', label: 'Gift', tweaks: ['gift'], on: () => B('gfOn') },
+      { key: 'clinic', label: 'Testing locations', tweaks: ['clinic'], on: () => B('clOn') },
+      { key: 'gr', label: 'Gift receipt', tweaks: ['gr'], on: () => B('grOn') },
+      { key: 'rf', label: 'Gift referral', flow: 'rf', on: () => B('rfOn') },
+      { key: 'cn', label: 'Consent', on: () => B('cnOn') },
+      /* the modals that take over: full modals, full bottom sheets, the chats */
+      { key: 'ar', label: 'Async report', tweaks: ['ar'], flow: 'ar', on: () => B('arOpen') },
+      { key: 'hp', label: 'Health profile', tweaks: ['hp'], flow: ['jny', 'wtl'], on: hp },   // Past results and the Concierge's introduction its screens; its consent and pickers its own (the journey stays)
+      { key: 'wel', label: 'Membership reveal', tweaks: ['wel'], flow: 'wtl', on: () => !gift() && !hp() && Q('.hpWrap.hpOpen.hpWelF, .hpWrap.hpOpen .hpAtLtr') },   // to the note from Steven
+      { key: 'sgf', label: 'Send a gift', flow: 'sgf', on: gift,   // its own group (.tkGroup[data-pages="sgf"]: Intro), the profile's none; its pages in the Flow panel
+        tweaks: () => { const r = ['sgf']; try { const s = window.HealthProfile.gift.steps[window._hp.giftAt()]; if (/receipt/i.test(s + ' ' + window.HealthProfile.gift.names[s])) r.push('gr'); } catch (e){} return r; } },   // and the Gift receipt's (data-pages="gr") on its receipt step, the flow's last
+      { key: 'sug', label: 'Suggestion', tweaks: ['sug'], on: () => B('sugOn') },
+      { key: 'dsg', label: 'Doctor’s suggestion', tweaks: ['dsg'], on: () => B('dsgOn') },
+      { key: 'prc', label: 'Personal recommendation', tweaks: ['prc'], on: () => B('prcOn') },
+      { key: 'mkDet', label: 'Marketplace service', on: () => up('.tlSheet.mkDet.on') },   // the marketplace's: none
+      { key: 'mkCart', label: 'Cart', on: () => up('.tlSheet.mkCart.on') },
+      { key: 'insSheet', label: 'Insights sheet', on: () => up('.shWrap.on:not(.recSheetWrap):not(.prWrap), .siWrap.on') },   // a report, every report, a finding, a section's explainer, a signal (the records' menu a menu, Results received's message its page)
+      { key: 'inbox', label: 'Inbox', on: () => up('.ibWrap.on:not(.bkSh)') },   // (Booked in: a service's last step, its flow's)
+      { key: 'more', label: 'More', on: () => up('.mvWrap.on') },
+      { key: 'ask', label: 'Ask sheet', tweaks: ['ask'], on: () => up('.aiWrap.on') },   // the dock's spark
+      { key: 'srch', label: 'Ask Everlab', tweaks: ['srch'], on: () => up('.evSrch.on') },   // the top chat field's search (Tweaks -> Top Chat AI -> Full modal)
+      { key: 'chat', label: 'Chat (in the app)', tweaks: ['cc'], on: () => up('.chWrap.on') },   // the chat a question opens over the page (EvChat: the top field's Enter, a service chip, Contact care team): the Chat page's tweaks ("this should be chat page, when come from overview")
+      { key: 'cc', label: 'Chat', tweaks: ['cc'], on: () => B('ccOn') && !B('ccOut') }
+    ].forEach(d => window.EvCtx.add(d)); }
   // Tweaks shows only what concerns the page: its groups, and a standalone's over it (the Async report's while it is up)
   // the profile's rows: into the Health profile group while the profile is showing, back to the Primary card's $299 part after
   const tkHp = on => { const part = document.querySelector('.pcPart[data-pc="hp"]'), grp = document.getElementById('tkHpGrp'); if (!part || !grp) return;
@@ -29841,24 +29900,22 @@ hairline({
     if (tkHp.home && part.parentNode === grp){ tkHp.home.p.insertBefore(part, tkHp.home.n); const ty = document.getElementById('stPcType'); part.hidden = (ty ? ty.value : 'member') !== 'member'; } };
   function tkPages(m, extra){
     const g = MODES[m] && MODES[m].group, key = g === 'Insights' ? 'ins' : (g === 'Overview page' || g === 'Results received') ? 'ov' : g === 'Landing page' ? 'lp' : g === 'Async report' ? 'ar' : '';
-    const sgPg = !!document.querySelector('.hpWrap.hpOpen .hpGfSolo');   // Send a gift: no tweaks (its own flow, not the profile's)
-    const hpPg = !sgPg && document.body.classList.contains('hpOn') && !!document.querySelector('.hpWrap.hpOpen:not(.hpWelF)') && !document.querySelector('.hpWrap.hpOpen .hpAtLtr');   // the note from Steven up: the reveal's last screen, not the profile ("not health profile")   // the profile showing (not its reveal): its tweaks alone
-    const gfPg = document.body.classList.contains('gfOn');   // the Gift page: its own group alone
-    const clPg = document.body.classList.contains('clOn');   // the Clinic's page: its own group alone
-    const grPg = document.body.classList.contains('grOn');   // the Gift receipt: its own group alone (Background)
-    const cnPg = document.body.classList.contains('cnOn') || document.body.classList.contains('rfOn') || document.body.classList.contains('mkOn');   // and the Services marketplace: no tweaks   // and the Gift referral: no tweaks yet   // General patterns -> Consent: no tweaks
-    const plPg = document.body.classList.contains('plOn');   // the Plan page: its own group alone
-    const ccPg = document.body.classList.contains('ccOn') && !document.body.classList.contains('ccOut');   // the Chat up, over whatever page: its own group alone (Chat -> Persona)
-    const welPg = !hpPg && !!document.querySelector('.hpWrap.hpOpen.hpWelF, .hpWrap.hpOpen .hpAtLtr');   // the Membership reveal up (its page, or played over the Overview): First-time user alone ("shouldn't have the Overview tweak here")
-    tkHp(hpPg);
-    const keys = ccPg ? ['cc'] : (extra === 'sug' || extra === 'dsg' || extra === 'prc') ? [extra] : plPg && extra !== 'ar' ? ['plan'] : cnPg || sgPg ? [] : grPg ? ['gr'] : gfPg ? ['gift'] : clPg ? ['clinic'] : hpPg ? ['hp'] : welPg ? ['wel'] : extra === 'ar' ? ['ar'] : [key, extra].filter(Boolean), tk = document.getElementById('tkMenu');   // a standalone up, its own tweaks alone ("Async report shouldn't have all the tweaks from the Overview, just the async ones")
-    if (tk){ tk.querySelectorAll('[data-pages]').forEach(el => { const p = el.dataset.pages.split(' '); el.hidden = !keys.some(k => p.indexOf(k) >= 0); }); tk.hidden = !keys.length; if (!keys.length) tk.open = false; }
+    /* a page over the app or a modal taking it over (EvCtx, the latest up): its own tweaks alone, the page's none ("Async report shouldn't have all the tweaks from the Overview, just the async ones";
+       the Chat over any page: Chat -> Persona; the profile, not its reveal: Health profile; the reveal to the note from Steven: First-time user; Send a gift, the marketplace, the referral, Consent: none); nothing over it, the page's */
+    const c = window.EvCtx ? window.EvCtx.top() : null;
+    tkHp(!!c && c.key === 'hp');
+    const keys = c ? window.EvCtx.tweaks(c) : [key, extra].filter(Boolean), tk = document.getElementById('tkMenu');
+    if (tk){ tk.querySelectorAll('[data-pages], [data-tl], [data-svc]').forEach(el => { const p = el.dataset.pages ? el.dataset.pages.split(' ') : el.hasAttribute('data-tl') ? ['tl'] : ['svc']; el.hidden = !keys.some(k => p.indexOf(k) >= 0); }); tk.hidden = !keys.length;
+      if (!keys.length){ if (tk.open) tk._held = true; tk.open = false; } else if (tk._held){ tk._held = false; tk.open = true; } }   // the Timeline's groups [data-tl] (key tl), a service's [data-svc] (key svc); the panel shut under a modal with none, open again as it goes (Closing restores the page's own tweaks)
+    document.documentElement.dataset.tk = c ? c.key : '';
     if (typeof jny === 'function'){ jny(); requestAnimationFrame(jny); setTimeout(jny, 500); }   // the journey beside the phone, once the profile's frame is placed
   }
   /* Flow, in the top bar: there while a screen has its flow panel at the left (the reveal's timeline, the profile's journey), pressed to fold the panel away and back; remembered */
   { const av = {}, b = document.getElementById('tkFlowBtn'), H = document.documentElement; try { if (localStorage.getItem('evFlowOff') === '1') H.classList.add('flowOff'); } catch (x){}
-    const sync = () => { if (!b) return; b.hidden = !Object.keys(av).some(k => av[k]); b.setAttribute('aria-pressed', String(!H.classList.contains('flowOff'))); };   // any screen with a flow panel (the profile's, the reveal's, the referral's, a service's, the report's)
+    const sync = () => { if (!b) return; b.hidden = !Object.keys(av).some(k => av[k] && window.__flowOk(k)); b.setAttribute('aria-pressed', String(!H.classList.contains('flowOff'))); };   // any screen with a flow panel (the profile's, the reveal's, the referral's, a service's, the report's)
+    window.__flowOk = k => !window.EvCtx || window.EvCtx.flow(k);   /* a modal over the page: its own flow alone, the page's none; no flow of its own, no Flow ("and flow as well if any"): EvCtx */
     window.__flowAv = (k, on) => { if (av[k] !== on){ av[k] = on; sync(); } };
+    const fUp = []; document.addEventListener('everlab:ctx', () => { sync(); fUp.forEach(u => { try { u(); } catch (e){} }); if (window.__flowDock) window.__flowDock(); });   // a modal up or gone: the panels and the button at once
     /* a panel shown or hidden by anything at all re-docks: a panel gone with the app still pushed left the page 320 off the menu ("why this right gap?") */
     { let fq = 0; const tb = document.querySelector('.topbar'); if (tb) new MutationObserver(() => { if (!fq) fq = requestAnimationFrame(() => { fq = 0; if (window.__flowDock) window.__flowDock(); }); }).observe(tb, { subtree: true, childList: true, attributes: true, attributeFilter: ['hidden'] }); }
     window.__flowDock = () => { const on = !!document.querySelector('.topbar .hpJny:not([hidden])');
@@ -29869,7 +29926,7 @@ hairline({
     window.__flowPanel = (key, cfg) => { let el = null, sig = '', busy = false;
       const esc = v => String(v == null ? '' : v).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
       const upd = () => { if (busy) return; busy = true; try {
-        const on = !!cfg.on(), m = on ? cfg.model() : null; window.__flowAv(key, !!m);
+        const on = !!cfg.on() && window.__flowOk(key), m = on ? cfg.model() : null; window.__flowAv(key, !!m);
         if (!m || H.classList.contains('flowOff')){ if (el && !el.hidden) el.hidden = true; window.__flowDock(); return; }
         const bar = document.querySelector('.topbar'); if (!bar) return;
         if (!el){ el = document.createElement('aside'); el.className = 'hpJny hpWtl hpFl'; el.dataset.fl = key;
@@ -29887,7 +29944,7 @@ hairline({
         window.__flowDock(); } finally { busy = false; } };
       new MutationObserver(upd).observe(H, { attributes: true, attributeFilter: ['class'] });   // Flow folded or unfolded
       new MutationObserver(upd).observe(document.body, { attributes: true, attributeFilter: ['class', 'data-bp'] });   // its screen up or gone
-      addEventListener('resize', upd); setInterval(upd, 400);   // and its steps moving, from wherever they move
+      addEventListener('resize', upd); setInterval(upd, 400); fUp.push(upd);   // and its steps moving, from wherever they move; a modal over it up or gone
       return upd; }; }
   [['stHpLtrFs', '--ltrFs'], ['stHpLtrLh', '--ltrLh']].forEach(([id, v]) => { const r = document.getElementById(id), o = document.getElementById(id + 'V'); if (!r) return; const set = () => { document.documentElement.style.setProperty(v, r.value + 'px'); if (o) o.textContent = r.value + 'px'; }; r.addEventListener('input', set); r.addEventListener('change', set); set(); setTimeout(set, 800); });   /* the Letter's font size and line height, live */
   { const s = document.getElementById('stHpRecShow'), b = document.getElementById('stHpRecTgl'), set = () => { const on = !s || s.value !== 'hide'; document.body.classList.toggle('hpRecHide', !on); if (b) b.setAttribute('aria-checked', String(on)); };   /* the past results card shown or not */
@@ -30006,7 +30063,7 @@ hairline({
     return () => { const rows = document.getElementById('stHpJnyRows'), mk = document.getElementById('stHpJnyMk'); if (!rows || !mk) return;
       if ((document.getElementById('versionSel') || {}).value === 'welc'){ if (el) el.hidden = true; if (window.__flowAv) window.__flowAv('jny', false); return; }   // Membership onboarding: its timeline holds the profile's rows (see wtl)
       const fr = document.querySelector('.hpWrap.hpOpen:not(.hpWelF) .aqFrame'), r = fr && fr.getBoundingClientRect(), W = 280, G = 40;
-      const on = !!r && r.width > 0 && (document.body.classList.contains('hpOn') || !!document.querySelector('.hpWrap.hpOpen.shut')) && !document.querySelector('.hpWrap.hpOpen .hpAtLtr') && !document.querySelector('.hpWrap.hpOpen .hpGfSolo');   /* Send a gift: its own Flow panel, below */   /* closing too: kept till the profile has gone, or the phone recentred under it mid-fade and the Overview showed through ("clipping when the Overview is behind an experience") */   /* opened from the Overview too (its card, Past results, Concierge, as a modal): the flow inside it gets its Flow panel ("I need to see the Flow because the page inside the modal has a flow; same for all modals with a flow inside") */ void G; void W;   /* at every viewport, Tweaks open or not: the flow its own panel, no longer in Tweaks ("Flow and Tweaks can live together"; "remove the flow inside Tweaks") */
+      const on = !!r && r.width > 0 && (document.body.classList.contains('hpOn') || !!document.querySelector('.hpWrap.hpOpen.shut')) && !document.querySelector('.hpWrap.hpOpen .hpAtLtr') && !document.querySelector('.hpWrap.hpOpen .hpGfSolo') && window.__flowOk('jny');   /* Send a gift: its own Flow panel, below */   /* a modal over the profile (the Chat): its own flow, not the journey (EvCtx) */   /* closing too: kept till the profile has gone, or the phone recentred under it mid-fade and the Overview showed through ("clipping when the Overview is behind an experience") */   /* opened from the Overview too (its card, Past results, Concierge, as a modal): the flow inside it gets its Flow panel ("I need to see the Flow because the page inside the modal has a flow; same for all modals with a flow inside") */ void G; void W;   /* at every viewport, Tweaks open or not: the flow its own panel, no longer in Tweaks ("Flow and Tweaks can live together"; "remove the flow inside Tweaks") */
       if (window.__flowAv) window.__flowAv('jny', on); const shw = on && !document.documentElement.classList.contains('flowOff'), p = shw ? make() : el; if (shw && !p) return;
       if (shw){ if (rows.parentNode !== p) p.appendChild(rows); const bar = document.querySelector('.topbar'), top = (bar ? bar.getBoundingClientRect().bottom : 56) + 16; p.style.left = '16px'; p.style.top = Math.round(top) + 'px'; p.style.maxHeight = Math.round(Math.max(200, innerHeight - top - 24)) + 'px'; p.hidden = false; }   /* the window's left panel, as the reveal's timeline */
       else { if (rows.parentNode !== mk.parentNode) mk.parentNode.insertBefore(rows, mk.nextSibling); if (p) p.hidden = true; } }; })();
@@ -30024,14 +30081,15 @@ hairline({
     const tick = () => { const welc = (document.getElementById('versionSel') || {}).value === 'welc'; if (window.__flowDock) window.__flowDock();
       const at = window._hpBack && window._hpBack.at ? window._hpBack.at() : -1, fr = (at >= 0 || (welc && document.body.classList.contains('hpOn'))) && document.querySelector('.hpWrap.hpOpen .aqFrame'), r = fr && fr.getBoundingClientRect(), W = 280, G = 40;   /* the profile's pages too, in Membership onboarding ("also include the health profile pages, with the timeline on the left") */
       const k = at + ':' + !!document.querySelector('.hpWrap.hpOpen .hpAtLtr'); if (k !== last){ last = k; if (window.__tkPages) window.__tkPages(); }   // the tweaks and the journey as the note comes and goes
-      if (window.__flowAv) window.__flowAv('wtl', !!(r && r.width > 0)); if (!(r && r.width > 0) || document.documentElement.classList.contains('flowOff')){ if (el) el.hidden = true; return; }
+      const ok = !!(r && r.width > 0) && window.__flowOk('wtl');   /* a modal over the reveal (the Chat): its own flow, not the timeline (EvCtx) */
+      if (window.__flowAv) window.__flowAv('wtl', ok); if (!ok || document.documentElement.classList.contains('flowOff')){ if (el) el.hidden = true; return; }
       const p = make(); if (!p) return; const side = r.left - G - W >= 16, bar = document.querySelector('.topbar'), bb = bar ? bar.getBoundingClientRect().bottom : 56;
       const top = bb + 16; p.style.left = '16px';   /* always the window's left panel, under the top bar ("the timeline flow like this always put as left panel") */ void side; p.style.top = Math.round(top) + 'px'; p.style.maxHeight = Math.round(Math.max(200, innerHeight - top - 24)) + 'px'; p.hidden = false;
       { const rows = document.getElementById('stHpJnyRows'); if (rows && welc && rows.parentNode !== p){ const h = document.createElement('div'); h.className = 'tkSub hpWtlHp'; h.textContent = 'Health profile'; if (!p.querySelector('.hpWtlHp')) p.appendChild(h); p.appendChild(rows); } }   // the profile's own rows under the reveal's: Step 1, 2, 3 pages and their Homes, Past results, Concierge
       const at2 = at === 4 && document.querySelector('.hpWrap.hpOpen .hpLtrS2') ? 5 : at;   /* Note from Steven the entrance; Letter view from the moment the avatar goes up ("note from Steven should be the entrance, letter is the moment the avatar goes on top") */   // the note as a letter lights Letter view
       p.querySelectorAll(':scope > ol > li').forEach((li, i) => { li.classList.toggle('now', i === at2); if (i === at2) li.setAttribute('aria-current', 'step'); else li.removeAttribute('aria-current'); });   /* the reveal's own rows only */
       if (at >= 0 || !document.body.classList.contains('hpOn')) document.querySelectorAll('#stHpJnyRows .tkHpHome.now, #stHpJnyRows li.now, #stHpPastRow.now, #stHpCcRow.now').forEach(e => { e.classList.remove('now'); e.removeAttribute('aria-current'); }); };   /* a reveal moment showing (or no profile up): no profile page lit ("why is step 2's Health profile home active here?") */
-    setInterval(tick, 250); addEventListener('resize', () => requestAnimationFrame(tick)); return tick; })();
+    setInterval(tick, 250); addEventListener('resize', () => requestAnimationFrame(tick)); document.addEventListener('everlab:ctx', () => tick()); return tick; })();   /* a modal over it up or gone (EvCtx): at once */
   /* the Tweaks for the moment of the Membership reveal showing, only ("I should ONLY see the tweak based on the current screen"): its groups marked with the moments they shape (data-at: 0, 1 the titles, 2 the dot, 3 the card, 4 the note from Steven), the rest folded away; nothing up, all of them */
   setInterval(() => { const at = window._hpBack && window._hpBack.at ? window._hpBack.at() : -1; document.querySelectorAll('.tkGroup[data-at]').forEach(g => g.classList.toggle('tkAtOff', at >= 0 && !g.dataset.at.split(' ').includes(String(at)))); }, 300);
   /* the Health profile's tweaks by its screen ("I should ONLY see the tweak based on the current screen"): the home its State, Documentation, records card and sphere; a step's pages Step title; Past results its map; and, any screen with none, said so in the panel ("if screen has no tweak, mention it in the panel") */
@@ -38130,7 +38188,7 @@ hairline({
     document.addEventListener('keydown', e => { if (e.key === 'Escape' && openK){ shut(); } });
     const tick = () => {
       const over = document.getElementById('dOver'), room = innerWidth - (document.documentElement.classList.contains('tkDocked') ? 320 : 0);
-      const live = over && over.offsetParent && !document.body.classList.contains('hpOn') && !document.body.matches('.sugOn, .dsgOn, .prcOn');   // not over a standalone full modal either
+      const live = over && over.offsetParent && !document.body.classList.contains('hpOn') && !document.body.matches('.sugOn, .dsgOn, .prcOn') && !(window.EvCtx && window.EvCtx.cur());   /* nor under any modal or page over it (EvCtx): its tweaks, not the Overview's sections' */   // not over a standalone full modal either
       const fe = document.getElementById('bpFrame'), fr = fe && getComputedStyle(fe).display !== 'none' ? fe.getBoundingClientRect() : null, orr = over ? over.getBoundingClientRect() : null;
       const top = Math.max(fr ? fr.top : (orr ? orr.top : 0), (bar.getBoundingClientRect().bottom || 0)) + 8, bot = Math.min(fr ? fr.bottom : innerHeight, innerHeight) - 44;
       const edge = fr ? fr.right : (orr ? orr.right : innerWidth), x = Math.min(edge + 32, room - 48);   // 32 off the screen ("detach the plus from the viewport by 32px")
@@ -45714,7 +45772,7 @@ hairline({
       const rfLight = () => document.body.classList.contains('light');   // the bar's Colour mode (body.light), as the Gift receipt follows it
       const rfSync = () => { const f = document.getElementById('rfFrame'); try { const r = f && f.contentDocument && f.contentDocument.documentElement; if (r){ r.classList.toggle('xs', rfXs()); r.dataset.theme = rfLight() ? 'light' : 'dark'; } } catch (e){} };   /* its frame (XS) and its theme: dark or light as the app ("Need to work on dark mode as well!") */
       const rfGo = i => { rfAt = i; const f = document.getElementById('rfFrame'); try { if (f && f.contentWindow && f.contentWindow.rfGo) f.contentWindow.rfGo(i); } catch (e){} rfTl(); };
-      const rfTl = () => { const on = document.body.classList.contains('rfOn'); if (window.__flowAv) window.__flowAv('rf', on); if (window.__flowDock) window.__flowDock();
+      const rfTl = () => { const on = document.body.classList.contains('rfOn') && (!window.__flowOk || window.__flowOk('rf')); if (window.__flowAv) window.__flowAv('rf', on); if (window.__flowDock) window.__flowDock();
         if (!on || document.documentElement.classList.contains('flowOff')){ if (rfEl) rfEl.hidden = true; if (window.__flowDock) window.__flowDock(); return; }
         if (!rfEl){ const bar = document.querySelector('.topbar'); if (!bar) return; rfEl = document.createElement('aside'); rfEl.className = 'hpJny hpWtl'; rfEl.setAttribute('aria-label', 'Gift referral steps');
           rfEl.innerHTML = '<div class="tkSub">Member</div><ol class="tkOrd tkOrdN tkOrdFix">' + RF.map((m, i) => '<li tabindex="0" role="button" data-i="' + i + '"><span class="nm">' + m[0] + '</span><i class="tkNowDot" aria-hidden="true"></i></li>').join('') + '</ol>';
@@ -45730,7 +45788,7 @@ hairline({
         const dev = rf.querySelector('.rfDev'); if (dev && !dev.firstChild){ const f = document.createElement('iframe'); f.id = 'rfFrame'; f.src = 'referral.html#s=' + (at || 0) + (rfXs() ? '&xs' : '') + (rfLight() ? '&light' : '&dark'); f.title = 'Gift referral'; f.addEventListener('load', rfSync); f.addEventListener('load', () => { try { f.contentDocument.querySelectorAll('.bs').forEach(bs => { if (window.EvSheetSwipe) window.EvSheetSwipe(bs, () => { const x = bs.querySelector('.x'); if (x) x.click(); }, { handle: '.grab, .bsH', skip: '.x', when: () => !!bs.parentElement.closest('.on') }); }); } catch (e){} }); dev.appendChild(f); rfAt = at || 0; }   /* its two sheets (Send an invitation, Invitation sent) swipe down as every sheet does, with the app's own helper (EvSheetSwipe): its Close, back to Refer */
         else if (at != null) rfGo(at);
         rfSync(); document.body.classList.add('rfOn'); if (versionSel) versionSel.value = 'rf'; rfTl(); if (window.__tkPages) window.__tkPages(); try { history.replaceState(null, '', '#gift-referral'); } catch (e){} };
-      window._rf = { show: rfShow, hide: rfHide, go: rfGo };
+      window._rf = { show: rfShow, hide: rfHide, go: rfGo }; document.addEventListener('everlab:ctx', rfTl);   /* a modal over the referral up or gone (EvCtx): its steps at once */
       addEventListener('message', e => { const f = document.getElementById('rfFrame'); if (!f || e.source !== f.contentWindow || !e.data || e.data.everlab !== 'rf:at') return; rfAt = +e.data.i || 0; rfTl(); });   // a CTA in the page moved it on: its step lit
       { const mo = new MutationObserver(() => { if (document.body.classList.contains('rfOn')){ rfSync(); rfTl(); } }); mo.observe(document.body, { attributes: true, attributeFilter: ['data-bp'] }); mo.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] }); }
       { const t = document.getElementById('themeSel'); if (t) t.addEventListener('change', () => setTimeout(rfSync, 0)); }   // the Colour mode changed: the page's theme with it (body.light is set by the bar's own listener first)
