@@ -20049,3 +20049,13 @@ Julien, on the flow's last screen ("This is the Receipt! already designed"), the
 
 - At a forced L the frame is 1440 wide; with the Flow column docked (320) it was centred in the 1120 left and ran 160 past each side of a 1440 window: the gift's Back sat under the Flow panel and its Close was off the window (x 1532), on the intro and every step.
 - Now a forced M or L frame, and a full modal's own breakpoint (`.aqWrap.aqBpM/L`), is `min(992 | 1440, 100vw - the docked Flow and Tweaks widths)`. Measured at 1440: Back at 344 (right of the panel), Close at 1372; with Tweaks docked too, Close at 1052. The phone sizes (XS, S) keep their device and its scale-to-fit.
+
+## Gift intro refinements (Julien's annotated Cards screenshot)
+
+- Title on two lines, "Give the best gift / of all time" (was "…of all. Time."); the letter cascade runs on across the break; read whole by a screen reader.
+- Sub-line 16/22 (was 14/20), 320 wide.
+- Video overlay: a #111 blanket over the intro video, 30% by default; Tweaks -> Send a gift -> Video overlay (0-100%, live, kept by Save; `--gfVidBl`).
+- Phone: the body hugs its content ("Body must be hug height"); the header takes the rest of the screen (400 at least; 554 on the XS phone), so Choose a gift sits 17 under the cards. Desk keeps its 400 header.
+- Items: "Pick a plan to gift." / "Customise a message." / "Choose when to send." (the middle one given a full stop to match).
+- Cards: icon in a 40 circle (8 padding, the ink at 4%: white 4% in dark), corners 18 (+4).
+- "Takes about two minutes" 16 under Choose a gift (was 8).
