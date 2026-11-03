@@ -5858,9 +5858,10 @@
   .aqWrap.evSolo:is(.aqBpM, .aqBpL) .arSheet.sgmSheet{--evTnX:24px;}   /* the desk: the page's padding/left-right at the viewport */
   .sgmSheet .sgmCol{max-width:calc(var(--ct2xs) + 2 * var(--sgmSide));padding:0 var(--sgmSide);}   /* the body in the 2xs container, its padding the column's own */
   .sgmSheet .sgmCol > .sgmT.evTnH1{margin-bottom:20px;}   /* the title, then the content as under the old head (its 12 and the scroller's 8) */
-  .sgmSheet .sgmScr > .evTnHasBk + .sgmCol > :first-child{margin-top:calc(var(--evTnD, 44px) - 16px + 12px);}   /* a Back floating (the Plan change): the content's first line under it */
+  .sgmSheet .sgmScr > .evTnHasBk:not(.evTnFar) + .sgmCol > :first-child{margin-top:calc(var(--evTnD, 44px) - 16px + 12px);}   /* a Back floating (the Plan change): the content's first line under it */
   .aqWrap.aqFull.evSolo:is(.aqBpM, .aqBpL) .aqFrame > .arSheet.arSheet.arSheet.arSheet.arSheet.sgmSheet{max-width:none;}   /* the desk: the modal the viewport's width, its bar spanning it; the column is the body's (.sgmCol) */
-  .aqWrap.evSolo:is(.aqBpM, .aqBpL) .arSheet.sgmSheet .arFoot.sgmFoot.sgmFoot{padding-left:max(var(--evTnX), calc((100% - var(--ct2xs)) / 2));padding-right:max(var(--evTnX), calc((100% - var(--ct2xs)) / 2));}   /* the footer spans it too, its buttons held to the body's column, centred under it */   /* the design system's header (Modals: "Title 24/30 · 500 · Close at its right"): the title in it, the content scrolling under it ("the title should be part of the design system header") */
+  .aqWrap.evSolo:is(.aqBpS, .aqBpM, .aqBpL) .arSheet.sgmSheet .arFoot.sgmFoot.sgmFoot{padding-left:max(var(--evTnX), calc((100% - var(--ct2xs)) / 2));padding-right:max(var(--evTnX), calc((100% - var(--ct2xs)) / 2));}   /* the footer spans it too, its buttons held to the body's column (2xs: 512 S, 544 M, 576 L), centred under it */
+  /* the old head (.sgmHead / .arHeadRow), kept only as the fallback when window.EvTopNav is missing; the Top nav master draws the head otherwise */
   .aqWrap.aqFull.evSolo .arSheet.sgmSheet .arHeadRow{margin-inline:0;justify-content:space-between;align-items:flex-start;gap:12px;}   /* the column's width on the desk, the close at its edge */
   .sgmSheet .sgmT{flex:1 1 auto;min-width:0;margin:0;padding-top:3px;font:500 24px/30px var(--ar-font);letter-spacing:-.2px;color:oklch(var(--ar-ink) / 1);text-wrap:pretty;}
   .sgmSheet .sgmHead .arClose{flex:none;}
@@ -6070,10 +6071,11 @@
   body.light .prSheet{background:#f6ece6;}
   /* --- the message itself, the same markup in both --- */
   .prTop{flex:none;display:flex;justify-content:flex-end;padding:16px 16px 0;}
-  .prNav{--evTnTop:0px;--evTnX:16px;--evTnGnd:#181818;--evTnInk:#ececec;} body.light .prNav{--evTnGnd:#fff;--evTnInk:#2e1f1a;} body.light .prSheet .prNav{--evTnGnd:#f6ece6;}   /* the Top nav master in the close-only sheets (Results received, the info sheet): C, on the sheet's own ground */
+  .prNav{--evTnTop:0px;--evTnX:16px;--evTnGnd:#181818;--evTnInk:#ececec;} body.light .prNav{--evTnGnd:#fff;--evTnInk:#2e1f1a;} body.light :is(.prSheet, .siSheet) .prNav{--evTnGnd:#f6ece6;}   /* the Top nav master in the close-only sheets (Results received, the info sheet): C, on the sheet's own ground */
   .prScroll > .prNav{margin:0 -22px;} .prSheet .prScroll > .prNav{margin:0 -18px;} .siScroll > .prNav{margin:0 -22px;} .siSheet .siScroll > .prNav{margin:0 -18px;}   /* the bar the sheet's width, over the scroller's padding */
   .siScroll > .prNav + .siTitle{margin-top:0;}
-  .recSheet .prTop{position:relative;height:32px;padding:0;} .recSheet .prTop .prX{position:absolute;top:16px;right:16px;width:44px;height:44px;} .recSheet .siTitle{padding-right:56px;}   /* the filter sheet: the same C, its control floating over a 32 safe space, the title clear of it */
+  .recSheet .prTop{position:relative;height:32px;padding:0;} .recSheet .prTop .prX{position:absolute;top:16px;right:16px;}   /* the filter sheet's fallback head (no EvTopNav); otherwise the master's C (.recNav), its 44 Close floating over the 32 safe space, the title (.evTnH1) clear of it */
+  .siWrap.siDesk .siScroll{flex:0 1 auto;min-height:0;overflow-y:auto;scrollbar-width:none;} .siWrap.siDesk .siScroll::-webkit-scrollbar{display:none;}   /* the desk's info modal scrolls under its bar too */
   .prX{
     width:38px;height:38px;border:0;border-radius:50%;padding:0;cursor:pointer;
     display:flex;align-items:center;justify-content:center;
@@ -7286,7 +7288,7 @@
   .tnV{position:relative;width:400px;max-width:100%;overflow:hidden;border-radius:16px;background:var(--sBg);color:var(--sInk);box-shadow:0 0 0 1px var(--ldLine);font-family:var(--ar-font, inherit);}
   .tnV > .evTn, .tnPh .evTn, .tnDk .evTn{--evTnGnd:var(--sBg);--evTnInk:var(--sInk);}
   .tnVB{padding:0 16px 20px;} .tnVB .tnBlk:first-child{margin-top:0;}
-  .tnH{margin:0;font:500 24px/30px var(--ar-font, inherit);letter-spacing:-.2px;text-wrap:pretty;} .tnV .tnH{font-size:20px;line-height:26px;}
+  .tnH{margin:0;font-weight:500;font-size:24px;line-height:30px;font-family:var(--ar-font, "Saans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif);letter-spacing:-.2px;text-wrap:pretty;} .tnV .tnH{font-size:20px;line-height:26px;}
   .tnP{margin:8px 0 0;font-size:15px;line-height:22px;color:var(--sMut);}
   .tnBlk{display:block;height:56px;margin-top:12px;border-radius:16px;background:color-mix(in srgb, var(--sInk) 6%, transparent);} .tnBlk.t{height:180px;background:linear-gradient(160deg, color-mix(in srgb, #e08a5a 40%, var(--sBg)), color-mix(in srgb, #5a7be0 30%, var(--sBg)));}
   .tnPh{position:relative;width:393px;height:760px;flex:none;overflow:hidden;border-radius:48px;background:var(--sBg);color:var(--sInk);box-shadow:inset 0 0 0 1px var(--ldLine);font-family:var(--ar-font, inherit);}
@@ -16583,6 +16585,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
    and the top of the body; the page's H1 is the first thing in the body, its lines clear of the controls (.evTnH1). Scrolled up under the bar, the H1 comes into it (.evTnFt, centred between the controls, 17/22 600: the Service detail's bar, "fixed gradient blur with title appearing").
    The ground is always the gradient blur ("Top nav always gradient blur by default"): the screen's own colour (--evTnGnd) fading to nothing by a mask (--hoTint at the top, the Header overlap's), over ten backdrop-blur bands (the Overview bar's .ovGround: 14 px at the top to 1.5 at the foot);
    at rest it ends at the bar's foot (nothing under it veiled), and once the content scrolls under it (.evTnOn) it reaches --evTnBleed further, so what passes under fades and blurs in, never a hard cut.
+   Type in longhands, the family on its own (a var() falling back to inherit inside a font shorthand voids the whole shorthand).
    Host tokens: --evTnTop (the status bar / safe area above the bar: 0 on the desk), --evTnX (the page's padding/left-right), --evTnGnd (the screen's colour), --evTnInk (its ink) */
 .evTn { --evTnD: 44px; position: sticky; top: 0; z-index: 6; display: flex; align-items: center; gap: 16px; box-sizing: border-box; min-height: calc(var(--evTnTop, 0px) + 76px); margin: 0; padding: calc(var(--evTnTop, 0px) + 16px) var(--evTnX, 16px) 16px; color: var(--evTnInk, currentColor); isolation: isolate; pointer-events: none; }
 .evTn > :not(.evTnG) { pointer-events: auto; }
@@ -16591,17 +16594,20 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
 .evTnBtn svg { width: 16px; height: 16px; }
 .evTnBtn:hover { box-shadow: inset 0 0 0 40px color-mix(in srgb, var(--evTnInk, currentColor) 4%, transparent); }
 .evTnBtn:focus-visible { outline: 2px solid #4b7bec; outline-offset: 2px; }
-.evTnT { flex: 1 1 auto; min-width: 0; margin: 0; overflow: hidden; font: 500 20px/28px var(--ar-font, inherit); letter-spacing: -.1px; color: inherit; white-space: nowrap; text-overflow: ellipsis; }
+.evTnT { flex: 1 1 auto; min-width: 0; margin: 0; overflow: hidden; font-weight: 500; font-size: 20px; line-height: 28px; font-family: var(--ar-font, "Saans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif); letter-spacing: -.1px; color: inherit; white-space: nowrap; text-overflow: ellipsis; }
 .evTn:not(.evTnC) > .evTnT ~ .evTnBtn, .evTn:not(.evTnC) > .evTnFt ~ .evTnBtn { margin-left: auto; }
 .evTnC > .evTnBtn { position: absolute; top: calc(var(--evTnTop, 0px) + 16px); }
 .evTnC > .evTnBk { left: var(--evTnX, 16px); } .evTnC > :is(.evTnX, .evTnMore) { right: var(--evTnX, 16px); }
 .evTnFt { position: absolute; top: calc(var(--evTnTop, 0px) + 16px); left: calc(var(--evTnX, 16px) + var(--evTnD) + 12px); right: calc(var(--evTnX, 16px) + var(--evTnD) + 12px); height: var(--evTnD); display: flex; align-items: center; justify-content: center; pointer-events: none !important; opacity: 0; transform: translateY(6px); transition: opacity .25s ease, transform .25s ease; }
-.evTnFt span { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font: 600 17px/22px var(--ar-font, inherit); letter-spacing: -.2px; color: inherit; }
+.evTnFt span { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-weight: 600; font-size: 17px; line-height: 22px; font-family: var(--ar-font, "Saans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif); letter-spacing: -.2px; color: inherit; }
 .evTn.evTnTitled > .evTnFt { opacity: 1; transform: none; }
 .evTn:not(.evTnC) > .evTnFt { display: none; }
 /* the body's H1 under a C bar: its lines clear of the floating Close (the disc and 12), and under a floating Back it starts below the disc (its foot and 12) */
 .evTnC.evTnHasX ~ .evTnH1, .evTnC.evTnHasX ~ * .evTnH1 { padding-right: calc(var(--evTnD, 44px) + 12px); box-sizing: border-box; }
 .evTnC.evTnHasBk ~ .evTnH1, .evTnC.evTnHasBk ~ * .evTnH1, .evTnC.evTnHasBk + .evTnClr, .evTnC.evTnHasBk + * > .evTnClr:first-child { margin-top: calc(var(--evTnD, 44px) - 16px + 12px); }
+/* no clearance where there is nothing to clear: both discs (the H1 already starts below them), or the column far from the controls (.evTnFar, set by watch(): the desk's 2xs column) */
+.evTnC.evTnHasBk.evTnHasX ~ .evTnH1, .evTnC.evTnHasBk.evTnHasX ~ * .evTnH1, .evTnC.evTnFar ~ .evTnH1, .evTnC.evTnFar ~ * .evTnH1 { padding-right: 0; }
+.evTnC.evTnFar.evTnHasBk ~ .evTnH1, .evTnC.evTnFar.evTnHasBk ~ * .evTnH1, .evTnC.evTnFar.evTnHasBk + .evTnClr, .evTnC.evTnFar.evTnHasBk + * > .evTnClr:first-child { margin-top: 0; }
 /* the ground */
 .evTnG { position: absolute; left: 0; right: 0; top: 0; bottom: 0; z-index: -1; pointer-events: none; transition: bottom .28s ease; }
 .evTn.evTnOn > .evTnG { bottom: calc(-1 * var(--evTnBleed, 24px)); }
@@ -19752,7 +19758,7 @@ window.EvOverlap = (function () {
    html({ back, title, close, more, reveal, cls, backCls, closeCls, tag, titleId, backLabel, closeLabel }) -> its markup:
      a title: A (Close) or B (Back, then the title) -- 76 hug, 16 all round, 44 discs, the title 20/28 500 one line;
      no title: C -- a 32 safe space, the controls floating at their place (16 down, 16 in), the page's H1 the first thing in the body (give it .evTnH1: clear of the controls); reveal: the H1's words, faded into the bar once the H1 has gone under it.
-   mount(el, o) -> the bar, drawn into el. watch(scroller, nav, h1) -> { update }: the ground's overflow (.evTnOn, the content under it) and, on C, the bar's title (.evTnTitled) the moment the H1's middle passes the controls' foot or the sheet covers it (the Service detail's own rule, titled()).
+   mount(el, o) -> the bar, drawn into el. watch(scroller, nav, h1) -> { update }: the ground's overflow (.evTnOn, the content under it) and, on C, the bar's title (.evTnTitled) once the page has moved and the H1's middle has passed the controls' foot (the Service detail's own rule, titled(), gated on the scroll); .evTnFar when the H1's column is clear of the controls (no clearance).
    The ground (.evTnG) is in every bar: always the gradient blur. Host tokens: --evTnTop, --evTnX, --evTnGnd, --evTnInk */
 window.EvTopNav = (function () {
   var IB = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3.5 5.5 8l4.5 4.5"/></svg>';
@@ -19773,12 +19779,19 @@ window.EvTopNav = (function () {
   /* the Service detail's rule, shared: the title is in the bar once the H1's middle is above the bar's controls' foot, or the sheet under it has come over the H1 */
   function titled(h1, bar, sheet) { if (!h1 || !bar) return false; var r = h1.getBoundingClientRect(); if (!r.height) return false; return r.top + r.height / 2 < bar.getBoundingClientRect().bottom || (!!sheet && sheet.getBoundingClientRect().top < r.bottom); }
   function foot(nav) { var b = nav.querySelector(':scope > .evTnBtn') || nav, r = nav.getBoundingClientRect(); return nav.classList.contains('evTnC') ? b.getBoundingClientRect().bottom : r.bottom; }
+  /* the H1's column clear of the controls' x-range (the desk: a 2xs column far from the discs at the viewport's edges): .evTnFar, and the H1 keeps its full width and its place (no clearance) */
+  function far(nav, h1) { if (!h1 || !nav.classList.contains('evTnC')) return false; var r = h1.getBoundingClientRect(); if (!r.width) return nav.classList.contains('evTnFar');
+    var x = nav.querySelector(':scope > :is(.evTnX, .evTnMore)'), b = nav.querySelector(':scope > .evTnBk');
+    if (x && r.right > x.getBoundingClientRect().left - 12) return false; if (b && r.left < b.getBoundingClientRect().right + 12) return false; return true; }
   function watch(sc, nav, h1, o) {
     o = o || {}; if (!sc || !nav) return { update: function () {} }; var q = 0;
     var ft = nav.querySelector(':scope > .evTnFt span'); if (ft && !ft.textContent && h1) ft.textContent = h1.textContent.trim();
     var run = function () { q = 0; nav.classList.toggle('evTnOn', sc.scrollTop > 0);
-      if (nav.classList.contains('evTnC') && h1) { var r = h1.getBoundingClientRect(); nav.classList.toggle('evTnTitled', !!r.height && r.bottom < foot(nav)); } };
+      if (nav.classList.contains('evTnC') && h1) { nav.classList.toggle('evTnFar', far(nav, h1));
+        /* the Service detail's rule (its middle past the controls' foot), once the page has moved: at rest on the desk the H1 sits level with the Close and stays in the body */
+        var r = h1.getBoundingClientRect(); nav.classList.toggle('evTnTitled', sc.scrollTop > 0 && !!r.height && r.top + r.height / 2 < foot(nav)); } };
     sc.addEventListener('scroll', function () { if (!q) q = requestAnimationFrame(run); }, { passive: true });
+    if (window.ResizeObserver) new ResizeObserver(function () { if (!q) q = requestAnimationFrame(run); }).observe(sc);
     run(); return { update: run };
   }
   return { html: html, mount: mount, watch: watch, titled: titled, variant: variant, IB: IB, IX: IX, IM: IM };
@@ -36712,6 +36725,7 @@ hairline({
         '<div class="shHandle"></div>' + body + '<div class="shHome"></div></div>';
     }
     host.appendChild(wrap);
+    if (window.EvTopNav) window.EvTopNav.watch(wrap.querySelector('.prScroll'), wrap.querySelector('.prNav'), wrap.querySelector('.prTitle'));   /* the ground's overflow once the page moves under it, the title into the bar once it has gone under the Close (the title sits below the Close at rest, centred: no clearance) */
     // Dismissing it is per-surface and only for the length of the visit: the
     // page IS the message, so leaving and coming back brings it back.
     // the phone's copy rides the sheet chrome's slide, which is driven by `on`;
@@ -37936,7 +37950,6 @@ hairline({
   };
   function infoSheet(host, desk){
     if (!host) return null;
-    const X = '<button class="prX siX" type="button" aria-label="Close"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>';
     const body = '<div class="siScroll">' + window.EvTopNav.html({ close: true, closeCls: 'prX siX', cls: 'prNav' }) + '<h3 class="siTitle evTnH1"></h3><div class="siBody"></div></div>';   /* the Top nav master, C: the title the body's first thing, clear of the floating Close */
     const wrap = document.createElement('div');
     if (desk){
@@ -37948,9 +37961,12 @@ hairline({
         '<div class="shHandle"></div>' + body + '<div class="shHome"></div></div>';
     }
     host.appendChild(wrap);
+    const tw = window.EvTopNav.watch(wrap.querySelector('.siScroll'), wrap.querySelector('.prNav'), wrap.querySelector('.siTitle'));   /* the ground's overflow and the title into the bar, the master's */
     const show = key => {
       const c = SEC_INFO[key]; if (!c) return;
       wrap.querySelector('.siTitle').textContent = c.title;
+      const ft = wrap.querySelector('.prNav > .evTnFt span'); if (ft) ft.textContent = c.title;
+      const sc = wrap.querySelector('.siScroll'); if (sc) sc.scrollTop = 0; tw.update();
       const UP = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 10.5V2.8M4.8 6 8 2.8 11.2 6M2.5 10.8v2.2a.8.8 0 0 0 .8.8h9.4a.8.8 0 0 0 .8-.8v-2.2"/></svg>';
       wrap.querySelector('.siBody').innerHTML = [].concat(c.body).map(p => '<p>' + p + '</p>').join('') +
         // the way to act on what was just read, as the last line
@@ -46777,8 +46793,8 @@ hairline({
         sheet.className = 'shWrap siWrap recSheetWrap';
         sheet.innerHTML = '<div class="shDim"></div><div class="sheet siSheet recSheet" role="dialog" aria-modal="true">' +
           '<div class="shHandle"></div>' +
-          '<div class="prTop"><button class="prX siX" type="button" aria-label="Close"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button></div>' +
-          '<h3 class="siTitle">' + (cfg.recKey ? 'Filter records' : 'Filter results') + '</h3></div>';
+          (window.EvTopNav ? window.EvTopNav.html({ close: true, closeCls: 'prX siX', cls: 'prNav recNav' }) : '<div class="prTop"><button class="prX siX" type="button" aria-label="Close"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button></div>') +   /* the Top nav master, C */
+          '<h3 class="siTitle evTnH1">' + (cfg.recKey ? 'Filter records' : 'Filter results') + '</h3></div>';
         const sh = sheet.querySelector('.sheet');
         rec.menu.hidden = false;        // the sheet shows and hides; the menu is always "open" inside it
         sh.appendChild(rec.menu);
