@@ -166,7 +166,7 @@ type Item =
 |---|---|---|
 | Saved compositions | `db`, collection `chatVideos`, one document `{ v, name, updated, comp }` each, shared by the team (live) | `localStorage` `everlab:chatVideos` |
 | Background pictures | `assets.upload`, kept as `/_blob/<id>` in the composition | a data URL, scaled to 1920 px |
-| Files (code, JSON; the MP4 next) | `downloads.save` (the viewer confirms) | a plain download link |
+| Files (code, JSON, the video) | `downloads.save` (the viewer confirms) | a plain download link |
 | The draft being edited, the builder's theme | `localStorage` (`everlab:chatVideoDraft`, `everlab:chatVideoTheme`) | the same |
 
 - A composition over 240 KB (a large picture kept as a data URL) is saved in this browser, with a note. A viewer who cannot write to the artifact cannot upload pictures.
@@ -178,7 +178,20 @@ type Item =
 - **Composition JSON**: the composition itself, to import here again or to load in the stage.
 - **Import JSON**: paste or open a file; the stage makes it whole (`normalize`), and it opens as a draft.
 
-## The MP4 hook
+## The page's API
 
-- Export → **MP4 video** is disabled until `window.ChatVideo.exportMp4` exists. When it does, it is called with `{ comp, stage, saveFile, toast }`.
-- `window.ChatVideo` also has `comp()`, `setComp(c)`, `stage()`, `schedule()`, `saveFile(name, data, mime)`, `cap(name)`, `toast(msg)` and `toTsx(c?)`.
+- `window.ChatVideo` has `comp()`, `setComp(c)`, `stage()`, `schedule()`, `saveFile(name, data, mime)`, `cap(name)`, `toast(msg)`, `toTsx(c?)`, `exportMp4(o)` and, after an export, `lastExport`.
+
+## MP4 export (section 16)
+
+Export → **MP4 video**. One rendering system: the frames are the stage's own, so the video is the preview.
+
+- **The renderer**: a stage of its own (`concierge.html#stage` in a hidden frame at the composition's size, `fit(false)`), so the builder's preview stays free. For each frame `i` it calls `stage.frame(i / 30 s)`: `seek(t)`, then the stage's DOM and CSS drawn through an SVG `foreignObject`, with the background, the phone and every picture in it. The frame is laid on an opaque canvas (the background colour under it), cropped to an even size.
+- **Size and rate**: the composition's own size (1920 × 1080, 1080 × 1920, 1080 × 1080, 1440 × 1080, 1080 × 1440, or the custom size rounded down to even), 30 fps. `N = ceil(duration × 30)` frames, so the video lasts the composition (lead and tail included).
+- **Encoding**: WebCodecs `VideoEncoder`, variable bitrate, a keyframe every 2 s. About 10 Mbps for 1080p (4 to 12 Mbps by size). In the app the bitrate is also capped so the file fits the downloads capability's 16 MB; a file still over it is encoded again, smaller (twice at most).
+- **Codec, in order**: H.264 (`avc1.6400xx` High, the level the size needs, then Main, then Baseline) into an **MP4** with `mp4-muxer` 5.2.2 (fast start). If the browser can't encode H.264: **VP9 in WebM** (`webm-muxer` 5.1.4), then VP8, and the dialog says so. Without WebCodecs: `MediaRecorder` on the canvas (real time, so a slow frame stretches the timing a little; the dialog says so).
+  - Both muxers load from cdn.jsdelivr.net (pinned UMD builds, `Mp4Muxer` and `WebMMuxer`).
+- **The dialog**: size, frame rate, length and format; a live thumbnail of the frames; a bar with **Frame n / N**, the per cent and the time left; **Cancel** (or Esc). When it is done: the file's size and time taken, then **Download MP4** (Download WebM on the fallback). The builder's shortcuts wait while it is open.
+- **Saving**: `downloads.save` in the app (the viewer confirms), a plain link elsewhere.
+- `exportMp4({ comp?, saveFile?, toast?, prefer? })` returns the result (`{ blob, filename, mime, codec, label, container, w, h, fps, frames, duration, bitrate, bytes, renderMs, msPerVideoSecond }`, also `ChatVideo.lastExport`), or null when cancelled or failed. `prefer: 'vp9-mp4'` puts VP9 in the MP4 first: the checks use it to run the MP4 path in a browser without H.264.
+- **Known gaps**: a background picture on another host whose fetch is blocked comes out blank; the glass blur behind the phone header's buttons (`backdrop-filter`) is not drawn by the SVG route; Safari may refuse a canvas drawn from an SVG `foreignObject` (it would then fail with a message). 60 fps and 4K are later.

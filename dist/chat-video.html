@@ -257,6 +257,23 @@
   .toast.warn { background: var(--warn); color: #1b1c1e; }
   @keyframes tIn { from { opacity: 0; transform: translateY(6px); } }
 
+  /* the video export's dialog: what is made, a live thumbnail of the frames, frame n / N, Cancel, then Download */
+  .dlg.xp { width: min(620px, 100%); height: auto; max-height: 100%; grid-template-rows: auto minmax(0, 1fr) auto; }
+  .xpBody { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 18px; padding: 6px 18px 4px; align-items: start; }
+  .xpPrev { display: grid; place-items: center; width: 240px; height: 240px; border-radius: 10px; background: var(--ground); box-shadow: inset 0 0 0 1px var(--line); overflow: hidden; }
+  .xpPrev canvas { display: block; max-width: 100%; max-height: 100%; border-radius: 4px; background: #000; }
+  .xpInfo { display: grid; gap: 12px; min-width: 0; }
+  .xpMeta { margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .xpMeta div { padding: 7px 9px; border-radius: 8px; background: var(--raised); min-width: 0; }
+  .xpMeta dt { color: var(--muted); font-size: 10.5px; } .xpMeta dd { margin: 0; font: 12px var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .xpBar { height: 6px; border-radius: 3px; background: var(--raised); overflow: hidden; }
+  .xpBar i { display: block; height: 100%; width: 0; border-radius: 3px; background: var(--accent); transition: width .12s linear; }
+  .xp.ok .xpBar i { background: var(--ok); } .xp.bad .xpBar i { background: var(--danger); }
+  .xpNum { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; font-size: 12.5px; font-variant-numeric: tabular-nums; min-height: 18px; }
+  .xpNum b { font-weight: 600; } .xpNum span { color: var(--muted); }
+  .xpNote { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.45; min-height: 0; } .xpNote:empty { display: none; } .xpNote.warn { color: var(--warn); }
+  @media (max-width: 560px) { .xpBody { grid-template-columns: 1fr; } .xpPrev { width: 100%; } }
+
   @media (max-width: 1180px) { .cvb { grid-template-columns: 268px minmax(0, 1fr) 288px; } .nm { width: 170px; } .brand b { display: none; } }
   @media (max-width: 860px) {
     html, body { overflow: auto; }
@@ -272,6 +289,221 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/htm@3.1.1/dist/htm.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mp4-muxer@5.2.2/build/mp4-muxer.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/webm-muxer@5.1.4/build/webm-muxer.js"></script>
+<script>
+/* ================= Export -> MP4 video (the brief's section 16): one rendering system. A stage of its own (concierge.html#stage in a hidden frame at the composition's size) draws
+   every frame t = i / 30 with Concierge.stage.frame(t): seek(t), then the stage's own DOM and CSS rasterised through an SVG foreignObject, background and phone included.
+   Frames go to WebCodecs (H.264 High, VBR) and into an MP4 (mp4-muxer); a browser without H.264 encoding gets VP9 in WebM (webm-muxer) and is told so; one without
+   WebCodecs records the canvas with MediaRecorder. The file goes out through the downloads capability (16 MB), a plain link elsewhere ================= */
+(function () {
+  'use strict';
+  var CV = window.ChatVideo = window.ChatVideo || {};
+  var FPS = 30, LIMIT = 16 * 1048576, STAGE_SRC = 'concierge.html#stage';
+  var busy = false;
+
+  var hex2 = function (n) { return (n < 16 ? '0' : '') + n.toString(16); };
+  var slug = function (s) { return String(s || 'chat-video').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'chat-video'; };
+  var mb = function (b) { return b >= 1048576 ? (b / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(b / 1024)) + ' KB'; };
+  var secs = function (ms) { return (ms / 1000).toFixed(1) + ' s'; };
+  var el = function (tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
+  var CANCEL = { cancelled: true };
+
+  /* ---------- the codec: H.264 at the level the size needs (High, then Main, then Baseline); then VP9 / VP8 in WebM; then MediaRecorder ---------- */
+  var AVC_LEVELS = [[0x28, 8192], [0x2a, 8704], [0x32, 22080], [0x33, 36864], [0x34, 36864]];   /* level, most macroblocks a frame */
+  var cfgOf = function (c, W, H, bps) {
+    var o = { codec: c.codec, width: W, height: H, bitrate: Math.round(bps), framerate: FPS, bitrateMode: 'variable', latencyMode: 'quality' };
+    if (c.track === 'avc') o.avc = { format: 'avc' };
+    return o;
+  };
+  var pick = async function (W, H, bps, prefer) {
+    var tries = [], mbs = Math.ceil(W / 16) * Math.ceil(H / 16);
+    if (window.VideoEncoder && window.VideoFrame) {
+      AVC_LEVELS.forEach(function (l) { if (mbs <= l[1]) ['6400', '4d00', '42e0'].forEach(function (p) { tries.push({ codec: 'avc1.' + p + hex2(l[0]), mux: 'mp4', track: 'avc', ext: 'mp4', mime: 'video/mp4', label: 'H.264', box: 'MP4' }); }); });
+      tries.push({ codec: 'vp09.00.' + (mbs <= 8704 ? '40' : '51') + '.08', mux: 'webm', track: 'V_VP9', ext: 'webm', mime: 'video/webm', label: 'VP9', box: 'WebM' });
+      tries.push({ codec: 'vp8', mux: 'webm', track: 'V_VP8', ext: 'webm', mime: 'video/webm', label: 'VP8', box: 'WebM' });
+      if (prefer === 'vp9-mp4') tries.unshift({ codec: 'vp09.00.40.08', mux: 'mp4', track: 'vp9', ext: 'mp4', mime: 'video/mp4', label: 'VP9', box: 'MP4' });   /* the MP4 path where H.264 can't encode (the checks) */
+      for (var i = 0; i < tries.length; i++) {
+        var c = tries[i];
+        if (c.mux === 'mp4' ? !window.Mp4Muxer : !window.WebMMuxer) continue;
+        try { var s = await VideoEncoder.isConfigSupported(cfgOf(c, W, H, bps)); if (s && s.supported) return c; } catch (e) {}
+      }
+    }
+    if (window.MediaRecorder && HTMLCanvasElement.prototype.captureStream) {
+      var mr = [['video/mp4;codecs=avc1', 'mp4', 'H.264', 'MP4'], ['video/mp4', 'mp4', 'H.264', 'MP4'], ['video/webm;codecs=vp9', 'webm', 'VP9', 'WebM'], ['video/webm', 'webm', 'VP8', 'WebM']];
+      for (var j = 0; j < mr.length; j++) if (MediaRecorder.isTypeSupported(mr[j][0])) return { mux: 'mr', codec: mr[j][0], mime: mr[j][0].split(';')[0], ext: mr[j][1], label: mr[j][2], box: mr[j][3] };
+    }
+    return null;
+  };
+
+  /* ---------- a stage of its own, at the composition's size, so the preview stays the builder's ---------- */
+  var stageFor = function (comp, W, H) {
+    return new Promise(function (res, rej) {
+      var f = document.createElement('iframe'); f.src = STAGE_SRC; f.title = 'MP4 renderer'; f.tabIndex = -1; f.setAttribute('aria-hidden', 'true');
+      f.style.cssText = 'position:fixed;left:' + (-W - 200) + 'px;top:0;width:' + W + 'px;height:' + H + 'px;border:0;visibility:hidden;pointer-events:none';
+      var t = setTimeout(function () { rej(new Error('The renderer did not start (concierge.html#stage).')); }, 30000);
+      f.onload = function () {
+        var S = null; try { S = f.contentWindow.Concierge && f.contentWindow.Concierge.stage; } catch (e) {}
+        if (!S) { clearTimeout(t); rej(new Error('The renderer could not be reached.')); return; }
+        try { S.fit(false); } catch (e) {}
+        Promise.resolve(S.load(comp)).then(function () { return S.ready(); }).then(function (info) { clearTimeout(t); res({ S: S, f: f, info: info }); }, function (e) { clearTimeout(t); rej(e); });
+      };
+      document.body.appendChild(f);
+    });
+  };
+
+  var dequeued = function (enc) {
+    return new Promise(function (r) { var done = false, go = function () { if (!done) { done = true; r(); } }; try { enc.addEventListener('dequeue', go, { once: true }); } catch (e) {} setTimeout(go, 25); });
+  };
+
+  /* ---------- the frames, one by one: the stage's frame(t) onto an opaque canvas of even size, into the encoder ---------- */
+  var render = async function (job) {
+    var S = job.S, W = job.W, H = job.H, N = job.N, c = job.codec, base = job.base;
+    var out = document.createElement('canvas'); out.width = W; out.height = H;
+    var g = out.getContext('2d', { alpha: false }), tmp = document.createElement('canvas');
+    var draw = async function (i) {
+      var cv = await S.frame(Math.min(job.dur, i * 1000 / FPS), { canvas: tmp });
+      g.fillStyle = '#000'; g.fillRect(0, 0, W, H); g.fillStyle = base; g.fillRect(0, 0, W, H); g.drawImage(cv, 0, 0);
+      job.onFrame(i, out);
+    };
+    if (c.mux === 'mr') {   /* the last resort: the canvas recorded in real time, held for a frame's length each */
+      var stream = out.captureStream(0), track = stream.getVideoTracks()[0], parts = [];
+      var rec = new MediaRecorder(stream, { mimeType: c.codec, videoBitsPerSecond: Math.round(job.bps) });
+      rec.ondataavailable = function (e) { if (e.data && e.data.size) parts.push(e.data); };
+      var stopped = new Promise(function (r) { rec.onstop = r; });
+      await draw(0); rec.start(500); var t0 = performance.now();
+      for (var k = 0; k < N; k++) {
+        if (job.cancelled()) { rec.stop(); throw CANCEL; }
+        if (k) await draw(k);
+        if (track.requestFrame) track.requestFrame();
+        var wait = t0 + (k + 1) * 1000 / FPS - performance.now(); if (wait > 0) await new Promise(function (r) { setTimeout(r, wait); });
+      }
+      rec.stop(); await stopped;
+      return new Blob(parts, { type: c.mime });
+    }
+    var target, mx, err = null;
+    if (c.mux === 'mp4') { target = new Mp4Muxer.ArrayBufferTarget(); mx = new Mp4Muxer.Muxer({ target: target, video: { codec: c.track, width: W, height: H, frameRate: FPS }, fastStart: 'in-memory', firstTimestampBehavior: 'offset' }); }
+    else { target = new WebMMuxer.ArrayBufferTarget(); mx = new WebMMuxer.Muxer({ target: target, video: { codec: c.track, width: W, height: H, frameRate: FPS }, firstTimestampBehavior: 'offset' }); }
+    var enc = new VideoEncoder({ output: function (chunk, meta) { try { mx.addVideoChunk(chunk, meta); } catch (e) { err = e; } }, error: function (e) { err = e; } });
+    enc.configure(cfgOf(c, W, H, job.bps));
+    try {
+      for (var i = 0; i < N; i++) {
+        if (job.cancelled()) throw CANCEL;
+        if (err) throw err;
+        await draw(i);
+        var vf = new VideoFrame(out, { timestamp: Math.round(i * 1e6 / FPS), duration: Math.round(1e6 / FPS) });
+        try { enc.encode(vf, { keyFrame: i % (FPS * 2) === 0 }); } finally { vf.close(); }
+        while (enc.encodeQueueSize > 3 && !err && !job.cancelled()) await dequeued(enc);
+      }
+      await enc.flush();
+      if (err) throw err;
+    } finally { try { enc.close(); } catch (e) {} }
+    mx.finalize();
+    return new Blob([target.buffer], { type: c.mime });
+  };
+
+  /* ---------- the dialog: what is made, frame n / N, %, time left, Cancel; then Download ---------- */
+  var dialog = function (title, onCancel) {
+    var bg = el('div', 'dlgBg xpBg'), d = el('div', 'dlg xp'), hd = el('div', 'dlgHd'), h2 = el('h2', null, title), x = el('button', 'ib');
+    d.setAttribute('role', 'dialog'); d.setAttribute('aria-modal', 'true'); d.setAttribute('aria-label', title);
+    x.type = 'button'; x.setAttribute('aria-label', 'Close'); x.innerHTML = '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+    hd.append(h2, x);
+    var body = el('div', 'xpBody'), pv = el('div', 'xpPrev'), cv = el('canvas'), info = el('div', 'xpInfo'), meta = el('dl', 'xpMeta'), bar = el('div', 'xpBar'), fill = el('i'), num = el('div', 'xpNum'), note = el('p', 'xpNote');
+    bar.setAttribute('role', 'progressbar'); bar.setAttribute('aria-valuemin', '0'); bar.setAttribute('aria-valuemax', '100'); bar.setAttribute('aria-valuenow', '0'); bar.setAttribute('aria-label', 'Rendering');
+    num.setAttribute('aria-live', 'polite'); bar.append(fill); pv.append(cv); info.append(meta, bar, num, note); body.append(pv, info);
+    var ft = el('div', 'dlgFt'), sp = el('span', 'sp'), cancel = el('button', 'btn', 'Cancel'), dl = el('button', 'btn pri');
+    cancel.type = dl.type = 'button'; dl.hidden = true; ft.append(sp, cancel, dl);
+    d.append(hd, body, ft); bg.append(d); document.body.appendChild(bg);
+    var state = 'run', close = function () { removeEventListener('keydown', keys, true); bg.remove(); };
+    var stop = function () { if (state === 'run') onCancel(); else close(); };
+    var keys = function (e) {   /* the builder's shortcuts (Space, Delete, ...) wait while this is open */
+      if (e.key === 'Escape') { e.preventDefault(); stop(); }
+      else if (e.key === 'Tab') { var fs = [x, cancel, dl].filter(function (b) { return !b.hidden && !b.disabled; }), i = fs.indexOf(document.activeElement); if (fs.length) { e.preventDefault(); fs[(i + (e.shiftKey ? fs.length - 1 : 1)) % fs.length].focus(); } }
+      e.stopPropagation();
+    };
+    addEventListener('keydown', keys, true);
+    x.onclick = stop; cancel.onclick = stop; cancel.focus();
+    return {
+      meta: function (rows) { meta.textContent = ''; rows.forEach(function (r) { var w = el('div'); w.append(el('dt', null, r[0]), el('dd', null, r[1])); meta.append(w); }); },
+      ratio: function (W, H) { var k = Math.min(240 / W, 240 / H); cv.width = Math.max(1, Math.round(W * k)); cv.height = Math.max(1, Math.round(H * k)); },
+      thumb: function (src) { var g = cv.getContext('2d'); g.drawImage(src, 0, 0, cv.width, cv.height); },
+      progress: function (i, N, left) {
+        var p = N ? Math.floor(i / N * 100) : 0; fill.style.width = (N ? i / N * 100 : 0).toFixed(2) + '%'; bar.setAttribute('aria-valuenow', String(p));
+        num.innerHTML = ''; num.append(el('b', null, 'Frame ' + i + ' / ' + N), el('span', null, p + '%'), el('span', null, left == null ? '' : left < 1500 ? 'Almost done' : 'About ' + Math.ceil(left / 1000) + ' s left'));
+      },
+      status: function (t) { num.innerHTML = ''; num.append(el('b', null, t)); },
+      note: function (t, warn) { note.textContent = t || ''; note.className = 'xpNote' + (warn ? ' warn' : ''); },
+      done: function (label, onDl) { state = 'done'; d.classList.add('ok'); fill.style.width = '100%'; bar.setAttribute('aria-valuenow', '100'); cancel.textContent = 'Close'; dl.hidden = false; dl.textContent = label; dl.onclick = onDl; dl.focus(); },
+      fail: function (msg) { state = 'fail'; d.classList.add('bad'); cancel.textContent = 'Close'; num.innerHTML = ''; num.append(el('b', null, 'The video could not be made')); note.textContent = msg; note.className = 'xpNote warn'; cancel.focus(); },
+      busyDl: function (on) { dl.disabled = !!on; },
+      close: close, el: bg
+    };
+  };
+
+  /* ---------- the export ---------- */
+  CV.exportMp4 = async function (o) {
+    o = o || {};
+    if (busy) { if (o.toast) o.toast('A video is already being made.', 'warn'); return null; }
+    var comp = JSON.parse(JSON.stringify(o.comp || (CV.comp && CV.comp()) || null));
+    if (!comp || !Array.isArray(comp.sequence) || !comp.sequence.length) { if (o.toast) o.toast('Add something to the sequence first.', 'warn'); return null; }
+    busy = true;
+    var cancelled = false, R = null, ui = dialog('Export video · ' + (comp.name || 'Untitled video'), function () { cancelled = true; ui.status('Cancelling…'); });
+    var save = o.saveFile || CV.saveFile, toast = o.toast || CV.toast || function () {};
+    var dlCap = null; try { dlCap = CV.cap ? await CV.cap('downloads') : null; } catch (e) {}
+    try {
+      ui.status('Preparing the renderer…');
+      var fw = (comp.format && +comp.format.w) || 1080, fh = (comp.format && +comp.format.h) || 1920;
+      R = await stageFor(comp, fw, fh);
+      if (cancelled) throw CANCEL;
+      var W0 = R.info.w || fw, H0 = R.info.h || fh, W = W0 - W0 % 2, H = H0 - H0 % 2, dur = R.info.duration || R.S.duration();
+      var N = Math.max(1, Math.ceil(dur * FPS / 1000)), base = (comp.background && comp.background.color) || '#000000';
+      var bps = Math.min(12e6, Math.max(4e6, 10e6 * W * H / (1920 * 1080)));
+      if (dlCap) bps = Math.min(bps, LIMIT * .82 * 8 / Math.max(1, dur / 1000));   /* the downloads capability takes 16 MB */
+      bps = Math.max(1e6, bps);
+      var codec = await pick(W, H, bps, o.prefer);
+      if (!codec) throw new Error(window.Mp4Muxer || window.WebMMuxer ? 'This browser can’t encode video. Use a recent Chrome, Edge or Safari.' : 'The video library (mp4-muxer, from cdn.jsdelivr.net) could not load. Check the connection, then reload the page.');
+      ui.ratio(W, H);
+      ui.meta([['Size', W + ' × ' + H], ['Frame rate', FPS + ' fps'], ['Length', secs(dur)], ['Format', codec.label + ' · ' + codec.box]]);
+      ui.note(codec.box === 'MP4' ? (codec.label === 'H.264' ? '' : 'This browser can’t encode H.264: the MP4 holds VP9 (plays in browsers and VLC, not QuickTime).')
+        : 'This browser can’t encode H.264, so the video is ' + codec.label + ' in WebM. For an MP4, export from Chrome, Edge or Safari.', codec.label !== 'H.264');
+      if (codec.mux === 'mr') ui.note('This browser has no WebCodecs: the video is recorded in real time, and a frame slower than 1/30 s stretches the timing a little.', true);
+      var t0 = performance.now(), blob = null, tries = 0;
+      for (;;) {
+        var tStart = performance.now();
+        blob = await render({ S: R.S, W: W, H: H, N: N, dur: dur, codec: codec, bps: bps, base: base, cancelled: function () { return cancelled; },
+          onFrame: function (i, cvs) {
+            var done = i + 1, el2 = performance.now() - tStart;
+            ui.progress(done, N, done > 4 ? el2 / done * (N - done) : null);
+            if (i % 3 === 0 || done === N) ui.thumb(cvs);
+          } });
+        if (!(dlCap && blob.size > LIMIT - 65536) || tries++ >= 2 || codec.mux === 'mr') break;
+        bps = bps * (LIMIT * .8) / blob.size; ui.note('Over the 16 MB download limit: encoding again at ' + (bps / 1e6).toFixed(1) + ' Mbps.', true);
+      }
+      var ms = performance.now() - t0, fn = slug(comp.name) + '.' + codec.ext;
+      var res = { blob: blob, filename: fn, mime: codec.mime, codec: codec.codec, label: codec.label, container: codec.box, w: W, h: H, fps: FPS, frames: N, duration: dur, bitrate: Math.round(bps),
+        bytes: blob.size, renderMs: Math.round(ms), msPerVideoSecond: Math.round(ms / Math.max(.001, dur / 1000)) };
+      CV.lastExport = res;
+      ui.status('Ready · ' + mb(blob.size) + ' · made in ' + secs(ms));
+      if (dlCap && blob.size > LIMIT) ui.note('The file is ' + mb(blob.size) + ', over the 16 MB the app can hand over: shorten the composition or export it from the builder outside the app.', true);
+      ui.done('Download ' + (codec.box === 'MP4' ? 'MP4' : codec.box), function () {
+        ui.busyDl(true);
+        save(fn, blob, codec.mime).then(function (r) {
+          ui.busyDl(false);
+          if (r === 'declined') ui.note('The download was declined. Download again when you’re ready.');
+          else { ui.note((r === 'saved' ? 'Saved ' : 'Downloaded ') + fn + '.'); toast('Saved ' + fn); }
+        }, function (e) { ui.busyDl(false); ui.note((e && e.message) || 'The file could not be saved.', true); });
+      });
+      return res;
+    } catch (e) {
+      if (e === CANCEL) { ui.close(); toast('Export cancelled'); return null; }
+      ui.fail((e && e.message) || String(e)); return null;
+    } finally {
+      busy = false;
+      if (R && R.f) { try { R.S.exit(); } catch (e) {} R.f.remove(); }
+    }
+  };
+})();
+</script>
 <script>
 /* ================= the Chat video builder (Marketing): Julien's brief, "I write the conversation and choose the components. The tool handles the design and animation."
    The composition (docs/chat-video.md, v1) is the one model: this page edits it, the Concierge's stage (concierge.html#stage, in the iframe) draws it for the preview and the MP4,
@@ -1044,7 +1276,7 @@
     useEffect(function () { document.documentElement.dataset.theme = theme; ls.set(THEME, theme); }, [theme]);
     useEffect(function () { var mo = new MutationObserver(function () { var v = document.documentElement.dataset.theme || 'dark'; setTheme(function (o) { return o === v ? o : v; }); }); mo.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] }); return function () { mo.disconnect(); }; }, []);
 
-    /* the page's API, for the MP4 export (the next step) and the app around it */
+    /* the page's API, for the MP4 export (the script before this one) and the app around it */
     useEffect(function () {
       Object.assign(window.ChatVideo, {
         version: 1, comp: function () { return clone(docRef.current.comp); }, setComp: function (x) { importComp(x); }, stage: function () { return S; }, schedule: function () { return clone(sched); },
@@ -1071,7 +1303,7 @@
         <button type="button" className="btn" onClick=${function () { saveNow().catch(function () {}); }}><${Ic} n="save" />Save</button>
         <div className="mnw"><button type="button" className="btn pri" aria-haspopup="menu" aria-expanded=${String(menu)} onClick=${function () { setMenu(!menu); }}>Export<${Ic} n="chev" /></button>
           ${menu ? html`<div className="menu" role="menu">
-            <button type="button" role="menuitem" disabled=${!mp4} onClick=${function () { setMenu(false); try { window.ChatVideo.exportMp4({ comp: clone(comp), stage: S, saveFile: saveFile, toast: toast }); } catch (e) { toast(e.message, 'warn'); } }}><${Ic} n="film" /><span><b>MP4 video</b><em>1080p, 30 fps, the composition’s own size</em></span>${mp4 ? null : html`<span className="soon">Next</span>`}</button>
+            <button type="button" role="menuitem" disabled=${!mp4} onClick=${function () { setMenu(false); try { window.ChatVideo.exportMp4({ comp: clone(comp), stage: S, saveFile: saveFile, toast: toast }); } catch (e) { toast(e.message, 'warn'); } }}><${Ic} n="film" /><span><b>MP4 video</b><em>${fw} × ${fh} · 30 fps, the composition’s own size</em></span>${mp4 ? null : html`<span className="soon">Next</span>`}</button>
             <hr />
             <button type="button" role="menuitem" onClick=${function () { setMenu(false); setDlg('tsx'); }}><${Ic} n="code" /><span><b>Code</b><em>React + TypeScript, reusable anywhere</em></span></button>
             <button type="button" role="menuitem" onClick=${function () { setMenu(false); setDlg('json'); }}><${Ic} n="file" /><span><b>Composition JSON</b><em>To import again, or for the stage</em></span></button>
