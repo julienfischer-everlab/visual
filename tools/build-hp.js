@@ -43,7 +43,7 @@ body { margin: 0; overflow: hidden; background: var(--pg); color: var(--pgFg); f
 #hp > .arSheet { position: relative; display: flex; flex-direction: column; width: 100%; height: 100%; min-height: 0; overflow: hidden; }
 .bpStatus { display: none; }
 @media (min-width: 1100px) { #stage[data-bp="auto"] #dev { height: calc(100% - 48px); border-radius: 24px; box-shadow: 0 30px 80px rgba(0, 0, 0, .3); } }
-#stage[data-bp="xs"] #dev { width: 393px; max-width: none; height: calc(100% - 96px); max-height: 900px; border-radius: 56px; box-shadow: 0 0 0 5px #000, 0 0 0 11px #3b3b40, 0 0 0 12px rgba(255, 255, 255, .14); }   /* the prototype's XS frame (--evPhBz), no drop shadow ("the SAME iPhone frame all the time, meaning NO shadow") */
+#stage[data-bp="xs"] #dev { flex: none; width: 393px; max-width: none; height: 852px; max-height: none; scale: var(--devS, 1); border-radius: 56px; box-shadow: 0 0 0 5px #000, 0 0 0 11px #3b3b40, 0 0 0 12px rgba(255, 255, 255, .14); }   /* the prototype's XS frame (--evPhBz), no drop shadow ("the SAME iPhone frame all the time, meaning NO shadow"); 393 x 852 minimum ("All XS need a minimum height 852px"): a window too short for it draws it smaller (--devS), never a shorter screen */
 #stage[data-bp="s"] #dev { width: 600px; max-width: calc(100% - 64px); height: calc(100% - 96px); border-radius: 28px; box-shadow: 0 0 0 9px #000, 0 0 0 16px #3b3b40, 0 0 0 17px rgba(255, 255, 255, .14); }
 #stage[data-bp="m"] #dev { width: 992px; max-width: 100%; }
 #stage[data-bp="l"] #dev { width: 1440px; max-width: 100%; }
@@ -101,7 +101,8 @@ ${hpJs}
   var stage = document.getElementById('stage'), dev = document.getElementById('dev'), demo = document.querySelector('.demo'), KEY = 'everlab.hp.bp';
   var paint = function () { if (inst) inst.theme(dark() ? 'dark' : 'light'); stage.classList.toggle('lt', !dark()); [].forEach.call(document.querySelectorAll('.demo [data-th]'), function (b) { b.setAttribute('aria-pressed', String((b.getAttribute('data-th') === 'dark') === dark())); }); };
   /* the Demo button beside the screen when it fits (28 right of the device, or in a wide Auto's gutter); else the pill under the sheet's button */
-  var place = function () { var r = dev.getBoundingClientRect(), x = r.right + 28; demo.classList.toggle('side', x + 36 + 12 <= innerWidth); if (demo.classList.contains('side')) { demo.style.left = Math.round(x) + 'px'; } else demo.style.left = ''; };
+  var place = function () { stage.style.setProperty('--devS', String(Math.max(.2, Math.min(1, (innerHeight - 96) / 852, (innerWidth - 32) / 393)))); var r = dev.getBoundingClientRect(), x = r.right + 28;   /* the XS phone's scale, 48 above and below it as before */
+    demo.classList.toggle('side', x + 36 + 12 <= innerWidth); if (demo.classList.contains('side')) { demo.style.left = Math.round(x) + 'px'; } else demo.style.left = ''; };
   var setBp = function (b) { stage.setAttribute('data-bp', b); [].forEach.call(document.querySelectorAll('.demo [data-bp]'), function (x) { x.setAttribute('aria-pressed', String(x.getAttribute('data-bp') === b)); }); try { localStorage.setItem(KEY, b); } catch (e) {} requestAnimationFrame(place); };
   var mount = function () { if (inst) inst.destroy(); host.textContent = ''; inst = HP.mount(host, { theme: dark() ? 'dark' : 'light', name: 'Julien', onClose: function () { if (inst) inst.home(); } }); paint(); };
   var stateOf = function () { var sm = HP.store.summary(), nx = ['wear', 'past', 'you'].filter(function (k) { return sm.st[k] !== 'done'; })[0]; return sm.n === 3 ? 'all' : ['none', 'one', 'two'][sm.n] + (nx === 'you' && sm.st.you === 'prog' ? '_d' : ''); };   // only step 3 has a dropped-off state
