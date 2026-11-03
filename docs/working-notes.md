@@ -20210,3 +20210,24 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
   - A hyphenated word in the line under the price is kept whole ("doctor-led", never "doctor- / led").
 - **Stack.** The group card's ground goes to 5% ink (+4).
 - **Checked** (Playwright, dist, XS, Plans = Tabs): the mark animates logo → dot, the badge reads PROTOCOL / DIAGNOSTICS, the icon circles, the white edge, and the texture all follow the pick. dist/index.html is 15.5 MB (the mark's strip is not inlined twice). No console errors.
+
+## Gift: one note card for the note step and the envelope; Long envelope flips; Check and pay polish
+
+- **One card** (`gfNc`, CSS "Their note's card"): the note step's card and the card inside the envelope are now the same piece of code, sized from its own width (container query units, `cqw`), 86 by 52 ("card should be the same one that goes inside the envelope").
+  - The envelope's `.hpGfEvCd` is now only a frame for it: 86 by 52 of the envelope, with the card's corners and the shadow. The merge's flight crossfades between two copies of the same card.
+  - At 361 wide: 24 corners; the mark 28 at 20 from the edges ("+8px from edge, logo 12px smaller"); the line 14; the signature 38 tall; the count bottom right.
+  - The note is set by length: 22 up to 40 characters, then 19, 16 (over 70), 14 (over 110) and 12.6 (over 150). This keeps up to 180 characters inside the card's fixed shape (checked: no overflow at 10, 60, 100, 140, 180).
+- **Note step.**
+  - "Add your signature": dashed outline, no fill, 12 more above it.
+  - The From line under the card is removed; the giver's name stays in the card's line.
+  - The sub under the card: 32 a side (was 64).
+- **Long envelope flips** ("need to be able to flip as well as the other tweak"). It rests on its back with For <name> in foil:
+  - a tap turns it over to its front (the Card's turn, the other way);
+  - the next tap turns it back and opens it on the card (the Card's own opening);
+  - the next tap closes it, on its back again.
+  - Its card now sits 3 from the top, so the same 52-tall card fits; the merge's card middle is updated to match.
+- **Check and pay.** "All wrapped up!" centred. The summary row "Their note" is now "Note".
+- **Checked** (Playwright, dist, XS):
+  - Note card 361 × 218: mark 28 at 20/20, dashed button with no fill and 12 margin, sub padding 32, no From line.
+  - Long: tap 1 front, tap 2 open on the card, tap 3 closed on its back. The Card envelope opens on the same card, 310 × 188.
+  - H1 centred; the rows read To / Arrives / Note. No console errors.
