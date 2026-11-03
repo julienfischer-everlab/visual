@@ -19981,3 +19981,10 @@ Julien, on the flow's last screen ("This is the Receipt! already designed"), the
 
 - "no close needed": the When step's date field drops its right label while the calendar is open (the field itself folds it); "Change" shows again once it is closed.
 - "height viewport ??": the Header overlap doc phone scales by the smaller of the column width and the window height (innerHeight - 140 over the 876 frame), re-fitting on resize; 1400x720 now shows the whole phone (564 tall).
+
+## Main page headers: My journey on Services' line ("uncosnsitent with overview header" / "services is good, take that as ref")
+
+- One title rule for the phone and tablet main pages (Services, My journey): the Title group master's H2 at XS·S (`--tgH2FsS/LhS/LsS`, 24/30, 500), as the desk already reads its M·L H2. My journey was 26 (XS) and 28 (S).
+- One disc fill, `--mainBtn` / `--mainBtnH` (Services' values: 7% white dark, #f2f2f2 light): Services' cart and My journey's Past and search discs read it. My journey's were 4%.
+- XS: the journey's row lifted 7 (`margin-top:-7px`), so its title sits at Services' 46 and its discs at 39, level with the Services cart and the Overview's Inbox and bell. Measured equal in V1 and V2, dark and light.
+- S: the Past button a 44 disc (was a 40 rounded square), the row hugging the title's 30 (discs 7 over, as the cart), 10 under the drawn strip as Services, 24 below: title 52, disc 45, as Services.
