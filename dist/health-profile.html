@@ -1121,6 +1121,52 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
 body[data-bp="xs"], [data-ct-bp="xs"], .aqWrap.aqBpXS { --ct2xs: 100%; } body[data-bp="s"], [data-ct-bp="s"], .aqWrap.aqBpS { --ct2xs: 512px; } body[data-bp="m"], [data-ct-bp="m"], .aqWrap.aqBpM { --ct2xs: 544px; } body[data-bp="l"], body[data-bp="xl"], [data-ct-bp="l"], .aqWrap.aqBpL { --ct2xs: 576px; }   /* [data-ct-bp]: the Container doc reads a breakpoint's tokens off these very rules */
 [data-container] { box-sizing: border-box; width: 100%; margin-left: auto; margin-right: auto; }
 [data-container="2xs"] { max-width: var(--ct2xs); } [data-container="xs"] { max-width: var(--ctXs); } [data-container="sm"] { max-width: var(--ctSm); } [data-container="md"] { max-width: var(--ctMd); } [data-container="lg"] { max-width: var(--ctLg); }
+/* ---- Title group, the master (Design system -> General layout -> Title group; window.EvTitle builds it, its numbers saved as everlab:tgMaster). One title block for every page, each part an option ("some titles don't need that. That's just an option"):
+   a level and its type (Display hero, Display, H1 and its Short hero, H2 to H6); the title, on H1 in two tones (the muted part on its own line; the Short hero's inline after the comma, wrapping on); a slot (an icon, a visual, a badge)
+   above the group or at its right, vertically centred (the right one with left alignment only); a support line above the title (support top) and one under it (support bottom); an icon at either side of the words, its size the level's.
+   Left or centred. The type: raw tokens per level and per breakpoint pair, XS·S and M·L (--tg<Lv>Fs|Lh|Ls<S|L>, the weight --tg<Lv>W, the support line --tg<Lv>Sf|Sl; EvTitle writes its numbers over these defaults),
+   the pair picked by --tgL (0 XS·S, 1 M·L): the window's (992 and up), a forced body[data-bp], a frame's [data-ct-bp], a modal's .aqWrap.aqBp*. The gaps are tokens too (support top -> title --tgGapT, title -> support bottom --tgGapB,
+   both halved from H3 down; slot -> group --tgGapS; group -> the right slot --tgGapR), carried as padding by the parts, so a host's margin reset keeps them. Ink: the title the host's own; the muted part and the support lines
+   the secondary ink, 56% of it (--tgMute). The face is the host's (its surface's family: Saans in the sheets, the shell's on the desk); the master sets the size, line height, weight and tracking */
+:root { --tgL: 0;
+  --tgDhFsS: 40px; --tgDhLhS: 44px; --tgDhLsS: -1px; --tgDhFsL: 52px; --tgDhLhL: 56px; --tgDhLsL: -1.4px; --tgDhW: 300; --tgDhSf: 16px; --tgDhSl: 22px;
+  --tgDsFsS: 32px; --tgDsLhS: 38px; --tgDsLsS: -.3px; --tgDsFsL: 40px; --tgDsLhL: 46px; --tgDsLsL: -.6px; --tgDsW: 500; --tgDsSf: 16px; --tgDsSl: 22px;
+  --tgH1FsS: 26px; --tgH1LhS: 30px; --tgH1LsS: -.2px; --tgH1FsL: 28px; --tgH1LhL: 32px; --tgH1LsL: -.2px; --tgH1W: 570; --tgH1Sf: 16px; --tgH1Sl: 22px;
+  --tgH2FsS: 24px; --tgH2LhS: 30px; --tgH2LsS: -.2px; --tgH2FsL: 24px; --tgH2LhL: 30px; --tgH2LsL: -.3px; --tgH2W: 500; --tgH2Sf: 15px; --tgH2Sl: 22px;
+  --tgH3FsS: 20px; --tgH3LhS: 26px; --tgH3LsS: -.2px; --tgH3FsL: 20px; --tgH3LhL: 26px; --tgH3LsL: -.2px; --tgH3W: 500; --tgH3Sf: 14px; --tgH3Sl: 20px;
+  --tgH4FsS: 17px; --tgH4LhS: 24px; --tgH4LsS: 0px; --tgH4FsL: 17px; --tgH4LhL: 24px; --tgH4LsL: 0px; --tgH4W: 400; --tgH4Sf: 14px; --tgH4Sl: 20px;
+  --tgH5FsS: 12px; --tgH5LhS: 16px; --tgH5LsS: 1px; --tgH5FsL: 12px; --tgH5LhL: 16px; --tgH5LsL: 1px; --tgH5W: 600; --tgH5Sf: 13px; --tgH5Sl: 18px;
+  --tgH6FsS: 12px; --tgH6LhS: 16px; --tgH6LsS: 0px; --tgH6FsL: 12px; --tgH6LhL: 16px; --tgH6LsL: 0px; --tgH6W: 500; --tgH6Sf: 13px; --tgH6Sl: 18px;
+  --tgGapT: 8px; --tgGapB: 8px; --tgGapS: 16px; --tgGapR: 16px; }
+@media (min-width: 992px) { :root { --tgL: 1; } }
+body[data-bp="xs"], body[data-bp="s"], [data-ct-bp="xs"], [data-ct-bp="s"], .aqWrap.aqBpXS, .aqWrap.aqBpS { --tgL: 0; }
+body[data-bp="m"], body[data-bp="l"], body[data-bp="xl"], [data-ct-bp="m"], [data-ct-bp="l"], .aqWrap.aqBpM, .aqWrap.aqBpL { --tgL: 1; }
+.evTg { --tgFs: calc(var(--tgFsS) * (1 - var(--tgL, 0)) + var(--tgFsL) * var(--tgL, 0)); --tgLh: calc(var(--tgLhS) * (1 - var(--tgL, 0)) + var(--tgLhL) * var(--tgL, 0)); --tgLs: calc(var(--tgLsS) * (1 - var(--tgL, 0)) + var(--tgLsL) * var(--tgL, 0));
+  --tgGT: var(--tgGapT, 8px); --tgGB: var(--tgGapB, 8px); --tgMute: color-mix(in srgb, currentColor 56%, transparent); display: flex; flex-direction: column; align-items: stretch; min-width: 0; text-align: left; }
+.evTg.evTgC { align-items: center; text-align: center; }
+.evTg[data-lv="display-hero"] { --tgFsS: var(--tgDhFsS); --tgFsL: var(--tgDhFsL); --tgLhS: var(--tgDhLhS); --tgLhL: var(--tgDhLhL); --tgLsS: var(--tgDhLsS); --tgLsL: var(--tgDhLsL); --tgW: var(--tgDhW); --tgSf: var(--tgDhSf); --tgSl: var(--tgDhSl); }
+.evTg[data-lv="display"] { --tgFsS: var(--tgDsFsS); --tgFsL: var(--tgDsFsL); --tgLhS: var(--tgDsLhS); --tgLhL: var(--tgDsLhL); --tgLsS: var(--tgDsLsS); --tgLsL: var(--tgDsLsL); --tgW: var(--tgDsW); --tgSf: var(--tgDsSf); --tgSl: var(--tgDsSl); }
+.evTg[data-lv="h1"] { --tgFsS: var(--tgH1FsS); --tgFsL: var(--tgH1FsL); --tgLhS: var(--tgH1LhS); --tgLhL: var(--tgH1LhL); --tgLsS: var(--tgH1LsS); --tgLsL: var(--tgH1LsL); --tgW: var(--tgH1W); --tgSf: var(--tgH1Sf); --tgSl: var(--tgH1Sl); }
+.evTg[data-lv="h1-short"] { --tgFsS: var(--tgH1FsS); --tgFsL: var(--tgH1FsL); --tgLhS: var(--tgH1LhS); --tgLhL: var(--tgH1LhL); --tgLsS: var(--tgH1LsS); --tgLsL: var(--tgH1LsL); --tgW: var(--tgH1W); --tgSf: var(--tgH1Sf); --tgSl: var(--tgH1Sl); }
+.evTg[data-lv="h2"] { --tgFsS: var(--tgH2FsS); --tgFsL: var(--tgH2FsL); --tgLhS: var(--tgH2LhS); --tgLhL: var(--tgH2LhL); --tgLsS: var(--tgH2LsS); --tgLsL: var(--tgH2LsL); --tgW: var(--tgH2W); --tgSf: var(--tgH2Sf); --tgSl: var(--tgH2Sl); }
+.evTg[data-lv="h3"] { --tgFsS: var(--tgH3FsS); --tgFsL: var(--tgH3FsL); --tgLhS: var(--tgH3LhS); --tgLhL: var(--tgH3LhL); --tgLsS: var(--tgH3LsS); --tgLsL: var(--tgH3LsL); --tgW: var(--tgH3W); --tgSf: var(--tgH3Sf); --tgSl: var(--tgH3Sl); }
+.evTg[data-lv="h4"] { --tgFsS: var(--tgH4FsS); --tgFsL: var(--tgH4FsL); --tgLhS: var(--tgH4LhS); --tgLhL: var(--tgH4LhL); --tgLsS: var(--tgH4LsS); --tgLsL: var(--tgH4LsL); --tgW: var(--tgH4W); --tgSf: var(--tgH4Sf); --tgSl: var(--tgH4Sl); }
+.evTg[data-lv="h5"] { --tgFsS: var(--tgH5FsS); --tgFsL: var(--tgH5FsL); --tgLhS: var(--tgH5LhS); --tgLhL: var(--tgH5LhL); --tgLsS: var(--tgH5LsS); --tgLsL: var(--tgH5LsL); --tgW: var(--tgH5W); --tgSf: var(--tgH5Sf); --tgSl: var(--tgH5Sl); }
+.evTg[data-lv="h6"] { --tgFsS: var(--tgH6FsS); --tgFsL: var(--tgH6FsL); --tgLhS: var(--tgH6LhS); --tgLhL: var(--tgH6LhL); --tgLsS: var(--tgH6LsS); --tgLsL: var(--tgH6LsL); --tgW: var(--tgH6W); --tgSf: var(--tgH6Sf); --tgSl: var(--tgH6Sl); }
+.evTg:is([data-lv="h3"], [data-lv="h4"], [data-lv="h5"], [data-lv="h6"]) { --tgGT: calc(var(--tgGapT, 8px) / 2); --tgGB: calc(var(--tgGapB, 8px) / 2); }
+.evTg .evTgT { margin: 0; padding: 0; font-size: var(--tgFs); line-height: var(--tgLh); font-weight: var(--tgW); letter-spacing: var(--tgLs); color: inherit; text-wrap: pretty; }
+.evTg:is([data-lv="display-hero"], [data-lv="display"], [data-lv="h1"], [data-lv="h1-short"]) .evTgT { text-wrap: balance; }
+.evTg[data-lv="h5"] .evTgT { text-transform: uppercase; }
+.evTg .evTgM { color: var(--tgMute); }
+.evTg[data-lv="h1"] .evTgM::before { content: "\A"; white-space: pre; }   /* H1: the second tone on a line of its own (a break, so an icon after it follows its last word), up to two lines; the Short hero's inline after the comma */
+.evTg .evTgTop, .evTg .evTgBot { margin: 0; font-size: var(--tgSf); line-height: var(--tgSl); font-weight: 400; letter-spacing: 0; text-transform: none; color: var(--tgMute); text-wrap: pretty; }
+.evTg .evTgTop { padding-bottom: var(--tgGT); } .evTg .evTgBot { padding-top: var(--tgGB); }   /* the parts' rules one class above a host's element rules (.dash h1) */
+.evTgIc { display: inline-flex; align-items: center; height: 1lh; vertical-align: top; }   /* in the words' flow, hugging the first word and the last (a wrapped title too), each centred on its line */ .evTgIcL { margin-right: .5em; } .evTgIcR { margin-left: .5em; }
+.evTgIc svg { display: block; width: .875em; height: .875em; }   /* the level's size: 7/8 of its type */
+.evTgSlot { flex: none; display: flex; max-width: 100%; }
+.evTgSlotT { align-self: flex-start; padding-bottom: var(--tgGapS, 16px); } .evTgC .evTgSlotT { align-self: center; }
+.evTg.evTgSlR { flex-direction: row; align-items: center; gap: var(--tgGapR, 16px); }
+.evTgSlR > .evTgCol { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; align-items: stretch; }
 html:not(#_m):not(#_d) .arSheet .arHead .arHeadRow > .arIconBtn.arIconBtn { width: 44px !important; height: 44px !important; min-width: 44px !important; min-height: 44px !important; align-self: flex-start; }   /* at the row's top: 58 down on XS, 44 on S, 16 on the desk, the Top nav master's 16 */   /* the flows' heads (the Async report, the Health profile, Send a gift, the Step flow master): the Top nav master's 44 discs ("CTA top nav always 44px"); their bars keep their own markup for the progress riding in them */
 html:not(#_m):not(#_d) .evTn .evTnBtn.evTnBtn { width: var(--evTnD) !important; height: var(--evTnD) !important; min-width: var(--evTnD) !important; min-height: var(--evTnD) !important; }   /* the master's disc (--evTnD, 44) for a control that keeps an old class (.arClose, .prX ...) for its handler, whatever that class sizes it */
 /* ---- Sheet header, the master (Design system -> Modals -> Bottom sheet: "titled bottom sheets = the Modals doc's sheet header (24/30 title with a compact close, as the Modals page documents for sheets)"; the doc draws its sheets with these very classes, window.EvSheetHead.html builds them):
@@ -1158,11 +1204,11 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
 .arSheet.hpSheet :is(.hpSec, .hpOpt, .hpTile, .hpArea, .hpEdit, .hpRowB, .hpStepB, .hpIn):focus-visible { outline: 2px solid var(--ar-blue-fg); outline-offset: 2px; }
 /* type: the questionnaire's ("question titles, descriptions and supporting information") */
 .arSheet.hpSheet .hpEy { font-family: var(--ar-font-mono); font-size: 12px; line-height: 16px; font-weight: 570; letter-spacing: 1px; text-transform: uppercase; color: oklch(var(--ar-ink) / .5); }
-.arSheet.hpSheet .hpH { margin: 0; font-family: var(--ar-font); font-size: 28px; line-height: 32px; font-weight: 570; letter-spacing: -.2px; text-wrap: balance; color: oklch(var(--ar-ink)); }
-.aqWrap:is(.aqBpXS, .aqBpS) .arSheet.hpSheet .hpH { font-size: 26px; line-height: 30px; }
+.arSheet.hpSheet .hpH { margin: 0; font-family: var(--ar-font); font-size: var(--tgH1FsL, 28px); line-height: var(--tgH1LhL, 32px); font-weight: var(--tgH1W, 570); letter-spacing: var(--tgH1LsL, -.2px); text-wrap: balance; color: oklch(var(--ar-ink)); }   /* the Title group master's H1 (EvTitle; its numbers, saved as everlab:tgMaster): M·L here, */
+.aqWrap:is(.aqBpXS, .aqBpS) .arSheet.hpSheet .hpH { font-size: var(--tgH1FsS, 26px); line-height: var(--tgH1LhS, 30px); }   /* XS·S in the phone's and the tablet's modal */
 .aqWrap .arSheet.hpSheet .hpHome .hpH, .arSheet.hpSheet .hpHome .hpH { font-size: 32px; line-height: 32px; font-weight: 570; letter-spacing: -.01em; }   /* the intro's title as the Async report's intro title (.arRvT: "same font style as the Async intro title") */
 .arSheet.hpSheet .hpD { margin: 0; font-size: 16px; line-height: 22px; color: oklch(var(--ar-ink) / .64); text-wrap: pretty; }
-.arSheet.hpSheet .hpQ { display: flex; flex-direction: column; gap: 8px; margin-bottom: 28px; }
+.arSheet.hpSheet .hpQ { display: flex; flex-direction: column; margin-bottom: 28px; } .arSheet.hpSheet .hpQ:not(.evTg) { gap: 8px; }   /* a title group drawn by the master (q()) takes the master's gaps (--tgGapT, --tgGapB: 8) */
 .arSheet.hpSheet .hpQ.hpC { align-items: center; text-align: center; }
 /* the dotted circle: rings of dots, a third lit per area done, clockwise from twelve */
 .arSheet.hpSheet .hpDots, .hpDots { display: block; flex: none; color: oklch(var(--ar-ink, 0% 0 0)); }
@@ -1342,12 +1388,12 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
  .arSheet.hpSheet .hpCcShim { width: fit-content; font-size: 14px; line-height: 19px; font-weight: 400; color: oklch(var(--ar-ink) / .55); background: linear-gradient(90deg, oklch(var(--ar-ink) / .36) 0 30%, oklch(var(--ar-ink)) 45%, oklch(var(--ar-ink) / .36) 60% 100%) 0 0 / 300% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; animation: hpCcShim 1.6s linear infinite; } .arSheet.hpSheet .hpCcThink.hpCcShim { padding: 6px 2px; animation: hpCcShim 1.6s linear infinite, hpCcIn .7s cubic-bezier(.16, 1, .3, 1) backwards; }
  @keyframes hpCcShim { from { background-position: 100% 0; } to { background-position: 0 0; } }   /* the chat page's Thinking…: muted words, a light passing through them */
  html.ccNoVid .arSheet.hpSheet .hpCcVidW { display: none !important; }   /* Background video Off: the video, its black band and its gradient gone; the Concierge on its own dark ground (its ink stays white, as it is on the video) */
-.arSheet.hpSheet .hpCcVidW { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; opacity: 0; transition: opacity .9s ease; } .arSheet.hpSheet.hpCcVidOn .hpCcVidW { opacity: var(--ccVidOp, 1); } .arSheet.hpSheet .hpCcP > :not(.hpCcIntro) { position: relative; z-index: 1; } .arSheet.hpSheet .hpScr.hpCcP, .arSheet.hpSheet.hpCcAt .arFoot { transition: background-color .9s ease; } .arSheet.hpSheet.hpCcVidOn .hpScr.hpCcP { background-color: transparent; } .arSheet.hpSheet.hpCcVidOn .arFoot { background: transparent; } .arSheet.hpSheet.hpCcAt .arFoot::before { bottom: 0; height: auto; top: -96px; background: linear-gradient(to bottom, transparent, color-mix(in srgb, var(--ar-paper) 55%, transparent) 45%, color-mix(in srgb, var(--ar-paper) 92%, transparent)); opacity: 0; transition: opacity .9s ease; z-index: -1; } .arSheet.hpSheet.hpCcVidOn .arFoot::before { opacity: 1; }   /* one smooth fade from the video into the buttons, from 96 above them to the foot; no edge ("bg on the footer = gradient") */
- .arSheet.hpSheet .hpCcVid { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 62% 50%; scale: 1.06; transition: scale 6s cubic-bezier(.2, .6, .3, 1); } .arSheet.hpSheet.hpCcVidOn .hpCcVid { scale: 1; }
+.arSheet.hpSheet :is(.hpCcVidW, .hpGfVidW) { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; opacity: 0; transition: opacity .9s ease; } .arSheet.hpSheet.hpCcVidOn .hpCcVidW { opacity: var(--ccVidOp, 1); } .arSheet.hpSheet .hpCcP > :not(.hpCcIntro) { position: relative; z-index: 1; } .arSheet.hpSheet .hpScr.hpCcP, .arSheet.hpSheet.hpCcAt .arFoot { transition: background-color .9s ease; } .arSheet.hpSheet.hpCcVidOn .hpScr.hpCcP { background-color: transparent; } .arSheet.hpSheet.hpCcVidOn .arFoot { background: transparent; } .arSheet.hpSheet.hpCcAt .arFoot::before { bottom: 0; height: auto; top: -96px; background: linear-gradient(to bottom, transparent, color-mix(in srgb, var(--ar-paper) 55%, transparent) 45%, color-mix(in srgb, var(--ar-paper) 92%, transparent)); opacity: 0; transition: opacity .9s ease; z-index: -1; } .arSheet.hpSheet.hpCcVidOn .arFoot::before { opacity: 1; }   /* one smooth fade from the video into the buttons, from 96 above them to the foot; no edge ("bg on the footer = gradient") */
+ .arSheet.hpSheet :is(.hpCcVid, .hpGfVid) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 62% 50%; scale: 1.06; transition: scale 6s cubic-bezier(.2, .6, .3, 1); } .arSheet.hpSheet.hpCcVidOn .hpCcVid, .arSheet.hpSheet .hpGfVidOn .hpGfVid { scale: 1; }   /* the Send a gift intro's header plays the same video, the same way (.hpGfVid in .hpGfVidW, on .hpGfVidOn) */
  .arSheet.hpSheet .hpCcVidW::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, var(--ar-paper) 0%, color-mix(in srgb, var(--ar-paper) 88%, transparent) 26%, color-mix(in srgb, var(--ar-paper) 40%, transparent) 46%, transparent 64%); }   /* the video full bleed behind the screen, the page's ground fading down over its top so the title reads */
  .arSheet.hpSheet.hpCcVidOn .hpCcMe { -webkit-backdrop-filter: blur(32px); backdrop-filter: blur(32px); background: rgba(255, 255, 255, .04); }   /* the member's outlined bubble readable over the video */ .arSheet.hpSheet.hpCcVidOn .hpCcAi.hpCcAi { background: rgba(255, 255, 255, .2); }   /* Eva's over the video: the member's .04, +16 */
  .arSheet.hpSheet .hpCcWipH { display: none; } .arSheet.hpSheet.hpCcAt .hpCcWipH { display: inline-flex; position: absolute; left: 50%; top: 50%; translate: -50% -50%; margin: 0; } .arSheet.hpSheet .arHeadRow { position: relative; }
- html .arSheet.hpSheet .hpCcVidW { top: 0; bottom: calc(60% - 64px); background: #000; }   /* the video 40% of the height ("video cover 40% of height"), from 64 down */ html .arSheet.hpSheet .hpCcVid { top: -24px; height: calc(100% + 24px); }   /* 24 higher again ("move up video by 24px") */ html .arSheet.hpSheet .hpCcVid { scale: 1.05; transition: scale 2.4s cubic-bezier(.25, .8, .3, 1); }   /* a softer zoom in ("too pronounced, make it softer") */ html .arSheet.hpSheet.hpCcVidOn .hpCcVid { scale: 1; }   /* the video comes in at 1.15 and settles to 1 in its area ("scale up by 1.15x and scale down to 1 when it appears") */   /* the picture 64 higher in the same area, running up under the bar's black ("keep video in this area but move up the video position by 64px") */   /* the video 64 down, black above it, under the bar */   /* 64 lower ("move down the visual by 64px") */ .arSheet.hpSheet .hpCcT { margin-top: 16px; }   /* 32 higher ("title group push up by 32px") */ .arSheet.hpSheet.hpCcAt .arFoot { gap: 12px; }   /* +8 between Try concierge and Go to overview */   /* the title group 48 lower */ html .arSheet.hpSheet .hpCcVidW::after { background: linear-gradient(to bottom, transparent 0, transparent 40%, color-mix(in srgb, var(--ar-paper) 18%, transparent) 55%, color-mix(in srgb, var(--ar-paper) 55%, transparent) 72.5%, color-mix(in srgb, var(--ar-paper) 88%, transparent) 87.5%, var(--ar-paper) 100%);   /* the fade into the page 25% longer, from 40% down ("increase gradient progressive by 25% on the bottom") */ }   /* the video's overlap gradient: black under the bar, half as strong over the picture's top ("reduce backdrop gradient by 50%"), a progressive fade into the page at its foot */ html .arSheet.hpSheet .hpCcTh, html .arSheet.hpSheet .hpCcFrOn .hpCcTh { -webkit-mask-image: none; mask-image: none; }   /* no mask on the thread: a mask cuts the bubbles' backdrop blur off from the video ("bubble speech bg blur doesn't work"); only the last two show anyway */ html .arSheet.hpSheet.hpCcAt.hpCcAt.hpCcAt .arHead .arClose { visibility: hidden !important; pointer-events: none !important; } html .arSheet.hpSheet.hpCcAt .arHead { --ar-ink: 100% 0 0; color: #fff; } html .arSheet.hpSheet.hpCcAt.hpCcAt.hpCcAt.hpCcAt .arHead .arIconBtn { width: 44px; height: 44px; border-radius: 50%; background: rgba(255, 255, 255, .12) !important; color: #fff !important; -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); } .aqWrap.aqDev.aqInk:is(.aqFull, .aqPhone).on:has(.arSheet.hpCcAt) .aqStat { color: #fff; }   /* the top always dark, its back a round secondary button, no gradient behind it ("top nav force dark mode, use secondary CTA, no gradient bg") */ html .arSheet.hpSheet .hpCcFx { font-size: 14px; } html .arSheet.hpSheet .hpCcF { scale: 1.05; transition: scale .6s cubic-bezier(.22, 1, .36, 1); }   /* 1.05 at rest, to 1 on the tap ("field scale from 1.05 to 1") */ html .arSheet.hpSheet .hpCcF:is(.hpCcTyping, .hpCcPress, .hpCcOut) { scale: 1; transition: scale .45s cubic-bezier(.25, 1, .5, 1); }   /* inverse: 1.1 at rest, settling to 1 on the tap, smoothly ("scale 1.1 --> tap --> scale 1, smoother") */   /* snappier ("animation should be snappier") */ html .arSheet.hpSheet .hpCcF > :is(.hpCcBmIn, .hpCcBmL, .hpCcBmG) { transition: opacity .3s ease; } html .arSheet.hpSheet .hpCcF:is(.hpCcTyping, .hpCcPress, .hpCcOut) > :is(.hpCcBmIn, .hpCcBmL, .hpCcBmG) { opacity: 0; transition-duration: .12s; } html .arSheet.hpSheet .hpCcF:is(.hpCcTyping, .hpCcPress):not(.hpCcOut) > .hpCcBmIn { opacity: .2; transition-duration: .25s; } html .arSheet.hpSheet .hpCcF:is(.hpCcTyping, .hpCcPress):not(.hpCcOut) > .hpCcBmG { opacity: .018; transition-duration: .25s; } html .arSheet.hpSheet .hpCcF:is(.hpCcTyping, .hpCcPress):not(.hpCcOut) > .hpCcBmL { opacity: .084; transition-duration: .25s; }   /* the edge line back ("border beam was better before on the chat field, put it back"), down 80% with the light when focused */   /* focused, the beam down by 80%, not gone ("focus on chat field reduce beam border opacity by 80%, not totally") */   /* the field at rest .9, snapping to full size as it is used, its lights gone then ("inactive scale .9x, active snappy 1x, when active no orb") */ html .arSheet.hpSheet.hpCcTyping .hpCcFt::after, html .arSheet.hpSheet .hpCcTyping .hpCcFt::after { height: 15px; vertical-align: -2px; background: #fff; }   /* the caret white ("cursor chat field white"); the field 1.1x all round, .99 at rest, 1.1 in use ("chat field scale 1.1 in general") */ html .arSheet.hpSheet .hpCcB.hpCcB, html .arSheet.hpSheet .hpCcMe.hpCcMe { -webkit-backdrop-filter: blur(64px); backdrop-filter: blur(64px); }   /* the bubbles' blur 64 ("bubble speech blur 64px") */   /* the field 16 wider (24 from the sides) and its words 2 smaller ("chat field font smaller", "+16px width") */   /* no dismiss on the Concierge: the last step of the reveal, Go to overview its way out ("no dismiss") */   /* no fade on the thread's top and bottom ("remove fade out on the visual on top and bottom") */ html .arSheet.hpSheet.hpCcVidOn .hpScr.hpCcP, html .arSheet.hpSheet.hpCcAt .hpScr.hpCcP { background-color: transparent; transition: none; }   /* the screen with no ground of its own, so the video comes in evenly, the bar's strip with the rest ("top nav cut bg when video appears") */ html .arSheet.hpSheet.hpCcAt .arFoot::before { display: none; } html .arSheet.hpSheet.hpCcVidOn .arFoot { background: var(--ar-paper); }   /* the video the top half of the screen, fading progressively into the page at its foot ("keep video Half, remove the tweak") */
+ html .arSheet.hpSheet .hpCcVidW { top: 0; bottom: calc(60% - 64px); background: #000; }   /* the video 40% of the height ("video cover 40% of height"), from 64 down */ html .arSheet.hpSheet .hpCcVid { top: -24px; height: calc(100% + 24px); }   /* 24 higher again ("move up video by 24px") */ html .arSheet.hpSheet :is(.hpCcVid, .hpGfVid) { scale: 1.05; transition: scale 2.4s cubic-bezier(.25, .8, .3, 1); }   /* a softer zoom in ("too pronounced, make it softer") */ html .arSheet.hpSheet.hpCcVidOn .hpCcVid, html .arSheet.hpSheet .hpGfVidOn .hpGfVid { scale: 1; }   /* the video comes in at 1.15 and settles to 1 in its area ("scale up by 1.15x and scale down to 1 when it appears") */   /* the picture 64 higher in the same area, running up under the bar's black ("keep video in this area but move up the video position by 64px") */   /* the video 64 down, black above it, under the bar */   /* 64 lower ("move down the visual by 64px") */ .arSheet.hpSheet .hpCcT { margin-top: 16px; }   /* 32 higher ("title group push up by 32px") */ .arSheet.hpSheet.hpCcAt .arFoot { gap: 12px; }   /* +8 between Try concierge and Go to overview */   /* the title group 48 lower */ html .arSheet.hpSheet .hpCcVidW::after { background: linear-gradient(to bottom, transparent 0, transparent 40%, color-mix(in srgb, var(--ar-paper) 18%, transparent) 55%, color-mix(in srgb, var(--ar-paper) 55%, transparent) 72.5%, color-mix(in srgb, var(--ar-paper) 88%, transparent) 87.5%, var(--ar-paper) 100%);   /* the fade into the page 25% longer, from 40% down ("increase gradient progressive by 25% on the bottom") */ }   /* the video's overlap gradient: black under the bar, half as strong over the picture's top ("reduce backdrop gradient by 50%"), a progressive fade into the page at its foot */ html .arSheet.hpSheet .hpCcTh, html .arSheet.hpSheet .hpCcFrOn .hpCcTh { -webkit-mask-image: none; mask-image: none; }   /* no mask on the thread: a mask cuts the bubbles' backdrop blur off from the video ("bubble speech bg blur doesn't work"); only the last two show anyway */ html .arSheet.hpSheet.hpCcAt.hpCcAt.hpCcAt .arHead .arClose { visibility: hidden !important; pointer-events: none !important; } html .arSheet.hpSheet.hpCcAt .arHead { --ar-ink: 100% 0 0; color: #fff; } html .arSheet.hpSheet.hpCcAt.hpCcAt.hpCcAt.hpCcAt .arHead .arIconBtn { width: 44px; height: 44px; border-radius: 50%; background: rgba(255, 255, 255, .12) !important; color: #fff !important; -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); } .aqWrap.aqDev.aqInk:is(.aqFull, .aqPhone).on:has(.arSheet.hpCcAt) .aqStat { color: #fff; }   /* the top always dark, its back a round secondary button, no gradient behind it ("top nav force dark mode, use secondary CTA, no gradient bg") */ html .arSheet.hpSheet .hpCcFx { font-size: 14px; } html .arSheet.hpSheet .hpCcF { scale: 1.05; transition: scale .6s cubic-bezier(.22, 1, .36, 1); }   /* 1.05 at rest, to 1 on the tap ("field scale from 1.05 to 1") */ html .arSheet.hpSheet .hpCcF:is(.hpCcTyping, .hpCcPress, .hpCcOut) { scale: 1; transition: scale .45s cubic-bezier(.25, 1, .5, 1); }   /* inverse: 1.1 at rest, settling to 1 on the tap, smoothly ("scale 1.1 --> tap --> scale 1, smoother") */   /* snappier ("animation should be snappier") */ html .arSheet.hpSheet .hpCcF > :is(.hpCcBmIn, .hpCcBmL, .hpCcBmG) { transition: opacity .3s ease; } html .arSheet.hpSheet .hpCcF:is(.hpCcTyping, .hpCcPress, .hpCcOut) > :is(.hpCcBmIn, .hpCcBmL, .hpCcBmG) { opacity: 0; transition-duration: .12s; } html .arSheet.hpSheet .hpCcF:is(.hpCcTyping, .hpCcPress):not(.hpCcOut) > .hpCcBmIn { opacity: .2; transition-duration: .25s; } html .arSheet.hpSheet .hpCcF:is(.hpCcTyping, .hpCcPress):not(.hpCcOut) > .hpCcBmG { opacity: .018; transition-duration: .25s; } html .arSheet.hpSheet .hpCcF:is(.hpCcTyping, .hpCcPress):not(.hpCcOut) > .hpCcBmL { opacity: .084; transition-duration: .25s; }   /* the edge line back ("border beam was better before on the chat field, put it back"), down 80% with the light when focused */   /* focused, the beam down by 80%, not gone ("focus on chat field reduce beam border opacity by 80%, not totally") */   /* the field at rest .9, snapping to full size as it is used, its lights gone then ("inactive scale .9x, active snappy 1x, when active no orb") */ html .arSheet.hpSheet.hpCcTyping .hpCcFt::after, html .arSheet.hpSheet .hpCcTyping .hpCcFt::after { height: 15px; vertical-align: -2px; background: #fff; }   /* the caret white ("cursor chat field white"); the field 1.1x all round, .99 at rest, 1.1 in use ("chat field scale 1.1 in general") */ html .arSheet.hpSheet .hpCcB.hpCcB, html .arSheet.hpSheet .hpCcMe.hpCcMe { -webkit-backdrop-filter: blur(64px); backdrop-filter: blur(64px); }   /* the bubbles' blur 64 ("bubble speech blur 64px") */   /* the field 16 wider (24 from the sides) and its words 2 smaller ("chat field font smaller", "+16px width") */   /* no dismiss on the Concierge: the last step of the reveal, Go to overview its way out ("no dismiss") */   /* no fade on the thread's top and bottom ("remove fade out on the visual on top and bottom") */ html .arSheet.hpSheet.hpCcVidOn .hpScr.hpCcP, html .arSheet.hpSheet.hpCcAt .hpScr.hpCcP { background-color: transparent; transition: none; }   /* the screen with no ground of its own, so the video comes in evenly, the bar's strip with the rest ("top nav cut bg when video appears") */ html .arSheet.hpSheet.hpCcAt .arFoot::before { display: none; } html .arSheet.hpSheet.hpCcVidOn .arFoot { background: var(--ar-paper); }   /* the video the top half of the screen, fading progressively into the page at its foot ("keep video Half, remove the tweak") */
  .arSheet.hpSheet.hpCcVidOn .arHead { --ar-ink: 100% 0 0; color: #fff; } .arSheet.hpSheet .arHead { transition: color .6s ease; } .aqWrap.aqDev.aqInk:is(.aqFull, .aqPhone).on:has(.arSheet.hpCcVidOn) .aqStat { color: #fff; }   /* with the video up, the top always dark ("even in light mode the top header: a black backdrop, the header forced dark", only while the video shows): black down over the video's top, the bar and the status in white */
  html.hpCcVisFirst .arSheet.hpSheet .hpCcP > .hpCcChat { order: -1; margin-top: 8px; margin-bottom: 24px; } html.hpCcVisFirst .arSheet.hpSheet .hpCcF { top: var(--ccMidY, 50%); bottom: auto; translate: 0 -50%; } html .arSheet.hpSheet .hpCcF { transition: scale .6s cubic-bezier(.22, 1, .36, 1), opacity .6s ease, transform .8s cubic-bezier(.22, 1, .36, 1); } html .arSheet.hpSheet .hpCcF:is(.hpCcTyping, .hpCcPress) { transition: scale .45s cubic-bezier(.25, 1, .5, 1), opacity .6s ease, transform .8s cubic-bezier(.22, 1, .36, 1), background-color .3s ease; } html .arSheet.hpSheet .hpCcF.hpCcHid { opacity: 0; transform: translateY(32px); transition: none; } html .arSheet.hpSheet .hpCcF.hpCcOut, html .arSheet.hpSheet .hpCcConv .hpCcF.hpCcOut { opacity: 0; transform: translateY(32px); scale: 1; transition: opacity .4s ease, transform .5s cubic-bezier(.45, 0, .55, 1), scale .45s ease; }   /* the field in, rising 24 as it fades in, and out the other way, sinking 32 as it fades ("move up 32px, fade in", "disappear the inverse, fade out 32px"; the same each round) */
  html .arSheet.hpSheet .hpCcAv { filter: drop-shadow(0 14px 22px rgba(0, 0, 0, .34)) drop-shadow(0 3px 6px rgba(0, 0, 0, .18)); transition: transform .9s cubic-bezier(.2, 1.15, .35, 1), opacity .45s ease; } html .arSheet.hpSheet .hpCcAv.in:not(.on) { opacity: .4; } html body[data-bp="xs"] #dOver .dvTop > .hpRecOut.hpRecOut.hpRecOut { margin: 4px 0 12px; } html body[data-bp="xs"] #dOver > .hpRecOut, html body[data-bp="xs"] #dOver > .ovCcCard, html body[data-bp="xs"] #dOver > .dvLead.dvLead { margin: 12px 0; gap: 12px; } html body[data-bp="xs"] #dOver > .dvLead > :is(.ovCcCard, .hpRecOut) { padding: 20px !important; } html body[data-bp="xs"] #dOver > .ovSvc.ovSvc { padding-top: 0; padding-bottom: 0; margin-top: 12px; margin-bottom: 12px; } html body[data-bp="xs"] #dOver > :is(.hpRecOut, .ovCcCard, .ovSvc, .dvLead) + :is(.hpRecOut, .ovCcCard, .ovSvc, .dvLead) { margin-top: 0; } html body[data-bp="xs"] #dOver > :is(.hpRecOut, .ovCcCard, .ovSvc, .dvLead) + .dvTop > :first-child { margin-top: 0; } html body[data-bp="xs"] #dOver > :is(.hpRecOut, .ovCcCard, .ovSvc, .dvLead) + .dvTop > .hpOvCard.hpOvCard:first-child { margin-top: 0; } html:not(.insHero) body[data-bp="xs"] #dOver > :is(.hpRecOut, .ovCcCard, .ovSvc, .dvLead) + .ovInsHero + .dvTop > .hpOvCard.hpOvCard:first-child { margin-top: 0; }   /* past the hidden insights hero between them */ html body[data-bp="xs"] #dOver > .dvTop:has(> .hpRecOut) + :is(.hpRecOut, .ovCcCard, .ovSvc, .dvLead) { margin-top: 0; } html body[data-bp="xs"] #dOver > .dvTop:not(:has(> .hpRecOut)) + :is(.hpRecOut, .ovCcCard, .ovSvc, .dvLead) { margin-top: 4px; } html body[data-bp="xs"] #dOver > :is(.hpRecOut, .ovCcCard, .ovSvc, .dvLead) + .dvSec { margin-top: -12px; } html:not(.insHero) body[data-bp="xs"] #dOver > :is(.hpRecOut, .ovCcCard, .ovSvc, .dvLead) + .ovInsHero + .dvSec { margin-top: -12px; }   /* the services too, their scroller's 12 above and 16 below gone ("vertical gap 16px") */   /* 12 between the cards at the top, whatever their order ("12px gap"; was 16 ("make sure 16px gap between hero cards") */ html #dOver .ovSvcChip .ovSvcVis, html #phone2 .ovSvcChip .ovSvcVis { display: none !important; } html.svcIc #dOver .ovSvcChip .ovSvcVis, html.svcIc #phone2 .ovSvcChip .ovSvcVis { display: flex !important; flex: none; order: -1; width: 32px; height: 32px; margin: 0; background: none; border-radius: 0; }   /* Tweaks -> Services -> Icons On ("put back the iconography emoji"): the service's 3D render back, before its name, 32 on the cards */ html.svcIc :is(body[data-bp="xs"] #dOver, #phone2) .ovSvcChip .ovSvcVis { width: 24px; height: 24px; }   /* on the phone's chips, 24 at the name's left */ html.svcIc :is(#dOver, #phone2) .ovSvcChip .ovSvcVis img { width: 100%; height: 100%; object-fit: contain; filter: saturate(.8); } html #dOver .ovSvcChip.ovSvcChip, html #phone2 .ovSvcChip.ovSvcChip, html body .aiTile.aiSvc.aiSvc.aiSvc { border-radius: 28px; } html body .aiTile.aiSvc.aiSvc.aiSvc.aiSvc { border-radius: 16px; font-size: 14px; }   /* the AI card's services: 16 round and 14 type ("reduce the radius on these service cards to 16px; reduce the font size to 14"), their names whole again */   /* the service cards 8 rounder ("service card more rounded"; were 20): the Overview's, every size, and the AI card's */   /* no renders on the service cards, at any size ("also remove emoji") */
@@ -2007,19 +2053,26 @@ html .arSheet.hpSheet.hpGfSolo.hpGfAtIn:not(.hpGfOnSheet) .arHead .arIconBtn.arI
 .arSheet.hpSheet.hpWide .hpScr.hpGfIn > * { max-width: none; }
 .arSheet.hpSheet.hpWide.hpGfSolo .hpMain { max-width: none; }   /* the desk: the intro's photo edge to edge of the modal, as the Activity plan's header (the profile's 980 frame dropped; the step pages keep their 2xs column inside it) */
 .arSheet.hpSheet .hpGfBand { --hoBarH: var(--hpHeadH, 64px); --hoGnd: var(--ar-paper); }
-.arSheet.hpSheet .hpGfHero { height: 62%; min-height: 340px; overflow: hidden; background: #181818; }
-.arSheet.hpSheet.hpWide .hpGfHero { height: 56%; }
+.arSheet.hpSheet .hpGfHero { overflow: hidden; background: #181818; }
 .arSheet.hpSheet .hpGfPic { position: absolute; inset: 0; overflow: hidden; }
-.arSheet.hpSheet .hpGfPicI { display: block; width: 100%; height: calc(100% + var(--hoRise, 32px)); background: var(--hpLivPic) 50% 38% / cover no-repeat; }
-.arSheet.hpSheet .hpGfPic::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.4) 0, rgba(0,0,0,0) 28%, rgba(0,0,0,.08) 48%, rgba(0,0,0,.66) 100%); }   /* the Activity plan's: the status bar legible at the top, darkening to the title */
-.arSheet.hpSheet .hpGfHeroT { position: absolute; left: var(--hpSide); right: var(--hpSide); bottom: calc(var(--hoOverlap, 28px) + 28px); text-align: center; }
-.arSheet.hpSheet .hpGfH1 { margin: 0; font-family: 'Tobias', 'Tobias Light', 'Tobias Regular', Georgia, 'Times New Roman', serif; font-size: 36px; line-height: 40px; font-weight: 400; letter-spacing: -.5px; color: #fff; text-wrap: balance; }   /* Tobias by name, as the landing's: shown where it is installed, a serif where not */
-.arSheet.hpSheet.hpWide .hpGfHeroT .hpGfH1 { font-size: 48px; line-height: 52px; }
-.arSheet.hpSheet .hpGfBody { flex: none; padding: 28px var(--hpSide) 8px; background: var(--ar-paper); box-sizing: border-box; }   /* hugs its words ("Hug content"): the CTA under the ticks, the photo taking what is left above */
+.arSheet.hpSheet .hpGfPicI { position: relative; display: block; width: 100%; height: calc(100% + var(--hoRise, 32px)); background: var(--hpLivPic) 50% 38% / cover no-repeat; }   /* the photo, and the video laid over it in the same layer (.hoPic: the parallax and the dim move both) */
+.arSheet.hpSheet .hpGfPic::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 72% 42% at 50% calc(50% + var(--hpHeadH, 64px) / 2 - var(--hoOverlap, 28px) / 2), rgba(0,0,0,.3), rgba(0,0,0,0) 100%), linear-gradient(180deg, rgba(0,0,0,.46) 0, rgba(0,0,0,.16) 30%, rgba(0,0,0,.2) 62%, rgba(0,0,0,.42) 100%); }   /* over the photo and the video alike: the status bar, the wordmark and the close legible at the top, a soft shade behind the words in the middle */
+/* the words in the header's middle, between the bar's foot and the sheet's top ("in the centre of the header"), 28 from the sides as the Concierge intro's (.hpCcIntro): its title (.hpH.hpLtrT.hpCcIntroT: its type at every breakpoint), white over the picture, its line under it at 14 */
+.arSheet.hpSheet .hpGfHeroT { position: absolute; left: 28px; right: 28px; top: var(--hpHeadH, 64px); bottom: var(--hoOverlap, 28px); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; text-align: center; --ar-ink: 100% 0 0; color: #fff; }
+.arSheet.hpSheet .hpGfHeroT .hpGfH { max-width: 560px; }
+.arSheet.hpSheet .hpGfHeroT .hpGfSub { max-width: 300px; margin: 0; font-size: 14px; line-height: 20px; font-weight: 400; letter-spacing: 0; text-wrap: balance; color: #fff; opacity: .8; }   /* white at 80% (its letters end on the ink, white here: the 80% on the line itself) */
+.arSheet.hpSheet .hpGfH1 { margin: 0; font-family: 'Tobias', 'Tobias Light', 'Tobias Regular', Georgia, 'Times New Roman', serif; font-size: 36px; line-height: 40px; font-weight: 400; letter-spacing: -.5px; color: #fff; text-wrap: balance; }   /* Payment received's title (.hpGfH1Ink): Tobias by name, as the landing's: shown where it is installed, a serif where not */
+/* the Concierge's video in the photo's place once the words are written: in over .9s, settling from 1.05 to 1 (the Concierge's rules, :is(.hpCcVid, .hpGfVid) with its own) */
+.arSheet.hpSheet .hpGfVidOn .hpGfVidW { opacity: 1; }
+.arSheet.hpSheet .hpGfBody { flex: 1 0 auto; padding: 28px var(--hpSide) 8px; background: var(--ar-paper); box-sizing: border-box; }   /* hugs its words ("Hug content"); the header no taller than 400 ("max height of 400px for the head"), what is left the sheet's paper, down to Choose a gift */
 .arSheet.hpSheet .hpScr.hpGfIn, .arSheet.hpSheet.hpWide:not(.hpAtHome) .hpScr.hpGfIn { display: flex; flex-direction: column; }
-.arSheet.hpSheet .hpGfHero, .arSheet.hpSheet.hpWide .hpGfHero { flex: 1 0 auto; height: auto; min-height: 340px; }
+.arSheet.hpSheet .hpGfHero, .arSheet.hpSheet.hpWide .hpGfHero { flex: none; height: 400px; max-height: 400px; min-height: 0; }   /* 400 at every breakpoint, the phone's too */
 .arSheet.hpSheet .hpGfBodyIn { display: flex; flex-direction: column; align-items: center; gap: 24px; max-width: 520px; margin: 0 auto; }
-.arSheet.hpSheet .hpGfLead { margin: 0; font-size: 18px; line-height: 24px; text-align: center; text-wrap: balance; color: oklch(var(--ar-ink)); }
+/* Intro: Cards (Tweaks -> Send a gift): the three side by side, 8 apart, on the sheet's card ground, each its line icon on top and its words at the foot, centred, 14 */
+.arSheet.hpSheet .hpGfCards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; align-self: stretch; margin: 0; padding: 0; list-style: none; }
+.arSheet.hpSheet .hpGfCard { display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 12px; min-width: 0; padding: 14px 16px; border-radius: 14px; background: var(--ar-card-bg); color: oklch(var(--ar-ink)); text-align: center; }   /* the option cards' (.hpOpt) corners and padding */
+.arSheet.hpSheet .hpGfCardI { display: flex; width: 24px; height: 24px; } .arSheet.hpSheet .hpGfCardI svg { display: block; width: 100%; height: 100%; }
+.arSheet.hpSheet .hpGfCardT { font-size: 14px; line-height: 18px; text-wrap: balance; overflow-wrap: break-word; }
 .arSheet.hpSheet .hpGfTicks { display: flex; flex-direction: column; gap: 14px; margin: 0; padding: 0; list-style: none; }
 .arSheet.hpSheet .hpGfTicks li { display: flex; align-items: center; gap: 12px; font-size: 16px; line-height: 20px; color: oklch(var(--ar-ink)); }
 .arSheet.hpSheet .hpGfTick { flex: none; display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; background: var(--hpOk); color: var(--hpOkFg); }
@@ -2050,6 +2103,21 @@ html .arSheet.hpSheet.hpGfSolo.hpGfAtIn:not(.hpGfOnSheet) .arHead .arIconBtn.arI
 .arSheet.hpSheet .hpPlanD { margin: 0; font-size: 14px; line-height: 20px; opacity: .72; }
 .arSheet.hpSheet .hpPlanL { display: flex; flex-direction: column; gap: 10px; margin: 2px 0 0; padding: 14px 0 0; list-style: none; box-shadow: inset 0 1px 0 color-mix(in srgb, currentColor 16%, transparent); }
 .arSheet.hpSheet .hpPlanL[hidden] { display: none; }
+/* Plans: Tabs (Tweaks -> Send a gift -> Plans): two cards side by side, each a tab (icon at the top centre, name, price, a line of introduction); the chosen one's list in a card under them */
+.arSheet.hpSheet .hpPlansT { display: flex; flex-direction: column; gap: 12px; }
+.arSheet.hpSheet .hpPlTabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.arSheet.hpSheet .hpPlTab { appearance: none; display: flex; flex-direction: column; align-items: center; gap: 4px; margin: 0; padding: 16px 12px 18px; border: 0; border-radius: 20px; background: var(--ar-card-bg); color: oklch(var(--ar-ink)); font: inherit; font-family: var(--ar-font); text-align: center; cursor: pointer; transition: background .22s ease, color .22s ease; }
+.arSheet.hpSheet .hpPlTab[aria-selected="true"] { background: oklch(var(--ar-ink)); color: var(--ar-paper); }
+.arSheet.hpSheet .hpPlTabI { display: grid; place-items: center; width: 40px; height: 40px; margin: 0 0 6px; border-radius: 50%; background: color-mix(in srgb, currentColor 9%, transparent); }
+.arSheet.hpSheet .hpPlTabN { font-size: 16px; line-height: 20px; font-weight: 570; }
+.arSheet.hpSheet .hpPlTabP { font-size: 15px; line-height: 20px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.arSheet.hpSheet .hpPlTabD { margin-top: 4px; font-size: 13px; line-height: 17px; opacity: .64; text-wrap: balance; }
+.arSheet.hpSheet .hpPlTab:focus-visible { outline: 2px solid var(--ar-blue-fg); outline-offset: 2px; }
+@media (hover: hover) { .arSheet.hpSheet .hpPlTab:not([aria-selected="true"]):hover { background: color-mix(in srgb, oklch(var(--ar-ink)) 9%, var(--ar-card-bg)); } }
+.arSheet.hpSheet .hpPlPanel { padding: 16px 20px 18px; border-radius: 20px; background: var(--ar-card-bg); color: oklch(var(--ar-ink)); }
+.arSheet.hpSheet .hpPlPanelH { margin: 0 0 12px; font-size: 14px; line-height: 18px; font-weight: 500; color: oklch(var(--ar-ink) / .56); }
+.arSheet.hpSheet .hpPlPanelL { margin: 0; padding: 0; box-shadow: none; animation: hpPlanIn .32s cubic-bezier(.2, .7, .2, 1) both; }
+@media (prefers-reduced-motion: reduce) { .arSheet.hpSheet .hpPlTab, .arSheet.hpSheet .hpPlPanelL { transition: none; animation: none; } }
 /* See more with the gradient (the Async report's biomarker module, .arMbMore): folded, two items, the third fading to nothing under the button; open, all of them */
 .arSheet.hpSheet .hpPlanFold:not(.hpPlanOpen *) > li:nth-child(n+4) { display: none; }
 .arSheet.hpSheet .hpPlan:not(.hpPlanOpen) .hpPlanFold > li:nth-child(3) { max-height: 36px; overflow: hidden; -webkit-mask-image: linear-gradient(180deg, #000 0%, rgba(0,0,0,.35) 45%, transparent 100%); mask-image: linear-gradient(180deg, #000 0%, rgba(0,0,0,.35) 45%, transparent 100%); pointer-events: none; }
@@ -2078,6 +2146,14 @@ html .arSheet.hpSheet.hpGfSolo.hpGfAtIn:not(.hpGfOnSheet) .arHead .arIconBtn.arI
 .arSheet.hpSheet .hpGfPvN { margin: 0; font-family: 'Tobias', 'Tobias Light', 'Tobias Regular', Georgia, 'Times New Roman', serif; font-size: 22px; line-height: 28px; text-wrap: balance; overflow-wrap: anywhere; }
 /* Check and pay: the plan over the rows, each its Change */
 .arSheet.hpSheet .hpGfSum { padding: 0 16px; }
+/* the checkout's Recipient and Gift details: the Gift receipt's cards (its .grp, .grpH, .row): 24 corners, the title inside at 18/24 500, rows of a 9em label and its value, 14/20, no rules, 8 between the cards */
+.arSheet.hpSheet .hpGfRcW { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+.arSheet.hpSheet .hpGfRc { padding: 14px 24px 12px; border-radius: 24px; background: var(--ar-card-bg); }
+.arSheet.hpSheet .hpGfRcH { margin: 0; padding: 8px 0 4px; font-family: var(--ar-font); font-size: 18px; line-height: 24px; font-weight: 500; letter-spacing: -.005em; color: oklch(var(--ar-ink)); }
+.arSheet.hpSheet .hpGfRcL { margin: 0; padding: 4px 0 0; }
+.arSheet.hpSheet .hpGfRcR { display: grid; grid-template-columns: minmax(0, 9em) minmax(0, 1fr); column-gap: 16px; padding: 5px 0; font-size: 14px; line-height: 20px; }
+.arSheet.hpSheet .hpGfRcR dt { color: oklch(var(--ar-ink) / .56); } .arSheet.hpSheet .hpGfRcR dd { margin: 0; color: oklch(var(--ar-ink)); overflow-wrap: anywhere; } .arSheet.hpSheet .hpGfRcMsg dd { font-style: italic; }
+.arSheet:not(.hpWide).hpSheet .hpGfRc { padding: 14px 20px 12px; } .arSheet:not(.hpWide).hpSheet .hpGfRcR { grid-template-columns: minmax(0, 8.4em) minmax(0, 1fr); column-gap: 12px; padding: 4px 0; }   /* the phone: the receipt's own narrower label column */
 .arSheet.hpSheet .hpGfSumW { display: flex; flex-direction: column; gap: 12px; } .arSheet.hpSheet .hpGfSumPlan .hpGfSumTop { box-shadow: none; }   /* the plan's card on its own, 12 over the rows' card */
 .arSheet.hpSheet .hpGfSumTop { display: flex; justify-content: space-between; gap: 12px; padding: 16px 0; box-shadow: inset 0 -1px 0 oklch(var(--ar-ink) / .08); }
 .arSheet.hpSheet .hpGfSumTop b { display: block; font-size: 16px; line-height: 21px; font-weight: 570; } .arSheet.hpSheet .hpGfSumTop span { display: block; margin-top: 2px; font-size: 13px; line-height: 17px; color: oklch(var(--ar-ink) / .56); }
@@ -2085,7 +2161,7 @@ html .arSheet.hpSheet.hpGfSolo.hpGfAtIn:not(.hpGfOnSheet) .arHead .arIconBtn.arI
 .arSheet.hpSheet .hpGfSum .hpSumR:last-child { box-shadow: none; }
 .arSheet.hpSheet .hpGfSub { display: block; margin-top: 2px; font-size: 13px; line-height: 17px; color: oklch(var(--ar-ink) / .56); overflow-wrap: anywhere; }
 .arSheet.hpSheet .hpGfQ { margin-top: 20px; text-align: center; }
-/* the checkout and payment received: the order's card, the sections' titles, the key-value rows */
+/* the checkout: the order's card, the sections' titles, the key-value rows */
 .arSheet.hpSheet .hpGfItem { gap: 12px; padding: 16px; }
 .arSheet.hpSheet .hpGfItemR { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; align-items: start; gap: 12px; }
 .arSheet.hpSheet .hpGfThumb { display: block; width: 56px; height: 56px; border-radius: 12px; background: var(--hpLivPic) 50% 40% / cover no-repeat; }
@@ -2099,12 +2175,17 @@ html .arSheet.hpSheet.hpGfSolo.hpGfAtIn:not(.hpGfOnSheet) .arHead .arIconBtn.arI
 .arSheet.hpSheet .hpGfKvs { padding: 0 16px; }
 .arSheet.hpSheet .hpGfKv { display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 12px; padding: 12px 0; box-shadow: inset 0 -1px 0 oklch(var(--ar-ink) / .08); font-size: 14px; line-height: 20px; }
 .arSheet.hpSheet .hpGfKv:last-child { box-shadow: none; } .arSheet.hpSheet .hpGfKv span { color: oklch(var(--ar-ink) / .56); } .arSheet.hpSheet .hpGfKv b { font-weight: 400; color: oklch(var(--ar-ink)); overflow-wrap: anywhere; }
-.arSheet.hpSheet .hpGfTagW { display: flex; justify-content: flex-start; }   /* the tag in the column, at its left, on the desk too (the page's children take the column; the pill alone kept its width) */
 .arSheet.hpSheet.hpGfPaying .arHead .arIconBtn { opacity: .32; pointer-events: none; }   /* paying: Back and Close held */
-.arSheet.hpSheet .hpGfTag { display: inline-flex; width: auto; padding: 4px 10px; border-radius: 9999px; background: color-mix(in srgb, var(--hpOk) 14%, transparent); color: var(--hpOk); font-family: var(--ar-font-mono); font-size: 11px; line-height: 16px; font-weight: 570; letter-spacing: 1px; text-transform: uppercase; }
 .arSheet.hpSheet .hpGfH1.hpGfH1Ink { margin: 16px 0 12px; font-size: 34px; line-height: 38px; color: oklch(var(--ar-ink)); }
-.arSheet.hpSheet .hpGfDone .hpGfIn2 { margin-top: 12px; }
-.arSheet.hpSheet .hpGfMsg { gap: 8px; padding: 20px; } .arSheet.hpSheet .hpGfMsgT { margin: 0; font-family: 'Tobias', 'Tobias Light', 'Tobias Regular', Georgia, 'Times New Roman', serif; font-size: 20px; line-height: 26px; color: oklch(var(--ar-ink)); overflow-wrap: anywhere; } .arSheet.hpSheet .hpGfMsg > span { font-size: 13px; line-height: 17px; color: oklch(var(--ar-ink) / .56); }
+/* the last page, the Gift receipt itself (gift-receipt.html in a frame, its master; "This is the Receipt! already designed"): the whole sheet, the bar over it holding the Close alone (no ground, as on the intro), no foot (its own Back to overview);
+   the frame faded in once loaded. Without the page beside it (the Health profile published alone), its words on the sheet (.hpGfDone) and Done */
+.arSheet.hpSheet:has(.hpView > .hpScr.hpGfRc:last-child) .arHead { position: absolute; left: 0; right: 0; top: 0; z-index: 7; background: none; }
+.arSheet.hpSheet:has(.hpView > .hpScr.hpGfRc:last-child) .arHead::before, .arSheet.hpSheet:has(.hpView > .hpScr.hpGfRc:last-child) .arHead::after { display: none; }
+.arSheet.hpSheet:has(.hpView > .hpScr.hpGfRc:last-child) .arFoot { display: none; }
+.arSheet.hpSheet .hpScr.hpGfRc, .arSheet.hpSheet.hpWide:not(.hpAtHome) .hpScr.hpGfRc { display: block; padding: 0; overflow: hidden; }
+.arSheet.hpSheet .hpScr.hpGfRc > .hpGfRcF, .arSheet.hpSheet.hpWide:not(.hpAtHome) .hpScr.hpGfRc > .hpGfRcF { position: absolute; inset: 0; display: block; width: 100%; max-width: none; height: 100%; margin: 0; border: 0; background: none; }
+.arSheet.hpSheet .hpGfRcF { opacity: 0; transition: opacity .32s ease; } .arSheet.hpSheet .hpGfRcF.hpGfRcOn { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .arSheet.hpSheet .hpGfRcF { transition: none; } }
 @media (prefers-reduced-motion: reduce) { .arSheet.hpSheet :is(.hpPlan, .hpGfChip, .hpPlanX svg, .hpGfMark) { transition: none; } }
 
 </style>
@@ -2353,7 +2434,7 @@ window.EvDismiss = (function () {
     notch: function (el) { if (!el || el.querySelector(':scope > .evNotch')) return null; var n = document.createElement('i'); n.className = 'evNotch'; n.setAttribute('aria-hidden', 'true'); el.insertBefore(n, el.firstChild); return n; } };
 })();
 window.EvOverlap = (function () {
-  var M = { ty: .25, rise: 32, end: 40, overlap: 28, radius: 24, dim: .35, tint: .85, delay: 48 }, D = JSON.parse(JSON.stringify(M)), root = document.documentElement;
+  var M = { ty: .25, rise: 32, end: 40, overlap: 28, radius: 24, dim: .35, tint: .85, delay: 48, ramp: 64 }, D = JSON.parse(JSON.stringify(M)), root = document.documentElement;
   var red = function () { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
   var tok = function () { root.style.setProperty('--hoOverlap', M.overlap + 'px'); root.style.setProperty('--hoRadius', M.radius + 'px'); root.style.setProperty('--hoRise', M.rise + 'px'); root.style.setProperty('--hoDim', String(M.dim)); root.style.setProperty('--hoTint', String(M.tint)); };
   /* the span: the scroll over which the picture rises and the title fades (the hero's height less the fade end; 'short', a page that cannot scroll that far: its own scroll) */
@@ -2371,7 +2452,7 @@ window.EvOverlap = (function () {
   var mark = function (sc) { [['hero', 'hoHero'], ['img', 'hoPic'], ['title', 'hoWords'], ['sheet', 'hoSheet'], ['band', 'hoBand']].forEach(function (p) { [].forEach.call(sc.querySelectorAll('[data-ov="' + p[0] + '"]'), function (e) { e.classList.add(p[1]); }); });
     [].forEach.call(sc.querySelectorAll('.hoBand'), function (b) { if (b.querySelector(':scope > .ovGround')) return; var g = document.createElement('div'); g.className = 'ovGround'; g.setAttribute('aria-hidden', 'true'); g.innerHTML = new Array(11).join('<i></i>'); b.insertBefore(g, b.firstChild); }); };   /* the bar's blur bands, the Overview bar's own (.ovGround) */
   /* the bar's overflow state: on once the sheet's top reaches the bar's foot */
-  var touch = function (sc, band, sheet) { if (!band) return false; var r = sc.getBoundingClientRect(), z = sc.offsetHeight ? r.height / sc.offsetHeight : 1, over = !!sheet && sheet.getBoundingClientRect().top - r.top <= band.offsetHeight * z + .5;   /* z: a frame drawn smaller (the doc's phone, scaled to a narrow window): the bar's height on screen */ band.classList.toggle('on', over || sc.scrollTop > M.delay); band.classList.toggle('hoOnSheet', over); return over; };   /* lit (.on, dark over the photo) once the scroll passes the ground delay (M.delay, 48: "a 48px delay when the bg gradient and blur start to appear"); .hoOnSheet once the sheet's top reaches the bar's foot: the screen's mode */
+  var touch = function (sc, band, sheet) { if (!band) return false; var r = sc.getBoundingClientRect(), z = sc.offsetHeight ? r.height / sc.offsetHeight : 1, over = !!sheet && sheet.getBoundingClientRect().top - r.top <= band.offsetHeight * z + .5;   /* z: a frame drawn smaller (the doc's phone, scaled to a narrow window): the bar's height on screen */ var g = over ? 1 : Math.max(0, Math.min(1, (sc.scrollTop - M.delay) / Math.max(1, M.ramp))), gs = g.toFixed(3); if (band.style.getPropertyValue('--hoK') !== gs) band.style.setProperty('--hoK', gs); band.classList.toggle('on', over || g > 0);   /* the ground formed gradually over M.ramp (64) of scroll once past the delay ("the blur and gradient should be formed through 64px scroll gradually, start after the ground delay"): --hoK 0 -> 1 scales the tint and the blur */ band.classList.toggle('hoOnSheet', over); return over; };   /* lit (.on, dark over the photo) once the scroll passes the ground delay (M.delay, 48: "a 48px delay when the bg gradient and blur start to appear"); .hoOnSheet once the sheet's top reaches the bar's foot: the screen's mode */
   var bind = function (sc, o) { o = o || {}; if (!sc) return { update: function () {} }; mark(sc); var q = 0, sp = 0, hz = null, ro = null;
     if (SDA) sc.classList.add('hoTl');   /* its timeline, for its picture and title */
     var heroOf = function () { return typeof o.hero === 'function' ? o.hero() : sc.querySelector(o.hero || '.hoHero'); };
@@ -2442,6 +2523,65 @@ window.EvSheetHead = (function () {
   function html(o) { o = o || {}; var tag = o.tag || 'h2', t = '<' + tag + ' class="evShT' + (o.titleCls ? ' ' + o.titleCls : '') + '"' + (o.id ? ' id="' + o.id + '"' : '') + '>' + (o.title || '') + '</' + tag + '>';
     return '<div class="evShHd' + (o.cls ? ' ' + o.cls : '') + '">' + (o.pre ? '<div>' + o.pre + t + '</div>' : t) + (o.close === false ? '' : '<button type="button" class="evShX' + (o.closeCls ? ' ' + o.closeCls : '') + '" aria-label="' + (o.closeLabel || 'Close') + '">' + (o.closeIcon || IX) + '</button>') + '</div>'; }
   return { html: html, IX: IX };
+})();
+/* EvTitle: the Title group master (Design system -> General layout -> Title group; its CSS .evTg beside the Top nav's). One title block for every page, each part an option ("some titles don't need that. That's just an option"):
+   html({ level, title, muted, align, top, bottom, slot, iconL, iconR, tag, cls, id, titleCls, titleId, topCls, bottomCls, attr }) -> its markup.
+     level: 'display-hero' | 'display' | 'h1' | 'h1-short' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' (h1: the muted part on its own line; h1-short: the H1's type, the muted part inline after the comma);
+     title, muted (the second tone), top (support top), bottom (support bottom): text, escaped, or { html } for markup; slot: { at: 'top' | 'right', html } (or both, a list): an icon, a visual, a badge;
+     the right one with left alignment only (centred, it goes on top); iconL, iconR: an svg at either side of the words, the level's size, in their flow (hugging the first and the last word); align 'left' (default) | 'center';
+     tag: the title's element (h1-h6 or p; by default the level's: Display and H1 an h1); cls, id, attr on the group; titleCls, titleId on the title; topCls, bottomCls on the support lines (a host's own hooks).
+   Markup: div.evTg.evTgL|C[.evTgSlT][.evTgSlR][data-lv] > [div.evTgSlot.evTgSlotT] + [p.evTgTop] + <tag>.evTgT ([span.evTgIc] [span.evTgW] words [span.evTgM] [span.evTgIc]) + [p.evTgBot]; with a right slot the column in div.evTgCol, then div.evTgSlot.evTgSlotR.
+   node(o) -> the element; mount(el, o) -> drawn into el. Its numbers (M, D; set, save, reset): every level's type at XS·S and M·L (size, line height, tracking), its weight, its support line, the gaps;
+   written as the --tg* tokens on <html>, saved as everlab:tgMaster, read here at parse on every page (the doc's Save setup), over the CSS defaults and older saves */
+window.EvTitle = (function () {
+  var LV = [
+    ["display-hero", "Display hero", "Dh", "h1", "One big statement a page opens on: a welcome, a landing hero, an empty state"],
+    ["display", "Display", "Ds", "h1", "A standalone page’s own title (the Concierge page’s, 32/38 on the phone)"],
+    ["h1", "H1 · Hero", "H1", "h1", "A flow’s step title and a marketing title in two tones, the muted part on its own line (the Health profile’s steps, Send a gift’s, the Concierge phases)"],
+    ["h1-short", "H1 · Short hero", "H1", "h1", "The H1 with its muted part inline after a comma, wrapping on"],
+    ["h2", "H2", "H2", "h2", "A page title: the desk’s main pages (Overview, Insights, Services, My journey, My plan, My account), a modal’s or a sheet’s H1 under the Top nav"],
+    ["h3", "H3", "H3", "h3", "A section’s title, a small card’s or a variant’s H1 (the Top nav A and B bar title’s size)"],
+    ["h4", "H4", "H4", "h4", "A card’s or a group’s title, in the text’s weight"],
+    ["h5", "H5", "H5", "h5", "An overline: a label over a list or a section, uppercase, letter-spaced"],
+    ["h6", "H6", "H6", "h6", "The smallest heading: a caption’s title, a meta label"]
+  ];
+  var KEY = {}, TAG = {}; LV.forEach(function (l) { KEY[l[0]] = l[2]; TAG[l[0]] = l[3]; });
+  var D = {   /* the defaults (the CSS :root ones): per level, XS·S size / line height / tracking (…S), M·L (…L), weight (W), support line size / line height (Sf, Sl); the gaps */
+    DhFsS: 40, DhLhS: 44, DhLsS: -1, DhFsL: 52, DhLhL: 56, DhLsL: -1.4, DhW: 300, DhSf: 16, DhSl: 22,
+    DsFsS: 32, DsLhS: 38, DsLsS: -.3, DsFsL: 40, DsLhL: 46, DsLsL: -.6, DsW: 500, DsSf: 16, DsSl: 22,
+    H1FsS: 26, H1LhS: 30, H1LsS: -.2, H1FsL: 28, H1LhL: 32, H1LsL: -.2, H1W: 570, H1Sf: 16, H1Sl: 22,
+    H2FsS: 24, H2LhS: 30, H2LsS: -.2, H2FsL: 24, H2LhL: 30, H2LsL: -.3, H2W: 500, H2Sf: 15, H2Sl: 22,
+    H3FsS: 20, H3LhS: 26, H3LsS: -.2, H3FsL: 20, H3LhL: 26, H3LsL: -.2, H3W: 500, H3Sf: 14, H3Sl: 20,
+    H4FsS: 17, H4LhS: 24, H4LsS: 0, H4FsL: 17, H4LhL: 24, H4LsL: 0, H4W: 400, H4Sf: 14, H4Sl: 20,
+    H5FsS: 12, H5LhS: 16, H5LsS: 1, H5FsL: 12, H5LhL: 16, H5LsL: 1, H5W: 600, H5Sf: 13, H5Sl: 18,
+    H6FsS: 12, H6LhS: 16, H6LsS: 0, H6FsL: 12, H6LhL: 16, H6LsL: 0, H6W: 500, H6Sf: 13, H6Sl: 18,
+    GapT: 8, GapB: 8, GapS: 16, GapR: 16 },
+    M = JSON.parse(JSON.stringify(D)), K = 'everlab:tgMaster', root = document.documentElement;
+  var unit = function (k) { return /W$/.test(k) ? '' : 'px'; };
+  var put = function (k) { root.style.setProperty('--tg' + k, M[k] + unit(k)); };
+  var tok = function () { Object.keys(M).forEach(put); };
+  var esc = function (t) { return String(t == null ? '' : t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); };
+  var has = function (v) { return v != null && v !== false && (typeof v === 'object' ? v.html != null && v.html !== '' : String(v) !== ''); };
+  var txt = function (v) { return v && typeof v === 'object' ? String(v.html) : esc(v); };
+  function html(o) {
+    o = o || {}; var lv = KEY[o.level] ? o.level : 'h2', al = o.align === 'center' ? 'C' : 'L', tag = /^(h[1-6]|p)$/.test(o.tag || '') ? o.tag : TAG[lv], sT = null, sR = null, ic = !!(o.iconL || o.iconR);
+    [].concat(o.slot || []).forEach(function (x) { if (!x || !has(x.html)) return; if (x.at === 'right' && al === 'L') { if (!sR) sR = x; } else if (!sT) sT = x; });
+    var w = txt(o.title) + (has(o.muted) ? ' <span class="evTgM">' + txt(o.muted) + '</span>' : '');
+    var t = '<' + tag + ' class="evTgT' + (ic ? ' evTgHasIc' : '') + (o.titleCls ? ' ' + o.titleCls : '') + '"' + (o.titleId ? ' id="' + esc(o.titleId) + '"' : '') + '>' +
+      (o.iconL ? '<span class="evTgIc evTgIcL" aria-hidden="true">' + o.iconL + '</span>' : '') + (ic ? '<span class="evTgW">' + w + '</span>' : w) + (o.iconR ? '<span class="evTgIc evTgIcR" aria-hidden="true">' + o.iconR + '</span>' : '') + '</' + tag + '>';
+    var col = (sT ? '<div class="evTgSlot evTgSlotT">' + sT.html + '</div>' : '') + (has(o.top) ? '<p class="evTgTop' + (o.topCls ? ' ' + o.topCls : '') + '">' + txt(o.top) + '</p>' : '') + t +
+      (has(o.bottom) ? '<p class="evTgBot' + (o.bottomCls ? ' ' + o.bottomCls : '') + '">' + txt(o.bottom) + '</p>' : '');
+    return '<div class="evTg evTg' + al + (sT ? ' evTgSlT' : '') + (sR ? ' evTgSlR' : '') + (o.cls ? ' ' + o.cls : '') + '" data-lv="' + lv + '"' + (o.id ? ' id="' + esc(o.id) + '"' : '') + (o.attr ? ' ' + o.attr : '') + '>' +
+      (sR ? '<div class="evTgCol">' + col + '</div><div class="evTgSlot evTgSlotR">' + sR.html + '</div>' : col) + '</div>';
+  }
+  function node(o) { var t = document.createElement('template'); t.innerHTML = html(o); return t.content.firstElementChild; }
+  function mount(el, o) { if (!el) return null; el.innerHTML = html(o); return el.firstElementChild; }
+  var load = function () { try { var v = JSON.parse(localStorage.getItem(K) || 'null'); if (v && typeof v === 'object') Object.keys(M).forEach(function (k) { if (typeof v[k] === 'number' && isFinite(v[k])) M[k] = v[k]; }); } catch (e) {} tok(); };
+  load();
+  return { LV: LV, M: M, D: D, K: K, key: function (lv) { return KEY[lv] || 'H2'; }, html: html, node: node, mount: mount,
+    set: function (k, v) { if (!(k in D) || typeof v !== 'number' || !isFinite(v)) return; M[k] = v; put(k); },
+    save: function () { try { localStorage.setItem(K, JSON.stringify(M)); return true; } catch (e) { return false; } },
+    reset: function () { Object.keys(D).forEach(function (k) { M[k] = D[k]; }); try { localStorage.removeItem(K); } catch (e) {} tok(); } };
 })();
 /* EvMagnet: a row of cards swiped by hand, the magnet one ("if you swipe more than 50%, you go to the second card. If not, you come back to the normal card"), once for every carousel: the Plan's goals, the Services' recommended row.
    Dragged by hand, a mouse as a finger (a mouse cannot pan a scroller, and a press-and-pull only selected the text); a drag more down than across is left to the page's scroll; the row's snapping off while it moves.
@@ -2600,7 +2740,10 @@ window.EvConsent = (function () {
   function s(tag, a) { var el = document.createElementNS(SVGNS, tag); if (a) Object.keys(a).forEach(function (k) { el.setAttribute(k, a[k]); }); for (var i = 2; i < arguments.length; i++) add(el, arguments[i]); return el; }
   function ic(w, d, sw) { return s('svg', { width: w, height: w, viewBox: '0 0 16 16', fill: 'none', stroke: 'currentColor', 'stroke-width': sw || 1.6, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'aria-hidden': 'true' }, [].concat(d).map(function (p) { return s('path', { d: p }); })); }
   function ic24(d) { return s('svg', { width: 20, height: 20, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', 'stroke-width': 1.6, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'aria-hidden': 'true' }, [].concat(d).map(function (p) { return s('path', { d: p }); })); }
-  var P = { back: 'M10 3.5 5.5 8l4.5 4.5', close: 'M3.5 3.5l9 9M12.5 3.5l-9 9', check: 'm3.8 8.3 2.6 2.6 5.8-6', pen: ['m11.2 2.6 2.2 2.2-8.2 8.2H3v-2.2z', 'm9.6 4.2 2.2 2.2'], chev: 'm4 6 4 4 4-4', plus: 'M8 3.5v9M3.5 8h9', minus: 'M3.5 8h9', err: ['M8 1.8a6.2 6.2 0 1 1 0 12.4A6.2 6.2 0 0 1 8 1.8Z', 'M8 5v3.4', 'M8 10.8v.1'] };
+  var P = { back: 'M10 3.5 5.5 8l4.5 4.5', close: 'M3.5 3.5l9 9M12.5 3.5l-9 9', check: 'm3.8 8.3 2.6 2.6 5.8-6', pen: ['m11.2 2.6 2.2 2.2-8.2 8.2H3v-2.2z', 'm9.6 4.2 2.2 2.2'], chev: 'm4 6 4 4 4-4', plus: 'M8 3.5v9M3.5 8h9', minus: 'M3.5 8h9', err: ['M8 1.8a6.2 6.2 0 1 1 0 12.4A6.2 6.2 0 0 1 8 1.8Z', 'M8 5v3.4', 'M8 10.8v.1'],
+    shield: ['M8 1.8 13 3.6v4.2c0 3-2.1 5.4-5 6.4-2.9-1-5-3.4-5-6.4V3.6Z', 'm5.8 8 1.6 1.6 3-3.2'], tube: ['M5.6 1.8h4.8', 'M6.6 1.8v8.9a1.4 1.4 0 0 0 2.8 0V1.8', 'M6.6 6.6h2.8'],   /* the plans' tabs: Protocol, Diagnostics */
+    gift: ['M3.6 6h8.8a.8.8 0 0 1 .8.8v1.2a.8.8 0 0 1-.8.8H3.6a.8.8 0 0 1-.8-.8V6.8a.8.8 0 0 1 .8-.8Z', 'M3.6 8.8v4.4h8.8V8.8', 'M8 6v7.2', 'M8 6S7.12 3.04 5.52 3.36c-1.2.24-1.04 2.08.56 2.64', 'M8 6s.88-2.96 2.48-2.64c1.2.24 1.04 2.08-.56 2.64'],   /* the app's gift and calendar (the Timeline's group icons, JG), on this set's 16 grid */
+    cal: ['M4.4 3.6h7.2a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H4.4a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2Z', 'M2.4 6.8h11.2', 'M5.6 2.24v2.56M10.4 2.24v2.56'] };
   var DI = {   // the devices' kinds, 24 square
     phone: ['M8 2.5h8a1.5 1.5 0 0 1 1.5 1.5v16a1.5 1.5 0 0 1-1.5 1.5H8A1.5 1.5 0 0 1 6.5 20V4A1.5 1.5 0 0 1 8 2.5Z', 'M10.5 18.5h3'],
     watch: ['M8.5 6.5h7a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-7a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2Z', 'M9 6.5 9.6 3h4.8l.6 3.5M9 17.5l.6 3.5h4.8l.6-3.5', 'M12 10v2.2l1.4 1'],
@@ -2855,14 +2998,14 @@ window.EvConsent = (function () {
   var AREA = {}; AREAS.forEach(function (a, i) { a.i = i; AREA[a.k] = a; });
   AREA.res = { k: 'res', t: 'Your past results', s: '', steps: ['search', 'cc'], sub: ['Past results', 'Concierge'], i: 2 };   /* then the Concierge's introduction ("next screen needs to be a Concierge intro, with CTA Go to overview") */   /* the past results search, after the three ("You're all set" -> "Next: your past results", the capture): a page of its own, not a step; the bar's three dashes full (i: the last) */
   /* Send a gift ("Create the Send Gift Page flow in standalone flow"; Standalone flow -> Send a gift, #send-gift): a standalone flow on the profile's own step system ("use the same step system layout as the Health profile promise and detail"):
-     the intro (the header overlap's hero, EvOverlap), seven form steps ("n of 7", EvSteps.progress), the checkout, then payment received. Opened on its own (mount's solo 'gift'), never one of the profile's stages; its answers this sitting's only */
+     the intro (the header overlap's hero, EvOverlap), seven form steps ("n of 7", EvSteps.progress), the checkout, then the Gift receipt (the page itself, this gift in it). Opened on its own (mount's solo 'gift'), never one of the profile's stages; its answers this sitting's only */
   var GF = ['intro', 'where', 'fit', 'who', 'plan', 'when', 'note', 'pay', 'checkout', 'done'], GF_FORM = 7;   /* where..pay: the seven form steps, 1 of 7 to 7 of 7 */
-  var GFN = { intro: 'Intro', where: 'Where they live', fit: 'Is Everlab right for them?', who: 'Who it’s for', plan: 'Choose the gift', when: 'Occasion and date', note: 'Their note', pay: 'Check and pay', checkout: 'Checkout', done: 'Payment received' };
+  var GFN = { intro: 'Intro', where: 'Where they live', fit: 'Is Everlab right for them?', who: 'Who it’s for', plan: 'Choose the gift', when: 'Occasion and date', note: 'Their note', pay: 'Check and pay', checkout: 'Checkout', done: 'Receipt' };   /* the last page the Gift receipt itself (visuals/gift-receipt.html): "This is the Receipt! already designed" */
   AREA.gift = { k: 'gift', t: 'Send a gift', s: 'About two minutes', steps: GF.slice(), sub: GF.map(function (k) { return GFN[k]; }), i: 0 };
   var GF_PLAN = {   /* the two plans a gift can be, the board's words ("Protocol A$2,999", "Diagnostics A$1,199"); New Zealand's prices a draft ("New: New Zealand with NZ prices") */
-    prot: { n: 'Protocol', full: 'Everlab Protocol Plan', d: 'Our most advanced health assessment, designed to detect, prevent and reverse risk of disease.', L: ['10 consultations across the plan', '90+ blood biomarkers incl. OrganAge, a DEXA body composition scan and a heart health assessment', 'Full physical assessment including strength, stability and VO2 max', 'A personalised health and performance program built around their lifestyle', 'Structured re-testing of key biomarkers to track progress'] },
-    diag: { n: 'Diagnostics', full: 'Everlab Diagnostics Plan', d: 'Full body diagnostics and doctor-led insights, including advanced bloods, DEXA and heart health.', L: ['90+ blood biomarkers covering hormones, metabolic function, lipids and more', 'A DEXA body composition scan', 'A heart health assessment', 'A doctor-led consultation on their results'] } };
-  var GF_PRICE = { AU: { cur: 'A$', prot: 2999, diag: 1199 }, NZ: { cur: 'NZ$', prot: 3299, diag: 1299 } };
+    prot: { s: 'Our most advanced assessment, with a year of doctor-led care.', n: 'Protocol', full: 'Everlab Protocol Plan', d: 'Our most advanced health assessment, designed to detect, prevent and reverse risk of disease.', L: ['10 consultations across the plan', '90+ blood biomarkers incl. OrganAge, a DEXA body composition scan and a heart health assessment', 'Full physical assessment including strength, stability and VO2 max', 'A personalised health and performance program built around their lifestyle', 'Structured re-testing of key biomarkers to track progress'] },
+    diag: { s: 'Full body diagnostics and doctor-led insights.', n: 'Diagnostics', full: 'Everlab Diagnostics Plan', d: 'Full body diagnostics and doctor-led insights, including advanced bloods, DEXA and heart health.', L: ['90+ blood biomarkers covering hormones, metabolic function, lipids and more', 'A DEXA body composition scan', 'A heart health assessment', 'A doctor-led consultation on their results'] } };
+  var GF_PRICE = { AU: { cur: 'A$', prot: 2999, diag: 1199 }, NZ: { cur: 'NZ$', prot: 3299, diag: 1299 }, UK: { cur: '£', prot: 1999, diag: 799 } };   /* the UK's a draft too ("Add UK") */
   var GF_FIT = [['u18', 'They’re under 18'], ['canc', 'They’re having cancer treatment'], ['preg', 'They’re pregnant'], ['none', 'None of these']];
   var GF_OCC = [['bday', 'Birthday'], ['xmas', 'Christmas'], ['anniv', 'Anniversary'], ['thanks', 'Thank you'], ['just', 'Just because']];
   var GF_TODAY = new Date(2026, 10, 3), GF_MAX = 180;   /* the prototype's today (early November 2026, "up to 12 months ahead" from it); the note's length */
@@ -3290,7 +3433,9 @@ window.EvConsent = (function () {
     }
 
     /* parts */
-    var q = function (ey, t, d, c) { return h('div', { class: 'hpQ' + (c ? ' hpC' : '') }, ey ? h('span', { class: 'hpEy', text: ey }) : null, h('h2', { class: 'hpH', text: t }), d ? h('p', { class: 'hpD', text: d }) : null); };
+    var q = function (ey, t, d, c) {   /* a step's title group: the Title group master (EvTitle, Design system -> General layout -> Title group), H1, its title an h2; the HP's hooks kept for its context rules (hpQ, hpC, hpEy, hpH, hpD) */
+      if (window.EvTitle) return window.EvTitle.node({ level: 'h1', tag: 'h2', top: ey, title: t, bottom: d, align: c ? 'center' : 'left', cls: 'hpQ' + (c ? ' hpC' : ''), topCls: 'hpEy', titleCls: 'hpH', bottomCls: 'hpD' });
+      return h('div', { class: 'hpQ' + (c ? ' hpC' : '') }, ey ? h('span', { class: 'hpEy', text: ey }) : null, h('h2', { class: 'hpH', text: t }), d ? h('p', { class: 'hpD', text: d }) : null); };
     var err = function (t) { return h('span', { class: 'hpErr', role: 'alert', hidden: !t }, ic(14, P.err, 1.5), h('span', { text: t || '' })); };
     var setErr = function (f, t) { var e = f.querySelector('.hpErr'); f.classList.toggle('hpBad', !!t); if (e) { e.hidden = !t; e.lastChild.textContent = t || ''; } };
     function choice(L, get, set, multi, onChange) {   // option cards: one, or as many as wanted ('none' alone)
@@ -3323,6 +3468,7 @@ window.EvConsent = (function () {
     /* the State dropdown (the designs' "Dropdown, State selection"): the states in the designs' order, the territories after; see pickF */
     var SO = ['NSW', 'VIC', 'QLD', 'WA', 'SA', 'TAS', 'ACT', 'NT'];
     var AUF = '<svg viewBox="0 0 24 24" aria-hidden="true"><clipPath id="hpAuC"><circle cx="12" cy="12" r="12"/></clipPath><g clip-path="url(#hpAuC)"><rect width="24" height="24" fill="#012169"/><path d="M0 0l12 8M12 0 0 8" stroke="#fff" stroke-width="2.4"/><path d="M0 0l12 8M12 0 0 8" stroke="#c8102e" stroke-width="1"/><path d="M6 0v8M0 4h12" stroke="#fff" stroke-width="3"/><path d="M6 0v8M0 4h12" stroke="#c8102e" stroke-width="1.6"/><g fill="#fff"><circle cx="6" cy="16.5" r="2"/><circle cx="17.5" cy="6" r="1.1"/><circle cx="14.5" cy="11.5" r="1.1"/><circle cx="19.5" cy="12" r=".9"/><circle cx="17.5" cy="18.5" r="1.2"/></g></g></svg>';   // Australia's flag in a circle, for the phone's +61
+    var UKF = '<svg viewBox="0 0 24 24" aria-hidden="true"><clipPath id="hpUkC"><circle cx="12" cy="12" r="12"/></clipPath><g clip-path="url(#hpUkC)"><rect width="24" height="24" fill="#012169"/><path d="M0 0l24 24M24 0 0 24" stroke="#fff" stroke-width="4.8"/><path d="M0 0l24 24M24 0 0 24" stroke="#c8102e" stroke-width="1.6"/><path d="M12 0v24M0 12h24" stroke="#fff" stroke-width="6"/><path d="M12 0v24M0 12h24" stroke="#c8102e" stroke-width="3.4"/></g></svg>';   // the United Kingdom's flag in a circle, for +44 ("Add UK")
     var NZF = '<svg viewBox="0 0 24 24" aria-hidden="true"><clipPath id="hpNzC"><circle cx="12" cy="12" r="12"/></clipPath><g clip-path="url(#hpNzC)"><rect width="24" height="24" fill="#012169"/><path d="M0 0l12 8M12 0 0 8" stroke="#fff" stroke-width="2.4"/><path d="M0 0l12 8M12 0 0 8" stroke="#c8102e" stroke-width="1"/><path d="M6 0v8M0 4h12" stroke="#fff" stroke-width="3"/><path d="M6 0v8M0 4h12" stroke="#c8102e" stroke-width="1.6"/><g fill="#c8102e" stroke="#fff" stroke-width=".6"><circle cx="17.5" cy="6.5" r="1.2"/><circle cx="14.6" cy="11.8" r="1.1"/><circle cx="20.2" cy="11.2" r="1"/><circle cx="17.5" cy="18" r="1.3"/></g></g></svg>';   // New Zealand's flag in a circle, for a gift's +64
     /* a dropdown field (State, Country of birth): the value (or its placeholder) and a chevron; the phone (the sheet narrow): a sheet from the foot, its title and close, the options,
        the one picked with a filled tick; the desk: a menu under the field. A tap on an option picks it and closes ("no confirm / cancel: tapping a state closes the modal and changes the select") */
@@ -3387,9 +3533,9 @@ window.EvConsent = (function () {
     }
     /* a phone number: Australia's flag and +61 at its left, a rule, then the number (3 3 3) */
     function telF(o) {   /* o.cc 'NZ': New Zealand's flag and +64, its mobiles 2 3 4 (a gift's New Zealand: "New: New Zealand with NZ prices") */
-      var nz = o.cc === 'NZ', cc = nz ? '+64' : '+61', f = field({ label: o.label, ph: o.ph || '412 345 678', mode: 'tel', max: nz ? 12 : 11, value: o.value, set: o.set }), inp = f._in;
-      inp.addEventListener('input', function () { var d = digits(inp.value, 11).replace(/^0/, '').slice(0, nz ? 10 : 9), t = nz ? d.slice(0, 2) + (d.length > 2 ? ' ' + d.slice(2, 5) : '') + (d.length > 5 ? ' ' + d.slice(5) : '') : d.slice(0, 3) + (d.length > 3 ? ' ' + d.slice(3, 6) : '') + (d.length > 6 ? ' ' + d.slice(6) : ''); if (t !== inp.value) inp.value = t; o.set(t); });
-      var fl = h('span', { class: 'hpTelF' }); fl.innerHTML = nz ? NZF : AUF; var box = h('div', { class: 'hpTel' }, h('span', { class: 'hpTelC', 'aria-hidden': 'true' }, fl, h('span', { text: cc })));
+      var nz = o.cc === 'NZ', uk = o.cc === 'UK', cc = uk ? '+44' : nz ? '+64' : '+61', f = field({ label: o.label, ph: o.ph || '412 345 678', mode: 'tel', max: nz || uk ? 12 : 11, value: o.value, set: o.set }), inp = f._in;   /* the UK: 10 digits after +44, 7400 123 456 */
+      inp.addEventListener('input', function () { var d = digits(inp.value, 11).replace(/^0/, '').slice(0, nz || uk ? 10 : 9), t = uk ? d.slice(0, 4) + (d.length > 4 ? ' ' + d.slice(4, 7) : '') + (d.length > 7 ? ' ' + d.slice(7) : '') : nz ? d.slice(0, 2) + (d.length > 2 ? ' ' + d.slice(2, 5) : '') + (d.length > 5 ? ' ' + d.slice(5) : '') : d.slice(0, 3) + (d.length > 3 ? ' ' + d.slice(3, 6) : '') + (d.length > 6 ? ' ' + d.slice(6) : ''); if (t !== inp.value) inp.value = t; o.set(t); });
+      var fl = h('span', { class: 'hpTelF' }); fl.innerHTML = uk ? UKF : nz ? NZF : AUF; var box = h('div', { class: 'hpTel' }, h('span', { class: 'hpTelC', 'aria-hidden': 'true' }, fl, h('span', { text: cc })));
       inp.parentNode.insertBefore(box, inp); box.appendChild(inp); inp.setAttribute('aria-label', o.label + ', after ' + cc); return f;
     }
     var ADDR = ['12 Bayview Street, Bondi NSW 2026', '12 Bay Street, Double Bay NSW 2028', '8 Ocean Street, Bondi NSW 2026', '220 George Street, Sydney NSW 2000', '75 Crown Street, Surry Hills NSW 2010', '1/19 Palmer Street, Woolloomooloo NSW 2011', '30 Bourke Street, Melbourne VIC 3000', '41 Queen Street, Brisbane City QLD 4000'];   // the demo's addresses (made up)
@@ -3442,6 +3588,12 @@ window.EvConsent = (function () {
 
     /* each step: its page, then its footer (the journey driver's screens: stage 1 Our promise, Your details, Medicare and contact, Health background; stage 2 Choose a time, Review and confirm; stage 3 the lifestyle questions, then the past results search) */
     var digits = function (v, n) { return (v || '').replace(/\D/g, '').slice(0, n); };
+    /* the writing (one master: the Concierge intro's title, the Send a gift intro's header): each letter a span resolving from a blur to sharp, warm till it is (.hpWelC under an .hpLtrT, played by its .on),
+       34 ms after the one before, 1300 ms each. One counter for everything a writer writes, so a line written after another carries the cascade on. w(word), sp(words) -> nodes; at() the next letter's start, end() the last one sharp */
+    var ltrW = function () { var n = 0, STEP = 34, DUR = 1300;
+      var w = function (word) { return h('span', { class: 'hpW2Wd' }, word.split('').map(function (ch) { return h('span', { class: 'hpWelC', style: '--d:' + (n++ * STEP) + 'ms;--dur:' + DUR + 'ms', text: ch }); })); };
+      return { w: w, sp: function (ws) { var o = []; ws.split(' ').forEach(function (x, i) { if (i) o.push(' '); o.push(w(x)); }); return o; }, at: function () { return n * STEP; }, end: function () { return Math.max(0, n - 1) * STEP + DUR; } };
+    };
     var BUILD = {
       'wear.promise': function (scr, ans) {
         /* Health information (the design): the promise, then the agreement and the records' access */
@@ -3724,9 +3876,9 @@ window.EvConsent = (function () {
         else {
           var tm = [], live = function () { return scr.isConnected; }, at2 = function (fn, t) { tm.push(setTimeout(function () { if (live()) fn(); }, t)); };
           /* its intro, as the reveal's ("need an intro similar to intro reveal, h1"): the screen empty but for a title written letter by letter in the reveal's way (blur to sharp, a warm touch), AI in an outlined tag; held, lifted away, then the screen in and its loop */
-          var cn = 0, cw = function (w) { return h('span', { class: 'hpW2Wd' }, w.split('').map(function (ch) { return h('span', { class: 'hpWelC', style: '--d:' + (cn++ * 34) + 'ms;--dur:1300ms', text: ch }); })); }, sp = function (ws) { var o = []; ws.split(' ').forEach(function (w, i) { if (i) o.push(' '); o.push(cw(w)); }); return o; };
-          var l1 = sp('Every health question answered,'), l2a = sp('by Eva'), tagD = cn * 34, tag = h('span', { class: 'hpCcAiTag', style: '--bd:' + tagD + 'ms' }, cw('AI')), l2b = sp('or a clinician');
-          var iT = h('h2', { class: 'hpH hpLtrT hpCcIntroT' }, l1, h('br'), l2a, ' ', tag, ' ', l2b), iBy = (cn - 1) * 34 + 1300, iOv = h('div', { class: 'hpCcIntro', 'aria-hidden': 'true' }, iT); tag.style.setProperty('--sd', iBy + 'ms');
+          var LW = ltrW(), cw = LW.w, sp = LW.sp;   /* the writing's master (ltrW), shared with the Send a gift intro's header */
+          var l1 = sp('Every health question answered,'), l2a = sp('by Eva'), tagD = LW.at(), tag = h('span', { class: 'hpCcAiTag', style: '--bd:' + tagD + 'ms' }, cw('AI')), l2b = sp('or a clinician');
+          var iT = h('h2', { class: 'hpH hpLtrT hpCcIntroT' }, l1, h('br'), l2a, ' ', tag, ' ', l2b), iBy = LW.end(), iOv = h('div', { class: 'hpCcIntro', 'aria-hidden': 'true' }, iT); tag.style.setProperty('--sd', iBy + 'ms');
           var PH = window.__ccPhase || 'intro', MT = 0, MRun = null, fldIn = false; window.__ccPhase = null; window.__ccPhaseCur = PH; [].forEach.call(document.querySelectorAll('#stHpCcList li'), function (li) { li.classList.toggle('now', li.dataset.ph === PH); });   /* the Flow panel's phase lit as it opens */   /* where it starts: the intro, the bubbles or the specialists ("break the flow in 3 phases") */
           if (PH === 'intro') {
           scr.appendChild(iOv); root.classList.add('hpCcIntroOn', 'hpCcLate'); fld.classList.add('hpCcHid'); fldIn = true; var inPos = function () { var st = (root.querySelector('.arStage') || root).getBoundingClientRect(), sr = scr.getBoundingClientRect(), k = sr.height / (scr.offsetHeight || sr.height) || 1; iOv.style.setProperty('--ccInT', ((st.top - sr.top) / k) + 'px'); iOv.style.setProperty('--ccInB', ((sr.bottom - st.bottom) / k) + 'px'); }; inPos(); requestAnimationFrame(inPos);   /* its box the whole screen's, so the words sit in its middle */   /* the video already playing under the intro ("video should be on intro") */
@@ -3986,10 +4138,10 @@ window.EvConsent = (function () {
     };
 
     /* ---------- Send a gift (solo 'gift'; "Create the Send Gift Page flow in standalone flow"): its pages, each built here from the profile's own parts (q, choice, field, telF, lbl, two, the summary rows, the calendar),
-       on the step system: the intro, then where, fit, who, plan, when, note, pay (1 to 7 of 7), the checkout and payment received. The board's words; its orange tags notes, not words on screen ---------- */
+       on the step system: the intro, then where, fit, who, plan, when, note, pay (1 to 7 of 7), the checkout and the Gift receipt. The board's words; its orange tags notes, not words on screen ---------- */
     var EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/, GP = {};   /* GP: the checkout's card, this page's only, never saved */
     var gfName = function (ans, dflt) { return (ans.first || '').trim() || dflt; };
-    var gfMobOk = function (ans) { var d = digits(ans.mob, 10); return ans.ctry === 'NZ' ? d[0] === '2' && d.length >= 8 && d.length <= 10 : d.length === 9 && d[0] === '4'; };
+    var gfMobOk = function (ans) { var d = digits(ans.mob, 10); return ans.ctry === 'UK' ? d.length === 10 && d[0] === '7' : ans.ctry === 'NZ' ? d[0] === '2' && d.length >= 8 && d.length <= 10 : d.length === 9 && d[0] === '4'; };
     var gfNoteT = function (ans) { return (ans.note || '').trim(); };
     var gfFrom = function (ans) { var f = ans.from == null ? DEMO.gift.from : ans.from; return (f || '').trim() || 'Someone'; };   /* one giver, the board's (Sam): the From the note starts with and the name Log in fills come from DEMO.gift; theirs once they write another (none: Someone) */
     var gfComplete = function (ans) { return !!(ans.ctry && (ans.fit || []).indexOf('none') >= 0 && (ans.first || '').trim() && (ans.last || '').trim() && EMAIL.test((ans.email || '').trim()) && gfMobOk(ans) && GF_PLAN[ans.plan] && (ans.dlv === 'now' || (ans.dlv === 'date' && gfDate(ans.date)))); };   /* every required answer in: Check and pay's Continue and the checkout's Pay */
@@ -4000,7 +4152,7 @@ window.EvConsent = (function () {
       var ans = S.a.gift.ans, D = DEMO.gift, cp = function (k) { ans[k] = JSON.parse(JSON.stringify(D[k])); };
       stepsOf('gift').slice(0, i).forEach(function (id) {
         if (!gfOk[id] || gfOk[id](ans)) return;
-        if (id === 'who') { if (!(ans.first || '').trim()) cp('first'); if (!(ans.last || '').trim()) cp('last'); if (!EMAIL.test((ans.email || '').trim())) cp('email'); if (!gfMobOk(ans)) ans.mob = ans.ctry === 'NZ' ? '21 234 5678' : D.mob; return; }
+        if (id === 'who') { if (!(ans.first || '').trim()) cp('first'); if (!(ans.last || '').trim()) cp('last'); if (!EMAIL.test((ans.email || '').trim())) cp('email'); if (!gfMobOk(ans)) ans.mob = ans.ctry === 'NZ' ? '21 234 5678' : ans.ctry === 'UK' ? '7400 123 456' : D.mob; return; }
         if (id === 'when') { if (ans.occ === undefined) cp('occ'); if (!(ans.dlv === 'now' || (ans.dlv === 'date' && gfDate(ans.date)))) { cp('dlv'); cp('date'); } return; }
         if (id === 'note') { cp('note'); if (ans.from == null) cp('from'); return; }
         if (id === 'checkout') { if (!(ans.pName || '').trim()) cp('pName'); if (!EMAIL.test((ans.pEmail || '').trim())) cp('pEmail'); return; }
@@ -4010,6 +4162,16 @@ window.EvConsent = (function () {
     /* the plan card ("the plan cards (expandable details)"): a radio card a plan, its name and price, its line, What's included opening its list; the one picked inked (the board's black card), opened with it.
        plans(keys, get, set, country, onChange) -> the radiogroup; arrows move between the cards, Enter or Space picks, the toggle opens or closes a card's list without picking it */
     function plans(ks, get, set, ctry, onChange) {
+      if ((document.getElementById('stGfPlans') || {}).value === 'tabs') {   /* Tweaks -> Send a gift -> Plans: Tabs ("two cards next to each other, each a tab; the list of all its values below; the card: an icon at the top centre, the name, the price, a small introduction") */
+        var tb = h('div', { class: 'hpPlansT' }), row = h('div', { class: 'hpPlTabs', role: 'tablist', 'aria-label': 'Choose a plan' }), pnl = h('div', { class: 'hpPlPanel', role: 'tabpanel' }), ICO = { prot: P.shield, diag: P.tube };
+        var paintT = function () { var cur = GF_PLAN[get()] ? get() : ks[0]; [].forEach.call(row.children, function (c) { var on = c.dataset.v === cur; c.setAttribute('aria-selected', String(on)); c.tabIndex = on ? 0 : -1; });
+          pnl.textContent = ''; pnl.appendChild(h('p', { class: 'hpPlPanelH', text: 'What\u2019s included in ' + GF_PLAN[cur].n })); pnl.appendChild(h('ul', { class: 'hpPlanL hpPlPanelL' }, GF_PLAN[cur].L.map(function (t) { return h('li', null, ic(12, P.check, 2.2), h('span', { text: t })); }))); };
+        var pickT = function (k) { if (get() !== k) { set(k); save(true); } paintT(); if (onChange) onChange(); };
+        ks.forEach(function (k, i) { var p = GF_PLAN[k];
+          row.appendChild(h('button', { type: 'button', role: 'tab', class: 'hpPlTab', 'data-v': k, on: { click: function () { pickT(k); }, keydown: function (e) { var d = e.key === 'ArrowRight' || e.key === 'ArrowDown' ? 1 : e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? -1 : 0; if (!d) return; e.preventDefault(); var n = ks[(i + d + ks.length) % ks.length]; pickT(n); var nb = row.querySelector('[data-v="' + n + '"]'); if (nb) nb.focus(); } } },
+            h('span', { class: 'hpPlTabI', 'aria-hidden': 'true' }, ic(20, ICO[k] || P.gift, 1.4)), h('b', { class: 'hpPlTabN', text: p.n }), h('span', { class: 'hpPlTabP', text: gfMoney(ctry, k) }), h('span', { class: 'hpPlTabD', text: p.s || '' }))); });
+        tb.appendChild(row); tb.appendChild(pnl); paintT(); return tb;
+      }
       var box = h('div', { class: 'hpPlans', role: 'radiogroup', 'aria-label': 'Choose a plan' }), openK = {};
       /* what's included as the Async report's biomarker module ("a See more with gradient, same as Async Biomarker module"): two shown, the third fading under a full-width See n more, the rest opening in place, then Show less */
       var paint = function () { [].forEach.call(box.children, function (c, i) { var k = c.dataset.v, on = get() === k, op = !!openK[k], tg = c.querySelector('.hpPlanMore');
@@ -4042,14 +4204,34 @@ window.EvConsent = (function () {
       if (gfNote) gfNote.hidden = id !== 'intro';
     };
     BUILD['gift.intro'] = function (scr) {
-      /* the Activity plan's header ("Intro: header visual / body copy, same as activity page style"): the header overlap (EvOverlap: the picture pinned, the sheet sliding over it, the small parallax, the bar's overflow state), the title centred on the photo, the words in the sheet; Choose a gift at the foot */
+      /* the Activity plan's header ("Intro: header visual / body copy, same as activity page style"): the header overlap (EvOverlap: the picture pinned, the sheet sliding over it, the small parallax, the bar's overflow state); Choose a gift at the foot.
+         The title in the header's centre in the app's own type, the Concierge introduction's ("in the centre of the header with the normal font, in the same style as the concierge introduction, and the text appears"), its line under it at 14 ("put the subtext below the title"),
+         both written by the Concierge's writing (ltrW); then the Concierge's video behind them ("include the video to complete the behind-the-scenes of the demo"), the photo till it plays (and if it cannot). A still (Documentation) or reduced motion: the words shown, the photo */
       scr.classList.add('hpGfIn');
+      var still = !!opts.snap || reduced(), LW = ltrW(), T1 = 'Give the best gift of all. Time.', T2 = 'Treat someone you love to a year of Everlab, with a note from you.';
+      var wr = function (t) { return still ? t : [h('span', { class: 'hpSr', text: t }), h('span', { 'aria-hidden': 'true' }, LW.sp(t))]; };   /* the letters hidden from a reader, the words read whole */
+      var hT = h('h1', { class: 'hpH hpLtrT hpCcIntroT hpGfH' }, wr(T1)), tEnd = LW.end(), hS = h('p', { class: 'hpLtrT hpGfSub' }, wr(T2));   /* the Concierge intro's title classes: its size, weight, line height and tracking at every breakpoint; the line carrying the cascade on */
+      var pic = h('i', { class: 'hoPic hpGfPicI' });
       var band = h('div', { class: 'hoBand hpGfBand', 'aria-hidden': 'true' });
-      var hero = h('div', { class: 'hpGfHero hoHero' }, h('div', { class: 'hpGfPic', 'aria-hidden': 'true' }, h('i', { class: 'hoPic hpGfPicI' })),   /* the photo the Gift page's own (two people at home, at ease: "Time"), the sheet's token --hpLivPic */
-        h('div', { class: 'hpGfHeroT hoWords' }, h('h1', { class: 'hpGfH1', text: 'Give the best gift of all. Time.' })));
-      var body = h('div', { class: 'hpGfBody hoSheet' }, h('div', { class: 'hpGfBodyIn' }, h('p', { class: 'hpGfLead', text: 'Treat someone you love to a year of Everlab, with a note from you.' }),
-        h('ul', { class: 'hpGfTicks' }, ['Pick a plan', 'Customise a message', 'It arrives on the day you choose'].map(function (t) { return h('li', null, h('span', { class: 'hpGfTick', 'aria-hidden': 'true' }, ic(12, P.check, 2.4)), h('span', { text: t })); }))));
+      var hero = h('div', { class: 'hpGfHero hoHero' }, h('div', { class: 'hpGfPic', 'aria-hidden': 'true' }, pic),   /* the photo the Gift page's own (two people at home, at ease: "Time"), the sheet's token --hpLivPic; the video laid in it (the parallax and the dim its too) */
+        h('div', { class: 'hpGfHeroT hoWords' }, hT, hS));
+      /* its three items: the ticked list, or three cards side by side, each its icon over its words (Tweaks -> Send a gift -> Intro: "three cards next to each other, with the icon on top and the text at the bottom centre") */
+      var ITEMS = [['Pick a plan', P.gift], ['Customise a message', P.pen], ['It arrives on the day you choose', P.cal]], cards = (document.getElementById('stGfIntro') || {}).value === 'cards';
+      var items = cards ? h('ul', { class: 'hpGfCards' }, ITEMS.map(function (t) { return h('li', { class: 'hpGfCard' }, h('span', { class: 'hpGfCardI', 'aria-hidden': 'true' }, ic(24, t[1], 1)), h('span', { class: 'hpGfCardT', text: t[0] })); }))
+        : h('ul', { class: 'hpGfTicks' }, ITEMS.map(function (t) { return h('li', null, h('span', { class: 'hpGfTick', 'aria-hidden': 'true' }, ic(12, P.check, 2.4)), h('span', { text: t[0] })); }));
+      var body = h('div', { class: 'hpGfBody hoSheet' }, h('div', { class: 'hpGfBodyIn' }, items));
       add(scr, [band, hero, body]);
+      if (!still) {
+        setTimeout(function () { hT.classList.add('on'); hS.classList.add('on'); }, 80);   /* written as the Concierge's, 80 ms in */
+        var V = window.__ccVid;   /* the Concierge's own video, named once (no second copy): the standalone Health Profile carries it too; without it, the photo */
+        if (V && V.length > 1) {
+          var vid = h('video', { class: 'hpGfVid', muted: '', playsinline: '', loop: '', preload: 'auto', 'aria-hidden': 'true' }, h('source', { src: V[0], type: 'video/webm' }), h('source', { src: V[1], type: 'video/mp4' })); vid.muted = true;
+          pic.appendChild(h('span', { class: 'hpGfVidW' }, vid));
+          var due = false, vOn = function () { if (due && scr.isConnected && !vid.paused) hero.classList.add('hpGfVidOn'); };   /* in once it is due and really playing: the photo stays under it till then, and for good if it cannot play */
+          vid.addEventListener('playing', vOn);
+          setTimeout(function () { if (!scr.isConnected) return; due = true; try { vid.currentTime = 0; var pr = vid.play(); if (pr && pr.catch) pr.catch(function () {}); } catch (e) {} vOn(); }, 80 + tEnd);   /* once the title is written (the Concierge's: the video once the intro's words are done) */
+        }
+      }
       foot2('Choose a gift', true, fwd);
       if (window.EvOverlap && !opts.snap) { var ov = window.EvOverlap.bind(scr, { hero: '.hpGfHero', band: '.hpGfBand', sheet: '.hpGfBody', onFrame: function (k, on) { if (shown === scr) root.classList.toggle('hpGfOnSheet', !!on); } }); setTimeout(ov.update, 0); }
       if (!opts.snap && !reduced() && body.animate) { body.firstChild.animate([{ opacity: 0, transform: 'translateY(16px)' }, { opacity: 1, transform: 'none' }], { duration: 640, delay: 180, easing: 'cubic-bezier(.16, 1, .3, 1)', fill: 'backwards' }); }
@@ -4057,9 +4239,9 @@ window.EvConsent = (function () {
     BUILD['gift.where'] = function (scr, ans) {
       scr.appendChild(q('', 'Where do they live?', 'Their tests happen at Everlab clinics and partner sites near them.'));
       var ok = function () { foot2('Continue', !!ans.ctry, fwd); };
-      var box = choice([['AU', 'Australia'], ['NZ', 'New Zealand']], function () { return ans.ctry; }, function (v) { if (v !== ans.ctry) ans.mob = ''; ans.ctry = v; }, false, ok);   /* a number kept for the other country is not theirs */
+      var box = choice([['AU', 'Australia'], ['NZ', 'New Zealand'], ['UK', 'United Kingdom']], function () { return ans.ctry; }, function (v) { if (v !== ans.ctry) ans.mob = ''; ans.ctry = v; }, false, ok);   /* a number kept for the other country is not theirs */
       box.classList.add('hpOptsRow', 'hpGfOne');
-      [].forEach.call(box.children, function (b) { var f = h('span', { class: 'hpTelF hpGfFlag', 'aria-hidden': 'true' }); f.innerHTML = b.dataset.v === 'NZ' ? NZF : AUF; b.appendChild(f); });
+      [].forEach.call(box.children, function (b) { var f = h('span', { class: 'hpTelF hpGfFlag', 'aria-hidden': 'true' }); f.innerHTML = b.dataset.v === 'UK' ? UKF : b.dataset.v === 'NZ' ? NZF : AUF; b.appendChild(f); });
       scr.appendChild(box); ok();
     };
     BUILD['gift.fit'] = function (scr, ans) {
@@ -4079,9 +4261,9 @@ window.EvConsent = (function () {
       var ln = field({ label: 'Surname', ph: 'Taylor', value: ans.last, set: function (v) { ans.last = v; ok(); } });
       var em = field({ label: 'Their email', ph: 'alex@example.com', mode: 'email', help: 'Their gift arrives here. Use the address they’ll sign in with.', value: ans.email, set: function (v) { ans.email = v; ok(); } });
       em._in.setAttribute('type', 'email');
-      var mb = telF({ label: 'Their mobile', cc: ans.ctry, ph: ans.ctry === 'NZ' ? '21 234 5678' : '498 765 432', value: ans.mob, set: function (v) { ans.mob = v; ok(); } });
+      var mb = telF({ label: 'Their mobile', cc: ans.ctry, ph: ans.ctry === 'UK' ? '7400 123 456' : ans.ctry === 'NZ' ? '21 234 5678' : '498 765 432', value: ans.mob, set: function (v) { ans.mob = v; ok(); } });
       em._in.addEventListener('blur', function () { var v = (ans.email || '').trim(); if (v && !EMAIL.test(v)) setErr(em, 'Enter an email like name@example.com'); });
-      mb._in.addEventListener('blur', function () { if (digits(ans.mob, 10) && !gfMobOk(ans)) setErr(mb, ans.ctry === 'NZ' ? 'Enter their mobile, 8 to 10 digits after +64, starting with 2' : 'Enter their mobile, 9 digits after +61, starting with 4'); });
+      mb._in.addEventListener('blur', function () { if (digits(ans.mob, 10) && !gfMobOk(ans)) setErr(mb, ans.ctry === 'UK' ? 'Enter their mobile, 10 digits after +44, starting with 7' : ans.ctry === 'NZ' ? 'Enter their mobile, 8 to 10 digits after +64, starting with 2' : 'Enter their mobile, 9 digits after +61, starting with 4'); });
       fn._in.setAttribute('data-focus', '');
       scr.appendChild(h('div', { class: 'hpFields' }, two(fn, ln, 'hpTwoNm'), em, mb)); ok();
     };
@@ -4095,7 +4277,7 @@ window.EvConsent = (function () {
     BUILD['gift.when'] = function (scr, ans) {
       /* the occasion (optional, its chips; tapped again, none) and the delivery: Send now, or On a date with the calendar (from tomorrow to 12 months ahead); Christmas suggests the 25th */
       if (ans.occ === undefined) ans.occ = '';   /* seen: no occasion is an answer (a later jump keeps it) */
-      var nm = gfName(ans, 'them'), sub = h('p', { class: 'hpD' }), Q = q('', 'When should it arrive?', ''), calOpen = ans.dlv === 'date' && !ans.date;
+      var nm = gfName(ans, 'them'), sub = h('p', { class: 'evTgBot hpD' }), Q = q('', 'When should it arrive?', ''), calOpen = ans.dlv === 'date' && !ans.date;
       Q.appendChild(sub); scr.appendChild(Q);
       var min = new Date(GF_TODAY.getFullYear(), GF_TODAY.getMonth(), GF_TODAY.getDate() + 1), max = new Date(GF_TODAY.getFullYear() + 1, GF_TODAY.getMonth(), GF_TODAY.getDate());
       var xmas = function () { if (ans.occ === 'xmas' && ans.dlv === 'date' && !ans.date) ans.date = '2026-12-25'; };
@@ -4112,7 +4294,7 @@ window.EvConsent = (function () {
         if (ans.dlv === 'date') {
           var d = gfDate(ans.date), id = 'hpGfD' + Math.random().toString(36).slice(2, 6);
           var btn = h('button', { type: 'button', class: 'hpIn hpPickB hpGfDateB' + (d ? '' : ' hpEmpty'), id: id, 'aria-expanded': String(calOpen), on: { click: function () { calOpen = !calOpen; paint(); } } },
-            h('span', { class: 'hpPickV', text: d ? gfDay(d) : 'Choose a date' }), h('span', { class: 'hpGfDateA', text: calOpen ? 'Close' : 'Change' }));
+            h('span', { class: 'hpPickV', text: d ? gfDay(d) : 'Choose a date' }), calOpen ? null : h('span', { class: 'hpGfDateA', text: 'Change' }));   /* no Close while the calendar is open ("no close needed"): the field itself folds it */
           dateBox.appendChild(h('div', { class: 'hpF' }, h('label', { for: id, text: 'Date' }), btn));
           if (calOpen) dateBox.appendChild(cal({ month: d || min, min: min, max: max, today: GF_TODAY, value: d, onPick: function (x) { ans.date = gfIso(x); save(true); paint(); } }).el);
         }
@@ -4168,8 +4350,11 @@ window.EvConsent = (function () {
       var detB = h('button', { type: 'button', class: 'hpLinkIn hpGfDet', 'aria-expanded': 'false', on: { click: function () { det.hidden = !det.hidden; detB.setAttribute('aria-expanded', String(!det.hidden)); detB.textContent = det.hidden ? 'Details' : 'Hide details'; } } }, 'Details');
       scr.appendChild(h('div', { class: 'hpCard hpGfItem' }, h('div', { class: 'hpGfItemR' }, h('i', { class: 'hpGfThumb', 'aria-hidden': 'true' }), h('div', { class: 'hpGfItemT' }, h('b', { text: p.full }), h('span', { text: '12-month membership, a gift for ' + nm }), detB), h('b', { class: 'hpGfItemP', text: tot })), det,
         h('div', { class: 'hpGfTot' }, h('span', { text: 'Total due (GST inclusive)' }), h('b', { text: tot }))));
-      scr.appendChild(gfSec('Gift details', [h('p', { class: 'hpHelp', text: 'This gift will be sent to the person below.' }), h('div', { class: 'hpCard hpGfKvs' },
-        gfKv('To', ((ans.first || '') + ' ' + (ans.last || '')).trim() + ' · ' + (ans.email || '').trim()), gfKv('From', gfFrom(ans)), gfKv('Occasion', occ || 'None'), gfKv('Message', nt || 'Someone wanted you to have this.'), gfKv('Delivery', gfArrive(ans)))]));
+      /* the receipt's cards ("checkout should use same style list item as the receipt gift page cards with list items inside"): a title inside each, label and value rows, no rules, the message in italics */
+      var rcRow = function (l, v, cls) { return h('div', { class: 'hpGfRcR' + (cls ? ' ' + cls : '') }, h('dt', { text: l }), h('dd', { text: v || '—' })); };
+      scr.appendChild(h('div', { class: 'hpGfRcW' },
+        h('section', { class: 'hpGfRc' }, h('h3', { class: 'hpGfRcH', text: 'Recipient' }), h('dl', { class: 'hpGfRcL' }, rcRow('Name', ((ans.first || '') + ' ' + (ans.last || '')).trim()), rcRow('Email', (ans.email || '').trim()), rcRow('Delivery', gfArrive(ans)))),
+        h('section', { class: 'hpGfRc' }, h('h3', { class: 'hpGfRcH', text: 'Gift details' }), h('dl', { class: 'hpGfRcL' }, occ ? rcRow('Occasion', occ) : null, rcRow('Message', '\u201c' + (nt || 'Someone wanted you to have this.') + '\u201d', 'hpGfRcMsg'), rcRow('From', gfFrom(ans))))));
       var ok = function () { var e = /^(\d\d) \/ (\d\d)$/.exec(GP.exp || ''), okE = !!e && +e[1] >= 1 && +e[1] <= 12 && (2000 + +e[2]) * 12 + +e[1] >= GF_TODAY.getFullYear() * 12 + GF_TODAY.getMonth() + 1;
         foot2('Pay ' + tot, gfComplete(ans) && !!((ans.pName || '').trim() && EMAIL.test((ans.pEmail || '').trim()) && digits(GP.card, 16).length === 16 && okE && digits(GP.cvc, 4).length >= 3), pay); };
       var pay = function () { if (!window.EvLoad || opts.snap) { GP = {}; fwd(); return; } cta.disabled = true; var t = tick; gfHold(true);   /* paying: Back and Close held till it is through (a payment never dropped half way) */
@@ -4191,15 +4376,26 @@ window.EvConsent = (function () {
       ok();
     };
     BUILD['gift.done'] = function (scr, ans) {
-      /* payment received: the giver's page once they've paid (the Gift receipt's words): the tag, the title, when it goes and where the receipt went, their message, the gift's summary; Done closes */
-      var d = gfDate(ans.date), nm = gfName(ans, 'them'), occ = name(GF_OCC, ans.occ), nt = gfNoteT(ans), k = ans.plan || 'prot';
-      scr.classList.add('hpGfDone');
-      add(scr, [h('div', { class: 'hpGfTagW' }, h('span', { class: 'hpGfTag', text: 'Payment received' })), h('h2', { class: 'hpGfH1 hpGfH1Ink', text: 'Your gift for ' + nm + ' is all set' }),
-        h('p', { class: 'hpD', text: (ans.dlv === 'date' && d ? 'We’ll email it to them on ' + gfDay(d, false) + '.' : 'We’ve emailed it to them just now.') + ' Your receipt is on its way to ' + ((ans.pEmail || '').trim() || 'your inbox') + '.' }),
-        h('p', { class: 'hpHelp hpGfIn2' }, 'Already an Everlab member? ', link('Sign in', function () { if (opts.onClose) opts.onClose(); })),   /* the member's app: the flow closed, the Overview under it */
-        gfSec('Your message', h('div', { class: 'hpCard hpGfMsg' }, h('p', { class: 'hpGfMsgT', text: nt || 'Someone wanted you to have this.' }), h('span', { text: 'From ' + gfFrom(ans) }))),
-        gfSec('Gift summary', h('div', { class: 'hpCard hpGfKvs' }, gfKv('Gift', GF_PLAN[k].full), gfKv('For', ((ans.first || '') + ' ' + (ans.last || '')).trim()), gfKv('Sent to', (ans.email || '').trim()), gfKv('From', gfFrom(ans)), gfKv('Occasion', occ || 'None'), gfKv('Delivery', ans.dlv === 'date' && d ? gfDay(d, false) : 'Sent at once')))]);
+      /* the Gift receipt, the page itself (visuals/gift-receipt.html, the master; "This is the Receipt! already designed"), not a page of its own: framed full in the sheet, this gift on its link (#gift=), dressed by the Gift receipt's settings
+         (Tweaks -> Gift receipt, the app's window._gr: Background, Header, Card visual, Properties, Split cards; Delivery this gift's; In app on, the flow being the app's). Its Back to overview ends the flow, the Overview under it; the bar's Close too, never asking.
+         The flow's own foot not shown (CSS). Where the page is not beside this one (the Health profile published alone: no window._gr), its words alone on the sheet, and Done */
+      var d = gfDate(ans.date), sch = ans.dlv === 'date' && !!d, nm = gfName(ans, 'them'), k = GF_PLAN[ans.plan] ? ans.plan : 'prot', occ = name(GF_OCC, ans.occ), nt = gfNoteT(ans), gr = window._gr;
       foot2('Done', true, fwd);
+      if (!gr || !gr.src) {
+        scr.classList.add('hpGfDone');
+        add(scr, [h('h2', { class: 'hpGfH1 hpGfH1Ink', text: sch ? 'Your gift is all set' : 'Your gift is on its way' }),
+          h('p', { class: 'hpD', text: 'Thank you for giving ' + nm + ' the gift of health. We’ll let ' + nm + ' know ' + (sch ? 'on ' + d.getDate() + ' ' + MON[d.getMonth()] : 'shortly') + ', and your receipt is on its way to ' + ((ans.pEmail || '').trim() || 'your inbox') + '.' })]);
+        return;
+      }
+      scr.classList.add('hpGfRc');
+      var gift = { first: (ans.first || '').trim(), last: (ans.last || '').trim(), email: (ans.email || '').trim(), product: GF_PLAN[k].n + ' membership', items: GF_PLAN[k].L.slice(), dlv: sch ? 'date' : 'now', date: sch ? ans.date : '', occ: occ || '', msg: nt ? '“' + nt + '”' : 'Someone wanted you to have this.', pEmail: (ans.pEmail || '').trim() };
+      var th = function () { return root.classList.contains('arDark') ? 'dark' : 'light'; };
+      var f = h('iframe', { class: 'hpGfRcF', title: 'Gift receipt', src: gr.src({ theme: th(), still: !!opts.snap, gift: gift }) });
+      f._dress = function () { if (gr.dress) gr.dress(f, { theme: th(), sched: sch, inApp: true, still: !!opts.snap }); };   /* again on a theme change (INST.theme) */
+      f.addEventListener('load', function () { f._dress(); f.classList.add('hpGfRcOn'); });
+      if (opts.snap) f.setAttribute('tabindex', '-1');
+      else { var onMsg = function (e) { if (!f.isConnected) { removeEventListener('message', onMsg); return; } if (e.source !== f.contentWindow || !e.data || e.data.everlab !== 'gr:overview') return; removeEventListener('message', onMsg); if (alive && A === 'gift') fwd(); }; addEventListener('message', onMsg); }   /* its Back to overview: the flow's end (fwd, the last page: onClose) */
+      scr.appendChild(f);
     };
     /* the demo: a tap in a form fills it ("when I click whatever field, simulate all the fields completed so I can continue"): its empty answers from the demo member's, the page drawn again with them; once filled, the fields edit as usual */
     var FILL = { 'wear.promise': ['tc', 'find'], 'wear.details': ['first', 'last', 'sex', 'dob', 'occ', 'state'], 'wear.address': ['addr'], 'wear.emergency': ['ecn', 'ece', 'ecp', 'ecr'], 'wear.mobile': ['mob'], 'wear.otp': ['otp'], 'wear.medicare': ['mc', 'mcn', 'irn', 'exp'], 'wear.declare': ['hdC', 'hdM', 'hdA', 'hdAT', 'hdS', 'hdF', 'hdFT'], 'wear.health': ['country', 'eth', 'goals'], 'past.time': ['day', 'time', 'tz'], 'you.about': ['country', 'goals', 'occ'] };
@@ -4210,7 +4406,7 @@ window.EvConsent = (function () {
       if (!A || !e.target.closest('.hpScr :is(.hpIn, .hpSel, .hpOpt, .hpChk, .hpDay, .hpSlot, .hpGfChip, .hpGfDateB, input, textarea)') || e.target.closest('.hpPop, .hpPk, .hpSug, .hpFLock')) return;   // not inside a dropdown's menu or sheet, the suggestions, a held field
       var id = A + '.' + stepsOf(A)[I], keys = FILL[id], ans = S.a[A].ans, src = DEMO[A]; if (!keys) return;
       var miss = keys.filter(function (k) { return k === 'tc' ? !ans.tc : k === 'card' ? !(GP.card && GP.exp && GP.cvc) : empty(ans[k]); }); if (!miss.length) return;
-      miss.forEach(function (k) { if (k === 'card') { GP = { card: '4242 4242 4242 4242', exp: '08 / 29', cvc: '123' }; return; } if (k === 'mob' && ans.ctry === 'NZ') { ans.mob = '21 234 5678'; return; } ans[k] = JSON.parse(JSON.stringify(src[k])); });
+      miss.forEach(function (k) { if (k === 'card') { GP = { card: '4242 4242 4242 4242', exp: '08 / 29', cvc: '123' }; return; } if (k === 'mob' && ans.ctry === 'NZ') { ans.mob = '21 234 5678'; return; } if (k === 'mob' && ans.ctry === 'UK') { ans.mob = '7400 123 456'; return; } ans[k] = JSON.parse(JSON.stringify(src[k])); });
       if (id === 'wear.details' && opts.name) ans.first = opts.name;
       e.preventDefault(); save(true); step(0);
     }, true);
@@ -4227,7 +4423,7 @@ window.EvConsent = (function () {
       goId: function (k, id) { if (!AREA[k]) return false; var i = stepsOf(k).indexOf(id); if (i < 0) return false; if (k !== 'res' && root.classList.contains('hpSolo')) { root.classList.remove('hpSolo'); landAt = null; if (opts.onUnsolo) opts.onUnsolo(); } if (ORD.indexOf(k) > 0) { linear(k); save(true); } area(k, 0, i); return true; },   // a later step's page: the steps before it done (linear)   // a step's page from Past results on its own: the profile again round it   // a stage at a named page (Tweaks' page lists), wherever its order puts it
       where: function () { return { a: A, i: I }; },
       note: function () { noteBack(); },   // the note from Steven (the prototype's Back from the home), Let's begin played backwards
-      theme: function (t) { root.classList.toggle('arDark', t === 'dark'); },
+      theme: function (t) { root.classList.toggle('arDark', t === 'dark'); [].forEach.call(root.querySelectorAll('iframe.hpGfRcF'), function (x) { if (x._dress) x._dress(); }); },   // Send a gift's receipt with it
       destroy: function () { if (alive) tell(null); alive = false; clearInterval(pt); if (opts.solo === 'gift' && !opts.snap && S.a.gift) { delete S.a.gift; save(true); } if (root.parentNode) root.parentNode.removeChild(root); },   /* a gift's answers this sitting's only */
       refresh: function () { if (!alive) return; if (!A) home(0); else if (A === 'wear') { I = Math.min(I, stepsOf('wear').length - 1); step(0); } }   // step 1's order changed: the home's lines, or the page now at this place
     };
