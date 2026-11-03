@@ -19887,3 +19887,9 @@ At XS the closed search and the Past button are ghost buttons at 44 ("ghost 44")
 - Intro ⇄ first step: the Page types push (EvPush numbers: 340 ms, the old page 28% aside and dimmed, the new one in from the right; back the other way) instead of the soft cross. Other steps keep the step flow's cross.
 - Tap-to-fill as the Health profile: FILL entries for every gift step (where, fit, who, plan, when, note, checkout incl. the demo card 4242…); NZ gets an NZ mobile. Targets widened to chips, the date button, inputs and textareas.
 - Plan cards: "What's included" link replaced by the Async biomarker module's See more: two items, the third fading under a full-width "See n more" (44, radius 12, currentColor 8%), opening in place, then "Show less" with the chevron turned.
+
+## Desk sidebar to the Figma; dock AI beam fast; Ask sheet icons 32
+- Sidebar (open): padding 26/8, so each entry's plate (ghost card) sits 8 off the rail's edges; entries 44 high (12 padding), 8 between glyph and label, 6 between entries; the wordmark's left on the glyphs' (20 from the edge: the plates bleed 12 past it). Icons drawn a size down in their 20 box (the library's viewBox 2 2 20 20 shown as 1 1 22 22: ~16 glyphs, the Figma's). The lit entry is filled open as well as contracted (.icLit no longer gated on sideMin).
+- Contracted: the rail 60 (was 72: --sideW 60, panels' left 60), the 44 plates 8 off either side, every glyph where it was open; the account foot 8/8.
+- Dock AI button (EvBeamStar.press): no wait — the sheet opens on click; the beam's round is 350 ms (CSS ring .35 s, RND 350), played over it. Navigation doc row says so.
+- Ask Everlab sheet, Icons 3D: the renders 32 square (was 40).
