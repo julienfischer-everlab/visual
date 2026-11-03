@@ -19932,3 +19932,8 @@ Julien, on the Chat page at XS ("Use Same keyboard as the overview top chat fiel
 ## Chat page: no minus; top CTAs 44
 - visuals/concierge.html: the header's Minimise (−, #hdMin, which only closed the chat like the X) is gone ("remove this minus icon"); the header keeps the menu, the title and the close.
 - Its top-nav buttons are 44 on the phone whether embedded or not (was 44 only embedded, 36 bare): "CTA top nav always 44px".
+
+## Header overlap: the ground forms over 64 px after the delay; doc in the frame master; Header desc removed
+- EvOverlap.M.ramp (64, saved with everlab:hoMaster): past the ground delay (48) the bar's tint and blur grow with the scroll, --hoK 0 → 1 over 64 px (tint × k, each band's blur radius × k), full at 112. The sheet reaching the bar (.hoOnSheet) is k = 1. No timed ease over the photo (the scroll drives it); the switch to the screen's own ground keeps its .28 s. Doc: a "Ground fade" slider beside "Ground delay"; the Bar row says so. Measured in the doc: 0/40 → nothing, 60 → 19%, 80 → 50% (tint .43, blur 7), 112+ → full (.85, 14).
+- The Header overlap demo phone is the app's XS frame (--evPhR 56, --evPhBz bezel, home bar), 12 round the 393 x 852 screen, scaled to fit ("use frame master").
+- General layout › Header: its side description removed ("remove desc"); Show sizes stays.
