@@ -3021,7 +3021,7 @@
   html:not(.bpAuto) body:is([data-bp="xs"], [data-bp="s"]) .dash .chBody{padding-bottom:34px;}
   html:not(.bpAuto) body:is([data-bp="xs"], [data-bp="s"]) .dash .chComposer{margin-bottom:16px;}
   html:not(.bpAuto) body:is([data-bp="xs"], [data-bp="s"]) .dash .chHome{display:block;position:absolute;left:50%;bottom:8px;width:134px;height:5px;margin-left:-67px;border-radius:3px;background:rgba(255,255,255,.26);pointer-events:none;}
-  body.light .chHome{background:rgba(0,0,0,.24);}
+  html:not(.bpAuto) body.light:is([data-bp="xs"], [data-bp="s"]) .dash .chHome{background:rgba(0,0,0,.24);}   /* light: the frame's own bar ink (.mHome), as specific as the rule it beats */
   /* a plain cut ("a full-screen modal over the page with the full chat, no
      fancy transition"): the modal is simply there, and simply gone. It used
      to grow out of the field on a half-second morph. */
@@ -3104,6 +3104,7 @@
      the edge line (1 wide, 42%), the lights spilling inward (a 9 band, blur 7, 25%, held inside), a faint halo outside (an 8 band 4 out, blur 12, 9%), all one warm
      conic turned by --hpBm. Once round in 1.9 s at an even pace, as the intro turns, fading in and out; reduced motion: a brief glow where it stands */
   .evBeam{position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;}
+  .chComposer > :is(input, .chRow){position:relative;}   /* the field's words, +, pill and send above the light, as the intro's field keeps its words over its beam (.hpCcFx) */
   .evBeam .evBm, .evBeam .evBmG, .evBeam .evBmIn, .evBeam .evBmIn > span{position:absolute;inset:0;border-radius:inherit;pointer-events:none;}
   .evBeam .evBm{background:conic-gradient(from var(--hpBm), transparent 0deg 55deg, #FF9F4A 92deg, #FFB866 118deg, #FF8A3D 146deg, transparent 185deg 360deg);-webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;}
   .evBeam .evBmL{inset:-.5px;padding:1px;opacity:.42;}
@@ -32955,6 +32956,12 @@ hairline({
     // in the Concierge's and the service tiles' words where they have them; the
     // first that matches answers, the last says what she can help with.
     const BANK = [
+      [/^\s*(hi|hello|hey|hiya|g(’|')?day|good (morning|afternoon|evening))\b[\s!.,]*(eva)?[\s!.,]*$/, [
+        'Hi Julien. I can help with your results, your plan and supplements, booking a test or your consultation, or getting a question to your care team.',
+        'A good place to start is your next step, or what your latest results say.']],
+      [/reschedul|cancel (my|the|a) (booking|appointment|consult\w*|test)|(move|change) (my|the) (booking|appointment|consult\w*|test|time)|another (day|time)/, [
+        'Your care team can move it for you. Choose Care team from the Eva menu below and tell them which booking and the days that suit.',
+        'Your coordinator moves it and confirms the new time here, within a business day.']],
       [/next step|what(’|')?s next|what next|what should i do|where (do|should) i (start|begin)|to-?do/, [
         'Your next step is your consultation with your Everlab doctor. Book it from the Health profile card on your Overview: it takes about a minute, and your doctor has your records open before you meet.',
         'After that, your pathology request from the onboarding plan is still open: a fasting blood panel and a urine sample, at any Everlab or partner clinic.',
@@ -32966,21 +32973,27 @@ hairline({
         'Your consultation with your Everlab doctor is the next thing to book. The Health profile card on your Overview does it in about a minute: pick a time that suits you, and your doctor has your records open before you meet.',
         'If you’d rather see someone today, Telehealth gets you in front of an Everlab doctor from home, usually within the hour.',
         'Shall I open the booking for you?']],
-      [/\b(book|booking|schedule|reschedule|appointment|slot)\b|pathology|collection|referral|blood test/, [
+      [/\b(book|booking|schedule|appointment|slot)\b|pathology|collection|referral|blood test/, [
         'Your pathology request from the onboarding plan is still open: a fasting blood panel and a urine sample, at any Everlab or partner clinic.',
         'Quantum Therapy Sydney is the closest to you, with fasting slots from 7:30 am. Results land in your Insights within two to three days.',
         'Want me to book a morning this week?']],
       [/biological age|bio age|how old|organ age/, [
-        'Your biological age reads 40: the age your biomarkers look like, rather than the one on your birthday. It comes from the 142 biomarkers in your latest results.',
+        'Your biological age reads 40: the age your biomarkers look like, rather than the one on your birthday. It comes from the 124 biomarkers in your latest results.',
         'Your report shows which organs pull it up or down and where to focus first. It moves with your results, so your next panel shows how your plan is working.']],
-      [/supplement|vitamin|magnesium|tablet|capsule|b12|whey|multivitamin|\bdose|\biron\b/, [
+      [/\biron\b|ferritin|anaemi|anemi/, [
+        'Your iron stores are on the low side: your ferritin was 22 µg/L, below where we’d like it. It’s the one result, with your vitamin D, that Dr Lu has built into your plan.',
+        'The plan is one 25 mg iron tablet a day, away from tea, coffee and calcium; a glass of orange juice helps it absorb. Your next panel will show how it’s moving.']],
+      [/cholesterol|apob|\bldl\b|\bhdl\b|lipid|triglycer|heart health/, [
+        'Your heart markers are in Insights, under Heart Health: LDL and HDL cholesterol, triglycerides and ApoB, each with its range and what it means for you.',
+        'They aren’t among the results your plan is working on; those are your vitamin D and your iron stores. Is there one you’d like me to explain?']],
+      [/supplement|vitamin|magnesium|tablet|capsule|b12|whey|multivitamin|\bdose/, [
         'There are seven on your plan. Two answer your results: vitamin D3 + K2 drops, one drop a day with a meal, as your vitamin D was 42 nmol/L, and iron, one 25 mg tablet a day, for your low iron stores.',
         'Take the iron away from tea, coffee and calcium; a glass of orange juice helps it absorb. The rest back your training and your sleep: whey protein, a multivitamin, a B12 spray, magnesium glycinate in the evening and a protein bar on busy days.']],
       [/sleep|wind-? ?down|insomnia|tired|bed ?time|\brest\b/, [
         'Your plan has a wind-down routine for the hour before bed: screens off and the lights dimmed, tomorrow’s worries written down, magnesium glycinate, then ten slow breaths and lights out.',
         'Your morning cortisol, overnight heart rate variability and CRP all sit in the optimal range, so this is about sleeping better rather than fixing a problem. You’ll find it in Plan, under Wind-down routine.']],
       [/protein|\beat|diet|nutrition|meal|food|macro/, ANSWER],
-      [/result|biomarker|blood|marker|\blabs?\b|range|trend|flag|ferritin|apob|cholesterol|report|test/, [
+      [/result|biomarker|blood|marker|\blabs?\b|range|trend|flag|report|test/, [
         'Your latest results are in Insights, each biomarker with its range and what it means for you. Two sit below where we’d like them: your vitamin D at 42 nmol/L, and your iron stores, with a ferritin of 22 µg/L.',
         'Dr Lu has built both into your plan, with vitamin D drops and an iron tablet, and your next panel will show how they’re moving.',
         'Is there one you’d like me to explain?']],
@@ -33011,7 +33024,7 @@ hairline({
         '<div class="chHead"><button class="chIcon" type="button" aria-label="Menu">' + ICON.menu + '</button><h3>Protein intake</h3>' +
           '<button class="chIcon" type="button" aria-label="More">' + ICON.more + '</button><button class="chIcon chX" type="button" aria-label="Close">' + ICON.x + '</button></div>' +
         '<div class="chThread"></div>' +
-        '<div class="chComposer"><input type="text" placeholder="Ask Eva &hellip;" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="send" aria-label="Ask Eva">' +
+        '<div class="chComposer"><input type="text" placeholder="Ask Eva&hellip;" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="send" aria-label="Message Eva">' +
           '<div class="chRow"><button class="chPlus" type="button" aria-label="Add">+</button><span class="chSpace"></span>' +
           '<button class="chModel" type="button" aria-haspopup="menu" aria-expanded="false"><span>Eva</span>' + ICON.chev + '</button><button class="chSend" type="button" aria-label="Send">' + ICON.up + '</button></div></div>' +
         '<i class="chHome" aria-hidden="true"></i>' +
@@ -33142,8 +33155,8 @@ hairline({
       const setModel = (m, beam) => {
         const was = model; model = m === 'care' ? 'care' : 'eva';
         mPill.firstElementChild.textContent = model === 'care' ? 'Care team' : 'Eva';
-        inp.placeholder = model === 'care' ? 'Message your care team…' : 'Ask Eva …';
-        inp.setAttribute('aria-label', model === 'care' ? 'Message your care team' : 'Ask Eva');
+        inp.placeholder = model === 'care' ? 'Message your care team…' : 'Ask Eva…';   /* the Concierge master's words, both ways */
+        inp.setAttribute('aria-label', model === 'care' ? 'Message your care team' : 'Message Eva');
         if (beam && model === 'eva' && was !== 'eva' && window.EvBeam) window.EvBeam.run(composer);   // Care team -> Eva: the beam once round the field
       };
       mPill.addEventListener('pointerdown', e => e.preventDefault());
@@ -33151,7 +33164,7 @@ hairline({
       pop.addEventListener('pointerdown', e => e.preventDefault());
       pop.addEventListener('click', e => { const b = e.target.closest('.chMi'); if (!b) return; closeMenu(); setModel(b.dataset.m, true); });
       document.addEventListener('pointerdown', e => { if (!pop.hidden && !pop.contains(e.target) && !mPill.contains(e.target)) closeMenu(); }, true);
-      thread.addEventListener('scroll', closeMenu, { passive: true });
+      ['wheel', 'touchmove'].forEach(ev => thread.addEventListener(ev, closeMenu, { passive: true }));   /* the member's own scroll lets go of it; the thread following a streamed answer (follow) does not, so Care team can be picked while Eva writes */
       // The head under the frame's status bar ("top header issue on chat"): on
       // the desk's shell at XS and S the frame draws its strip over the page's
       // top; what of it stands over the modal (the phone's 47, the tablet's own
