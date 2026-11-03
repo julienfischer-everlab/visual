@@ -62,7 +62,7 @@ All anchors are in `index.html` unless named. Line numbers drift; grep the patte
 
 **How to use.** `var(--hdr*)` for a header, `var(--ctPadX/--ctPadY/--ctGap)` for a page container, `--evPhR/--evPhBz` (`--evTbR/--evTbBz`) for any device: never new numbers.
 
-**Pitfalls.** The Container doc table and frame are hard-coded (`CT`), not read from the app's tokens. `--hdr*` are read only by the doc. A forced breakpoint has its own token overrides after the media queries: a new token needs both. **Being reworked**: Top nav + container-tokens rule (#260), desk panels (#270), DS "Page types" rule (#274).
+**Pitfalls.** The Container doc reads the tokens off the CSS (`ctRead`), so change the CSS rules. `--hdr*` are read only by the doc; app bars use the Top nav master (`--evTn*`). A forced breakpoint has its own token overrides after the media queries: a new token needs both. Container max widths are tokens too: `--ct2xs` (100% / 512 / 544 / 576), `--ctXs` 800, `--ctSm` 1080, `--ctMd` 1280, `--ctLg` 1440, used through `data-container` (merged #260). **Being reworked**: desk panels (#270), DS "Page types" rule (#274).
 
 ---
 
@@ -78,7 +78,7 @@ All anchors are in `index.html` unless named. Line numbers drift; grep the patte
 
 **How to use.** In an `.arSheet`: `background: var(--ar-card-bg)`. In an evSolo modal: `.sgmCard` (or `var(--sgmCardBg)` when a dot or ring cuts into it). Don't invent a new grey.
 
-**Pitfalls.** The translucent `--ar-card-bg` lets dots and strokes show through, hence the opaque `--sgmCardBg`. Gift receipt / Overview cards have their own grounds: check the page's existing card first. **Being reworked**: Plan hover/press (#269), desk panels 12 px corners (#270).
+**Pitfalls.** The translucent `--ar-card-bg` lets dots and strokes show through, hence the opaque `--sgmCardBg`. Gift receipt / Overview cards have their own grounds: check the page's existing card first. **Being reworked**: desk panels 12 px corners (#270).
 
 ---
 
@@ -94,7 +94,7 @@ All anchors are in `index.html` unless named. Line numbers drift; grep the patte
 
 **How to use.** Any flow, modal or sheet CTA: the `.arBtn` trio inside an `.arSheet`; a secondary beside it: `.sgmAsk` or `.sgmNot`; `.svBtn` only on the service page's own blocks. Loading: `EvLoad.label`/`simple` on the same button.
 
-**Pitfalls.** A global button reset once blanked the HP card button (now `:where(:not(.hpOvBtn))`). `.svBtn` is overridden by context rules with `!important` (check `.svPend`/`.svcMob`). A disabled primary needs an explicit rule (only hpSheet has one). **Being reworked**: Plan hover/press (#269).
+**Pitfalls.** A global button reset once blanked the HP card button (now `:where(:not(.hpOvBtn))`). `.svBtn` is overridden by context rules with `!important` (check `.svPend`/`.svcMob`). A disabled primary needs an explicit rule (only hpSheet has one). Plan buttons take the Plan's interaction states (merged #269; references/navigation-icons-motion.md, Hover / press).
 
 ---
 
@@ -156,7 +156,7 @@ const ring = EvTl.enter(sheet.querySelector('.evTl'), a, d);   /* in evSolo ente
 
 **Where.** EvOverlap `everlab:hoMaster` (doc Header overlap, `HO_C`); EvSteps `everlab:sfMaster` (`SF_C`); EvDismiss `everlab:mdMaster` (Modals `.mdSave`); `window._navMaster` `everlab:navMaster` (Navigation `.nvSave`). Shell: `const DOCS`, `DSET`; top bar `#tkDocSave` mapping (`grep -n "docCur === 'sf'"`).
 
-**API.** Masters expose `M`, `set(k, v)`, `save()` (true on success), `reset()`, plus their own bind/update. Doc buttons `.mdBtn` Save setup / Reset / Play (read "Saved" for 1400 ms). View state keys `everlab:glPart glBp mdPart mdBp mdLay sfBp bbPart` (not masters).
+**API.** EvOverlap and EvSteps expose `M`, `D`, `set(k, v)`, `save()` (true on success), `reset()`, plus their own bind/update. EvDismiss has `K`, `on()`, `set(v)`, `save()`, `notch(el)` (no `M`/`reset`). The dock's is the `window._navMaster()` loader; its Save is the doc's `.nvSave`. Doc buttons `.mdBtn` Save setup / Reset / Play (read "Saved" for 1400 ms). View state keys `everlab:glPart glBp mdPart mdBp mdLay sfBp bbPart` (not masters).
 
 **Rules.** Read on every page load, applied over Tweaks and older saves. localStorage only (this browser), unlike Tweaks (shared store).
 

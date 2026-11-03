@@ -1,4 +1,4 @@
-# Layout: breakpoints, frames, container, header, Header overlap, desk panels
+# Layout: breakpoints, frames, container, header, Top nav, Header overlap, desk panels
 
 All anchors are in `index.html` unless named. Line numbers are approximate (`~`) and drift; grep the pattern.
 
@@ -66,11 +66,11 @@ html:not(.bpAuto) body.X:is([data-bp="xs"],[data-bp="s"]) .xDev{position:fixed;l
 
 **What.** The page container: a centred column as wide as the screen up to a max width, padded, sections a gap apart. Padding and gap are live CSS tokens; max widths exist only in the doc. The tab shows a live questionnaire page at XS/S/M/L, scaled to fit, and a tokens table.
 
-**Where.** `grep -n -- "--ctPadY:24px"` (~10140: `:root`, `@media` 600/992/1440, `body[data-bp=...]`). Consumers: `#dOver`, `#dOver .ovTop`, `.ov5Cards`. Doc: `grep -n "const glCt\|glCt ="`, the `CT` map (`grep -n "max: 'none', px: 16"`), CSS `.glCt*`. Tab `data-gl="ct"`.
+**Where.** `grep -n -- "--ctPadY:24px"` (~10210: `:root`, `@media` 600/992/1440, `body[data-bp=...], [data-ct-bp=...]`); max widths `grep -n -- "--ct2xs: 100%"` (~16683, with `[data-container]`). Consumers: `#dOver`, `#dOver .ovTop`, `.ov5Cards` (padding); `data-container="2xs"` on evSolo's `.sgmCol`, the flows' desk column via `var(--ct2xs)`. Doc: `grep -n "const ctRead\|const CT_BP\|const CT_MAX"` (reads the tokens off the CSS through a hidden `[data-ct-bp]` element), CSS `.glCt*`. Tab `data-gl="ct"`.
 
-**API.** `--ctPadY` (top/bottom), `--ctPadX` (sides), `--ctGap` (between sections). Doc-frame only: `--ctMax`, `--ctPx`, `--ctPy`, `--ctGap` on `.glCtFr`. Doc classes `.glCtBps [data-ctbp]`, `.glCtStage`, `.glCtSc`, `.glCtFr`, `.glCtWrap`, `.glCtBox`, `.glTgl` (Show sizes, `.glRed` on `.glMain`). `CT = { xs:{w:393,h:852,max:'none',px:16,py:24,gap:24}, s:{w:600,...,max:'512px',px:16,py:28,gap:28}, m:{w:992,...,max:'544px',px:24,py:32,gap:32}, l:{w:1440,...,max:'576px',px:24,py:36,gap:36} }`.
+**API.** `--ctPadY` (top/bottom), `--ctPadX` (sides), `--ctGap` (between sections). Max widths `--ct2xs` (100% XS, 512 S, 544 M, 576 L), `--ctXs` 800, `--ctSm` 1080, `--ctMd` 1280, `--ctLg` 1440; a page names its column `data-container="2xs|xs|sm|md|lg"` (centred, `max-width: var(--ct…)`) instead of a max-width of its own. `[data-ct-bp="xs|s|m|l"]` and `.aqWrap.aqBpXS/S/M/L` carry a breakpoint's tokens. Doc: `CT_W` frame sizes (xs 393x852, s 600x760, m 992x760, l 1440x820), `CT_NAMES`, `ctRead(bp)`, `CT_BP`, `CT_MAX`; a Breakpoint AND a Container picker; classes `.glCtStage`, `.glCtSc`, `.glCtFr`, `.glCtWrap`, `.glTgl` (Show sizes, `.glRed` on `.glMain`). The top nav (Top nav C) and the footer span the frame inside its padding; only the body's content sits in the container.
 
-**Rules.** XS / S / M / L: padding top-bottom 24 / 28 / 32 / 36; left-right 16 / 16 / 24 / 24; gap 24 / 28 / 32 / 36. Max-width table: `layout/container/max-width/2xs` 10000 (no cap) / 512 / 544 / 576 for a flow's page; xs 800; sm 1080; md 1280; lg 1440. Media queries min-width 600, 992, 1440; a forced `data-bp` overrides them. Doc UI keys `everlab:glBp`, `everlab:glPart`. No saved setup (not a savable master).
+**Rules.** XS / S / M / L: padding top-bottom 24 / 28 / 32 / 36; left-right 16 / 16 / 24 / 24; gap 24 / 28 / 32 / 36. Max-width table: `layout/container/max-width/2xs` 10000 (no cap) / 512 / 544 / 576 for a flow's page; xs 800; sm 1080; md 1280; lg 1440. Media queries min-width 600, 992, 1440; a forced `data-bp` overrides them. Doc UI keys `everlab:glBp`, `everlab:glCt`, `everlab:glPart`. No saved setup (not a savable master).
 
 **How to use.**
 ```css
@@ -80,9 +80,9 @@ top:calc(-1 * var(--ctPadY)); margin:calc(-1 * var(--ctPadY)) calc(-1 * var(--ct
 ```
 Flow pages cap at 544 on the desk (`width 544; max-width calc(100% - 48px)`).
 
-**Pitfalls.** (1) Only the Overview reads the tokens; `#dMain #dSvc #dTl #dApt #dAcc #dMkt` hard-code 32 40. (2) The desk Overview overrides to `--ctPadY:32px; --ctPadX:40px`, so the doc's M/L 24 isn't what it shows. (3) Max widths are not CSS variables: the `CT` map and the `T` table duplicate numbers by hand; change both. (4) `#dOver` centres its 1080 content with `padding: max(var(--ctPadX), calc((min(1584px - var(--sideW,224px), 100% - var(--sideW,224px) - 16px) - 1080px) / 2))` (the % is the dash's, hence `--sideW`). A new token needs both the media query and the `body[data-bp]` override.
+**Pitfalls.** (1) Only the Overview reads the tokens; `#dMain #dSvc #dTl #dApt #dAcc #dMkt` hard-code 32 40. (2) The desk Overview overrides to `--ctPadY:32px; --ctPadX:40px`, so the doc's M/L 24 isn't what it shows. (3) The doc reads the tokens off the CSS: change the `:root` / `@media` / `body[data-bp], [data-ct-bp]` rules, never a copy. (4) `#dOver` centres its 1080 content with `padding: max(var(--ctPadX), calc((min(1584px - var(--sideW,224px), 100% - var(--sideW,224px) - 16px) - 1080px) / 2))` (the % is the dash's, hence `--sideW`). A new token needs both the media query and the `body[data-bp], [data-ct-bp]` override.
 
-**Being reworked.** Top nav + container-tokens rule (#260) and desk panels follow the Overview (#270) will move panels onto these tokens.
+**Being reworked.** Desk panels follow the Overview (#270) will move panels onto these tokens.
 
 ---
 
@@ -106,11 +106,30 @@ Flow pages cap at 544 on the desk (`width 544; max-width calc(100% - 48px)`).
 
 Demo frames: XS 393 x 852, S 600 x 860, desk 720 tall with a 544 column (max-width `calc(100% - 48px)`). Foot: 16 16 34 on the phone (CTA 52, radius 26), 20 0 32 on desk (CTA 48). No saved setup.
 
-**How to use.** This tab plus the Modals Sizes rows are the spec for a full modal's or a page's head. Real copies: Modals doc `.mdNav` (76/64, 16/76 sides, `.mdIc` 44/32), Plan subpages' 24/30 title.
+**How to use.** For a modal's, sheet's, standalone page's or flow's bar use the Top nav master (next section), not these numbers. Real copies of this tab: Modals doc `.mdNav` (76/64, 16/76 sides, `.mdIc` 44/32), Plan subpages' 24/30 title.
 
 **Pitfalls.** (1) `--hdr*` are read ONLY by the doc's `.gl*`: changing a token changes the doc, not the app. (2) The documented status bar is 54, but forced XS draws a 47 px band and the strip at padding 18 34 4; EvOverlap's bar foot is 130 (54 + 76). (3) Step flow and Modals docs carry their own header rows (e.g. "one row 40 high ... 58 down on XS") that differ; check both.
 
-**Being reworked.** Top nav rule (#260: 76 with a title, 32 safe space without, floating controls, H1 in the body, app-wide) will rewrite this tab and wire the tokens into the app.
+---
+
+## Top nav (`window.EvTopNav`, `.evTn`; General layout > Top nav, merged #260)
+
+**What.** One bar for every modal, sheet, standalone page and flow with a Back and / or a Close. A (title, Close) and B (Back, title, Close): 76 hug. C (no title): a 32 safe space, the controls floating at their place, the page's H1 the first thing in the body, its words faded into the bar once the H1 has gone under it. The ground is always the gradient blur.
+
+**Where.** `grep -n "window.EvTopNav = "` (~19846, header comment); CSS `grep -n "^\.evTn"` (~16643-16680, after the report sheet's styles); doc `grep -n "const glTn\|const glTnWire"` (variants, XS phones at rest / scrolled, desk, rules table). Tab `data-gl="tn"`. concierge.html copies the ground (`.evTnG`) for its head: change both.
+
+**API.** `window.EvTopNav = { html(o), mount(el, o), watch(scroller, nav, h1, o) -> { update }, titled(h1, bar, sheet), variant(o), IB, IX, IM }`. `o = { back, title, close, more, reveal, cls, backCls, closeCls, tag, titleId, backLabel, closeLabel, attr }`; `variant`: title → `'a'` (or `'b'` with back), else `'c'`. Markup `div.evTn.evTnA|B|C[data-tn] > .evTnG (10 <i>) + button.evTnBtn.evTnBk + .evTnT | .evTnFt > span + button.evTnBtn.evTnX|.evTnMore`; `.evTnHasBk`, `.evTnHasX`. The body's H1 gets `.evTnH1` (clearance from the controls). `watch` sets `.evTnOn` (scrollTop > 0: the ground bleeds 24 further), on C `.evTnTitled` (the H1's middle past the controls' foot, once the page has moved) and `.evTnFar` (the H1's column clear of the controls: no clearance). Host tokens `--evTnTop` (54 under the XS status bar, else 0), `--evTnX` (16 phone, 24 desk), `--evTnGnd`, `--evTnInk`; `--evTnD` 44.
+
+**Rules.** A/B: min-height 76 (+ `--evTnTop`), padding 16, gap 16, title 20/28 500 one line. C: height 32 (+ `--evTnTop`), controls absolute 16 down, `--evTnX` in. Discs 44, ink 6%, 16 icon, hover ink 4%, focus 2px #4b7bec. Title appearing 17/22 600, centred between the controls, fade + 6 px rise .25 s. H1 under C: 12 clear of a Close (padding-right 56), 40 lower under a Back. Ground: `--evTnGnd` at `--hoTint` (.85) masked to nothing over 10 backdrop-blur bands (14 px top to 1.5 foot); sticky at its scroller's top. Reduced motion: no transitions.
+
+**How to use.**
+```js
+body = '<div class="siScroll">' + EvTopNav.html({ close: true, closeCls: 'prX siX', cls: 'prNav' }) + '<h3 class="siTitle evTnH1">...</h3>...';   /* the info sheet */
+EvTopNav.watch(wrap.querySelector('.siScroll'), wrap.querySelector('.prNav'), wrap.querySelector('.siTitle'));
+```
+Sites: evSolo (`cls: 'sgmNav'`, Back or Close, title `#<key>T`), Results received / info sheets (`.prNav`), the records filter, the Service detail (`titled()` rule), the Container and Header docs. A control that keeps an old class (`.arClose`, `.prX`) for its handler passes it as `closeCls`/`backCls`.
+
+**Pitfalls.** Never a hand-made head with its own discs or ground. The flows (Async report, Health profile, Step flow) keep their `.arHeadRow` markup (progress rides in it) with the 44 discs only. EvChat's `.chHead` is not on it yet (#273). The old `.sgmHead` is only the fallback when `EvTopNav` is missing.
 
 ---
 
@@ -171,13 +190,13 @@ Sites: Activity plan (hero `.plATop`, `data-ov` markup), Nutrition plan (`.plNTo
 
 ## Design system page shell and the General layout tab
 
-**What.** Design system is the page-menu value `'ds'`. It shares the Documentation shell (`#docPage`, `window._doc`) with its own tabs. General layout has a left aside with three parts (Header, Container, Header overlap), each with a note, and a main column.
+**What.** Design system is the page-menu value `'ds'`. It shares the Documentation shell (`#docPage`, `window._doc`) with its own tabs. General layout has a left aside with four parts (Header, Top nav, Container, Header overlap), each with a note, and a main column.
 
 **Where.** `grep -n "o.value = 'ds'"`; `grep -n "const DOCS\|DSET = \|docLast"`; `docShow`; `#tkDocSave` mapping (`grep -n "docCur === 'sf'"`); `docHash`; `const glDoc`; home card `doc: 'gl', wide: true`; CSS `.ldSide/.ldPats/.ldNotes`, `.glMain/.glSec`.
 
-**API.** `window._doc.show(k, set)`, `hide()`. `DSET = ['gl','sf','md','bb','nv','ld']`; `docLast = { doc:'pt', ds:'gl' }`. Hashes `#general-layout #step-flow #modals #chat-bubbles #navigation #loading-states`, and `#design-system` (last tab open). Parts: `[data-gl="hdr|ct|ho"]` buttons, `[data-glv]` views, `[data-gln]` notes, `pick(k)`. Keys `everlab:glPart`, `everlab:glBp` (UI only). `body.docOn`, `body.dataset.docSet`.
+**API.** `window._doc.show(k, set)`, `hide()`. `DSET = ['gl','sf','md','bb','nv','ld']`; `docLast = { doc:'pt', ds:'gl' }`. Hashes `#general-layout #step-flow #modals #chat-bubbles #navigation #loading-states`, and `#design-system` (last tab open). Parts: `[data-gl="hdr|tn|ct|ho"]` buttons, `[data-glv]` views, `[data-gln]` notes, `pick(k)`. Keys `everlab:glPart`, `everlab:glBp`, `everlab:glCt` (UI only). `body.docOn`, `body.dataset.docSet`.
 
-**Rules.** Pages take their numbers from the masters the doc drives. The Design system pages have no Tweaks group, so nothing in Tweaks overrides a saved master. The bar's Save maps `'sf'` → `EvSteps.save`, `'gl'` → `EvOverlap.save`, `'md'` → `EvDismiss.save` (Navigation has its own `.nvSave`).
+**Rules.** Parts: `[data-gl="hdr|tn|ct|ho"]` (Header, Top nav, Container, Header overlap). Pages take their numbers from the masters the doc drives. The Design system pages have no Tweaks group, so nothing in Tweaks overrides a saved master. The bar's Save maps `'sf'` → `EvSteps.save`, `'gl'` → `EvOverlap.save`, `'md'` → `EvDismiss.save` (Navigation has its own `.nvSave`).
 
 **How to use.** New General layout part: a `[data-gl]` button in `.ldPats`, a `[data-gln]` note, a `[data-glv]` view built by its own function (like `glCt`, `glHo`); extend `pick()` if it needs a refresh on show (`el._hoUp`); a master gets `save()` and joins the `#tkDocSave` mapping. New tab: an entry in `DOCS` (`el`, `t`, `hash`) and in `DSET`.
 

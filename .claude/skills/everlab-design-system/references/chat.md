@@ -60,7 +60,7 @@ if (ph && ph._chat) ph._chat.open(tile, ctx.q, ctx);          /* Overview servic
 ```
 Ask Everlab hands off with `ch._chat.open(card, q)` and removes the sheet after 300 ms (`.handoff`).
 
-**Pitfalls.** Its member bubble is `.chBubble`, not `.bbMe`; its loader is `ICON.dots` + `chPulse`, not `.bbGrid`. `follow()` divides by a scale k (docs draw the phone scaled). **Being reworked**: chat top bar controls to the full-modal nav size (#273), Top nav rule (#260): re-check `.chHead`.
+**Pitfalls.** Its member bubble is `.chBubble`, not `.bbMe`; its loader is `ICON.dots` + `chPulse`, not `.bbGrid`. `follow()` divides by a scale k (docs draw the phone scaled). **Being reworked**: chat top bar controls to the full-modal nav size (#273): `.chHead` is not on the Top nav master yet.
 
 ---
 
@@ -92,7 +92,7 @@ Ask Everlab hands off with `ch._chat.open(card, q)` and removes the sheet after 
 
 **How to use.** Edit concierge.html, then build (`dist/concierge.html` is what `#ccFrame` loads; publish it in `files` as `concierge.html`). Links `#components`, `#mobile`, `#chat-<id>`, `#doc-components`, `#persona-2`.
 
-**Pitfalls.** Its bubbles/motion are NOT the master's (radius 22, rise 8px, no blur, shimmer loader): flag before claiming "built from the master". Landing must not show the drawer (`.noSlide`). The field is moved between `#homeBox` and `.dock` (`boxTo`), never copied. **Being reworked**: top bar controls (#273), Top nav (#260), Chat video builder (#268) on this chat.
+**Pitfalls.** Its bubbles/motion are NOT the master's (radius 22, rise 8px, no blur, shimmer loader): flag before claiming "built from the master". Landing must not show the drawer (`.noSlide`). The field is moved between `#homeBox` and `.dock` (`boxTo`), never copied. Its head's ground is a copy of the Top nav master's `.evTnG` (merged #260; `--hdH`, the thread runs up under `.hd`): change it with index.html's. **Being reworked**: top bar controls (#273), Chat video builder (#268) on this chat.
 
 ---
 
@@ -145,7 +145,7 @@ Rendered as `<div class='blk b-<t>' data-b=j>`; booking is stateful via `data-re
 
 **What.** Edit the open conversation's questions, answers (Eva or care team), reply line and widgets from Tweaks; drag/move/delete turns; + Question / + Answer; Reset; saved with Tweaks.
 
-**Where.** concierge.html API `grep -n "WIDGETS\|FIELDS\|getConv\|setConv\|onConv"` (~1474-1571, the comment lists every call). App: `grep -n 'id="ccEd"\|ccEdPick\|stCcConv'` (editor, `CC()` accessor, `turnHtml/draw`).
+**Where.** concierge.html API `grep -n "WIDGETS\|FIELDS\|getConv\|setConv\|onConv"` (~1480-1595; the calls are set as `window.Concierge.getConv = ...` at ~1582-1591, the comment above lists every call). App: `grep -n 'id="ccEd"\|ccEdPick\|stCcConv'` (editor, `CC()` accessor, `turnHtml/draw`).
 
 **API.** `Concierge.getConv(id?)` → `{ id, persona, title, turns, edited, seeded } | null`; `setConv(id, turns|null, { at?, persona?, title? })` (null = back to its own); `onConv(fn)` → unsubscribe (`fn({ id, persona, why:'open'|'chat'|'edits' })`); `edits(map?)` → `{ '<persona>:<id>': { title, turns, base? } }`; `convs()`; `widgets()` → `[{ t, l, fields:[{ k, l, kind:'text'|'area'|'select', opts }] }]`; `preset(t)`; `field(block, k, v?)`.
 
@@ -193,7 +193,7 @@ window._cc.run(c => { c.model('care'); c.go('new'); if (c.focus) c.focus(); }); 
 window._cc.ask('Tell me about the ' + s.t + ...);                                 /* a service card */
 ```
 
-**Pitfalls.** Never call `w.Concierge` before the frame has loaded: use `_cc.run`. try/catch `contentWindow` access. One path, one iframe (the editor expects `#ccFrame`). `dist/concierge.html` must be published in `files` or the frame 404s. **Being reworked**: Top nav (#260), chat top bar (#273): re-check `--safeT/--safeB` and `.emb .hd`.
+**Pitfalls.** Never call `w.Concierge` before the frame has loaded: use `_cc.run`. try/catch `contentWindow` access. One path, one iframe (the editor expects `#ccFrame`). `dist/concierge.html` must be published in `files` or the frame 404s. **Being reworked**: chat top bar (#273): re-check `--safeT/--safeB` and `.emb .hd`.
 
 ---
 

@@ -17,7 +17,7 @@ All anchors are in `index.html` unless named. Line numbers drift; grep the patte
 - `shell({ root, head, stepWrap, body, foot, cta, o, on, later })` → `{ fitG, edge }`: gradient bar (`span.arGround`, `--ar-head-h`, `--ar-gs`, `--ar-ge`, `.arScrolled` at scrollTop > 2), gradient footer (`span.arFootGround`, `--ar-foot-h`, `--ar-fs`, `--ar-cta-b`, `--ar-fe`), solid edge (`.arEdge`, `--ar-tf`/`--ar-bf` 0..24px).
 - Tokens on `<html>`: `--sfBar`, `--sfGap`, `--sfPad`.
 
-**Rules.** `M = { dist: 20, dur: 220, out: 130, lag: 75, bar: 3, gap: 4, pad: 12 }`. Saved key `everlab:sfMaster` (finite numbers only), read on every load over Tweaks. Controls: dist 0-64/2, dur 40-800/10, out 40-600/10, lag 0-300/5, bar 1-8, gap 0-12, pad 0-24. Fill transition clip-path .5s `cubic-bezier(0, 0, .2, 1)`; segment corners 4; base opacity .12. Doc anatomy: header row 40 high, 58 down on XS (discs at 60), 44 on S, 16 on desk; Back/Close 36 circles ink 6%, icons 18/16; title 14/18 over 12/16 ink 50%; step title 28/29.6 weight 570, 24 under progress; intro 16/22 ink 56%; footer pill 56, 16 + 34 home indicator on XS; desk column 536 at M, 568 at L/XL; Back hidden on a flow's first page; reduced motion: no push. Doc frames: xs 393x852, s 600x860, m 992x720, l 1440x900, xl 1920x1080 (drawn as L). Viewer pref `everlab:sfBp`. Doc "Slow" = push(..., 4).
+**Rules.** `M = { dist: 20, dur: 220, out: 130, lag: 75, bar: 3, gap: 4, pad: 12 }`. Saved key `everlab:sfMaster` (finite numbers only), read on every load over Tweaks. Controls: dist 0-64/2, dur 40-800/10, out 40-600/10, lag 0-300/5, bar 1-8, gap 0-12, pad 0-24. Fill transition clip-path .5s `cubic-bezier(0, 0, .2, 1)`; segment corners 4; base opacity .12. Doc anatomy: header row 40 high, 58 down on XS (discs at 60), 44 on S, 16 on desk; Back/Close drawn 44 (the Top nav master's discs, forced by `.arHeadRow > .arIconBtn` 44px; the doc's anatomy row still says 36) ink 6%, icons 18/16; on desk Back and Close 24 from the frame's edges (the bar spans the screen); title 14/18 over 12/16 ink 50%; step title 28/29.6 weight 570, 24 under progress; intro 16/22 ink 56%; footer pill 56, 16 + 34 home indicator on XS; desk column 584 at M, 616 at L/XL (the 2xs container 544 / 576 inside 20 sides; the `BPS` frame captions still say 536 / 568); Back hidden on a flow's first page; reduced motion: no push. Doc frames: xs 393x852, s 600x860, m 992x720, l 1440x900, xl 1920x1080 (drawn as L). Viewer pref `everlab:sfBp`. Doc "Slow" = push(..., 4).
 
 **How to use.**
 ```js
@@ -31,7 +31,7 @@ const arLk = window.EvSteps.look();
 
 **Pitfalls.** Never re-implement a push or progress (the HP and report copies were removed). The caller owns the leaving page: position it absolutely where it stood, and cancel/remove any page still leaving before pushing again (sfDoc `go1`: remove `.sfOld` first). The HP variant uses `--sfBar`/`--sfGap` but not `--sfPad`, and has its own header. The welcome/last page "rise" is not this push. The doc rebuilds on `#stArBar/#stArFoot/#stArCard` and theme; call `fitG`/`edge` again when the page changes.
 
-**Being reworked.** Top nav rule (#260) and desk panels (#270) may change the header numbers (58/44/16 down, 36 discs) and the desk column.
+**Being reworked.** Desk panels (#270) may change the desk column. The flows keep their own `.arHeadRow` (progress rides in it), not `EvTopNav` markup.
 
 ---
 
@@ -49,7 +49,7 @@ const arLk = window.EvSteps.look();
 
 **Pitfalls.** The demo is its own markup (`.mdPanel/.mdFull/.mdSheet/.mdStack`), not the app's sheet code; only EvDismiss and EvSheetSwipe are shared. The app's Full modal (`.aqFull`) and stack (iosStk script) carry the same numbers by hand: change both, or better move the demo onto app code. Dismiss Off keeps the notch's room (title 28 under the sheet top either way). The Dismiss control hides on M/L and on Full.
 
-**Being reworked.** Top nav rule (#260) may change Full's nav numbers (76/64, 44/32); desk panels (#270).
+**Note.** Since the Top nav master (#260, merged) the app's full modals draw their bar with `EvTopNav` (references/layout.md); the Modals doc's own `.mdNav` numbers (76/64, 44/32) are a hand-made demo. **Being reworked**: desk panels (#270).
 
 ---
 
@@ -57,9 +57,9 @@ const arLk = window.EvSteps.look();
 
 **What.** The Full modal: a page of its own over the app (Health profile, Async report, Concierge, Suggestion, Doctor's suggestion, Personal recommendation). `evSolo` is the shell factory for the standalone full modals: `.aqWrap.aqDesk.aqFull.evSolo` with an `.arSheet.sgmSheet` (head with title + close/back, scroller `.sgmScr`, pinned footer `.arFoot.sgmFoot`).
 
-**Where.** CSS `grep -n "aqWrap.aqDesk.aqFull .aqFrame"` (~5805); evSolo CSS `grep -n "\.sgmHead\|--sgmSide"`; factory `grep -n "const evSolo"` (~36783); `window.__soloClose`; `html.evCover`. Instances `window._sug`, `window._dsg`, `window._prc`.
+**Where.** CSS `grep -n "aqWrap.aqDesk.aqFull .aqFrame"` (~5805); evSolo CSS `grep -n "\.sgmCol\|--sgmSide"`; factory `grep -n "const evSolo"` (~36783); `window.__soloClose`; `html.evCover`. Instances `window._sug`, `window._dsg`, `window._prc`.
 
-**API.** `const evSolo = cfg => api` (local to the app script, not on window). cfg: `on` (body class), `cls` (wrap class), `key` (menu value), `hash`, `label`, `sheet`, `title` (string or fn; `''` = content carries its own h2 `id=key+'T'`), `back` (fn → Back chevron instead of Close), `body()`, `foot()`, `mount(sheet, api)`, `unmount`, `paint`, `enter(sheet, api)`, `still(sheet, api)` (reduced motion), `click(e, sheet, api)`, `tweaks: [ids]`, `replay: id`. Returns `{ open(), close(now), replay(), remount() }` plus `api = { isOpen, reduced, optV, dark, rise(el, y, delay, dur), push(anim), el() }`. Wrap: `.aqDim`, `.aqFrame`, `.aqStat` (status bar copied from `#bpFrame .bpStatus`). Classes `.on`, `.shut`, `aqBpXS/S/M/L`, `.aqDev` (forced XS/S), `.aqInk` (light), `.sgmScrolled` (> 2).
+**API.** `const evSolo = cfg => api` (local to the app script, not on window). cfg: `on` (body class), `cls` (wrap class), `key` (menu value), `hash`, `label`, `sheet`, `title` (string or fn; `''` = content carries its own h2 `id=key+'T'`), `back` (fn → Back chevron instead of Close), `body()`, `foot()`, `mount(sheet, api)`, `unmount`, `paint`, `enter(sheet, api)`, `still(sheet, api)` (reduced motion), `click(e, sheet, api)`, `tweaks: [ids]`, `replay: id`. Returns `{ open(), close(now), replay(), remount() }` plus `api = { isOpen, reduced, optV, dark, rise(el, y, delay, dur), push(anim), el() }`. Wrap: `.aqDim`, `.aqFrame`, `.aqStat` (status bar copied from `#bpFrame .bpStatus`). Classes `.on`, `.shut`, `aqBpXS/S/M/L`, `.aqDev` (forced XS/S), `.aqInk` (light). The head is the Top nav master, variant C (`EvTopNav.html({ back, close, cls: 'sgmNav' })`, `EvTopNav.watch(.sgmScr, .sgmNav, #<key>T)`: `.evTnOn` / `.evTnTitled`); the title is the body's `h2.sgmT.evTnH1`; the body column `.sgmCol[data-container="2xs"]`; tokens on `.arSheet.sgmSheet` `--evTnTop` (54 on XS), `--evTnX` (`--sgmSide`, 24 desk). `.sgmHead` is only the fallback when `EvTopNav` is missing.
 
 **Rules.** `.on` after two rAFs; focus into the sheet after 540 ms. `rise()` default 780 ms `cubic-bezier(.16, 1, .3, 1)`. Close: `.shut`, ends after 580 ms (`now` = at once). Desk dismiss: `.arClose`/`.sgmNot`, Escape (not while `.tkShotM` or a Chat `.ccOn` is over it); Tab trapped in the sheet. Closes at once on `everlab:mode`. Frame paper from `--ar-paper`. Hashes `#suggestion`, `#doctors-suggestion`, `#personal-recommendation`. `html.evCover` hides the page under a covering full modal 0.7 s after it is up (never for `.hpBs` sheets). No saved setup.
 
@@ -73,7 +73,7 @@ window.EvLoad.label(go, 'Processing');               /* its CTA loader (.dsgGo) 
 
 **Pitfalls.** A new standalone full modal goes through `evSolo` and joins `__soloClose`'s list `['_sug', '_dsg', '_prc']` and the page-switch hides. Full modal on the phone is up 64 + fade, not a full-screen slide. The page under must not paint once covered (`html.evCover`). Full modals have no swipe-down: never bind EvSheetSwipe to them.
 
-**Being reworked.** Top nav rule (#260) and "Chat top bar controls to full-modal top nav size" (#273) will change `.sgmHead` and the nav numbers; desk panels (#270).
+**Being reworked.** "Chat top bar controls to full-modal top nav size" (#273); desk panels (#270).
 
 ---
 

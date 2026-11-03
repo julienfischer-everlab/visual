@@ -11,14 +11,14 @@ The prototype is `index.html` (about 47k lines: never read it whole; `grep -n` a
 
 Every Documentation / Design system page is the master component. The app's instances are built from the same code or settings, never from copied numbers. When a doc page has a saved setup, every page applies it on load, over Tweaks and older saves (CLAUDE.md).
 
-The page menu `#versionSel` has Documentation (`'doc'`) and Design system (`'ds'`). Design system tabs (`DSET = ['gl','sf','md','bb','nv','ld']`): General layout (Header, Container, Header overlap), Step flow, Modals, Chat bubbles, Navigation (iconography, dock, desk sidebar, More, Ask Everlab), Loading states. Grep `DSET` and `const DOCS` for the shell.
+The page menu `#versionSel` has Documentation (`'doc'`) and Design system (`'ds'`). Design system tabs (`DSET = ['gl','sf','md','bb','nv','ld']`): General layout (Header, Top nav, Container, Header overlap), Step flow, Modals (Full, Bottom sheet · Floating, Full bottom sheet), Chat bubbles, Navigation (Island and Iconography: dock, desk sidebar, More, Ask Everlab), Loading states. Documentation tabs: Service timeline (`'pt'`, `components/progress-timeline/demo.html`), Concierge components (`'cc'`, references/chat.md), Membership onboarding (`'hp'`, `hcDoc`, Health profile card states and flows, Concierge phases). Grep `DSET` and `const DOCS` for the shell.
 
 ## How to work
 
 1. **Find the master first.** Look the element up in the table below and read its reference. Grep its anchor (`grep -n "window.EvSteps = " index.html`). Line numbers in the references drift: trust the grep pattern.
-2. **Build the instance from the master.** Call the module (`EvSteps.progress`, `EvSheetSwipe`, `EvLoad.label`, `evSolo`, `EvNavIc.svg`, ...) or read its tokens (`var(--ctPadX)`, `var(--evPhR)`, `--ar-*`). Never re-implement a push, a swipe, a notch, a frame, a loader or an icon. If no master fits, make one (below) rather than a one-off.
+2. **Build the instance from the master.** Call the module (`EvSteps.progress`, `EvSheetSwipe`, `EvLoad.label`, `evSolo`, `EvTopNav.html`, `EvNavIc.svg`, ...) or read its tokens (`var(--ctPadX)`, `var(--evPhR)`, `--ar-*`). Never re-implement a push, a swipe, a notch, a frame, a loader or an icon. If no master fits, make one (below) rather than a one-off.
 3. **Document it on its doc page.** A new pattern or state goes on its Design system tab (or the Concierge Components tab), drawn by the same code. Update the doc's hand-written tables when numbers change.
-4. **Saved setups.** A master with live controls has `M` defaults, `set(k, v)`, `save()`, `reset()`, a key `everlab:<x>Master` read at parse on every page, and the top bar's Save (`#tkDocSave`) mapped to it. Existing: `everlab:hoMaster` (EvOverlap), `everlab:sfMaster` (EvSteps), `everlab:mdMaster` (EvDismiss), `everlab:navMaster` (dock). They are localStorage only (this browser).
+4. **Saved setups.** A master with live controls has `M` defaults, `set(k, v)`, `save()`, `reset()`, a key `everlab:<x>Master` read at parse on every page, and the top bar's Save (`#tkDocSave`) mapped to it. Existing: `everlab:hoMaster` (EvOverlap), `everlab:sfMaster` (EvSteps), `everlab:mdMaster` (EvDismiss: `on()`, `set(v)`, `save()`, no `M`/`reset`), `everlab:navMaster` (dock: the `window._navMaster()` loader and the doc's `.nvSave`, not `#tkDocSave`). They are localStorage only (this browser).
 5. **Page state.** `setMode` rewrites `body.className` whole: put new state on `<html>` or in `CARD_STATE` (written back in the class rebuild), never a hand-toggled body class.
 
 ## House rules
@@ -43,7 +43,8 @@ The page menu `#versionSel` has Documentation (`'doc'`) and Design system (`'ds'
 |---|---|---|
 | Breakpoints, Viewport select (XS/S/M/L, Auto) | `#stBp`, `body[data-bp]`, `html.bpAuto` | references/layout.md |
 | XS phone / S tablet frame (852 device, fit-scaling) | `#bpFrame`, `--evPh*`, `--evTb*`, `--bpS` | references/layout.md |
-| Container tokens, General layout > Container | `--ctPadY/X`, `--ctGap`, `glCt` | references/layout.md |
+| Top nav master (A / B / C, General layout > Top nav) | `window.EvTopNav`, `.evTn`, `glTn` | references/layout.md |
+| Container tokens, General layout > Container | `--ctPadY/X`, `--ctGap`, `--ct2xs`..`--ctLg`, `data-container` | references/layout.md |
 | Header (status bar, nav bar, titles) | `--hdr*`, `glDoc` | references/layout.md |
 | Header overlap | `window.EvOverlap` | references/layout.md |
 | Desk page panels | `#dMain #dOver #dSvc #dTl #dApt #dAcc #dPlan #dMkt` | references/layout.md |
@@ -70,7 +71,7 @@ The page menu `#versionSel` has Documentation (`'doc'`) and Design system (`'ds'
 | Ask Everlab card | `window.EvAsk` | references/navigation-icons-motion.md |
 | Other beams (chat composer, intro field, field star) | `window.EvBeam`, `hpCcBm`, `.ovChatSpark` | references/navigation-icons-motion.md |
 | Carousels | `window.EvMagnet` | references/navigation-icons-motion.md |
-| Hover / press conventions | plain CSS | references/navigation-icons-motion.md |
+| Hover / press conventions, the Plan's interaction states | plain CSS; `#dPlan --plHov/--plPrs/--plPrsS`, `.plPress` | references/navigation-icons-motion.md |
 | Chat bubbles master | `bbDoc`, `.bbB` | references/chat.md |
 | Concierge intro bubbles | `.hpCc*`, `bub()`, `flip()` | references/chat.md |
 | In-app chat | `window.EvChat` | references/chat.md |
@@ -96,12 +97,10 @@ The page menu `#versionSel` has Documentation (`'doc'`) and Design system (`'ds'
 
 ## Being reworked (update these references after they merge)
 
-- **Top nav + container-tokens rule** (task #260): title 76 / no-title 32 safe space, floating controls, H1 in the body, `--hdr*` and `--ct*` wired app-wide. Touches Header, Container, Step flow and Modals header rows, evSolo `.sgmHead`, EvChat `.chHead`.
 - **Desk panels follow the Overview** (#270): gap, top, 12 px corners, ground, padding, title on every panel.
-- **Plan hover/press on every clickable** (#269): may formalise the press scales.
 - **DS "Page types" rule** (#274): Main / Sub pages, every Sub page pushes in and pops out from one master.
 - **Chat top bar controls to full-modal top nav size** (#273) and the **Chat video builder** (#268) on the Concierge chat.
-- Merged on this branch already: **XS 852 minimum** (#266) and **Ask sheet icons** (#271).
+- Merged on this branch already: **XS 852 minimum** (#266), **Ask sheet icons** (#271), **Plan hover/press on every clickable** (#269, the Plan's interaction states) and the **Top nav master + container tokens** (#260: `EvTopNav`, `--ct2xs`..`--ctLg`, `data-container`; evSolo's head is Top nav C). Places still on their own heads after #260: EvChat `.chHead`, the flows' `.arHeadRow` (44 discs only), the Header tab's `--hdr*` (doc only).
 
 ## Checklist before you ship
 
