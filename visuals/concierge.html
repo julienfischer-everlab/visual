@@ -521,6 +521,7 @@
   .wrapRow > .apt:not(.cmp) { width: min(100%, 380px); }
   .rowList { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 210px), 1fr)); gap: 16px; }
   .rowList .aRow { padding: 0; }
+  .aRows { max-width: 440px; }   /* the rows as an answer's widget, without the group's card */
   .cmpIn .car { max-width: 640px; }
 
   /* as a page of the prototype (Concierge.embed, from its Viewport): in the XS phone or the S tablet frame, the chat alone filling the screen, its own bar gone, clear of the frame's status bar (--safeT) and home indicator (--safeB);
@@ -794,6 +795,7 @@
   var BLOCK = {
     apt: function (b) { return aptCard(b.k, b.st, b.date, b.cmp); },
     aptGroup: function (b) { return aptGroup(b.rows, b.shown || 3); },
+    aptRows: function (b) { return '<div class="grpList aRows">' + b.rows.map(function (r) { return aptRow(r[0], r[1], r[2]); }).join('') + '</div>'; },   // the rows alone, without the group's card
     goals: function () { return carousel('Your goals', GOALS.map(function (g) { return goalCard(g); })); },
     goal: function (b) { return goalCard(GOALS[b.i], true); },
     atts: function (b) { return atts(b.f); },
@@ -825,7 +827,7 @@
       (n > 1 ? '<path class="spL" d="M' + xy.slice(0, n).map(f).join(' L') + '"/>' : '') + (n ? '<path class="spL spA" d="M' + f(xy[n - 1]) + ' L' + f(xy[n]) + '"/>' : '') +
       xy.slice(0, n).map(function (p) { return c(p, 2.25, 'spD'); }).join('') + c(xy[n], 7, 'spH') + c(xy[n], 4, 'spE') + '</svg>';
   };
-  var slotTx = function (b) { var s = b.slots[b.at || 0]; return s[0] + ' · ' + s[1] + (b.prep ? ' · ' + b.prep : ''); };
+  var slotTx = function (b) { var s = b.slots[b.at || 0] || []; return [s[0], s[1], b.prep].filter(Boolean).join(' · '); };
   BLOCK.checkin = function (b) { return '<div class="ckHd">' + ic('spark') + '<span>' + esc((b.who || 'Eva') + ' · checked in ' + (b.when || 'just now')) + '</span></div>'; };
   BLOCK.trend = function (b) {
     var last = b.pts[b.pts.length - 1];
@@ -996,9 +998,26 @@
       } }
   };
   var P = null;
-  var loadPersona = function (id) {   /* a persona's data afresh: its conversations, Inbox (read or not), attention list and ways in */
-    P = PERSONA[id] || PERSONA.p1; chats = {}; order = [];
-    P.convs().forEach(function (c) { chats[c.id] = { id: c.id, title: c.title, msgs: c.turns }; order.push(c.id); });
+  /* the conversations as edited (Tweaks -> Chat -> Conversation): { '<persona>:<chat id>': { title, turns, base? } }, put over that persona's own whenever it loads.
+     base: a new chat's turns as it was asked, for its Reset (a seeded chat's are the persona's own) */
+  var OV = {}, SEEDED = {};
+  var turnsIn = function (ts) {   /* turns as the chat draws them, whoever wrote them: a role, words, blocks, a time; a booking caught mid-way is offered again */
+    var last = '';
+    return copy(ts || []).filter(function (t) { return t && typeof t === 'object'; }).map(function (t) {
+      t.r = t.r === 'u' ? 'u' : 'a'; t.text = t.text == null ? '' : String(t.text);
+      if (t.r === 'a'){ t.who = t.who === 'doctor' ? 'doctor' : 'eva'; t.blocks = Array.isArray(t.blocks) ? t.blocks.filter(function (b) { return b && typeof b === 'object'; }) : []; t.blocks.forEach(function (b) { if (b.t === 'booking' && b.st === 'loading') b.st = 'offer'; }); }
+      else delete t.blocks;
+      t.time = t.time || last || now(); last = t.time; return t;
+    });
+  };
+  var putOv = function (id, r) {   /* an edited conversation into the persona's: a new chat (one asked, then edited) made again */
+    if (!chats[id]){ chats[id] = { id: id, title: r.title || 'New chat', msgs: [] }; order.unshift(id); }
+    chats[id].msgs = turnsIn(r.turns); if (r.title) chats[id].title = r.title;
+  };
+  var loadPersona = function (id) {   /* a persona's data afresh: its conversations (as edited, if they were), Inbox (read or not), attention list and ways in */
+    P = PERSONA[id] || PERSONA.p1; chats = {}; order = []; SEEDED = {};
+    P.convs().forEach(function (c) { chats[c.id] = { id: c.id, title: c.title, msgs: c.turns }; order.push(c.id); SEEDED[c.id] = 1; });
+    Object.keys(OV).forEach(function (key) { if (key.indexOf(P.id + ':') === 0) putOv(key.slice(P.id.length + 1), OV[key]); });
     INBOX = copy(P.inbox); ATTN = P.attn; CATS = P.cats;
   };
   loadPersona('p1');
@@ -1006,6 +1025,9 @@
   /* ---------- state ---------- */
   var app = $('#app'), stage = $('#stage'), col = $('#col'), thread = $('#thread'), q = $('#q'), ttl = $('#ttl');
   var S = { view: 'new', id: null, hist: [], model: 'eva', busy: false, dev: 'desk', tab: 'chat' };
+  /* who is told when the conversation changes (Concierge.onConv: the Tweaks' editor of it): one opened, its turns changed in the chat (a question asked, a booking made), the persona's edits put back */
+  var LIS = [];
+  var convNote = function (why) { var d = { id: S.view === 'chat' ? S.id : null, persona: P.id, why: why }; LIS.slice().forEach(function (f) { try { f(d); } catch (e) {} }); };
 
   /* the static chrome's icons */
   $('#brand').innerHTML = ic('mark') + '<span>Concierge</span>';
@@ -1091,10 +1113,16 @@
       return '<button class="note' + (n.read ? ' read' : '') + '" type="button" data-act="note" data-n="' + i + '"><span class="dot"></span>' + (n.av ? '<img src="' + n.av + '" alt="">' : '<span class="noteIc">' + ic(n.icon) + '</span>') + '<span><b>' + esc(n.who) + '</b><p>' + esc(n.line) + '</p></span><time>' + n.when + '</time></button>';
     }).join('') + '</div>';
   };
-  var renderChat = function () {
-    var c = chats[S.id]; col.innerHTML = '';
+  var reveal = function (n) {   /* a message brought into the thread's view, the least scroll that shows it (its top first if it is taller) */
+    if (!n) return; var tr = thread.getBoundingClientRect(), r = n.getBoundingClientRect(), pad = 16; thread.style.scrollBehavior = 'auto';
+    if (r.top < tr.top + pad) thread.scrollTop += r.top - tr.top - pad; else if (r.bottom > tr.bottom - pad) thread.scrollTop += Math.min(r.bottom - tr.bottom + pad, r.top - tr.top - pad);
+  };
+  var renderChat = function (o) {   /* o.keep: drawn again where it was (an edit), o.at: then that turn brought into view; else at its end */
+    var c = chats[S.id], top = thread.scrollTop; col.innerHTML = '';
     c.msgs.forEach(function (m, i) { col.appendChild(msgEl(m, i)); });
-    markLast(); carSync(); requestAnimationFrame(function () { toBottom(false); });
+    markLast(); carSync();
+    if (o && o.keep){ thread.style.scrollBehavior = 'auto'; thread.scrollTop = top; if (o.at != null) reveal(col.querySelector('.msg[data-i="' + o.at + '"]')); }
+    else requestAnimationFrame(function () { toBottom(false); });
   };
   var go = function (view, id, push) {
     if (push !== false && (S.view !== view || S.id !== id)) S.hist.push([S.view, S.id]);
@@ -1105,7 +1133,7 @@
     ttl.textContent = view === 'chat' ? chats[id].title : view === 'inbox' ? 'Inbox' : 'New chat';
     if (view === 'chat') renderChat(); else if (view === 'inbox') renderInbox(); else renderNew();
     if (view !== 'chat') thread.scrollTop = 0;
-    renderRec(); closePop(); app.classList.remove('drawer');
+    renderRec(); closePop(); app.classList.remove('drawer'); convNote('open');
   };
 
   /* asking: the question, Eva thinking, the answer written out, then what it shows */
@@ -1124,11 +1152,13 @@
     var u = msgEl(c.msgs[c.msgs.length - 1], c.msgs.length - 1); u.classList.add('in'); col.appendChild(u);
     q.value = ''; grow(); sendState(); toBottom(true);
     var a = turnOf(k); a.time = t; c.msgs.push(a);   // the answer as a turn of its own (its blocks copied: a booking made stays with it)
-    play(c.msgs.length - 1, null);
+    play(c.msgs.length - 1, null); convNote('chat');
   };
   var THINK = { aptNext: 'Checking your bookings', aptSoon: 'Checking your bookings', aptGroup: 'Checking your bookings', goals: 'Reading your plan', goalOne: 'Weighing your goals against your results', attach: 'Finding your files', clin: 'Asking your care team', care: 'Sending to your care team', reports: 'Gathering your reports', nutri: 'Checking your reports', protein: 'Reading your nutrition review', mri: 'Opening your imaging', mriCmp: 'Lining up both scans', mriAll: 'Opening your imaging', mriStudy: 'Preparing the study', script: 'Checking your scripts', refSpec: 'Opening a referral request', refBlood: 'Opening a referral request', refImg: 'Opening a referral request', reqSent: 'Sending to Dr Lu', help: 'Thinking', apobWhat: 'Reading your results', apobTrend: 'Reading your results', apobFast: 'Checking your booking', apobBook: 'Finding a time near you', p2Results: 'Finding your results', p2Help: 'Thinking', bkDone: 'Confirming your booking' };
   var play = function (i, into, say) {   /* say: the shimmer's words, if not the intent's (Eva checking in) */
-    var c = chats[S.id], m = c.msgs[i], chatId = S.id; S.busy = true; sendState();
+    var c = chats[S.id], m = c.msgs[i], chatId = S.id;
+    if (!m || m.r !== 'a'){ if (into && m) into.replaceWith(msgEl(m, i)); return; }   // only an answer is played in (an edited conversation can end on a question)
+    S.busy = true; sendState();
     var th = el('<div class="think in">' + (say || THINK[m.k] || 'Thinking') + '…</div>');
     if (into) into.replaceWith(th); else col.appendChild(th);
     toBottom(true);
@@ -1190,20 +1220,21 @@
   var bkDraw = function (d) { var c = bkCard(d); if (c) c.replaceWith(el(BLOCK.booking(d))); return bkCard(d); };
   var confirmTurn = function (chatId, text) {   /* Eva's words once it is booked: a turn of the conversation, played in if it is open */
     var c = chats[chatId], t = { r: 'a', who: 'eva', k: 'bkDone', text: text, blocks: [], time: now() };
-    var put = function () { if (c !== chats[chatId]) return; if (S.busy){ setTimeout(put, 250); return; } c.msgs.push(t); if (S.view === 'chat' && S.id === chatId) play(c.msgs.length - 1, null); };
+    var put = function () { if (c !== chats[chatId]) return; if (S.busy){ setTimeout(put, 250); return; } c.msgs.push(t); if (S.view === 'chat' && S.id === chatId) play(c.msgs.length - 1, null); convNote('chat'); };
     put();
   };
   var bkAct = function (act, b) {
     var card = b.closest('.bk'), d = card && REG[+card.dataset.reg]; if (!d) return;
-    if (act === 'bkTimes'){ d.st = d.st === 'times' ? 'offer' : 'times'; bkDraw(d); return; }
-    if (act === 'bkSlot'){ d.at = +b.dataset.s; d.st = 'offer'; var nc = bkDraw(d), w = nc && $('.bkWhen', nc); if (w) w.classList.add('flash'); return; }
+    var inChat = !!card.closest('#col'), told = function () { if (inChat) convNote('chat'); };   // the turn's state changed: the editor of the conversation follows
+    if (act === 'bkTimes'){ d.st = d.st === 'times' ? 'offer' : 'times'; bkDraw(d); told(); return; }
+    if (act === 'bkSlot'){ d.at = +b.dataset.s; d.st = 'offer'; var nc = bkDraw(d), w = nc && $('.bkWhen', nc); if (w) w.classList.add('flash'); told(); return; }
     if (act === 'bkCal'){ toast('Added to your calendar'); return; }
-    if (act === 'bkRe'){ d.st = 'times'; bkDraw(d); return; }
+    if (act === 'bkRe'){ d.st = 'times'; bkDraw(d); told(); return; }
     if (act !== 'bkBook' || d.st === 'loading' || d.st === 'booked') return;
-    var chatId = card.closest('#col') && S.view === 'chat' ? S.id : null;
+    var chatId = inChat && S.view === 'chat' ? S.id : null;
     d.st = 'loading'; bkDraw(d);
     setTimeout(function () {
-      d.st = 'booked'; var nc = bkDraw(d); if (nc) nc.classList.add('done');
+      d.st = 'booked'; var nc = bkDraw(d); if (nc) nc.classList.add('done'); told();
       var s = d.slots[d.at || 0], say = 'You’re booked for ' + s[0] + ' at ' + s[1] + ' at ' + (d.area || d.place) + '.' + (d.after ? ' ' + d.after : '');
       if (chatId && chats[chatId]) confirmTurn(chatId, say); else toast('Booked for ' + s[0] + ', ' + s[1]);
     }, 1300);
@@ -1406,11 +1437,107 @@
     if (!PERSONA[id] || id === P.id) return P.id;
     loadPersona(id); S.hist = []; S.busy = false; attnF = 'all'; closePop(); lbClose();
     if (S.tab !== 'chat' && /\bemb/.test(document.documentElement.className)) setTab('chat');
-    if (P.open && chats[P.open]){ go('chat', P.open, false); var i = chats[P.open].msgs.length - 1, node = col.querySelector('.msg[data-i="' + i + '"]'); if (node) play(i, node, 'Eva is checking in'); }
+    if (P.open && chats[P.open]){ go('chat', P.open, false); var i = chats[P.open].msgs.length - 1, lt = chats[P.open].msgs[i], node = col.querySelector('.msg[data-i="' + i + '"]'); if (node) play(i, node, lt && (lt.blocks || []).some(function (b) { return b.t === 'checkin'; }) ? 'Eva is checking in' : null); }   // its last turn played in (a check-in as Eva checking in)
     else go('new', null, false);
     return P.id;
   };
   window.Concierge.persona = function (id) { return id ? setPersona(id) : P.id; };
+
+  /* ---------- a conversation edited from outside (Tweaks -> Chat -> Conversation, "control the copy of the Question, Answer and widget below answer; add Question or Answer and reorder them"):
+       Concierge.getConv(id?)            the conversation (the one open, with no id): { id, persona, title, turns, edited, seeded }, or null
+       Concierge.setConv(id, turns, o?)  its turns replaced (null: its own put back), drawn again where it was (o.at: that turn brought into view); o.persona: another persona's,
+                                         kept for when it loads; o.title: a new chat's name. Kept per persona and conversation (Concierge.edits)
+       Concierge.onConv(fn)              fn({ id, persona, why: 'open' | 'chat' | 'edits' }) whenever another conversation opens or the chat changes this one; returns the way to stop
+       Concierge.edits(map?)             every edit, { '<persona>:<id>': { title, turns, base? } } (what the Tweaks' Save keeps); with a map, those put in place of the current ones
+       Concierge.convs()                 the persona's conversations, newest first: [{ id, title, edited }]
+       Concierge.widgets()               what an answer can show (the BLOCK renderers): [{ t, l, fields: [{ k, l, kind: 'text' | 'area' | 'seg', opts }] }], in the editor's order
+       Concierge.preset(t)               a widget with real content in it, ready to add
+       Concierge.field(block, k, v?)     a widget's field read (as the editor shows it) or, with v, a copy of the widget with it written ---------- */
+  var WIDGETS = [
+    ['apt', 'Appointment card', function () { return { t: 'apt', k: 'review', st: 'booked', date: 'Tue 27 Oct, 2:30 PM AEDT' }; }],
+    ['aptRows', 'Appointment rows', function () { return { t: 'aptRows', rows: [['review', 'booked', 'Tue 27 Oct, 2:30 PM'], ['dexa', 'open'], ['nutri', 'blocked']] }; }],
+    ['aptGroup', 'Appointment group', function () { return copy(A.aptGroup.blocks[0]); }],
+    ['goals', 'Goals', function () { return { t: 'goals' }; }],
+    ['goal', 'Goal', function () { return { t: 'goal', i: 0 }; }],
+    ['atts', 'Attachments', function () { return { t: 'atts', f: ['blood', 'bio'] }; }],
+    ['report', 'Report', function () { return { t: 'report', r: 'nutri' }; }],
+    ['reports', 'Reports', function () { return { t: 'reports', r: ['diag', 'nutri', 'mri', 'phys'] }; }],
+    ['cite', 'Citation', function () { return { t: 'cite', r: 'nutri' }; }],
+    ['img', 'Image', function () { return { t: 'img', k: 'neuro' }; }],
+    ['imgGroup', 'Images', function () { return { t: 'imgGroup' }; }],
+    ['sugs', 'Suggestions', function () { return P.id === 'p2' ? copy(A.p2Help.blocks[0]) : { t: 'sugs', qs: SUGS.map(function (x) { return x.q; }) }; }],
+    ['checkin', 'Check-in header', function () { return { t: 'checkin', who: 'Eva', when: 'just now' }; }],
+    ['trend', 'Biomarker trend', function () { return copy(APOB); }],
+    ['booking', 'Booking card', function () { return copy(RETEST); }],
+    ['drNote', 'Doctor\u2019s footnote', function () { return { t: 'drNote', text: 'Recommended by your Everlab doctor' }; }]
+  ];
+  var FIELDS = {   /* the copy a widget carries of its own, as few fields as say it */
+    trend: [['name', 'Marker'], ['value', 'Value'], ['date', 'Date'], ['st', 'Status', 'seg', [['opt', 'Optimal'], ['sub', 'Suboptimal'], ['out', 'Out of range']]]],
+    booking: [['title', 'Title'], ['incl', 'Note'], ['time', 'Time'], ['place', 'Place'], ['st', 'State', 'seg', [['offer', 'Offered'], ['times', 'Times'], ['booked', 'Booked']]]],
+    drNote: [['text', 'Text', 'area']],
+    checkin: [['when', 'Checked in']],
+    sugs: [['qs', 'Questions', 'area']]
+  };
+  var fieldGet = function (b, k) {
+    var s, l;
+    if (b.t === 'trend' && k === 'value'){ l = (b.pts || [])[(b.pts || []).length - 1]; return l ? l[1] + ' ' + (b.unit || '') : ''; }
+    if (b.t === 'booking' && k === 'time'){ s = (b.slots || [])[b.at || 0] || []; return [s[0], s[1]].filter(Boolean).join(' · '); }
+    if (b.t === 'booking' && k === 'place') return (b.place || '') + (b.dist ? ' · ' + b.dist : '');
+    if (b.t === 'booking' && k === 'st') return b.st === 'loading' ? 'offer' : b.st || 'offer';
+    if (b.t === 'sugs' && k === 'qs') return (b.qs || SUGS.map(function (x) { return x.q; })).join('\n');
+    return b[k] == null ? '' : String(b[k]);
+  };
+  var fieldSet = function (b, k, v) {
+    b = copy(b); v = String(v == null ? '' : v); var m, cut;
+    if (b.t === 'trend' && k === 'value'){ m = /^\s*(-?\d+(?:[.,]\d+)?)\s*(.*)$/.exec(v); if (m && b.pts && b.pts.length){ b.pts[b.pts.length - 1][1] = +m[1].replace(',', '.'); if (m[2].trim()) b.unit = m[2].trim(); } return b; }   // the latest point (the sparkline's end) and its unit
+    if (b.t === 'booking' && k === 'time'){ cut = v.split(/\s*[·|]\s*|,\s*(?=\d{1,2}[:.]?\d{0,2}\s*(?:am|pm))/i); b.slots = b.slots && b.slots.length ? b.slots : [['', '']]; b.slots[b.at || 0] = [cut[0] || '', cut.slice(1).join(' ')]; return b; }   // the slot shown: its day · its time
+    if (b.t === 'booking' && k === 'place'){ cut = v.lastIndexOf('·'); b.place = (cut < 0 ? v : v.slice(0, cut)).trim(); b.dist = cut < 0 ? '' : v.slice(cut + 1).trim(); b.area = b.place.split(',').pop().trim(); return b; }   // its place · how far; the area (Eva's "at Bondi Junction") the place's last part
+    if (b.t === 'sugs' && k === 'qs'){ b.qs = v.split('\n').map(function (x) { return x.trim(); }).filter(Boolean); return b; }
+    b[k] = v; return b;
+  };
+  var redraw = function (id, at) {   /* the edited conversation shown again: in place if it is open (the scroll kept), its name in Recent */
+    if (S.view === 'chat' && S.id === id && chats[id]){ S.busy = false; sendState(); ttl.textContent = chats[id].title; renderChat({ keep: true, at: at }); }
+    renderRec();
+  };
+  var unOv = function (id, was) {   /* its own turns back: a seeded chat's from the persona, a new chat's as it was asked; one that was only an edit goes */
+    var c = chats[id]; if (!c) return;
+    if (SEEDED[id]){ var o = P.convs().filter(function (x) { return x.id === id; })[0]; c.msgs = o.turns; c.title = o.title; }
+    else if (was && was.base) c.msgs = turnsIn(was.base);
+    else { delete chats[id]; order.splice(order.indexOf(id), 1); }
+  };
+  var getConv = function (id) {
+    id = id || (S.view === 'chat' ? S.id : null); var c = id && chats[id]; if (!c) return null;
+    return { id: id, persona: P.id, title: c.title, turns: copy(c.msgs), edited: !!OV[P.id + ':' + id], seeded: !!SEEDED[id] };
+  };
+  var setConv = function (id, turns, o) {
+    o = o || {}; var pid = PERSONA[o.persona] ? o.persona : P.id, key = pid + ':' + id, here = pid === P.id, was = OV[key];
+    if (!id) return false;
+    if (turns == null){ delete OV[key]; if (here) unOv(id, was); }
+    else {
+      var r = was ? copy(was) : {};
+      if (here){ var c = chats[id]; if (c && !r.base && !SEEDED[id]) r.base = copy(c.msgs); if (!c) putOv(id, { title: o.title || r.title, turns: [] }); if (o.title) chats[id].title = o.title; chats[id].msgs = turnsIn(turns); r.title = chats[id].title; r.turns = copy(chats[id].msgs); }
+      else { if (o.title) r.title = o.title; r.turns = turnsIn(turns); }
+      OV[key] = r;
+    }
+    if (here){ if (S.view === 'chat' && S.id === id && !chats[id]) go('new', null, false); else redraw(id, o.at); }
+    return true;
+  };
+  var edits = function (map) {
+    if (map === undefined) return copy(OV);
+    var old = OV, ids = {}, pre = P.id + ':'; OV = map && typeof map === 'object' ? copy(map) : {};
+    [old, OV].forEach(function (m) { Object.keys(m).forEach(function (k) { if (k.indexOf(pre) === 0) ids[k.slice(pre.length)] = 1; }); });
+    Object.keys(ids).forEach(function (id) { var r = OV[pre + id]; if (r) putOv(id, r); else unOv(id, old[pre + id]); });
+    if (S.view === 'chat' && !chats[S.id]) go('new', null, false); else { if (S.view === 'chat' && ids[S.id]) redraw(S.id); else renderRec(); convNote('edits'); }
+    return true;
+  };
+  window.Concierge.getConv = getConv;
+  window.Concierge.setConv = setConv;
+  window.Concierge.onConv = function (fn) { if (typeof fn !== 'function') return function () {}; LIS.push(fn); return function () { var i = LIS.indexOf(fn); if (i >= 0) LIS.splice(i, 1); }; };
+  window.Concierge.edits = edits;
+  window.Concierge.convs = function () { return order.map(function (id) { return { id: id, title: chats[id].title, edited: !!OV[P.id + ':' + id] }; }); };
+  window.Concierge.widgets = function () { return WIDGETS.map(function (w) { return { t: w[0], l: w[1], fields: (FIELDS[w[0]] || []).map(function (f) { return { k: f[0], l: f[1], kind: f[2] || 'text', opts: f[3] || null }; }) }; }); };
+  window.Concierge.preset = function (t) { var w = WIDGETS.filter(function (x) { return x[0] === t; })[0]; return w ? w[2]() : null; };
+  window.Concierge.field = function (b, k, v) { if (!b || typeof b !== 'object') return v === undefined ? '' : b; return v === undefined ? fieldGet(b, k) : fieldSet(b, k, v); };
   if (hs === 'persona-2') setPersona('p2');   // a link straight to Persona #2's chat
 })();
 </script>
