@@ -20258,3 +20258,14 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - **"Sam got something special for you"** in the secondary ink (56%), 16 to the note under it.
 - **The line under the card** ("It's the first thing they'll see…") removed ("no need").
 - **Checked** (Playwright, dist, XS): the sizes above; the column never past the card (138 to 146 of 145, with 1 of tolerance); the envelope's card at the same size; no console errors.
+
+## Gift note card: 20 px floor, 60 characters, 16 more each side, new placeholder
+
+- **The note's smallest size is 20 px at 361** (5.54cqw; "card note font size min 20px"). The largest stays 34.
+- **16 more each side** of the note (4.43cqw padding on the note, the field and the text alike).
+- **"Type your note here"** is the field's placeholder; it was "Someone wanted you to have this.". The envelope, the summary row and the screen reader's label still use that line when a note is left empty.
+- **The note's length is 60 characters (was 180).** That is what the card holds at 20 px with the signature's place: measured on real notes, 59 to 67 characters fit.
+  - A note of long words that fills the card first stops taking letters (`_full`: not even 20 px fits).
+  - The drawn keys type by script past `maxlength`, so the field is held to 60 in its own input handler too.
+  - The demo note is now "Merry Christmas! To many more adventures together. Love you." (60).
+- **Checked** (Playwright, dist, XS): the empty field at 34 with the new placeholder; the demo note at 22; a long-word note typed letter by letter stops at 60 / 60 at 22 and fits (145 / 145); the note's padding is 16; no console errors.
