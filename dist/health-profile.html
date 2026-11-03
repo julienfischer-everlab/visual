@@ -1952,7 +1952,7 @@ window.__ccVid = ['data:video/webm;base64,GkXfo59ChoEBQveBAULygQRC84EIQoKEd2VibU
    The Service detail's own (its task pages and its services without a progress card), as the Appointment page copied it: the hero pinned (sticky) under the bar, the sheet sliding up over it,
    the picture rising --hoRise (32) as it goes and dimming to --hoDim of itself, the title drifting up at a quarter of the scroll and fading out by the hero's height less 40.
    Markup: .hoHero (sticky), .hoPic (the picture, clipped by its hero), .hoWords (the title group), .hoSheet (the sheet: --hoOverlap over the hero's foot, --hoRadius corners);
-   or the data-ov contract (data-ov="hero|img|title|sheet"), which bind() turns into those classes. bind(scroller, {hero, short, onFrame}) -> {update}: one rAF per scroller.
+   or the data-ov contract (data-ov="hero|img|title|sheet"), which bind() turns into those classes. bind(scroller, {hero, short, onFrame}) -> {update}: one rAF per scroller; hero a selector or a function, short true or a function, onFrame(k, on, hero). Every page with it binds here: the Plan's, the Service detail, the Appointment page.
    The numbers are the master's, Design system -> General layout -> Header overlap: saved there (everlab:hoMaster), every page takes them on load */
 window.EvBeamStar = function (size) { var e = document.createElement('span'); e.className = 'evBeamStar'; e.setAttribute('aria-hidden', 'true'); if (size) e.style.setProperty('--bsz', size + 'px'); e.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11 3c.4 4.6 2.4 6.6 7 7-4.6.4-6.6 2.4-7 7-.4-4.6-2.4-6.6-7-7 4.6-.4 6.6-2.4 7-7Z"/><path d="M18.5 14.5c.2 2 1 2.8 3 3-2 .2-2.8 1-3 3-.2-2-1-2.8-3-3 2-.2 2.8-1 3-3Z"/></svg>'; return e; };   // Eva's beam star (.evBeamStar), the one the debrief's last step and the Iconography doc show
 /* EvFullView: a modal over the whole app, never only the page it opened from ("modal should ALWAYS cover the full viewport, not just the body"): on the desk, fixed over the app's own window (.dash: the sidebar too), re-fitted on resize; on the phone (XS, S) it already covers the screen */
@@ -2085,11 +2085,12 @@ window.EvOverlap = (function () {
   var red = function () { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
   var tok = function () { root.style.setProperty('--hoOverlap', M.overlap + 'px'); root.style.setProperty('--hoRadius', M.radius + 'px'); root.style.setProperty('--hoRise', M.rise + 'px'); root.style.setProperty('--hoDim', String(M.dim)); root.style.setProperty('--hoTint', String(M.tint)); };
   /* the span: the scroll over which the picture rises and the title fades (the hero's height less the fade end; 'short', a page that cannot scroll that far: its own scroll) */
-  var spanOf = function (sc, hero, o) { var H = hero.offsetHeight, s = Math.max(60, H - M.end); if (o && o.short) s = Math.max(60, Math.min(H - M.end, sc.scrollHeight - sc.clientHeight)); return s; };
+  var spanOf = function (sc, hero, o) { var H = hero.offsetHeight, s = Math.max(60, H - M.end), sh = o && (typeof o.short === 'function' ? o.short() : o.short); if (sh) s = Math.max(60, Math.min(H - M.end, sc.scrollHeight - sc.clientHeight)); return s; };   /* short: true, or a function (a page short only in one state: the Service detail's tasks) */
   /* scroll-driven animations ("img on parallax so laggy!"): where the browser has them, the picture and the title run on the compositor off the scroller's timeline (.hoTl, CSS above), locked to the scroll;
      the script only sets their range (--hoSpan) and the title's drift at its end (--hoWy) on the hero, once per resize or content change (update), never per frame. Elsewhere apply(), once a frame, as before */
   var SDA = (function () { try { return !!(window.CSS && CSS.supports && CSS.supports('animation-timeline: scroll()')); } catch (e) { return false; } })();
-  var range = function (sc, hero, o) { var s = spanOf(sc, hero, o), v = s + 'px', w = (-M.ty * s).toFixed(1) + 'px';
+  var range = function (sc, hero, o) { if (!hero || !hero.offsetHeight) return 0;   /* a hero not laid out (its page hidden): no span from a zero height; measured again once it shows (the observer in bind) or on the next frame */
+    var s = spanOf(sc, hero, o), v = s + 'px', w = (-M.ty * s).toFixed(1) + 'px';
     if (hero.style.getPropertyValue('--hoSpan') !== v) hero.style.setProperty('--hoSpan', v); if (hero.style.getPropertyValue('--hoWy') !== w) hero.style.setProperty('--hoWy', w); return s; };
   var apply = function (sc, hero, o) { if (!sc || !hero) return 0; var y = Math.max(0, sc.scrollTop), span = spanOf(sc, hero, o);
     var k = Math.min(1, Math.max(0, y / span)), r = red();
@@ -2098,16 +2099,21 @@ window.EvOverlap = (function () {
   var mark = function (sc) { [['hero', 'hoHero'], ['img', 'hoPic'], ['title', 'hoWords'], ['sheet', 'hoSheet'], ['band', 'hoBand']].forEach(function (p) { [].forEach.call(sc.querySelectorAll('[data-ov="' + p[0] + '"]'), function (e) { e.classList.add(p[1]); }); });
     [].forEach.call(sc.querySelectorAll('.hoBand'), function (b) { if (b.querySelector(':scope > .ovGround')) return; var g = document.createElement('div'); g.className = 'ovGround'; g.setAttribute('aria-hidden', 'true'); g.innerHTML = new Array(11).join('<i></i>'); b.insertBefore(g, b.firstChild); }); };   /* the bar's blur bands, the Overview bar's own (.ovGround) */
   /* the bar's overflow state: on once the sheet's top reaches the bar's foot */
-  var touch = function (sc, band, sheet) { if (!band) return false; var over = !!sheet && sheet.getBoundingClientRect().top - sc.getBoundingClientRect().top <= band.offsetHeight + .5; band.classList.toggle('on', over || sc.scrollTop > 0); band.classList.toggle('hoOnSheet', over); return over; };   /* lit (.on, dark over the photo) from the first pixel of scroll; .hoOnSheet once the sheet's top reaches the bar's foot: the screen's mode */
-  var bind = function (sc, o) { o = o || {}; if (!sc) return { update: function () {} }; mark(sc); var q = 0, sp = 0;
+  var touch = function (sc, band, sheet) { if (!band) return false; var r = sc.getBoundingClientRect(), z = sc.offsetHeight ? r.height / sc.offsetHeight : 1, over = !!sheet && sheet.getBoundingClientRect().top - r.top <= band.offsetHeight * z + .5;   /* z: a frame drawn smaller (the doc's phone, scaled to a narrow window): the bar's height on screen */ band.classList.toggle('on', over || sc.scrollTop > 0); band.classList.toggle('hoOnSheet', over); return over; };   /* lit (.on, dark over the photo) from the first pixel of scroll; .hoOnSheet once the sheet's top reaches the bar's foot: the screen's mode */
+  var bind = function (sc, o) { o = o || {}; if (!sc) return { update: function () {} }; mark(sc); var q = 0, sp = 0, hz = null, ro = null;
     if (SDA) sc.classList.add('hoTl');   /* its timeline, for its picture and title */
     var heroOf = function () { return typeof o.hero === 'function' ? o.hero() : sc.querySelector(o.hero || '.hoHero'); };
-    var run = function () { q = 0; var hero = heroOf(), k;
-      if (SDA) { if (hero && !sp) sp = range(sc, hero, o); k = sp ? Math.min(1, Math.max(0, sc.scrollTop / sp)) : 0; }   /* the compositor moves them: here only the progress, for onFrame (the range read once, then kept) */
+    /* the span, measured by bind itself: read every frame it runs (reads only; written to the hero only when it changes), and on any change of size of the scroller, its content or its hero
+       (a page shown, a breakpoint, a tab, content loading for a 'short' page), so no caller has to remember to; a hero swapped for a new one (a page painted again) is watched in its place */
+    var measure = function () { var hero = heroOf() || null; if (hero !== hz) { if (ro && hz) ro.unobserve(hz); hz = hero; if (ro && hero) ro.observe(hero); } sp = SDA ? range(sc, hero, o) : 0; return hero; };
+    if (SDA && window.ResizeObserver) { ro = new ResizeObserver(function () { measure(); }); ro.observe(sc); [].forEach.call(sc.children, function (c) { ro.observe(c); }); }
+    var run = function () { q = 0; var hero = measure(), k;
+      if (SDA) k = sp ? Math.min(1, Math.max(0, sc.scrollTop / sp)) : 0;   /* the compositor moves them: here only the progress, for onFrame */
       else k = apply(sc, hero, o);
-      var on = touch(sc, o.band ? sc.querySelector(o.band) : sc.querySelector('.hoBand'), o.sheet ? sc.querySelector(o.sheet) : sc.querySelector('.hoSheet')); if (o.onFrame) o.onFrame(k, on); };
+      var on = touch(sc, o.band ? sc.querySelector(o.band) : sc.querySelector('.hoBand'), o.sheet ? sc.querySelector(o.sheet) : sc.querySelector('.hoSheet')); if (o.onFrame) o.onFrame(k, on, hero); };
     sc.addEventListener('scroll', function () { if (!q) q = requestAnimationFrame(run); }, { passive: true });
-    return { update: function () { var hero = heroOf(); if (SDA && hero) sp = range(sc, hero, o); run(); } }; };   /* a resize, a tab, a new number: the range again */
+    measure();
+    return { update: run }; };   /* a resize, a tab, a new number: the range again */
   var load = function () { try { var v = JSON.parse(localStorage.getItem('everlab:hoMaster') || 'null'); if (v) Object.keys(M).forEach(function (k) { if (typeof v[k] === 'number' && isFinite(v[k])) M[k] = v[k]; }); } catch (e) {} tok(); };
   load();
   return { M: M, D: D, sda: SDA, apply: apply, bind: bind, mark: mark, set: function (k, v) { M[k] = v; tok(); },
