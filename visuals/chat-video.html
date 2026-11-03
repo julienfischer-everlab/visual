@@ -1,0 +1,1130 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chat video builder</title>
+<link rel="icon" href="data:,">
+<style>
+  /* Marketing -> Chat video builder (docs/chat-video.md): a composition layer around the Concierge's stage. This page edits the composition JSON; the preview (and the MP4's frames)
+     are drawn by visuals/concierge.html#stage in an iframe, with the chat's own CSS and renderers, so the builder never draws a bubble. Its own chrome is the app's tool-page look
+     (the Image generator's tokens), dark by default, light on html[data-theme="light"] */
+  :root {
+    --ground: #0e0f10; --stage: #121314; --panel: #18191b; --raised: #212226; --hover: #2a2b30; --line: #2a2c31; --lineS: #3a3d44;
+    --text: #e8e9eb; --label: #a9adb4; --muted: #80858d; --faint: #5c6068; --accent: #3d9be4; --accentSoft: rgba(61, 155, 228, .16);
+    --primary: #ecedef; --primaryInk: #111214; --danger: #ef6b5e; --warn: #f0b45a; --ok: #5fd08b; --dot: rgba(255, 255, 255, .045);
+    --shadow: rgba(0, 0, 0, .5); --veil: rgba(10, 11, 12, .72); --pop: #1d1e21;
+    --tUser: rgba(255, 255, 255, .08); --tUserFg: #c9ccd1; --tEva: rgba(242, 107, 58, .16); --tEvaFg: #f58a5a; --tSpec: rgba(95, 208, 139, .14); --tSpecFg: #6fd497; --tWid: rgba(61, 155, 228, .16); --tWidFg: #6cb4ec;
+    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    color-scheme: dark;
+  }
+  html[data-theme="light"] {
+    --ground: #f3f3f1; --stage: #e8e8e5; --panel: #ffffff; --raised: #f2f2f0; --hover: #e9e9e6; --line: #e0e0dc; --lineS: #cbcbc6;
+    --text: #1b1c1e; --label: #44474c; --muted: #6c7077; --faint: #a0a4aa; --accent: #1f7fd0; --accentSoft: rgba(31, 127, 208, .12);
+    --primary: #1b1c1e; --primaryInk: #ffffff; --danger: #c8402f; --warn: #b7791f; --ok: #1f8a4c; --dot: rgba(0, 0, 0, .06);
+    --shadow: rgba(0, 0, 0, .16); --veil: rgba(243, 243, 241, .8); --pop: #ffffff;
+    --tUser: rgba(0, 0, 0, .06); --tUserFg: #44474c; --tEva: rgba(217, 90, 40, .12); --tEvaFg: #c4521f; --tSpec: rgba(31, 138, 76, .12); --tSpecFg: #1f7a45; --tWid: rgba(31, 127, 208, .12); --tWidFg: #1f6fb4;
+    color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body { background: var(--ground); color: var(--text); font: 12.5px/1.45 var(--sans); -webkit-font-smoothing: antialiased; overflow: hidden; }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  [hidden] { display: none !important; }
+  :focus-visible { outline: 1.5px solid var(--accent); outline-offset: 2px; }
+  .boot { height: 100%; display: grid; place-items: center; color: var(--muted); padding: 24px; text-align: center; }
+  .boot.err { color: var(--warn); }
+  .ic { width: 16px; height: 16px; flex: none; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* ---------- the frame: top bar, Composition (left), the canvas (centre), playback (foot), settings (right) ---------- */
+  .cvb { height: 100%; display: grid; grid-template-columns: 300px minmax(0, 1fr) 320px; grid-template-rows: auto minmax(0, 1fr) 54px; }
+  .tb { grid-column: 1 / -1; display: flex; align-items: center; gap: 8px; padding: 8px 12px 8px 14px; border-bottom: 1px solid var(--line); background: var(--panel); min-width: 0; }
+  .brand { display: flex; align-items: center; gap: 7px; font-weight: 600; white-space: nowrap; color: var(--label); }
+  .brand .ic { color: var(--text); }
+  .nm { min-width: 60px; width: 240px; height: 30px; padding: 0 8px; border: 0; border-radius: 7px; background: transparent; font-weight: 550; font-size: 13px; outline: none; text-overflow: ellipsis; }
+  .nm:hover { background: var(--raised); } .nm:focus { background: var(--raised); box-shadow: inset 0 0 0 1.5px var(--accent); }
+  .stat { font: 11px/1 var(--mono); color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .stat.dirty { color: var(--warn); }
+  .sp { flex: 1 1 auto; }
+  .btn { height: 30px; padding: 0 12px; border: 0; border-radius: 8px; background: var(--raised); display: inline-flex; align-items: center; justify-content: center; gap: 6px; white-space: nowrap; color: var(--text); }
+  .btn:hover { background: var(--hover); }
+  .btn.pri { background: var(--primary); color: var(--primaryInk); }
+  .btn.pri:hover { filter: brightness(.94); }
+  .btn.ghost { background: transparent; } .btn.ghost:hover { background: var(--hover); }
+  .btn.sm { height: 26px; padding: 0 9px; font-size: 12px; border-radius: 7px; }
+  .btn.danger { color: var(--danger); }
+  .btn:disabled, .ib:disabled { opacity: .4; cursor: default; }
+  .ib { width: 30px; height: 30px; padding: 0; border: 0; border-radius: 8px; background: transparent; display: inline-grid; place-items: center; color: var(--label); flex: none; }
+  .ib:hover:not(:disabled) { background: var(--hover); color: var(--text); }
+  .ib[aria-pressed="true"] { background: var(--accentSoft); color: var(--accent); }
+  .ib.sm { width: 26px; height: 26px; border-radius: 7px; } .ib.sm .ic { width: 14px; height: 14px; }
+  .mnw { position: relative; }
+  .menu { position: absolute; right: 0; top: calc(100% + 6px); z-index: 30; min-width: 250px; padding: 6px; border-radius: 12px; background: var(--pop); box-shadow: 0 0 0 1px var(--line), 0 16px 40px var(--shadow); display: grid; gap: 2px; }
+  .menu button { display: grid; grid-template-columns: 18px 1fr auto; align-items: center; gap: 10px; height: auto; min-height: 36px; padding: 6px 10px; border: 0; border-radius: 8px; background: transparent; text-align: left; }
+  .menu button:hover:not(:disabled) { background: var(--hover); }
+  .menu button:disabled { opacity: .5; cursor: default; }
+  .menu b { font-weight: 550; display: block; } .menu em { font-style: normal; color: var(--muted); font-size: 11.5px; display: block; }
+  .menu .soon { font: 10px/1 var(--mono); padding: 4px 6px; border-radius: 5px; background: var(--raised); color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+  .menu hr { border: 0; height: 1px; background: var(--line); margin: 4px 2px; }
+
+  .left, .right { grid-row: 2 / 4; background: var(--panel); display: flex; flex-direction: column; min-height: 0; min-width: 0; overflow: hidden; }
+  .left { grid-column: 1; border-right: 1px solid var(--line); }
+  .right { grid-column: 3; border-left: 1px solid var(--line); }
+  .pHd { display: flex; align-items: center; gap: 8px; padding: 12px 14px 8px; }
+  .pHd h2 { margin: 0; font-size: 12.5px; font-weight: 600; }
+  .pHd .cnt { color: var(--muted); font: 11px var(--mono); }
+  .pTabs { padding: 0 12px 10px; }
+  .seg { display: flex; gap: 2px; padding: 2px; border-radius: 9px; background: var(--raised); min-width: 0; }
+  .seg button { flex: 1 1 0; min-width: 0; height: 26px; border: 0; border-radius: 7px; background: transparent; color: var(--muted); padding: 0 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .seg button:hover { color: var(--text); }
+  .seg button[aria-pressed="true"] { background: var(--hover); color: var(--text); box-shadow: 0 1px 2px rgba(0, 0, 0, .25); }
+  html[data-theme="light"] .seg button[aria-pressed="true"] { background: #fff; box-shadow: 0 1px 2px rgba(0, 0, 0, .12), 0 0 0 1px var(--line); }
+  .seg.sm button { height: 24px; font-size: 12px; padding: 0 7px; }
+  .scroll { flex: 1 1 auto; min-height: 0; overflow: auto; overscroll-behavior: contain; padding: 2px 12px 18px; }
+  .scroll::-webkit-scrollbar { width: 8px; } .scroll::-webkit-scrollbar-thumb { background: var(--line); border-radius: 8px; }
+  .adds { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 0 12px 10px; }
+  .add { height: 32px; border: 0; border-radius: 8px; background: var(--raised); display: flex; align-items: center; gap: 7px; padding: 0 10px; color: var(--text); white-space: nowrap; }
+  .add:hover { background: var(--hover); }
+  .add .dotT { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+
+  /* the sequence */
+  .rows { position: relative; display: grid; gap: 6px; }
+  .row { position: relative; display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 4px; padding: 8px 8px 8px 2px; border-radius: 10px; background: var(--raised); box-shadow: inset 0 0 0 1px transparent; transition: transform .2s cubic-bezier(.2, .8, .2, 1), box-shadow .12s, background .12s; }
+  .row:hover { background: var(--hover); }
+  .row.sel { box-shadow: inset 0 0 0 1.5px var(--accent); }
+  .row.drag { transition: none; z-index: 5; background: var(--hover); box-shadow: 0 12px 30px var(--shadow), inset 0 0 0 1.5px var(--accent); }
+  .grip { touch-action: none; cursor: grab; width: 20px; align-self: stretch; display: grid; place-items: center; color: var(--faint); border: 0; background: none; padding: 0; border-radius: 6px; }
+  .grip:hover { color: var(--label); } .row.drag .grip { cursor: grabbing; }
+  .rowMain { min-width: 0; cursor: pointer; outline: none; border-radius: 6px; }
+  .rowMain:focus-visible { box-shadow: 0 0 0 1.5px var(--accent); }
+  .rowTop { display: flex; align-items: center; gap: 6px; min-width: 0; }
+  .num { font: 10.5px/1 var(--mono); color: var(--faint); width: 14px; text-align: right; flex: none; }
+  .tag { font-size: 10px; font-weight: 650; letter-spacing: .05em; text-transform: uppercase; padding: 3px 6px; border-radius: 5px; white-space: nowrap; flex: none; }
+  .tag.user { background: var(--tUser); color: var(--tUserFg); } .tag.eva { background: var(--tEva); color: var(--tEvaFg); }
+  .tag.specialist { background: var(--tSpec); color: var(--tSpecFg); } .tag.widget { background: var(--tWid); color: var(--tWidFg); }
+  .dotT.user { background: var(--tUserFg); } .dotT.eva { background: var(--tEvaFg); } .dotT.specialist { background: var(--tSpecFg); } .dotT.widget { background: var(--tWidFg); }
+  .sub { color: var(--muted); font-size: 11.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .live { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex: none; margin-left: auto; box-shadow: 0 0 0 3px var(--accentSoft); }
+  .prev { margin: 4px 0 0 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text); }
+  .rowFoot { display: flex; align-items: center; gap: 2px; margin: 4px 0 0 20px; }
+  .meta { font: 10.5px/1.2 var(--mono); color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; flex: 1; font-variant-numeric: tabular-nums; }
+  .rowAct { display: flex; gap: 0; opacity: .6; transition: opacity .12s; }
+  .row:hover .rowAct, .row.sel .rowAct, .row:focus-within .rowAct { opacity: 1; }
+  .none { padding: 18px 12px; border-radius: 12px; border: 1px dashed var(--lineS); color: var(--muted); text-align: center; line-height: 1.5; }
+
+  /* the widget library */
+  .srch { position: relative; margin: 0 0 8px; }
+  .srch .ic { position: absolute; left: 9px; top: 7px; color: var(--muted); }
+  .srch input { width: 100%; height: 30px; padding: 0 9px 0 30px; border: 0; border-radius: 8px; background: var(--raised); box-shadow: inset 0 0 0 1px var(--line); outline: none; }
+  .srch input:focus { box-shadow: inset 0 0 0 1.5px var(--accent); }
+  .chips { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 10px; }
+  .chip { height: 26px; padding: 0 10px; border: 0; border-radius: 99px; background: var(--raised); color: var(--muted); font-size: 12px; }
+  .chip[aria-pressed="true"] { background: var(--primary); color: var(--primaryInk); }
+  .wh { margin: 12px 2px 6px; font-size: 10.5px; font-weight: 650; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
+  .wgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .wcard { border: 0; padding: 0; border-radius: 10px; background: var(--raised); text-align: left; overflow: hidden; display: flex; flex-direction: column; box-shadow: inset 0 0 0 1px transparent; }
+  .wcard:hover { box-shadow: inset 0 0 0 1.5px var(--accent); }
+  .wth { height: 112px; display: grid; place-items: center; background: var(--stage); overflow: hidden; padding: 8px; }
+  .wth img { display: block; max-width: 100%; max-height: 96px; object-fit: contain; border-radius: 4px; }
+  .wth .ph { width: 70%; height: 46px; border-radius: 8px; background: var(--hover); animation: ph 1.2s ease-in-out infinite alternate; }
+  @keyframes ph { to { opacity: .45; } }
+  .wlbl { padding: 7px 9px 8px; font-size: 12px; display: flex; align-items: center; gap: 6px; }
+  .wlbl em { font-style: normal; color: var(--accent); font-size: 10.5px; margin-left: auto; white-space: nowrap; opacity: 0; transition: opacity .12s; } .wcard:hover .wlbl em, .wcard:focus-visible .wlbl em { opacity: 1; }
+
+  /* saved compositions and templates */
+  .svRow { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 6px; padding: 8px 6px 8px 10px; border-radius: 10px; background: var(--raised); margin-bottom: 6px; box-shadow: inset 0 0 0 1px transparent; }
+  .svRow.cur { box-shadow: inset 0 0 0 1.5px var(--accent); }
+  .svRow .nmB { min-width: 0; border: 0; background: none; padding: 0; text-align: left; }
+  .svRow b { display: block; font-weight: 550; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .svRow em { display: block; font-style: normal; color: var(--muted); font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .svRow input { width: 100%; height: 26px; padding: 0 6px; border: 0; border-radius: 6px; background: var(--panel); box-shadow: inset 0 0 0 1.5px var(--accent); outline: none; }
+  .svAct { display: flex; }
+  .where { display: inline-flex; align-items: center; gap: 5px; margin: 0 2px 10px; color: var(--muted); font-size: 11.5px; }
+  .where i { width: 7px; height: 7px; border-radius: 50%; background: var(--faint); } .where.db i { background: var(--ok); }
+  .tpl { display: grid; gap: 6px; }
+  .tplB { border: 0; padding: 9px 10px; border-radius: 10px; background: var(--raised); text-align: left; display: grid; gap: 2px; }
+  .tplB:hover { background: var(--hover); }
+  .tplB b { font-weight: 550; } .tplB span { color: var(--muted); font-size: 11.5px; }
+  .tplB .flow { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 4px; }
+  .warnBar { margin: 0 0 10px; padding: 9px 10px; border-radius: 10px; background: rgba(240, 180, 90, .12); color: var(--text); font-size: 12px; display: grid; gap: 8px; }
+  .warnBar div { display: flex; gap: 6px; }
+
+  /* the canvas */
+  .centre { grid-row: 2; grid-column: 2; position: relative; min-width: 0; min-height: 0; display: grid; place-items: center; background: var(--stage);
+    background-image: radial-gradient(circle at 1px 1px, var(--dot) 1px, transparent 1.3px); background-size: 16px 16px; overflow: hidden; }
+  .cv { position: relative; box-shadow: 0 0 0 1px var(--line), 0 20px 50px var(--shadow); background: #000; margin-bottom: 18px; }
+  .cv iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; pointer-events: none; }
+  .cvHit { position: absolute; inset: 0; cursor: pointer; }
+  .res { position: absolute; left: 0; right: 0; bottom: 10px; display: flex; justify-content: center; gap: 10px; font: 11px/1 var(--mono); color: var(--muted); pointer-events: none; font-variant-numeric: tabular-nums; }
+  .res b { color: var(--label); font-weight: 500; }
+  .stErr { position: absolute; inset: auto 16px 40px; padding: 10px 12px; border-radius: 10px; background: var(--veil); color: var(--warn); text-align: center; }
+  .empty { position: absolute; inset: 0; display: grid; place-items: center; padding: 24px; background: var(--veil); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); z-index: 4; }
+  .emptyIn { width: min(560px, 100%); padding: 22px; border-radius: 16px; background: var(--panel); box-shadow: 0 0 0 1px var(--line), 0 24px 60px var(--shadow); display: grid; gap: 14px; }
+  .emptyIn h2 { margin: 0; font-size: 18px; font-weight: 600; }
+  .emptyIn p { margin: 0; color: var(--muted); line-height: 1.5; }
+  .emptyIn .tpl { grid-template-columns: 1fr 1fr; }
+  .emptyIn .tplB { background: var(--raised); }
+
+  /* playback */
+  .tp { grid-row: 3; grid-column: 2; display: flex; align-items: center; gap: 6px; padding: 9px 14px; border-top: 1px solid var(--line); background: var(--panel); min-width: 0; }
+  .tp .play { width: 34px; height: 34px; border-radius: 50%; background: var(--primary); color: var(--primaryInk); }
+  .tp .play:hover:not(:disabled) { background: var(--primary); color: var(--primaryInk); filter: brightness(.92); }
+  .tp .play .ic { fill: currentColor; stroke: none; width: 15px; height: 15px; }
+  .scrub { position: relative; flex: 1 1 auto; min-width: 80px; height: 30px; margin: 0 6px; }
+  .scrub input { position: absolute; left: 0; right: 0; top: 12px; width: 100%; margin: 0; height: 18px; background: transparent; -webkit-appearance: none; appearance: none; cursor: pointer; }
+  .scrub input::-webkit-slider-runnable-track { height: 4px; border-radius: 2px; background: linear-gradient(var(--accent), var(--accent)) 0 / var(--p, 0%) 100% no-repeat, var(--line); }
+  .scrub input::-moz-range-track { height: 4px; border-radius: 2px; background: var(--line); }
+  .scrub input::-moz-range-progress { height: 4px; border-radius: 2px; background: var(--accent); }
+  .scrub input::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; margin-top: -5px; border-radius: 50%; background: var(--text); box-shadow: 0 1px 4px var(--shadow); }
+  .scrub input::-moz-range-thumb { width: 14px; height: 14px; border: 0; border-radius: 50%; background: var(--text); }
+  .marks { position: absolute; left: 7px; right: 7px; top: 0; height: 10px; }
+  .mk { position: absolute; top: 0; width: 8px; height: 8px; margin-left: -4px; border: 0; padding: 0; border-radius: 2px; transform: rotate(45deg); opacity: .85; }
+  .mk.user { background: var(--tUserFg); } .mk.eva { background: var(--tEvaFg); } .mk.specialist { background: var(--tSpecFg); } .mk.widget { background: var(--tWidFg); }
+  .mk.sel { outline: 1.5px solid var(--text); outline-offset: 1px; }
+  .time { font: 11.5px/1 var(--mono); color: var(--label); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .time b { color: var(--text); font-weight: 500; }
+
+  /* settings */
+  .fs { padding: 2px 0 12px; border-bottom: 1px solid var(--line); margin-bottom: 10px; }
+  .fs:last-child { border-bottom: 0; }
+  .fs h3 { margin: 6px 0 9px; font-size: 10.5px; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); font-weight: 650; display: flex; align-items: center; gap: 8px; }
+  .fs h3 .tag { letter-spacing: .05em; }
+  .f { display: grid; gap: 5px; margin-bottom: 10px; min-width: 0; }
+  .f > .lb { color: var(--label); font-size: 11.5px; display: flex; justify-content: space-between; gap: 8px; }
+  .f > .lb em { font-style: normal; color: var(--muted); }
+  .hint { color: var(--muted); font-size: 11px; line-height: 1.4; font-style: normal; margin: 0; }
+  .in, .ta, .slc { width: 100%; min-width: 0; height: 30px; padding: 0 9px; border: 0; border-radius: 7px; background: var(--raised); box-shadow: inset 0 0 0 1px var(--line); outline: none; }
+  .ta { height: auto; min-height: 58px; padding: 7px 30px 7px 9px; resize: none; line-height: 1.45; display: block; }
+  .in:focus, .ta:focus, .slc:focus { box-shadow: inset 0 0 0 1.5px var(--accent); }
+  .slc { padding-right: 6px; }
+  .f2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .rng { display: grid; grid-template-columns: minmax(0, 1fr) 46px; gap: 8px; align-items: center; }
+  .rng input { width: 100%; accent-color: var(--accent); }
+  .rng output { font: 11px var(--mono); color: var(--label); text-align: right; font-variant-numeric: tabular-nums; }
+  .txw { position: relative; }
+  .emoB { position: absolute; right: 4px; top: 4px; width: 24px; height: 24px; border: 0; border-radius: 6px; background: transparent; color: var(--muted); font-size: 14px; line-height: 1; }
+  .emoB:hover { background: var(--hover); color: var(--text); }
+  .emo { display: grid; grid-template-columns: repeat(8, 1fr); gap: 2px; margin-top: 6px; padding: 6px; border-radius: 8px; background: var(--raised); box-shadow: inset 0 0 0 1px var(--line); }
+  .emo button { height: 28px; border: 0; border-radius: 6px; background: transparent; font-size: 16px; line-height: 1; }
+  .emo button:hover { background: var(--hover); }
+  .tog { display: flex; align-items: center; gap: 9px; width: 100%; min-height: 28px; padding: 0; border: 0; background: transparent; text-align: left; color: var(--text); }
+  .tog i { position: relative; width: 30px; height: 18px; border-radius: 99px; background: var(--lineS); flex: none; transition: background .15s; }
+  .tog i::after { content: ""; position: absolute; left: 2px; top: 2px; width: 14px; height: 14px; border-radius: 50%; background: #fff; transition: transform .15s; box-shadow: 0 1px 2px rgba(0, 0, 0, .3); }
+  .tog[aria-checked="true"] i { background: var(--accent); } .tog[aria-checked="true"] i::after { transform: translateX(12px); }
+  .tog span { flex: 1; }
+  .sw { display: flex; flex-wrap: wrap; gap: 7px; align-items: center; }
+  .sw button { width: 24px; height: 24px; padding: 0; border: 0; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(128, 128, 128, .45); }
+  .sw button[aria-pressed="true"] { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .hexRow { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 6px; margin-top: 8px; }
+  .hexRow input[type="color"] { width: 30px; height: 30px; padding: 0; border: 0; border-radius: 7px; background: none; cursor: pointer; }
+  .hexRow input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; } .hexRow input[type="color"]::-webkit-color-swatch { border: 0; border-radius: 7px; box-shadow: inset 0 0 0 1px var(--line); }
+  .bgPrev { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 10px; align-items: center; margin-bottom: 10px; }
+  .bgPrev .th { width: 64px; height: 48px; border-radius: 8px; background: var(--raised) center / cover no-repeat; box-shadow: inset 0 0 0 1px var(--line); display: grid; place-items: center; color: var(--muted); font-size: 10.5px; text-align: center; }
+  .bgPrev .acts { display: flex; flex-wrap: wrap; gap: 6px; }
+  .upl { position: relative; overflow: hidden; }
+  .upl input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+  .spk { position: relative; }
+  .spBtn, .spList button { width: 100%; display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; gap: 9px; align-items: center; padding: 6px 8px; border: 0; border-radius: 8px; background: var(--raised); text-align: left; box-shadow: inset 0 0 0 1px var(--line); }
+  .spList { position: absolute; left: 0; right: 0; top: calc(100% + 4px); z-index: 20; max-height: 300px; overflow: auto; padding: 4px; border-radius: 10px; background: var(--pop); box-shadow: 0 0 0 1px var(--line), 0 16px 40px var(--shadow); display: grid; gap: 2px; }
+  .spList button { grid-template-columns: 30px minmax(0, 1fr); background: transparent; box-shadow: none; }
+  .spList button:hover, .spList button[aria-selected="true"] { background: var(--hover); }
+  .av { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; display: grid; place-items: center; background: var(--hover); color: var(--label); font-size: 11px; font-weight: 600; flex: none; }
+  .spT { min-width: 0; } .spT b { display: block; font-weight: 550; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .spT em { display: block; font-style: normal; color: var(--muted); font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .itemHd { display: flex; align-items: center; gap: 8px; margin: 2px 0 12px; }
+  .itemHd .sp { flex: 1; }
+  .wPrev { display: grid; place-items: center; height: 120px; margin-bottom: 12px; border-radius: 10px; background: var(--stage); overflow: hidden; padding: 8px; }
+  .wPrev img { max-width: 100%; max-height: 104px; }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 10px; }
+  .stats div { padding: 7px 8px; border-radius: 8px; background: var(--raised); }
+  .stats b { display: block; font: 12px var(--mono); font-variant-numeric: tabular-nums; } .stats span { color: var(--muted); font-size: 10.5px; }
+  .noSel { padding: 22px 6px; color: var(--muted); text-align: center; line-height: 1.5; display: grid; gap: 12px; justify-items: center; }
+
+  /* the code dialog, toasts */
+  .dlgBg { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; padding: 24px; background: rgba(0, 0, 0, .5); }
+  .dlg { width: min(860px, 100%); height: min(720px, 100%); display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; border-radius: 14px; background: var(--panel); box-shadow: 0 0 0 1px var(--line), 0 30px 80px rgba(0, 0, 0, .5); overflow: hidden; }
+  .dlgHd { display: flex; align-items: center; gap: 10px; padding: 12px 12px 8px 18px; }
+  .dlgHd h2 { margin: 0; font-size: 14px; font-weight: 600; flex: 1; }
+  .dlgTabs { padding: 0 18px 10px; display: flex; gap: 10px; align-items: center; }
+  .dlgTabs .seg { width: 380px; }
+  .code { margin: 0 18px; min-height: 0; overflow: auto; padding: 12px 14px; border-radius: 10px; background: var(--ground); box-shadow: inset 0 0 0 1px var(--line); font: 11.5px/1.55 var(--mono); white-space: pre; tab-size: 2; color: var(--text); }
+  .imp { margin: 0 18px; display: grid; gap: 10px; grid-template-rows: auto minmax(0, 1fr); min-height: 0; }
+  .imp textarea { width: 100%; height: 100%; min-height: 160px; padding: 12px; border: 0; border-radius: 10px; background: var(--ground); box-shadow: inset 0 0 0 1px var(--line); font: 11.5px/1.5 var(--mono); resize: none; outline: none; }
+  .dlgFt { display: flex; gap: 8px; align-items: center; padding: 12px 18px 16px; }
+  .toasts { position: fixed; left: 50%; bottom: 78px; transform: translateX(-50%); z-index: 60; display: grid; gap: 6px; justify-items: center; pointer-events: none; }
+  .toast { padding: 9px 14px; border-radius: 10px; background: var(--primary); color: var(--primaryInk); font-size: 12.5px; box-shadow: 0 10px 30px var(--shadow); max-width: min(520px, 90vw); text-align: center; animation: tIn .2s cubic-bezier(.2, .8, .2, 1); }
+  .toast.warn { background: var(--warn); color: #1b1c1e; }
+  @keyframes tIn { from { opacity: 0; transform: translateY(6px); } }
+
+  @media (max-width: 1180px) { .cvb { grid-template-columns: 268px minmax(0, 1fr) 288px; } .nm { width: 170px; } .brand b { display: none; } }
+  @media (max-width: 860px) {
+    body { overflow: auto; }
+    .cvb { height: auto; min-height: 100%; grid-template-columns: 1fr; grid-template-rows: auto 56vh 54px auto auto; }
+    .left, .right { grid-column: 1; grid-row: auto; border: 0; border-top: 1px solid var(--line); max-height: 70vh; }
+    .centre { grid-row: 2; grid-column: 1; } .tp { grid-row: 3; grid-column: 1; }
+    .tb { flex-wrap: wrap; } .nm { width: 140px; }
+  }
+</style>
+</head>
+<body>
+<div id="app"><div class="boot" id="boot">Loading the Chat video builder…</div></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/htm@3.1.1/dist/htm.umd.js"></script>
+<script>
+/* ================= the Chat video builder (Marketing): Julien's brief, "I write the conversation and choose the components. The tool handles the design and animation."
+   The composition (docs/chat-video.md, v1) is the one model: this page edits it, the Concierge's stage (concierge.html#stage, in the iframe) draws it for the preview and the MP4,
+   and the code export writes it as a React tree and as JSON. Capabilities (the published app's): db for the team's saved compositions, assets for background pictures, downloads
+   for the files; each one null outside the artifact, with this browser's storage and a plain link in its place ================= */
+(function () {
+  'use strict';
+  var bootEl = document.getElementById('boot');
+  window.ChatVideo = window.ChatVideo || {};
+  if (!window.React || !window.ReactDOM || !window.htm) { if (bootEl) { bootEl.textContent = 'The builder could not load React from cdnjs. Check the connection, then reload the page.'; bootEl.className = 'boot err'; } return; }
+  var R = React, useState = R.useState, useEffect = R.useEffect, useRef = R.useRef, useMemo = R.useMemo, useLayoutEffect = R.useLayoutEffect, useSyncExternalStore = R.useSyncExternalStore;
+  var html = htm.bind(R.createElement);
+  var STAGE_SRC = 'concierge.html#stage';
+
+  /* ---------- small things ---------- */
+  var clone = function (o) { return o == null ? o : JSON.parse(JSON.stringify(o)); };
+  var rid = function () { return 'i' + Math.random().toString(36).slice(2, 8); };
+  var clamp = function (v, a, b) { return v < a ? a : v > b ? b : v; };
+  var fmt = function (ms) { ms = Math.max(0, ms || 0); var s = ms / 1000, m = Math.floor(s / 60); return m + ':' + (s - m * 60).toFixed(1).padStart(4, '0'); };
+  var sec = function (ms) { return (Math.round((ms || 0) / 100) / 10).toFixed(1) + ' s'; };
+  var ls = {
+    get: function (k, d) { try { var v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+    set: function (k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } }
+  };
+  var slug = function (s) { return String(s || 'chat-video').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'chat-video'; };
+  var ago = function (t) { if (!t) return ''; var s = (Date.now() - t) / 1000; return s < 50 ? 'just now' : s < 3600 ? Math.round(s / 60) + ' min ago' : s < 86400 ? Math.round(s / 3600) + ' h ago' : new Date(t).toLocaleDateString('en-AU', { day: 'numeric', month: 'short' }); };
+  var TYPE = { user: 'Question', eva: 'EVA', specialist: 'Specialist', widget: 'Widget' };
+  var DEL = { user: 400, eva: 350, specialist: 450, widget: 300 };   /* the stage's motion defaults, for the "Auto" hints */
+
+  /* ---------- the capabilities: the published app's window.claude, from this frame or the app page that frames it (same origin); null anywhere else ---------- */
+  var claudeHost = function () {
+    var w = window;
+    for (var i = 0; i < 4 && w; i++) {
+      try { if (w.claude && typeof w.claude.use === 'function') return w.claude; } catch (e) { return null; }
+      try { if (w.parent === w) break; w = w.parent; } catch (e) { break; }
+    }
+    return null;
+  };
+  var CAPS = {};
+  var cap = function (name) {
+    if (CAPS[name]) return CAPS[name];
+    CAPS[name] = new Promise(function (res) {
+      var c = claudeHost(); if (!c) return res(null);
+      var done = false, t = setTimeout(function () { if (!done) res(null); }, 11000);
+      try { c.use(name).then(function (v) { done = true; clearTimeout(t); res(v || null); }, function () { done = true; clearTimeout(t); res(null); }); } catch (e) { res(null); }
+    });
+    return CAPS[name];
+  };
+  var GONE = { unavailable: 1, not_granted: 1, capability_disabled: 1, capability_removed: 1 };
+  /* a file to the viewer: the downloads capability in the app (the viewer confirms), a plain link elsewhere. Resolves 'saved' | 'local' | 'declined' */
+  var saveFile = function (filename, data, mime) {
+    return cap('downloads').then(function (dl) {
+      var local = function () {
+        var blob = data instanceof Blob ? data : new Blob([data], { type: mime || 'application/octet-stream' });
+        var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = filename; a.style.display = 'none'; document.body.appendChild(a); a.click();
+        setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 4000); return 'local';
+      };
+      if (!dl) return local();
+      return dl.save({ filename: filename, data: data }).then(function () { return 'saved'; }, function (e) { var c = e && e.code; if (c === 'declined') return 'declined'; if (GONE[c]) return local(); throw new Error((e && e.message) || 'The file could not be saved'); });
+    });
+  };
+  var copyText = function (t) {
+    var old = function () { try { var ta = document.createElement('textarea'); ta.value = t; ta.style.cssText = 'position:fixed;left:-9999px;top:0'; document.body.appendChild(ta); ta.select(); var ok = document.execCommand('copy'); ta.remove(); return ok; } catch (e) { return false; } };
+    try { if (navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(t).then(function () { return true; }, old); } catch (e) {}
+    return Promise.resolve(old());
+  };
+  /* pictures: read, scaled down when big (a data URL kept in this browser), or put in the artifact's asset store (a URL every viewer can load) */
+  var readURL = function (f) { return new Promise(function (res, rej) { var r = new FileReader(); r.onload = function () { res(r.result); }; r.onerror = rej; r.readAsDataURL(f); }); };
+  var shrink = function (file, max, type, q) {
+    return readURL(file).then(function (src) { return new Promise(function (res) {
+      var im = new Image();
+      im.onload = function () { var k = Math.min(1, max / Math.max(im.naturalWidth, im.naturalHeight)); if (k >= 1 && file.size < 700000) return res(src);
+        var c = document.createElement('canvas'); c.width = Math.max(1, Math.round(im.naturalWidth * k)); c.height = Math.max(1, Math.round(im.naturalHeight * k)); c.getContext('2d').drawImage(im, 0, 0, c.width, c.height); res(c.toDataURL(type || 'image/jpeg', q || .86)); };
+      im.onerror = function () { res(src); }; im.src = src; }); });
+  };
+  var putImage = function (file) {
+    return cap('assets').then(function (as) {
+      if (as && file.size < 20 * 1048576) return as.upload(file).then(function (r) { return { src: '/_blob/' + r.id, asset: r.id, shared: true }; }, function () { return null; });
+      return null;
+    }).then(function (r) { return r || shrink(file, 1920, 'image/jpeg', .86).then(function (src) { return { src: src, shared: false }; }); });
+  };
+
+  /* ---------- the saved compositions: the team's (db, collection chatVideos, one document each) and this browser's (localStorage) ---------- */
+  var Store = (function () {
+    var KEY = 'everlab:chatVideos', COL = 'chatVideos', db = null, shared = [], subs = [], ver = 0;
+    var local = function () { var a = ls.get(KEY, []); return Array.isArray(a) ? a.filter(function (r) { return r && r.id && r.comp; }) : []; };
+    var emit = function () { ver++; subs.slice().forEach(function (f) { f(); }); };
+    var list = function () {
+      var all = shared.concat(local().map(function (r) { return Object.assign({}, r, { shared: false }); })), by = {};
+      all.forEach(function (r) { if (!by[r.id] || (r.updated || 0) > (by[r.id].updated || 0)) by[r.id] = r; });
+      return Object.keys(by).map(function (k) { return by[k]; }).sort(function (a, b) { return (b.updated || 0) - (a.updated || 0); });
+    };
+    cap('db').then(function (d) {
+      if (!d) return; db = d;
+      try { d.collection(COL).onSnapshot(function (s) { shared = s.docs.filter(function (x) { return x.exists; }).map(function (x) { var v = x.data() || {}; return { id: x.id, name: v.name, updated: v.updated, comp: v.comp, shared: true }; }).filter(function (r) { return r.comp; }); emit(); }, function () { db = null; emit(); }); }
+      catch (e) { db = null; }
+      emit();
+    });
+    return {
+      subscribe: function (f) { subs.push(f); return function () { subs = subs.filter(function (x) { return x !== f; }); }; },
+      version: function () { return ver; },
+      list: list,
+      mode: function () { return db ? 'db' : 'local'; },
+      save: function (rec) {
+        var r = { id: rec.id || ('cv' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6)), name: rec.name || 'Untitled video', updated: Date.now(), comp: clone(rec.comp) };
+        var size = JSON.stringify(r).length, toLocal = function (why) {
+          var L = local().filter(function (x) { return x.id !== r.id; }); L.push(r);
+          if (!ls.set(KEY, L)) return Promise.reject(new Error('This browser’s storage is full: the background picture is too large to keep here.'));
+          emit(); return Object.assign({}, r, { shared: false, why: why });
+        };
+        if (db && rec.shared !== false && size < 240000) {
+          return db.collection(COL).doc(r.id).set({ v: 1, name: r.name, updated: r.updated, comp: r.comp }).then(function () {
+            var L = local(); if (L.some(function (x) { return x.id === r.id; })) ls.set(KEY, L.filter(function (x) { return x.id !== r.id; }));
+            emit(); return Object.assign({}, r, { shared: true });
+          }, function (e) { if (e && e.code === 'quota_exceeded') return Promise.reject(new Error('The team’s library is full: delete a composition first.')); return toLocal('err'); });
+        }
+        return Promise.resolve().then(function () { return toLocal(db ? (size >= 240000 ? 'big' : 'local') : 'local'); });
+      },
+      remove: function (rec) {
+        if (rec.shared && db) return db.collection(COL).doc(rec.id).delete();
+        ls.set(KEY, local().filter(function (x) { return x.id !== rec.id; })); emit(); return Promise.resolve();
+      }
+    };
+  })();
+
+  /* ---------- the playhead, outside React's state so 60 frames a second only redraw the playback bar ---------- */
+  var Clock = (function () {
+    var t = 0, pl = false, subs = [];
+    return {
+      set: function (nt, np) { if (nt === t && np === pl) return; t = nt; pl = !!np; subs.slice().forEach(function (f) { f(); }); },
+      t: function () { return t; }, playing: function () { return pl; },
+      subscribe: function (f) { subs.push(f); return function () { subs = subs.filter(function (x) { return x !== f; }); }; }
+    };
+  })();
+  var stageOf = function (f) { try { var C = f && f.contentWindow && f.contentWindow.Concierge; return (C && C.stage) || null; } catch (e) { return null; } };
+
+  /* ---------- widget thumbnails: each widget drawn by the real component, in a second stage (hidden), floating on a clear ground, cropped to what it drew ---------- */
+  var hash = function (s) { var h = 5381; for (var i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0; return (h >>> 0).toString(36); };
+  var Thumbs = (function () {
+    var f = null, ready = null, cache = {}, queue = [], busy = false, subs = [], ver = 0;
+    var boot = function () {
+      return ready || (ready = new Promise(function (res) {
+        f = document.createElement('iframe'); f.src = STAGE_SRC; f.title = 'Widget thumbnails'; f.tabIndex = -1; f.setAttribute('aria-hidden', 'true');
+        f.style.cssText = 'position:fixed;left:-4000px;top:0;width:640px;height:900px;border:0;visibility:hidden;pointer-events:none';
+        f.onload = function () { res(stageOf(f)); }; document.body.appendChild(f);
+      }));
+    };
+    var crop = function (cv) {
+      var w = cv.width, h = cv.height, d = cv.getContext('2d').getImageData(0, 0, w, h).data, x0 = w, y0 = h, x1 = -1, y1 = -1;
+      for (var y = 0; y < h; y++) for (var x = 0; x < w; x++) if (d[(y * w + x) * 4 + 3] > 8) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+      if (x1 < 0) return cv.toDataURL('image/png');
+      var o = document.createElement('canvas'); o.width = x1 - x0 + 1; o.height = y1 - y0 + 1; o.getContext('2d').drawImage(cv, x0, y0, o.width, o.height, 0, 0, o.width, o.height); return o.toDataURL('image/png');
+    };
+    var pump = function () {
+      if (busy || !queue.length) return; busy = true;
+      var job = queue.shift();
+      boot().then(function (S) {
+        if (!S) throw new Error('no stage');
+        return S.load(job.comp).then(function () { return S.frame(S.duration(), { scale: .5 }); }).then(function (cv) { cache[job.k] = crop(cv); });
+      }).catch(function () { cache[job.k] = 'x'; }).then(function () { ver++; subs.slice().forEach(function (fn) { fn(); }); busy = false; pump(); });
+    };
+    return {
+      want: function (key, theme, data) {
+        var k = theme + '|' + key + '|' + hash(JSON.stringify(data || {}));
+        if (cache[k]) return cache[k] === 'x' ? null : cache[k];
+        if (!queue.some(function (j) { return j.k === k; })) {
+          queue.push({ k: k, comp: { v: 1, name: 'thumb', format: { ratio: 'custom', w: 600, h: 1400 }, background: { kind: 'color', color: 'transparent' }, device: false, theme: theme, padding: 24, lead: 0, tail: 0,
+            sequence: [{ id: 'w', type: 'widget', widget: key, data: data || {}, attach: false, delay: 0, hold: 0 }] } });
+          setTimeout(pump, 0);
+        }
+        return null;
+      },
+      subscribe: function (fn) { subs.push(fn); return function () { subs = subs.filter(function (x) { return x !== fn; }); }; },
+      version: function () { return ver; }
+    };
+  })();
+
+  /* ---------- starter templates (section 19): they only preconfigure the sequence; everything stays editable ---------- */
+  var blank = function () { return { v: 1, name: 'Untitled video', format: { ratio: '9:16', w: 1080, h: 1920 }, background: { kind: 'color', color: '#0d0d0c' }, device: true, theme: 'dark', sequence: [] }; };
+  var TEMPLATES = [
+    { key: 'explainer', name: 'EVA explainer', line: 'Question, EVA, a widget, EVA again. In the phone.', flow: ['user', 'eva', 'widget', 'eva'], make: function (P) { return {
+      v: 1, name: 'EVA explainer', format: { ratio: '9:16', w: 1080, h: 1920 }, background: { kind: 'color', color: '#0d0d0c' }, device: true, theme: 'dark', sequence: [
+        { id: rid(), type: 'user', text: 'What does ApoB actually measure?', typing: 'text' },
+        { id: rid(), type: 'eva', text: 'ApoB counts the particles that carry cholesterol into your artery walls. Each one carries exactly one ApoB, so it’s a more direct read on heart risk than LDL alone.', think: 1600, step: 'Looking at your records' },
+        { id: rid(), type: 'widget', widget: 'trend', data: P('trend') },
+        { id: rid(), type: 'eva', text: 'Yours has risen from 0.94 to 1.12 g/L since March. Worth acting on now, while it’s early.', think: 900, step: 'Comparing your results' }] }; } },
+    { key: 'specialist', name: 'Specialist answer', line: 'Question, EVA, then Dr Steven Lu. In the phone, light.', flow: ['user', 'eva', 'specialist'], make: function () { return {
+      v: 1, name: 'Specialist answer', format: { ratio: '9:16', w: 1080, h: 1920 }, background: { kind: 'color', color: '#f4f2ed' }, device: true, theme: 'light', sequence: [
+        { id: rid(), type: 'user', text: 'Should I be worried about my iron levels?', typing: 'dots' },
+        { id: rid(), type: 'eva', text: 'Your ferritin is 18 µg/L, below the optimal range. I’ve asked Dr Lu to take a look.', think: 1400, step: 'Looking at your records' },
+        { id: rid(), type: 'specialist', specialist: 'steven', text: 'Low ferritin is common and very fixable. Let’s start a gentle iron protocol and recheck in eight weeks.', typing: true }] }; } },
+    { key: 'insight', name: 'Health insight', line: 'Question, EVA, an insight card. Floating, square.', flow: ['user', 'eva', 'widget'], make: function (P) { return {
+      v: 1, name: 'Health insight', format: { ratio: '1:1', w: 1080, h: 1080 }, background: { kind: 'color', color: '#2e1f1a' }, device: false, theme: 'dark', sequence: [
+        { id: rid(), type: 'user', text: 'Anything new in my latest results?', typing: 'dots' },
+        { id: rid(), type: 'eva', text: 'One thing stands out: your ApoB has crept up across three tests.', think: 1400, step: 'Reading your October panel' },
+        { id: rid(), type: 'widget', widget: 'insight', data: P('insight') }] }; } },
+    { key: 'demo', name: 'Product demo', line: 'Question, EVA, a recommendation and a CTA. Phone on a photo, 16:9.', flow: ['user', 'eva', 'widget', 'widget'], make: function (P) { return {
+      v: 1, name: 'Product demo', format: { ratio: '16:9', w: 1920, h: 1080 }, background: { kind: 'image', src: 'clinic', fit: 'fill', x: 50, y: 50, scale: 1, blur: 18, overlay: .45, overlayColor: '#000000' }, device: true, theme: 'dark', sequence: [
+        { id: rid(), type: 'user', text: 'What should I do about my heart health?', typing: 'text' },
+        { id: rid(), type: 'eva', text: 'Based on your results, an advanced cardiovascular panel is the clearest next step.', think: 1600, step: 'Looking at your records' },
+        { id: rid(), type: 'widget', widget: 'recommendation', data: P('recommendation') },
+        { id: rid(), type: 'widget', widget: 'cta', data: P('cta') }] }; } },
+    { key: 'social', name: 'Social asset', line: 'Floating messages on sand, no phone. Square.', flow: ['user', 'eva', 'widget', 'specialist'], make: function (P) { return {
+      v: 1, name: 'Social asset', format: { ratio: '1:1', w: 1080, h: 1080 }, background: { kind: 'color', color: '#efe7d8' }, device: false, theme: 'light', sequence: [
+        { id: rid(), type: 'user', text: 'Can you explain my latest blood results?', typing: 'dots' },
+        { id: rid(), type: 'eva', text: 'There are a few markers worth looking at.', think: 1200, step: 'Looking at your records' },
+        { id: rid(), type: 'widget', widget: 'biomarker', data: P('biomarker') },
+        { id: rid(), type: 'specialist', specialist: 'steven', text: 'I’d focus first on your cardiovascular risk profile.', typing: false }] }; } }
+  ];
+  var newItem = function (type, P, extra) {
+    if (type === 'user') return { id: rid(), type: 'user', text: 'Can you explain my latest blood results?', typing: 'dots' };
+    if (type === 'eva') return { id: rid(), type: 'eva', text: 'There are a few markers worth looking at. Your ApoB has risen across your last three tests.', think: 1600, step: 'Looking at your records' };
+    if (type === 'specialist') return { id: rid(), type: 'specialist', specialist: 'steven', text: 'I’d focus first on your cardiovascular risk profile. Let’s talk it through this week.', typing: false };
+    var k = extra || 'biomarker'; return { id: rid(), type: 'widget', widget: k, data: P(k) || { t: k } };
+  };
+
+  /* ---------- the code export (section 17): a self-contained React + TypeScript module. The tree compiles to the composition (compositionOf) and the Everlab stage draws it,
+       so the result looks like the product wherever it is used. Times in ms ---------- */
+  var PASCAL = function (s) { var p = String(s || '').replace(/[^A-Za-z0-9]+(.)?/g, function (m, c) { return c ? c.toUpperCase() : ''; }); p = p.charAt(0).toUpperCase() + p.slice(1); return /^[A-Za-z]/.test(p) ? p : 'ChatVideo' + p; };
+  var IDENT = /^[A-Za-z_$][\w$]*$/;
+  var attr = function (k, v) {
+    if (v === undefined || v === null || v === '') return '';
+    if (v === true) return ' ' + k;
+    if (typeof v === 'string') return /["\\\n\r{}<>&]/.test(v) ? ' ' + k + '={' + JSON.stringify(v) + '}' : ' ' + k + '="' + v + '"';
+    if (typeof v === 'number' || typeof v === 'boolean') return ' ' + k + '={' + v + '}';
+    return ' ' + k + '={' + JSON.stringify(v) + '}';
+  };
+  var kid = function (t) { t = String(t == null ? '' : t); return !t || /[{}<>&\n\r]|^\s|\s$|\s{2}/.test(t) ? '{' + JSON.stringify(t) + '}' : t; };
+  var RESERVED = { attach: 1, delay: 1, hold: 1, id: 1, type: 1, data: 1, children: 1, key: 1, ref: 1 };
+  var LIB_TSX = [
+    "import * as React from 'react';",
+    '',
+    '/* ---------- the composition (v1): the builder edits it, the Everlab stage draws it. Times in ms ---------- */',
+    "export type Ratio = '16:9' | '9:16' | '4:3' | '3:4' | '1:1' | 'custom';",
+    'export type Background =',
+    "  | { kind: 'color'; color: string }",
+    "  | { kind: 'image'; src: string; fit?: 'fill' | 'fit' | 'crop'; x?: number; y?: number; scale?: number; blur?: number; overlay?: number; overlayColor?: string; color?: string };",
+    'export interface Timing { id?: string; /** ms after the item before ends (Auto when left out) */ delay?: number; /** ms the item stays before the next one starts */ hold?: number }',
+    "export interface UserMessageProps extends Timing { children?: React.ReactNode; name?: string; /** a picture URL or initials */ avatar?: string; typing?: 'none' | 'dots' | 'text'; typeMs?: number; /** max bubble width, chat px */ width?: number }",
+    "export interface EvaMessageProps extends Timing { children?: React.ReactNode; /** ms of Eva's thinking state */ think?: number; step?: string; reveal?: 'fade' | 'stream'; /** Eva's label over the answer */ avatar?: boolean }",
+    'export interface SpecialistMessageProps extends Timing { children?: React.ReactNode; specialist: Specialist | string; name?: string; role?: string; avatar?: string; when?: string; typing?: boolean; /** ms between the card and the words */ wait?: number }',
+    'export type WidgetData = Record<string, unknown>;',
+    'export type WidgetProps = WidgetData & Timing & { /** false: a message of its own, not part of the answer above */ attach?: boolean };',
+    "export interface Item { id: string; type: 'user' | 'eva' | 'specialist' | 'widget'; [key: string]: unknown }",
+    "export interface Composition { v: 1; name: string; title?: string; format: { ratio: Ratio; w: number; h: number }; background: Background; device: boolean; padding?: number; theme: 'dark' | 'light'; lead?: number; tail?: number; column?: number; zoom?: number; anchor?: 'bottom' | 'top'; sequence: Item[] }",
+    'export interface ChatVideoProps {',
+    "  name?: string; title?: string; aspectRatio?: Ratio; width?: number; height?: number; background?: string | Background; deviceFrame?: boolean; theme?: 'dark' | 'light';",
+    "  padding?: number; lead?: number; tail?: number; column?: number; zoom?: number; anchor?: 'bottom' | 'top';",
+    "  /** where the Everlab stage is served: the Concierge page in stage mode */ stageSrc?: string; autoPlay?: boolean; loop?: boolean; className?: string; style?: React.CSSProperties; children?: React.ReactNode;",
+    '}',
+    '',
+    "const SIZES: Record<string, [number, number]> = { '16:9': [1920, 1080], '9:16': [1080, 1920], '4:3': [1440, 1080], '3:4': [1080, 1440], '1:1': [1080, 1080] };",
+    '',
+    '/* ---------- the sequence: each component is one item. They render nothing themselves: ChatVideo reads them in order ---------- */',
+    'export function UserMessage(_props: UserMessageProps): null { return null; }',
+    'export function EvaMessage(_props: EvaMessageProps): null { return null; }',
+    'export function SpecialistMessage(_props: SpecialistMessageProps): null { return null; }',
+    'export function Widget(_props: WidgetProps & { type: string; data?: WidgetData }): null { return null; }',
+    'type WidgetComponent = ((props: WidgetProps) => null) & { widgetType: string };',
+    'function widget(type: string): WidgetComponent { const W = ((_props: WidgetProps) => null) as WidgetComponent; W.widgetType = type; return W; }',
+    '@@WIDGETS@@',
+    '',
+    "const textOf = (n: React.ReactNode): string => React.Children.toArray(n).map(c => (typeof c === 'string' || typeof c === 'number' ? String(c) : '')).join('');",
+    'const defined = <T extends object>(o: T): T => { const r: Record<string, unknown> = {}; Object.entries(o).forEach(([k, v]) => { if (v !== undefined) r[k] = v; }); return r as T; };',
+    '',
+    '/** The composition a <ChatVideo> tree describes: the same JSON the builder saves and imports. */',
+    'export function compositionOf(props: ChatVideoProps): Composition {',
+    "  const ratio: Ratio = props.aspectRatio || (props.width && props.height ? 'custom' : '9:16');",
+    '  const size = SIZES[ratio] || [props.width || 1080, props.height || 1920];',
+    "  const background: Background = typeof props.background === 'string' ? { kind: 'color', color: props.background } : props.background || { kind: 'color', color: props.theme === 'light' ? '#f4f2ed' : '#0d0d0c' };",
+    '  const sequence: Item[] = [];',
+    '  React.Children.toArray(props.children).forEach((el, i) => {',
+    '    if (!React.isValidElement(el)) return;',
+    '    const p = el.props as Record<string, any>, t = el.type as unknown, id = p.id || \'i\' + (i + 1);',
+    "    if (t === UserMessage) sequence.push(defined({ id, type: 'user', text: textOf(p.children), name: p.name, avatar: p.avatar, typing: p.typing || 'none', typeMs: p.typeMs, width: p.width, delay: p.delay, hold: p.hold }));",
+    "    else if (t === EvaMessage) sequence.push(defined({ id, type: 'eva', text: textOf(p.children), think: p.think ?? 1600, step: p.step, reveal: p.reveal, avatar: p.avatar, delay: p.delay, hold: p.hold }));",
+    "    else if (t === SpecialistMessage) sequence.push(defined({ id, type: 'specialist', specialist: p.specialist, name: p.name, role: p.role, avatar: p.avatar, when: p.when, text: textOf(p.children), typing: !!p.typing, wait: p.wait, delay: p.delay, hold: p.hold }));",
+    '    else if (t === Widget || (t as WidgetComponent).widgetType) {',
+    '      const { type, data, attach, delay, hold, id: _id, children: _c, ...rest } = p;',
+    '      const w: string = t === Widget ? type : (t as WidgetComponent).widgetType;',
+    "      sequence.push(defined({ id, type: 'widget', widget: w, data: { t: w, ...(data || {}), ...rest }, attach, delay, hold }));",
+    '    }',
+    '  });',
+    '  return defined({',
+    "    v: 1 as const, name: props.name || 'Untitled video', title: props.title, format: { ratio, w: props.width || size[0], h: props.height || size[1] }, background,",
+    "    device: props.deviceFrame !== false, padding: props.padding, theme: props.theme === 'light' ? 'light' as const : 'dark' as const,",
+    '    lead: props.lead, tail: props.tail, column: props.column, zoom: props.zoom, anchor: props.anchor, sequence',
+    '  });',
+    '}',
+    '',
+    '/** The video, drawn by the Everlab chat itself: the Concierge page in stage mode, driven by message (it works across origins). */',
+    'export function ChatVideo(props: ChatVideoProps) {',
+    '  const ref = React.useRef<HTMLIFrameElement>(null);',
+    "  const { stageSrc = 'concierge.html#stage', autoPlay = true, loop = true } = props;",
+    '  const comp = compositionOf(props), json = JSON.stringify(comp);',
+    '  React.useEffect(() => {',
+    '    const f = ref.current; if (!f) return;',
+    '    let n = 0;',
+    "    const call = (fn: string, args: unknown[] = []) => f.contentWindow?.postMessage({ everlab: 'stage', id: 'cv' + (++n), fn, args }, '*');",
+    "    const go = () => { call('load', [JSON.parse(json)]); call('loop', [loop]); if (autoPlay) { call('seek', [0]); call('play'); } };",
+    "    f.addEventListener('load', go); go();",
+    "    return () => f.removeEventListener('load', go);",
+    '  }, [json, autoPlay, loop]);',
+    '  return (',
+    '    <iframe ref={ref} src={stageSrc} title={comp.name} className={props.className}',
+    "      style={{ display: 'block', width: '100%', aspectRatio: comp.format.w + ' / ' + comp.format.h, border: 0, ...props.style }} />",
+    '  );',
+    '}'
+  ].join('\n');
+  var toTsx = function (c, cat) {
+    var wl = (cat && cat.widgets) || [], specs = (cat && cat.specialists) || [];
+    var used = []; (c.sequence || []).forEach(function (it) { if (it.type === 'widget' && used.indexOf(it.widget) < 0) used.push(it.widget); });
+    var wOf = function (k) { return wl.filter(function (w) { return w.key === k; })[0]; };
+    var wdecl = used.map(function (k) { var w = wOf(k); return '/** ' + (w ? w.label + ' (' + w.category + ')' + (w.fields.length ? ': ' + w.fields.map(function (f) { return f.key + (f.label && f.label !== f.key ? ' (' + f.label + ')' : ''); }).join(', ') : ': the chat’s own content') : k) + ' */\nexport const ' + PASCAL(k) + 'Widget = widget(' + JSON.stringify(k) + ');'; }).join('\n');
+    var specT = "export type Specialist = " + (specs.length ? specs.map(function (s) { return JSON.stringify(s.key); }).join(' | ') : 'string') + ';   /* ' + specs.map(function (s) { return s.key + ': ' + s.name + ', ' + s.role; }).join('; ') + ' */';
+    var lib = LIB_TSX.replace('@@WIDGETS@@', specT + (wdecl ? '\n' + wdecl : ''));
+    var f = c.format || {}, bg = c.background || {};
+    var top = attr('name', c.name) + attr('title', c.title) + (f.ratio && f.ratio !== 'custom' ? attr('aspectRatio', f.ratio) : attr('width', f.w) + attr('height', f.h)) +
+      (bg.kind === 'color' ? attr('background', bg.color) : attr('background', bg)) + (c.device === false ? ' deviceFrame={false}' : ' deviceFrame') + attr('theme', c.theme || 'dark') +
+      attr('padding', c.padding) + attr('lead', c.lead) + attr('tail', c.tail) + (c.device === false ? attr('column', c.column) + attr('zoom', c.zoom) + attr('anchor', c.anchor) : '');
+    var T = function (it) { return attr('delay', it.delay) + attr('hold', it.hold); };
+    var rows = (c.sequence || []).map(function (it) {
+      if (it.type === 'user') return '<UserMessage' + attr('name', it.name) + attr('avatar', it.avatar) + (it.typing && it.typing !== 'none' ? attr('typing', it.typing) : '') + attr('typeMs', it.typeMs) + attr('width', it.width) + T(it) + '>' + kid(it.text) + '</UserMessage>';
+      if (it.type === 'eva') return '<EvaMessage' + attr('think', it.think == null ? 1600 : it.think) + attr('step', it.step) + (it.reveal === 'stream' ? attr('reveal', 'stream') : '') + (typeof it.avatar === 'boolean' ? ' avatar={' + it.avatar + '}' : '') + T(it) + '>' + kid(it.text) + '</EvaMessage>';
+      if (it.type === 'specialist') return '<SpecialistMessage' + attr('specialist', it.specialist) + attr('name', it.name) + attr('role', it.role) + attr('avatar', it.avatar) + attr('when', it.when) + (it.typing ? ' typing' : '') + attr('wait', it.wait) + T(it) + '>' + kid(it.text) + '</SpecialistMessage>';
+      var d = Object.assign({}, it.data || {}); delete d.t;
+      var keys = Object.keys(d), clash = keys.some(function (k) { return RESERVED[k] || !IDENT.test(k); });
+      var tail = (it.attach === false ? ' attach={false}' : '') + T(it) + ' />';
+      if (clash) return '<Widget' + attr('type', it.widget) + attr('data', d) + tail;
+      return '<' + PASCAL(it.widget) + 'Widget' + keys.map(function (k) { return attr(k, d[k]); }).join('') + tail;
+    });
+    var head = '/**\n * ' + (c.name || 'Untitled video') + ': an Everlab chat video, exported from the Chat video builder (Marketing).\n' +
+      ' * Reuse it in the marketing site, a landing page or a React demo. Times are in ms; leave delay and hold out for the Everlab motion defaults.\n' +
+      ' * The tree compiles to the composition JSON (compositionOf) and the Everlab stage draws it: the Concierge page (concierge.html#stage),\n' +
+      ' * the chat design system’s own renderer, so the video always looks like the product. Point stageSrc at wherever concierge.html is served.\n' +
+      (bg.kind === 'image' && /^\/_blob\//.test(bg.src || '') ? ' * The background picture is in the prototype’s asset store (' + bg.src + '): host it beside your page and change its src.\n' : '') + ' */\n';
+    return head + lib + '\n\n/* ---------- the video ---------- */\nexport default function ' + PASCAL(c.name || 'Chat video') + '() {\n  return (\n    <ChatVideo' + top + '>\n' +
+      rows.map(function (r) { return '      ' + r; }).join('\n') + '\n    </ChatVideo>\n  );\n}\n';
+  };
+
+  /* ---------- icons ---------- */
+  var ICP = {
+    play: '<path d="M8 5.2v13.6L19 12z" fill="currentColor" stroke="none"/>', pause: '<path d="M7 5h3.6v14H7zM13.4 5H17v14h-3.6z" fill="currentColor" stroke="none"/>',
+    restart: '<path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3M4.5 4.5v4.2h4.2"/>', loop: '<path d="M17 3l3 3-3 3M4 11V9.5A3.5 3.5 0 0 1 7.5 6H20M7 21l-3-3 3-3M20 13v1.5a3.5 3.5 0 0 1-3.5 3.5H4"/>',
+    plus: '<path d="M12 5v14M5 12h14"/>', grip: '<path d="M9 6h.01M15 6h.01M9 12h.01M15 12h.01M9 18h.01M15 18h.01" stroke-width="2.8"/>',
+    copy: '<rect x="8" y="8" width="12" height="12" rx="2.2"/><path d="M16 8V6.2A2.2 2.2 0 0 0 13.8 4H6.2A2.2 2.2 0 0 0 4 6.2v7.6A2.2 2.2 0 0 0 6.2 16H8"/>',
+    trash: '<path d="M4.5 7h15M10 11v6M14 11v6M6.5 7l.8 11.2A2 2 0 0 0 9.3 20h5.4a2 2 0 0 0 2-1.8L17.5 7M9.5 7V4.5h5V7"/>',
+    edit: '<path d="M4 20h4L19 9l-4-4L4 16zM13.5 6.5l4 4"/>', chev: '<path d="M6 9l6 6 6-6"/>', up: '<path d="M12 19V5M6 11l6-6 6 6"/>',
+    upload: '<path d="M12 15V4M7.5 8.5L12 4l4.5 4.5M4 15v3.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V15"/>', x: '<path d="M6 6l12 12M18 6L6 18"/>',
+    download: '<path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M4 20h16"/>', code: '<path d="M9 7l-5 5 5 5M15 7l5 5-5 5"/>',
+    film: '<rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M7.5 5v14M16.5 5v14M3 9.7h4.5M3 14.3h4.5M16.5 9.7H21M16.5 14.3H21"/>',
+    sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6L6 6M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4L6 18M18 6l1.4-1.4"/>', moon: '<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>',
+    search: '<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/>', undo: '<path d="M9 14L4 9l5-5M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/>', redo: '<path d="M15 14l5-5-5-5M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/>',
+    save: '<path d="M5.5 4h10.8L20 7.7v10.8A1.5 1.5 0 0 1 18.5 20h-13A1.5 1.5 0 0 1 4 18.5v-13A1.5 1.5 0 0 1 5.5 4zM8 4v4.5h7M8 20v-6h8v6"/>', image: '<rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-8.5 8"/>',
+    file: '<path d="M14 3H6.5A1.5 1.5 0 0 0 5 4.5v15A1.5 1.5 0 0 0 6.5 21h11a1.5 1.5 0 0 0 1.5-1.5V8zM14 3v5h5"/>', check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>'
+  };
+  var Ic = function (p) { return html`<svg className="ic" viewBox="0 0 24 24" aria-hidden="true" dangerouslySetInnerHTML=${{ __html: ICP[p.n] || '' }}></svg>`; };
+
+  /* ---------- form parts ---------- */
+  var Field = function (p) { return html`<div className="f"><div className="lb"><span>${p.label}</span>${p.aside ? html`<em>${p.aside}</em>` : null}</div>${p.children}${p.hint ? html`<p className="hint">${p.hint}</p>` : null}</div>`; };
+  var Seg = function (p) { return html`<div className=${'seg' + (p.sm ? ' sm' : '')} role="group" aria-label=${p.label}>${p.options.map(function (o) { return html`<button type="button" key=${String(o[0])} aria-pressed=${String(p.value === o[0])} disabled=${o[2] || false} title=${o[3] || null} onClick=${function () { p.onChange(o[0]); }}>${o[1]}</button>`; })}</div>`; };
+  var Toggle = function (p) { return html`<button type="button" className="tog" role="switch" aria-checked=${String(!!p.on)} onClick=${function () { p.onChange(!p.on); }}><i></i><span>${p.label}</span></button>`; };
+  var Range = function (p) { return html`<div className="rng"><input type="range" aria-label=${p.label} min=${p.min} max=${p.max} step=${p.step || 1} value=${p.value} disabled=${p.disabled || false} onChange=${function (e) { p.onChange(+e.target.value); }} /><output>${p.fmt ? p.fmt(p.value) : p.value}</output></div>`; };
+  function SecIn(p) {   /* seconds in the field, ms in the model; empty: Auto (the stage's default, shown as the hint) */
+    var show = function (ms) { return ms == null ? '' : String(+(ms / 1000).toFixed(2)); };
+    var st = useState(show(p.ms)), txt = st[0], setTxt = st[1], foc = useRef(false), max = p.max || 60;
+    useEffect(function () { if (!foc.current) setTxt(show(p.ms)); }, [p.ms]);
+    return html`<input className="in" type="number" inputMode="decimal" min="0" max=${max} step="0.1" aria-label=${p.label} placeholder=${'Auto · ' + (p.auto == null ? '–' : (p.auto / 1000).toFixed(1)) + ' s'} value=${txt}
+      onFocus=${function () { foc.current = true; }} onBlur=${function () { foc.current = false; setTxt(show(p.ms)); }}
+      onChange=${function (e) { var v = e.target.value; setTxt(v); if (v === '') p.onChange(undefined); else if (!isNaN(parseFloat(v))) p.onChange(Math.round(clamp(parseFloat(v), 0, max) * 1000)); }} />`;
+  }
+  var EMO = ['😊', '🙂', '👋', '👍', '🙏', '❤️', '💪', '🎉', '✅', '⚠️', '📅', '🩺', '💊', '🧪', '🫀', '🧠', '🏃', '🥗', '😴', '💧', '📈', '📉', '🤔', '✨'];
+  function TextIn(p) {   /* multiline, emoji, grows with its text */
+    var ref = useRef(null), st = useState(false), emo = st[0], setEmo = st[1];
+    useLayoutEffect(function () { var t = ref.current; if (!t) return; t.style.height = 'auto'; t.style.height = Math.min(300, t.scrollHeight + 2) + 'px'; }, [p.value]);
+    var ins = function (e) { var t = ref.current, v = p.value || '', a = t ? t.selectionStart : v.length, b = t ? t.selectionEnd : a; p.onChange(v.slice(0, a) + e + v.slice(b)); requestAnimationFrame(function () { if (t) { t.focus(); t.setSelectionRange(a + e.length, a + e.length); } }); };
+    return html`<div className="txw"><textarea ref=${ref} className="ta" rows=${p.rows || 3} aria-label=${p.label} placeholder=${p.placeholder || ''} value=${p.value || ''} onChange=${function (e) { p.onChange(e.target.value); }}></textarea>
+      <button type="button" className="emoB" aria-label="Insert an emoji" aria-expanded=${String(emo)} title="Emoji" onClick=${function () { setEmo(!emo); }}>☺</button>
+      ${emo ? html`<div className="emo">${EMO.map(function (x) { return html`<button type="button" key=${x} aria-label=${'Insert ' + x} onClick=${function () { ins(x); }}>${x}</button>`; })}</div>` : null}</div>`;
+  }
+  var Av = function (p) { var s = p.s || {}; return s.avatar ? html`<img className="av" src=${s.avatar} alt="" />` : html`<span className="av">${s.initials || '?'}</span>`; };
+  function SpecPicker(p) {
+    var st = useState(false), open = st[0], setOpen = st[1], ref = useRef(null);
+    useEffect(function () { if (!open) return; var off = function (e) { if (ref.current && !ref.current.contains(e.target)) setOpen(false); }; document.addEventListener('pointerdown', off); return function () { document.removeEventListener('pointerdown', off); }; }, [open]);
+    var specs = p.specs || [], cur = specs.filter(function (s) { return s.key === p.value; })[0] || specs[0];
+    var row = function (s) { return [html`<${Av} key="a" s=${s} />`, html`<span key="t" className="spT"><b>${s.name}</b><em>${s.role}</em></span>`]; };
+    return html`<div className="spk" ref=${ref}><button type="button" className="spBtn" aria-label="Specialist" aria-haspopup="listbox" aria-expanded=${String(open)} onClick=${function () { setOpen(!open); }}>${cur ? row(cur) : 'Choose a specialist'}<${Ic} n="chev" /></button>
+      ${open ? html`<div className="spList" role="listbox">${specs.map(function (s) { return html`<button type="button" role="option" key=${s.key} aria-selected=${String(s.key === p.value)} onClick=${function () { p.onChange(s.key); setOpen(false); }}>${row(s)}</button>`; })}</div>` : null}</div>`;
+  }
+  function Thumb(p) {
+    useSyncExternalStore(Thumbs.subscribe, Thumbs.version);
+    var src = Thumbs.want(p.k, p.theme, p.data);
+    return src ? html`<img src=${src} alt=${p.alt || ''} draggable="false" />` : html`<span className="ph"></span>`;
+  }
+
+  /* ---------- the sequence list: drag by the handle (mouse, pen, touch: pointer events), type, preview, timing, Edit, Duplicate, Delete ---------- */
+  function SeqList(p) {
+    var listRef = useRef(null), st = useState(null), drag = st[0], setDrag = st[1], dr = useRef(null);
+    var liveId = useSyncExternalStore(Clock.subscribe, function () { return p.S ? p.S.at(Clock.t()) : null; });
+    var start = function (e, i) {
+      if (e.button != null && e.button !== 0) return;
+      e.preventDefault(); e.stopPropagation();
+      var rows = Array.prototype.filter.call(listRef.current.children, function (el) { return el.classList.contains('row'); });
+      var rects = rows.map(function (r) { return r.getBoundingClientRect(); }), gap = rects.length > 1 ? Math.max(0, rects[1].top - rects[0].bottom) : 6;
+      var sc = listRef.current.closest('.scroll');
+      var s = { from: i, over: i, y0: e.clientY, dy: 0, rects: rects, h: rects[i].height + gap, sc: sc, sc0: sc ? sc.scrollTop : 0 };
+      dr.current = s; setDrag({ from: i, over: i, dy: 0, h: s.h });
+      var move = function (ev) {
+        var s = dr.current; if (!s) return;
+        if (s.sc) { var b = s.sc.getBoundingClientRect(); if (ev.clientY < b.top + 28) s.sc.scrollTop -= 10; else if (ev.clientY > b.bottom - 28) s.sc.scrollTop += 10; }
+        var sd = s.sc ? s.sc.scrollTop - s.sc0 : 0; s.dy = ev.clientY - s.y0 + sd;
+        var mid = s.rects[s.from].top + s.rects[s.from].height / 2 + s.dy, over = s.from;
+        s.rects.forEach(function (r, j) { var m = r.top + r.height / 2; if (j < s.from && mid < m) over = Math.min(over, j); if (j > s.from && mid > m) over = Math.max(over, j); });
+        s.over = over; setDrag({ from: s.from, over: over, dy: s.dy, h: s.h });
+      };
+      var up = function () { removeEventListener('pointermove', move); removeEventListener('pointerup', up); removeEventListener('pointercancel', up); var s = dr.current; dr.current = null; setDrag(null); if (s && s.over !== s.from) p.onMove(s.from, s.over); };
+      addEventListener('pointermove', move); addEventListener('pointerup', up); addEventListener('pointercancel', up);
+    };
+    var byId = {}; (p.sched.items || []).forEach(function (s) { byId[s.id] = s; });
+    if (!p.items.length) return html`<div className="none">No items yet. Add a question to start, or pick a template under Saved.</div>`;
+    return html`<div className="rows" ref=${listRef} role="list" aria-label="Sequence">${p.items.map(function (it, i) {
+      var s = byId[it.id], shift = 0;
+      if (drag && i !== drag.from) { if (drag.from < drag.over && i > drag.from && i <= drag.over) shift = -drag.h; if (drag.from > drag.over && i >= drag.over && i < drag.from) shift = drag.h; }
+      var isDrag = drag && drag.from === i, w = it.type === 'widget' ? (p.wById[it.widget] || {}) : null;
+      var who = it.type === 'specialist' ? ((p.specById[it.specialist] || {}).name || it.specialist) : it.type === 'widget' ? (w.label || it.widget) + (it.attach === false ? ' · own message' : '') : it.type === 'user' ? (it.typing === 'text' ? 'types in the field' : it.typing === 'dots' ? 'typing dots' : 'appears') : 'thinks ' + sec(it.think == null ? 1600 : it.think);
+      var prevTxt = it.type === 'widget' ? (p.S ? (p.S.field(it.data || {}, 'title') || p.S.field(it.data || {}, 'name') || '') : '') : it.text;
+      var meta = s ? sec(s.end - s.start) + ' · delay ' + sec(s.start - s.prevEnd) + (it.delay == null ? '' : ' (set)') : '';
+      return html`<div key=${it.id} role="listitem" className=${'row' + (p.sel === it.id ? ' sel' : '') + (isDrag ? ' drag' : '')} style=${{ transform: isDrag ? 'translateY(' + drag.dy + 'px)' : shift ? 'translateY(' + shift + 'px)' : null }} data-id=${it.id}>
+        <button type="button" className="grip" aria-label=${'Drag to reorder item ' + (i + 1)} title="Drag to reorder" onPointerDown=${function (e) { start(e, i); }}><${Ic} n="grip" /></button>
+        <div>
+          <div className="rowMain" role="button" tabIndex="0" aria-label=${'Item ' + (i + 1) + ', ' + TYPE[it.type] + '. Select it and jump the playhead to it'} onClick=${function () { p.onSelect(it.id); }} onKeyDown=${function (e) { if (e.key === 'Enter') p.onSelect(it.id); }}>
+            <div className="rowTop"><span className="num">${i + 1}</span><span className=${'tag ' + it.type}>${TYPE[it.type]}</span><span className="sub">${who}</span>${liveId === it.id ? html`<span className="live" title="On screen now"></span>` : null}</div>
+            <div className="prev">${prevTxt || html`<span style=${{ color: 'var(--muted)' }}>${it.type === 'widget' ? (w.label || it.widget) : 'Empty'}</span>`}</div>
+          </div>
+          <div className="rowFoot"><span className="meta">${meta}</span>
+            <span className="rowAct">
+              <button type="button" className="ib sm" aria-label=${'Edit item ' + (i + 1)} title="Edit" onClick=${function () { p.onSelect(it.id, true); }}><${Ic} n="edit" /></button>
+              <button type="button" className="ib sm" aria-label=${'Duplicate item ' + (i + 1)} title="Duplicate (⌘D)" onClick=${function () { p.onDup(it.id); }}><${Ic} n="copy" /></button>
+              <button type="button" className="ib sm" aria-label=${'Delete item ' + (i + 1)} title="Delete (Delete key)" onClick=${function () { p.onDel(it.id); }}><${Ic} n="trash" /></button>
+            </span></div>
+        </div></div>`;
+    })}</div>`;
+  }
+
+  /* ---------- the Widgets library: search, Health / Services / Actions, each drawn by the real component ---------- */
+  var CATS = ['Health', 'Services', 'Actions'];
+  function WidgetsPanel(p) {
+    var a = useState(''), q = a[0], setQ = a[1], b = useState('All'), c = b[0], setC = b[1];
+    var ql = q.trim().toLowerCase(), list = (p.cat ? p.cat.widgets : []).filter(function (w) { return (c === 'All' || w.category === c) && (!ql || (w.label + ' ' + w.key + ' ' + w.category).toLowerCase().indexOf(ql) >= 0); });
+    return html`<div>
+      <div className="srch"><${Ic} n="search" /><input type="search" placeholder="Search widgets" aria-label="Search widgets" value=${q} onChange=${function (e) { setQ(e.target.value); }} /></div>
+      <div className="chips" role="group" aria-label="Category">${['All'].concat(CATS).map(function (k) { return html`<button type="button" key=${k} className="chip" aria-pressed=${String(c === k)} onClick=${function () { setC(k); }}>${k}</button>`; })}</div>
+      ${!p.cat ? html`<div className="none">Loading the design system…</div>` : !list.length ? html`<div className="none">No widget matches “${q}”.</div>` : CATS.map(function (k) {
+        var ws = list.filter(function (w) { return w.category === k; }); if (!ws.length) return null;
+        return html`<div key=${k}><div className="wh">${k}</div><div className="wgrid">${ws.map(function (w) {
+          return html`<button type="button" key=${w.key} className="wcard" data-w=${w.key} title=${'Add ' + w.label + ' to the sequence'} onClick=${function () { p.onAdd(w.key); }}>
+            <span className="wth"><${Thumb} k=${w.key} theme=${p.theme} data=${w.preset} alt=${w.label} /></span><span className="wlbl">${w.label}<em>+ Add</em></span></button>`; })}</div></div>`; })}
+    </div>`;
+  }
+
+  /* ---------- saved compositions and the starter templates ---------- */
+  function SavedPanel(p) {
+    var ver = useSyncExternalStore(Store.subscribe, Store.version), recs = useMemo(function () { return Store.list(); }, [ver]);
+    var a = useState(null), ren = a[0], setRen = a[1], b = useState(''), rv = b[0], setRv = b[1], c = useState(null), del = c[0], setDel = c[1];
+    var mode = Store.mode();
+    return html`<div>
+      <div className=${'where ' + mode}><i></i>${mode === 'db' ? 'Shared with the team (this artifact’s database)' : 'Kept in this browser (open the published app to share with the team)'}</div>
+      ${p.pending ? html`<div className="warnBar">This draft isn’t saved yet. Save it before opening another one?<div><button type="button" className="btn sm pri" onClick=${p.onSaveThen}>Save draft</button><button type="button" className="btn sm" onClick=${p.onDiscardThen}>Discard it</button><button type="button" className="btn sm ghost" onClick=${p.onCancelPending}>Cancel</button></div></div>` : null}
+      <div style=${{ display: 'flex', gap: '6px', marginBottom: '10px' }}><button type="button" className="btn sm" onClick=${p.onNew}><${Ic} n="plus" />New</button><button type="button" className="btn sm" onClick=${p.onSave}><${Ic} n="save" />Save current</button></div>
+      ${recs.length ? recs.map(function (r) {
+        var cur = r.id === p.curId, n = (r.comp.sequence || []).length, fm = (r.comp.format || {}).ratio || '';
+        return html`<div key=${r.id} className=${'svRow' + (cur ? ' cur' : '')} data-name=${r.name}>
+          ${ren === r.id ? html`<input autoFocus aria-label="New name" value=${rv} onChange=${function (e) { setRv(e.target.value); }} onKeyDown=${function (e) { if (e.key === 'Enter') { p.onRename(r, rv); setRen(null); } if (e.key === 'Escape') setRen(null); }} onBlur=${function () { p.onRename(r, rv); setRen(null); }} />`
+            : html`<button type="button" className="nmB" title="Open" onClick=${function () { p.onOpen(r); }}><b>${r.name || 'Untitled video'}</b><em>${fm} · ${n} item${n === 1 ? '' : 's'} · ${ago(r.updated)}${r.shared ? ' · Team' : ' · This browser'}</em></button>`}
+          <span className="svAct">${del === r.id ? html`<button type="button" className="btn sm danger" onClick=${function () { p.onDelete(r); setDel(null); }}>Delete</button><button type="button" className="ib sm" aria-label="Keep it" onClick=${function () { setDel(null); }}><${Ic} n="x" /></button>`
+            : html`<button type="button" className="ib sm" aria-label=${'Rename ' + r.name} title="Rename" onClick=${function () { setRen(r.id); setRv(r.name || ''); }}><${Ic} n="edit" /></button><button type="button" className="ib sm" aria-label=${'Duplicate ' + r.name} title="Duplicate" onClick=${function () { p.onDup(r); }}><${Ic} n="copy" /></button><button type="button" className="ib sm" aria-label=${'Delete ' + r.name} title="Delete" onClick=${function () { setDel(r.id); }}><${Ic} n="trash" /></button>`}</span></div>`;
+      }) : html`<div className="none" style=${{ marginBottom: '10px' }}>No saved compositions yet.</div>`}
+      <div className="wh" style=${{ marginTop: '18px' }}>Templates</div>
+      <${Templates} onPick=${p.onTemplate} />
+    </div>`;
+  }
+  var Templates = function (p) { return html`<div className="tpl">${TEMPLATES.map(function (t) { return html`<button type="button" key=${t.key} className="tplB" data-tpl=${t.key} onClick=${function () { p.onPick(t); }}><b>${t.name}</b><span>${t.line}</span><span className="flow">${t.flow.map(function (f, i) { return html`<span key=${i} className=${'tag ' + f}>${TYPE[f]}</span>`; })}</span></button>`; })}</div>`; };
+
+  /* ---------- settings of the selected item ---------- */
+  function ItemPanel(p) {
+    var it = p.item, S = p.S, s = p.sch, set = p.set, w = it.type === 'widget' ? p.wById[it.widget] : null;
+    var timing = html`<div className="fs"><h3>Timing</h3>
+      ${s ? html`<div className="stats"><div><b>${sec(s.start)}</b><span>Starts</span></div><div><b>${sec(s.end - s.start)}</b><span>On its own</span></div><div><b>${sec(s.start - s.prevEnd)}</b><span>Delay</span></div></div>` : null}
+      <div className="f2"><${Field} label="Delay before"><${SecIn} label="Delay before, seconds" ms=${it.delay} auto=${s ? s.start - s.prevEnd : DEL[it.type]} onChange=${function (v) { set({ delay: v }); }} /><//>
+      <${Field} label=${it.type === 'widget' || it.type === 'user' ? 'Stays for' : 'Reading time'}><${SecIn} label="Hold after, seconds" ms=${it.hold} auto=${s ? s.end - s.phases.inEnd : null} onChange=${function (v) { set({ hold: v }); }} /><//></div>
+      <p className="hint">Empty fields follow the Everlab motion defaults: answers stay long enough to read.</p></div>`;
+    var body;
+    if (it.type === 'user') body = html`<div className="fs"><h3>Message</h3>
+      <${Field} label="Question"><${TextIn} label="Question text" value=${it.text} onChange=${function (v) { set({ text: v }, 'text'); }} /><//>
+      <${Field} label="Name" hint="Optional: shown over the bubble."><input className="in" aria-label="Member name" placeholder="None" value=${it.name || ''} onChange=${function (e) { set({ name: e.target.value || undefined }, 'name'); }} /><//>
+      <${Field} label="Avatar"><${Seg} label="Member avatar" value=${!it.avatar ? 'none' : /^(data:|https?:|blob:|\/)/.test(it.avatar) ? 'pic' : 'ini'} options=${[['none', 'None'], ['ini', 'Initials'], ['pic', 'Picture']]} onChange=${function (v) { if (v === 'none') set({ avatar: undefined }); else if (v === 'ini') set({ avatar: (it.name || 'Sam Lee').split(/\s+/).map(function (x) { return x[0]; }).join('').slice(0, 2).toUpperCase() }); else p.pickAvatar(); }} />
+        ${it.avatar && !/^(data:|https?:|blob:|\/)/.test(it.avatar) ? html`<input className="in" style=${{ marginTop: '6px' }} aria-label="Initials" maxLength="3" value=${it.avatar} onChange=${function (e) { set({ avatar: e.target.value || undefined }, 'av'); }} />` : null}
+        ${it.avatar && /^(data:|https?:|blob:|\/)/.test(it.avatar) ? html`<div style=${{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '6px' }}><img className="av" src=${it.avatar} alt="" /><button type="button" className="btn sm" onClick=${p.pickAvatar}>Replace</button></div>` : null}<//>
+      <${Field} label="Before it appears"><${Seg} label="Typing state" value=${it.typing || 'none'} options=${[['none', 'Nothing'], ['dots', 'Typing dots'], ['text', 'Types the text', !p.comp.device, 'Needs the iPhone frame']]} onChange=${function (v) { set({ typing: v }); }} /><//>
+      ${it.typing && it.typing !== 'none' ? html`<${Field} label="Typing time"><${SecIn} label="Typing time, seconds" ms=${it.typeMs} auto=${s && s.phases.typeMs} onChange=${function (v) { set({ typeMs: v }); }} /><//>` : null}
+      <${Field} label="Bubble width" aside=${it.width ? it.width + ' px' : 'Auto'}><${Range} label="Bubble width" min=${0} max=${360} step=${10} value=${it.width || 0} fmt=${function (v) { return v ? v : 'Auto'; }} onChange=${function (v) { set({ width: v >= 120 ? v : undefined }, 'w'); }} /><//>
+      <p className="hint">Alignment: the member’s bubble sits on the right, as in the chat.</p></div>`;
+    else if (it.type === 'eva') body = html`<div className="fs"><h3>Answer</h3>
+      <${Field} label="EVA’s answer"><${TextIn} label="EVA answer text" rows=${4} value=${it.text} onChange=${function (v) { set({ text: v }, 'text'); }} /><//>
+      <${Field} label="Thinking" aside=${sec(it.think == null ? 1600 : it.think)}><${Range} label="Thinking time" min=${0} max=${6000} step=${100} value=${it.think == null ? 1600 : it.think} fmt=${function (v) { return (v / 1000).toFixed(1) + 's'; }} onChange=${function (v) { set({ think: v }, 'think'); }} /><//>
+      <${Field} label="Thinking line" hint="Shown as “Thinking · …” with EVA’s loader."><input className="in" aria-label="Thinking step" placeholder="Looking at your records" value=${it.step || ''} onChange=${function (e) { set({ step: e.target.value || undefined }, 'step'); }} /><//>
+      <${Field} label="Answer comes in"><${Seg} label="Answer reveal" value=${it.reveal || 'fade'} options=${[['fade', 'Fades in'], ['stream', 'Word by word']]} onChange=${function (v) { set({ reveal: v }); }} /><//>
+      <${Field} label="EVA label over the answer"><${Seg} label="EVA label" value=${it.avatar == null ? 'auto' : it.avatar ? 'on' : 'off'} options=${[['auto', 'Auto'], ['on', 'Show'], ['off', 'Hide']]} onChange=${function (v) { set({ avatar: v === 'auto' ? undefined : v === 'on' }); }} /><//>
+      <p className="hint">EVA never types like a person: her thinking state, then the answer.</p></div>`;
+    else if (it.type === 'specialist') body = html`<div className="fs"><h3>Specialist</h3>
+      <${Field} label="Who"><${SpecPicker} specs=${p.cat ? p.cat.specialists : []} value=${it.specialist} onChange=${function (v) { set({ specialist: v, name: undefined, role: undefined }); }} /><//>
+      <div className="f2"><${Field} label="Name"><input className="in" aria-label="Specialist name" placeholder=${(p.specById[it.specialist] || {}).name || ''} value=${it.name || ''} onChange=${function (e) { set({ name: e.target.value || undefined }, 'name'); }} /><//>
+      <${Field} label="Role"><input className="in" aria-label="Specialist role" placeholder=${(p.specById[it.specialist] || {}).role || ''} value=${it.role || ''} onChange=${function (e) { set({ role: e.target.value || undefined }, 'role'); }} /><//></div>
+      <${Field} label="Answer"><${TextIn} label="Specialist answer text" rows=${4} value=${it.text} onChange=${function (v) { set({ text: v }, 'text'); }} /><//>
+      <${Field} label="Time label" hint="Optional, e.g. “Today, 9:41”."><input className="in" aria-label="Time label" placeholder="None" value=${it.when || ''} onChange=${function (e) { set({ when: e.target.value || undefined }, 'when'); }} /><//>
+      <${Toggle} label="Typing dots before the words" on=${!!it.typing} onChange=${function (v) { set({ typing: v }); }} />
+      <${Field} label="Card to words"><${SecIn} label="Wait before the words, seconds" ms=${it.wait} auto=${s && s.phases.in - s.phases.presIn} onChange=${function (v) { set({ wait: v }); }} /><//></div>`;
+    else body = html`<div className="fs"><h3>Widget</h3>
+      <${Field} label="Component"><select className="slc" aria-label="Widget type" value=${it.widget} onChange=${function (e) { var k = e.target.value; set({ widget: k, data: p.P(k) }); }}>${CATS.map(function (c) { return html`<optgroup key=${c} label=${c}>${(p.cat ? p.cat.widgets : []).filter(function (x) { return x.category === c; }).map(function (x) { return html`<option key=${x.key} value=${x.key}>${x.label}</option>`; })}</optgroup>`; })}</select><//>
+      <${Toggle} label="Part of the answer above" on=${it.attach !== false} onChange=${function (v) { set({ attach: v ? undefined : false }); }} />
+      <div style=${{ height: '8px' }}></div>
+      ${w && w.fields.length ? w.fields.map(function (f) {
+        var v = S ? S.field(it.data || {}, f.key) : '', put = function (val) { if (!S) return; set({ data: clone(S.field(it.data || { t: it.widget }, f.key, val)) }, 'f:' + f.key); };
+        var ctl = f.type === 'select' ? html`<select className="slc" aria-label=${f.label} value=${String(v)} onChange=${function (e) { put(e.target.value); }}>${(f.options || []).map(function (o) { return html`<option key=${o.value} value=${o.value}>${o.label}</option>`; })}</select>`
+          : f.type === 'specialist' ? html`<${SpecPicker} specs=${p.cat ? p.cat.specialists : []} value=${v} onChange=${put} />`
+          : f.type === 'area' ? html`<${TextIn} label=${f.label} value=${String(v)} onChange=${put} />`
+          : f.type === 'lines' ? html`<${TextIn} label=${f.label} rows=${3} value=${String(v)} onChange=${put} />`
+          : html`<input className="in" aria-label=${f.label} value=${String(v)} onChange=${function (e) { put(e.target.value); }} />`;
+        return html`<${Field} key=${f.key} label=${f.label} hint=${f.type === 'lines' ? 'One per line.' : null}>${ctl}<//>`;
+      }) : html`<p className="hint">This widget shows the chat’s own content: nothing to edit here.</p>`}
+      <div style=${{ display: 'flex', gap: '6px' }}><button type="button" className="btn sm" onClick=${function () { set({ data: p.P(it.widget) }); }}>Reset its content</button></div></div>`;
+    return html`<div>
+      <div className="itemHd"><span className=${'tag ' + it.type}>${TYPE[it.type]}</span><b>Item ${p.index + 1}</b><span className="sp"></span>
+        <button type="button" className="ib sm" aria-label="Duplicate this item" title="Duplicate (⌘D)" onClick=${p.onDup}><${Ic} n="copy" /></button>
+        <button type="button" className="ib sm" aria-label="Delete this item" title="Delete" onClick=${p.onDel}><${Ic} n="trash" /></button></div>
+      ${body}${timing}</div>`;
+  }
+
+  /* ---------- settings of the canvas: format, background, device, padding, theme ---------- */
+  function CanvasPanel(p) {
+    var c = p.comp, ed = p.edit, bg = c.background || { kind: 'color', color: '#0d0d0c' }, f = c.format || {};
+    var setBg = function (patch, key) { ed(function (x) { x.background = Object.assign({}, x.background, patch); return x; }, key); };
+    var fmts = (p.cat ? p.cat.formats : [{ ratio: '16:9', w: 1920, h: 1080 }, { ratio: '9:16', w: 1080, h: 1920 }, { ratio: '4:3', w: 1440, h: 1080 }, { ratio: '3:4', w: 1080, h: 1440 }, { ratio: '1:1', w: 1080, h: 1080 }]);
+    var colors = p.cat ? p.cat.colors : [];
+    var bgColor = bg.kind === 'color' ? bg.color : (bg.color || '#0d0d0c');
+    var hex = /^#[0-9a-f]{6}$/i.test(bgColor) ? bgColor : '#000000';
+    var isPic = bg.kind === 'image', picKey = isPic && !/^(data:|https?:|blob:|\/)/.test(bg.src);
+    return html`<div>
+      <div className="fs"><h3>Format</h3>
+        <div className="seg" role="group" aria-label="Aspect ratio" style=${{ flexWrap: 'wrap' }}>${fmts.map(function (x) { return html`<button type="button" key=${x.ratio} aria-pressed=${String(f.ratio === x.ratio)} title=${x.w + ' × ' + x.h} onClick=${function () { ed(function (y) { y.format = { ratio: x.ratio, w: x.w, h: x.h }; return y; }); }}>${x.ratio}</button>`; }).concat(html`<button type="button" key="custom" aria-pressed=${String(f.ratio === 'custom')} onClick=${function () { ed(function (y) { y.format = { ratio: 'custom', w: f.w || 1080, h: f.h || 1350 }; return y; }); }}>Custom</button>`)}</div>
+        <div className="f2" style=${{ marginTop: '8px' }}>
+          <${Field} label="Width"><input className="in" type="number" aria-label="Width in pixels" min="16" max="7680" value=${f.w} disabled=${f.ratio !== 'custom'} onChange=${function (e) { var v = Math.round(+e.target.value); if (v >= 16) ed(function (y) { y.format = { ratio: 'custom', w: Math.min(7680, v), h: y.format.h }; return y; }, 'fw'); }} /><//>
+          <${Field} label="Height"><input className="in" type="number" aria-label="Height in pixels" min="16" max="7680" value=${f.h} disabled=${f.ratio !== 'custom'} onChange=${function (e) { var v = Math.round(+e.target.value); if (v >= 16) ed(function (y) { y.format = { ratio: 'custom', w: y.format.w, h: Math.min(7680, v) }; return y; }, 'fh'); }} /><//></div>
+        <p className="hint">${f.w} × ${f.h} px, exported at this size.</p></div>
+      <div className="fs"><h3>Layout</h3>
+        <${Toggle} label="Show iPhone frame" on=${c.device !== false} onChange=${function (v) { ed(function (y) { y.device = v; return y; }); }} />
+        <p className="hint" style=${{ margin: '2px 0 10px' }}>${c.device !== false ? 'The whole chat in the phone: header, conversation and field.' : 'Floating: only the bubbles and widgets, straight on the background.'}</p>
+        <${Field} label="Chat theme"><${Seg} label="Chat theme" value=${c.theme || 'dark'} options=${[['dark', 'Dark'], ['light', 'Light']]} onChange=${function (v) { ed(function (y) { var was = y.theme || 'dark'; y.theme = v; if (y.background && y.background.kind === 'color' && v !== was) { if (v === 'light' && y.background.color === '#0d0d0c') y.background.color = '#f4f2ed'; else if (v === 'dark' && y.background.color === '#f4f2ed') y.background.color = '#0d0d0c'; } return y; }); }} /><//>
+        <${Field} label="Padding" aside=${c.padding == null ? 'Auto' : c.padding + ' px'}><${Range} label="Padding" min=${-10} max=${Math.round(Math.min(f.w, f.h) / 3)} step=${10} value=${c.padding == null ? -10 : c.padding} fmt=${function (v) { return v < 0 ? 'Auto' : v; }} onChange=${function (v) { ed(function (y) { if (v < 0) delete y.padding; else y.padding = v; return y; }, 'pad'); }} /><//>
+        ${c.device !== false ? html`<${Field} label="Header title"><input className="in" aria-label="Phone header title" placeholder="Eva" value=${c.title || ''} onChange=${function (e) { ed(function (y) { if (e.target.value) y.title = e.target.value; else delete y.title; return y; }, 'title'); }} /><//>`
+          : html`<div className="f2"><${Field} label="Column" aside=${(c.column || 440) + ' px'}><${Range} label="Column width" min=${280} max=${900} step=${10} value=${c.column || 440} fmt=${function (v) { return v; }} onChange=${function (v) { ed(function (y) { y.column = v; return y; }, 'col'); }} /><//>
+            <${Field} label="Zoom" aside=${(c.zoom || 1).toFixed(2) + '×'}><${Range} label="Zoom" min=${.5} max=${2} step=${.05} value=${c.zoom || 1} fmt=${function (v) { return v.toFixed(2); }} onChange=${function (v) { ed(function (y) { y.zoom = v; return y; }, 'zoom'); }} /><//></div>
+            <${Field} label="Thread grows"><${Seg} label="Anchor" value=${c.anchor || 'bottom'} options=${[['bottom', 'Up from the foot'], ['top', 'Down from the top']]} onChange=${function (v) { ed(function (y) { y.anchor = v; return y; }); }} /><//>`}</div>
+      <div className="fs"><h3>Background</h3>
+        <${Seg} label="Background kind" value=${bg.kind} options=${[['color', 'Colour'], ['image', 'Image']]} onChange=${function (v) { if (v === 'color') ed(function (y) { y.background = { kind: 'color', color: bgColor }; return y; }); else if (bg.kind !== 'image') { if (p.lastPic) ed(function (y) { y.background = clone(p.lastPic); return y; }); else p.pickBg(); } }} />
+        <div style=${{ height: '10px' }}></div>
+        ${!isPic ? html`<div>
+            <div className="sw" role="group" aria-label="Design system colours">${colors.map(function (x) { return html`<button type="button" key=${x.value} aria-label=${x.name} title=${x.name + ' ' + x.value} aria-pressed=${String(bgColor.toLowerCase() === x.value.toLowerCase())} style=${{ background: x.value }} onClick=${function () { setBg({ color: x.value }); }}></button>`; })}</div>
+            <div className="hexRow"><input type="color" aria-label="Pick a colour" value=${hex} onChange=${function (e) { setBg({ color: e.target.value }, 'hex'); }} /><input className="in" aria-label="Hex colour" value=${bgColor} onChange=${function (e) { var v = e.target.value.trim(); if (/^#?[0-9a-f]{3}([0-9a-f]{3})?$/i.test(v)) setBg({ color: v[0] === '#' ? v : '#' + v }, 'hex'); }} /></div></div>`
+          : html`<div>
+            <div className="bgPrev"><span className="th" style=${{ backgroundImage: picKey ? null : 'url("' + bg.src + '")' }}>${picKey ? bg.src : null}</span>
+              <div className="acts"><span className="btn sm upl"><${Ic} n="upload" />Replace<input type="file" accept="image/*" aria-label="Upload a background image" onChange=${function (e) { var fl = e.target.files && e.target.files[0]; e.target.value = ''; if (fl) p.uploadBg(fl); }} /></span><button type="button" className="btn sm" onClick=${function () { ed(function (y) { y.background = { kind: 'color', color: bg.color || '#0d0d0c' }; return y; }); }}>Remove</button></div></div>
+            <${Field} label="Fit"><${Seg} label="Image fit" value=${bg.fit || 'fill'} options=${[['fill', 'Fill'], ['fit', 'Fit'], ['crop', 'Crop']]} onChange=${function (v) { setBg({ fit: v }); }} /><//>
+            <div className="f2"><${Field} label="Position X"><${Range} label="Position X" min=${0} max=${100} value=${bg.x == null ? 50 : bg.x} fmt=${function (v) { return v + '%'; }} onChange=${function (v) { setBg({ x: v }, 'bx'); }} /><//>
+            <${Field} label="Position Y"><${Range} label="Position Y" min=${0} max=${100} value=${bg.y == null ? 50 : bg.y} fmt=${function (v) { return v + '%'; }} onChange=${function (v) { setBg({ y: v }, 'by'); }} /><//></div>
+            <${Field} label="Scale" hint=${bg.fit === 'crop' ? null : 'Scale applies to Crop.'}><${Range} label="Scale" min=${1} max=${4} step=${.05} value=${bg.scale || 1} disabled=${bg.fit !== 'crop'} fmt=${function (v) { return v.toFixed(2) + '×'; }} onChange=${function (v) { setBg({ scale: v }, 'bs'); }} /><//>
+            <${Field} label="Blur"><${Range} label="Blur" min=${0} max=${60} value=${bg.blur || 0} fmt=${function (v) { return v + 'px'; }} onChange=${function (v) { setBg({ blur: v }, 'bb'); }} /><//>
+            <${Field} label="Overlay"><${Range} label="Overlay opacity" min=${0} max=${100} value=${Math.round((bg.overlay || 0) * 100)} fmt=${function (v) { return v + '%'; }} onChange=${function (v) { setBg({ overlay: v / 100 }, 'bo'); }} />
+              <div className="sw" style=${{ marginTop: '6px' }} role="group" aria-label="Overlay colour">${['#000000', '#0d0d0c', '#2e1f1a', '#ffffff', '#f4f2ed'].map(function (x) { return html`<button type="button" key=${x} aria-label=${'Overlay ' + x} aria-pressed=${String((bg.overlayColor || '#000000').toLowerCase() === x)} style=${{ background: x }} onClick=${function () { setBg({ overlayColor: x }); }}></button>`; })}</div><//>
+            ${bg.fit === 'fit' ? html`<${Field} label="Behind the picture"><div className="sw">${colors.map(function (x) { return html`<button type="button" key=${x.value} aria-label=${x.name} aria-pressed=${String((bg.color || '').toLowerCase() === x.value.toLowerCase())} style=${{ background: x.value }} onClick=${function () { setBg({ color: x.value }); }}></button>`; })}</div><//>` : null}
+            ${p.bgNote ? html`<p className="hint">${p.bgNote}</p>` : null}</div>`}
+        ${!isPic ? html`<div style=${{ display: 'flex', gap: '6px', marginTop: '10px', flexWrap: 'wrap' }}><span className="btn sm upl"><${Ic} n="image" />Upload an image<input type="file" accept="image/*" aria-label="Upload a background image" onChange=${function (e) { var fl = e.target.files && e.target.files[0]; e.target.value = ''; if (fl) p.uploadBg(fl); }} /></span><button type="button" className="btn sm" onClick=${function () { ed(function (y) { y.background = { kind: 'image', src: 'clinic', fit: 'fill', x: 50, y: 50, scale: 1, blur: 12, overlay: .4, overlayColor: '#000000', color: bgColor }; return y; }); }}>Sample photo</button></div>` : null}</div>
+      <div className="fs"><h3>Timing</h3><div className="f2">
+        <${Field} label="Before the first"><${SecIn} label="Lead, seconds" ms=${c.lead} auto=${500} onChange=${function (v) { ed(function (y) { if (v == null) delete y.lead; else y.lead = v; return y; }, 'lead'); }} /><//>
+        <${Field} label="After the last"><${SecIn} label="Tail, seconds" ms=${c.tail} auto=${1500} onChange=${function (v) { ed(function (y) { if (v == null) delete y.tail; else y.tail = v; return y; }, 'tail'); }} /><//></div></div>
+    </div>`;
+  }
+
+  /* ---------- playback: play, pause, restart, loop, 1x / 0.5x, the scrubber with a mark per item, the time ---------- */
+  function Transport(p) {
+    var t = useSyncExternalStore(Clock.subscribe, Clock.t), playing = useSyncExternalStore(Clock.subscribe, Clock.playing);
+    var S = p.S, dur = p.sched.duration || 0, a = useState(false), loop = a[0], setLoop = a[1], b = useState(1), rate = b[0], setRate = b[1];
+    useEffect(function () { if (S) { S.loop(loop); S.rate(rate); } }, [S, loop, rate]);
+    var pct = dur ? Math.min(100, t / dur * 100) : 0;
+    return html`<div className="tp" role="group" aria-label="Playback">
+      <button type="button" className="ib play" aria-label=${playing ? 'Pause' : 'Play'} title="Play / pause (Space)" disabled=${!S || !dur} onClick=${function () { if (S.playing()) S.pause(); else S.play(); }}><${Ic} n=${playing ? 'pause' : 'play'} /></button>
+      <button type="button" className="ib" aria-label="Restart" title="Restart" disabled=${!S || !dur} onClick=${function () { S.pause(); S.seek(0); S.play(); }}><${Ic} n="restart" /></button>
+      <button type="button" className="ib" aria-label="Loop" title="Loop" aria-pressed=${String(loop)} onClick=${function () { setLoop(!loop); }}><${Ic} n="loop" /></button>
+      <div style=${{ width: '92px' }}><${Seg} sm=${true} label="Speed" value=${rate} options=${[[1, '1×'], [.5, '0.5×']]} onChange=${setRate} /></div>
+      <div className="scrub">
+        <div className="marks">${(p.sched.items || []).map(function (s, i) { return html`<button type="button" key=${s.id} className=${'mk ' + s.type + (p.sel === s.id ? ' sel' : '')} style=${{ left: (dur ? s.start / dur * 100 : 0) + '%' }} aria-label=${'Jump to item ' + (i + 1)} title=${(i + 1) + ' · ' + TYPE[s.type] + ' · ' + fmt(s.start)} onClick=${function () { p.onJump(s.id); }}></button>`; })}</div>
+        <input type="range" aria-label="Playhead" min="0" max=${dur} step="1" value=${Math.min(t, dur)} style=${{ '--p': pct + '%' }} disabled=${!S || !dur} onPointerDown=${function () { if (S) S.pause(); }} onChange=${function (e) { if (S) { S.pause(); S.seek(+e.target.value); } }} />
+      </div>
+      <span className="time" aria-live="off"><b>${fmt(t)}</b> / ${fmt(dur)}</span>
+    </div>`;
+  }
+
+  /* ---------- the code export and import ---------- */
+  function CodeDlg(p) {
+    var a = useState(p.tab || 'tsx'), tab = a[0], setTab = a[1], b = useState(''), paste = b[0], setPaste = b[1];
+    var tsx = useMemo(function () { return toTsx(p.comp, p.cat); }, [p.comp, p.cat]), json = useMemo(function () { return JSON.stringify(p.comp, null, 2); }, [p.comp]);
+    useEffect(function () { var k = function (e) { if (e.key === 'Escape') p.onClose(); }; addEventListener('keydown', k); return function () { removeEventListener('keydown', k); }; }, []);
+    var base = slug(p.comp.name), txt = tab === 'tsx' ? tsx : json;
+    var dl = function () {
+      var inApp = !!claudeHost();
+      /* the downloads capability takes .txt but not .tsx: in the app the module comes as <name>.tsx.txt (rename it), anywhere else as .tsx */
+      var fn = tab === 'tsx' ? base + (inApp ? '.tsx.txt' : '.tsx') : base + '.json';
+      saveFile(fn, txt, tab === 'tsx' ? 'text/plain' : 'application/json').then(function (r) { if (r !== 'declined') p.toast(tab === 'tsx' && inApp ? 'Saved as ' + fn + ': rename it to .tsx' : 'Saved ' + fn); }, function (e) { p.toast(e.message, 'warn'); });
+    };
+    var imp = function (text) { try { var o = JSON.parse(text); p.onImport(o && o.comp ? o.comp : o); } catch (e) { p.toast('That isn’t valid JSON: ' + e.message, 'warn'); } };
+    return html`<div className="dlgBg" onPointerDown=${function (e) { if (e.target === e.currentTarget) p.onClose(); }}><div className="dlg" role="dialog" aria-modal="true" aria-label="Export code">
+      <div className="dlgHd"><h2>Export · ${p.comp.name}</h2><button type="button" className="ib" aria-label="Close" onClick=${p.onClose}><${Ic} n="x" /></button></div>
+      <div className="dlgTabs"><${Seg} label="Format" value=${tab} options=${[['tsx', 'React + TypeScript'], ['json', 'Composition JSON'], ['import', 'Import JSON']]} onChange=${setTab} />
+        <span className="hint">${tab === 'tsx' ? 'A self-contained module: the <ChatVideo> tree, drawn by the Everlab stage.' : tab === 'json' ? 'The composition itself: import it here again, or load it in the stage.' : 'Paste a composition, or open a .json file.'}</span></div>
+      ${tab === 'import' ? html`<div className="imp"><span className="btn sm upl" style=${{ justifySelf: 'start' }}><${Ic} n="file" />Open a .json file<input type="file" accept="application/json,.json,.txt" aria-label="Open a composition file" onChange=${function (e) { var f = e.target.files && e.target.files[0]; e.target.value = ''; if (f) f.text().then(imp); }} /></span>
+          <textarea aria-label="Composition JSON to import" placeholder='{ "v": 1, "name": "…", "format": { … }, "sequence": [ … ] }' value=${paste} onChange=${function (e) { setPaste(e.target.value); }}></textarea></div>`
+        : html`<pre className="code" tabIndex="0" aria-label=${tab === 'tsx' ? 'React code' : 'Composition JSON'} data-kind=${tab}>${txt}</pre>`}
+      <div className="dlgFt">${tab === 'import' ? html`<button type="button" className="btn pri" disabled=${!paste.trim()} onClick=${function () { imp(paste); }}>Import</button>`
+        : html`<button type="button" className="btn pri" onClick=${function () { copyText(txt).then(function (ok) { p.toast(ok ? 'Copied' : 'Copy was blocked: select the code and copy it', ok ? null : 'warn'); }); }}><${Ic} n="copy" />Copy</button>
+          <button type="button" className="btn" onClick=${dl}><${Ic} n="download" />Download ${tab === 'tsx' ? '.tsx' : '.json'}</button>`}
+        <span className="sp"></span><span className="hint">${(txt.length / 1024).toFixed(1)} KB</span></div>
+    </div></div>`;
+  }
+
+  /* ================= the app ================= */
+  var DRAFT = 'everlab:chatVideoDraft', THEME = 'everlab:chatVideoTheme';
+  function App() {
+    var a = useState(null), S = a[0], setS = a[1], b = useState(null), cat = b[0], setCat = b[1], e0 = useState(''), stErr = e0[0], setStErr = e0[1];
+    var c = useState(function () { var d0 = ls.get(DRAFT, null); return d0 && d0.comp && Array.isArray(d0.comp.sequence) ? { comp: d0.comp, id: d0.id || null, shared: !!d0.shared, dirty: !!d0.dirty } : { comp: blank(), id: null, shared: false, dirty: false }; }), doc = c[0], setDoc = c[1];
+    var comp = doc.comp, docRef = useRef(doc); docRef.current = doc;
+    var s0 = useState(null), sel = s0[0], setSel = s0[1], selRef = useRef(sel); selRef.current = sel;
+    var r0 = useState('canvas'), rtab = r0[0], setRtab = r0[1], l0 = useState('seq'), ltab = l0[0], setLtab = l0[1];
+    var t0 = useState(function () { return document.documentElement.dataset.theme || ls.get(THEME, 'dark'); }), theme = t0[0], setTheme = t0[1];
+    var m0 = useState(false), menu = m0[0], setMenu = m0[1], g0 = useState(null), dlg = g0[0], setDlg = g0[1];
+    var q0 = useState([]), toasts = q0[0], setToasts = q0[1], p0 = useState(null), pending = p0[0], setPending = p0[1], n0 = useState(''), bgNote = n0[0], setBgNote = n0[1];
+    var v0 = useState('idle'), saving = v0[0], setSaving = v0[1], lastPic = useRef(null);
+    var hist = useRef({ past: [], future: [], key: null, at: 0 }), jump = useRef(null), frameRef = useRef(null), centreRef = useRef(null), avRef = useRef(null);
+    var x0 = useState({ w: 900, h: 600 }), box = x0[0], setBox = x0[1];
+
+    var toast = function (msg, kind) { var id = Math.random(); setToasts(function (t) { return t.concat([{ id: id, msg: msg, kind: kind }]); }); setTimeout(function () { setToasts(function (t) { return t.filter(function (x) { return x.id !== id; }); }); }, kind === 'warn' ? 5200 : 2600); };
+    var P = function (k) { return S ? clone(S.preset(k)) : { t: k }; };
+    var setD = function (nd) { docRef.current = nd; setDoc(nd); };
+    /* every change through here: one undo step, or one for a run of edits to the same field */
+    var edit = function (fn, key) {
+      var d = docRef.current, next = fn(clone(d.comp)); if (!next) return;
+      var H = hist.current, now = Date.now();
+      if (!(key && H.key === key && now - H.at < 900)) { H.past.push(d.comp); if (H.past.length > 150) H.past.shift(); }
+      H.key = key || null; H.at = now; H.future = [];
+      setD(Object.assign({}, d, { comp: next, dirty: true }));
+    };
+    var undo = function () { var H = hist.current, d = docRef.current; if (!H.past.length) return; H.future.push(d.comp); H.key = null; setD(Object.assign({}, d, { comp: H.past.pop(), dirty: true })); };
+    var redo = function () { var H = hist.current, d = docRef.current; if (!H.future.length) return; H.past.push(d.comp); H.key = null; setD(Object.assign({}, d, { comp: H.future.pop(), dirty: true })); };
+    var replace = function (nd) { hist.current = { past: [], future: [], key: null, at: 0 }; setD(nd); setSel(null); setRtab('canvas'); if (S) { S.pause(); S.seek(0); } };
+
+    var items = comp.sequence || [];
+    var idx = function (id) { for (var i = 0; i < items.length; i++) if (items[i].id === id) return i; return -1; };
+    var setItem = function (id, patch, key) { jump.current = id; edit(function (x) { x.sequence = x.sequence.map(function (it) { if (it.id !== id) return it; var n = Object.assign({}, it, patch); Object.keys(n).forEach(function (k) { if (n[k] === undefined) delete n[k]; }); return n; }); return x; }, key ? 'it:' + id + ':' + key : null); };
+    var addItem = function (it) { var at = sel ? idx(sel) + 1 : items.length; if (at <= 0) at = items.length; edit(function (x) { x.sequence.splice(at, 0, it); return x; }); jump.current = it.id; setSel(it.id); setRtab('item'); };
+    var add = function (type, k) { addItem(newItem(type, P, k)); if (type === 'widget' && !k) setLtab('widgets'); else setLtab('seq'); };
+    var dup = function (id) { var i = idx(id); if (i < 0) return; var n = clone(items[i]); n.id = rid(); edit(function (x) { x.sequence.splice(i + 1, 0, n); return x; }); jump.current = n.id; setSel(n.id); setRtab('item'); };
+    var del = function (id) { var i = idx(id); if (i < 0) return; edit(function (x) { x.sequence.splice(i, 1); return x; }); var nb = items[i + 1] || items[i - 1]; setSel(nb ? nb.id : null); if (!nb) setRtab('canvas'); };
+    var move = function (from, to) { if (from === to) return; edit(function (x) { var it = x.sequence.splice(from, 1)[0]; x.sequence.splice(to, 0, it); return x; }); };
+
+    /* the stage: the iframe's Concierge.stage, its catalogue, its clock */
+    var onStageLoad = function () {
+      var st = stageOf(frameRef.current);
+      if (!st) { setStErr('The chat stage could not be reached (concierge.html#stage).'); return; }
+      try { st.onTime(function (t, pl) { Clock.set(t, pl); }); setCat({ widgets: clone(st.widgets()), specialists: clone(st.specialists()), colors: clone(st.colors()), formats: clone(st.formats()) }); setS(st); }
+      catch (e) { setStErr('The chat stage failed to start: ' + e.message); }
+    };
+    var sched = useMemo(function () {
+      if (!S) return { items: [], duration: 0 };
+      try { var r = clone(S.schedule(comp)), lead = comp.lead == null ? 500 : comp.lead; r.items.forEach(function (s, i) { s.prevEnd = i ? r.items[i - 1].end : lead; }); return r; } catch (e) { return { items: [], duration: 0 }; }
+    }, [S, comp]);
+    var schById = useMemo(function () { var o = {}; sched.items.forEach(function (s) { o[s.id] = s; }); return o; }, [sched]);
+    var showAt = function (s) { return Math.max(s.start, Math.min(s.end - 1, s.phases.inEnd + 150)); };
+    useEffect(function () {
+      if (!S) return;
+      var raf = requestAnimationFrame(function () {
+        try { S.load(comp); } catch (e) { toast('The preview could not draw that: ' + e.message, 'warn'); return; }
+        var j = jump.current; jump.current = null;
+        if (j && schById[j] && !S.playing()) S.seek(showAt(schById[j]));
+      });
+      return function () { cancelAnimationFrame(raf); };
+    }, [S, comp]);
+    var jumpTo = function (id) { var s = schById[id]; if (!S || !s) return; S.pause(); S.seek(showAt(s)); };
+    var select = function (id) { setSel(id); setRtab('item'); jumpTo(id); };
+
+    /* the canvas: the format's frame fitted in the centre, the stage fitting itself in it */
+    useLayoutEffect(function () { var el = centreRef.current; if (!el) return; var ro = new ResizeObserver(function () { setBox({ w: el.clientWidth, h: el.clientHeight }); }); ro.observe(el); return function () { ro.disconnect(); }; }, []);
+    var fw = (comp.format || {}).w || 1080, fh = (comp.format || {}).h || 1920, k = Math.min((box.w - 56) / fw, (box.h - 76) / fh), dw = Math.max(40, Math.floor(fw * k)), dh = Math.max(40, Math.floor(fh * k));
+
+    /* the draft in this browser; a saved composition saves itself as it is edited */
+    useEffect(function () { var t = setTimeout(function () { if (!ls.set(DRAFT, { comp: doc.comp, id: doc.id, shared: doc.shared, dirty: doc.dirty })) { var c2 = clone(doc.comp); if (c2.background && /^data:/.test(c2.background.src || '')) c2.background = { kind: 'color', color: c2.background.color || '#0d0d0c' }; ls.set(DRAFT, { comp: c2, id: doc.id, shared: doc.shared, dirty: true }); } }, 350); return function () { clearTimeout(t); }; }, [doc]);
+    var saveNow = function (opts) {
+      var d = docRef.current, c3 = d.comp; setSaving('saving');
+      return Store.save({ id: d.id, name: c3.name, comp: c3, shared: d.shared === false && d.id ? false : undefined }).then(function (r) {
+        var cur = docRef.current; setD(Object.assign({}, cur, { id: r.id, shared: r.shared, dirty: cur.comp !== c3 })); setSaving('idle');
+        if (!(opts && opts.quiet)) toast(r.shared ? 'Saved for the team' : r.why === 'big' ? 'Saved in this browser: the background picture is too big to share (upload needs edit access to the app).' : Store.mode() === 'db' ? 'Saved in this browser only' : 'Saved in this browser', r.why === 'big' ? 'warn' : null);
+        return r;
+      }, function (e) { setSaving('idle'); toast(e.message, 'warn'); throw e; });
+    };
+    useEffect(function () { if (!doc.id || !doc.dirty) return; var t = setTimeout(function () { saveNow({ quiet: true }).catch(function () {}); }, 1400); return function () { clearTimeout(t); }; }, [doc]);
+    var openDoc = function (r) { replace({ comp: clone(r.comp), id: r.id, shared: r.shared, dirty: false }); };
+    var guard = function (fn) { var d = docRef.current; if (!d.id && d.dirty && (d.comp.sequence || []).length) { setPending(function () { return fn; }); setLtab('saved'); return; } fn(); };
+    var newDoc = function () { guard(function () { replace({ comp: blank(), id: null, shared: false, dirty: false }); }); };
+    var fromTemplate = function (t) { guard(function () { replace({ comp: t.make(P), id: null, shared: false, dirty: true }); setLtab('seq'); setTimeout(function () { if (S) { S.seek(0); S.play(); } }, 120); }); };
+
+    /* pictures */
+    var uploadBg = function (file) {
+      if (!/^image\//.test(file.type)) { toast('That file isn’t an image.', 'warn'); return; }
+      setBgNote('Uploading…');
+      putImage(file).then(function (r) {
+        var bgp = { kind: 'image', src: r.src, fit: 'fill', x: 50, y: 50, scale: 1, blur: 0, overlay: 0, overlayColor: '#000000', color: (comp.background || {}).color || '#0d0d0c' };
+        if (comp.background && comp.background.kind === 'image') ['fit', 'x', 'y', 'scale', 'blur', 'overlay', 'overlayColor'].forEach(function (q) { if (comp.background[q] != null) bgp[q] = comp.background[q]; });
+        lastPic.current = bgp; edit(function (y) { y.background = bgp; return y; });
+        setBgNote(r.shared ? 'Stored in the app’s assets: every viewer sees it.' : r.src.length > 1500000 ? 'Kept in this browser (large: it may not fit the saved list).' : 'Kept in this browser with the composition.');
+      }, function () { setBgNote(''); toast('The picture could not be read.', 'warn'); });
+    };
+    var pickBg = function () { var i = document.createElement('input'); i.type = 'file'; i.accept = 'image/*'; i.onchange = function () { var f = i.files && i.files[0]; if (f) uploadBg(f); }; i.click(); };
+    var pickAvatar = function () { var i = avRef.current; if (i) i.click(); };
+    var onAvatar = function (e) { var f = e.target.files && e.target.files[0]; e.target.value = ''; if (!f || !sel) return; var id = sel; shrink(f, 160, 'image/png').then(function (src) { setItem(id, { avatar: src }); }); };
+
+    /* import a composition: made whole by the stage, opened as a new draft */
+    var importComp = function (o) {
+      if (!o || typeof o !== 'object' || !Array.isArray(o.sequence)) { toast('That JSON isn’t a composition (no sequence).', 'warn'); return; }
+      var n = S ? clone(S.normalize(o)) : o; n.sequence.forEach(function (it) { if (it.type === 'eva' && it.avatar == null) delete it.avatar; });
+      guard(function () { replace({ comp: n, id: null, shared: false, dirty: true }); setDlg(null); setLtab('seq'); toast('Imported “' + (n.name || 'Untitled') + '”'); });
+    };
+
+    /* keyboard: Delete, Cmd/Ctrl+D duplicate, Space play, Cmd/Ctrl+Z undo, Alt+arrows reorder, arrows select */
+    useEffect(function () {
+      var onKey = function (e) {
+        if (dlg) return;
+        var t = e.target, typing = t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)), mod = e.metaKey || e.ctrlKey;
+        if (mod && (e.key === 'z' || e.key === 'Z') && !typing) { e.preventDefault(); if (e.shiftKey) redo(); else undo(); return; }
+        if (mod && (e.key === 'y') && !typing) { e.preventDefault(); redo(); return; }
+        if (mod && (e.key === 's' || e.key === 'S')) { e.preventDefault(); saveNow().catch(function () {}); return; }
+        if (typing) return;
+        if (mod && (e.key === 'd' || e.key === 'D')) { e.preventDefault(); if (selRef.current) dup(selRef.current); return; }
+        if ((e.key === 'Delete' || e.key === 'Backspace') && selRef.current) { e.preventDefault(); del(selRef.current); return; }
+        if (e.key === ' ' && !(t && t.tagName === 'BUTTON')) { e.preventDefault(); if (S) { if (S.playing()) S.pause(); else S.play(); } return; }
+        if ((e.key === 'ArrowUp' || e.key === 'ArrowDown') && items.length) {
+          e.preventDefault(); var i = selRef.current ? idx(selRef.current) : -1, d = e.key === 'ArrowUp' ? -1 : 1;
+          if (e.altKey && i >= 0) { var j = clamp(i + d, 0, items.length - 1); move(i, j); return; }
+          var n = items[clamp(i + d, 0, items.length - 1)]; if (n) select(n.id);
+        }
+        if (e.key === 'Escape') { setMenu(false); setSel(null); setRtab('canvas'); }
+      };
+      addEventListener('keydown', onKey); return function () { removeEventListener('keydown', onKey); };
+    });
+    useEffect(function () { if (!menu) return; var off = function (e) { if (!e.target.closest('.mnw')) setMenu(false); }; document.addEventListener('pointerdown', off); return function () { document.removeEventListener('pointerdown', off); }; }, [menu]);
+    useEffect(function () { document.documentElement.dataset.theme = theme; ls.set(THEME, theme); }, [theme]);
+    useEffect(function () { var mo = new MutationObserver(function () { var v = document.documentElement.dataset.theme || 'dark'; setTheme(function (o) { return o === v ? o : v; }); }); mo.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] }); return function () { mo.disconnect(); }; }, []);
+
+    /* the page's API, for the MP4 export (the next step) and the app around it */
+    useEffect(function () {
+      Object.assign(window.ChatVideo, {
+        version: 1, comp: function () { return clone(docRef.current.comp); }, setComp: function (x) { importComp(x); }, stage: function () { return S; }, schedule: function () { return clone(sched); },
+        saveFile: saveFile, cap: cap, toast: toast, toTsx: function (x) { return toTsx(x || docRef.current.comp, cat); }
+      });
+    });
+
+    var wById = useMemo(function () { var o = {}; (cat ? cat.widgets : []).forEach(function (w) { o[w.key] = w; }); return o; }, [cat]);
+    var specById = useMemo(function () { var o = {}; (cat ? cat.specialists : []).forEach(function (s) { o[s.key] = s; }); return o; }, [cat]);
+    var selItem = sel ? items[idx(sel)] : null, selIdx = sel ? idx(sel) : -1;
+    var status = saving === 'saving' ? 'Saving…' : doc.id ? (doc.dirty ? 'Edited' : 'Saved' + (doc.shared ? ' · Team' : ' · This browser')) : (items.length ? 'Draft · not saved' : 'New');
+    var mp4 = typeof window.ChatVideo.exportMp4 === 'function';
+    var hasPic = comp.background && comp.background.kind === 'image';
+
+    return html`<div className="cvb">
+      <header className="tb">
+        <div className="brand"><${Ic} n="film" /><b>Chat video</b></div>
+        <input className="nm" aria-label="Composition name" value=${comp.name || ''} placeholder="Untitled video" onChange=${function (e) { edit(function (y) { y.name = e.target.value; return y; }, 'name'); }} />
+        <span className=${'stat' + (doc.dirty && !doc.id && items.length ? ' dirty' : '')}>${status}</span>
+        <span className="sp"></span>
+        <button type="button" className="ib" aria-label="Undo" title="Undo (⌘Z)" disabled=${!hist.current.past.length} onClick=${undo}><${Ic} n="undo" /></button>
+        <button type="button" className="ib" aria-label="Redo" title="Redo (⇧⌘Z)" disabled=${!hist.current.future.length} onClick=${redo}><${Ic} n="redo" /></button>
+        <button type="button" className="btn ghost" onClick=${newDoc}>New</button>
+        <button type="button" className="btn" onClick=${function () { saveNow().catch(function () {}); }}><${Ic} n="save" />Save</button>
+        <div className="mnw"><button type="button" className="btn pri" aria-haspopup="menu" aria-expanded=${String(menu)} onClick=${function () { setMenu(!menu); }}>Export<${Ic} n="chev" /></button>
+          ${menu ? html`<div className="menu" role="menu">
+            <button type="button" role="menuitem" disabled=${!mp4} onClick=${function () { setMenu(false); try { window.ChatVideo.exportMp4({ comp: clone(comp), stage: S, saveFile: saveFile, toast: toast }); } catch (e) { toast(e.message, 'warn'); } }}><${Ic} n="film" /><span><b>MP4 video</b><em>1080p, 30 fps, the composition’s own size</em></span>${mp4 ? null : html`<span className="soon">Next</span>`}</button>
+            <hr />
+            <button type="button" role="menuitem" onClick=${function () { setMenu(false); setDlg('tsx'); }}><${Ic} n="code" /><span><b>Code</b><em>React + TypeScript, reusable anywhere</em></span></button>
+            <button type="button" role="menuitem" onClick=${function () { setMenu(false); setDlg('json'); }}><${Ic} n="file" /><span><b>Composition JSON</b><em>To import again, or for the stage</em></span></button>
+            <button type="button" role="menuitem" onClick=${function () { setMenu(false); setDlg('import'); }}><${Ic} n="upload" /><span><b>Import JSON…</b><em>Open a composition</em></span></button></div>` : null}</div>
+        <button type="button" className="ib" aria-label="Switch the builder’s theme" title="Light / dark" onClick=${function () { setTheme(theme === 'dark' ? 'light' : 'dark'); }}><${Ic} n=${theme === 'dark' ? 'sun' : 'moon'} /></button>
+      </header>
+
+      <aside className="left" aria-label="Composition">
+        <div className="pHd"><h2>Composition</h2><span className="cnt">${items.length} item${items.length === 1 ? '' : 's'} · ${fmt(sched.duration)}</span></div>
+        <div className="pTabs"><${Seg} label="Composition panel" value=${ltab} options=${[['seq', 'Sequence'], ['widgets', 'Widgets'], ['saved', 'Saved']]} onChange=${setLtab} /></div>
+        ${ltab === 'seq' ? html`<div className="adds">
+            <button type="button" className="add" onClick=${function () { add('user'); }}><i className="dotT user"></i>+ Question</button>
+            <button type="button" className="add" onClick=${function () { add('eva'); }}><i className="dotT eva"></i>+ EVA</button>
+            <button type="button" className="add" onClick=${function () { add('specialist'); }}><i className="dotT specialist"></i>+ Specialist</button>
+            <button type="button" className="add" onClick=${function () { setLtab('widgets'); }}><i className="dotT widget"></i>+ Widget</button></div>` : null}
+        <div className="scroll">
+          ${ltab === 'seq' ? html`<${SeqList} items=${items} sched=${sched} lead=${comp.lead == null ? 500 : comp.lead} sel=${sel} S=${S} wById=${wById} specById=${specById} onSelect=${select} onMove=${move} onDup=${dup} onDel=${del} />`
+            : ltab === 'widgets' ? html`<${WidgetsPanel} cat=${cat} theme=${comp.theme || 'dark'} onAdd=${function (k) { add('widget', k); setLtab('seq'); toast('Added ' + ((wById[k] || {}).label || k)); }} />`
+            : html`<${SavedPanel} curId=${doc.id} pending=${!!pending} onNew=${newDoc} onSave=${function () { saveNow().catch(function () {}); }} onOpen=${function (r) { guard(function () { openDoc(r); }); }}
+                onRename=${function (r, n) { n = (n || '').trim(); if (!n || n === r.name) return; if (r.id === doc.id) edit(function (y) { y.name = n; return y; }); else Store.save({ id: r.id, name: n, comp: Object.assign({}, r.comp, { name: n }), shared: r.shared ? undefined : false }).catch(function (e) { toast(e.message, 'warn'); }); }}
+                onDup=${function (r) { var cc = clone(r.comp); cc.name = (r.name || 'Untitled video') + ' copy'; Store.save({ name: cc.name, comp: cc, shared: r.shared ? undefined : false }).then(function () { toast('Duplicated “' + r.name + '”'); }, function (e) { toast(e.message, 'warn'); }); }}
+                onDelete=${function (r) { Store.remove(r).then(function () { if (r.id === doc.id) setD(Object.assign({}, docRef.current, { id: null, dirty: true })); toast('Deleted “' + r.name + '”'); }, function (e) { toast((e && e.message) || 'Could not delete', 'warn'); }); }}
+                onTemplate=${fromTemplate}
+                onSaveThen=${function () { var fn = pending; setPending(null); saveNow().then(function () { fn(); }, function () {}); }} onDiscardThen=${function () { var fn = pending; setPending(null); setD(Object.assign({}, docRef.current, { dirty: false })); fn(); }} onCancelPending=${function () { setPending(null); }} />`}
+        </div>
+      </aside>
+
+      <main className="centre" ref=${centreRef} aria-label="Canvas">
+        <div className="cv" style=${{ width: dw + 'px', height: dh + 'px' }}>
+          <iframe ref=${frameRef} src=${STAGE_SRC} title="Chat video preview" tabIndex="-1" onLoad=${onStageLoad}></iframe>
+          <div className="cvHit" title="Canvas settings" onClick=${function () { setRtab('canvas'); }}></div>
+        </div>
+        <div className="res"><b>${fw} × ${fh}</b><span>${(comp.format || {}).ratio === 'custom' ? 'Custom' : (comp.format || {}).ratio}</span><span>${comp.device !== false ? 'iPhone frame' : 'Floating'}</span><span>${hasPic ? 'Image' : (comp.background || {}).color}</span></div>
+        ${stErr ? html`<div className="stErr">${stErr}</div>` : null}
+        ${!items.length ? html`<div className="empty"><div className="emptyIn">
+          <h2>Make a chat video</h2><p>Write the conversation and pick the components: the Everlab chat handles the design and the motion. Start from a template, or add the first question.</p>
+          <${Templates} onPick=${fromTemplate} />
+          <div style=${{ display: 'flex', gap: '8px' }}><button type="button" className="btn pri" onClick=${function () { add('user'); }}><${Ic} n="plus" />Add a question</button><button type="button" className="btn" onClick=${function () { setLtab('saved'); }}>Open a saved one</button></div></div></div>` : null}
+      </main>
+
+      <${Transport} S=${S} sched=${sched} sel=${sel} onJump=${select} />
+
+      <aside className="right" aria-label="Settings">
+        <div className="pTabs" style=${{ paddingTop: '12px' }}><${Seg} label="Settings" value=${rtab} options=${[['item', selItem ? 'Item ' + (selIdx + 1) : 'Item'], ['canvas', 'Canvas']]} onChange=${setRtab} /></div>
+        <div className="scroll">
+          ${rtab === 'canvas' ? html`<${CanvasPanel} comp=${comp} cat=${cat} edit=${edit} uploadBg=${uploadBg} pickBg=${pickBg} bgNote=${bgNote} lastPic=${lastPic.current} />`
+            : selItem ? html`<${ItemPanel} key=${selItem.id} item=${selItem} index=${selIdx} comp=${comp} S=${S} cat=${cat} sch=${schById[selItem.id]} wById=${wById} specById=${specById} P=${P}
+                set=${function (patch, key) { setItem(selItem.id, patch, key); }} onDup=${function () { dup(selItem.id); }} onDel=${function () { del(selItem.id); }} pickAvatar=${pickAvatar} />`
+            : html`<div className="noSel"><span>Select an item in the sequence to edit it, or click the canvas for its format and background.</span><button type="button" className="btn sm" onClick=${function () { setRtab('canvas'); }}>Canvas settings</button></div>`}
+        </div>
+      </aside>
+      <input ref=${avRef} type="file" accept="image/*" hidden onChange=${onAvatar} />
+      ${dlg ? html`<${CodeDlg} tab=${dlg} comp=${comp} cat=${cat} toast=${toast} onClose=${function () { setDlg(null); }} onImport=${importComp} />` : null}
+      <div className="toasts" aria-live="polite">${toasts.map(function (t) { return html`<div key=${t.id} className=${'toast' + (t.kind ? ' ' + t.kind : '')}>${t.msg}</div>`; })}</div>
+    </div>`;
+  }
+
+  try { document.documentElement.dataset.theme = document.documentElement.dataset.theme === 'light' || ls.get(THEME, 'dark') === 'light' ? 'light' : 'dark'; } catch (e) {}
+  ReactDOM.createRoot(document.getElementById('app')).render(html`<${App} />`);
+})();
+</script>
+</body>
+</html>
