@@ -20,7 +20,21 @@
 
   Fonts are named, never loaded where commercial (Saans, Tobias): Geist and
   Newsreader from Google Fonts stand in.
+
+  The Refer page's top is the Activity plan's ("a header same as Activity with
+  Visual and h1 centered"): the photo (the Gift page's couple) pinned, the H1
+  centred at its foot, the sheet sliding up over it with the lede first, the
+  Everlab logo in the top nav's centre slot. The header overlap is the master's
+  (EvOverlap, Design system -> General layout -> Header overlap): its CSS and
+  script are not copied here but put in by tools/build.js from index.html where
+  the two ev:master markers stand, so dist/referral.html runs the very code
+  the app's pages do, with the numbers saved on the doc page.
+
+  Light or dark as the app's Colour mode (data-theme on the root, set by the
+  prototype; #light / #dark in the hash for the first paint; the system's
+  when opened alone).
 -->
+<!--ev:master EvOverlap css-->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Newsreader:opsz,wght@6..72,400&display=swap">
@@ -32,17 +46,31 @@
     --sans:'Saans','Geist','Helvetica Neue',Helvetica,Arial,sans-serif;
     --serif:'Tobias','Tobias Regular','Newsreader',Georgia,'Times New Roman',serif;
     --ease:cubic-bezier(.22,1,.36,1);
+    --desk:#e9e5e0; --btn:#0d0d0d; --btnInk:#fff; --btnHover:#262422; --fill:rgba(29,26,23,.05); --fillHi:rgba(29,26,23,.09); --modal:#fff; --field:#fff; --focus:rgba(29,26,23,.55); --ring:rgba(29,26,23,.06); --dimBg:rgba(20,18,16,.3); --grabBg:rgba(0,0,0,.12); --nRing:rgba(29,26,23,.4);
     color-scheme:light;
   }
+  /* dark, as the app's Dark mode and the Activity plan's dark sheet (#0f0f0f, cards #181818, modals #181818): the prototype sets data-theme; alone, the system's */
+  :root[data-theme="dark"]{
+    --paper:#0f0f0f; --card:#181818; --ink:#fff; --ink2:rgba(255,255,255,.56); --ink3:rgba(255,255,255,.4); --line:rgba(255,255,255,.12);
+    --ok:#6fd39a; --okBg:rgba(30,138,76,.18);
+    --desk:#000; --btn:#fff; --btnInk:#0d0d0d; --btnHover:#e6e6e6; --fill:rgba(255,255,255,.08); --fillHi:rgba(255,255,255,.13); --modal:#181818; --field:rgba(255,255,255,.04); --focus:rgba(255,255,255,.5); --ring:rgba(255,255,255,.08); --dimBg:rgba(0,0,0,.55); --grabBg:rgba(255,255,255,.2); --nRing:rgba(255,255,255,.4);
+    color-scheme:dark;
+  }
+  @media (prefers-color-scheme: dark){ :root:not([data-theme]){
+    --paper:#0f0f0f; --card:#181818; --ink:#fff; --ink2:rgba(255,255,255,.56); --ink3:rgba(255,255,255,.4); --line:rgba(255,255,255,.12);
+    --ok:#6fd39a; --okBg:rgba(30,138,76,.18);
+    --desk:#000; --btn:#fff; --btnInk:#0d0d0d; --btnHover:#e6e6e6; --fill:rgba(255,255,255,.08); --fillHi:rgba(255,255,255,.13); --modal:#181818; --field:rgba(255,255,255,.04); --focus:rgba(255,255,255,.5); --ring:rgba(255,255,255,.08); --dimBg:rgba(0,0,0,.55); --grabBg:rgba(255,255,255,.2); --nRing:rgba(255,255,255,.4);
+    color-scheme:dark;
+  } }
   *{box-sizing:border-box;}
   html,body{height:100%;}
-  body{margin:0;background:var(--paper);color:var(--ink);font:400 15px/1.4 var(--sans);-webkit-font-smoothing:antialiased;overflow:hidden;}
+  body{margin:0;background:var(--paper);color:var(--ink);font:400 15px/1.4 var(--sans);-webkit-font-smoothing:antialiased;overflow:hidden;transition:background-color .3s ease, color .3s ease;}
   button{font:inherit;color:inherit;}
   .logo svg{display:block;height:22px;width:auto;}
 
   /* the column: the phone's width at any size, centred on a desk */
   .stage{position:relative;height:100%;max-width:480px;margin:0 auto;overflow:hidden;}
-  :root:not(.xs) body{background:#e9e5e0;} :root:not(.xs) .stage{box-shadow:0 0 0 1px rgba(0,0,0,.06);}
+  :root:not(.xs) body{background:var(--desk);} :root:not(.xs) .stage{box-shadow:0 0 0 1px var(--line);}
   .sc{position:absolute;inset:0;overflow:hidden;opacity:0;visibility:hidden;transition:opacity .35s ease,visibility 0s .35s;}
   .sc.on{opacity:1;visibility:visible;transition:opacity .35s ease;}
 
@@ -50,7 +78,8 @@
   .sb{display:none;position:absolute;left:0;right:0;top:0;z-index:30;height:54px;padding:18px 34px 0 46px;justify-content:space-between;align-items:center;font:600 16px/1 -apple-system,'SF Pro Text',var(--sans);letter-spacing:-.01em;pointer-events:none;}
   :root.xs .sb{display:flex;}
   .sb i{display:flex;gap:6px;align-items:center;} .sb svg{display:block;}
-  :root.xs .sc{padding-top:54px;}
+  :root.xs .s0{padding-top:54px;}   /* the app's More; the referral's own screens run their photo up under the status bar, as the Activity plan's */
+  .sb{color:#fff;transition:color .28s ease;} :root[data-at="0"] .sb{color:#f2f2f2;} :root.rfUnder[data-at="1"] .sb{color:var(--ink);}   /* white over the photo; the screen's ink once the sheet is under the bar */
 
   /* 00, the app: the Overview dimmed behind the More sheet */
   .s0{background:var(--app);color:var(--appInk);}
@@ -74,44 +103,55 @@
   .s0 .it .av{flex:none;width:22px;height:22px;border-radius:50%;background:#f2f2f2;color:#111;font-size:11px;font-weight:500;display:grid;place-items:center;}
   .s0 .it.go{background:rgba(255,255,255,.06);}
 
-  /* 01, the referral page */
-  .s1{background:var(--paper);overflow-y:auto;scrollbar-width:none;} .s1::-webkit-scrollbar{display:none;}
-  .pg{display:flex;flex-direction:column;align-items:center;padding:24px 20px 40px;text-align:center;}
-  .pg .logo{color:var(--ink);} .pg .logo svg{height:24px;}
-  h1{margin:40px 0 0;font:400 34px/1.08 var(--serif);letter-spacing:-.01em;text-wrap:balance;}
-  .lede{margin:14px 0 0;max-width:300px;color:var(--ink2);font-size:15px;line-height:1.4;}
-  .how{width:100%;margin-top:28px;padding:22px 18px 18px;border-radius:24px;background:var(--card);text-align:left;}
+  /* 01, the referral page: the Activity plan's header. The hero pinned (.hoHero), the photo --hoRise taller to rise into (.hoPic), the H1 centred at its foot (.hoWords),
+     the sheet over its foot (.hoSheet), the bar's overflow state (.hoBand): the master's classes and numbers (EvOverlap); the sizes the Activity plan's (265 XS, 320 the column) */
+  .s1{background:var(--paper);overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-width:none;transition:background-color .3s ease;} .s1::-webkit-scrollbar{display:none;}
+  .rfBand{--hoBarH:64px;--hoGnd:var(--paper);} :root.xs .rfBand{--hoBarH:130px;}   /* the status bar and the nav bar (54 + 76) on the phone; 64 in the column */
+  .rfBar{position:sticky;top:0;z-index:7;height:0;}   /* the top nav: fixed with the page, its centre slot the logo; no controls (the page has none) */
+  .rfBarIn{position:absolute;left:0;right:0;top:0;height:64px;display:flex;align-items:center;justify-content:center;padding:0 72px;} :root.xs .rfBarIn{top:54px;height:76px;}
+  .rfBar .logo{color:#fff;transition:color .28s ease;} .rfBar .logo svg{height:24px;}
+  :root.rfUnder[data-at="1"] .s1 .rfBar .logo{color:var(--ink);}   /* the screen's ink once the sheet is under the bar, as the Activity plan's Back */
+  .rfTop{height:320px;} :root.xs .rfTop{height:265px;}
+  .rfHero{position:absolute;inset:0;overflow:hidden;background:#181818;}
+  .rfHero img{display:block;width:100%;height:calc(100% + var(--hoRise, 32px));object-fit:cover;object-position:56% 30%;}   /* the couple's faces in frame */
+  .rfHero::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg, rgba(0,0,0,.34) 0, rgba(0,0,0,0) 30%, rgba(0,0,0,.1) 50%, rgba(0,0,0,.66) 100%);pointer-events:none;}   /* the Activity plan's: the status bar legible at its top, darkening to its foot under the title */
+  .rfHead{position:absolute;left:20px;right:20px;bottom:calc(var(--hoOverlap, 28px) + 24px);text-align:center;}
+  h1{margin:0;font:400 34px/1.08 var(--serif);letter-spacing:-.01em;text-wrap:balance;color:#fff;}
+  .pg{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;padding:28px 20px 40px;text-align:center;background:var(--paper);transition:background-color .3s ease;}
+  :root.xs .pg{padding-bottom:74px;}   /* the home indicator's 34 under the last line */
+  .lede{margin:0;max-width:300px;color:var(--ink2);font-size:15px;line-height:1.4;}
+  .how{width:100%;margin-top:24px;padding:22px 18px 18px;border-radius:24px;background:var(--card);text-align:left;}
   .how h2{margin:0 0 16px;font:400 23px/1.15 var(--serif);}
   .how ol{list-style:none;margin:0;padding:0;display:grid;gap:16px;}
   .how li{display:grid;grid-template-columns:26px 1fr;gap:12px;}
-  .how .n{width:26px;height:26px;border-radius:50%;border:1px solid rgba(29,26,23,.4);display:grid;place-items:center;font-size:12px;}
+  .how .n{width:26px;height:26px;border-radius:50%;border:1px solid var(--nRing);display:grid;place-items:center;font-size:12px;}
   .how b{display:block;font-weight:500;font-size:15px;line-height:1.3;}
   .how span{display:block;margin-top:3px;color:var(--ink2);font-size:13px;line-height:1.4;}
-  .btn{display:block;width:100%;height:56px;border:0;border-radius:16px;background:#0d0d0d;color:#fff;font-size:16px;font-weight:500;cursor:pointer;transition:transform .15s ease,background .2s ease;}
-  .btn:hover{background:#262422;} .btn:active{transform:scale(.98);}
-  .btn.sec{background:rgba(29,26,23,.05);color:var(--ink);} .btn.sec:hover{background:rgba(29,26,23,.09);}
+  .btn{display:block;width:100%;height:56px;border:0;border-radius:16px;background:var(--btn);color:var(--btnInk);font-size:16px;font-weight:500;cursor:pointer;transition:transform .15s ease,background .2s ease;}
+  .btn:hover{background:var(--btnHover);} .btn:active{transform:scale(.98);}
+  .btn.sec{background:var(--fill);color:var(--ink);} .btn.sec:hover{background:var(--fillHi);}
   .how .btn{margin-top:22px;}
   .fine{margin:26px 4px 0;color:var(--ink3);font-size:11.5px;line-height:1.5;}
   .ask{margin:16px 0 0;color:var(--ink2);font-size:13px;} .ask a{color:inherit;}
 
   /* 02 and 03: a sheet over the referral page, the page dimmed */
   .s2,.s3{background:var(--paper);}
-  .s2 .pg,.s3 .pg{pointer-events:none;}
-  .dim{position:absolute;inset:0;background:rgba(20,18,16,.3);opacity:0;transition:opacity .4s ease;}
+  .s2 .pw,.s3 .pw{pointer-events:none;}
+  .dim{position:absolute;inset:0;z-index:8;background:var(--dimBg);opacity:0;transition:opacity .4s ease;}
   .on .dim{opacity:1;}
-  .bs{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:10px 20px 34px;border-radius:32px 32px 0 0;background:#fff;transform:translateY(100%);transition:transform .55s var(--ease);}
+  .bs{position:absolute;left:0;right:0;bottom:0;z-index:9;padding:10px 20px 34px;border-radius:32px 32px 0 0;background:var(--modal);color:var(--ink);transform:translateY(100%);transition:transform .55s var(--ease), background-color .3s ease;}
   .on .bs{transform:none;}
-  .bs .grab{background:rgba(0,0,0,.12);margin-bottom:18px;}
+  .bs .grab{background:var(--grabBg);margin-bottom:18px;}
   html.evDisOff .grab{opacity:0;visibility:hidden;}   /* the prototype's Dismiss off (Design system -> Modals): no notch, its room kept */
   .bsH{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;}
   .bsH h3{margin:0;font:400 26px/1.15 var(--serif);}
   .bsH p{margin:6px 0 0;color:var(--ink2);font-size:13px;line-height:1.4;max-width:270px;}
-  .bs .x{flex:none;width:36px;height:36px;background:rgba(29,26,23,.06);}
+  .bs .x{flex:none;width:36px;height:36px;background:var(--fill);color:var(--ink);}
   .fl{display:grid;gap:14px;margin-top:22px;}
   .fl label{display:grid;gap:7px;font-size:13px;font-weight:500;}
   .fl label small{font-weight:400;color:var(--ink3);font-size:12px;}
-  .in{display:flex;height:52px;border:1px solid var(--line);border-radius:12px;background:#fff;overflow:hidden;transition:border-color .2s ease,box-shadow .2s ease;}
-  .in:focus-within{border-color:rgba(29,26,23,.55);box-shadow:0 0 0 3px rgba(29,26,23,.06);}
+  .in{display:flex;height:52px;border:1px solid var(--line);border-radius:12px;background:var(--field);overflow:hidden;transition:border-color .2s ease,box-shadow .2s ease;}
+  .in:focus-within{border-color:var(--focus);box-shadow:0 0 0 3px var(--ring);}
   .in input{flex:1;min-width:0;border:0;outline:0;padding:0 14px;background:none;font:inherit;font-size:15px;color:var(--ink);}
   .in input::placeholder{color:var(--ink3);}
   .in .cc{flex:none;display:flex;align-items:center;padding:0 14px;border-right:1px solid var(--line);font-size:15px;}
@@ -181,8 +221,10 @@
 
   <!-- 01 Refer, and the page under 02 and 03 -->
   <template id="tPg">
-    <div class="pg">
-      <span class="logo" aria-label="Everlab"><svg aria-hidden="true" focusable="false" viewBox="0 0 124 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <div class="pw">
+    <div class="hoBand rfBand" aria-hidden="true"></div>
+    <div class="rfBar"><div class="rfBarIn">
+      <span class="logo" role="img" aria-label="Everlab"><svg aria-hidden="true" focusable="false" viewBox="0 0 124 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g>
 <g class="lgWord">
 <path d="M49.3525 19.1583L49.3188 19.2518C49.3007 19.3037 49.254 19.3219 49.2178 19.3219C49.1815 19.3219 49.1375 19.3037 49.1193 19.2518L44.4665 6.26393H42.3629L47.7178 20.8275C47.9484 21.4558 48.552 21.8763 49.2204 21.8763C49.8888 21.8763 50.495 21.4532 50.7229 20.8223L56.0467 6.26133H54.0312L49.3551 19.1557L49.3525 19.1583Z" fill="currentColor"/>
@@ -206,7 +248,12 @@
 </clipPath>
 </defs>
 </svg></span>
-      <h1>Good health is worth passing on.</h1>
+    </div></div>
+    <div class="hoHero rfTop">
+      <div class="rfHero" aria-hidden="true"><img class="hoPic" src="../assets/gift/living-room.webp" alt="" decoding="async"></div>
+      <div class="rfHead hoWords"><h1>Good health is worth passing on.</h1></div>
+    </div>
+    <div class="hoSheet pg">
       <p class="lede">Most people hear about Everlab from a friend or a loved one. Refer someone and both of you will receive $100 off.</p>
       <div class="how">
         <h2>How the referral works</h2>
@@ -219,6 +266,7 @@
       </div>
       <p class="fine">You can receive credit for up to two successful referrals. You can’t refer yourself. Referral credits expire within three months, and are removed if the person you referred receives a refund.</p>
       <p class="ask">Questions? Reach us on <a href="mailto:support@everlab.com.au" tabindex="-1">support@everlab.com.au</a></p>
+    </div>
     </div>
   </template>
   <section class="sc s1" data-i="1" aria-label="Refer"></section>
@@ -250,21 +298,28 @@
     </div>
   </section>
 </div>
+<!--ev:master EvOverlap js-->
 <script>
 (function () {
   var root = document.documentElement, scs = [].slice.call(document.querySelectorAll('.sc')), at = -1;
+  /* the theme first, before anything paints: the prototype's Colour mode in the hash (it sets data-theme on the root after too) */
+  var th = /(?:^|[#&])(light|dark)(?:&|$)/.exec(location.hash); if (th) root.dataset.theme = th[1];
   // the referral page once, under 01, 02 and 03
   var t = document.getElementById('tPg');
   ['.s1', '.s2', '.s3'].forEach(function (s) { var sc = document.querySelector(s); sc.insertBefore(t.content.cloneNode(true), sc.firstChild); });
-  [].forEach.call(document.querySelectorAll('.s2 .pg button, .s3 .pg button, .s2 .pg a, .s3 .pg a'), function (b) { b.tabIndex = -1; });
-  // the status bar's ink follows the screen: light on the app, dark on the page
-  var sb = document.querySelector('.sb');
+  [].forEach.call(document.querySelectorAll('.s2 .pw button, .s3 .pw button, .s2 .pw a, .s3 .pw a'), function (b) { b.tabIndex = -1; });
+  [].forEach.call(document.querySelectorAll('.s2 .pw, .s3 .pw'), function (p) { p.setAttribute('aria-hidden', 'true'); });
+  /* the header overlap, by its master (EvOverlap): the photo pinned, the sheet over it, the photo rising and dimming, the title drifting and fading, the bar's overflow state; the master's numbers.
+     Refer scrolls; under Contact capture and Sent the page rests at its top (their bars marked so they draw as Refer's at rest). onFrame: the sheet under the bar (the status bar and the logo in the screen's ink) */
+  var E = window.EvOverlap;
+  if (E) { E.bind(document.querySelector('.s1'), { hero: '.rfTop', onFrame: function (k, on) { root.classList.toggle('rfUnder', !!on); } }); E.mark(document.querySelector('.s2')); E.mark(document.querySelector('.s3')); }
+  // the status bar's ink follows the screen (CSS, by data-at): light on the app, white over the photo, the page's ink once the sheet is under it
   function go(i, quiet) {
     i = Math.max(0, Math.min(scs.length - 1, +i || 0));
     if (i === at) return;
     at = i;
     scs.forEach(function (s, k) { s.classList.toggle('on', k === i); s.setAttribute('aria-hidden', String(k !== i)); s.inert = k !== i; });
-    sb.style.color = i === 0 ? '#f2f2f2' : '#1d1a17';
+    root.dataset.at = String(i);
     if (i === 2) setTimeout(function () { var n = document.getElementById('rfName'); if (n && at === 2) n.focus({ preventScroll: true }); }, 420);
     if (!quiet) try { parent.postMessage({ everlab: 'rf:at', i: i }, '*'); } catch (e) {}
   }
