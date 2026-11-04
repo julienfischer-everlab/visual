@@ -20548,3 +20548,17 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - "No border on focus": the field keeps only its resting hairline.
 - "Cursor white not orange": the overlay's caret takes the ink, so it's white on dark and dark on light. That applies on the desk and on the phone.
 - "Keep same rotating on the floating bottom field than the top overview placeholders": the Overview's placeholder rotator is now shared (`window.EvPh.attach`). The Eva field turns over the same lines, at 2.6 s, in the app and in the Navigation doc.
+
+## Navigation doc Save setup fixed and shared; Eva field morphs into a 512 panel; tiles 128
+
+- **"Save doesnt work!"** On the published page the Tweaks load their shared copy from the artifact's store a moment after it opens. That copy wrote over the Navigation doc's saved setup: labels, Main nav desktop, Eva field, icon motion.
+  - The doc's setup is now kept in the store too (`masters/everlab_navMaster`, through `window.EvShared`), so every browser opens with it.
+  - It's taken after the shared Tweaks and applied again over them. The doc is the master.
+  - The button says "Saved for everyone", or "Saved here only" without the store.
+- **Eva field** ("+64px max width floating chat"): now 384 wide.
+- **Full shape** ("Full shape 512 max width. Need to morph"):
+  - A tap morphs the field into the chat overlay. The field's pill grows to the panel, 512 wide at most, as tall as it lays out, in 460 ms.
+  - The foot and centre stay put, the words come in once there's room, and the border beam goes round once.
+  - Closing, the panel shrinks back into the field (320 ms) and the field shows again.
+- **No blanket** ("No blanket and blur when click on the bottom chat field"): opened from the bottom field, the page stays as it is, with no dim and no blur. A click on the page still closes the panel.
+- **Ask services Tiles** ("Tile +32 width"): 128 wide.
