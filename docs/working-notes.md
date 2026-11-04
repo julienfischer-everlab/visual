@@ -20667,3 +20667,11 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
   - Modals doc: Floating at XS scales 9 / 44; Bottom sheet 0 / 32.
   - Phase figures 96×96, 50%.
   - 0 page errors.
+
+## Send a gift intro, desk: banner 2xs, list centred, +8 between rows
+
+"desktop / Content centered / Reduce banner container one level down / Add 8px gap between list value".
+- The desk banner (`.hpWide .hpGfHero`) is now in the 2xs container, `min(var(--ct2xs), 100% - 48px)`: 576 at L and 544 at M, the button's own width. It was xs, 800.
+- The list (Detail or Ticks) is a block centred under it on the desk, its rows still left-aligned inside. Detail rows drop their phone-only 32 right padding there.
+- Detail rows are 28 apart (was 20).
+- Checked at 1440: banner, list and button all centred on 720. Detail is 520 wide with a 28 row gap; Ticks is 207 wide, centred. 0 page errors.
