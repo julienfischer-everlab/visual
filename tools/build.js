@@ -19,6 +19,14 @@ const root = path.resolve(__dirname, '..');
 let src = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
 // the build's stamp in the toolbar (Sydney time), so a page a browser kept from before is told apart at a glance
 src = src.replace('>dev build</span>', '>Build ' + new Date().toLocaleString('en-AU', { timeZone: 'Australia/Sydney', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', hour12: false }) + '</span>');
+// Lucide (the icon library, npm install lucide here in tools/): the icons the page names (data-lucide="…", EvLucide.svg('…')) put in the page as data,
+// window.__evLucideIcons, so EvLucide draws them with no network; only those, never the whole set (456 KB). The unbuilt page loads the library from unpkg instead.
+{ let L = null; try { L = require('lucide'); } catch (e) { console.warn('lucide not installed in tools/: icons will load from unpkg'); }
+  if (L){ const names = new Set(), pas = n => n.replace(/(^|-)([a-z0-9])/g, (m, a, b) => b.toUpperCase()), map = {};
+    src.replace(/data-lucide="([a-z0-9-]+)"/g, (m, n) => names.add(n)); src.replace(/EvLucide\.svg\('([a-z0-9-]+)'\)/g, (m, n) => names.add(n));
+    names.forEach(n => { const ic = (L.icons && L.icons[pas(n)]) || L[pas(n)]; if (ic) map[n] = ic; else console.warn('lucide: no icon named ' + n); });
+    src = src.replace('<meta charset="utf-8">', '<meta charset="utf-8">\n<script>window.__evLucideIcons=' + JSON.stringify(map) + ';</script>');
+    console.log('lucide ' + Object.keys(map).length + ' icons inlined (' + Object.keys(map).join(', ') + ')'); } }
 
 // Images live under assets/ so the source stays a file people can read and
 // the dev page loads them over HTTP like any other page. dist/index.html has
