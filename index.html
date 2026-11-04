@@ -22764,6 +22764,10 @@ window.EvConsent = (function () {
        tapped again, the same back: in, sealed, its front. Every part ends together, so running it back is the closing, from wherever it is. Reduced motion: at once */
     var gfEvTap = function (ev, ans) {
       var on = false, an = null, nm = gfName(ans, 'them');
+      /* opened, the title over it fades out ("Fade out title when Opened"), back once it is shut and settled; shutting, the card goes in and the flap down first, the page moving up after ("On tap, close first then move up"):
+         the box's grow (the room the drawn card takes) re-timed to the start of the run, so played back it comes last; opening, its own place again (780 to 1250, with the card) */
+      var tFade = function (out) { var t = ev.title; if (!t || !t.animate) return; var from = getComputedStyle(t).opacity; if (t._fa) t._fa.cancel(); t._fa = t.animate([{ opacity: from }, { opacity: out ? 0 : 1 }], { duration: out ? 260 : 380, delay: out ? 0 : (reduced() ? 0 : 1050), easing: 'ease', fill: 'forwards' }); };
+      var boxT = function (A, shut) { var b = A && A[A.length - 1]; if (!b || !b.effect || !b.effect.updateTiming) return; b.effect.updateTiming(shut ? { delay: 0, duration: 470, endDelay: 780 } : { delay: 780, duration: 470, endDelay: 0 }); };
       var lab = function () { ev.box.setAttribute('aria-expanded', String(on)); ev.box.setAttribute('aria-label', on ? 'Your note for ' + nm + ': ' + (gfNoteT(ans) || 'Someone wanted you to have this.') + ' From ' + gfFrom(ans) + '. Close the envelope' : 'The envelope for ' + nm + ', your note sealed inside. Open it'); };
       lab();
       /* Long ("need to be able to flip as well as the other tweak"): at rest on its back, a tap turns it over to its front (the Card's turn, the other way); the next turns it back and opens it on the card (the Card's own opening: the turn, the flap up, the card drawn out); the next closes it, on its back again */
@@ -22778,8 +22782,8 @@ window.EvConsent = (function () {
           if (st === 1) { var W = ev.box.offsetWidth, D = 1250, t = function (dl, du, e) { return { delay: dl, duration: du, endDelay: D - dl - du, easing: e || E0 }; };
             op = [ev.turn.animate([{ transform: 'rotateY(360deg)' }, { transform: 'rotateY(540deg)' }], gfT(t(0, 520)))].concat(gfFlapA(ev, t(460, 380, 'cubic-bezier(.4, 0, .2, 1)'), false),
               [ev.card.animate([{ transform: 'none' }, { transform: 'translateY(' + (-.5 * W).toFixed(1) + 'px)' }], gfT(t(800, 450))), ev.box.animate([{ height: (ev.R * 100) + 'cqw' }, { height: (ev.R * 100 + 47.5) + 'cqw' }], gfT(t(780, 470)))]);
-            if (fl) { fl.cancel(); fl = null; } st = 2; labL(); fin(op); return; }
-          var back = op.slice(1); back.forEach(function (x) { x.updatePlaybackRate(-1); x.play(); }); st = 0; labL();   /* closed where it opened, on its back (the turn held at 540, its back) */
+            if (fl) { fl.cancel(); fl = null; } st = 2; labL(); tFade(true); fin(op); return; }
+          var back = op.slice(1); boxT(back, true); back.forEach(function (x) { x.updatePlaybackRate(-1); x.play(); }); st = 0; labL(); tFade(false);   /* closed where it opened, on its back (the turn held at 540, its back): the card in and the flap down, then the page up */
           fin(back, function () { op.forEach(function (x) { x.cancel(); }); op = null; });
         });
         return;
@@ -22790,6 +22794,7 @@ window.EvConsent = (function () {
           an = [ev.turn.animate([{ transform: 'rotateY(' + (ev.long ? 180 : 0) + 'deg)' }, { transform: 'rotateY(180deg)' }], gfT(t(0, 520)))].concat(gfFlapA(ev, t(460, 380, 'cubic-bezier(.4, 0, .2, 1)'), false),   /* Long: already on its back, no turn */
             [ev.card.animate([{ transform: 'none' }, { transform: 'translateY(' + (-.5 * W).toFixed(1) + 'px)' }], gfT(t(800, 450))), ev.box.animate([{ height: (ev.R * 100) + 'cqw' }, { height: (ev.R * 100 + 47.5) + 'cqw' }], gfT(t(780, 470)))]);
           an.forEach(function (a) { a.pause(); }); }
+        boxT(an, !on); tFade(on);
         var mine = an; an.forEach(function (a) { a.updatePlaybackRate(on ? 1 : -1); a.play(); if (reduced()) a.finish(); });
         an[0].finished.then(function () { if (!on && an === mine) { mine.forEach(function (a) { a.cancel(); }); an = null; } }, function () {});   /* shut again: its own resting state, crisp */
       });
@@ -22855,8 +22860,8 @@ window.EvConsent = (function () {
     BUILD['gift.pay'] = function (scr, ans) {
       /* Check and pay: the plan and its price, To, Arrives and the note, each its Change back to its step (and Continue there straight back here) */
       var k = ans.plan || 'prot', p = GF_PLAN[k], occ = name(GF_OCC, ans.occ), nt = gfNoteT(ans);
-      scr.appendChild(q('', 'All wrapped up!', null, true));   /* centred ("centered title") */   /* the page's H1 over the envelope; the review's H2 and its line under it ("push this title up above envelope: H1 All wrapped up!, envelope, H2 Review your information, sub ...") */
-      var ev = gfEnv(ans, true); gfEvTap(ev, ans); scr.appendChild(ev.el);   /* their note sealed in its envelope, on top of the page ("an enveloppe that will sit on top of the section check and pay"); tapped, it opens on the card */
+      var gfTtl = q('', 'All wrapped up!', null, true); scr.appendChild(gfTtl);   /* centred ("centered title") */   /* the page's H1 over the envelope; the review's H2 and its line under it ("push this title up above envelope: H1 All wrapped up!, envelope, H2 Review your information, sub ...") */
+      var ev = gfEnv(ans, true); ev.title = gfTtl; gfEvTap(ev, ans); scr.appendChild(ev.el);   /* their note sealed in its envelope, on top of the page ("an enveloppe that will sit on top of the section check and pay"); tapped, it opens on the card */
       if (gfSeal && !opts.snap) scr._gfFx = function (old) { gfSealFx(scr, ev, ans, old); };   /* from Their note's Continue: the merge first (show() runs it in place of the push) */
       else if (opts.snap && opts.gfSeal) { var gw = 0, wait = function () { if (!alive) return; if (!scr.isConnected || !scr.offsetWidth) { if (++gw < 90) requestAnimationFrame(wait); return; } gfSealFx(scr, ev, ans, null, opts.gfSeal); }; requestAnimationFrame(wait); }   /* the Documentation's frame of the merge, held */
       var rvT = 'Review your information', rvD = 'Before heading to Everlab’s secure checkout to complete your details and payment.';

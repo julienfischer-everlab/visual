@@ -20604,3 +20604,22 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - The store also showed the bar's Tweaks last saved for everyone at 05:41. Its Save now waits, retries and names the reason it fails (previous build).
 - "No arrow on Mobile, only on desktop": the carousels' prev/next arrows (`.nav.railNav`, e.g. the Overview's Recent insights) now show on the desk only. The phone and the tablet swipe: XS and S frames, `#phone2`, and Auto under 992.
 - "Drop the left Action": the history button (Your conversations, the clock) no longer slides in at the left of the Overview's top field when it's in use on the phone. The field runs from the edge, and the close button stays at its right.
+
+## Lucide icons, top bar Inbox Tweak, no home indicator, envelope close sequence
+
+- **Lucide** ("What lib needed?": `lucide`, the plain JavaScript package; `npm install lucide`): installed in `tools/` (1.60.0, pinned).
+  - The build puts the icons the page names (`data-lucide="…"`, `EvLucide.svg('…')`) into the page as data (`window.__evLucideIcons`), only those, so they draw with no network.
+  - The unbuilt page loads the library from unpkg, pinned, never @latest.
+  - The whole library (456 KB) isn't inlined: the page is near its 16 MB.
+  - First use: the Eva field's mic is Lucide's `mic`.
+- **Top bar Inbox** ("Need top nav tweak. Inbox ON OFF (OFF default)"): Tweaks › Top Chat AI › Inbox, On or Off, Off by default. Off hides the Overview top bar's Inbox button, leaving the bell.
+- **No home indicator anywhere** ("Remove home indicator everywhere"): the 134 × 5 bar is gone from:
+  - the dock, the sheets, the keyboard, the in-app chat;
+  - the Documentation's frames and the header-overlap demo;
+  - the drawn devices (Past results and Concierge sheets, gift, clinic, referral);
+  - the Concierge and Gift pages themselves.
+
+  The 34 of room under a footer stays (the device's safe area).
+- **Check and pay's envelope:**
+  - "Fade out title when Opened": All wrapped up! fades out as the envelope opens (260 ms), and back once it's shut and settled.
+  - "On tap, close first then move up": shutting, the card goes in and the flap comes down first. The page moves up after, as the envelope turns back to its front. The box's growth is re-timed for the close and back for the next open.
