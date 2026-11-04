@@ -20369,3 +20369,44 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - Design system nav: "+2px gap between icon and label": 7 (was 5) under the 12px labels, every dock (the Navigation doc's phone too).
 - Nutrition plan meal cards: "visual -12px": the category visuals 84 (was 96).
 - The gift-intro helper had published its own build (against its brief) at 03:30; this publish replaces it with the merged build, which already holds its changes.
+
+## The chat video stage: the Concierge draws the AI Chat Video Builder's preview and its MP4 ("Create a 'Marketing' page in assets. Chat builder will be the first test here.")
+
+- **One renderer**: `visuals/concierge.html#stage` (built to `dist/concierge.html`) draws a composition, a conversation over a background, in the phone or floating, with the chat's own CSS and renderers. The builder only edits the JSON. The whole API and model are in docs/chat-video.md.
+- **Composition v1**: `{ v, name, format, background, device, padding, theme, sequence }`. Items are `user` (typing none, dots or text in the composer), `eva` (the thinking line for `think` ms, then the answer, never typed), `specialist` (the card with the avatar first, then the words) and `widget` (a BLOCK, joined to the answer before it).
+- **Time sets everything**: `Concierge.stage.seek(ms)` draws the exact state at ms. That covers the entrances (8 px over 240 ms, widgets 10 px over 300 ms), the 3 x 3 thinking grid and its shimmer, the typing dots, the caret, the send disc and the scroll (500 ms, eased, measured once per load).
+  - No CSS animation or transition runs in the stage. The same ms always gives the same DOM, whether it is reached forward, back or frame by frame. About 0.04 ms per seek.
+  - The scroll moves the column with `top`, not a transform, so a frame reached either way rasterises alike.
+- **The MP4's frames**: `stage.frame(ms, { scale })` returns that same DOM and CSS drawn into a canvas through an SVG foreignObject, with pictures as data URLs. It renders 1080 x 1920 in about 60 ms.
+- **Phone**: the stage draws the master XS frame itself (393 x 852, `--evPhR`, `--evPhBz`, no shadow) with the status bar, the chat's head, the thread, the composer and the home indicator, so the builder draws no frame.
+- **Floating**: the thread alone in a 440 column, anchored at the foot, its top edge faded. In light theme the cards take the booking card's white and shadow so they read on a light ground.
+- **Specialists**: Dr Steven Lu (Preventative Health Doctor, his photo), Dr Sarah Chen (her photo), and Drs Goh, Kerr, Martin, Lim and Okafor by their initials. The clinician card now takes any doctor (`t.dr`).
+- **Widgets**: 30 in `stage.widgets()` by Health, Services and Actions, each with fields and mock data.
+  - New BLOCKs from the chat's own card, type, buttons and tags: Biomarker, Chart, Insight, Results, Protocol, Recommendation, Specialist, Diagnostic, Screening, Referral, CTA, Questionnaire, Upload and Connect wearable.
+  - The appointment card takes its own title, description and picture.
+  - All are in the Components tab under Thinking and typing, Specialists, and Video widgets.
+- **Fix**: the Components tab opened straight from a link (`#components`, the Documentation's gallery) threw an error because the widget list was read before the editor's fields existed. The list is now kept only once the fields are there.
+- **Checked** with `tools/stage-check.js` (Playwright) on visuals/ and dist/:
+  - Phone dark 9:16, phone light 16:9 on a blurred picture, floating dark 1:1 on a cropped picture, and floating light 4:3, each with 7 items.
+  - `seek(t)` twice gives the same DOM and pixels. Forward then back and frame by frame land on the same frame. The thread scrolls with the last item in view.
+  - `frame(t)` is the right size and stable. All 30 widgets draw, with no page errors.
+
+## The Chat video builder and the Marketing page ("Create a 'Marketing' page in assets. Chat builder will be the first test here.")
+
+- **Marketing**: a new page in the page menu's Asset group, after Assets library (`#marketing`). It is also on Home, in the comments' page list and in `__pageVal`. A slim header names the page and its tools, with the Chat video builder first; the tool's own page is in a frame under it. Any other page opening makes it give way.
+- **The builder** is `visuals/chat-video.html`, built to `dist/chat-video.html` (125 KB). It is React 18.3.1 and htm from cdnjs and jsdelivr, with no build step. The app's `index.html` only gained the shell (about 5 KB).
+  - The canvas is the Concierge's stage in an iframe, so there is no second chat UI. The builder edits the composition and the stage draws it.
+  - The widget library's thumbnails are the real components, captured from a second, hidden stage.
+- **Layout per the brief**:
+  - Left, Composition: Sequence (add buttons, drag by the handle with mouse or touch, Edit, Duplicate, Delete, duration and delay per row), Widgets (search, Health, Services, Actions), Saved (list, Rename, Duplicate, Delete, five templates).
+  - Centre: the canvas in the format's frame, with its resolution.
+  - Foot: play, pause, restart, loop, 1× and 0.5×, a scrubber with a mark per item, the time.
+  - Right: the item's or the canvas's settings.
+- **Storage**: the team's compositions in the artifact's db (`chatVideos`), pictures in its assets, files through downloads. Each one falls back to this browser or a plain link outside the artifact.
+- **Code export**: one `.tsx` (the `<ChatVideo>` tree, typed, driving the stage by postMessage), the composition JSON, and Import JSON. Export → MP4 video waits for `window.ChatVideo.exportMp4` (the next step).
+- **Checked** with Playwright inside the app's Marketing page (dist), 63 checks, no page errors:
+  - Seven items built from scratch with the real mouse and keyboard (emoji, multiline, biomarker fields, specialist picker). Duplicate, delete, reorder by mouse drag and by touch drag, undo and redo.
+  - Play, pause, scrub, jump to an item, 0.5×, loop, Space, Delete, Ctrl+D.
+  - Phone and floating, the five formats and a custom size, a DS colour, a hex and an uploaded picture with crop, scale, blur and overlay, and an avatar picture.
+  - Save, rename, duplicate, delete, a template, the unsaved-draft prompt, the TSX and JSON (copy and download), import, light theme, and leaving and coming back by the menu.
+  - The exported `.tsx` passes `tsc --strict` and runs: on another origin it loads and plays the composition in the stage.
