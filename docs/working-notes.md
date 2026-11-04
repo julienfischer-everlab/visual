@@ -20329,3 +20329,13 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 ## XS and S frames clip everything to their corners
 - "Make sure the XS frame iPhone clips content (radius covers the screen); we can see the full viewport's sharp edges when navigating through pages": the screen (`.dash`, the landing `.lp`, the Ask sheet's desk wrapper) relied on overflow + border-radius alone. A page sliding in or out (Plan ↔ Activity plan and the other pushes) is its own composited layer, and some browsers paint such a layer square past the corners. A `clip-path: inset(0 round 56px)` (S: 28px) on the same boxes now holds every layer, fixed ones included (the Overview's dim, already phone-sized). Auto (full screen) is unchanged.
 - Checked headless mid-push and mid-pop at XS: corners round throughout.
+
+## Nutrition plan: category visuals and the content from the screen; Plan nutrition rows open the item's sheet (helper, merged)
+- "Nutrition categori visuals": the seven category cut-outs (192 square, clear ground, WebP q88, `assets/plan/nut-cat-*`) sit at each My meals card's top right, 96 px, no tile, Dark and Light. They're in the Assets library under Plan; the old placeholders (nut-lunch/dinner/tips/after, food-dark/light) and their entries are gone.
+- Content follows the mock: "Smart choice between meals"; the Supplement stack's rows read Daily as the Plan's Supplements do. Everything else already matched the screen word for word.
+- The Plan's Nutrition card is now My meals' Breakfast (title, line, visual and tips read from the same list). "Open bottom sheet of the item, no the nutrition page": its rows open the item's own sheet (the Nutrition plan's `.plNSh`: category eyebrow, title, words) over the Plan where it stands; Close, scrim, Escape or a swipe brings the Plan back as it was. Only See plan opens the Nutrition plan.
+- Left alone: Vitamin D keeps its full product name ("Vitamin D3 + K2 Drops") so it matches My supplements; the hero photo is still the placeholder (no hero in the zip).
+
+## More sheet: the page you're on keeps a plate, sub pages included
+- "If the user is under a sub page, the main page on the nav still need to be the active nav": on the Activity plan (and every Plan sub page) More already resolved to Plan and filled its icon, but only a hover plate showed on another row, which read as the active one. The current row (`aria-current="page"`) now keeps an 8% plate (Light: 7% of the ink), hovers elsewhere stay 5%.
+- Checked: Settings → Plan → Activity plan → More lights Plan only. The dock keeps More lit on every Plan sub page; Service detail has no dock by design (My journey lit when it closes).
