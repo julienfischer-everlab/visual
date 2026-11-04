@@ -20642,3 +20642,28 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
   - Home: back, Home lit.
   - L·1440 sidebar: Plan lit on the Plan, My journey lit on the Timeline.
   - 0 page errors.
+
+## Batch: insights merge, edge-to-edge sheets, foot = sides, desk panel fills, phase circles, Account tab
+
+- **Insights Hero, the two cards merged** ("Merge these 2"; "Add this in the Insight Tweak group as an option"). The readings with their charts (ApoB, Vitamin D, Resting heart rate) are lifted into `OV_READS`. The bento card's default slides and Insights -> Position -> Hero now read them first, then the Recent insights cards with their renders: 8 slides in one carousel. The readings take the hero's link CTA, "View results ->", so the card has one CTA style.
+- **Bottom sheets edge to edge** ("Bottom sheet floating ONLY for Overview AI action. All other bottom sheet need to be edge to edge").
+  - `:root` is now `--evShGap:0px; --evShR:32px; --evShRb:0px`. Every `border-radius:var(--evShR)` became `var(--evShR) var(--evShR) var(--evShRb) var(--evShRb)`: 32 at the top, a square foot that the screen's own corners round.
+  - Floating is the variation `.evShFloat`, which sets 12 in and 44 all round. The AI action's `.aiWrap` uses it.
+  - The More cards (`.mvWrap`) keep it too: they are cards stacked like the AI sheet, and stacked cards can't sit flush.
+  - Modals doc has a new part, **Floating bottom sheet** ("12 in, 44 corners · the AI action only"). The old "Bottom sheet · Floating" is now **Bottom sheet**, and its spec reads edge to edge. The Full bottom sheet spec is updated too: 32 corners, 35 once stacked.
+- **The foot as far as the sides** ("Container padding left right, apply same on the bottom (seems too much atm)").
+  - The dock: `--navLift: var(--navInset)`, 12 under it like its 12 sides (was 29). Full screen and Auto follow.
+  - The drawn phone's `--evHome` is 0, since its home bar is gone. Sheet footers use `max(16px, 16px + var(--evHome) - var(--evShGap))`, so 16 under them like their 16 sides. The chat body, the Modals doc and General layout demo footers likewise.
+- **Desk: the black body fills the width** ("Black body area always fill the width").
+  - `--pnCap` is now `100% - --sideW - 16`, and `.dash` sets `--sideW: var(--sideFill)`, the rail's own 224 to 320. The panels start at `left: var(--sideW)`.
+  - The old 1360 cap moved inside the panel as padding, `--pnIn: max(0, (100% - sideW - 1376) / 2)`, on the shared panel rule, Appointments, Account and Services. The Overview's own formula already handled it.
+  - Checked at 2000 / 1700 / 1440 / 1100, open and retracted: panel 8 off the rail and 8 off the edge. Content still 1280 on Insights, Services and Account, 1080 on My journey and the Overview's column. 1440 is unchanged.
+- **My journey: phase pictures as 96 circles** ("Use Circle 96 96"): `html .jvMsF` is 96×96 at every size. The baseline and Re-test photos are still to come (`JV_MSPH[0]` and `[2]`). The two photos sent mid-turn didn't reach disk.
+- **Journey demo step 4** is "Protocol or Diagnostics purchased" ("Protocol OR diagnostic membership purchase").
+- **Overview -> Account: Freemium / Member (default)** ("Add tweak Tab Freemium / Member (default)"). A segmented row, `#stFrm`, sets `html.freemium` and is saved with the setup. It is deliberately not tied to the Journey demo, whose default is already "Not a member". What Freemium changes is still to be decided.
+- **Checked:**
+  - Plan nutrition sheet flush (L0 R0 B0, 32/0 corners); the AI card at 12 / 44; More at 12; the dock at 12 / 12.
+  - Hero slides: 3 charts, then 5 renders.
+  - Modals doc: Floating at XS scales 9 / 44; Bottom sheet 0 / 32.
+  - Phase figures 96×96, 50%.
+  - 0 page errors.
