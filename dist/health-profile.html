@@ -2223,7 +2223,7 @@ html .arSheet.hpSheet.hpGfSolo.hpGfAtIn:not(.hpGfOnSheet) .arHead .arIconBtn.arI
 .arSheet.hpSheet .hpGfNc .hpGfCnt { position: absolute; right: 4.43cqw; bottom: 3.32cqw; font-size: 3.6cqw; line-height: 1.3; color: rgba(243, 237, 230, .48); } .arSheet.hpSheet .hpGfNc .hpGfCnt.hpGfCntHi { color: var(--ar-out-fg); }
 /* the note typed in the card: its text the card's own (Tobias, centred), no box; the caret and the placeholder in the card's ink; the card's edge lit while writing */
 .arSheet.hpSheet .hpGfPvEd { cursor: text; } .arSheet.hpSheet .hpGfPvOff { cursor: default; }
-.arSheet.hpSheet .hpGfNoteC { display: flex; flex-direction: column; gap: 12px; }
+.arSheet.hpSheet .hpGfNoteC { display: flex; flex-direction: column; gap: 12px; } .arSheet.hpSheet .hpGfNtTg { display: flex; align-items: center; gap: 12px; min-height: 44px; } .arSheet.hpSheet .hpGfNtTgL { flex: 1; min-width: 0; font-size: 16px; line-height: 22px; font-weight: 500; color: oklch(var(--ar-ink)); } .arSheet.hpSheet .hpGfNtTg > .hpGfCnt { flex: none; }   /* Note control: Toggle, the row under the card: the words, the count, the switch */ .arSheet.hpSheet .hpGfNoteC > .hpGfCnt { align-self: flex-end; margin-top: -4px; }   /* the count under the card, at its right edge */
 /* the note's tabs: With note, Without note */
 .arSheet.hpSheet .hpGfNtTabs { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; border-radius: 999px; background: oklch(var(--ar-ink) / .06); }
 .arSheet.hpSheet .hpGfNtTab { appearance: none; height: 36px; margin: 0; padding: 0 12px; border: 0; border-radius: 999px; background: none; color: oklch(var(--ar-ink) / .56); font: inherit; font-family: var(--ar-font); font-size: 14px; font-weight: 500; cursor: pointer; transition: background-color .2s ease, color .2s ease; }
@@ -2279,6 +2279,7 @@ html .arSheet.hpSheet.hpGfSolo.hpGfAtIn:not(.hpGfOnSheet) .arHead .arIconBtn.arI
 .arSheet.hpSheet .hpGfEvL .hpGfEvFl { height: 30cqw; filter: drop-shadow(0 .5cqw .9cqw rgba(0, 0, 0, .55)); }
 .arSheet.hpSheet .hpGfEvL .hpGfEvLn { display: none; }
 .arSheet.hpSheet .hpGfEvL .hpGfEvPk { background: var(--evGrain) 0 0 / 160px 160px, linear-gradient(200deg, #202020 0%, #171717 50%, #111 100%); }
+.arSheet.hpSheet .hpGfEvLb.hpGfEvLbM { width: 6.4cqw; height: 6.4cqw; background: none; -webkit-text-fill-color: initial; } .arSheet.hpSheet .hpGfEvLbM svg { display: block; width: 100%; height: 100%; }   /* the mark in the foil's place, about the label's height twice */
 .arSheet.hpSheet .hpGfEvLb { position: absolute; left: 50%; top: 46%; transform: translate(-50%, -50%); font-family: var(--ar-font); font-size: 2.9cqw; line-height: 1; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; white-space: nowrap; color: #d9b36a; background: linear-gradient(100deg, #a77c35 0%, #f3d98f 38%, #c69445 62%, #f6e2a8 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; opacity: inherit; }   /* the foil: a warm gold, a sheen across it; its flap's opacity taken as its own (the text clip is a layer of its own in the turning flap, and showed through it open) */
 .arSheet.hpSheet .hpGfEvL .hpGfEvCd { top: 3cqw; }   /* Long: the same card, 3 from its top so it ends at the envelope's foot */
 /* the merge moment's layer over the page: the note's card in flight, the step's preview giving way to it */
@@ -4515,7 +4516,7 @@ window.EvConsent = (function () {
       /* the note ("note style card: no border, paper textured, +4 radius"; "add tab: With note, the text typed inside the card; Without note, <From> got something special for you, in the serif"; "option to add a signature: a card at the end of the message, a bottom sheet with a canvas to sign"):
          the tabs over the paper card; the card the wordmark, then the note typed in its Tobias (With note) or the line in it (Without); the signature's card at its foot; From and the count under it. No hint any more */
       var nm = gfName(ans, '');
-      scr.appendChild(q('', nm ? 'Add a note for ' + nm : 'Add a note'));   /* its sub under the card */
+      /* no title ("remove title"): the card itself opens the step, its placeholder naming them */
       if (ans.from == null) ans.from = DEMO.gift.from; if (ans.note === undefined) ans.note = '';   /* one giver (DEMO.gift, as Log in); seen: no note is an answer */
       var tabs = h('div', { class: 'hpGfNtTabs', role: 'tablist', 'aria-label': 'Your note' }), cardW = h('div', { class: 'hpGfNtCard' });
       var cnt = h('span', { class: 'hpGfCnt', 'aria-live': 'polite' }), ta = null, pvT = null, offN = null, pvC = null;
@@ -4560,24 +4561,29 @@ window.EvConsent = (function () {
         if (off) { offN = h('p', { class: 'hpGfNcN' }); kids.push(offN); }   /* Without note: the line itself, in the card's Tobias */
         else {
           pvT = h('b', { class: 'hpGfNcT' });
-          ta = h('textarea', { class: 'hpGfNcN', rows: '1', maxlength: String(GF_MAX), placeholder: 'Type your note here', 'aria-label': 'Your note', 'data-focus': '', spellcheck: 'true' }); ta.value = ans.note || '';
+          ta = h('textarea', { class: 'hpGfNcN', rows: '1', maxlength: String(GF_MAX), placeholder: nm ? 'Type your note for ' + nm : 'Type your note here', 'aria-label': nm ? 'Your note for ' + nm : 'Your note', 'data-focus': '', spellcheck: 'true' }); ta.value = ans.note || '';
           ta.addEventListener('input', function () { var was = ans.note || '', v = ta.value.slice(0, GF_MAX); if (ta.value.length > GF_MAX) { var at0 = Math.min(ta.selectionStart || 0, GF_MAX); ta.value = v; try { ta.setSelectionRange(at0, at0); } catch (e) {} }   /* the drawn keys type by script, past maxlength: held to it here */
             ans.note = v; live();
             if (pvC && pvC._full && v.length > was.length) { var at = Math.max(0, (ta.selectionStart || 0) - (v.length - was.length)); ta.value = was; ans.note = was; try { ta.setSelectionRange(at, at); } catch (e) {} live(); }   /* the card full at its smallest size: the letter not taken */
             save(true); });
           kids.push(pvT, ta);
         }
-        kids.push(h('div', { class: 'hpGfNcSlot' }, sigEl()), cnt);
+        kids.push(h('div', { class: 'hpGfNcSlot' }, sigEl()));   /* the count under the card now ("counter below the card") */
         pvC = gfNcMake(kids, { cls: ' hpGfPv', on: { click: function (e) { if (ta && !e.target.closest('button')) ta.focus(); } } }); cardW.appendChild(pvC);   /* the envelope's card, fitting itself; a tap on it writes in it */
         [].forEach.call(tabs.children, function (b) { var on = (b.dataset.v === 'off') === off; b.setAttribute('aria-selected', String(on)); b.tabIndex = on ? 0 : -1; });
+        if (sw) sw.setAttribute('aria-checked', String(!off));
         live();
         if (focus && ta) setTimeout(function () { try { ta.focus({ preventScroll: true }); var n = ta.value.length; ta.setSelectionRange(n, n); } catch (e) {} }, 0);
       };
       [['on', 'With note'], ['off', 'Without note']].forEach(function (t) {
         tabs.appendChild(h('button', { type: 'button', role: 'tab', class: 'hpGfNtTab', 'data-v': t[0], text: t[1], on: { click: function () { var off = t[0] === 'off'; if (!!ans.noteOff === off) return; ans.noteOff = off; save(true); paint(!off); } } }));
       });
+      /* Tweaks -> Send a gift -> Note control ("use Toggle instead"): Toggle puts one row under the card, Add a note for <name> at the left and a switch at the right, the count at the switch's left while it is on ("add the counter on the left of the toggle"); Segmented keeps the tabs */
+      var TOG = (document.getElementById('stGfNtCtl') || {}).value === 'tog', sw = null;
+      if (TOG) sw = h('button', { type: 'button', class: 'hpSw', role: 'switch', 'aria-checked': String(!ans.noteOff), 'aria-label': nm ? 'Add a note for ' + nm : 'Add a note', on: { click: function () { ans.noteOff = !ans.noteOff; save(true); paint(!ans.noteOff); } } }, h('i', { 'aria-hidden': 'true' }));
       paint(false);
-      scr.appendChild(h('div', { class: 'hpFields hpGfNoteFs' }, tabs, h('div', { class: 'hpF hpGfNoteC' }, cardW)));   /* no line under the card ("no need") */
+      scr.appendChild(TOG ? h('div', { class: 'hpFields hpGfNoteFs' }, h('div', { class: 'hpF hpGfNoteC' }, cardW), h('div', { class: 'hpGfNtTg' }, h('span', { class: 'hpGfNtTgL', text: nm ? 'Add a note for ' + nm : 'Add a note' }), cnt, sw))
+        : h('div', { class: 'hpFields hpGfNoteFs' }, h('div', { class: 'hpF hpGfNoteC' }, cardW, cnt), tabs));   /* the card, its count under it at the right ("counter below the card"), then With note / Without note ("segmented tab below") */
       foot2('Continue', true, fwd);
     };
     /* Send a gift: the envelope (CSS "Send a gift: the envelope"), one builder for Check and pay's, the merge moment's and the Documentation's stills. The mark and the connectors are the logo's own paths (the sidebar's svg, as wordmark()), never redrawn */
@@ -4622,12 +4628,15 @@ window.EvConsent = (function () {
         function (id) { return '<g clip-path="url(#' + id + 'l)">' + P + '</g><g transform="matrix(80 0 0 1 -821.6 0)"><g clip-path="url(#' + id + 's)">' + P + '</g></g>'; }, .12) : null;
       var mk = D.length ? gfDeb('hpGfEvMk', '-0.8 2 22.8 22.8', 'xMidYMid meet', function () { return ''; }, function () { return P; }, .4) : null;
       var front = h('div', { class: 'hpGfEvF' }, cn, h('div', { class: 'hpGfEvId' }, h('span', { class: 'hpGfEvLogo' }, wordmark()), nm ? h('span', { class: 'hpGfEvTo', text: 'For ' + nm }) : null));
-      var flap = h('div', { class: 'hpGfEvFl' }, h('div', { class: 'hpGfEvFlI' }), h('div', { class: 'hpGfEvFlO' }, LONG ? h('span', { class: 'hpGfEvLb', text: nm ? 'For ' + nm : 'For you' }) : mk));
+      var flap = h('div', { class: 'hpGfEvFl' }, h('div', { class: 'hpGfEvFlI' }), h('div', { class: 'hpGfEvFlO' }, LONG ? (D.length ? gfFoilMk(P) : h('span', { class: 'hpGfEvLb', text: nm ? 'For ' + nm : 'For you' })) : mk));
       var card = gfCardEl(ans), pocket = h('div', { class: 'hpGfEvPk' }, h('p', { class: 'hpGfEvLn' }, h('b', { text: 'Your health. Your future.' }), h('span', { text: 'We’re here when you’re ready.' })));
       var turn = h('div', { class: 'hpGfEvT', 'aria-hidden': 'true' }, front, h('div', { class: 'hpGfEvB' }, flap, card, pocket));
       var box = h(btn ? 'button' : 'div', btn ? { type: 'button', class: 'hpGfEv' + (LONG ? ' hpGfEvL' : ''), 'aria-expanded': 'false' } : { class: 'hpGfEv' + (LONG ? ' hpGfEvL' : '') }, turn);
       return { el: h('div', { class: 'hpGfEvW' }, box), box: box, turn: turn, flap: flap, fi: flap.firstChild, fo: flap.lastChild, card: card, long: LONG, R: LONG ? .55 : .6 };   /* R: its height over its width */
     };
+    /* the Long envelope's foil ("put logo mark everlab instead of For Alex"): the mark's own paths in the label's gold, its sheen across it */
+    var gfFoilMk = function (P) { var gid = 'hpGfEvG' + (++gfEvN), w = h('span', { class: 'hpGfEvLb hpGfEvLbM', 'aria-hidden': 'true' });
+      w.innerHTML = '<svg viewBox="-0.4 2.39 22.02 22.01" xmlns="http://www.w3.org/2000/svg" focusable="false"><defs><linearGradient id="' + gid + '" x1="0" y1="0" x2="1" y2=".36"><stop offset="0" stop-color="#a77c35"/><stop offset=".38" stop-color="#f3d98f"/><stop offset=".62" stop-color="#c69445"/><stop offset="1" stop-color="#f6e2a8"/></linearGradient></defs><g fill="url(#' + gid + ')">' + P + '</g></svg>'; return w; };
     var gfT = function (o) { var r = { fill: 'both' }; for (var x in o) r[x] = o[x]; return r; };
     /* the flap shut (opened: the same keyframes run back), over the card from behind it half way, its inside giving way to its outside there */
     var gfFlapA = function (ev, t, shut) {

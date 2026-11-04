@@ -20352,3 +20352,11 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - "top bottom padding 96" / "contaienr size xs": the desk banner is now the XS container (`--ctXs`, 800) with 96 above and below: 800×264 at 1440, wordmark inside at its top.
 - "grascale on inactive. Remove logo everlab": on Choose the gift (Tabs) the card not picked is greyscale (glow, texture, icon disc, badge; text unchanged) with a .3 s swap; the gift cards' moving dot logo is gone (the membership card keeps its own).
 - Checked on the merged build: XS full video start → move → settled; desk start full window → 800×264 banner; no console errors. The group now has two rows labelled "Intro" (the list layout and this one); their options tell them apart.
+
+## Send a gift, Their note: no title, the name in the placeholder, count and tabs under the card, a Toggle tweak; the Long envelope's foil is the logo mark
+- "remove title": the step opens on the card itself (no "Add a note for Alex").
+- "place holder, Type your note for Alex": the field's placeholder names them (Type your note here with no name).
+- "Couter below the card" / "Segmented tab below": the count leaves the card for just under it at its right edge (13px, 56% ink), then With note / Without note under it.
+- "Tweak segmented tab, use Toggle instead … Add note to Alex | Toggle … If yes add the counter on the left of the toggle": Tweaks → Send a gift → **Note control: Segmented / Toggle** (default Segmented; changing it redraws the step; Save keeps it). Toggle is one row under the card: "Add a note for Alex" at the left, the HP switch at the right, the count at the switch's left while it is on (hidden off). Off writes the card's Without-note line, as the tab did.
+- "Put Logo mark everlab instead of For alex": the Long envelope's gold foil is now the Everlab mark (its own paths, the foil's gold gradient and sheen), about 23px on the phone; For <name> remains only if the mark's paths can't be read.
+- Checked at XS: both note modes, toggle on/off, Check and pay with Long. No console errors.
