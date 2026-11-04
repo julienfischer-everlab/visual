@@ -20743,3 +20743,8 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
   - Save, then reload: Ideation comes back with its setup; Latest still has its own.
   - Live picked fresh keeps the values.
   - 0 page errors.
+
+## Light mode: bottom nav white 12%
+
+"Bottom nav bg fff 12%". In light mode the dock's glass is now `rgba(255,255,255,.12)` over the page, the blur kept (16px), with no grey plate and no darkening of what's behind it. Dark mode unchanged.
+- Checked: light dock computes rgba(255,255,255,0.12), filter blur(16px) saturate(1); 0 page errors.
