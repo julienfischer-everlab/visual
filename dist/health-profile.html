@@ -4813,15 +4813,22 @@ window.EvConsent = (function () {
         an[0].finished.then(function () { if (!on && an === mine) { mine.forEach(function (a) { a.cancel(); }); an = null; } }, function () {});   /* shut again: its own resting state, crisp */
       });
     };
-    /* the merge ("after their note, a screen that merge the note into an envelope that will sit on top of Check and pay"), Check and pay's first beat, no tap: the note's card lifts from its preview, the envelope (its back, the flap open) rises from below, the card slides down into it,
-       the flap folds over it, then it turns to its front, smaller, up to its place at the top of the page, the page coming in round it. About 2.2 s, eased, no bounce. still: the Documentation's frame of it, held at that time. Reduced motion: none (the envelope there at once) */
+    /* the merge ("after their note, a screen that merge the note into an envelope that will sit on top of Check and pay"), Check and pay's first beat, no tap, now its landing ("Envelopp land sequence: card goes into the enveloppe centered vertically; title All wrapped up! appear above;
+       both goes / push up as the rest of the content appear"): the note's card lifts from its preview, the envelope (its back, the flap open) rises from below to the middle of the screen, the card slides down into it, the flap folds over it (0 to 1500, nothing else on the page);
+       it turns to its front at its own size, the title coming in over it, the two centred as a pair (1520 to 2350); then the review comes in from the foot and pushes them up to their places (2600 to 3500), the page as it rests. Continue to payment stays put throughout.
+       About 3.5 s, eased, no bounce. still: the Documentation's frame of it, held at that time. Reduced motion, or Check and pay reached any other way (the Flow panel, Back, a reload): none, the page at rest at once (the step's own move) */
+    /* the page's room as it will be once the letters' keyboard is down (Continue on Their note lets it go as the merge starts): measured in that state, then put back to go down in its own .3 s */
+    var gfRoom = function (scr) { if (!akb || !root.classList.contains('hpAkOn')) return scr.clientHeight; var hk = akb.style.height, tn = akb.style.transition; akb.style.transition = 'none'; root.classList.remove('hpAkOn'); akb.style.height = '';
+      var v = scr.clientHeight; root.classList.add('hpAkOn'); akb.style.height = hk; void akb.offsetHeight; akb.style.transition = tn; return v; };
     var gfSealFx = function (scr, ev, ans, old, still) {
       var sr = scr.getBoundingClientRect(), k = (sr.width / scr.offsetWidth) || 1, er = ev.el.getBoundingClientRect();
-      var Vw = scr.clientWidth, Vh = scr.clientHeight, W = ev.el.offsetWidth, H = ev.R * W, sx = (er.left - sr.left) / k, sy = (er.top - sr.top) / k;
+      var Vw = scr.clientWidth, Vh = gfRoom(scr), W = ev.el.offsetWidth, H = ev.R * W, sx = (er.left - sr.left) / k, sy = (er.top - sr.top) / k;
       if (!W || !Vh) { if (old) old.remove(); return; }
-      /* its place in the middle of the moment: as wide as the room allows (up to 1.12 its own), the card out over it and the envelope, both, centred a touch high */
-      var m = Math.max(.6, Math.min(1.12, (Vw - 32) / W, (Vh - 56) / (1.165 * W))), Wm = m * W, top0 = Math.max(12, (Vh - 1.165 * Wm) / 2 - Vh * .02);
-      var Ox = sx + W / 2, Oy = sy + H / 2, dx = Vw / 2 - Ox, dy = top0 + .865 * Wm - Oy, low = Vh + .55 * Wm + 12 - Oy, lift = -.565 * W;
+      /* its place while the card goes in: the envelope's middle at the screen's (the page's room, between the bar and Continue), as wide as the room allows (up to 1.12 its own) with the card out over its mouth still under the bar */
+      var m = Math.max(.6, Math.min(1.12, (Vw - 32) / W, (Vh / 2 - 12) / (W * (ev.R / 2 + .54)))), Wm = m * W, cy1 = Math.max(Vh / 2, 12 + Wm * (ev.R / 2 + .54));
+      var Ox = sx + W / 2, Oy = sy + H / 2, dx = Vw / 2 - Ox, dy = cy1 - Oy, low = Vh + .55 * Wm + 12 - Oy, lift = -.565 * W;
+      /* then the title and the envelope at their own sizes, centred as a pair (dyP: the pair's offset from its place) */
+      var T = scr.firstChild, trc = T.getBoundingClientRect(), ty = (trc.top - sr.top) / k, dyP = Vh / 2 - (ty + (sy + H - ty) / 2);
       var tr = function (x, y, s) { return 'translate(' + x.toFixed(2) + 'px, ' + y.toFixed(2) + 'px) scale(' + s.toFixed(4) + ')'; };
       var fx = h('div', { class: 'hpGfFx', 'aria-hidden': 'true' }), cw = h('div', { class: 'hpGfFxC', style: 'left:' + sx.toFixed(2) + 'px;top:' + sy.toFixed(2) + 'px;width:' + W + 'px;height:' + H.toFixed(2) + 'px' }, gfCardEl(ans));
       var pv = old && old.querySelector('.hpGfPv'), pr = pv && pv.getBoundingClientRect(), pin = !!(pr && pr.width && pr.bottom > sr.top + 8 && pr.top < sr.bottom - 8);
@@ -4830,26 +4837,30 @@ window.EvConsent = (function () {
       var cl = pin ? pv.cloneNode(true) : null; if (cl) { cl.setAttribute('inert', ''); [].forEach.call(cl.querySelectorAll('[data-focus]'), function (x) { x.removeAttribute('data-focus'); }); }   /* a picture of the card, never a field: the page's focus pass would put the caret (and the keyboard) back in its copy of the note */
       if (cl) cl.style.cssText = 'left:' + ((pr.left - sr.left) / k).toFixed(2) + 'px;top:' + ((pr.top - sr.top) / k).toFixed(2) + 'px;width:' + (pr.width / k).toFixed(2) + 'px;height:' + (pr.height / k).toFixed(2) + 'px';
       fx.appendChild(cw); if (cl) fx.appendChild(cl); scr.appendChild(fx);
-      var A = [], E1 = 'cubic-bezier(.4, 0, .1, 1)', E2 = 'cubic-bezier(.16, 1, .3, 1)', E3 = 'cubic-bezier(.45, 0, .2, 1)', E4 = 'cubic-bezier(.55, 0, .15, 1)';
+      var A = [], E1 = 'cubic-bezier(.4, 0, .1, 1)', E2 = 'cubic-bezier(.16, 1, .3, 1)', E3 = 'cubic-bezier(.45, 0, .2, 1)', E4 = 'cubic-bezier(.55, 0, .15, 1)', E5 = 'cubic-bezier(.5, 0, .15, 1)';
       var go = function (el, kf, o) { var a = el.animate(kf, gfT(o)); A.push(a); return a; };
       /* the card lifts (0 to 480), out of the preview (its copy giving way in the first 200), then waits over the mouth */
       go(cw, [{ transform: tr(Pc.x - Ox, Pc.y - Oy - s0 * (Cy - Oy), s0) }, { transform: tr(dx, dy + lift * m, m) }], { duration: 480, easing: E1 });
       go(cw, [{ opacity: 0 }, { opacity: 1, offset: .25 }, { opacity: 1, offset: .999 }, { opacity: 0 }], { duration: 800, easing: 'linear' });
       if (cl) { go(cl, [{ transform: 'none' }, { transform: 'translate(' + (Lx - Pc.x).toFixed(2) + 'px, ' + (Ly - Pc.y).toFixed(2) + 'px) scale(' + (.86 * W * m / Pc.w).toFixed(4) + ')' }], { duration: 480, easing: E1 }); go(cl, [{ opacity: 1 }, { opacity: 0 }], { duration: 200, easing: 'linear' }); }
-      /* the envelope, its back, the flap open behind the card, rises from below the screen's foot (220 to 800; no fade: a grey ghost on Light) */
+      /* the envelope, its back, the flap open behind the card, rises from below the screen's foot to its middle (220 to 800; no fade: a grey ghost on Light) */
       go(ev.el, [{ transform: tr(dx, low, m) }, { transform: tr(dx, dy, m) }], { delay: 220, duration: 580, easing: E2 });
       /* the card handed to the envelope's own, the same place (800), and down into it, behind its pocket (800 to 1180) */
       go(ev.card, [{ opacity: 0 }, { opacity: 0, offset: .999 }, { opacity: 1 }], { duration: 800, easing: 'linear' });
       go(ev.card, [{ transform: 'translateY(' + lift.toFixed(2) + 'px)' }, { transform: 'none' }], { delay: 800, duration: 380, easing: E3 });
       /* the flap folds over it (1140 to 1500), the mark on it */
       A = A.concat(gfFlapA(ev, { delay: 1140, duration: 360, easing: 'cubic-bezier(.4, 0, .2, 1)' }, true));
-      /* turned to its front as it goes up to its place, its own size (1520 to 2120) */
+      /* turned to its front at its own size, down a little to make room for the title over it (1520 to 2120) */
       go(ev.turn, [{ transform: 'rotateY(180deg)' }, { transform: 'rotateY(' + (ev.long ? 180 : 0) + 'deg)' }], { delay: 1520, duration: 600, easing: E4 });   /* Long: it stays on its back, the flap and its foil up */
-      go(ev.el, [{ transform: tr(dx, dy, m) }, { transform: tr(0, 0, 1) }], { delay: 1520, duration: 600, easing: E4, fill: 'forwards' });
-      /* the page round it: the title, the plan, the rows, one after another as it lands */
-      [].filter.call(scr.children, function (c) { return c !== ev.el && c !== fx; }).forEach(function (c, i) { go(c, [{ opacity: 0, transform: 'translateY(12px)' }, { opacity: 1, transform: 'none' }], { delay: 1780 + i * 70, duration: 480, easing: E2 }); });
-      /* Continue to payment out with the note's page, back with Check and pay's */
-      if (ctaFx) ctaFx.cancel(); ctaFx = go(cta, [{ opacity: 1 }, { opacity: 0, offset: .09 }, { opacity: 0, offset: .8 }, { opacity: 1 }], { duration: 2240, easing: 'linear', fill: 'none' });
+      go(ev.el, [{ transform: tr(dx, dy, m) }, { transform: tr(0, dyP, 1) }], { delay: 1520, duration: 600, easing: E4, fill: 'forwards' });
+      /* All wrapped up! over it (1950 to 2350), the pair held in the middle a moment */
+      go(T, [{ opacity: 0, transform: 'translateY(' + (dyP + 10).toFixed(2) + 'px)' }, { opacity: 1, transform: 'translateY(' + dyP.toFixed(2) + 'px)' }], { delay: 1950, duration: 400, easing: E2 });
+      /* the review (its title, the plan, the rows, the help line) in from the foot (2600, 40 apart, 820 each), pushing the pair up to its place (2700 to 3420): the page as it rests */
+      var P0 = 2600, rest = [].filter.call(scr.children, function (c) { return c !== T && c !== ev.el && c !== fx; }), c0 = rest.length ? (rest[0].getBoundingClientRect().top - sr.top) / k : Vh, dC = Math.max(dyP + 24, Vh - c0);
+      rest.forEach(function (c, i) { go(c, [{ opacity: 0, transform: 'translateY(' + dC.toFixed(2) + 'px)' }, { opacity: 1, offset: .5 }, { opacity: 1, transform: 'none' }], { delay: P0 + i * 40, duration: 820, easing: E5 }); });
+      go(T, [{ transform: 'translateY(' + dyP.toFixed(2) + 'px)' }, { transform: 'none' }], { delay: P0 + 100, duration: 720, easing: E5, fill: 'forwards' });
+      go(ev.el, [{ transform: tr(0, dyP, 1) }, { transform: tr(0, 0, 1) }], { delay: P0 + 100, duration: 720, easing: E5, fill: 'forwards' });
+      if (ctaFx) { ctaFx.cancel(); ctaFx = null; }   /* Continue to payment stays put throughout ("The footer CTA stays put"; it was out with the note's page and back with Check and pay's) */
       var ovY = scr.style.overflowY; scr.style.overflowY = 'hidden'; ev.el.classList.add('hpGfSealing'); ev.sealing = true;
       if (still != null) { A.forEach(function (a) { a.pause(); a.currentTime = still; }); return; }
       /* the note's page gives way (its preview stays: the copy over it) */
