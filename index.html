@@ -1171,6 +1171,9 @@
   }
   /* the bottom nav in light: white at 12% over the page ("Bottom nav bg fff 12%"), the blur kept, no darkening of what is behind it (the grey came from the plate and brightness .9) */
   body.light .mDock .lgGlass{background:rgba(255,255,255,.12);-webkit-backdrop-filter:blur(var(--lgBlur)) saturate(var(--lgSat));backdrop-filter:blur(var(--lgBlur)) saturate(var(--lgSat));}
+  /* the floating bottom nav (island + the AI button): its shadow at half the glass's ("50% less shadow on bottom nav floating"); the Glass shadow slider still scales it */
+  .mDock .lgGlass{box-shadow:0 18px 38px -14px rgba(0,0,0,calc(.33 * var(--lgShadowK))),0 5px 14px -8px rgba(0,0,0,calc(.25 * var(--lgShadowK))),inset 0 1px 1px rgba(255,255,255,calc(.16 * var(--lgSheenK)));}
+  body.light .mDock .lgGlass{box-shadow:0 18px 38px -16px rgba(46,31,26,calc(.16 * var(--lgShadowK))),0 4px 12px -7px rgba(46,31,26,calc(.09 * var(--lgShadowK))),inset 0 1px 1px rgba(255,255,255,calc(.8 * var(--lgSheenK)));}
 
   /* ---- the dock: an island of four, and the chat beside it ----------------
      Both float over the content rather than sitting on a bar, both 56px, a
@@ -1378,7 +1381,7 @@
      replaces was a 1.5px stroke using about two thirds of its 24px box; this
      one is filled and uses about five sixths of the same box, so 23px would
      read a fifth larger for no reason. 20px lands on the same weight. */
-  .mChat svg{width:20px;height:20px;fill:currentColor;stroke:none;}
+  .mChat svg{width:24px;height:24px;fill:currentColor;stroke:none;}   /* "icon +4px width" (was 20) */
   body.light .mChat{
     color:#000;
     background:
@@ -2748,6 +2751,7 @@
   .aiX:hover{background:rgba(255,255,255,.22);}
   .aiX svg{width:14px;height:14px;}
   body.light .aiX{background:rgba(46,31,26,.14);color:#000;}
+  body.light .aiCard .aiField{box-shadow:none;}   /* light too: no ring on the card's field ("input no border"); body.light .ovChatBox drew one */
   body.light .aiCard .aiField:focus-within{box-shadow:none;background:rgba(46,31,26,.08);}
   /* the services title, a title rather than an eyebrow ("not full caps"), and
      no rule above it ("remove divider"): the field's 20px of air does the
@@ -7987,7 +7991,22 @@
   html.svFlat :is(#svcMob, body[data-bp="xs"] #dSvc) .svmHero :is(.svmHz, .svmHzStack){margin-top:0;}   /* the title centred, 256 at most, and 24 under the title group ("body no card: H1 centred, max width 256px, 24px bottom margin") */
   html.svFlat :is(#svcMob, body[data-bp="xs"] #dSvc) .svmHero.hasHz::after{background:linear-gradient(0deg,#0f0f0f 0,#0f0f0f calc(80px + var(--hzH, 120px) * .7),rgb(15 15 15 / 0) calc(80px + var(--hzH, 120px) * .7 + 150px));} html.svFlat :is(#svcMob, body[data-bp="xs"] #dSvc) .svmHero.hasHz::before{bottom:calc(80px + var(--hzH, 120px) * .7);}   /* the fade 32 higher ("push up gradient to start 32px above") */
   html.svFlat :is(#svcMob, body[data-bp="xs"] #dSvc) .svmHero:not(.hasHz)::after{background:linear-gradient(180deg,transparent 45%,#0f0f0f 100%);opacity:1;}
-  html.svFlat #svcMob, html.svFlat body[data-bp="xs"] #dSvc{background:#0f0f0f;--stkRGB:15,15,15;}   /* in the phone's sheet, right under its title */
+  html.svFlat #svcMob, html.svFlat body[data-bp="xs"] #dSvc{background:#0f0f0f;--stkRGB:15,15,15;}
+  /* Body style No card, light mode ("light mode not handled"): the same flat screen on the light page's white, the hero's fade running into that white, the title in ink over it, the progress card on the light card tone */
+  html.svFlat body.light #svcMob, html.svFlat body.light[data-bp="xs"] #dSvc{background:#fff;--stkRGB:255,255,255;}
+  html.svFlat body.light :is(#svcMob, #dSvc) .svmBody, html.svFlat body.light :is(#svcMob, #dSvc) .svmHero{background:#fff;}
+  html.svFlat body.light :is(#svcMob, #dSvc) .svmHero.hasHz::after{background:linear-gradient(0deg,#fff 0,#fff calc(80px + var(--hzH, 120px) * .7),rgb(255 255 255 / 0) calc(80px + var(--hzH, 120px) * .7 + 150px));}
+  html.svFlat body.light :is(#svcMob, #dSvc) .svmHero:not(.hasHz)::after{background:linear-gradient(180deg,transparent 45%,#fff 100%);}
+  html.svFlat body.light :is(#svcMob, #dSvc) .svmHero h1{color:#000;}
+  html.svFlat body.light :is(#svcMob, #dSvc) .svmHero.hasHz .svmHz{background:#f4efe7;} html.svFlat body.light .svmHzStack > .svmHz{--hzBase:#fff;}
+  html.svFlat body.light :is(#svcMob, #dSvc) .svmHero .svmHz{color:#000;} html.svFlat body.light :is(#svcMob, #dSvc) .svmHero .svmHz :is(b, .svmCurS){color:#000 !important;} html.svFlat body.light :is(#svcMob, #dSvc) .svmHero .svmHz :is(span, em, .svmNxA, .svmHzNx){color:rgba(0,0,0,.56) !important;}
+  /* its bar on the light ground: no dark scrim at rest (no dark photo under it), Back and More in ink on a light disc */
+  html.svFlat body.light[data-bp="xs"] #dSvc:not(.ovScrolled):has(.svXsHero) .svTop::before, html.svFlat body.light #phone2:not(.svcScrolled) .svmNav::before{background:none !important;}
+  html.svFlat body.light[data-bp="xs"] #dSvc .svTop :is(.svBack, .svXsMore), html.svFlat body.light #phone2 .svmNav .svmBtn{color:#000;background:rgba(46,31,26,.06);}
+  /* light, once scrolled (every body style): the bar is the light ground, so its title and actions in ink (they stayed white) */
+  body.light[data-bp="xs"] #dSvc.ovScrolled .svmNavT span, body.light #phone2.svcScrolled .svmNavT span{color:#000;}
+  body.light[data-bp="xs"] #dSvc.ovScrolled .svTop :is(.svBack, .svXsMore), body.light #phone2.svcScrolled .svmNav .svmBtn{color:#000;background:rgba(46,31,26,.06);}
+  body.light .svmHz .svJrBars i{background:rgba(46,31,26,.12);} body.light .svmHz .svJrBars i.on{background:#42be65;} body.light .svmHz .svJrBars i.cur{background:#f5be8c;} body.light .svmHz .svJrBars i.cur.pas{background:rgba(46,31,26,.4);}   /* in the phone's sheet, right under its title */
   .svGrpL{list-style:none;margin:0;padding:18px 24px;border-radius:20px;background:rgba(255,255,255,.06);display:grid;gap:4px;}   /* 18 -> 4 between the bars ("bar progress gap should be 4px") */
   .svGrpL li{display:flex;align-items:center;gap:16px;min-height:22px;cursor:default;} .svGrpL li > .svGrpBar{align-self:stretch;} .svGrpL li > div{padding:8px 0;}   /* the words 4 above and below, centred on their bar ("padding top bottom 4px, content aligned vertically with the bar") */   /* steps to read, not links ("we shouldn't be able to click on a step") */ .svGrpL li > div{min-width:0;}
   .svGrpBar{flex:none;position:relative;width:4px;border-radius:2px;background:#4d4d4d;overflow:hidden;} .svGrpL li.on .svGrpBar{background:#42be65;}
@@ -10550,8 +10569,9 @@
   #bpFrame > .ovSug .aiChip{transition:background-color .2s ease,transform .15s ease;} #bpFrame > .ovSug .aiChip:active{transform:scale(.96);}
   #bpFrame > .ovSug .aiChip.aiChipPri:hover{background:#dcdcdc;color:#141414;} #bpFrame > .ovSug .aiChip.aiChipPri:active{background:#cfcfcf;}   /* the primary keeps its light ground and dark words on hover, a touch darker ("review hover, doesn't work like this") */
   body.light #bpFrame > .ovSug .aiChip.aiChipPri:hover{background:#2c2c2e;color:#f2f2f2;} body.light #bpFrame > .ovSug .aiChip:not(.aiChipPri):hover{background:rgba(46,31,26,.1);}
-  body.light[data-bp="xs"] #bpFrame > .ovSug{background:linear-gradient(to bottom,rgba(247,242,233,0) 0%,rgba(247,242,233,.86) 46%,#f7f2e9 100%);}   /* 16 under the chips ("bottom padding 16"), and a ground fading in behind them from above, the page's own, so what scrolls under them never reads through ("backdrop fade gradient bg") */
+  body.light[data-bp="xs"] #bpFrame > .ovSug{background:linear-gradient(to bottom,rgba(13,13,12,0) 0%,rgba(13,13,12,.86) 46%,#0d0d0c 100%);}   /* light too: the black ground fading in, over the dim ("Gradient black not white on light mode"; was the page's cream) */   /* 16 under the chips ("bottom padding 16"), and a ground fading in behind them from above, the page's own, so what scrolls under them never reads through ("backdrop fade gradient bg") */
   body.light #bpFrame > .ovSug .aiChip{background:rgba(255,255,255,.94);box-shadow:none;color:#000;}
+  /* on that black ground the primary chip is the dark mode's (white, ink), so it doesn't sink into it */ body.light #bpFrame > .ovSug .aiChip.aiChipPri{background:#f2f2f2;color:#141414;} body.light #bpFrame > .ovSug .aiChip.aiChipPri:hover{background:#dcdcdc;color:#141414;}
   body[data-bp="xs"]:is(.ovKbd, .frKbd) #bpFrame > .mKbd, html:not(.bpAuto) body[data-bp="xs"]:has(.dash.chatOn.chKbd) #bpFrame > .mKbd{transform:none;visibility:visible;pointer-events:auto;transition-delay:0s;clip-path:inset(0 0 0 0 round 0 0 var(--kbR,0px) var(--kbR,0px));} body[data-bp="xs"].ovKbd #bpFrame > .mTabs{display:none;}
   #bpFrame > .aiWrap{pointer-events:auto;border-radius:inherit;overflow:hidden;} body:not([data-bp="xs"]):not([data-bp="s"]) #bpFrame > .aiWrap{display:none;}   /* the assistant's sheet in the XS frame, over the desk's Overview, its corners the screen's */
   body.hdrV3[data-bp="xs"] #dOver .ovAvatar{display:block;}
@@ -11217,7 +11237,7 @@
   .ovProfSlide .ovProfBtn{width:28px;height:28px;padding:0;font-size:0;border-radius:50%;background:none;display:flex;align-items:center;justify-content:center;color:#8b8b86;}
   .ovProfSlide .ovProfBtn::before{content:"";width:14px;height:14px;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 3.5 4.5 4.5L6 12.5'/%3E%3C/svg%3E") center / contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 3.5 4.5 4.5L6 12.5'/%3E%3C/svg%3E") center / contain no-repeat;}
   .ovProfSlide .ovProfRow:hover .ovProfBtn{background:rgba(255,255,255,.08);color:#ececec;}   /* the button a ghost chevron ("CTA just a ghost arrow chevron") */ .ovProfSlide .ovProfCk{width:20px;height:20px;} .ovProfSlide .ovProfCk svg{width:11px;height:11px;}
-  html.dockGlass .mDock .lgGlass{box-shadow:0 18px 38px -14px rgba(0,0,0,.7),0 5px 14px -8px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.22),inset 0 -1px 0 rgba(255,255,255,.06),inset 0 0 0 1px rgba(255,255,255,.08) !important;}
+  html.dockGlass .mDock .lgGlass{box-shadow:0 18px 38px -14px rgba(0,0,0,.35),0 5px 14px -8px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.22),inset 0 -1px 0 rgba(255,255,255,.06),inset 0 0 0 1px rgba(255,255,255,.08) !important;}
   html.dockGlass .mDock .lgGlass::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.14) 0%,rgba(255,255,255,.03) 38%,rgba(255,255,255,0) 60%,rgba(255,255,255,.04) 100%);}
   html.dockGlass .mDock .lgGlass{position:relative;}
   .ovProfIc, .ovProfT2{display:none;}
@@ -49651,7 +49671,16 @@ hairline({
         });
         chipSt = c.dataset.st || 'all';
         load(false);
+        pinBar(cfg.chipsBar);
       }));
+      // A chip picked: the bar goes to its pinned place at the top of the screen and the filtered list starts right under it ("When click on a filter, it should be on the fixed position on top").
+      // The bar is sticky; its natural place is read with the stickiness off for a moment. The body is held at least a screen taller than that place, so a short result (12 out of range) still lets the bar sit pinned.
+      function pinBar(bar){ const w = bar && bar.closest('.msWrap'); if (!w) return; let sc = w.parentElement; while (sc && !/(auto|scroll)/.test(getComputedStyle(sc).overflowY)) sc = sc.parentElement; if (!sc) return;
+        const body = w.parentElement, sr = () => sc.getBoundingClientRect().top, top = parseFloat(getComputedStyle(w).top) || 0, ps = w.style.position;
+        w.style.position = 'relative'; const nat = w.getBoundingClientRect().top - sr() + sc.scrollTop; w.style.position = ps;
+        const want = Math.max(0, Math.round(nat - top)), bodyTop = body.getBoundingClientRect().top - sr() + sc.scrollTop;
+        body.style.minHeight = Math.max(0, Math.ceil(want + sc.clientHeight - bodyTop)) + 'px';
+        sc.scrollTo({ top: want, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); }
     }
     return { load: load, typed: typed, choose: choose };
   }

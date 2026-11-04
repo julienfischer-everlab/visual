@@ -20758,3 +20758,13 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
   - fainter ink (under 40%) keeps its opacity on black.
   - 554 declarations. Status colours (greens, ambers, reds, blues), white-on-dark text and backgrounds are untouched.
 - Checked: light Insights biomarker list, names #000 and lines rgba(0,0,0,.56); light Overview; desk journey card shows Get started and opens the membership experience; 0 page errors.
+
+## Dock shadow, AI icon, Ask field, keyboard chips, service page light mode, filter pin
+
+- "50% less shadow on bottom nav floating": the floating dock (island + AI button) casts half the glass shadow, dark and light (the Glass shadow slider still scales it); the Glass dock variant's shadow halved too.
+- "icon +4px width": the AI button's sparkle 20 → 24px.
+- "input no border": the Ask Everlab card's field has no ring in light either (dark already had none; `body.light .ovChatBox` drew one).
+- "Gradient black not white on light mode": the ground fading in behind the keyboard suggestion chips is black in light too (was the page's cream); on it the primary chip (Go to concierge) takes the dark mode's white so it doesn't sink.
+- "light mode not handled" (service page, Body style No card): the flat service page was #0f0f0f in light, with light-mode ink on it. In light it is now white, the hero's fade runs into white, the title is ink, the progress card takes the light card tone with ink text, and Back / More are ink on a light disc. Also for every body style in light: once scrolled, the bar's title and actions are ink (they stayed white on the light bar).
+- "When click on a filter, it should be on the fixed position on top": picking a chip on the Insights biomarker list scrolls so the search + chips bar sits pinned at the top, the filtered list starting right under it; the list is held a screen tall so a short result still lets the bar pin.
+- Checked (light, XS): dock shadow rgba(46,31,26,.26) (was .53); AI icon 24px; Ask field box-shadow none; chip strip gradient black; Microbiome questionnaire page (Flat + Sections, at rest and scrolled; Sheet style scrolled); chips clicked from the top and from further down both leave the bar at 0 from the top; 0 page errors.
