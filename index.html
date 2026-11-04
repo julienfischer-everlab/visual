@@ -8258,9 +8258,9 @@
      its title centred near its top and the goals stacked in it, white cards with dark words in Light, the phone's dark glass cards in Dark ("Card should be dark mode"), the photo fading to dark at its foot. The pair centred in the page; the page's ground the sheet's own.
      #dPlan.plDesk (the Plan's script, deskFit): a forced M or L, or Auto on a window of 992 or more. Auto from 600 to 991 reads S: the one column, the photo across the top, as before (two columns there squeezed the sections to 190 to 320) */
   body.m9.plOn #dPlan.plDesk{display:grid;}
-  body #dPlan.plDesk{grid-template-columns:minmax(0, 520px) 260px;align-items:start;justify-content:center;column-gap:32px;padding:32px 40px 0;background:var(--plSh);transition:left .16s cubic-bezier(.2,.8,.2,1), background-color .3s ease;}   /* the panel's own 32 above and 40 at the sides at every desk width, as the Overview's ("service and plan desktop ... need to follow the setup on overview"); was 24 at the sides below L */
-  body[data-bp="l"] #dPlan.plDesk{grid-template-columns:minmax(0, 580px) 312px;column-gap:48px;}
-  @media (min-width: 1440px){ body:not([data-bp]) #dPlan.plDesk{grid-template-columns:minmax(0, 580px) 312px;column-gap:48px;} }   /* Auto on a wide window (XL), as L */
+  body #dPlan.plDesk{grid-template-columns:minmax(0, var(--plMain, 520px)) 260px;align-items:start;justify-content:center;column-gap:32px;padding:32px 40px 0;background:var(--plSh);transition:left .16s cubic-bezier(.2,.8,.2,1), background-color .3s ease;}   /* the panel's own 32 above and 40 at the sides at every desk width, as the Overview's ("service and plan desktop ... need to follow the setup on overview"); was 24 at the sides below L */
+  body[data-bp="l"] #dPlan.plDesk{grid-template-columns:minmax(0, var(--plMain, 580px)) 312px;column-gap:48px;}
+  @media (min-width: 1440px){ body:not([data-bp]) #dPlan.plDesk{grid-template-columns:minmax(0, var(--plMain, 580px)) 312px;column-gap:48px;} }   /* Auto on a wide window (XL), as L */
   body #dPlan.plDesk > .plSheet{grid-column:1;grid-row:1;margin:0;padding:0 0 96px;border-radius:0;background:none;min-height:0;}   /* the room at the foot the sheet's own: a grid's padding at its end is no part of what the page scrolls */
   body #dPlan.plDesk .plSheetIn{max-width:none;margin:0;}
   body #dPlan.plDesk .plPgT{position:static;width:auto;height:auto;overflow:visible;clip-path:none;white-space:normal;margin:0 0 28px;font-size:28px;line-height:34px;font-weight:500;letter-spacing:-.01em;color:var(--plInk);}
@@ -13127,6 +13127,16 @@
           <button class="tkBtn stTkReset" type="button">Reset</button>
           <button class="tkBtn tkX" type="button" aria-label="Close tweaks" title="Close"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none"/></svg></button>
         </div>
+        <!-- the page's Container ("FOR EACH PAGE Main page or sub page I want a Container tweak to select the container of the content 2xs s m l etc (design system rules)"): on every Main page and Sub page, the page up named;
+             its choices the General layout master's (window.EvCt fills them: 2xs, xs, sm, md, lg, Full, and Own where the page has a width of its own today), from M. #stCt shows the page's own; #stCtPg keeps every page's for Save -->
+        <div class="tkGroup" data-pages="ct" id="tkCtGrp">
+          <div class="tkSub">Container</div>
+          <div class="tkRow tkCtRow" title="This page’s content container, from M (XS and S keep the full width with the breakpoint’s padding)">
+            <span class="lbl" id="stCtLbl">Page</span>
+            <select id="stCt" class="tkSegSel tkProxy" aria-label="Container of this page’s content"></select>
+            <input type="hidden" id="stCtPg" value="">
+          </div>
+        </div>
         <!-- The panel reads top-down the way the page does: the Layout first,
              since it decides what every row under it is dressing; then the
              Biomarkers tab's controls under their own heading, then the
@@ -16992,6 +17002,16 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
 body[data-bp="xs"], [data-ct-bp="xs"], .aqWrap.aqBpXS { --ct2xs: 100%; } body[data-bp="s"], [data-ct-bp="s"], .aqWrap.aqBpS { --ct2xs: 512px; } body[data-bp="m"], [data-ct-bp="m"], .aqWrap.aqBpM { --ct2xs: 544px; } body[data-bp="l"], body[data-bp="xl"], [data-ct-bp="l"], .aqWrap.aqBpL { --ct2xs: 576px; }   /* [data-ct-bp]: the Container doc reads a breakpoint's tokens off these very rules */
 [data-container] { box-sizing: border-box; width: 100%; margin-left: auto; margin-right: auto; }
 [data-container="2xs"] { max-width: var(--ct2xs); } [data-container="xs"] { max-width: var(--ctXs); } [data-container="sm"] { max-width: var(--ctSm); } [data-container="md"] { max-width: var(--ctMd); } [data-container="lg"] { max-width: var(--ctLg); }
+/* a page's own container (Tweaks -> Container, window.EvCt; "FOR EACH PAGE Main page or sub page I want a Container tweak to select the container of the content"): set from M on the page's element while a pick other than its default is up
+   (data-pg-ct, and --ctPg the token by its name: var(--ctMd)..., 100% for Full); the content held to it, centred in the panel, the page's own side padding the least it keeps. Nothing set: the page as it was */
+#dOver[data-pg-ct] { padding-left: max(var(--ctPadX), calc((var(--pnCap) - var(--ctPg)) / 2)); padding-right: max(var(--ctPadX), calc((var(--pnCap) - var(--ctPg)) / 2)); }   /* the Overview: its sm centring, the pick in its place */
+:is(#dMain, #dApt, #dAcc)[data-pg-ct], body #dPlan.plDesk[data-pg-ct] { padding-left: max(40px, calc((var(--pnCap) - var(--ctPg)) / 2)); padding-right: max(40px, calc((var(--pnCap) - var(--ctPg)) / 2)); }   /* the panels' own 40 (--pnIn's md, 1280, by default) */
+#dMkt[data-pg-ct] { padding-left: max(var(--mkPx), calc((var(--pnCap) - var(--ctPg)) / 2)); padding-right: max(var(--mkPx), calc((var(--pnCap) - var(--ctPg)) / 2)); }
+body #dPlan.plDesk[data-pg-ct] { --plMain: 1fr; }   /* the Plan: its sheet's column takes what the container leaves beside the goals (Own: 520, 580 at L) */
+#dSvc[data-pg-ct] .svGrid, body #dTl[data-pg-ct] .tlCol { max-width: var(--ctPg); }   /* the Service detail's grid, My journey's column (their bars span the panel) */
+#dPlan .plAStage[data-pg-ct] :is(.plABarIn, .plATopIn, .plAIn) { max-width: calc(var(--ctPg) + 2 * var(--plAPad)); } #dPlan .plNStage[data-pg-ct] :is(.plNBarIn, .plNTopIn, .plNIn) { max-width: calc(var(--ctPg) + 2 * var(--plNPad)); } #dPlan .plPPg[data-pg-ct] .plPIn { max-width: calc(var(--ctPg) + 2 * var(--plPPad)); }   /* the Plan's Sub pages: their column (its padding inside it) */
+.aqWrap.plSesWrap[data-pg-ct] { --ct2xs: var(--ctPg); }   /* the Activity session (EvSolo): its body, its bar's title and its footer all on --ct2xs, the pick in its place */
+.topbar .tkCtRow { flex-wrap: wrap; row-gap: 6px; } .topbar .tkCtRow .tkSegT { flex: 1 1 100%; } .topbar .tkCtRow .tkSegT button { flex: 1 1 auto; padding: 0 6px; } .topbar .tkCtRow .tkSegT button[hidden] { display: none; }   /* the page's name, then its choices under it, the row's width */
 /* ---- Title group, the master (Design system -> General layout -> Title group; window.EvTitle builds it, its numbers saved as everlab:tgMaster). One title block for every page, each part an option ("some titles don't need that. That's just an option"):
    a level and its type (Display hero, Display, H1 and its Short hero, H2 to H6); the title, on H1 in two tones (the muted part on its own line; the Short hero's inline after the comma, wrapping on); a slot (an icon, a visual, a badge)
    above the group or at its right, vertically centred (the right one with left alignment only); a support line above the title (support top) and one under it (support bottom); an icon at either side of the words, its size the level's.
@@ -31180,6 +31200,59 @@ hairline({
       { key: 'chat', label: 'Chat (in the app)', tweaks: ['cc'], on: () => up('.chWrap.on') },   // the chat a question opens over the page (EvChat: the top field's Enter, a service chip, Contact care team): the Chat page's tweaks ("this should be chat page, when come from overview")
       { key: 'cc', label: 'Chat', tweaks: ['cc'], on: () => B('ccOn') && !B('ccOut') }
     ].forEach(d => window.EvCtx.add(d)); }
+  /* ---- a page's Container (Tweaks -> Container; "FOR EACH PAGE Main page or sub page I want a Container tweak to select the container of the content 2xs s m l etc (design system rules)"): window.EvCt.
+     names: the container sizes and their tokens, the master's (Design system -> General layout -> Container reads them from here); Full is 100%. Every Main page and Sub page (P: its key, its name, its default, the element
+     its container is set on, the EvCtx context it lives in) keeps its own pick; the row shows the page up (cur(): the body's classes, the Plan's data-pl-page, My account's tab, the mode's group), its default the container
+     it has today ('own': a width of its own, no token yet), so nothing moves until one is picked. A pick other than the default sets data-pg-ct and --ctPg (the token by name) on that element, from M only (XS and S keep the
+     full width and the breakpoint's padding); the CSS beside the tokens (data-pg-ct) holds the content to it, centred. Kept by the Tweaks' Save as one hidden value (#stCtPg, JSON { key: pick }), put back on load as
+     every tweak; Reset gives every page its default. The Container part has no saved setup of its own, so nothing comes over it */
+  window.EvCt = (() => {
+    const names = { '2xs': '--ct2xs', xs: '--ctXs', sm: '--ctSm', md: '--ctMd', lg: '--ctLg' }, OPTS = ['own'].concat(Object.keys(names), ['full']);
+    const lbl = k => k === 'own' ? 'Own' : k === 'full' ? 'Full' : k, css = k => k === 'full' ? '100%' : names[k] ? 'var(' + names[k] + ')' : '';
+    const q = x => document.querySelector(x), B = c => document.body.classList.contains(c);
+    const tab = () => { try { return window._acc && window._acc.tab ? window._acc.tab() : ''; } catch (e){ return ''; } };
+    const P = [   /* key, name, default, its element, its context (EvCtx: '' the app's own page) */
+      ['ov', 'Overview', 'sm', () => q('#dOver'), ''], ['ins', 'Insights', 'md', () => q('#dMain'), ''],
+      ['plan', 'Plan', 'own', () => q('#dPlan'), 'plan'], ['planAct', 'Activity plan', 'own', () => q('#dPlan .plAStage'), 'plan'], ['planNut', 'Nutrition plan', 'own', () => q('#dPlan .plNStage'), 'plan'],
+      ['planMed', 'Medical actions', 'own', () => q('#dPlan .plPPg[data-p="med"]'), 'plan'], ['planSup', 'Supplements', 'own', () => q('#dPlan .plPPg[data-p="sup"]'), 'plan'], ['planRtn', 'Wind-down routine', 'own', () => q('#dPlan .plPPg[data-p="rtn"]'), 'plan'],
+      ['planSes', 'Activity session', '2xs', () => q('.aqWrap.plSesWrap'), 'plan'],
+      ['mk', 'Services marketplace', 'md', () => q('#dMkt'), 'mk'],
+      ['tl', () => window.__tlName ? window.__tlName() : 'My journey', () => { const t = q('#dTl'); return t && !t.classList.contains('tlVer2') ? 'own' : 'sm'; }, () => q('#dTl'), 'tl'],   /* v1 (Timeline) its own 760 */
+      ['svc', 'Service detail', 'sm', () => q('#dSvc'), 'svc'], ['apt', 'Appointment', 'md', () => q('#dApt'), 'svc'],
+      ['acc', 'My account', 'md', () => tab() !== 'settings' ? q('#dAcc') : null, 'acc'], ['set', 'Settings', 'md', () => tab() === 'settings' ? q('#dAcc') : null, 'acc']];
+    const by = k => P.find(p => p[0] === k), dOf = p => typeof p[2] === 'function' ? p[2]() : p[2], nOf = p => typeof p[1] === 'function' ? p[1]() : p[1];
+    let M = {};   /* the picks, by page */
+    const OFF = ['docOn', 'homeOn', 'alOn', 'mtgOn', 'hlOn', 'igOn', 'rvOn', 'gfOn', 'clOn', 'grOn', 'cnOn', 'rfOn'];   /* the tools' and the website's pages: not the app's */
+    const cur = () => { const b = document.body; if (!b || OFF.some(B)) return '';
+      if (B('plSesOn')) return 'planSes';
+      if (B('plOn')) return by(b.dataset.plPage) ? b.dataset.plPage : B('plActOn') ? 'planAct' : B('plNutOn') ? 'planNut' : 'plan';
+      if (B('mkOn')) return 'mk'; if (B('accOn')) return tab() === 'settings' ? 'set' : 'acc';
+      if (B('tlOn')) return 'tl'; if (B('svcOn')) return 'svc'; if (B('aptOn')) return 'apt';
+      const g = MODES[version] && MODES[version].group; return g === 'Overview page' ? 'ov' : g === 'Insights' ? 'ins' : ''; };
+    const desk = () => { const f = document.body.dataset.bp; return f ? /^(m|l|xl)$/.test(f) : innerWidth >= 992; };   /* from M: a forced M or L, or Auto on a window of 992 or more (the tokens' own breakpoint) */
+    const pick = p => { const v = M[p[0]]; return v && OPTS.indexOf(v) >= 0 ? v : dOf(p); };
+    const apply = () => { const dk = desk(); P.forEach(p => { const el = p[3](); if (!el) return; const v = pick(p), c = dk && v !== dOf(p) ? css(v) : '';
+      if (c){ if (el.getAttribute('data-pg-ct') !== v) el.setAttribute('data-pg-ct', v); if (el.style.getPropertyValue('--ctPg') !== c) el.style.setProperty('--ctPg', c); }
+      else if (el.hasAttribute('data-pg-ct')){ el.removeAttribute('data-pg-ct'); el.style.removeProperty('--ctPg'); } }); };
+    const sel = () => document.getElementById('stCt'), hid = () => document.getElementById('stCtPg');
+    const row = () => { const s = sel(); if (!s) return; const p = by(cur()), d = p ? dOf(p) : '', v = p ? pick(p) : '', lb = document.getElementById('stCtLbl');
+      if (lb){ const t = p ? nOf(p) + (desk() ? '' : ' · from M') : ''; if (lb.textContent !== t) lb.textContent = t; }
+      if (s.value !== v){ s.value = v; s.setAttribute('data-v', v); }   /* data-v: the segments follow at once (they watch the select's attributes) */
+      const seg = s.nextElementSibling; if (seg && seg.classList.contains('tkSegT')) seg.querySelectorAll('button').forEach(b => { const own = b.dataset.v === 'own' && d !== 'own'; if (b.hidden !== own) b.hidden = own; const t = b.dataset.v === d ? 'This page’s container today (the default)' : ''; if (b.title !== t) b.title = t; }); };
+    const keep = () => { const h = hid(); if (h) h.value = Object.keys(M).length ? JSON.stringify(M) : ''; };
+    const read = v => { let o = null; try { o = v ? JSON.parse(v) : {}; } catch (e){ o = {}; } M = {}; if (o && typeof o === 'object') Object.keys(o).forEach(k => { if (by(k) && OPTS.indexOf(o[k]) >= 0) M[k] = o[k]; }); };
+    const on = () => { const k = cur(); if (!k) return false; const c = window.EvCtx ? window.EvCtx.top() : null, x = by(k)[4]; return c ? x === c.key : !x; };   /* the row's: the page itself, or the context it lives in (never a modal or a sheet over it) */
+    const sync = () => { apply(); row(); const g = document.getElementById('tkCtGrp'); if (g && window.__tkPages && g.hidden === on()) try { window.__tkPages(); } catch (e){} };   /* a page come or gone without Tweaks redrawn: drawn again */
+    const set = (k, v) => { const p = by(k); if (!p || OPTS.indexOf(v) < 0) return; if (v === dOf(p)) delete M[k]; else M[k] = v; keep(); sync(); };
+    { const s = sel(), h = hid();
+      if (s && !s.options.length) s.innerHTML = OPTS.map(k => '<option value="' + k + '">' + lbl(k) + '</option>').join('');   /* before the segments are drawn from it */
+      if (s) s.addEventListener('change', () => { const k = cur(); if (k) set(k, s.value); });
+      if (h) h.addEventListener('change', () => { read(h.value); sync(); }); }   /* a Save put back, the shared one taken, Reset */
+    new MutationObserver(sync).observe(document.body, { attributes: true, attributeFilter: ['class', 'data-bp', 'data-pl-page'] });   /* a page, a Sub page, a breakpoint */
+    addEventListener('resize', sync); document.addEventListener('everlab:ctx', sync); document.addEventListener('click', () => setTimeout(sync, 0)); setInterval(sync, 500); requestAnimationFrame(sync);   /* My account's tab, the session's wrap as it is built */
+    return { names, opts: OPTS.slice(), css, cur, on, ctx: k => { const p = by(k); return p ? p[4] : null; }, get: k => { const p = by(k); return p ? pick(p) : ''; }, set, sync,
+      pages: () => P.map(p => ({ key: p[0], name: nOf(p), def: dOf(p) })) };
+  })();
   // Tweaks shows only what concerns the page: its groups, and a standalone's over it (the Async report's while it is up)
   // the profile's rows: into the Health profile group while the profile is showing, back to the Primary card's $299 part after
   const tkHp = on => { const part = document.querySelector('.pcPart[data-pc="hp"]'), grp = document.getElementById('tkHpGrp'); if (!part || !grp) return;
@@ -31193,6 +31266,7 @@ hairline({
     tkHp(!!c && c.key === 'hp');
     const sgRc = !!c && c.key === 'sgf' && window.EvCtx.tweaks(c)[0] === 'gr'; document.documentElement.classList.toggle('grInFlow', sgRc);   /* Send a gift on its Receipt step: the Gift receipt's own tweaks (EvCtx), Scheduled and In app not shown there, the gift says them */
     const keys = c ? window.EvCtx.tweaks(c) : [key, extra].filter(Boolean), tk = document.getElementById('tkMenu');
+    if (window.EvCt && window.EvCt.on()) keys.push('ct');   /* the page's Container (window.EvCt): on the page itself or its context, never a modal's */
     if (tk){ tk.querySelectorAll('[data-pages], [data-tl], [data-svc]').forEach(el => { const p = el.dataset.pages ? el.dataset.pages.split(' ') : el.hasAttribute('data-tl') ? ['tl'] : ['svc']; el.hidden = !keys.some(k => p.indexOf(k) >= 0); }); tk.hidden = !keys.length;
       if (!keys.length){ if (tk.open) tk._held = true; tk.open = false; } else if (tk._held){ tk._held = false; tk.open = true; } }   // the Timeline's groups [data-tl] (key tl), a service's [data-svc] (key svc); the panel shut under a modal with none, open again as it goes (Closing restores the page's own tweaks)
     document.documentElement.dataset.tk = c ? c.key : '';
@@ -47736,7 +47810,7 @@ hairline({
          The live page (a questionnaire) at the breakpoint's width and padding; the top nav (the Top nav master, C) and the footer span the viewport inside that padding, only the body's content sits in the picked container,
          centred, its max-width the token's at that breakpoint (capped by the viewport less its padding), the footer's CTA held to the same column ("the max width container is on the body content, not the viewport") */
       /* the tokens read off the app's own CSS (the [data-ct-bp] rules beside body[data-bp]: --ctPadY, --ctPadX, --ctGap, --ct2xs, --ctXs, --ctSm, --ctMd, --ctLg), never a copy: a change to the tokens reaches the doc */
-      const CT_W = { xs: [393, 852], s: [600, 760], m: [992, 760], l: [1440, 820] }, CT_NAMES = { '2xs': '--ct2xs', xs: '--ctXs', sm: '--ctSm', md: '--ctMd', lg: '--ctLg' };
+      const CT_W = { xs: [393, 852], s: [600, 760], m: [992, 760], l: [1440, 820] }, CT_NAMES = window.EvCt.names;   /* the sizes and their tokens: one object, the Container tweak's too (window.EvCt) */
       const ctRead = bp => { const d = document.createElement('div'); d.setAttribute('data-ct-bp', bp); d.style.cssText = 'position:absolute;visibility:hidden;pointer-events:none'; (document.body || document.documentElement).appendChild(d);
         const cs = getComputedStyle(d), n = v => { v = String(cs.getPropertyValue(v)).trim(); return /%$/.test(v) ? 0 : parseFloat(v) || 0; }, o = { w: CT_W[bp][0], h: CT_W[bp][1], px: n('--ctPadX'), py: n('--ctPadY'), gap: n('--ctGap'), max: {} };
         Object.keys(CT_NAMES).forEach(k => { o.max[k] = n(CT_NAMES[k]); }); d.remove(); return o; };
@@ -47752,7 +47826,7 @@ hairline({
           ['layout/container/max-width/2xs'].concat(B4.map(k => px(CT_MAX['2xs'][k])), ['A flow’s page (a questionnaire, a step, a standalone modal’s body): data-container="2xs", --ct2xs. The standalone modals’ body and CTA.']),
           ['layout/container/max-width/xs'].concat(B4.map(k => px(CT_MAX.xs[k])), ['data-container="xs", --ctXs. None yet.']),
           ['layout/container/max-width/sm'].concat(B4.map(k => px(CT_MAX.sm[k])), ['--ctSm (read as a var in their own rules): the Overview’s content, the Service detail’s grid, My journey (V2).']),
-          ['layout/container/max-width/md'].concat(B4.map(k => px(CT_MAX.md[k])), ['data-container="md", --ctMd. None yet.']),
+          ['layout/container/max-width/md'].concat(B4.map(k => px(CT_MAX.md[k])), ['data-container="md", --ctMd. The desk panels held by --pnIn come to it (Insights, Services, the Appointment, My account).']),
           ['layout/container/max-width/lg'].concat(B4.map(k => px(CT_MAX.lg[k])), ['data-container="lg", --ctLg. None yet.'])];
         return '<div data-glv="ct" hidden><section class="glSec"><h4>Container · live</h4><p>Pick a breakpoint and a container: any pair. The page keeps its padding at the viewport; the top nav and the footer span the screen; the container centres the body content, as wide as its max-width at that breakpoint (never wider than the screen less its padding), its sections gap/xl apart, the footer’s button held to the same column.</p>' +
           '<div class="mdBar" data-dpx><div class="glCtGrp" data-dpx><span class="glCtLbl">Breakpoints</span><div class="glCtBps" role="group" aria-label="Breakpoints" data-dp="Breakpoint" data-dpg="Container">' + ['xs', 's', 'm', 'l'].map(k => '<button type="button" data-ctbp="' + k + '" aria-pressed="false">' + k.toUpperCase() + ' · ' + CT_BP[k].w + '</button>').join('') + '</div></div>' +
@@ -47763,7 +47837,7 @@ hairline({
             '<div class="glCtOpts">' + O.map((o, i) => '<button type="button" class="glOpt' + (i === 0 ? ' on' : '') + '"><b>' + o[0] + '</b><span>' + o[1] + '</span></button>').join('') + '</div></div></div>' +
             '<div class="glPart glCtFoot" data-sz="Footer"><button type="button" class="glCtCta">Continue</button></div></div></div></div></div><p class="glCtNote"></p></section>' +
           '<section class="glSec"><h4>Tokens</h4><p>Values that change with the viewport, per breakpoint (the design file’s table). A page names its container (data-container) instead of a max-width of its own; the app’s CSS custom properties take each breakpoint’s value.</p><div class="glTabW"><table class="glTab glTok"><thead><tr><th>Token</th><th>xs · 393</th><th>s · 600</th><th>m · 992</th><th>l · 1440</th><th>Use</th></tr></thead><tbody>' +
-            T.map(r => '<tr><th><code>' + r[0] + '</code></th><td>' + r[1] + '</td><td>' + r[2] + '</td><td>' + r[3] + '</td><td>' + r[4] + '</td><td>' + r[5] + '</td></tr>').join('') + '</tbody></table></div><p class="glCtNote">Between the body’s major sections: gap/xl, ' + B4.map(k => CT_BP[k].gap).join(' · ') + ' (--ctGap).</p><p class="glCtNote">Widths that match no token yet: My journey (V1) 760; the Async report’s and the Health profile’s desk columns 536 (M) and 568 (L), and the profile sheet’s 560.</p></section></div>'; };
+            T.map(r => '<tr><th><code>' + r[0] + '</code></th><td>' + r[1] + '</td><td>' + r[2] + '</td><td>' + r[3] + '</td><td>' + r[4] + '</td><td>' + r[5] + '</td></tr>').join('') + '</tbody></table></div><p class="glCtNote">Between the body’s major sections: gap/xl, ' + B4.map(k => CT_BP[k].gap).join(' · ') + ' (--ctGap).</p><p class="glCtNote">Widths that match no token yet: My journey (V1) 760; the Async report’s and the Health profile’s desk columns 536 (M) and 568 (L), and the profile sheet’s 560.</p><p class="glCtNote">Every page and sub page has a Container tweak (Tweaks → Container, from M; XS and S keep the full width), its default the one it has today (own: its own width, no token yet): ' + (window.EvCt ? window.EvCt.pages().map(p => p.name + ' ' + p.def).join(' · ') : '') + '.</p></section></div>'; };
       /* General layout -> Top nav ("General TOP NAV rule (DS). IF no h1 title, keep a safe space at the top. h1 is then part of the Body"; "Top nav always gradient blur by default"; the Service detail's bar, "fixed gradient blur with title appearing"):
          the master (window.EvTopNav, .evTn) drawn by its own code: A, B and C (Back, Close, both) at the board's 400; live in the XS phone and at the desk's width, a scroller each (scroll them, or Play): the ground always the gradient blur, the H1 coming into the bar as it goes under it */
       const glTn = sb => { const TN = window.EvTopNav; if (!TN) return '<div data-glv="tn" hidden></div>';
