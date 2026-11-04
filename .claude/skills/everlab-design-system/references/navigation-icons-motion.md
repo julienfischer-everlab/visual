@@ -146,7 +146,9 @@ All anchors are in `index.html` unless named. Line numbers drift; grep the patte
 
 **Pitfalls.** The tile's title text is the key into `EvSvcChat` (a renamed tile falls back to Concierge). The chat opens only if the host has `_chat` (EvChat attached).
 
-**Pending: Services Grid / Carousel.** A setting on the Navigation doc for how the Ask sheet lays out its Services (Grid or Carousel) is in flight. After it merges, document here: its control and where it is saved (likely `everlab:navMaster`), the two layouts' numbers, the classes, how the carousel swipes (EvMagnet?), and its doc row.
+**Services: Grid / Carousel, and the services list.** Design system › Navigation › Ask Everlab (right panel): Services `Grid` (default) or `Carousel` (`EvAsk.svc()` / `EvAsk.svc(v)`, `html.askCar`, event `everlab:askSvc`), and a Services list (a row a service: its label in a field, up/down to reorder, Reset; `EvAsk.list()` / `EvAsk.list(v)`, defaults `EvAsk.SVCS`). Five services, keyed by id: `script`, `symp`, `spec`, `blood`, `imaging` (no Concierge); a tile starts its chat by id (EvSvcChat), a renamed one titled with its new label. Saved in `everlab:navMaster` as `svc` and `svcs: [{id, l}]` beside lab, icm, ins; applied on load (`_navMaster`), an older save keeps the default order and names.
+- Corners: tokens on `.aiCard`, `--aiR` 44 (its bottom corners) and `--aiIn` 16 (its padding to the tiles); every tile's radius `calc(var(--aiR) - var(--aiIn))` = 28, concentric, in both layouts.
+- Grid: two columns, tile padding 14 / 16, visual 32 (3D icons) · Carousel: one row, EvMagnet (`item: '.aiSvc'`, snaps a tile, drag divided by `evK`), tiles hug their label (nowrap), padding 16 / 18, visual 24, the row bleeding the card's 16 so the first tile lines up with the field; edge fades `--chL` / `--chR` up to 34 (bleed + tile padding).
 
 ---
 

@@ -20392,3 +20392,9 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - The everlab-design-system skill refreshed against the current page (helper): line hints, Page types, Flow panel, EvSolo, Send a gift, the Plan module, navMaster keys; pending notes for the chat top bar (#273) and the video builder (#268).
 - The dock's AI button: no beam ring on press any more (the earlier "Remove beam effect on press" had removed the wait, not the ring); it opens Ask Everlab at once. The Navigation doc's AI button row says so.
 - When should it arrive?: Send now and On a date stacked, one a row, 12 more inside (26 28), from the left ("+12px padding", "Stacked", "not centered").
+
+## Ask sheet services: corners, padding, no Concierge, a services list (helper)
+- The service tiles' corners run with the Ask card's: its 44 less the 16 between its edge and the tiles, 28, in Grid and Carousel ("Service cards rounded radius should match with radius on main card"); both numbers tokens on the card (--aiR, --aiIn). Grid: 4 less padding, 14 / 16 ("grid, reduce padding by 4px"). Carousel: 2 less, 16 / 18, and a 24 visual ("Icon -4px / padding -2px"); its edge fades follow (34).
+- Concierge is no longer one of the Ask card's services ("Remove concierge chip services").
+- Design system → Navigation → Ask Everlab: a Services list ("Create a List of service that I can control (order) on the tweak, with label for each"): each service's label in a field, up/down to reorder, Reset. Every Ask card follows it live (Grid and Carousel); Save setup keeps it in everlab:navMaster (svcs, beside lab, icm, ins, svc) and every page applies it on load. Tiles are keyed by id, so a renamed service still opens its own chat, titled with its new name.
+- The design-system skill's Navigation reference documents it (it was a Pending note).
