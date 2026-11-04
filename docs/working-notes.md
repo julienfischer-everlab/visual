@@ -20623,3 +20623,22 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - **Check and pay's envelope:**
   - "Fade out title when Opened": All wrapped up! fades out as the envelope opens (260 ms), and back once it's shut and settled.
   - "On tap, close first then move up": shutting, the card goes in and the flap comes down first. The page moves up after, as the envelope turns back to its front. The box's growth is re-timed for the close and back for the next open.
+
+## Swap Menu: Timeline <> Plan
+
+"Swap Menu : Timeline <> Plan". The dock's third tab is now **Plan**, and **My journey** (the Timeline) has moved into More, in Plan's old place as the first group.
+- **Dock:** MOBILE_NAV draws `navIc('plan')` / Plan. In mountNav, `DEST = [6, 20, 'plan', 'mkt', null]`: the 'plan' branches open `window._plan`. At XS it opens in place; from the Insights phone, stBp goes to XS first, as the Timeline and the marketplace already did.
+- **Lighting:**
+  - Plan's open lights the dock's tab 2. Its subpages keep it lit.
+  - The Timeline's open calls `window.__litMore()`: More lit.
+  - `__morePage` returns 'timeline' while tlOn, so More's My journey row shows its filled icon on that page.
+- **More sheet:** EvMore's GROUPS starts with `['My journey', 'timeline']`. The label follows Timeline version through `window.__tlName`, which the Timeline's `name()` sets: My journey on v2, Timeline on v1. The Plan's old `.mvRow` 'Plan' handler is gone. The Timeline module has a `.mvRow[data-mv="timeline"]` handler: setMode(9), stBp to XS when tapped from a phone, then `open()`.
+- **Desk sidebar:** reordered to Overview, Insights, Plan, Services, My journey. Lighting and icons are keyed by class and label, so nothing else moved. The Navigation doc clones the dock and the sidebar, so it follows. Iconography's descriptions now say Timeline is "In More, not a tab" and Plan is a tab.
+- **Checked (dist, Playwright):**
+  - The XS dock reads Home | Insights | Plan | Services | More.
+  - Plan tap: plOn, Plan lit.
+  - More lists My journey, Contact us, Settings, My account, Gift Everlab, Refer a loved one.
+  - My journey: tlOn, More lit, its row current.
+  - Home: back, Home lit.
+  - L·1440 sidebar: Plan lit on the Plan, My journey lit on the Timeline.
+  - 0 page errors.
