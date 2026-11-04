@@ -20314,3 +20314,9 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - "Remove border" (the chat's Ask Eva composer): no 1px inner ring in Dark or Light; the fill alone.
 - "All cards need to be clickable" (the Plan's goal cards): every goal card is now one button over the whole card (press scale, hover plate, a drag along the row opens nothing), each to the part of the plan that moves it: Restorative sleep the Wind-down routine (as before), Stronger heart (LDL) My Medical actions, Steady energy (HbA1c, glucose) the Nutrition plan. Same on the desk's right column.
 - Checked at XS (frame): Script renewal and Check Symptoms tiles close the sheet and open their chats; typed "sdsdsd", bento, field empty, no send state. Goal cards at XS and L open their three pages. No console errors.
+
+## Activity plan: the programs' figures on a tile that follows the mode
+- "Activity plan imagery should follow these, bg change based on mode, visual png above it": the four programs' pictures (My programs and My week) are now Julien's cut-out figures (barbell squat, one-arm dumbbell row, brisk walk, run), converted to 240-square WebP with alpha (`assets/plan/act-fga|ppl|z2b|z2i.webp`, 10–13 KB each), contained on the 80 tile.
+- The tile's grey is its own token, `--plATileBg`: #262626 on the Dark sheet, #f0f0f0 on the Light one (the Plan's mode: app Light, or the Plan sheet tweak), easing between them.
+- The zip's other two figures (Balance and Stability Training, Pelvic Floor Health) are not in the plan's four programs, so they are not added.
+- Assets library: the four registered under Plan. Checked at XS, Dark and Light.
