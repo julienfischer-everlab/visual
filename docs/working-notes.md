@@ -20269,3 +20269,24 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
   - The drawn keys type by script past `maxlength`, so the field is held to 60 in its own input handler too.
   - The demo note is now "Merry Christmas! To many more adventures together. Love you." (60).
 - **Checked** (Playwright, dist, XS): the empty field at 34 with the new placeholder; the demo note at 22; a long-word note typed letter by letter stops at 60 / 60 at 22 and fits (145 / 145); the note's padding is 16; no console errors.
+
+## Flow panel opens only from its button; My account header as My journey's; sidebar rows even; retract on layers; More icon
+
+- **Flow panel.** It is folded on every load ("don't automatically open the Flow panel, only when we activate it by clicking the CTA"). The stored open state is no longer read or written; its button opens and folds it.
+- **My account header**, matched to My journey's ("match this to the other header, e.g. timeline"):
+  - The title is the Title group's H2 at XS and S (24/30, −0.2), as My journey and Services.
+  - The bell and gear discs use the main pages' fill (`--mainBtn`, `--mainBtnH` on hover) with 20 icons, hanging 7 over and under the title's row. Title and discs land where My journey's do: 64 / 57 on the phone, 62 / 55 on the tablet (10 more under the tablet's strip, as My journey).
+  - The tabs sit 20 under the discs.
+- **Settings gear active state.** The gear disc is lit while the Settings tab is up (`.on`: #ececec with an #111 icon, the light theme inverted), as My journey's Past when it is on ("need also an active state for settings icon"). `aria-pressed` follows.
+- **Desk sidebar.** The rows run 8 from the window and 8 from the page panel ("right side padding should be same as left side"; it was 8 and 16).
+  - Open, the rail's padding is 8 on the left only; the panel is 8 off the rail.
+  - Retracted, the rail is 52 (was 60): the 44 plates sit 8 either side, and every glyph keeps its x (20).
+- **Retract without clipping** ("clipping a lot on retract menu"). The page's blocks go onto layers of their own one frame before the rail moves and come off after (`body.sideMove` → `will-change: transform` on each page panel's children, 420 ms). They are slid instead of repainted every frame. The wide page had fallen behind and shown dark tiles where its text and pictures were.
+- **More icon** 1 up in the dock ("move up icon by 1px").
+- **Checked** (Playwright, dist):
+  - Flow panel folded on load.
+  - Sidebar rows 8..224 open and 8..52 retracted, 8 to the panel both ways; `sideMove` on during the move and off after.
+  - My account vs My journey header positions equal at XS and S.
+  - Gear lit on Settings only.
+  - More icon 1 above Home's.
+  - No console errors.
