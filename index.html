@@ -2697,7 +2697,7 @@
   .aiWrap.on .aiDim{opacity:1;}
   .aiCard{
     position:absolute;left:var(--evShGap);right:var(--evShGap);bottom:var(--evShGap);   /* floating, 12 off the edges ("a 12px gap so the card feels more like floating"): the bottom sheets' --evShGap */
-    --aiR:var(--evShR);--aiIn:16px;   /* the card's foot corners and its inset: the tiles' corners run parallel to the foot's (--aiR less --aiIn, below) */
+    --aiR:var(--evShR);--aiIn:24px;   /* 24 inside ("internal padding 24px"; was 16) */   /* the card's foot corners and its inset: the tiles' corners run parallel to the foot's (--aiR less --aiIn, below) */
     padding:var(--aiIn);border-radius:26px;background:#181818;   /* no handle ("remove the swipe-down indicator"): 16 of air, then the field */
     box-shadow:0 -20px 60px -30px rgba(0,0,0,.9),0 0 0 1px rgba(255,255,255,.05);
     transform-origin:center;will-change:transform;
@@ -5180,6 +5180,13 @@
   body.repTab:is(.repCards,.repFew) #phone :is(#mHeroOrgan,#mRepCarHost) .rcWrap.n4 > .rcCard.rcBig{flex:none;}
   body.repTab:is(.repCards,.repFew) #phone :is(#mHeroOrgan,#mRepCarHost) .rcWrap.n4 .rcCard.rcStack{flex:1 1 auto;min-height:0;}
   body.repTab.repCards .dash .rcWrap.dRepCards{display:flex;gap:16px;margin:0 0 6px;}   /* the biomarker bento's gap */
+  /* the Cards style on the desk: the phone's carousel card (the date as its eyebrow, New beside it), 320 wide, in a row that scrolls and snaps; the standard arrows over its ends while it overflows (repDeskNav) */
+  body.repTab.repCards .dash .rcWrap.dRepCards.nCar{overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain;scroll-behavior:smooth;align-items:stretch;}
+  body.repTab.repCards .dash .rcWrap.dRepCards.nCar::-webkit-scrollbar{display:none;}
+  body.repTab.repCards .dash .rcWrap.dRepCards.nCar > .rcCard{flex:0 0 320px;width:320px;min-width:0;scroll-snap-align:start;}
+  body.repTab.repCards .dash .rcWrap.dRepCards.nCar > .rcCard > .rcVis{flex:0 0 168px;height:168px;}   /* every card's picture the same height, the New badge's taller eyebrow or not */
+  .dash .rcWrap.dRepCards + .nav.rcNav{position:absolute;}
+  body:not(.repTab) .nav.rcNav, body:not(.repCards) .nav.rcNav{display:none !important;}
 
   /* ---- V2.5's Reports tab: the hero hugs the section ----------------------
      The hero is a fixed 410px because it was drawn for the organ; on the
@@ -7391,7 +7398,7 @@
   .mdFull.mdDk .mdPanel{transform:none;opacity:0;transition:opacity .38s ease;box-shadow:none;} .mdFull.mdDk.on .mdPanel{opacity:1;}
   .mdSheet .mdPanel{left:var(--evShGap);right:var(--evShGap);bottom:var(--evShGap);max-height:calc(100% - 64px - var(--evShGap));padding:8px 16px max(16px, 16px + var(--evHome, 0px) - var(--evShGap));border-radius:var(--evShR) var(--evShR) var(--evShRb) var(--evShRb);transform:translateY(calc(100% + var(--evShGap)));transition:transform .5s cubic-bezier(.2,.8,.2,1);} .mdSheet.on .mdPanel{transform:none;}
   .mdSheet.mdDk .mdPanel{left:50%;right:auto;top:50%;bottom:auto;width:min(100% - 48px,544px);max-height:calc(100% - 48px);padding:24px;border-radius:28px;opacity:0;transform:translate(-50%,calc(-50% + 24px));transition:transform .45s cubic-bezier(.2,.8,.2,1),opacity .3s ease;box-shadow:0 30px 80px rgba(0,0,0,.35);} .mdSheet.mdDk.on .mdPanel{opacity:1;transform:translate(-50%,-50%);}
-  .mdGrab{align-self:center;flex:none;width:36px;height:4px;margin:0 0 12px;border-radius:2px;background:var(--evNotchC, var(--sLine));} .mdDk .mdGrab{display:none;}
+  .mdGrab{align-self:center;flex:none;width:36px;height:4px;margin:0 0 12px;border-radius:2px;background:var(--evNotchC, var(--sLine));} .mdDk .mdGrab{display:none;} .mdSheet.evShFloat:not(.mdDk) .mdPanel{padding:8px 24px 24px;}   /* the Floating bottom sheet: 24 inside ("internal padding 24px"), the notch 8 down */
   .mdSh{--evShPt:24px;}   /* the sheet header: the master's (.evShHd, EvSheetHead.html); the doc's panel already brings it 24 down (8 padding, the 4 notch and its 12 in the flow; 24 on the desk) */
   .mdSp{margin:0 0 20px;color:var(--sMut);} .mdBtns{display:grid;gap:8px;} .mdDk .mdBtns{grid-template-columns:1fr 1fr;}
   .mdNote{margin:12px 0 0;font-size:12px;color:var(--ldMut);}
@@ -10460,7 +10467,7 @@
   :root{--evPhR:56px;--evShGap:0px;--evShR:32px;--evShRb:0px;--evPhBz:0 0 0 5px #000, 0 0 0 11px #3b3b40, 0 0 0 12px rgba(255,255,255,.14);--evTbR:28px;--evTbBz:0 0 0 9px #000, 0 0 0 16px #3b3b40, 0 0 0 17px rgba(255,255,255,.14);}   /* THE phone and tablet frames, the master every drawn device takes (the app's XS and S, the Documentation's phones, the standalone pages' shells): a black bezel in a steel rim with a hairline, no drop shadow ("the frame should be treated as master: the SAME iPhone frame all the time, meaning NO shadow") */
   /* every bottom sheet on the phone and the tablet is edge to edge ("Bottom sheet floating ONLY for Overview AI action. All other bottom sheet need to be edge to edge"): --evShGap 0, its top corners --evShR (32), its foot square (--evShRb 0), the screen's own corners clipping it.
      Floating (Design system -> Modals -> Floating bottom sheet) is a variation: .evShFloat, the AI action's card (.aiWrap) and the More cards stacked like it (.mvWrap) float 12 in, four corners the screen's 56 less the 12 */
-  .evShFloat, .aiWrap, .mvWrap{--evShGap:12px;--evShR:calc(var(--evPhR) - 12px);--evShRb:var(--evShR);}
+  .evShFloat, .aiWrap, .mvWrap{--evShGap:8px;--evShR:calc(var(--evPhR) - 8px);--evShRb:var(--evShR);}   /* 8 off the viewport ("less -4px padding from viewport. 8px from viewport"; was 12), the corners the phone's 56 less the 8 */
   /* was: every bottom sheet floats --evShGap (12) in from the screen's sides and foot, its four corners --evShR: the screen's 56 less the 12, so its corners run concentric with the phone's ("ALL bottom sheet use the same radius based on a gap of 12px from edge of the viewport and iphone radius"); Design system -> Modals draws it */
   body[data-bp="xs"] #bpFrame{border-radius:var(--evPhR);box-shadow:var(--evPhBz);}   /* the phone shell's: a black bezel in a steel rim */
   body[data-bp="s"] #bpFrame{border-radius:28px;box-shadow:var(--evTbBz);}   /* the tablet's: a wider bezel, squarer corners */
@@ -38283,6 +38290,20 @@ hairline({
   // never actually reach. `host.dataset.rcBase` remembers the element's own
   // starting class (set once, off the DOM) so re-running on a tweak change
   // replaces last time's n1/n2/n3 rather than piling another one on.
+  /* the desk Reports row's arrows: the app's standard carousel arrows (.nav.railNav, as the Overview's Recent insights), over the row's two ends at mid-height; the whole nav off when the row does not overflow, each arrow gone at its own end; a card back or on per press */
+  function repDeskNav(host, on){
+    let nav = host._repNav;
+    if (!nav){ nav = document.createElement('span'); nav.className = 'nav railNav rcNav off'; nav.innerHTML = '<button type="button" aria-label="Previous reports">&#8249;</button><button type="button" aria-label="Next reports">&#8250;</button>'; host._repNav = nav;
+      const b = nav.querySelectorAll('button'), step = d => { const c = host.querySelector('.rcCard'), w = c ? c.getBoundingClientRect().width + 16 : host.clientWidth * .8; host.scrollBy({ left: d * w, behavior: 'smooth' }); };
+      b[0].addEventListener('click', () => step(-1)); b[1].addEventListener('click', () => step(1));
+      const place = () => { const live = !!host._repNavOn && host.offsetWidth > 0, max = host.scrollWidth - host.clientWidth, over = live && max > 4; nav.classList.toggle('off', !over); if (!over) return;
+        nav.style.top = (host.offsetTop + host.offsetHeight / 2) + 'px'; nav.style.left = host.offsetLeft + 'px'; nav.style.width = host.offsetWidth + 'px';
+        b[0].classList.toggle('hid', host.scrollLeft <= 4); b[1].classList.toggle('hid', host.scrollLeft >= max - 4); };
+      host._repNavPlace = place; host.addEventListener('scroll', place, { passive: true }); addEventListener('resize', place); if ('ResizeObserver' in window) new ResizeObserver(place).observe(host);
+      document.addEventListener('everlab:mode', () => setTimeout(place, 60)); }
+    if (nav.parentNode !== host.parentNode || nav.previousSibling !== host) host.parentNode.insertBefore(nav, host.nextSibling);
+    host._repNavOn = on; requestAnimationFrame(host._repNavPlace); setTimeout(host._repNavPlace, 400);
+  }
   function buildRepCards(host, sheet){
     if (!host || !REPS.length) return;
     if (host.dataset.rcBase === undefined) host.dataset.rcBase = host.className;
@@ -38362,7 +38383,9 @@ hairline({
     // by side -- not a stack ("Mobile view report: use carousel for >2; card
     // width based on the 3rd card visible 16px on the right side"). The desk
     // keeps the main card and the stack.
-    const shape = count === 1 ? 'n1' : count === 2 ? 'n2' : onPhone ? 'nCar' : 'n4';
+    // the desk's Cards style: the phone's carousel card, every count, in a row that scrolls ("This tweak in Health insight need to look like the card on the XS carousel. So a carousel on desktop, using standard Arrow system IF overflow")
+    const deskCar = !onPhone && host.id === 'dRepCards' && !!CARD_STATE.repCards;
+    const shape = deskCar ? 'nCar' : count === 1 ? 'n1' : count === 2 ? 'n2' : onPhone ? 'nCar' : 'n4';
     const MORE = '<button class="rcMore" type="button">See more' +
       '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" ' +
       'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
@@ -38400,6 +38423,7 @@ hairline({
         '</div>';
     host.className = host.dataset.rcBase + ' ' + shape;
     host.scrollLeft = 0;   // a rebuilt carousel opens on its first card
+    if (!onPhone && host.id === 'dRepCards') repDeskNav(host, deskCar);   /* the desk row's arrows, the standard ones (.nav.railNav), there only while it overflows */
     if (host._syncCar) requestAnimationFrame(host._syncCar);   // ...and that card is the lit one
     // The row's dots ("add carousel nav dot"), one per card, in the hero
     // carousel's own dot language. They live AFTER the row, as its sibling,
@@ -48142,9 +48166,9 @@ hairline({
               ['Padding', '8 top · 16 sides · 16 bottom, as the sides (no home space: the home indicator is gone)', '24'], ['Header', 'The sheet header master (EvSheetHead, .evShHd): title 24/30 · 500 · −0.2, the compact Close (32 circle · ink 7% · 16 glyph) at its right, 12 apart, both from the row’s top (the title 4 lower) · 24 under the sheet’s top (the notch 8 down, 12 above it) · 8 to the content · every titled sheet in the app wears it (the service sheets, the Async report’s, the cart, the inbox, the Plan’s, the Insights biomarker, the Health profile’s pickers and Medicare example, the consent)', 'The same, 24 under the modal’s top (its 24 padding)'], ['Buttons', 'Stacked · 56 pills · 8 apart · primary first', 'Side by side · 56 pills · 8 apart'],
               ['Scrim', 'Black 62% · fades 300 ms ease', 'The same'], ['Enter', 'Up from below its own height: transform 500 ms cubic-bezier(.2, .8, .2, 1)', 'Rises 24 and fades in: transform 450 ms cubic-bezier(.2, .8, .2, 1), opacity 300 ms ease'],
               ['Exit', 'The entrance reversed', 'The entrance reversed'], ['Used by', 'The Membership welcome (sheet mode), the consent, the leave question, the Plan’s item sheets, the item menus, every other bottom sheet but the AI action', 'The same']]],
-          float: ['Floating bottom sheet', 'A variation of the bottom sheet, for one place only: the Overview’s AI action (the dock’s Ask button, the Ask card). It floats 12 in from the screen’s sides and foot, its four corners concentric with the phone’s. Every other bottom sheet is edge to edge. The dock’s More stacks its cards the same way.',
-            [['Shape', 'Floats 12 from the screen’s sides and foot · 44 corners all round, the phone’s 56 less the 12 · .evShFloat sets --evShGap 12, --evShR and --evShRb 44 on whatever it wraps', 'The desk’s Ask is the chat overlay (EvSearch), not a sheet'], ['Ground', '#181818 in dark · white in light', 'The same'],
-              ['Padding', '8 top · 16 sides · 16 bottom, the sides’ own', '—'], ['Scrim', 'Black 62% · fades 300 ms ease', '—'], ['Enter', 'Up from below its own height and its 12: transform 500 ms cubic-bezier(.2, .8, .2, 1)', '—'], ['Exit', 'The entrance reversed', '—'], ['Used by', 'The Overview’s AI action (the Ask card, .aiWrap) · the More cards (.mvWrap)', '—']]],
+          float: ['Floating bottom sheet', 'A variation of the bottom sheet, for one place only: the Overview’s AI action (the dock’s Ask button, the Ask card). It floats 8 in from the screen’s sides and foot, its four corners concentric with the phone’s, 24 of padding inside. Every other bottom sheet is edge to edge. The dock’s More stacks its cards the same way.',
+            [['Shape', 'Floats 8 from the screen’s sides and foot · 48 corners all round, the phone’s 56 less the 8 · .evShFloat sets --evShGap 8, --evShR and --evShRb 48 on whatever it wraps', 'The desk’s Ask is the chat overlay (EvSearch), not a sheet'], ['Ground', '#181818 in dark · white in light', 'The same'],
+              ['Padding', '24 inside (the notch 8 from the top)', '—'], ['Scrim', 'Black 62% · fades 300 ms ease', '—'], ['Enter', 'Up from below its own height and its 8: transform 500 ms cubic-bezier(.2, .8, .2, 1)', '—'], ['Exit', 'The entrance reversed', '—'], ['Used by', 'The Overview’s AI action (the Ask card, .aiWrap) · the More cards (.mvWrap)', '—']]],
           stack: ['Full bottom sheet', 'Almost the whole screen. The first one overlaps the page: the page stays where it is, blanked under the scrim. A sheet opened from inside it stacks, as iOS does: the sheet behind draws back into a card on black (92%, rounded, at 80%, emptied) and the page goes; every layer above stacks the same way, one card showing behind. On the desk, a tall floating modal.',
             [['Shape', 'Edge to edge: the screen’s width, flush with its foot · 32 top corners, the foot square (--evShGap 0, --evShR, --evShRb) · its top 62 down, under the status bar · the notch while Dismiss is on · #181818 in dark', 'min(viewport − 48, 544) wide · up to 720 high · 28 corners · centred · #181818 in dark'], ['Dismiss', 'On (the default): the notch on every layer (36 × 4 · 2 corners · line colour · 8 from the top, 12 above the header) and a swipe down on the top layer (EvSheetSwipe, as Bottom sheet): from its notch or header, or its content at its top, past 80 it goes and the one behind comes forward again; Close (the top layer only) and the scrim above it too · Off: no notch (its room kept, the header stays put), no swipe: Close and the scrim above it only', 'Close, the scrim, Escape · no notch either way'], ['Layer 1', 'Overlaps: the page stays put under the blanket (black 72%) · nothing draws back', 'Over the scrim (black 62%)'],
               ['Layer 2 and up', 'Stacks: the sheet behind draws back (translateY −12 · scale .92 · 35 corners, 32 once scaled · 80% · its content gone) · the page, or the sheet under that, goes, on black', 'Modals do not stack'],
@@ -48153,7 +48177,7 @@ hairline({
               ['Exit', 'The sheet down; the one behind forward again, its content back at once', 'The entrance reversed'], ['Used by', 'The Async report’s detail sheets (Sources over a sheet stacks), the service sheets, the consent on the phone, a service from the Services marketplace, the Services cart', 'The same']]] };
         let part = 'full', bp = 'xs'; try { const a = localStorage.getItem('everlab:mdPart'), b = localStorage.getItem('everlab:mdBp'); if (TX[a]) part = a; if (BP[b]) bp = b; } catch (e){}
         el.innerHTML = '<aside class="ldSide"><h3 class="ldSideH">Modals</h3><p class="ldSideP">How a page opens over another. Pick a breakpoint and press Play to see it come in.</p>' +
-          '<div class="ldPats" role="tablist" aria-label="Modal types"><button type="button" role="tab" data-md="full"><b>Full</b><span>Covers the viewport</span></button><button type="button" role="tab" data-md="sheet"><b>Bottom sheet</b><span>Edge to edge on XS, S · floating modal on M, L</span></button><button type="button" role="tab" data-md="float"><b>Floating bottom sheet</b><span>12 in, 44 corners · the AI action only</span></button><button type="button" role="tab" data-md="stack"><b>Full bottom sheet</b><span>Overlaps, then stacks from layer 2 on XS, S · tall floating on M, L</span></button></div>' +
+          '<div class="ldPats" role="tablist" aria-label="Modal types"><button type="button" role="tab" data-md="full"><b>Full</b><span>Covers the viewport</span></button><button type="button" role="tab" data-md="sheet"><b>Bottom sheet</b><span>Edge to edge on XS, S · floating modal on M, L</span></button><button type="button" role="tab" data-md="float"><b>Floating bottom sheet</b><span>8 in, 48 corners, 24 inside · the AI action only</span></button><button type="button" role="tab" data-md="stack"><b>Full bottom sheet</b><span>Overlaps, then stacks from layer 2 on XS, S · tall floating on M, L</span></button></div>' +
           '<div class="ldNotes"><p class="ldD" data-mdn="full">' + TX.full[1] + '</p><p class="ldD" data-mdn="sheet">' + TX.sheet[1] + '</p><p class="ldD" data-mdn="float">' + TX.float[1] + '</p><p class="ldD" data-mdn="stack">' + TX.stack[1] + '</p><h3>Which one</h3><p>Full for a flow or a page of its own (a questionnaire, the profile, a report). Bottom sheet for a short task or a question over the page (a confirmation, a welcome). Floating bottom sheet for the Overview’s AI action alone. Full bottom sheet for long content over the page that keeps its place under it (a detail, a consent’s text).</p><h3>Breakpoints</h3><p>XS 393 · S 600 · M 992 · L 1440. The sheet turns into the floating modal from M.</p><h3>Dismiss</h3><p>One setting for every bottom sheet in the app: choose it here, then Save setup, and every page takes it on load. On, the default: every bottom sheet on the phone (XS, S) wears a small notch at its top and closes with a swipe down, one helper for all of them (EvSheetSwipe): from its notch or header, or from its content once that is scrolled to its top. It follows the finger, the scrim lightening; let go past 80 px, or flicked, it closes the way its Close does; short of it, it springs back. Off: no notch and no swipe, Close and the scrim only; the notch’s room is kept, so nothing moves. Try both on the phone here. The desk’s floating modal has neither. The Health profile’s own page (its standalone link) lives apart from the app and keeps the default, On.</p></div></aside>' +
           '<div class="ldMain glMain"><section class="glSec"><h4 class="mdH"></h4><p class="mdP"></p><div class="mdBar" data-dpx><div class="glCtBps" role="group" aria-label="Breakpoint" data-dp="Breakpoint" data-dpg="Modal">' + Object.keys(BP).map(k => '<button type="button" data-mdbp="' + k + '" aria-pressed="false">' + k.toUpperCase() + '</button>').join('') + '</div><span class="mdLays" role="group" aria-label="Layers" hidden data-dp="Layers">' + [1, 2, 3].map(n => '<button type="button" class="mdBtn" data-mdl="' + n + '" aria-pressed="false">' + n + (n > 1 ? ' layers' : ' layer') + '</button>').join('') + '</span><div class="glCtBps mdDis" role="group" aria-label="Dismiss" hidden data-dp="Dismiss"><span class="mdDisL" aria-hidden="true" data-dpx>Dismiss</span><button type="button" data-mddis="on" aria-pressed="false">On</button><button type="button" data-mddis="off" aria-pressed="false">Off</button></div><button type="button" class="mdBtn mdPlay" data-dpa>Play</button><button type="button" class="mdBtn mdShut" data-dpa>Close</button><button type="button" class="mdBtn mdSave" data-dpa>Save setup</button></div>' +
           '<div class="glCtStage mdStage"><div class="glCtSc mdSc"><div class="mdFr"></div></div></div><p class="mdNote"></p></section><section class="glSec"><h4>Sizes and motion</h4><div class="glTabW"><table class="glTab"><thead><tr><th>Part</th><th>XS · S</th><th>M · L</th></tr></thead><tbody class="mdTb"></tbody></table></div></section></div>';

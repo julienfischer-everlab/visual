@@ -20686,3 +20686,19 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
   - A document-level capture listener opens Membership onboarding the way the Page menu does (`versionSel = 'welc'`), from both places.
   - It no longer just steps the journey demo on.
   - Checked from My journey's hero and from the bento's status card (Timeline card view: Update): Page is Membership onboarding, "Welcome to Everlab." is up, 0 errors.
+
+## Insights Results: Cards style on the desk is the XS carousel; floating sheet 8 / 24
+
+- **Reports → Style: Cards on the desk** ("This tweak in Health inisght need to look lke the card on the XS carousel. So a carousel on desktop, (using standar Arrow system IF overflow").
+  - `buildRepCards` gives `#dRepCards` the phone's `nCar` shape at every count while Cards is on (`deskCar`): one card per report, the phone's own card (picture, the date as eyebrow with New beside it, title, meta, See report). It replaces the big card + "Other reports" stack.
+  - The row is 320-wide cards that scroll and snap; pictures are pinned at 168, so the New badge's taller eyebrow doesn't shrink the first one.
+  - `repDeskNav()` adds the standard arrows (`.nav.railNav`, as the Overview's Recent insights) over the row's ends at mid-height. They show only when the row overflows, each arrow hides at its own end, and a press moves one card (card + 16). Hidden at XS / S like every railNav, and off on other tabs / styles.
+  - The document row falls back above Medical records, since there is no right column in this shape.
+- **Floating bottom sheet** ("less -4px padding from vieport. 8px from viewport. Also internal padding 24px"): `.evShFloat / .aiWrap / .mvWrap` are now 8 in, with corners 56 − 8 = 48. The AI card's inset `--aiIn` is 24 (was 16). The Modals doc's Floating demo has 24 inside, and its spec and tab label read 8 in · 48 corners · 24 inside.
+- **Checked:**
+  - Desk 1440: 5 cards 320×286, row 1120 wide in a 1664 scroll. Next arrow shown, Previous hidden; one press scrolls 336, then Previous shows.
+  - 2000 and 1100: same, arrows on.
+  - Two reports: the row fits, so no arrows.
+  - XS phone carousel unchanged (301×318).
+  - AI card L8 R8 B8, 24 padding, 48 radius.
+  - 0 page errors.
