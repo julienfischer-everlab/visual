@@ -20320,3 +20320,8 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - The tile's grey is its own token, `--plATileBg`: #262626 on the Dark sheet, #f0f0f0 on the Light one (the Plan's mode: app Light, or the Plan sheet tweak), easing between them.
 - The zip's other two figures (Balance and Stability Training, Pelvic Floor Health) are not in the plan's four programs, so they are not added.
 - Assets library: the four registered under Plan. Checked at XS, Dark and Light.
+
+## Supplements: cut-out renders over the tile ("Same here, png transparent overlap bg visual")
+- The seven supplement pictures (My supplements, the Plan's Supplements, the Nutrition plan's stack, the detail sheet) are now Julien's cut-outs: Liquid drop (Vitamin D3 + K2), Gummies (Multivitamin), Powder (Whey), Gel spray (B12), Pill – capsules (Magnesium Glycinate, and Iron until an iron render exists), Food – drink (Protein Bar). 240-square WebP with alpha, written over the same `sup-*.webp` files, so every place that shows them follows.
+- The tile's grey is the mock's: #252522 on Dark, #f3efed on Light; the Light tile's 1px edge is gone (the mock has none).
+- Checked My supplements at XS, Dark and Light.
