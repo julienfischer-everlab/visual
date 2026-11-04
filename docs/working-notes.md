@@ -20716,3 +20716,14 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
   - The row reads Overview sm, Insights md. An Overview md pick saves `{"ov":"md"}`.
   - Insights at xs narrows the Results row from 1280 to 800, and the Reports carousel arrows still show on overflow.
   - 0 page errors; `dist/index.html` is 15.70 MB.
+
+## Insights → Position: the card options visible
+
+"Still dont see the other insight card options here": the chart card had only been merged into Hero.
+- Overview Tweaks → Insights → Position now lists every card:
+  - **Section**: the Recent insights section, as it was; still the default.
+  - **Hero · Charts + insights** (`hero`): the merged card.
+  - **Hero · Charts** (`heroChart`): the readings alone, ApoB first.
+  - **Hero · Insights** (`heroIns`): the report insights alone, with their renders.
+- Each hero choice builds a fresh card (`fill()` swaps in a new `.ovInsHero` so its listeners are its own). Saved setups holding `hero` open the merged card as before.
+- Checked at 1440: Charts shows 3 chart slides, Insights 5 render slides, Charts + insights all 8. Section hides the card. After switching, a dot click still goes to its slide. 0 errors.

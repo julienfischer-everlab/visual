@@ -14282,7 +14282,9 @@
           <span class="lbl">Position</span>
           <select id="stInsPos" aria-label="Where the insights sit on the Overview">
             <option value="full" selected>Section</option>   <!-- the Recent insights section, as it is -->
-            <option value="hero">Hero</option>   <!-- the section gone; the insights one card above the appointment card, in the services' place -->
+            <option value="hero">Hero · Charts + insights</option>   <!-- the section gone; the insights one card above the appointment card, in the services' place: the readings with their charts, then the Recent insights ("Merge these 2") -->
+            <option value="heroChart">Hero · Charts</option>   <!-- the readings alone, each its chart (ApoB, Vitamin D, Resting heart rate: "Add this in the Insight Tweak group as an option") -->
+            <option value="heroIns">Hero · Insights</option>   <!-- the Recent insights alone, each its render -->
           </select>
         </div>
         </div>
@@ -43920,16 +43922,21 @@ hairline({
   document.querySelectorAll('.ovInsCard').forEach(c => buildOvInsights(c));   // not forEach(buildOvInsights): its index would arrive as the items
   // Insights -> Position -> Hero: the insights as one card in the services' place, on the desk beside Next step, at XS where the row is; kept just before the row wherever the page moves it
   { const over = document.getElementById('dOver'), row0 = over && over.querySelector('.ovSvc');
-    if (row0){ const ic = document.createElement('div'); ic.className = 'ovInsCard ovInsHero'; row0.before(ic);
+    if (row0){ let ic = document.createElement('div'); ic.className = 'ovInsCard ovInsHero'; row0.before(ic);
       // the same insights as the Recent insights carousel, and the same visuals ("use the same visual as the carousel on insight section"): read off the rail's cards, so one list feeds both and no render ships twice
       const tx = v => String(v || '').replace(/&/g, '&amp;').replace(/</g, '&lt;');
       const exp = [...over.querySelectorAll('.ovcar .ovcard.ovExp')].map(c => { const im = c.querySelector('.ovIllImg'), h = c.querySelector('h4'), by = [...c.querySelectorAll('.ocBy > span')].map(x => x.textContent.trim()).filter(Boolean), bt = c.querySelector('.ovbtn');
         return { t: h ? h.innerHTML : '', s: tx(by.join(' \u00b7 ') || (c.querySelector('.ocDate') || {}).textContent), cta: tx(bt ? bt.textContent.trim() : 'See insights'), link: 'See insight', img: im ? im.getAttribute('src') : '' }; }).filter(x => x.img && x.t);
-      buildOvInsights(ic, OV_READS.map(r => Object.assign({ link: 'View results' }, r)).concat(exp));   /* the two merged ("Merge these 2"): the readings with their charts first, then the Recent insights with their renders; one CTA style in the card, the link with its arrow */
+      const READS = OV_READS.map(r => Object.assign({ link: 'View results' }, r));   /* the readings, with the hero's link CTA: one CTA style in the card */
+      const posV = () => { const p = document.getElementById('stInsPos'); return p ? p.value : 'full'; };
+      let built = null; const fill = () => { const v = posV(), k = v === 'heroChart' ? 'chart' : v === 'heroIns' ? 'ins' : 'mix'; if (built === k) return; built = k;   /* Position's card: Charts + insights (merged, "Merge these 2"), Charts alone, or Insights alone */
+        const fresh = document.createElement('div'); fresh.className = 'ovInsCard ovInsHero'; ic.replaceWith(fresh); ic = fresh;   /* a fresh card each time: its listeners are its own */
+        buildOvInsights(ic, k === 'chart' ? READS : k === 'ins' ? (exp.length ? exp : READS) : READS.concat(exp)); };
+      fill();
       const keep = () => { const r = over.querySelector('.ovSvc'); if (r && r.nextElementSibling !== ic) r.after(ic); };   // after the Services tiles: they keep their place at the top
       new MutationObserver(keep).observe(over, { childList: true, subtree: true });
       const pos = document.getElementById('stInsPos');
-      const ap = () => { const on = !!pos && pos.value === 'hero' && !document.body.classList.contains('hdrV5'); if (document.documentElement.classList.contains('insHero') === on) return; document.documentElement.classList.toggle('insHero', on); if (on && ic._ovIns) requestAnimationFrame(() => ic._ovIns.go(ic._ovIns.at())); };   // the Live version: always the section
+      const ap = () => { const on = !!pos && /^hero/.test(pos.value) && !document.body.classList.contains('hdrV5'); if (on) fill(); if (document.documentElement.classList.contains('insHero') === on) return; document.documentElement.classList.toggle('insHero', on); if (on && ic._ovIns) requestAnimationFrame(() => ic._ovIns.go(ic._ovIns.at())); };   // the Live version: always the section
       if (pos){ ap(); pos.addEventListener('change', ap); new MutationObserver(ap).observe(document.body, { attributes: true, attributeFilter: ['class'] }); } } }
   // hover: cell and its organ fade together, .5 resting -> 1 hovered
   const gHov = new Array(PILL.length).fill(0);
