@@ -20748,3 +20748,13 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 
 "Bottom nav bg fff 12%". In light mode the dock's glass is now `rgba(255,255,255,.12)` over the page, the blur kept (16px), with no grey plate and no darkening of what's behind it. Dark mode unchanged.
 - Checked: light dock computes rgba(255,255,255,0.12), filter blur(16px) saturate(1); 0 page errors.
+
+## Get started; light mode text black / black 56%
+
+- "Get started": the welcome hero's CTA (My journey, and the journey's status card that copies it) now reads **Get started** (was Start your baseline), matching the step's own copy rule (Start your health journey, Get started). It still opens the membership experience.
+- "light mode Fg primary 000 / Fg secondary 000. 56%": every light-mode text colour (`color:` in `body.light` rules, and the light text-ink tokens such as --tlInk, --tlTx, --tlSub, --mkInk, --mkMut, --acInk, --acMut, --apTx, --sInk, --ink-bright, --ink) is now neutral black:
+  - dark browns and near-blacks (#2e1f1a, #2e241c, #33291f, #111, #141414, rgba(46,31,26,.8+) and the like): `#000`;
+  - mid browns and greys, and translucent ink between 40% and 80% (#7d6b58, #9b8a75, #6b5c4a, #7a716a, rgba(46,31,26,.4–.75), rgba(20,20,20,.5)…): `rgba(0,0,0,.56)`;
+  - fainter ink (under 40%) keeps its opacity on black.
+  - 554 declarations. Status colours (greens, ambers, reds, blues), white-on-dark text and backgrounds are untouched.
+- Checked: light Insights biomarker list, names #000 and lines rgba(0,0,0,.56); light Overview; desk journey card shows Get started and opens the membership experience; 0 page errors.
