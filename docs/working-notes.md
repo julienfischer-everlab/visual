@@ -20398,3 +20398,84 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - Concierge is no longer one of the Ask card's services ("Remove concierge chip services").
 - Design system → Navigation → Ask Everlab: a Services list ("Create a List of service that I can control (order) on the tweak, with label for each"): each service's label in a field, up/down to reorder, Reset. Every Ask card follows it live (Grid and Carousel); Save setup keeps it in everlab:navMaster (svcs, beside lab, icm, ins, svc) and every page applies it on load. Tiles are keyed by id, so a renamed service still opens its own chat, titled with its new name.
 - The design-system skill's Navigation reference documents it (it was a Pending note).
+
+## The chat video stage: the Concierge draws the AI Chat Video Builder's preview and its MP4 ("Create a 'Marketing' page in assets. Chat builder will be the first test here.")
+
+- **One renderer**: `visuals/concierge.html#stage` (built to `dist/concierge.html`) draws a composition, a conversation over a background, in the phone or floating, with the chat's own CSS and renderers. The builder only edits the JSON. The whole API and model are in docs/chat-video.md.
+- **Composition v1**: `{ v, name, format, background, device, padding, theme, sequence }`. Items are `user` (typing none, dots or text in the composer), `eva` (the thinking line for `think` ms, then the answer, never typed), `specialist` (the card with the avatar first, then the words) and `widget` (a BLOCK, joined to the answer before it).
+- **Time sets everything**: `Concierge.stage.seek(ms)` draws the exact state at ms. That covers the entrances (8 px over 240 ms, widgets 10 px over 300 ms), the 3 x 3 thinking grid and its shimmer, the typing dots, the caret, the send disc and the scroll (500 ms, eased, measured once per load).
+  - No CSS animation or transition runs in the stage. The same ms always gives the same DOM, whether it is reached forward, back or frame by frame. About 0.04 ms per seek.
+  - The scroll moves the column with `top`, not a transform, so a frame reached either way rasterises alike.
+- **The MP4's frames**: `stage.frame(ms, { scale })` returns that same DOM and CSS drawn into a canvas through an SVG foreignObject, with pictures as data URLs. It renders 1080 x 1920 in about 60 ms.
+- **Phone**: the stage draws the master XS frame itself (393 x 852, `--evPhR`, `--evPhBz`, no shadow) with the status bar, the chat's head, the thread, the composer and the home indicator, so the builder draws no frame.
+- **Floating**: the thread alone in a 440 column, anchored at the foot, its top edge faded. In light theme the cards take the booking card's white and shadow so they read on a light ground.
+- **Specialists**: Dr Steven Lu (Preventative Health Doctor, his photo), Dr Sarah Chen (her photo), and Drs Goh, Kerr, Martin, Lim and Okafor by their initials. The clinician card now takes any doctor (`t.dr`).
+- **Widgets**: 30 in `stage.widgets()` by Health, Services and Actions, each with fields and mock data.
+  - New BLOCKs from the chat's own card, type, buttons and tags: Biomarker, Chart, Insight, Results, Protocol, Recommendation, Specialist, Diagnostic, Screening, Referral, CTA, Questionnaire, Upload and Connect wearable.
+  - The appointment card takes its own title, description and picture.
+  - All are in the Components tab under Thinking and typing, Specialists, and Video widgets.
+- **Fix**: the Components tab opened straight from a link (`#components`, the Documentation's gallery) threw an error because the widget list was read before the editor's fields existed. The list is now kept only once the fields are there.
+- **Checked** with `tools/stage-check.js` (Playwright) on visuals/ and dist/:
+  - Phone dark 9:16, phone light 16:9 on a blurred picture, floating dark 1:1 on a cropped picture, and floating light 4:3, each with 7 items.
+  - `seek(t)` twice gives the same DOM and pixels. Forward then back and frame by frame land on the same frame. The thread scrolls with the last item in view.
+  - `frame(t)` is the right size and stable. All 30 widgets draw, with no page errors.
+
+## The Chat video builder and the Marketing page ("Create a 'Marketing' page in assets. Chat builder will be the first test here.")
+
+- **Marketing**: a new page in the page menu's Asset group, after Assets library (`#marketing`). It is also on Home, in the comments' page list and in `__pageVal`. A slim header names the page and its tools, with the Chat video builder first; the tool's own page is in a frame under it. Any other page opening makes it give way.
+- **The builder** is `visuals/chat-video.html`, built to `dist/chat-video.html` (125 KB). It is React 18.3.1 and htm from cdnjs and jsdelivr, with no build step. The app's `index.html` only gained the shell (about 5 KB).
+  - The canvas is the Concierge's stage in an iframe, so there is no second chat UI. The builder edits the composition and the stage draws it.
+  - The widget library's thumbnails are the real components, captured from a second, hidden stage.
+- **Layout per the brief**:
+  - Left, Composition: Sequence (add buttons, drag by the handle with mouse or touch, Edit, Duplicate, Delete, duration and delay per row), Widgets (search, Health, Services, Actions), Saved (list, Rename, Duplicate, Delete, five templates).
+  - Centre: the canvas in the format's frame, with its resolution.
+  - Foot: play, pause, restart, loop, 1× and 0.5×, a scrubber with a mark per item, the time.
+  - Right: the item's or the canvas's settings.
+- **Storage**: the team's compositions in the artifact's db (`chatVideos`), pictures in its assets, files through downloads. Each one falls back to this browser or a plain link outside the artifact.
+- **Code export**: one `.tsx` (the `<ChatVideo>` tree, typed, driving the stage by postMessage), the composition JSON, and Import JSON. Export → MP4 video waits for `window.ChatVideo.exportMp4` (the next step).
+- **Checked** with Playwright inside the app's Marketing page (dist), 63 checks, no page errors:
+  - Seven items built from scratch with the real mouse and keyboard (emoji, multiline, biomarker fields, specialist picker). Duplicate, delete, reorder by mouse drag and by touch drag, undo and redo.
+  - Play, pause, scrub, jump to an item, 0.5×, loop, Space, Delete, Ctrl+D.
+  - Phone and floating, the five formats and a custom size, a DS colour, a hex and an uploaded picture with crop, scale, blur and overlay, and an avatar picture.
+  - Save, rename, duplicate, delete, a template, the unsaved-draft prompt, the TSX and JSON (copy and download), import, light theme, and leaving and coming back by the menu.
+  - The exported `.tsx` passes `tsc --strict` and runs: on another origin it loads and plays the composition in the stage.
+
+## Marketing and the Chat video builder merged into main; MP4 export finished ("back to this")
+
+- **Merged** the paused branch (`worktree-wf_3cc6b04b-aef-1`: the Concierge's stage, the builder, the Marketing page, the MP4 work in progress) into main with a merge commit. Main's work is kept whole; Marketing joins it:
+  - `index.html`: the page menu's change handler keeps main's Send a gift (`sgf`) and gains Marketing (`.mtgOn`, `_mtg`) in the list of full pages a standalone closes. `__pageVal` keeps main's Activity session (`plSesOn`) and names Marketing.
+  - `tools/build.js`: main's masters (`withMasters`, EvOverlap, EvKbd) kept, and `chat-video` added to the pages built beside the app.
+  - `visuals/concierge.html`: main's EvKbd master marker and the stage's CSS, both kept.
+  - `dist/`: rebuilt (`dist/index.html` 15.6 MB).
+- **The stage follows main's chat head**. Main's head is now menu, title and close (no minimise) over the Top nav master's gradient blur, with the thread running under it. The phone in the video cloned the old head by hand and measured the thread as if it ended at the head, so the last item sat under the composer. Now:
+  - The stage's head is a clone of the page's own `.main > .hd`.
+  - The scroll keeps new content below the head.
+  - The head takes its scrolled state from the time.
+  - In `frame()` (the MP4), a blurred copy of the thread stands in for the ground's `backdrop-filter`, which `foreignObject` can't draw. `tools/stage-check.js` passes, now also checking that the last item clears the head.
+- **MP4 export finished** (Export → MP4 video). The codec order:
+  1. H.264 by the browser (WebCodecs, mp4-muxer 5.2.2).
+  2. New: H.264 in software (`h264-mp4-encoder` 1.0.12, WebAssembly, loaded from jsdelivr only when the browser has no H.264 encoder). It is still an MP4, which is what headless Chromium gets.
+  3. VP9 in WebM (webm-muxer 5.1.4).
+  4. MediaRecorder. It is now paused while each frame is drawn, so a slow frame no longer stretches the video (5.12 s for 5.03 s, where it was 11.6 s).
+- **The file** goes through the downloads capability in the app (mp4 and webm are on its list, 16 MB) and as a plain link elsewhere.
+- **Import over an unsaved draft**: the Import dialog now closes first. The "Save it before opening another one?" question was hidden behind it.
+- **Marketing's header on a phone-wide window**: the tool's name stays on one line, and its note is left out.
+- **Checked** (headless Chromium, the CDNs served from the npm registry's copies of the same versions):
+  - `tools/mp4-check.js` (new). Each path's file read by ffprobe:
+    - Software H.264: `h264 Baseline 1080x1920, 5.033 s, 151 frames` and `1920x1080`.
+    - VP9 MP4 and WebM.
+    - MediaRecorder.
+    - Esc cancels.
+  - Export → MP4 video from the builder's menu downloads an H.264 MP4.
+  - The app at L and XS, with no console errors:
+    - Marketing from the page menu, `#marketing` and the Home card.
+    - The builder inside it: template, + Question, play and pause, Code and JSON, Import.
+    - Overview, Plan, Send a gift, Chat and Concierge.
+- **Not checked here**: H.264 by the browser's own encoder. This Chromium has none, and running a downloaded Chrome was refused. The code is the `'vp9-mp4'` path with the `avc` track, so check it once in Chrome or Safari.
+- **Publishing**: Everlab App - Latest's `files` map needs `"chat-video.html": "dist/chat-video.html"`.
+
+## Desk rail fills to 320; occasion icons and note line; List cards white when picked; Marketing / Chat video builder merged
+- Desk sidebar ("Fill the menu, max width left menu panel 320px"): open, the rail fills the room left of the centred page panel, from 224 up to 320 (--sideFill, set from the shell's width: 224 + half of what the 1584 cap leaves, less the panel's 8). 224 up to a 1600 window, 274 at 1700, 320 from about 1780. The panel stays where it was; retracted is 52 as before.
+- What's the occasion?: each row its icon in a filled circle (the List cards' disc, 8% ink, 32): a cake, a tree, two rings, a heart (Thank you), a spark (Just because) ("Need icon circle filled for each"); under the list, 14 below it at 14: "You'll be able to attach a personal note later."
+- Choose the gift, List: the picked card's edge and switch are the ink's white (the module's own switch, its paper knob), not the plan's accent ("Use white border and toggle as active card"); the price sits at the right beside the switch ("Price next to toggle").
+- Marketing and the Chat video builder merged (helper): the paused branch on top of this one; MP4 export (browser H.264 via WebCodecs + mp4-muxer, a WebAssembly H.264 fallback, then VP9 WebM, then MediaRecorder); the stage copies the chat's real head; tools/stage-check.js and tools/mp4-check.js; docs/chat-video.md. The published artifact now carries chat-video.html beside the app.

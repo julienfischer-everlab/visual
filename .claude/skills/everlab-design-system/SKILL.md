@@ -92,6 +92,7 @@ The page menu `#versionSel` has Documentation (`'doc'`) and Design system (`'ds'
 | Conversation model and personas | `A`, `match()`, `PERSONA` | references/chat.md |
 | Conversation editor | `Concierge.getConv/setConv/edits` | references/chat.md |
 | Concierge components gallery | `buildCmp` | references/chat.md |
+| Chat video stage and builder (Marketing page, MP4 export) | `Concierge.stage` (`concierge.html#stage`), `visuals/chat-video.html`, `window._mtg`, `ChatVideo.exportMp4` | docs/chat-video.md |
 | App embedding of the Concierge | `window._cc`, `#ccFrame` | references/chat.md |
 | Thinking / typing loaders | `.bbThink`, `.bbTyp`, `.chThink`, `.think` | references/chat.md |
 | Colour modes | `#themeSel`, `body.light` | references/tokens-components.md |
@@ -112,11 +113,8 @@ The page menu `#versionSel` has Documentation (`'doc'`) and Design system (`'ds'
 Each has a short "Pending" placeholder in its reference; replace it with the usual what / where / API / rules / how to use / pitfalls once the work is on this branch.
 
 - **Chat top bar** (#273, still pending): EvChat's `.chHead` and the Concierge's `.hd` keep their own markup with the master's 44 discs until it merges. references/chat.md.
-- **Chat video builder** (#268, on another branch being merged) on the Concierge chat. references/chat.md.
-- **Ask sheet Services: Grid / Carousel**, a setting on the Navigation doc (in flight). references/navigation-icons-motion.md, Ask Everlab card.
-- **Dot-ribbon banner on the gift plan cards** (Send a gift › Choose the gift, in flight). references/flows-modals.md, Send a gift.
 
-Merged since the skill was first written, documented here: the Top nav master and container tokens (#260), desk panels follow the Overview (#270, `--pnCap`), the Plan's hover / press (#269), Page types (#274, `EvPush`), XS 852 (#266), the Ask sheet icons (#271), the Title group (`EvTitle`), `window.EvSolo` with `dark` / `bar` / `paint`, the Insights icon (`ins`), the More sheet's plate, the 52 retract rail, the XS / S corner clip, the Flow panel closed on load. Places still on their own heads: EvChat `.chHead` and the Concierge `.hd` (#273), the flows' `.arHeadRow` (the master's 44 discs only), the Header tab's `--hdr*` (doc only). Top bar CTAs are 44 everywhere ("CTA top nav always 44px"); titled sheets wear the sheet header master (EvSheetHead).
+Merged since the skill was first written, documented here: the **Chat video builder** (#268: Marketing, `Concierge.stage`, the MP4 export; docs/chat-video.md, references/chat.md), the Ask sheet Services Grid / Carousel and services list (references/navigation-icons-motion.md), the gift plan cards’ dot-ribbon banner and List cards (references/flows-modals.md), the Top nav master and container tokens (#260), desk panels follow the Overview (#270, `--pnCap`), the Plan's hover / press (#269), Page types (#274, `EvPush`), XS 852 (#266), the Ask sheet icons (#271), the Title group (`EvTitle`), `window.EvSolo` with `dark` / `bar` / `paint`, the Insights icon (`ins`), the More sheet's plate, the 52 retract rail, the XS / S corner clip, the Flow panel closed on load. Places still on their own heads: EvChat `.chHead` and the Concierge `.hd` (#273), the flows' `.arHeadRow` (the master's 44 discs only), the Header tab's `--hdr*` (doc only). Top bar CTAs are 44 everywhere ("CTA top nav always 44px"); titled sheets wear the sheet header master (EvSheetHead).
 
 ## Checklist before you ship
 

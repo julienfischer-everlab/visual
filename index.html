@@ -12841,6 +12841,8 @@
 <div class="docPage" id="docPage" aria-label="Documentation"></div>
 <!-- Assets library: every picture and video the app uses, each replaceable; a page of the prototype like Home ("create a page, Assets library, where we can update all assets used inside the app") -->
 <div class="alPage" id="alPage" aria-label="Assets library"></div>
+<!-- Marketing: the marketing tools, each in its own page (chat-video.html, built from visuals/chat-video.html and published beside this page), a page of the prototype like the Assets library ("Create a 'Marketing' page in assets. Chat builder will be the first test here.") -->
+<div class="mtgPage" id="mtgPage" aria-label="Marketing"></div>
 <div class="home" id="home" aria-label="All pages">
   <div class="homeIn">
     <header class="homeHead"><div class="homeBrand">everlab</div><h1>Prototype</h1><p>Every page of the design in one place. Pick a card to open it.</p></header>
@@ -17295,6 +17297,59 @@ window.EvSvcImg = { concierge: 'assets/overview/svc-concierge.webp', treat: 'ass
   window._al = { show: show, hide: hide, open: openK, keys: function () { return ORDER.slice(); }, scan: function () { scan(document); } };
   addEventListener('hashchange', function () { if (location.hash === '#assets-library') show(); else hide(); });
   if (location.hash === '#assets-library') show();
+})();
+</script>
+<style>
+  /* Marketing: a page of the prototype like the Assets library, under the bar; a slim header naming the page and its tools (the Chat video builder first, room for more), the tool's own page in an iframe ("Create a 'Marketing' page in assets. Chat builder will be the first test here.") */
+  .mtgPage{display:none;position:fixed;left:0;right:0;bottom:0;top:var(--barH,45px);z-index:9;flex-direction:column;--mtgBg:#0e0f10;--mtgFg:#e8e9eb;--mtgMut:#80858d;--mtgLine:#2a2c31;--mtgOn:#212226;background:var(--mtgBg);color:var(--mtgFg);font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;}
+  body.light .mtgPage{--mtgBg:#f3f3f1;--mtgFg:#1b1c1e;--mtgMut:#6c7077;--mtgLine:#e0e0dc;--mtgOn:#ffffff;}
+  body.mtgOn .mtgPage{display:flex;}
+  body.mtgOn #tkMenu, body.mtgOn #inkMenu, body.mtgOn .svFloatNav, body.mtgOn .tbLay, body.mtgOn #tkVisuals, body.mtgOn .tkFl, body.mtgOn #bpFrame, body.mtgOn #bpGrp{display:none !important;}
+  .mtgHd{flex:none;display:flex;align-items:center;gap:14px;height:44px;padding:0 16px;border-bottom:1px solid var(--mtgLine);}
+  .mtgHd h1{margin:0;font-size:13px;font-weight:600;letter-spacing:.01em;}
+  .mtgTabs{display:flex;gap:2px;height:100%;}
+  .mtgTabs button{position:relative;height:100%;padding:0 10px;border:0;background:transparent;color:var(--mtgMut);font:inherit;font-size:12.5px;cursor:pointer;white-space:nowrap;}
+  @media (max-width:600px){ .mtgHd{gap:8px;padding:0 12px;} .mtgHd .mtgNote{display:none;} }   /* a phone-wide window: the tool's name on one line, its note left out */
+  .mtgTabs button:hover{color:var(--mtgFg);}
+  .mtgTabs button[aria-selected="true"]{color:var(--mtgFg);} .mtgTabs button[aria-selected="true"]::after{content:"";position:absolute;left:10px;right:10px;bottom:-1px;height:2px;border-radius:2px;background:currentColor;}
+  .mtgHd .mtgSp{flex:1;} .mtgHd .mtgNote{color:var(--mtgMut);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .mtgBody{flex:1;min-height:0;position:relative;}
+  .mtgBody iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block;}
+</style>
+<script>
+/* Marketing: the page and its tools. A tool is a page of its own, built beside this one and opened in the frame the first time it is picked; the bar's Mode is its theme (dark or light set it, colour mode leaves it to the tool) */
+(function () {
+  var pg = document.getElementById('mtgPage'); if (!pg) return;
+  var TOOLS = [{ k: 'chat-video', t: 'Chat video builder', src: 'chat-video.html', note: 'Write a conversation; the Everlab chat plays it as a video' }];
+  var cur = TOOLS[0].k, built = false;
+  var frame = function () { return pg.querySelector('iframe'); };
+  var theme = function () { var f = frame(), t = document.getElementById('themeSel'); try { var r = f && f.contentDocument && f.contentDocument.documentElement; if (!r) return; var v = t ? t.value : ''; if (v === 'dark' || v === 'light') r.dataset.theme = v; } catch (e) {} };
+  var paint = function () {
+    var tool = TOOLS.filter(function (x) { return x.k === cur; })[0] || TOOLS[0];
+    if (!built) { built = true; pg.innerHTML = '<div class="mtgHd"><h1>Marketing</h1><nav class="mtgTabs" role="tablist" aria-label="Marketing tools">' + TOOLS.map(function (x) { return '<button type="button" role="tab" data-tool="' + x.k + '">' + x.t + '</button>'; }).join('') + '</nav><span class="mtgSp"></span><span class="mtgNote"></span></div><div class="mtgBody"></div>'; }
+    [].forEach.call(pg.querySelectorAll('.mtgTabs button'), function (b) { b.setAttribute('aria-selected', String(b.dataset.tool === tool.k)); });
+    pg.querySelector('.mtgNote').textContent = tool.note;
+    var body = pg.querySelector('.mtgBody'), f = frame();
+    if (!f || f.dataset.tool !== tool.k) { body.innerHTML = ''; f = document.createElement('iframe'); f.id = 'mtgFrame'; f.dataset.tool = tool.k; f.src = tool.src; f.title = tool.t; f.setAttribute('allow', 'clipboard-write'); f.addEventListener('load', theme); body.appendChild(f); }
+    theme();
+  };
+  var OTHERS = ['homeOn', 'hlOn', 'igOn', 'rvOn', 'docOn', 'gfOn', 'clOn', 'grOn', 'cnOn', 'rfOn', 'alOn', 'plOn', 'tlOn', 'svcOn', 'aptOn', 'accOn', 'mkOn'];
+  var show = function () {
+    ['_home', '_hl', '_ig', '_rv', '_doc', '_gf', '_cl', '_gr', '_cn', '_rf', '_cc', '_al'].forEach(function (n) { var p = window[n]; if (p && p.hide) try { p.hide(); } catch (e) {} });
+    if (window._hp) try { window._hp.close(true); } catch (e) {} if (window._ar && window._ar.isOpen && window._ar.isOpen()) try { window._ar.close(); } catch (e) {} try { if (window.__soloClose) window.__soloClose(); } catch (e) {}
+    paint(); document.body.classList.add('mtgOn');
+    var vs = document.getElementById('versionSel'); if (vs) vs.value = 'mtg';
+    if (window.__tkPages) try { window.__tkPages(); } catch (e) {}
+    try { history.replaceState(null, '', '#marketing'); } catch (e) {}
+  };
+  var hide = function () { if (!document.body.classList.contains('mtgOn')) return; document.body.classList.remove('mtgOn'); if (window.__tkPages) try { window.__tkPages(); } catch (e) {} };
+  pg.addEventListener('click', function (e) { var b = e.target.closest('.mtgTabs [data-tool]'); if (b && b.dataset.tool !== cur) { cur = b.dataset.tool; paint(); } });
+  { var t = document.getElementById('themeSel'); if (t) t.addEventListener('change', theme); }
+  /* another page opened by any way (a card, a link, the menu): this one gives way */
+  new MutationObserver(function () { var b = document.body.classList; if (b.contains('mtgOn') && OTHERS.some(function (k) { return b.contains(k); })) hide(); }).observe(document.body, { attributes: true, attributeFilter: ['class'] });
+  window._mtg = { show: show, hide: hide, tools: function () { return TOOLS.map(function (x) { return x.k; }); } };
+  addEventListener('hashchange', function () { if (location.hash === '#marketing' || location.hash === '#chat-video') show(); else hide(); });
+  if (location.hash === '#marketing' || location.hash === '#chat-video') { if (document.readyState === 'complete') show(); else addEventListener('load', function () { setTimeout(show, 60); }, { once: true }); }
 })();
 </script>
 <script>
@@ -30610,7 +30665,8 @@ hairline({
   { const o = document.createElement('option'); o.value = 'rv'; o.textContent = 'Report visuals'; assetG.appendChild(o); }
   { const o = document.createElement('option'); o.value = 'doc'; o.textContent = 'Documentation'; assetG.appendChild(o); }
   { const o = document.createElement('option'); o.value = 'ds'; o.textContent = 'Design system'; assetG.appendChild(o); }   // the shared patterns: General layout, Modals, Chat bubbles, Navigation, Loading states
-  { const o = document.createElement('option'); o.value = 'al'; o.textContent = 'Assets library'; assetG.appendChild(o); }   // every picture and video the app uses, each replaceable from it   // the components, documented: the Progress timeline first   // the report cards, a page of their own   // the halftone tool, a page of its own   // the Hairline illustrations, a page of their own beside Home
+  { const o = document.createElement('option'); o.value = 'al'; o.textContent = 'Assets library'; assetG.appendChild(o); }
+  { const o = document.createElement('option'); o.value = 'mtg'; o.textContent = 'Marketing'; assetG.appendChild(o); }   /* the marketing tools, the Chat video builder first ("Create a 'Marketing' page in assets. Chat builder will be the first test here.") */   // every picture and video the app uses, each replaceable from it   // the components, documented: the Progress timeline first   // the report cards, a page of their own   // the halftone tool, a page of its own   // the Hairline illustrations, a page of their own beside Home
   { const o = document.createElement('option'); o.value = 'home'; o.textContent = 'Home'; assetG.appendChild(o); }   // the mosaic of every page
   /* two groups ("group all of that by main pages; remove all the subgroups: the page's name is in its name"): Main pages, each page an entry of its own, then the OrganAge concept at the very end, the teaser video and the landing page with it
      ("the organ age concept at the very end of this list"; "keep these two pages inside the OrganAge concept group"). Still an allow-list: a mode whose group is not read here is built, routable by its hash and missing from the menu */
@@ -30682,12 +30738,12 @@ hairline({
     const v = versionSel.value;
     window.__ccSolo = v === 'ci'; window.__ccCard = false; document.documentElement.dataset.jny = v;   /* the Flow panel shows only the picked page's own flow */   /* the Concierge picked as its own page; anything else (the membership flow, the Flow panel) is the flow ("if from flow membership: primary Go to overview") */
     if (v !== 'hp' && v !== 'welc' && v !== 'pr' && v !== 'ci' && v !== 'sgf' && window._hp) { try { window._hp.close(true); } catch (e){} }   // the Health profile or its reveal gone with any other page picked ("move to page sometimes keeps the XS view: focus only on the new page selected")
-    if ((v === 'cc' || v === 'ar' || v === 'sug' || v === 'dsg' || v === 'prc') && document.body.matches('.docOn, .hlOn, .igOn, .rvOn, .homeOn, .gfOn, .clOn, .grOn, .cnOn, .rfOn, .alOn')) { ['_doc', '_hl', '_ig', '_rv', '_home', '_gf', '_cl', '_gr', '_cn', '_rf', '_al'].forEach(k => { if (window[k]) try { window[k].hide(); } catch (e){} }); setMode(9); resize(); }   /* over a full page (the Documentation, Hairline, Home, Gift…): that page goes, the Overview under them instead ("every time I'm on Docs and select another page the screen goes over the docs") */
+    if ((v === 'cc' || v === 'ar' || v === 'sug' || v === 'dsg' || v === 'prc') && document.body.matches('.docOn, .hlOn, .igOn, .rvOn, .homeOn, .gfOn, .clOn, .grOn, .cnOn, .rfOn, .alOn, .mtgOn')) { ['_doc', '_hl', '_ig', '_rv', '_home', '_gf', '_cl', '_gr', '_cn', '_rf', '_al', '_mtg'].forEach(k => { if (window[k]) try { window[k].hide(); } catch (e){} }); setMode(9); resize(); }   /* over a full page (the Documentation, Hairline, Home, Gift…): that page goes, the Overview under them instead ("every time I'm on Docs and select another page the screen goes over the docs") */
     if (v === 'cc'){ if (window._cc) window._cc.show(); return; }   // the standalones: over the page that is showing, which stays
     if (v === 'ar'){ if (window.__soloClose) window.__soloClose(); if (window._ar) window._ar.open(); return; }
     if (v === 'sug' || v === 'dsg' || v === 'prc'){ const solo = window['_' + v]; if (window._ar) window._ar.close(); if (window._cc) window._cc.hide(); ['_sug', '_dsg', '_prc'].forEach(k => { const o = window[k]; if (o && o !== solo && o.isOpen()) o.close(true); }); if (solo) solo.open(); return; }   // the standalone full modals, the same way (the Chat, above them, put away; the other one gone)
     if (window._cc) window._cc.hide(); if (window._ar) window._ar.close(); if (window.__soloClose) window.__soloClose();   // another page: they go
-    { const SA = { al: '_al', rf: '_rf', gf: '_gf', cl: '_cl', gr: '_gr', cn: '_cn' };   // the Assets library and the website's pages: every other one gone first, then the picked one (Testing locations left the Consent on under it: only the pages before it in this list went)
+    { const SA = { al: '_al', mtg: '_mtg', rf: '_rf', gf: '_gf', cl: '_cl', gr: '_gr', cn: '_cn' };   // the Assets library and the website's pages: every other one gone first, then the picked one (Testing locations left the Consent on under it: only the pages before it in this list went)
       Object.keys(SA).forEach(k => { if (k !== v && window[SA[k]]) window[SA[k]].hide(); });
       if (SA[v]){ if (window[SA[v]]) window[SA[v]].show(); return; } }
     if (v === 'doc' || v === 'ds'){ if (window._doc) window._doc.show(null, v); return; }   // Documentation, or Design system: the tab last open on it
@@ -46725,6 +46781,7 @@ hairline({
       gift: () => B(36, 9, 28, 3, 'lt', '99px') + B(24, 22, 52, 4, 'hi') + B(28, 30, 44, 4, 'hi') + B(33, 38, 34, 4, 'hi') + B(42, 50, 16, 7, 'card', '99px') + B(28, 70, 44, 60, 'ac', '50%'),   // the eyebrow, the message, the button, the photo's dome at the foot
       grc: () => B(42, 8, 16, 3, 'lt', '2px') + B(28, 17, 26, 70, 'ac', '50%') + B(36, 18, 28, 2.5, 'hi') + B(24, 24, 52, 5, 'hi') + B(30, 32, 40, 2.4) + B(22, 40, 56, 38, 'card', '5px') + [0, 1, 2, 3, 4].map(i => B(26, 44 + i * 6.6, 12, 2) + B(42, 44 + i * 6.6, 24, 2, 'hi')).join('') + B(22, 82, 27, 6, '', '3px') + B(51, 82, 27, 6, 'lt', '3px'),   // the wordmark, the light, the eyebrow and the title, the card's rows, the two buttons
       clin: () => B(5, 8, 12, 3, 'hi') + B(70, 7, 12, 5, 'lt', '4px') + B(5, 20, 14, 4, 'card', '3px') + B(5, 28, 34, 7, 'hi') + B(5, 39, 36, 2) + B(5, 44, 30, 2) + [0, 1, 2].map(i => B(5, 58 + i * 10, 12, 6, i ? 'card' : 'lt', '3px')).join('') + [0, 1].map(c => [0, 1].map(r => B(32 + c * 33, 58 + r * 19, 3, 4, '', '50%') + B(37 + c * 33, 58 + r * 19, 20, 2.4, 'hi') + B(37 + c * 33, 63 + r * 19, 24, 2) + B(32 + c * 33, 70 + r * 19, 8, 3.4, 'card', '3px')).join('')).join(''),   // the wordmark and the button, the tag and the title, the states at the left, the locations two by two
+      mtg: () => B(3, 6, 22, 88, 'card', '4px') + [0, 1, 2, 3].map(i => B(5, 12 + i * 12, 18, 9, i === 1 ? 'ac' : 'org', '3px')).join('') + B(39, 9, 22, 80, 'card', '9px') + B(47, 18, 12, 5, 'hi', '4px') + B(41, 28, 14, 8, 'org', '4px') + B(47, 40, 12, 5, 'hi', '4px') + B(30, 93, 40, 2) + B(75, 6, 22, 88, 'card', '4px') + B(77, 12, 12, 2.4, 'hi') + B(77, 19, 18, 6, 'org', '3px') + B(77, 29, 18, 6, 'org', '3px'),   // the Chat video builder: the sequence, the phone on its canvas, the settings
       alib: () => B(5, 7, 30, 3, 'hi') + B(5, 13, 46, 2) + [0, 1, 2, 3, 4, 5, 6, 7].map(i => { const x = 5 + (i % 4) * 23.5, y = 22 + Math.floor(i / 4) * 38; return B(x, y, 21, 22, 'card', '5px') + B(x + 5, y + 4, 11, 14, i === 2 ? 'ac' : 'org', '3px') + B(x, y + 25, 14, 2.4, 'hi') + B(x, y + 30, 18, 2); }).join(''),   // the library's grid: a card each, its picture, its name; one replaced (warm)
       rvis: () => B(5, 7, 30, 3, 'hi') + [5, 29, 53, 77].map(x => B(x, 18, 19, 72, 'card', '6px') + B(x + 3, 25, 13, 34, 'lt', '3px') + B(x + 3, 66, 11, 2) + B(x + 3, 73, 8, 2)).join(''),   // four report cards, a panel and two lines each
       igen: () => { let h = B(5, 7, 30, 3, 'hi'); for (let r = 0; r < 7; r++) for (let c = 0; c < 12; c++){ const d = Math.hypot(c - 5.5, (r - 3) * 1.4) / 7, z = Math.max(0.6, 5.2 * (1 - d)); if (z > 0.8) h += B(6 + c * 7.6 + (3.8 - z / 2), 18 + r * 11 + (3.8 - z / 2), z, z * 1.4, (r + c) % 5 ? '' : 'lt', '50%'); } return h; },
@@ -46806,7 +46863,8 @@ hairline({
       { g: 'Documentation', n: 'Service timeline', s: 'docs', doc: 'pt', wide: true },
       { g: 'Documentation', n: 'Concierge components', s: 'cccmp', doc: 'cc', wide: true },
       { g: 'Design system', n: 'General layout', s: 'docs', doc: 'gl', wide: true },
-      { g: 'Assets library', n: 'Assets library', s: 'alib', al: true, wide: true }
+      { g: 'Assets library', n: 'Assets library', s: 'alib', al: true, wide: true },
+      { g: 'Marketing', n: 'Chat video builder', s: 'mtg', mtg: true, wide: true }
     ];
     const ARR = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 11.5 11.5 4.5M6 4.5h5.5V10"/></svg>';
     // the pages in the order they are worked on, each with its line
@@ -46826,6 +46884,7 @@ hairline({
       ['Image generator', 'Any picture as an organic print halftone: dots, crosses and diamonds, exported as PNG or SVG.'],
       ['Report visuals', 'The card each report reveals: MRI and CT, microbiome, blood testing and DEXA, side by side.'],
       ['Assets library', 'Every picture and video the app uses, in one place: replace one and every page shows the new file at once.'],
+      ['Marketing', 'Tools for marketing assets: the Chat video builder writes a conversation and the Everlab chat plays it as a video.'],
       ['Design system', 'The patterns every page shares, documented and live: general layout, modals, chat bubbles, navigation and loading states.'],
       ['Documentation', 'The system\u2019s components, documented and live: the Service timeline and its rules, and Concierge\u2019s components in each of their states.']
     ];
@@ -46838,6 +46897,7 @@ hairline({
       const c = e.target.closest('.hmCard'); if (!c) return;
       const p = P[+c.dataset.i]; hide();
       if (p.al){ if (window._al) window._al.show(); return; }
+      if (p.mtg){ if (window._mtg) window._mtg.show(); return; }
       if (p.hl){ if (window._hl) window._hl.show(); return; }
       if (p.ig){ if (window._ig) window._ig.show(); return; }
       if (p.rv){ if (window._rv) window._rv.show(); return; }
@@ -46997,7 +47057,7 @@ hairline({
       // the Concierge, the same way, its theme the bar's Mode as Report visuals' is
       const cc = document.getElementById('ccPage');
       let ccUnder = null, ccT = 0, ccHash = '';   // the page under it, named again in the menu when it goes
-      window.__pageVal = () => { const b = document.body; return b.classList.contains('sugOn') ? 'sug' : b.classList.contains('dsgOn') ? 'dsg' : b.classList.contains('prcOn') ? 'prc' : b.classList.contains('plSesOn') ? 'planSes' : b.classList.contains('alOn') ? 'al' : b.classList.contains('rfOn') ? 'rf' : b.classList.contains('grOn') ? 'gr' : b.classList.contains('clOn') ? 'cl' : b.classList.contains('gfOn') ? 'gf' : b.classList.contains('docOn') ? (b.dataset.docSet === 'ds' ? 'ds' : 'doc') : b.classList.contains('hlOn') ? 'hl' : b.classList.contains('igOn') ? 'ig' : b.classList.contains('rvOn') ? 'rv' : b.classList.contains('homeOn') ? 'home' : b.classList.contains('mkOn') ? 'svcMkt' : b.classList.contains('plOn') ? (b.dataset.plPage || (b.classList.contains('plActOn') ? 'planAct' : b.classList.contains('plNutOn') ? 'planNut' : 'plan')) : b.classList.contains('tlOn') ? 'tl' : b.classList.contains('svcOn') ? 'svcD' : b.classList.contains('aptOn') ? 'aptD' : String(version); };   // the page showing under a standalone (a standalone full modal itself: a Chat over it gives it back; Service detail and the Appointment page by their menu names), as the menu names it
+      window.__pageVal = () => { const b = document.body; return b.classList.contains('sugOn') ? 'sug' : b.classList.contains('dsgOn') ? 'dsg' : b.classList.contains('prcOn') ? 'prc' : b.classList.contains('plSesOn') ? 'planSes' : b.classList.contains('alOn') ? 'al' : b.classList.contains('mtgOn') ? 'mtg' : b.classList.contains('rfOn') ? 'rf' : b.classList.contains('grOn') ? 'gr' : b.classList.contains('clOn') ? 'cl' : b.classList.contains('gfOn') ? 'gf' : b.classList.contains('docOn') ? (b.dataset.docSet === 'ds' ? 'ds' : 'doc') : b.classList.contains('hlOn') ? 'hl' : b.classList.contains('igOn') ? 'ig' : b.classList.contains('rvOn') ? 'rv' : b.classList.contains('homeOn') ? 'home' : b.classList.contains('mkOn') ? 'svcMkt' : b.classList.contains('plOn') ? (b.dataset.plPage || (b.classList.contains('plActOn') ? 'planAct' : b.classList.contains('plNutOn') ? 'planNut' : 'plan')) : b.classList.contains('tlOn') ? 'tl' : b.classList.contains('svcOn') ? 'svcD' : b.classList.contains('aptOn') ? 'aptD' : String(version); };   // the page showing under a standalone (a standalone full modal itself: a Chat over it gives it back; Service detail and the Appointment page by their menu names), as the menu names it
       const ccHide = () => { const b = document.body; if (!b.classList.contains('ccOn') || b.classList.contains('ccOut')) return; b.classList.add('ccOut'); clearTimeout(ccT); ccT = setTimeout(() => { b.classList.remove('ccOn', 'ccOut'); }, 260); if (versionSel && versionSel.value === 'cc') versionSel.value = ccUnder && ccUnder !== 'cc' ? ccUnder : String(version); if (location.hash === '#concierge') try { history.replaceState(null, '', ccHash || location.pathname + location.search); } catch (e){} };
       addEventListener('message', e => { const f = document.getElementById('ccFrame'); if (e.data && e.data.everlab === 'ccClose' && f && e.source === f.contentWindow) ccHide(); });   // its own close and minimise, from inside it
       const ccTheme = () => { const f = document.getElementById('ccFrame'), t = document.getElementById('themeSel'); try { const r = f && f.contentDocument && f.contentDocument.documentElement; if (!r) return; const v = t ? t.value : ''; if (v === 'dark' || v === 'light') r.dataset.theme = v; else delete r.dataset.theme; } catch (e){} };
@@ -49790,9 +49850,9 @@ hairline({
 
   /* the view: the version, the page or overlay over it (one, the topmost: the reveal, the Health profile, the Async report, the chat, a documentation tab…), the viewport, the mode, and every tweak that page shows (the Tweaks rows not hidden for it, the bar's own selects showing) */
   var bc = function (k) { return function () { return document.body.classList.contains(k); }; };
-  var PAGES = [['wel', 'Membership reveal', function () { return !!document.querySelector('.hpWrap.hpOpen.hpWelF'); }], ['hp', 'Health profile', bc('hpOn')], ['ar', 'Async report', bc('arOpen')], ['sug', 'Suggestion', bc('sugOn')], ['dsg', 'Doctor’s suggestion', bc('dsgOn')], ['prc', 'Personal recommendation', bc('prcOn')], ['cc', 'Chat', bc('ccOn')], ['gf', 'Gift', bc('gfOn')], ['gr', 'Gift receipt', bc('grOn')], ['cl', 'Testing locations', bc('clOn')], ['doc', 'Documentation', bc('docOn')], ['hl', 'Hairline', bc('hlOn')], ['ig', 'Illustrations', bc('igOn')], ['rv', 'Report visuals', bc('rvOn')], ['al', 'Assets library', bc('alOn')], ['home', 'Home', bc('homeOn')]];
+  var PAGES = [['wel', 'Membership reveal', function () { return !!document.querySelector('.hpWrap.hpOpen.hpWelF'); }], ['hp', 'Health profile', bc('hpOn')], ['ar', 'Async report', bc('arOpen')], ['sug', 'Suggestion', bc('sugOn')], ['dsg', 'Doctor’s suggestion', bc('dsgOn')], ['prc', 'Personal recommendation', bc('prcOn')], ['cc', 'Chat', bc('ccOn')], ['gf', 'Gift', bc('gfOn')], ['gr', 'Gift receipt', bc('grOn')], ['cl', 'Testing locations', bc('clOn')], ['doc', 'Documentation', bc('docOn')], ['hl', 'Hairline', bc('hlOn')], ['ig', 'Illustrations', bc('igOn')], ['rv', 'Report visuals', bc('rvOn')], ['al', 'Assets library', bc('alOn')], ['mtg', 'Marketing', bc('mtgOn')], ['home', 'Home', bc('homeOn')]];
   var pageKey = function () { var p = PAGES.filter(function (x) { return x[2](); })[0]; if (!p) return ''; if (p[0] === 'doc') { var dt = document.querySelector('.docNav [aria-selected="true"]'); return 'doc' + (dt && dt.dataset.doc ? ':' + dt.dataset.doc : ''); } return p[0]; };
-  var LEG = { wel: 'wel', hpOn: 'hp', arOpen: 'ar', sugOn: 'sug', dsgOn: 'dsg', prcOn: 'prc', ccOn: 'cc', gfOn: 'gf', rfOn: 'rf', grOn: 'gr', clOn: 'cl', docOn: 'doc', hlOn: 'hl', igOn: 'ig', rvOn: 'rv', alOn: 'al', homeOn: 'home' };
+  var LEG = { wel: 'wel', hpOn: 'hp', arOpen: 'ar', sugOn: 'sug', dsgOn: 'dsg', prcOn: 'prc', ccOn: 'cc', gfOn: 'gf', rfOn: 'rf', grOn: 'gr', clOn: 'cl', docOn: 'doc', hlOn: 'hl', igOn: 'ig', rvOn: 'rv', alOn: 'al', mtgOn: 'mtg', homeOn: 'home' };
   var canonPg = function (pg) { var p = String(pg || '').split(' ').filter(Boolean); if (p.length === 1 && (/^doc/.test(p[0]) || PAGES.some(function (x) { return x[0] === p[0]; }))) return p[0];
     var d = p.filter(function (x) { return /^doc:/.test(x); })[0]; if (d) return d; if (p.indexOf('wel') >= 0) return 'wel'; for (var i = 0; i < PAGES.length; i++) { for (var o in LEG) if (LEG[o] === PAGES[i][0] && p.indexOf(o) >= 0) return PAGES[i][0]; } return ''; };   // comments kept before this: their page as the classes it had
   var bp = function () { var b = document.body.dataset.bp; if (b) return b; var w = innerWidth; return w >= 1440 ? 'l' : w >= 992 ? 'm' : w >= 600 ? 's' : 'xs'; };
@@ -49925,9 +49985,9 @@ hairline({
 
   /* to a comment's view, fully ("really need to swap fully to the other view"): whatever stands over the page put away, its mode and viewport, its version drawn afresh, its tweaks as they were, its page or overlay opened; then its thread */
   var setv = function (id, v) { var el = $(id); if (!el || v == null) return false; if (el.type === 'checkbox' || el.type === 'radio') { if (String(el.checked) === v) return false; el.checked = v === 'true'; } else { if (el.value === v) return false; el.value = v; } el.dispatchEvent(new Event('input', { bubbles: true })); el.dispatchEvent(new Event('change', { bubbles: true })); return true; };
-  var closeAll = function () { try { if (window._hp) window._hp.close(true); } catch (e) {} try { if (window._ar && window._ar.isOpen && window._ar.isOpen()) window._ar.close(); } catch (e) {} try { if (window.__soloClose) window.__soloClose(); } catch (e) {} ['_cc', '_gf', '_gr', '_cl', '_doc', '_hl', '_ig', '_rv', '_home'].forEach(function (k) { try { if (window[k] && window[k].hide) window[k].hide(); } catch (e) {} }); };   // every page and overlay put away: the prototype alone under what opens next
+  var closeAll = function () { try { if (window._hp) window._hp.close(true); } catch (e) {} try { if (window._ar && window._ar.isOpen && window._ar.isOpen()) window._ar.close(); } catch (e) {} try { if (window.__soloClose) window.__soloClose(); } catch (e) {} ['_cc', '_gf', '_gr', '_cl', '_doc', '_hl', '_ig', '_rv', '_home', '_mtg'].forEach(function (k) { try { if (window[k] && window[k].hide) window[k].hide(); } catch (e) {} }); };   // every page and overlay put away: the prototype alone under what opens next
   var openPage = function (pg) { var k = (pg || '').split(':')[0]; if (!k || k === 'home' || pageKey().split(':')[0] === k) return;
-    try { if (k === 'wel' && window._hp) window._hp.open({ welcome: true }); else if (k === 'hp' && window._hp) window._hp.open({}); else if (k === 'ar' && window._ar) window._ar.open(); else if (k === 'sug' && window._sug) window._sug.open(); else if (k === 'dsg' && window._dsg) window._dsg.open(); else if (k === 'prc' && window._prc) window._prc.open(); else if (k === 'cc' && window._cc) window._cc.show(); else if (k === 'gf' && window._gf) window._gf.show(); else if (k === 'gr' && window._gr) window._gr.show(); else if (k === 'cl' && window._cl) window._cl.show(); else if (k === 'doc' && window._doc) window._doc.show(); } catch (e) {} };
+    try { if (k === 'wel' && window._hp) window._hp.open({ welcome: true }); else if (k === 'hp' && window._hp) window._hp.open({}); else if (k === 'ar' && window._ar) window._ar.open(); else if (k === 'sug' && window._sug) window._sug.open(); else if (k === 'dsg' && window._dsg) window._dsg.open(); else if (k === 'prc' && window._prc) window._prc.open(); else if (k === 'cc' && window._cc) window._cc.show(); else if (k === 'gf' && window._gf) window._gf.show(); else if (k === 'gr' && window._gr) window._gr.show(); else if (k === 'cl' && window._cl) window._cl.show(); else if (k === 'doc' && window._doc) window._doc.show(); else if (k === 'mtg' && window._mtg) window._mtg.show(); } catch (e) {} };
   var goTo = function (c) {
     var x = c.ctx, vs = $('versionSel'); closePop(); closeAll();
     setv('themeSel', x.th); if (bp() !== x.bp) setv('stBp', x.bp);
