@@ -2138,40 +2138,53 @@ html .arSheet.hpSheet.hpGfSolo.hpGfAtIn:not(.hpGfOnSheet) .arHead .arIconBtn.arI
 .arSheet.hpSheet .hpGfDateA { font-size: 14px; line-height: 18px; text-decoration: underline; text-underline-offset: 3px; color: oklch(var(--ar-ink)); }
 .arSheet.hpSheet .hpGfDate .hpCal { margin-bottom: 0; }
 .arSheet.hpSheet :is(.hpGfChip, .hpPlan, .hpPlanX, .hpGfDateB, .hpGfDet):focus-visible { outline: 2px solid var(--ar-blue-fg); outline-offset: 2px; }
-/* the plan card (plans()): a radio card, its list opened by What's included; the one picked inked, the board's black card (white on Dark) */
+/* the plan card (plans(), List; "List card type this style, can use a banner like this. Consider active and inactive"): the reference's product card. Across its top the banner (gfBan, the Tabs cards' dot ribbons), the card's own corners;
+   the name with its price beside it and a switch at the right (.hpSw, the module's); what's included as rows, each a small disc with its line icon; a tinted pill at the foot, the intro's own words for the plan.
+   Picked: the plan's accent edge (1.5), the banner in colour, the switch on. Not picked: a hairline edge, the banner and the pill greyscale (the Tabs cards' rule and its .3s), the switch off; its words and rows as they are */
 .arSheet.hpSheet .hpPlans { display: flex; flex-direction: column; gap: 12px; }
-.arSheet.hpSheet .hpPlan { display: flex; flex-direction: column; align-items: stretch; gap: 8px; padding: 20px; border-radius: 20px; background: var(--ar-card-bg); color: oklch(var(--ar-ink)); cursor: pointer; transition: background .22s ease, color .22s ease; }
-.arSheet.hpSheet .hpPlan:hover:not([aria-checked="true"]) { background: oklch(var(--ar-ink) / .08); }
-.arSheet.hpSheet .hpPlan[aria-checked="true"] { background: oklch(var(--ar-ink)); color: var(--ar-paper); }
-.arSheet.hpSheet .hpPlanH { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
-.arSheet.hpSheet .hpPlanH b { font-size: 20px; line-height: 24px; font-weight: 570; }
-.arSheet.hpSheet .hpPlanP { font-size: 18px; line-height: 24px; font-weight: 500; font-variant-numeric: tabular-nums; }
-.arSheet.hpSheet .hpPlanD { margin: 0; font-size: 14px; line-height: 20px; opacity: .72; }
+.arSheet.hpSheet .hpPlan { --plA: 247 131 89; position: relative; isolation: isolate; overflow: hidden; display: flex; flex-direction: column; align-items: stretch; border-radius: 20px; background: var(--ar-card-bg); color: oklch(var(--ar-ink)); cursor: pointer; transition: background .22s ease; }
+.arSheet.hpSheet .hpPlan[data-v="diag"] { --plA: 176 204 216; } .arSheet.hpSheet:not(.arDark) .hpPlan[data-v="prot"] { --plA: 232 108 58; } .arSheet.hpSheet:not(.arDark) .hpPlan[data-v="diag"] { --plA: 92 124 140; }   /* Protocol the Tabs cards' orange, Diagnostics silver and cool (its banner's); deeper on Light */
+.arSheet.hpSheet .hpPlan::after { content: ''; position: absolute; inset: 0; z-index: 2; border-radius: inherit; box-shadow: inset 0 0 0 1px oklch(var(--ar-ink) / .12); pointer-events: none; transition: box-shadow .3s ease; } .arSheet.hpSheet .hpPlan.hpPlanOn::after { box-shadow: inset 0 0 0 1.5px rgb(var(--plA)); }   /* the edge over the banner: a hairline, the accent once picked */
+@media (hover: hover) { .arSheet.hpSheet .hpPlan:not(.hpPlanOn):hover { background: oklch(var(--ar-ink) / .08); } }
+.arSheet.hpSheet .hpPlanB { position: relative; flex: none; display: block; height: 112px; overflow: hidden; background: #050404; } .arSheet.hpSheet.hpWide .hpPlanB { height: 136px; }   /* the banner, 112 on the phone, 136 wider */
+.arSheet.hpSheet .hpPlanBd { display: flex; flex-direction: column; gap: 16px; padding: 18px 20px 20px; }
+.arSheet.hpSheet .hpPlanH { display: flex; align-items: center; gap: 12px; }
+.arSheet.hpSheet .hpPlanHT { flex: 1; min-width: 0; display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 8px; }
+.arSheet.hpSheet .hpPlanH b { font-size: 22px; line-height: 28px; font-weight: 570; }
+.arSheet.hpSheet .hpPlanP { font-size: 17px; line-height: 22px; font-weight: 500; font-variant-numeric: tabular-nums; color: oklch(var(--ar-ink) / .6); }   /* the price beside the name */
+.arSheet.hpSheet .hpPlan .hpSw i { background: #fff; } .arSheet.hpSheet .hpPlan .hpSw[aria-checked="true"] { background: rgb(var(--plA)); }   /* the module's switch, on in the plan's accent, its knob white either way (the reference's) */
+.arSheet.hpSheet .hpPlanR { display: flex; flex-direction: column; gap: 16px; margin: 4px 0 0; padding: 0; list-style: none; }
+.arSheet.hpSheet .hpPlanR li { display: flex; align-items: flex-start; gap: 12px; font-size: 15px; line-height: 20px; color: oklch(var(--ar-ink) / .72); } .arSheet.hpSheet .hpPlanR li > span:last-child { padding-top: 4px; text-wrap: pretty; }
+.arSheet.hpSheet .hpPlanI { flex: none; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: oklch(var(--ar-ink) / .08); color: oklch(var(--ar-ink) / .86); }   /* a small disc, 8% ink, the line icon in it */
+.arSheet.hpSheet .hpPlanBd .hpPlanMore { margin-top: -26px; } .arSheet.hpSheet .hpPlanOpen .hpPlanBd .hpPlanMore { margin-top: -4px; }   /* See n more over the third row's fade; Show less 12 under the last */
+.arSheet.hpSheet .hpPlanT { margin: 0; padding: 12px 16px; border-radius: 999px; background: rgb(var(--plA) / .14); text-align: center; font-size: 14px; line-height: 20px; font-weight: 600; color: rgb(var(--plA)); } .arSheet.hpSheet:not(.arDark) .hpPlanT { color: oklch(var(--ar-ink)); }   /* the foot's pill, in the plan's tint, its words in its accent (the ink on Light) */
 .arSheet.hpSheet .hpPlanL { display: flex; flex-direction: column; gap: 10px; margin: 2px 0 0; padding: 14px 0 0; list-style: none; box-shadow: inset 0 1px 0 color-mix(in srgb, currentColor 16%, transparent); }
 .arSheet.hpSheet .hpPlanL[hidden] { display: none; }
 /* Plans: Tabs (Tweaks -> Send a gift -> Plans): two cards side by side, each a tab (a banner across its top, name, price, a line of introduction); the chosen one's list in a card under them */
 .arSheet.hpSheet .hpPlansT { display: flex; flex-direction: column; gap: 12px; }
-.arSheet.hpSheet .hpPlTabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.arSheet.hpSheet .hpPlTab { appearance: none; position: relative; isolation: isolate; overflow: hidden; display: flex; flex-direction: column; align-items: center; gap: 4px; margin: 0; padding: 0 16px 24px; border: 0; border-radius: 20px; --plT: 247 131 89; background: linear-gradient(180deg, color-mix(in srgb, oklch(var(--ar-ink)) 8%, var(--ar-paper)), color-mix(in srgb, oklch(var(--ar-ink)) 3%, var(--ar-paper))); box-shadow: none; color: oklch(var(--ar-ink)); font: inherit; font-family: var(--ar-font); text-align: center; cursor: pointer; opacity: .5; transition: opacity .22s ease; }   /* no border ("No border"); the one not picked at 50% ("Inactive opacity 50%") */   /* the plan cards ("Card plan style: orange card and grey silver light card", the reference's dark glass cards): the card's ground, a hairline and a lit top edge; its tint (--plT) glowing from the top-left corner, a faint ring top-right */
+.arSheet.hpSheet .hpPlTabs { margin-bottom: 16px; }   /* the cards' group +16 under it ("Card group margin bottom +16px") */
+.arSheet.hpSheet .hpPlTabs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }   /* +4 ("cards gap +4px") */
+.arSheet.hpSheet .hpPlTab { appearance: none; position: relative; isolation: isolate; overflow: hidden; display: flex; flex-direction: column; align-items: center; gap: 4px; margin: 0; padding: 0 24px 32px; border: 0; border-radius: 24px; --plT: 247 131 89; background: linear-gradient(180deg, color-mix(in srgb, oklch(var(--ar-ink)) 8%, var(--ar-paper)), color-mix(in srgb, oklch(var(--ar-ink)) 3%, var(--ar-paper))); box-shadow: none; color: oklch(var(--ar-ink)); font: inherit; font-family: var(--ar-font); text-align: center; cursor: pointer; opacity: .5; transition: opacity .22s ease; }   /* no border ("No border"); the one not picked at 50% ("Inactive opacity 50%") */   /* the plan cards ("Card plan style: orange card and grey silver light card", the reference's dark glass cards): the card's ground, a hairline and a lit top edge; its tint (--plT) glowing from the top-left corner, a faint ring top-right */   /* +4 round, +8 inside ("More rounded by 4px", "more padding in the body content +8px") */
 .arSheet.hpSheet .hpPlTab[data-v="diag"] { --plT: 252 172 96; }   /* Protocol orange, Diagnostics a warmer amber in the same glow ("match the glow of the Protocol card; diag card, more warm orange vibe"; was silver) */
 .arSheet.hpSheet .hpPlTabTx { position: absolute; inset: 0; z-index: -1; display: block; width: 100%; height: 100%; border-radius: inherit; pointer-events: none; transform: scaleX(-1); -webkit-mask: radial-gradient(125% 125% at 100% 100%, #000 0%, rgba(0, 0, 0, .55) 32%, rgba(0, 0, 0, .18) 52%, transparent 74%); mask: radial-gradient(125% 125% at 100% 100%, #000 0%, rgba(0, 0, 0, .55) 32%, rgba(0, 0, 0, .18) 52%, transparent 74%); }   /* the membership card's texture (w2Tex: dots, 40%, 3 px, its light running through), drawn in its corner and turned over to sit in the bottom left ("add the texture animated on the bottom left of each card, same as the membership onboarding card") */
 .arSheet.hpSheet .hpPlTab::before { content: ''; position: absolute; inset: 0; z-index: -1; background: radial-gradient(120% 85% at 0% 0%, rgb(var(--plT) / .44), rgb(var(--plT) / .1) 48%, transparent 72%); opacity: .55; transition: opacity .3s ease; pointer-events: none; }
 .arSheet.hpSheet .hpPlTab[aria-selected="true"] { opacity: 1; } .arSheet.hpSheet .hpPlTab[aria-selected="true"]::before { opacity: 1; }   /* picked: whole, its glow full */
 .arSheet.hpSheet .hpPlTab::after { content: ''; position: absolute; inset: 0; z-index: 1; border-radius: inherit; box-shadow: inset 0 0 0 1.5px oklch(var(--ar-ink)); opacity: 0; transition: opacity .22s ease; pointer-events: none; } .arSheet.hpSheet .hpPlTab[aria-selected="true"]::after { opacity: 1; }   /* the picked card's white edge, 1.5 ("white border for active, 1.5 thickness"), over its glow and texture */
 /* the card, as the membership card ("keep the same bg style; same badge above price"; its moving dot logo at the top left gone: "Remove logo everlab", the membership card keeps its own): the plan's name in its foil badge (.hpW2Tag, the Solid card's warm one) over the price; the banner of dot ribbons at its top (.hpPlTabB, was an icon in a circle of 8% ink); no radio ("no radio indicator") */
-.arSheet.hpSheet .hpPlTab .hpW2Tag { position: relative; display: inline-block; margin: 4px 0 6px; padding: 8px 13px 7px; border-radius: 999px; font-family: var(--ar-font-mono); font-size: 11px; line-height: 1; letter-spacing: .16em; text-transform: uppercase; white-space: nowrap; }
+.arSheet.hpSheet .hpPlTab .hpW2Tag { position: relative; display: inline-block; margin: 4px 0 6px; padding: 6px 13px 5px; border-radius: 999px; font-family: var(--ar-font-mono); font-size: 11px; line-height: 1; letter-spacing: .16em; text-transform: uppercase; white-space: nowrap; }
 .arSheet.hpSheet .hpPlTabTx { opacity: 0; transition: opacity .35s ease; } .arSheet.hpSheet .hpPlTab[aria-selected="true"] .hpPlTabTx { opacity: 1; }   /* the texture on the picked card only ("effect pattern only on the active one") */
-.arSheet.hpSheet .hpPlTabB { position: relative; flex: none; display: block; align-self: stretch; height: 72px; margin: 0 -16px 6px; overflow: hidden; background: #050404; }   /* the banner instead of the icon disc ("Create a banner instead of the visual"): a band across the card's top, its full width, the card's own top corners (its clip), 72 tall; its ground the reference's black in both modes (art, as a picture); the badge, price and line under it */
-.arSheet.hpSheet .hpPlTabB canvas { display: block; width: 100%; height: 100%; }
-.arSheet.hpSheet .hpPlTabB::after { content: ''; position: absolute; inset: auto 0 0; height: 1px; background: rgb(255 255 255 / .06); pointer-events: none; }   /* a hairline at its foot */
+.arSheet.hpSheet .hpPlTabB { position: relative; flex: none; display: block; align-self: stretch; height: 72px; margin: 0 -24px 6px; overflow: hidden; background: #050404; }   /* the banner instead of the icon disc ("Create a banner instead of the visual"): a band across the card's top, its full width, the card's own top corners (its clip), 72 tall; its ground the reference's black in both modes (art, as a picture); the badge, price and line under it */
+.arSheet.hpSheet :is(.hpPlTabB, .hpPlanB) canvas { display: block; width: 100%; height: 100%; }
+.arSheet.hpSheet :is(.hpPlTabB, .hpPlanB)::after { content: ''; position: absolute; inset: auto 0 0; height: 1px; background: rgb(255 255 255 / .06); pointer-events: none; }   /* a hairline at its foot */
 .arSheet.hpSheet .hpPlTabN { font-size: 16px; line-height: 20px; font-weight: 570; }
 .arSheet.hpSheet .hpPlTabP { font-size: 23px; line-height: 28px; font-weight: 500; font-variant-numeric: tabular-nums; }   /* the cost +8 ("cost +8px bigger") */
 .arSheet.hpSheet .hpPlTabD .hpNoBr { white-space: nowrap; }   /* a hyphenated word kept whole ("doctor-led", never "doctor- / led") */
 .arSheet.hpSheet .hpPlTabD { margin-top: 4px; font-size: 13px; line-height: 17px; opacity: .64; text-wrap: balance; }
 .arSheet.hpSheet .hpPlTab:focus-visible { outline: 2px solid var(--ar-blue-fg); outline-offset: 2px; }
-.arSheet.hpSheet .hpPlTab::before, .arSheet.hpSheet .hpPlTab :is(.hpPlTabTx, .hpPlTabB, .hpW2Tag) { filter: grayscale(0); } .arSheet.hpSheet .hpPlTab:not([aria-selected="true"])::before, .arSheet.hpSheet .hpPlTab:not([aria-selected="true"]) :is(.hpPlTabTx, .hpPlTabB, .hpW2Tag) { filter: grayscale(1); }   /* the card not picked in greyscale ("grascale on inactive"): its glow, its texture, its banner and its badge; its words as they are; the picked one in colour */
-.arSheet.hpSheet .hpPlTab::before { transition: opacity .3s ease, filter .3s ease; } .arSheet.hpSheet .hpPlTab .hpPlTabTx { transition: opacity .35s ease, filter .3s ease; } .arSheet.hpSheet .hpPlTab :is(.hpPlTabB, .hpW2Tag) { transition: filter .3s ease; }   /* the swap eased as the pick changes */
+.arSheet.hpSheet .hpPlTab::before, .arSheet.hpSheet .hpPlTab :is(.hpPlTabTx, .hpPlTabB, .hpW2Tag), .arSheet.hpSheet .hpPlan :is(.hpPlanB, .hpPlanT) { filter: grayscale(0); } .arSheet.hpSheet .hpPlTab:not([aria-selected="true"])::before, .arSheet.hpSheet .hpPlTab:not([aria-selected="true"]) :is(.hpPlTabTx, .hpPlTabB, .hpW2Tag), .arSheet.hpSheet .hpPlan:not(.hpPlanOn) :is(.hpPlanB, .hpPlanT) { filter: grayscale(1); }   /* the card not picked in greyscale ("grascale on inactive"): its glow, its texture, its banner and its badge; its words as they are; the picked one in colour */
+.arSheet.hpSheet .hpPlTab::before { transition: opacity .3s ease, filter .3s ease; } .arSheet.hpSheet .hpPlTab .hpPlTabTx { transition: opacity .35s ease, filter .3s ease; } .arSheet.hpSheet .hpPlTab :is(.hpPlTabB, .hpW2Tag), .arSheet.hpSheet .hpPlan :is(.hpPlanB, .hpPlanT) { transition: filter .3s ease; }   /* the swap eased as the pick changes */
 @media (hover: hover) { .arSheet.hpSheet .hpPlTab:not([aria-selected="true"]):hover { opacity: .72; } }
+html.gfPlLeft .arSheet.hpSheet .hpPlTab { align-items: flex-start; text-align: left; }   /* Tweaks -> Send a gift -> Card align: Left ("Tweak align left"): the badge, price and line from the left edge; the banner still the card's width */
 /* Plans: Stack (the ghost card of rows) */
 .arSheet.hpSheet .hpPlStack { display: flex; flex-direction: column; gap: 4px; padding: 8px; border-radius: 24px; background: oklch(var(--ar-ink) / .05); -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px); }   /* no border; its ground at 5% ink ("no border, main card -4% opacity", then "main card +4% bg opacity") */
 .arSheet.hpSheet .hpPlRow { appearance: none; display: flex; align-items: center; gap: 14px; width: 100%; margin: 0; padding: 18px;   /* +4 ("item card inside +4px padding") */ border: 0; border-radius: 16px; background: transparent; color: oklch(var(--ar-ink)); font: inherit; font-family: var(--ar-font); text-align: left; cursor: pointer; transition: background-color .2s ease; }
@@ -2331,7 +2344,7 @@ html .arSheet.hpSheet.hpGfSolo.hpGfAtIn:not(.hpGfOnSheet) .arHead .arIconBtn.arI
 .arSheet.hpSheet .hpScr.hpGfRc > .hpGfRcF, .arSheet.hpSheet.hpWide:not(.hpAtHome) .hpScr.hpGfRc > .hpGfRcF { position: absolute; inset: 0; display: block; width: 100%; max-width: none; height: 100%; margin: 0; border: 0; background: none; }
 .arSheet.hpSheet .hpGfRcF { opacity: 0; transition: opacity .32s ease; } .arSheet.hpSheet .hpGfRcF.hpGfRcOn { opacity: 1; }
 @media (prefers-reduced-motion: reduce) { .arSheet.hpSheet .hpGfRcF { transition: none; } }
-@media (prefers-reduced-motion: reduce) { .arSheet.hpSheet :is(.hpPlan, .hpGfChip, .hpPlanX svg, .hpGfMark) { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .arSheet.hpSheet :is(.hpPlan, .hpGfChip, .hpPlanX svg, .hpGfMark), .arSheet.hpSheet .hpPlan::after, .arSheet.hpSheet .hpPlan :is(.hpPlanB, .hpPlanT) { transition: none; } }
 
 </style>
 <div id="stage" data-bp="auto"><div id="dev"><div id="hp"></div><div class="bpStatus" aria-hidden="true">
@@ -2888,7 +2901,12 @@ window.EvConsent = (function () {
   var P = { back: 'M10 3.5 5.5 8l4.5 4.5', close: 'M3.5 3.5l9 9M12.5 3.5l-9 9', check: 'm3.8 8.3 2.6 2.6 5.8-6', pen: ['m11.2 2.6 2.2 2.2-8.2 8.2H3v-2.2z', 'm9.6 4.2 2.2 2.2'], sign: ['M2 10.6c1.4-2.8 2.5-5.9 3.7-5.5 1.1.4-.9 5 .3 5.2 1 .2 1.5-2.3 2.6-2.2.9.1.3 2 1.3 2.1.8.1 1.4-.8 2.1-1.5', 'M2 13.4h12'], chev: 'm4 6 4 4 4-4', plus: 'M8 3.5v9M3.5 8h9', minus: 'M3.5 8h9', err: ['M8 1.8a6.2 6.2 0 1 1 0 12.4A6.2 6.2 0 0 1 8 1.8Z', 'M8 5v3.4', 'M8 10.8v.1'],
     shield: ['M8 1.8 13 3.6v4.2c0 3-2.1 5.4-5 6.4-2.9-1-5-3.4-5-6.4V3.6Z', 'm5.8 8 1.6 1.6 3-3.2'], tube: ['M5.6 1.8h4.8', 'M6.6 1.8v8.9a1.4 1.4 0 0 0 2.8 0V1.8', 'M6.6 6.6h2.8'],   /* the plans' tabs: Protocol, Diagnostics */
     gift: ['M3.6 6h8.8a.8.8 0 0 1 .8.8v1.2a.8.8 0 0 1-.8.8H3.6a.8.8 0 0 1-.8-.8V6.8a.8.8 0 0 1 .8-.8Z', 'M3.6 8.8v4.4h8.8V8.8', 'M8 6v7.2', 'M8 6S7.12 3.04 5.52 3.36c-1.2.24-1.04 2.08.56 2.64', 'M8 6s.88-2.96 2.48-2.64c1.2.24 1.04 2.08-.56 2.64'],   /* the app's gift and calendar (the Timeline's group icons, JG), on this set's 16 grid */
-    cal: ['M4.4 3.6h7.2a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H4.4a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2Z', 'M2.4 6.8h11.2', 'M5.6 2.24v2.56M10.4 2.24v2.56'] };
+    cal: ['M4.4 3.6h7.2a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H4.4a2 2 0 0 1-2-2v-6a2 2 0 0 1 2-2Z', 'M2.4 6.8h11.2', 'M5.6 2.24v2.56M10.4 2.24v2.56'],
+    /* the List plan cards' rows ("List card type this style"): a consult, the bloods, the physical, the program, the re-test, the scan, the heart */
+    chat: 'M4.5 3h7A1.5 1.5 0 0 1 13 4.5v5a1.5 1.5 0 0 1-1.5 1.5H7.2l-2.7 2.2V11A1.5 1.5 0 0 1 3 9.5v-5A1.5 1.5 0 0 1 4.5 3Z', drop: 'M8 2.3c2.13 2.8 4 4.87 4 7.07a4 4 0 0 1-8 0c0-2.2 1.87-4.27 4-7.07Z', pulse: 'M1.8 8h2.6l1.6-4 3 8 1.6-4h3.6',
+    target: ['M8 2.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11Z', 'M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5Z'], retest: ['M13 8a5 5 0 0 1-8.6 3.5', 'M3 8a5 5 0 0 1 8.6-3.5', 'M11.8 2.2v2.5H9.3', 'M4.2 13.8v-2.5h2.5'],
+    scan: ['M2.7 5.7V4A1.3 1.3 0 0 1 4 2.7h1.7', 'M10.3 2.7H12A1.3 1.3 0 0 1 13.3 4v1.7', 'M13.3 10.3V12a1.3 1.3 0 0 1-1.3 1.3h-1.7', 'M5.7 13.3H4A1.3 1.3 0 0 1 2.7 12v-1.7', 'M5 8h6'],
+    heart: 'M12.67 9.33c1-.97 2-2.14 2-3.66A3.67 3.67 0 0 0 11 2c-1.17 0-2 .33-3 1.33C7 2.33 6.17 2 5 2a3.67 3.67 0 0 0-3.67 3.67c0 1.53 1 2.7 2 3.66L8 14Z' };
   var DI = {   // the devices' kinds, 24 square
     phone: ['M8 2.5h8a1.5 1.5 0 0 1 1.5 1.5v16a1.5 1.5 0 0 1-1.5 1.5H8A1.5 1.5 0 0 1 6.5 20V4A1.5 1.5 0 0 1 8 2.5Z', 'M10.5 18.5h3'],
     watch: ['M8.5 6.5h7a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-7a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2Z', 'M9 6.5 9.6 3h4.8l.6 3.5M9 17.5l.6 3.5h4.8l.6-3.5', 'M12 10v2.2l1.4 1'],
@@ -3144,8 +3162,8 @@ window.EvConsent = (function () {
   AREA.res = { k: 'res', t: 'Your past results', s: '', steps: ['search', 'cc'], sub: ['Past results', 'Concierge'], i: 2 };   /* then the Concierge's introduction ("next screen needs to be a Concierge intro, with CTA Go to overview") */   /* the past results search, after the three ("You're all set" -> "Next: your past results", the capture): a page of its own, not a step; the bar's three dashes full (i: the last) */
   /* Send a gift ("Create the Send Gift Page flow in standalone flow"; Standalone flow -> Send a gift, #send-gift): a standalone flow on the profile's own step system ("use the same step system layout as the Health profile promise and detail"):
      the intro (the header overlap's hero, EvOverlap), seven form steps ("n of 7", EvSteps.progress), the checkout, then the Gift receipt (the page itself, this gift in it). Opened on its own (mount's solo 'gift'), never one of the profile's stages; its answers this sitting's only */
-  var GF = ['intro', 'where', 'fit', 'who', 'plan', 'when', 'note', 'pay', 'checkout', 'done'], GF_FORM = 7;   /* where..pay: the seven form steps, 1 of 7 to 7 of 7 */
-  var GFN = { intro: 'Intro', where: 'Where they live', fit: 'Is Everlab right for them?', who: 'Who it’s for', plan: 'Choose the gift', when: 'Occasion and date', note: 'Their note', pay: 'Check and pay', checkout: 'Checkout', done: 'Receipt' };   /* the last page the Gift receipt itself (visuals/gift-receipt.html): "This is the Receipt! already designed" */
+  var GF = ['intro', 'where', 'fit', 'who', 'plan', 'occ', 'when', 'note', 'pay', 'checkout', 'done'], GF_FORM = 8;   /* where..pay: the eight form steps, 1 of 8 to 8 of 8 (the occasion its own page, then when it arrives: "Split into a dedicated Question, What's the occasion? stacked items. Then question → When it should arrive?") */
+  var GFN = { intro: 'Intro', where: 'Where they live', fit: 'Is Everlab right for them?', who: 'Who it’s for', plan: 'Choose the gift', occ: 'Occasion', when: 'Delivery', note: 'Their note', pay: 'Check and pay', checkout: 'Checkout', done: 'Receipt' };   /* the last page the Gift receipt itself (visuals/gift-receipt.html): "This is the Receipt! already designed" */
   AREA.gift = { k: 'gift', t: 'Send a gift', s: 'About two minutes', steps: GF.slice(), sub: GF.map(function (k) { return GFN[k]; }), i: 0 };
   var GF_PLAN = {   /* the two plans a gift can be, the board's words ("Protocol A$2,999", "Diagnostics A$1,199"); New Zealand's prices a draft ("New: New Zealand with NZ prices") */
     prot: { s: 'Our most advanced assessment, with a year of doctor-led care.', n: 'Protocol', full: 'Everlab Protocol Plan', d: 'Our most advanced health assessment, designed to detect, prevent and reverse risk of disease.', L: ['10 consultations across the plan', '90+ blood biomarkers incl. OrganAge, a DEXA body composition scan and a heart health assessment', 'Full physical assessment including strength, stability and VO2 max', 'A personalised health and performance program built around their lifestyle', 'Structured re-testing of key biomarkers to track progress'] },
@@ -4294,7 +4312,7 @@ window.EvConsent = (function () {
     };
 
     /* ---------- Send a gift (solo 'gift'; "Create the Send Gift Page flow in standalone flow"): its pages, each built here from the profile's own parts (q, choice, field, telF, lbl, two, the summary rows, the calendar),
-       on the step system: the intro, then where, fit, who, plan, when, note, pay (1 to 7 of 7), the checkout and the Gift receipt. The board's words; its orange tags notes, not words on screen ---------- */
+       on the step system: the intro, then where, fit, who, plan, occ, when, note, pay (1 to 8 of 8), the checkout and the Gift receipt. The board's words; its orange tags notes, not words on screen ---------- */
     var EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/, GP = {};   /* GP: the checkout's card, this page's only, never saved */
     var gfName = function (ans, dflt) { return (ans.first || '').trim() || dflt; };
     var gfMobOk = function (ans) { var d = digits(ans.mob, 10); return ans.ctry === 'UK' ? d.length === 10 && d[0] === '7' : ans.ctry === 'NZ' ? d[0] === '2' && d.length >= 8 && d.length <= 10 : d.length === 9 && d[0] === '4'; };
@@ -4302,14 +4320,15 @@ window.EvConsent = (function () {
     var gfFrom = function (ans) { var f = ans.from == null ? DEMO.gift.from : ans.from; return (f || '').trim() || 'Someone'; };   /* one giver, the board's (Sam): the From the note starts with and the name Log in fills come from DEMO.gift; theirs once they write another (none: Someone) */
     var gfComplete = function (ans) { return !!(ans.ctry && (ans.fit || []).indexOf('none') >= 0 && (ans.first || '').trim() && (ans.last || '').trim() && EMAIL.test((ans.email || '').trim()) && gfMobOk(ans) && GF_PLAN[ans.plan] && (ans.dlv === 'now' || (ans.dlv === 'date' && gfDate(ans.date)))); };   /* every required answer in: Check and pay's Continue and the checkout's Pay */
     var gfOk = { where: function (a) { return !!a.ctry; }, fit: function (a) { return (a.fit || []).indexOf('none') >= 0; }, who: function (a) { return !!((a.first || '').trim() && (a.last || '').trim() && EMAIL.test((a.email || '').trim()) && gfMobOk(a)); }, plan: function (a) { return !!GF_PLAN[a.plan]; },
-      when: function (a) { return a.occ !== undefined && (a.dlv === 'now' || (a.dlv === 'date' && !!gfDate(a.date))); }, note: function (a) { return a.note !== undefined; }, checkout: function (a) { return !!((a.pName || '').trim() && EMAIL.test((a.pEmail || '').trim())); } };   /* a page done with (the occasion and the note optional: seen once, '' is an answer) */
+      occ: function (a) { return a.occ !== undefined; }, when: function (a) { return a.dlv === 'now' || (a.dlv === 'date' && !!gfDate(a.date)); }, note: function (a) { return a.note !== undefined; }, checkout: function (a) { return !!((a.pName || '').trim() && EMAIL.test((a.pEmail || '').trim())); } };   /* a page done with (the occasion and the note optional: seen once, '' is an answer) */
     /* a jump past a page not done (the Flow panel, Go to prototype): what it lacks the board's gift's, as the profile's goId fills the steps before it (linear); what is already complete kept */
     var gfFillTo = function (i) {
       var ans = S.a.gift.ans, D = DEMO.gift, cp = function (k) { ans[k] = JSON.parse(JSON.stringify(D[k])); };
       stepsOf('gift').slice(0, i).forEach(function (id) {
         if (!gfOk[id] || gfOk[id](ans)) return;
         if (id === 'who') { if (!(ans.first || '').trim()) cp('first'); if (!(ans.last || '').trim()) cp('last'); if (!EMAIL.test((ans.email || '').trim())) cp('email'); if (!gfMobOk(ans)) ans.mob = ans.ctry === 'NZ' ? '21 234 5678' : ans.ctry === 'UK' ? '7400 123 456' : D.mob; return; }
-        if (id === 'when') { if (ans.occ === undefined) cp('occ'); if (!(ans.dlv === 'now' || (ans.dlv === 'date' && gfDate(ans.date)))) { cp('dlv'); cp('date'); } return; }
+        if (id === 'occ') { cp('occ'); return; }
+        if (id === 'when') { cp('dlv'); cp('date'); return; }
         if (id === 'note') { cp('note'); if (ans.from == null) cp('from'); return; }
         if (id === 'checkout') { if (!(ans.pName || '').trim()) cp('pName'); if (!EMAIL.test((ans.pEmail || '').trim())) cp('pEmail'); return; }
         ans[id === 'where' ? 'ctry' : id] = JSON.parse(JSON.stringify(D[id === 'where' ? 'ctry' : id]));
@@ -4428,22 +4447,26 @@ window.EvConsent = (function () {
             tcv, h('span', { class: 'hpPlTabB', 'aria-hidden': 'true' }, bcv), h('span', { class: 'hpW2Tag', text: p.n }), h('span', { class: 'hpPlTabP', text: gfMoney(ctry, k) }), h('span', { class: 'hpPlTabD' }, (p.s || '').split(/(\S+-\S+)/).map(function (w, j) { return j % 2 ? h('span', { class: 'hpNoBr', text: w }) : w; })))); });
         tb.appendChild(row); tb.appendChild(pnl); paintT(); return tb;
       }
-      var box = h('div', { class: 'hpPlans', role: 'radiogroup', 'aria-label': 'Choose a plan' }), openK = {};
+      /* List ("List card type this style, can use a banner like this. Consider active and inactive"): the reference's card, a banner, the name and price with a switch, what's included as rows, a pill at the foot; one plan picked at a time, as before:
+         a tap on the card or turning its switch on picks it (the other's off); turning the picked one's switch off picks the other, so one is always picked */
+      var box = h('div', { class: 'hpPlans', role: 'group', 'aria-label': 'Choose a plan' }), openK = {};
+      var PIC = { prot: ['chat', 'drop', 'pulse', 'target', 'retest'], diag: ['drop', 'scan', 'heart', 'chat'] }, PILL = { prot: 'A year of doctor-led care', diag: 'A full health check' };   /* each row's icon; the pill the intro's own words for each plan ("Protocol, a year of doctor-led care, or Diagnostics, a full health check") */
       /* what's included as the Async report's biomarker module ("a See more with gradient, same as Async Biomarker module"): two shown, the third fading under a full-width See n more, the rest opening in place, then Show less */
-      var paint = function () { [].forEach.call(box.children, function (c, i) { var k = c.dataset.v, on = get() === k, op = !!openK[k], tg = c.querySelector('.hpPlanMore');
-        c.setAttribute('aria-checked', String(on)); c.tabIndex = on || (!get() && i === 0) ? 0 : -1; c.classList.toggle('hpPlanOpen', op);
+      var paint = function () { [].forEach.call(box.children, function (c) { var k = c.dataset.v, on = get() === k, op = !!openK[k], tg = c.querySelector('.hpPlanMore'), sw = c.querySelector('.hpSw');
+        c.classList.toggle('hpPlanOn', on); if (sw) sw.setAttribute('aria-checked', String(on)); c.classList.toggle('hpPlanOpen', op);
         if (tg) { tg.setAttribute('aria-expanded', String(op)); tg.firstChild.textContent = op ? 'Show less' : 'See ' + (GF_PLAN[k].L.length - 2) + ' more'; } }); };
       var pick = function (k) { if (get() === k) return; set(k); save(true); paint(); if (onChange) onChange(); };
       ks.forEach(function (k, i) {
-        var p = GF_PLAN[k], id = 'hpPl' + k + Math.random().toString(36).slice(2, 6);
+        var p = GF_PLAN[k], id = 'hpPl' + k + Math.random().toString(36).slice(2, 6), bcv = h('canvas', { 'aria-hidden': 'true' });
         var tg = p.L.length > 3 ? h('button', { type: 'button', class: 'hpPlanMore', 'aria-controls': id, on: { click: function (e) { e.stopPropagation(); openK[k] = !openK[k]; paint(); } } }, h('span'), ic(16, P.chev, 1.6)) : null;
-        var c = h('div', { class: 'hpPlan', role: 'radio', 'data-v': k, 'aria-labelledby': id + 'n', on: { click: function () { pick(k); },
-          keydown: function (e) { if (e.target !== c) return; if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(k); return; }
-            var d = e.key === 'ArrowDown' || e.key === 'ArrowRight' ? 1 : e.key === 'ArrowUp' || e.key === 'ArrowLeft' ? -1 : 0; if (!d) return; e.preventDefault(); var n = ks[(i + d + ks.length) % ks.length]; pick(n); var nc = box.querySelector('[data-v="' + n + '"]'); if (nc) nc.focus(); } } },
-          h('div', { class: 'hpPlanH' }, h('b', { id: id + 'n', text: p.n }), h('span', { class: 'hpPlanP', text: gfMoney(ctry, k) })),
-          h('p', { class: 'hpPlanD', text: p.d }),
-          h('ul', { class: 'hpPlanL' + (tg ? ' hpPlanFold' : ''), id: id }, p.L.map(function (t) { return h('li', null, ic(12, P.check, 2.2), h('span', { text: t })); })), tg);
-        box.appendChild(c);
+        var sw = h('button', { type: 'button', class: 'hpSw', role: 'switch', 'aria-checked': 'false', 'aria-labelledby': id + 'n ' + id + 'p', on: { click: function (e) { e.stopPropagation(); pick(get() === k ? ks[(i + 1) % ks.length] : k); } } }, h('i'));
+        var c = h('div', { class: 'hpPlan', 'data-v': k, on: { click: function () { pick(k); } } },
+          h('span', { class: 'hpPlanB', 'aria-hidden': 'true' }, bcv),
+          h('div', { class: 'hpPlanBd' },
+            h('div', { class: 'hpPlanH' }, h('span', { class: 'hpPlanHT' }, h('b', { id: id + 'n', text: p.n }), h('span', { class: 'hpPlanP', id: id + 'p', text: gfMoney(ctry, k) })), sw),
+            h('ul', { class: 'hpPlanR' + (tg ? ' hpPlanFold' : ''), id: id }, p.L.map(function (t, j) { var pk = (PIC[k] || [])[j]; return h('li', null, h('span', { class: 'hpPlanI', 'aria-hidden': 'true' }, ic(14, P[pk] || P.check, 1.4)), h('span', { text: t })); })), tg,
+            PILL[k] ? h('p', { class: 'hpPlanT', text: PILL[k] }) : null));
+        box.appendChild(c); gfBan(bcv, k).start();
       });
       if (get()) openK[get()] = true; paint();
       if (!opts.snap && !reduced() && box.animate) [].forEach.call(box.children, function (b, i) { b.animate([{ opacity: 0, transform: 'translateY(12px)' }, { opacity: 1, transform: 'none' }], { duration: 460, delay: 160 + i * 70, easing: 'cubic-bezier(.2, .8, .2, 1)', fill: 'backwards' }); });   /* one after another, as the option cards */
@@ -4573,20 +4596,31 @@ window.EvConsent = (function () {
       var ok = function () { foot2(ans.plan ? 'Continue with ' + GF_PLAN[ans.plan].n : 'Continue', !!ans.plan, fwd); };
       scr.appendChild(plans(['prot', 'diag'], function () { return ans.plan; }, function (v) { ans.plan = v; }, ans.ctry, ok)); ok();
     };
-    BUILD['gift.when'] = function (scr, ans) {
-      /* the occasion (optional, its chips; tapped again, none) and the delivery: Send now, or On a date with the calendar (from tomorrow to 12 months ahead); Christmas suggests the 25th */
+    var gfXmas = function (ans) { if (ans.occ === 'xmas' && ans.dlv === 'date' && !ans.date) ans.date = '2026-12-25'; };   /* Christmas suggests the 25th */
+    BUILD['gift.occ'] = function (scr, ans) {
+      /* the occasion, a page of its own ("Split into a dedicated Question, What's the occasion? stacked items"): optional, tapped again, none; Stacked the step pages' own option cards (choice(), as Is Everlab right for them?), Chips by Tweak (Tweaks -> Send a gift -> Occasion) */
       if (ans.occ === undefined) ans.occ = '';   /* seen: no occasion is an answer (a later jump keeps it) */
+      scr.appendChild(q('', 'What’s the occasion?', 'Optional. We’ll mention it when we tell them about their gift.'));
+      var pickO = function (v) { ans.occ = ans.occ === v ? '' : v; gfXmas(ans); };
+      if ((document.getElementById('stGfOcc') || {}).value === 'chips') {
+        var chips = h('div', { class: 'hpGfChips', role: 'group', 'aria-label': 'Occasion' }, GF_OCC.map(function (o) {
+          return h('button', { type: 'button', class: 'hpGfChip', 'data-v': o[0], 'aria-pressed': 'false', on: { click: function () { pickO(o[0]); save(true); paintC(); } } }, o[1]); }));
+        var paintC = function () { [].forEach.call(chips.children, function (b) { b.setAttribute('aria-pressed', String(ans.occ === b.dataset.v)); }); };
+        scr.appendChild(chips); paintC();
+      } else {
+        var box = choice(GF_OCC, function () { return ans.occ; }, pickO, false, null); box.setAttribute('aria-label', 'Occasion'); scr.appendChild(box);
+      }
+      foot2('Continue', true, fwd);
+    };
+    BUILD['gift.when'] = function (scr, ans) {
+      /* when it arrives, a page of its own ("Then question → When it should arrive?"): Send now, or On a date with the calendar (from tomorrow to 12 months ahead); Christmas suggests the 25th */
       var nm = gfName(ans, 'them'), sub = h('p', { class: 'evTgBot hpD' }), Q = q('', 'When should it arrive?', ''), calOpen = ans.dlv === 'date' && !ans.date;
       Q.appendChild(sub); scr.appendChild(Q);
       var min = new Date(GF_TODAY.getFullYear(), GF_TODAY.getMonth(), GF_TODAY.getDate() + 1), max = new Date(GF_TODAY.getFullYear() + 1, GF_TODAY.getMonth(), GF_TODAY.getDate());
-      var xmas = function () { if (ans.occ === 'xmas' && ans.dlv === 'date' && !ans.date) ans.date = '2026-12-25'; };
-      var chips = h('div', { class: 'hpGfChips', role: 'group', 'aria-label': 'Occasion' }, GF_OCC.map(function (o) {
-        return h('button', { type: 'button', class: 'hpGfChip', 'data-v': o[0], 'aria-pressed': 'false', on: { click: function () { ans.occ = ans.occ === o[0] ? '' : o[0]; xmas(); save(true); paint(); } } }, o[1]); }));
-      var dl = choice([['now', 'Send now', 'As soon as you pay'], ['date', 'On a date', 'Up to 12 months ahead']], function () { return ans.dlv; }, function (v) { ans.dlv = v; if (v === 'date') { xmas(); calOpen = true; } }, false, function () { paint(); });
-      dl.classList.add('hpGfDual');
+      var dl = choice([['now', 'Send now', 'As soon as you pay'], ['date', 'On a date', 'Up to 12 months ahead']], function () { return ans.dlv; }, function (v) { ans.dlv = v; if (v === 'date') { gfXmas(ans); calOpen = true; } }, false, function () { paint(); });
+      dl.classList.add('hpGfDual'); dl.setAttribute('aria-label', 'Delivery');
       var dateBox = h('div', { class: 'hpGfDate' });
       var paint = function () {
-        [].forEach.call(chips.children, function (b) { b.setAttribute('aria-pressed', String(ans.occ === b.dataset.v)); });
         [].forEach.call(dl.children, function (b) { b.setAttribute('aria-checked', String(ans.dlv === b.dataset.v)); });
         sub.textContent = ans.dlv === 'now' ? 'We’ll email ' + nm + ' as soon as you pay.' : 'We’ll email ' + nm + ' at 8am on the day.';
         dateBox.textContent = ''; dateBox.hidden = ans.dlv !== 'date';
@@ -4599,9 +4633,7 @@ window.EvConsent = (function () {
         }
         foot2('Continue', ans.dlv === 'now' || (ans.dlv === 'date' && !!gfDate(ans.date)), fwd);
       };
-      scr.appendChild(h('div', { class: 'hpFields' },
-        h('div', { class: 'hpF' }, h('span', { class: 'hpLbl' }, 'What’s the occasion?', h('span', { class: 'hpOptL', text: ' (optional)' })), h('span', { class: 'hpHelp', text: 'We’ll mention it when we tell them about their gift.' }), chips),
-        lbl('Delivery', dl), dateBox));
+      scr.appendChild(h('div', { class: 'hpFields' }, dl, dateBox));   /* the question says it: no Delivery label over the two cards now */
       paint();
     };
     BUILD['gift.note'] = function (scr, ans) {
@@ -4832,7 +4864,7 @@ window.EvConsent = (function () {
         h('div', { class: 'hpCard hpGfSum hpGfSumPlan' }, h('div', { class: 'hpGfSumTop' }, h('div', null, h('b', { text: p.full }), h('span', { text: '12-month membership for ' + gfName(ans, 'them') })), h('div', { class: 'hpGfSumP' }, h('b', { text: gfMoney(ans.ctry, k) }), h('span', { text: 'Includes GST' })))),
         h('div', { class: 'hpCard hpGfSum' },
         gfRow('To', ((ans.first || '') + ' ' + (ans.last || '')).trim(), (ans.email || '').trim(), 'who'),
-        gfRow('Arrives', gfArrive(ans), occ ? occ + ' gift' : '', 'when'),
+        gfRow('Arrives', gfArrive(ans), '', 'when'), gfRow('Occasion', occ || 'None', '', 'occ'),
         gfRow('Note', nt ? '“' + nt + '”' : 'Someone wanted you to have this.', 'From ' + gfFrom(ans), 'note'))));   /* "Note" (was Their note) */
       scr.appendChild(h('p', { class: 'hpHelp hpGfQ' }, 'Questions? Email ', h('a', { class: 'hpLink', href: 'mailto:support@everlab.com.au', text: 'support@everlab.com.au' })));
       foot2('Continue to payment', gfComplete(ans), fwd);   /* a gift with no recipient, plan or day never reaches Pay */
@@ -4897,7 +4929,7 @@ window.EvConsent = (function () {
     /* the demo: a tap in a form fills it ("when I click whatever field, simulate all the fields completed so I can continue"): its empty answers from the demo member's, the page drawn again with them; once filled, the fields edit as usual */
     var FILL = { 'wear.promise': ['tc', 'find'], 'wear.details': ['first', 'last', 'sex', 'dob', 'occ', 'state'], 'wear.address': ['addr'], 'wear.emergency': ['ecn', 'ece', 'ecp', 'ecr'], 'wear.mobile': ['mob'], 'wear.otp': ['otp'], 'wear.medicare': ['mc', 'mcn', 'irn', 'exp'], 'wear.declare': ['hdC', 'hdM', 'hdA', 'hdAT', 'hdS', 'hdF', 'hdFT'], 'wear.health': ['country', 'eth', 'goals'], 'past.time': ['day', 'time', 'tz'], 'you.about': ['country', 'goals', 'occ'] };
     /* Send a gift, as the profile ("click on one input: auto fill the entire screen, same as the health profile"): the board's gift (Alex, Christmas, Protocol, Sam), the card a demo one */
-    FILL['gift.where'] = ['ctry']; FILL['gift.fit'] = ['fit']; FILL['gift.who'] = ['first', 'last', 'email', 'mob']; FILL['gift.plan'] = ['plan']; FILL['gift.when'] = ['occ', 'dlv', 'date']; FILL['gift.note'] = ['note', 'from']; FILL['gift.checkout'] = ['pName', 'pEmail', 'card'];
+    FILL['gift.where'] = ['ctry']; FILL['gift.fit'] = ['fit']; FILL['gift.who'] = ['first', 'last', 'email', 'mob']; FILL['gift.plan'] = ['plan']; FILL['gift.occ'] = ['occ']; FILL['gift.when'] = ['dlv', 'date']; FILL['gift.note'] = ['note', 'from']; FILL['gift.checkout'] = ['pName', 'pEmail', 'card'];
     var empty = function (v) { return v == null || v === '' || v === false && false || (Array.isArray(v) && !v.length); };
     root.addEventListener('pointerdown', function (e) {
       if (!A || !e.target.closest('.hpScr :is(.hpIn, .hpSel, .hpOpt, .hpChk, .hpDay, .hpSlot, .hpGfChip, .hpGfDateB, input, textarea)') || e.target.closest('.hpPop, .hpPk, .hpSug, .hpFLock')) return;   // not inside a dropdown's menu or sheet, the suggestions, a held field
