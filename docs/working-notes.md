@@ -20360,3 +20360,12 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - "Tweak segmented tab, use Toggle instead … Add note to Alex | Toggle … If yes add the counter on the left of the toggle": Tweaks → Send a gift → **Note control: Segmented / Toggle** (default Segmented; changing it redraws the step; Save keeps it). Toggle is one row under the card: "Add a note for Alex" at the left, the HP switch at the right, the count at the switch's left while it is on (hidden off). Off writes the card's Without-note line, as the tab did.
 - "Put Logo mark everlab instead of For alex": the Long envelope's gold foil is now the Everlab mark (its own paths, the foil's gold gradient and sheen), about 23px on the phone; For <name> remains only if the mark's paths can't be read.
 - Checked at XS: both note modes, toggle on/off, Check and pay with Long. No console errors.
+
+## Small batch: support line 14, Continue to payment spinner only, signature outline, star without beam, dock gap, meal visuals 84
+- Check and pay: "Questions? Email support@everlab.com.au" at 14/20 ("14px"; was 13).
+- "Need loading icon only": Continue to payment now shows the Loading states' Simple loader (the spinner, no words) on its button for 1.2 s, then the checkout (reduced motion: at once).
+- Signature button ("padding +4px, dashed 1px, more gap, margin +12px top +16px bottom"): padding 14/18 (was 10/14); its outline drawn as a 1px dashed rect (3 on, 5 off) so the gap can be set; the slot 24 below the note (was 12) and 16 above the card's foot. The note's size fitting now counts that bottom margin.
+- "Remove beam effect on press": the dock's star opens the Ask sheet at once, no beam round it first.
+- Design system nav: "+2px gap between icon and label": 7 (was 5) under the 12px labels, every dock (the Navigation doc's phone too).
+- Nutrition plan meal cards: "visual -12px": the category visuals 84 (was 96).
+- The gift-intro helper had published its own build (against its brief) at 03:30; this publish replaces it with the merged build, which already holds its changes.
