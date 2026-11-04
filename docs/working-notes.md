@@ -20583,3 +20583,16 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
   - Desktop modals are unchanged (24 and 28).
   - The Gift referral page (its own file) still has its old full-width sheets.
 - Eva field ("Same bg opacity as the top chat field. No border"): the Overview top field's ground, ink 8% on dark and 6% on light, blurred 96. No border; a soft shadow under it still lifts it off the page.
+
+## Save fixed for blocked storage; Overview Eva field after 128 of scroll
+
+- **"Save issue!!!" (the bar's Save said Cannot save).** On that view this browser's storage refused the write, and the shared store didn't take it either. The Tweaks' Save and the Navigation doc's Save setup now:
+  - wait for the shared store if it hasn't answered yet (up to 10 s);
+  - try once more after a busy or passing failure;
+  - name the reason if it still fails ("Not saved · …"), with a console warning.
+- The shared Navigation setup now applies straight from the store, and is kept in memory where this browser can't store it. Tested with storage blocked, a store that answers late and one failed write: it saved and applied.
+- **Eva field on the Overview** ("Should only appear when 128px scroll has been made, if that the case the top chat disappear. floating bottom chat should appear moving up 16px, fade in / out"):
+  - Hidden at the top of the page.
+  - Once the page is more than 128 down, it rises 16 and fades in, and the top field fades out.
+  - Back above 128, the reverse.
+  - Other pages show it as before.
