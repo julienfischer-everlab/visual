@@ -20391,3 +20391,4 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - Design system → Navigation: the Breakpoint switch now sits in the page over the frame (XS · 393 … XL · 1920), not in the right panel ("put breakpoint inside the content, not as tweak"); the doc's phone has no home indicator ("Remove home nav notch").
 - The everlab-design-system skill refreshed against the current page (helper): line hints, Page types, Flow panel, EvSolo, Send a gift, the Plan module, navMaster keys; pending notes for the chat top bar (#273) and the video builder (#268).
 - The dock's AI button: no beam ring on press any more (the earlier "Remove beam effect on press" had removed the wait, not the ring); it opens Ask Everlab at once. The Navigation doc's AI button row says so.
+- When should it arrive?: Send now and On a date stacked, one a row, 12 more inside (26 28), from the left ("+12px padding", "Stacked", "not centered").
