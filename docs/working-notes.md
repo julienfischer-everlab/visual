@@ -20602,3 +20602,4 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 
 - "Still can't save setup! … try to make pop as default." The shared store showed the save landing (`masters/everlab_navMaster`, Icon motion Pop, 07:16). On load, though, `_navMaster` turned every saved Pop into the Beam. That was a leftover migration from when the Beam replaced Pop as the default. The saved motion is now applied as it is. Checked against a simulated store: Pop is still Pop after a reload, with no beam class.
 - The store also showed the bar's Tweaks last saved for everyone at 05:41. Its Save now waits, retries and names the reason it fails (previous build).
+- "No arrow on Mobile, only on desktop": the carousels' prev/next arrows (`.nav.railNav`, e.g. the Overview's Recent insights) now show on the desk only. The phone and the tablet swipe: XS and S frames, `#phone2`, and Auto under 992.
