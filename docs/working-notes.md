@@ -20702,3 +20702,17 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
   - XS phone carousel unchanged (301×318).
   - AI card L8 R8 B8, 24 padding, 48 radius.
   - 0 page errors.
+
+## Container tweak on every page (helper, merged ff08206)
+
+"FOR EACH PAGE Main page or sub page I want a Container tweak to select the container of the content 2xs s m l etc (design system rules)".
+- **The row:** Tweaks > Container comes first in the panel. It names the page up and offers the General layout master's sizes, 2xs · xs · sm · md · lg, plus Full. Pages that already have a width of their own get a seventh option, Own: the Plan's 520 + 260, its sub pages' 640, My journey V1's 760.
+- **Pages:** each keeps its own pick. Overview, Insights, Plan, Activity plan, Nutrition plan, Medical actions, Supplements, Wind-down routine, Activity session, Services, My journey, Service detail, Appointment, My account, Settings.
+- **Defaults** are each page's container today, so nothing moved: Overview sm, Service detail and My journey sm, the `--pnIn` panels md, the session 2xs, the Plan family Own.
+- **Applying a pick:** from M only; XS and S keep the full width with the breakpoint's padding. The content is held to the token and centred, with the page's own side padding as the minimum.
+- **Shared object:** `window.EvCt` holds the names (the Container doc reads them from it), the page table and the rule.
+- **Saving:** the picks go out with Save as one hidden value, `#stCtPg` (JSON per page key), and Reset clears them. The Container doc now lists every page's default.
+- **Checked after the merge** (2000 wide):
+  - The row reads Overview sm, Insights md. An Overview md pick saves `{"ov":"md"}`.
+  - Insights at xs narrows the Results row from 1280 to 800, and the Reports carousel arrows still show on overflow.
+  - 0 page errors; `dist/index.html` is 15.70 MB.
