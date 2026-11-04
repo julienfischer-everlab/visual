@@ -87,6 +87,7 @@ The page menu `#versionSel` has Documentation (`'doc'`) and Design system (`'ds'
 | Conversation model and personas | `A`, `match()`, `PERSONA` | references/chat.md |
 | Conversation editor | `Concierge.getConv/setConv/edits` | references/chat.md |
 | Concierge components gallery | `buildCmp` | references/chat.md |
+| Chat video stage and builder (Marketing page, MP4 export) | `Concierge.stage` (`concierge.html#stage`), `visuals/chat-video.html`, `window._mtg`, `ChatVideo.exportMp4` | docs/chat-video.md |
 | App embedding of the Concierge | `window._cc`, `#ccFrame` | references/chat.md |
 | Thinking / typing loaders | `.bbThink`, `.bbTyp`, `.chThink`, `.think` | references/chat.md |
 | Colour modes | `#themeSel`, `body.light` | references/tokens-components.md |
@@ -105,8 +106,7 @@ The page menu `#versionSel` has Documentation (`'doc'`) and Design system (`'ds'
 
 - **Desk panels follow the Overview** (#270): gap, top, 12 px corners, ground, padding, title on every panel.
 - **DS "Page types" rule** (#274): Main / Sub pages, every Sub page pushes in and pops out from one master.
-- **Chat video builder** (#268) on the Concierge chat.
-- Merged on this branch already: **XS 852 minimum** (#266), **Ask sheet icons** (#271), **Plan hover/press on every clickable** (#269, the Plan's interaction states) and the **Top nav master + container tokens** (#260: `EvTopNav`, `--ct2xs`..`--ctLg`, `data-container`; evSolo's head is Top nav C). Places still on their own heads after #260: EvChat `.chHead` and the Concierge `.hd` (44 controls: #273), the flows' `.arHeadRow` (the master's 44 discs only), the Header tab's `--hdr*` (doc only). Top bar CTAs are 44 everywhere ("CTA top nav always 44px"); titled sheets wear the sheet header master (EvSheetHead).
+- Merged on this branch already: **Chat video builder** (#268: Marketing, `Concierge.stage`, the MP4 export; docs/chat-video.md), **XS 852 minimum** (#266), **Ask sheet icons** (#271), **Plan hover/press on every clickable** (#269, the Plan's interaction states) and the **Top nav master + container tokens** (#260: `EvTopNav`, `--ct2xs`..`--ctLg`, `data-container`; evSolo's head is Top nav C). Places still on their own heads after #260: EvChat `.chHead` and the Concierge `.hd` (44 controls: #273), the flows' `.arHeadRow` (the master's 44 discs only), the Header tab's `--hdr*` (doc only). Top bar CTAs are 44 everywhere ("CTA top nav always 44px"); titled sheets wear the sheet header master (EvSheetHead).
 
 ## Checklist before you ship
 

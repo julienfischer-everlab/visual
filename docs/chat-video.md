@@ -102,7 +102,9 @@ type Item =
 
 ## Phone and floating (decided)
 
-- **Phone (`device: true`)**: the stage draws the whole phone itself, so the preview and the MP4 are the same pixels. That covers the XS screen (393 x 852), the master frame's look (`--evPhR` 56 round, the `--evPhBz` bezel, no shadow), the status bar (9:41, the island, signal, wifi, battery) and the chat's head for an open conversation (menu, title, minimise, close). It also covers the thread, the composer (field, +, Eva ▾, send) and the home indicator. The phone is scaled to fit the canvas inside `padding`. The builder draws no frame of its own.
+- **Phone (`device: true`)**: the stage draws the whole phone itself, so the preview and the MP4 are the same pixels. That covers the XS screen (393 x 852), the master frame's look (`--evPhR` 56 round, the `--evPhBz` bezel, no shadow), the status bar (9:41, the island, signal, wifi, battery) and the chat's own head, cloned from the page's `.main > .hd` (menu, title, close: the chat dropped its minimise button, so the video did too). It also covers the thread, the composer (field, +, Eva ▾, send) and the home indicator. The phone is scaled to fit the canvas inside `padding`. The builder draws no frame of its own.
+  - **The head's ground** is the chat's: the Top nav master's gradient blur (`.evTnG`, "Top nav always gradient blur by default"). The thread runs up under the head by its height (`--hdH`), and the head takes its scrolled state (`.evTnOn`, the ground 24 px longer) once the thread is under it, set from the time like everything else. The scroll keeps new content below the head.
+  - **In `frame()`** (the MP4), the ground's `backdrop-filter` can't be drawn through `foreignObject`. A copy of the thread, blurred 9 px on the page's ground and fading out over the ground's last third, stands in for it under the ground's tint, so the video's head reads as the preview's. The preview's DOM is not touched. The 32 px glass on the head's round buttons is still not drawn in the video.
 - **Floating (`device: false`)**: no phone and no ground of the chat's own. Only the thread (bubbles, Eva's answers, avatars, the clinician card, widgets) at the chat's spacing, in a 440 px column scaled to the canvas, anchored at the foot. The top edge fades out under 56 px. Eva's words and the thinking line take the card ground so they read on a picture. In light theme the cards take the chat's raised surface (the booking card's white and `--bkShadow`).
 
 ## Specialists
@@ -129,13 +131,13 @@ type Item =
 
 ## Checks
 
-`tools/stage-check.js`: serve the repo, then run `NODE_PATH=<playwright> node tools/stage-check.js http://127.0.0.1:<port>/visuals/concierge.html#stage <shots dir>`. It checks four compositions: phone dark 9:16, phone light 16:9 on a blurred picture, floating dark 1:1 on a cropped picture, and floating light 4:3. Each has 7 items.
+`tools/stage-check.js` (the stage) and `tools/mp4-check.js` (the export, below): serve the repo, then run `NODE_PATH=<playwright> node tools/stage-check.js http://127.0.0.1:<port>/visuals/concierge.html#stage <shots dir>`. It checks four compositions: phone dark 9:16, phone light 16:9 on a blurred picture, floating dark 1:1 on a cropped picture, and floating light 4:3. Each has 7 items.
 
 - `seek(t)` twice gives the same DOM and the same screenshot at 11 times.
 - Forward then back gives the same frame. The DOM must match exactly. A few pixels may differ by 1 level of 255 when the compositor re-rasterises.
 - Every 30 fps frame from 0 to t, then t, gives the same DOM as jumping to t.
 - `seek` takes under 8 ms (measured: about 0.04).
-- At the end the thread has scrolled and the last item is in view.
+- At the end the thread has scrolled and the last item is in view (on the phone, clear of the head).
 - `frame(t)` returns the composition's size and the same pixels twice.
 - All 30 widgets draw, and the page throws no errors.
 
@@ -176,7 +178,7 @@ type Item =
 
 - **React + TypeScript**: one self-contained `.tsx`. It holds the model's types; `UserMessage`, `EvaMessage`, `SpecialistMessage`, `Widget` and a named component for each widget used (`BiomarkerWidget`, `CtaWidget`, ...); `compositionOf(props)`, which turns the tree into the composition; and `ChatVideo`, which loads it in the Everlab stage by `postMessage`, so it works across origins (`stageSrc`, default `concierge.html#stage`). The default export is the composition as a tree. It type-checks under `tsc --strict` with `@types/react`.
 - **Composition JSON**: the composition itself, to import here again or to load in the stage.
-- **Import JSON**: paste or open a file; the stage makes it whole (`normalize`), and it opens as a draft.
+- **Import JSON**: paste or open a file; the stage makes it whole (`normalize`), and it opens as a draft. Over an unsaved draft the dialog closes first, so the Saved panel's "Save it before opening another one?" can be seen.
 
 ## The page's API
 
@@ -189,9 +191,29 @@ Export → **MP4 video**. One rendering system: the frames are the stage's own, 
 - **The renderer**: a stage of its own (`concierge.html#stage` in a hidden frame at the composition's size, `fit(false)`), so the builder's preview stays free. For each frame `i` it calls `stage.frame(i / 30 s)`: `seek(t)`, then the stage's DOM and CSS drawn through an SVG `foreignObject`, with the background, the phone and every picture in it. The frame is laid on an opaque canvas (the background colour under it), cropped to an even size.
 - **Size and rate**: the composition's own size (1920 × 1080, 1080 × 1920, 1080 × 1080, 1440 × 1080, 1080 × 1440, or the custom size rounded down to even), 30 fps. `N = ceil(duration × 30)` frames, so the video lasts the composition (lead and tail included).
 - **Encoding**: WebCodecs `VideoEncoder`, variable bitrate, a keyframe every 2 s. About 10 Mbps for 1080p (4 to 12 Mbps by size). In the app the bitrate is also capped so the file fits the downloads capability's 16 MB; a file still over it is encoded again, smaller (twice at most).
-- **Codec, in order**: H.264 (`avc1.6400xx` High, the level the size needs, then Main, then Baseline) into an **MP4** with `mp4-muxer` 5.2.2 (fast start). If the browser can't encode H.264: **VP9 in WebM** (`webm-muxer` 5.1.4), then VP8, and the dialog says so. Without WebCodecs: `MediaRecorder` on the canvas (real time, so a slow frame stretches the timing a little; the dialog says so).
-  - Both muxers load from cdn.jsdelivr.net (pinned UMD builds, `Mp4Muxer` and `WebMMuxer`).
+- **Codec, in order**:
+  1. **H.264 by the browser** (WebCodecs `VideoEncoder`: `avc1.6400xx` High at the level the size needs, then Main, then Baseline) into an **MP4** with `mp4-muxer` 5.2.2 (fast start). Chrome, Edge and Safari on a Mac or PC do this, in hardware where there is one.
+  2. **H.264 in software** when the browser has no H.264 encoder (Chromium builds without the proprietary codecs, as headless Chromium is; some Linux browsers): `h264-mp4-encoder` 1.0.12 (WebAssembly, H.264 Baseline, writes the MP4 itself), loaded from jsdelivr only then (1.7 MB). Each frame's pixels go in; quality is set by QP 24, speed 6, a keyframe every 2 s. About 5 s of work per second of 1080p video. The dialog says it takes longer. If the page's security policy refuses its WebAssembly, the export moves on.
+  3. **VP9 in WebM** (`webm-muxer` 5.1.4), then VP8, and the dialog says so.
+  4. **MediaRecorder** on the canvas, without WebCodecs. The recorder is paused while each frame is drawn and runs for 1/30 s of recorded time per frame, so a slow frame no longer stretches the video; its length can still be off by a few frames (5.12 s for 5.03 s in the check). The format is what the browser records (MP4 or WebM, the codec named when it says).
+  - The libraries are pinned UMD builds from cdn.jsdelivr.net (`Mp4Muxer`, `WebMMuxer`, `HME`): the two muxers load with the page, the software encoder on demand; one that failed to load is asked for again at the next export.
 - **The dialog**: size, frame rate, length and format; a live thumbnail of the frames; a bar with **Frame n / N**, the per cent and the time left; **Cancel** (or Esc). When it is done: the file's size and time taken, then **Download MP4** (Download WebM on the fallback). The builder's shortcuts wait while it is open.
 - **Saving**: `downloads.save` in the app (the viewer confirms), a plain link elsewhere.
-- `exportMp4({ comp?, saveFile?, toast?, prefer? })` returns the result (`{ blob, filename, mime, codec, label, container, w, h, fps, frames, duration, bitrate, bytes, renderMs, msPerVideoSecond }`, also `ChatVideo.lastExport`), or null when cancelled or failed. `prefer: 'vp9-mp4'` puts VP9 in the MP4 first: the checks use it to run the MP4 path in a browser without H.264.
-- **Known gaps**: a background picture on another host whose fetch is blocked comes out blank; the glass blur behind the phone header's buttons (`backdrop-filter`) is not drawn by the SVG route; Safari may refuse a canvas drawn from an SVG `foreignObject` (it would then fail with a message). 60 fps and 4K are later.
+- `exportMp4({ comp?, saveFile?, toast?, prefer? })` returns the result (`{ blob, filename, mime, codec, label, container, encoder: 'WebCodecs' | 'software' | 'MediaRecorder', w, h, fps, frames, duration, bitrate, bytes, renderMs, msPerVideoSecond }`, also `ChatVideo.lastExport`), or null when cancelled or failed. `prefer` (the checks): `'vp9-mp4'` puts VP9 in the MP4 first, to run the WebCodecs MP4 path in a browser without H.264; `'soft'`, `'webm'` and `'mr'` start from that fallback.
+- **Over 16 MB** in the app: the bitrate is lowered (WebCodecs) or QP raised by 5 (software), and the video made again, twice at most.
+- **Known gaps**: a background picture on another host whose fetch is blocked comes out blank; the glass blur behind the phone header's round buttons (`backdrop-filter`) is not drawn by the SVG route (the head's ground is: see Phone); Safari may refuse a canvas drawn from an SVG `foreignObject` (it would then fail with a message). 60 fps and 4K are later.
+
+## The export's check (`tools/mp4-check.js`)
+
+It runs each path in headless Chromium on a 5 s composition with 3 items, clicks the dialog's Download, saves the file and reads it with ffprobe. The CDN libraries come from the npm registry's copies of the same versions (`tools/.libcache`, not committed), so it runs where the CDNs can't be reached. Measured on dist/chat-video.html:
+
+| Path | File | ffprobe | Made in |
+|---|---|---|---|
+| default here (no H.264 encoder in this Chromium): software | `check-phone-9-16.mp4`, 241 KB | h264 Baseline, 1080 x 1920, 5.033 s, 151 frames | 24 s |
+| software, floating light 16:9 | `check-floating-16-9.mp4`, 257 KB | h264 Baseline, 1920 x 1080, 5.033 s, 151 frames | 24 s |
+| `prefer: 'vp9-mp4'` (WebCodecs, mp4-muxer) | `.mp4`, 578 KB | vp9, 1080 x 1920, 5.033 s, 151 frames | 6 s |
+| `prefer: 'webm'` (WebCodecs, webm-muxer) | `.webm`, 547 KB | vp9, 1920 x 1080, 5.0 s, 151 frames | 7 s |
+| `prefer: 'mr'` (MediaRecorder) | `.mp4`, 552 KB | vp9, 1080 x 1920, 5.12 s, 151 frames | 11 s |
+
+- Esc during the frames cancels: `exportMp4` resolves null and the dialog and the renderer's frame go.
+- The H.264-by-the-browser path can't run here (no encoder in this Chromium). It is the same code as `'vp9-mp4'` with the `avc` track; check it in Chrome or Safari: Export → MP4 video, then Download MP4.

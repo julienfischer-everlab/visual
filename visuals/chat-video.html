@@ -294,8 +294,9 @@
 <script>
 /* ================= Export -> MP4 video (the brief's section 16): one rendering system. A stage of its own (concierge.html#stage in a hidden frame at the composition's size) draws
    every frame t = i / 30 with Concierge.stage.frame(t): seek(t), then the stage's own DOM and CSS rasterised through an SVG foreignObject, background and phone included.
-   Frames go to WebCodecs (H.264 High, VBR) and into an MP4 (mp4-muxer); a browser without H.264 encoding gets VP9 in WebM (webm-muxer) and is told so; one without
-   WebCodecs records the canvas with MediaRecorder. The file goes out through the downloads capability (16 MB), a plain link elsewhere ================= */
+   Frames go to WebCodecs (H.264 High, VBR) and into an MP4 (mp4-muxer). A browser with no H.264 encoder of its own encodes H.264 in software (h264-mp4-encoder, WebAssembly,
+   loaded only then), still an MP4; failing that VP9 in WebM (webm-muxer), and is told so; one without WebCodecs records the canvas with MediaRecorder.
+   The file goes out through the downloads capability (16 MB), a plain link elsewhere ================= */
 (function () {
   'use strict';
   var CV = window.ChatVideo = window.ChatVideo || {};
@@ -307,34 +308,68 @@
   var mb = function (b) { return b >= 1048576 ? (b / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(b / 1024)) + ' KB'; };
   var secs = function (ms) { return (ms / 1000).toFixed(1) + ' s'; };
   var el = function (tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
+  var tick = function () { return new Promise(function (r) { setTimeout(r, 0); }); };
   var CANCEL = { cancelled: true };
 
-  /* ---------- the codec: H.264 at the level the size needs (High, then Main, then Baseline); then VP9 / VP8 in WebM; then MediaRecorder ---------- */
+  /* ---------- the libraries, each pinned: the two muxers load with the page (above), the software H.264 encoder (1.7 MB) only for a browser that has no H.264 encoder.
+     One that did not load is asked for again at the next export ---------- */
+  var LIBS = {
+    Mp4Muxer: 'https://cdn.jsdelivr.net/npm/mp4-muxer@5.2.2/build/mp4-muxer.js',
+    WebMMuxer: 'https://cdn.jsdelivr.net/npm/webm-muxer@5.1.4/build/webm-muxer.js',
+    HME: 'https://cdn.jsdelivr.net/npm/h264-mp4-encoder@1.0.12/embuild/dist/h264-mp4-encoder.web.js'
+  };
+  var LOADING = {};
+  var lib = function (name) {
+    if (window[name]) return Promise.resolve(window[name]);
+    if (!LOADING[name]) LOADING[name] = new Promise(function (res) {
+      var s = document.createElement('script'), t = setTimeout(function () { fin(null); }, 45000);
+      var fin = function (v) { clearTimeout(t); if (!v) LOADING[name] = null; res(v); };
+      s.src = LIBS[name]; s.async = true;
+      s.onload = function () { fin(window[name] || null); }; s.onerror = function () { fin(null); };
+      document.head.appendChild(s);
+    });
+    return LOADING[name];
+  };
+
+  /* ---------- the codec: H.264 at the level the size needs (High, then Main, then Baseline); then H.264 in software; then VP9 / VP8 in WebM; then MediaRecorder ---------- */
   var AVC_LEVELS = [[0x28, 8192], [0x2a, 8704], [0x32, 22080], [0x33, 36864], [0x34, 36864]];   /* level, most macroblocks a frame */
   var cfgOf = function (c, W, H, bps) {
     var o = { codec: c.codec, width: W, height: H, bitrate: Math.round(bps), framerate: FPS, bitrateMode: 'variable', latencyMode: 'quality' };
     if (c.track === 'avc') o.avc = { format: 'avc' };
     return o;
   };
+  var softOk = null;   /* the software encoder starts (its WebAssembly may be refused by the page's security policy): asked once */
+  var trySoft = async function () {
+    if (softOk) return true;
+    var H = await lib('HME'); if (!H || !H.createH264MP4Encoder) return false;
+    try { var e = await H.createH264MP4Encoder(); e.delete(); softOk = true; } catch (er) { softOk = false; }
+    return softOk;
+  };
   var pick = async function (W, H, bps, prefer) {
-    var tries = [], mbs = Math.ceil(W / 16) * Math.ceil(H / 16);
-    if (window.VideoEncoder && window.VideoFrame) {
-      AVC_LEVELS.forEach(function (l) { if (mbs <= l[1]) ['6400', '4d00', '42e0'].forEach(function (p) { tries.push({ codec: 'avc1.' + p + hex2(l[0]), mux: 'mp4', track: 'avc', ext: 'mp4', mime: 'video/mp4', label: 'H.264', box: 'MP4' }); }); });
-      tries.push({ codec: 'vp09.00.' + (mbs <= 8704 ? '40' : '51') + '.08', mux: 'webm', track: 'V_VP9', ext: 'webm', mime: 'video/webm', label: 'VP9', box: 'WebM' });
-      tries.push({ codec: 'vp8', mux: 'webm', track: 'V_VP8', ext: 'webm', mime: 'video/webm', label: 'VP8', box: 'WebM' });
-      if (prefer === 'vp9-mp4') tries.unshift({ codec: 'vp09.00.40.08', mux: 'mp4', track: 'vp9', ext: 'mp4', mime: 'video/mp4', label: 'VP9', box: 'MP4' });   /* the MP4 path where H.264 can't encode (the checks) */
-      for (var i = 0; i < tries.length; i++) {
-        var c = tries[i];
-        if (c.mux === 'mp4' ? !window.Mp4Muxer : !window.WebMMuxer) continue;
-        try { var s = await VideoEncoder.isConfigSupported(cfgOf(c, W, H, bps)); if (s && s.supported) return c; } catch (e) {}
-      }
+    var mbs = Math.ceil(W / 16) * Math.ceil(H / 16), wc = !!(window.VideoEncoder && window.VideoFrame), hw = [], vp = [];
+    var soft = { codec: 'avc1.42e0' + hex2(mbs <= 8192 ? 0x28 : 0x33), mux: 'soft', track: 'avc', ext: 'mp4', mime: 'video/mp4', label: 'H.264', box: 'MP4', soft: true };
+    if (wc) {
+      AVC_LEVELS.forEach(function (l) { if (mbs <= l[1]) ['6400', '4d00', '42e0'].forEach(function (p) { hw.push({ codec: 'avc1.' + p + hex2(l[0]), mux: 'mp4', track: 'avc', ext: 'mp4', mime: 'video/mp4', label: 'H.264', box: 'MP4' }); }); });
+      vp.push({ codec: 'vp09.00.' + (mbs <= 8704 ? '40' : '51') + '.08', mux: 'webm', track: 'V_VP9', ext: 'webm', mime: 'video/webm', label: 'VP9', box: 'WebM' });
+      vp.push({ codec: 'vp8', mux: 'webm', track: 'V_VP8', ext: 'webm', mime: 'video/webm', label: 'VP8', box: 'WebM' });
+    }
+    /* prefer (the checks): 'vp9-mp4' runs the WebCodecs MP4 path where H.264 can't encode; 'soft', 'webm' and 'mr' start from that fallback */
+    var vp9mp4 = { codec: 'vp09.00.' + (mbs <= 8704 ? '40' : '51') + '.08', mux: 'mp4', track: 'vp9', ext: 'mp4', mime: 'video/mp4', label: 'VP9', box: 'MP4' };
+    var tries = prefer === 'mr' ? [] : prefer === 'soft' ? [soft].concat(hw, vp) : prefer === 'webm' ? vp.concat(hw, [soft]) : prefer === 'vp9-mp4' ? (wc ? [vp9mp4] : []).concat(hw, [soft], vp) : hw.concat([soft], vp);
+    for (var i = 0; i < tries.length; i++) {
+      var c = tries[i];
+      if (c.mux === 'soft') { if (await trySoft()) return c; continue; }
+      if (!(await lib(c.mux === 'mp4' ? 'Mp4Muxer' : 'WebMMuxer'))) continue;
+      try { var s = await VideoEncoder.isConfigSupported(cfgOf(c, W, H, bps)); if (s && s.supported) return c; } catch (e) {}
     }
     if (window.MediaRecorder && HTMLCanvasElement.prototype.captureStream) {
-      var mr = [['video/mp4;codecs=avc1', 'mp4', 'H.264', 'MP4'], ['video/mp4', 'mp4', 'H.264', 'MP4'], ['video/webm;codecs=vp9', 'webm', 'VP9', 'WebM'], ['video/webm', 'webm', 'VP8', 'WebM']];
+      var mr = [['video/mp4;codecs=avc1', 'mp4', 'H.264', 'MP4'], ['video/mp4', 'mp4', '', 'MP4'], ['video/webm;codecs=vp9', 'webm', 'VP9', 'WebM'], ['video/webm', 'webm', '', 'WebM']];
       for (var j = 0; j < mr.length; j++) if (MediaRecorder.isTypeSupported(mr[j][0])) return { mux: 'mr', codec: mr[j][0], mime: mr[j][0].split(';')[0], ext: mr[j][1], label: mr[j][2], box: mr[j][3] };
     }
     return null;
   };
+  /* what MediaRecorder actually wrote, from the type it reports once started ('video/mp4;codecs=avc1.42000c', 'video/webm;codecs=vp9', ...) */
+  var labelOf = function (t, d) { t = String(t || ''); return /avc1|h264/i.test(t) ? 'H.264' : /vp0?9/i.test(t) ? 'VP9' : /vp8/i.test(t) ? 'VP8' : /av01|av1/i.test(t) ? 'AV1' : d; };
 
   /* ---------- a stage of its own, at the composition's size, so the preview stays the builder's ---------- */
   var stageFor = function (comp, W, H) {
@@ -360,26 +395,45 @@
   var render = async function (job) {
     var S = job.S, W = job.W, H = job.H, N = job.N, c = job.codec, base = job.base;
     var out = document.createElement('canvas'); out.width = W; out.height = H;
-    var g = out.getContext('2d', { alpha: false }), tmp = document.createElement('canvas');
+    var g = out.getContext('2d', { alpha: false, willReadFrequently: c.mux === 'soft' }), tmp = document.createElement('canvas');
     var draw = async function (i) {
       var cv = await S.frame(Math.min(job.dur, i * 1000 / FPS), { canvas: tmp });
       g.fillStyle = '#000'; g.fillRect(0, 0, W, H); g.fillStyle = base; g.fillRect(0, 0, W, H); g.drawImage(cv, 0, 0);
       job.onFrame(i, out);
     };
-    if (c.mux === 'mr') {   /* the last resort: the canvas recorded in real time, held for a frame's length each */
+    if (c.mux === 'mr') {   /* the last resort: the canvas recorded in real time, each frame held for its 1/30 s; the recorder is paused while the next one is drawn, so a slow frame does not stretch the video */
       var stream = out.captureStream(0), track = stream.getVideoTracks()[0], parts = [];
       var rec = new MediaRecorder(stream, { mimeType: c.codec, videoBitsPerSecond: Math.round(job.bps) });
       rec.ondataavailable = function (e) { if (e.data && e.data.size) parts.push(e.data); };
-      var stopped = new Promise(function (r) { rec.onstop = r; });
-      await draw(0); rec.start(500); var t0 = performance.now();
+      var stopped = new Promise(function (r) { rec.onstop = r; }), canPause = typeof rec.pause === 'function', run = 0, tr = 0;   /* run: the recorded (unpaused) time so far, which the holds follow */
+      await draw(0); rec.start(500); tr = performance.now();
+      c.label = labelOf(rec.mimeType, c.label); if (job.onCodec) job.onCodec(c);
       for (var k = 0; k < N; k++) {
         if (job.cancelled()) { rec.stop(); throw CANCEL; }
-        if (k) await draw(k);
+        if (k && canPause) { rec.pause(); run += performance.now() - tr; await draw(k); rec.resume(); tr = performance.now(); }
+        else if (k) await draw(k);
         if (track.requestFrame) track.requestFrame();
-        var wait = t0 + (k + 1) * 1000 / FPS - performance.now(); if (wait > 0) await new Promise(function (r) { setTimeout(r, wait); });
+        var left = (k + 1) * 1000 / FPS - (run + performance.now() - tr); if (left > 0) await new Promise(function (r) { setTimeout(r, left); });
       }
       rec.stop(); await stopped;
       return new Blob(parts, { type: c.mime });
+    }
+    if (c.mux === 'soft') {   /* H.264 in software (WebAssembly): each frame's pixels into the encoder, which writes the MP4 itself */
+      var hm = await HME.createH264MP4Encoder();
+      try {
+        hm.width = W; hm.height = H; hm.frameRate = FPS; hm.groupOfPictures = FPS * 2; hm.speed = job.speed; hm.quantizationParameter = job.qp; hm.outputFilename = 'chat-video.mp4';
+        hm.initialize();
+        for (var q = 0; q < N; q++) {
+          if (job.cancelled()) throw CANCEL;
+          await draw(q);
+          hm.addFrameRgba(g.getImageData(0, 0, W, H).data);
+          if (q % 2) await tick();   /* the dialog paints between frames */
+        }
+        hm.finalize();
+        var bytes = hm.FS.readFile(hm.outputFilename);
+        try { hm.FS.unlink(hm.outputFilename); } catch (e) {}
+        return new Blob([bytes], { type: c.mime });
+      } finally { try { hm.delete(); } catch (e) {} }
     }
     var target, mx, err = null;
     if (c.mux === 'mp4') { target = new Mp4Muxer.ArrayBufferTarget(); mx = new Mp4Muxer.Muxer({ target: target, video: { codec: c.track, width: W, height: H, frameRate: FPS }, fastStart: 'in-memory', firstTimestampBehavior: 'offset' }); }
@@ -440,6 +494,14 @@
     };
   };
 
+  /* what the dialog says of the codec: nothing for H.264 by the browser; why when it is anything else */
+  var noteOf = function (c) {
+    if (c.mux === 'mr') return ['This browser has no WebCodecs: the video is recorded as it plays (' + (c.label ? c.label + ' in ' : '') + c.box + '), so its length can be off by a few frames.', true];
+    if (c.soft) return ['This browser has no H.264 encoder of its own: the MP4 is encoded in software, which takes longer.', false];
+    if (c.box === 'MP4') return [c.label === 'H.264' ? '' : 'This browser can’t encode H.264: the MP4 holds ' + c.label + ' (plays in browsers and VLC, not QuickTime).', c.label !== 'H.264'];
+    return ['This browser can’t encode H.264, so the video is ' + c.label + ' in WebM. For an MP4, export from Chrome, Edge or Safari.', true];
+  };
+
   /* ---------- the export ---------- */
   CV.exportMp4 = async function (o) {
     o = o || {};
@@ -460,27 +522,28 @@
       var bps = Math.min(12e6, Math.max(4e6, 10e6 * W * H / (1920 * 1080)));
       if (dlCap) bps = Math.min(bps, LIMIT * .82 * 8 / Math.max(1, dur / 1000));   /* the downloads capability takes 16 MB */
       bps = Math.max(1e6, bps);
+      ui.status('Choosing the codec…');
       var codec = await pick(W, H, bps, o.prefer);
+      if (cancelled) throw CANCEL;
       if (!codec) throw new Error(window.Mp4Muxer || window.WebMMuxer ? 'This browser can’t encode video. Use a recent Chrome, Edge or Safari.' : 'The video library (mp4-muxer, from cdn.jsdelivr.net) could not load. Check the connection, then reload the page.');
-      ui.ratio(W, H);
-      ui.meta([['Size', W + ' × ' + H], ['Frame rate', FPS + ' fps'], ['Length', secs(dur)], ['Format', codec.label + ' · ' + codec.box]]);
-      ui.note(codec.box === 'MP4' ? (codec.label === 'H.264' ? '' : 'This browser can’t encode H.264: the MP4 holds VP9 (plays in browsers and VLC, not QuickTime).')
-        : 'This browser can’t encode H.264, so the video is ' + codec.label + ' in WebM. For an MP4, export from Chrome, Edge or Safari.', codec.label !== 'H.264');
-      if (codec.mux === 'mr') ui.note('This browser has no WebCodecs: the video is recorded in real time, and a frame slower than 1/30 s stretches the timing a little.', true);
-      var t0 = performance.now(), blob = null, tries = 0;
+      var showCodec = function (c) { ui.meta([['Size', W + ' × ' + H], ['Frame rate', FPS + ' fps'], ['Length', secs(dur)], ['Format', (c.label ? c.label + ' · ' : '') + c.box]]); var n = noteOf(c); ui.note(n[0], n[1]); };
+      ui.ratio(W, H); showCodec(codec);
+      var qp = 24, t0 = performance.now(), blob = null, tries = 0;   /* qp: the software encoder's quality (lower is better), raised when the file is over the limit */
       for (;;) {
         var tStart = performance.now();
-        blob = await render({ S: R.S, W: W, H: H, N: N, dur: dur, codec: codec, bps: bps, base: base, cancelled: function () { return cancelled; },
+        blob = await render({ S: R.S, W: W, H: H, N: N, dur: dur, codec: codec, bps: bps, qp: qp, speed: 6, base: base, cancelled: function () { return cancelled; }, onCodec: showCodec,
           onFrame: function (i, cvs) {
             var done = i + 1, el2 = performance.now() - tStart;
             ui.progress(done, N, done > 4 ? el2 / done * (N - done) : null);
             if (i % 3 === 0 || done === N) ui.thumb(cvs);
           } });
         if (!(dlCap && blob.size > LIMIT - 65536) || tries++ >= 2 || codec.mux === 'mr') break;
-        bps = bps * (LIMIT * .8) / blob.size; ui.note('Over the 16 MB download limit: encoding again at ' + (bps / 1e6).toFixed(1) + ' Mbps.', true);
+        bps = bps * (LIMIT * .8) / blob.size; qp = Math.min(40, qp + 5);
+        ui.note('Over the 16 MB download limit: encoding again, smaller' + (codec.soft ? '' : ' (' + (bps / 1e6).toFixed(1) + ' Mbps)') + '.', true);
       }
       var ms = performance.now() - t0, fn = slug(comp.name) + '.' + codec.ext;
-      var res = { blob: blob, filename: fn, mime: codec.mime, codec: codec.codec, label: codec.label, container: codec.box, w: W, h: H, fps: FPS, frames: N, duration: dur, bitrate: Math.round(bps),
+      var res = { blob: blob, filename: fn, mime: codec.mime, codec: codec.codec, label: codec.label, container: codec.box, encoder: codec.soft ? 'software' : codec.mux === 'mr' ? 'MediaRecorder' : 'WebCodecs',
+        w: W, h: H, fps: FPS, frames: N, duration: dur, bitrate: codec.soft ? Math.round(blob.size * 8 / Math.max(.001, dur / 1000)) : Math.round(bps),
         bytes: blob.size, renderMs: Math.round(ms), msPerVideoSecond: Math.round(ms / Math.max(.001, dur / 1000)) };
       CV.lastExport = res;
       ui.status('Ready · ' + mb(blob.size) + ' · made in ' + secs(ms));
@@ -1248,7 +1311,8 @@
     var importComp = function (o) {
       if (!o || typeof o !== 'object' || !Array.isArray(o.sequence)) { toast('That JSON isn’t a composition (no sequence).', 'warn'); return; }
       var n = S ? clone(S.normalize(o)) : o; n.sequence.forEach(function (it) { if (it.type === 'eva' && it.avatar == null) delete it.avatar; });
-      guard(function () { replace({ comp: n, id: null, shared: false, dirty: true }); setDlg(null); setLtab('seq'); toast('Imported “' + (n.name || 'Untitled') + '”'); });
+      setDlg(null);   /* the dialog goes first: over an unsaved draft the Saved panel asks to save it, and the dialog hid that question */
+      guard(function () { replace({ comp: n, id: null, shared: false, dirty: true }); setLtab('seq'); toast('Imported “' + (n.name || 'Untitled') + '”'); });
     };
 
     /* keyboard: Delete, Cmd/Ctrl+D duplicate, Space play, Cmd/Ctrl+Z undo, Alt+arrows reorder, arrows select */
