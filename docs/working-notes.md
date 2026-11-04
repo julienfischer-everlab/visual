@@ -20597,3 +20597,8 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
   - Back above 128, the reverse.
   - Other pages show it as before.
 - Eva field "+64px width on chat floating field bottom, +64px when expand": the field is now 448 wide (less on a panel narrower than 496), and the panel it morphs into is 576 at most.
+
+## Navigation Save setup: Pop now sticks
+
+- "Still can't save setup! … try to make pop as default." The shared store showed the save landing (`masters/everlab_navMaster`, Icon motion Pop, 07:16). On load, though, `_navMaster` turned every saved Pop into the Beam. That was a leftover migration from when the Beam replaced Pop as the default. The saved motion is now applied as it is. Checked against a simulated store: Pop is still Pop after a reload, with no beam class.
+- The store also showed the bar's Tweaks last saved for everyone at 05:41. Its Save now waits, retries and names the reason it fails (previous build).
