@@ -20506,3 +20506,34 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
   - the name sits 10 below the visual, at 14 / 18, on one line or two (never three), left-aligned;
   - every tile in the row is as tall as the tallest.
 - The doc's "Ask Everlab · services" row describes it.
+
+## Desk Eva field (floating), rail search opens the chat overlay
+
+- "Create a Tweak Eva with floating chat field centered at the bottom of the body area. 48px from bottom of viewport … Design system bottom nav, save the setup and see the changes in all experience". There's a new **Eva** setting, Off or Floating field. You set it in Documentation › Design system › Navigation (panel, Eva) and in Tweaks › Dock › Eva. Save setup keeps it (`navMaster.evf`), and every page applies it on load, over Tweaks.
+- **Where it sits.** M and up only; the phone and tablet keep the dock's AI button. The pill floats over the page, centred on the page panel in view, 48 above the window's foot. It follows the panel when the rail folds. It's as wide as the panel less 80 (720 at most, 320 at least) and 64 high.
+- **How it looks.**
+  - Dark: #1e1e1e at 86%, blurred 24, a hairline at 8%.
+  - Light: white at 90%.
+  - At its left is the Overview field's dot, Eva's mark. The text reads "Ask Eva anything", at 17.
+  - At its right is a mic (44, ink 7%). It turns into the white send arrow once something is typed.
+- **What it does.** Enter asks Eva in the chat. The mic, or Enter with nothing typed, opens a new chat with her; Escape clears.
+- **Room and hiding.** Every page keeps 144 of room under its content. The field hides while the chat is open and under the Docs. One builder (`EvFloat.make`) draws the app's field and the Navigation doc's desk view.
+- "Main nav Eva trigger the same chat overlay as the overview chat top right field": in the app, a tap on the rail's Search chats opens the Overview's chat overlay (`EvSearch`), the one its top-right field opens. That works open or retracted. The doc's copy still lists its recent chats.
+- **Fix.** A page switch (Insights) rewrote the body's classes and dropped With Eva and the Eva field. The class writer now keeps both.
+
+## Overview card after the call: Your first insights, in any order (helper)
+
+- "Once the call is completed we need a Health insight sequencing of action, non linear, can be done in any order." After "After the call: plan", the primary card can be **Your first insights**. One renderer (`HPC.ins` / `HPC.insFill`) draws it for the Overview and Documentation.
+- **Three tasks, not steps:**
+  - **Health profile:** to do or done. It's the profile itself, so "to do" means step 3 is left, and finishing the questionnaire ticks it.
+  - **Health data:** to do, connected or skipped. It has a Skip.
+  - **Past results:** to do, found or none found.
+- **Rows.** Each row has a status disc: done is the profile's green and tick, skipped or none found is a grey disc with a dash, to do is an empty ring with a chevron. A row to do opens its flow:
+  - the profile, on the step left;
+  - Past results, which comes back Found;
+  - My account › Connected devices (`everlab:dev` marks it connected).
+- **Footer.** While anything is to do it reads "n of 3 ready / In any order". Once everything is done or skipped it reads "Ready to build / About 10 minutes" with **Build my insights**: the Simple loader on the button, then the Async report.
+- **Visual.** A new halftone sphere in the HP module (`HealthProfile.halftone()`), lit orange a third per task ready.
+- **Tweaks › Primary card › State** gains First insights · To do / In progress / Ready to build (STOPS 11 to 13). Three task rows, shown on those states only, set any mix.
+- **Documentation › Membership onboarding** has a First insights row.
+- On a narrow card (desk M, tablet S) the sphere drops to 97, then 72, and the button runs across the card. The State list now shrinks so its Next arrow stays in the panel.
