@@ -20582,3 +20582,4 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
   - Swipe-to-dismiss and the stacking check now accept a floating sheet.
   - Desktop modals are unchanged (24 and 28).
   - The Gift referral page (its own file) still has its old full-width sheets.
+- Eva field ("Same bg opacity as the top chat field. No border"): the Overview top field's ground, ink 8% on dark and 6% on light, blurred 96. No border; a soft shadow under it still lifts it off the page.
