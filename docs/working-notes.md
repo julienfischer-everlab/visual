@@ -20290,3 +20290,20 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
   - Gear lit on Settings only.
   - More icon 1 above Home's.
   - No console errors.
+
+## Plan: the desk's goal cards dark in Dark mode
+- "Card should be dark mode": the desk's goal cards (`#dPlan.plDesk .plGoal`) were white in either mode. In Dark they now take the phone's own dark glass goal card (rgba(38,38,38,.84) + blur 24, white words, 72% lines, icon disc white 10%, chips' white 12% hairline, white hover plate); the white card with dark words stays under `body.light`. Sizes unchanged in both modes.
+- They follow the app's Dark/Light mode, not the Plan's own sheet Dark/Light tweak.
+
+## Insights icon: Heart (+active state), a Navigation doc setting
+- "For insights menu nav, create a Heart icon (+active state) as a tweak on the Design system": a Heart drawn in the nav icon library's own style (24 grid, the 1.75 line as a filled evenodd outline, round at the point and inside the dip); filled, the heart solid, the beam running round its edge from the dip.
+- Design system › Navigation › Iconography, right panel: **Insights icon: Chart / Heart** (default Chart). It switches live; Save setup keeps it in `everlab:navMaster` as `ins`, read at parse on every page (before the dock is drawn) and applied again on load.
+- Follows it: the phone dock's Insights tab, the desk sidebar's Insights entry (open and contracted), the Navigation doc's phone. Same outline at rest, filled when lit, same icon motion (Beam/Pop/Rise/Fade). Iconography shows both drawings ("Insights · Chart", "Insights · Heart"), the one in use tagged "In use".
+- `EvNavIc.ins()` returns the one in use; `EvNavIc.ins('heart'|'chart')` swaps every icon drawn for Insights. Library keys: `chart`, `heart`; `insights` is whichever is chosen.
+
+## Send a gift: the desk banner hugs its title, logo inside, S container
+- "Logo inside banner": on the desk (hpWide) the Everlab wordmark sits in the banner at its top centre (24 down, 20px mark, white over the photo) and fades in with the photo. The bar's wordmark is hidden on the desk; the phone keeps the bar's.
+- "Banner padding top bottom 192px / height hug": the banner's height now comes from its title group plus 192 above and below (456 with the two-line title), with the photo as a cover background. It no longer has the fixed 400.
+- "Reduce container size of banner use s": the banner uses the sm container (--ctSm, 1080; the window less 48 below that), centred, instead of md (1280).
+- Entrance unchanged: the title is held at the screen's centre, then the body rises and the photo and logo fade in; the photo keeps its 24 corners while it comes in. At 800-tall windows only the first row shows above Choose a gift and the rest scroll.
+- Checked on the merged build: banner 1080×456 at 1440, wordmark inside it, Plan goal cards dark (38,38,38 .84) at L, Insights default Chart; no console errors.

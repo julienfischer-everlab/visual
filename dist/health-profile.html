@@ -2073,12 +2073,16 @@ html .arSheet.hpSheet.hpGfSolo.hpGfAtIn:not(.hpGfOnSheet) .arHead .arIconBtn.arI
 .arSheet.hpSheet .hpGfH1 { margin: 0; font-family: 'Tobias', 'Tobias Light', 'Tobias Regular', Georgia, 'Times New Roman', serif; font-size: 36px; line-height: 40px; font-weight: 400; letter-spacing: -.5px; color: #fff; text-wrap: balance; }   /* Payment received's title (.hpGfH1Ink): Tobias by name, as the landing's: shown where it is installed, a serif where not */
 /* the Concierge's video in the photo's place once the words are written: in over .9s, settling from 1.05 to 1 (the Concierge's rules, :is(.hpCcVid, .hpGfVid) with its own) */
 .arSheet.hpSheet .hpGfVidOn .hpGfVidW { opacity: 1; }
-/* the desk ("on desktop use a banner, container M, then the body below"): the header a banner as wide as the md container (1280, the window's less 48 under it), 400 tall, 24 corners, under the bar; the body below it on the page (no overlap, no sheet), the bar's wordmark in the ink */
-.arSheet.hpSheet.hpWide .hpGfHero { position: relative; top: auto; box-sizing: border-box; width: min(var(--ctMd, 1280px), calc(100% - 48px)); height: 400px; margin: var(--hpHeadH, 64px) auto 0; border-radius: 24px; overflow: hidden; }
-.arSheet.hpSheet.hpWide .hpGfHeroT { top: 0; bottom: 0; }
+/* the desk ("on desktop use a banner, container M, then the body below"; then "Reduce container size of banner use s", "Banner padding top bottom 192px / height hug"): the header a banner as wide as the sm container (1080, the window's less 48 under it), its height its title group's with 192 above and below it, the photo its ground (cover), 24 corners, under the bar; the body below it on the page (no overlap, no sheet) */
+.arSheet.hpSheet.hpWide .hpGfHero { position: relative; top: auto; box-sizing: border-box; width: min(var(--ctSm, 1080px), calc(100% - 48px)); height: auto; max-height: none; min-height: 0; padding: 192px 28px; margin: var(--hpHeadH, 64px) auto 0; border-radius: 24px; overflow: hidden; }
+.arSheet.hpSheet.hpWide .hpGfHeroT { position: relative; inset: auto; }   /* the title group in the banner's flow: the banner hugs it */
+.arSheet.hpSheet.hpWide .hpGfPic { border-radius: inherit; }   /* its 24 corners kept while the entrance lifts the banner's clip */
 .arSheet.hpSheet.hpWide .hpGfBody.hpGfBody { margin-top: 0; padding-top: 40px; border-radius: 0; background: transparent; }
 .arSheet.hpSheet.hpWide .hpGfBand { display: none; }
-.arSheet.hpSheet.hpWide.hpGfAtIn .hpGfMark { color: oklch(var(--ar-ink)); }
+/* "Logo inside banner": the desk's wordmark at the banner's top centre, white over the photo, in with the photo; the bar's own there hidden (the phone keeps the bar's) */
+.arSheet.hpSheet.hpWide .arHead .hpGfMark, .arSheet.hpSheet:not(.hpWide) .hpGfMark.hpGfMarkB { display: none; }
+.arSheet.hpSheet.hpWide .hpGfHero .hpGfMark.hpGfMarkB { display: flex; align-items: center; justify-content: center; position: absolute; left: 0; right: 0; top: 24px; z-index: 1; height: 36px; color: #fff; transition: opacity 1s ease .37s; }
+.arSheet.hpSheet.hpWide.hpGfPre .hpGfHero .hpGfMark.hpGfMarkB { transition: none; }
 /* the entrance (.hpGfPre on the sheet till the move up): the screen #111, the picture, the body and the foot out; the title group held at the screen's centre (its translate set by the script), then each to its place */
 .arSheet.hpSheet.hpGfAtIn { transition: background-color .9s ease; } .arSheet.hpSheet.hpGfPre { background-color: #111; }
 .arSheet.hpSheet .hpGfHeroT { transition: translate .73s cubic-bezier(.65, 0, .35, 1) .08s; } .arSheet.hpSheet.hpGfPre .hpGfHeroT { transition: none; }   /* a beat after the body sets off: pushed by it (1.5x faster with it: .73 s, was 1.1) */
@@ -2092,7 +2096,7 @@ html .arSheet.hpSheet.hpGfSolo.hpGfAtIn:not(.hpGfOnSheet) .arHead .arIconBtn.arI
 .arSheet.hpSheet .hpGfVidW::after { content: ''; position: absolute; inset: 0; background: #111; opacity: var(--gfVidBl, .3); pointer-events: none; }   /* a #111 blanket over the video, 30% unless Tweaks says (Send a gift -> Video overlay: "Overlay video tweak, default 30% #111 blanket") */
 .arSheet.hpSheet .hpGfBody { flex: none; padding: 28px var(--hpSide) 27px;   /* Choose a gift 44 under the items ("CTA margin top 32px", then "+12px"; with the foot's own) */ background: var(--ar-paper); box-sizing: border-box; }   /* hugs its words ("Hug content"); the header no taller than 400 ("max height of 400px for the head"), what is left the sheet's paper, down to Choose a gift */
 .arSheet.hpSheet .hpScr.hpGfIn, .arSheet.hpSheet.hpWide:not(.hpAtHome) .hpScr.hpGfIn { display: flex; flex-direction: column; }
-.arSheet.hpSheet .hpGfHero, .arSheet.hpSheet.hpWide .hpGfHero { flex: none; height: 400px; max-height: 400px; min-height: 0; }   /* 400 on the desk ("max height of 400px for the head") */
+.arSheet.hpSheet .hpGfHero { flex: none; height: 400px; max-height: 400px; min-height: 0; }   /* 400 ("max height of 400px for the head"); the desk's banner hugs its title group (.hpWide above) */
 .arSheet.hpSheet:not(.hpWide) .hpGfHero { flex: 1 1 400px; min-height: 300px; height: auto; max-height: none; }   /* and shorter (to 300) when the body needs the room (Detail's rows), so Choose a gift keeps its 44 under them */   /* the phone: the body hugs its content ("Body must be hug height"), the header the rest of the screen, 400 at least */
 .arSheet.hpSheet .hpGfBodyIn { display: flex; flex-direction: column; align-items: center; gap: 24px; max-width: 520px; margin: 0 auto; }
 /* Intro: Cards (Tweaks -> Send a gift): the three side by side, 8 apart, on the sheet's card ground, each its line icon on top and its words at the foot, centred, 14 */
@@ -4358,6 +4362,7 @@ window.EvConsent = (function () {
       var pic = h('i', { class: 'hoPic hpGfPicI' });
       var band = h('div', { class: 'hoBand hpGfBand', 'aria-hidden': 'true' });
       var hero = h('div', { class: 'hpGfHero hoHero' }, h('div', { class: 'hpGfPic', 'aria-hidden': 'true' }, pic),   /* the photo the Gift page's own (two people at home, at ease: "Time"), the sheet's token --hpLivPic; the video laid in it (the parallax and the dim its too) */
+        h('span', { class: 'hpGfMark hpGfMarkB', role: 'img', 'aria-label': 'Everlab' }, wordmark()),   /* "Logo inside banner": the desk's wordmark, at the banner's top (the phone's in the bar) */
         h('div', { class: 'hpGfHeroT hoWords' }, hT)), heroT = hero.lastChild;
       /* its three items: the ticked list, or three cards side by side, each its icon over its words (Tweaks -> Send a gift -> Intro: "three cards next to each other, with the icon on top and the text at the bottom centre") */
       var ITEMS = [['Pick a plan to gift.', P.gift], ['Customise a message.', P.sign], ['Choose when to send.', P.cal]], IMODE = (document.getElementById('stGfIntro') || {}).value, cards = IMODE === 'cards';
