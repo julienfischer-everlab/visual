@@ -3073,7 +3073,7 @@
   .chAns p:empty{margin:0;}
   .chComposer{
     flex:none;margin:8px 12px 12px;padding:14px 14px 12px;border-radius:24px;
-    background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px rgba(255,255,255,.05);
+    background:rgba(255,255,255,.06);box-shadow:none;   /* no border ("remove border"): the fill alone */
   }
   .chComposer input{display:block;width:100%;border:0;background:none;font:inherit;font-size:16px;color:#ececec;outline:none;padding:2px 4px 14px;}
   .chComposer input::placeholder{color:#8b8b86;}
@@ -3090,7 +3090,7 @@
   body.light .chHead h3, body.light .chBubble, body.light .chThink b, body.light .chAns p, body.light .chComposer input, body.light .chDots{color:#2e1f1a;}
   body.light .chIcon, body.light .chPlus, body.light .chSend, body.light .chModel, body.light .chBubble{background:rgba(46,31,26,.07);}
   body.light .chIcon, body.light .chPlus, body.light .chModel{color:#2e1f1a;}
-  body.light .chComposer{background:rgba(46,31,26,.05);box-shadow:inset 0 0 0 1px rgba(46,31,26,.08);}
+  body.light .chComposer{background:rgba(46,31,26,.05);box-shadow:none;}
   body.light .chMeta, body.light .chThink, body.light .chComposer input::placeholder{color:#7d6b58;}
   /* sending ("also need to be able to submit messages"): the send disc lit in the ink once there are words, as the Overview field's; each exchange a turn
      in the thread, the new one coming up 16 and fading in as the Chat bubbles master's (420 ms on (.22, 1, .36, 1), the fade 200 ms from 120) */
@@ -34452,6 +34452,13 @@ hairline({
       wrap.querySelector('.aiBentoBtn').addEventListener('pointerdown', e => { e.preventDefault(); inp.blur(); });
       // a chip is the question, asked: on pointerdown, so the field keeps its focus through the hand-off
       wrap.querySelectorAll('.aiChip').forEach(c => c.addEventListener('pointerdown', e => { e.preventDefault(); inp.value = c.textContent; submit(); }));
+      // a service tile starts its chat ("this service action leads to: bottom sheet close, chat experience starts triggered by the context selected"): the sheet closes back into the star, then the chat opens on that service, with its title, the ask the tile stands for and Eva's opening on it (the Overview services row's, window.EvSvcChat)
+      wrap.querySelectorAll('.aiSvc').forEach(t => t.addEventListener('click', e => {
+        e.preventDefault();
+        const M = window.EvSvcChat || {}, ctx = M[t.querySelector('.aiSvcT').textContent.trim()] || M.Concierge, ch = chatOf();
+        close();
+        if (ch && ch._chat && ctx) setTimeout(() => ch._chat.open(t, ctx.q, ctx), 300);   /* most of the way into the sheet's close (.46), the chat fading in as it lands */
+      }));
       // Typing: the field is tapped, the services go and the keyboard comes,
       // the card standing on the keys ("on field click the list of services
       // disappears and the keyboard appears"). Let go empty, they come back.
@@ -34467,6 +34474,7 @@ hairline({
         if (wrap.classList.contains('handoff')) return;   // the chat is fading in over us: nothing moves
         wrap.classList.remove('typing');
         card.style.bottom = '';
+        inp.value = ''; field.classList.remove('hasText');   // back to the services, the field starts clean ("when the user goes back into the bottom sheet after typing in the chat, the chat field is reset")
       });
       inp.addEventListener('keydown', e => { if (e.key === 'Enter'){ e.preventDefault(); submit(); } });
       // The card grows out of the star ("the star button should expand to a
@@ -40141,8 +40149,11 @@ hairline({
     'Script renewal': { title: 'Script renewal', q: 'I need to renew a script', answer: ['You have two regular scripts on file: vitamin D, and the dosage Dr Lu adjusted this morning. The next repeat is due on the 4th.', 'I can send a renewal request to Dr Lu now; once signed, it goes straight to your pharmacy as an e-script.', 'Which one would you like renewed?'] },
     'Specialist referral': { title: 'Specialist referral', q: 'I’d like a specialist referral', answer: ['A referral comes from your Everlab doctor, written with your results attached so the specialist starts with the full picture.', 'From your last review, Dr Lu flagged a cardiology check as worth doing this year. I can ask him to write that one, or another you have in mind.', 'Who would you like to see?'] },
     'Blood test referral': { title: 'Blood test referral', q: 'I need a blood test referral', answer: ['Your pathology request from the onboarding plan is still open: a fasting blood panel and a urine sample, at any Everlab or partner clinic.', 'Quantum Therapy Sydney is the closest to you, with fasting slots from 7:30 am. Results land in your Insights within two to three days.', 'Want me to book a morning this week?'] },
-    'Imaging referral': { title: 'Imaging referral', q: 'I need an imaging referral', answer: ['Imaging referrals cover scans like ultrasound, X-ray, CT and MRI, written by your Everlab doctor with the reason for the scan.', 'Your DEXA from last year is due for a repeat. I can ask Dr Lu for that referral, or for another scan you need.', 'Which scan is it for?'] }
-  };  // an observation's Contact care team: the chat, with the care team, on the results ("contact care team CTA for all observation cards")
+    'Imaging referral': { title: 'Imaging referral', q: 'I need an imaging referral', answer: ['Imaging referrals cover scans like ultrasound, X-ray, CT and MRI, written by your Everlab doctor with the reason for the scan.', 'Your DEXA from last year is due for a repeat. I can ask Dr Lu for that referral, or for another scan you need.', 'Which scan is it for?'] },
+    'Check Symptoms': { title: 'Check symptoms', q: 'I’d like to check some symptoms', answer: ['Tell me what you’re feeling, where, and since when. I’ll read it against your latest results and your history, and ask a few questions to narrow it down.', 'If anything points to something urgent, I’ll say so straight away; if not, I can set up a telehealth call with an Everlab doctor, usually within the hour.', 'What’s been bothering you?'] }   /* the Ask sheet's sixth tile */
+  };
+  window.EvSvcChat = SERVICE_CHAT;   /* the same openings for the Ask sheet's service tiles (aiSheet) */
+  // an observation's Contact care team: the chat, with the care team, on the results ("contact care team CTA for all observation cards")
   document.addEventListener('click', e => { const b = e.target.closest('.svObCare'); if (!b) return;
     const ph = b.closest('#phone2') || document.querySelector('.dash'); if (!ph || !ph._chat) return;
     ph._chat.open(b, 'I have a question about my results', Object.assign({}, SERVICE_CHAT.Concierge, { q: 'I have a question about my results' })); });
@@ -45860,8 +45871,10 @@ hairline({
     pSc.addEventListener('keydown', e => { if (e.key === 'Escape' && !e.defaultPrevented){ e.preventDefault(); pBackTo(); } });
     shEl.addEventListener('click', e => { const b = e.target.closest('.plSee[data-pl-sub], [data-med], [data-sup], [data-pl-go]'); if (!b) return;   // on the Plan: a section's See plan, its rows, the routine card's View routine (the Activity's own above)
       const k = b.dataset.plSub || b.dataset.plGo || (b.dataset.med != null ? 'med' : 'sup'); if (PG[k]) pShow(k, false, b); });
-    { const g = [...host.querySelectorAll('.plGoal')].find(x => (x.querySelector('h3') || {}).textContent === 'Restorative sleep');   // the hero's Restorative sleep: the whole card, a button over it (a drag along the row still opens nothing)
-      if (g){ const b = document.createElement('button'); b.type = 'button'; b.className = 'plPGoalGo'; b.setAttribute('aria-label', 'Restorative sleep: your wind-down routine'); g.classList.add('plPGoal'); g.appendChild(b); b.addEventListener('click', () => pShow('rtn', false, b)); } }
+    { /* every goal card opens ("all cards need to be clickable"): the whole card, a button over it (a drag along the row still opens nothing), each to the part of the plan that moves it -- Restorative sleep the wind-down routine, Stronger heart (LDL) My Medical actions, Steady energy (HbA1c, glucose) the Nutrition plan */
+      const GO = { 'Restorative sleep': ['your wind-down routine', b => pShow('rtn', false, b)], 'Stronger heart': ['your medical actions', b => pShow('med', false, b)], 'Steady energy': ['your nutrition plan', b => nutShow(false, b)] };
+      host.querySelectorAll('.plGoal').forEach(g => { const t = (g.querySelector('h3') || {}).textContent, go = GO[t]; if (!go || g.querySelector('.plPGoalGo')) return;
+        const b = document.createElement('button'); b.type = 'button'; b.className = 'plPGoalGo'; b.setAttribute('aria-label', t + ': ' + go[0]); g.classList.add('plPGoal'); g.appendChild(b); b.addEventListener('click', () => go[1](b)); }); }
     const pAtHash = () => { const h = location.hash, k = PKEY[h];
       if (k && h.charAt(0) === '#'){ if (!document.body.classList.contains('plOn')) open(); if (!pOn || pK !== k) pShow(k, true); }   // its link: the Plan with it up
       else if (pOn && (h === '#plan' || h === '#activity-plan' || h === '#nutrition-plan')){ pRet = null; pHide(true); const v = vs(); if (v && h === '#plan') v.value = 'plan'; } };   // the Plan's, the Activity or the Nutrition plan's: this one away first
