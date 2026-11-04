@@ -20727,3 +20727,19 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
   - **Hero · Insights** (`heroIns`): the report insights alone, with their renders.
 - Each hero choice builds a fresh card (`fill()` swaps in a new `.ovInsHero` so its listeners are its own). Saved setups holding `hero` open the merged card as before.
 - Checked at 1440: Charts shows 3 chart slides, Insights 5 render slides, Charts + insights all 8. Section hides the card. After switching, a dot click still goes to its slide. 0 errors.
+
+## Overview: Ideation version, and every version its own setup
+
+"Create ideation Version based on the latest version. All setup saved below and on this tweak Will save under the version selected".
+- **The option:** Overview Tweaks → Latest now offers Latest version · Live version · **Ideation version**. Ideation draws the Latest version's page (`#stHdr` stays v4) with `html.ovIdea` on, so anything ideation-only can hang on it later.
+- **Per-version setups:** every control in the Overview's groups (`.tkGroup[data-pages~="ov"]`: Overview, Insights, Services and the rest, minus the version selects) is kept per version in a hidden `#stOvVers`, as JSON by version key (v1..v5, idea).
+  - Picking another version keeps the one left (its values snapped) and puts the picked one's back.
+  - The first time Ideation is picked it starts as a copy of the Latest's.
+  - Save writes the version up into it first (a capture listener on `.stTkSave`). `#stOvVers` and `#stOvIdea` are then saved and shared like every other tweak, and Reset clears them.
+  - A version with nothing kept yet (Live, the first time) leaves the values as they stand.
+- **Checked** (1440, dist):
+  - Latest set to Hero · Charts. Ideation opens with the same (copied).
+  - In Ideation, Hero · Insights + Freemium. Back to Latest: Charts + Member. Back to Ideation: Insights + Freemium.
+  - Save, then reload: Ideation comes back with its setup; Latest still has its own.
+  - Live picked fresh keeps the values.
+  - 0 page errors.

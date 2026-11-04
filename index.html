@@ -13905,8 +13905,12 @@
           <select id="stHdrNew" class="tkProxy" aria-label="The Overview's latest version">
             <option value="v4" selected>Latest version</option>   <!-- V4 ("Current -> Latest version") -->
             <option value="v5">Live version</option>   <!-- V5, the framework: see .ov5 ("v5 -> Live version") -->
+            <option value="idea">Ideation version</option>   <!-- a copy of the Latest version to try things on ("Create ideation Version based on the latest version"): V4's page, html.ovIdea, its own saved setup -->
             <option value="" hidden>—</option>
           </select>
+          <!-- the Ideation version on (#stHdr stays v4 under it), and every version's own setup of the Overview's tweaks, as JSON by version ("All setup saved below and on this tweak will save under the version selected"); both saved with the rest -->
+          <input type="hidden" id="stOvIdea" value="off">
+          <input type="hidden" id="stOvVers" value="">
         </div>
         <!-- who is looking ("Add tweak Tab Freemium / Member (default)"): html.freemium on Freemium, for the free account's differences to hang on; Member, the app as it is. Its own state, saved with the setup; the nav's Journey demo is left alone -->
         <div class="tkRow">
@@ -44826,12 +44830,33 @@ hairline({
     OV_HOSTS.forEach(h => { const sc = h.sc(h.ph); if (sc) sc.dispatchEvent(new Event('scroll')); });   // read the scroll position as it stands
   });
   // its two selects, Latest and Older version: either one picks for #stHdr; each follows it back (a Save put back, a Reset)
-  if (stHdrSel){ const nw = document.getElementById('stHdrNew'), od = document.getElementById('stHdrOld');
-    const sync = () => { const v = stHdrSel.value, latest = v === 'v4' || v === 'v5'; if (nw) nw.value = latest ? v : ''; if (od) od.value = latest ? '' : v; };
-    const pick = v => { if (!v || stHdrSel.value === v){ sync(); return; } stHdrSel.value = v; stHdrSel.dispatchEvent(new Event('change', { bubbles: true })); };
+  if (stHdrSel){ const nw = document.getElementById('stHdrNew'), od = document.getElementById('stHdrOld'), idea = document.getElementById('stOvIdea'), vers = document.getElementById('stOvVers');
+    const isIdea = () => !!idea && idea.value === 'on';
+    const key = () => isIdea() && stHdrSel.value === 'v4' ? 'idea' : stHdrSel.value;   /* the version up: v1..v5, or idea (V4's page, its own setup) */
+    const sync = () => { const v = stHdrSel.value, latest = v === 'v4' || v === 'v5'; if (nw) nw.value = latest ? (v === 'v4' && isIdea() ? 'idea' : v) : ''; if (od) od.value = latest ? '' : v; document.documentElement.classList.toggle('ovIdea', key() === 'idea'); };
+    /* each version its own setup of the Overview's tweaks (every control in the Overview's groups, .tkGroup[data-pages~="ov"], but the version's own): kept in #stOvVers by version; Save writes the one up into it first, a pick of another version keeps the one left and puts the picked one's back. The Ideation version's first setup is a copy of the Latest's */
+    const OWN = ['stHdr', 'stHdrNew', 'stHdrOld', 'stOvIdea', 'stOvVers'];
+    const ctl = () => [...document.querySelectorAll('.tkGroup[data-pages~="ov"] :is(select, input)[id]')].filter(el => !OWN.includes(el.id) && !el.classList.contains('inkHex') && !el.classList.contains('tkProxy'));
+    const read = () => { try { return (vers && JSON.parse(vers.value || '{}')) || {}; } catch (e){ return {}; } };
+    const write = all => { if (vers) vers.value = JSON.stringify(all); };
+    const snap = k => { const all = read(), o = {}; ctl().forEach(el => { o[el.id] = el.type === 'checkbox' ? String(el.checked) : el.value; }); all[k] = o; write(all); };
+    const apply = k => { const o = read()[k]; if (!o) return; Object.keys(o).forEach(id => { const el = document.getElementById(id), v = o[id]; if (!el || v == null) return;
+      if (el.type === 'checkbox'){ if (String(el.checked) === v) return; el.checked = v === 'true'; el.dispatchEvent(new Event('change', { bubbles: true })); return; }
+      if (el.value === String(v)) return; el.value = String(v); el.dispatchEvent(new Event(el.type === 'range' ? 'input' : 'change', { bubbles: true }));
+      const g = el.nextElementSibling; if (g && g.classList && g.classList.contains('tgl')) g.setAttribute('aria-checked', String(el.value === 'on')); }); };
+    let cur = key();
+    const pick = v => { const to = v === 'idea' ? 'idea' : (v || 'v4'); if (to === cur){ sync(); return; }
+      snap(cur);   // the version left keeps what it was showing
+      if (to === 'idea' && !read().idea){ const all = read(); all.idea = Object.assign({}, all.v4 || all[cur] || {}); write(all); }   // the Ideation version starts as the Latest's copy
+      if (idea) idea.value = to === 'idea' ? 'on' : 'off';
+      const hv = to === 'idea' ? 'v4' : to; if (stHdrSel.value !== hv){ stHdrSel.value = hv; stHdrSel.dispatchEvent(new Event('change', { bubbles: true })); }
+      cur = to; apply(to); sync(); };
     if (nw) nw.addEventListener('change', () => pick(nw.value || 'v4'));
     if (od) od.addEventListener('change', () => pick(od.value || 'v4'));   // the dash: back to the latest
-    stHdrSel.addEventListener('change', sync); sync(); }
+    const upd = () => { cur = key(); sync(); };   // a Save put back, a Reset: the version up read again, nothing applied over it
+    stHdrSel.addEventListener('change', upd); if (idea) idea.addEventListener('change', upd); sync();
+    document.addEventListener('click', e => { if (e.target.closest && e.target.closest('.stTkSave')) snap(key()); }, true);   /* Save: the version up's setup kept under it, before the panel's values are written */
+    window.EvOvVer = { key, snap, apply, read }; }
   // the Layout tweak: the viewport's width, live, with the breakpoint it
   // falls in (or the one forced); and the select that forces one
   {
