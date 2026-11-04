@@ -20675,3 +20675,14 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - The list (Detail or Ticks) is a block centred under it on the desk, its rows still left-aligned inside. Detail rows drop their phone-only 32 right padding there.
 - Detail rows are 28 apart (was 20).
 - Checked at 1440: banner, list and button all centred on 720. Detail is 520 wide with a 28 row gap; Ticks is 207 wide, centred. 0 page errors.
+
+## Fix: Send a gift ended up in the Concierge; Start your baseline opens Membership onboarding
+
+- **"Why sent a gift End up in concierge experience ???"** Send a gift runs on the Health profile's sheet as its `gift` area. The sheet's `back()` treats index 0 of any area as "go home" (`home(-1)`). So Back from the gift intro walked into the Health profile home ("Great start"), and on back through its areas to Past results' Concierge step ("Go to overview / Try concierge"). The gift's own "Takes about two minutes" stayed under it.
+  - The intro's Back button was hidden, but any back route (the Flow panel, a repeat Back) took that path.
+  - Fix: in `back()`, `if (I === 0 && (A === 'gift' || opts.solo === 'gift')) return;`. The intro is the gift's first page, with nothing behind it.
+  - Checked: Back from the intro, and Back twice from "Where do they live?", both stay on the intro. 0 errors.
+- **"Get started CTA ---> Need to open membership experience."** My journey's welcome hero button "Start your baseline" is now `data-jrn="welc"`. The Overview / My journey bento status card copies it.
+  - A document-level capture listener opens Membership onboarding the way the Page menu does (`versionSel = 'welc'`), from both places.
+  - It no longer just steps the journey demo on.
+  - Checked from My journey's hero and from the bento's status card (Timeline card view: Update): Page is Membership onboarding, "Welcome to Everlab." is up, 0 errors.
