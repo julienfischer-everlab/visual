@@ -20369,3 +20369,7 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - Design system nav: "+2px gap between icon and label": 7 (was 5) under the 12px labels, every dock (the Navigation doc's phone too).
 - Nutrition plan meal cards: "visual -12px": the category visuals 84 (was 96).
 - The gift-intro helper had published its own build (against its brief) at 03:30; this publish replaces it with the merged build, which already holds its changes.
+
+## Desk sidebar retract 2x faster; active nav icon bounce halved
+- "Retract menu desktop should be 2x faster": the rail, its rows, labels and logo, the shell's padding and every page panel's slide now run .16 s (were .32 s); the labels and logo fade in .1 s (were .2 s); the layer promotion (`sideMove`) lets go after 220 ms (was 420). Checked at L: the rail is fully closed by 200 ms.
+- "Bounce effect active icon menu should be less by 50%": the Pop motion's squash and overshoot halved (`evIcPop` .94 / 1.03, were .88 / 1.06) and the filled shape's overshoot curve halved (`cubic-bezier(.34,1.28,.64,1)`, was 1.56). Every icon that lights uses it: the dock, the desk sidebar, the More sheet, the Navigation doc.
