@@ -20537,3 +20537,14 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - **Tweaks › Primary card › State** gains First insights · To do / In progress / Ready to build (STOPS 11 to 13). Three task rows, shown on those states only, set any mix.
 - **Documentation › Membership onboarding** has a First insights row.
 - On a narrow card (desk M, tablet S) the sphere drops to 97, then 72, and the button runs across the card. The State list now shrinks so its Next arrow stays in the panel.
+
+## Eva field opens the full shape; search overlay border beam; white caret
+
+- "Need a light border beam effect when this field appears": the desk's chat overlay (EvSearch, opened by the Overview's top-right field, the rail's Search chats and the Eva field) now plays the in-app chat's border beam (EvBeam) once round the panel as it appears. It's 1.9 s, warm, and fades in and out.
+- "On click on the bottom field, trigger the full shape" and "320px max width. Then expand to 400 with full shape":
+  - The floating Eva field is now 320 wide (less on a page panel narrower than 368).
+  - A tap opens the same overlay grown out of it: centred on the field, 400 wide, its foot on the field's foot, rising from it.
+  - The field fades away under the panel and comes back when it closes.
+- "No border on focus": the field keeps only its resting hairline.
+- "Cursor white not orange": the overlay's caret takes the ink, so it's white on dark and dark on light. That applies on the desk and on the phone.
+- "Keep same rotating on the floating bottom field than the top overview placeholders": the Overview's placeholder rotator is now shared (`window.EvPh.attach`). The Eva field turns over the same lines, at 2.6 s, in the app and in the Navigation doc.
