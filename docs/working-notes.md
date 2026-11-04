@@ -20596,3 +20596,4 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
   - Once the page is more than 128 down, it rises 16 and fades in, and the top field fades out.
   - Back above 128, the reverse.
   - Other pages show it as before.
+- Eva field "+64px width on chat floating field bottom, +64px when expand": the field is now 448 wide (less on a panel narrower than 496), and the panel it morphs into is 576 at most.
