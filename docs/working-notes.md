@@ -20562,3 +20562,23 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
   - Closing, the panel shrinks back into the field (320 ms) and the field shows again.
 - **No blanket** ("No blanket and blur when click on the bottom chat field"): opened from the bottom field, the page stays as it is, with no dim and no blur. A click on the page still closes the panel.
 - **Ask services Tiles** ("Tile +32 width"): 128 wide.
+- Eva field text ("16px font"): 16, the rotating lines too.
+
+## Bottom sheets: one geometry, 12 in from the screen and 44 corners all round (helper)
+
+- "Lets make sure ALL bottom sheet use the same radius based on a gap of 12px from edge of the viewport and iphone radius … Use this value on the page bottom sheets as well!"
+- **One shape on the phone and tablet.** Every bottom sheet floats 12 in from the screen's left, right and bottom edges. All four corners are 44: the iPhone screen's 56 corner less the 12 gap, so the sheet's corners run parallel to the phone's. Two tokens next to the phone frame hold it: `--evShGap` 12 and `--evShR` 44.
+- **Sheets that read the tokens:**
+  - Inbox, More, the Ask card;
+  - the service, steps and booking sheets, and the locked service;
+  - the marketplace detail and cart, the item menu, the debrief pop-up;
+  - the Plan's sheets, the biomarker detail, the Async report's sheets;
+  - the Health profile's pickers, leave question, Past results and Concierge sheets;
+  - the consent;
+  - the Modals documentation page's Bottom sheet and Full bottom sheet demos and spec.
+- **Buttons stay put.** A sheet now sits 12 higher, so the space under its last button is 12 smaller (34 → 22, 32 → 20, 40 → 28).
+- **Stacks.** A stacked sheet's card behind keeps the same 44 corners and stays inside the 12 gap.
+- **Fixes and limits.**
+  - Swipe-to-dismiss and the stacking check now accept a floating sheet.
+  - Desktop modals are unchanged (24 and 28).
+  - The Gift referral page (its own file) still has its old full-width sheets.
