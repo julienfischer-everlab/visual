@@ -20497,3 +20497,12 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - "Where is the main nav panel": the Navigation doc's desk view (M, L, XL) lost its rail when the app itself was on the XS or S frame. The doc's copy of the rail takes the app's own rail rules, rewritten from `.dash` to `.nvDash`, and that carried `body[data-bp="xs"] .dash .side{display:none}` along. `nvSideCss()` now leaves out every rule gated on the app's frame (`[data-bp…]`) or its docked panels (`html.tkDocked`, `html.flowDocked`, …). The doc's rail is a desk rail at the doc's own breakpoint.
 - The doc's rail also takes the app's fill at that width (`--sideFill`, 224 to 320: 224 at M and L, 320 at XL).
 - The Ask card's Services eyebrow now reads "Looking for a service?".
+
+## Ask card services: a third layout, Tiles
+
+- "Tweak version 96px width cards (carousel): Visual / Line 1 / line 2 if any". Documentation › Design system › Navigation › Ask Everlab › Services now offers Grid, Carousel and **Tiles**. Save setup keeps the choice, and every Ask card takes it.
+- Tiles use the Carousel's row: the same swipe, snap and edge fades. Each tile is 96 wide with padding 14 / 12 / 16:
+  - the visual sits on top at 32. With Icons 3D on, it's the 3D render; without it, the service's own render or glyph;
+  - the name sits 10 below the visual, at 14 / 18, on one line or two (never three), left-aligned;
+  - every tile in the row is as tall as the tallest.
+- The doc's "Ask Everlab · services" row describes it.
