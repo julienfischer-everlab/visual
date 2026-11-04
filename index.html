@@ -34758,7 +34758,7 @@ hairline({
           // a grid row going from 1fr to 0fr, so its height animates from
           // whatever the content needs to nothing
           '<div class="aiServices"><div class="aiServicesIn">' +
-            '<div class="aiEyebrow">Services</div>' +
+            '<div class="aiEyebrow">Looking for a service?</div>' +
             // the same cards as the Overview's services row: the name at the left, the render on a grey disc at the right ("keep same visual in bottom menu sheet for actions")
             '<div class="aiBento aiSvcGrid">' + svcList.map(svcTileHtml).join('') + '</div>' +   /* the services list's, in its order and names (svcSet) */
             '<div class="shHome" aria-hidden="true"></div>' +
@@ -48156,7 +48156,7 @@ hairline({
           el.querySelector('.nvH').textContent = (desk ? 'Desk sidebar' : 'Island') + ' · ' + nvBp.toUpperCase() + ' · ' + d[1] + ' px';
           el.querySelector('.nvHp').textContent = desk ? 'M and up: the desk sidebar, not the dock. The app’s own rail at this width: tap an entry to light it, the retract (top right) to fold it to its icons.' : nvBp === 's' ? 'The tablet: the same dock, 420 wide and centred. Choose, then Save setup.' : 'The master: the dock on every page follows it. Choose, then Save setup.';
           fr.hidden = desk; dk.hidden = !desk; fr.classList.toggle('nvS', nvBp === 's');
-          if (desk){ dkBuild(); dk.style.width = d[1] + 'px'; dk.style.height = d[2] + 'px'; } else { fr.style.width = d[1] + 'px'; fr.style.height = d[2] + 'px'; if (fr._reslide) requestAnimationFrame(fr._reslide); }
+          if (desk){ dkBuild(); dk.style.width = d[1] + 'px'; dk.style.height = d[2] + 'px'; dash.style.setProperty('--sideFill', Math.round(Math.max(224, Math.min(320, 216 + (d[1] - 1584) / 2))) + 'px'); }   /* the rail's fill at this width, the app's own sum (224 to 320) */ else { fr.style.width = d[1] + 'px'; fr.style.height = d[2] + 'px'; if (fr._reslide) requestAnimationFrame(fr._reslide); }
           fit(); };
         el.querySelector('.nvBps').addEventListener('click', e => { const b = e.target.closest('[data-nvbp]'); if (b && b.dataset.nvbp !== nvBp) setBp(b.dataset.nvbp); });
         setBp(nvBp);
@@ -48166,7 +48166,7 @@ hairline({
       /* the desk sidebar's rules for a copy of it outside the app's shell (Documentation -> Navigation at M and up): every rule of the app's that styles .dash .side (and .dash's own tokens), its selectors rewritten
          (.dash -> .nvDash, body.sideMin .dash -> .nvDash.nvMin), so the doc's rail is drawn by the very numbers the app's is, and folds by its own class, not the app's. The copy can't be a .dash: the app looks its shell up by that class */
       const nvSideCss = () => { if (document.getElementById('nvSideCss')) return; let out = '';
-        const map = sel => sel.split(',').map(x => x.trim()).filter(x => /\.dash\b/.test(x) && (/\.dash\s+\.side\b/.test(x) || /\.dash$/.test(x) || /\.dash\s+\*$/.test(x)))
+        const map = sel => sel.split(',').map(x => x.trim()).filter(x => /\.dash\b/.test(x) && (/\.dash\s+\.side\b/.test(x) || /\.dash$/.test(x) || /\.dash\s+\*$/.test(x)) && !/\[data-bp|(^|\s)html[.:\[]/.test(x))   /* not the rules gated on the app's own frame (body[data-bp=xs/s] hides its rail: "where is the main nav panel") or its docked panels (html.tkDocked ...): the doc's rail is a desk rail at the doc's breakpoint, whatever the app's */
           .map(x => x.replace(/body((?:\.[\w-]+|\[[^\]]+\])*)\.sideMin((?:\.[\w-]+|\[[^\]]+\])*)\s+\.dash\b/g, (m, a, b) => (a || b ? 'body' + a + b + ' ' : '') + '.nvDash.nvMin').replace(/(^|[\s>+~(])\.dash\b/g, '$1.nvDash'));
         const walk = (rules, wrap) => { for (const r of rules){
           if (r.type === 1 && r.selectorText){ const ss = map(r.selectorText); if (!ss.length) continue; let body = '';
