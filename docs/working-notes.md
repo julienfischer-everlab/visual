@@ -20918,3 +20918,14 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 ## Card screen: background even more diffused
 
 - "Can you make the background even more diffuse?": the radial mask fades sooner and over longer, on an eased run of stops instead of three. Dark: whole to 40%, then .9 / .72 / .5 / .3 / .13 every 10%, gone at 100%. Light: whole to 38%, the same run every 9%, gone at 92% (still before the picture's dark foot). Checked on L light and dark and on XS light.
+
+## Batch: Bento, envelope mark, card screen, theme switch, care team photo, Lucide gallery
+- Send a gift: Send now is the default delivery; the note card fits up to three lines (stepped sizes 9.5 / 8 / 6.65 cqw, then a search down to 5.54); logo centred at the top, line +24 / +8, signature padding +8 and +16 above.
+- Step flow master: Footer safe bottom (`foot: 24`, `--sfFoot`) in the doc's controls and token table.
+- Light mode desk: #FAFAFA for the sidebar, the ground and the page panel.
+- Tweaks → Bento: Module 1/2/3 (Insights, Tasks, Services, None) with up/down moves; the shown modules sit together, in slot order, where the services row stands (`EvBento.place`).
+- Check and pay envelope: the front's mark embossed (mask layers: face, light rim, shade), half of it off the right edge, much fainter; +24 above the plan card.
+- Card screen: a wider, softer radial mask (eased fade with a long tail); on the desk the picture is 128 higher.
+- Tweaks → First-time user → Theme switch: Off by default (the sun/moon switch hidden on every membership screen).
+- Care team doctor photo (assets/hp/team1.webp) is now Dr Steven Lu, cut round from his avatar.
+- Design system → Navigation → Iconography → Lucide icons: one tile per Lucide name the app draws (data-lc), from the pages' own markup.
