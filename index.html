@@ -2758,6 +2758,7 @@
   .aiCard .aiField.hasText:focus-within .ovChatGo, .aiWrap.handoff .aiField.hasText .ovChatGo{opacity:1;transform:none;pointer-events:auto;background:#ececec;color:#111;}   /* and only once there is something to send ("if nothing typed, remove the arrow") */
   .aiWrap.handoff .aiField{background:rgba(255,255,255,.09);}
   .aiWrap.handoff .aiField .ovChatGo{transition:none;}
+  .aiWrap.aiMorph .aiCard{opacity:0;transition:opacity .12s ease;}   /* sent: the chat's composer takes the field's place and shape (EvChat.morph), the card under it goes */
   /* the dismiss floats above the card's top-right corner, on the dim, and
      rides with the card (it is the card's child); it fades in once the card
      is open, so it never shows scaled during the morph */
@@ -3196,6 +3197,7 @@
   /* sending ("also need to be able to submit messages"): the send disc lit in the ink once there are words, as the Overview field's; each exchange a turn
      in the thread, the new one coming up 16 and fading in as the Chat bubbles master's (420 ms on (.22, 1, .36, 1), the fade 200 ms from 120) */
   .chComposer{position:relative;}
+  .chComposer.chMorph{position:absolute;z-index:3;margin:0;box-sizing:border-box;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;pointer-events:none;}   /* EvChat.morph's copy: the field just sent from becoming the composer, its words at the top, +, Eva and send at the foot as the box changes */
   .chSend{transition:background .16s ease,color .16s ease;}
   .chComposer.hasText .chSend{background:#ececec;color:#111;} body.light .chComposer.hasText .chSend{background:#2e1f1a;color:#fff;}
   .chTurn + .chTurn{margin-top:8px;}
@@ -35232,11 +35234,15 @@ hairline({
       const submit = () => {
         const q = inp.value.trim(), ch = chatOf();
         if (!ch || !ch._chat) return;
-        wrap.classList.add('handoff');   // before the open: the chat takes the focus at once, and that blur must change nothing
+        /* the field's box as it stands (Version 2: the field card; else the card down to 16 under the field, the suggestions under it left out): the chat's composer grows from it (EvChat.morph) */
+        const v2 = document.documentElement.classList.contains('askV2'), fb = v2 ? wrap.querySelector('.aiRowTop') : card, fr = fb.getBoundingClientRect(), fcs = getComputedStyle(fb), k = window.evK ? window.evK(card) : 1;
+        const fTop = wrap.querySelector('.aiRowTop').getBoundingClientRect(), rect = v2 ? fr : { left: fr.left, top: fr.top, width: fr.width, height: Math.min(fr.height, fTop.bottom - fr.top + 16 * k) };
+        wrap.classList.add('handoff', 'aiMorph');   // before the open: the chat takes the focus at once, and that blur must change nothing; the card goes under the composer's copy
         ch._chat.open(card, q);
+        if (ch._chat.morph) ch._chat.morph({ rect: rect, radius: fcs.borderRadius, pad: fcs.padding, bg: fcs.backgroundColor });
         inp.value = '';
         setTimeout(() => {
-          ph.classList.remove('aiOpen'); wrap.classList.remove('on', 'typing', 'show', 'handoff'); card.style.transform = ''; card.style.bottom = '';
+          ph.classList.remove('aiOpen'); wrap.classList.remove('on', 'typing', 'show', 'handoff', 'aiMorph'); card.style.transform = ''; card.style.bottom = '';
           field.classList.remove('hasText');   // the words went with the chat; the next open starts clean
         }, 300);
       };
@@ -35667,7 +35673,17 @@ hairline({
         ph.classList.remove('chatOn', 'chKbd'); ph._kbdTarget = null; { const fr = frame(); if (fr && fr._kbdTarget === inp) fr._kbdTarget = null; }
         setTimeout(() => { if (!wrap.classList.contains('on')) wrap.classList.remove('show'); }, 240);
       };
-      ph._chat = { open, close, send: q => { inp.value = q; sendState(); send(); }, model: m => setModel(m, true) };
+      /* morph(f): the field a question was just sent from stays where it was and becomes this composer ("the field should stay in place, keep the same elements, and just morph it ... It's the same field that we have on the concierge experience"):
+         a copy of the composer (the words, +, Eva, send) laid on the field's box (f: its rect, corners, ground, padding), drawn to the composer's own over 440 ms while the chat fades in round it; the composer itself shown once it lands (kept at opacity 0 meanwhile, so its focus and the keys stay) */
+      const morph = f => { if (!f || !f.rect || !wrap.animate || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        const W = wrap.getBoundingClientRect(), k = window.evK ? window.evK(wrap) : 1, T = composer.getBoundingClientRect(); if (!T.width || !W.width) return;
+        const box = r => ({ left: (r.left - W.left) / k + 'px', top: (r.top - W.top) / k + 'px', width: r.width / k + 'px', height: r.height / k + 'px' });
+        const cs = getComputedStyle(composer), g = composer.cloneNode(true); g.classList.add('chMorph'); g.classList.remove('hasText'); g.setAttribute('aria-hidden', 'true'); g.querySelectorAll('input, button').forEach(e => { e.tabIndex = -1; }); { const gi = g.querySelector('input'); if (gi) gi.value = ''; }
+        const a = Object.assign({ borderRadius: f.radius, padding: f.pad, backgroundColor: f.bg }, box(f.rect)), b = Object.assign({ borderRadius: cs.borderRadius, padding: cs.padding, backgroundColor: cs.backgroundColor }, box(T));
+        Object.assign(g.style, a); wrap.appendChild(g); composer.style.opacity = '0';
+        const an = g.animate([a, b], { duration: 440, easing: 'cubic-bezier(.2, .8, .2, 1)', fill: 'forwards' });
+        const done = () => { g.remove(); composer.style.opacity = ''; }; an.onfinish = done; an.oncancel = done; };
+      ph._chat = { open, close, morph, send: q => { inp.value = q; sendState(); send(); }, model: m => setModel(m, true) };
       wrap.querySelector('.chX').addEventListener('click', close);
       addEventListener('keydown', e => { if (e.key !== 'Escape') return; if (!pop.hidden){ e.stopImmediatePropagation(); closeMenu(); mPill.focus({ preventScroll: true }); return; } close(); }, true);   // Escape: the menu first, then the chat
       document.addEventListener('everlab:mode', close);
