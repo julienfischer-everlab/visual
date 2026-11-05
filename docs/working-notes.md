@@ -20929,3 +20929,5 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - Tweaks → First-time user → Theme switch: Off by default (the sun/moon switch hidden on every membership screen).
 - Care team doctor photo (assets/hp/team1.webp) is now Dr Steven Lu, cut round from his avatar.
 - Design system → Navigation → Iconography → Lucide icons: one tile per Lucide name the app draws (data-lc), from the pages' own markup.
+- Desk sidebar: a small light "WIP" badge on Services (CSS `.nv.nvSvc::after`, so the label's text, which the sidebar's code reads, stays "Services"); hidden when the rail retracts.
+- Note from Steven: "MBBS (Hons), DCH, FRACGP" under "Steven" at the sign-off (`.hpLtrCred`, 56%).
