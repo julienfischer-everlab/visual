@@ -57,7 +57,7 @@ The page menu `#versionSel` has Documentation (`'doc'`) and Design system (`'ds'
 | Doc pages' controls panel (every control in a Tweaks-style right panel) | `window.EvDocPanel`, `data-dp*`, `.dpRail` | references/layout.md |
 | Viewport centring with docked panels | `--vwC`, `html.tkDocked/flowDocked` | references/layout.md |
 | Flow panel (closed on load, opened by its button) | `#tkFlowBtn`, `html.flowOff`, `window.__flowPanel`, `__flowOk` | references/layout.md |
-| Step flow (Linear / Fade) | `window.EvSteps` | references/flows-modals.md |
+| Step flow (Linear / Fade; the Questionnaire Header: step titles `--sfQh` lower) | `window.EvSteps` | references/flows-modals.md |
 | Modals doc | `mdDoc` | references/flows-modals.md |
 | Full modal shell, standalone full modals (Suggestion, Doctor's suggestion, Personal recommendation, Activity session) | `.aqWrap.aqDesk.aqFull`, `window.EvSolo` (`dark`, `bar`, `paint`) | references/flows-modals.md |
 | Full bottom sheet stacking | `iosLay1` / `iosStk` script | references/flows-modals.md |

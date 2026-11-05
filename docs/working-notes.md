@@ -20875,3 +20875,9 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 ## Gift plan card: 4 more under the badge
 
 - "+4px margin-bottom below the badge": the plan card's tier badge (PROTOCOL, DIAGNOSTICS, BASELINE; `.hpPlTab .hpW2Tag`) now has 10 below it to the price (was 6), in Send a gift's plan tabs and wherever that card is drawn.
+
+## Questionnaire Header (step pages' header variation)
+
+- "For all steps system, the header should have a small variation from the normal header. The title should have +16px padding on the top. The title only, the title row": the Step flow master (EvSteps) gets `qh: 16` and the token `--sfQh`; one CSS rule puts it as padding-top on every step page's title block: the Async report's steps (`.arBody > .arStack > :is(.arLfHead, .arRsHead):first-child`, not on the welcome) and the Health profile / Send a gift step pages (`.hpScr > .hpQ:first-child`, not on the home or pages without bars). The top nav and the bars do not move.
+- Phone and desk, dark and light: measured 16 on HP (XS, L), the Async report (XS, L), a Send a gift form step and the Step flow doc's live phone.
+- Design system → Step flow: a "Questionnaire Header" slider (saved with the master, everlab:sfMaster), a section in the side notes, rows in Anatomy and the token table. Skill reference updated (flows-modals.md).

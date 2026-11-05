@@ -188,6 +188,8 @@ body { margin: 0; overflow: hidden; background: var(--pg); color: var(--pgFg); f
 .arSheet.arIsWelcome .arHead { position: absolute; }
 .arSheet .arHeadRow { display: flex; align-items: center; gap: 10px; min-height: 40px; }
 .arSheet .arHead { gap: 0; } .arSheet .arStepWrap { padding: var(--sfPad, 12px) 0; }   /* the progress 12 above and below ("progress padding top 12, bottom 12") */
+/* Questionnaire Header (Design system -> Step flow): the step pages' header, a small variation of the normal one ("The title should have +16px padding on the top. The title only, the title row"): the title row --sfQh (16) lower, the top nav and the bars where they were; every step flow (the Async report's steps, the Health profile's and Send a gift's step pages, the Step flow master), the phone and the desk, every ground. Not on a welcome, a flow's home or a page without bars */
+.arSheet:not(.arIsWelcome) .arBody > .arStack > :is(.arLfHead, .arRsHead):first-child, .arSheet.hpSheet:not(.hpAtHome):not(.hpNoBars) .hpScr > .hpQ:first-child { padding-top: var(--sfQh, 16px); }
 /* Fixed bar Gradient (the Insights' sticky): past the welcome the body runs up under the head (its height, --ar-head-h, measured), the flow scrolling beneath; once it has, the paper fades down from .55 at the head's top to nothing 32 under it, over ten bands of blur, the softest the tallest */
 .arSheet.arBarGrad:not(.arIsWelcome) .arBody { margin-top: calc(-1 * var(--ar-head-h, 0px)); padding-top: calc(var(--ar-head-h, 0px) + 24px); scroll-padding-top: var(--ar-head-h, 0px); }
 /* Solid bar / foot: the flow fades out over the last 24px under the bar and above the foot (--ar-tf / --ar-bf, set from the scroll: 0 at rest and at the end); once the anchors are pinned, the fade hangs under them instead */
@@ -2513,9 +2515,9 @@ window.EvFullView = (function () {
    push(old, nw, dir) -> the leaving page's animation: going on (dir > 0) the old page drifts dist to the left as it fades out, the new one comes dist from the right as it fades in, lag after; going back, mirrored. The easing the Async report's (out .4, 0, 1, 1; in .16, 1, .3, 1).
    Its numbers halve the Async report's ("make the left right transition 2x fast with less movement 2x": 40 px, in 440 ms after 150, out 260 ms -> 20 px, 220 after 75, 130). Saved on the master (everlab:sfMaster), every page takes them on load */
 window.EvSteps = (function () {
-  var M = { dist: 20, dur: 220, out: 130, lag: 75, bar: 3, gap: 4, pad: 12, fade: 0 }, D = JSON.parse(JSON.stringify(M)), K = 'everlab:sfMaster', root = document.documentElement;
+  var M = { dist: 20, dur: 220, out: 130, lag: 75, bar: 3, gap: 4, pad: 12, fade: 0, qh: 16 }, D = JSON.parse(JSON.stringify(M)), K = 'everlab:sfMaster', root = document.documentElement;
   var EIN = 'cubic-bezier(.16, 1, .3, 1)', EOUT = 'cubic-bezier(.4, 0, 1, 1)';
-  var tok = function () { root.style.setProperty('--sfBar', M.bar + 'px'); root.style.setProperty('--sfGap', M.gap + 'px'); root.style.setProperty('--sfPad', M.pad + 'px'); };
+  var tok = function () { root.style.setProperty('--sfBar', M.bar + 'px'); root.style.setProperty('--sfGap', M.gap + 'px'); root.style.setProperty('--sfPad', M.pad + 'px'); root.style.setProperty('--sfQh', M.qh + 'px'); };   /* --sfQh: the Questionnaire Header's extra top on a step's title row */
   var mk = function (cls) { var e = document.createElement('div'); e.className = cls; return e; };
   var progress = function (n) {
     var el = mk('arSteps'), fill = null, N = 0; el.setAttribute('role', 'progressbar'); el.setAttribute('aria-valuemin', '1');
