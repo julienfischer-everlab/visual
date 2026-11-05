@@ -1294,7 +1294,8 @@
   .evSrchChips{display:flex;flex-wrap:nowrap;gap:8px;margin:0 -8px;padding:2px 12px 8px;overflow-x:auto;scrollbar-width:none;overscroll-behavior-x:contain;} .evSrchChips::-webkit-scrollbar{display:none;} .evSrchChips.fadeR{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 56px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 56px),transparent);} .evSrchChips.fadeL{-webkit-mask-image:linear-gradient(90deg,transparent,#000 56px);mask-image:linear-gradient(90deg,transparent,#000 56px);} .evSrchChips.fadeL.fadeR{-webkit-mask-image:linear-gradient(90deg,transparent,#000 56px,#000 calc(100% - 56px),transparent);mask-image:linear-gradient(90deg,transparent,#000 56px,#000 calc(100% - 56px),transparent);} .evSrchR.evSrchChip{flex:none;}   /* one row, a carousel, its edges fading where it runs on ("carousel fade out on overflow") */ .evSrchR.evSrchChip{width:auto;height:36px;padding:0 14px;gap:8px;border-radius:18px;background:rgba(255,255,255,.07);font-size:14px;} .evSrchR.evSrchChip span{flex:none;} .evSrchR.evSrchChip.on{background:rgba(255,255,255,.14);} .evSrchR.evSrchChip.evSrchCc{background:#f2f2f2;color:#141414;} .evSrchR.evSrchChip.evSrchCc.on{background:#fff;} .evSrchR.evSrchChip.evSrchCc > svg{width:14px;height:14px;opacity:1;} .evSrchR.evSrchChip.evSrchCc span{font-weight:500;}
   /* Top Chat AI -> Suggestion: Conversation ("latest conversation inbox presented as stacked badge"): the chips one under another, each its words' width, Go to concierge first; a conversation's day after its title, fainter */
   .evSrchChips.evSrchStack{flex-direction:column;align-items:flex-start;overflow:visible;-webkit-mask-image:none !important;mask-image:none !important;} .evSrchR.evSrchConv i, #bpFrame > .ovSug .aiChip.aiChipConv i{font-style:normal;margin-left:8px;opacity:.5;font-variant-numeric:tabular-nums;}
-  #bpFrame > .ovSug.ovSugConv .aiChipsRow{flex-direction:column;align-items:flex-start;overflow:visible;} #bpFrame > .ovSug .aiChip.aiChipConv{display:inline-flex;align-items:center;}
+  #bpFrame > .ovSug.ovSugConv .aiChipsRow{flex-direction:column;align-items:flex-start;overflow:visible;} #bpFrame > .ovSug .aiChip.aiChipConv{display:inline-flex;align-items:center;gap:8px;} #bpFrame > .ovSug .aiChip.aiChipConv i{margin-left:0;}
+  .aiConvIc{flex:none;width:16px;height:16px;display:block;} .evSrchR.evSrchConv{display:inline-flex;align-items:center;gap:8px;} .evSrchR.evSrchConv > .aiConvIc{width:14px;height:14px;opacity:1;} .evSrchR.evSrchConv i{margin-left:0;}   /* each conversation its message icon ("add Message icon for each"), the star's size and gap beside it */
   /* "The badge chips should appear from bottom to top one after another": each time the stack comes up, the badges rise in from 12 below and fade in, the lowest first, 70 ms apart (the keyboard's chips; the phone's full modal) */
   @keyframes evStackIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:none;}}
   body.ovKbd #bpFrame > .ovSug.ovSugConv .aiChip, .evSrch.on .evSrchStack > .evSrchR{animation:evStackIn .42s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(140ms + var(--stk, 0) * 70ms);}
@@ -2775,6 +2776,15 @@
      no rule above it ("remove divider"): the field's 20px of air does the
      separating */
   .aiEyebrow{font-size:15px;font-weight:500;letter-spacing:-.1px;color:#b5b5b0;margin:20px 0 12px 2px;}
+  /* Ask sheet, Suggestion: Conversation (html.askConv): the services' eyebrow and tiles give their place to the Top Chat's stacked chips, Go to concierge first, rising in from the lowest as the sheet opens */
+  .aiConvL{display:none;} html.askConv .aiServices :is(.aiEyebrow, .aiSvcGrid){display:none;}
+  html.askConv .aiConvL{display:flex;flex-direction:column;align-items:flex-start;gap:8px;margin:20px 0 4px;}
+  .aiConvL .aiChip{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;border:0;border-radius:999px;font:inherit;font-size:14px;color:#f2f2f2;background:rgba(255,255,255,.08);box-shadow:none;cursor:pointer;white-space:nowrap;transition:background-color .2s ease,transform .15s ease;}
+  .aiConvL .aiChip:active{transform:scale(.96);} .aiConvL .aiChip.aiChipPri{background:#f2f2f2;color:#141414;} .aiConvL .aiChip svg{flex:none;width:16px;height:16px;} .aiConvL .aiChip i{font-style:normal;opacity:.5;font-variant-numeric:tabular-nums;}
+  body.light .aiConvL .aiChip{background:rgba(46,31,26,.06);color:#000;} body.light .aiConvL .aiChip.aiChipPri{background:#141414;color:#f2f2f2;}
+  .aiWrap.on .aiConvL .aiChip{animation:evStackIn .42s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(140ms + var(--stk, 0) * 70ms);}
+  .aiConvL > :nth-last-child(2){--stk:1;} .aiConvL > :nth-last-child(3){--stk:2;} .aiConvL > :nth-last-child(4){--stk:3;} .aiConvL > :nth-last-child(5){--stk:4;}
+  @media (prefers-reduced-motion: reduce){ .aiWrap.on .aiConvL .aiChip{animation:none;} }
   .aiBento{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;}
   /* the tile ("bento this style"): a soft grey slab, big corners, the glyph
      bare in the top-left corner and the label under it, left, on up to two
@@ -14071,6 +14081,7 @@
         </div>
         <!-- the Ask Everlab sheet (the dock's assistant button): its Services tiles, the names alone, or each with its 3D render at the left and two lines of name at least ("add tweak with 3d icon on the left of each label") -->
         <div class="tkGroup" data-pages="ov ins ask"><div class="tkSub">Ask sheet</div>   <!-- and alone while the sheet is up (EvCtx: ask) -->
+        <div class="tkRow"><span class="lbl">Suggestion</span><select id="stAskSug" class="tkSegSel" aria-label="Under the Ask sheet's field: the services, or the latest conversations stacked under Go to concierge"><option value="svc" selected>Services</option><option value="conv">Conversation</option></select></div>   <!-- "Same here, conversation tweak, in ask sheet tweak" -->
         <div class="tkRow"><span class="lbl">Icons</span><select id="stAskIc" class="tkSegSel" aria-label="The Ask Everlab sheet's services: the names alone, or each with its 3D render at the left"><option value="off" selected>Off</option><option value="3d">3D</option></select></div>
         </div>
         <!-- the Health profile ("add a Health Profile card to the Overview"): its card's section, and the profile's demo states ("include examples of the not-started, in-progress and completed states"); Saved, what was last done in it here -->
@@ -35120,6 +35131,7 @@ hairline({
             '<div class="aiEyebrow">Looking for a service?</div>' +
             // the same cards as the Overview's services row: the name at the left, the render on a grey disc at the right ("keep same visual in bottom menu sheet for actions")
             '<div class="aiBento aiSvcGrid">' + svcList.map(svcTileHtml).join('') + '</div>' +   /* the services list's, in its order and names (svcSet) */
+            '<div class="aiConvL"></div>' +   /* Tweaks -> Ask sheet -> Suggestion: Conversation (html.askConv), in the services' place: the Top Chat's chips (EvConvChips), filled as the sheet opens */
             '<div class="shHome" aria-hidden="true"></div>' +
           '</div></div>' +
         '</div>' +
@@ -35174,7 +35186,10 @@ hairline({
       // the bento button lets the field go: the services unfold, the keys drop
       wrap.querySelector('.aiBentoBtn').addEventListener('pointerdown', e => { e.preventDefault(); inp.blur(); });
       // a chip is the question, asked: on pointerdown, so the field keeps its focus through the hand-off
-      wrap.querySelectorAll('.aiChip').forEach(c => c.addEventListener('pointerdown', e => { e.preventDefault(); inp.value = c.textContent; submit(); }));
+      wrap.querySelectorAll('.aiChips .aiChip').forEach(c => c.addEventListener('pointerdown', e => { e.preventDefault(); inp.value = c.textContent; submit(); }));
+      /* the conversation chips: Go to concierge opens the Concierge, a conversation opens itself there, the sheet closing back into the star first (as a service tile does) */
+      wrap.querySelector('.aiConvL').addEventListener('click', e => { const c = e.target.closest('.aiChip'); if (!c) return; e.preventDefault(); close();
+        setTimeout(() => { if (c.dataset.conv && window.EvOpenConv) window.EvOpenConv(c.dataset.conv); else if (window._cc) window._cc.show(); }, 300); });
       // a service tile starts its chat ("this service action leads to: bottom sheet close, chat experience starts triggered by the context selected"): the sheet closes back into the star, then the chat opens on that service, with its title, the ask the tile stands for and Eva's opening on it (the Overview services row's, window.EvSvcChat)
       /* on the row, so the tiles the list redraws keep it; by the tile's id, not its label: a renamed service still opens its own chat, titled as the tile */
       svcR.addEventListener('click', e => {
@@ -35221,6 +35236,7 @@ hairline({
         keyboard();   // built now, so its height is there to measure when the field is tapped
         wrap.classList.add('show');
         svcR.scrollLeft = 0; svcFade(svcR);   /* the carousel opens on its first tile, in line with the field */
+        { const cl = wrap.querySelector('.aiConvL'); if (cl && window.EvConvChips) cl.innerHTML = window.EvConvChips(); }   /* the conversations, as they stand now */
         ph.classList.add('aiOpen');   // the sticky greeting steps under the dim
         card.style.transition = 'none';
         card.style.transform = fromBtn();
@@ -35761,6 +35777,8 @@ hairline({
     /* Tweaks -> Top Chat AI -> Suggestion ("Services (current): carousel horizontal as it is; Conversation: latest conversation inbox presented as stacked badges, the first the entry point to the Concierge, Go to concierge"):
        the member's latest conversations with the Concierge, newest first, as its chat lists them (concierge.html, SEED: persona 1's first three); a badge opens that conversation */
     window.EvRecentConv = [['protein', 'Ideal protein intake', '26 Oct'], ['next', 'Next appointment', '26 Oct'], ['ferritin', 'Why my ferritin is flagged', '25 Oct']];
+    /* the conversation chips, one builder for the Top Chat's suggestions and the Ask sheet's ("Same here, conversation tweak"): Go to concierge, then each latest conversation with its message icon and its date */
+    window.EvConvChips = cc => (cc === false ? '' : '<button class="aiChip aiChipPri" type="button" data-cc="1"><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5c.3 3.9 2.6 6.2 6.5 6.5-3.9.3-6.2 2.6-6.5 6.5-.3-3.9-2.6-6.2-6.5-6.5 3.9-.3 6.2-2.6 6.5-6.5ZM16 12.5c.15 1.6 1.05 2.5 2.65 2.65-1.6.15-2.5 1.05-2.65 2.65-.15-1.6-1.05-2.5-2.65-2.65 1.6-.15 2.5-1.05 2.65-2.65Z"/></svg>Go to concierge</button>') + window.EvRecentConv.map(c => '<button class="aiChip aiChipConv" type="button" data-conv="' + c[0] + '"><svg class="aiConvIc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lc="message-circle" aria-hidden="true"><path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"/></svg><span>' + c[1] + '</span><i>' + c[2] + '</i></button>').join('');
     window.EvOpenConv = id => { const c = window._cc; if (c && c.run) c.run(C => { if (C.model) C.model('eva'); C.go('chat', id); }); else if (c) c.show(); };
     const sugMode = () => (document.getElementById('stTopSug') || {}).value === 'conv' ? 'conv' : 'svc';   // ("Suggestion: Script renewal, Specialist referral, Blood test referral, and Imaging referral")
     let sug = null, cur = null;
@@ -35770,7 +35788,7 @@ hairline({
       if (sug && sug.parentNode === fr && sug.dataset.cc === String(ccOn) && sug.dataset.mode === sugMode()) return sug;
       if (sug && sug.parentNode) sug.remove();   // the Concierge chip tweak changed: drawn again
       const conv = sugMode() === 'conv'; sug = document.createElement('div'); sug.className = 'ovSug' + (conv ? ' ovSugConv' : ''); sug.dataset.cc = String(ccOn); sug.dataset.mode = sugMode(); sug.setAttribute('role', 'group'); sug.setAttribute('aria-label', conv ? 'Conversations' : 'Suggestions');
-      sug.innerHTML = '<div class="aiChipsRow">' + (ccOn ? '<button class="aiChip aiChipPri" type="button" data-cc="1"><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5c.3 3.9 2.6 6.2 6.5 6.5-3.9.3-6.2 2.6-6.5 6.5-.3-3.9-2.6-6.2-6.5-6.5 3.9-.3 6.2-2.6 6.5-6.5ZM16 12.5c.15 1.6 1.05 2.5 2.65 2.65-1.6.15-2.5 1.05-2.65 2.65-.15-1.6-1.05-2.5-2.65-2.65 1.6-.15 2.5-1.05 2.65-2.65Z"/></svg>Go to concierge</button>' : '') + (conv ? window.EvRecentConv.map(c => '<button class="aiChip aiChipConv" type="button" data-conv="' + c[0] + '"><span>' + c[1] + '</span><i>' + c[2] + '</i></button>') : SUG.map(c => '<button class="aiChip" type="button">' + c + '</button>')).join('') + '</div>';   /* Conversation: the same chips stacked, the latest conversations under Go to concierge */
+      sug.innerHTML = '<div class="aiChipsRow">' + (conv ? window.EvConvChips(ccOn) : (ccOn ? '<button class="aiChip aiChipPri" type="button" data-cc="1"><svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 1.5c.3 3.9 2.6 6.2 6.5 6.5-3.9.3-6.2 2.6-6.5 6.5-.3-3.9-2.6-6.2-6.5-6.5 3.9-.3 6.2-2.6 6.5-6.5ZM16 12.5c.15 1.6 1.05 2.5 2.65 2.65-1.6.15-2.5 1.05-2.65 2.65-.15-1.6-1.05-2.5-2.65-2.65 1.6-.15 2.5-1.05 2.65-2.65Z"/></svg>Go to concierge</button>' : '') + SUG.map(c => '<button class="aiChip" type="button">' + c + '</button>').join('')) + '</div>';   /* Conversation: the same chips stacked, the latest conversations under Go to concierge */
       sug.addEventListener('pointerdown', e => { const c = e.target.closest('.aiChip'); if (!c) return; e.preventDefault(); if (c.dataset.cc){ if (cur) cur.blur(); if (window._cc) window._cc.show(); return; }   /* Go to concierge: the Concierge itself */ if (c.dataset.conv){ if (cur) cur.blur(); window.EvOpenConv(c.dataset.conv); return; }   /* a conversation: the chat on it */ if (!cur) return; cur.value = c.textContent; cur.dispatchEvent(new Event('input', { bubbles: true })); cur.dispatchEvent(new CustomEvent('everlab:go', { bubbles: true })); cur.blur(); });
       { const row = sug.querySelector('.aiChipsRow'); row.addEventListener('scroll', () => row.classList.toggle('fadeL', row.scrollLeft > 2), { passive: true }); }   // scrolled: the chips fade out at the left ("need left fade out when carousel overflow")
       fr.appendChild(sug); return sug;
@@ -35822,7 +35840,7 @@ hairline({
         '<div class="evSrchL"><button type="button" class="evSrchR evSrchAsk" hidden>' + SP + '<span></span>' + GO + '</button>' +
         '<div class="evSrchH">' + (conv ? 'Conversations' : 'Suggestions') + '</div><div class="evSrchChips' + (conv && full ? ' evSrchStack' : '') + '">' +   /* stacked on the phone; on the desk the row, a carousel ("on desktop use horixontal carousel") */
         (ccOn ? '<button type="button" class="evSrchR evSrchChip evSrchCc" data-cc="1">' + SP + '<span>Go to concierge</span></button>' : '') +
-        (conv ? (window.EvRecentConv || []).map(c => '<button type="button" class="evSrchR evSrchChip evSrchConv" data-conv="' + c[0] + '"><span>' + c[1] + '</span><i>' + c[2] + '</i></button>')   /* Tweaks -> Top Chat AI -> Suggestion: Conversation, stacked */
+        (conv ? (window.EvRecentConv || []).map(c => '<button type="button" class="evSrchR evSrchChip evSrchConv" data-conv="' + c[0] + '"><svg class="aiConvIc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lc="message-circle" aria-hidden="true"><path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"/></svg><span>' + c[1] + '</span><i>' + c[2] + '</i></button>')   /* Tweaks -> Top Chat AI -> Suggestion: Conversation, stacked */
           : SUGS.map(t => '<button type="button" class="evSrchR evSrchChip" data-q="' + t + '"><span>' + t + '</span></button>')).join('') + '</div>' +
         '</div></div>';   /* (no past conversations: "remove past history") */   /* the suggestions a row of chips, then the past conversations as a list ("add suggestions as chips row; add group: past conversation, list items") */
       (host || document.body).appendChild(w); const inp = w.querySelector('input'), ask = w.querySelector('.evSrchAsk');
@@ -44859,6 +44877,7 @@ hairline({
 
   // Which shape the Reports tab takes. A body class, like everything else that
   // has to survive setMode writing the list whole.
+  { const as = document.getElementById('stAskSug'); if (as){ const put = () => document.documentElement.classList.toggle('askConv', as.value === 'conv'); as.addEventListener('change', put); put(); } }   /* Ask sheet, Suggestion: Services / Conversation (html.askConv) */
   { const sf = document.getElementById('stSrchFoc'); if (sf){ const put = () => document.documentElement.classList.toggle('srchFull', sf.value === 'full'); sf.addEventListener('change', put); put(); } }   /* Search focus: Split / Full width (html.srchFull, CSS by .msRecIc) */
   const stRepLaySel = document.getElementById('stRepLay');
   if (stRepLaySel) stRepLaySel.addEventListener('change', () => {
