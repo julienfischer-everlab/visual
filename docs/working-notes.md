@@ -20944,3 +20944,4 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - Expanded floating chat fields (every .evSrch but the full-screen one): the floating field's ground (ink 8%, blur 96, its shadow), light mode too.
 - Async report: the step is "What to expect / in your debrief." (navigator: What to expect); each row's blue disc replaced by a mini visual: a 96 × 64 frame, 24 corners, light grey secondary ground, clipping a small UI: a reading card (line to a dot, range bar), the doctor's photo with a Reviewed tick over skeleton lines, two chat bubbles.
 - Card screen: the warm and dark specks float at half the speed (their travel 13 to 24 s, the wobble and the rails halved); the picture 25% more saturated (×1.875 dark, ×1.81 light, over the Saturation tweak).
+- Card screen: saturation 10% down (×1.69 dark, ×1.63 light).
