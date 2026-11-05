@@ -20871,3 +20871,7 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - Ask sheet, Suggestion: Conversation ("On clicking the star, trigger the keyboard directly"): the star opens the sheet with its field live, the keyboard up and the card on it (Services still opens at rest).
 - Typing in that version ("when the keyboard is activated, the conversation suggestion should be under the chat as well"): the conversations' row stays under the field on the keys, in place of the field's own suggestion chips; the home bar's room not kept there.
 - Card screen, light mode ("the orange should be way more intense, almost the same as the dark mode"): the light at full strength through its orange into its first browns (mask 46% -> 66% of its box), then the white page; the white blanket over it down to 12% of its alpha.
+
+## Gift plan card: 4 more under the badge
+
+- "+4px margin-bottom below the badge": the plan card's tier badge (PROTOCOL, DIAGNOSTICS, BASELINE; `.hpPlTab .hpW2Tag`) now has 10 below it to the price (was 6), in Send a gift's plan tabs and wherever that card is drawn.
