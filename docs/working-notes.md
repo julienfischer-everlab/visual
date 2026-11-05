@@ -20864,3 +20864,10 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 ## Ask sheet, Conversation: the sheet is the expanded chat field
 
 - "For this version with the little conversation, use the chat field expanded directly; the chat field is the bottom sheet directly, and keep the line carousel": with Suggestion on Conversation (`html.askConv`) the Ask sheet has no field plate inside it any more; the sheet is the field: the words at its top (17), then its tools as the Top Chat's expanded field has them (+ at the left, Eva and the send at the right, 36 discs; the send white once something is typed), then the conversations' row under them (Chips: the swiped row; List: one a line). The small field's dot and the bento disc are not drawn in this version. Typing, the card rides the keys as before and the field's own suggestions show under it. Services is unchanged.
+
+## Desk modal chips aligned, the star straight to the keys, conversations on the keys, light orange stronger
+
+- Top Chat's desk modal ("+8px", "padding"): the conversations' row 20 in (was 12), so its first chip starts on the same edge as the label, the field's words and its + (420 in the measure).
+- Ask sheet, Suggestion: Conversation ("On clicking the star, trigger the keyboard directly"): the star opens the sheet with its field live, the keyboard up and the card on it (Services still opens at rest).
+- Typing in that version ("when the keyboard is activated, the conversation suggestion should be under the chat as well"): the conversations' row stays under the field on the keys, in place of the field's own suggestion chips; the home bar's room not kept there.
+- Card screen, light mode ("the orange should be way more intense, almost the same as the dark mode"): the light at full strength through its orange into its first browns (mask 46% -> 66% of its box), then the white page; the white blanket over it down to 12% of its alpha.
