@@ -20807,3 +20807,11 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - Envelope front ("Remove horizontal line. Keep logo with opacity 24%"): the five pressed-in rows and their lines carried off the edge are gone; the logo mark, white at 24%, sits at the right (as far in as the wordmark from the left). The deboss helper is removed.
 - Envelope flap ("Put white logo mark here"): the white mark on the flap in both formats (the Classic's was pressed in, unseen on the black). It is a plain white fill now: the gradient it used was referenced by id, and a copied envelope (the seal, the doc stills) duplicated the id, so a copy in a hidden screen could leave the mark unpainted.
 - Checked: XS and Desktop, mouse clicks on Send now / Send later (each picks itself, the calendar with Send later only), the plan cards' padding, the Classic front and back, the Long back; 0 page errors.
+
+## Top Chat AI → Suggestion: Services / Conversation
+
+- New Tweak in Top Chat AI ("Suggestion: Services (current), carousel horizontal as it is; Conversation, latest conversation inbox presented as stacked badge, first badge the entry point to Concierge 'Go to concierge'"): `#stTopSug`, Services (default) or Conversation.
+- Conversation: Go to concierge first, then the latest conversations with the Concierge stacked one under another, each its title and its day (fainter); a badge opens the Concierge on that conversation (`window.EvOpenConv(id)`). The list is `window.EvRecentConv`, the Concierge's own latest three (Ideal protein intake, Next appointment, Why my ferritin is flagged).
+- Both renderings follow it: the keyboard with chips (Full modal Off; its black ground reaching up to the first badge) and the search (Full modal On on the phone, the desk's modal), headed Conversations.
+- Checked: XS keyboard mode (the stack, a badge opening "Ideal protein intake" in the Concierge), XS full modal, Desktop modal; 0 page errors.
+- Lucide: installed as `window.EvLucide` (the build inlines the named icons), but only the Eva field's mic uses it so far; every other icon is still drawn by hand (`EvNavIc` and inline SVGs). It isn't on a Design system page yet.

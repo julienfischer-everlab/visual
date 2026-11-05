@@ -152,6 +152,8 @@ All anchors are in `index.html` unless named. Line numbers drift; grep the patte
 
 ---
 
+**Top chat field (Overview) and its suggestions.** Tweaks → Top Chat AI: Full modal On (the search `EvSearch`, `.evSrch`, full screen on the phone, a modal on the desk) or Off (the frame's keyboard with the chips above it, `#bpFrame > .ovSug`, built in `ovAskXs`); Suggestion (`#stTopSug`) `Services` (default: Go to concierge, then the service chips, one row, a carousel) or `Conversation` (Go to concierge first, then the latest Concierge conversations as stacked badges, title and day, `.evSrchStack` / `.ovSugConv`). The conversations are `window.EvRecentConv` (`[id, title, day]`, persona 1's latest three from the Concierge's `SEED`, newest first); a badge opens that chat with `window.EvOpenConv(id)` (`_cc.run(C => C.go('chat', id))`). Keep the list in step with the Concierge's own conversations when they change.
+
 ## Other beams: `EvBeam` (chat composer), intro field `hpCcBm`, field star `.ovChatSpark`
 
 **What.** The warm conic beam family sharing `@property --hpBm`: (1) `hpCcBm`, the Concierge intro field's resting beam; (2) `EvBeam`, the same layers once round a field (in-app composer; concierge.html on Care team → Eva); (3) the Overview ask field's star morphing into a 16%-ink dot with a beam round it.
