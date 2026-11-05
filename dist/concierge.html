@@ -129,7 +129,7 @@
   .box { position: relative; }
   @property --hpBm { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
   .evBeam { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; }
-  .box > :is(textarea, .boxRow, .boxPh) { position: relative; }   /* the field's words, +, pill and send above the light, as the intro's field keeps its words over its beam */
+  .box > :is(textarea, .boxRow, .boxPh, .stgField) { position: relative; }   /* the field's words, +, pill and send above the light, as the intro's field keeps its words over its beam */
   .evBeam .evBm, .evBeam .evBmG, .evBeam .evBmIn, .evBeam .evBmIn > span { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; }
   .evBeam .evBm { background: conic-gradient(from var(--hpBm), transparent 0deg 55deg, #FF9F4A 92deg, #FFB866 118deg, #FF8A3D 146deg, transparent 185deg 360deg); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; }
   .evBeam .evBmL { inset: -.5px; padding: 1px; opacity: .42; }
@@ -1865,7 +1865,7 @@ window.EvKbd = (function () {
     };
     /* the motion ("subtle, premium"): a bubble fades in and rises 8 over 240 ms on the chat's own curve (.rise: .2, .8, .2, 1); a widget 10 over 300; the thread scrolls in 500 ms (.4, 0, .2, 1) */
     var MO = { bubble: 240, rise: 8, widget: 300, wRise: 10, scroll: 500, grow: 220 };
-    var EIN = bez(.2, .8, .2, 1), ESC = bez(.4, 0, .2, 1), EIO = bez(.42, 0, .58, 1);
+    var EIN = bez(.2, .8, .2, 1), ESC = bez(.4, 0, .2, 1), EIO = bez(.42, 0, .58, 1), EASE = bez(.25, .1, .25, 1), BEAM = 1900;   /* EASE: CSS ease; BEAM: the field's beam once round, ms */
     var DEL = { user: 400, eva: 350, specialist: 450, widget: 300 };
     var FORMATS = { '16:9': [1920, 1080], '9:16': [1080, 1920], '4:3': [1440, 1080], '3:4': [1080, 1440], '1:1': [1080, 1080] };
     var PH = { w: 393, h: 852, bz: 12 };   /* the XS phone, its bezel (the master's 12 round it) */
@@ -1928,7 +1928,7 @@ window.EvKbd = (function () {
     };
 
     /* ---------- the DOM: the canvas, its ground, the phone or the floating thread; each item's nodes, made once per load ---------- */
-    var host = null, C = null, SCH = null, N = [], col = null, view = null, thread = null, field = null, send = null, hdEl = null, geo = null, ready = Promise.resolve(), sizeO = null, fitOn = true;
+    var host = null, C = null, SCH = null, N = [], col = null, view = null, thread = null, field = null, send = null, beam = null, hdEl = null, geo = null, ready = Promise.resolve(), sizeO = null, fitOn = true;
     var SB = '<span class="tm">9:41</span><span class="isl"></span><svg viewBox="0 0 66 12" aria-hidden="true"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="5" width="3" height="7" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="1" width="3" height="11" rx="1"/><path d="M29 4.6a8.4 8.4 0 0 1 11 0l-1.6 1.9a5.9 5.9 0 0 0-7.8 0Zm2.6 3.1a4.4 4.4 0 0 1 5.8 0l-2.9 3.4Z"/><rect x="46" y="2" width="17" height="8" rx="2.5" fill="none" stroke="currentColor" stroke-opacity=".5"/><rect x="47.5" y="3.5" width="12" height="5" rx="1.4"/></svg>';
     var GRIDT = [[-300, 1300], [500, 1700], [100, 1500], [800, 1400], [-600, 1900], [650, 1300], [400, 1600], [-950, 1500], [0, 1800]];   /* each dot's delay and length, the master's */
     var enter = function () { root.classList.add('stg', 'emb'); if (!host){ host = D.createElement('div'); host.id = 'stg'; host.setAttribute('aria-hidden', 'true'); D.body.appendChild(host); } };
@@ -1960,13 +1960,13 @@ window.EvKbd = (function () {
       var app;
       if (c.device){
         view = node('<div class="stgDev"><div class="stgPhone"><div class="app mob stgApp"><section class="main">' + headHtml(c.title || 'Eva') +
-          '<div class="thread"><div class="col"></div></div><div class="dock"><div class="box"><div class="stgField ph"><span class="stgFi"><span class="stgTx">Ask Eva…</span><i class="stgCaret"></i></span></div>' +
+          '<div class="thread"><div class="col"></div></div><div class="dock"><div class="box"><span class="evBeam stgBeam" aria-hidden="true"><span class="evBmIn"><span><i class="evBm"></i></span></span><i class="evBm evBmL"></i><span class="evBmG"><i class="evBm"></i></span></span><div class="stgField ph"><span class="stgFi"><span class="stgTx">Ask Eva…</span><i class="stgCaret"></i></span></div>' +
           '<div class="boxRow"><button class="round" type="button" tabindex="-1">' + ic('plus') + '</button><span class="sp"></span><button class="pill" type="button" tabindex="-1"><span>Eva</span>' + ic('chevD') + '</button><button class="send" type="button" tabindex="-1">' + ic('send') + '</button></div></div></div>' +
           '</section></div><div class="stgSb">' + SB + '</div><i class="homeInd"></i></div></div>');
-        thread = $('.thread', view); field = $('.stgField', view); send = $('.send', view); hdEl = $('.hd', view);
+        thread = $('.thread', view); field = $('.stgField', view); send = $('.send', view); hdEl = $('.hd', view); beam = $('.stgBeam', view); beam._m = [].slice.call(beam.querySelectorAll('.evBm'));
       } else {
         view = node('<div class="stgFlV"><div class="app mob stgApp stgFloat"><div class="col"></div></div></div>');
-        thread = view; field = send = hdEl = null;
+        thread = view; field = send = hdEl = beam = null;
       }
       host.appendChild(view); col = $('.col', view); app = $('.stgApp', view);
       /* each item's nodes: user (typing bubble, message), eva (thinking line, answer), specialist (its card coming in, its message), widget (its block, in the answer before it or a message of its own) */
@@ -2120,6 +2120,11 @@ window.EvKbd = (function () {
       putE(car, 'opacity', caret ? '1' : '0');
       putE(send, 'width', (40 * grow).toFixed(2) + 'px'); putE(send, 'marginLeft', (-8 * (1 - grow)).toFixed(2) + 'px'); putE(send, 'opacity', grow.toFixed(3)); putE(send, 'transform', 'scale(' + (.6 + .4 * grow).toFixed(4) + ')');
       send.classList.toggle('on', on);
+      /* the beam ("On message submit, beam border effect one round"): sent, the field's light once round its edge, the chat's own (.evBeam, Care team -> Eva's), painted from the time like everything here so the MP4 has it:
+         1.9 s at an even pace, faded in over its first 8% and out over its last 14%, eased as the CSS keyframes are */
+      if (beam){ var bn = null; N.forEach(function (n) { if (n.it.type === 'user' && n.p.typing === 'text' && t >= n.p.sent && t < n.p.sent + BEAM) bn = n; });
+        var bu = bn ? (t - bn.p.sent) / BEAM : 0, bo = !bn ? 0 : bu < .08 ? EASE(bu / .08) : bu < .86 ? 1 : 1 - EASE((bu - .86) / .14);
+        putE(beam, 'opacity', bo.toFixed(3)); var ba = (360 * bu).toFixed(2) + 'deg'; beam._m.forEach(function (m) { if (m._a !== ba){ m._a = ba; m.style.setProperty('--hpBm', ba); } }); }
     };
     var cur = 0;
     var seek = function (ms) {

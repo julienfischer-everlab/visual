@@ -57,6 +57,7 @@ type Item =
 
 - `delay`: ms after the item before ends. `hold`: ms the item stays before the next one starts. Leave both out for the motion defaults.
 - `typing: 'text'` types the words into the composer. That needs the phone; floating falls back to `'dots'`.
+- When a typed message is sent, the composer's beam goes once round its edge (the chat's own `.evBeam`, Care team → Eva's), 1.9 s from `sent`, fading in over its first 8% and out over its last 14%. It is painted from the time in `seek`, like everything else, so the MP4 has it.
 - A widget joins the answer just before it (Eva's or the specialist's), as a block of that answer. With `attach: false` it is a message of its own.
 - `stage.normalize(comp)` returns the composition made whole: every field set, every item given a unique id.
 
