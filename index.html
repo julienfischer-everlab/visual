@@ -1736,6 +1736,16 @@
      out, and one line that can be read beats two that cannot. It comes back
      when the search closes. */
   .msWrap.searchOn .msRec i{display:none;}
+  /* Search focus, Full width (Tweaks -> Biomarkers tab, html.srchFull): open, the record field folds to a 56 square, its filter icon alone (a white dot on it while a record is chosen), and the search takes the rest; the two swap as the split does (both flex-basis lengths) */
+  .msRec :is(.msRecIc, .msRecDot){display:none;}   /* past .msRec i (the eyebrow's display:block) */
+  html.srchFull .msWrap.searchOn .msRecWrap{flex:0 0 56px;}
+  html.srchFull .msWrap.searchOn .msRow .msBox{flex:0 0 calc(100% - 12px - 56px);}
+  html.srchFull .msWrap.searchOn .msRec{position:relative;justify-content:center;padding:0;}
+  html.srchFull .msWrap.searchOn .msRec :is(.t, .msRecChev, .msRecNew){display:none;}
+  html.srchFull .msWrap.searchOn .msRecClear{display:none !important;}
+  html.srchFull .msWrap.searchOn .msRecIc{display:block;flex:none;width:20px;height:20px;}
+  html.srchFull .msWrap.searchOn .msRecWrap.cleared .msRecDot{display:block;position:absolute;top:10px;right:10px;margin:0;width:8px;height:8px;border-radius:50%;background:#fff;}
+  html.srchFull body.light .msWrap.searchOn .msRecWrap.cleared .msRecDot{background:#000;}
   .msWrap:not(.searchOn) .msClear{display:none !important;}
   body.light .msRec{--msEdge:#ddd3bf;color:#000;}
   body.light .msRec:hover{--msEdge:#9b8a75;}
@@ -5591,6 +5601,15 @@
     background:rgba(255,255,255,.08);color:#ececec;cursor:pointer;
   }
   body.light .rcCta{background:rgba(46,31,26,.08);color:#000;}
+  /* Your debriefs' carousel card (phone and desk, .rcDb): 4:3, the date eyebrow 14, the title 16 on one line, no sub, a chevron disc for its CTA
+     ("ratio of the card should be 4:3 / Eyebrow 14px / Title 16px No sub / CTA chevron right only"). The picture takes what the lines leave. */
+  .rcCard.rcBig.rcDb .rcCta.rcCtaIc{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;padding:0;border-radius:50%;}
+  .rcCard.rcBig.rcDb .rcCta.rcCtaIc svg{width:18px;height:18px;display:block;}
+  body.repVisual .rcCard.rcBig.rcDb{aspect-ratio:4 / 3 !important;height:auto !important;align-self:flex-start !important;display:flex !important;flex-direction:column !important;padding:0 0 20px !important;}
+  body.repVisual .rcCard.rcBig.rcDb > .rcVis{flex:1 1 0 !important;height:auto !important;min-height:0 !important;aspect-ratio:auto !important;}
+  body.repVisual .rcCard.rcBig.rcDb .rcEyebrow:not(#_){display:flex !important;align-items:center;height:28px;margin-top:14px !important;font-size:14px !important;line-height:28px;white-space:nowrap;}
+  body.repVisual .rcCard.rcBig.rcDb .rcTitle{margin-top:2px !important;font-size:16px !important;line-height:22px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:70px !important;}
+  body.repVisual .rcCard.rcBig.rcDb .rcCta.rcCtaIc{position:absolute !important;right:22px !important;bottom:28px !important;margin:0 !important;}
   /* the stack: the same card shell, holding the same list the bento's own
      "All reports" card scrolls -- report 2 onward, never report 1, which
      already has the big card beside this one */
@@ -8702,7 +8721,11 @@
   #dPlan .plNShX{flex:none;display:grid;place-items:center;width:32px;height:32px;margin:0;padding:0;border:0;border-radius:50%;background:color-mix(in srgb, var(--plInk) 7%, var(--plNShBg));color:var(--plInk);cursor:pointer;}
   #dPlan .plNShX svg{width:12px;height:12px;} #dPlan .plNShX:focus-visible{outline:2px solid var(--plInk);outline-offset:2px;}
   #dPlan .plNShB{margin-top:16px;} #dPlan .evShHd + :is(.plNShB, .plPMdPr){margin-top:0;}   /* under the sheet header master: its 8 to the content, no more */
-  #dPlan .plNShB p{margin:0;font-size:16px;line-height:24px;color:var(--plTx2);text-wrap:pretty;} #dPlan .plNShB p + p{margin-top:12px;}
+  #dPlan .plNShP:not(.plNShSes) .plNShB p{margin:0;font-size:16px;line-height:24px;color:var(--plTx2);text-wrap:pretty;} #dPlan .plNShP:not(.plNShSes) .plNShB p + p{margin-top:12px;}
+  /* an Activity row's session in this sheet (.plNShSes: "open bottom sheet, not full modal"): the full modal's parts (the :is(.plSesSheet, .plNShSes) rules below), their tokens the sheet's (--ar-*) read off the Plan's mode */
+  #dPlan .plNShP.plNShSes{--ar-card-bg:oklch(100% 0 263.28 / .06);--ar-badge-bg:oklch(100% 0 263.28 / .24);--ar-blue-bg2:oklch(25.33% .065 257.47);--plSesBar:#43566f;--plSesNoteInk:#92a3bd;}
+  #dPlan.plLight .plNShP.plNShSes{--ar-card-bg:oklch(0% 0 0 / .04);--ar-badge-bg:oklch(0% 0 0 / .08);--ar-blue-bg2:oklch(96.36% .018 253.39);--plSesBar:#d9e0eb;--plSesNoteInk:#5d646d;}
+  #dPlan .plNShSes .sgmRule.plSesRule{display:block;border:0;background:var(--plNHair);} #dPlan .plNShSes .plNShB > .plSesSec:first-child{margin-top:16px;}   /* the sheet's title, then 16 to Exercises: a section under it, not a line of it */
   body:is([data-bp="xs"], [data-bp="s"]) #dPlan .plNSh{align-items:flex-end;padding:64px var(--evShGap) var(--evShGap);}
   body:is([data-bp="xs"], [data-bp="s"]) #dPlan .plNShP{width:100%;padding:8px 16px max(16px, 16px + var(--evHome, 0px) - var(--evShGap));border-radius:var(--evShR) var(--evShR) var(--evShRb) var(--evShRb);opacity:1;transform:translateY(calc(100% + var(--evShGap)));transition:transform .5s cubic-bezier(.2,.8,.2,1), background-color .3s ease;}   /* up from below its own height and its float; the home indicator's 34 less the 12 it floats (--evShGap), the sheets' corners (--evShR) */
   body:is([data-bp="xs"], [data-bp="s"]) #dPlan .plNSh.on .plNShP{transform:translateY(var(--plNDrag, 0px));}
@@ -8752,26 +8775,26 @@
      The cards press as the Plan's rows (the Plan's interaction states above: its plate, scoped :is(#dPlan, .plSesSheet)) */
   .arSheet.plSesSheet{--plInk:oklch(var(--ar-ink) / 1);--plSesBar:#d9e0eb;--plSesNoteInk:#5d646d;}
   .arSheet.plSesSheet.arDark{--plSesBar:#43566f;--plSesNoteInk:#92a3bd;}
-  .plSesSheet .plSesSec{margin:0;} .plSesSheet .plSesSec > .plSecH{margin:0 0 8px;} .plSesSheet .plSesSec:last-child > .plSecH{margin-bottom:16px;}   /* Exercises 8 over its cards, Important 16 over its note (the mock) */
-  .plSesSheet .plSesExs{display:flex;flex-direction:column;gap:6px;margin:0;padding:0;list-style:none;}
-  .plSesSheet .plSesEx{appearance:none;-webkit-appearance:none;display:grid;grid-template-columns:96px minmax(0, 1fr) auto;grid-template-rows:auto 1fr auto;column-gap:20px;width:100%;margin:0;padding:16px;border:0;border-radius:20px;background:var(--ar-card-bg);color:oklch(var(--ar-ink) / 1);font:inherit;text-align:left;cursor:pointer;}
-  .plSesSheet .plSesPic{grid-row:1 / 4;grid-column:1;align-self:start;position:relative;width:96px;height:96px;border-radius:16px;overflow:hidden;background:var(--ar-card-bg);}
-  .plSesSheet .plSesPic img{display:block;width:100%;height:100%;object-fit:cover;} .plSesSheet .plSesPic img.plSesCrop{transform:scale(1.2);}   /* the Plan's two protocol photos carry the mock's own rounded frame and dark rim: cropped past them */
-  .plSesSheet .plSesPlay{position:absolute;left:50%;top:50%;display:flex;align-items:center;justify-content:center;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;background:rgba(0,0,0,.24);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);color:#fff;}   /* a smoked glass disc on the photo, the mock's 44 */
-  .plSesSheet .plSesPlay svg{width:12px;height:12px;margin-left:2px;}   /* the triangle's weight centred, not its box */
-  .plSesSheet .plSesExT{grid-row:1;grid-column:2;align-self:start;padding-top:3px;font-size:16px;line-height:20px;font-weight:500;letter-spacing:-.1px;text-wrap:pretty;overflow-wrap:anywhere;}
-  .plSesSheet .plSesN{grid-row:1;grid-column:3;align-self:start;display:flex;align-items:center;justify-content:center;box-sizing:border-box;width:24px;height:24px;margin:2px 0 0 4px;border:1.5px solid currentColor;border-radius:50%;font-size:13px;line-height:1;font-weight:500;font-variant-numeric:tabular-nums;}   /* level with the name's first line */
-  .plSesSheet .plSesChips{grid-row:3;grid-column:2 / 4;align-self:end;display:flex;flex-wrap:wrap;gap:4px;margin:8px 0 4px;}
-  .plSesSheet .plSesChips > span{padding:2px 8px;border-radius:6px;background:var(--ar-badge-bg);font-size:12px;line-height:16px;white-space:nowrap;}
-  .plSesSheet .sgmRule.plSesRule{height:1px;margin:24px 0;}   /* the column's width, 24 either side (the mock) */
-  .plSesSheet .plSesProg{display:flex;flex-direction:column;gap:24px;}
-  .plSesSheet .plSesTag{display:inline-block;max-width:100%;box-sizing:border-box;margin:0;padding:4px 8px;border-radius:8px;background:var(--ar-badge-bg);font-size:14px;line-height:18px;font-weight:500;letter-spacing:0;color:oklch(var(--ar-ink) / 1);}
-  .plSesSheet .plSesL{margin:8px 0 0;font-size:16px;line-height:24px;font-weight:500;text-wrap:pretty;}
-  .plSesSheet .plSesB{margin:6px 0 0;padding:0;list-style:none;font-size:16px;line-height:24px;font-weight:400;text-wrap:pretty;}
-  .plSesSheet .plSesB li{position:relative;padding-left:28px;} .plSesSheet .plSesB li + li{margin-top:2px;}
-  .plSesSheet .plSesB li::before{content:"";position:absolute;left:7px;top:9.5px;width:5px;height:5px;background:currentColor;}   /* the mock's square bullet, centred on the first line */
-  .plSesSheet .plSesNote{display:flex;gap:16px;margin:0;padding:20px;border-radius:20px;background:var(--ar-blue-bg2);color:var(--plSesNoteInk);font-size:16px;line-height:20px;text-wrap:pretty;}
-  .plSesSheet .plSesNote::before{content:"";flex:none;width:3px;background:var(--plSesBar);}   /* the bar inside it, the words' height */
+  :is(.plSesSheet, #dPlan .plNShSes) .plSesSec{margin:0;} :is(.plSesSheet, #dPlan .plNShSes) .plSesSec > .plSecH{margin:0 0 8px;} :is(.plSesSheet, #dPlan .plNShSes) .plSesSec:last-child > .plSecH{margin-bottom:16px;}   /* Exercises 8 over its cards, Important 16 over its note (the mock) */
+  :is(.plSesSheet, #dPlan .plNShSes) .plSesExs{display:flex;flex-direction:column;gap:6px;margin:0;padding:0;list-style:none;}
+  :is(.plSesSheet, #dPlan .plNShSes) .plSesEx{appearance:none;-webkit-appearance:none;display:grid;grid-template-columns:96px minmax(0, 1fr) auto;grid-template-rows:auto 1fr auto;column-gap:20px;width:100%;margin:0;padding:16px;border:0;border-radius:20px;background:var(--ar-card-bg);color:oklch(var(--ar-ink) / 1);font:inherit;text-align:left;cursor:pointer;}
+  :is(.plSesSheet, #dPlan .plNShSes) .plSesPic{grid-row:1 / 4;grid-column:1;align-self:start;position:relative;width:96px;height:96px;border-radius:16px;overflow:hidden;background:var(--ar-card-bg);}
+  :is(.plSesSheet, #dPlan .plNShSes) .plSesPic img{display:block;width:100%;height:100%;object-fit:cover;} :is(.plSesSheet, #dPlan .plNShSes) .plSesPic img.plSesCrop{transform:scale(1.2);}   /* the Plan's two protocol photos carry the mock's own rounded frame and dark rim: cropped past them */
+  :is(.plSesSheet, #dPlan .plNShSes) .plSesPlay{position:absolute;left:50%;top:50%;display:flex;align-items:center;justify-content:center;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;background:rgba(0,0,0,.24);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);color:#fff;}   /* a smoked glass disc on the photo, the mock's 44 */
+  :is(.plSesSheet, #dPlan .plNShSes) .plSesPlay svg{width:12px;height:12px;margin-left:2px;}   /* the triangle's weight centred, not its box */
+  :is(.plSesSheet, #dPlan .plNShSes) .plSesExT{grid-row:1;grid-column:2;align-self:start;padding-top:3px;font-size:16px;line-height:20px;font-weight:500;letter-spacing:-.1px;text-wrap:pretty;overflow-wrap:anywhere;}
+  :is(.plSesSheet, #dPlan .plNShSes) .plSesN{grid-row:1;grid-column:3;align-self:start;display:flex;align-items:center;justify-content:center;box-sizing:border-box;width:24px;height:24px;margin:2px 0 0 4px;border:1.5px solid currentColor;border-radius:50%;font-size:13px;line-height:1;font-weight:500;font-variant-numeric:tabular-nums;}   /* level with the name's first line */
+  :is(.plSesSheet, #dPlan .plNShSes) .plSesChips{grid-row:3;grid-column:2 / 4;align-self:end;display:flex;flex-wrap:wrap;gap:4px;margin:8px 0 4px;}
+  :is(.plSesSheet, #dPlan .plNShSes) .plSesChips > span{padding:2px 8px;border-radius:6px;background:var(--ar-badge-bg);font-size:12px;line-height:16px;white-space:nowrap;}
+  :is(.plSesSheet, #dPlan .plNShSes) .sgmRule.plSesRule{height:1px;margin:24px 0;}   /* the column's width, 24 either side (the mock) */
+  :is(.plSesSheet, #dPlan .plNShSes) .plSesProg{display:flex;flex-direction:column;gap:24px;}
+  :is(.plSesSheet, #dPlan .plNShSes) .plSesTag{display:inline-block;max-width:100%;box-sizing:border-box;margin:0;padding:4px 8px;border-radius:8px;background:var(--ar-badge-bg);font-size:14px;line-height:18px;font-weight:500;letter-spacing:0;color:oklch(var(--ar-ink) / 1);}
+  :is(.plSesSheet, #dPlan .plNShSes) .plSesL{margin:8px 0 0;font-size:16px;line-height:24px;font-weight:500;text-wrap:pretty;}
+  :is(.plSesSheet, #dPlan .plNShSes) .plSesB{margin:6px 0 0;padding:0;list-style:none;font-size:16px;line-height:24px;font-weight:400;text-wrap:pretty;}
+  :is(.plSesSheet, #dPlan .plNShSes) .plSesB li{position:relative;padding-left:28px;} :is(.plSesSheet, #dPlan .plNShSes) .plSesB li + li{margin-top:2px;}
+  :is(.plSesSheet, #dPlan .plNShSes) .plSesB li::before{content:"";position:absolute;left:7px;top:9.5px;width:5px;height:5px;background:currentColor;}   /* the mock's square bullet, centred on the first line */
+  :is(.plSesSheet, #dPlan .plNShSes) .plSesNote{display:flex;gap:16px;margin:0;padding:20px;border-radius:20px;background:var(--ar-blue-bg2);color:var(--plSesNoteInk);font-size:16px;line-height:20px;text-wrap:pretty;}
+  :is(.plSesSheet, #dPlan .plNShSes) .plSesNote::before{content:"";flex:none;width:3px;background:var(--plSesBar);}   /* the bar inside it, the words' height */
   /* ---- Services (#dMkt, "we need to create a page, services, which is the marketplace, so you can start with just a skeleton of a marketplace"): a page in the shell as the Plan is (body.mkOn); the dock's Services, the desk nav's Services, the page menu and #services.
      The mock's Version #1 (Grid 3 columns): the title, Your recommended services and its carousel (swiped with the Plan's magnet, EvMagnet; its arrows from M), then All | Individual | Bundles with the search, Price and Category,
      and the services: a list at XS, two columns of cards at S and M, three at L and XL. The page's own width picks the layout (a container: S from 480, M from 640, L from 1000), so Auto at any window reads as its breakpoint */
@@ -11090,7 +11113,10 @@
   body #dOver .ovInsCard.ovInsHero .ovInsDots{left:0;right:0;bottom:20px;justify-content:center;}
   /* its link ("See more not see insight; top right link 14px no underline; card height will decrease then"): See more at the slide's top right, on the label's line, 14 regular, no arrow, no underline; out of the column, so the card is as tall as its words */
   body #dOver .ovInsCard.ovInsHero .ovInsSl{position:relative;} body #dOver .ovInsCard.ovInsHero .ovInsLink{position:absolute;top:20px;right:24px;margin:0;font-size:14px;line-height:18px;text-decoration:none;color:#ececec;transition:opacity .16s ease;} body[data-bp="xs"] #dOver .ovInsCard.ovInsHero .ovInsLink{top:24px;right:20px;}
-  @media (hover: hover){ body #dOver .ovInsCard.ovInsHero .ovInsLink:hover{opacity:.72;text-decoration:none;} } body.light #dOver .ovInsCard.ovInsHero .ovInsLink{color:#000;}   /* centred under the button ("the carousel nav should be centred") */
+  @media (hover: hover){ body #dOver .ovInsCard.ovInsHero .ovInsLink:hover{opacity:.72;text-decoration:none;} } body.light #dOver .ovInsCard.ovInsHero .ovInsLink{color:#000;}
+  /* Section links: a section title's link at its right is "See more", 16 regular, never underlined, wherever it is ("Link no underline / 16px, regular / See more / for all link"):
+     the Plan's sections, the Overview's Action plan (phone and desk), its Tasks card, the Insights hero, Your debriefs' header */
+  html body :is(#dPlan .plSee, .ovsec .see.tlSee, .dvSec .see.tlSee, .ovBkMore, .ovInsLink, .rcMore){font-size:16px !important;font-weight:400 !important;text-decoration:none !important;}   /* centred under the button ("the carousel nav should be centred") */
   body[data-bp="xs"] #dOver .ovInsCard.ovInsHero .ovInsSl{padding-top:24px;padding-left:20px;} body[data-bp="xs"] #dOver .ovInsCard.ovInsHero{height:auto;}   /* XS: as tall as its tallest slide, the button at the foot of each */   /* XS: the words on the cards' 20 edge, the label level with Coming up's and Next step's */
   .ovInsHero .ovInsVis{container-type:size;} .ovInsHero .ovInsVis .ovIllImg{position:absolute;left:50%;top:50%;width:calc(min(170cqw, 210cqh) - 54px);height:auto;max-width:none;aspect-ratio:816 / 480;object-fit:contain;transform:translate(-50%, -50%);}
 
@@ -13229,6 +13255,14 @@
             <option value="seg" selected>Segmented</option>
           </select>
         </div>
+        <!-- Search focus ("When search is focus and active, the Report field become an CTA icon only with white dot if filter is active; so if search active or focus it fills the width"): Split, the two halves as today; Full, the record field a 56 icon and the search the rest of the row -->
+        <div class="tkRow">
+          <span class="lbl">Search focus</span>
+          <select id="stSrchFoc" class="tkSegSel" aria-label="What the record field does while the search is open">
+            <option value="split" selected>Split</option>
+            <option value="full">Full width</option>
+          </select>
+        </div>
         <div class="tkRow">
           <span class="lbl">Biomarkers</span>
           <select id="stBio" aria-label="Biomarker card state">
@@ -15228,6 +15262,7 @@
       <div class="msRecWrap" id="mRecWrap">
         <button class="msRec" id="mRecSel" type="button" aria-haspopup="listbox" aria-expanded="false">
           <span class="t"><b id="mRecLbl">All records</b><i id="mRecEy" hidden></i></span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lc="list-filter" class="msRecIc" aria-hidden="true"><path d="M2 5h20"/><path d="M6 12h12"/><path d="M9 19h6"/></svg><i class="msRecDot" aria-hidden="true"></i>
           <i class="msRecNew" aria-hidden="true"></i>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round" data-lc="chevron-down" class="msRecChev" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
         </button>
@@ -15352,6 +15387,7 @@
           <div class="msRecWrap" id="mMedRecWrap">
             <button class="msRec" id="mMedRecSel" type="button" aria-haspopup="listbox" aria-expanded="false">
               <span class="t"><b id="mMedRecLbl">All records</b><i id="mMedRecEy" hidden></i></span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lc="list-filter" class="msRecIc" aria-hidden="true"><path d="M2 5h20"/><path d="M6 12h12"/><path d="M9 19h6"/></svg><i class="msRecDot" aria-hidden="true"></i>
               <i class="msRecNew" aria-hidden="true"></i>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round" data-lc="chevron-down" class="msRecChev" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
             </button>
@@ -15479,7 +15515,7 @@
       <!-- what the member can add about themselves ("add a section Health profile with 3 items inside: fill questionnaire, connect wearables, ...") -->
       <div class="ovsec ovsecProf">Health profile <span class="see"><span><span class="ovProfN">1</span> of 3 done</span></span></div>
       <div class="ovProf"><div class="ovProfRow done"><button class="ovProfCk" type="button" aria-label="Mark as done" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round" data-lc="check" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></button><span class="ovProfIc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" data-lc="notebook-text" aria-hidden="true"><path d="M2 6h4"/><path d="M2 10h4"/><path d="M2 14h4"/><path d="M2 18h4"/><rect width="16" height="20" x="4" y="2" rx="2"/><path d="M9.5 8h5"/><path d="M9.5 12H16"/><path d="M9.5 16H14"/></svg></span><span class="ovProfTx"><b>Fill in your questionnaire</b><em class="ovProfT2">Fill your questionnaire</em><span>Your history and lifestyle, about 10 min</span></span><button class="ovProfBtn" type="button">Start</button></div><div class="ovProfRow"><button class="ovProfCk" type="button" aria-label="Mark as done" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round" data-lc="check" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></button><span class="ovProfIc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" data-lc="watch" aria-hidden="true"><path d="M12 10v2.2l1.6 1"/><path d="m16.13 7.66-.81-4.05a2 2 0 0 0-2-1.61h-2.68a2 2 0 0 0-2 1.61l-.78 4.05"/><path d="m7.88 16.36.8 4a2 2 0 0 0 2 1.61h2.72a2 2 0 0 0 2-1.61l.81-4.05"/><circle cx="12" cy="12" r="6"/></svg></span><span class="ovProfTx"><b>Connect your wearables</b><em class="ovProfT2">Connect your accounts</em><span>Apple Health, Garmin, Oura or Whoop</span></span><button class="ovProfBtn" type="button">Connect</button></div><div class="ovProfRow"><button class="ovProfCk" type="button" aria-label="Mark as done" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round" data-lc="check" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></button><span class="ovProfIc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" data-lc="file-up" aria-hidden="true"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M12 12v6"/><path d="m15 15-3-3-3 3"/></svg></span><span class="ovProfTx"><b>Upload your medical records</b><em class="ovProfT2">Upload your medical record</em><span>Past results from your GP or specialist</span></span><button class="ovProfBtn" type="button">Upload</button></div></div>
-      <div class="ovsec ovsecPlan">Action plan<span class="see tlSee" role="link" tabindex="0">See timeline</span></div>
+      <div class="ovsec ovsecPlan">Action plan<span class="see tlSee" role="link" tabindex="0" aria-label="See more: your timeline">See more</span></div>
       <div class="ovplan">
         <div class="ovact">
           <div class="ovactTop"><span class="ph" style="background:url(assets/overview/plan-consult.webp) center / cover"></span><span class="tx"><b>Onboarding Consult</b><span>Speak with an Everlab doctor about trends from your existing data, and gaps in your screening.</span><span class="pr">Protocol</span></span></div>
@@ -15824,7 +15860,7 @@
     <div class="ovcar dvRail"></div>
     <div class="ovcdots dvDots"></div>
 
-    <div class="dvSec dvSecPlan">Action plan<span class="see tlSee" role="link" tabindex="0">See timeline</span></div>
+    <div class="dvSec dvSecPlan">Action plan<span class="see tlSee" role="link" tabindex="0" aria-label="See more: your timeline">See more</span></div>
     <div class="dvPlanGrid"><article class="dvProt"><div class="dvProtTop"><span class="ph" style="background:url(assets/overview/plan-consult.webp) center / cover"></span><span class="badge">Protocol</span></div><div><b>Onboarding Consult</b><p>Speak with an Everlab doctor about trends from your existing data, and gaps in your screening.</p></div><div class="dvProtFoot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round" data-lc="monitor"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg><span>Online video call</span><button class="go pri">Book</button></div></article><article class="dvProt"><div class="dvProtTop"><span class="ph" style="background:url(assets/overview/plan-path.webp) center / cover"></span><span class="badge">Protocol</span></div><div><b>Pathology Test</b><p>Visit an Everlab or partner clinic to complete your pathology tests.</p></div><div class="dvProtFoot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round" data-lc="map-pin"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg><span>In person</span><button class="go">View</button></div></article><article class="dvProt"><div class="dvProtTop"><span class="ph" style="background:url(assets/overview/plan-dexa.webp) center / cover"></span><span class="badge">Protocol</span></div><div><b>Dexa Scan</b><p>Visit an Everlab or partner clinic to get your full body composition scan.</p></div><div class="dvProtFoot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round" data-lc="map-pin"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg><span>In person</span><button class="go">View</button></div></article><article class="dvProt"><div class="dvProtTop"><span class="ph" style="background:url(assets/overview/plan-mri.webp) center / cover"></span><span class="badge">Protocol</span></div><div><b>Whole Body MRI &amp; CT Chest</b><p>Title of the event lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor.</p></div><div class="dvProtFoot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round" data-lc="map-pin"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg><span>In person</span><button class="go">View</button></div></article><article class="dvProt"><div class="dvProtTop"><span class="ph" style="background:url(assets/overview/plan-physical.webp) center / cover"></span><span class="badge">Protocol</span></div><div><b>Physical Assessment</b><p>A 90 minute longevity focused physical assessment to guide your exercise plan.</p></div><div class="dvProtFoot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round" data-lc="map-pin"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg><span>In person</span><button class="go">View</button></div></article><article class="dvProt"><div class="dvProtTop"><span class="ph" style="background:url(assets/overview/plan-nutrition.webp) center / cover"></span><span class="badge">Protocol</span></div><div><b>Nutrition Review</b><p>Transform your health data into actionable insights with an Accredited Dietitian.</p></div><div class="dvProtFoot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round" data-lc="monitor"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg><span>Online video call</span><button class="go">View</button></div></article></div>
     <div class="ovplan dvPlanList">
         <div class="ovact">
@@ -38510,7 +38546,7 @@ hairline({
     // it; the card's text then sits under it, on the page. It is in the
     // markup always and shown by body.repVisual, so the tweak is CSS alone.
     const big = (r, row, lbl, dateTop) =>
-      '<div class="rcCard rcBig' + (row ? ' rcRow' : '') + (lbl === LATEST ? ' rcNewCard' : '') + '">' +
+      '<div class="rcCard rcBig' + (row ? ' rcRow' : '') + (dateTop ? ' rcDb' : '') + (lbl === LATEST ? ' rcNewCard' : '') + '">' +
         (lbl === LATEST ? '<span class="rcNew">New</span>' : '') +
         '<button class="rcVis hasImg" type="button" data-r="' + r.id + '" aria-label="View ' + r.label + '" ' +
           'style="--a0:' + r.art[0] + ';--a1:' + r.art[1] + ';background-image:url(' + repImg(r) + ')">' + repArtHTML(r, 'v') +
@@ -38525,12 +38561,11 @@ hairline({
           // corner badge serves the other dress
           '<div class="rcEyebrow">' + (dateTop ? r.date + (lbl === LATEST ? '<span class="rcNew rcNewInline">New</span>' : '') : lbl) + '</div>' +
           '<div class="rcTitle">' + r.label + (lbl === LATEST && !dateTop ? '<span class="rcNew rcNewInline">New</span>' : '') + '</div>' +
-          '<div class="rcMeta">' + (dateTop ? '' : r.date + ' &middot; ') +
-            (r.media === 'video' ? 'Video' : r.n + ' biomarkers') +
-          '</div>' +
+          (dateTop ? '' /* the carousel card: no sub ("Title 16px No sub") */ : '<div class="rcMeta">' + r.date + ' &middot; ' + (r.media === 'video' ? 'Video' : r.n + ' biomarkers') + '</div>') +
         '</div>' +
-        // the way in: a rounded CTA, bottom right in the Visual dress
-        '<button class="rcCta" type="button" data-r="' + r.id + '">See report</button>' +
+        // the way in: a rounded CTA, bottom right in the Visual dress; on the carousel card a chevron disc alone ("CTA chevron right only")
+        (dateTop ? '<button class="rcCta rcCtaIc" type="button" data-r="' + r.id + '" aria-label="See report"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lc="chevron-right" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>'
+          : '<button class="rcCta" type="button" data-r="' + r.id + '">See report</button>') +
       '</div>';
     // the stack's rows carry a small thumbnail of the report's visual in
     // the Visual layout ("put a small thumbnail next to each stacked
@@ -44824,6 +44859,7 @@ hairline({
 
   // Which shape the Reports tab takes. A body class, like everything else that
   // has to survive setMode writing the list whole.
+  { const sf = document.getElementById('stSrchFoc'); if (sf){ const put = () => document.documentElement.classList.toggle('srchFull', sf.value === 'full'); sf.addEventListener('change', put); put(); } }   /* Search focus: Split / Full width (html.srchFull, CSS by .msRecIc) */
   const stRepLaySel = document.getElementById('stRepLay');
   if (stRepLaySel) stRepLaySel.addEventListener('change', () => {
     CARD_STATE.repBento = stRepLaySel.value === 'bento';
@@ -46429,7 +46465,7 @@ hairline({
     /* a section of the Plan ("Adjust plan design based on that", the Lifestyle hub mock): its title, a count (n) or a small icon (ic) after it, See plan at the right (see.k the subpage it opens; none for My routines), then its body.
        The title the h2's first text: the Suggestion's rows find their section by it */
     const sec = (t, n, body, see, icn) => '<section class="plSec"><header class="plSecH"><h2>' + esc(t) + (n ? '<span class="plCnt">' + n + '</span>' : '') + (icn ? '<span class="plSecI" aria-hidden="true">' + icn + '</span>' : '') + '</h2>'
-      + (see ? '<button type="button" class="plSee" data-pl-sub="' + see.k + '" aria-label="See plan: ' + esc(t) + '">See plan</button>' : '') + '</header>' + body + '</section>';
+      + (see ? '<button type="button" class="plSee" data-pl-sub="' + see.k + '" aria-label="See more: ' + esc(t) + '">See more</button>' : '') + '</header>' + body + '</section>';
     /* ---- My Medical actions, My supplements, the Wind-down routine ("That's for medication.", "That's for a supplement.", "That's for routines."): three more pages of the Plan's own, the Activity plan's siblings, their words from the mocks.
        Here their data and their markup; how they open and close, after the goals' carousel. The medications are MEDS above (the Plan's rows and the page's cards read the one list), grouped by health area,
        each area under the marker it is watched by, the member's own reading on it (the Insights' October bloods; Serum DHT is not among them, so its chip draws the range with nothing on it) */
@@ -46714,8 +46750,8 @@ hairline({
     window._plSes = ses;
     const sesOpen = k => { if (!ses || !SES[k]) return; const was = sesK; sesK = k; if (ses.isOpen()){ if (was !== k) ses.remount(); return; } ses.open(); };
     const sesShut = now => { if (ses && ses.isOpen()) ses.close(now); };
-    host.querySelectorAll('.plProt .plRow[data-ses]').forEach(b => b.addEventListener('click', () => sesOpen(b.dataset.ses)));   // the Plan's two Activity rows
-    act.addEventListener('click', e => { const b = e.target.closest('button.plRow[data-ses]'); if (b && act.contains(b)) sesOpen(b.dataset.ses); });   // My programs' and My week's rows
+    host.querySelectorAll('.plProt .plRow[data-ses]').forEach(b => b.addEventListener('click', () => detSoloShow('ses:' + b.dataset.ses, b)));   // the Plan's two Activity rows: their session in the Plan's bottom sheet ("open bottom sheet, not full modal"); the full modal (sesOpen) stays for its link and the page menu
+    act.addEventListener('click', e => { const b = e.target.closest('button.plRow[data-ses]'); if (b && act.contains(b)) detSoloShow('ses:' + b.dataset.ses, b); });   // My programs' and My week's rows, the same sheet
     /* the Nutrition plan, over the Plan as the Activity plan is: its stage, its page, the same push in and out; a row's detail in its own sheet (Modals' Bottom sheet · Floating: up from the foot on the phone, floating on the desk) */
     const nStage = host.querySelector('.plNStage'), nut = nStage.querySelector('.plN'), nutSh = nut.querySelector('.plNSheet'), nutBand = nut.querySelector('.plNBand'), nutBack = nut.querySelector('.plNBack'), nutSide = nut.querySelector('.plNSide');
     const det = nStage.querySelector('.plNSh'), detP = det.querySelector('.plNShP'), detX = det.querySelector('.plNShX'), detGrab = det.querySelector('.plNShGrab');
@@ -46726,21 +46762,23 @@ hairline({
       if (k === 'mac') return ['Your daily recommendations', 'Suggested daily macros', NP.mac];
       if ((m = /^k(\d+)$/.exec(k))) { const r = NP.keys[+m[1]]; return r && ['Key actions', r[1], r[3]]; }
       if ((m = /^m(\d+)-(\d+)$/.exec(k))) { const ml = NP.meals[+m[1]], t = ml && ml.tips[+m[2]]; return t && [ml.t, t[0], [t[1]]]; }
+      if ((m = /^ses:(\w+)$/.exec(k)) && SES[m[1]]) { sesK = m[1]; return ['Activity', SES[m[1]].t, [], sesBody()]; }   /* an Activity row's session, in this sheet ("open bottom sheet, not full modal"): its title, its body the session's own (sesBody) */
       return null; };
     const detShow = (k, from) => { const d = detOf(k); if (!d) return; clearTimeout(detT); detFrom = from || null;
-      det.querySelector('.plNShE').textContent = d[0]; det.querySelector('.plNShT').textContent = d[1]; det.querySelector('.plNShB').innerHTML = d[2].map(p => '<p>' + esc(p) + '</p>').join('');
+      const nm = d[3] && from && from.querySelector('.plRowT b, .plRowT > b, b');   /* a session: the row's own name over its title */
+      det.querySelector('.plNShE').textContent = nm ? nm.textContent.trim() : d[0]; det.querySelector('.plNShT').textContent = d[1]; det.querySelector('.plNShB').innerHTML = d[3] || d[2].map(p => '<p>' + esc(p) + '</p>').join(''); detP.classList.toggle('plNShSes', !!d[3]);
       detP.classList.remove('plNDrag'); detP.style.removeProperty('--plNDrag'); det.hidden = false; if (window.EvFullView) window.EvFullView.cover(det); nut.inert = true; detP.scrollTop = 0; void detP.offsetWidth; det.classList.add('on');
       try { detP.focus({ preventScroll: true }); } catch (e) {} };
-    const detHide = now => { if (det.hidden) return; clearTimeout(detT); det.classList.remove('on'); nut.inert = false; if (detSolo) planInert(false);   /* over the Plan: the Plan live again at once, so focus can go back to its row */
+    const detHide = now => { if (det.hidden) return; clearTimeout(detT); det.classList.remove('on'); nut.inert = false; if (detSolo){ if (actOn) act.inert = false; else planInert(false); }   /* over the Plan: the Plan live again at once, so focus can go back to its row */
       const done = () => { det.hidden = true; detP.classList.remove('plNDrag'); detP.style.removeProperty('--plNDrag'); if (detSolo) detSoloOff(); };
       if (now || reduced()) done(); else detT = setTimeout(done, 500);
       if (!now && detFrom && detFrom.isConnected) try { detFrom.focus({ preventScroll: true }); } catch (e) {} };
     /* the same detail from the Plan's Nutrition card ("Open bottom sheet of the item, no the nutrition page"): the Nutrition plan's stage up where the Plan stands with its page left out (.plNSolo), the sheet alone over the Plan;
        Close, the scrim, Escape or the swipe take it away, the stage with it, and the Plan is where it was, focus back on the row */
     const detSoloOff = () => { detSolo = false; nStage.classList.remove('plNSolo'); if (!nutOn){ nStage.hidden = true; host.classList.remove('plNUp'); } };
-    const detSoloShow = (k, from) => { if (nutOn || pOn || actOn || !detOf(k)) return;
-      if (!detSolo){ detSolo = true; nStage.classList.add('plNSolo'); nStage.style.setProperty('--plNY', host.scrollTop + 'px'); nStage.hidden = false; host.classList.add('plNUp'); }
-      planInert(true); detShow(k, from); };
+    const detSoloShow = (k, from) => { if (nutOn || pOn || (actOn && !/^ses:/.test(k)) || !detOf(k)) return;
+      if (!detSolo){ detSolo = true; nStage.classList.add('plNSolo'); nStage.style.setProperty('--plNY', actOn ? (stage.style.getPropertyValue('--plAY') || host.scrollTop + 'px') : host.scrollTop + 'px'); nStage.hidden = false; host.classList.add('plNUp'); }
+      if (actOn) act.inert = true; planInert(true); detShow(k, from); };   /* over the Activity plan where it stands (a session from its rows): that page held still under it */
     nut.addEventListener('click', e => { const b = e.target.closest('[data-pn]'); if (b) detShow(b.dataset.pn, b);
       const s = e.target.closest('[data-pl-sup]'); if (s && window.__plOpen) window.__plOpen('sup', { item: s.dataset.plSup, from: s }); });   // the stack's rows: My supplements with that one's detail, Back coming here again
     detX.addEventListener('click', () => detHide()); det.querySelector('.plNShScrim').addEventListener('click', () => detHide());
