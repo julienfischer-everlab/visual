@@ -20824,3 +20824,10 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - Desk gap ("Make sure grid gap is the same (above insight seem to big)"): the Insights card under the Services tiles had 24 on top of the column's 16; now the column's 16 alone, as between the tiles.
 - Marketing → Chat video builder ("On message submit, beam border effect one round"): a typed message's send runs the composer's beam once round (the chat's `.evBeam`), painted from the time in the stage's `seek`, so the preview and the MP4 frames both have it. docs/chat-video.md updated.
 - Checked: Tasks at XS and Desktop (3 rows; Add your past results opens Past results), the gaps (16 above Insights on the desk, 12 at XS), See more's place (on the label's line), the beam over time (0 → 1 at send, 0 at 1.9 s, angle 0 → 360) and in an exported frame; 0 page errors.
+
+## Icons → Lucide, batch 1 (option 1: everything, the dock and sidebar included)
+
+- The user chose "1": every icon becomes a Lucide icon, the navigation's too, and the Design system's Iconography shows the set.
+- Batch 1: every literal icon SVG in index.html (195 distinct hand-drawn glyphs, 373 places). Each was identified on a numbered sheet and given one Lucide name (90 names), so the same icon is the same Lucide glyph everywhere. They were swapped for Lucide's own geometry (24 grid, from tools/node_modules/lucide, 1.60.0), keeping each tag's class, size, colour and aria. The line keeps its visual weight (the old stroke × 24 / the old grid), and each carries `data-lc="<name>"`.
+- Left as they are: the logo marks, the iOS keyboard's keys (part of the device), decorative dots and circles, and art (charts, illustrations).
+- Still to do: the path dictionaries (the async report's parts, the recommendations' RCI, the Health profile's P, the dock and sidebar's NAV_IC with its filled states), the SVG fragments in helpers (about 70 icons), visuals/*.html, and the Iconography page.
