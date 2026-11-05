@@ -2017,6 +2017,23 @@
   parallax();
   $('back').addEventListener('click', goBack);
 
+  /* the prototype's Documentation holds the page on one of its screens (#embed&still=intro|gift|next; "break down all of the screens of the gifting experience"): the message as it lands (intro), the gift once the circle has opened (gift), and What's next under it (next) */
+  (function(){
+    var still = (params.get('still') || '').toLowerCase();
+    if(still !== 'gift' && still !== 'next') return;
+    var scrollTo = function(){
+      var t = $('steps'); if(!t) return;
+      for(var e = t.parentElement; e && e !== document.body; e = e.parentElement){
+        var cs = getComputedStyle(e);
+        if(/(auto|scroll)/.test(cs.overflowY) && e.scrollHeight > e.clientHeight + 4){ e.scrollTop += t.getBoundingClientRect().top - e.getBoundingClientRect().top - 24; return; }
+      }
+    };
+    setTimeout(function(){
+      reveal();
+      if(still === 'next') setTimeout(scrollTo, (isStatic() ? 600 : (reduce ? 320 : SCENE_MS)) + 900);
+    }, 250);
+  })();
+
   /* ---------- scroll as a trigger ----------
      On the first fold, scrolling down (wheel, trackpad, swipe, keyboard) runs
      the same reveal as the button, once the message and button are on

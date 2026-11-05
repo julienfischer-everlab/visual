@@ -20779,3 +20779,13 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - Their note: on the desk the card (and its control) in the middle of the screen; the placeholder no larger than 5cqw (18 on the phone, 29 on the desk; the note itself still fits up to 9.5cqw); the card's mark 16 smaller on the desk (4.72cqw, so the envelope's copy keeps the same look).
 - Envelope (Long): the mark on the flap white ("Logo should be white"; was gold foil).
 - Checked on desk 1440: intro block centred (153 above the banner and under the button); banners 104 with the photos, 20 gap; when cards side by side; note card centred, mark 27, placeholder 28.8px; Check and pay's flap mark white; 0 page errors.
+
+## Documentation → Gifting; light card silhouette
+
+- New Documentation tab **Gifting** (`#gifting`, after Membership onboarding; "Create documentation that just breaks down all of the screens of the gifting experience from Send a Gift. And also receive a gift"). The Membership onboarding's canvas (same frames, zoom, XS / Desktop in the right panel, drag to pan, the arrow on a screen opens it in the prototype, Go to prototype per row):
+  - **Send a gift**: every page of the flow in order, drawn still by the flow's own code (`HealthProfile.snap`, current Tweaks): Intro, Where they live, Is Everlab right for them, Who it's for, Choose the gift, The occasion, When should it arrive?, Their note, Their note sealed, All wrapped up!, Check and pay, Checkout, Gift receipt; each with a short description.
+  - **Receive a gift**: the email (a note: not drawn in the prototype yet), then the gift page itself (`gift.html`, Tweaks → Gift on its link) held on The message, The gift and What's next, then Claim my gift (a note: the activation link, then the Membership onboarding; buttons to its doc and to the prototype).
+  - `gift.html` takes `still=intro|gift|next` on its link (`#embed&still=…`): it reveals the gift by itself, and for `next` scrolls What's next into view.
+  - Redrawn on the theme and on any Send a gift / Gift tweak.
+- Membership card, light (Solid with a light colour): the silhouette's particles were white on the white card ("Can't see the silhouette"); on a light card its canvas is inverted (.88), so they read dark with their own opacities.
+- Checked: the Gifting tab at XS and Desktop (13 Send screens, 5 Receive steps; the frames on intro / gift / gift states), 0 page errors; a light Solid card's back (V3) shows the silhouette dark.
