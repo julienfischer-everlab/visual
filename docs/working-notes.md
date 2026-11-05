@@ -20945,3 +20945,12 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - Async report: the step is "What to expect / in your debrief." (navigator: What to expect); each row's blue disc replaced by a mini visual: a 96 × 64 frame, 24 corners, light grey secondary ground, clipping a small UI: a reading card (line to a dot, range bar), the doctor's photo with a Reviewed tick over skeleton lines, two chat bubbles.
 - Card screen: the warm and dark specks float at half the speed (their travel 13 to 24 s, the wobble and the rails halved); the picture 25% more saturated (×1.875 dark, ×1.81 light, over the Saturation tweak).
 - Card screen: saturation 10% down (×1.69 dark, ×1.63 light).
+
+## Tweaks fold, Scheduled tweaks, Insights empty in the widget, card screen light, debrief visuals
+
+- **Every Tweaks group folds** ("all tweak from now need collapse feature option"): the first header of each `.tkGroup` gets a chevron (`.tkColB`); tapping it (or a plain header) folds the group down to its header (`.tkCol`). Which groups are folded is remembered in this browser (`everlab:tkCol`, keyed by `data-sec`, `data-fl`, id or the header text). A MutationObserver adds the chevron to groups added later and to headers that get rewritten (the section cards' handle and switch), so new groups get it automatically. Floating panels don't show the chevron.
+- **Scheduled tweak group** (Overview): Has data Yes / No and Items 1 / 2 / More. They drive the Booked in card (`stBkPers` on, `stBkN` 0 / 1 / 2 / more). No shows the card's empty line, "You don't have any booked appointment yet."
+- **Insights Has data No**: with Dedicated section Off, the three activation steps now sit inside the Bento's Insights widget (`.ovInsHeroE`) instead of a separate card. With Dedicated section On, they sit inside the section. Paint reads the Has data switch itself, because its change can run before `insEmpty` is set.
+- **Expanded floating chat fields** use the phone Ask card's ground: #181818 with its shadow and 5% edge, and #f6ece6 in light, with no glass.
+- **Card screen, light mode**: ground #F0F0F0 (the light's fade too), the warm light 15% less saturated (×1.39), and the Baseline card white (#fff).
+- **Debrief "What to expect" visuals**: 128 × 96 (+32 each way; the scene is scaled up from its 96 × 72 drawing), 16px corners (was 24). A light sweeps through each one in turn: row 1, then 2, then 3, looping. It is off with reduced motion.
