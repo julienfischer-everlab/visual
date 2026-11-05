@@ -11156,7 +11156,8 @@
   #dOver .ovTask:active{opacity:.7;} #dOver .ovTask:focus-visible{outline:2px solid rgba(236,236,236,.6);outline-offset:2px;border-radius:10px;}
   body.light #dOver .ovTasks{background:rgba(46,31,26,.055);color:#000;} body.light #dOver .ovTask{border-top-color:rgba(46,31,26,.1);} body.light #dOver .ovTask:first-child{border-top:0;} body.light #dOver .ovTaskC{box-shadow:inset 0 0 0 1.5px rgba(46,31,26,.3);} body.light #dOver :is(.ovTasksH .lbl, .ovTasksN, .ovTaskTx small, .ovTask > svg){color:rgba(0,0,0,.56);}
   html.svcTasks body:not([data-bp="xs"]) #dOver .dvTop > div:has(> .ovTasks){grid-template-rows:auto !important;}
-  html.svcTasks body:not([data-bp="xs"]) #dOver .dvTop > div:not(:has(> .dvLead:not([data-n="0"]))) > .ovInsCard.ovInsHero + .ovTasks{margin-top:16px;}   /* no lead row: the column is a flex with no gap, so the card keeps the grid's 16 to the Insights card under it ("Need gap between card") */   /* the desk's column: the card as tall as its rows */
+  html.svcTasks body:not([data-bp="xs"]) #dOver .dvTop > div:not(:has(> .dvLead:not([data-n="0"]))) > .ovInsCard.ovInsHero + .ovTasks{margin-top:16px;}
+  body:not([data-bp="xs"]) #dOver .dvTop > div:not(:has(> .dvLead:not([data-n="0"]))) > :is(.ovSvc, .ovTasks, .ovInsCard.ovInsHero, .ovInsEmptyCard) ~ :is(.ovSvc, .ovTasks, .ovInsCard.ovInsHero, .ovInsEmptyCard){margin-top:16px;}   /* the Bento's modules, in any order, the grid's 16 between them as between the primary card and them ("Bento should have the same grid gap"); EvBento puts the shown ones first */   /* no lead row: the column is a flex with no gap, so the card keeps the grid's 16 to the Insights card under it ("Need gap between card") */   /* the desk's column: the card as tall as its rows */
   /* Tweaks -> Bento: a slot's select and its two moves; the services row hidden when no slot holds it (html.bmNoSvc), shown beside Tasks when both are picked (html.bmSvcToo) */
   .tkBmSec{margin:10px 0 2px;padding-top:10px;border-top:1px solid rgba(255,255,255,.08);font-size:11px;line-height:14px;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.5);}   /* Bento: Primary, then a Secondary group of two ("Module 1 --> Primary; Module 2 and 3 in a group 'Secondary'") */
   .tkBmSec0{margin-top:2px;padding-top:0;border-top:0;} .tkBmLock{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:rgba(255,255,255,.62);} .tkBmLock svg{width:14px;height:14px;flex:none;}   /* the Primary: the primary card, locked */
@@ -11175,7 +11176,8 @@
   #dOver .ovInsEmpty{display:none;} html.insEmpty #dOver .ovInsEmpty{display:flex;flex-direction:column;box-sizing:border-box;min-width:0;padding:20px 20px 8px;border-radius:22px;background:rgba(255,255,255,.04);color:#ececec;}
   html.insEmpty body.light #dOver .ovInsEmpty{background:rgba(46,31,26,.055);color:#000;}
   html.insEmpty #dOver :is(.ovcar, .ovcdots){display:none !important;} html.insEmpty #dOver .dvSecIns :is(.see, .nav){display:none !important;}
-  html.insHero.insEmpty #dOver .ovInsCard.ovInsHero{display:none;} html.insHero.insEmpty #dOver > .dvSecIns{display:flex !important;}
+  html.insHero.insEmpty #dOver .ovInsCard.ovInsHero{display:none;}
+  #dOver .ovInsEmptyCard{display:none;} html.insHero.insEmpty #dOver .ovInsEmptyCard{display:flex;flex-direction:column;box-sizing:border-box;min-width:0;padding:20px 20px 8px;border-radius:22px;background:rgba(255,255,255,.04);color:#ececec;} html.insHero.insEmpty body.light #dOver .ovInsEmptyCard{background:rgba(46,31,26,.055);color:#000;} body:not([data-bp="xs"]) #dOver .ovInsEmptyCard{border-radius:20px;padding:20px 24px 8px;} html.insHero.insEmpty body[data-bp="xs"] #dOver .ovInsEmptyCard{margin:0 0 12px;}   /* Has data: No with the Insights a Bento module: the activation list in its own card there (was: the section back) */
   html.insHero body:not([data-bp="xs"]) #dOver .dvTop .ovInsCard.ovInsHero{flex:1 1 auto;height:auto;min-height:200px;margin:0;}
   html.insHero body:not([data-bp="xs"]) #dOver .dvTop .ovSvc + .ovInsCard.ovInsHero{margin-top:0;min-height:176px;}
   html.insHero:not(.svcTasks) body:not([data-bp="xs"]) #dOver .dvTop > div:not(:has(> .dvLead:not([data-n="0"]))) > .ovSvc + .ovInsCard.ovInsHero{margin-top:16px;}   /* no lead row: a flex column with no gap, so the 16 is the card's own ("Need gap between card") */   /* under the Services tiles, the grid's own gap between, the tiles' 16 ("Make sure grid gap is the same (above insight seem to big)": it had 24 more) */
@@ -14463,6 +14465,7 @@
             <option value="3" selected>On</option>
           </select>
         </div>
+        <div class="tkRow"><span class="lbl">Dedicated section</span><select id="stInsDed" class="tkSegSel" aria-label="Insights in a section of their own under the Bento (On), or a module in the Bento (Off)"><option value="on" selected>On</option><option value="off">Off</option></select></div>   <!-- "Dedicated section ON: a section with its title below the bento, Insights can't be a Bento module; OFF: Insights can be a Bento secondary module" -->
         <div class="tkRow" id="tkInsPosRow">   <!-- where the insights sit: their own full section, or one card up top in the services' place -- words left, the visual right, dots under ("remove Content and replace this tweak in Insights: Position: Full section, Hero (above Coming up instead of service)"; "a select: Section, like the Recent insights we have; Hero: the whole Recent insights section disappears, the insights come above the appointment card instead of the service card") -->
           <span class="lbl">Format</span>   <!-- ("the tweak Position, you can rename by Format") -->
           <select id="stInsPos" aria-label="The insights' format on the Overview">
@@ -44280,13 +44283,29 @@ hairline({
       const paint = () => { if (!R.classList.contains('insEmpty') || !window._hpCard || !window._hpIns) return; em.innerHTML = window._hpCard.insList(window._hpIns.now()); };
       em.addEventListener('click', e => { if (window._hpIns) window._hpIns.act(e); });
       const put = () => { R.classList.toggle('insMini', !!pos && pos.value === 'mini'); R.classList.toggle('insEmpty', !!dat && dat.value === 'no'); paint(); };
-      if (pos) pos.addEventListener('change', put); if (dat) dat.addEventListener('change', put); document.addEventListener('everlab:insPaint', paint); put(); } }
+      /* the empty state as a Bento module ("Has data will show the insight items inside OR the empty state"): the same list in a card of its own, standing in for the Insights card while it has nothing */
+      const ec = document.createElement('div'); ec.className = 'ovInsEmptyCard hpOvInsList'; (over.querySelector('.ovInsCard.ovInsHero') || rail).after(ec); ec.addEventListener('click', e => { if (window._hpIns) window._hpIns.act(e); });
+      const paint2 = () => { if (!R.classList.contains('insEmpty') || !window._hpCard || !window._hpIns) return; ec.innerHTML = window._hpCard.insList(window._hpIns.now()); };
+      document.addEventListener('everlab:insPaint', paint2); if (dat) dat.addEventListener('change', paint2); if (pos) pos.addEventListener('change', paint2);
+      if (pos) pos.addEventListener('change', put); if (dat) dat.addEventListener('change', put); document.addEventListener('everlab:insPaint', paint); put(); paint2();
+      /* Insights -> Dedicated section: On, the Insights a section with its title under the Bento (Format: Section or Mini cards), not a Bento module; Off, a Bento module (Format: the Hero ones) */
+      const sec = document.getElementById('stInsDed');
+      if (sec && pos){ let busy = false;
+        const isHero = () => /^hero/.test(pos.value);
+        const opts = () => { const on = sec.value === 'on'; [...pos.options].forEach(o => { o.hidden = on === /^hero/.test(o.value); });
+          document.querySelectorAll('#stBm1 option[value="ins"], #stBm2 option[value="ins"]').forEach(o => { o.disabled = on; o.hidden = on; }); };
+        const fromSec = () => { if (busy) return; busy = true; const on = sec.value === 'on';
+          if (on && isHero()){ pos.dataset.secHero = pos.value; pos.value = 'full'; pos.dispatchEvent(new Event('change', { bubbles: true })); }
+          else if (!on && !isHero()){ pos.dataset.secSec = pos.value; pos.value = pos.dataset.secHero || 'hero'; pos.dispatchEvent(new Event('change', { bubbles: true })); }
+          opts(); busy = false; };
+        const fromPos = () => { if (busy) return; const v = isHero() ? 'off' : 'on'; if (sec.value !== v){ sec.value = v; } opts(); };   /* the Format (or the Bento) moved it: the switch follows */
+        sec.addEventListener('change', fromSec); pos.addEventListener('change', fromPos); fromPos(); } } }
   /* Tweaks -> Bento (window.EvBento): the secondary modules beside the primary card, each slot Insights (the Insights hero card), Tasks (the Tasks card), Services (the services row) or None, in the slots' order.
      It drives the switches that already show them (Services -> Content: Tasks or Services; Insights -> Format: a Hero or Section) and orders the visible cards among the places they hold (the hidden ones stay put, so the page's gaps hold);
      the old keepers (Tasks after the Insights card, the Insights card after the services) defer to it. Changing those switches by hand updates the slots */
   { const over = document.getElementById('dOver'), R = document.documentElement, SEL = [1, 2].map(i => document.getElementById('stBm' + i)), svcC = document.getElementById('stSvcCnt'), posC = document.getElementById('stInsPos');
     if (over && SEL.every(Boolean)){
-      const KS = ['ins', 'tasks', 'svc'], els = () => ({ svc: over.querySelector('.ovSvc'), tasks: over.querySelector('.ovTasks'), ins: over.querySelector('.ovInsCard.ovInsHero') });
+      const KS = ['ins', 'tasks', 'svc'], els = () => ({ svc: over.querySelector('.ovSvc'), tasks: over.querySelector('.ovTasks'), ins: R.classList.contains('insEmpty') ? over.querySelector('.ovInsEmptyCard') || over.querySelector('.ovInsCard.ovInsHero') : over.querySelector('.ovInsCard.ovInsHero') });   /* no data: the empty state's card in the Insights' slot */
       const slots = () => SEL.map(s => s.value), shown = k => slots().indexOf(k) >= 0;
       const vis = e => !!e && getComputedStyle(e).display !== 'none';
       /* one group where the services row stands (its place in the page's order): the shown modules in the slots' order, the hidden ones after them; moved only when not already so (the observers that call it see no change then) */
