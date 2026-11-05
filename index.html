@@ -11157,6 +11157,19 @@
   html.svcTasks body:not([data-bp="xs"]) #dOver .dvTop > div:has(> .ovTasks){grid-template-rows:auto !important;}
   html.svcTasks body:not([data-bp="xs"]) #dOver .dvTop > div:not(:has(> .dvLead:not([data-n="0"]))) > .ovInsCard.ovInsHero + .ovTasks{margin-top:16px;}   /* no lead row: the column is a flex with no gap, so the card keeps the grid's 16 to the Insights card under it ("Need gap between card") */   /* the desk's column: the card as tall as its rows */
   .ovInsCard.ovInsHero{display:none;} html.insHero #dOver .ovInsCard.ovInsHero{display:flex;} html.insHero #dOver > :is(.dvSecIns, .dvRail, .railNav, .dvDots){display:none !important;}   /* the Services tiles stay: their own section, not the insights' ("this is not related to Insights; treat services separately") */ html.insHero #dOver:has(.dvSecIns.ovOff) .ovInsCard.ovInsHero{display:none;}
+  /* Insights -> Format -> Mini cards (html.insMini; "two cards plus 32px of the third"): on the phone two cards and 32 of the next in view (XS: the rail 16 in, 12 apart; S: 16 apart), 240 wide on the desk; each card its visual centred on top, its words centred, the button across its foot; no Explore label, no source line ("focus more on the text and the CTA") */
+  html.insMini #dOver .ovcard.ovExp{flex:0 0 240px;align-items:center;gap:10px;padding:20px 16px 16px;text-align:center;scroll-snap-align:start;opacity:1;}
+  html.insMini body[data-bp="xs"] #dOver .ovcard.ovExp{flex-basis:calc((100% - 40px) / 2);padding:18px 14px 14px;} html.insMini body[data-bp="s"] #dOver .ovcard.ovExp{flex-basis:calc((100% - 64px) / 2);}
+  html.insMini body[data-bp="xs"] #dOver .ovcar{scroll-padding-inline:16px;}
+  html.insMini #dOver .ovcard.ovExp :is(.oclab, .ocBy){display:none;}
+  html.insMini #dOver .ovcard.ovExp .ovIllWrap{order:-1;display:flex;justify-content:center;align-self:stretch;height:96px;margin:0 0 4px;}
+  html.insMini #dOver .ovcard.ovExp h4{padding-right:0;font-size:14px;line-height:1.3;text-align:center;text-wrap:balance;}
+  html.insMini #dOver .ovcard.ovExp .ovbtn{align-self:stretch;margin-top:auto;padding:10px 0;font-size:13px;text-align:center;}
+  /* Insights -> Has data: No (html.insEmpty): the three activation tasks in the rail's place, on the Tasks card's ground; the section's See all and arrows gone with the rail; in a Hero format, the section back in place of the hero card */
+  #dOver .ovInsEmpty{display:none;} html.insEmpty #dOver .ovInsEmpty{display:flex;flex-direction:column;box-sizing:border-box;min-width:0;padding:20px 20px 8px;border-radius:22px;background:rgba(255,255,255,.04);color:#ececec;}
+  html.insEmpty body.light #dOver .ovInsEmpty{background:rgba(46,31,26,.055);color:#000;}
+  html.insEmpty #dOver :is(.ovcar, .ovcdots){display:none !important;} html.insEmpty #dOver .dvSecIns :is(.see, .nav){display:none !important;}
+  html.insHero.insEmpty #dOver .ovInsCard.ovInsHero{display:none;} html.insHero.insEmpty #dOver > .dvSecIns{display:flex !important;}
   html.insHero body:not([data-bp="xs"]) #dOver .dvTop .ovInsCard.ovInsHero{flex:1 1 auto;height:auto;min-height:200px;margin:0;}
   html.insHero body:not([data-bp="xs"]) #dOver .dvTop .ovSvc + .ovInsCard.ovInsHero{margin-top:0;min-height:176px;}
   html.insHero:not(.svcTasks) body:not([data-bp="xs"]) #dOver .dvTop > div:not(:has(> .dvLead:not([data-n="0"]))) > .ovSvc + .ovInsCard.ovInsHero{margin-top:16px;}   /* no lead row: a flex column with no gap, so the 16 is the card's own ("Need gap between card") */   /* under the Services tiles, the grid's own gap between, the tiles' 16 ("Make sure grid gap is the same (above insight seem to big)": it had 24 more) */
@@ -14435,14 +14448,16 @@
           </select>
         </div>
         <div class="tkRow" id="tkInsPosRow">   <!-- where the insights sit: their own full section, or one card up top in the services' place -- words left, the visual right, dots under ("remove Content and replace this tweak in Insights: Position: Full section, Hero (above Coming up instead of service)"; "a select: Section, like the Recent insights we have; Hero: the whole Recent insights section disappears, the insights come above the appointment card instead of the service card") -->
-          <span class="lbl">Position</span>
-          <select id="stInsPos" aria-label="Where the insights sit on the Overview">
+          <span class="lbl">Format</span>   <!-- ("the tweak Position, you can rename by Format") -->
+          <select id="stInsPos" aria-label="The insights' format on the Overview">
             <option value="full" selected>Section</option>   <!-- the Recent insights section, as it is -->
+            <option value="mini">Section · Mini cards</option>   <!-- the section's rail, two cards and 32 of the third on the phone; each card its visual, its words and its button, centred, no Explore label (html.insMini) -->
             <option value="hero">Hero · Charts + insights</option>   <!-- the section gone; the insights one card above the appointment card, in the services' place: the readings with their charts, then the Recent insights ("Merge these 2") -->
             <option value="heroChart">Hero · Charts</option>   <!-- the readings alone, each its chart (ApoB, Vitamin D, Resting heart rate: "Add this in the Insight Tweak group as an option") -->
             <option value="heroIns">Hero · Insights</option>   <!-- the Recent insights alone, each its render -->
           </select>
         </div>
+        <div class="tkRow"><span class="lbl">Has data</span><select id="stInsData" class="tkSegSel" aria-label="Insights: the member's insights, or none yet (the three activation tasks in their place)"><option value="yes" selected>Yes</option><option value="no">No</option></select></div>   <!-- "an empty state for insights: a tweak Has data yes / no; if no, the activation steps inside: three steps people need to do" (html.insEmpty) -->
         </div>
         <div class="tkGroup" data-pages="ar">
         <div class="tkSub">General</div>   <!-- the report's own ("async report renamed General"), first, over Intro -->
@@ -39628,7 +39643,7 @@ hairline({
     let cardErr = false;
     let ovStep2 = 0; const step2 = () => { if (document.body.classList.contains('hpOn') || store.summary().n > 0 || ovStep2) return; ovStep2 = setTimeout(() => { ovStep2 = 0; if (!document.body.classList.contains('hpOn') && store.summary().n === 0) store.preset('one'); }, 0); };   /* the Overview never on step 1: step 1 is done in the onboarding, the card on step 2 whatever set it back (a saved setup, the reveal's fresh profile, Tweaks) ("should always have step 2 of the health profile, never step 1 on overview") */
     new MutationObserver(() => { if (!document.body.classList.contains('hpOn')) step2(); }).observe(document.body, { attributes: true, attributeFilter: ['class'] });   // the profile closed: back on step 2 if it was left on step 1
-    const paintCard = back => { step2(); try { paintCard0(back); cardErr = false; } catch (e){ cardErr = true; console.warn('Health profile card:', e); const c = document.querySelector('#dOver .hpOvCard'), hero = document.querySelector('#dOver > .dvTop > .ovhero'); if (c && !c.childElementCount){ c.classList.add('ovOff'); if (hero) hero.classList.remove('hpRep'); } } insTk(); };   /* a card that cannot be drawn leaves Next step in its place, never an empty slot ("primary card is gone on XS") */   /* and the first insights' task rows in Tweaks with it */
+    const paintCard = back => { step2(); try { paintCard0(back); cardErr = false; } catch (e){ cardErr = true; console.warn('Health profile card:', e); const c = document.querySelector('#dOver .hpOvCard'), hero = document.querySelector('#dOver > .dvTop > .ovhero'); if (c && !c.childElementCount){ c.classList.add('ovOff'); if (hero) hero.classList.remove('hpRep'); } } insTk(); document.dispatchEvent(new Event('everlab:insPaint')); };   /* a card that cannot be drawn leaves Next step in its place, never an empty slot ("primary card is gone on XS") */   /* and the first insights' task rows in Tweaks with it */
     /* Records processing (Tweaks -> Primary card): the past results being collected, an outlined card of its own under the primary card ("if records being
        processed, the card stacked with the primary on the left side, below it, hugging its content; the primary fills the height"): on the desk the left
        column the two, the services spanning both rows; one column, simply under it. At its right an 8 px dot, particles drawn into it ("to feel it's processing") */
@@ -39690,6 +39705,7 @@ hairline({
       if (k === 'hp'){ const sm = store.summary(), nx = ['wear', 'past', 'you'].find(a => sm.st[a] !== 'done'); open(nx ? { area: nx, dism: true, ov: true } : { dism: true, ov: true }); }
       else if (k === 'past'){ insBack = 'past'; openPast(0, true); }
       else if (k === 'data' && window._acc) window._acc.open({ tab: 'health', sec: 'devices' }); };
+    window._hpIns = { now: insNow, act: insAct };   /* the three tasks' state and their press, for the Insights section's empty state (the same rows, the same flows) */
     document.addEventListener('everlab:dev', e => { if (ins && e.detail && e.detail.on && INS.data !== 'conn'){ INS.data = 'conn'; paintCard(); stSync(); } });   // a device connected in My account: Health data connected
     const setPlan = v => { if (plan === v) return; plan = v; paintCard(); };
     const setGone = v => { if (gone === v) return; gone = v; window._hpGone = v;
@@ -44195,6 +44211,14 @@ hairline({
       const pos = document.getElementById('stInsPos');
       const ap = () => { const on = !!pos && /^hero/.test(pos.value) && !document.body.classList.contains('hdrV5'); if (on) fill(); if (document.documentElement.classList.contains('insHero') === on) return; document.documentElement.classList.toggle('insHero', on); if (on && ic._ovIns) requestAnimationFrame(() => ic._ovIns.go(ic._ovIns.at())); };   // the Live version: always the section
       if (pos){ ap(); pos.addEventListener('change', ap); new MutationObserver(ap).observe(document.body, { attributes: true, attributeFilter: ['class'] }); } } }
+  /* Insights -> Format: Mini cards (html.insMini), and Has data: No (html.insEmpty, "an empty state for insights ... the activation steps inside: three steps people need to do"):
+     no insights yet, the section holds the First insights' three tasks instead of its rail, drawn by the same master as the primary card's To-do list (window._hpCard.insList) with the same state and presses (window._hpIns), redrawn as the card is */
+  { const over = document.getElementById('dOver'), R = document.documentElement, pos = document.getElementById('stInsPos'), dat = document.getElementById('stInsData'), rail = over && over.querySelector('.ovcar');
+    if (over && rail){ const em = document.createElement('div'); em.className = 'ovInsEmpty hpOvInsList'; rail.before(em);
+      const paint = () => { if (!R.classList.contains('insEmpty') || !window._hpCard || !window._hpIns) return; em.innerHTML = window._hpCard.insList(window._hpIns.now()); };
+      em.addEventListener('click', e => { if (window._hpIns) window._hpIns.act(e); });
+      const put = () => { R.classList.toggle('insMini', !!pos && pos.value === 'mini'); R.classList.toggle('insEmpty', !!dat && dat.value === 'no'); paint(); };
+      if (pos) pos.addEventListener('change', put); if (dat) dat.addEventListener('change', put); document.addEventListener('everlab:insPaint', paint); put(); } }
   // hover: cell and its organ fade together, .5 resting -> 1 hovered
   const gHov = new Array(PILL.length).fill(0);
   const gA = new Array(PILL.length).fill(0.32);
@@ -47341,12 +47365,12 @@ hairline({
       ins: ['Insights', '.ovInsCard, .ovsecIns, .ovcar, .ovcdots'], prof: ['Health profile', '.ovsecProf, .ovProf'], plan: ['Action plan', '.ovsecPlan, .ovplan, .ovtl'], later: ['Later card', '.ovsecAvail, .ovDef'] };
     const host = () => { const c = document.querySelector('#phone2 .ovcar'); return c && c.parentElement; };
     const inp = document.getElementById('stOvOrder'), list = document.getElementById('tkOvOrd'), offI = document.getElementById('stOvOff');
-    const DSEC = { primary: '.hpOvCard, .ovhero', svc: '.ovSvc, .dvTop > div:not(.ovhero):not(.ovBk):not(.hpOvCard):not(.hpRecOut)', hero: '.ovhero', row2: '.ovrow2', rec: '.hpRecOut', cc: '.ovCcCard', ins: '.dvSecIns, .dvRail, .railNav, .dvDots', prof: '.ovsecProf, .ovProf, .dvSecProf, .dvProf, .hpOvCard', plan: '.dvSecPlan, .dvPlanChips, .dvPlanGrid, .dvPlanList, .dvPlanTl', later: '.dvSecAvail, .dvDef' };   // the same sections on the Overview itself (desk to XS)
+    const DSEC = { primary: '.hpOvCard, .ovhero', svc: '.ovSvc, .dvTop > div:not(.ovhero):not(.ovBk):not(.hpOvCard):not(.hpRecOut)', hero: '.ovhero', row2: '.ovrow2', rec: '.hpRecOut', cc: '.ovCcCard', ins: '.dvSecIns, .ovInsEmpty, .dvRail, .railNav, .dvDots', prof: '.ovsecProf, .ovProf, .dvSecProf, .dvProf, .hpOvCard', plan: '.dvSecPlan, .dvPlanChips, .dvPlanGrid, .dvPlanList, .dvPlanTl', later: '.dvSecAvail, .dvDef' };   // the same sections on the Overview itself (desk to XS)
     const pkOf = () => window._hpGone ? 'hero' : 'prof';   // the Primary card's section: the profile's card, or Next step once it is put away
     const offs = () => { const lv = new Set([...document.querySelectorAll('.tkGroup[data-sec]')].map(g => g.dataset.sec)); return new Set((offI && offI.value || '').split(',').filter(k => k && (!lv.size || lv.has(k)))); };   /* only the sections Tweaks still has a switch for: one saved from a retired switch (the old Health profile section) no longer hides the profile's card with no way back ("health profile gone?") */
     // the order on the Overview itself ("changing the order must change also on the screen"): its sections moved as units in the list's order; on the desk Services and Next step share one row (.dvTop), placed where the first of the two stands, Next step left and Services right as ever
     const applyD = () => { const pl = document.querySelector('#dOver .dvSecPlan'); if (!pl) return; const m = pl.parentElement, top = m.querySelector(':scope > .dvTop'), inCol = !!(top && top.querySelector('.ovSvc')), q = sl => [...m.querySelectorAll(':scope > :is(' + sl + ')')];
-      const U = { svc: inCol ? [top] : q('.ovSvc'), hero: top ? [top] : [], ins: q('.dvSecIns, .dvRail, .railNav, .dvDots'), prof: top && top.querySelector(':scope > .hpOvCard') ? [top] : q('.hpOvCard'), cc: q('.ovCcCard'), plan: q('.dvSecPlan, .dvPlanChips, .dvPlanGrid, .dvPlanList, .dvPlanTl'), later: q('.dvSecAvail, .dvDef') }, o = order(), seen = new Set(), seq = [];
+      const U = { svc: inCol ? [top] : q('.ovSvc'), hero: top ? [top] : [], ins: q('.dvSecIns, .ovInsEmpty, .dvRail, .railNav, .dvDots'), prof: top && top.querySelector(':scope > .hpOvCard') ? [top] : q('.hpOvCard'), cc: q('.ovCcCard'), plan: q('.dvSecPlan, .dvPlanChips, .dvPlanGrid, .dvPlanList, .dvPlanTl'), later: q('.dvSecAvail, .dvDef') }, o = order(), seen = new Set(), seq = [];
       { const rc = m.querySelector('.hpRecOut'), sk = o.filter(k => k === 'rec' ? !!rc : (U[k] || []).length), ri = sk.indexOf('rec'), free = !!rc && ri >= 0 && !(ri > 0 && top && (U[sk[ri - 1]] || []).includes(top));
         window._recFree = free; U.rec = free ? [rc] : []; if (window._ovLeadOn && window._ovLeadOn()){ const ld = m.querySelector(':scope > .dvLead'); U.rec = ld ? [ld] : []; U.cc = ld ? [ld] : []; }   /* the XS pair: both keys the one group, placed at the first of them */   /* the Past result card: in the top row under the primary card while it follows it in the order; anywhere else, a section of its own ("past result card also needs to be able to reorder") */
         if (rc && window._recPlace && !(window._ovLeadOn && window._ovLeadOn()) && (free ? rc.parentElement === top : rc.parentElement !== top)) window._recPlace(); }
