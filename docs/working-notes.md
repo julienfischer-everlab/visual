@@ -20931,3 +20931,5 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - Design system → Navigation → Iconography → Lucide icons: one tile per Lucide name the app draws (data-lc), from the pages' own markup.
 - Desk sidebar: a small light "WIP" badge on Services (CSS `.nv.nvSvc::after`, so the label's text, which the sidebar's code reads, stays "Services"); hidden when the rail retracts.
 - Note from Steven: "MBBS (Hons), DCH, FRACGP" under "Steven" at the sign-off (`.hpLtrCred`, 56%).
+- Async report: a new step after the intro, "In your debrief" (DBF = 1; the insights from I0 = 2): three rows on navy discs (What we found, Peace of mind, Want to talk through your results?), the title on the left. The step navigator beside the phone and the Flow panel list it; where()/at() know it ('d').
+- Send a gift, Their note: the card hugs its content (86:52 at the least, grows with the note and the signature; the logo no longer sits on the line). The fit goes by lines alone there; the envelope's copy keeps its frame.

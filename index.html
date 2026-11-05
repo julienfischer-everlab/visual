@@ -16970,6 +16970,10 @@
 .arSheet .arRvBg { position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; opacity: 0; transition: opacity .64s ease; background: #1a0d0b; }
 .arSheet .arRvBg img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 18% 50%; display: block; }   /* its red side in the frame, the dark falling away to the foot */
 .arSheet .arRvBg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, oklch(0% 0 0 / .32) 0, oklch(0% 0 0 / .12) 34%, oklch(0% 0 0 / .28) 62%, oklch(0% 0 0 / .62) 100%); }   /* the head's words and the card read on it */
+.arSheet.arSheet .arDbfHead.arDbfHead, .arSheet.arSheet .arDbfHead.arDbfHead > * { text-align: left; align-items: flex-start; align-self: stretch; justify-content: flex-start; }   /* the title on the left, as the capture's */ .arSheet .arDbfL { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.arSheet .arDbfR { display: flex; align-items: flex-start; gap: 20px; padding: 24px 0; border-top: 1px solid color-mix(in srgb, var(--ar-ink) 10%, transparent); } .arSheet .arDbfR:first-child { border-top: 0; padding-top: 8px; }
+.arSheet .arDbfI { flex: none; display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; background: #13264a; color: #c7d4ee; } .arSheet:not(.arDark) .arDbfI { background: #dfe7f6; color: #1d3561; }
+.arSheet .arDbfT { display: flex; flex-direction: column; gap: 6px; min-width: 0; padding-top: 2px; } .arSheet .arDbfT b { font-size: 18px; line-height: 24px; font-weight: 500; color: var(--ar-ink); } .arSheet .arDbfT span { font-size: 16px; line-height: 23px; color: color-mix(in srgb, var(--ar-ink) 56%, transparent); }   /* In your debrief (step 1): the rows from the capture, a navy disc for each icon */
 .arSheet.arIsIntro .arRvBg { opacity: 1; } .arSheet.arIsIntro .arRvBg img { animation: arRvZoom 10s cubic-bezier(.2, .6, .2, 1) both; }   /* the picture settling as the words come */
 @keyframes arRvZoom { from { transform: scale(1.12); } to { transform: scale(1); } }
 .arSheet.arSheet.arIsIntro :is(.arHead, .arBody, .arFoot) { background: transparent; } .arSheet.arIsIntro :is(.arGround, .arFootGround) { display: none; }
@@ -18214,7 +18218,7 @@ window.EvSvcImg = { concierge: 'assets/overview/svc-concierge.webp', treat: 'ass
       onClose: typeof opts.onClose === 'function' ? opts.onClose : null
     };
     var uid = ++mountSeq, evSeq = 0, still = false;   // still: a remount back on its screen, its typing written at once
-    var REST = NEWI.length + 1, REC = REST + 1, NEXT = REC + 1, STEP_COUNT = NEXT + 1;   // the welcome, the insights, everything else, here's what we recommend, that's your debrief (9) (the insights' list removed: "remove this step and delete")
+    var DBF = 1, I0 = DBF + 1, REST = NEWI.length + I0, REC = REST + 1, NEXT = REC + 1, STEP_COUNT = NEXT + 1;   /* DBF: In your debrief, after the intro ("after the intro add a step: what the user will see"); the insights from I0 */   // the welcome, the insights, everything else, here's what we recommend, that's your debrief (9) (the insights' list removed: "remove this step and delete")
     var step = 0;
     var alive = true;
     var timers = [], figs = [];   // figs: the Hairline figures drawn on the step, let go with it
@@ -19066,6 +19070,16 @@ window.EvSvcImg = { concierge: 'assets/overview/svc-concierge.webp', treat: 'ass
         }))];
       sheetOpen(c.t, nRec(rcCount(c)), c.t, ' arRcSheet', rows, from, false, true);   // as tall as its content
     }
+    /* In your debrief: what the member will see, three rows (a disc with its icon, a title, a line), between the intro and the first insight */
+    function buildDbf() {
+      var title = h('h2', { class: 'arH700', 'aria-label': 'In your debrief' }, 'In your debrief'), hd = h('div', { class: 'arIntroBlock arRsHead arDbfHead' }, title);
+      var R = [[['M3 3v16a2 2 0 0 0 2 2h16', 'm19 9-5 5-4-4-3 3'], 'What we found', 'The most important findings from your results, explained in context.'],
+        [['M12 2a10 10 0 1 0 0 20 10 10 0 1 0 0-20Z', 'M8 14s1.5 2 4 2 4-2 4-2', 'M9 9h.01', 'M15 9h.01'], 'Peace of mind', 'Our clinical team checks every result and would have contacted you already if anything was critical. Rest assured, red or yellow markers here aren\u2019t urgent.'],
+        [['M14 9a2 2 0 0 1-2 2H6l-4 4V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2z', 'M18 9h2a2 2 0 0 1 2 2v11l-4-4h-6a2 2 0 0 1-2-2v-1'], 'Want to talk through your results?', 'You can message your clinical team or book a consult at the end.']];
+      var rows = R.map(function (r) { return h('li', { class: 'arDbfR' }, h('span', { class: 'arDbfI', 'aria-hidden': 'true' }, strokeIcon(20, 24, 1.75, r[0])), h('span', { class: 'arDbfT' }, h('b', { text: r[1] }), h('span', { text: r[2] }))); });
+      var list = h('ul', { class: 'arDbfL' }, rows);
+      return enter(h('div', { class: 'arStack arGap24 arDbfStack' }, hd, list), hd, title, [list]);
+    }
     function buildRecs() {
       if (RPLAN) {   /* the plan as a list ("what we recommend should be just a list"): its eyebrow, then each line, New ones flagged, the later ones quieter */
         var pt = h('h2', { class: 'arH700', 'aria-label': 'Here’s what we recommend' }, 'Here’s what', h('br'), 'we recommend'), pl = h('p', { class: 'arPara arRcLede', text: nRec(RPLAN.items.length) });
@@ -19260,7 +19274,8 @@ window.EvSvcImg = { concierge: 'assets/overview/svc-concierge.webp', treat: 'ass
 
     function build(st) {
       if (st === 0) return buildWelcome();
-      if (st >= 1 && st <= NEWI.length) return buildLife(NEWI[st - 1]);
+      if (st === DBF) return buildDbf();
+      if (st >= I0 && st < I0 + NEWI.length) return buildLife(NEWI[st - I0]);
       if (st === REST) return buildRest();
       if (st === REC) return buildRecs();
       return buildNext();
@@ -19357,14 +19372,14 @@ window.EvSvcImg = { concierge: 'assets/overview/svc-concierge.webp', treat: 'ass
     return {
       el: root,
       go: go,
-      steps: function () { return { n: NEWI.length, rest: REST, rec: REC, next: NEXT, at: step, names: NEWI.map(function (L) { return L.short || L.headline; }), report: REPORT.name }; },   // names: each insight's, for the Flow panel   // for the step navigator beside the phone
+      steps: function () { return { n: NEWI.length, dbf: DBF, i0: I0, rest: REST, rec: REC, next: NEXT, at: step, names: NEWI.map(function (L) { return L.short || L.headline; }), report: REPORT.name }; },   // names: each insight's, for the Flow panel   // for the step navigator beside the phone
       reset: function () { go(0, true); },
       /* where it stands, and back there in a new mount ("when I change a tweak don't reload the experience from the beginning, stay on the current screen"): the step by what it is (the list, the nth insight...), so the list on or off still lands on the same screen; its scroll kept when the screen is the same, and its entrance not played again */
-      where: function () { return { t: step === 0 ? 'w' : step <= NEWI.length ? 'i' + (step - 1) : step === REST ? 'r' : step === REC ? 'c' : 'n', y: body.scrollTop }; },
+      where: function () { return { t: step === 0 ? 'w' : step === DBF ? 'd' : step < I0 + NEWI.length ? 'i' + (step - I0) : step === REST ? 'r' : step === REC ? 'c' : 'n', y: body.scrollTop }; },
       at: function (w, keepY) {
         if (!w || !alive) return;
         var t = w.t, i = t.charAt(0) === 'i' ? Math.min(NEWI.length - 1, +t.slice(1) || 0) : 0;
-        still = true; go(t === 'w' ? 0 : t === 'l' ? 1 : t === 'r' ? REST : t === 'c' ? REC : t === 'n' ? NEXT : 1 + i, true); still = false;   /* ('l', the list a remount from an older page was on: the first insight) */
+        still = true; go(t === 'w' ? 0 : t === 'd' ? DBF : t === 'l' ? I0 : t === 'r' ? REST : t === 'c' ? REC : t === 'n' ? NEXT : I0 + i, true); still = false;   /* ('l', the list a remount from an older page was on: the first insight) */
         try { root.getAnimations({ subtree: true }).forEach(function (a) { var e = a.effect && a.effect.getComputedTiming && a.effect.getComputedTiming(); if (e && isFinite(e.endTime)) a.finish(); }); } catch (e) {}
         if (keepY && t !== 'l') body.scrollTop = w.y;
       },
@@ -20506,6 +20521,7 @@ html.gfPlLeft .arSheet.hpSheet .hpPlTab { align-items: flex-start; text-align: l
 .arSheet.hpSheet.hpWide .hpScr > .hpGfNoteFs { margin-block: auto; }   /* the desk: Their note's card (and its control) in the middle of the screen ("On desktop, you can centre the card in the middle of the screen"); auto margins, so a short window still scrolls from the top */
 .arSheet.hpSheet.hpWide .hpGfNcK { width: 4.72cqw; height: 4.72cqw; }   /* the desk: the mark 16 smaller ("the logo, we can reduce by 16px": 41 to 25 on the 527 card; in cqw, so the envelope's copy of the card keeps the same look) */
 .arSheet.hpSheet.hpWide .hpGfNcI { padding-top: 9.5cqw; padding-bottom: 9.5cqw; } .arSheet.hpSheet.hpWide .hpGfNcSlot { margin-bottom: 0; }   /* the desk: the card's content centred on its height ("desktop centered vertically on the card"), the same room above and below; the mark at the top left over it as before */
+.arSheet.hpSheet .hpGfNc:not(.hpGfEvCd > .hpGfNc) { aspect-ratio: auto; } .arSheet.hpSheet .hpGfNc:not(.hpGfEvCd > .hpGfNc) > .hpGfNcI { position: relative; inset: auto; min-height: 60.47cqw; }   /* Their note's card hugs its content ("Card hug content!"): it grows with the note and the signature, never cuts them; 86:52 at the least. The envelope's copy keeps its frame */
 .arSheet.hpSheet .hpGfNc .hpGfCnt { position: absolute; right: 4.43cqw; bottom: 3.32cqw; font-size: 3.6cqw; line-height: 1.3; color: rgba(243, 237, 230, .48); } .arSheet.hpSheet .hpGfNc .hpGfCnt.hpGfCntHi { color: var(--ar-out-fg); }
 /* the note typed in the card: its text the card's own (Tobias, centred), no box; the caret and the placeholder in the card's ink; the card's edge lit while writing */
 .arSheet.hpSheet .hpGfPvEd { cursor: text; } .arSheet.hpSheet .hpGfPvOff { cursor: default; }
@@ -22992,7 +23008,7 @@ window.EvConsent = (function () {
     var GF_NC_STEP = [GF_NC_MAX, 8, 6.65];
     var gfNcFit = function (nc) {
       var I = nc && nc.firstChild, N = I && I.querySelector('.hpGfNcN'); if (!N || !I.clientHeight) return;
-      var cs = getComputedStyle(I), room = I.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom) + 1;
+      var cs = getComputedStyle(I), room = cs.position === 'absolute' ? I.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom) + 1 : Infinity;   /* the step's card hugs its content ("Card hug content"): its lines alone set the size; the envelope's (a fixed frame) still by its room */
       var col = [].filter.call(I.children, function (c) { return c.offsetParent && getComputedStyle(c).position !== 'absolute'; }); if (!col.length) return;
       var ta = N.tagName === 'TEXTAREA', ph = ta && !N.value; if (ph) N.value = N.placeholder;
       var set = function (v) { N.style.fontSize = v.toFixed(2) + 'cqw'; if (ta) { N.style.height = 'auto'; N.style.height = N.scrollHeight + 'px'; } };
@@ -39154,7 +39170,7 @@ hairline({
       nav.style.left = Math.round(r.right + 40) + 'px'; nav.style.top = Math.round(r.top + 72) + 'px';
       const key = s.n + ':' + s.rest + ':' + s.rec + ':' + s.next;
       if (key !== navKey) { navKey = key; nav.textContent = '';
-        [['Welcome', 0]].concat(Array.from({ length: s.n }, (x, i) => ['Insight ' + (i + 1), i + 1]), [['Everything else', s.rest], ['Recommendations', s.rec], ['Next steps', s.next]]).forEach(([t, n]) => {
+        [['Welcome', 0]].concat(s.dbf ? [['In your debrief', s.dbf]] : [], Array.from({ length: s.n }, (x, i) => ['Insight ' + (i + 1), i + (s.i0 || 1)]), [['Everything else', s.rest], ['Recommendations', s.rec], ['Next steps', s.next]]).forEach(([t, n]) => {
           const b = document.createElement('button'); b.type = 'button'; b.className = 'aqNavB'; b.textContent = t; b.dataset.n = n;
           b.addEventListener('click', () => { if (inst && inst.steps && inst.steps().at !== n) inst.go(n); navTick(); }); nav.appendChild(b); }); }
       [...nav.children].forEach(b => { const on = +b.dataset.n === s.at; b.classList.toggle('on', on); if (on) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current'); });
@@ -39178,7 +39194,7 @@ hairline({
         go: id => { if (window._hp && window._hp.giftGo) { if (+id === 0) window.__gfReplay = 1; window._hp.giftGo(+id); } } });   /* Intro from here: its entrance again, from the blank screen ("when click Intro it needs to start from the beginning") */
       window.__flowPanel('ar', { on: () => vis() && !!arD.inst() && !document.body.matches('.hpOn, .sugOn, .dsgOn, .prcOn, .docOn, .ccOn'),
         model: () => { const I = arD.inst(), s = I && I.steps ? I.steps() : null; if (!s) return null;
-          return { title: 'Async report', now: String(s.at), groups: [{ rows: [{ t: 'Welcome', go: '0' }].concat((s.names || []).map((t, i) => ({ t, go: String(i + 1) })), [{ t: 'Everything else we checked', go: String(s.rest) }, { t: 'Here’s what we recommend', go: String(s.rec) }, { t: 'That wraps up your debrief', go: String(s.next) }]) }] }; },
+          return { title: 'Async report', now: String(s.at), groups: [{ rows: [{ t: 'Welcome', go: '0' }].concat(s.dbf ? [{ t: 'In your debrief', go: String(s.dbf) }] : [], (s.names || []).map((t, i) => ({ t, go: String(i + (s.i0 || 1)) })), [{ t: 'Everything else we checked', go: String(s.rest) }, { t: 'Here’s what we recommend', go: String(s.rec) }, { t: 'That wraps up your debrief', go: String(s.next) }]) }] }; },
         go: id => { const I = arD.inst(); if (I && I.go) I.go(+id); } }); }
     /* ---- EvTl, the vertical timeline (first in the Suggestion's Plan change, "Why your heart scan moved"): a step list on a thin connector, one node a step, its title (when · what) and its line beside it.
        EvTl.html(steps, label) its markup (an ol.evTl); a step { s, t, d }: s 'done' (a grey disc and a check: it happened), 'flag' (the ember disc and a sparkle: what the plan raised), 'next' (an empty dashed ember ring: planned, not yet sure);

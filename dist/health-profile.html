@@ -915,6 +915,10 @@ body { margin: 0; overflow: hidden; background: var(--pg); color: var(--pgFg); f
 .arSheet .arRvBg { position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; opacity: 0; transition: opacity .64s ease; background: #1a0d0b; }
 .arSheet .arRvBg img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 18% 50%; display: block; }   /* its red side in the frame, the dark falling away to the foot */
 .arSheet .arRvBg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, oklch(0% 0 0 / .32) 0, oklch(0% 0 0 / .12) 34%, oklch(0% 0 0 / .28) 62%, oklch(0% 0 0 / .62) 100%); }   /* the head's words and the card read on it */
+.arSheet.arSheet .arDbfHead.arDbfHead, .arSheet.arSheet .arDbfHead.arDbfHead > * { text-align: left; align-items: flex-start; align-self: stretch; justify-content: flex-start; }   /* the title on the left, as the capture's */ .arSheet .arDbfL { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.arSheet .arDbfR { display: flex; align-items: flex-start; gap: 20px; padding: 24px 0; border-top: 1px solid color-mix(in srgb, var(--ar-ink) 10%, transparent); } .arSheet .arDbfR:first-child { border-top: 0; padding-top: 8px; }
+.arSheet .arDbfI { flex: none; display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; background: #13264a; color: #c7d4ee; } .arSheet:not(.arDark) .arDbfI { background: #dfe7f6; color: #1d3561; }
+.arSheet .arDbfT { display: flex; flex-direction: column; gap: 6px; min-width: 0; padding-top: 2px; } .arSheet .arDbfT b { font-size: 18px; line-height: 24px; font-weight: 500; color: var(--ar-ink); } .arSheet .arDbfT span { font-size: 16px; line-height: 23px; color: color-mix(in srgb, var(--ar-ink) 56%, transparent); }   /* In your debrief (step 1): the rows from the capture, a navy disc for each icon */
 .arSheet.arIsIntro .arRvBg { opacity: 1; } .arSheet.arIsIntro .arRvBg img { animation: arRvZoom 10s cubic-bezier(.2, .6, .2, 1) both; }   /* the picture settling as the words come */
 @keyframes arRvZoom { from { transform: scale(1.12); } to { transform: scale(1); } }
 .arSheet.arSheet.arIsIntro :is(.arHead, .arBody, .arFoot) { background: transparent; } .arSheet.arIsIntro :is(.arGround, .arFootGround) { display: none; }
@@ -2323,6 +2327,7 @@ html.gfPlLeft .arSheet.hpSheet .hpPlTab { align-items: flex-start; text-align: l
 .arSheet.hpSheet.hpWide .hpScr > .hpGfNoteFs { margin-block: auto; }   /* the desk: Their note's card (and its control) in the middle of the screen ("On desktop, you can centre the card in the middle of the screen"); auto margins, so a short window still scrolls from the top */
 .arSheet.hpSheet.hpWide .hpGfNcK { width: 4.72cqw; height: 4.72cqw; }   /* the desk: the mark 16 smaller ("the logo, we can reduce by 16px": 41 to 25 on the 527 card; in cqw, so the envelope's copy of the card keeps the same look) */
 .arSheet.hpSheet.hpWide .hpGfNcI { padding-top: 9.5cqw; padding-bottom: 9.5cqw; } .arSheet.hpSheet.hpWide .hpGfNcSlot { margin-bottom: 0; }   /* the desk: the card's content centred on its height ("desktop centered vertically on the card"), the same room above and below; the mark at the top left over it as before */
+.arSheet.hpSheet .hpGfNc:not(.hpGfEvCd > .hpGfNc) { aspect-ratio: auto; } .arSheet.hpSheet .hpGfNc:not(.hpGfEvCd > .hpGfNc) > .hpGfNcI { position: relative; inset: auto; min-height: 60.47cqw; }   /* Their note's card hugs its content ("Card hug content!"): it grows with the note and the signature, never cuts them; 86:52 at the least. The envelope's copy keeps its frame */
 .arSheet.hpSheet .hpGfNc .hpGfCnt { position: absolute; right: 4.43cqw; bottom: 3.32cqw; font-size: 3.6cqw; line-height: 1.3; color: rgba(243, 237, 230, .48); } .arSheet.hpSheet .hpGfNc .hpGfCnt.hpGfCntHi { color: var(--ar-out-fg); }
 /* the note typed in the card: its text the card's own (Tobias, centred), no box; the caret and the placeholder in the card's ink; the card's edge lit while writing */
 .arSheet.hpSheet .hpGfPvEd { cursor: text; } .arSheet.hpSheet .hpGfPvOff { cursor: default; }
@@ -4839,7 +4844,7 @@ window.EvConsent = (function () {
     var GF_NC_STEP = [GF_NC_MAX, 8, 6.65];
     var gfNcFit = function (nc) {
       var I = nc && nc.firstChild, N = I && I.querySelector('.hpGfNcN'); if (!N || !I.clientHeight) return;
-      var cs = getComputedStyle(I), room = I.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom) + 1;
+      var cs = getComputedStyle(I), room = cs.position === 'absolute' ? I.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom) + 1 : Infinity;   /* the step's card hugs its content ("Card hug content"): its lines alone set the size; the envelope's (a fixed frame) still by its room */
       var col = [].filter.call(I.children, function (c) { return c.offsetParent && getComputedStyle(c).position !== 'absolute'; }); if (!col.length) return;
       var ta = N.tagName === 'TEXTAREA', ph = ta && !N.value; if (ph) N.value = N.placeholder;
       var set = function (v) { N.style.fontSize = v.toFixed(2) + 'cqw'; if (ta) { N.style.height = 'auto'; N.style.height = N.scrollHeight + 'px'; } };
