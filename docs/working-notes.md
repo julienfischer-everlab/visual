@@ -20933,3 +20933,5 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - Note from Steven: "MBBS (Hons), DCH, FRACGP" under "Steven" at the sign-off (`.hpLtrCred`, 56%).
 - Async report: a new step after the intro, "In your debrief" (DBF = 1; the insights from I0 = 2): three rows on navy discs (What we found, Peace of mind, Want to talk through your results?), the title on the left. The step navigator beside the phone and the Flow panel list it; where()/at() know it ('d').
 - Send a gift, Their note: the card hugs its content (86:52 at the least, grows with the note and the signature; the logo no longer sits on the line). The fit goes by lines alone there; the envelope's copy keeps its frame.
+- Design system: Navigation is now General layout's "Main menu" (its tab gone from the bar; a Main menu part in General layout's list opens it, General layout stays lit; "‹ General layout" on its sidebar goes back; #main-menu, #navigation still works).
+- Hairline inside the Assets library: a "Hairline figures" button in the library's header opens it; its Page menu entry is hidden (kept so the menu reads "Assets library › Hairline" while it is up).
