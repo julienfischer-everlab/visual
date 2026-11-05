@@ -20954,3 +20954,14 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - **Expanded floating chat fields** use the phone Ask card's ground: #181818 with its shadow and 5% edge, and #f6ece6 in light, with no glass.
 - **Card screen, light mode**: ground #F0F0F0 (the light's fade too), the warm light 15% less saturated (×1.39), and the Baseline card white (#fff).
 - **Debrief "What to expect" visuals**: 128 × 96 (+32 each way; the scene is scaled up from its 96 × 72 drawing), 16px corners (was 24). A light sweeps through each one in turn: row 1, then 2, then 3, looping. It is off with reduced motion.
+
+## Debrief visuals animate, rows in cards; Bento 256 and one gap; Insights not twice; card screen grounds
+
+- **Debrief "What to expect"**:
+  - The visuals are 160 × 112 (32 wider, 16 taller), with 16 corners. The scene is drawn at 120 × 84 and scaled 1.333.
+  - The light sweep is gone ("I was thinking the UI element, not a reflection"). Now the little UI plays, row 1, then 2, then 3: the line draws, its dot pops and the bars fill; the doctor's note rises, the tick pops and its lines fill; the question pops and the answer rises. It holds, then goes round every 8.4s. It is off with reduced motion.
+  - Each row is a card ("put them in cards"): 16 padding, 20 corners, rgb(255 255 255 / .06) in dark, #f5f4f2 in light, 12 apart (was 48 between rows). Where it's too narrow for the text beside the visual (the phone), the text wraps under it.
+- **Insights in the Bento with Has data No**: the section copy of the activation list (`.ovInsEmpty`) is hidden whenever Insights is a Bento module (`html.insHero`). It was showing twice: in the widget and again below.
+- **Bento min height 256** on desk for every module: primary, Services, Tasks, Insights, Booked in. The Insights hero's own 200 / 176 minimums are raised to 256.
+- **Same gap on the phone**: the V4 phone's Health profile card kept an 8px bottom margin from the old "services 8 nearer". It is now 12 like every other Bento gap, unless the Past result card follows it.
+- **Card screen**: light ground back to #FAFAFA (and the light's fade). Dark mode's light gets 15% less contrast (`contrast(.85)`).
