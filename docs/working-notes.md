@@ -21062,3 +21062,7 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 
 ## What to expect bullets: filled icons
 - "use filled icon": the three circles in `dbcBullets()` (Chart and Card) now draw filled glyphs, not outline strokes: a trend's filled area (What we found), a solid shield with its tick cut out by an SVG mask, so the circle shows through in either theme (Peace of mind), a solid message bubble (Talk it through). Same 44 circle, 18px glyph, ink at .72.
+
+## What to expect: squares fly with the push; stronger icon circles
+- "the square should move at the same time as the transition happens, not after": `sqFly` no longer waits for the line's draw; each square leaves the sphere as the page push starts and lands as the page settles (960 ms, pushTo's IN 300 + 660, 40 ms apart). The line then draws through squares already in place.
+- Bullet circles: ink .08 → .12 ("+4%"); the glyph in the ink at full (white in dark).
