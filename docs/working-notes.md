@@ -21024,3 +21024,13 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - **Grid**: every other dot is in the ink at the Dot opacity. New tweaks on the What to expect screen: **Dot gap** (4–16px, default 7) and **Dot opacity** (0–100%, default 20), both in the presets and remounting the report.
 - **Bullets**: each has a 36px circle filled with the ink at 8% and a Lucide icon (trending-up, shield-check, message-circle). The title (15 / 500) sits over its line (14, secondary), stacked, with no dash.
 - **Correction, "a straight line for the curve"**: the line is no longer made of dots. It is one solid 2px line in the ink, straight segments through the readings (the same trends), drawn left to right once the grid has landed (from 1.5s). The orange squares (7px) pop at each turn and at Today as the line reaches them. The cloud's particles now form only the grid (Dot gap / Dot opacity). Without a sphere welcome, the same line and squares are drawn the same way.
+
+## What to expect: Card variation, bullet spacing, square rings
+
+- **Card** (a third value for What to expect: Cards / Chart / Card): the title and its line, then a chart card in the reference's style. The card (ink 6%, 24 corners, 20 padding) holds:
+  - eyebrow "Your biomarker trend", title "Vitamin D, improving", "2023 — Today" at the right;
+  - one smooth orange line (Catmull-Rom through the readings) drawn in, with dots popping at three tests (today's larger) and a baseline;
+  - "3 years ago" / "Today" under it, and a one-line legend with an orange dot.
+  - Then the three bullets. The sphere doesn't stay on this one (it flies off with the welcome, as before).
+- **Bullets** (Chart and Card): 24 in at each side; icon circles 44 (was 36), icons 18.
+- **Chart's squares**: a 2px ring of the ground around each (stroke 4 under the fill, `paint-order: stroke`; the sphere ground in the dots version, the paper otherwise), so the line stops short of them.
