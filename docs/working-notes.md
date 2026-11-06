@@ -21225,3 +21225,20 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - **Recommendation detail sheet** (`rcDetail`): the picture over the title, in the sheet's head ("visual above title"). `sheetOpen` takes a `lead` element, put above the title and cleared on the next open.
 - **What we recommend for this rows:** the text centred against the picture when it is shorter ("content vertically align if content doesn't fill the vertical").
 - **Confirm your updated plan:** no card. The rows sit on the page with a hairline between them ("not into big card; add divider between item"), each with its picture at the left (56, radius 16; "keep visual left side"). Total today keeps its price at the right. The Declined group is the same.
+
+## Chart badges, What to expect eyebrow, Maybe later, review: ghost rows + sheet, Grid, Included / Extra, Pay label
+
+- **What to expect (Chart):**
+  - The badges' border is at half its opacity.
+  - On the Sphere's ground (`arSphPark` / `arIsSphere`) the badges take that ground's colour (`--ar-sph-bg`), so they match the page.
+  - The chart's squares are 1px smaller (5.11).
+  - A "What to expect" eyebrow (14, ink 56%) sits over the title, Chart and Card alike.
+- **Stacked / Arc:**
+  - "Decline" is "Maybe later". The review's group is "Maybe later", and the end card counts "N for later".
+  - +8 between the phase / price line and the buttons.
+- **Confirm your updated plan:**
+  - Each row is a ghost card: a tile under it on hover / press.
+  - A tap opens a bottom sheet with the stacked card's content (`rcStkCard`, its own card ground removed). Maybe later / Add to my plan there move the item and close the sheet.
+  - Added items are grouped under **Included** and **Extra** (priced), then Total today.
+  - The button reads **Pay $xx.xx (N items)**, N being the extras.
+  - Tweak **What we recommend → Review: List / Grid**: Grid is two a row, each item a secondary card (picture, name, phase, price or Add to plan), with Total today across under them.
