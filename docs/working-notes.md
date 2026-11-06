@@ -21266,3 +21266,8 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - "Need a colour selector for bg and bg active item": two colour pickers under the Island sliders, **Background colour** and **Active colour**. Like the sliders, each mode keeps its own: `_nvDk` `bgc` / `actc` (light, defaults #ffffff / #2e1f1a) and `bgcD` / `actcD` (dark, defaults #101011, the glass plate, / #ffffff).
 - They feed `--nvBgC`, `--nvActC`, `--nvBgCD`, `--nvActCD` (r,g,b): the light island's ground and active pill, and the dark glass's plate and active layer. Background / Active background set their opacity as before.
 - Labels say (light) / (dark) with the hex. Save setup keeps them in `everlab:navMaster.dk`; older saves take the defaults, which draw the dock as before.
+
+## Navigation doc: Island foreground colours (active, inactive), per mode
+
+- "Foreground colour active and inactive": two more Island colour pickers, **Foreground active** and **Foreground inactive** (the tab's icon and label). Each mode keeps its own: `_nvDk` `fgc` / `fgic` (light, #000 / #000) and `fgcD` / `fgicD` (dark, #fff / #ececea). They feed `--nvFgC`, `--nvFgiC`, `--nvFgCD`, `--nvFgiCD`.
+- Inactive keeps its opacity (.63 dark, .54 light, the Labels' inactive scale) and hover lifts it as before. The defaults draw every dock (app and doc) as before. Saved with the setup.
