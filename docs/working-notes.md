@@ -21204,3 +21204,10 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - The card's "1 of 10" is gone. The line under the title reads "1 of 10 recommendations" and follows the active card ("1 of 10: merge, and remove inside the card"). It goes back to "10 recommendations" on the end card.
 - Next is hidden, not dimmed, until every card is decided ("remove Next until it is enabled"). Any disabled primary in the Async report's footer fades out and drops 12. When enabled, it rises back in.
 - The card's picture is 96 (was 72, "visual +24px"): `.arRcPic.arRcStkPic`, specific enough over `.arRcPic`'s 64, which had been winning before.
+
+## Insights empty state: ghost tiles, visual 40, two-line regular titles, 50% when incomplete
+
+- The three task tiles (Health profile, Health data, Past results) on the Overview's Insights empty state (Tweaks → Insights → Has data: No) are ghost cards ("use ghost card"): no ground at rest, ink 6% on hover, 10% on press, radius 16, padded 12 / 8.
+- 3D visual 40 (was 56, "reduce visual by 16px"); its check badge moved out to match.
+- Titles regular (400), always on two lines ("all in 2 lines"): `insList` splits a title before its last word (`.ovTL`, block only on these tiles; the HP card's list rows keep one line).
+- A task not done (to do, skipped, none found: `.ovTaskInc`) has its title at 50% ("opacity font 50% if incomplete").
