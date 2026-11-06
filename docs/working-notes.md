@@ -21115,3 +21115,7 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 ## The star's rule (Ask sheet Version 2 by default)
 - "Star general menu rule": tap the star → the floating field card, the suggestions listed above it, no keyboard, the field collapsed (no + and no Eva, only its send disc); tap the field → the keyboard comes and the field extends with its tools (+, Eva). Version 2 already drew both states; it focused the field 140 ms after opening, which brought the keys and tools at once. That auto-focus is gone for V2 (V1 Conversation keeps its own).
 - Version 2 is the default now. Setups saved on V1 before this take V2: local saves once (`everlab:mig:askV2`); the shared setup whenever it was saved before the rule (`at` < 1793942000000), so the owner's next Save, V1 or V2, is respected as is.
+
+## What to expect chart: typed badge, top right
+- A badge 12 in from the chart's top right ("small badge, mono 12px, random text appearing with a square cursor, outlined the colour of the pattern's dots"): `--ar-font-mono` 12px uppercase, 22 tall, 4 corners, a 1px outline in the ink at the Dot opacity (`--dbcDotA` = Tweak Dot opacity), a 7×11 block cursor blinking after the text.
+- Its text is the reading's name, typed in (55–95 ms a letter): Vitamin D (Improving), Cortisol (Up and down), Ferritin (Declining), HbA1c (Dip and recover); with Line shape Cycle each new shape types its own as the line morphs.
