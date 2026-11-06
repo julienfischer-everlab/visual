@@ -21155,3 +21155,8 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - The envelope's copy of the note card (`gfCardEl`) keeps the empty "Add your signature" slot when unsigned, unseen (`.hpGfSigGhost`, opacity 0), so its layout matches the step's card ("keep the empty sign and put an opacity 0").
 - In the merge (`gfSealFx`), the step card's picture (it hugs its note, taller than the envelope's 86:52 card) eases its height to the envelope card's shape about its centre over the 200 ms cross-fade, so the hand-over has no jump in height (mid-fade: 237 vs 221 px, was 243 vs 303).
 - Envelope front: the Everlab logo 10% smaller (mark 4.86cqw, word 5.76cqw); the embossed mark 40% lighter (face .027/.009, rim .066, shade .3).
+
+## Timeline V1 / V2 setups; Timeline onboarding standalone page
+
+- Tweaks -> Timeline -> Timeline: V1 / V2 (`#stTlD`, `html.tlD2`; nothing drawn differently yet: "where I'll adjust some design later"). Each version keeps its own Timeline tweaks (every control in the `[data-tl]` groups): switching keeps the one left and puts the other's back (V2 starts as a copy of V1). Both setups live as JSON in `#stTlDSet`, a hidden control the panel's Save stores (this browser and the shared setup) and puts back on load, so Save keeps V1's and V2's setups.
+- Page menu -> Standalone flow -> Timeline onboarding (`tlo`, `#timeline-onboarding`): a Health profile area of one step (`AREA.tlo`, `BUILD['tlo.intro']`, `_hp.tlo()`), the title alone in the middle of the screen ("Your health journey, / one step at a time."), written letter by letter with the Concierge intro's master (`ltrW`, `.hpLtrT.on`); the bar's dismiss only (no steps, back or foot).
