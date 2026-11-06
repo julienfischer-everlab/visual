@@ -21280,3 +21280,9 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - The doc pushes its colour mode, its Island numbers and colours (saved or not), its labels, icon motion, Insights icon and Ask services into the frame live (`_nvDk.all`, `_navMaster(m)`). The doc's More and AI buttons tap the frame's own.
 - The status bar takes the app's ground and ink.
 - The picture and the doc's own dock stand in until the frame is up, about 3.5 s here.
+
+## Insights card (Has data: No): count gone, button spacing, the check in dark
+
+- The "n of 3 ready" count at the header's right is hidden in this card ("remove").
+- Build my insights: 20 above it, was 28 ("margin top -8px"), and 8 under it ("cta margin bottom +8").
+- The tiles' check takes the Health profile card's colours ("check icon dark mode"). In dark it is #42BE65 with a #0f0f0f tick, no longer the light green with a white tick. In light it is #24A148 with a white tick.
