@@ -21134,3 +21134,7 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 ## Navigation doc: dock controls (Island) for the light dock
 
 - "Dock controller, where?": the Light row added before lived only in the legacy top-bar Dock menu (shown on old pages alone). The controls now sit in Design system -> Navigation, right panel, group Island: Background (opacity, 0-100%, default 100), Blur (0-40px, default 16), Active background (0-20%, default 6), Shadow (0-200%, default 100). Live on every dock (`window._nvDk`, `--nvBgA`, `--nvBlur`, `--nvActA`, `--nvShK` on <html>), kept by the doc's Save setup (`everlab:navMaster`, `dk`), applied on load on every page. Light mode only; dark unchanged.
+
+## Async report: "What we recommend for this" card on some insight steps
+
+- From the screenshot: a grey card (the report's --ar-card-bg, card radius + 4) at the end of What this means for you: "What we recommend for this" (15, ink .56), each recommendation a 64 picture (14 corners), its name (17/500) and one line (15, ink .56), 20 apart; "You'll decide on each one next." under them. Data per insight as `L.rx` ([name, line, picture]); on Persona #1's cholesterol (Nutrition review, Heart CT scan (CTCA), ApoB and LDL retest), stress hormone (Doctor review, Morning cortisol retest) and vitamin D (D3 + K2 drops, Morning sun and walks, Vitamin D retest) insights; the pictures the report's own renders (RC_IMG, EvSvcImg). Classes `.arRx*`.
