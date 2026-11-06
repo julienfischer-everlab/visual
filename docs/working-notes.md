@@ -21078,3 +21078,8 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - Tweak Dot ripple (On/Off, What to expect only, `stArDbcRip` → `dbcRip`): rings of orange run through the grid's dots from each orange square, fading as they spread (sphere renderer, per grid dot).
 - Line 1.5x faster: .93 s (was 1.4), from 1 s after the push in the dots mode; square pops retimed to match.
 - Bullet rows: text at least the icon's 52, centred on it when shorter.
+
+## What to expect chart: as many squares as the sphere, line shapes cycling, no years
+- Squares: as many as the sphere shows inside the frame at See my results (`dbcN`, from the squares inside the stage only), the first reading at the left always a square, today always; extra readings halfway along the longest stretches. Each sphere square flies to the chart's in left-to-right order, its colour morphing to the target's.
+- Tweak Line shape (`stArDbcShape` → `opts.dbcShape`; the report's `o` is a whitelist, so read from `opts`): Cycle (3 s, default) / Improving / Declining / Up and down / Dip and recover. A reading at or above its shape's range line is white, below orange; the line orange through the alarming stretches, light grey through the rest, a 32 px blend at each turn (`dbcStops`). Cycle morphs every 3 s (900 ms): the line's points rise and fall, each square rides the line, colours flip as a square crosses its range line, the ripple's sources follow (read each frame).
+- No years under the chart; the box is 330 × 156 (the grid morph's plot constants follow).
