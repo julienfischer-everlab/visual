@@ -20995,3 +20995,13 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
   - "Your key findings, explained in context."
   - "Our clinicians checked every result. Nothing flagged here is urgent."
   - "Want to talk it through?" / "Message your care team or book a consult at the end."
+
+## Async report: What to expect, Chart variation (the cloud becomes the chart)
+
+- **Tweak** Async report → What to expect: Cards (default) / Chart (`stArDbf`, `o.dbf`). It is in the presets and remounts the report on change.
+- **Chart layout**: title "What to expect in your debrief.", then a line under it: "Your results tell a story over time. We'll walk you through it, one finding at a time." Then the visual, a biomarker trend over 2023 → Today climbing into its optimal band. Then three bullets with the welcome's orange square marks, each a bold lead and a secondary line: What we found, Peace of mind, Talk it through.
+- **The cloud becomes the chart** ("the cloud becomes a grid dot pattern, organised, that is the pattern of the chart"): with the Sphere / Sphere hero welcome, about a thousand of the sphere's particles travel, each in its own time over 1.7s, into a dot grid laid on the chart's plot. It is 7px apart, follows the chart element as the page rises in, and the rest of the cloud fades.
+  - Dots on the reading's line are orange (2.8px); under it they are lit (fading with depth); above it faint, a touch brighter in the optimal band. Only the years stay from the SVG.
+  - Back to the welcome, the dots return to the cloud. On to the first insight, they fly up and out with the page.
+  - Code: `sphereLayer`'s `grid(on, {el, inst, dur})`, with targets per frame (GX/GY/GA/GS/GL, TQ).
+- **Without the sphere** (Split bg and the others), the Chart is drawn as SVG instead: gradient line drawing in from the left, each test's point popping as the line reaches it, today's with a breathing ring, the optimal band behind.
