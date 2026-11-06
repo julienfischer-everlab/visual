@@ -21066,3 +21066,8 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 ## What to expect: squares fly with the push; stronger icon circles
 - "the square should move at the same time as the transition happens, not after": `sqFly` no longer waits for the line's draw; each square leaves the sphere as the page push starts and lands as the page settles (960 ms, pushTo's IN 300 + 660, 40 ms apart). The line then draws through squares already in place.
 - Bullet circles: ink .08 → .12 ("+4%"); the glyph in the ink at full (white in dark).
+
+## What to expect: bullets bigger, chart inset, no sub
+- Bullets (pixels, "not percent"): circle 44 → 52 and 4 lower, glyph 18 → 22, icon-to-text gap 14 → 18.
+- Chart: in by the list's 12 each side, so its edges meet the icons' (558 / 882 at XS); its top 32 under the H1 ("gap between the H1 and the chart is 32px"); each square's ground ring 2 → 2.5 (stroke 5).
+- "Here is what to expect" removed (Chart and Card).
