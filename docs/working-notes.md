@@ -21149,3 +21149,9 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - Async report flow chips (beside the phone): an insight whose page has the What we recommend for this card (`L.rx`) wears a Lucide lightbulb after its name (amber #FFB866 on the grey chip, #E8691C on the white active one); `steps().rx` tells which. Persona #1: Insight 1 (cholesterol), 2 (stress hormone), 4 (vitamin D).
 - Tweaks -> Async report -> Max biomarkers: 3 / 2 / 1. 1: one biomarker shown, the second partly under the See N more CTA (the same fade as 2 and 3; the questionnaire follows it too).
 - What to expect chart badges: the report's name top left, its date bottom right, each 20px in from the pattern's outer dots (the plot's 10 / 8 / 6 units inside the 330 x 156 box, so the offsets scale with the chart); their words at .36 ink (half the .72).
+
+## Send a gift: smooth note-to-envelope flight; envelope logo -10%, emboss -40%
+
+- The envelope's copy of the note card (`gfCardEl`) keeps the empty "Add your signature" slot when unsigned, unseen (`.hpGfSigGhost`, opacity 0), so its layout matches the step's card ("keep the empty sign and put an opacity 0").
+- In the merge (`gfSealFx`), the step card's picture (it hugs its note, taller than the envelope's 86:52 card) eases its height to the envelope card's shape about its centre over the 200 ms cross-fade, so the hand-over has no jump in height (mid-fade: 237 vs 221 px, was 243 vs 303).
+- Envelope front: the Everlab logo 10% smaller (mark 4.86cqw, word 5.76cqw); the embossed mark 40% lighter (face .027/.009, rim .066, shade .3).
