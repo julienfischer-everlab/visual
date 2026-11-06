@@ -21088,3 +21088,6 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - "When the dots and squares appear in the chart pattern, the whole thing is clipping": the ball's points not taken into the grid stayed down where the ball was while the rest condensed, reading as a hard cut. Now the ball rises into the chart as it morphs ("the sphere should move up while it's morphing"): its centre eases out (cubic) to the plot's centre (`GCY`) with the grid morph, so the whole cloud travels up and condenses.
 - The pattern white with its opacity ("all of the patterns white with opacity"): every point turns to the ink (white in dark) within the first 40% of the morph; the Dot ripple keeps its orange.
 - H1 → chart 24 ("title H1 and chart gap: 24px").
+
+## Insights empty state: no inner cards, no sub-line
+- "No card inside. Remove the subline": the three activation columns (`.ovInsEmpty` / the Bento's `.ovInsHeroE`, Tweak Insights › Has data No) lose their own card ground and padding, hover included, and their sub-line; each is its ring icon over its title, centred, inside the one widget card.
