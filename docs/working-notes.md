@@ -21091,3 +21091,8 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 
 ## Insights empty state: no inner cards, no sub-line
 - "No card inside. Remove the subline": the three activation columns (`.ovInsEmpty` / the Bento's `.ovInsHeroE`, Tweak Insights › Has data No) lose their own card ground and padding, hover included, and their sub-line; each is its ring icon over its title, centred, inside the one widget card.
+
+## What to expect: no clip at the hand-off, rows in turn; doc stills scaled as the live phone
+- "The dot arrives, then there's a clip": the chart was one of the page's entrance parts (enter(), arEnFade after the title's words), so it sat at opacity 0 until ~1.5 s while the flying squares landed at ~1 s and handed over to it: the squares vanished for a beat, then the chart faded in. The chart is no longer in the page's fade (it brings itself in: grid morph, line draw, squares), so the squares land on a visible chart.
+- "Each row, one after each other": the bullets' rows are the entrance parts now, each in after the one before (Chart and Card).
+- Documentation stills (`.hcScr`): scaled with the `scale` property like the live phone (`#bpFrame`), not `transform: scale` inside `contain: paint`. WebKit mishandles backdrop-filter glass inside a transformed, paint-contained, clipped box; the membership card's glass (blur 10, saturate 1.7) read over-saturated in the doc vs the prototype. Chromium renders both identically, so this is unverified in Safari.
