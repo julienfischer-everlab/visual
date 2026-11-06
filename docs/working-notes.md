@@ -21126,3 +21126,7 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - What to expect (Sphere hero -> chart): the sphere's lift waits until the title is halfway up (360 ms into the push, the next page's H1 at 50% of its rise), then 900 ms easeInOutQuint. Back down: the quint on the morph's own progress.
 - Back to the Welcome: the content no longer drops in from about 290 px above; it stays in place (only its own word fade-up) while the leaving page fades over it.
 - Chart page: no report title in the top nav; the chart's badges carry it: the report name top right (typed, cursor), then its date bottom right (typed, the cursor moves there). The cycling biomarker names on the badge are gone.
+
+## Dock in light mode: white bar, secondary active pill (Design system setup)
+
+- Design system -> Navigation, Dock -> Light: Solid (default) / Glass (`#dkLt`, `html.navLtSolid`), saved in the Navigation setup (`everlab:navMaster`, `lt`) and applied on every page. Solid: the island and the AI button plain white, the active tab's pill the secondary grey (rgba(46,31,26,.06)), no glass sheen ("Nav BG white, Active bg Secondary"). Glass: the frosted plate as before. Dark mode unchanged.
