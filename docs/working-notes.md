@@ -21143,3 +21143,9 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 
 - "ALL keyboard should come inside the frame, atm we can see the keyboard outside the frame for a moment": the keyboard box used to slide (transform) while a clip-path, transitioned separately, cut what passed the screen's foot. The two run on different clocks (the transform on the compositor), and in some browsers (Safari) the cut lagged, so the keys showed under the phone for a moment.
 - Now the `.mKbd` box never moves: it stands at the screen's foot, `overflow:hidden` and a static corner clip; its ground (`::before`, colour `--kbBg`) and its rows slide up inside it (`transform: translateY(var(--kbY))`, 340px down to 0, same .32s curve). Every "up" rule (frame, Overview, Timeline, Navigation doc, Chat page `.on`) now sets `--kbY:0px`; light keyboards set `--kbBg`. The Health profile's in-flow keyboard (`.hpAkb`) keeps `--kbY:0` and its height animation. Applies to every keyboard (the Chat page takes this section in the build).
+
+## Flow chips: bulb on insights with a recommendation; Max biomarkers 1; chart badges top left / bottom right
+
+- Async report flow chips (beside the phone): an insight whose page has the What we recommend for this card (`L.rx`) wears a Lucide lightbulb after its name (amber #FFB866 on the grey chip, #E8691C on the white active one); `steps().rx` tells which. Persona #1: Insight 1 (cholesterol), 2 (stress hormone), 4 (vitamin D).
+- Tweaks -> Async report -> Max biomarkers: 3 / 2 / 1. 1: one biomarker shown, the second partly under the See N more CTA (the same fade as 2 and 3; the questionnaire follows it too).
+- What to expect chart badges: the report's name top left, its date bottom right, each 20px in from the pattern's outer dots (the plot's 10 / 8 / 6 units inside the 330 x 156 box, so the offsets scale with the chart); their words at .36 ink (half the .72).
