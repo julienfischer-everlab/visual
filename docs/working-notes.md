@@ -21017,3 +21017,9 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
   - Recommendations and the end: General alone.
   - Report shut: everything shows.
 - A group whose rows are all hidden goes too.
+
+## Chart variation: line only, turns in orange, grid sliders, icon bullets
+
+- **Curve**: the reading is straight trends (up, a dip, a steep climb, levelling). The grid draws it as a line only: one ink dot per column, with the steps between columns filled. Where a trend turns, and at Today, an orange square (5px). There is no fill under the line ("the curve should be just a line, with square orange when trend change; don't fill").
+- **Grid**: every other dot is in the ink at the Dot opacity. New tweaks on the What to expect screen: **Dot gap** (4–16px, default 7) and **Dot opacity** (0–100%, default 20), both in the presets and remounting the report.
+- **Bullets**: each has a 36px circle filled with the ink at 8% and a Lucide icon (trending-up, shield-check, message-circle). The title (15 / 500) sits over its line (14, secondary), stacked, with no dash.
