@@ -21211,3 +21211,10 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - 3D visual 40 (was 56, "reduce visual by 16px"); its check badge moved out to match.
 - Titles regular (400), always on two lines ("all in 2 lines"): `insList` splits a title before its last word (`.ovTL`, block only on these tiles; the HP card's list rows keep one line).
 - A task not done (to do, skipped, none found: `.ovTaskInc`) has its title at 50% ("opacity font 50% if incomplete").
+
+## Insight activation: the Health profile task is Tell us about you
+
+- "Health profile is basically what the user filled through this flow (its three steps)… so trigger this Tell us about you experience." The first insights' Health profile task now stands for the Health profile's Tell us about you step.
+  - **Its state:** done once that step is done (`insNow` reads `summary().st.you`; the activation flow's `inaSt('hp')` reads `S.a.you`). It was the three steps all done.
+  - **Its press:** opens Tell us about you (`inaGo('hp')` → `area('you')`; the card's fallback opens the profile on `area: 'you'`), on the Insights card, the empty-state tiles and the activation home alike. Once done it still opens, to edit (no longer locked).
+  - **Its words:** "Tell us about you" (to do) / "Tell us about you, done", and on the activation home "Tell us about you, about 5 minutes".

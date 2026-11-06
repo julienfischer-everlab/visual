@@ -3636,12 +3636,12 @@ window.EvConsent = (function () {
     /* the home: the circle, the greeting, the three areas */
     /* Insight activation ("Create an Insight activation flow, same as health profile, in standalone flow; this will anchor the steps from this card; no mandatory order, no linear"): the profile's home, its three cards
        the Insights card's three (Health profile, Health data, Past results), each open whatever the others' state, each back to this home when done or skipped; Build my insights once all three are in (done or skipped) */
-    var INA = [['hp', 'Health profile', 'About 12 minutes', 'Completed'], ['data', 'Health data', 'Connect a wearable, about a minute', 'Connected'], ['res', 'Past results', 'We search the labs for you', 'Past results found']];
+    var INA = [['hp', 'Health profile', 'Tell us about you, about 5 minutes', 'Completed'], ['data', 'Health data', 'Connect a wearable, about a minute', 'Connected'], ['res', 'Past results', 'We search the labs for you', 'Past results found']];
     var inaSt = function (k) { S.ina = S.ina || {}; var C = window._hpIns && window._hpIns.now ? window._hpIns.now() : null;   /* the Insights card's own state, when the card is there: the flow and the card one ("this will anchor the steps from this card") */
       if (C && k === 'data') return C.data === 'conn' ? 'done' : C.data === 'skip' ? 'skip' : ''; if (C && k === 'res') return C.past === 'found' || C.past === 'none' ? 'done' : '';
-      if (k === 'hp') return AREAS.every(function (a) { return S.a[a.k].st === 'done'; }) ? 'done' : AREAS.some(function (a) { return S.a[a.k].st !== 'not'; }) ? 'prog' : ''; return S.ina[k] || ''; };
+      if (k === 'hp') return S.a.you.st === 'done' ? 'done' : S.a.you.st !== 'not' ? 'prog' : ''; return S.ina[k] || ''; };   /* the Health profile task is Tell us about you ("Health profile is what the user filled through this flow... trigger this Tell us about you experience") */
     var inaPut = function (k, v) { S.ina = S.ina || {}; S.ina[k] = v; save(); if (window._hpIns && window._hpIns.set) window._hpIns.set(k === 'res' ? 'past' : k, k === 'res' ? 'found' : v === 'done' ? 'conn' : v); };
-    var inaGo = function (k) { if (k === 'hp') { var nx = AREAS.filter(function (a) { return S.a[a.k].st !== 'done'; })[0]; if (nx) area(nx.k, 1); return; } if (k === 'data') area('idt', 1, 0); else area('res', 1, 0); };
+    var inaGo = function (k) { if (k === 'hp') { area('you', 1); return; } if (k === 'data') area('idt', 1, 0); else area('res', 1, 0); };
     function inaHome(dir) {
       tell(null); landAt = null; backBtn.classList.add('hpNoBack');
       if (A && dir) vFrom = freeze(); var jd = justDone; justDone = null;
@@ -3655,7 +3655,7 @@ window.EvConsent = (function () {
         scr.appendChild(h('div', { class: 'hpHome' }, dd.el,
           h('div', { class: 'hpQ' }, h('h2', { class: 'hpH', text: CP[0] }), h('p', { class: 'hpD', text: CP[1] })),
           h('div', { class: 'hpAreas' }, INA.map(function (x, i) {
-            var v = inaSt(x[0]), dn = v === 'done', sk = v === 'skip', lock = dn && x[0] === 'hp';   /* any card opens, in any order; the profile done stays done (edited from the profile itself) */
+            var v = inaSt(x[0]), dn = v === 'done', sk = v === 'skip', lock = false;   /* the profile done opens Tell us about you again, to edit */   /* any card opens, in any order; the profile done stays done (edited from the profile itself) */
             return h(lock ? 'div' : 'button', lock ? { class: 'hpArea hpDone hpLocked' + (jd === x[0] ? ' hpJust' : '') } : { type: 'button', class: 'hpArea' + (dn ? ' hpDone' : ' hpNext') + (jd === x[0] ? ' hpJust' : ''), on: { click: function () { inaGo(x[0]); } } },
               h('span', { class: 'hpNum', 'aria-hidden': 'true' }, dn ? ic(16, P.check, 2) : String(i + 1)),
               h('span', { class: 'hpAreaT' }, h('b', { text: x[1] }), h('span', { text: dn ? x[3] : sk ? 'Skipped' : v === 'prog' ? 'In progress' : x[2] })));

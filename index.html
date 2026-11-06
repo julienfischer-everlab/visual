@@ -22112,12 +22112,12 @@ window.EvConsent = (function () {
     /* the home: the circle, the greeting, the three areas */
     /* Insight activation ("Create an Insight activation flow, same as health profile, in standalone flow; this will anchor the steps from this card; no mandatory order, no linear"): the profile's home, its three cards
        the Insights card's three (Health profile, Health data, Past results), each open whatever the others' state, each back to this home when done or skipped; Build my insights once all three are in (done or skipped) */
-    var INA = [['hp', 'Health profile', 'About 12 minutes', 'Completed'], ['data', 'Health data', 'Connect a wearable, about a minute', 'Connected'], ['res', 'Past results', 'We search the labs for you', 'Past results found']];
+    var INA = [['hp', 'Health profile', 'Tell us about you, about 5 minutes', 'Completed'], ['data', 'Health data', 'Connect a wearable, about a minute', 'Connected'], ['res', 'Past results', 'We search the labs for you', 'Past results found']];
     var inaSt = function (k) { S.ina = S.ina || {}; var C = window._hpIns && window._hpIns.now ? window._hpIns.now() : null;   /* the Insights card's own state, when the card is there: the flow and the card one ("this will anchor the steps from this card") */
       if (C && k === 'data') return C.data === 'conn' ? 'done' : C.data === 'skip' ? 'skip' : ''; if (C && k === 'res') return C.past === 'found' || C.past === 'none' ? 'done' : '';
-      if (k === 'hp') return AREAS.every(function (a) { return S.a[a.k].st === 'done'; }) ? 'done' : AREAS.some(function (a) { return S.a[a.k].st !== 'not'; }) ? 'prog' : ''; return S.ina[k] || ''; };
+      if (k === 'hp') return S.a.you.st === 'done' ? 'done' : S.a.you.st !== 'not' ? 'prog' : ''; return S.ina[k] || ''; };   /* the Health profile task is Tell us about you ("Health profile is what the user filled through this flow... trigger this Tell us about you experience") */
     var inaPut = function (k, v) { S.ina = S.ina || {}; S.ina[k] = v; save(); if (window._hpIns && window._hpIns.set) window._hpIns.set(k === 'res' ? 'past' : k, k === 'res' ? 'found' : v === 'done' ? 'conn' : v); };
-    var inaGo = function (k) { if (k === 'hp') { var nx = AREAS.filter(function (a) { return S.a[a.k].st !== 'done'; })[0]; if (nx) area(nx.k, 1); return; } if (k === 'data') area('idt', 1, 0); else area('res', 1, 0); };
+    var inaGo = function (k) { if (k === 'hp') { area('you', 1); return; } if (k === 'data') area('idt', 1, 0); else area('res', 1, 0); };
     function inaHome(dir) {
       tell(null); landAt = null; backBtn.classList.add('hpNoBack');
       if (A && dir) vFrom = freeze(); var jd = justDone; justDone = null;
@@ -22131,7 +22131,7 @@ window.EvConsent = (function () {
         scr.appendChild(h('div', { class: 'hpHome' }, dd.el,
           h('div', { class: 'hpQ' }, h('h2', { class: 'hpH', text: CP[0] }), h('p', { class: 'hpD', text: CP[1] })),
           h('div', { class: 'hpAreas' }, INA.map(function (x, i) {
-            var v = inaSt(x[0]), dn = v === 'done', sk = v === 'skip', lock = dn && x[0] === 'hp';   /* any card opens, in any order; the profile done stays done (edited from the profile itself) */
+            var v = inaSt(x[0]), dn = v === 'done', sk = v === 'skip', lock = false;   /* the profile done opens Tell us about you again, to edit */   /* any card opens, in any order; the profile done stays done (edited from the profile itself) */
             return h(lock ? 'div' : 'button', lock ? { class: 'hpArea hpDone hpLocked' + (jd === x[0] ? ' hpJust' : '') } : { type: 'button', class: 'hpArea' + (dn ? ' hpDone' : ' hpNext') + (jd === x[0] ? ' hpJust' : ''), on: { click: function () { inaGo(x[0]); } } },
               h('span', { class: 'hpNum', 'aria-hidden': 'true' }, dn ? ic(16, P.check, 2) : String(i + 1)),
               h('span', { class: 'hpAreaT' }, h('b', { text: x[1] }), h('span', { text: dn ? x[3] : sk ? 'Skipped' : v === 'prog' ? 'In progress' : x[2] })));
@@ -40150,12 +40150,12 @@ hairline({
       /* after the call, Your first insights ("once the call is completed we need a Health insight sequencing of action, non linear, can be done in any order"): three tasks, not steps, each a row in the card,
          its status disc at the left (done the profile's green and its tick; skipped or none found a grey disc and a dash; to do an empty ring), its words by its status; st: { hp: todo | done, data: todo | conn | skip, past: todo | found | none }.
          A row still to do is a button, its chevron at the right (Health data also its Skip), opening its own flow; while any is to do the foot counts what is ready, no button; none left: Ready to build and Build my insights */
-      INSW: { hp: { todo: ['Health profile', 'Finish your questionnaire'], done: ['Health profile', 'Details and questionnaire'] },   /* short enough for one line on the phone, Skip beside it */
+      INSW: { hp: { todo: ['Health profile', 'Tell us about you'], done: ['Health profile', 'Tell us about you, done'] },   /* short enough for one line on the phone, Skip beside it */
         data: { todo: ['Health data', 'Connect a wearable'], conn: ['Health data connected', 'Your sleep and activity are in'], skip: ['Health data skipped', 'You can connect it any time'] },
         past: { todo: ['Past results', 'Find your past blood tests'], found: ['Past results found', '3 blood tests, 2021 to 2024'], none: ['No past results found', 'Your new tests will be the start'] } },
       insN: st => ['hp', 'data', 'past'].filter(k => st[k] && st[k] !== 'todo').length,   // the tasks ready: done, connected, skipped, found or none found
       ins: st => { const n = HPC.insN(st), all = n === 3, I = (d, w) => '<svg width="' + w + '" height="' + w + '" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + d + '"/></svg>';
-        const row = k => { const v = st[k] || 'todo', w = HPC.INSW[k][v] || HPC.INSW[k].todo, todo = v === 'todo', ok = v === 'done' || v === 'conn' || v === 'found', go = todo || (k === 'data' && v === 'skip'), skip = todo && k === 'data';   /* skipped: still there to connect ("you can connect it any time") */
+        const row = k => { const v = st[k] || 'todo', w = HPC.INSW[k][v] || HPC.INSW[k].todo, todo = v === 'todo', ok = v === 'done' || v === 'conn' || v === 'found', go = todo || (k === 'data' && v === 'skip') || k === 'hp', skip = todo && k === 'data';   /* skipped: still there to connect ("you can connect it any time") */
           const inner = '<i class="hpInsSt" aria-hidden="true">' + (ok ? I('m3.8 8.3 2.6 2.6 5.8-6', 12) : todo ? '' : I('M4.5 8h7', 12)) + '</i><span class="hpInsTx"><b><span class="hpInsVh">' + (todo ? 'To do' : ok ? 'Done' : v === 'skip' ? 'Skipped' : 'None found') + ': </span>' + w[0] + '</b><span>' + w[1] + '</span></span>' + (todo ? '<i class="hpInsChev" aria-hidden="true">' + I('m6 3 5 5-5 5', 16) + '</i>' : '');
           return '<li class="hpInsLi hpIns_' + (todo ? 'todo' : ok ? 'done' : 'skip') + (skip ? ' hpInsHasSkip' : '') + '">' + (go ? '<button type="button" class="hpInsRow" data-ins="' + k + '">' + inner + '</button>' : '<div class="hpInsRow">' + inner + '</div>') + (skip ? '<button type="button" class="hpInsSkip" data-ins-skip="data">Skip</button>' : '') + '</li>'; };
         return '<div class="hpInsHd"><span class="hpOvEy">Your first insights</span><h3>Unlock your first insights</h3><p class="hpOvSub">What your past results, sleep and profile say about you</p></div>'
@@ -40165,7 +40165,7 @@ hairline({
          (the status disc at the left: done green and its tick, skipped or none found grey and a dash, to do an open ring; what it is, its line; a chevron where it still opens), no sphere; Build my insights at its foot once all three are ready */
       insList: st => { const n = HPC.insN(st), all = n === 3, I = (d, w) => '<svg width="' + w + '" height="' + w + '" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + d + '"/></svg>';
         const CHV = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" data-lc="chevron-right" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>';
-        const row = k => { const v = st[k] || 'todo', w = HPC.INSW[k][v] || HPC.INSW[k].todo, todo = v === 'todo', ok = v === 'done' || v === 'conn' || v === 'found', go = todo || (k === 'data' && v === 'skip');
+        const row = k => { const v = st[k] || 'todo', w = HPC.INSW[k][v] || HPC.INSW[k].todo, todo = v === 'todo', ok = v === 'done' || v === 'conn' || v === 'found', go = todo || (k === 'data' && v === 'skip') || k === 'hp';   /* the profile done still opens Tell us about you */
           const IMG = window.EvSvcImg || {}, V3 = '<span class="ovTask3d' + (ok ? ' ovTask3dOk' : '') + '" aria-hidden="true"><img src="' + (IMG[{ hp: 'cert', data: 'symp', past: 'path' }[k]] || '') + '" alt="" decoding="async" draggable="false">' + (ok ? '<i class="ovTask3dCk">' + I('m3.8 8.3 2.6 2.6 5.8-6', 10) + '</i>' : '') + '</span>';   /* the Insights empty state's 3D render (Tweaks -> Insights -> Empty visuals): greyscale until done, a green check top right once done */
           const inner = V3 + '<i class="ovTaskC' + (ok ? ' ovTaskOk' : todo ? '' : ' ovTaskSk') + '" aria-hidden="true">' + (ok ? I('m3.8 8.3 2.6 2.6 5.8-6', 12) : todo ? '' : I('M4.5 8h7', 12)) + '</i><span class="ovTaskTx"><b><span class="hpInsVh">' + (todo ? 'To do' : ok ? 'Done' : v === 'skip' ? 'Skipped' : 'None found') + ': </span>' + (w[0].lastIndexOf(' ') > 0 ? '<span class="ovTL">' + w[0].slice(0, w[0].lastIndexOf(' ')) + '</span> <span class="ovTL">' + w[0].slice(w[0].lastIndexOf(' ') + 1) + '</span>' : w[0]) + '</b><small>' + w[1] + '</small></span>';
           return go ? '<button class="ovTask' + (ok ? '' : ' ovTaskInc') + '" type="button" role="listitem" data-ins="' + k + '">' + inner + CHV + '</button>' : '<div class="ovTask ovTaskDone' + (ok ? '' : ' ovTaskInc') + '" role="listitem">' + inner + '</div>'; };   /* ovTaskInc: not done (to do, skipped, none found) */
@@ -40246,7 +40246,7 @@ hairline({
     /* after Done, one more ("when this card is no longer on the Overview, the Dexa card takes over"): the profile complete and its card put away, the Next step card back in its place showing the DEXA scan (the Hero tweak at DEXA scan while it lasts, what it was put back after) */
     let gone = false, heroKept = null, plan = false, openN = null, ins = false, insShown = null, insBack = null;   /* ins: Your first insights in the profile's place (after the call); insShown: tasks ready last shown; insBack: the flow a row opened, its outcome on the way back */   // plan: the Program card in the profile's place; openN: steps done when the sheet opened
     const INS = { data: 'skip', past: 'found' };   /* the first insights' Health data and Past results; the Health profile task is the profile itself (done: its three steps) */
-    const insNow = () => ({ hp: store.summary().n === 3 ? 'done' : 'todo', data: INS.data, past: INS.past });
+    const insNow = () => ({ hp: store.summary().st.you === 'done' ? 'done' : 'todo', data: INS.data, past: INS.past });   /* the Health profile task: its Tell us about you step */
     const stSync = () => { const t = document.getElementById('stHpSt'); if (t) t.value = stepOf(); };
     /* Tweaks -> Primary card: the three tasks' rows, shown on the First insights states only, each at what the card shows */
     const insTk = () => { const st = insNow(); { const ly = document.getElementById('stHpInsLay'), r = ly && ly.closest('.tkRow'); if (r) r.hidden = !ins; } [['stHpInsHp', 'hp'], ['stHpInsData', 'data'], ['stHpInsPast', 'past']].forEach(([id, k]) => { const e = document.getElementById(id); if (!e) return; const r = e.closest('.tkRow'); if (r) r.hidden = !ins; if (ins && e.value !== st[k]) e.value = st[k]; }); };
@@ -40257,7 +40257,7 @@ hairline({
         setTimeout(() => { if (done) done(); if (window._ar) window._ar.open(); }, matchMedia('(prefers-reduced-motion: reduce)').matches ? 400 : 1600); return; }
       const r = e.target.closest('button[data-ins]'); if (!r) return; const k = r.dataset.ins;
       if (openIna){ openIna({ hp: 'hp', data: 'data', past: 'res' }[k] || null); return; }   /* the Insight activation flow, on the step pressed (its home behind it, any order) */
-      if (k === 'hp'){ const sm = store.summary(), nx = ['wear', 'past', 'you'].find(a => sm.st[a] !== 'done'); open(nx ? { area: nx, dism: true, ov: true } : { dism: true, ov: true }); }
+      if (k === 'hp') open({ area: 'you', dism: true, ov: true });   /* Tell us about you */
       else if (k === 'past'){ insBack = 'past'; openPast(0, true); }
       else if (k === 'data' && window._acc) window._acc.open({ tab: 'health', sec: 'devices' }); };
     window._hpIns = { now: insNow, act: insAct, set: (k, v) => { if (k in INS){ INS[k] = v; paintCard(); stSync(); } } };   /* the three tasks' state and their press, for the Insights section's empty state (the same rows, the same flows) */
