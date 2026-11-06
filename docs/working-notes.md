@@ -21119,3 +21119,10 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 ## What to expect chart: typed badge, top right
 - A badge 12 in from the chart's top right ("small badge, mono 12px, random text appearing with a square cursor, outlined the colour of the pattern's dots"): `--ar-font-mono` 12px uppercase, 22 tall, 4 corners, a 1px outline in the ink at the Dot opacity (`--dbcDotA` = Tweak Dot opacity), a 7×11 block cursor blinking after the text.
 - Its text is the reading's name, typed in (55–95 ms a letter): Vitamin D (Improving), Cortisol (Up and down), Ferritin (Declining), HbA1c (Dip and recover); with Line shape Cycle each new shape types its own as the line morphs.
+
+## Ask sheet V2 stacked suggestions + tools at rest; sphere lift timing; back to Welcome; chart badges
+
+- Ask sheet V2: the suggestions over the field are stacked, one chip a line, left-aligned (Tweaks -> Ask sheet -> Suggestions: Stacked default / Carousel, `html.askV2Car`). New Tweak "Tools at rest" (Off default / On, `html.askToolsRest`): the + and Eva shown on the unfocused field, the card laid out as focused, no keyboard. Both rows show only with Version 2.
+- What to expect (Sphere hero -> chart): the sphere's lift waits until the title is halfway up (360 ms into the push, the next page's H1 at 50% of its rise), then 900 ms easeInOutQuint. Back down: the quint on the morph's own progress.
+- Back to the Welcome: the content no longer drops in from about 290 px above; it stays in place (only its own word fade-up) while the leaving page fades over it.
+- Chart page: no report title in the top nav; the chart's badges carry it: the report name top right (typed, cursor), then its date bottom right (typed, the cursor moves there). The cycling biomarker names on the badge are gone.
