@@ -18608,7 +18608,7 @@ window.EvSvcImg = { concierge: 'assets/overview/svc-concierge.webp', treat: 'ass
                 var tot = P.length / 3, st2 = Math.max(1, Math.floor(tot / GN)); TQ = new Int32Array(tot).fill(-1); for (var gq2 = 0; gq2 < GN; gq2++) { var qq = (gq2 * st2 + ((gq2 * 7) % st2)) % tot; TQ[qq] = gq2; } } } } }
         lastF = { T: (now - t0) / 1000, R: R, cx: cx, cy: cy, a: a, ct: ct, st: st, cr: cr, sr: sr, w: w, hh: hh, top: anchor && anchor.isConnected ? cy - R * .95 : null };   // this frame's ball, for a label's point to be chosen and followed
         var hA = null, hB = null, hw = 1; if (FOC && foc[1] != null) { proj(foc[1]); hB = [sx, sy]; if (foc[0] != null) { proj(foc[0]); hA = [sx, sy]; } hw = Math.min(1, (now - foc[2]) / 600); }   // the highlight's points this frame
-        var hlAt = function (x0, y0) { var v = hlB(x0, y0, hB); return hA && hw < 1 ? hlB(x0, y0, hA) * (1 - hw) + v * hw : v; };   // full alpha near the active marker, half beyond, a 600ms hand-over
+        var hlAt = function (x0, y0) { var v = hlB(x0, y0, hB); return hw < 1 ? (hA ? hlB(x0, y0, hA) : .4) * (1 - hw) + v * hw : v; };   /* the first area lit up from the dimmed ball, not dropped onto a bright one */   // full alpha near the active marker, half beyond, a 600ms hand-over
         var PW = cv.width, PH = cv.height, px8 = null;
         if (big) { if (!pimg || pimg.width !== PW || pimg.height !== PH) pimg = x.createImageData(PW, PH); px8 = pimg.data; px8.fill(0); }
         for (var c = 0; c < 3; c++) {
@@ -18618,7 +18618,7 @@ window.EvSvcImg = { concierge: 'assets/overview/svc-concierge.webp', treat: 'ass
             var q = ix[n]; proj(q); var gj = -1, ge2 = 0;
             if (GK > 0 && TQ) { gj = TQ[q]; var gd0 = ((q * .618034) % 1) * .45, gq3 = Math.min(1, Math.max(0, (GK - gd0) / .55)); ge2 = gq3 < .5 ? 4 * gq3 * gq3 * gq3 : 1 - Math.pow(-2 * gq3 + 2, 3) / 2; if (gj >= 0) { sx += (GX[gj] - sx) * ge2; sy += (GY[gj] - fOff - sy) * ge2; } }   /* into its grid point, each in its own time */
             if (sy < -4 || sy > hh + 4 || sx < -4 || sx > w + 4) continue;
-            var dp = (zz + 1) / 2, al = Math.min(1, A[q] * (.22 + .78 * dp) * lift) * (eK >= 0 ? pe * fo : 1) * (hB ? hlAt(sx, sy) : 1);
+            var dp = (zz + 1) / 2, al = Math.min(1, A[q] * (.22 + .78 * dp) * lift) * (eK >= 0 ? pe * fo : 1) * (hB ? hlAt(sx, sy) : FOC ? .4 : 1);   /* Marker highlight on: the ball arrives already dimmed, the first square's area lighting as it comes ("the sphere appears fully bright, then clips to the area light; it should arrive directly with one square's area highlighted") */
             if (GK > 0 && TQ) { if (gj >= 0) al = al * (1 - ge2) + GA[gj] * ge2; else al *= Math.max(0, 1 - ge2 * 1.5); }   /* the grid's own light; the rest of the cloud fading */
             if (al < .02) continue;
             var sz = .7 + .5 * dp; if (gj >= 0) sz = sz * (1 - ge2) + GS[gj] * ge2;
@@ -19268,6 +19268,7 @@ window.EvSvcImg = { concierge: 'assets/overview/svc-concierge.webp', treat: 'ass
         if (!sphL || !sphL.markers || !sphL.frame()) { later(start, 400); return; } var mk = sphL.markers(bounds());
         for (var j = mk.length - 1; j > 0; j--) { var r = Math.floor(Math.random() * (j + 1)), t = mk[j]; mk[j] = mk[r]; mk[r] = t; }
         for (var i = 0; i < labs.length; i++) { pin(labs[i], i, { k: mk[i % mk.length] }); labs[i].box.className = 'arOrbBox arOrbR arOrbDot'; }
+        want(labs[0] && labs[0].k);   /* its area lit with the first square, at once */
         labs.forEach(function (L, i) { later(function () { L.box.classList.add('arOrbOn'); }, RM ? 0 : i * 110); });
         later(next, RM ? 0 : labs.length * 110 + 400);
       };

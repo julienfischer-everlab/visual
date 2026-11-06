@@ -21043,3 +21043,11 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
   - Off with reduced motion; the welcomes without squares keep the squares' own pop.
 - **Title / sub** (Chart and Card): H1 "We'll walk you through it, / one finding at a time.", sub "Here is what to expect".
 - **Lines .5 thinner** ("line chart -.5px"): the Chart's 1.5 (was 2), the Card's 2 (was 2.5).
+
+## Sphere hero: arrives with its highlighted area, no bright flash
+
+- With Marker highlight on, the ball used to come in at full brightness and only dimmed to the active square's area once the first label was chosen (~1s later). Now:
+  - before any focus the whole ball draws at the dimmed level (40%);
+  - the first square pinned gets the focus at once (`want(labs[0].k)` in `start`);
+  - the first area lights up from the dimmed ball (the hand-over crossfades from .4, not from full).
+- "It should arrive directly with one square highlighted area."
