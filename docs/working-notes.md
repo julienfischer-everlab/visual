@@ -21102,3 +21102,7 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - Now only someone who can edit the artifact (`claude.use('user').canEdit()`, the owner) writes or resets the shared setup; a viewer's Save says "Saved for you" and stays in their browser, their Reset goes back to the owner's shared setup. Doc masters shared through `EvShared.put` follow the same rule. Without the user capability, as before.
 - Live: every open page listens to the shared doc (`onSnapshot`) and takes the owner's next Save as it lands, no reload (its own Save's echo skipped by `at`).
 - Checked with a stand-in store: editor Save writes and Reset deletes; viewer Save writes nothing, Reset deletes nothing; a shared Save pushed to an open page applies at once.
+
+## What to expect: the sphere really lifts while it morphs (64 to 96 px)
+- The earlier lift never ran: the chart's centre (`GCY`) was written inside a `var` comma list in the draw loop, which made it a per-frame local that only existed on the frame the grid was laid out; the layer's own `GCY` stayed null, so the ball held still (top edge 372 → 372) while its points left.
+- Now assigned to the layer's variable, and the lift clamped to 64–96 px, eased out with the morph ("move up a minimum of 64px while the particles become the pattern"); going all the way to the plot's centre buried the title in the cloud. Measured: top edge 372 → ~301 before the points leave.
