@@ -21111,3 +21111,7 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - Tweak Insights › Empty visuals (3D default / Ring; `stInsVis` → `html.insVis3d`): each task its 3D render from `window.EvSvcImg` (no new inlined picture): Health profile the papers (cert), Health data the heart and pulse card (symp), Past results the blood tubes (path). Greyscale at 56% until done ("greyscale if not completed"), full colour with a green check disc at its top right once done; skipped and none found stay greyscale. Ring keeps the status rings.
 - Its label "Insights" with a Lucide lock ("Insights (lock icon)"), the empty state and its Bento version only (the HP card's list keeps Your first insights).
 - No "Ready to build / About 10 minutes"; Build my insights centred in the card, 16 lower (padding-top 12 → 28).
+
+## The star's rule (Ask sheet Version 2 by default)
+- "Star general menu rule": tap the star → the floating field card, the suggestions listed above it, no keyboard, the field collapsed (no + and no Eva, only its send disc); tap the field → the keyboard comes and the field extends with its tools (+, Eva). Version 2 already drew both states; it focused the field 140 ms after opening, which brought the keys and tools at once. That auto-focus is gone for V2 (V1 Conversation keeps its own).
+- Version 2 is the default now. Setups saved on V1 before this take V2: local saves once (`everlab:mig:askV2`); the shared setup whenever it was saved before the rule (`at` < 1793942000000), so the owner's next Save, V1 or V2, is respected as is.
