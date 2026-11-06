@@ -20975,3 +20975,8 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 ## Gift plan cards: price 4px smaller
 
 - Send a gift's plan cards (`.hpPlTabP`): price 19px on a 24 line, was 23 / 28 ("reduce price font size by 4px").
+
+## Envelope card text under the mark; Send a gift refresh no longer lands on the Concierge video
+
+- **The card in the envelope** (`.hpGfEvCd .hpGfNcI`): its words start 20px under the logo mark (padding-top = the mark's top + its height + 20, `hpWide` with its smaller mark). They used to be centred, so a long note rose up over the mark ("push down content, need to sit below the logo mark by 20px"). Measured 20px at XS and L.
+- **Refresh on Send a gift showed the Concierge intro**: the intro's Header tweak (`stGfHead`) used to default to Video (the Concierge's video) and is now Photo. A Save made back then kept Video, and the saved setup wins on every load. A one-time migration (`everlab:mig:gfHead`) puts Photo back. Choosing Video again and saving still holds (tested with real reloads).
