@@ -21059,3 +21059,6 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
   - The squares flying from the Sphere hero are timed to land then: duration 1.15s, delay = 1.5s + share × 1.4s − 1.15s.
   - The non-flying squares pop on the same beats.
 - **Bullets**: 12 in at each side (was 24), 18 between the rows (was 14).
+
+## What to expect bullets: filled icons
+- "use filled icon": the three circles in `dbcBullets()` (Chart and Card) now draw filled glyphs, not outline strokes: a trend's filled area (What we found), a solid shield with its tick cut out by an SVG mask, so the circle shows through in either theme (Peace of mind), a solid message bubble (Talk it through). Same 44 circle, 18px glyph, ink at .72.
