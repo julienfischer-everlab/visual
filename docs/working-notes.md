@@ -21071,3 +21071,10 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - Bullets (pixels, "not percent"): circle 44 → 52 and 4 lower, glyph 18 → 22, icon-to-text gap 14 → 18.
 - Chart: in by the list's 12 each side, so its edges meet the icons' (558 / 882 at XS); its top 32 under the H1 ("gap between the H1 and the chart is 32px"); each square's ground ring 2 → 2.5 (stroke 5).
 - "Here is what to expect" removed (Chart and Card).
+
+## What to expect chart: sphere-matched squares, in-range white, ripple, faster line; rows centred
+- Squares as the sphere's: 6 px rendered, #ff7a1a (the flying copies and the line's orange too).
+- Today (in range, "not alarming, the top dot") white; the line orange through the alarming readings, then over 32 px past the last turn into a super light grey (ink .82), no height gradient.
+- Tweak Dot ripple (On/Off, What to expect only, `stArDbcRip` → `dbcRip`): rings of orange run through the grid's dots from each orange square, fading as they spread (sphere renderer, per grid dot).
+- Line 1.5x faster: .93 s (was 1.4), from 1 s after the push in the dots mode; square pops retimed to match.
+- Bullet rows: text at least the icon's 52, centred on it when shorter.
