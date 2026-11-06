@@ -21252,3 +21252,11 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 ## Insight activation: the done Health profile tile opens Tell us about you
 
 - "Trigger Tell us more flow here" (the Health profile tile, done, on the Insights empty state): the activation flow no longer skips its jump when the profile is done (`opts.inaAt === 'hp'` and `inaSt('hp') === 'done'` used to land on the activation home). It now opens Tell us about you: to do, on its first question; done, on its Review your answers (each answer with its Edit), as the profile does for a finished stage.
+
+## Navigation doc: Island sliders for light and dark, saved apart
+
+- "Tweak doesn't react to the nav"; "need to be able to save a different setup on light and dark mode". The Island sliders (Background, Blur, Active background, Shadow) drove only the light dock (`html.navLtSolid body.light`), so in dark mode they did nothing.
+- `window._nvDk` now holds both sets: light `bg / blur / act / sh` and dark `bgD / blurD / actD / shD` (`--nvBgAD`, `--nvBlurD`, `--nvActAD`, `--nvShKD`).
+- The dark dock's glass (`body:not(.light) .mDock .lgGlass`) scales its ground by Background and its shadow by Shadow, takes its blur from Blur, and its active tab layer from Active background. Dark defaults (100%, 16px, 20%, 100%) draw it exactly as before.
+- The sliders edit the mode the app is in: their labels say "(light)" or "(dark)", and switching the mode shows that mode's numbers. Active background's range is now 0–40.
+- Save setup keeps both sets in `everlab:navMaster.dk`. Older saves load the dark defaults.
