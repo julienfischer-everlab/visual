@@ -21051,3 +21051,11 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
   - the first square pinned gets the focus at once (`want(labs[0].k)` in `start`);
   - the first area lights up from the dimmed ball (the hand-over crossfades from .4, not from full).
 - "It should arrive directly with one square highlighted area."
+
+## Chart line: height gradient, even left-to-right draw, squares land on cue; bullets spacing
+
+- **Line colour** by its height ("orange when low, fff 24% the higher it goes; use a gradient"): a vertical gradient in the plot's own units (`#arDbcLg`, y 150 → 10). Orange (#f6a35c) at the low end, the ink at 24% at the top.
+- **Draw**: from the left at an even pace (linear, 1.4s; from 1.5s after the grid). Each square appears as the line reaches it, at .265 / .436 / .732 / 1 of the line's length.
+  - The squares flying from the Sphere hero are timed to land then: duration 1.15s, delay = 1.5s + share × 1.4s − 1.15s.
+  - The non-flying squares pop on the same beats.
+- **Bullets**: 12 in at each side (was 24), 18 between the rows (was 14).
