@@ -21034,3 +21034,12 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
   - Then the three bullets. The sphere doesn't stay on this one (it flies off with the welcome, as before).
 - **Bullets** (Chart and Card): 24 in at each side; icon circles 44 (was 36), icons 18.
 - **Chart's squares**: a 2px ring of the ground around each (stroke 4 under the fill, `paint-order: stroke`; the sphere ground in the dots version, the paper otherwise), so the line stops short of them.
+
+## Chart: the sphere's squares become the chart's squares; new title and sub; thinner lines
+
+- **Squares fly** ("the square on the sphere becomes the square on the next screen in the line chart"): going from the Sphere hero welcome to the Chart, each visible orange square on the sphere (the `.arOrbSq` markers, taken left to right) is picked up where it stands.
+  - A copy flies along a soft arc (up 40 at mid-way, 1.4× there) to one of the chart's four turn squares while the page rises in: 1.15s, staggered 90ms, ease in-out (`sqFly`).
+  - On landing the copy goes and the chart's own square shows (`.arDbcFly` holds them back until then). The line draws through them after.
+  - Off with reduced motion; the welcomes without squares keep the squares' own pop.
+- **Title / sub** (Chart and Card): H1 "We'll walk you through it, / one finding at a time.", sub "Here is what to expect".
+- **Lines .5 thinner** ("line chart -.5px"): the Chart's 1.5 (was 2), the Card's 2 (was 2.5).
