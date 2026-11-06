@@ -20971,3 +20971,7 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - With Has data No, the three activation steps (in the Bento widget and in the dedicated section) sit side by side, three columns ("insight empty: 3 cols with icon top content below centered"). Each step is a tile: rgba(255,255,255,.04) in dark, rgba(46,31,26,.05) in light, 16 corners. The icon (32) is on top and the title and line are centred under it, wrapping inside the tile. The whole tile is the press, so there is no chevron. Phone: 8 between the tiles, 14 / 12 text.
 - Scoped to `#dOver :is(.ovInsEmpty, .ovInsHeroE)`. The Health profile card's own to-do list (same `insList` master) keeps its rows.
 - Answered: the Async report's welcome cover is `assets/async/hero.webp`, an `<img class="arHeroImg">` with `object-fit: cover`, not a CSS background.
+
+## Gift plan cards: price 4px smaller
+
+- Send a gift's plan cards (`.hpPlTabP`): price 19px on a 24 line, was 23 / 28 ("reduce price font size by 4px").
