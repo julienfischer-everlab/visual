@@ -21174,3 +21174,8 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 ## Recommendation card: its title outside, as the biomarkers'
 
 - "What we recommend for this" is now the section's title over the card (`.arLfSec.arRxSec` > `.arLfH`), the same type as "1 biomarker" (and What we noticed); the card under it holds the rows and the footnote only.
+
+## Recommendation rows: photographs, not 3D icons
+
+- "Use imagery not 3D icon": each What we recommend for this row now shows a photograph (`RXP`), cropped to 128px tiles from the app's own photos (assets/async/rx-*.webp, about 1-4 KB each, made with ffmpeg from overview/hero-report, plan-dexa, status-mri, hero-doctor, hero-consult, plan-consult, async/hero, plan/activity-hero, plan/nut-hero): food for nutrition, the scan table for scans, a doctor for reviews, the clinic for the family check, the red abstract for retests, the runners for sun and walks, the green drink for supplements.
+- The reference photos sent in chat arrived as pictures only (no files in the session), so the app's existing photography stands in; send the files to swap them.
