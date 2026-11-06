@@ -21170,3 +21170,7 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 ## Recommendation card under the biomarkers, on every persona
 
 - "I don't see any recommendation? like this card": the screenshot was Persona #2, which had none. The What we recommend for this card now sits straight under the evidence (biomarkers) card, before What we noticed, in both layouts (tabs on and off), and Persona #2 (pelvic protein, inherited cholesterol, low iron, vitamin D) and Persona #3 (iron pattern) have their own (`L.rx`). The flow chips' bulb follows (Persona #2: Insights 1, 2, 3, 5).
+
+## Recommendation card: its title outside, as the biomarkers'
+
+- "What we recommend for this" is now the section's title over the card (`.arLfSec.arRxSec` > `.arLfH`), the same type as "1 biomarker" (and What we noticed); the card under it holds the rows and the footnote only.
