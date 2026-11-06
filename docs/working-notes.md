@@ -21218,3 +21218,10 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
   - **Its state:** done once that step is done (`insNow` reads `summary().st.you`; the activation flow's `inaSt('hp')` reads `S.a.you`). It was the three steps all done.
   - **Its press:** opens Tell us about you (`inaGo('hp')` → `area('you')`; the card's fallback opens the profile on `area: 'you'`), on the Insights card, the empty-state tiles and the activation home alike. Once done it still opens, to edit (no longer locked).
   - **Its words:** "Tell us about you" (to do) / "Tell us about you, done", and on the activation home "Tell us about you, about 5 minutes".
+
+## Recommendations: card header, detail sheet, rows, review list
+
+- **Stacked card:** the picture at its top right ("visual top right"), corners 26 (+4), its stroke icon 32 (+8). "+ New" under the title and its line ("New badge below title"); the old top row gone.
+- **Recommendation detail sheet** (`rcDetail`): the picture over the title, in the sheet's head ("visual above title"). `sheetOpen` takes a `lead` element, put above the title and cleared on the next open.
+- **What we recommend for this rows:** the text centred against the picture when it is shorter ("content vertically align if content doesn't fill the vertical").
+- **Confirm your updated plan:** no card. The rows sit on the page with a hairline between them ("not into big card; add divider between item"), each with its picture at the left (56, radius 16; "keep visual left side"). Total today keeps its price at the right. The Declined group is the same.
