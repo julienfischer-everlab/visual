@@ -21286,3 +21286,11 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - The "n of 3 ready" count at the header's right is hidden in this card ("remove").
 - Build my insights: 20 above it, was 28 ("margin top -8px"), and 8 under it ("cta margin bottom +8").
 - The tiles' check takes the Health profile card's colours ("check icon dark mode"). In dark it is #42BE65 with a #0f0f0f tick, no longer the light green with a white tick. In light it is #24A148 with a white tick.
+
+## Health profile card: View opens the consultation; Insights tiles: progress ring
+
+- All complete ("You're all set for your consult…"): View and the card itself open the Onboarding consultation's service page, at its booked call (`_svc.openDesk('consult', 'active', { at: 1 })`). Before, they opened the Health profile. Join call (within the hour) and step 4 (records) are unchanged.
+- Insights card (Has data: No): a task that is not done wears a small progress ring (18 px) where the check goes, top right ("circular small progress top right if not fully completed").
+  - The ring is the ink at 18% for the track, the ink for the part done, starting at the top and running clockwise. Light and dark each use their own ink.
+  - Health profile's ring fills as far as Tell us about you has gone (`insNow().hpP`, its pages); the others show an empty track.
+- Placeholder still: the service page says Dr Sarah Chen, Tue 6 Oct; the Overview card says Dr Steven Lu, Thu 29 Oct.
