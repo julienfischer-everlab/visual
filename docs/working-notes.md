@@ -20980,3 +20980,18 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 
 - **The card in the envelope** (`.hpGfEvCd .hpGfNcI`): its words start 20px under the logo mark (padding-top = the mark's top + its height + 20, `hpWide` with its smaller mark). They used to be centred, so a long note rose up over the mark ("push down content, need to sit below the logo mark by 20px"). Measured 20px at XS and L.
 - **Refresh on Send a gift showed the Concierge intro**: the intro's Header tweak (`stGfHead`) used to default to Video (the Concierge's video) and is now Photo. A Save made back then kept Video, and the saved setup wins on every load. A one-time migration (`everlab:mig:gfHead`) puts Photo back. Choosing Video again and saving still holds (tested with real reloads).
+
+## Async report: What to expect under the parked sphere, not a step
+
+- **Transition from the welcome (Sphere / Sphere hero)**: on See my results the welcome rises out (the existing vertical push) while the cloud sphere glides up (1s, ease in-out) until only its lower 40% shows at the top (centre a fifth of the ball above the top). The title and the three cards come up from below under it ("keeping the cloud sphere on top, 40% visible"). It is the Sphere's own ball size (the hero's shrinks to it).
+  - Sphere layer: new `park(on, {dur, inst})` in `sphereLayer`. The page gets `html .arSheet.arSphPark`, and the layer keeps drawing while it is set.
+  - Layout: `--arPark` (the visible part, .8R) and `--arBodyTop` set the stack's top padding.
+  - Moving on to the first insight: the ball flies up and out with the page, vertically. Back to the welcome: it glides back down.
+  - Coming back from an insight: parked at once, fading in.
+  - The Blood stream and the other welcomes keep their own transitions.
+- **Not a step** ("this screen is not considered as step"): no progress bars on it. The bars count only the insights, Everything else and the recommendations (`stepIndicator(REC - DBF)`, `set(step - DBF)`), so the first insight is the first bar.
+- **Cards**: two columns always (visual, then the words). The visual has no ground of its own (only its little UI), and is 120 × 84 on the phone (scene at its drawn size), 160 × 112 on desk. Title 16 / 500, line 14 / 20 in the secondary ink (`oklch(var(--ar-ink) / .56)`; the old `color-mix` of the raw channels was invalid and showed full ink).
+- **Shorter copy**:
+  - "Your key findings, explained in context."
+  - "Our clinicians checked every result. Nothing flagged here is urgent."
+  - "Want to talk it through?" / "Message your care team or book a consult at the end."
