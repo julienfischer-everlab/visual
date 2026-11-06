@@ -47760,7 +47760,11 @@ hairline({
     /* one setup for everyone ("the web version shows different things"): Save keeps the Tweaks in the artifact's shared store as well as in this browser, and every browser takes the shared one as it opens,
        so Chrome, the Claude app and anyone with the link see the same prototype; Reset clears it for everyone. Without the store (the page on its own), this browser's alone, as before */
     let SDB = null, dbWait = null; const SK = 'tweaks/shared';
-    const takeShared = d => { if (!d || !d.all) return; try { localStorage.setItem(KEY, JSON.stringify(d.v || {})); localStorage.setItem(KEY2, JSON.stringify(d.all)); } catch (e){} Object.keys(d.v || {}).forEach(id => put(id, d.v[id])); Object.keys(d.all).forEach(id => put2(id, d.all[id])); };
+    /* whose Save is everyone's ("the saved setup should affect everyone"): the artifact's editors (its owner) only; a viewer's Save stays in their own browser and never replaces the shared setup (last-writer-wins let anyone's Save overwrite it).
+       Without the user capability (the page on its own), anyone may, as before */
+    let CAN = null, lastAt = 0; try { if (window.claude && window.claude.use) window.claude.use('user').then(u => { if (!u || !u.canEdit){ CAN = true; return; } return Promise.resolve(u.canEdit()).then(v => { CAN = !!v; }, () => { CAN = true; }); }).catch(() => { CAN = true; }); } catch (e){ CAN = true; }
+    const canShare = () => CAN !== false;
+    const takeShared = d => { if (!d || !d.all) return; lastAt = d.at || lastAt; try { localStorage.setItem(KEY, JSON.stringify(d.v || {})); localStorage.setItem(KEY2, JSON.stringify(d.all)); } catch (e){} Object.keys(d.v || {}).forEach(id => put(id, d.v[id])); Object.keys(d.all).forEach(id => put2(id, d.all[id])); };
     /* the Documentation's saved setups shared the same way (EvShared.put from a doc's Save setup; the Navigation doc's so far): kept in the store under masters/, taken as the page opens, after the shared Tweaks,
        and each applied again over them (the doc is the master: "when a doc page has a saved setup, every page applies it on load, over Tweaks") */
     const MASTERS = { 'everlab:navMaster': () => { if (window._navMaster) window._navMaster(); } }, mId = k => 'masters/' + k.replace(/[^\w-]/g, '_');
@@ -47771,19 +47775,21 @@ hairline({
     const dbReady = () => SDB ? Promise.resolve(SDB) : dbWait ? Promise.race([dbWait, new Promise(r => setTimeout(() => r(null), 10000))]) : Promise.resolve(null);
     const dbSet = (path, body) => dbReady().then(db => { if (!db) throw { code: 'no store here' }; const go = n => db.doc(path).set(body).catch(e => { if (n > 0 && (!e || !e.code || /unavailable|resource_exhausted|queue_overflow/.test(e.code))) return new Promise(r => setTimeout(r, 500 + Math.random() * 700)).then(() => go(n - 1)); throw e || { code: 'unavailable' }; }); return go(1); });
     const why = e => String((e && (e.code || e.message)) || 'error').replace(/_/g, ' ');
-    window.EvShared = { on: () => !!(SDB || dbWait), put: (k, val) => { if (k === 'everlab:navMaster') window.__evNavM = val; return dbSet(mId(k), { val, at: Date.now() }).then(() => true, e => { try { console.warn('[everlab] shared save', k, e); } catch (x){} return why(e); }); } };
-    try { if (window.claude && window.claude.use) dbWait = window.claude.use('db').then(db => { if (!db) return null; SDB = db; db.doc(SK).get().then(sn => new Promise(res => { if (sn && sn.exists) requestAnimationFrame(() => { takeShared(sn.data()); res(); }); else res(); })).then(() => takeMasters(db), () => takeMasters(db)); return db; }).catch(() => null); } catch (e){}
+    window.EvShared = { on: () => !!(SDB || dbWait) && canShare(), put: (k, val) => { if (k === 'everlab:navMaster') window.__evNavM = val; if (!canShare()) return Promise.resolve('only the owner can share'); return dbSet(mId(k), { val, at: Date.now() }).then(() => true, e => { try { console.warn('[everlab] shared save', k, e); } catch (x){} return why(e); }); } };
+    try { if (window.claude && window.claude.use) dbWait = window.claude.use('db').then(db => { if (!db) return null; SDB = db; db.doc(SK).get().then(sn => new Promise(res => { if (sn && sn.exists) requestAnimationFrame(() => { takeShared(sn.data()); res(); }); else res(); })).then(() => takeMasters(db), () => takeMasters(db)).then(() => { try { db.doc(SK).onSnapshot(sn => { const d = sn && sn.exists ? sn.data() : null; if (d && d.all && d.at && d.at !== lastAt) requestAnimationFrame(() => takeShared(d)); }, () => {}); } catch (e){} }); return db; }).catch(() => null); } catch (e){}   /* and live: a page left open takes the owner's next Save as it lands, no reload */
     document.querySelectorAll('.stTkSave').forEach(b => b.addEventListener('click', () => {
       const v = {}; Object.keys(DEF).forEach(id => { const el = document.getElementById(id); if (el) v[id] = el.value; });
       const all = {}; ctl().forEach(el => { all[el.id] = valOf(el); });
       let ok = true; try { localStorage.setItem(KEY, JSON.stringify(v)); localStorage.setItem(KEY2, JSON.stringify(all)); } catch (e){ ok = false; }
       const say = (t, ms) => document.querySelectorAll('.stTkSave').forEach(x => { x.textContent = t; clearTimeout(x._t); x._t = setTimeout(() => { x.textContent = 'Save'; }, ms); });
-      if (SDB || dbWait){ say('Saving…', 12000); dbSet(SK, { v, all, at: Date.now() }).then(() => say('Saved for everyone', 1800), e => { try { console.warn('[everlab] Tweaks save', e); } catch (x){} say(ok ? 'Saved here only' : 'Not saved · ' + why(e), 5000); }); }   // shared: every browser opens with it
+      if ((SDB || dbWait) && !canShare()){ say('Saved for you', 2200); return; }   /* a viewer: their own browser only, the shared setup untouched */
+      if (SDB || dbWait){ const at = Date.now(); lastAt = at; say('Saving…', 12000); dbSet(SK, { v, all, at }).then(() => say('Saved for everyone', 1800), e => { try { console.warn('[everlab] Tweaks save', e); } catch (x){} say(ok ? 'Saved here only' : 'Not saved · ' + why(e), 5000); }); }   // shared: every browser opens with it
       else say(ok ? 'Saved' : 'Not saved · storage blocked', ok ? 1400 : 5000);
     }));
     document.querySelectorAll('.stTkReset').forEach(b => b.addEventListener('click', () => {
       try { localStorage.removeItem(KEY); localStorage.removeItem(KEY2); } catch (e){}
-      dbReady().then(db => { if (db) db.doc(SK).delete().catch(() => {}); });   // the shared one too: everyone back to the defaults
+      if ((SDB || dbWait) && !canShare()){ Object.keys(DEF2).forEach(id => put2(id, DEF2[id])); dbReady().then(db => db && db.doc(SK).get().then(sn => { if (sn && sn.exists){ lastAt = 0; takeShared(sn.data()); } })).catch(() => {}); return; }   /* a viewer: back to the owner's shared setup (never deleting it for everyone) */
+      dbReady().then(db => { if (db) db.doc(SK).delete().catch(() => {}); });   // the owner: the shared one too, everyone back to the defaults
       Object.keys(DEF2).forEach(id => put2(id, DEF2[id]));
     }));
   }
