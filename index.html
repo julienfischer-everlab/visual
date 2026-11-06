@@ -14592,7 +14592,7 @@
         <!-- Here's what we recommend: a card per kind (Categories), or every recommended product inline as a stack of cards, decided one at a time ("an inline stacked version where we list all product recommended") -->
         <div class="tkGroup" data-pages="ar" data-ar-at="c">
         <div class="tkSub">What we recommend</div>
-        <div class="tkRow"><span class="lbl">Layout</span><select id="stArRc" class="tkSegSel" aria-label="How Here's what we recommend lists the recommendations"><option value="cats" selected>Categories</option><option value="stack">Stacked</option></select></div>
+        <div class="tkRow"><span class="lbl">Layout</span><select id="stArRc" class="tkSegSel" aria-label="How Here's what we recommend lists the recommendations"><option value="cats" selected>Categories</option><option value="stack">Stacked</option><option value="arc">Arc</option></select></div>
         </div>
         <div class="tkGroup" data-pages="lp">
         <div class="tkSub">Organ Age landing</div>
@@ -16940,6 +16940,23 @@
 /* Here's what we recommend (the step before the end): the title and how many, then a card per kind, Everything else's area card (its fill, outline, hover, focus), 12 apart: an icon on a tile of the ink at 5%, its name, how many, the chevron.
    Its sheets: the products' rows on the mocks' warm grey tiles, the meals as cards of tips (the My meals mock), the others an icon tile; every row's detail stacked over it */
 .arSheet .arRcHead .arRcLede { margin: 0; font-size: 16px; line-height: 22px; color: oklch(var(--ar-ink) / .56); }   /* the title and how many, centred at every width (Everything else's head) */
+/* What we recommend, Arc: the thumbnails on a circle of 360 (its top under the title, a hairline fading at its sides), the active one at the top, 1.25x and sharp; the others 0.9x, blurred, at 50%; a tick (added) or a cross (declined) at a thumbnail's corner.
+   The active one's card under it, the others in the same cell, faded and drifted 24 aside (the way the arc turned) */
+.arSheet .arRcArc { position: relative; height: 124px; margin-top: 4px; }
+.arSheet .arRcArcClip { position: absolute; top: 0; left: 50%; width: 600px; height: 124px; margin-left: -300px; overflow: hidden; pointer-events: none; -webkit-mask-image: linear-gradient(90deg, transparent 18%, #000 40%, #000 60%, transparent 82%); mask-image: linear-gradient(90deg, transparent 18%, #000 40%, #000 60%, transparent 82%); }
+.arSheet .arRcArcLine { position: absolute; top: 40px; left: 0; width: 600px; height: 600px; border-radius: 50%; border: 1px solid oklch(var(--ar-ink) / .14); }
+.arSheet .arRcArcT { position: absolute; top: 8px; left: 50%; z-index: 1; appearance: none; -webkit-appearance: none; width: 64px; height: 64px; margin: 0; padding: 0; border: 0; border-radius: 16px; background: none; cursor: pointer; opacity: .5; filter: blur(2px); transform-origin: 50% 50%; -webkit-tap-highlight-color: transparent; transition: transform .55s cubic-bezier(.32, .72, 0, 1), opacity .35s ease, filter .35s ease; }
+.arSheet .arRcArcT .arRcPic { width: 64px; height: 64px; border-radius: 16px; }
+.arSheet .arRcArcT.arOn { z-index: 2; opacity: 1; filter: none; } .arSheet .arRcArcT.arRcArcFar { opacity: 0; pointer-events: none; }
+@media (hover: hover) { .arSheet .arRcArcT:not(.arOn):hover { opacity: .8; filter: blur(1px); } }
+.arSheet .arRcArcT:focus-visible { outline: 2px solid oklch(var(--ar-ink)); outline-offset: 3px; }
+.arSheet .arRcArcMk { position: absolute; right: -4px; bottom: -4px; display: none; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--ar-paper); }
+.arSheet .arRcArcY .arRcArcMkY { display: flex; background: oklch(68% .15 150); color: #fff; } .arSheet .arRcArcN .arRcArcMkN { display: flex; background: oklch(var(--ar-ink) / .3); color: var(--ar-paper); }
+.arSheet .arRcDeckArc { padding-bottom: 0; } .arSheet .arRcDeckArc .arRcStkPic { display: none; }   /* the arc shows it */
+.arSheet .arRcDeckArc > .arRcStkC { --k: 0; z-index: 1; opacity: 0; transform: translateX(calc(var(--dir, 1) * 24px)); pointer-events: none; transition: transform .45s cubic-bezier(.32, .72, 0, 1), opacity .3s ease; }
+.arSheet .arRcDeckArc > .arRcStkC.arRcArcL { transform: translateX(calc(var(--dir, 1) * -24px)); }
+.arSheet .arRcDeckArc > .arRcStkC.arOn { z-index: 2; opacity: 1; transform: none; pointer-events: auto; transition-delay: .08s; }
+.arSheet .arRcDeckArc > .arRcStkC > * { opacity: 1; }
 /* Confirm your updated plan (the Stacked recommendations' review): the title left, 32 / 38, its line under it; one card of the added items, each its name and phase at the left, its price at the right, a hairline between, Total today last */
 .arSheet.arIsRev .arNavT { visibility: hidden; }
 .arSheet:not(.hpSheet) .arBtnPrimary:disabled:not(.evBusyS):not(.evOk) { background: oklch(var(--ar-ink) / .06); color: oklch(var(--ar-ink) / .3); cursor: default; }   /* as the Health profile's: Stacked recommendations' Next until every card is decided */
@@ -18356,7 +18373,7 @@ window.EvSvcImg = { concierge: 'assets/overview/svc-concierge.webp', treat: 'ass
       blur: opts.blur === true,   // the gradients' blur, under them: off ("remove any blur effect when it's gradient"); on only when asked   // the footer: a solid ground (default), or a progressive gradient and blur, the flow running under it   // the fixed bar: a solid ground (default), or the Insights' sticky gradient and blur, the flow scrolling under it
       tabs: opts.tabs === false || opts.tabs === 'off' ? 'off' : opts.tabs === 'seg' ? 'seg' : 'pills',   // an insight's three sections anchored by pills (default) or a segmented control, or stacked with no tabs
       cards: opts.cards === 'outline' ? 'outline' : 'fill',   // Behind this insight's cards filled (default, "Filled should be the default style") or outlined
-      rc: opts.rc === 'stack' ? 'stack' : 'cats',   /* Here's what we recommend: a card per kind, or every product as a stack of cards decided one at a time */
+      rc: opts.rc === 'stack' || opts.rc === 'arc' ? opts.rc : 'cats',   /* Here's what we recommend: a card per kind, or every product as a stack of cards decided one at a time */
       mb: opts.mb === 1 ? 1 : opts.mb === 2 ? 2 : 3,   /* 1: one shown, the second under the See more CTA ("Add option Max 1") */   // the biomarkers shown before See N more (default 3), the next one partly shown
       src: opts.src === 'out' ? 'out' : 'in',
       lbg: opts.lbg === true,
@@ -18420,7 +18437,7 @@ window.EvSvcImg = { concierge: 'assets/overview/svc-concierge.webp', treat: 'ass
     function close() { if (o.onClose) o.onClose(); else go(0); }
     on(backBtn, 'click', function () { if (step === REC && revOn) { revOn = false; pushDir = -1; render(); return; } go(Math.max(0, step - 1)); });   /* the review pops back to the deck */
     on(closeBtn, 'click', close);
-    on(cta, 'click', function () { if (step === REC && revOn) { revPay(); return; } if (step === REC && o.rc === 'stack' && stkAll.length && stkAt >= stkAll.length) { revOn = true; pushDir = 1; render(); return; } if (step === NEXT) close(); else go(step + 1); });   /* Stacked, all decided with something added: the review first, then Pay */
+    on(cta, 'click', function () { if (step === REC && revOn) { revPay(); return; } if (step === REC && (o.rc === 'stack' || o.rc === 'arc') && stkFin()) { revOn = true; pushDir = 1; render(); return; } if (step === NEXT) close(); else go(step + 1); });   /* Stacked, all decided with something added: the review first, then Pay */
 
     /* the bottom sheet, almost the full height: the questionnaire's questions and answers, or every biomarker behind the insight */
     /* two layers: the sheet over the report, and one stacked on it (a biomarker opened from the X biomarkers sheet); the page behind pushed back and the sheet under a stacked one too, as iOS does ("biomarker detail should overlap the modal, stacking effect"; "all bottom sheets almost full should stack the screen behind as a standard iOS behaviour") */
@@ -19311,6 +19328,7 @@ window.EvSvcImg = { concierge: 'assets/overview/svc-concierge.webp', treat: 'ass
         var card = h('div', { class: 'arPlanL' }, h('p', { class: 'arPlanE', text: RPLAN.eyebrow }), h('ul', {}, RPLAN.items.map(function (it) { return h('li', { class: it.later ? 'later' : '' }, it.n ? h('b', { text: 'New:' }) : null, it.n ? ' ' : null, it.n ? it.t : it.t); })));
         return enter(h('div', { class: 'arStack arGap24 arRcStack' }, ph, card), ph, pt, [pl, card]); }
       if (o.rc === 'stack') return buildRecStack();
+      if (o.rc === 'arc') return buildRecArc();
       var all = RCS.reduce(function (t, c) { return t + rcCount(c); }, 0);
       var title = h('h2', { class: 'arH700', 'aria-label': 'Here’s what we recommend' }, 'Here’s what', h('br'), 'we recommend'), lede = h('p', { class: 'arPara arRcLede', text: nRec(all) });   // the title on two lines at every width, the break after what ("the break line under what")
       var hd = h('div', { class: 'arIntroBlock arRsHead arRcHead' }, title, lede);   // centred, as Everything else's ("you can centre the title here")
@@ -19365,15 +19383,7 @@ window.EvSvcImg = { concierge: 'assets/overview/svc-concierge.webp', treat: 'ass
       var dn = window.EvLoad ? window.EvLoad.simple(cta) : null, rm = reducedMotion();
       later(function () { var back = dn ? dn(revTotal() ? 'Paid' : 'Confirmed') : null; later(function () { if (back) back(); go(NEXT); }, rm ? 0 : 700); }, rm ? 0 : 1300);   /* the Simple loader, the button's tick, then the end */
     }
-    function buildRecStack() {
-      var its = []; RCS.forEach(function (c) { (c.items || []).forEach(function (it) { its.push({ it: it, c: c }); }); });
-      stkAll = its; var n = its.length, at = Math.min(stkAt, n), dec = stkDec;
-      var title = h('h2', { class: 'arH700', 'aria-label': 'Here’s what we recommend' }, 'Here’s what', h('br'), 'we recommend'), lede = h('p', { class: 'arPara arRcLede', text: nRec(n) });
-      var hd = h('div', { class: 'arIntroBlock arRsHead arRcHead' }, title, lede);
-      var deck = h('div', { class: 'arRcDeck', role: 'list', 'aria-label': 'Recommendations, one at a time' });
-      var doneT = h('h3', { class: 'arRcStkT' }), doneS = h('p', { class: 'arRcStkS' }), again = h('button', { type: 'button', class: 'arRcStkB arRcStkNo arRcStkAgain', text: 'Review again' });
-      var done = h('div', { class: 'arRcStkC arRcStkDone', 'aria-live': 'polite' }, h('span', { class: 'arRcStkTick', 'aria-hidden': 'true' }, strokeIcon(24, 24, 2, ['m5 12.5 4.5 4.5L19 7.5'])), doneT, doneS, again);
-      function card(x, i) {
+    function rcStkCard(x, i, n, decide) {   /* a recommendation's card, the Stacked deck's and the Arc's */
         var it = x.it, src = (it.from || [])[0], ins = !!src && typeof src !== 'string', sn = !src ? '' : ins ? (src.short || src.headline) : src;
         var no = h('button', { type: 'button', class: 'arRcStkB arRcStkNo', text: 'Decline' }), yes = h('button', { type: 'button', class: 'arRcStkB arRcStkYes', text: 'Add to my plan' });
         on(no, 'click', function () { decide(i, false); }); on(yes, 'click', function () { decide(i, true); });
@@ -19386,7 +19396,58 @@ window.EvSvcImg = { concierge: 'assets/overview/svc-concierge.webp', treat: 'ass
           h('div', { class: 'arRcStkMeta' }, h('span', { text: rcPhase(x) }), h('b', { text: RC_PRICE[it.t] || 'Included' })),
           h('div', { class: 'arRcStkBtns' }, no, yes));
       }
-      var cards = its.map(card);
+    function stkFin() { return stkAll.length > 0 && stkAll.every(function (x, i) { return stkDec[i] !== undefined; }); }
+    /* Arc ("a version with an arc below the title, presented by thumbnail of recommendation, and below the card that relates to the active state; inactive blurred thumbnail, opacity 50%"):
+       every recommendation's picture on an arc (a circle of 300 under the title, 15 degrees apart, two each side), the active one at its top, sharp and larger, the others blurred at 50%, a tick or a cross on the decided ones;
+       under it the active one's card. Deciding turns the arc to the next undecided one; a tap on a thumbnail brings it to the top (to decide again). Then the end card */
+    function buildRecArc() {
+      var its = []; RCS.forEach(function (c) { (c.items || []).forEach(function (it) { its.push({ it: it, c: c }); }); });
+      stkAll = its; var n = its.length, dec = stkDec, cur = Math.max(0, Math.min(stkAt, n - 1)), showDone = stkFin(), dir = 1, R = 300, STEP = 15;
+      var title = h('h2', { class: 'arH700', 'aria-label': 'Here’s what we recommend' }, 'Here’s what', h('br'), 'we recommend'), lede = h('p', { class: 'arPara arRcLede', text: nRec(n) });
+      var hd = h('div', { class: 'arIntroBlock arRsHead arRcHead' }, title, lede);
+      var arc = h('div', { class: 'arRcArc', role: 'tablist', 'aria-label': 'Recommendations' }, h('div', { class: 'arRcArcClip', 'aria-hidden': 'true' }, h('i', { class: 'arRcArcLine' })));
+      var thumbs = its.map(function (x, i) {
+        var b = h('button', { type: 'button', class: 'arRcArcT', role: 'tab', 'aria-label': x.it.t }, rcPic(x.it), h('span', { class: 'arRcArcMk arRcArcMkY', 'aria-hidden': 'true' }, strokeIcon(12, 24, 3, ['m5 12.5 4.5 4.5L19 7.5'])), h('span', { class: 'arRcArcMk arRcArcMkN', 'aria-hidden': 'true' }, strokeIcon(12, 24, 3, ['M7 7l10 10', 'M17 7 7 17'])));
+        on(b, 'click', function () { dir = i >= cur ? 1 : -1; cur = i; showDone = false; lay(); });
+        arc.appendChild(b); return b;
+      });
+      var deck = h('div', { class: 'arRcDeck arRcDeckArc', role: 'tabpanel' });
+      var doneT = h('h3', { class: 'arRcStkT' }), doneS = h('p', { class: 'arRcStkS' }), again = h('button', { type: 'button', class: 'arRcStkB arRcStkNo arRcStkAgain', text: 'Review again' });
+      var done = h('div', { class: 'arRcStkC arRcStkDone', 'aria-live': 'polite' }, h('span', { class: 'arRcStkTick', 'aria-hidden': 'true' }, strokeIcon(24, 24, 2, ['m5 12.5 4.5 4.5L19 7.5'])), doneT, doneS, again);
+      var cards = its.map(function (x, i) { return rcStkCard(x, i, n, decide); });
+      cards.forEach(function (c) { deck.appendChild(c); }); deck.appendChild(done);
+      function lay() {
+        var fin = stkFin(), endUp = fin && showDone;
+        thumbs.forEach(function (t, i) { var d = i - cur, a = d * STEP * Math.PI / 180, x = R * Math.sin(a), y = R * (1 - Math.cos(a));
+          t.style.transform = 'translate(calc(-50% + ' + x.toFixed(1) + 'px), ' + y.toFixed(1) + 'px) scale(' + (d === 0 && !endUp ? 1.25 : .9) + ')';
+          t.classList.toggle('arOn', d === 0 && !endUp); t.classList.toggle('arRcArcFar', Math.abs(d) > 2); t.classList.toggle('arRcArcY', dec[i] === true); t.classList.toggle('arRcArcN', dec[i] === false);
+          t.setAttribute('aria-selected', d === 0 && !endUp ? 'true' : 'false'); t.tabIndex = Math.abs(d) > 2 ? -1 : 0; });
+        cards.forEach(function (c, i) { var on0 = i === cur && !endUp; c.classList.toggle('arOn', on0); c.classList.toggle('arRcArcL', !on0 && (endUp || i < cur)); if (on0) c.removeAttribute('inert'); else c.setAttribute('inert', ''); c.setAttribute('aria-hidden', on0 ? 'false' : 'true'); });
+        deck.style.setProperty('--dir', dir);
+        done.classList.toggle('arOn', endUp); if (endUp) done.removeAttribute('inert'); else done.setAttribute('inert', '');
+        stkAt = cur; stkDec = dec; if (step === REC && !revOn) { ctaLabel.textContent = fin ? 'Review my plan' : 'Next'; cta.disabled = !fin; }
+        if (endUp) { var y = dec.filter(Boolean).length; doneT.textContent = y ? y + ' added to your plan' : 'Nothing added yet'; doneS.textContent = (n - y ? (n - y) + ' declined. ' : '') + 'You can change any of these later in Plan.'; }
+      }
+      function decide(i, yes) {
+        dec[i] = yes; dir = 1; var nx = -1;
+        for (var k = 1; k <= n; k++) { var j = (i + k) % n; if (dec[j] === undefined) { nx = j; break; } }
+        if (nx < 0) { showDone = true; } else cur = nx;
+        lay();
+      }
+      on(again, 'click', function () { dec = []; stkDec = dec; cur = 0; showDone = false; dir = -1; lay(); });
+      lay();
+      var wrap = h('div', { class: 'arRcStkWrap' }, arc, deck, h('p', { class: 'arRcStkNote', text: 'You can change any of these later in Plan.' }));
+      return enter(h('div', { class: 'arStack arGap24 arRcStack arRcArcStack' }, hd, wrap), hd, title, [lede, wrap]);
+    }
+    function buildRecStack() {
+      var its = []; RCS.forEach(function (c) { (c.items || []).forEach(function (it) { its.push({ it: it, c: c }); }); });
+      stkAll = its; var n = its.length, at = Math.min(stkAt, n), dec = stkDec;
+      var title = h('h2', { class: 'arH700', 'aria-label': 'Here’s what we recommend' }, 'Here’s what', h('br'), 'we recommend'), lede = h('p', { class: 'arPara arRcLede', text: nRec(n) });
+      var hd = h('div', { class: 'arIntroBlock arRsHead arRcHead' }, title, lede);
+      var deck = h('div', { class: 'arRcDeck', role: 'list', 'aria-label': 'Recommendations, one at a time' });
+      var doneT = h('h3', { class: 'arRcStkT' }), doneS = h('p', { class: 'arRcStkS' }), again = h('button', { type: 'button', class: 'arRcStkB arRcStkNo arRcStkAgain', text: 'Review again' });
+      var done = h('div', { class: 'arRcStkC arRcStkDone', 'aria-live': 'polite' }, h('span', { class: 'arRcStkTick', 'aria-hidden': 'true' }, strokeIcon(24, 24, 2, ['m5 12.5 4.5 4.5L19 7.5'])), doneT, doneS, again);
+      var cards = its.map(function (x, i) { return rcStkCard(x, i, n, decide); });
       cards.forEach(function (c) { deck.appendChild(c); }); deck.appendChild(done);
       function lay() {
         cards.forEach(function (c, i) { var k = i - at; c.style.setProperty('--k', Math.max(0, Math.min(k, 3))); c.classList.toggle('arOn', k === 0); c.classList.toggle('arRcStkFar', k > 2); if (k === 0) c.removeAttribute('inert'); else c.setAttribute('inert', ''); c.setAttribute('aria-hidden', k === 0 ? 'false' : 'true'); });
@@ -39581,7 +39642,7 @@ hairline({
     const mount = keep => { const w = keep && inst && inst.where ? inst.where() : null, was = per; per = ['p2', 'p3'].indexOf(opt('stArPer')) >= 0 ? opt('stArPer') : 'p1';   // a tweak changed: back on the same screen after ("don't reload the experience from the beginning")
       if (inst) inst.destroy(); frame.textContent = '';
       const arLk = window.EvSteps.look();   /* the shell's look (Fixed bar, Footer, Cards style): the step flow's reading of these Tweaks, the master's too (Design system -> Step flow) */
-      inst = window.AsyncReport.mount(frame, { ev: opt('stArEv') === 'v2' ? 'v2' : 'v1', persona: per, more: opt('stArMore') === 'fold' ? 'fold' : 'sheet', bm: opt('stArBm') === 'carousel' ? 'carousel' : 'static', mean: opt('stArMean') === 'text' ? 'text' : 'card', src: opt('stArSrc') === 'out' ? 'out' : 'in', assure: opt('stArAss') !== 'off', lbg: opt('stArLbg') === 'on', svis: opt('stArList') === 'stream' ? 'stream' : 'sphere', mhl: opt('stArMhl') === 'on', areas: opt('stArAreas') === 'list' ? 'list' : opt('stArAreas') === 'grid' ? 'grid' : 'stack', cdn: opt('stArCdn') === '' ? .4 : +opt('stArCdn') / 100, amt: opt('stArAmt') === '' ? .5 : +opt('stArAmt') / 100, wvis: 'photo',   /* Intro screen: Split bg, the welcome's picture (no list after it now); Halftone, Full bg and Sphere, the welcome itself as the reveal (Halftone on creme, its picture dithered as the Report visuals do) */ theme: opt('themeSel') === 'dark' ? 'dark' : 'light', bar: arLk.bar, foot: arLk.foot, welcome: opt('stArList') === 'reveal' ? 'reveal' : opt('stArList') === 'sphere' ? 'sphere' : opt('stArList') === 'orbit' || opt('stArList') === 'stream' ? 'orbit' : opt('stArList') === 'ht' ? 'halftone' : opt('stArWel') === 'includes' ? 'includes' : 'cards', tabs: opt('stArTab') || 'pills', cards: arLk.cards, rc: opt('stArRc') === 'stack' ? 'stack' : 'cats', mb: opt('stArMb') === '1' ? 1 : opt('stArMb') === '2' ? 2 : 3, srcVis: opt('stArSrcVis') === 'image' ? 'image' : 'hairline', dbf: opt('stArDbf') === 'chart' ? 'chart' : opt('stArDbf') === 'card' ? 'card' : 'cards', dbcGap: +opt('stArDbcGap') || 7, dbcOp: opt('stArDbcOp') === '' ? .2 : +opt('stArDbcOp') / 100, dbcRip: opt('stArDbcRip') !== 'off', dbcShape: opt('stArDbcShape') || 'cycle', onClose: () => { if (inst) inst.reset(); } });
+      inst = window.AsyncReport.mount(frame, { ev: opt('stArEv') === 'v2' ? 'v2' : 'v1', persona: per, more: opt('stArMore') === 'fold' ? 'fold' : 'sheet', bm: opt('stArBm') === 'carousel' ? 'carousel' : 'static', mean: opt('stArMean') === 'text' ? 'text' : 'card', src: opt('stArSrc') === 'out' ? 'out' : 'in', assure: opt('stArAss') !== 'off', lbg: opt('stArLbg') === 'on', svis: opt('stArList') === 'stream' ? 'stream' : 'sphere', mhl: opt('stArMhl') === 'on', areas: opt('stArAreas') === 'list' ? 'list' : opt('stArAreas') === 'grid' ? 'grid' : 'stack', cdn: opt('stArCdn') === '' ? .4 : +opt('stArCdn') / 100, amt: opt('stArAmt') === '' ? .5 : +opt('stArAmt') / 100, wvis: 'photo',   /* Intro screen: Split bg, the welcome's picture (no list after it now); Halftone, Full bg and Sphere, the welcome itself as the reveal (Halftone on creme, its picture dithered as the Report visuals do) */ theme: opt('themeSel') === 'dark' ? 'dark' : 'light', bar: arLk.bar, foot: arLk.foot, welcome: opt('stArList') === 'reveal' ? 'reveal' : opt('stArList') === 'sphere' ? 'sphere' : opt('stArList') === 'orbit' || opt('stArList') === 'stream' ? 'orbit' : opt('stArList') === 'ht' ? 'halftone' : opt('stArWel') === 'includes' ? 'includes' : 'cards', tabs: opt('stArTab') || 'pills', cards: arLk.cards, rc: opt('stArRc') || 'cats', mb: opt('stArMb') === '1' ? 1 : opt('stArMb') === '2' ? 2 : 3, srcVis: opt('stArSrcVis') === 'image' ? 'image' : 'hairline', dbf: opt('stArDbf') === 'chart' ? 'chart' : opt('stArDbf') === 'card' ? 'card' : 'cards', dbcGap: +opt('stArDbcGap') || 7, dbcOp: opt('stArDbcOp') === '' ? .2 : +opt('stArDbcOp') / 100, dbcRip: opt('stArDbcRip') !== 'off', dbcShape: opt('stArDbcShape') || 'cycle', onClose: () => { if (inst) inst.reset(); } });
       wrap.classList.toggle('aqInk', !!(inst && inst.el && !inst.el.classList.contains('arDark')));
       if (inst && inst.el) frame.style.background = getComputedStyle(inst.el).backgroundColor;   // the frame in the debrief's own paper, for the full screen's margins
       if (w && inst && inst.at) inst.at(w, was === per); };   // its scroll too, when it is the same member's
