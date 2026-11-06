@@ -21260,3 +21260,9 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - The dark dock's glass (`body:not(.light) .mDock .lgGlass`) scales its ground by Background and its shadow by Shadow, takes its blur from Blur, and its active tab layer from Active background. Dark defaults (100%, 16px, 20%, 100%) draw it exactly as before.
 - The sliders edit the mode the app is in: their labels say "(light)" or "(dark)", and switching the mode shows that mode's numbers. Active background's range is now 0–40.
 - Save setup keeps both sets in `everlab:navMaster.dk`. Older saves load the dark defaults.
+
+## Navigation doc: Island colour pickers (background, active item), per mode
+
+- "Need a colour selector for bg and bg active item": two colour pickers under the Island sliders, **Background colour** and **Active colour**. Like the sliders, each mode keeps its own: `_nvDk` `bgc` / `actc` (light, defaults #ffffff / #2e1f1a) and `bgcD` / `actcD` (dark, defaults #101011, the glass plate, / #ffffff).
+- They feed `--nvBgC`, `--nvActC`, `--nvBgCD`, `--nvActCD` (r,g,b): the light island's ground and active pill, and the dark glass's plate and active layer. Background / Active background set their opacity as before.
+- Labels say (light) / (dark) with the hex. Save setup keeps them in `everlab:navMaster.dk`; older saves take the defaults, which draw the dock as before.
