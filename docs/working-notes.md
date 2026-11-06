@@ -21130,3 +21130,7 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 ## Dock in light mode: white bar, secondary active pill (Design system setup)
 
 - Design system -> Navigation, Dock -> Light: Solid (default) / Glass (`#dkLt`, `html.navLtSolid`), saved in the Navigation setup (`everlab:navMaster`, `lt`) and applied on every page. Solid: the island and the AI button plain white, the active tab's pill the secondary grey (rgba(46,31,26,.06)), no glass sheen ("Nav BG white, Active bg Secondary"). Glass: the frosted plate as before. Dark mode unchanged.
+
+## Navigation doc: dock controls (Island) for the light dock
+
+- "Dock controller, where?": the Light row added before lived only in the legacy top-bar Dock menu (shown on old pages alone). The controls now sit in Design system -> Navigation, right panel, group Island: Background (opacity, 0-100%, default 100), Blur (0-40px, default 16), Active background (0-20%, default 6), Shadow (0-200%, default 100). Live on every dock (`window._nvDk`, `--nvBgA`, `--nvBlur`, `--nvActA`, `--nvShK` on <html>), kept by the doc's Save setup (`everlab:navMaster`, `dk`), applied on load on every page. Light mode only; dark unchanged.
