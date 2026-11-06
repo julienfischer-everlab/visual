@@ -21271,3 +21271,12 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 
 - "Foreground colour active and inactive": two more Island colour pickers, **Foreground active** and **Foreground inactive** (the tab's icon and label). Each mode keeps its own: `_nvDk` `fgc` / `fgic` (light, #000 / #000) and `fgcD` / `fgicD` (dark, #fff / #ececea). They feed `--nvFgC`, `--nvFgiC`, `--nvFgCD`, `--nvFgiCD`.
 - Inactive keeps its opacity (.63 dark, .54 light, the Labels' inactive scale) and hover lifts it as before. The defaults draw every dock (app and doc) as before. Saved with the setup.
+
+## Navigation doc: the phone runs the live app (light / dark setups checked)
+
+- "Light mode dark mode doesn't work": checked end to end. The Island's light and dark setups are kept apart (`_nvDk` light keys and `…D` keys). Save setup stores both. A reload brings both back, and switching the colour mode shows each mode's values on the sliders and on the dock. What hid it: the doc phone showed a still light-mode picture of the Overview, so a mode switch changed only the dock over a white picture.
+- "The overview is not interactive": the doc phone now runs the app itself. It is this page in a frame, `#nav-demo`, which sets `html.evEmbed` at parse. In that mode there is no top bar, no comment pins and no Flow button; the app loads on the Overview (version 9) at the Auto breakpoint, edge to edge.
+- It has its own Overview, dock, More sheet and Ask card, and every tap is real.
+- The doc pushes its colour mode, its Island numbers and colours (saved or not), its labels, icon motion, Insights icon and Ask services into the frame live (`_nvDk.all`, `_navMaster(m)`). The doc's More and AI buttons tap the frame's own.
+- The status bar takes the app's ground and ink.
+- The picture and the doc's own dock stand in until the frame is up, about 3.5 s here.
