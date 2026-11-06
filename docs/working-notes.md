@@ -21242,3 +21242,9 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
   - Added items are grouped under **Included** and **Extra** (priced), then Total today.
   - The button reads **Pay $xx.xx (N items)**, N being the extras.
   - Tweak **What we recommend → Review: List / Grid**: Grid is two a row, each item a secondary card (picture, name, phase, price or Add to plan), with Total today across under them.
+
+## Navigation doc: the Overview under the dock
+
+- "Add the Overview for the sake of the demo to test the nav, instead of this blank screen." The Island phone (Design system → Navigation, XS) now shows the XS Overview under the dock instead of the placeholder blocks. It is a picture of the page (`assets/overview/nav-demo-overview.webp`, 393 wide, light mode, 47 KB), scrolling in the phone (`.nvOvScr`, 110 clear at the foot), so the island's glass, blur, labels and More / Ask can be tried over real content.
+- A picture, not the live page: the Overview's styles hang on `#dOver` and the app's breakpoint, so a copy would not draw right.
+- dist is 15.97 MB with it.
