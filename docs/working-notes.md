@@ -21106,3 +21106,8 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 ## What to expect: the sphere really lifts while it morphs (64 to 96 px)
 - The earlier lift never ran: the chart's centre (`GCY`) was written inside a `var` comma list in the draw loop, which made it a per-frame local that only existed on the frame the grid was laid out; the layer's own `GCY` stayed null, so the ball held still (top edge 372 → 372) while its points left.
 - Now assigned to the layer's variable, and the lift clamped to 64–96 px, eased out with the morph ("move up a minimum of 64px while the particles become the pattern"); going all the way to the plot's centre buried the title in the cloud. Measured: top edge 372 → ~301 before the points leave.
+
+## Insights empty state: 3D renders, lock label, centred Build my insights
+- Tweak Insights › Empty visuals (3D default / Ring; `stInsVis` → `html.insVis3d`): each task its 3D render from `window.EvSvcImg` (no new inlined picture): Health profile the papers (cert), Health data the heart and pulse card (symp), Past results the blood tubes (path). Greyscale at 56% until done ("greyscale if not completed"), full colour with a green check disc at its top right once done; skipped and none found stay greyscale. Ring keeps the status rings.
+- Its label "Insights" with a Lucide lock ("Insights (lock icon)"), the empty state and its Bento version only (the HP card's list keeps Your first insights).
+- No "Ready to build / About 10 minutes"; Build my insights centred in the card, 16 lower (padding-top 12 → 28).
