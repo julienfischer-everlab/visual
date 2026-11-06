@@ -21248,3 +21248,7 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - "Add the Overview for the sake of the demo to test the nav, instead of this blank screen." The Island phone (Design system → Navigation, XS) now shows the XS Overview under the dock instead of the placeholder blocks. It is a picture of the page (`assets/overview/nav-demo-overview.webp`, 393 wide, light mode, 47 KB), scrolling in the phone (`.nvOvScr`, 110 clear at the foot), so the island's glass, blur, labels and More / Ask can be tried over real content.
 - A picture, not the live page: the Overview's styles hang on `#dOver` and the app's breakpoint, so a copy would not draw right.
 - dist is 15.97 MB with it.
+
+## Insight activation: the done Health profile tile opens Tell us about you
+
+- "Trigger Tell us more flow here" (the Health profile tile, done, on the Insights empty state): the activation flow no longer skips its jump when the profile is done (`opts.inaAt === 'hp'` and `inaSt('hp') === 'done'` used to land on the activation home). It now opens Tell us about you: to do, on its first question; done, on its Review your answers (each answer with its Edit), as the profile does for a finished stage.
