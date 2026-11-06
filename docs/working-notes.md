@@ -21198,3 +21198,9 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - `buildRecArc`: under the title, every recommendation's picture sits on an arc (a circle of 300, 15° apart, two each side, a hairline arc fading at its sides). The active thumbnail is at the top, 1.25×, sharp. The others are 0.9×, blurred 2px, at 50%. Decided ones carry a green tick (added) or a grey cross (declined).
 - Under the arc is the active recommendation's card: the shared `rcStkCard`, the Stacked deck's card, without its own picture since the arc shows it. Cards swap with a short fade and a drift in the direction the arc turned.
 - Decline / Add turns the arc to the next undecided recommendation. A tap on any thumbnail brings it to the top, to decide it again. Once all are decided: the end card, and Next becomes Review my plan (disabled until then, as Stacked). The review screen and its Declined group are shared with Stacked (`stkFin` replaces the old at-the-end check).
+
+## Stacked / Arc: n of N under the title, Next hidden until enabled, picture +24
+
+- The card's "1 of 10" is gone. The line under the title reads "1 of 10 recommendations" and follows the active card ("1 of 10: merge, and remove inside the card"). It goes back to "10 recommendations" on the end card.
+- Next is hidden, not dimmed, until every card is decided ("remove Next until it is enabled"). Any disabled primary in the Async report's footer fades out and drops 12. When enabled, it rises back in.
+- The card's picture is 96 (was 72, "visual +24px"): `.arRcPic.arRcStkPic`, specific enough over `.arRcPic`'s 64, which had been winning before.
