@@ -21005,3 +21005,15 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
   - Back to the welcome, the dots return to the cloud. On to the first insight, they fly up and out with the page.
   - Code: `sphereLayer`'s `grid(on, {el, inst, dur})`, with targets per frame (GX/GY/GA/GS/GL, TQ).
 - **Without the sphere** (Split bg and the others), the Chart is drawn as SVG instead: gradient line drawing in from the left, each test's point popping as the line reaches it, today's with a breathing ring, the optimal band behind.
+
+## Async report: Tweaks show only the screen that's up
+
+- "Only show the tweaks related to the active page": each Async report tweak carries `data-ar-at` with the screen it belongs to. A 300ms watcher reads the report's `where()` and hides the others (`.tkArOff`).
+  - General (Preset, Persona, Step shortcuts, Member): always.
+  - Intro rows: the welcome only.
+  - What to expect: its own screen.
+  - Insight group: on an insight.
+  - Everything else group: on its screen.
+  - Recommendations and the end: General alone.
+  - Report shut: everything shows.
+- A group whose rows are all hidden goes too.
