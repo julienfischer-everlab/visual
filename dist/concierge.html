@@ -590,13 +590,18 @@
     font-family:-apple-system,"SF Pro Text","Helvetica Neue",Helvetica,Arial,sans-serif;
     /* rises from the bottom edge as the device's does, and drops back the
        same way; hidden to touch and to the eye once it is down */
-    transform:translateY(100%);visibility:hidden;pointer-events:none;
-    transition:transform .32s cubic-bezier(.2,.8,.2,1),clip-path .32s cubic-bezier(.2,.8,.2,1),visibility 0s linear .32s;
+    visibility:hidden;pointer-events:none;
+    transition:visibility 0s linear .32s;
+    /* the box never moves: it stands at the screen's foot, clipped to itself, and its keys and ground slide up inside it ("ALL keyboard should come inside the frame, atm we can see the keyboard outside the frame for a moment"):
+       the old slide moved the box and cut it with a clip-path run on its own clock, which some browsers (Safari) let lag behind the slide, so the keys showed under the phone for a moment */
+    --kbY:340px;overflow:hidden;isolation:isolate;background:none;
     /* ...and only ever seen inside the screen ("the keyboard should come inside the screen; it comes from outside it"): cut at the screen's foot as it moves -- the cut, in the keys' own height, runs with the slide on the
        same curve, so what is past the foot is never drawn; its corners the screen's (--kbR) */
-    clip-path:inset(0 0 100% 0 round 0 0 var(--kbR,0px) var(--kbR,0px));
+    clip-path:inset(0 round 0 0 var(--kbR,0px) var(--kbR,0px));
   }
-  .mKbd.on{transform:none;visibility:visible;pointer-events:auto;transition-delay:0s;clip-path:inset(0 0 0 0 round 0 0 var(--kbR,0px) var(--kbR,0px));}   /* up, for a host that raises it by its own class (the Chat page) rather than the body's */
+  .mKbd::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--kbBg,#1d1d1f);}   /* its ground, sliding with the keys */
+  .mKbd > *, .mKbd::before{transform:translateY(var(--kbY));transition:transform .32s cubic-bezier(.2,.8,.2,1);}
+  .mKbd.on{--kbY:0px;visibility:visible;pointer-events:auto;transition-delay:0s;}   /* up, for a host that raises it by its own class (the Chat page) rather than the body's */
   .mKbd .kr{display:flex;justify-content:center;gap:6px;margin:0 0 11px;padding:0 3px;}
   .mKbd .kr.r2{padding:0 22px;}
   .mKbd .k{
@@ -614,7 +619,7 @@
   .mKbd .k svg{width:22px;height:22px;display:block;}
   .mKbd .kHome{height:34px;position:relative;}
   .mKbd .kHome i{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);width:134px;height:5px;border-radius:3px;background:rgba(255,255,255,.26);}
-  body.light .mKbd, .mKbd.kbL{background:#d1d3d9;}   /* light: the app's body.light, or .kbL where the page has no body.light (the Chat page sets it from its own theme) */
+  body.light .mKbd, .mKbd.kbL{--kbBg:#d1d3d9;}   /* light: the app's body.light, or .kbL where the page has no body.light (the Chat page sets it from its own theme) */
   body.light .mKbd .k, .mKbd.kbL .k{background:#fff;color:#000;box-shadow:0 1px 0 rgba(0,0,0,.3);}
   body.light .mKbd .k:active, .mKbd.kbL .k:active{background:#e6e7eb;}
   body.light .mKbd .k.fn, body.light .mKbd .k.n, .mKbd.kbL .k.fn, .mKbd.kbL .k.n{background:#acb0bb;color:#000;}

@@ -2679,13 +2679,18 @@
     font-family:-apple-system,"SF Pro Text","Helvetica Neue",Helvetica,Arial,sans-serif;
     /* rises from the bottom edge as the device's does, and drops back the
        same way; hidden to touch and to the eye once it is down */
-    transform:translateY(100%);visibility:hidden;pointer-events:none;
-    transition:transform .32s cubic-bezier(.2,.8,.2,1),clip-path .32s cubic-bezier(.2,.8,.2,1),visibility 0s linear .32s;
+    visibility:hidden;pointer-events:none;
+    transition:visibility 0s linear .32s;
+    /* the box never moves: it stands at the screen's foot, clipped to itself, and its keys and ground slide up inside it ("ALL keyboard should come inside the frame, atm we can see the keyboard outside the frame for a moment"):
+       the old slide moved the box and cut it with a clip-path run on its own clock, which some browsers (Safari) let lag behind the slide, so the keys showed under the phone for a moment */
+    --kbY:340px;overflow:hidden;isolation:isolate;background:none;
     /* ...and only ever seen inside the screen ("the keyboard should come inside the screen; it comes from outside it"): cut at the screen's foot as it moves -- the cut, in the keys' own height, runs with the slide on the
        same curve, so what is past the foot is never drawn; its corners the screen's (--kbR) */
-    clip-path:inset(0 0 100% 0 round 0 0 var(--kbR,0px) var(--kbR,0px));
+    clip-path:inset(0 round 0 0 var(--kbR,0px) var(--kbR,0px));
   }
-  .mKbd.on{transform:none;visibility:visible;pointer-events:auto;transition-delay:0s;clip-path:inset(0 0 0 0 round 0 0 var(--kbR,0px) var(--kbR,0px));}   /* up, for a host that raises it by its own class (the Chat page) rather than the body's */
+  .mKbd::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--kbBg,#1d1d1f);}   /* its ground, sliding with the keys */
+  .mKbd > *, .mKbd::before{transform:translateY(var(--kbY));transition:transform .32s cubic-bezier(.2,.8,.2,1);}
+  .mKbd.on{--kbY:0px;visibility:visible;pointer-events:auto;transition-delay:0s;}   /* up, for a host that raises it by its own class (the Chat page) rather than the body's */
   .mKbd .kr{display:flex;justify-content:center;gap:6px;margin:0 0 11px;padding:0 3px;}
   .mKbd .kr.r2{padding:0 22px;}
   .mKbd .k{
@@ -2703,7 +2708,7 @@
   .mKbd .k svg{width:22px;height:22px;display:block;}
   .mKbd .kHome{height:34px;position:relative;}
   .mKbd .kHome i{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);width:134px;height:5px;border-radius:3px;background:rgba(255,255,255,.26);}
-  body.light .mKbd, .mKbd.kbL{background:#d1d3d9;}   /* light: the app's body.light, or .kbL where the page has no body.light (the Chat page sets it from its own theme) */
+  body.light .mKbd, .mKbd.kbL{--kbBg:#d1d3d9;}   /* light: the app's body.light, or .kbL where the page has no body.light (the Chat page sets it from its own theme) */
   body.light .mKbd .k, .mKbd.kbL .k{background:#fff;color:#000;box-shadow:0 1px 0 rgba(0,0,0,.3);}
   body.light .mKbd .k:active, .mKbd.kbL .k:active{background:#e6e7eb;}
   body.light .mKbd .k.fn, body.light .mKbd .k.n, .mKbd.kbL .k.fn, .mKbd.kbL .k.n{background:#acb0bb;color:#000;}
@@ -2714,7 +2719,7 @@
   body:not(.fullscr) :is(#phone,#phone2) .mKbd{display:block;}   /* the Overview phone has a copy, for the assistant's field */
   body.mSearchOn:not(.fullscr) :is(#phone,#phone2) .mKbd,
   body:not(.fullscr) :is(#phone,#phone2).chatOn.chKbd .mKbd{   /* the chat stands on the keys while its field is focused; let go, the keys go down ("unfocus: no keyboard"; they used to stay up, focused or not) */
-    transform:none;visibility:visible;pointer-events:auto;transition-delay:0s;clip-path:inset(0 0 0 0 round 0 0 var(--kbR,0px) var(--kbR,0px));
+    --kbY:0px;visibility:visible;pointer-events:auto;transition-delay:0s;
   }
   body.mSearchOn:not(.fullscr) #phone .mscroll{padding-bottom:280px;}   /* the list can rise above the keys */
   /* ---- The assistant's card, grown from the dock's spark. A sheet over the
@@ -7515,7 +7520,7 @@
   .mdSp{margin:0 0 20px;color:var(--sMut);} .mdBtns{display:grid;gap:8px;} .mdDk .mdBtns{grid-template-columns:1fr 1fr;}
   .mdNote{margin:12px 0 0;font-size:12px;color:var(--ldMut);}
   .mdStack .mdPage .mdSb{visibility:hidden;} .mdStack .mdSbTop, .mdStack:not(.on) .mdSbTop{display:flex;opacity:1;color:var(--sInk);transition:color .12s linear .4s;} .mdStack.l2 .mdSbTop{color:#fff;} .mdStack:not(.on) .mdSbTop{transition:color .2s ease;}   /* the phone's status bar and island stay put, only the page draws back ("top home phone should stay, no move with the stack") */
-  .nvFr{--kbR:56px;} .nvFr .mKbd{display:block;} .nvFr:is(.kbdOn, .chatOn.chKbd) .mKbd{transform:none;visibility:visible;pointer-events:auto;transition-delay:0s;clip-path:inset(0 0 0 0 round 0 0 var(--kbR,0px) var(--kbR,0px));} .nvFr:is(.aiOpen, .chatOn) .mTabs{pointer-events:none;}   /* the doc's phone: its keys up while its field or chat is live, as the app's phones */
+  .nvFr{--kbR:56px;} .nvFr .mKbd{display:block;} .nvFr:is(.kbdOn, .chatOn.chKbd) .mKbd{--kbY:0px;visibility:visible;pointer-events:auto;transition-delay:0s;} .nvFr:is(.aiOpen, .chatOn) .mTabs{pointer-events:none;}   /* the doc's phone: its keys up while its field or chat is live, as the app's phones */
   .hoCtl{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px 20px;max-width:900px;margin:0 0 20px;} .hoC{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center;font-size:12.5px;color:var(--ldMut);} .hoC input{grid-column:1 / -1;width:100%;accent-color:var(--ldAcc);} .hoC b{font-weight:500;color:var(--ldFg);font-variant-numeric:tabular-nums;}
   /* Design system -> Step flow: the master at every breakpoint ("Need All break points"). Each the step flow's own shell (.arSheet) in the Async report's own full modal (.aqWrap.aqDesk.aqFull.aqBp*, with .aqDev on XS and S: the classes the report wears, so the app's rules for that width apply as they do in the app; XL wears L's, as the app does on a wide window),
      in the master frames (XS the app's phone, --evPhR/--evPhBz; S its tablet, --evTbR/--evTbBz; M, L, XL the desk's page, as General layout draws it), scaled to fit (fit), the scale under it. All: every one side by side, one scale, a row that scrolls */
@@ -10454,7 +10459,7 @@
   :is(#phone, #phone2, body[data-bp="xs"] .dash) > .tlSheet :is(.tlShAct, .bkFoot, .tlShBody:is(:last-child, :has(+ .tlShAct:empty:last-child))), body[data-bp="s"] .dash > .tlSheet:not(.svBook:not(.svLkM)) :is(.tlShAct, .bkFoot, .tlShBody:is(:last-child, :has(+ .tlShAct:empty:last-child))){padding-bottom:max(20px, 32px - var(--evShGap));}   /* the phone's sheets lifted 12 (--evShGap): the safe space under their foot 12 less, the last button where it was, 20 at least */ :is(#phone, #phone2, body[data-bp="xs"] .dash, body[data-bp="s"] .dash) > .tlSheet .tlShPanel{overflow:hidden;}   /* what scrolls in it clipped to its rounded foot (--evShR) */
   .tlShAct .tlAct{flex:1 1 auto;display:flex;margin:0;padding:0;} .tlShAct .tlBtn{flex:1 1 auto;height:44px;font-size:14px;} .tlShAct .tlMore{height:44px;width:48px;}
   body[data-bp="xs"] #bpFrame > .mKbd{display:block;border-bottom-left-radius:inherit;border-bottom-right-radius:inherit;overflow:hidden;--kbR:56px;}   /* the phone's drawn keyboard, in the XS frame for the Timeline's search; its foot rounded with the screen */
-  body[data-bp="xs"].tlKbd #bpFrame > .mKbd{transform:none;visibility:visible;pointer-events:auto;transition-delay:0s;clip-path:inset(0 0 0 0 round 0 0 var(--kbR,0px) var(--kbR,0px));}
+  body[data-bp="xs"].tlKbd #bpFrame > .mKbd{--kbY:0px;visibility:visible;pointer-events:auto;transition-delay:0s;}
   body[data-bp="xs"].tlKbd #bpFrame > .mTabs{display:none;} html:not(.bpAuto) body[data-bp="xs"].tlKbd #dTl{padding-bottom:300px;}   /* room for the drawn keys: the frame's only */   /* the keys up: the dock leaves, as on the Insights phone, and the list can rise above them */
   body[data-bp="xs"]:has(.tlSheet.on) #bpFrame > .mTabs, body[data-bp="s"]:has(.tlSheet.on) #bpFrame > .mTabs{display:none;}   /* the sheet stands where the dock was */
   body[data-bp="xs"]:has(.svMenu[data-tl].svMenuSh) #bpFrame > .mTabs{display:none;}   /* the item's ⋯ sheet too */
@@ -10684,7 +10689,7 @@
   body.light #bpFrame > .ovSug .aiChip{background:rgba(255,255,255,.94);box-shadow:none;color:#000;}
   body[data-bp="xs"] #bpFrame > .ovSug.ovSugConv{padding-top:64px;background:linear-gradient(to bottom,rgba(13,13,12,0) 0,rgba(13,13,12,.9) 64px,#0d0d0c 100%);}   /* Suggestion: Conversation, the stack taller than the row: its black ground reaching up to its first badge (either mode, as the row's) */
   /* on that black ground the primary chip is the dark mode's (white, ink), so it doesn't sink into it */ body.light #bpFrame > .ovSug .aiChip.aiChipPri{background:#f2f2f2;color:#141414;} body.light #bpFrame > .ovSug .aiChip.aiChipPri:hover{background:#dcdcdc;color:#141414;}
-  body[data-bp="xs"]:is(.ovKbd, .frKbd) #bpFrame > .mKbd, html:not(.bpAuto) body[data-bp="xs"]:has(.dash.chatOn.chKbd) #bpFrame > .mKbd{transform:none;visibility:visible;pointer-events:auto;transition-delay:0s;clip-path:inset(0 0 0 0 round 0 0 var(--kbR,0px) var(--kbR,0px));} body[data-bp="xs"].ovKbd #bpFrame > .mTabs{display:none;}
+  body[data-bp="xs"]:is(.ovKbd, .frKbd) #bpFrame > .mKbd, html:not(.bpAuto) body[data-bp="xs"]:has(.dash.chatOn.chKbd) #bpFrame > .mKbd{--kbY:0px;visibility:visible;pointer-events:auto;transition-delay:0s;} body[data-bp="xs"].ovKbd #bpFrame > .mTabs{display:none;}
   #bpFrame > .aiWrap{pointer-events:auto;border-radius:inherit;overflow:hidden;} body:not([data-bp="xs"]):not([data-bp="s"]) #bpFrame > .aiWrap{display:none;}   /* the assistant's sheet in the XS frame, over the desk's Overview, its corners the screen's */
   body.hdrV3[data-bp="xs"] #dOver .ovAvatar{display:block;}
   body[data-bp="xs"] #dOver .ovInbox, body[data-bp="xs"] #dOver .ovBell{width:44px;height:44px;}
@@ -20753,7 +20758,7 @@ html.gfPlLeft .arSheet.hpSheet .hpPlTab { align-items: flex-start; text-align: l
 .arSheet.hpSheet .hpSgHint { position: absolute; left: 0; right: 0; bottom: 22px; font-size: 13px; line-height: 16px; text-align: center; color: rgba(243, 237, 230, .4); pointer-events: none; transition: opacity .2s ease; } .arSheet.hpSheet .hpSgOn .hpSgHint { opacity: 0; }
 .arSheet.hpSheet .hpSgA { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 /* Send a gift's letters keyboard (EvKbd) under the page, as the number pad: in the flow, not floating */
-.arSheet.hpSheet .mKbd.hpAkb { display: block; position: relative; left: auto; right: auto; bottom: auto; z-index: auto; flex: none; height: 0; padding-top: 0; padding-bottom: 0; overflow: hidden; transform: none; visibility: visible; pointer-events: auto; clip-path: none; transition: height .3s cubic-bezier(.2, .8, .2, 1); } .arSheet.hpSheet.hpAkOn .mKbd.hpAkb { padding-top: 8px; }   /* down, no 8 px of its top padding left showing as a grey strip at the phone's foot ("bug footer, grey gap"); up, the keys' own 8 */
+.arSheet.hpSheet .mKbd.hpAkb { --kbY: 0px; display: block; position: relative; left: auto; right: auto; bottom: auto; z-index: auto; flex: none; height: 0; padding-top: 0; padding-bottom: 0; overflow: hidden; transform: none; visibility: visible; pointer-events: auto; clip-path: none; transition: height .3s cubic-bezier(.2, .8, .2, 1); } .arSheet.hpSheet.hpAkOn .mKbd.hpAkb { padding-top: 8px; }   /* down, no 8 px of its top padding left showing as a grey strip at the phone's foot ("bug footer, grey gap"); up, the keys' own 8 */
 .arSheet.hpSheet.hpAkOn .arFoot { padding-bottom: 12px; } @media (prefers-reduced-motion: reduce) { .arSheet.hpSheet .mKbd.hpAkb { transition: none; } }
 /* Send a gift: the envelope ("a screen that merge the note into a enveloppe that will sit on top of the section check and pay"; the board's black envelope). One builder (gfEnv): Check and pay's, the merge moment's, the Documentation's stills.
    Matte black paper (a breath of light from the top left, a fine grain), black in Light too (a thing, not a surface: a soft shadow there). Its back: the flap with the mark blind-debossed, the two lines at its foot; its front: the wordmark, For <name>, the logo's connectors pressed in, off its right edge.
