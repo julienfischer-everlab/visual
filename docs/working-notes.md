@@ -21337,3 +21337,11 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
   - "Remove the cross morph, add a new CTA at the top on the top nav": the star no longer turns into a cross. The close is a 44 disc on the top nav, where the Overview's bell sits (top 57, right 16; it overrides the 36 px rule every other close has).
   - "The chat field should expand with the tools directly, taking the full width": the dock steps away and the field spans the island's left to the star's right. It opens already expanded (the words, then +, Eva and send), the conversations stacked over it, all of it riding on the keys.
 - "Change the name of this card to Onboarding consult; also on the tweak; the health profile is just one step of the onboarding consult": the Overview card's eyebrow, the Tweaks group, its flow-panel heading, the page menu and the takeover context label now read Onboarding consult. The Health profile keeps its name where it is the step itself (the Insights task, My account's tab).
+
+## Insights card states; Type as a select
+
+- Insights empty state (Has data: No): "create few states for this card Insights, similar to the onboarding consult, on the tweak". Tweaks → Insights now has Health profile, Health data and Past results, each On / Off, shown only while Has data is No. On reads as done, connected and found.
+  - Locked unless the Health profile and Past results are both On; Health data is optional.
+  - The foot always offers **Generate my insights**: faded, disabled and with a lock before its words while locked, enabled once unlocked.
+  - The lock is gone from the eyebrow. The same master (`HPC.insList`) also draws the primary card's To-do list layout, so it follows.
+- Primary card → Type: "use select here: Freemium (we will cover that later), Member". It is a dropdown now, Freemium (later) disabled and Member selected. Next step is out of the menu; a saved Next step falls back to Member.
