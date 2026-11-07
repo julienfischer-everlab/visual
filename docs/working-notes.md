@@ -21523,3 +21523,8 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 ## Recommendations: the plan's total on the doctor's card
 
 - "Top right $ total recommendations", "badge": the doctor's note card carries, top right, a badge with what every recommendation comes to (`RC_PRICE` summed over Clinical and Lifestyle; included ones count 0): "$842 total" (P1). `.arRcDrTot`, ink 8% pill, the amount in ink, "total" at 64%.
+
+## Design system → Notes
+
+- "In the design system add a place where we can add notes, e.g. the next things to build": a Notes tab, last in the Design system (`ntDoc`, `#notes`). A field (Enter adds, Shift+Enter a new line) and Add note; the list newest first, done ones under, each a tick, its text, its author when the viewer is known and its date, and a delete on hover; To do / Done / All.
+- Shared: inside claude.ai the notes live in the artifact's store (collection `devNotes`, live through onSnapshot), so everyone who opens Everlab App - Latest sees the same list; elsewhere (a local file) this browser's `everlab:notes`. Dark and light from the docs' tokens.
