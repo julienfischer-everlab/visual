@@ -21566,3 +21566,7 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - "The segmented tab should filter the list below": the Add to plan / Later control is now one master, `rcSegTabs(name, onPick)` (Advanced cards or Simple pills, Tweaks -> Segmented), used by the review (it switches the panes) and by Your Lifestyle recommendations, where it filters the rows: Add to plan the ones set to Now, Later the others, each count live. A row switched with its own Later / Now (or from its sheet) fades out of the filter after a beat; a group with nothing left hides, and an empty filter says so.
 - "You didn't update the image": the plates, the glass and the dumbbell are cut-outs too, so every recommendation picture but the services' renders now sits on the Plan's tile ground (#252522 dark, #f3efed light), not the old light tile.
 - Still not done: the smoothie photos sent in the chat (no file came with them). The second one is the Plan's Nutrition hero already (plan/nut-hero); the first is not in the repo.
+
+## Your 13 recommendations: 12 more under the H2
+
+"+12px title margin bottom": the H2 over the intro's two cards sits 12 further from them (its bottom margin -4 to 8).
