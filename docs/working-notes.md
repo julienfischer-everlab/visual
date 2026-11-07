@@ -21609,3 +21609,8 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - "padding card align with eyebrow": the Insights empty-state tiles (grid layout, every breakpoint; not the XS Stacked rows) sit 12px outside the card's content edge on both sides (`margin: 0 -12px`), so what is in them lines up with the eyebrow and the link. At XS the list runs 8–353 in a 361 card; the badges sit inside their plates.
 - More sheet (`EvMore`, `.mvCard.mvOne`): "+16 padding top bottom" → 32 above and below the rows. "-4px card ghost padding" → the rows' plate 4px in each side (card padding 8, row padding 12). Icons and labels stay at 20, in line with the dividers (margin 12). Every row's plate is 22 round.
 - "no dismiss X": the More sheet's floating close disc is hidden (`.mvWrap .mvX`). It closes by a swipe down, a scrim tap, Esc or a row.
+
+## Overview field: the star leaves by a transition; More rows 18 round
+
+- "on focus when icon disappear, need transition": on the phone, focusing the Overview's top field (`body.ovKbd`) used to hide the sparkle at once. Now it fades, shrinks and turns as its room closes (width to 0, the 12 gap with it, .32s), and the placeholder slides left into its place. On blur it plays back, the star fading in once its room is open.
+- "-4 radius on card ghost": the More sheet rows' plate is 18 round (was 22).
