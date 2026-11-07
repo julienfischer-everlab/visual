@@ -21370,3 +21370,13 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
   - 22 high, 8 at the sides, 6 corners, 13 regular, the words centred in the pill;
   - done (Completed / Connected / Found) in its Optimal colours (`--ar-opt-bg2` / `--ar-opt-fg`, dark and light values);
   - in progress grey, to do neutral.
+
+## Health data home, connect sheet; Insights CTA position
+
+- Health data has its own home (Insight activation's Health data step, `BUILD['idt.src']`). Each wearable is a card, and tapping one opens `devSheet()`. On the phone that's a bottom sheet (`.hpPk`, Dismiss notch, swipe down); on the desk it's a centred modal. The sheet shows the device tile, "Connect <device>", what Everlab reads (green ticks) and a Connect button (`EvLoad.label` "Connecting", 1.6 s). Success shows the green tick and "<device> connected", then the sheet closes itself. This is simulated for now.
+- Back on the home, connected devices sit in a **Connected** group on top, each with a Connected badge (`.arLfPill.arLfOpt`, the status pill master's Optimal). The rest follow under **Not connected**. The group titles appear only once something is connected. The device just connected drops in and its badge pops in after it.
+- A connected card opens the same sheet with Done and Disconnect. The footer is Done once one device is connected; until then it's Done disabled plus Skip for now. Connecting updates the Insights task (`inaPut('data', …)`). Answers are kept in `ans.conn`.
+- Tweaks → Insights → **CTA position** (`stInsCtaPos`, `html.insCtaTop`, empty state only):
+  - Footer is the current layout.
+  - Top right makes Generate my insights a link at the label's right with a chevron (section-link type, 16 regular). The foot goes, and the locked state fades the link with its lock.
+- The badges under each task already exist: Tweaks → Insights → Badges (Off by default).
