@@ -21519,3 +21519,7 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - Labels 16 / 21 in white on two lines ("3 / Clinical / recommendations").
 - "If incomplete add a grey badge To review; if complete a green badge Reviewed", and "if completed add a CTA Review and remove the 2 badges": each card's badges row is now one badge, grey "To review" or green "✓ Reviewed"; reviewed, a Review button under it (Clinical: the stack again from its first card; Lifestyle: its screen). Lifestyle counts as reviewed once its screen was shown (`rcLifeSeen`). The corner tick removed (the badge says it).
 - Doctor's note card padding 36 (+16).
+
+## Recommendations: the plan's total on the doctor's card
+
+- "Top right $ total recommendations", "badge": the doctor's note card carries, top right, a badge with what every recommendation comes to (`RC_PRICE` summed over Clinical and Lifestyle; included ones count 0): "$842 total" (P1). `.arRcDrTot`, ink 8% pill, the amount in ink, "total" at 64%.
