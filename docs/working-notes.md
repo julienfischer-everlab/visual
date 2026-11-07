@@ -21316,3 +21316,11 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
   - The search page, once found, offers See your records with Got it under it.
   - Before this, the only way in was the Insights card's Past results task, which the default Overview doesn't show.
 
+
+## Blankets +24, and the star's chat in the dock
+
+- Blankets +24 ("increase blanket by 24%", "same for the bottom chat"): the Overview's top field 69% → 93% (`#dOver .ovDimD`), the star's chat 67% → 91% (`.aiDim`).
+- Ask sheet → Version gets a new default, **Dock** (`html.askDock`, with `html.askV2` for its suggestions; V1 and V2 kept). A setup saved on V1/V2 before it takes it once (`everlab:mig:askDock`, and shared setups saved before it).
+  - "On Star tap the icon should turn to Cross that become the dismiss action": the star itself (`.mChat`) turns away and a cross (`.mChatX`) turns in, on a solid disc over the blanket; a tap on it closes.
+  - "The nav left area become the Chat field": the field takes the island's box, measured as it opens (`--dkL/--dkW/--dkH/--dkB` on the phone), and the island fades. The conversations are stacked over it, left-aligned.
+  - "Keyboard should trigger as well": the field focuses at once, so the keys come. The field and the cross ride up on them together (`--dkUp`, the keyboard's height plus 10 less the dock's offset), and come down when the field lets go.

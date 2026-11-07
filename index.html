@@ -2738,7 +2738,7 @@
      keyboard. */
   .aiWrap{position:absolute;inset:0;z-index:6;display:none;}
   .aiWrap.show{display:block;}
-  .aiDim{position:absolute;inset:0;background:rgba(0,0,0,.67);   /* +12 ("+12% opacity blanket") */opacity:0;transition:opacity .35s ease;}
+  .aiDim{position:absolute;inset:0;background:rgba(0,0,0,.91);   /* +12 ("+12% opacity blanket"), then +24 ("increase blanket by 24%", "same for the bottom chat"): 91 */opacity:0;transition:opacity .35s ease;}
   .aiWrap.on .aiDim{opacity:1;}
   .aiCard{
     position:absolute;left:var(--evShGap);right:var(--evShGap);bottom:var(--evShGap);   /* floating, 12 off the edges ("a 12px gap so the card feels more like floating"): the bottom sheets' --evShGap */
@@ -2843,6 +2843,25 @@
   /* Version 2's suggestions Stacked (the default; Tweaks -> Ask sheet -> Suggestions: Stacked / Carousel, html.askV2Car for the row): one chip a line, left-aligned, over the field ("Stacked suggestion") */
   html.askV2:not(.askV2Car) .aiV2Stk{flex-direction:column;align-items:flex-start;overflow:visible;scroll-snap-type:none;touch-action:auto;-webkit-mask-image:none;mask-image:none;} html.askV2:not(.askV2Car) .aiV2Stk > .aiChip{max-width:100%;}
   html.askV2:not(.askV2Car) .aiV2Stk > .aiChip span{min-width:0;overflow:hidden;text-overflow:ellipsis;}
+  /* Ask sheet, Dock (Tweaks -> Ask sheet -> Version: Dock, html.askDock with html.askV2; the default): "On Star tap the icon should turn to Cross that become the dismiss action"; "The nav left area become the Chat field; keyboard should trigger as well".
+     The field takes the dock's island, its place and shape (--dkL, --dkW, --dkH, --dkB, measured as it opens), the conversations stacked over it; the star itself turns to a cross and closes it; the keys come at once, the field and the cross riding up on them together (--dkUp) */
+  html.askDock .aiWrap .aiCard{left:var(--dkL,12px);right:auto;width:var(--dkW,280px);bottom:calc(var(--dkB,24px) + var(--dkUp,0px));padding:0 !important;border-radius:calc(var(--dkH,64px) / 2) !important;transform:none !important;transition:bottom .34s cubic-bezier(.2,.8,.2,1);}
+  html.askDock .aiWrap .aiV2Sug{left:0;right:auto;width:var(--dkTot,370px);bottom:calc(100% + 12px);}
+  html.askDock .aiWrap .aiV2Stk{padding:0;}
+  html.askDock .aiWrap .aiRowTop, html.askDock .aiWrap.typing .aiRowTop{height:var(--dkH,64px);box-sizing:border-box;padding:0 6px 0 20px !important;border-radius:calc(var(--dkH,64px) / 2);background:#2a2a2a;box-shadow:0 0 0 1px rgba(255,255,255,.06);}
+  html.askDock body.light .aiWrap .aiRowTop{background:#fff;box-shadow:0 0 0 1px rgba(46,31,26,.08);}
+  html.askDock .aiWrap .aiCard .aiField, html.askDock .aiWrap.typing .aiCard .aiField{display:flex !important;align-items:center;gap:8px;width:100%;height:100%;padding:0 !important;background:none !important;border-radius:0;}
+  html.askDock .aiWrap .aiCard .aiField .aiFb{display:none !important;}
+  html.askDock .aiWrap .aiCard .aiField input{flex:1;min-width:0;height:auto;padding:0;font-size:17px;}
+  html.askDock .aiWrap .aiCard .aiField .ovChatGo{position:static;flex:none;width:calc(var(--dkH,64px) - 12px);height:calc(var(--dkH,64px) - 12px);margin:0;opacity:1;transform:none;pointer-events:auto;}
+  html.askDock .aiOpen .mTabs{z-index:8 !important;} html.askDock .aiOpen .mTabs::before{opacity:0;}   /* the dock over the blanket: its star, now the cross */
+  html.askDock .mTabs .mIsland{transition:opacity .2s ease;} html.askDock .aiOpen .mTabs .mIsland{opacity:0;pointer-events:none;}   /* the island gives its place to the field */
+  html.askDock .aiOpen .mTabs .mDock{transform:translateY(calc(-1 * var(--dkUp, 0px)));transition:transform .34s cubic-bezier(.2,.8,.2,1);}
+  .mChat .mChatX{display:none;}
+  html.askDock .mChat{position:relative;} html.askDock .mChat > svg:not(.mChatX){transition:opacity .2s ease,transform .42s cubic-bezier(.34,1.56,.64,1);}
+  html.askDock .mChat .mChatX{display:block;position:absolute;left:50%;top:50%;width:22px;height:22px;margin:-11px 0 0 -11px;fill:none;stroke:currentColor;opacity:0;transform:rotate(-90deg) scale(.4);transition:opacity .2s ease,transform .42s cubic-bezier(.34,1.56,.64,1);}
+  html.askDock .aiOpen .mTabs .mChat{background:#2a2a2a;box-shadow:0 0 0 1px rgba(255,255,255,.06);} html.askDock body.light .aiOpen .mTabs .mChat{background:#fff;box-shadow:0 0 0 1px rgba(46,31,26,.08);}   /* the cross on the field's own ground, solid over the blanket */ html.askDock .aiOpen .mChat > svg:not(.mChatX){opacity:0;transform:rotate(90deg) scale(.4);} html.askDock .aiOpen .mChat .mChatX{opacity:1;transform:none;}   /* the star turns away, the cross turns in */
+  @media (prefers-reduced-motion: reduce){ html.askDock .mChat svg, html.askDock .aiWrap .aiCard, html.askDock .aiOpen .mTabs .mDock{transition:none !important;} }
   html.askConv .aiConvL::-webkit-scrollbar{display:none;} html.askConv .aiConvL > .aiChip{flex:none;scroll-snap-align:start;}
   /* Conversation style: List (html.askConvList): no chips, a suggested-items list, one a line: its icon, its words, the date at the right, a hairline between ("avoid the bubbles, inline style instead, like a suggested item list") */
   html.askConv.askConvList .aiConvL{flex-direction:column;align-items:stretch;gap:0;margin:12px 0 0;padding:0;overflow:visible;scroll-snap-type:none;-webkit-mask-image:none;mask-image:none;}
@@ -10739,7 +10758,7 @@
   /* XS: the ask field as the phone's -- no send arrow at its right; a tap raises the drawn keyboard and a blanket over the page under the bar, a tap on it lets go ("on click should trigger the keyboard and overlay blanket the screen; no arrow CTA icon on the right side") */
   body[data-bp="xs"] #dOver .ovTop .ovChatBox{padding-right:16px;} body[data-bp="xs"] #dOver .ovTop .ovChatBox.hasText{padding-right:6px;} body[data-bp="xs"] #dOver .ovTop .ovChatBox.hasText .ovChatGo{width:32px;height:32px;}   /* the arrow back, white, once a character is typed, folded away while the field is empty ("arrow CTA white should appear when user types > 0 characters"): 32 in the 44 field, 6 from its edge */
   body[data-bp="xs"] #dOver .ovTop :is(.ovChatBox input, .ovPh){font-size:14px;line-height:20px;}   /* the caret and the rotating line on one baseline, 14 as the phone's (the line was 16, the typing 15) */
-  #dOver .ovDimD{display:none;} body[data-bp="xs"] #dOver .ovDimD{display:block;position:fixed;left:calc(var(--vwC, 50vw) - var(--bpW) / 2);width:var(--bpW);top:var(--bpTop, calc(var(--barH,57px) + 48px));bottom:var(--bpBot, 48px);z-index:4;border-radius:56px;background:rgba(0,0,0,.69);opacity:0;pointer-events:none;transition:opacity .28s ease;}
+  #dOver .ovDimD{display:none;} body[data-bp="xs"] #dOver .ovDimD{display:block;position:fixed;left:calc(var(--vwC, 50vw) - var(--bpW) / 2);width:var(--bpW);top:var(--bpTop, calc(var(--barH,57px) + 48px));bottom:var(--bpBot, 48px);z-index:4;border-radius:56px;background:rgba(0,0,0,.93);opacity:0;pointer-events:none;transition:opacity .28s ease;}   /* +24 ("increase blanket by 24%": was 69) */
   html.bpAuto body[data-bp="xs"] #dOver .ovDimD{left:0;width:auto;right:0;top:var(--barH,57px);bottom:0;border-radius:0;}
   body[data-bp="xs"].ovKbd #dOver .ovDimD{opacity:1;pointer-events:auto;}
   body[data-bp="xs"].ovKbd #dOver .ovTop .ovInbox{width:0;margin-right:-10px;opacity:0;pointer-events:none;}
@@ -14279,7 +14298,7 @@
         </div>
         <!-- the Ask Everlab sheet (the dock's assistant button): its Services tiles, the names alone, or each with its 3D render at the left and two lines of name at least ("add tweak with 3d icon on the left of each label") -->
         <div class="tkGroup" data-pages="ov ins ask"><div class="tkSub">Ask sheet</div>   <!-- and alone while the sheet is up (EvCtx: ask) -->
-        <div class="tkRow"><span class="lbl">Version</span><select id="stAskVer" class="tkSegSel" aria-label="The star's Ask sheet: V1, the sheet as it is; V2, two floating cards, the field and the conversations stacked over it"><option value="v1">V1</option><option value="v2" selected>V2</option></select></div>   <!-- V2 the star's rule now, the default ("star general menu rule"); "I want another totally different version: Version 1 keep what you have now; Version 2 two bottom sheet cards floating" -->
+        <div class="tkRow"><span class="lbl">Version</span><select id="stAskVer" class="tkSegSel" aria-label="The star's Ask sheet: V1, the sheet as it is; V2, two floating cards, the field and the conversations stacked over it"><option value="v1">V1</option><option value="v2">V2</option><option value="dock" selected>Dock</option></select></div>   <!-- V2 the star's rule now, the default ("star general menu rule"); "I want another totally different version: Version 1 keep what you have now; Version 2 two bottom sheet cards floating" -->
         <div class="tkRow"><span class="lbl">Suggestions</span><select id="stAskStk" class="tkSegSel" aria-label="Version 2: the suggestions over the field stacked, one a line, or a horizontal row"><option value="stack" selected>Stacked</option><option value="car">Carousel</option></select></div>   <!-- "Stacked suggestion" -->
         <div class="tkRow"><span class="lbl">Tools at rest</span><select id="stAskTools" class="tkSegSel" aria-label="Version 2: show the + and Eva on the field before it is focused"><option value="off" selected>Off</option><option value="on">On</option></select></div>   <!-- "show the PLUS icon and EVA on the unfocus state" -->
         <div class="tkRow"><span class="lbl">Conversation style</span><select id="stAskConvSt" class="tkSegSel" aria-label="The Ask sheet's conversations: a row of chips, or a list, one a line"><option value="chips" selected>Chips</option><option value="list">List</option></select></div>   <!-- "Each element in a row; avoid the bubbles (the badge style), inline style instead, like a suggested item list" -->
@@ -35837,6 +35856,12 @@ hairline({
       const title = id === 'phone2' && ph.querySelector('.mtitle');
       if (title && !ph.querySelector('.ovSvc')) title.after(svcRow());
       const btn = ph.querySelector('.mChat'); if (!btn) return;
+      if (!btn.querySelector('.mChatX')) btn.insertAdjacentHTML('beforeend', '<svg class="mChatX" viewBox="0 0 24 24" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" data-lc="x" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>');   /* Dock: the star turns to this cross, the dismiss */
+      const dock = () => document.documentElement.classList.contains('askDock');
+      let dkB = 0; const dkUp = v => ph.style.setProperty('--dkUp', Math.max(0, v) + 'px');
+      const dkPlace = () => { const dk = btn.closest('.mDock'), isl = dk && dk.querySelector('.mIsland'); if (!isl) return; dkUp(0);   /* the island's box in the phone's own pixels: the field takes it */
+        const k = window.evK ? window.evK(ph) : 1, P = ph.getBoundingClientRect(), I = isl.getBoundingClientRect(), B = btn.getBoundingClientRect(), L = P.left + ph.clientLeft * k, Bt = P.top + (ph.clientTop + ph.clientHeight) * k;
+        dkB = (Bt - I.bottom) / k; [['--dkL', (I.left - L) / k], ['--dkW', I.width / k], ['--dkH', I.height / k], ['--dkB', dkB], ['--dkTot', (B.right - I.left) / k]].forEach(([n, v]) => ph.style.setProperty(n, v.toFixed(1) + 'px')); };
       // The sheet ("same pattern as this: a card that overlaps the bottom of
       // the screen, no morph or shape change in the star CTA; the field first,
       // then the list of services below"): a handle, the field, a rule, the
@@ -35916,7 +35941,7 @@ hairline({
         if (ch._chat.morph) ch._chat.morph({ rect: rect, radius: fcs.borderRadius, pad: fcs.padding, bg: fcs.backgroundColor });
         inp.value = '';
         setTimeout(() => {
-          ph.classList.remove('aiOpen'); wrap.classList.remove('on', 'typing', 'show', 'handoff', 'aiMorph'); card.style.transform = ''; card.style.bottom = '';
+          ph.classList.remove('aiOpen'); wrap.classList.remove('on', 'typing', 'show', 'handoff', 'aiMorph'); card.style.transform = ''; card.style.bottom = ''; dkUp(0);
           field.classList.remove('hasText');   // the words went with the chat; the next open starts clean
         }, 300);
       };
@@ -35956,14 +35981,15 @@ hairline({
         const k = keyboard();
         wrap.classList.add('typing');
         if (k) void k.offsetWidth;
-        card.style.bottom = ((k ? k.offsetHeight : 0) + 12) + 'px';   // on the keys, keeping its 12px float
+        if (dock()) dkUp((k ? k.offsetHeight : 0) + 10 - dkB);   /* Dock: the field and the cross up on the keys together, 10 over them */
+        else card.style.bottom = ((k ? k.offsetHeight : 0) + 12) + 'px';   // on the keys, keeping its 12px float
         kbdOn(true);
       });
       inp.addEventListener('blur', () => {
         kbdOn(false);
         if (wrap.classList.contains('handoff')) return;   // the chat is fading in over us: nothing moves
         wrap.classList.remove('typing');
-        card.style.bottom = '';
+        card.style.bottom = ''; dkUp(0);
         inp.value = ''; field.classList.remove('hasText');   // back to the services, the field starts clean ("when the user goes back into the bottom sheet after typing in the chat, the chat field is reset")
       });
       inp.addEventListener('keydown', e => { if (e.key === 'Enter'){ e.preventDefault(); submit(); } });
@@ -35974,6 +36000,7 @@ hairline({
       // The button's rect is kept from the open: the dock may be gone by then.
       let from = null;
       const fromBtn = () => {
+        if (dock()) return '';   /* Dock: the field fades in where the island was */
         if (document.documentElement.classList.contains('askV2')) return 'translateY(56px)';   /* Version 2: the two cards rise from below as they fade in, not out of the star */
         const B = from || btn.getBoundingClientRect(), C = card.getBoundingClientRect();
         if (!C.width || !B.width) return '';
@@ -35983,6 +36010,7 @@ hairline({
       const open = () => {
         if (wrap.classList.contains('on')) return;
         from = btn.getBoundingClientRect();
+        if (dock()) dkPlace();
         keyboard();   // built now, so its height is there to measure when the field is tapped
         wrap.classList.add('show');
         svcR.scrollLeft = 0; svcFade(svcR);   /* the carousel opens on its first tile, in line with the field */
@@ -35994,7 +36022,7 @@ hairline({
         card.getBoundingClientRect();   // the start is laid out before the transition begins
         card.style.transition = '';
         requestAnimationFrame(() => { wrap.classList.add('on'); card.style.transform = '';
-          if (document.documentElement.classList.contains('askConv') && !document.documentElement.classList.contains('askV2')) setTimeout(() => { if (wrap.classList.contains('on')) try { inp.focus({ preventScroll: true }); } catch (e) {} }, 140); });   /* Conversation (V1): the star opens straight onto the keys, the field live ("On clicking the star, trigger the keyboard directly"). Version 2, the star's rule now: it opens calm, the floating field card with the suggestions above it, no keys, no tools; a tap on the field brings the keys and the tools (+, Eva) ("star general menu rule") */
+          if (dock() || (document.documentElement.classList.contains('askConv') && !document.documentElement.classList.contains('askV2'))) setTimeout(() => { if (wrap.classList.contains('on')) try { inp.focus({ preventScroll: true }); } catch (e) {} }, 140); });   /* Conversation (V1): the star opens straight onto the keys, the field live ("On clicking the star, trigger the keyboard directly"). Version 2, the star's rule now: it opens calm, the floating field card with the suggestions above it, no keys, no tools; a tap on the field brings the keys and the tools (+, Eva) ("star general menu rule") */
       };
       const close = () => {
         if (window.EvBeamStar && window.EvBeamStar.press) window.EvBeamStar.press.cancel(btn);   /* a tap's open still waiting on its beam round goes too */
@@ -36005,7 +36033,7 @@ hairline({
         wrap.classList.remove('on');
         setTimeout(() => { if (!wrap.classList.contains('on')){ wrap.classList.remove('show'); card.style.transform = ''; } }, 480);
       };
-      btn.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); open(); });   /* the card at once, no beam round the star first ("remove beam effect on press") */
+      btn.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); if (dock() && wrap.classList.contains('on')) close(); else open(); });   /* Dock: the star, a cross while open, closes it */   /* the card at once, no beam round the star first ("remove beam effect on press") */
       const hubSvc = ph.querySelector('.ovHubSvc');   // Header V2's Services row opens the same sheet
       if (hubSvc) hubSvc.addEventListener('click', e => { e.preventDefault(); open(); });
       wrap.querySelector('.aiDim').addEventListener('click', close);
@@ -45790,7 +45818,7 @@ hairline({
   // Which shape the Reports tab takes. A body class, like everything else that
   // has to survive setMode writing the list whole.
   { const cs = document.getElementById('stAskConvSt'); if (cs){ const put = () => document.documentElement.classList.toggle('askConvList', cs.value === 'list'); cs.addEventListener('change', put); put(); } }   /* Ask sheet, Conversation style: Chips / List (html.askConvList) */
-  { const as = document.getElementById('stAskSug'), av = document.getElementById('stAskVer'), cs = document.getElementById('stAskConvSt'); if (as){ const put = () => { const v2 = !!av && av.value === 'v2'; document.documentElement.classList.toggle('askV2', v2); document.documentElement.classList.toggle('askConv', as.value === 'conv' && !v2);
+  { const as = document.getElementById('stAskSug'), av = document.getElementById('stAskVer'), cs = document.getElementById('stAskConvSt'); if (as){ const put = () => { const v2 = !!av && (av.value === 'v2' || av.value === 'dock'); document.documentElement.classList.toggle('askV2', v2); document.documentElement.classList.toggle('askDock', !!av && av.value === 'dock');   /* Dock: Version 2's suggestions, the field in the dock's island */ document.documentElement.classList.toggle('askConv', as.value === 'conv' && !v2);
       [as, cs].forEach(e => { const r = e && e.closest('.tkRow'); if (r) r.hidden = v2; });
       const sk = document.getElementById('stAskStk'), tl = document.getElementById('stAskTools'); document.documentElement.classList.toggle('askV2Car', v2 && !!sk && sk.value === 'car'); document.documentElement.classList.toggle('askToolsRest', v2 && !!tl && tl.value === 'on');
       [sk, tl].forEach(e => { const r = e && e.closest('.tkRow'); if (r) r.hidden = !v2; }); };   /* Version 2's own: Suggestions Stacked / Carousel (html.askV2Car), Tools at rest (html.askToolsRest) */   /* Version 2 has its own suggestions (the conversations' card): Suggestion and Conversation style are Version 1's */
@@ -48270,7 +48298,7 @@ hairline({
     try { if (saved2 && !localStorage.getItem('everlab:mig:gfHead')){ if (saved2.stGfHead === 'video') saved2.stGfHead = 'photo'; localStorage.setItem(KEY2, JSON.stringify(saved2)); localStorage.setItem('everlab:mig:gfHead', '1'); } } catch (e){}   /* Send a gift's Header: Photo the default now; a setup saved while Video was (an older Save) brought the Concierge's video back at every load ("when I refresh send a gift I end up with concierge intro"): Photo, once; picking Video and saving again still holds */
     try { if (saved2 && /^(none|one)_d$/.test(saved2.stHpSt || '')) saved2.stHpSt = saved2.stHpSt.replace(/_d$/, ''); } catch (e){}   // steps 1 and 2 have no dropped-off state now   // Step 4 (records) retired: a setup saved on it, Booked with Records processing On
     try { if (saved2) delete saved2.stHpW2X; } catch (e){}
-    try { if (saved2 && saved2.stAskVer === 'v1' && !localStorage.getItem('everlab:mig:askV2')){ saved2.stAskVer = 'v2'; localStorage.setItem(KEY2, JSON.stringify(saved2)); localStorage.setItem('everlab:mig:askV2', '1'); } } catch (e){}   /* the star's rule is Version 2 now ("star general menu rule"): a setup saved on V1 before it takes V2, once */   // the card screen's Dismiss tweak is gone (no close on the reveal): its saved value dropped
+    try { if (saved2 && saved2.stAskVer === 'v1' && !localStorage.getItem('everlab:mig:askV2')){ saved2.stAskVer = 'v2'; localStorage.setItem(KEY2, JSON.stringify(saved2)); localStorage.setItem('everlab:mig:askV2', '1'); } if (saved2 && saved2.stAskVer === 'v2' && !localStorage.getItem('everlab:mig:askDock')){ saved2.stAskVer = 'dock'; localStorage.setItem(KEY2, JSON.stringify(saved2)); localStorage.setItem('everlab:mig:askDock', '1'); } } catch (e){}   /* the star's rule is the Dock now ("the nav left area become the chat field"): a setup saved before it takes it, once */   /* the star's rule is Version 2 now ("star general menu rule"): a setup saved on V1 before it takes V2, once */   // the card screen's Dismiss tweak is gone (no close on the reveal): its saved value dropped
     if (saved2) requestAnimationFrame(() => Object.keys(saved2).forEach(id => put2(id, saved2[id])));
     /* one setup for everyone ("the web version shows different things"): Save keeps the Tweaks in the artifact's shared store as well as in this browser, and every browser takes the shared one as it opens,
        so Chrome, the Claude app and anyone with the link see the same prototype; Reset clears it for everyone. Without the store (the page on its own), this browser's alone, as before */
@@ -48279,7 +48307,7 @@ hairline({
        Without the user capability (the page on its own), anyone may, as before */
     let CAN = null, lastAt = 0; try { if (window.claude && window.claude.use) window.claude.use('user').then(u => { if (!u || !u.canEdit){ CAN = true; return; } return Promise.resolve(u.canEdit()).then(v => { CAN = !!v; }, () => { CAN = true; }); }).catch(() => { CAN = true; }); } catch (e){ CAN = true; }
     const canShare = () => CAN !== false;
-    const takeShared = d => { if (!d || !d.all) return; lastAt = d.at || lastAt; if (d.all.stAskVer === 'v1' && (d.at || 0) < 1793942000000) d = Object.assign({}, d, { all: Object.assign({}, d.all, { stAskVer: 'v2' }) });   /* a shared setup saved before the star's rule (V2) takes it; one saved after keeps its choice */ try { localStorage.setItem(KEY, JSON.stringify(d.v || {})); localStorage.setItem(KEY2, JSON.stringify(d.all)); } catch (e){} Object.keys(d.v || {}).forEach(id => put(id, d.v[id])); Object.keys(d.all).forEach(id => put2(id, d.all[id])); };
+    const takeShared = d => { if (!d || !d.all) return; lastAt = d.at || lastAt; if (d.all.stAskVer === 'v1' && (d.at || 0) < 1793942000000) d = Object.assign({}, d, { all: Object.assign({}, d.all, { stAskVer: 'v2' }) }); if ((d.all.stAskVer === 'v1' || d.all.stAskVer === 'v2') && (d.at || 0) < 1794021600000) d = Object.assign({}, d, { all: Object.assign({}, d.all, { stAskVer: 'dock' }) });   /* and one saved before the Dock takes it */   /* a shared setup saved before the star's rule (V2) takes it; one saved after keeps its choice */ try { localStorage.setItem(KEY, JSON.stringify(d.v || {})); localStorage.setItem(KEY2, JSON.stringify(d.all)); } catch (e){} Object.keys(d.v || {}).forEach(id => put(id, d.v[id])); Object.keys(d.all).forEach(id => put2(id, d.all[id])); };
     /* the Documentation's saved setups shared the same way (EvShared.put from a doc's Save setup; the Navigation doc's so far): kept in the store under masters/, taken as the page opens, after the shared Tweaks,
        and each applied again over them (the doc is the master: "when a doc page has a saved setup, every page applies it on load, over Tweaks") */
     const MASTERS = { 'everlab:navMaster': () => { if (window._navMaster) window._navMaster(); } }, mId = k => 'masters/' + k.replace(/[^\w-]/g, '_');
