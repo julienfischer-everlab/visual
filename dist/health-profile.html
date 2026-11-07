@@ -3225,6 +3225,7 @@ window.EvConsent = (function () {
   };
   var CTRY = { au: ['Australia', 'Medicare'], uk: ['the UK', 'NHS'], nz: ['New Zealand', 'NHI'] };   // where the labs are searched, and the number they're searched under
   var ctry = function () { var v = (document.getElementById('stHpCtry') || {}).value; return CTRY[v] ? v : 'au'; };
+  window.EvRecMap = function (o) { return ausMap(o); };   /* the search's map, shared: Past records opens on it, found, its labs' towns lit */
   var quint = function (u) { return u < .5 ? 16 * u * u * u * u * u : 1 - Math.pow(2 - 2 * u, 5) / 2; };   // easeInOutQuint
   /* the map's pattern (Tweaks -> Health profile -> Map: "tweak to control more pattern map"): its mark (squares, round dots, plus signs, or halftone dots that swell and shrink across the land), its grid (straight, or every other row offset by half),
      the spacing and the size of its marks, its opacity in the crossing's circle (70%, "active area 70% opacity") and away from it (25%, "inactive areas 25%"), and the circle's radius (192 px, "radius 192px") */
@@ -4548,7 +4549,7 @@ window.EvConsent = (function () {
         var p = pending('search'), al = live(tick), lab = h('span', { class: 'hpSr', role: 'status', text: p.label });   // al: this page's tick (show() counted it before building); lab: the search's state, for screen readers only (the line under the map removed: "remove")
         var hd = q('', 'We’ve started looking for your past results',   /* the same title, found or not ("We’ve started looking for your past results") */ 'We check pathology labs across ' + CTRY[ctry()][0] + ' under your name and ' + CTRY[ctry()][1] + ' number. It runs in the background, so you can keep going.', true);   // centred ("title centred")
         var map = ausMap({ country: ctry(), from: S.a.wear.ans.state, done: p.done, still: !!opts.snap, alive: al, isDone: function () { var x = pending('search'); return !!(x && x.done); },
-          onDone: function () { lab.textContent = '4 past results found'; } });   // found while it shows: the status says so (for screen readers); the map goes round the four
+          onDone: function () { lab.textContent = '4 past results found'; recFoot(); } });   // found while it shows: the status says so (for screen readers); the map goes round the four
         var mw = h('div', { class: 'hpSearch' }, map.el, lab);
         scr.classList.add('hpSearchP'); scr.appendChild(mw); scr.appendChild(hd);   /* the map up in the header, over the title ("push the visual above the title, in the header") */
         var nb = h('button', { type: 'button', class: 'hpSw', role: 'switch', 'aria-checked': String(!!S.notif), 'aria-label': 'Tell me when they’re ready', on: { click: function () { S.notif = !S.notif; nb.setAttribute('aria-checked', String(S.notif)); save(true); } } }, h('i', { 'aria-hidden': 'true' }));   // a switch, not a button ("toggle")
@@ -4584,7 +4585,8 @@ window.EvConsent = (function () {
           h('div', { class: 'hpCard' }, row('Tell me when they’re ready', 'Turns on notifications for results and reminders', nb)),
           h('div', { class: 'hpCard' }, h('div', { class: 'hpRow' }, h('div', null, h('b', { text: 'Have a report from somewhere else?' }), upD), upB), fl));
         scr.appendChild(acts);
-        foot2('Got it', true, fwd);   // after the three: the profile done with ("Got it CTA"; was Go to overview)
+        var recFoot = function () { if (window._pastRec) foot2('See your records', true, function () { if (window._hp) window._hp.close(true); setTimeout(function () { window._pastRec.open(); }, 0); }, 'Got it', fwd); };   /* found: the records collected, their own full modal (Past records), Got it under it */
+        if (p.done && window._pastRec) recFoot(); else foot2('Got it', true, fwd);   // after the three: the profile done with ("Got it CTA"; was Go to overview)
         /* in turn ("title centred, appearing, fade in, then the map, then the CTA"): the title, the map (its ripples once it is there), the rows and the Continue */
         if (opts.snap || reduced() || !scr.animate) map.start(0);
         else {

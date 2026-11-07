@@ -21305,3 +21305,14 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - One data set, `window.EvPastRec` (10 records, 179 results, 4 labs, 2021 to 2025): the Past results task's line ("10 records, 2021 to 2025") reads it.
 - Wired like the other standalone modals: `__soloClose`, the page menu, the hash on load and on change, `__pageVal`, EvCtx, its display rules, and the pages that check for a modal being up.
 - Placeholder mismatch to align later: the older Past results message says 1,050 results, and Insights' historical record says 2011 to 2026.
+
+## Past records, second pass ("Try again")
+
+- The modal opens on the past-results search's own map, now in its found state. The search lines go round the four labs' towns (window.EvRecMap, the same ausMap the search page draws). A centred title and lead follow, then three counts that run up (10 records, 179 results, 4 labs).
+- The bar chart is gone. "Your records over time" puts every record on a 2021–2025 line where it falls. Each dot is sized by its results and red (--mbX) when a result was out of range, and the dots drop in oldest first. What stands out and Every record are unchanged.
+- It is now reachable from the default Overview:
+  - The records card ("Past results") opens Past records once the search is done. Its words then read "Your past records are in." and "10 records, 2021 to 2025".
+  - Tweaks -> Records processing has a new Found option to jump straight to that state.
+  - The search page, once found, offers See your records with Got it under it.
+  - Before this, the only way in was the Insights card's Past results task, which the default Overview doesn't show.
+
