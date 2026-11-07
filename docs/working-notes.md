@@ -21463,3 +21463,12 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
   - They were cut from the strip in a Chromium canvas: the flat #181818 ground was keyed out with its colour taken back out of the soft edges, and the "Edit" pill and share button over the strip were erased.
   - Saved as `assets/overview/ins-{hp,data,past}.webp` (240 px, about 8 KB each) and written once in `window.EvInsImg`.
   - They are greyscale until done, as before.
+
+## Async report, Here's what we recommend (Stacked): Clinical and Lifestyle phases
+
+- "Before that we need to intro 2 cards with 3 item inside, summarised + X more blur gradient on the 4th item … Clinical, Lifestyle … Each item need a property New / Adjusted … a badge right side … Click continue will start the Clinical group first … then the lifestyle group … all items in one screen with a Later / Now toggle … clicking on an item (ghost card) will open a modal (bottom sheet mobile)".
+- Stacked now runs in three phases (`rcPh`: intro, clin, life). Intro: two cards (`.arRcGrp`), Clinical (Tests, scans and care + Supplements & medications) and Lifestyle (Exercise & wellbeing + Nutrition & hydration's meals, a meal's habits as one item via `rcMealIt`). Each card: name and count, three rows (picture, name, line, New / Adjusted badge right), the fourth blurred and masked out under "+X more". CTA Continue.
+- Clinical: the existing stack (swipe, cues, done card) with the Clinical items only; lede "Clinical · n of N"; CTA Continue once all are decided. Review again clears only the Clinical decisions.
+- Lifestyle: every item as a ghost-card row with a Later / Now toggle (`.arRcSeg`, Now filled by default); a press on the row opens the stacked card in the bottom sheet (Maybe later / Add to my plan set the toggle). CTA Review my plan → the existing review and Pay.
+- Back steps life → clin → intro; entering the step forward starts on the intro. `stkAll` = Clinical then Lifestyle, so the review keeps its indices.
+- Item property: `adj: 1` in the data (P1 Strength training, B12 injections, the recheck; P2 vitamin D drops, the recheck, the results review); everything else New. The stacked card's tag reads Adjusted (blue) or + New (green).

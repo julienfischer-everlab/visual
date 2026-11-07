@@ -909,6 +909,28 @@ body.light .arSheet .arRcStkMk, .arSheet:not(.arDark) .arRcStkMk { background: r
 .arSheet .arRcStkNo { background: oklch(var(--ar-ink) / .08); color: oklch(var(--ar-ink)); } @media (hover: hover) { .arSheet .arRcStkNo:hover { background: oklch(var(--ar-ink) / .12); } .arSheet .arRcStkYes:hover { opacity: .9; } }
 .arSheet .arRcStkYes { background: oklch(var(--ar-ink)); color: var(--ar-paper); }
 .arSheet .arRcStkNote { margin: 0; text-align: center; font-size: 14px; line-height: 20px; color: oklch(var(--ar-ink) / .56); }
+/* Clinical and Lifestyle (the Stacked step's two cards; "a badge right side"): each card its name and count, three rows, the fourth fading out under a blur with how many more */
+.arSheet .arRcGrps { display: flex; flex-direction: column; gap: 16px; }
+.arSheet .arRcGrp { display: flex; flex-direction: column; min-width: 0; padding: 20px 20px 4px; border-radius: 24px; background: var(--ar-card-bg); overflow: hidden; }
+.arSheet .arRcGrpHd { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding-bottom: 4px; }
+.arSheet .arRcGrpT { margin: 0; font-size: 20px; line-height: 26px; font-weight: 600; color: oklch(var(--ar-ink)); } .arSheet .arRcGrpN { font-size: 15px; line-height: 20px; color: oklch(var(--ar-ink) / .56); }
+.arSheet .arRcGrpRow { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-top: 1px solid oklch(var(--ar-ink) / .1); } .arSheet .arRcGrpL > .arRcGrpRow:first-child { border-top: 0; }
+.arSheet .arRcGrpRow .arRvwTx { flex: 1; gap: 2px; } .arSheet .arRcGrpRow .arRvwTx b { font-size: 16px; line-height: 21px; } .arSheet .arRcGrpRow .arRvwTx span { font-size: 14px; line-height: 19px; }
+.arSheet .arRcPic.arRcGrpPic { width: 44px; height: 44px; border-radius: 12px; } .arSheet .arRcPic.arRcGrpPic svg { width: 20px; height: 20px; }
+.arSheet .arRcGrpMore { position: relative; height: 52px; overflow: hidden; border-top: 1px solid oklch(var(--ar-ink) / .1); }
+.arSheet .arRcGrpMore > .arRcGrpRow { border-top: 0; filter: blur(3px); opacity: .6; -webkit-mask-image: linear-gradient(#000 10%, transparent 95%); mask-image: linear-gradient(#000 10%, transparent 95%); }
+.arSheet .arRcGrpMoreT { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 15px; line-height: 20px; font-weight: 500; color: oklch(var(--ar-ink) / .8); }
+/* the badges: New green, Adjusted blue; small and round in the rows */
+.arSheet .arRcStkNew.arRcBdg { flex: none; padding: 2px 8px; border-radius: 9999px; font-size: 13px; line-height: 18px; font-weight: 500; color: oklch(80% .13 150); } .arSheet:not(.arDark) .arRcStkNew.arRcBdg { color: oklch(48% .13 150); }
+.arSheet .arRcStkNew.arRcAdj.arRcAdj { background: oklch(72% .12 245 / .2); color: oklch(82% .09 245); } .arSheet:not(.arDark) .arRcStkNew.arRcAdj.arRcAdj { color: oklch(48% .14 252); }
+/* Lifestyle: ghost-card rows, each its Later / Now (a thumb sliding under the choice: Now filled, Later quiet) */
+.arSheet .arRcLsRow { gap: 12px; } .arSheet .arRcLsRow .arRcPic.arRvwPic { width: 48px; height: 48px; border-radius: 14px; }
+.arSheet .arRcLsRow .arRvwTx b { font-size: 16px; line-height: 21px; } .arSheet .arRcLsSub { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; } .arSheet .arRvwTx .arRcLsSub > span:last-child { font-size: 14px; line-height: 19px; }
+.arSheet .arRcSeg { position: relative; flex: none; display: grid; grid-template-columns: 1fr 1fr; padding: 3px; border-radius: 9999px; background: oklch(var(--ar-ink) / .08); isolation: isolate; }
+.arSheet .arRcSeg::before { content: ""; position: absolute; z-index: -1; top: 3px; bottom: 3px; left: 3px; width: calc(50% - 3px); border-radius: 9999px; background: oklch(var(--ar-ink) / .16); transition: transform .3s cubic-bezier(.32, .72, 0, 1), background-color .2s ease; }
+.arSheet .arRcSeg.arNow::before { transform: translateX(100%); background: oklch(var(--ar-ink)); }
+.arSheet .arRcSeg > button { appearance: none; -webkit-appearance: none; min-width: 54px; height: 32px; margin: 0; padding: 0 10px; border: 0; border-radius: 9999px; background: none; font: inherit; font-size: 14px; line-height: 18px; font-weight: 500; color: oklch(var(--ar-ink) / .56); cursor: pointer; transition: color .2s ease; -webkit-tap-highlight-color: transparent; }
+.arSheet .arRcSeg > button[aria-checked="true"] { color: oklch(var(--ar-ink)); } .arSheet .arRcSeg.arNow > button[aria-checked="true"] { color: var(--ar-paper); } .arSheet .arRcSeg > button:focus-visible { outline: 2px solid oklch(var(--ar-ink)); outline-offset: 2px; }
 @media (prefers-reduced-motion: reduce) { .arSheet .arRcStkC, .arSheet .arRcStkC > * { transition-duration: .01s !important; transition-delay: 0s !important; } }
 .arSheet .arRcCats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }   /* two a row */
 .arSheet .arNxCards { width: 100%; } .arSheet .arNxCard { cursor: default; } .arSheet .arNxVis { display: grid; place-items: center; width: 64px; height: 64px; } .arSheet .arNxVis .evBeamStar { --bsBg: oklch(var(--ar-ink) / .04); --bsInk: oklch(var(--ar-ink)); } .arSheet .arNxAv { display: block; width: 64px; height: 64px; border-radius: 50%; object-fit: cover; }   /* the debrief's last two ways on, as cards: Eva's beam star, the doctor's photo */
