@@ -21480,3 +21480,8 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - "Break group: Nutrition, Workout, Supplements, Medication": Clinical is now Tests, scans and care only. Lifestyle holds Nutrition (the meals), Workout (Exercise & wellbeing), Supplements and Medication (`med: 1`: B12 injections, Iron tablet), each with its heading on the Later / Now screen.
 - "Also some Adjusted vs New": more Adjusted items: P2 Brisk walks with the pram and Omega-3, both personas' Hydration (`adj` on the meal, carried by `rcMealIt`).
 - The Lifestyle screen's title is "Your Lifestyle recommendations", with no sub.
+
+## Recommendations (Stacked): the two cards, count big, no sheet
+
+- "No modal on tap": the Clinical and Lifestyle cards are no longer buttons; their item sheet is gone, and so are its row styles.
+- "10 (BIG), Clinical recommendations; same for Lifestyle": under the render, the count at 40/44 semibold, then "Clinical recommendations" / "Lifestyle recommendations" (the card's muted line), then the New / Adjusted (or added / later) badges, centred.
