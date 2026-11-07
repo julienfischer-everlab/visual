@@ -21458,3 +21458,4 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
   - The sphere (or the plan's doctor) sits on top, then the title and its line centred (34ch).
   - Below them comes the button, then the consult line (or the progress) under the button.
   - The eyebrow is hidden.
+- Async report insight pages: What we recommend for this (`rxEl`) moves to the end of the sections, just above Any question? ("push down this section at the end, just above Any question?"). The earlier 24 gap above its card is undone (back to 8): "push down" meant its place in the page.
