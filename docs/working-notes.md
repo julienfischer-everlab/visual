@@ -21394,3 +21394,13 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - Let go past the threshold and it's decided: the cue is made whole, then the card leaves from where it is after 380 ms (the buttons' path keeps 650 ms). Short of it, the card springs back and the cue fades.
 - Vertical drags still scroll (`touch-action: pan-y`). Drags start off the buttons only, a drag never counts as a tap, and the movement is divided by `evK` for the scaled XS frame.
 - What we recommend for this (`.arRx`): 24 above the card (was 8), "push down the list".
+
+## Health data connect: Full bottom sheet
+
+- The connect sheet (`devSheet`, `.hpConf.hpDv`) is now a Full bottom sheet (Design system → Modals).
+- Phone:
+  - It runs from 62 under the screen's top to the foot, under a 72% blanket, rising 400 ms `cubic-bezier(.32, .72, 0, 1)`.
+  - Sides and corners follow the bottom sheet tokens (`--evShGap`, edge to edge since #311; `--evShR`).
+  - Its content scrolls; Connect / Done stays pinned at the foot over the home indicator's 34.
+  - The success state ("<device> connected") is centred in the sheet.
+- Desk: the tall floating sheet, min(544) wide, up to 720 high, 28 corners.
