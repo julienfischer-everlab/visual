@@ -21404,3 +21404,17 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
   - Its content scrolls; Connect / Done stays pinned at the foot over the home indicator's 34.
   - The success state ("<device> connected") is centred in the sheet.
 - Desk: the tall floating sheet, min(544) wide, up to 720 high, 28 corners.
+
+## Health data: device tiles, 2 x 2 grid; Insights status circles
+
+- Each device has a 3D tile (`assets/hp/dev-*.webp`, 192 px, about 7 KB each, written once in `DEVIMG`).
+  - Apple Health is the supplied heart render.
+  - Oura Ring (a titanium ring), Garmin (a blue watch) and Whoop (a green-to-red pulse) are drawn on the same tile, with the heart painted out in a Chromium canvas.
+- The Health data home is a 2 x 2 grid (`.hpDevGrid`). Each card has the tile (64), the name, what it reads, and a badge, all left aligned:
+  - Connected uses the status pill's Optimal colours (`.arLfPill.arLfOpt`).
+  - Not connected uses the pill's neutral (`.hpDevBdgOff`, ink 8% / 62%).
+  - The Connected / Not connected groups are gone: the badge carries the state, and it pops when the sheet closes.
+- The connect sheet's tile is the device's render at 96.
+- Insights card status circles:
+  - The done check uses the Optimal pill's colours, dark green with light green ink (light mode: pale green with deep green ink), "lighter than existing".
+  - Processing is a grey filled disc with a still loader icon inside (Lucide `loader`), no spin.
