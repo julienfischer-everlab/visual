@@ -21509,3 +21509,7 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 
 - "When you reach 70% swipe, start to show the content on the card behind": past 70% of the way to the decision point, the card behind's words fade in (`.arRcStkPeek`, `--rv`) and it comes forward (`--k` 1 → .15), whole at the threshold; short of it, it goes back; past it, lay() makes it the front. The dragged card is held on top (z 20) meanwhile.
 - "Tweak the visual by a small frame iPhone with stacked cards inside, show a card has been added with a small animation; super minimalist, half of a rounded rectangle iPhone shape": the two cards' 3D renders replaced by `rcPhone(kind, done)`, a CSS-only half phone (1.5px outline at ink .2, 26 top corners, open and fading at its foot, the island). Clinical: three mini cards stacked, the front one ticked green then sent off right while the next comes forward (4.2 s loop); done, it stays ticked. Lifestyle: three rows, their toggles turning on in turn. Still with reduced motion.
+
+## Swipe peek: 40% cap, whole on release
+
+- "While swipe the maximum content opacity is 40%: from 70% swipe to 100% the opacity grows from 0 to 40%; on release 100%": `--rv` is now 0 → .4 over 70–100% of the way to the threshold; let go past it, the card behind takes `arRcStkPeekGo` and `--rv: 1` (a .3 s fade to whole) at once, before lay() makes it the front. Measured: .4 at the drag's end, ~.97 150 ms after release.
