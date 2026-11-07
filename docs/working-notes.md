@@ -21578,3 +21578,7 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - Swiping a Clinical card past the threshold sends it off at once (it waited 380 ms where it was let go: "when I release a stacked card, there is a weird pause"); Maybe later / Add to my plan by button keep their beat for the cue.
 - The segmented tab is the review's only ("sorry the segmented was for the next screen"): the Lifestyle list has no filter again (rcSegTabs stays the one master for the review).
 - Confirm your updated plan: its title 8 further from the tabs; Tweaks -> Review groups: Card (default) / No card (the groups on the page's ground, heading and fold kept); a row's hover plate is no longer clipped at the sides by the fold (the clip 12 wider each side).
+
+## Past records intro: a phone with the records stacking into it
+
+"Here put a phone frame visual showing stacked items in it": under "They're part of your Everlab profile now." (the intro's step 1), a half phone in the recommendations' style (1.5 ink outline, island, foot faded), ink-tinted so it follows the theme. As the line comes in, four record cards (a tile and two lines) drop into it back to front, 240 ms apart, each settling a step lower and fainter behind the front one; then a green check pops on the front card. CSS only (`.prxPh`, `.prxPhK`, keyframes prxPhIn / prxPhOk), keyed off the line's own `prxIn`, so it plays each time the step shows; reduced motion lands it at once.
