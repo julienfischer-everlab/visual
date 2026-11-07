@@ -21418,3 +21418,8 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - Insights card status circles:
   - The done check uses the Optimal pill's colours, dark green with light green ink (light mode: pale green with deep green ink), "lighter than existing".
   - Processing is a grey filled disc with a still loader icon inside (Lucide `loader`), no spin.
+
+## Health data: product images, grouped grid with dots
+
+- The device visuals are now the supplied product images: the Apple Health heart tile, the Oura ring, the Garmin watch and the Whoop band. They are transparent PNGs, saved as 192 px WebP over the same `assets/hp/dev-*.webp` paths, 6–10 KB each.
+- The groups are back once a device is connected. Connected comes first, its eyebrow after a green dot (#5fd67c with a soft 16% ring). Not connected follows with a grey dot (ink 32%). Each group is its own 2 x 2 grid, and the cards keep their badges. A device just connected drops into Connected and its badge pops.
