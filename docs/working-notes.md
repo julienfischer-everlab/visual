@@ -21534,3 +21534,7 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - Async report welcome on the desk (M / L full modal, the pill welcomes: Sphere hero, Sphere, Halftone): "footer needs to follow the same top margin as the title group at the top, as bottom padding": the foot's bottom padding is the head (60) + the welcome's 80 + its 8 = 148, the badge's distance from the top; measured 148 / 148. "Increase max width, 2 lines": the title 460 wide on the desk, so "Your Advanced bloods / pathology results are here".
 - Doctor's note card: the corner badge now says how many ("13 recommendations"), not the price; it sits in the card's top-right corner (absolute, 14 in), so the name keeps its width on the phone.
 - The two cards: "To review" / "Reviewed" bigger (14 / 19, 5 × 12) and 12 lower (margin 20); the label medium (500); 4 more under the number. "Remove review CTA, put an edit circle, filled secondary, top right": reviewed, a 32 ink-10% disc with Lucide pencil at the card's top right (Clinical: the stack again; Lifestyle: its screen); no Review button.
+
+## Notes: priority
+
+- "Need to be able to prio some; need a badge when prio item": each note has a flag button (Lucide flag, beside delete; shown on hover, always when on); flagged notes (`prio` in devNotes) go first within their group (To do / Done) and wear an orange "Priority" badge before the author and date.
