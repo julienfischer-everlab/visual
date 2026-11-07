@@ -21433,3 +21433,6 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
   - Badges On: no mini circle on the visual. The badge is fully round, 10 above it (was 6), 5 / 10 padding, 26 high.
   - Tile names are Regular (400) wherever the list is drawn.
   - New CTA position **Footer link** (`footL`, `html.insCtaFootL`): progress at the left (a bar per task, green once done, then "n of 3 done") and the Generate my insights link with its chevron at the right.
+- Follow-ups:
+  - The tiles' grid is pulled out by the tiles' own 12 on both sides (`.ovTasksL` margin −12), so their content lines up with the eyebrow on the left and the link on the right. The ghost plates now reach 8 from the card's edge.
+  - Footer link: the progress is shorter (bars 12 wide, 3 apart, "n of 3") so it never meets the link at phone width.
