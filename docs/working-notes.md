@@ -21546,3 +21546,8 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 ## Clinical stack: H1 back, top nav "Plan recommendation"; reviewed card light green
 
 "Your clinical / recommendations as h1; change top nav just Plan recommendation." The Clinical stack opens with the H1 "Your clinical / recommendations" (two lines, as the Lifestyle's), the deck centred in the space under it; the top nav reads "Plan recommendation" with no "n of N" sub, as the intro and Lifestyle. "Card bg light green when completed": a reviewed group card on the intro takes a light green ground (green 150 at 10% dark, 14% light), its Reviewed badge a touch stronger.
+
+## Recommendations intro: 3D renders on the group cards; Overview HP card centred: bigger title, wider sides
+
+"Tweak visual by 3D visual: use the Scan one for Clinical and the Dropper bottle, cut out (Vitamin D3 + K2) for Lifestyle." The two group cards drop the half-phone (`rcPhone`, now unused) for the 3D renders in the categories' `.arRcVis`: Clinical the render already used as "the scan 3D asset" for Tests, scans and care (`RC_IMG.scan`, the Imaging referral render; there is no other scan render in the Assets library), Lifestyle the Assets library's "Dropper bottle, cut out (Vitamin D3 + K2)" (`RC_IMG.drop`, plan/sup-vitd), 88 on the phone and 96 on desktop, the bottle scaled 1.3 to the papers' size (its picture has room round it).
+"Centered version +4px font size, padding +16px left right": the Overview's Health profile card with Card align Centred (desktop, `html.hpOvCtrOn`) sets its title at 22/28 (was 18/23.4) and 40 on each side (was 24).
