@@ -82,6 +82,7 @@ The page menu `#versionSel` has Documentation (`'doc'`) and Design system (`'ds'
 | Other beams (chat composer, intro field, field star) | `window.EvBeam`, `hpCcBm`, `.ovChatSpark` | references/navigation-icons-motion.md |
 | Carousels | `window.EvMagnet` | references/navigation-icons-motion.md |
 | Hover / press conventions, the Plan's interaction states | plain CSS; `:is(#dPlan, .plSesSheet) --plHov/--plPrs/--plPrsS`, `.plPress` | references/navigation-icons-motion.md |
+| Chat field master (one typing card everywhere: the star's Dock chat, the Top Chat, the in-app chat's composer) | `--cf*` tokens, CSS "EvChatField, the chat field master" | references/chat.md |
 | Chat bubbles master | `bbDoc`, `.bbB` | references/chat.md |
 | Concierge intro bubbles | `.hpCc*`, `bub()`, `flip()` | references/chat.md |
 | In-app chat | `window.EvChat` | references/chat.md |

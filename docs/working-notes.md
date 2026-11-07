@@ -21351,3 +21351,12 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - "Light beam effect, border beam when trigger this": as the Dock chat opens, the house beam (EvBeam, the Concierge intro's warm conic) runs once round the field, the words and tools over it.
 - "Padding bottom (below chat field) must be the same as the left right padding container": the field now sits over the keys by its own side inset (`dkG`, measured with the island: 12 at XS), not a fixed 10.
 - Size: the built page had reached 15,999,642 bytes. The Concierge video was inlined twice (WebM 0.8 MB and MP4 1.0 MB), so `window.__ccVid` now carries the MP4 alone; its readers skip the empty WebM slot. dist/index.html is 14.89 MB.
+
+## Insights Row layout, every module its +, the chat field master
+
+- Insights → Card layout: Stacked / Row ("try a tweak, excluding the eyebrow and the carousel dots: left to right, visual, content group (title + sub), CTA circle chevron right"). Row lays each Hero slide out as a grid: the eyebrow and the dots as they were; between them a 72 visual tile (a report's render fills it), the title and its line, and a 44 round chevron (the CTA's words kept for its label).
+- "All modules should have a plus": the Insights + now finds its section, its Hero card or its empty card; the Services + finds the row or its Tasks list.
+- Chat field master (EvChatField, `--cf*` tokens, documented in the skill's references/chat.md): the Dock chat, the Top Chat (full modal) and the in-app chat's composer are now one card. #2a2a2a, 28 corners, 24 / 24 / 16, 17 words, 20 to the tools, 36 tools; white with an ink ring in light.
+- Dock order ("keyboard and chat appear together, then the suggestions once the group is displayed"): the field rises on the keys' own curve and time (.32 s), and the suggestions rise in, the nearest first, from 440 ms.
+
+- Insights empty state, Processing ("health data and past result can have processing icon (grey); if past result processing, can't submit"): Tweaks → Insights → Health data and Past results are now On / Processing / Off. Processing reads Syncing / Searching, with a grey arc turning where the check comes. Past results Processing keeps Generate my insights locked; Health data Processing doesn't (it is optional).

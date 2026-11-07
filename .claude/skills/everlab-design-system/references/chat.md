@@ -242,3 +242,32 @@ Still pending (not merged on this branch). Today EvChat's `.chHead` and the Conc
 ## Pending: Chat video builder (#268)
 
 On another branch, being merged; not on this branch yet. After it merges, document here: what it builds on the Concierge chat, its anchors (index.html and / or visuals/concierge.html), its API and data shape, its numbers and motion (does it reuse EvBeam or the Chat bubbles' FLIP?), its Tweaks or doc controls, a real call site, and its pitfalls; add its row to SKILL.md's table.
+
+## Chat field master (EvChatField)
+
+**What.** The one card a question is typed into, the same everywhere ("this chat field should be the same everywhere; make sure this is part of a DS component"). The star's Dock chat is the reference. The words sit on top at 17; 20 below them come the tools: + at the left, then who it goes to (Eva) and send at the right, each 36.
+
+**Where.** CSS `grep -n "EvChatField, the chat field master" index.html`. The tokens are on `:root`, with light values on `body.light`:
+
+| Token | Dark | Light | What |
+|---|---|---|---|
+| `--cfBg` | #2a2a2a | #fff | the card's ground |
+| `--cfRing` | white 6% | ink 8% | its 1 px ring |
+| `--cfR` | 28 | 28 | corners |
+| `--cfPT` / `--cfPX` / `--cfPB` | 24 / 24 / 16 | same | inside |
+| `--cfFs` | 17 | 17 | the words |
+| `--cfGap` | 20 | 20 | words to tools |
+| `--cfBtn` / `--cfBtnBg` | 36 / white 8% | 36 / ink 7% | +, who, send |
+
+**Instances.** The rule set dresses all three, over their own older numbers:
+- the Dock chat's `.aiRowTop` (EvAsk, `html.askDock`);
+- the Top Chat's full-modal `.evSrchFull .evSrchF.evSrchFd`;
+- the in-app chat's `.chComposer` (EvChat).
+
+The Top Chat's in-card variant (`.evSrch:not(.evSrchFull)`) stays flat inside its panel.
+
+**Rules.**
+- A new place to type uses these tokens, never its own numbers.
+- The send fills (light ground, dark arrow) once there are words (`.hasText` / `.on`).
+- In the Dock, the field rises with the keys on their curve (.32 s, `cubic-bezier(.2,.8,.2,1)`). The suggestions come after, bottom to top, from 440 ms, 70 ms apart, and the house beam (EvBeam) runs once round the field.
+
