@@ -21597,3 +21597,9 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - Tweaks -> Insights -> Tasks (XS): Columns (default) / Stacked ("stacked item, XS only: visual left, content align left, badge right"): on the phone the empty state's three tasks are rows, the 3D render 40 at the left, the name on one line, its badge at the right, .5 dividers between (html.insTaskStk; only with body[data-bp="xs"]). Not the "Card layout: Stacked / Row" control, which is the Hero insights card's.
 - Past records reveal, the first line: the captured documents listed under "We found ..." (mono, uppercase, orange marks, the record and its year), one after another, the sixth on fading and blurring more each ("add the list of capture documents, blur / fade out after 5"); after 3 s the list blurs away and the dots come up as the cloud; the beats after it move 1.6 s later.
 - Overview Health profile card, Card align Centred: the consult details are the card's footer at its foot ("content below the CTA as a footer"), the sphere / title / button group centred in what is left; the button 24 closer to the title (24, was 56 with the foot's margin); the sphere 16 more under it (36).
+
+## Centred Health profile card: visual 48 from the content
+
+- "visual 48px from content": on the centred desk card (`html.hpOvCtrOn`), the sphere's drawn foot now sits 48px above the title. The sphere is a 119px box drawn at `scale(1.6)`, so its margin is `calc(48px + 119px * .3)`; the Plan picture (unscaled) keeps a plain 48.
+- The hidden eyebrow sits after the visual, so the `.hpOvEy + *` auto top margin was landing on the title and adding ~43px under the sphere. `.hpOvEy:not(:first-child) + *` now resets it to 0: the visual, title and button stay together, centred above the consult footer.
+- Measured at 1920, M and Auto: sphere foot 225, title 273.
