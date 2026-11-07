@@ -17136,7 +17136,7 @@
 .arSheet .arRcDeck { display: grid; padding-bottom: 36px; }
 .arSheet .arRcDeck > .arRcStkC { grid-area: 1 / 1; }
 .arSheet .arRcStkC { --k: 0; position: relative; z-index: calc(10 - var(--k)); display: flex; flex-direction: column; gap: 16px; min-width: 0; padding: 20px; border-radius: 24px; background: linear-gradient(var(--ar-card-bg), var(--ar-card-bg)), var(--ar-paper); transform-origin: 50% 100%; transform: translateY(calc(var(--k) * 12px)) scale(calc(1 - var(--k) * .05)); opacity: calc(1 - var(--k) * .22); transition: transform .5s cubic-bezier(.32, .72, 0, 1), opacity .35s ease; }
-.arSheet .arRcStkC > * { transition: opacity .25s ease; } .arSheet .arRcStkC:not(.arOn) > * { opacity: 0; } .arSheet .arRcStkC.arOn > * { transition-delay: .12s; }
+.arSheet .arRcStkC > * { transition: opacity .25s ease; } .arSheet .arRcStkC:not(.arOn) > * { opacity: 0; } .arSheet .arRcStkC.arRcStkPeek:not(.arOn) > * { opacity: var(--rv, 0); transition: none; } .arSheet .arRcStkC.arOn > * { transition-delay: .12s; }
 .arSheet .arRcStkC.arRcStkFar { opacity: 0; }
 .arSheet .arRcStkC.arRcStkOutL, .arSheet .arRcStkC.arRcStkOutR { z-index: 11; opacity: 0; pointer-events: none; transition: transform .5s cubic-bezier(.32, .72, 0, 1), opacity .4s ease .1s; } .arSheet .arRcStkC.arRcStkOutL { transform: translateX(-115%) rotate(-8deg); } .arSheet .arRcStkC.arRcStkOutR { transform: translateX(115%) rotate(8deg); }
 .arSheet .arRcStkC.arRcStkOutL > *, .arSheet .arRcStkC.arRcStkOutR > * { opacity: 1; transition: none; }
@@ -17174,7 +17174,26 @@ body.light .arSheet .arRcStkMk, .arSheet:not(.arDark) .arRcStkMk { background: r
 .arSheet .arRcStkYes { background: oklch(var(--ar-ink)); color: var(--ar-paper); }
 .arSheet .arRcStkNote { margin: 0; text-align: center; font-size: 14px; line-height: 20px; color: oklch(var(--ar-ink) / .56); }
 /* Clinical and Lifestyle (the Stacked step's two cards, "minimal card, 2 per row, with 3D visual on top": the categories' .arRcCat): under the name and count, how many New and Adjusted; their sheet's rows, each its badge at the right */
-.arSheet .arRcGrpGhost .arRcGrpC { pointer-events: none; } .arSheet .arRcGrpsW { display: flex; flex-direction: column; gap: 12px; }
+.arSheet .arRcGrpGhost .arRcGrpC { pointer-events: none; }
+/* the two cards' half phone (rcPhone) */
+.arSheet .arRcPh { position: relative; display: block; flex: none; width: 112px; height: 80px; box-sizing: border-box; border: 1.5px solid oklch(var(--ar-ink) / .2); border-bottom: 0; border-radius: 26px 26px 0 0; overflow: hidden; -webkit-mask-image: linear-gradient(#000 55%, transparent); mask-image: linear-gradient(#000 55%, transparent); }
+.arSheet .arRcPhIs { position: absolute; top: 7px; left: 50%; width: 26px; height: 7px; margin-left: -13px; border-radius: 9999px; background: oklch(var(--ar-ink) / .22); }
+.arSheet .arRcPhK { position: absolute; left: 50%; height: 34px; border-radius: 9px; background: oklch(var(--ar-ink) / .13); transform: translateX(-50%); }
+.arSheet .arRcPhK::before, .arSheet .arRcPhK::after { content: ""; position: absolute; left: 8px; height: 4px; border-radius: 2px; background: oklch(var(--ar-ink) / .32); } .arSheet .arRcPhK::before { top: 9px; width: 42%; } .arSheet .arRcPhK::after { top: 17px; width: 26%; background: oklch(var(--ar-ink) / .18); }
+.arSheet .arRcPhK1 { z-index: 3; top: 24px; width: 74px; background: oklch(var(--ar-ink) / .16); } .arSheet .arRcPhK2 { z-index: 2; top: 30px; width: 66px; opacity: .55; } .arSheet .arRcPhK3 { z-index: 1; top: 36px; width: 58px; opacity: .3; }
+.arSheet .arRcPhOk { position: absolute; top: 7px; right: 7px; display: grid; place-items: center; width: 14px; height: 14px; border-radius: 50%; background: oklch(72% .15 150); color: #fff; opacity: 0; } .arSheet .arRcPhOk svg { width: 9px; height: 9px; }
+.arSheet .arRcPhC .arRcPhK1 { animation: arRcPhGo 4.2s cubic-bezier(.32, .72, 0, 1) infinite; } .arSheet .arRcPhC .arRcPhOk { animation: arRcPhOk 4.2s ease infinite; }
+@keyframes arRcPhGo { 0%, 46% { transform: translateX(-50%); opacity: 1; } 64% { transform: translateX(14%) rotate(12deg); opacity: 0; } 65% { transform: translateX(-50%) translateY(7px) scale(.9); opacity: 0; } 86%, 100% { transform: translateX(-50%); opacity: 1; } }
+@keyframes arRcPhOk { 0%, 26% { opacity: 0; transform: scale(.4); } 34%, 58% { opacity: 1; transform: scale(1); } 64%, 100% { opacity: 0; transform: scale(1); } }
+.arSheet .arRcPhLs { position: absolute; top: 24px; left: 50%; display: flex; flex-direction: column; gap: 8px; width: 78px; transform: translateX(-50%); }
+.arSheet .arRcPhR { display: flex; align-items: center; gap: 5px; height: 12px; } .arSheet .arRcPhR u { flex: none; width: 10px; height: 10px; border-radius: 3px; background: oklch(var(--ar-ink) / .18); } .arSheet .arRcPhR em { flex: 1; height: 4px; border-radius: 2px; background: oklch(var(--ar-ink) / .22); }
+.arSheet .arRcPhR s { position: relative; flex: none; width: 18px; height: 10px; border-radius: 9999px; background: oklch(var(--ar-ink) / .16); text-decoration: none; animation: arRcPhSw 4.2s ease infinite; } .arSheet .arRcPhR s::after { content: ""; position: absolute; top: 2px; left: 2px; width: 6px; height: 6px; border-radius: 50%; background: oklch(var(--ar-ink) / .55); animation: arRcPhTh 4.2s cubic-bezier(.32, .72, 0, 1) infinite; animation-delay: inherit; }
+.arSheet .arRcPhR2 s { animation-delay: .45s; } .arSheet .arRcPhR3 s { animation-delay: .9s; }
+@keyframes arRcPhSw { 0%, 14% { background: oklch(var(--ar-ink) / .16); } 22%, 80% { background: oklch(var(--ar-ink) / .85); } 90%, 100% { background: oklch(var(--ar-ink) / .16); } }
+@keyframes arRcPhTh { 0%, 14% { transform: none; background: oklch(var(--ar-ink) / .55); } 22%, 80% { transform: translateX(8px); background: var(--ar-paper); } 90%, 100% { transform: none; background: oklch(var(--ar-ink) / .55); } }
+.arSheet .arRcPhDone .arRcPhK1 { animation: none; } .arSheet .arRcPhDone .arRcPhOk { animation: none; opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .arSheet .arRcPh * , .arSheet .arRcPh *::after { animation: none !important; } .arSheet .arRcPh .arRcPhOk { opacity: 1; } .arSheet .arRcPhR s { background: oklch(var(--ar-ink) / .85); } .arSheet .arRcPhR s::after { transform: translateX(8px); background: var(--ar-paper); } }
+ .arSheet .arRcGrpsW { display: flex; flex-direction: column; gap: 12px; }
 .arSheet .arRcDrNote { margin: 0; display: flex; flex-direction: column; gap: 12px; padding: 20px; border-radius: 24px; background: var(--ar-card-bg); } .arSheet .arRcDrHd { display: flex; align-items: center; gap: 12px; }
 .arSheet .arRcDrAv { flex: none; width: 40px; height: 40px; max-width: none; border-radius: 50%; object-fit: cover; } .arSheet .arRcDrTx { display: flex; flex-direction: column; gap: 2px; min-width: 0; } .arSheet .arRcDrTx b { font-size: 16px; line-height: 21px; font-weight: 500; color: oklch(var(--ar-ink)); } .arSheet .arRcDrTx span { font-size: 14px; line-height: 19px; color: oklch(var(--ar-ink) / .56); }
 .arSheet .arRcDrQ { margin: 0; font-size: 16px; line-height: 24px; color: oklch(var(--ar-ink) / .88); text-wrap: pretty; } .arSheet .arRcDeck > .arRcStkC:not(.arRcStkDone) { padding: 28px; }   /* +8 ("+8px padding") */ .arSheet .arStack.arRcClin { min-height: 100%; box-sizing: border-box; justify-content: center; }
@@ -19671,6 +19690,14 @@ window.EvSvcImg = { concierge: 'assets/overview/svc-concierge.webp', treat: 'ass
         var a = w.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: j ? 'translateY(-8px) scale(.97)' : 'scale(1.04)' }], { duration: j ? 320 : 360, delay: j ? 0 : 120, easing: 'cubic-bezier(.32, .72, 0, 1)', fill: 'both' });
         a.onfinish = function () { w.remove(); }; });
       return { r: r0, K: K }; }
+    /* the two cards' visual ("a small frame iPhone with stacked cards inside, show a card has been added with a small animation; super minimalist, half of a rounded rectangle iPhone shape"):
+       the top half of a phone, its outline and island, fading out at its foot. Clinical: a stack of three cards, the front one ticked and sent off, the next coming forward; Lifestyle: three rows, their toggles turning on in turn.
+       Quiet loops; still with reduced motion (the stack ticked, the toggles on). Clinical done: the stack still, ticked */
+    function rcPhone(kind, done) {
+      var ph = h('span', { class: 'arRcPh arRcPh' + kind + (done ? ' arRcPhDone' : ''), 'aria-hidden': 'true' }, h('i', { class: 'arRcPhIs' }));
+      if (kind === 'C') ph.appendChild(h('span', { class: 'arRcPhS' }, [3, 2, 1].map(function (k) { return h('i', { class: 'arRcPhK arRcPhK' + k }, k === 1 ? h('b', { class: 'arRcPhOk' }, strokeIcon(9, 24, 3.4, ['m5 12.5 4.5 4.5L19 7.5'])) : null); })));
+      else ph.appendChild(h('span', { class: 'arRcPhLs' }, [1, 2, 3].map(function (k) { return h('i', { class: 'arRcPhR arRcPhR' + k }, h('u'), h('em'), h('s')); })));
+      return ph; }
     function rcClinFin() { var n = rcSplit().cl.length; for (var i = 0; i < n; i++) if (stkDec[i] === undefined) return false; return n > 0; }   /* every Clinical item decided */
     function rcBdg(it) { return h('span', { class: 'arRcStkNew arRcBdg' + (it.adj ? ' arRcAdj' : ''), text: it.adj ? 'Adjusted' : 'New' }); }   /* each item New or Adjusted ("each item need a property") */
     function rcHead(lt) { var title = h('h2', { class: 'arH700', 'aria-label': 'Here’s what we recommend' }, 'Here’s what', h('br'), 'we recommend'), lede = h('p', { class: 'arPara arRcLede', text: lt }); return { title: title, lede: lede, hd: h('div', { class: 'arIntroBlock arRsHead arRcHead' }, title, lede) }; }
@@ -19682,7 +19709,7 @@ window.EvSvcImg = { concierge: 'assets/overview/svc-concierge.webp', treat: 'ass
       var cfin = rcClinFin(), cy = sp.cl.filter(function (x, i) { return stkDec[i]; }).length;
       var card = function (name, img, list, done) { if (!list.length) return null; var na = list.filter(function (x) { return x.it.adj; }).length, nn = list.length - na;
         var b = h('div', { class: 'arRsArea arRcCat arRcGrpC', role: 'group', 'aria-label': list.length + ' ' + name + ' recommendations' + (nn ? ', ' + nn + ' new' : '') + (na ? ', ' + na + ' adjusted' : '') },   /* not a button ("no modal on tap") */
-          h('span', { class: 'arRcVis', 'aria-hidden': 'true' }, h('img', { src: img, alt: '', decoding: 'async', draggable: 'false' })),
+          rcPhone(name === 'Clinical' ? 'C' : 'L', done),
           h('span', { class: 'arRcCatT' }, h('span', { class: 'arRcGrpNum', text: String(list.length) }), h('span', { class: 'arRcCatS arRcGrpLbl', text: name + ' recommendations' }),   /* the count big, then "Clinical recommendations" ("10 (BIG), Clinical recommendations") */
             done ? h('span', { class: 'arRcGrpBd' }, h('span', { class: 'arRcStkNew arRcBdg arRcGrpOk' }, strokeIcon(12, 24, 3, ['m5 12.5 4.5 4.5L19 7.5']), cy + ' added'), list.length - cy ? h('span', { class: 'arRcStkNew arRcBdg arRcGrpLt', text: (list.length - cy) + ' later' }) : null)
               : h('span', { class: 'arRcGrpBd', 'aria-hidden': 'true' }, nn ? h('span', { class: 'arRcStkNew arRcBdg', text: nn + ' New' }) : null, na ? h('span', { class: 'arRcStkNew arRcBdg arRcAdj', text: na + ' Adjusted' }) : null)),
@@ -19726,7 +19753,7 @@ window.EvSvcImg = { concierge: 'assets/overview/svc-concierge.webp', treat: 'ass
       var cards = its.map(function (x, i) { return rcStkCard(x, i, n, decide); });
       cards.forEach(function (c) { deck.appendChild(c); }); deck.appendChild(done);
       function lay() {
-        cards.forEach(function (c, i) { var k = i - at; c.style.setProperty('--k', Math.max(0, Math.min(k, 3))); c.classList.toggle('arOn', k === 0); c.classList.toggle('arRcStkFar', k > 2); if (k === 0) c.removeAttribute('inert'); else c.setAttribute('inert', ''); c.setAttribute('aria-hidden', k === 0 ? 'false' : 'true'); });
+        cards.forEach(function (c, i) { if (c.classList.contains('arRcStkPeek')) { c.classList.remove('arRcStkPeek'); c.style.removeProperty('--rv'); c.style.transition = ''; } var k = i - at; c.style.setProperty('--k', Math.max(0, Math.min(k, 3))); c.classList.toggle('arOn', k === 0); c.classList.toggle('arRcStkFar', k > 2); if (k === 0) c.removeAttribute('inert'); else c.setAttribute('inert', ''); c.setAttribute('aria-hidden', k === 0 ? 'false' : 'true'); });
         var fin = at >= n; lede.textContent = 'Clinical · ' + (fin ? nRec(n) : (at + 1) + ' of ' + nRec(n)); if (step === REC && !revOn) { navTt.textContent = 'Clinical recommendations'; navTs.textContent = fin ? nRec(n) : (at + 1) + ' of ' + n; } done.classList.toggle('arOn', fin); if (fin) done.removeAttribute('inert'); else done.setAttribute('inert', '');
         stkAt = at; stkDec = dec; if (step === REC && !revOn) { ctaLabel.textContent = fin ? 'Continue' : 'Next'; cta.disabled = !fin; }   /* then on to Lifestyle */   /* the button on once every card is decided ("CTA enable only once all card has been actioned") */
         if (fin) { var y = dec.slice(0, n).filter(Boolean).length; doneT.textContent = y ? y + ' added to your plan' : 'Nothing added yet'; doneS.textContent = (n - y ? (n - y) + ' for later. ' : '') + 'Now let’s have a look at the lifestyle.'; }
@@ -19740,18 +19767,22 @@ window.EvSvcImg = { concierge: 'assets/overview/svc-concierge.webp', treat: 'ass
          The cue (the check or the clock over the card) fades in with the distance, whole at the threshold (a third of the card, 96 at least); let go past it and it is decided, short of it and the card springs back */
       (function () { var d = null;
         var cue = function (c, yes, p) { var mk = c.querySelector('.arRcStkMk'); if (mk && mk.classList.contains('arRcStkMkL') === yes) { mk.remove(); mk = null; } if (!mk) { mk = mkOf(yes); mk.classList.add('arRcStkMkDrag'); c.appendChild(mk); } mk.style.opacity = String(p); };
+        /* the card behind ("when you reach 70% swipe, start to show the content on the card behind"): past 70% of the way to deciding, its words fade in and it comes forward, whole at the threshold */
+        var peek = function (pr) { var nx = cards[at + 1]; if (!nx) return; var r = Math.max(0, (pr - .7) / .3); nx.style.transition = 'none'; nx.classList.toggle('arRcStkPeek', r > 0); nx.style.setProperty('--rv', r.toFixed(3)); nx.style.setProperty('--k', (1 - r * .85).toFixed(3)); };
+        var unpeek = function () { var nx = cards[at + 1]; if (!nx) return; nx.classList.remove('arRcStkPeek'); nx.style.removeProperty('--rv'); nx.style.transition = ''; nx.style.setProperty('--k', '1'); };
         var drop = function (c) { var mk = c.querySelector('.arRcStkMk.arRcStkMkDrag'); if (mk) { mk.style.transition = 'opacity .25s ease'; mk.style.opacity = '0'; setTimeout(function () { if (mk.parentNode && mk.classList.contains('arRcStkMkDrag')) mk.remove(); }, 260); } };
         on(deck, 'pointerdown', function (e) { if (at >= n || e.button > 0 || e.target.closest('button, a')) return; var c = cards[at]; if (!c.contains(e.target) || c.classList.contains('arRcStkMkOn')) return; d = { c: c, x: e.clientX, y: e.clientY, id: e.pointerId, k: (window.evK ? window.evK(c) : 1) || 1, on: false, dx: 0, T: Math.max(96, c.offsetWidth / 3) }; });
         on(window, 'pointermove', function (e) { if (!d || e.pointerId !== d.id) return; var dx = (e.clientX - d.x) / d.k, dy = (e.clientY - d.y) / d.k;
-          if (!d.on) { if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return; if (Math.abs(dy) > Math.abs(dx)) { d = null; return; } d.on = true; d.c.style.transition = 'none'; try { d.c.setPointerCapture(d.id); } catch (x) {} }
+          if (!d.on) { if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return; if (Math.abs(dy) > Math.abs(dx)) { d = null; return; } d.on = true; d.c.style.transition = 'none'; d.c.style.zIndex = '20';   /* over the card behind as it comes forward */ try { d.c.setPointerCapture(d.id); } catch (x) {} }
           e.preventDefault(); d.dx = dx; d.c.style.transform = 'translateX(' + dx.toFixed(1) + 'px) rotate(' + (dx * .04).toFixed(2) + 'deg)';
-          cue(d.c, dx > 0, Math.min(1, Math.max(0, (Math.abs(dx) - 12) / (d.T - 12)))); });
+          var pr = Math.min(1, Math.max(0, (Math.abs(dx) - 12) / (d.T - 12))); cue(d.c, dx > 0, pr); peek(pr); });
         var up = function (e) { if (!d || e.pointerId !== d.id) return; var g = d; d = null; if (!g.on) return;
           var stop = function (ev) { ev.stopPropagation(); ev.preventDefault(); }; g.c.addEventListener('click', stop, { capture: true, once: true }); setTimeout(function () { g.c.removeEventListener('click', stop, true); }, 0);   /* a drag isn't a tap */
-          if (Math.abs(g.dx) >= g.T) { decide(at, g.dx > 0, true); return; }
+          if (Math.abs(g.dx) >= g.T) { decide(at, g.dx > 0, true); return; }   /* the card behind keeps its peek till lay() makes it the front */
+          g.c.style.zIndex = ''; unpeek();   /* short of it: the card behind goes back, its words away */
           g.c.style.transition = 'transform .45s cubic-bezier(.34, 1.4, .64, 1)'; g.c.style.transform = ''; drop(g.c); setTimeout(function () { if (!g.c.classList.contains('arRcStkMkOn')) g.c.style.transition = ''; }, 460); };   /* short of it: back in the stack */
         on(window, 'pointerup', up); on(window, 'pointercancel', up); })();   /* the focus follows on to the next card for a keyboard only */
-      on(again, 'click', function () { at = 0; dec = dec.slice(); for (var q = 0; q < n; q++) dec[q] = undefined; cards.forEach(function (c) { c.classList.remove('arRcStkOutL', 'arRcStkOutR', 'arRcStkMkOn'); c.style.transform = ''; c.style.transition = ''; var mk = c.querySelector('.arRcStkMk'); if (mk) mk.remove(); }); lay(); });
+      on(again, 'click', function () { at = 0; dec = dec.slice(); for (var q = 0; q < n; q++) dec[q] = undefined; cards.forEach(function (c) { c.classList.remove('arRcStkOutL', 'arRcStkOutR', 'arRcStkMkOn'); c.style.transform = ''; c.style.zIndex = ''; c.style.transition = ''; var mk = c.querySelector('.arRcStkMk'); if (mk) mk.remove(); }); lay(); });
       lay();
       var wrap = h('div', { class: 'arRcStkWrap' }, deck, h('p', { class: 'arRcStkNote', text: 'You can change any of these later in Plan.' }));
       var B = rcBuild; rcBuild = null;

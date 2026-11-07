@@ -21504,3 +21504,8 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 ## Clinical stack build-up: slower, alternating sides
 
 - "Slower the stacked sequence. First come from left, 2nd from right etc": the three visible cards are dealt in turn, back card first, alternating sides (left, right, left), each tilted toward where it came from; 1000 ms each, 340 ms apart (was 620 / 110, all from the right); the note fades in after them.
+
+## Recommendations: peek on swipe, half-phone visuals
+
+- "When you reach 70% swipe, start to show the content on the card behind": past 70% of the way to the decision point, the card behind's words fade in (`.arRcStkPeek`, `--rv`) and it comes forward (`--k` 1 → .15), whole at the threshold; short of it, it goes back; past it, lay() makes it the front. The dragged card is held on top (z 20) meanwhile.
+- "Tweak the visual by a small frame iPhone with stacked cards inside, show a card has been added with a small animation; super minimalist, half of a rounded rectangle iPhone shape": the two cards' 3D renders replaced by `rcPhone(kind, done)`, a CSS-only half phone (1.5px outline at ink .2, 26 top corners, open and fading at its foot, the island). Clinical: three mini cards stacked, the front one ticked green then sent off right while the next comes forward (4.2 s loop); done, it stays ticked. Lifestyle: three rows, their toggles turning on in turn. Still with reduced motion.
