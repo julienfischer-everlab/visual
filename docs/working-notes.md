@@ -21500,3 +21500,7 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - "Once submitted the Async report, redirect to timeline": the review's Pay (after the Simple loader and its tick) calls the new `onSubmit(items)` option instead of the end screen; the app's mount switches to Timeline (versionSel 'tl', which closes the report) and calls `window._tl.news(items)`.
 - `window._tl.news(items)`: the tests, supplements and medication added (not the meals or workouts: the Plan's) become timeline rows (`inj`, `chg: 'new' | 'adj'`), Act & Improve's in October 2026 (Act & Improve phase), the retests in April 2027; the journey moved to its membership step (JST 4) so they show open, not locked. Each row its New / Adjusted badge after its title (`.tlChg`).
 - A toast at the foot: "N items moved since your last visit · n new · n adjusted" (5 s). An alert sticky at the page's top (`.tlWalk`): the badge, the item's name, "1 of N changes", Prev / Next (Next a green tick on the last: Done) and Dismiss; each step switches phase / opens the chip section / opens a shut card as needed, glides the page to the row and flashes it.
+
+## Clinical stack build-up: slower, alternating sides
+
+- "Slower the stacked sequence. First come from left, 2nd from right etc": the three visible cards are dealt in turn, back card first, alternating sides (left, right, left), each tilted toward where it came from; 1000 ms each, 340 ms apart (was 620 / 110, all from the right); the note fades in after them.

@@ -19758,8 +19758,9 @@ window.EvSvcImg = { concierge: 'assets/overview/svc-concierge.webp', treat: 'ass
       if (B) { requestAnimationFrame(function () { requestAnimationFrame(function () {   /* each card from the Clinical card's rect to its place on the stack (its own transform: scaled from its foot) */
           /* dealt in from the side, the swipe's way reversed ("build up stacked cards need to be like left right"): each from the right, tilted, onto its place, the back one first */
           cards.slice(at, at + 3).reverse().forEach(function (c, j) { if (!c.isConnected) return; var cs = getComputedStyle(c), base = cs.transform === 'none' ? '' : cs.transform, op = cs.opacity, dx = Math.round(c.offsetWidth * 1.15);
-            c.animate([{ transform: 'translateX(' + dx + 'px) rotate(' + (10 - j * 2) + 'deg) ' + base, opacity: 0 }, { offset: .35, opacity: op }, { transform: base || 'none', opacity: op }], { duration: 620, delay: 120 + j * 110, easing: 'cubic-bezier(.22, 1, .36, 1)', fill: 'backwards' }); });
-          var nt = wrap.querySelector('.arRcStkNote'); if (nt) nt.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 400, delay: 520, fill: 'backwards' });
+            var sd = j % 2 ? 1 : -1;   /* the first from the left, the second from the right, and so on ("first come from left, 2nd from right"), slower */
+            c.animate([{ transform: 'translateX(' + (sd * dx) + 'px) rotate(' + (sd * (10 - j * 2)) + 'deg) ' + base, opacity: 0 }, { offset: .35, opacity: op }, { transform: base || 'none', opacity: op }], { duration: 1000, delay: 150 + j * 340, easing: 'cubic-bezier(.22, 1, .36, 1)', fill: 'backwards' }); });
+          var nt = wrap.querySelector('.arRcStkNote'); if (nt) nt.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 400, delay: 1100, fill: 'backwards' });
         }); });
         return h('div', { class: 'arStack arGap24 arRcStack arRcClin' }, wrap); }
       if (!still && !reducedMotion()) wrap.style.animation = 'arEnFade .55s var(--ar-ease) .1s both';
