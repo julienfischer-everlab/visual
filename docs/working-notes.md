@@ -21513,3 +21513,9 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 ## Swipe peek: 40% cap, whole on release
 
 - "While swipe the maximum content opacity is 40%: from 70% swipe to 100% the opacity grows from 0 to 40%; on release 100%": `--rv` is now 0 → .4 over 70–100% of the way to the threshold; let go past it, the card behind takes `arRcStkPeekGo` and `--rv: 1` (a .3 s fade to whole) at once, before lay() makes it the front. Measured: .4 at the drag's end, ~.97 150 ms after release.
+
+## Recommendations: the two cards' review states
+
+- Labels 16 / 21 in white on two lines ("3 / Clinical / recommendations").
+- "If incomplete add a grey badge To review; if complete a green badge Reviewed", and "if completed add a CTA Review and remove the 2 badges": each card's badges row is now one badge, grey "To review" or green "✓ Reviewed"; reviewed, a Review button under it (Clinical: the stack again from its first card; Lifestyle: its screen). Lifestyle counts as reviewed once its screen was shown (`rcLifeSeen`). The corner tick removed (the badge says it).
+- Doctor's note card padding 36 (+16).
