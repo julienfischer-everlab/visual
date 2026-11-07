@@ -21366,3 +21366,7 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
   - Past results: To action / In progress / Found.
   Done is green, in progress grey, to do neutral.
 - The tasks' done disc is a lighter green (#5fd67c) with a white tick ("circle green lighter, foreground white"). Each task's card has 4 more inside ("card +4px padding": 16 / 12).
+- The tasks' badges are now drawn as the status pill master (`.arLfPill`, the Optimal pill sent as the reference):
+  - 22 high, 8 at the sides, 6 corners, 13 regular, the words centred in the pill;
+  - done (Completed / Connected / Found) in its Optimal colours (`--ar-opt-bg2` / `--ar-opt-fg`, dark and light values);
+  - in progress grey, to do neutral.
