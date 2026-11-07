@@ -21570,3 +21570,11 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 ## Your 13 recommendations: 12 more under the H2
 
 "+12px title margin bottom": the H2 over the intro's two cards sits 12 further from them (its bottom margin -4 to 8).
+
+## Recommendations: Row group cards, italic note, no intro sub, swipe without the pause, No-card review, hover plate whole
+
+- Tweaks -> Group cards: Visual on top (default) / Row ("left: 3, Clinical, badge; right: visual 64"; "number as an outline badge"): the count in a 1px outline pill, the name, the status badge at the left; the render 64 at the top right, the edit disc at the foot right.
+- The doctor's note in italic. The intro's sub "Here are a few recommendations" removed; its H1 8 further from the note; "Your 13 recommendations" 12 more above it.
+- Swiping a Clinical card past the threshold sends it off at once (it waited 380 ms where it was let go: "when I release a stacked card, there is a weird pause"); Maybe later / Add to my plan by button keep their beat for the cue.
+- The segmented tab is the review's only ("sorry the segmented was for the next screen"): the Lifestyle list has no filter again (rcSegTabs stays the one master for the review).
+- Confirm your updated plan: its title 8 further from the tabs; Tweaks -> Review groups: Card (default) / No card (the groups on the page's ground, heading and fold kept); a row's hover plate is no longer clipped at the sides by the fold (the clip 12 wider each side).
