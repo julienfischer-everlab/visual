@@ -21436,3 +21436,20 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - Follow-ups:
   - The tiles' grid is pulled out by the tiles' own 12 on both sides (`.ovTasksL` margin −12), so their content lines up with the eyebrow on the left and the link on the right. The ghost plates now reach 8 from the card's edge.
   - Footer link: the progress is shorter (bars 12 wide, 3 apart, "n of 3") so it never meets the link at phone width.
+
+## Past records: step-by-step intro; Insights card follow-ups
+
+- Past records (`window._pastRec`) opens on an intro, a step at a time, with Continue in the foot. The page's state lives in `data-prx` on the sheet, driven by `prxStep(sh, k)`.
+  - **Step 1:** under the map, "We found 10 records across 4 labs, going back to 2021." rises in at 0.5 s, holds, and goes with a blur at 3.3 s. After a 1 s pause, "They're part of your Everlab profile now." comes in.
+  - **Step 2:** the map folds away, the count runs up to 10 Records, and a cloud of 10 drifting dots appears, one per record, sized by its results and red when it holds a result out of range. After 2 s the line draws and the dots settle onto it one after another, each where it falls between 2021 and 2025, with the years fading in.
+  - **Then:** Continue shows the page as it was, its parts rising in, and the button becomes See your trends. Step 3 is to come.
+  - Reduced motion jumps to each step's end state.
+- Fixes on the page:
+  - The page's title gets back its 20 margin; it had lost it inside the wrapper.
+  - The centred titles drop the title master's 56 right padding (room for a top-right control), which had pushed them off centre.
+  - The lead sits 4 lower ("+4px margin to p").
+  - The map's canvas no longer throws on a 0-size frame (`isFinite` guards on its gradients).
+- Insights card:
+  - Badges have icons: a check when done, a still loader ring otherwise.
+  - The top-right link is 14 with a 16 chevron.
+  - CTA position "Footer + progress" (was Footer link) puts the progress bars and "n of 3" top right, with the centred Generate my insights button at the foot.
