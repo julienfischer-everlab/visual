@@ -21386,3 +21386,11 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - Tweaks → Top Chat AI → **Desk conversations** (`stTopConvD`): Chips (current) or Cards. It applies when the Suggestion tweak is Conversation, on the desk's Ask field (`EvSearch`, not the phone's full modal).
 - Cards (`.evSrchCards`): each card is 128 wide with its icon top left, the title on up to two lines, and the date under it, all left aligned. Go to concierge is a card too, keeping its primary fill. The section is titled "Recent conversations", with 4 more under the title (`.evSrchHC`, 14 bottom padding).
 - Navigation doc, desk sidebar (M / L / XL): the cloned rail kept the app's `top: 47px`, the space it leaves under the prototype's bar, so it sat 47 lower than its page panel. It's now `top: 0` in the doc, with the logo 14 under the panel's top, as in the app.
+
+## Recommendation stack: swipe; What we recommend for this pushed down
+
+- Here's what we recommend, Stacked (`buildRecStack`): the top card can be swiped. It follows the finger and tilts 0.04°/px; right adds the recommendation, left saves it for later.
+- The cue (check "Added to your plan" or clock "Saved for later", the same `.arRcStkMk` as the buttons') fades in as the card moves, from 12 px of travel to fully shown at the threshold. The threshold is a third of the card's width, 96 px at least.
+- Let go past the threshold and it's decided: the cue is made whole, then the card leaves from where it is after 380 ms (the buttons' path keeps 650 ms). Short of it, the card springs back and the cue fades.
+- Vertical drags still scroll (`touch-action: pan-y`). Drags start off the buttons only, a drag never counts as a tap, and the movement is divided by `evK` for the scaled XS frame.
+- What we recommend for this (`.arRx`): 24 above the card (was 8), "push down the list".
