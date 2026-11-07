@@ -21542,3 +21542,7 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 ## Sphere hero welcome → What to expect: the sphere rises with the title
 
 "The sphere should go up with the title when transitioning, not after." The ball's glide to the top (park, Cards) eased in and out over 1000 ms, so it barely moved while the welcome's title rose out; the Chart variation's lift also waited 360 ms. Both now start on the first frame of the push and ease out (cubic) over 960 ms, the length of the page push (380 out + 300 delay + 660 in), so the ball leaves with the title and is in place as the next title lands. Back down is unchanged.
+
+## Clinical stack: H1 back, top nav "Plan recommendation"; reviewed card light green
+
+"Your clinical / recommendations as h1; change top nav just Plan recommendation." The Clinical stack opens with the H1 "Your clinical / recommendations" (two lines, as the Lifestyle's), the deck centred in the space under it; the top nav reads "Plan recommendation" with no "n of N" sub, as the intro and Lifestyle. "Card bg light green when completed": a reviewed group card on the intro takes a light green ground (green 150 at 10% dark, 14% light), its Reviewed badge a touch stronger.
