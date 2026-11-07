@@ -21328,3 +21328,12 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 ## Review your answers: Update only when something changed
 
 - "if nothing has changed, no need CTA; if something has changed, Update CTA": on About you's Review your answers, once the step is done, the foot is hidden while the answers match the ones it showed first (`youSnap`, kept through the Edits, per open). Change one and it reads **Update**; Update clears the snapshot and carries on as Done did. The first time through it still reads Save answers.
+
+## Recommendation stamp, Dock chat rework, Onboarding consult
+
+- Stacked recommendations ("on tap we should have a small visual cue saying that it's been added or not; overlap the card with a check if added then the card goes on the right"): on Add to my plan, a veil over the card with a white disc and a drawn check, "Added to your plan"; on Maybe later, a clock, "Saved for later". About 0.65 s later the card leaves, right (added) or left (later). Review again clears the stamps.
+- Dock chat, second pass:
+  - "Trigger keyboard once it's tapped": in Dock the keys come up on open and on any tap on the field, whatever the focus does. A blur no longer drops them; the close does.
+  - "Remove the cross morph, add a new CTA at the top on the top nav": the star no longer turns into a cross. The close is a 44 disc on the top nav, where the Overview's bell sits (top 57, right 16; it overrides the 36 px rule every other close has).
+  - "The chat field should expand with the tools directly, taking the full width": the dock steps away and the field spans the island's left to the star's right. It opens already expanded (the words, then +, Eva and send), the conversations stacked over it, all of it riding on the keys.
+- "Change the name of this card to Onboarding consult; also on the tweak; the health profile is just one step of the onboarding consult": the Overview card's eyebrow, the Tweaks group, its flow-panel heading, the page menu and the takeover context label now read Onboarding consult. The Health profile keeps its name where it is the step itself (the Insights task, My account's tab).

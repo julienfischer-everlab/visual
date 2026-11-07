@@ -2843,25 +2843,19 @@
   /* Version 2's suggestions Stacked (the default; Tweaks -> Ask sheet -> Suggestions: Stacked / Carousel, html.askV2Car for the row): one chip a line, left-aligned, over the field ("Stacked suggestion") */
   html.askV2:not(.askV2Car) .aiV2Stk{flex-direction:column;align-items:flex-start;overflow:visible;scroll-snap-type:none;touch-action:auto;-webkit-mask-image:none;mask-image:none;} html.askV2:not(.askV2Car) .aiV2Stk > .aiChip{max-width:100%;}
   html.askV2:not(.askV2Car) .aiV2Stk > .aiChip span{min-width:0;overflow:hidden;text-overflow:ellipsis;}
-  /* Ask sheet, Dock (Tweaks -> Ask sheet -> Version: Dock, html.askDock with html.askV2; the default): "On Star tap the icon should turn to Cross that become the dismiss action"; "The nav left area become the Chat field; keyboard should trigger as well".
-     The field takes the dock's island, its place and shape (--dkL, --dkW, --dkH, --dkB, measured as it opens), the conversations stacked over it; the star itself turns to a cross and closes it; the keys come at once, the field and the cross riding up on them together (--dkUp) */
-  html.askDock .aiWrap .aiCard{left:var(--dkL,12px);right:auto;width:var(--dkW,280px);bottom:calc(var(--dkB,24px) + var(--dkUp,0px));padding:0 !important;border-radius:calc(var(--dkH,64px) / 2) !important;transform:none !important;transition:bottom .34s cubic-bezier(.2,.8,.2,1);}
-  html.askDock .aiWrap .aiV2Sug{left:0;right:auto;width:var(--dkTot,370px);bottom:calc(100% + 12px);}
+  /* Ask sheet, Dock (Tweaks -> Ask sheet -> Version: Dock, html.askDock with html.askV2; the default): the star opens the chat in the dock's place ("the nav left area become the chat field"; "keyboard should trigger as well").
+     The dock steps away and the field takes its whole width, the island's left to the star's right (--dkL, --dkTot, --dkB, measured as it opens), open with its tools at once (+, Eva, send: "the chat field should expand with the tool directly, taking the full width"); the conversations stacked over it;
+     the keys come at once, the field riding up on them (--dkUp). No cross on the star any more: the close is a 44 disc on the top nav, top right ("remove the cross morph, add a new CTA at the top on the top nav") */
+  html.askDock .aiWrap .aiCard{left:var(--dkL,12px);right:auto;width:var(--dkTot,370px);bottom:calc(var(--dkB,24px) + var(--dkUp,0px));padding:0 !important;border-radius:28px !important;transform:none !important;transition:bottom .34s cubic-bezier(.2,.8,.2,1);}
+  html.askDock .aiWrap .aiV2Sug{left:0;right:0;bottom:calc(100% + 12px);}
   html.askDock .aiWrap .aiV2Stk{padding:0;}
-  html.askDock .aiWrap .aiRowTop, html.askDock .aiWrap.typing .aiRowTop{height:var(--dkH,64px);box-sizing:border-box;padding:0 6px 0 20px !important;border-radius:calc(var(--dkH,64px) / 2);background:#2a2a2a;box-shadow:0 0 0 1px rgba(255,255,255,.06);}
+  html.askDock .aiWrap .aiRowTop{border-radius:28px;background:#2a2a2a;box-shadow:0 0 0 1px rgba(255,255,255,.06);}
   html.askDock body.light .aiWrap .aiRowTop{background:#fff;box-shadow:0 0 0 1px rgba(46,31,26,.08);}
-  html.askDock .aiWrap .aiCard .aiField, html.askDock .aiWrap.typing .aiCard .aiField{display:flex !important;align-items:center;gap:8px;width:100%;height:100%;padding:0 !important;background:none !important;border-radius:0;}
-  html.askDock .aiWrap .aiCard .aiField .aiFb{display:none !important;}
-  html.askDock .aiWrap .aiCard .aiField input{flex:1;min-width:0;height:auto;padding:0;font-size:17px;}
-  html.askDock .aiWrap .aiCard .aiField .ovChatGo{position:static;flex:none;width:calc(var(--dkH,64px) - 12px);height:calc(var(--dkH,64px) - 12px);margin:0;opacity:1;transform:none;pointer-events:auto;}
-  html.askDock .aiOpen .mTabs{z-index:8 !important;} html.askDock .aiOpen .mTabs::before{opacity:0;}   /* the dock over the blanket: its star, now the cross */
-  html.askDock .mTabs .mIsland{transition:opacity .2s ease;} html.askDock .aiOpen .mTabs .mIsland{opacity:0;pointer-events:none;}   /* the island gives its place to the field */
-  html.askDock .aiOpen .mTabs .mDock{transform:translateY(calc(-1 * var(--dkUp, 0px)));transition:transform .34s cubic-bezier(.2,.8,.2,1);}
-  .mChat .mChatX{display:none;}
-  html.askDock .mChat{position:relative;} html.askDock .mChat > svg:not(.mChatX){transition:opacity .2s ease,transform .42s cubic-bezier(.34,1.56,.64,1);}
-  html.askDock .mChat .mChatX{display:block;position:absolute;left:50%;top:50%;width:22px;height:22px;margin:-11px 0 0 -11px;fill:none;stroke:currentColor;opacity:0;transform:rotate(-90deg) scale(.4);transition:opacity .2s ease,transform .42s cubic-bezier(.34,1.56,.64,1);}
-  html.askDock .aiOpen .mTabs .mChat{background:#2a2a2a;box-shadow:0 0 0 1px rgba(255,255,255,.06);} html.askDock body.light .aiOpen .mTabs .mChat{background:#fff;box-shadow:0 0 0 1px rgba(46,31,26,.08);}   /* the cross on the field's own ground, solid over the blanket */ html.askDock .aiOpen .mChat > svg:not(.mChatX){opacity:0;transform:rotate(90deg) scale(.4);} html.askDock .aiOpen .mChat .mChatX{opacity:1;transform:none;}   /* the star turns away, the cross turns in */
-  @media (prefers-reduced-motion: reduce){ html.askDock .mChat svg, html.askDock .aiWrap .aiCard, html.askDock .aiOpen .mTabs .mDock{transition:none !important;} }
+  html.askDock .mTabs .mDock{transition:opacity .2s ease;} html.askDock .aiOpen .mTabs .mDock{opacity:0;pointer-events:none;}   /* the dock gives its place to the field */
+  html.askV2.askDock .aiWrap > .aiX{display:flex !important;position:absolute;top:var(--dkXTop,56px);right:16px;z-index:3;background:#2a2a2a;}   /* the close, on the top nav */
+  html.askV2.askDock body.light .aiWrap > .aiX{background:#fff;box-shadow:0 0 0 1px rgba(46,31,26,.08);}
+  html.askDock .mChat .mChatX{display:none !important;}
+  @media (prefers-reduced-motion: reduce){ html.askDock .aiWrap .aiCard, html.askDock .mTabs .mDock{transition:none !important;} }
   html.askConv .aiConvL::-webkit-scrollbar{display:none;} html.askConv .aiConvL > .aiChip{flex:none;scroll-snap-align:start;}
   /* Conversation style: List (html.askConvList): no chips, a suggested-items list, one a line: its icon, its words, the date at the right, a hairline between ("avoid the bubbles, inline style instead, like a suggested item list") */
   html.askConv.askConvList .aiConvL{flex-direction:column;align-items:stretch;gap:0;margin:12px 0 0;padding:0;overflow:visible;scroll-snap-type:none;-webkit-mask-image:none;mask-image:none;}
@@ -14308,7 +14302,7 @@
         <!-- the Health profile ("add a Health Profile card to the Overview"): its card's section, and the profile's demo states ("include examples of the not-started, in-progress and completed states"); Saved, what was last done in it here -->
         <!-- the Primary card, the Overview's first card: its Type, a $299 member's card (Health profile, or Plan to purchase) or Next step (the hero and its action) ("this part of Primary card: Type: $299 purchased: Health profile, Plan to purchase; Next step: Dexa, etc.") -->
         <!-- the Health profile on its own ("when I'm on the health profile page I want to control only the health profile tweaks"): while the profile is showing, the panel is this group alone, the profile's rows (Primary card's $299 part) moved in here, and back when it goes -->
-        <div class="tkGroup" data-pages="hp" id="tkHpGrp"><div class="tkSub">Health profile</div>
+        <div class="tkGroup" data-pages="hp" id="tkHpGrp"><div class="tkSub">Onboarding consult</div>   <!-- "change the name of this card to Onboarding consult; also on the tweak; the health profile is just one step of the onboarding consult" -->
         <div class="tkRow"><span class="lbl">Background video</span><select id="stHpCcVid" class="tkSegSel" aria-label="The Concierge's video behind the screen: shown, or hidden (the screen on its own dark ground)"><option value="on" selected>On</option><option value="off">Off</option></select></div>   <!-- the Concierge's first row, a general one ("on concierge, a general tweak so we can just hide the video in the background") -->
         <div class="tkRow"><span class="lbl">Bubble text</span><span class="tkSlide"><input type="range" id="stHpCcBubFs" min="12" max="20" step="1" value="15" aria-label="The Concierge's bubbles, their text size"><i class="tkVal" id="stHpCcBubFsV">15px</i></span></div>   <!-- "tweak font size bubble speech" -->
         <div class="tkRow"><span class="lbl">Bubble line height</span><span class="tkSlide"><input type="range" id="stHpCcBubLh" min="1.1" max="1.7" step="0.02" value="1.34" aria-label="The Concierge's bubbles, their line height"><i class="tkVal" id="stHpCcBubLhV">1.34</i></span></div>
@@ -17091,6 +17085,17 @@
 .arSheet .arRcStkC.arRcStkFar { opacity: 0; }
 .arSheet .arRcStkC.arRcStkOutL, .arSheet .arRcStkC.arRcStkOutR { z-index: 11; opacity: 0; pointer-events: none; transition: transform .5s cubic-bezier(.32, .72, 0, 1), opacity .4s ease .1s; } .arSheet .arRcStkC.arRcStkOutL { transform: translateX(-115%) rotate(-8deg); } .arSheet .arRcStkC.arRcStkOutR { transform: translateX(115%) rotate(8deg); }
 .arSheet .arRcStkC.arRcStkOutL > *, .arSheet .arRcStkC.arRcStkOutR > * { opacity: 1; transition: none; }
+/* the decision shown on the card before it goes ("on tap we should have a small visual cue saying that it's been added or not; overlap the card with a check if added, then the card goes on the right"): a veil over it, a disc popping in (a check, added; a clock, later), its words under it; then off right (added) or left */
+.arSheet .arRcStkMk { position: absolute; inset: 0; z-index: 5; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; border-radius: inherit; background: rgba(20, 20, 20, .72); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); opacity: 0; pointer-events: none; transition: opacity .2s ease; }
+.arSheet .arRcStkC.arRcStkMkOn { pointer-events: none; } .arSheet .arRcStkC.arRcStkMkOn .arRcStkMk { opacity: 1; }
+.arSheet .arRcStkMk i { display: grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; background: #fff; color: #111; transform: scale(.4); opacity: 0; transition: transform .45s cubic-bezier(.34, 1.56, .64, 1) .05s, opacity .2s ease .05s; }
+.arSheet .arRcStkMk.arRcStkMkL i { background: rgba(255, 255, 255, .14); color: #fff; }
+.arSheet .arRcStkC.arRcStkMkOn .arRcStkMk i { transform: none; opacity: 1; }
+.arSheet .arRcStkMk b { font: 500 17px/22px var(--ar-font); color: #fff; opacity: 0; transform: translateY(6px); transition: opacity .3s ease .14s, transform .3s ease .14s; } .arSheet .arRcStkC.arRcStkMkOn .arRcStkMk b { opacity: 1; transform: none; }
+.arSheet .arRcStkMk:not(.arRcStkMkL) path { stroke-dasharray: 30; stroke-dashoffset: 30; transition: stroke-dashoffset .35s ease .2s; } .arSheet .arRcStkC.arRcStkMkOn .arRcStkMk:not(.arRcStkMkL) path { stroke-dashoffset: 0; }   /* the check drawn in */
+body.light .arSheet .arRcStkMk, .arSheet:not(.arDark) .arRcStkMk { background: rgba(255, 255, 255, .74); } body.light .arSheet .arRcStkMk b, .arSheet:not(.arDark) .arRcStkMk b { color: #111; } body.light .arSheet .arRcStkMk i, .arSheet:not(.arDark) .arRcStkMk i { background: #111; color: #fff; } body.light .arSheet .arRcStkMk.arRcStkMkL i, .arSheet:not(.arDark) .arRcStkMk.arRcStkMkL i { background: rgba(0, 0, 0, .08); color: #111; }
+.arSheet.arDark .arRcStkMk { background: rgba(20, 20, 20, .72); } .arSheet.arDark .arRcStkMk b { color: #fff; } .arSheet.arDark .arRcStkMk i { background: #fff; color: #111; } .arSheet.arDark .arRcStkMk.arRcStkMkL i { background: rgba(255, 255, 255, .14); color: #fff; }
+@media (prefers-reduced-motion: reduce) { .arSheet .arRcStkMk, .arSheet .arRcStkMk * { transition: none !important; } }
 .arSheet .arRcStkDone { z-index: 1; align-items: center; justify-content: center; text-align: center; gap: 8px; opacity: 0; transform: scale(.96); }
 .arSheet .arRcStkDone.arOn { opacity: 1; transform: none; } .arSheet .arRcStkDone .arRcStkAgain { width: auto; margin-top: 16px; padding: 0 24px; }
 .arSheet .arRcStkTick { display: flex; align-items: center; justify-content: center; width: 48px; height: 48px; margin-bottom: 8px; border-radius: 50%; background: oklch(72% .15 150 / .18); color: oklch(78% .14 150); } .arSheet:not(.arDark) .arRcStkTick { color: oklch(52% .13 150); }
@@ -17401,6 +17406,7 @@ body:not(.light) #mScroll.bmdBackOn { background: color-mix(in srgb, var(--bmd-b
 /* every modal's dismiss button 36 ("Dismiss ALL MODAL! 36px"): the image viewer's, Ask Eva's, the chat's, the sheets', the price and inbox panels', the doctor's review, the service sheets', the report's and its sheet's; the two ids only so this wins over each surface's own size, whatever it was (30 to 44) */
 html:not(#_m):not(#_d) :is(.imClose, .aiX, .chX, .shClose, .prX, .ibX, .dbX, .tlShX, .arSheet .arClose, .arSheet .arQaX) { width: 36px !important; height: 36px !important; min-width: 36px !important; min-height: 36px !important; flex: none; }
 html:not(#_m):not(#_d) .aiX { top: -52px; }   /* still 16 above Ask Eva's card */
+html:not(#_m):not(#_d):not(#_k).askDock .aiWrap > .aiX { top: var(--dkXTop, 57px); width: 44px !important; height: 44px !important; min-width: 44px !important; min-height: 44px !important; }   /* Dock: the close on the top nav, 44 as every top nav CTA, where the Overview's bell sits */
 html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18px) !important; right: calc(var(--rvSqR, 8cqw) + 4px - 18px) !important; } html:not(#_m):not(#_d) :is(#phone2, body[data-bp="xs"] .dash, body[data-bp="s"] .dash) > .dbM.v9 .dbX { right: calc(var(--rvSqR, 7cqw) + 4px - 18px) !important; } html:not(#_m):not(#_d) .dbM.v9 .dbX::before { left: 14px; top: 14px; }   /* the review's square-corner cross: its centre where it was */
 
 /* ---- Top nav, the master (Design system -> General layout -> Top nav; window.EvTopNav builds it): one bar for every modal, sheet, standalone page and flow with a Back and / or a Close.
@@ -19577,8 +19583,12 @@ window.EvSvcImg = { concierge: 'assets/overview/svc-concierge.webp', treat: 'ass
         stkAt = at; stkDec = dec; if (step === REC && !revOn) { ctaLabel.textContent = fin ? 'Review my plan' : 'Next'; cta.disabled = !fin; }   /* the button on once every card is decided ("CTA enable only once all card has been actioned") */
         if (fin) { var y = dec.filter(Boolean).length; doneT.textContent = y ? y + ' added to your plan' : 'Nothing added yet'; doneS.textContent = (n - y ? (n - y) + ' for later. ' : '') + 'You can change any of these later in Plan.'; }
       }
-      function decide(i, yes) { if (i !== at) return; var kb = document.activeElement && document.activeElement.matches && document.activeElement.matches(':focus-visible'); dec[i] = yes; cards[i].classList.add(yes ? 'arRcStkOutR' : 'arRcStkOutL'); at++; lay(); var nx = at < n ? cards[at].querySelector('.arRcStkYes') : again; if (kb) setTimeout(function () { nx.focus({ preventScroll: true }); }, 60); }   /* the focus follows on to the next card for a keyboard only */
-      on(again, 'click', function () { at = 0; dec = []; cards.forEach(function (c) { c.classList.remove('arRcStkOutL', 'arRcStkOutR'); }); lay(); });
+      function decide(i, yes) { if (i !== at || cards[i].classList.contains('arRcStkMkOn')) return; var kb = document.activeElement && document.activeElement.matches && document.activeElement.matches(':focus-visible'); dec[i] = yes;
+        var c = cards[i], mk = c.querySelector('.arRcStkMk'); if (mk) mk.remove();
+        mk = h('div', { class: 'arRcStkMk' + (yes ? '' : ' arRcStkMkL'), role: 'status' }, h('i', null, yes ? strokeIcon(28, 24, 2.4, ['m5 12.5 4.5 4.5L19 7.5']) : strokeIcon(26, 24, 2, ['M12 7v5l3 2', 'M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0'])), h('b', { text: yes ? 'Added to your plan' : 'Saved for later' }));
+        c.appendChild(mk); void mk.offsetWidth; c.classList.add('arRcStkMkOn');   /* the cue first: a check (added) or a clock (later) over the card */
+        later(function () { c.classList.add(yes ? 'arRcStkOutR' : 'arRcStkOutL'); at++; lay(); var nx = at < n ? cards[at].querySelector('.arRcStkYes') : again; if (kb) setTimeout(function () { nx.focus({ preventScroll: true }); }, 60); }, reducedMotion() ? 0 : 650); }   /* then off: right, added; left, for later. The focus follows on to the next card for a keyboard only */   /* the focus follows on to the next card for a keyboard only */
+      on(again, 'click', function () { at = 0; dec = []; cards.forEach(function (c) { c.classList.remove('arRcStkOutL', 'arRcStkOutR', 'arRcStkMkOn'); var mk = c.querySelector('.arRcStkMk'); if (mk) mk.remove(); }); lay(); });
       lay();
       var wrap = h('div', { class: 'arRcStkWrap' }, deck, h('p', { class: 'arRcStkNote', text: 'You can change any of these later in Plan.' }));
       return enter(h('div', { class: 'arStack arGap24 arRcStack' }, hd, wrap), hd, title, [lede, wrap]);
@@ -31770,7 +31780,7 @@ hairline({
      from its first frame (#card-reveal); Health profile, the profile open over the Overview (#health-profile) */
   { const sg = document.createElement('optgroup'); sg.label = 'Standalone flow';
     addTo(sg, 'welc', 'Membership onboarding');   /* renamed ("rename this page to Membership onboarding"; was Membership reveal) */   /* "Card reveal -> Membership reveal" */
-    addTo(sg, 'hp', 'Health profile');
+    addTo(sg, 'hp', 'Onboarding consult');
     addTo(sg, 'pr', 'Past results');
     addTo(sg, 'pastRec', 'Past records');   /* the history collected, a full modal of its own (#past-records; "a full modal experience highlighting the past records collected") */
     addTo(sg, 'ci', 'Concierge');
@@ -32053,7 +32063,7 @@ hairline({
       { key: 'cn', label: 'Consent', on: () => B('cnOn') },
       /* the modals that take over: full modals, full bottom sheets, the chats */
       { key: 'ar', label: 'Async report', tweaks: ['ar'], flow: 'ar', on: () => B('arOpen') },
-      { key: 'hp', label: 'Health profile', tweaks: ['hp'], flow: ['jny', 'wtl'], on: hp },   // Past results and the Concierge's introduction its screens; its consent and pickers its own (the journey stays)
+      { key: 'hp', label: 'Onboarding consult', tweaks: ['hp'], flow: ['jny', 'wtl'], on: hp },   // Past results and the Concierge's introduction its screens; its consent and pickers its own (the journey stays)
       { key: 'wel', label: 'Membership reveal', tweaks: ['wel'], flow: 'wtl', on: () => !gift() && !hp() && Q('.hpWrap.hpOpen.hpWelF, .hpWrap.hpOpen .hpAtLtr') },   // to the note from Steven
       { key: 'sgf', label: 'Send a gift', flow: 'sgf', on: gift,   // its own group (.tkGroup[data-pages="sgf"]: Intro), the profile's none; its pages in the Flow panel
         tweaks: () => { try { const s = window.HealthProfile.gift.steps[window._hp.giftAt()]; if (s === 'done' || /receipt/i.test(s + ' ' + ((window.HealthProfile.gift.names || {})[s] || ''))) return ['gr']; return s === 'intro' ? ['sgfIn'] : s === 'plan' ? ['sgfPl'] : s === 'occ' ? ['sgfOc'] : (s === 'note' || s === 'pay') ? ['sgfEv'] : []; } catch (e){} return ['sgfIn']; } },   /* the step's own tweaks only ("Tweak should be related to the active step"): Intro its intro's, Choose the gift its Plans, Their note and Check and pay the envelope's, the receipt the Gift receipt's; the others none */   // and the Gift receipt's (data-pages="gr") on its receipt step, the flow's last
@@ -32318,7 +32328,7 @@ hairline({
       if (window.__flowAv) window.__flowAv('wtl', ok); if (!ok || document.documentElement.classList.contains('flowOff')){ if (el) el.hidden = true; return; }
       const p = make(); if (!p) return; const side = r.left - G - W >= 16, bar = document.querySelector('.topbar'), bb = bar ? bar.getBoundingClientRect().bottom : 56;
       const top = bb + 16; p.style.left = '16px';   /* always the window's left panel, under the top bar ("the timeline flow like this always put as left panel") */ void side; p.style.top = Math.round(top) + 'px'; p.style.maxHeight = Math.round(Math.max(200, innerHeight - top - 24)) + 'px'; p.hidden = false;
-      { const rows = document.getElementById('stHpJnyRows'); if (rows && welc && rows.parentNode !== p){ const h = document.createElement('div'); h.className = 'tkSub hpWtlHp'; h.textContent = 'Health profile'; if (!p.querySelector('.hpWtlHp')) p.appendChild(h); p.appendChild(rows); } }   // the profile's own rows under the reveal's: Step 1, 2, 3 pages and their Homes, Past results, Concierge
+      { const rows = document.getElementById('stHpJnyRows'); if (rows && welc && rows.parentNode !== p){ const h = document.createElement('div'); h.className = 'tkSub hpWtlHp'; h.textContent = 'Onboarding consult'; if (!p.querySelector('.hpWtlHp')) p.appendChild(h); p.appendChild(rows); } }   // the profile's own rows under the reveal's: Step 1, 2, 3 pages and their Homes, Past results, Concierge
       const at2 = at === 4 && document.querySelector('.hpWrap.hpOpen .hpLtrS2') ? 5 : at;   /* Note from Steven the entrance; Letter view from the moment the avatar goes up ("note from Steven should be the entrance, letter is the moment the avatar goes on top") */   // the note as a letter lights Letter view
       p.querySelectorAll(':scope > ol > li').forEach((li, i) => { li.classList.toggle('now', i === at2); if (i === at2) li.setAttribute('aria-current', 'step'); else li.removeAttribute('aria-current'); });   /* the reveal's own rows only */
       if (at >= 0 || !document.body.classList.contains('hpOn')) document.querySelectorAll('#stHpJnyRows .tkHpHome.now, #stHpJnyRows li.now, #stHpPastRow.now, #stHpCcRow.now').forEach(e => { e.classList.remove('now'); e.removeAttribute('aria-current'); }); };   /* a reveal moment showing (or no profile up): no profile page lit ("why is step 2's Health profile home active here?") */
@@ -35865,6 +35875,7 @@ hairline({
       if (!btn.querySelector('.mChatX')) btn.insertAdjacentHTML('beforeend', '<svg class="mChatX" viewBox="0 0 24 24" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" data-lc="x" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>');   /* Dock: the star turns to this cross, the dismiss */
       const dock = () => document.documentElement.classList.contains('askDock');
       let dkB = 0; const dkUp = v => ph.style.setProperty('--dkUp', Math.max(0, v) + 'px');
+      let dkKeys = () => {};   /* Dock: the keys up with the field on them, set below once the keyboard is known ("trigger keyboard once it's tapped") */
       const dkPlace = () => { const dk = btn.closest('.mDock'), isl = dk && dk.querySelector('.mIsland'); if (!isl) return; dkUp(0);   /* the island's box in the phone's own pixels: the field takes it */
         const k = window.evK ? window.evK(ph) : 1, P = ph.getBoundingClientRect(), I = isl.getBoundingClientRect(), B = btn.getBoundingClientRect(), L = P.left + ph.clientLeft * k, Bt = P.top + (ph.clientTop + ph.clientHeight) * k;
         dkB = (Bt - I.bottom) / k; [['--dkL', (I.left - L) / k], ['--dkW', I.width / k], ['--dkH', I.height / k], ['--dkB', dkB], ['--dkTot', (B.right - I.left) / k]].forEach(([n, v]) => ph.style.setProperty(n, v.toFixed(1) + 'px')); };
@@ -35969,7 +35980,7 @@ hairline({
       wrap.querySelectorAll('.aiConvL').forEach(L => L.addEventListener('click', e => { const c = e.target.closest('.aiChip'); if (!c) return; e.preventDefault(); close();
         setTimeout(() => { if (c.dataset.conv && window.EvOpenConv) window.EvOpenConv(c.dataset.conv); else if (window._cc) window._cc.show(); }, 300); }));   /* the Conversation row and Version 2's suggestion card alike */
       /* Version 2: a tap anywhere on the field card (its arrow too) opens the field: the keys come, the suggestion card goes */
-      wrap.querySelector('.aiRowTop').addEventListener('click', () => { if (document.documentElement.classList.contains('askV2') && !wrap.classList.contains('typing')) try { inp.focus({ preventScroll: true }); } catch (e) {} });
+      wrap.querySelector('.aiRowTop').addEventListener('click', () => { if (dock()){ dkKeys(true); try { inp.focus({ preventScroll: true }); } catch (e) {} return; } if (document.documentElement.classList.contains('askV2') && !wrap.classList.contains('typing')) try { inp.focus({ preventScroll: true }); } catch (e) {} });
       // a service tile starts its chat ("this service action leads to: bottom sheet close, chat experience starts triggered by the context selected"): the sheet closes back into the star, then the chat opens on that service, with its title, the ask the tile stands for and Eva's opening on it (the Overview services row's, window.EvSvcChat)
       /* on the row, so the tiles the list redraws keep it; by the tile's id, not its label: a renamed service still opens its own chat, titled as the tile */
       svcR.addEventListener('click', e => {
@@ -35991,7 +36002,9 @@ hairline({
         else card.style.bottom = ((k ? k.offsetHeight : 0) + 12) + 'px';   // on the keys, keeping its 12px float
         kbdOn(true);
       });
+      dkKeys = on => { const k = on ? keyboard() : null; if (k) void k.offsetWidth; wrap.classList.toggle('typing', on); kbdOn(on); dkUp(on ? (k ? k.offsetHeight : 0) + 10 - dkB : 0); if (on) ph._kbdTarget = inp; };
       inp.addEventListener('blur', () => {
+        if (dock() && wrap.classList.contains('on')) return;   /* Dock: the keys stay up while it is open, focus or not; the cross or the blanket closes */
         kbdOn(false);
         if (wrap.classList.contains('handoff')) return;   // the chat is fading in over us: nothing moves
         wrap.classList.remove('typing');
@@ -36017,6 +36030,7 @@ hairline({
         if (wrap.classList.contains('on')) return;
         from = btn.getBoundingClientRect();
         if (dock()) dkPlace();
+        { const x = wrap.querySelector('.aiX'); if (x) (dock() ? wrap : card).appendChild(x); }   /* Dock: the close on the top nav, over the whole screen; else above the card */
         keyboard();   // built now, so its height is there to measure when the field is tapped
         wrap.classList.add('show');
         svcR.scrollLeft = 0; svcFade(svcR);   /* the carousel opens on its first tile, in line with the field */
@@ -36028,12 +36042,13 @@ hairline({
         card.getBoundingClientRect();   // the start is laid out before the transition begins
         card.style.transition = '';
         requestAnimationFrame(() => { wrap.classList.add('on'); card.style.transform = '';
-          if (dock() || (document.documentElement.classList.contains('askConv') && !document.documentElement.classList.contains('askV2'))) setTimeout(() => { if (wrap.classList.contains('on')) try { inp.focus({ preventScroll: true }); } catch (e) {} }, 140); });   /* Conversation (V1): the star opens straight onto the keys, the field live ("On clicking the star, trigger the keyboard directly"). Version 2, the star's rule now: it opens calm, the floating field card with the suggestions above it, no keys, no tools; a tap on the field brings the keys and the tools (+, Eva) ("star general menu rule") */
+          if (dock()) { dkKeys(true); setTimeout(() => { if (wrap.classList.contains('on')) try { inp.focus({ preventScroll: true }); } catch (e) {} }, 140); } else if (document.documentElement.classList.contains('askConv') && !document.documentElement.classList.contains('askV2')) setTimeout(() => { if (wrap.classList.contains('on')) try { inp.focus({ preventScroll: true }); } catch (e) {} }, 140); });   /* Conversation (V1): the star opens straight onto the keys, the field live ("On clicking the star, trigger the keyboard directly"). Version 2, the star's rule now: it opens calm, the floating field card with the suggestions above it, no keys, no tools; a tap on the field brings the keys and the tools (+, Eva) ("star general menu rule") */
       };
       const close = () => {
         if (window.EvBeamStar && window.EvBeamStar.press) window.EvBeamStar.press.cancel(btn);   /* a tap's open still waiting on its beam round goes too */
         if (!wrap.classList.contains('on')) return;
         inp.blur();
+        if (dock()){ dkKeys(false); inp.value = ''; field.classList.remove('hasText'); }
         ph.classList.remove('aiOpen');
         card.style.transform = fromBtn();
         wrap.classList.remove('on');
@@ -40345,7 +40360,7 @@ hairline({
         const bar = '<span class="hpOvBar" role="progressbar" aria-valuemin="0" aria-valuemax="3" aria-valuenow="' + sm.n + '" aria-label="' + sm.n + ' of 3 steps done">' + [0, 1, 2].map(i => '<i class="' + (i < sm.n ? 'on' : i === sm.n && sm.st[nx] === 'prog' ? 'half' : '') + '"></i>').join('') + '</span>';   /* a progress bar, a third a step, the done ones orange ("I just need a progress bar"); the next half only when left part-way through it ("the half increment only when the user drops off in the middle of the flow") */
         const fresh = sm.state === 'not';   // not begun: the button across the card, nothing at its left ("CTA full, no left copy"; was only out of the primary's place)   /* not begun at all, out of the primary's place: no bar, the button across the card ("if the journey has not started yet, use fill full for the main CTA"); in its place, Next step's foot: what it takes at the left, the button at the right */
         const left = sm.state === 'done' || nx === 'you' ? '<div class="ovBookWhen"><b>Onboarding consultation</b><span>' + (sm.when === 'now' ? 'Today, 2:30pm · starts soon' : sm.when ? 'Today, 2:30pm' : sm.bk || 'Booked') + '</span></div>' : sm.state === 'not' ? '' : bar;   /* done: the consult at the foot, where the progress was ("put your consult on the left side instead of the increment"); step 3 too, booked by then ("replace Progress by OC info") */
-        return '<span class="hpOvEy">Health profile</span><h3>' + ttl + '</h3>' + (sub ? '<p class="hpOvSub">' + sub + '</p>' : '') + (sm.rec ? '' : '<div class="ovBookFoot">' + left + '<button class="hpOvBtn' + (fresh ? ' hpOvFull' : '') + (sm.state === 'done' && sm.when === 'now' ? ' hpOvJoin' : '') + '" type="button">' + (sm.state === 'done' && sm.when === 'now' ? 'Join call' : sm.state === 'done' ? 'View' : nx === 'wear' && sm.st[nx] === 'prog' ? 'Continue' : cur[2]) + '</button></div>');   /* step 4: no foot ("no CTA for this state and no left copy"): the words, the sphere and its particles; the card itself still opens the profile */   /* Next step's layout: its eyebrow Health profile, the step's title and its stage, at its foot the progress and the way on */
+        return '<span class="hpOvEy">Onboarding consult</span><h3>' + ttl + '</h3>' + (sub ? '<p class="hpOvSub">' + sub + '</p>' : '') + (sm.rec ? '' : '<div class="ovBookFoot">' + left + '<button class="hpOvBtn' + (fresh ? ' hpOvFull' : '') + (sm.state === 'done' && sm.when === 'now' ? ' hpOvJoin' : '') + '" type="button">' + (sm.state === 'done' && sm.when === 'now' ? 'Join call' : sm.state === 'done' ? 'View' : nx === 'wear' && sm.st[nx] === 'prog' ? 'Continue' : cur[2]) + '</button></div>');   /* step 4: no foot ("no CTA for this state and no left copy"): the words, the sphere and its particles; the card itself still opens the profile */   /* Next step's layout: its eyebrow Health profile, the step's title and its stage, at its foot the progress and the way on */
       },
       plan: () => '<span class="hpOvEy">Your plan</span><h3>Your plan is ready</h3><p class="hpOvSub">\u201cI\u2019ve built your plan around your results and what matters to you, ' + nameOf() + '.\u201d</p>'
         + '<img class="hpPlPic" src="assets/overview/avatar-steven.webp" alt="Dr Steven Lu" width="88" height="88" decoding="async">'
@@ -51599,7 +51614,7 @@ hairline({
 
   /* the view: the version, the page or overlay over it (one, the topmost: the reveal, the Health profile, the Async report, the chat, a documentation tab…), the viewport, the mode, and every tweak that page shows (the Tweaks rows not hidden for it, the bar's own selects showing) */
   var bc = function (k) { return function () { return document.body.classList.contains(k); }; };
-  var PAGES = [['wel', 'Membership reveal', function () { return !!document.querySelector('.hpWrap.hpOpen.hpWelF'); }], ['hp', 'Health profile', bc('hpOn')], ['ar', 'Async report', bc('arOpen')], ['sug', 'Suggestion', bc('sugOn')], ['dsg', 'Doctor’s suggestion', bc('dsgOn')], ['prc', 'Personal recommendation', bc('prcOn')], ['cc', 'Chat', bc('ccOn')], ['gf', 'Gift', bc('gfOn')], ['gr', 'Gift receipt', bc('grOn')], ['cl', 'Testing locations', bc('clOn')], ['doc', 'Documentation', bc('docOn')], ['hl', 'Hairline', bc('hlOn')], ['ig', 'Illustrations', bc('igOn')], ['rv', 'Report visuals', bc('rvOn')], ['al', 'Assets library', bc('alOn')], ['mtg', 'Marketing', bc('mtgOn')], ['home', 'Home', bc('homeOn')]];
+  var PAGES = [['wel', 'Membership reveal', function () { return !!document.querySelector('.hpWrap.hpOpen.hpWelF'); }], ['hp', 'Onboarding consult', bc('hpOn')], ['ar', 'Async report', bc('arOpen')], ['sug', 'Suggestion', bc('sugOn')], ['dsg', 'Doctor’s suggestion', bc('dsgOn')], ['prc', 'Personal recommendation', bc('prcOn')], ['cc', 'Chat', bc('ccOn')], ['gf', 'Gift', bc('gfOn')], ['gr', 'Gift receipt', bc('grOn')], ['cl', 'Testing locations', bc('clOn')], ['doc', 'Documentation', bc('docOn')], ['hl', 'Hairline', bc('hlOn')], ['ig', 'Illustrations', bc('igOn')], ['rv', 'Report visuals', bc('rvOn')], ['al', 'Assets library', bc('alOn')], ['mtg', 'Marketing', bc('mtgOn')], ['home', 'Home', bc('homeOn')]];
   var pageKey = function () { var p = PAGES.filter(function (x) { return x[2](); })[0]; if (!p) return ''; if (p[0] === 'doc') { var dt = document.querySelector('.docNav [aria-selected="true"]'); return 'doc' + (dt && dt.dataset.doc ? ':' + dt.dataset.doc : ''); } return p[0]; };
   var LEG = { wel: 'wel', hpOn: 'hp', arOpen: 'ar', sugOn: 'sug', dsgOn: 'dsg', prcOn: 'prc', ccOn: 'cc', gfOn: 'gf', rfOn: 'rf', grOn: 'gr', clOn: 'cl', docOn: 'doc', hlOn: 'hl', igOn: 'ig', rvOn: 'rv', alOn: 'al', mtgOn: 'mtg', homeOn: 'home' };
   var canonPg = function (pg) { var p = String(pg || '').split(' ').filter(Boolean); if (p.length === 1 && (/^doc/.test(p[0]) || PAGES.some(function (x) { return x[0] === p[0]; }))) return p[0];
