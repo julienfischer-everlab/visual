@@ -21345,3 +21345,9 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
   - The foot always offers **Generate my insights**: faded, disabled and with a lock before its words while locked, enabled once unlocked.
   - The lock is gone from the eyebrow. The same master (`HPC.insList`) also draws the primary card's To-do list layout, so it follows.
 - Primary card → Type: "use select here: Freemium (we will cover that later), Member". It is a dropdown now, Freemium (later) disabled and Member selected. Next step is out of the menu; a saved Next step falls back to Member.
+
+## Dock chat: border beam, bottom gap; the Concierge video MP4 only
+
+- "Light beam effect, border beam when trigger this": as the Dock chat opens, the house beam (EvBeam, the Concierge intro's warm conic) runs once round the field, the words and tools over it.
+- "Padding bottom (below chat field) must be the same as the left right padding container": the field now sits over the keys by its own side inset (`dkG`, measured with the island: 12 at XS), not a fixed 10.
+- Size: the built page had reached 15,999,642 bytes. The Concierge video was inlined twice (WebM 0.8 MB and MP4 1.0 MB), so `window.__ccVid` now carries the MP4 alone; its readers skip the empty WebM slot. dist/index.html is 14.89 MB.
