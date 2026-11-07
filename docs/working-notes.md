@@ -21459,3 +21459,7 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
   - Below them comes the button, then the consult line (or the progress) under the button.
   - The eyebrow is hidden.
 - Async report insight pages: What we recommend for this (`rxEl`) moves to the end of the sections, just above Any question? ("push down this section at the end, just above Any question?"). The earlier 24 gap above its card is undone (back to 8): "push down" meant its place in the page.
+- The Insights tasks' visuals are the supplied renders ("use these img for insight, cut them"): the profile's stacked cards, Health data's glass layers with their wave, and Past results' blood tube.
+  - They were cut from the strip in a Chromium canvas: the flat #181818 ground was keyed out with its colour taken back out of the soft edges, and the "Edit" pill and share button over the strip were erased.
+  - Saved as `assets/overview/ins-{hp,data,past}.webp` (240 px, about 8 KB each) and written once in `window.EvInsImg`.
+  - They are greyscale until done, as before.
