@@ -21538,3 +21538,7 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 ## Notes: priority
 
 - "Need to be able to prio some; need a badge when prio item": each note has a flag button (Lucide flag, beside delete; shown on hover, always when on); flagged notes (`prio` in devNotes) go first within their group (To do / Done) and wear an orange "Priority" badge before the author and date.
+
+## Sphere hero welcome → What to expect: the sphere rises with the title
+
+"The sphere should go up with the title when transitioning, not after." The ball's glide to the top (park, Cards) eased in and out over 1000 ms, so it barely moved while the welcome's title rose out; the Chart variation's lift also waited 360 ms. Both now start on the first frame of the push and ease out (cubic) over 960 ms, the length of the page push (380 out + 300 delay + 660 in), so the ball leaves with the title and is in place as the next title lands. Back down is unchanged.
