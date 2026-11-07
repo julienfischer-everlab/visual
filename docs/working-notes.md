@@ -21380,3 +21380,9 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
   - Footer is the current layout.
   - Top right makes Generate my insights a link at the label's right with a chevron (section-link type, 16 regular). The foot goes, and the locked state fades the link with its lock.
 - The badges under each task already exist: Tweaks → Insights → Badges (Off by default).
+
+## Desk conversation cards; Navigation doc rail top
+
+- Tweaks → Top Chat AI → **Desk conversations** (`stTopConvD`): Chips (current) or Cards. It applies when the Suggestion tweak is Conversation, on the desk's Ask field (`EvSearch`, not the phone's full modal).
+- Cards (`.evSrchCards`): each card is 128 wide with its icon top left, the title on up to two lines, and the date under it, all left aligned. Go to concierge is a card too, keeping its primary fill. The section is titled "Recent conversations", with 4 more under the title (`.evSrchHC`, 14 bottom padding).
+- Navigation doc, desk sidebar (M / L / XL): the cloned rail kept the app's `top: 47px`, the space it leaves under the prototype's bar, so it sat 47 lower than its page panel. It's now `top: 0` in the doc, with the logo 14 under the panel's top, as in the app.
