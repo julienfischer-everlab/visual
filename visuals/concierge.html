@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script>/* in the prototype's frame: nothing drawn until the prototype says which page it is (Concierge.embed), so the desk's layout, its tabs and its drawer never flash first ("shouldn't see any drawer when land on the chat") */ try { if (window.parent !== window && !/^#(stage|doc-components)/.test(location.hash)) { document.documentElement.classList.add('embWait'); setTimeout(function () { document.documentElement.classList.remove('embWait'); }, 3000); } } catch (e) {}</script>
+<style>html.embWait body { visibility: hidden; }</style>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Concierge</title>
 <style>
@@ -2200,6 +2202,7 @@
   /* a page of the prototype: 'phone' (the XS frame), 'tablet' (the S frame), 'desk', or nothing (on its own) */
   var embed = function (m) {
     var r = document.documentElement, fr = m === 'phone' || m === 'tablet';
+    if (r.classList.contains('embWait')) requestAnimationFrame(function () { r.classList.remove('embWait'); });   /* told where it is: drawn, in its place */
     r.classList.toggle('emb', fr); r.classList.toggle('embPhone', m === 'phone'); r.classList.toggle('embDesk', m === 'desk');
     r.style.setProperty('--safeT', m === 'phone' ? '54px' : m === 'tablet' ? '30px' : '0px'); r.style.setProperty('--safeB', m === 'phone' ? '22px' : m === 'tablet' ? '12px' : '0px');
     if (m && S.tab !== 'chat') setTab('chat');   // a page of the prototype is the chat alone

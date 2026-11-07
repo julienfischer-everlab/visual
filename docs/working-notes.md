@@ -21423,3 +21423,13 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 
 - The device visuals are now the supplied product images: the Apple Health heart tile, the Oura ring, the Garmin watch and the Whoop band. They are transparent PNGs, saved as 192 px WebP over the same `assets/hp/dev-*.webp` paths, 6–10 KB each.
 - The groups are back once a device is connected. Connected comes first, its eyebrow after a green dot (#5fd67c with a soft 16% ring). Not connected follows with a grey dot (ink 32%). Each group is its own 2 x 2 grid, and the cards keep their badges. A device just connected drops into Connected and its badge pops.
+
+## More sheet in one card; chat lands without its drawer; Insights card polish
+
+- More (`window.EvMore`): one card (`.mvCard.mvOne`) holding every group, with a hairline (`.mvDiv`) between groups. It has 16 above and under the rows, so the rows' ghost plates stay clear of the big corners. Every plate is 22 round. The notch and swipe are as before.
+- Chat: `concierge.html` in the prototype's frame is hidden (`html.embWait`) until the prototype calls `Concierge.embed(mode)`, so its desk layout, tabs and drawer never flash on landing. A 3 s fallback shows it anyway. The Stage and Documentation frames (`#stage`, `#doc-components`) are left out.
+- Insights card:
+  - CTA position Top right or Footer link: 20 under the tiles, the same as the sides.
+  - Badges On: no mini circle on the visual. The badge is fully round, 10 above it (was 6), 5 / 10 padding, 26 high.
+  - Tile names are Regular (400) wherever the list is drawn.
+  - New CTA position **Footer link** (`footL`, `html.insCtaFootL`): progress at the left (a bar per task, green once done, then "n of 3 done") and the Generate my insights link with its chevron at the right.
