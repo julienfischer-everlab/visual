@@ -21294,3 +21294,14 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
   - The ring is the ink at 18% for the track, the ink for the part done, starting at the top and running clockwise. Light and dark each use their own ink.
   - Health profile's ring fills as far as Tell us about you has gone (`insNow().hpP`, its pages); the others show an empty track.
 - Placeholder still: the service page says Dr Sarah Chen, Tue 6 Oct; the Overview card says Dr Steven Lu, Thu 29 Oct.
+
+## Past records: a full modal of the history collected (#past-records)
+
+"Create a full modal experience highlighting the past records collected with the list of historical records captured."
+
+- New standalone full modal `window._pastRec` on the EvSolo shell (variant C: Close floating, the title the body's H2), hash `#past-records`, in the page menu under Standalone flow as **Past records**.
+- Opened by the Insights card's **Past results** task once it is found (the primary card's list and the Insights empty state's tiles; the task is now a button in that state). Other states still open the Insight activation flow.
+- Content, top to bottom: title "Your past records are in." and a lead; the summary card (records, results, clinics, then results by year as bars to one scale, the latest year strongest); **What stands out** (LDL creeping up, vitamin D running low); **Every record** with an All / Out of range switch, grouped by year, newest first, each record opening to its key markers (value, unit, High / Low / In range tags in the Insights' range colours, who ordered it, how many more results); the clinics it came from. Footer: **See your trends** closes it and lands on Insights with the historical records filter chosen.
+- One data set, `window.EvPastRec` (10 records, 179 results, 4 labs, 2021 to 2025): the Past results task's line ("10 records, 2021 to 2025") reads it.
+- Wired like the other standalone modals: `__soloClose`, the page menu, the hash on load and on change, `__pageVal`, EvCtx, its display rules, and the pages that check for a modal being up.
+- Placeholder mismatch to align later: the older Past results message says 1,050 results, and Insights' historical record says 2011 to 2026.
