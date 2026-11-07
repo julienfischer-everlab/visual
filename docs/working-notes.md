@@ -21472,3 +21472,11 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - Lifestyle: every item as a ghost-card row with a Later / Now toggle (`.arRcSeg`, Now filled by default); a press on the row opens the stacked card in the bottom sheet (Maybe later / Add to my plan set the toggle). CTA Review my plan → the existing review and Pay.
 - Back steps life → clin → intro; entering the step forward starts on the intro. `stkAll` = Clinical then Lifestyle, so the review keeps its indices.
 - Item property: `adj: 1` in the data (P1 Strength training, B12 injections, the recheck; P2 vitamin D drops, the recheck, the results review); everything else New. The stacked card's tag reads Adjusted (blue) or + New (green).
+
+## Recommendations (Stacked): minimal cards, back to them after Clinical, Lifestyle in four groups
+
+- "More like a minimal card, 2 per row, with 3D visual on top": the intro's Clinical and Lifestyle are the categories' `.arRcCat` cards (render on top: the scan for Clinical, the dumbbell for Lifestyle), name, count, then how many New and Adjusted. A press opens the group's items in a bottom sheet (picture, name, line, badge right).
+- "Actually back to the main view with 2 cards": the Clinical stack's last decision brings the two cards back (pop). Clinical then carries a green tick and "✓ n added · n later"; Continue goes to Lifestyle. Back from the stack or from Lifestyle goes to the two cards. The stack's done card (only seen in passing) reads "Now let's have a look at the lifestyle."
+- "Break group: Nutrition, Workout, Supplements, Medication": Clinical is now Tests, scans and care only. Lifestyle holds Nutrition (the meals), Workout (Exercise & wellbeing), Supplements and Medication (`med: 1`: B12 injections, Iron tablet), each with its heading on the Later / Now screen.
+- "Also some Adjusted vs New": more Adjusted items: P2 Brisk walks with the pram and Omega-3, both personas' Hydration (`adj` on the meal, carried by `rcMealIt`).
+- The Lifestyle screen's title is "Your Lifestyle recommendations", with no sub.
