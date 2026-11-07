@@ -21485,3 +21485,10 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 
 - "No modal on tap": the Clinical and Lifestyle cards are no longer buttons; their item sheet is gone, and so are its row styles.
 - "10 (BIG), Clinical recommendations; same for Lifestyle": under the render, the count at 40/44 semibold, then "Clinical recommendations" / "Lifestyle recommendations" (the card's muted line), then the New / Adjusted (or added / later) badges, centred.
+
+## Recommendations (Stacked): Clinical stack polish
+
+- "Indicator icon during the swipe should be green": the Added cue's disc is green (white check), in both modes; Saved for later's clock stays neutral.
+- "When we swipe the container cuts the card": on the desk (M / L full modal) the step's scroller is let out to the frame's sides while the deck is on screen (`.arBody:has(... .arRcDeck)`, margin out / padding in by the same amount), so a dragged or sent-off card is no longer cut at the 616 column.
+- "When continue, build up the stacking Clinical cards": Continue on the two cards leaves copies of both where they stood (Lifestyle sliding off, Clinical swelling and fading) and grows the stack's three visible cards out of the Clinical card's rect, back card first (`rcGrab`, then a FLIP in `buildRecStack`); no page push.
+- "Remove title; Clinical recommendations on top nav; centre the stacked cards vertically": the stack screen has no H2 or lede. The top bar reads "Clinical recommendations" over "n of N" (`navTt` / `navTs`, reset to the report's name and date on every render). The deck and its note are centred in the page (`.arRcClin`).
