@@ -21360,3 +21360,9 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 - Dock order ("keyboard and chat appear together, then the suggestions once the group is displayed"): the field rises on the keys' own curve and time (.32 s), and the suggestions rise in, the nearest first, from 440 ms.
 
 - Insights empty state, Processing ("health data and past result can have processing icon (grey); if past result processing, can't submit"): Tweaks → Insights → Health data and Past results are now On / Processing / Off. Processing reads Syncing / Searching, with a grey arc turning where the check comes. Past results Processing keeps Generate my insights locked; Health data Processing doesn't (it is optional).
+- Insights tasks, Badges ("add a tweak where each item has a small badge; badge support ON OFF"): Tweaks → Insights → Badges On / Off. On, each task shows its plain name, then a pill under it:
+  - Health profile: To complete / Completed;
+  - Health data: To connect / In progress / Connected;
+  - Past results: To action / In progress / Found.
+  Done is green, in progress grey, to do neutral.
+- The tasks' done disc is a lighter green (#5fd67c) with a white tick ("circle green lighter, foreground white"). Each task's card has 4 more inside ("card +4px padding": 16 / 12).
