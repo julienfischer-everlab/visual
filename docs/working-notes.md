@@ -21582,3 +21582,12 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
 ## Past records intro: a phone with the records stacking into it
 
 "Here put a phone frame visual showing stacked items in it": under "They're part of your Everlab profile now." (the intro's step 1), a half phone in the recommendations' style (1.5 ink outline, island, foot faded), ink-tinted so it follows the theme. As the line comes in, four record cards (a tile and two lines) drop into it back to front, 240 ms apart, each settling a step lower and fainter behind the front one; then a green check pops on the front card. CSS only (`.prxPh`, `.prxPhK`, keyframes prxPhIn / prxPhOk), keyed off the line's own `prxIn`, so it plays each time the step shows; reduced motion lands it at once.
+
+## Past records reveal: four beats on one dot visual, no map
+
+The map is gone from the Past records reveal ("overall remove the map"). Step 1 is now four lines over one visual (`prxVis()`, `.prxV[data-v]`), every record a dot (sized by its results, red with one out of range):
+1. "We found 10 records across 4 labs, going back to 2021." the dots pop in as a drifting cloud ("show dot cloud that appear");
+2. "We organised them." a table fades in (years across, labs down) and each dot moves into its year x lab cell ("table grid and dot going into cell");
+3. "They're part of your Everlab profile now." the table goes, a half phone in the Async report's minimal outline draws in, the dots become its rows (a dot and a line each) and a check pops ("the dots become part of a minimal frame");
+4. "So we can interpret them." the phone goes and the dots slide onto a line chart, by date, the line drawing through them ("transition to a line chart, same as async").
+Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visual's state with it); one set of dots, three resting places set as custom properties, so every move is a transition; reduced motion lands on the chart. Continue then goes on to step 2 as before. The phone I had added under the profile line is folded into this.
