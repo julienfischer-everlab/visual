@@ -21453,3 +21453,8 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
   - Badges have icons: a check when done, a still loader ring otherwise.
   - The top-right link is 14 with a 16 chevron.
   - CTA position "Footer + progress" (was Footer link) puts the progress bars and "n of 3" top right, with the centred Generate my insights button at the foot.
+- The Insights tiles' grid is back inside the card's padding, so the hover plates line up with the eyebrow on both sides ("match padding with eyebrow and same on right"). The −12 pull is undone.
+- Tweaks → Primary card → **Desk alignment** (`stPcAlign`): Left (current) or Centered. Centered sets `html.hpOvCtrOn` on the desk only: M, L, XL, or a window 992+ wide in Auto.
+  - The sphere (or the plan's doctor) sits on top, then the title and its line centred (34ch).
+  - Below them comes the button, then the consult line (or the progress) under the button.
+  - The eyebrow is hidden.
