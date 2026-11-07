@@ -3593,7 +3593,7 @@ window.EvConsent = (function () {
       prog.part(k, frac, 3, AREAS[k].t + ', ' + Math.round(Math.max(0, Math.min(1, frac)) * 100) + '% done');
     };
     var ctaFx = null;   // the Continue's own fade in (the search page's), stopped by the next page
-    var foot2 = function (label, ok, fn, sl, sfn) { cta.firstChild.textContent = label; cta.disabled = !ok; onCta = fn; sec.hidden = !sl; sec.textContent = sl || ''; onSec = sfn || null; };
+    var foot2 = function (label, ok, fn, sl, sfn) { foot.style.display = ''; cta.firstChild.textContent = label; cta.disabled = !ok; onCta = fn; sec.hidden = !sl; sec.textContent = sl || ''; onSec = sfn || null; };
     // a page in: pushed from the right going on, from the left coming back (the report's push: 440ms, the old a third aside and dimmed)
     /* between the intro and a stage, up or down, as the Async report's intro to its insight pages ("move up the content when going to the next step, similar to the Async report's intro to insight page"): on, the old page rises 72 and fades,
        the new comes up from a third of the screen below as it fades in, then the bar's back, title and steps fade in over it; back to the intro, the other way. The old page held where it stood as the bar comes or goes (vFrom) */
@@ -4024,6 +4024,7 @@ window.EvConsent = (function () {
         onConsent: function () { ans.tc = true; save(true); step(0); }, onDecline: function () { ans.tc = false; save(true); step(0); } }); };
     var row = function (t, d, b, icon) { return h('div', { class: 'hpRow' + (icon ? ' hpRowIc' : '') }, icon ? h('i', { class: 'hpRowI', 'aria-hidden': 'true' }, ic(16, icon, 1.5)) : null, h('div', null, h('b', { text: t }), h('span', { text: d })), b); };   // icon: a tile at its left (the search page's rows, as Anshul's map)
     var sumRow = function (q2, a2, go) { return h('div', { class: 'hpSumR' }, h('div', null, h('span', { text: q2 }), h('b', { text: a2 || '—' })), go ? h('button', { type: 'button', class: 'hpEdit', 'aria-label': 'Edit ' + q2, text: 'Edit', on: { click: go } }) : null); };
+    var youSnap = null;   /* the review's answers when it first showed, once done: Update only once they differ */
     var editTo = function (j) { return function () { ret = I; I = typeof j === 'string' ? Math.max(0, stepsOf(A).indexOf(j)) : j; step(-1); }; };   // j: the page's id (its place follows Tweaks' order)
     function intro(scr, t, d) {
       var dd = dots(); scr.appendChild(h('div', { class: 'hpIntro' }, dd.el, q('', t, d, true)));
@@ -4262,7 +4263,12 @@ window.EvConsent = (function () {
         scr.appendChild(h('div', { class: 'hpSum' },
           sumRow('Sleep', name(SLEEP, ans.sleep), editTo('sleep')), sumRow('Country of birth', name(COUNTRY, ans.country), editTo('about')), sumRow('Ethnicity', ans.eth, editTo('about')), sumRow('Health goals and concerns', ans.goals, editTo('about')), sumRow('Occupation', ans.occ, editTo('about')),
           sumRow('Smoking', name(SMOKE, ans.smoke), editTo('smoke')), sumRow('Alcohol', ans.alc != null ? ans.alc + (ans.alc === 1 ? ' time' : ' times') + ' a week' : '', editTo('alcohol'))));
-        foot2(S.a.you.st === 'done' ? 'Done' : 'Save answers', true, fwd);
+        if (S.a.you.st !== 'done') { foot2('Save answers', true, fwd); return; }
+        /* reviewed again once done: no button while nothing has changed; something changed, Update ("if nothing has changed, no need CTA; if something has changed, Update CTA"). The answers as they stood when this review first showed, kept through the Edits */
+        var cur = JSON.stringify(['sleep', 'country', 'eth', 'goals', 'occ', 'smoke', 'alc'].map(function (k) { return ans[k] == null ? '' : ans[k]; }));
+        if (youSnap == null) youSnap = cur;
+        if (cur === youSnap) { foot2('Update', false, null); foot.style.display = 'none'; }
+        else foot2('Update', true, function () { youSnap = null; fwd(); });
       },
       'res.cc': function (scr) {   /* the Concierge's introduction, after the past results: its mark, what it is (the Overview's Concierge card's words), three things it does, Go to overview */
         scr.classList.add('hpCcP');

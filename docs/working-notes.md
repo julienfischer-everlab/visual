@@ -21324,3 +21324,7 @@ Julien: "CTA top nav always 44px". The branch's 36 top bar (and its 68 titled ba
   - "On Star tap the icon should turn to Cross that become the dismiss action": the star itself (`.mChat`) turns away and a cross (`.mChatX`) turns in, on a solid disc over the blanket; a tap on it closes.
   - "The nav left area become the Chat field": the field takes the island's box, measured as it opens (`--dkL/--dkW/--dkH/--dkB` on the phone), and the island fades. The conversations are stacked over it, left-aligned.
   - "Keyboard should trigger as well": the field focuses at once, so the keys come. The field and the cross ride up on them together (`--dkUp`, the keyboard's height plus 10 less the dock's offset), and come down when the field lets go.
+
+## Review your answers: Update only when something changed
+
+- "if nothing has changed, no need CTA; if something has changed, Update CTA": on About you's Review your answers, once the step is done, the foot is hidden while the answers match the ones it showed first (`youSnap`, kept through the Edits, per open). Change one and it reads **Update**; Update clears the snapshot and carries on as Done did. The first time through it still reads Save answers.
