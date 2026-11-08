@@ -21821,3 +21821,4 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 ## Clinical card on desktop: 400 × 512 at most
 
 - "Desktop: max height 512, max width 400": at M and L the Clinical stack's cards are at most 400 wide and 512 tall, centred, hugging their content (no more stretching to the footer); the phone keeps its full-height card.
+- Clinical: +16 between "Your clinical recommendations" and the card ("more gap +16px"): `.arRcClinHd` margin-bottom 12 → 28.
