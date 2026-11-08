@@ -21693,3 +21693,14 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 
 - "remove to review": the Stat group cards no longer show the grey To review badge (Reviewed still shows once a group is done). Top and Row layouts keep it.
 - "Visual on right side. bigger by 12px": the 3D visual moves to the card's top right at 36 (was 24, left); the label takes the left, the edit disc sits between them once reviewed.
+
+## Recommendations: standard footer, swipe progress, straight to Lifestyle, Lifestyle group card
+
+- "Use standard footer system!! no green cta, primary instead": the Clinical deck's answers live in the sheet's own footer: the primary "Add to my plan" (Continue once all are decided), "Maybe later" the text button under it (the Health profile's secondary). The green inline pair is gone.
+- "Put this copy above the footer" / "no scroll!": "You can change any of these later in Plan." sits above the primary; the screen's spacing tightened (body top 16, no foot padding, title gap 12, peek room 24, footer top 8) so personas #1 and #2 fit at XS without scrolling.
+- "cqrd stacked below should be less visible": the cards behind at 55% / 10% (was 78% / 56%).
+- "reduce img by 16px": the card's picture 80 (was 96).
+- "a progress indicator that fills as the user swipes, with haptic feedback once they reach the threshold": a ring round the disc fills with the drag, the veil part way in, "Swipe to add" / "Swipe for later"; at the threshold the ring closes, the disc pops, "Release to add" / "Release for later", and the phone vibrates once (Android / where navigator.vibrate exists; iOS Safari has no web vibration).
+- "after clinical, no need to come back to this page": the last Clinical decision goes straight on to Lifestyle.
+- "tweak for lifestyle screen: Card around items group (ex title group) ON OFF": Tweaks -> Async report -> Lifestyle group card (On by default): each group's rows in a card, its title above.
+- "png inside visual reduce by 8px": Lifestyle row pictures 8 smaller inside their 48 tile.
