@@ -21649,3 +21649,10 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - The marker gets the dashed line through the bar, and value | date uses a hairline divider (`.bioDv`); the Insights list uses both. The Design system page shows a Breakpoints section with each size at its width.
 - Filter results sheet, "review this modal padding": the header is now the sheet header master (EvSheetHead: 24 title, 32 close on one row; the 44 close used to hang over the tabs). One 24 inset for title, tabs and row words (plates at 12); 16 from the title to the tabs.
 - "rounded corner input not full rounded": the Search first field is 16 round; the chip in it stays a pill.
+
+## Async report transitions; Biomarker item columns
+
+- "content jump up for no reason" (What to expect → first insight): What to expect's own spacing lives inside the page, so when the step's classes changed the leaving page's title moved up 16 before it left. `pushFrom` now records the leaving page's title position (`yref`, `y0`) and `pushTo` holds it there with `translate` once it is in the push layer; measured 176 → 176 at the switch (was 176 → 160).
+- "transition sphere between this and next screen should be smoother" (Sphere intro → What to expect as Chart): the grid morph now starts from the ball as it stood on the welcome (`grid.fR / fCy` from the last frame, eased in and out over 1.1 s, as the park already did) instead of snapping to the new size and place on the first frame. The cloud that does not join the grid fades over the whole morph (was gone two thirds in).
+- Biomarker item columns, "chart 80 max width (L), aligned vertically; 96 for M": trend 96 wide at M, 80 at L, in fixed columns (S 140 + 104, M 120 / 120 / 96 / 104, L 140 / 140 / 80 / 96 / 128), so every row's trend stands at the same x. Strokes keep 2px (`non-scaling-stroke`).
+- "badge in a frame 128px, left align": at L the status sits in a 128 column, left-aligned (both badges at the same x).
