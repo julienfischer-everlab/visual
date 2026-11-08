@@ -21688,3 +21688,8 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 
 - "The frame XS should be a mask... Sohuldnt happen, never": the doc's phone frames now carry the app's 34px home space (`--evHome` on `.mdFr.mdPhone`), so the sheet, float, stack and full modals all stay inside the screen's rounded corners (buttons 30 / 19 / 31 above the frame's foot), and the stack scrolls inside its sheet.
 - "Create a cta to simulate the tirgger of botton sheet" / "same for all modal.": the phone's page has an "Open the sheet" button; it opens the selected modal (Sheet, Floating, Full, or the stack layer by layer). Play still replays it.
+
+## Recommendations Stat cards: no To review; visual right, 36
+
+- "remove to review": the Stat group cards no longer show the grey To review badge (Reviewed still shows once a group is done). Top and Row layouts keep it.
+- "Visual on right side. bigger by 12px": the 3D visual moves to the card's top right at 36 (was 24, left); the label takes the left, the edit disc sits between them once reviewed.
