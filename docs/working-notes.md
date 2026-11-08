@@ -21708,3 +21708,7 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 ## Insights: the Biomarker item master at every breakpoint
 
 - "use the right component in insight all breakpoint": the desk Insights list (`#dRecsList`) no longer draws its own `.brow` table; every row is `EvBio.row` (Design system -> Biomarker item), the same as the phone. Rows carry every breakpoint's parts (`all: true`) and `EvBio.fit(host)` gives them their breakpoint from the list's own width: under 560 XS, S, from 760 M, from 1000 L (desk 1920: L; 1440: M; 1060: XS with value | date under the name). The phone and tablet list (`#mRecs`) uses the same fit (XS on the phone, S on the tablet). The record filter, tally and search now read `.mbrow`.
+
+## Desk Eva field: folds back on page scroll, keeps the words
+
+- "for general chat floating, is focused and scroll in the page, the field become floating again, keeping what typed inside (if any)": the floating Eva field's expanded panel (EvSearch grown from the field) closes when the page is scrolled under it (a wheel outside the panel), folding back to the floating field; what was typed goes back into the field (send arrow lit), and comes back into the panel when it is opened again. That first wheel also scrolls the page. Sending empties it as before. (EvSearch.open's `at` takes `val` and `back`.)
