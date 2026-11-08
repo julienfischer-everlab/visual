@@ -21750,3 +21750,12 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 ## Connect a device: the connected sequence
 
 - "When [Apple Health] is connected, the content should fade out and go down, and the image should go down in the middle. Then the title below: Now connected. Then a trail with the Everlab logo next to the visual, so the visual is pushed on the left, and a trail always moving to an Everlab logo": devSheet's `linked()`. After Connecting, the words, the What we'll read card and the button drop 24 and fade (45 ms apart); the device's tile glides to the middle (640 ms); Now connected rises under it with a short blur; then the row opens: the tile moves left as a 64 trail of dots (always flowing right) and Everlab's tile (white, the wordmark's mark) take their room; Done comes in last (its room kept from the start, so nothing jumps). Closing it any way after connecting counts as connected.
+
+## Recommendations polish + Container follows the screen up
+
+- Clinical shuffle: the last square itself grows into the first card (same shape, its photo fading out), no second card scaling in.
+- Lifestyle: Nutrition, Workout… groups fade in one after another after the title; 16px between a group's title and its card.
+- Review: pictures 64px (cut-out PNGs 8px smaller inside); Later rows show the price (or Included) next to a round + button that adds the item back.
+- Defaults: Lifestyle Choice = Toggle, Review Segmented = Simple. Tweaks → What we recommend → Lifestyle (Group card, Choice) and Review (Groups, Layout, Segmented).
+- "The container should always be related to what screen is displayed": EvCtx now ranks a modal or sheet above any page context (contexts flagged `pg: 1` are pages), whichever came up first, so Tweaks and the Container row speak to the screen on top (the Async report opened over Service detail was showing Service detail's).
+- EvCt: every full modal (Async report, Onboarding consult, Membership reveal, Send a gift, Suggestion, Doctor's suggestion, Personal recommendation, Past records) has its own Container pick, default 2xs; a pick sets `data-pg-ct`/`--ctPg` on the open `.aqWrap.aqFull`, which re-points its `--ct2xs` column (M and up). Screens with no container yet (sheets, More, the chat) still name themselves, "· its own width", the segments disabled.
