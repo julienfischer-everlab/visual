@@ -21739,3 +21739,10 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 ## Confirm your updated plan: group cards tightened
 
 - "Reduce the gap so it's an 8px gap between and reduce the title. It needs to be H2 ... Remove the counter on the right. And remove the first divider below the title": the Included / Extra / Later cards sit 8 apart (were 24), their titles at the H2 size (18 / 22, were 20 / 24), no count before the chevron, and no hairline between the title and the first row.
+
+## Design system: Toggle and Segmented masters; Lifestyle info sheet; review tabs
+
+- "Use a toggle: white, not green. Should be like a grayscale toggle system add them in the design system as well": `window.EvToggle` (`.evTgl`), grayscale, from the Figma Toggle (16 variants): Off / On x Default, Hover, Pressed, Disabled x S 52 x 30 / L 64 x 36. Dark: off ink 22% track with the ground as knob, on the white track with the dark knob and a white check; light: off 8% with a white knob, on black with a white knob and a black check. Design system -> Toggle (#toggle) shows every state from the master, live ones, its numbers. The Lifestyle Choice: Toggle rows use it.
+- "On this bottom sheet, we don't need the selection ... The bottom sheet is just information. Put the visual on the left side": a Lifestyle item's sheet (`.arRcInfo`) has no Maybe later / Add to my plan, its picture at the left.
+- "-8px on the gap on the segmented tab": the review's tabs to the first card 24 (was 32).
+- "Use 56 high tab with the tab item 50 high. Use 2 lines, so Add to plan, and then the number below X actions. And then Later, X action" / "Can add this tab in the design system as well": `window.EvSeg` (`.evSeg`), the segmented master: two lines 56 (items 50, 3 inside, 16 / 13 round, label 16 / 20 medium, support 14 / 18), label only 48 or 40; 2 to 4 tabs; the pill slides. Design system -> Segmented (#segmented). The review's Simple tabs are now EvSeg: "Add to plan / 13 actions", "Later / 0 actions".
