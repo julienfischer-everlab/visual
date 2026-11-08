@@ -21671,3 +21671,11 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 ## Your clinical recommendations: +12 under the H1
 
 - "+12 margin bottom h1": the Clinical stack's title block (`.arRcClinHd`) has 12 below it; 36 from the H1 to the stack (was 24).
+
+## Clinical stack: footer answers, Slack-coloured swipe; Biomarker item badges, gap, ghost card
+
+- "CTA outside the card as a footer" (screen recording of Slack's catch-up): Maybe later / Add to my plan leave the card (`.arRcStkWrap.arRcStkFtOn .arRcStkBtns` hidden) and sit under the stack (`.arRcStkFt`), acting on the card on top; hidden once every card is answered. Add to my plan is green.
+- "swipe, add colour as Slack example; green": the drag / decide overlay fills the card with the answer's colour: Add to my plan green (#1f8a4c, white check disc, "Added to your plan"), Maybe later a quiet grey (#3a3a38, clock, "Saved for later"), over every theme.
+- "all badge 28px height 8px radius": the status badges (`.st`, phone, doc and desk) are 28 tall, 8 round; their skeletons too.
+- "12px gap between range and badge": the master wraps the bar and its badge in `.bioR`, 12 apart (stacked at XS, S, M; side by side at L with the badge in its 128 frame), whatever the name's length.
+- "simulate for all ghost card clickable": every biomarker row (Insights list, Design system page) is a ghost card: no ground at rest, a plate 12 past its words on hover (5%), stronger on press (9%); it still opens the detail.

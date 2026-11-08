@@ -960,7 +960,7 @@
     background:linear-gradient(90deg,#1c1c1b 0,#2a2a28 40%,#1c1c1b 80%);
     background-size:220% 100%;animation:msShimmer 1.1s linear infinite;
   }
-  .dash .dSkel .st{width:82px;height:26px;border-radius:8px;justify-self:start;}
+  .dash .dSkel .st{width:82px;height:28px;border-radius:8px;justify-self:start;}
   .dash .dSkel .rng i{background:#2a2a28;}
   .dash .dSkel .rng .mk{display:none;}
   body.light .dash .dSkel .skb,body.light .dash .dSkel .st{
@@ -983,7 +983,7 @@
   }
   .dash .fchip.on{background:rgba(255,255,255,.16);box-shadow:inset 0 0 0 1.5px #fff;color:#fff;}
   .dash .fchip i{width:8px;height:8px;border-radius:3px;font-style:normal;}
-  .dash .st{border-radius:8px;padding:5px 11px;font-size:12.5px;justify-self:start;}
+  .dash .st{display:inline-flex;align-items:center;box-sizing:border-box;height:28px;border-radius:8px;padding:0 11px;font-size:12.5px;line-height:16px;white-space:nowrap;justify-self:start;}   /* 28 tall, 8 round, as the phone's */
   .dash .st.ok{background:#17251a;color:#9fc98f;}
   .dash .st.sub{background:#272113;color:#f2c744;}
   /* the desk had no rule of its own for the other two readings, so an
@@ -1544,19 +1544,24 @@
   }
   .mbrow .g{color:#8b8b86;font-size:var(--bioS);line-height:var(--bioSLh);}   /* Design system -> Biomarker item (window.EvBio): the title 16, the sub 14 ("increase the title of marker to 16px", "and sub 14"; were 14 and 12) */
   :root{--bioT:16px;--bioTLh:22px;--bioS:14px;--bioSLh:20px;}
+  :is(#mRecs, .evBio) .mbrow{position:relative;cursor:pointer;-webkit-tap-highlight-color:transparent;} :is(#mRecs, .evBio) .mbrow > *{position:relative;z-index:1;}
+  :is(#mRecs, .evBio) .mbrow::before{content:"";position:absolute;inset:4px -12px;border-radius:12px;background:transparent;transition:background-color .15s ease;pointer-events:none;}
+  @media (hover: hover){ :is(#mRecs, .evBio) .mbrow:hover::before{background:rgba(255,255,255,.05);} body.light :is(#mRecs, .evBio) .mbrow:hover::before{background:rgba(46,31,26,.05);} }
+  :is(#mRecs, .evBio) .mbrow:active::before{background:rgba(255,255,255,.09);} body.light :is(#mRecs, .evBio) .mbrow:active::before{background:rgba(46,31,26,.09);}   /* every biomarker row a ghost card ("simulate for all ghost card clickable"): no ground at rest, a plate 12 past its words on hover, stronger on press; the row opens its detail */
   .bioDv{display:inline-block;width:1px;height:12px;margin:0 8px;vertical-align:-1px;background:currentColor;opacity:.35;font-style:normal;}   /* value | date: a hairline, not a typed bar */
   :is(#phone, .evBio) .rng .mk::after{content:"";position:absolute;left:-.5px;top:-2px;height:10px;border-left:1px dashed #ececec;opacity:.8;}   /* the marker's dashed line through the bar ("Biomarkers item interactive") */
   body.light :is(#phone, .evBio) .rng .mk::after{border-left-color:#000;}
-  .bioSp{display:block;width:140px;height:40px;overflow:visible;} .bioSp path{vector-effect:non-scaling-stroke;} .mbrow.bioM > .bioSp{width:96px;height:32px;} .mbrow.bioL > .bioSp{width:80px;height:28px;} .mbrow:is(.bioS, .bioM, .bioL) > :is(.rng, .st){justify-self:end;} :is(#phone, .evBio) .mbrow.bioL > .st{justify-self:start;}   /* L: the status in a 128 frame, left-aligned, so every badge starts in line ("badge in a frame 128 px left align") */   /* the trend 96 wide at M, 80 at L, in a fixed column so it stands in line from row to row ("80 max width (L), aligned vertically; 96 for M") */ .bioSp .bioSpG{stroke:currentColor;stroke-width:1;opacity:.1;}
+  .bioSp{display:block;width:140px;height:40px;overflow:visible;} .bioSp path{vector-effect:non-scaling-stroke;} .mbrow.bioM > .bioSp{width:96px;height:32px;} .mbrow.bioL > .bioSp{width:80px;height:28px;}   /* L: the status in a 128 frame, left-aligned, so every badge starts in line ("badge in a frame 128 px left align") */   /* the trend 96 wide at M, 80 at L, in a fixed column so it stands in line from row to row ("80 max width (L), aligned vertically; 96 for M") */ .bioSp .bioSpG{stroke:currentColor;stroke-width:1;opacity:.1;}
   /* the breakpoints (Design system -> Biomarker item): S adds the trend; M sets name, value, date and trend on one line; L also the bar and the status */
-  .mbrow.bioS{grid-template-columns:minmax(0,1fr) 140px 104px;grid-template-areas:"n sp r" "g sp st";column-gap:24px;}
-  .mbrow.bioS > .bioN{grid-area:n;} .mbrow.bioS > .bioSp{grid-area:sp;align-self:center;} .mbrow.bioS > .rng{grid-area:r;} .mbrow.bioS > .g{grid-area:g;} .mbrow.bioS > .st{grid-area:st;}
-  .mbrow.bioM{grid-template-columns:minmax(0,1fr) 120px 120px 96px 104px;grid-template-areas:"n v d sp r" "n v d sp st";column-gap:32px;}
-  .mbrow.bioM > .bioN{grid-area:n;} .mbrow.bioM > .bioV{grid-area:v;} .mbrow.bioM > .bioD{grid-area:d;} .mbrow.bioM > .bioSp{grid-area:sp;} .mbrow.bioM > .rng{grid-area:r;} .mbrow.bioM > .st{grid-area:st;}
-  .mbrow.bioM > :is(.bioN, .bioV, .bioD, .bioSp){align-self:center;}
-  .mbrow.bioL{grid-template-columns:minmax(0,1fr) 140px 140px 80px 96px 128px;grid-template-areas:"n v d sp r st";column-gap:40px;}
-  .mbrow.bioL > .bioN{grid-area:n;} .mbrow.bioL > .bioV{grid-area:v;} .mbrow.bioL > .bioD{grid-area:d;} .mbrow.bioL > .bioSp{grid-area:sp;} .mbrow.bioL > .rng{grid-area:r;padding-top:0;align-self:center;} .mbrow.bioL > .st{grid-area:st;}
-  .mbrow:is(.bioM, .bioL) > :is(.bioV, .bioD){font-size:var(--bioS);line-height:var(--bioSLh);color:#8b8b86;white-space:nowrap;} body.light .mbrow:is(.bioM, .bioL) > :is(.bioV, .bioD){color:rgba(0,0,0,.56);}   /* the Biomarker item's type, one place: every biomarker row reads these (Insights list, Plan "What this moves", the doc) */
+  .mbrow > .bioR{grid-column:2;grid-row:1 / span 2;display:flex;flex-direction:column;align-items:flex-end;justify-content:center;gap:12px;align-self:center;} .mbrow > .bioR > .rng{padding-top:9px;}   /* XS: name over value | date at the left; the bar over its badge at the right, 12 apart */
+  .mbrow.bioS{grid-template-columns:minmax(0,1fr) 140px 104px;grid-template-areas:"n sp r" "g sp r";column-gap:24px;}
+  .mbrow.bioS > .bioN{grid-area:n;} .mbrow.bioS > .bioSp{grid-area:sp;align-self:center;} .mbrow.bioS > .g{grid-area:g;} .mbrow.bioS > .bioR{grid-area:r;}
+  .mbrow.bioM{grid-template-columns:minmax(0,1fr) 120px 120px 96px 104px;grid-template-areas:"n v d sp r";column-gap:32px;align-items:center;}
+  .mbrow.bioM > .bioN{grid-area:n;} .mbrow.bioM > .bioV{grid-area:v;} .mbrow.bioM > .bioD{grid-area:d;} .mbrow.bioM > .bioSp{grid-area:sp;} .mbrow.bioM > .bioR{grid-area:r;grid-row:auto;}
+  .mbrow.bioL{grid-template-columns:minmax(0,1fr) 140px 140px 80px auto;grid-template-areas:"n v d sp r";column-gap:40px;align-items:center;}
+  .mbrow.bioL > .bioN{grid-area:n;} .mbrow.bioL > .bioV{grid-area:v;} .mbrow.bioL > .bioD{grid-area:d;} .mbrow.bioL > .bioSp{grid-area:sp;}
+  .mbrow.bioL > .bioR{grid-area:r;grid-row:auto;flex-direction:row;align-items:center;gap:12px;} .mbrow.bioL > .bioR > .rng{width:96px;padding-top:0;} .mbrow.bioL > .bioR{min-width:calc(96px + 12px + 128px);} :is(#phone, .evBio) .mbrow.bioL > .bioR > .st{margin-right:auto;}   /* L: the bar then the badge, 12 apart, the badge in its 128 frame, left in it */
+  .mbrow:is(.bioM, .bioL) > :is(.bioV, .bioD){font-size:var(--bioS);line-height:var(--bioSLh);color:#8b8b86;white-space:nowrap;} body.light .mbrow:is(.bioM, .bioL) > :is(.bioV, .bioD){color:rgba(0,0,0,.56);}
   /* rows in a group: the last carries no rule (it used to be an inline style
      on the last row, which a filter that hides rows could not follow) */
   .mgrp .mbrow:last-child{border-bottom:none;}
@@ -2701,7 +2706,7 @@
   .msSkel .rng i{height:4px;border-radius:2px;background:linear-gradient(90deg,#2a2a28 0%,#3a3a38 40%,#2a2a28 80%);background-size:220% 100%;}
   .msSkel .rng i:nth-child(1){width:34px;}
   .msSkel .rng i:nth-child(2), .msSkel .rng i:nth-child(3){width:26px;}
-  .msSkel .st{width:74px;height:24px;border-radius:8px;justify-self:end;}
+  .msSkel .st{width:74px;height:28px;border-radius:8px;justify-self:end;}
   body.light .msSkel .skb, body.light .msSkel .st{background:linear-gradient(90deg,#ece4d4 0%,#f5efe4 40%,#ece4d4 80%);background-size:220% 100%;}
   body.light .msSkel .rng i{background:linear-gradient(90deg,#e2d9c7 0%,#ede6d8 40%,#e2d9c7 80%);background-size:220% 100%;}
   @keyframes msShimmer{from{background-position:120% 0;}to{background-position:-120% 0;}}
@@ -3339,7 +3344,7 @@
     position:absolute;top:-2px;left:1px;width:0;height:0;border:4px solid transparent;
     border-top:6px solid #ececec;background:none;border-radius:0;
   }
-  :is(#phone, .evBio) .st{border-radius:8px;padding:5px 11px;font-size:12px;justify-self:end;}
+  :is(#phone, .evBio) .st{display:inline-flex;align-items:center;box-sizing:border-box;height:28px;border-radius:8px;padding:0 11px;font-size:12px;line-height:16px;white-space:nowrap;justify-self:end;}   /* every status badge 28 tall, 8 round ("all badge 28px height 8px radius") */
   :is(#phone, .evBio) .st.ok{background:#17251a;color:#9fc98f;}
   :is(#phone, .evBio) .st.sub{background:#272113;color:#f2c744;}
   :is(#phone, .evBio) .st.out{background:#2b1416;color:#fe8087;}
@@ -17220,6 +17225,13 @@
 .arSheet .arRcStkC.arRcStkMkOn { pointer-events: none; } .arSheet .arRcStkC.arRcStkMkOn .arRcStkMk { opacity: 1; }
 .arSheet .arRcStkMk i { display: grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; background: #fff; color: #111; transform: scale(.4); opacity: 0; transition: transform .45s cubic-bezier(.34, 1.56, .64, 1) .05s, opacity .2s ease .05s; }
 .arSheet .arRcStkMk.arRcStkMkL i { background: rgba(255, 255, 255, .14); color: #fff; }
+/* the swipe's colour, as Slack's catch-up ("swipe, add colour as Slack example; green"): the card fills with the answer's colour as it is dragged and as it leaves, its mark and word on it: Add to my plan green, Maybe later a quiet grey */
+html .arSheet.arSheet.arSheet .arRcStkMk:not(.arRcStkMkL) { background: #1f8a4c; -webkit-backdrop-filter: none; backdrop-filter: none; } html .arSheet.arSheet.arSheet .arRcStkMk:not(.arRcStkMkL) i { background: #fff; color: #1f8a4c; } html .arSheet.arSheet.arSheet .arRcStkMk b { color: #fff; }
+html .arSheet.arSheet.arSheet .arRcStkMk.arRcStkMkL { background: #3a3a38; -webkit-backdrop-filter: none; backdrop-filter: none; } html .arSheet.arSheet.arSheet .arRcStkMk.arRcStkMkL i { background: rgba(255, 255, 255, .14); color: #fff; }   /* over every theme's glass (the Light and Dark rules below) */
+/* the answers under the stack, not in the card ("CTA outside the card as a footer"): Maybe later secondary, Add to my plan green, as the swipe's colour */
+.arSheet .arRcStkWrap.arRcStkFtOn .arRcStkC .arRcStkBtns { display: none; }
+.arSheet .arRcStkFt { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 24px; } .arSheet .arRcStkFt[hidden] { display: none; }
+.arSheet .arRcStkFt .arRcStkB.arRcStkYes { background: #1f8a4c; color: #fff; } .arSheet .arRcStkFt .arRcStkB.arRcStkYes:hover { background: #23995a; }
 .arSheet .arRcStkC.arRcStkMkOn .arRcStkMk i { transform: none; opacity: 1; }
 .arSheet .arRcStkMk b { font: 500 17px/22px var(--ar-font); color: #fff; opacity: 0; transform: translateY(6px); transition: opacity .3s ease .14s, transform .3s ease .14s; } .arSheet .arRcStkC.arRcStkMkOn .arRcStkMk b { opacity: 1; transform: none; }
 .arSheet .arRcStkMk:not(.arRcStkMkL) path { stroke-dasharray: 30; stroke-dashoffset: 30; transition: stroke-dashoffset .35s ease .2s; } .arSheet .arRcStkC.arRcStkMkOn .arRcStkMk:not(.arRcStkMkL) path { stroke-dashoffset: 0; }   /* the check drawn in */
@@ -19862,12 +19874,14 @@ window.EvSvcImg = { concierge: 'assets/overview/svc-concierge.webp', treat: 'ass
       var its = sp.cl, n = its.length, at = Math.min(stkAt, n), dec = stkDec;   /* the stack: the Clinical items ("Click continue will start the Clinical group first") */
       var title = h('h2', { class: 'arH700', 'aria-label': 'Your clinical recommendations' }, 'Your clinical', h('br'), 'recommendations'), lede = h('p', { class: 'arPara arRcLede', text: 'Clinical · ' + nRec(n) });   /* the H1 back, as the Lifestyle's ("Your clinical / recommendations as h1") */
       var hd = h('div', { class: 'arIntroBlock arRsHead arRcHead arRcClinHd' }, title);
+      var foot = null;   /* the two answers under the stack, for the card on top ("CTA outside the card as a footer") */
       var deck = h('div', { class: 'arRcDeck', role: 'list', 'aria-label': 'Recommendations, one at a time' });
       var doneT = h('h3', { class: 'arRcStkT' }), doneS = h('p', { class: 'arRcStkS' }), again = h('button', { type: 'button', class: 'arRcStkB arRcStkNo arRcStkAgain', text: 'Review again' });
       var done = h('div', { class: 'arRcStkC arRcStkDone', 'aria-live': 'polite' }, h('span', { class: 'arRcStkTick', 'aria-hidden': 'true' }, strokeIcon(24, 24, 2, ['m5 12.5 4.5 4.5L19 7.5'])), doneT, doneS, again);
       var cards = its.map(function (x, i) { return rcStkCard(x, i, n, decide); });
       cards.forEach(function (c) { deck.appendChild(c); }); deck.appendChild(done);
       function lay() {
+        if (foot) foot.hidden = at >= n;
         cards.forEach(function (c, i) { if (c.classList.contains('arRcStkPeek')) { c.classList.remove('arRcStkPeek', 'arRcStkPeekGo'); c.style.removeProperty('--rv'); c.style.transition = ''; } var k = i - at; c.style.setProperty('--k', Math.max(0, Math.min(k, 3))); c.classList.toggle('arOn', k === 0); c.classList.toggle('arRcStkFar', k > 2); if (k === 0) c.removeAttribute('inert'); else c.setAttribute('inert', ''); c.setAttribute('aria-hidden', k === 0 ? 'false' : 'true'); });
         var fin = at >= n; lede.textContent = 'Clinical · ' + (fin ? nRec(n) : (at + 1) + ' of ' + nRec(n)); if (step === REC && !revOn) { navTt.textContent = 'Plan recommendation'; navTs.hidden = true; }   /* the top bar just "Plan recommendation" ("change top nav just Plan recommendation") */ done.classList.toggle('arOn', fin); if (fin) done.removeAttribute('inert'); else done.setAttribute('inert', '');
         stkAt = at; stkDec = dec; if (step === REC && !revOn) { ctaLabel.textContent = fin ? 'Continue' : 'Next'; cta.disabled = !fin; }   /* then on to Lifestyle */   /* the button on once every card is decided ("CTA enable only once all card has been actioned") */
@@ -19899,7 +19913,9 @@ window.EvSvcImg = { concierge: 'assets/overview/svc-concierge.webp', treat: 'ass
         on(window, 'pointerup', up); on(window, 'pointercancel', up); })();   /* the focus follows on to the next card for a keyboard only */
       on(again, 'click', function () { at = 0; dec = dec.slice(); for (var q = 0; q < n; q++) dec[q] = undefined; cards.forEach(function (c) { c.classList.remove('arRcStkOutL', 'arRcStkOutR', 'arRcStkMkOn'); c.style.transform = ''; c.style.zIndex = ''; c.style.transition = ''; var mk = c.querySelector('.arRcStkMk'); if (mk) mk.remove(); }); lay(); });
       lay();
-      var wrap = h('div', { class: 'arRcStkWrap' }, deck, h('p', { class: 'arRcStkNote', text: 'You can change any of these later in Plan.' }));
+      var fNo = h('button', { type: 'button', class: 'arRcStkB arRcStkNo', text: 'Maybe later' }), fYes = h('button', { type: 'button', class: 'arRcStkB arRcStkYes', text: 'Add to my plan' });
+      foot = h('div', { class: 'arRcStkFt' }, fNo, fYes); foot.hidden = at >= n; on(fNo, 'click', function () { decide(at, false); }); on(fYes, 'click', function () { decide(at, true); });
+      var wrap = h('div', { class: 'arRcStkWrap arRcStkFtOn' }, deck, foot, h('p', { class: 'arRcStkNote', text: 'You can change any of these later in Plan.' }));
       var B = rcBuild; rcBuild = null;
       if (B) { requestAnimationFrame(function () { requestAnimationFrame(function () {   /* each card from the Clinical card's rect to its place on the stack (its own transform: scaled from its foot) */
           /* dealt in from the side, the swipe's way reversed ("build up stacked cards need to be like left right"): each from the right, tilted, onto its place, the back one first */
@@ -49639,8 +49655,8 @@ hairline({
           '<tr><th>Title</th><td>The biomarker\u2019s name, ' + tk('--bioT') + ' / ' + tk('--bioTLh') + ', regular, primary ink</td></tr>' +
           '<tr><th>Sub</th><td>The reading and its test\u2019s date (value &nbsp;|&nbsp; Mon YYYY), ' + tk('--bioS') + ' / ' + tk('--bioSLh') + ', secondary ink</td></tr>' +
           '<tr><th>Range bar</th><td>Three segments, optimal 34, suboptimal 26, out of range 26 wide, 4 tall, 4 apart; a 6px marker where the reading sits</td></tr>' +
-          '<tr><th>Status</th><td>A pill under the bar: Optimal, Suboptimal, Out of range, Unclassified; 12px, 8 round, 5 / 11 padding</td></tr>' +
-          '<tr><th>Row</th><td>16 above and below, a hairline between rows (none under the last of a group); the whole row opens the biomarker\u2019s detail sheet</td></tr>' +
+          '<tr><th>Status</th><td>A badge 12 under the bar (12 beside it at L): Optimal, Suboptimal, Out of range, Unclassified; 28 tall, 8 round, 12px type</td></tr>' +
+          '<tr><th>Row</th><td>16 above and below, a hairline between rows (none under the last of a group); a ghost card: a plate 12 past the words on hover, stronger on press; the whole row opens the biomarker\u2019s detail sheet</td></tr>' +
           '</tbody></table></section>' +
           '<section class="biSec"><h2>Used in</h2><ul class="biUse"><li>Insights \u2192 Biomarkers: every row of the list (phone)</li><li>Plan \u2192 What this moves: the rows under a goal (type only)</li></ul></section></div>';
         const fill = () => { const B = window.EvBio, pv = el.querySelector('.biPrev'); if (!B) return setTimeout(fill, 150); pv.innerHTML = [['Serum bilirubin', 'ok', '8.0 umol/L'], ['Gamma-glutamyl transferase (GGT)', 'sub', '54 U/L'], ['Ferritin', 'out', '412 ug/L'], ['Lipoprotein(a)', 'other', '\u2014']].map(r => B.row({ name: r[0], st: r[1], val: r[2], date: 'Aug 2026' })).join(''); el.querySelectorAll('.biPrev[data-bp]').forEach(f => { f.innerHTML = [['Biomarker name', 'ok', '18.0 ng/dL'], ['Gamma-glutamyl transferase (GGT)', 'sub', '54 U/L']].map(r => B.row({ name: r[0], st: r[1], val: r[2], date: 'Dec 2024', bp: f.dataset.bp })).join(''); }); }; fill();   /* the master's rows, once the master is up (a doc opened by its link draws before the Insights script runs) */
@@ -50954,9 +50970,8 @@ hairline({
       return '<div class="mbrow' + (bp !== 'xs' ? ' bio' + bp.toUpperCase() : '') + '"' + (o.attrs || '') + '><span class="bioN">' + o.name + '</span>' +
         (wide ? '<span class="bioV">' + o.val + '</span><span class="bioD">' + (o.date || '') + '</span>' : '') +
         (bp !== 'xs' ? spark(o.name, o.st) : '') +
-        '<span class="rng">' + mk + '<i class="s1"></i><i class="s2"></i><i class="s3"></i></span>' +
         (wide ? '' : '<span class="g" data-v="' + o.val + '">' + sub + '</span>') +
-        '<span class="st ' + o.st + '">' + (ST_WORD[o.st] || '') + '</span></div>'; };
+        '<span class="bioR"><span class="rng">' + mk + '<i class="s1"></i><i class="s2"></i><i class="s3"></i></span><span class="st ' + o.st + '">' + (ST_WORD[o.st] || '') + '</span></span></div>'; };   /* the bar and its badge one block, 12 apart ("12px gap between range and badge") */
     return { ST: ST_WORD, row: row, spark: spark };
   })();
   (function buildPhonePanel(){
