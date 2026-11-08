@@ -21784,3 +21784,9 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - Tweaks → Async report → Doctor note: Card (default) / Letter ("Use mono font same the letter on the membership experience, aligned left. Tweak this version"): the note in `--ar-font-mono` at the letter's size (`--ltrFs` / `--ltrLh`, 12 / 16), not italic, left-aligned, the name left too. Id `stArDrN` (in the saved keys).
 - Tweaks → Group cards: Stacked ("Stacked card: content left, visual right"): one card a row, the name and the big count at the left, the visual 64 at the right (centred on the card; under the edit disc once reviewed).
 - Copy: "Here are your recommendations" (was "Here are the"); "You can change your mind later in Plan." (was "You can change any of these later in Plan.", every place it showed).
+
+## Doctor card +16 top; Tweaks follow the recommendations' screen
+
+- Doctor card: +16 above it ("margin +16px top").
+- Tweaks → What we recommend: a "Doctor note" group of its own ("we need a group for the page Doctor note"), and only the rows of the screen up ("if the tweak are not related to the page don't show them"): rows / subs tagged `data-ar-ph` (dr, intro, clin, life, rev; `none` when the Layout isn't Stacked), read from the report's `where().rc` in the same 300 ms check that hides the other steps' groups. Doctor screen: Layout + Doctor note; cards: Layout + Group cards; Clinical: Layout; Lifestyle: Layout + Lifestyle; review: Review only.
+- Group cards' first option reads "Top" (was "Visual on top") so the four fit the row.
