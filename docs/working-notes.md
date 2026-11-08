@@ -21679,3 +21679,7 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - "all badge 28px height 8px radius": the status badges (`.st`, phone, doc and desk) are 28 tall, 8 round; their skeletons too.
 - "12px gap between range and badge": the master wraps the bar and its badge in `.bioR`, 12 apart (stacked at XS, S, M; side by side at L with the badge in its 128 frame), whatever the name's length.
 - "simulate for all ghost card clickable": every biomarker row (Insights list, Design system page) is a ghost card: no ground at rest, a plate 12 past its words on hover (5%), stronger on press (9%); it still opens the detail.
+
+## Page menu: Design system (pattern)
+
+- "Design system (pattern)": the Page menu's entry for the Design system page reads "Design system (pattern)".
