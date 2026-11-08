@@ -269,3 +269,11 @@ A new Plan surface: its colours from the `--pl*` tokens (and a `#dPlan.plLight` 
 **How to use.** After an edit: parse check, build, grep dist for the change (minified), working note, commit with the attribution footer, push, publish per CLAUDE.md.
 
 **Pitfalls.** A JS parse error can name an unrelated identifier (GLSL in a template literal); `new Function` on the block names the line. csso/terser run on the built copy: an unclosed CSS comment in the source silently swallows rules. A quoted `-->` once opened an HTML comment over the page. A missing asset file stays a path with only a console warning. Large SVGs with embedded photos have come in at 17.9 MB. A helper session once published its own build against its brief: publish only the merged build.
+
+## Interactive sizes and the core components (EvCtl)
+
+- **What**: one height scale for every interactive element ("a Input m size will have the same size as a button m size; the m reflects the height"): lg 56 · md 44 · sm 36 · xs 28 · 2xs 20. Tokens `--ctlLg … --ctl2xs` on `:root`; `.evCtl-<size>` sets `--cH` (height), `--cPx`, `--cFs/--cLh`, `--cIc`, `--cGap`, `--cR` for the components.
+- **Master**: `window.EvCtl` (grep `window.EvCtl = `): `btn({ label, size, kind: primary|secondary|tertiary|ghost, icon: ''|'l'|'r'|'both', iconOnly, disabled })`, `split({ label, size, kind })`, `badge({ label, size, kind: outline|tint|solid, icon })`, `input({ kind: text|search|select|area, size, placeholder })`, `chip({ label, size, on })`, `filter({ label, size, set })`, `seg({ size })` (EvSeg), `HAS` (the sizes each comes in), `sample(k, size)`, `wire(root)`. Classes `.evBtn .evSplit .evBdg .evIn .evChip`; ink via `--cInk/--cGnd` (dark default, `body.light` / `.arSheet:not(.arDark)` light).
+- **Availability**: Buttons (label, icon only, split) lg–xs; Badges md–2xs; Inputs lg, md; Segment tab lg (two lines), md, sm; Filter chip md; Chip md, sm. Anything else is "Not available".
+- **Docs**: Design system → Core components: Sizes (`#sizes`, the full matrix), Buttons (`#buttons`), Inputs (`#inputs`), Badges (`#badges`), Chips (`#chips`), Segment tab, Toggle; drawn by `czDoc(k)`.
+- **Already on the scale**: `EvSeg` (`.evSeg2` lg, `.evSegM` md, `.evSegS` sm), `.arBtnLg` (lg). New controls should come from EvCtl, not a fresh button or field.
