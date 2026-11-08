@@ -21813,3 +21813,7 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - Tweaks group names follow the Flow panel: Recommendation summary (Group cards), Doctor note, Lifestyle, Review; on Clinical (no rows of its own) the group hides.
 - Stacked group cards ("not big numbers ... badge secondary X recommendations"): the name, a one-line description, a secondary badge "N recommendations" at the left, the visual at the right; padding 8 less top and bottom (20 / 18).
 - Note: a stray publish of the unbuilt index.html (v2225) was replaced at once by the built dist (v2226).
+
+## Letter footer +8
+
+- Doctor note, Letter: the footer (the name, "Your Everlab doctor", the avatar) 8 further from the note ("footer margin top 8px"): the card grid's row gap 20 → 28.
