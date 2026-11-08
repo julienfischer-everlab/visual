@@ -21661,3 +21661,9 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 
 - "the sphere still moving up too fast, should be the same speed as the other elements": the grid morph now starts 300 ms after the tap (as the leaving page clears; `grid({ delay: 300 })`), its lift runs 900 ms easeInOutQuint (was 960 ms ease-out cubic from the tap, fastest at the start), and the morph takes 1.9 s (was 1.7). Measured on the Sphere hero: the ball's top stays put to ~400 ms, then rises with the next page (380 → 284 by ~1 s).
 - "reduce visual by 16px": the recommendations' Row cards (Clinical / Lifestyle, `.arRcGrpRow`) carry a 48 visual (was 64).
+
+## Recommendations: Stat cards, next-step push; sphere timing
+
+- "add tweak layout this style" (a stat card: icon and label, the number big, its badge at the right): Tweaks → Async report → Group cards → **Stat** (`o.grpc = 'stat'`, `.arRcGrpStat`). The visual 24 and the name on one line (the edit disc at its right once reviewed), the count 40 under them, the To review / Reviewed badge on the count's line at the right.
+- "when click See recommendations, this part is clipping; should be just a next step kind of transition": the intro → Clinical stack no longer gathers the cards into the stack (`rcGrab`); it runs the flow's own step push (`pushDir = 1`).
+- "now the sphere moves up too late, move up earlier": the grid lift starts on the tap again (no 300 wait), 1 s easeInOutCubic: −10 by ~325 ms, −34 by 500, −80 by 700, settled by ~1 s.
