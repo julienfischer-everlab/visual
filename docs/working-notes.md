@@ -21638,3 +21638,14 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - Search first, "full rounded and bg secondary, no border": the field is 999 round on rgba(255,255,255,.08) (focused .11), no ring; the chip a step up (.1).
 - "no chevron but cross; click resets, the rest opens the sheet": with a record chosen, the chip shows the cross (`#mRecClear`, the existing reset) and no chevron.
 - "break the list with year group": the Filter sheet's Records list puts a year heading (`.mRecYr`) where the year turns; All records and the ranges stay above, ungrouped. Selection skips the headings.
+
+## Biomarker item at four breakpoints; Filter sheet spacing; search field corners
+
+- "4 breakpoints breakdown here" (Figma: Biomarkers item interactive / XS, S, M, L): `EvBio.row({ …, date, bp })`.
+  - XS: as the app (name and value | date left; bar over status right).
+  - S: adds a 140px trend line between them (`EvBio.spark`: 12 readings off the name, smoothed, each stretch green, amber or red by where it runs, two faint band lines).
+  - M: one line (name | value | date | trend), the bar over the status at the right.
+  - L: everything on one line.
+- The marker gets the dashed line through the bar, and value | date uses a hairline divider (`.bioDv`); the Insights list uses both. The Design system page shows a Breakpoints section with each size at its width.
+- Filter results sheet, "review this modal padding": the header is now the sheet header master (EvSheetHead: 24 title, 32 close on one row; the 44 close used to hang over the tabs). One 24 inset for title, tabs and row words (plates at 12); 16 from the title to the tabs.
+- "rounded corner input not full rounded": the Search first field is 16 round; the chip in it stays a pill.

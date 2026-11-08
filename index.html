@@ -1543,7 +1543,20 @@
     padding:16px 0;border-bottom:1px solid #1c1c1b;font-size:var(--bioT);line-height:var(--bioTLh);color:#e4e4e0;   /* 14 -> 16: "add padding on the row" */
   }
   .mbrow .g{color:#8b8b86;font-size:var(--bioS);line-height:var(--bioSLh);}   /* Design system -> Biomarker item (window.EvBio): the title 16, the sub 14 ("increase the title of marker to 16px", "and sub 14"; were 14 and 12) */
-  :root{--bioT:16px;--bioTLh:22px;--bioS:14px;--bioSLh:20px;}   /* the Biomarker item's type, one place: every biomarker row reads these (Insights list, Plan "What this moves", the doc) */
+  :root{--bioT:16px;--bioTLh:22px;--bioS:14px;--bioSLh:20px;}
+  .bioDv{display:inline-block;width:1px;height:12px;margin:0 8px;vertical-align:-1px;background:currentColor;opacity:.35;font-style:normal;}   /* value | date: a hairline, not a typed bar */
+  :is(#phone, .evBio) .rng .mk::after{content:"";position:absolute;left:-.5px;top:-2px;height:10px;border-left:1px dashed #ececec;opacity:.8;}   /* the marker's dashed line through the bar ("Biomarkers item interactive") */
+  body.light :is(#phone, .evBio) .rng .mk::after{border-left-color:#000;}
+  .bioSp{display:block;width:140px;height:40px;overflow:visible;} .bioSp .bioSpG{stroke:currentColor;stroke-width:1;opacity:.1;}
+  /* the breakpoints (Design system -> Biomarker item): S adds the trend; M sets name, value, date and trend on one line; L also the bar and the status */
+  .mbrow.bioS{grid-template-columns:minmax(0,1fr) 140px auto;grid-template-areas:"n sp r" "g sp st";column-gap:24px;}
+  .mbrow.bioS > .bioN{grid-area:n;} .mbrow.bioS > .bioSp{grid-area:sp;align-self:center;} .mbrow.bioS > .rng{grid-area:r;} .mbrow.bioS > .g{grid-area:g;} .mbrow.bioS > .st{grid-area:st;}
+  .mbrow.bioM{grid-template-columns:minmax(0,1fr) 120px 120px 140px auto;grid-template-areas:"n v d sp r" "n v d sp st";column-gap:32px;}
+  .mbrow.bioM > .bioN{grid-area:n;} .mbrow.bioM > .bioV{grid-area:v;} .mbrow.bioM > .bioD{grid-area:d;} .mbrow.bioM > .bioSp{grid-area:sp;} .mbrow.bioM > .rng{grid-area:r;} .mbrow.bioM > .st{grid-area:st;}
+  .mbrow.bioM > :is(.bioN, .bioV, .bioD, .bioSp){align-self:center;}
+  .mbrow.bioL{grid-template-columns:minmax(0,1fr) 140px 140px 140px auto auto;grid-template-areas:"n v d sp r st";column-gap:40px;}
+  .mbrow.bioL > .bioN{grid-area:n;} .mbrow.bioL > .bioV{grid-area:v;} .mbrow.bioL > .bioD{grid-area:d;} .mbrow.bioL > .bioSp{grid-area:sp;} .mbrow.bioL > .rng{grid-area:r;padding-top:0;align-self:center;} .mbrow.bioL > .st{grid-area:st;}
+  .mbrow:is(.bioM, .bioL) > :is(.bioV, .bioD){font-size:var(--bioS);line-height:var(--bioSLh);color:#8b8b86;white-space:nowrap;} body.light .mbrow:is(.bioM, .bioL) > :is(.bioV, .bioD){color:rgba(0,0,0,.56);}   /* the Biomarker item's type, one place: every biomarker row reads these (Insights list, Plan "What this moves", the doc) */
   /* rows in a group: the last carries no rule (it used to be an inline style
      on the last row, which a filter that hides rows could not follow) */
   .mgrp .mbrow:last-child{border-bottom:none;}
@@ -1771,10 +1784,10 @@
   html.srchFull body.light .msWrap.searchOn .msRecWrap.cleared .msRecDot{background:#000;}
   .msWrap:not(.searchOn) .msClear{display:none !important;}
   /* Search focus, Search first (Tweaks -> Biomarkers tab, html.srchChip; "the search is the primary action, the Records is presented as a chip on the right inside the search; default All records, on click open the bottom sheet select"): the phone's search fills the row and is always open; the record field a pill laid inside it at the right, its label alone (the record's name once chosen, cut short past half the row), a small chevron; a tap opens the same filter sheet */
-  html.srchChip #mSearch .msRow .msBox{flex:1 1 100%;min-width:0;gap:9px;padding-left:16px;border-radius:999px;background:rgba(255,255,255,.08);box-shadow:none;padding-right:calc(var(--msChipW, 124px) + 18px);justify-content:flex-start;}
+  html.srchChip #mSearch .msRow .msBox{flex:1 1 100%;min-width:0;gap:9px;padding-left:16px;border-radius:16px;background:rgba(255,255,255,.08);box-shadow:none;padding-right:calc(var(--msChipW, 124px) + 18px);justify-content:flex-start;}
   html.srchChip #mSearch .msRow .msBox input{flex:1 1 auto;width:auto;opacity:1;pointer-events:auto;}
   html.srchChip #mSearch .msRecWrap{position:absolute;right:10px;top:50%;transform:translateY(-50%);z-index:2;flex:none;width:auto;max-width:calc(50% - 10px);transition:none;}
-  html.srchChip #mSearch.focus .msRow .msBox{background:rgba(255,255,255,.11);box-shadow:none;} html.srchChip body.light #mSearch .msRow .msBox{background:rgba(46,31,26,.06);} html.srchChip body.light #mSearch.focus .msRow .msBox{background:rgba(46,31,26,.09);}   /* the field fully round on the secondary ground, no edge ("search first full rounded and bg secondary, no border") */
+  html.srchChip #mSearch.focus .msRow .msBox{background:rgba(255,255,255,.11);box-shadow:none;} html.srchChip body.light #mSearch .msRow .msBox{background:rgba(46,31,26,.06);} html.srchChip body.light #mSearch.focus .msRow .msBox{background:rgba(46,31,26,.09);}   /* the field on the secondary ground, no edge, 16 round ("bg secondary, no border"; "rounded corner input not full rounded"); the chip in it stays a pill */
   html.srchChip #mSearch .msRec{width:auto;max-width:100%;height:36px;padding:0 10px 0 14px;gap:6px;border:0;border-radius:999px;background:rgba(255,255,255,.1);box-shadow:none;}
   html.srchChip #mSearch .msRec:hover, html.srchChip #mSearch .msRec[aria-expanded="true"]{background:rgba(255,255,255,.12);}
   html.srchChip #mSearch .msRecWrap.cleared .msRec{padding-right:10px;background:rgba(255,255,255,.16);}
@@ -6460,8 +6473,9 @@
   }
   .recSheet .mRecMenu::-webkit-scrollbar{display:none;}
   .recSheet .mRecScroll{max-height:none;overflow:visible;}
-  .recSheet .siTitle{margin:0 18px 12px;}
-  .recSheet .mRecTabs{margin:0 6px 10px;}
+  .recSheet .siTitle{margin:0 24px 12px;}
+  .recSheet .mRecTabs{margin:0 12px 12px;}
+  .recSheet .recHd{--evShPt:12px;padding-left:24px;padding-right:20px;margin-bottom:16px;} .recSheet .mRecYr{padding-left:12px;padding-right:12px;}   /* one side inset, 24, for the title, the tabs (12 in from the menu's 12) and the rows' words (12 in their 12-inset plates); the close 20 from the edge, its 32 disc's centre on the title's line ("review this modal padding") */
   .recSheet .shHome{margin-top:16px;}
   /* ---- V4 IA ---------------------------------------------------------------
      Overview | Results. The Overview keeps the bento and puts the tests under
@@ -7806,7 +7820,7 @@
   .ldDone{position:absolute;inset:0;z-index:41;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:var(--sBg);opacity:0;transition:opacity .3s ease;} .ldDone.on{opacity:1;} .ldDone i{display:grid;place-items:center;width:56px;height:56px;border-radius:50%;background:#24a148;color:#fff;font-style:normal;font-size:26px;} .ldDone b{font-size:22px;font-weight:500;} .ldDone span{color:var(--sMut);font-size:14px;}
   /* Design system -> Notes (ntDoc) */
   .ldDoc.ntDoc{display:block;overflow:auto;background:var(--ldBg);color:var(--ldFg);}
-.biSec h2{margin:12px 0 12px;font-size:18px;line-height:24px;font-weight:600;} .biPrev{max-width:393px;padding:4px 16px;border-radius:20px;background:#000;box-shadow:inset 0 0 0 1px var(--ldLine, rgba(255,255,255,.08));} body.light .biPrev{background:#fff;} .biTbl{width:100%;border-collapse:collapse;font-size:14px;line-height:20px;} .biTbl th{width:120px;padding:10px 12px 10px 0;text-align:left;font-weight:500;vertical-align:top;} .biTbl td{padding:10px 0;color:var(--ldMut);} .biTbl tr + tr :is(th, td){border-top:1px solid var(--ldLine, rgba(255,255,255,.08));} .biUse{margin:0;padding-left:18px;font-size:14px;line-height:22px;color:var(--ldMut);} .biDoc code{font-size:13px;}   /* Design system -> Biomarker item */
+.biSec h2{margin:12px 0 12px;font-size:18px;line-height:24px;font-weight:600;} .biPrev{max-width:393px;padding:4px 16px;border-radius:20px;background:#000;box-shadow:inset 0 0 0 1px var(--ldLine, rgba(255,255,255,.08));} body.light .biPrev{background:#fff;} .biTbl{width:100%;border-collapse:collapse;font-size:14px;line-height:20px;} .biTbl th{width:120px;padding:10px 12px 10px 0;text-align:left;font-weight:500;vertical-align:top;} .biTbl td{padding:10px 0;color:var(--ldMut);} .biTbl tr + tr :is(th, td){border-top:1px solid var(--ldLine, rgba(255,255,255,.08));} .biUse{margin:0;padding-left:18px;font-size:14px;line-height:22px;color:var(--ldMut);} .biDoc code{font-size:13px;} .biDoc .ntIn{max-width:1240px;} .biNote{margin:0 0 16px;max-width:72ch;font-size:14px;line-height:21px;color:var(--ldMut);} .biBp{display:flex;flex-direction:column;gap:8px;margin:0 0 24px;} .biBpL{font-size:12px;line-height:16px;font-weight:600;letter-spacing:.06em;color:var(--ldMut);} .biBpS{overflow-x:auto;} .biPrev.biWxs{max-width:393px;} .biPrev.biWs{max-width:none;width:680px;} .biPrev.biWm{max-width:none;width:960px;} .biPrev.biWl{max-width:none;width:1200px;} .biPrev{box-sizing:border-box;}   /* Design system -> Biomarker item */
   .ntIn{max-width:720px;margin:0 auto;padding:48px 24px 96px;display:flex;flex-direction:column;gap:20px;}
   .ntHd h1{margin:0;font-size:32px;line-height:38px;font-weight:600;letter-spacing:-.01em;} .ntHd p{margin:8px 0 0;font-size:15px;line-height:22px;color:var(--ldMut);}
   .ntAdd{display:flex;gap:10px;align-items:flex-end;padding:12px;border-radius:18px;background:var(--ldChip);} .ntAdd textarea{flex:1;min-width:0;resize:vertical;min-height:44px;max-height:240px;padding:10px 12px;border:0;border-radius:12px;background:transparent;color:inherit;font:inherit;font-size:16px;line-height:22px;outline:none;}
@@ -17689,7 +17703,7 @@ html:not(#_m):not(#_d) .evTn .evTnBtn.evTnBtn { width: var(--evTnD) !important; 
    .evShT the title 24/30 500, -0.2, balanced. .evShX the compact close: a 32 circle, ink 7%, its glyph 16 (the every-dismiss 36 above is for the floating closes; a top bar's are the Top nav master's 44). A top nav (Back / Close bar) is the Top nav master, never this. */
 html:not(#_s) .evShHd { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; box-sizing: border-box; margin: 0 0 8px; padding-top: max(0px, calc(24px - var(--evShPt, 0px))); padding-bottom: 0; }
 html:not(#_s) .evShHd > .evShT, html:not(#_s) .evShHd > * > .evShT { flex: 1 1 auto; min-width: 0; margin: 4px 0 0; font-size: 24px; line-height: 30px; font-weight: 500; letter-spacing: -.2px; text-wrap: balance; }
-html:not(#_s) .evShHd > div:has(> .evShT) { flex: 1 1 auto; min-width: 0; }
+html:not(#_s) .evShHd > div:has(> .evShT) { flex: 1 1 auto; min-width: 0; } html:not(#_s) .recSheet .evShHd.recHd { margin-bottom: 16px; }   /* the filter sheet: 16 between its title and the tabs */
 html:not(#_m):not(#_d) .evShHd .evShX.evShX { appearance: none; -webkit-appearance: none; position: static; flex: none; display: grid; place-items: center; width: 32px !important; height: 32px !important; min-width: 32px !important; min-height: 32px !important; margin: 0; padding: 0; border: 0; border-radius: 50%; background: color-mix(in srgb, currentColor 7%, transparent); color: inherit; cursor: pointer; }
 html:not(#_s) .evShHd .evShX svg { width: 16px; height: 16px; } .evShHd .evShX:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
 </style>
@@ -49607,6 +49621,7 @@ hairline({
         const cs = getComputedStyle(document.documentElement), tk = n => (cs.getPropertyValue(n) || '').trim();
         el.innerHTML = '<div class="ntIn"><header class="ntHd"><h1>Biomarker item</h1><p>One reading in a list: the biomarker, its value and the date of the test, where it sits on its range, and its status. Drawn by <code>window.EvBio.row</code>; its type from <code>--bioT</code> and <code>--bioS</code>, so a change here changes every list.</p></header>' +
           '<section class="biSec"><h2>States</h2><div class="evBio biPrev">' + rows + '</div></section>' +
+          '<section class="biSec"><h2>Breakpoints</h2><p class="biNote">XS: the name and value | date at the left, the range bar over the status at the right. S: the trend line between them. M: one line, name, value, date, trend, and the bar over the status. L: everything on one line.</p>' + ['xs', 's', 'm', 'l'].map(b => '<div class="biBp"><div class="biBpL">' + b.toUpperCase() + '</div><div class="biBpS"><div class="evBio biPrev biW' + b + '" data-bp="' + b + '"></div></div></div>').join('') + '</section>' +
           '<section class="biSec"><h2>Anatomy</h2><table class="biTbl"><tbody>' +
           '<tr><th>Title</th><td>The biomarker\u2019s name, ' + tk('--bioT') + ' / ' + tk('--bioTLh') + ', regular, primary ink</td></tr>' +
           '<tr><th>Sub</th><td>The reading and its test\u2019s date (value &nbsp;|&nbsp; Mon YYYY), ' + tk('--bioS') + ' / ' + tk('--bioSLh') + ', secondary ink</td></tr>' +
@@ -49615,7 +49630,7 @@ hairline({
           '<tr><th>Row</th><td>16 above and below, a hairline between rows (none under the last of a group); the whole row opens the biomarker\u2019s detail sheet</td></tr>' +
           '</tbody></table></section>' +
           '<section class="biSec"><h2>Used in</h2><ul class="biUse"><li>Insights \u2192 Biomarkers: every row of the list (phone)</li><li>Plan \u2192 What this moves: the rows under a goal (type only)</li></ul></section></div>';
-        const fill = () => { const B = window.EvBio, pv = el.querySelector('.biPrev'); if (!B) return setTimeout(fill, 150); pv.innerHTML = [['Serum bilirubin', 'ok', '8.0 umol/L'], ['Gamma-glutamyl transferase (GGT)', 'sub', '54 U/L'], ['Ferritin', 'out', '412 ug/L'], ['Lipoprotein(a)', 'other', '\u2014']].map(r => B.row({ name: r[0], st: r[1], val: r[2], sub: r[2] + ' &nbsp;|&nbsp; Aug 2026' })).join(''); }; fill();   /* the master's rows, once the master is up (a doc opened by its link draws before the Insights script runs) */
+        const fill = () => { const B = window.EvBio, pv = el.querySelector('.biPrev'); if (!B) return setTimeout(fill, 150); pv.innerHTML = [['Serum bilirubin', 'ok', '8.0 umol/L'], ['Gamma-glutamyl transferase (GGT)', 'sub', '54 U/L'], ['Ferritin', 'out', '412 ug/L'], ['Lipoprotein(a)', 'other', '\u2014']].map(r => B.row({ name: r[0], st: r[1], val: r[2], date: 'Aug 2026' })).join(''); el.querySelectorAll('.biPrev[data-bp]').forEach(f => { f.innerHTML = [['Biomarker name', 'ok', '18.0 ng/dL'], ['Gamma-glutamyl transferase (GGT)', 'sub', '54 U/L']].map(r => B.row({ name: r[0], st: r[1], val: r[2], date: 'Dec 2024', bp: f.dataset.bp })).join(''); }); }; fill();   /* the master's rows, once the master is up (a doc opened by its link draws before the Insights script runs) */
         return el;
       };
       const ntDoc = () => {
@@ -50906,9 +50921,31 @@ hairline({
   // amber, past it -- an unclassified one has no place to sit and shows none
   const MK_AT = { ok: [6, 30], sub: [40, 60], out: [70, 88] };
   /* Design system -> Biomarker item ("Biomarker item must be part of the design system"): the one builder of a biomarker row, the Insights list's and the doc's. o: name, st (ok / sub / out / other), val (the reading), sub (the line under the name; the reading if none), attrs (extra attributes). The row: the name (--bioT), the reading | date (--bioS), the range bar with its marker at the right, the status pill under it */
-  window.EvBio = { ST: ST_WORD, row: o => { const at = MK_AT[o.st]; let h = 0; for (let i = 0; i < o.name.length; i++) h = (h * 31 + o.name.charCodeAt(i)) & 0xffff;
-    const mk = at ? '<i class="mk" style="left:' + (at[0] + h % (at[1] - at[0])) + 'px"></i>' : '';
-    return '<div class="mbrow"' + (o.attrs || '') + '><span>' + o.name + '</span><span class="rng">' + mk + '<i class="s1"></i><i class="s2"></i><i class="s3"></i></span><span class="g" data-v="' + o.val + '">' + (o.sub || o.val) + '</span><span class="st ' + o.st + '">' + (ST_WORD[o.st] || '') + '</span></div>'; } };
+  window.EvBio = (function () {
+    const hash = t => { let h = 0; for (let i = 0; i < t.length; i++) h = (h * 31 + t.charCodeAt(i)) & 0xffff; return h; };
+    /* the trend line (S and up, "Biomarker item / S, M, L"): 12 readings off the name, smoothed (Catmull-Rom), each stretch coloured by where it runs: high green, middle amber, low red; two faint band lines behind */
+    const spark = (name, st) => { let h = hash(name) || 7; const n = 12, W = 140, H = 40, pts = [];
+      for (let i = 0; i < n; i++) { h = (h * 1103515245 + 12345) & 0x7fffffff; const y = 8 + (h % 1000) / 1000 * 24; pts.push([i * W / (n - 1), y]); }
+      pts[n - 1][1] = st === 'ok' ? 10 : st === 'sub' ? 20 : st === 'out' ? 30 : 20;
+      const col = y => y < 15 ? 'var(--rgOpt)' : y < 25 ? 'var(--rgSub)' : 'var(--rgOut)';
+      let d = ''; for (let i = 0; i < n - 1; i++) { const p0 = pts[Math.max(0, i - 1)], p1 = pts[i], p2 = pts[i + 1], p3 = pts[Math.min(n - 1, i + 2)];
+        const c1 = [p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6], c2 = [p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6];
+        d += '<path d="M' + p1[0].toFixed(1) + ' ' + p1[1].toFixed(1) + 'C' + c1.map(v => v.toFixed(1)).join(' ') + ' ' + c2.map(v => v.toFixed(1)).join(' ') + ' ' + p2[0].toFixed(1) + ' ' + p2[1].toFixed(1) + '" stroke="' + col((p1[1] + p2[1]) / 2) + '"/>'; }
+      return '<svg class="bioSp" viewBox="0 0 ' + W + ' ' + H + '" fill="none" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path class="bioSpG" d="M0 15H' + W + 'M0 25H' + W + '"/>' + d + '</svg>'; };
+    /* one row. o: name, st (ok / sub / out / other), val (the reading), date ("Aug 2026"), sub (the line under the name if not value | date), bp ('xs' default, 's', 'm', 'l'), attrs.
+       XS: the name and value | date at the left; the range bar over the status at the right. S: the trend line between them. M: one line, name | value | date | trend, the bar over the status at the right. L: all on one line, the bar then the status. */
+    const row = o => { const at = MK_AT[o.st], bp = o.bp || 'xs', h = hash(o.name);
+      const mk = at ? '<i class="mk" style="left:' + (at[0] + h % (at[1] - at[0])) + 'px"></i>' : '';
+      const sub = o.sub || (o.date ? o.val + '<i class="bioDv" aria-hidden="true"></i>' + o.date : o.val);
+      const wide = bp === 'm' || bp === 'l';
+      return '<div class="mbrow' + (bp !== 'xs' ? ' bio' + bp.toUpperCase() : '') + '"' + (o.attrs || '') + '><span class="bioN">' + o.name + '</span>' +
+        (wide ? '<span class="bioV">' + o.val + '</span><span class="bioD">' + (o.date || '') + '</span>' : '') +
+        (bp !== 'xs' ? spark(o.name, o.st) : '') +
+        '<span class="rng">' + mk + '<i class="s1"></i><i class="s2"></i><i class="s3"></i></span>' +
+        (wide ? '' : '<span class="g" data-v="' + o.val + '">' + sub + '</span>') +
+        '<span class="st ' + o.st + '">' + (ST_WORD[o.st] || '') + '</span></div>'; };
+    return { ST: ST_WORD, row: row, spark: spark };
+  })();
   (function buildPhonePanel(){
     const host = document.getElementById('mRecs');
     if (!host) return;
@@ -50928,7 +50965,7 @@ hairline({
     assignRecords(host.querySelectorAll('.mbrow'), (row, rec) => {
       // on the phone the reading and its date share one cell
       const v = row.querySelector('.g');
-      v.innerHTML = v.dataset.v + ' &nbsp;|&nbsp; ' + (rec.short || '');
+      v.innerHTML = v.dataset.v + '<i class="bioDv" aria-hidden="true"></i>' + (rec.short || '');   /* the master's divider (Biomarker item) */
     });
   })();
 
@@ -51208,8 +51245,8 @@ hairline({
         sheet.className = 'shWrap siWrap recSheetWrap';
         sheet.innerHTML = '<div class="shDim"></div><div class="sheet siSheet recSheet" role="dialog" aria-modal="true">' +
           '<div class="shHandle"></div>' +
-          (window.EvTopNav ? window.EvTopNav.html({ close: true, closeCls: 'prX siX', cls: 'prNav recNav' }) : '<div class="prTop"><button class="prX siX" type="button" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round" data-lc="x" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>') +   /* the Top nav master, C */
-          '<h3 class="siTitle evTnH1">' + (cfg.recKey ? 'Filter records' : 'Filter results') + '</h3></div>';
+          (window.EvSheetHead ? window.EvSheetHead.html({ title: (cfg.recKey ? 'Filter records' : 'Filter results'), tag: 'h3', closeCls: 'prX siX', cls: 'recHd' }) : '<h3 class="siTitle">' + (cfg.recKey ? 'Filter records' : 'Filter results') + '</h3>') +   /* the sheet header master (EvSheetHead): the 24 title and the 32 close on one row, so the close no longer hangs over the tabs ("review this modal padding") */
+          '</div>';
         const sh = sheet.querySelector('.sheet');
         rec.menu.hidden = false;        // the sheet shows and hides; the menu is always "open" inside it
         sh.appendChild(rec.menu);
