@@ -21622,3 +21622,10 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - Tweaks → Primary card → Desk min height (Auto, 480–800): the primary card's least height on the desk (`--hpOvMinH`, `html.hpOvMinOn`); the Bento beside it grows to match.
 - Centred card, "reduce gap between visual and content by 64px": the sphere's dots fill only ~108 of its 190 scaled box, so the gap seen was ~89; its margin is now `calc(48px + 119px * .3 - 64px)`, about 25 seen.
 - Debrief cards (`.rcCard.rcDb`, Insights Reports carousel): visual 32 taller (140 → 172 at XS, via `75cqw - 54px`), words 4 further in (26 sides, 18 above, 24 below), chevron with them, 16 between the cards.
+
+## Insights biomarkers: Search first filter
+
+- "new filtering version: the search is the primary action, the Records presented as a chip on the right inside the search; default All records, on click open the bottom sheet select": Tweaks → Biomarkers tab → Search focus gets a third option, **Search first** (`html.srchChip`, phone `#mSearch`).
+- The search fills the row and is always open. The record field becomes a pill inside it at the right: its label alone ("All records", or the chosen record's name, cut at half the row) and a small chevron. A tap opens the same Filter sheet as before.
+- The pill's width is kept as `--msChipW` (ResizeObserver), so typed text and the search's clear button stop before it.
+- Split stays the default; the desk's search is unchanged.

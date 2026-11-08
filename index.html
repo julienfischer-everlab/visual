@@ -1769,6 +1769,22 @@
   html.srchFull .msWrap.searchOn .msRecWrap.cleared .msRecDot{display:block;position:absolute;top:10px;right:10px;margin:0;width:8px;height:8px;border-radius:50%;background:#fff;}
   html.srchFull body.light .msWrap.searchOn .msRecWrap.cleared .msRecDot{background:#000;}
   .msWrap:not(.searchOn) .msClear{display:none !important;}
+  /* Search focus, Search first (Tweaks -> Biomarkers tab, html.srchChip; "the search is the primary action, the Records is presented as a chip on the right inside the search; default All records, on click open the bottom sheet select"): the phone's search fills the row and is always open; the record field a pill laid inside it at the right, its label alone (the record's name once chosen, cut short past half the row), a small chevron; a tap opens the same filter sheet */
+  html.srchChip #mSearch .msRow .msBox{flex:1 1 100%;min-width:0;gap:9px;padding-left:16px;padding-right:calc(var(--msChipW, 124px) + 18px);justify-content:flex-start;}
+  html.srchChip #mSearch .msRow .msBox input{flex:1 1 auto;width:auto;opacity:1;pointer-events:auto;}
+  html.srchChip #mSearch .msRecWrap{position:absolute;right:10px;top:50%;transform:translateY(-50%);z-index:2;flex:none;width:auto;max-width:calc(50% - 10px);transition:none;}
+  html.srchChip #mSearch .msRec{width:auto;max-width:100%;height:36px;padding:0 10px 0 14px;gap:6px;border:0;border-radius:999px;background:rgba(255,255,255,.08);box-shadow:none;}
+  html.srchChip #mSearch .msRec:hover, html.srchChip #mSearch .msRec[aria-expanded="true"]{background:rgba(255,255,255,.12);}
+  html.srchChip #mSearch .msRecWrap.cleared .msRec{padding-right:10px;background:rgba(255,255,255,.16);}
+  html.srchChip #mSearch .msRec .t{flex:0 1 auto;min-width:0;}
+  html.srchChip #mSearch .msRec b{font-size:14px;line-height:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  html.srchChip #mSearch .msRec :is(i, .msRecIc, .msRecDot, .msRecNew){display:none !important;}
+  html.srchChip #mSearch .msRecWrap.cleared .msRecChev{display:block;}
+  html.srchChip #mSearch .msRecChev{flex:none;width:14px;height:14px;}
+  html.srchChip #mSearch .msRecClear{display:none !important;}
+  html.srchChip body.light #mSearch .msRec{background:rgba(46,31,26,.06);}
+  html.srchChip body.light #mSearch .msRec:hover, html.srchChip body.light #mSearch .msRec[aria-expanded="true"]{background:rgba(46,31,26,.1);}
+  html.srchChip body.light #mSearch .msRecWrap.cleared .msRec{background:rgba(46,31,26,.12);}
   body.light .msRec{--msEdge:#ddd3bf;color:#000;}
   body.light .msRec:hover{--msEdge:#9b8a75;}
   body.light .msRec[aria-expanded="true"]{background:rgba(46,31,26,.05);--msEdge:#9b8a75;}
@@ -13554,6 +13570,7 @@
           <select id="stSrchFoc" class="tkSegSel" aria-label="What the record field does while the search is open">
             <option value="split" selected>Split</option>
             <option value="full">Full width</option>
+            <option value="chip">Search first</option>
           </select>
         </div>
         <div class="tkRow">
@@ -46308,7 +46325,8 @@ hairline({
       const sk = document.getElementById('stAskStk'), tl = document.getElementById('stAskTools'); document.documentElement.classList.toggle('askV2Car', v2 && !!sk && sk.value === 'car'); document.documentElement.classList.toggle('askToolsRest', v2 && !!tl && tl.value === 'on');
       [sk, tl].forEach(e => { const r = e && e.closest('.tkRow'); if (r) r.hidden = !v2; }); };   /* Version 2's own: Suggestions Stacked / Carousel (html.askV2Car), Tools at rest (html.askToolsRest) */   /* Version 2 has its own suggestions (the conversations' card): Suggestion and Conversation style are Version 1's */
     as.addEventListener('change', put); if (av) av.addEventListener('change', put); ['stAskStk', 'stAskTools'].forEach(id => { const e = document.getElementById(id); if (e) e.addEventListener('change', put); }); put(); } }   /* Ask sheet, Suggestion: Services / Conversation (html.askConv) */
-  { const sf = document.getElementById('stSrchFoc'); if (sf){ const put = () => document.documentElement.classList.toggle('srchFull', sf.value === 'full'); sf.addEventListener('change', put); put(); } }   /* Search focus: Split / Full width (html.srchFull, CSS by .msRecIc) */
+  { const sf = document.getElementById('stSrchFoc'); if (sf){ const put = () => { document.documentElement.classList.toggle('srchFull', sf.value === 'full'); document.documentElement.classList.toggle('srchChip', sf.value === 'chip'); }; sf.addEventListener('change', put); put(); } }   /* Search first (html.srchChip): the search the row, the records a chip inside it at the right; the chip's width kept as --msChipW so the typed text stops before it */
+  { const w = document.getElementById('mRecWrap'), m = document.getElementById('mSearch'); if (w && m && window.ResizeObserver) new ResizeObserver(() => m.style.setProperty('--msChipW', Math.ceil(w.getBoundingClientRect().width / (window.evK ? window.evK(w) : 1)) + 'px')).observe(w); }   /* Search focus: Split / Full width (html.srchFull, CSS by .msRecIc) */
   const stRepLaySel = document.getElementById('stRepLay');
   if (stRepLaySel) stRepLaySel.addEventListener('change', () => {
     CARD_STATE.repBento = stRepLaySel.value === 'bento';
