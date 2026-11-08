@@ -21790,3 +21790,7 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - Doctor card: +16 above it ("margin +16px top").
 - Tweaks → What we recommend: a "Doctor note" group of its own ("we need a group for the page Doctor note"), and only the rows of the screen up ("if the tweak are not related to the page don't show them"): rows / subs tagged `data-ar-ph` (dr, intro, clin, life, rev; `none` when the Layout isn't Stacked), read from the report's `where().rc` in the same 300 ms check that hides the other steps' groups. Doctor screen: Layout + Doctor note; cards: Layout + Group cards; Clinical: Layout; Lifestyle: Layout + Lifestyle; review: Review only.
 - Group cards' first option reads "Top" (was "Visual on top") so the four fit the row.
+
+## Flow panel: the recommendations by phase
+
+- "We need to breakdown the flow by phases": under "Here's what we recommend" in the Async report's Flow panel, five rows, indented and not numbered: Doctor note, Recommendation summary, Clinical recommendation, Lifestyle recommendation, Review recommendations (when Layout is Stacked, the phased flow). The phase up is lit; a click goes straight there (`inst.recGo(ph)`: dr / intro / clin / life / rev; the review fills anything undecided as added so it has a plan to show). `steps()` gives `phased` and `recPh`; the panel's rows take a `sub` flag (`.hpFlSub`).
