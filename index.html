@@ -17366,7 +17366,14 @@ body.light .arSheet .arRcStkMk, .arSheet:not(.arDark) .arRcStkMk { background: r
 .arSheet .arRcStkWhy { display: flex; align-items: center; gap: 8px; min-width: 0; }
 .arSheet .arRcStkWhy.arRcWhyB { justify-content: space-between; gap: 12px; width: 100%; margin: 0; padding: 12px 16px; border: 0; border-radius: 14px; background: oklch(72% .15 45 / .14); font: inherit; text-align: left; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: background-color .15s ease; }
 .arSheet .arRcWhyB .arRcWhyV { display: flex; align-items: center; gap: 8px; min-width: 0; } .arSheet .arRcWhyB:active { background: oklch(72% .15 45 / .22); } @media (hover: hover) { .arSheet .arRcWhyB:hover { background: oklch(72% .15 45 / .2); } } .arSheet .arRcWhyB:focus-visible { outline: 2px solid #f0875a; outline-offset: 2px; }
-.arSheet:not(.arDark) .arRcStkWhy.arRcWhyB { background: oklch(70% .15 45 / .12); }
+.arSheet .arRcWhyCard { display: flex; flex-direction: column; border-radius: 14px; background: oklch(var(--ar-ink) / .06); }
+.arSheet .arRcWhyCard .arRcWhyR { display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; gap: 2px;   /* the label, then its value under it (a reason never cut) */ width: 100%; min-width: 0; margin: 0; padding: 12px 16px; border: 0; border-radius: 0; background: none; font: inherit; color: inherit; text-align: left; }
+.arSheet .arRcWhyCard .arRcWhyR + .arRcWhyR { border-top: 1px solid oklch(var(--ar-ink) / .08); }
+.arSheet .arRcWhyCard .arRcWhyB { cursor: pointer; border-radius: 14px 14px 0 0; -webkit-tap-highlight-color: transparent; transition: background-color .15s ease; } @media (hover: hover) { .arSheet .arRcWhyCard .arRcWhyB:hover { background: oklch(var(--ar-ink) / .04); } } .arSheet .arRcWhyCard .arRcWhyB:active { background: oklch(var(--ar-ink) / .06); }
+.arSheet .arRcWhyCard .arRcWhyL { flex: none; font-size: 14px; line-height: 20px; color: oklch(var(--ar-ink) / .56); }
+.arSheet .arRcWhyCard .arRcWhyV { display: flex; align-items: center; gap: 8px; min-width: 0; max-width: 100%; } .arSheet .arRcWhyCard .arRcStkSrc { white-space: normal; } .arSheet .arRcWhyCard .arRcStkSrc { font-size: 15px; }
+.arSheet .arRcWhyCard .arRcWhyRel { font-size: 15px; line-height: 20px; font-weight: 500; color: oklch(80% .13 150); } .arSheet .arRcWhyCard .arRcWhyRel.arRcAdj { color: oklch(80% .1 240); }
+.arSheet:not(.arDark) .arRcWhyCard .arRcWhyRel { color: oklch(48% .13 150); } .arSheet:not(.arDark) .arRcWhyCard .arRcWhyRel.arRcAdj { color: oklch(48% .12 240); }
 .arSheet .arRcWhyS .arRcWhyP { margin: 0 0 12px; font-size: 16px; line-height: 24px; color: oklch(var(--ar-ink) / .88); } .arSheet .arRcWhyS .arRcWhyM { color: oklch(var(--ar-ink) / .56); font-size: 15px; line-height: 22px; }
 .arSheet .arRcStkWl { font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 12px; line-height: 16px; letter-spacing: .12em; text-transform: uppercase; color: oklch(var(--ar-ink) / .56); }
 .arSheet .arRcStkDot { flex: none; width: 8px; height: 8px; border-radius: 50%; background: #f0875a; } .arSheet .arRcStkSrc { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 16px; line-height: 20px; font-weight: 500; color: #f0875a; }
@@ -19952,22 +19959,25 @@ window.EvCtl = (function () {
     function rcSubmitted() { return revItems().map(function (x) { var g = x.g || (x.c.t === 'Tests, scans and care' ? 'Clinical' : x.c.t === 'Supplements & medications' ? (x.it.med ? 'Medication' : 'Supplements') : x.c.t === 'Exercise & wellbeing' ? 'Workout' : 'Nutrition');
       return { t: x.it.t, s: x.it.s, adj: !!x.it.adj, g: g, ph: rcPhase(x), price: RC_PRICE[x.it.t] || '' }; }); }
     function rcWhyB(it, src, ins, sn) {
-      var b = h('button', { type: 'button', class: 'arRcStkWhy arRcWhyB', 'aria-haspopup': 'dialog', 'aria-label': 'Why: ' + sn + '. More about it' }, h('span', { class: 'arRcStkWl', text: 'Why' }), h('span', { class: 'arRcWhyV' }, h('i', { class: 'arRcStkDot' + (ins ? '' : ' arRcStkG'), 'aria-hidden': 'true' }), h('span', { class: 'arRcStkSrc' + (ins ? '' : ' arRcStkG'), text: sn })));
+      /* a secondary card of two rows ("Adjusted should be another row inside the orange card; orange card should be secondary"): why it is recommended (a press, the small sheet), then its relation to the plan, New action or Action adjusted */
+      var rel = h('div', { class: 'arRcWhyR' }, h('span', { class: 'arRcWhyL', text: 'Relation to your plan' }), h('span', { class: 'arRcWhyRel' + (it.adj ? ' arRcAdj' : ''), text: it.adj ? 'Action adjusted' : 'New action' }));
+      if (!sn) return h('div', { class: 'arRcWhyCard' }, rel);
+      var b = h('button', { type: 'button', class: 'arRcWhyR arRcWhyB', 'aria-haspopup': 'dialog', 'aria-label': 'Why this is recommended: ' + sn + '. More about it' }, h('span', { class: 'arRcWhyL', text: 'Why this is recommended' }), h('span', { class: 'arRcWhyV' }, h('i', { class: 'arRcStkDot' + (ins ? '' : ' arRcStkG'), 'aria-hidden': 'true' }), h('span', { class: 'arRcStkSrc' + (ins ? '' : ' arRcStkG'), text: sn })));
       on(b, 'click', function (e) { e.stopPropagation();
         var srcs = ins && src.sources ? src.sources.map(function (z) { return z[1]; }) : [];
         var rows = [h('p', { class: 'arRcWhyP', text: ins ? src.headline + '.' : 'From ' + sn.charAt(0).toLowerCase() + sn.slice(1) + '.' }), h('p', { class: 'arRcWhyP arRcWhyM', text: ins ? (srcs.length ? 'Drawn from: ' + srcs.join(', ') + '.' : 'From your results.') : it.why })];
         sheetOpen(sn, '', 'Why: ' + sn, ' arRcWhyS', rows, b, true, true); });
-      return b; }
+      return h('div', { class: 'arRcWhyCard' }, b, rel); }
     function rcStkCard(x, i, n, decide) {   /* a recommendation's card, the Stacked deck's and the Arc's */
         var it = x.it, src = (it.from || [])[0], ins = !!src && typeof src !== 'string', sn = !src ? '' : ins ? (src.short || src.headline) : src;
         var no = h('button', { type: 'button', class: 'arRcStkB arRcStkNo', text: 'Maybe later' }), yes = h('button', { type: 'button', class: 'arRcStkB arRcStkYes', text: 'Add to my plan' });
         on(no, 'click', function () { decide(i, false); }); on(yes, 'click', function () { decide(i, true); });
         var pic = rcPic(it); pic.classList.add('arRcStkPic');
         return h('div', { class: 'arRcStkC', role: 'listitem', 'aria-label': it.t + ', ' + (i + 1) + ' of ' + n },
-          h('div', { class: 'arRcStkHd' }, pic, h('div', { class: 'arRcStkTx' }, h('h3', { class: 'arRcStkT', text: it.t }), h('p', { class: 'arRcStkS', text: it.s }), h('span', { class: 'arRcStkNew' + (it.adj ? ' arRcAdj' : ''), text: it.adj ? 'Adjusted' : '+ New' }))),   /* the picture at the card's top right, the New tag under the title ("visual top right; New badge below title") */
+          h('div', { class: 'arRcStkHd' }, pic, h('div', { class: 'arRcStkTx' }, h('h3', { class: 'arRcStkT', text: it.t }), h('p', { class: 'arRcStkS', text: it.s }))),   /* New / Adjusted now the Why card's second row */   /* the picture at the card's top right, the New tag under the title ("visual top right; New badge below title") */
           h('p', { class: 'arRcStkP', text: it.why }),
           h('div', { class: 'arRcStkMeta' }, h('span', { text: rcPhase(x) }), h('b', { text: RC_PRICE[it.t] || 'Included' })),
-          sn ? rcWhyB(it, src, ins, sn) : null,   /* at the card's foot, a light orange badge: Why left, what it rests on right; a press, a small sheet saying more ("put this at the bottom in a orange light badge. Why left, value right. Click on it will open a bottom sheet small description") */
+          rcWhyB(it, src, ins, sn),   /* at the card's foot, a light orange badge: Why left, what it rests on right; a press, a small sheet saying more ("put this at the bottom in a orange light badge. Why left, value right. Click on it will open a bottom sheet small description") */
           h('div', { class: 'arRcStkBtns' }, no, yes));
       }
     function stkFin() { return stkAll.length > 0 && stkAll.every(function (x, i) { return stkDec[i] !== undefined; }); }

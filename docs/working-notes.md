@@ -21822,3 +21822,7 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 
 - "Desktop: max height 512, max width 400": at M and L the Clinical stack's cards are at most 400 wide and 512 tall, centred, hugging their content (no more stretching to the footer); the phone keeps its full-height card.
 - Clinical: +16 between "Your clinical recommendations" and the card ("more gap +16px"): `.arRcClinHd` margin-bottom 12 → 28.
+
+## Clinical card: the Why card, secondary, two rows
+
+- "Adjusted should be another row inside the orange card; orange card should be secondary": the orange badge is now a secondary card (the ink at 6%, 14 round) of two rows, each its label over its value: "Why this is recommended" / the insight (orange dot and name; a press opens the small sheet, as before), and "Relation to your plan" / "New action" (green) or "Action adjusted" (blue). The New / Adjusted badge under the title is gone. A card with no source shows the second row alone (`rcWhyB`, `.arRcWhyCard`).
