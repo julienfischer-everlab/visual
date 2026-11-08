@@ -21801,3 +21801,7 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - "remove arc": the Arc option is gone from Layout; a save holding it opens Stacked.
 - Group cards: Category ("category card style"): Clinical / Lifestyle cards in the categories' card (render size, name, "N recommendations"), Reviewed kept, To review hidden.
 - Clinical card: +8 between its line and the New / Adjusted badge (12 → 20; "+8px gap"). The Why line moves to the card's foot as a light orange badge, Why left, the insight right ("put this at the bottom in a orange light badge"); a press opens a small fitted bottom sheet: the insight's name, its headline, what it's drawn from (`rcWhyB`).
+
+## Doctor note Letter: +1 type, avatar bottom right
+
+- Letter (Tweaks → Doctor note): the note 1px larger (13 / 17 from the letter's 12 / 16; "letter +1px font size"); the avatar no longer overlaps the top: it sits at the card's bottom right, 48, beside the name and "Your Everlab doctor" ("Letter --> Avatar right bottom"). The card a grid: the note across, then the name left and the avatar right.
