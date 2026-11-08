@@ -21716,3 +21716,7 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 ## Recommendations intro: the doctor's note as a speech bubble
 
 - "put the avatar, the name of the doctor, and the sub just above the card ... the card with the note is stacked. On the card, there is a bubble speech notch on the top left": the doctor (avatar 40, name, Your Everlab doctor) sits plain on the ground; the quote is the card under them (24 padding, 24 corners, the card fill), 16 below, with a notch on its top edge pointing up at the avatar's centre (a rotated square clipped to its upper half, so the translucent fill doesn't double). Dark and light checked.
+
+## Clinical recommendations: opening shuffle
+
+- "start by showing the title and then a few squares that just change fast ... every half second, an image. At the end, the card appears, scales up, and becomes the first card" (from the screen recording): on reaching the Clinical stack with nothing decided yet, the title comes in, then a 112 square in the stack's middle shows each card's picture in turn (500 ms apiece, a small pop on each, the first card's picture last); then the square grows into the first card (its words fading in half way), the cards behind and the footer (note, Add to my plan, Maybe later) after it. The answers wait while it plays; reduced motion skips it. The cards' pictures are their icon tiles (the clinical items have no photos).

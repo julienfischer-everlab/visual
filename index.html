@@ -17240,6 +17240,10 @@ html .arSheet.arSheet.arSheet .arRcStkMk.arRcStkMkL { background: #3a3a38; -webk
 /* the Clinical deck in the standard footer: the note above the primary, Maybe later a text button under it (the Health profile's secondary) */
 /* no scroll on the deck ("no scroll!"): the body's foot padding gone (the footer's note is the gap), the title 16 over the stack, the peek room 24 (two cards 12 each) */
 .arSheet .arBody:has(> .arStack.arRcClin) { padding-top: 16px; padding-bottom: 0; } .arSheet .arStack.arRcClin.arGap24 { gap: 12px; } .arSheet .arFoot:has(> .arRcFtNote:not([hidden])) { padding-top: 8px; } .arSheet .arRcClin .arRcDeck:not(.arRcDeckArc) { padding-bottom: 24px; }
+/* the Clinical opening's square (buildRecStack): 112, the cards' picture in it, centred on the stack; the cards hidden till it becomes the first, the footer too */
+.arSheet .arRcDeck { position: relative; } .arSheet .arRcShuf { position: absolute; z-index: 30; left: 50%; top: calc(50% - 12px); width: 112px; height: 112px; margin: -56px 0 0 -56px; border-radius: 30px; overflow: hidden; pointer-events: none; } .arSheet .arRcShuf > .arRcPic.arRcPic { width: 100%; height: 100%; border-radius: inherit; } .arSheet .arRcShuf > .arRcPic svg { width: 44px; height: 44px; }
+.arSheet .arRcShufOn .arRcDeck > .arRcStkC:not(.arRcShufMe) { visibility: hidden; } .arSheet .arRcShufOn .arRcDeck > .arRcStkC.arRcShufMe { z-index: 25; }
+.arSheet .arFoot > :is(.arRcFtNote, .arRcFtSec) { transition: opacity .35s ease; } .arSheet.arRcShufing .arFoot > :not(.arFootGround) { opacity: 0; pointer-events: none; transition: none; }
 .arSheet .arFoot .arRcFtNote { margin: 0 0 6px; text-align: center; font-size: 14px; line-height: 20px; color: oklch(var(--ar-ink) / .56); } .arSheet .arFoot :is(.arRcFtNote, .arRcFtSec)[hidden] { display: none; }
 .arSheet .arFoot .arRcFtSec { appearance: none; -webkit-appearance: none; width: 100%; height: 48px; margin: -6px 0 0; padding: 0 16px; border: 0; border-radius: 9999px; background: none; font: inherit; font-family: var(--ar-font); font-size: 16px; line-height: 18px; font-weight: 570; color: oklch(var(--ar-ink)); cursor: pointer; -webkit-tap-highlight-color: transparent; transition: background-color .15s ease; } @media (hover: hover) { .arSheet .arFoot .arRcFtSec:hover { background: oklch(var(--ar-ink) / .05); } } .arSheet .arFoot .arRcFtSec:active { background: oklch(var(--ar-ink) / .08); }
 /* the swipe's progress ring round the disc, and the pop at the threshold */
@@ -19944,7 +19948,8 @@ window.EvSvcImg = { concierge: 'assets/overview/svc-concierge.webp', treat: 'ass
       var aft = cta.parentNode, fSec = aft.querySelector('.arRcFtSec'), fNote = aft.querySelector('.arRcFtNote');
       if (!fNote) { fNote = h('p', { class: 'arRcFtNote', text: 'You can change any of these later in Plan.' }); aft.insertBefore(fNote, cta); }
       if (!fSec) { fSec = h('button', { type: 'button', class: 'arRcFtSec', text: 'Maybe later' }); aft.insertBefore(fSec, cta.nextSibling); on(fSec, 'click', function () { if (rcStkFt) rcStkFt(false); }); }
-      rcStkFt = function (yes) { if (!deck.isConnected || at >= n) return false; decide(at, yes); return true; };
+      var shufBusy = false;   /* the opening shuffle playing: the answers wait */
+      rcStkFt = function (yes) { if (shufBusy) return true; if (!deck.isConnected || at >= n) return false; decide(at, yes); return true; };
       fNote.hidden = false; foot = fSec; foot.hidden = at >= n;
       var wrap = h('div', { class: 'arRcStkWrap arRcStkFtOn' }, deck);
       var B = rcBuild; rcBuild = null;
@@ -19957,6 +19962,26 @@ window.EvSvcImg = { concierge: 'assets/overview/svc-concierge.webp', treat: 'ass
         }); });
         if (!reducedMotion()) hd.style.animation = 'arEnFade .55s var(--ar-ease) both';
         return h('div', { class: 'arStack arGap24 arRcStack arRcClin' }, hd, wrap); }
+      /* the opening ("start by showing the title and then a few squares that just change fast ... every half second, an image. At the end, the card appears, scales up, and becomes the first card"):
+         under the title a square in the stack's middle shows each card's picture in turn, 500 ms apiece, the first card's last; then the square grows into that card, its words fading in, the cards behind and the footer after */
+      if (at === 0 && n && !reducedMotion()) (function () {
+        var pics = cards.map(function (c) { return c.querySelector('.arRcStkPic'); }).filter(Boolean); if (!pics.length) return;
+        var seq = pics.slice(1).concat(pics[0]), sq = h('div', { class: 'arRcShuf', 'aria-hidden': 'true' }), T0 = 520, STEP = 500;
+        shufBusy = true; wrap.classList.add('arRcShufOn'); root.classList.add('arRcShufing'); deck.appendChild(sq);
+        var live = function () { return wrap.isConnected && root.contains(wrap); };
+        var finish = function () { shufBusy = false; wrap.classList.remove('arRcShufOn'); root.classList.remove('arRcShufing'); if (sq.parentNode) sq.remove(); };
+        seq.forEach(function (p, i) { setTimeout(function () { if (!live()) return finish(); sq.innerHTML = ''; sq.appendChild(p.cloneNode(true));
+          sq.animate(i ? [{ transform: 'scale(.9)', opacity: .4 }, { transform: 'scale(1)', opacity: 1 }] : [{ transform: 'scale(.4)', opacity: 0 }, { transform: 'scale(1)', opacity: 1 }], { duration: i ? 220 : 360, easing: 'cubic-bezier(.2, .9, .3, 1.25)' }); }, T0 + i * STEP); });
+        setTimeout(function () { if (!live()) return finish(); var c0 = cards[0], k = (window.evK ? window.evK(c0) : 1) || 1;
+          c0.classList.add('arRcShufMe'); var r0 = c0.getBoundingClientRect(), rs = sq.getBoundingClientRect();
+          var dx = (rs.left + rs.width / 2 - (r0.left + r0.width / 2)) / k, dy = (rs.top + rs.height / 2 - (r0.top + r0.height / 2)) / k, sx = rs.width / r0.width, sy = rs.height / r0.height;
+          sq.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 160, fill: 'forwards' }); setTimeout(function () { if (sq.parentNode) sq.remove(); }, 170);
+          c0.animate([{ transform: 'translate(' + dx.toFixed(1) + 'px, ' + dy.toFixed(1) + 'px) scale(' + sx.toFixed(3) + ', ' + sy.toFixed(3) + ')', borderRadius: '60px' }, { transform: 'none', borderRadius: '24px' }], { duration: 640, easing: 'cubic-bezier(.2, .9, .25, 1)' });   /* the square scaled up into the card */
+          [].forEach.call(c0.children, function (x) { if (!x.classList.contains('arRcStkMk')) x.animate([{ opacity: 0 }, { opacity: 0, offset: .45 }, { opacity: 1 }], { duration: 640, easing: 'ease' }); });
+          setTimeout(function () { c0.classList.remove('arRcShufMe'); wrap.classList.remove('arRcShufOn'); root.classList.remove('arRcShufing'); shufBusy = false;
+            cards.slice(1, 4).forEach(function (c, j) { c.animate([{ opacity: 0, transform: 'translateY(0) scale(.96)' }, { opacity: getComputedStyle(c).opacity, transform: getComputedStyle(c).transform }], { duration: 360, delay: j * 90, easing: 'cubic-bezier(.2, .9, .25, 1)', fill: 'backwards' }); }); }, 560);   /* then the cards behind it, and the footer */
+        }, T0 + seq.length * STEP);
+      })();
       return enter(h('div', { class: 'arStack arGap24 arRcStack arRcClin' }, hd, wrap), hd, title, [wrap]);   /* no title ("remove title"): its name in the top bar, the stack centred in the page ("centered vertical the stacked cards") */
     }
 
