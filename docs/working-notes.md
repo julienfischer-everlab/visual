@@ -21777,3 +21777,10 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - New master `window.EvCtl`: Buttons (label, icon only, split; Primary / Secondary / Tertiary / Ghost), Inputs (text, search, select, text area), Badges (Outline / Tint / Solid), Chip and Filter chip; availability per the reference (Not available elsewhere). EvSeg now reads the scale (two lines lg 56, md 44 was 48, sm 36 was 40); `.arBtnLg` reads `--ctlLg`.
 - Core components nav: Sizes, Buttons, Inputs, Badges, Chips, Segment tab, Toggle (Buttons no longer "Soon"). Sizes draws the reference's sheet: every component in every size.
 - Fix: `.ldDoc.ntDoc` (display:block) beat `[hidden]`, so the page-style docs (Notes, Toggle, Segment tab, Biomarkers) stacked side by side when switched in one visit; `.ldDoc.ntDoc[hidden]` hides them.
+
+## Doctor card spacing, Letter tweak, Stacked group cards, copy
+
+- Doctor card: sides +8 (32), +8 above the doctor's name.
+- Tweaks → Async report → Doctor note: Card (default) / Letter ("Use mono font same the letter on the membership experience, aligned left. Tweak this version"): the note in `--ar-font-mono` at the letter's size (`--ltrFs` / `--ltrLh`, 12 / 16), not italic, left-aligned, the name left too. Id `stArDrN` (in the saved keys).
+- Tweaks → Group cards: Stacked ("Stacked card: content left, visual right"): one card a row, the name and the big count at the left, the visual 64 at the right (centred on the card; under the edit disc once reviewed).
+- Copy: "Here are your recommendations" (was "Here are the"); "You can change your mind later in Plan." (was "You can change any of these later in Plan.", every place it showed).
