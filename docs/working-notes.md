@@ -21656,3 +21656,8 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - "transition sphere between this and next screen should be smoother" (Sphere intro → What to expect as Chart): the grid morph now starts from the ball as it stood on the welcome (`grid.fR / fCy` from the last frame, eased in and out over 1.1 s, as the park already did) instead of snapping to the new size and place on the first frame. The cloud that does not join the grid fades over the whole morph (was gone two thirds in).
 - Biomarker item columns, "chart 80 max width (L), aligned vertically; 96 for M": trend 96 wide at M, 80 at L, in fixed columns (S 140 + 104, M 120 / 120 / 96 / 104, L 140 / 140 / 80 / 96 / 128), so every row's trend stands at the same x. Strokes keep 2px (`non-scaling-stroke`).
 - "badge in a frame 128px, left align": at L the status sits in a 128 column, left-aligned (both badges at the same x).
+
+## Sphere hero into the chart at the page's pace; recommendation cards' visual
+
+- "the sphere still moving up too fast, should be the same speed as the other elements": the grid morph now starts 300 ms after the tap (as the leaving page clears; `grid({ delay: 300 })`), its lift runs 900 ms easeInOutQuint (was 960 ms ease-out cubic from the tap, fastest at the start), and the morph takes 1.9 s (was 1.7). Measured on the Sphere hero: the ball's top stays put to ~400 ms, then rises with the next page (380 → 284 by ~1 s).
+- "reduce visual by 16px": the recommendations' Row cards (Clinical / Lifestyle, `.arRcGrpRow`) carry a 48 visual (was 64).
