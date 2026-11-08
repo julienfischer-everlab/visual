@@ -21761,3 +21761,5 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - EvCt: every full modal (Async report, Onboarding consult, Membership reveal, Send a gift, Suggestion, Doctor's suggestion, Personal recommendation, Past records) has its own Container pick, default 2xs; a pick sets `data-pg-ct`/`--ctPg` on the open `.aqWrap.aqFull`, which re-points its `--ct2xs` column (M and up). Screens with no container yet (sheets, More, the chat) still name themselves, "· its own width", the segments disabled.
 
 - Clinical deck footer: "You can change any of these later in Plan." sits 12px higher (24 above Later / Add to plan, was 12).
+
+- Review rows: the price on the title's line (17 regular, the title's size; 16 in Grid), the + alone at the right on Later rows; Included 2px smaller (15); no divider above Total today.
