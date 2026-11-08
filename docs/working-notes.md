@@ -21837,3 +21837,9 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 
 - Tweaks → Recommendation summary → Medication card (Off default / On; "ON add the card below with an appropriate img"): a third card under Clinical and Lifestyle, "Medication" / "What your doctor prescribes or adjusts" / the count of the medication items (the Supplements & medications kind's when none is flagged a medication), the pill bottle render (the Supplements & medications category's, `RC_IMG.treat`). Id `stArMedC`, in the saved keys; shown only on the summary.
 - Doctor note, Letter: padding top +4 (28), bottom +2 (26).
+
+## Clinical card: Why / Type rows, above the price, 14px text, 64 visual, blur while swiping
+
+- The secondary card's rows on one line each, short labels ("each item shouldn't stack, one line; use smaller label: Why, Type"): Why · the insight (ellipsis if long), Type · New action / Action adjusted. No divider between them; the card sits above the price row.
+- The card's description 14 / 20 (was 17 / 25). The visual 64 (was 80), its icon 28.
+- Swiping a card blurs its content with the distance, 8px at the threshold (`--sb` on the card, `filter: blur()` on its children but the progress cue `.arRcStkMk`); cleared when it springs back or the stack is reset.
