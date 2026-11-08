@@ -21817,3 +21817,7 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 ## Letter footer +8
 
 - Doctor note, Letter: the footer (the name, "Your Everlab doctor", the avatar) 8 further from the note ("footer margin top 8px"): the card grid's row gap 20 → 28.
+
+## Clinical card on desktop: 400 × 512 at most
+
+- "Desktop: max height 512, max width 400": at M and L the Clinical stack's cards are at most 400 wide and 512 tall, centred, hugging their content (no more stretching to the footer); the phone keeps its full-height card.
