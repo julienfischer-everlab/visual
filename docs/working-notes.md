@@ -21794,3 +21794,10 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 ## Flow panel: the recommendations by phase
 
 - "We need to breakdown the flow by phases": under "Here's what we recommend" in the Async report's Flow panel, five rows, indented and not numbered: Doctor note, Recommendation summary, Clinical recommendation, Lifestyle recommendation, Review recommendations (when Layout is Stacked, the phased flow). The phase up is lit; a click goes straight there (`inst.recGo(ph)`: dr / intro / clin / life / rev; the review fills anything undecided as added so it has a plan to show). `steps()` gives `phased` and `recPh`; the panel's rows take a `sub` flag (`.hpFlSub`).
+
+## Categories keeps the phases; Arc removed; Category group cards; Clinical card Why badge
+
+- "Categories tweak should keep the sub step": Layout Categories now runs the phased flow too (Doctor note, summary, Clinical, Lifestyle, Review; `rcPhased()` true for cats). Its summary is the category cards ("I'd like this categories card styles"): the four kinds, render on top, name, how many (Tests, scans and care 3 = Clinical; the other three 10 = Lifestyle). Flow panel phases and the Tweaks phase filter follow (`introC`: no Group cards row on Categories' summary).
+- "remove arc": the Arc option is gone from Layout; a save holding it opens Stacked.
+- Group cards: Category ("category card style"): Clinical / Lifestyle cards in the categories' card (render size, name, "N recommendations"), Reviewed kept, To review hidden.
+- Clinical card: +8 between its line and the New / Adjusted badge (12 → 20; "+8px gap"). The Why line moves to the card's foot as a light orange badge, Why left, the insight right ("put this at the bottom in a orange light badge"); a press opens a small fitted bottom sheet: the insight's name, its headline, what it's drawn from (`rcWhyB`).
