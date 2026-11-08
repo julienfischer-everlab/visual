@@ -101,6 +101,7 @@ The page menu `#versionSel` has Documentation (`'doc'`) and Design system (`'ds'
 | Range colours, status pills | `--rg*`, `--mb*`, `.st`, `.arLfPill`, `.tdTag` | references/tokens-components.md |
 | Type, spacing, radius tokens | `--hdr*`, `--ct*`, `--evPh*`, `--tg*` | references/tokens-components.md |
 | Cards | `--ar-card-bg`, `.sgmCard` | references/tokens-components.md |
+| Biomarker item (a reading in a list: name 16, value + date 14, range bar, status pill; Design system > Biomarker item) | `window.EvBio.row`, `.mbrow`, `--bioT/--bioTLh/--bioS/--bioSLh`, `biDoc` | references/tokens-components.md |
 | Buttons | `.arBtn.arBtnPrimary.arBtnLg`, `.svBtn`, `.sgmAsk` | references/tokens-components.md |
 | Vertical timeline | `window.EvTl` | references/tokens-components.md |
 | The Plan module (tiles, Sub pages, sheets, Activity session) | `#dPlan`, `window._plan`, `--plATileBg`, `--plPTileBg`, `detSoloShow` | references/tokens-components.md |

@@ -21629,3 +21629,12 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - The search fills the row and is always open. The record field becomes a pill inside it at the right: its label alone ("All records", or the chosen record's name, cut at half the row) and a small chevron. A tap opens the same Filter sheet as before.
 - The pill's width is kept as `--msChipW` (ResizeObserver), so typed text and the search's clear button stop before it.
 - Split stays the default; the desk's search is unchanged.
+
+## Biomarker item master; Search first polish; records by year
+
+- "where is the search version": Search first is now the default of Tweaks → Biomarkers tab → Search focus.
+- "Biomarker item must be part of the design system", "title of marker 16px", "and sub 14": new master `window.EvBio.row({ name, st, val, sub, attrs })`. The Insights list builds every row with it; its type lives in `--bioT` 16/22 and `--bioS` 14/20 (were 14 and 12). Plan's "What this moves" rows read the same tokens (were 15/13). The row's range bar and pill rules now also apply inside `.evBio`.
+- New Design system tab, Biomarker item (`#biomarker-item`, `biDoc`): the four states drawn by `EvBio.row`, then the anatomy (numbers read from the tokens) and where it is used.
+- Search first, "full rounded and bg secondary, no border": the field is 999 round on rgba(255,255,255,.08) (focused .11), no ring; the chip a step up (.1).
+- "no chevron but cross; click resets, the rest opens the sheet": with a record chosen, the chip shows the cross (`#mRecClear`, the existing reset) and no chevron.
+- "break the list with year group": the Filter sheet's Records list puts a year heading (`.mRecYr`) where the year turns; All records and the ranges stay above, ungrouped. Selection skips the headings.

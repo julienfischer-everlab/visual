@@ -1540,9 +1540,10 @@
   .mrecs .gd{font-size:12.5px;color:#8b8b86;line-height:1.55;margin-bottom:4px;}
   .mbrow{
     display:grid;grid-template-columns:1fr auto;gap:2px 12px;align-items:center;   /* 6 -> 2 between the name and the value ("reduce gap by 4px") */
-    padding:16px 0;border-bottom:1px solid #1c1c1b;font-size:14px;color:#e4e4e0;   /* 14 -> 16: "add padding on the row" */
+    padding:16px 0;border-bottom:1px solid #1c1c1b;font-size:var(--bioT);line-height:var(--bioTLh);color:#e4e4e0;   /* 14 -> 16: "add padding on the row" */
   }
-  .mbrow .g{color:#8b8b86;font-size:12px;}   /* the sub 12 under the 14 title ("14px title, 12px sub") */
+  .mbrow .g{color:#8b8b86;font-size:var(--bioS);line-height:var(--bioSLh);}   /* Design system -> Biomarker item (window.EvBio): the title 16, the sub 14 ("increase the title of marker to 16px", "and sub 14"; were 14 and 12) */
+  :root{--bioT:16px;--bioTLh:22px;--bioS:14px;--bioSLh:20px;}   /* the Biomarker item's type, one place: every biomarker row reads these (Insights list, Plan "What this moves", the doc) */
   /* rows in a group: the last carries no rule (it used to be an inline style
      on the last row, which a filter that hides rows could not follow) */
   .mgrp .mbrow:last-child{border-bottom:none;}
@@ -1770,18 +1771,18 @@
   html.srchFull body.light .msWrap.searchOn .msRecWrap.cleared .msRecDot{background:#000;}
   .msWrap:not(.searchOn) .msClear{display:none !important;}
   /* Search focus, Search first (Tweaks -> Biomarkers tab, html.srchChip; "the search is the primary action, the Records is presented as a chip on the right inside the search; default All records, on click open the bottom sheet select"): the phone's search fills the row and is always open; the record field a pill laid inside it at the right, its label alone (the record's name once chosen, cut short past half the row), a small chevron; a tap opens the same filter sheet */
-  html.srchChip #mSearch .msRow .msBox{flex:1 1 100%;min-width:0;gap:9px;padding-left:16px;padding-right:calc(var(--msChipW, 124px) + 18px);justify-content:flex-start;}
+  html.srchChip #mSearch .msRow .msBox{flex:1 1 100%;min-width:0;gap:9px;padding-left:16px;border-radius:999px;background:rgba(255,255,255,.08);box-shadow:none;padding-right:calc(var(--msChipW, 124px) + 18px);justify-content:flex-start;}
   html.srchChip #mSearch .msRow .msBox input{flex:1 1 auto;width:auto;opacity:1;pointer-events:auto;}
   html.srchChip #mSearch .msRecWrap{position:absolute;right:10px;top:50%;transform:translateY(-50%);z-index:2;flex:none;width:auto;max-width:calc(50% - 10px);transition:none;}
-  html.srchChip #mSearch .msRec{width:auto;max-width:100%;height:36px;padding:0 10px 0 14px;gap:6px;border:0;border-radius:999px;background:rgba(255,255,255,.08);box-shadow:none;}
+  html.srchChip #mSearch.focus .msRow .msBox{background:rgba(255,255,255,.11);box-shadow:none;} html.srchChip body.light #mSearch .msRow .msBox{background:rgba(46,31,26,.06);} html.srchChip body.light #mSearch.focus .msRow .msBox{background:rgba(46,31,26,.09);}   /* the field fully round on the secondary ground, no edge ("search first full rounded and bg secondary, no border") */
+  html.srchChip #mSearch .msRec{width:auto;max-width:100%;height:36px;padding:0 10px 0 14px;gap:6px;border:0;border-radius:999px;background:rgba(255,255,255,.1);box-shadow:none;}
   html.srchChip #mSearch .msRec:hover, html.srchChip #mSearch .msRec[aria-expanded="true"]{background:rgba(255,255,255,.12);}
   html.srchChip #mSearch .msRecWrap.cleared .msRec{padding-right:10px;background:rgba(255,255,255,.16);}
   html.srchChip #mSearch .msRec .t{flex:0 1 auto;min-width:0;}
   html.srchChip #mSearch .msRec b{font-size:14px;line-height:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   html.srchChip #mSearch .msRec :is(i, .msRecIc, .msRecDot, .msRecNew){display:none !important;}
-  html.srchChip #mSearch .msRecWrap.cleared .msRecChev{display:block;}
   html.srchChip #mSearch .msRecChev{flex:none;width:14px;height:14px;}
-  html.srchChip #mSearch .msRecClear{display:none !important;}
+  html.srchChip #mSearch .msRecClear{display:none;} html.srchChip #mSearch .msRecWrap.cleared .msRecClear{display:flex;right:8px;width:22px;height:22px;background:rgba(255,255,255,.14);} html.srchChip #mSearch .msRecWrap.cleared .msRec{padding-right:38px;} html.srchChip body.light #mSearch .msRecWrap.cleared .msRecClear{background:rgba(46,31,26,.12);}   /* a record chosen: no chevron, a cross at the chip's right that resets it; the rest of the chip opens the sheet ("no chevron but cross. if click reset, if click the rest of the field open bottom sheet select") */
   html.srchChip body.light #mSearch .msRec{background:rgba(46,31,26,.06);}
   html.srchChip body.light #mSearch .msRec:hover, html.srchChip body.light #mSearch .msRec[aria-expanded="true"]{background:rgba(46,31,26,.1);}
   html.srchChip body.light #mSearch .msRecWrap.cleared .msRec{background:rgba(46,31,26,.12);}
@@ -1826,6 +1827,7 @@
   }
   /* a hairline between rows, drawn by the row above so the selected plate has
      nothing crossing it */
+  .mRecYr{padding:20px 12px 6px;font-size:13px;line-height:18px;font-weight:500;letter-spacing:.02em;color:rgba(236,236,234,.56);font-variant-numeric:tabular-nums;} body.light .mRecYr{color:rgba(0,0,0,.56);}   /* the year over its records ("break the list with year group") */
   .mRecOpt + .mRecOpt::before{
     content:"";position:absolute;left:12px;right:12px;top:-1px;height:1px;
     background:rgba(236,236,234,.09);
@@ -3315,20 +3317,20 @@
   @keyframes evBmTurn{from{--hpBm:0deg;}to{--hpBm:360deg;}}
   @keyframes evBmFade{0%{opacity:0;}8%{opacity:1;}86%{opacity:1;}100%{opacity:0;}}
   @media (prefers-reduced-motion: reduce){ .evBeam.run{animation-duration:1.2s;} .evBeam.run .evBm{animation:none;} }
-  #phone .rng{position:relative;display:flex;gap:4px;align-items:center;padding-top:9px;justify-self:end;}
-  #phone .rng i{height:4px;border-radius:2px;font-style:normal;display:block;}
-  #phone .rng .s1{width:34px;background:var(--rgOpt);}
-  #phone .rng .s2{width:26px;background:var(--rgSub);}
-  #phone .rng .s3{width:26px;background:var(--rgOut);}
-  #phone .rng .mk{
+  :is(#phone, .evBio) .rng{position:relative;display:flex;gap:4px;align-items:center;padding-top:9px;justify-self:end;}
+  :is(#phone, .evBio) .rng i{height:4px;border-radius:2px;font-style:normal;display:block;}
+  :is(#phone, .evBio) .rng .s1{width:34px;background:var(--rgOpt);}
+  :is(#phone, .evBio) .rng .s2{width:26px;background:var(--rgSub);}
+  :is(#phone, .evBio) .rng .s3{width:26px;background:var(--rgOut);}
+  :is(#phone, .evBio) .rng .mk{
     position:absolute;top:-2px;left:1px;width:0;height:0;border:4px solid transparent;
     border-top:6px solid #ececec;background:none;border-radius:0;
   }
-  #phone .st{border-radius:8px;padding:5px 11px;font-size:12px;justify-self:end;}
-  #phone .st.ok{background:#17251a;color:#9fc98f;}
-  #phone .st.sub{background:#272113;color:#f2c744;}
-  #phone .st.out{background:#2b1416;color:#fe8087;}
-  #phone .st.other{background:#1e1e1d;color:#9a9a96;}
+  :is(#phone, .evBio) .st{border-radius:8px;padding:5px 11px;font-size:12px;justify-self:end;}
+  :is(#phone, .evBio) .st.ok{background:#17251a;color:#9fc98f;}
+  :is(#phone, .evBio) .st.sub{background:#272113;color:#f2c744;}
+  :is(#phone, .evBio) .st.out{background:#2b1416;color:#fe8087;}
+  :is(#phone, .evBio) .st.other{background:#1e1e1d;color:#9a9a96;}
 
   /* ---- Spatial: dimensional cover-flow of living organ cards ---- */
   #spatial{
@@ -7804,6 +7806,7 @@
   .ldDone{position:absolute;inset:0;z-index:41;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:var(--sBg);opacity:0;transition:opacity .3s ease;} .ldDone.on{opacity:1;} .ldDone i{display:grid;place-items:center;width:56px;height:56px;border-radius:50%;background:#24a148;color:#fff;font-style:normal;font-size:26px;} .ldDone b{font-size:22px;font-weight:500;} .ldDone span{color:var(--sMut);font-size:14px;}
   /* Design system -> Notes (ntDoc) */
   .ldDoc.ntDoc{display:block;overflow:auto;background:var(--ldBg);color:var(--ldFg);}
+.biSec h2{margin:12px 0 12px;font-size:18px;line-height:24px;font-weight:600;} .biPrev{max-width:393px;padding:4px 16px;border-radius:20px;background:#000;box-shadow:inset 0 0 0 1px var(--ldLine, rgba(255,255,255,.08));} body.light .biPrev{background:#fff;} .biTbl{width:100%;border-collapse:collapse;font-size:14px;line-height:20px;} .biTbl th{width:120px;padding:10px 12px 10px 0;text-align:left;font-weight:500;vertical-align:top;} .biTbl td{padding:10px 0;color:var(--ldMut);} .biTbl tr + tr :is(th, td){border-top:1px solid var(--ldLine, rgba(255,255,255,.08));} .biUse{margin:0;padding-left:18px;font-size:14px;line-height:22px;color:var(--ldMut);} .biDoc code{font-size:13px;}   /* Design system -> Biomarker item */
   .ntIn{max-width:720px;margin:0 auto;padding:48px 24px 96px;display:flex;flex-direction:column;gap:20px;}
   .ntHd h1{margin:0;font-size:32px;line-height:38px;font-weight:600;letter-spacing:-.01em;} .ntHd p{margin:8px 0 0;font-size:15px;line-height:22px;color:var(--ldMut);}
   .ntAdd{display:flex;gap:10px;align-items:flex-end;padding:12px;border-radius:18px;background:var(--ldChip);} .ntAdd textarea{flex:1;min-width:0;resize:vertical;min-height:44px;max-height:240px;padding:10px 12px;border:0;border-radius:12px;background:transparent;color:inherit;font:inherit;font-size:16px;line-height:22px;outline:none;}
@@ -8713,9 +8716,9 @@
   #dPlan .plPStep .plRowT b{font-size:14px;}
   #dPlan button.plPStep{cursor:pointer;}
   /* What this moves, the Activity plan's rows on this page */
-  #dPlan .plPSc .mbrow{grid-template-columns:minmax(0, 1fr) auto;padding:16px 0;border-bottom:1px solid var(--plPHair);font-size:15px;line-height:20px;color:var(--plInk);}
+  #dPlan .plPSc .mbrow{grid-template-columns:minmax(0, 1fr) auto;padding:16px 0;border-bottom:1px solid var(--plPHair);font-size:var(--bioT);line-height:var(--bioTLh);color:var(--plInk);}
   #dPlan .plPSc .mbrow:last-child{border-bottom:0;}
-  #dPlan .plPSc .mbrow .g{display:flex;flex-wrap:wrap;align-items:center;gap:0 8px;min-width:0;font-size:13px;line-height:18px;color:var(--plMut);}
+  #dPlan .plPSc .mbrow .g{display:flex;flex-wrap:wrap;align-items:center;gap:0 8px;min-width:0;font-size:var(--bioS);line-height:var(--bioSLh);color:var(--plMut);}
   #dPlan .plPSc .plASep{font-style:normal;color:var(--plInk);opacity:.3;}
   #dPlan .plPSc .rng{justify-self:end;} #dPlan .plPSc .rng .mk{border-top-color:var(--plInk);}
   #dPlan .plPSc .st{justify-self:end;font-size:12px;line-height:15px;} #dPlan .plPSc .st.ok{background:var(--plPOptBg);color:var(--plPOptFg);} #dPlan .plPSc .st.sub{background:var(--plPSubBg);color:var(--plPSubFg);} #dPlan .plPSc .st.out{background:var(--plPOutBg);color:var(--plPOutFg);}   /* the Nutrition plan's tags */
@@ -8808,9 +8811,9 @@
   #dPlan .plA .plADay .plRow{padding:10px 0;border-bottom:0;}
   #dPlan .plA .plARest{cursor:default;}
   #dPlan .plACard{margin-top:12px;padding:0 16px;border-radius:16px;background:var(--plCard);transition:background-color .3s ease;}
-  #dPlan .plA .mbrow{grid-template-columns:minmax(0, 1fr) auto;padding:16px 0;border-bottom:1px solid var(--plAHair);font-size:15px;line-height:20px;color:var(--plInk);}
+  #dPlan .plA .mbrow{grid-template-columns:minmax(0, 1fr) auto;padding:16px 0;border-bottom:1px solid var(--plAHair);font-size:var(--bioT);line-height:var(--bioTLh);color:var(--plInk);}
   #dPlan .plA .mbrow:last-child{border-bottom:0;}
-  #dPlan .plA .mbrow .g{display:flex;flex-wrap:wrap;align-items:center;gap:0 8px;min-width:0;font-size:13px;line-height:18px;color:var(--plMut);}
+  #dPlan .plA .mbrow .g{display:flex;flex-wrap:wrap;align-items:center;gap:0 8px;min-width:0;font-size:var(--bioS);line-height:var(--bioSLh);color:var(--plMut);}
   #dPlan .plA .plASep{font-style:normal;color:var(--plInk);opacity:.3;}   /* the faint rule between the reading and its date */
   #dPlan .plA .rng{justify-self:end;} #dPlan .plA .rng .mk{border-top-color:var(--plInk);}
   #dPlan .plA .st{justify-self:end;font-size:12px;line-height:15px;} #dPlan .plA .st.ok{background:var(--plAOptBg);color:var(--plAOptFg);}
@@ -8891,9 +8894,9 @@
   #dPlan .plNSupI{flex:none;display:grid;place-items:center;width:80px;height:80px;overflow:hidden;border-radius:var(--plTileR80);background:#f3efed;}   /* the products' warm grey, in both sheets (their photos' own ground) */
   #dPlan .plNSupI img{display:block;width:100%;height:100%;object-fit:cover;}
   #dPlan .plN .plNSup .plMedN{gap:8px;margin-bottom:2px;} #dPlan .plN .plNSup .plMedN b{margin:0;}
-  #dPlan .plN .mbrow{grid-template-columns:minmax(0, 1fr) auto;padding:16px 0;border-bottom:1px solid var(--plNHair);font-size:15px;line-height:20px;color:var(--plInk);}
+  #dPlan .plN .mbrow{grid-template-columns:minmax(0, 1fr) auto;padding:16px 0;border-bottom:1px solid var(--plNHair);font-size:var(--bioT);line-height:var(--bioTLh);color:var(--plInk);}
   #dPlan .plN .mbrow:last-child{border-bottom:0;}
-  #dPlan .plN .mbrow .g{display:flex;flex-wrap:wrap;align-items:center;gap:0 6px;min-width:0;font-size:13px;line-height:18px;color:var(--plMut);}
+  #dPlan .plN .mbrow .g{display:flex;flex-wrap:wrap;align-items:center;gap:0 6px;min-width:0;font-size:var(--bioS);line-height:var(--bioSLh);color:var(--plMut);}
   #dPlan .plN .rng{justify-self:end;} #dPlan .plN .rng .mk{border-top-color:var(--plInk);}
   #dPlan .plN .st{justify-self:end;font-size:12px;line-height:15px;} #dPlan .plN .st.ok{background:var(--plNOptBg);color:var(--plNOptFg);} #dPlan .plN .st.sub{background:var(--plNSubBg);color:var(--plNSubFg);} #dPlan .plN .st.out{background:var(--plNOutBg);color:var(--plNOutFg);}
   /* M: the photo under the title, then one card split in two: the numbers two by two at the left, Key actions at the right */
@@ -11804,10 +11807,10 @@
   body.light .mrecs .gd{color:rgba(0,0,0,.56);}
   body.light .mbrow{color:#000;border-bottom-color:#ece4d4;}
   body.light .mbrow .g{color:rgba(0,0,0,.56);}
-  body.light #phone .st.ok{background:#e5efdb;color:#55763f;}
-  body.light #phone .st.sub{background:#f3ead0;color:#8f7327;}
-  body.light #phone .st.out{background:#f7dcda;color:#a33c39;}
-  body.light #phone .st.other{background:#eae4d6;color:rgba(0,0,0,.56);}
+  body.light :is(#phone, .evBio) .st.ok{background:#e5efdb;color:#55763f;}
+  body.light :is(#phone, .evBio) .st.sub{background:#f3ead0;color:#8f7327;}
+  body.light :is(#phone, .evBio) .st.out{background:#f7dcda;color:#a33c39;}
+  body.light :is(#phone, .evBio) .st.other{background:#eae4d6;color:rgba(0,0,0,.56);}
   body.light .morgan{background:#f3e2d8 !important;}
   /* card flip */
   body.light .spCard{background:rgba(255,252,246,.55);}
@@ -13568,9 +13571,9 @@
         <div class="tkRow">
           <span class="lbl">Search focus</span>
           <select id="stSrchFoc" class="tkSegSel" aria-label="What the record field does while the search is open">
-            <option value="split" selected>Split</option>
+            <option value="split">Split</option>
             <option value="full">Full width</option>
-            <option value="chip">Search first</option>
+            <option value="chip" selected>Search first</option>
           </select>
         </div>
         <div class="tkRow">
@@ -49283,10 +49286,10 @@ hairline({
       const doc = document.getElementById('docPage');
       const docHide = () => { if (!document.body.classList.contains('docOn')) return; document.body.classList.remove('docOn', 'docCc', 'docLd'); delete document.body.dataset.docSet; if (versionSel && (versionSel.value === 'doc' || versionSel.value === 'ds')) versionSel.value = String(version); };
       /* the documents, a tab each, each in its own frame kept as it was left: the Progress timeline's playground, and Concierge's components in each of their states (the chat page's gallery without its bar, in the prototype's theme) */
-      const DOCS = { pt: { src: 'components/progress-timeline/demo.html', t: 'Service timeline', hash: '#documentation' }, cc: { src: 'concierge.html#doc-components', t: 'Concierge components', hash: '#concierge-components' }, ld: { el: () => ldDoc(), t: 'Loading states', hash: '#loading-states' }, nt: { el: () => ntDoc(), t: 'Notes', hash: '#notes' }, hp: { el: () => hcDoc(), t: 'Membership onboarding', hash: '#health-profile-card' }, gf: { el: () => gfDoc(), t: 'Gifting', hash: '#gifting' }, gl: { el: () => glDoc(), t: 'General layout', hash: '#general-layout' }, sf: { el: () => sfDoc(), t: 'Step flow', hash: '#step-flow' }, md: { el: () => mdDoc(), t: 'Modals', hash: '#modals' }, bb: { el: () => bbDoc(), t: 'Chat bubbles', hash: '#chat-bubbles' }, nv: { el: () => nvDoc(), t: 'Main menu', hash: '#main-menu' } };   // gl: the layout every page shares, the source of truth ("create a documentation for general layout; start by header")   // hp: the card's every state, from the renderer the Overview uses   // ld: drawn here, with the module the pages use (EvLoad), not a frame
+      const DOCS = { pt: { src: 'components/progress-timeline/demo.html', t: 'Service timeline', hash: '#documentation' }, cc: { src: 'concierge.html#doc-components', t: 'Concierge components', hash: '#concierge-components' }, ld: { el: () => ldDoc(), t: 'Loading states', hash: '#loading-states' }, nt: { el: () => ntDoc(), t: 'Notes', hash: '#notes' }, bi: { el: () => biDoc(), t: 'Biomarker item', hash: '#biomarker-item' }, hp: { el: () => hcDoc(), t: 'Membership onboarding', hash: '#health-profile-card' }, gf: { el: () => gfDoc(), t: 'Gifting', hash: '#gifting' }, gl: { el: () => glDoc(), t: 'General layout', hash: '#general-layout' }, sf: { el: () => sfDoc(), t: 'Step flow', hash: '#step-flow' }, md: { el: () => mdDoc(), t: 'Modals', hash: '#modals' }, bb: { el: () => bbDoc(), t: 'Chat bubbles', hash: '#chat-bubbles' }, nv: { el: () => nvDoc(), t: 'Main menu', hash: '#main-menu' } };   // gl: the layout every page shares, the source of truth ("create a documentation for general layout; start by header")   // hp: the card's every state, from the renderer the Overview uses   // ld: drawn here, with the module the pages use (EvLoad), not a frame
       let docCur = 'pt';
       /* two pages from the one shell ("put General layout / Modals / Chat bubbles / Navigation / Loading states in another page called Design system"): Documentation keeps the product's own (Service timeline, Concierge components, Membership onboarding), Design system the shared patterns; each page its own tabs, and the one last open on it */
-      const DSET = ['gl', 'sf', 'md', 'bb', 'nv', 'ld', 'nt'], DORD = ['pt', 'cc', 'hp', 'gf', 'gl', 'sf', 'md', 'bb', 'nv', 'ld', 'nt'], setOf = k => DSET.includes(k) ? 'ds' : 'doc', docLast = { doc: 'pt', ds: 'gl' };
+      const DSET = ['gl', 'sf', 'md', 'bb', 'bi', 'nv', 'ld', 'nt'], DORD = ['pt', 'cc', 'hp', 'gf', 'gl', 'sf', 'md', 'bb', 'bi', 'nv', 'ld', 'nt'], setOf = k => DSET.includes(k) ? 'ds' : 'doc', docLast = { doc: 'pt', ds: 'gl' };
       const docTheme = () => { const f = doc && doc.querySelector('iframe[data-doc="cc"]'), t = document.getElementById('themeSel'); try { const r = f && f.contentDocument && f.contentDocument.documentElement; if (!r) return; const v = t ? t.value : ''; if (v === 'dark' || v === 'light') r.dataset.theme = v; else delete r.dataset.theme; } catch (e){} };
       { const t = document.getElementById('themeSel'); if (t) t.addEventListener('change', docTheme); }
       /* Documentation -> Loading states: a small sidebar with the patterns and their notes ("allocate a small side bar for documentation support"), and the pattern itself, live, at the prototype's breakpoint
@@ -49596,6 +49599,25 @@ hairline({
         setBp(); boardDraw(); ctlDraw(); draw(); };
       /* Design system -> Notes ("in the design system add a place where we can add notes, e.g. the next things to build"): one shared list, in the artifact's store (collection devNotes) for everyone who opens
          the prototype, this browser's own store otherwise. Add a note (Enter adds, Shift+Enter a new line), tick it done, delete it; To do / Done / All; newest first, each its author (when the viewer is known) and its date */
+      /* Design system -> Biomarker item ("Biomarker item must be part of the design system"): the row as the Insights list draws it, each status, by the same builder (window.EvBio.row), and its numbers from the same tokens (--bioT / --bioS) */
+      const biDoc = () => {
+        const el = document.createElement('div'); el.className = 'ldDoc ntDoc biDoc';
+        const dark = () => el.classList.toggle('evDark', !document.body.classList.contains('light')); dark(); new MutationObserver(dark).observe(document.body, { attributes: true, attributeFilter: ['class'] });
+        const rows = '';
+        const cs = getComputedStyle(document.documentElement), tk = n => (cs.getPropertyValue(n) || '').trim();
+        el.innerHTML = '<div class="ntIn"><header class="ntHd"><h1>Biomarker item</h1><p>One reading in a list: the biomarker, its value and the date of the test, where it sits on its range, and its status. Drawn by <code>window.EvBio.row</code>; its type from <code>--bioT</code> and <code>--bioS</code>, so a change here changes every list.</p></header>' +
+          '<section class="biSec"><h2>States</h2><div class="evBio biPrev">' + rows + '</div></section>' +
+          '<section class="biSec"><h2>Anatomy</h2><table class="biTbl"><tbody>' +
+          '<tr><th>Title</th><td>The biomarker\u2019s name, ' + tk('--bioT') + ' / ' + tk('--bioTLh') + ', regular, primary ink</td></tr>' +
+          '<tr><th>Sub</th><td>The reading and its test\u2019s date (value &nbsp;|&nbsp; Mon YYYY), ' + tk('--bioS') + ' / ' + tk('--bioSLh') + ', secondary ink</td></tr>' +
+          '<tr><th>Range bar</th><td>Three segments, optimal 34, suboptimal 26, out of range 26 wide, 4 tall, 4 apart; a 6px marker where the reading sits</td></tr>' +
+          '<tr><th>Status</th><td>A pill under the bar: Optimal, Suboptimal, Out of range, Unclassified; 12px, 8 round, 5 / 11 padding</td></tr>' +
+          '<tr><th>Row</th><td>16 above and below, a hairline between rows (none under the last of a group); the whole row opens the biomarker\u2019s detail sheet</td></tr>' +
+          '</tbody></table></section>' +
+          '<section class="biSec"><h2>Used in</h2><ul class="biUse"><li>Insights \u2192 Biomarkers: every row of the list (phone)</li><li>Plan \u2192 What this moves: the rows under a goal (type only)</li></ul></section></div>';
+        const fill = () => { const B = window.EvBio, pv = el.querySelector('.biPrev'); if (!B) return setTimeout(fill, 150); pv.innerHTML = [['Serum bilirubin', 'ok', '8.0 umol/L'], ['Gamma-glutamyl transferase (GGT)', 'sub', '54 U/L'], ['Ferritin', 'out', '412 ug/L'], ['Lipoprotein(a)', 'other', '\u2014']].map(r => B.row({ name: r[0], st: r[1], val: r[2], sub: r[2] + ' &nbsp;|&nbsp; Aug 2026' })).join(''); }; fill();   /* the master's rows, once the master is up (a doc opened by its link draws before the Insights script runs) */
+        return el;
+      };
       const ntDoc = () => {
         const el = document.createElement('div'); el.className = 'ldDoc ntDoc';
         const dark = () => el.classList.toggle('evDark', !document.body.classList.contains('light')); dark(); new MutationObserver(dark).observe(document.body, { attributes: true, attributeFilter: ['class'] });
@@ -50395,12 +50417,12 @@ hairline({
         if (!f){ f = document.createElement('iframe'); f.dataset.doc = k; if (k === 'pt') f.id = 'docFrame'; f.src = DOCS[k].src; f.title = 'Documentation: ' + DOCS[k].t; if (k === 'cc') f.addEventListener('load', docTheme); if (k === 'pt') f.addEventListener('load', () => ptPanel(f)); doc.appendChild(f); }
         doc.querySelectorAll('iframe, .ldDoc').forEach(x => { x.hidden = x !== f; }); doc.querySelectorAll('.docNav [data-doc]').forEach(b => { b.setAttribute('aria-selected', String(b.dataset.doc === k || (k === 'nv' && b.dataset.doc === 'gl'))); b.hidden = setOf(b.dataset.doc) !== dst || b.dataset.doc === 'nv'; });   /* Navigation is General layout's Main menu ("put Navigation inside general layout and rename navigation --> Main menu"): no tab of its own, General layout lit while it is up */ { const nv = doc.querySelector('.docNav'); if (nv) nv.setAttribute('aria-label', dst === 'ds' ? 'Design system' : 'Documentation'); }   // the page's own tabs only
         document.body.dataset.docSet = dst;
-        if (k === 'cc') docTheme(); document.body.classList.add('docOn'); document.body.classList.toggle('docCc', k === 'cc'); document.body.classList.toggle('docLd', k === 'ld' || k === 'hp' || k === 'gf' || k === 'nt'); if (versionSel) versionSel.value = dst; try { history.replaceState(null, '', DOCS[k].hash); } catch (e){} };
+        if (k === 'cc') docTheme(); document.body.classList.add('docOn'); document.body.classList.toggle('docCc', k === 'cc'); document.body.classList.toggle('docLd', k === 'ld' || k === 'hp' || k === 'gf' || k === 'nt' || k === 'bi'); if (versionSel) versionSel.value = dst; try { history.replaceState(null, '', DOCS[k].hash); } catch (e){} };
       /* the Service timeline's playground (its own page, in its frame): its controls in the same right panel (EvDocPanel, the CSS copied into the frame), docked at the frame's right edge, the stage and the gallery beside it */
       const ptPanel = f => { try { const d = f.contentDocument, m = d && d.querySelector('main'), c = d && d.getElementById('controls'); if (m && c && window.EvDocPanel && !d.querySelector('.dpRail')) window.EvDocPanel.mount(m, { root: d.body, fixed: true, wide: 900, before: c, label: 'Playground controls' }); } catch (e){} };
       window._doc = { show: docShow, hide: docHide };
       { const b = document.getElementById('tkDocSave'); if (b) b.addEventListener('click', () => { const f = document.getElementById('docFrame'); let ok = false; try { const M = docCur === 'sf' ? window.EvSteps : docCur === 'gl' ? (({ pt: window.EvPush, tg: window.EvTitle })[(() => { try { return localStorage.getItem('everlab:glPart'); } catch (x){ return ''; } })()] || window.EvOverlap) : docCur === 'md' ? window.EvDismiss : null; if (M && M.save) ok = !!M.save(); else { const w = f && f.contentWindow; if (w && w.PTDemo) ok = w.PTDemo.save(); } } catch (e){}   /* the masters' own Save setup on Step flow and General layout */ b.textContent = ok ? 'Saved' : 'Cannot save'; clearTimeout(b._t); b._t = setTimeout(() => { b.textContent = 'Save'; }, ok ? 1400 : 2600); }); }   // the bar's Save: the page's own, as Save presets on Report visuals
-      const docHash = () => location.hash === '#notes' ? 'nt' : location.hash === '#documentation' ? 'pt' : location.hash === '#concierge-components' ? 'cc' : location.hash === '#loading-states' ? 'ld' : location.hash === '#health-profile-card' ? 'hp' : location.hash === '#gifting' ? 'gf' : location.hash === '#general-layout' || location.hash === '#title-group' ? 'gl' : location.hash === '#step-flow' ? 'sf' : location.hash === '#modals' ? 'md' : location.hash === '#chat-bubbles' ? 'bb' : location.hash === '#navigation' || location.hash === '#main-menu' ? 'nv' : location.hash === '#design-system' ? docLast.ds : '';
+      const docHash = () => location.hash === '#notes' ? 'nt' : location.hash === '#biomarker-item' ? 'bi' : location.hash === '#documentation' ? 'pt' : location.hash === '#concierge-components' ? 'cc' : location.hash === '#loading-states' ? 'ld' : location.hash === '#health-profile-card' ? 'hp' : location.hash === '#gifting' ? 'gf' : location.hash === '#general-layout' || location.hash === '#title-group' ? 'gl' : location.hash === '#step-flow' ? 'sf' : location.hash === '#modals' ? 'md' : location.hash === '#chat-bubbles' ? 'bb' : location.hash === '#navigation' || location.hash === '#main-menu' ? 'nv' : location.hash === '#design-system' ? docLast.ds : '';
       const tgHash = after => { if (location.hash !== '#title-group') return; try { localStorage.setItem('everlab:glPart', 'tg'); } catch (e){} const g = after && doc && doc.querySelector('.glDoc'); if (g && g._pick) g._pick('tg'); };   /* #title-group: General layout on its Title group (remembered before a first build, picked on one already built) */
       if (docHash()) { tgHash(); docShow(docHash()); tgHash(true); }
       addEventListener('hashchange', () => { const d = docHash(); if (d){ tgHash(); docShow(d); tgHash(true); } else docHide(); });
@@ -50883,6 +50905,10 @@ hairline({
   // where the reading sits on its own range bar: inside the green, into the
   // amber, past it -- an unclassified one has no place to sit and shows none
   const MK_AT = { ok: [6, 30], sub: [40, 60], out: [70, 88] };
+  /* Design system -> Biomarker item ("Biomarker item must be part of the design system"): the one builder of a biomarker row, the Insights list's and the doc's. o: name, st (ok / sub / out / other), val (the reading), sub (the line under the name; the reading if none), attrs (extra attributes). The row: the name (--bioT), the reading | date (--bioS), the range bar with its marker at the right, the status pill under it */
+  window.EvBio = { ST: ST_WORD, row: o => { const at = MK_AT[o.st]; let h = 0; for (let i = 0; i < o.name.length; i++) h = (h * 31 + o.name.charCodeAt(i)) & 0xffff;
+    const mk = at ? '<i class="mk" style="left:' + (at[0] + h % (at[1] - at[0])) + 'px"></i>' : '';
+    return '<div class="mbrow"' + (o.attrs || '') + '><span>' + o.name + '</span><span class="rng">' + mk + '<i class="s1"></i><i class="s2"></i><i class="s3"></i></span><span class="g" data-v="' + o.val + '">' + (o.sub || o.val) + '</span><span class="st ' + o.st + '">' + (ST_WORD[o.st] || '') + '</span></div>'; } };
   (function buildPhonePanel(){
     const host = document.getElementById('mRecs');
     if (!host) return;
@@ -50892,17 +50918,8 @@ hairline({
               '<div class="gd">' + desc + '</div>';
       rows.trim().split('\n').forEach(line => {
         const [name, st, val] = line.trim().split('|');
-        const at = MK_AT[st];
-        // deterministic within the band, off the name, so the markers do not
-        // all stack on one pixel and do not move between loads
-        let h = 0; for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) & 0xffff;
-        const mk = at ? '<i class="mk" style="left:' + (at[0] + h % (at[1] - at[0])) + 'px"></i>' : '';
-        html += '<div class="mbrow" data-type="' + rowType(name, title) + '" data-grp="' + catKey(title) + '">' +
-                  '<span>' + name + '</span>' +
-                  '<span class="rng">' + mk + '<i class="s1"></i><i class="s2"></i><i class="s3"></i></span>' +
-                  '<span class="g" data-v="' + val + '">' + val + '</span>' +
-                  '<span class="st ' + st + '">' + ST_WORD[st] + '</span>' +
-                '</div>';
+        // the master's row (EvBio); its marker deterministic within the band, off the name, so the markers do not all stack on one pixel and do not move between loads
+        html += window.EvBio.row({ name: name, st: st, val: val, attrs: ' data-type="' + rowType(name, title) + '" data-grp="' + catKey(title) + '"' });
       });
       html += '</section>';
     });
@@ -51155,7 +51172,9 @@ hairline({
       // the newest report carries a New badge beside its name while the New
       // results notice is live (body.newRep, and the wrap not yet .seen)
       const newest = (typeof REPS !== 'undefined' && REPS[0]) ? REPS[0].id : null;
-      rec.listEl.innerHTML = recs.map(r =>
+      let yrAt = '';   /* the dated records under their year ("break the list with year group"): a heading where the year turns; All records and the ranges stay above, ungrouped */
+      const yrOf = r => { const m = !r.all && r.id !== 'all' && r.date && String(r.date).match(/(\d{4})\s*$/); return m ? m[1] : ''; };
+      rec.listEl.innerHTML = recs.map(r => { const y = yrOf(r), head = y && y !== yrAt ? '<div class="mRecYr" role="presentation">' + y + '</div>' : ''; if (y) yrAt = y; return head +
         '<button class="mRecOpt' + (r.id === 'all' ? ' on' : '') + '" type="button" role="option" ' +
                 'aria-selected="' + (r.id === 'all') + '" data-r="' + r.id + '">' +
           // the badge: the newest report's, live with the New results notice;
@@ -51175,7 +51194,7 @@ hairline({
           (r.id === 'all' || r.all ? '<span class="n">' + (cfg.recKey ? DOC : CHART) + allRows.length + '</span>' :
            r.nDocs != null ? '<span class="n">' + DOC + r.nDocs + '</span>' :
            r.nText ? '<span class="n">' + r.nText + '</span>' : r.n ? '<span class="n">' + CHART + r.n + '</span>' : '') +
-        '</button>').join('');
+        '</button>'; }).join('');
       let showPane = function(){};   // the menu's tab head, when it has one (set below)
       // On the phone the menu is a bottom sheet, not a plate hung off the
       // button ("for the dropdown use a bottom sheet, mobile only"): the same
@@ -51324,7 +51343,7 @@ hairline({
       recAll = !!(recs.find(x => x.id === id) || {}).all;
       const r = recs.find(x => x.id === id) || recs[0];
       if (rec.listEl){
-        [].slice.call(rec.listEl.children).forEach(x => {
+        [].slice.call(rec.listEl.children).forEach(x => { if (!x.dataset.r) return;   /* the year headings are not options */
           const on = x.dataset.r === id;
           x.classList.toggle('on', on);
           x.setAttribute('aria-selected', String(on));
