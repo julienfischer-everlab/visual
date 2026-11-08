@@ -21704,3 +21704,7 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - "after clinical, no need to come back to this page": the last Clinical decision goes straight on to Lifestyle.
 - "tweak for lifestyle screen: Card around items group (ex title group) ON OFF": Tweaks -> Async report -> Lifestyle group card (On by default): each group's rows in a card, its title above.
 - "png inside visual reduce by 8px": Lifestyle row pictures 8 smaller inside their 48 tile.
+
+## Insights: the Biomarker item master at every breakpoint
+
+- "use the right component in insight all breakpoint": the desk Insights list (`#dRecsList`) no longer draws its own `.brow` table; every row is `EvBio.row` (Design system -> Biomarker item), the same as the phone. Rows carry every breakpoint's parts (`all: true`) and `EvBio.fit(host)` gives them their breakpoint from the list's own width: under 560 XS, S, from 760 M, from 1000 L (desk 1920: L; 1440: M; 1060: XS with value | date under the name). The phone and tablet list (`#mRecs`) uses the same fit (XS on the phone, S on the tablet). The record filter, tally and search now read `.mbrow`.

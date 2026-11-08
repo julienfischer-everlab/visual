@@ -954,6 +954,7 @@
   /* a filtered row leaves, and a group with nothing left leaves with it --
      both are display:grid, so [hidden] needs saying out loud */
   .dash .brow[hidden],.dash .grp[hidden]{display:none;}
+  .mbrow:not(.bioS):not(.bioM):not(.bioL) > .bioSp, .mbrow:not(.bioM):not(.bioL) > :is(.bioV, .bioD), .mbrow:is(.bioM, .bioL) > .g{display:none;}   /* an all-part row (EvBio.row all): only its breakpoint's parts */ .dash #dRecsList .mbrow:last-child{border-bottom:0;}
   /* the loading beat, in the desk row's own shape */
   .dash .dSkel .skb,.dash .dSkel .st{
     display:block;height:13px;border-radius:6px;
@@ -46911,7 +46912,7 @@ hairline({
     const STS = [['ok', 'Optimal'], ['sub', 'Suboptimal'], ['out', 'Out of range'], ['other', 'Other']];
     const tally = id => {
       const t = { ok: 0, sub: 0, out: 0, other: 0, n: 0 };
-      document.querySelectorAll('#dRecsList .brow').forEach(r => {
+      document.querySelectorAll('#dRecsList .mbrow').forEach(r => {
         if ((' ' + (r.dataset.r || '') + ' ').indexOf(' ' + id + ' ') < 0) return;
         const s = r.querySelector('.st');
         const k = STS.map(p => p[0]).find(c => s && s.classList.contains(c)) || 'other';
@@ -50995,13 +50996,17 @@ hairline({
     const row = o => { const at = MK_AT[o.st], bp = o.bp || 'xs', h = hash(o.name);
       const mk = at ? '<i class="mk" style="left:' + (at[0] + h % (at[1] - at[0])) + 'px"></i>' : '';
       const sub = o.sub || (o.date ? o.val + '<i class="bioDv" aria-hidden="true"></i>' + o.date : o.val);
-      const wide = bp === 'm' || bp === 'l';
+      const wide = bp === 'm' || bp === 'l', all = !!o.all;   /* all: every breakpoint's parts in one row, its class (fit) picking what shows, so a list follows its own width ("use the right component in insight all breakpoint") */
       return '<div class="mbrow' + (bp !== 'xs' ? ' bio' + bp.toUpperCase() : '') + '"' + (o.attrs || '') + '><span class="bioN">' + o.name + '</span>' +
-        (wide ? '<span class="bioV">' + o.val + '</span><span class="bioD">' + (o.date || '') + '</span>' : '') +
-        (bp !== 'xs' ? spark(o.name, o.st) : '') +
-        (wide ? '' : '<span class="g" data-v="' + o.val + '">' + sub + '</span>') +
+        (wide || all ? '<span class="bioV">' + o.val + '</span><span class="bioD">' + (o.date || '') + '</span>' : '') +
+        (bp !== 'xs' || all ? (o.st === 'other' && all ? '<span class="bioSp" aria-hidden="true"></span>' : spark(o.name, o.st)) : '') +
+        (wide && !all ? '' : '<span class="g" data-v="' + o.val + '">' + sub + '</span>') +
         '<span class="bioR"><span class="rng">' + mk + '<i class="s1"></i><i class="s2"></i><i class="s3"></i></span><span class="st ' + o.st + '">' + (ST_WORD[o.st] || '') + '</span></span></div>'; };   /* the bar and its badge one block, 12 apart ("12px gap between range and badge") */
-    return { ST: ST_WORD, row: row, spark: spark };
+    /* a list of all-part rows takes its breakpoint from its own width (the rows' column): under 560 XS, then S, from 760 M, from 1000 L; again on every resize */
+    const fit = host => { let cur = null; const set = () => { const r = host.querySelector('.mbrow'); if (!r || !r.parentElement) return; const w = r.parentElement.clientWidth; if (!w) return; const bp = w >= 1000 ? 'L' : w >= 760 ? 'M' : w >= 560 ? 'S' : 'XS'; if (bp === cur) return; cur = bp; host.dataset.bioBp = bp;
+        host.querySelectorAll('.mbrow').forEach(x => { x.classList.remove('bioS', 'bioM', 'bioL'); if (bp !== 'XS') x.classList.add('bio' + bp); }); };
+      set(); if (window.ResizeObserver) new ResizeObserver(set).observe(host); return set; };
+    return { ST: ST_WORD, row: row, spark: spark, fit: fit };
   })();
   (function buildPhonePanel(){
     const host = document.getElementById('mRecs');
@@ -51013,7 +51018,7 @@ hairline({
       rows.trim().split('\n').forEach(line => {
         const [name, st, val] = line.trim().split('|');
         // the master's row (EvBio); its marker deterministic within the band, off the name, so the markers do not all stack on one pixel and do not move between loads
-        html += window.EvBio.row({ name: name, st: st, val: val, attrs: ' data-type="' + rowType(name, title) + '" data-grp="' + catKey(title) + '"' });
+        html += window.EvBio.row({ name: name, st: st, val: val, all: true, attrs: ' data-type="' + rowType(name, title) + '" data-grp="' + catKey(title) + '"' });
       });
       html += '</section>';
     });
@@ -51023,7 +51028,9 @@ hairline({
       // on the phone the reading and its date share one cell
       const v = row.querySelector('.g');
       v.innerHTML = v.dataset.v + '<i class="bioDv" aria-hidden="true"></i>' + (rec.short || '');   /* the master's divider (Biomarker item) */
+      const d = row.querySelector('.bioD'); if (d) d.textContent = rec.short || '';   /* its own column from M */
     });
+    window.EvBio.fit(host);   /* XS on the phone, S on the tablet: the list's own width */
   })();
 
   // Which records each reading is in. Exact quotas by construction: walk the
@@ -51635,27 +51642,22 @@ hairline({
         const spark = st === 'other' ? '<span></span>' :
           '<svg width="76" height="24" viewBox="0 0 76 24" aria-hidden="true"><path d="' +
           SPARK[h % SPARK.length] + '" fill="none" stroke="url(#sgrad)" stroke-width="2" stroke-linecap="round"/></svg>';
-        html += '<div class="brow" data-type="' + rowType(name, title) + '" data-grp="' + catKey(title) + '">' +
-                  '<span>' + name + '</span>' +
-                  '<span class="g">' + val + '</span>' +
-                  '<span class="g dDate"></span>' +
-                  spark +
-                  '<span class="rng">' + markAt(st, name) + '<i class="s1"></i><i class="s2"></i><i class="s3"></i></span>' +
-                  '<span class="st ' + st + '">' + ST_WORD[st] + '</span>' +
-                '</div>';
+        html += window.EvBio.row({ name: name, st: st, val: val, all: true, attrs: ' data-type="' + rowType(name, title) + '" data-grp="' + catKey(title) + '"' });   /* the master's row (Design system -> Biomarker item), at the list's own breakpoint ("use the right component in insight all breakpoint") */ void spark;
       });
       html += '</div></div>';
     });
-    host.innerHTML = html;
-    assignRecords(host.querySelectorAll('.brow'), (row, rec) => {
-      // the desk has a column for the date, where the phone shares one cell
-      row.querySelector('.dDate').textContent = rec.short || '';
+    host.innerHTML = html; host.classList.add('evBio');
+    assignRecords(host.querySelectorAll('.mbrow'), (row, rec) => {
+      // the date: its own column from M, after the value below it
+      row.querySelector('.bioD').textContent = rec.short || '';
+      const v = row.querySelector('.g'); v.innerHTML = v.dataset.v + '<i class="bioDv" aria-hidden="true"></i>' + (rec.short || '');
     });
+    window.EvBio.fit(host);
 
     const field = document.getElementById('dSearch'), input = document.getElementById('dSearchIn');
     const clear = document.getElementById('dSearchClear');
     const bio = bioFilter({
-      list: host, groupSel: '.grp', rowSel: '.brow',
+      list: host, groupSel: '.grp', rowSel: '.mbrow',
       skel: document.getElementById('dSkel'), empty: document.getElementById('dSearchEmpty'),
       input: input, fieldEl: field,
       chipsBar: document.querySelector('.dash .filters'),
