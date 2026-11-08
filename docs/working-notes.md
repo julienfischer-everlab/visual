@@ -21614,3 +21614,11 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 
 - "on focus when icon disappear, need transition": on the phone, focusing the Overview's top field (`body.ovKbd`) used to hide the sparkle at once. Now it fades, shrinks and turns as its room closes (width to 0, the 12 gap with it, .32s), and the placeholder slides left into its place. On blur it plays back, the star fading in once its room is open.
 - "-4 radius on card ghost": the More sheet rows' plate is 18 round (was 22).
+
+## Insights renders in the library; Bento hug; primary card min height; debrief cards
+
+- "put these visual in the library": the three Insights task renders (Health profile, Health data, Past results) are named in the Assets library (group Insights). Each is one file (`window.EvInsImg`), so a replacement there changes every tile that shows it.
+- "hug height, the card below should fill the height of the col": desk Bento with Insights empty (`html.insEmpty`). The column is a flex column; the Insights card keeps its own height (227) and the other modules (256 at least) share what is left of the row.
+- Tweaks → Primary card → Desk min height (Auto, 480–800): the primary card's least height on the desk (`--hpOvMinH`, `html.hpOvMinOn`); the Bento beside it grows to match.
+- Centred card, "reduce gap between visual and content by 64px": the sphere's dots fill only ~108 of its 190 scaled box, so the gap seen was ~89; its margin is now `calc(48px + 119px * .3 - 64px)`, about 25 seen.
+- Debrief cards (`.rcCard.rcDb`, Insights Reports carousel): visual 32 taller (140 → 172 at XS, via `75cqw - 54px`), words 4 further in (26 sides, 18 above, 24 below), chevron with them, 16 between the cards.
