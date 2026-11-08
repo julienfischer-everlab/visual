@@ -21763,3 +21763,9 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - Clinical deck footer: "You can change any of these later in Plan." sits 12px higher (24 above Later / Add to plan, was 12).
 
 - Review rows: the price on the title's line (17 regular, the title's size; 16 in Grid), the + alone at the right on Later rows; Included 2px smaller (15); no divider above Total today.
+
+## Plan recommendation in two screens, Lifestyle Off rows greyed, Design system left nav
+
+- Plan recommendation (Async report, Stacked): "Split this in 2 screens, doctor first". A new phase `dr` comes before `intro` (`rcPh`). Screen 1: "Your doctor suggests updating your plan" with the doctor's note, CTA See recommendations. Screen 2: "Here are the recommendations" with the Clinical / Lifestyle cards (the "Your N recommendations" H2 is gone: the H1 says it), CTA Continue. Back goes Clinical / Lifestyle → cards → doctor → the previous step; entering the step forward lands on the doctor.
+- Lifestyle rows: "Grayscale on item if OFF, opacity -30%". `.arRcLsRow.arRcOff` (set in the row's paint) greys the picture and text (grayscale 1, opacity .7); the toggle / Later-Now stays as it is.
+- Design system: "Create a left nav in the design system ... where we will have groups". The `.docNav` becomes a 232 left column on the Design system (`body[data-doc-set="ds"]`) with groups: Core components (Toggle, Segment tab, Buttons · Soon), Patterns (General layout, Modals, Chat bubble, Step flow, Loading states), Feature components (Biomarkers), then Notes under a rule. Documentation keeps its top tabs.
