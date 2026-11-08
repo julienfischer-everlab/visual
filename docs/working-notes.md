@@ -21735,3 +21735,7 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - "all of the lifestyle stuff you can put in the group tweak. And all of the review as well" / "Put this [Segmented] in the review plan group": Tweaks -> Async report -> What we recommend now has a Lifestyle section (Group card, Choice) and a Review section (Groups, Layout, Segmented).
 - "two CTAs next to each other ... Later secondary on the left, Add to plan on the right": the Clinical footer is the note across, then Later (secondary, ink 8%) and Add to plan (primary), 56 tall, 12 apart.
 - "title is 16 and the subtitle is 14. Put the badge on the third line. And increase the image visual by 8 pixels": Lifestyle rows read title 16, its line 14, the New / Adjusted badge on a third line; the picture 56 (was 48).
+
+## Confirm your updated plan: group cards tightened
+
+- "Reduce the gap so it's an 8px gap between and reduce the title. It needs to be H2 ... Remove the counter on the right. And remove the first divider below the title": the Included / Extra / Later cards sit 8 apart (were 24), their titles at the H2 size (18 / 22, were 20 / 24), no count before the chevron, and no hairline between the title and the first row.
