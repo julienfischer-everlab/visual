@@ -21805,3 +21805,11 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 ## Doctor note Letter: +1 type, avatar bottom right
 
 - Letter (Tweaks → Doctor note): the note 1px larger (13 / 17 from the letter's 12 / 16; "letter +1px font size"); the avatar no longer overlaps the top: it sits at the card's bottom right, 48, beside the name and "Your Everlab doctor" ("Letter --> Avatar right bottom"). The card a grid: the note across, then the name left and the avatar right.
+
+## Letter dated and 16 higher; Layout row gone; Group cards five options; Stacked cards without big numbers
+
+- Letter (Doctor note): 16 higher ("push up by 16px"); dated: the report's date then a comma on its own line, a blank line, then the note ("add date starting the letter like $date, $content").
+- "Just put categories as an option Group cards and keep only lifestyle and clinical, so 2 cards": no Layout row; the recommendations always run the phased two-card flow (`rc: 'stack'`). Group cards: Top / Row / Stat / Stacked / Categories (the category card style); with five options the tabs take a line of their own under the label (`.tkRowWide`, any segmented select over four).
+- Tweaks group names follow the Flow panel: Recommendation summary (Group cards), Doctor note, Lifestyle, Review; on Clinical (no rows of its own) the group hides.
+- Stacked group cards ("not big numbers ... badge secondary X recommendations"): the name, a one-line description, a secondary badge "N recommendations" at the left, the visual at the right; padding 8 less top and bottom (20 / 18).
+- Note: a stray publish of the unbuilt index.html (v2225) was replaced at once by the built dist (v2226).
