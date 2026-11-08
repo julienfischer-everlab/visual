@@ -21832,3 +21832,8 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - What to expect, Chart: one badge, top left ("keep only the top left badge, alternate $name and $date; cursor writes and deletes letter to write the next label"): the report's name typed, held 2.2 s, deleted letter by letter (32 ms), the date typed, held, deleted, round again; the bottom-right date badge gone. Reduced motion: the name typed once, no cycling.
 - Group cards: "remove Top Row Stat": Stacked (the default) and Categories only; any saved Top / Row / Stat opens Stacked.
 - Stacked cards: the count badge +4 below the line (12); the title 16, the line 14.
+
+## Medication card tweak; Letter padding
+
+- Tweaks → Recommendation summary → Medication card (Off default / On; "ON add the card below with an appropriate img"): a third card under Clinical and Lifestyle, "Medication" / "What your doctor prescribes or adjusts" / the count of the medication items (the Supplements & medications kind's when none is flagged a medication), the pill bottle render (the Supplements & medications category's, `RC_IMG.treat`). Id `stArMedC`, in the saved keys; shown only on the summary.
+- Doctor note, Letter: padding top +4 (28), bottom +2 (26).
