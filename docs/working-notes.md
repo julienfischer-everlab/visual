@@ -21826,3 +21826,9 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 ## Clinical card: the Why card, secondary, two rows
 
 - "Adjusted should be another row inside the orange card; orange card should be secondary": the orange badge is now a secondary card (the ink at 6%, 14 round) of two rows, each its label over its value: "Why this is recommended" / the insight (orange dot and name; a press opens the small sheet, as before), and "Relation to your plan" / "New action" (green) or "Action adjusted" (blue). The New / Adjusted badge under the title is gone. A card with no source shows the second row alone (`rcWhyB`, `.arRcWhyCard`).
+
+## What to expect chart: one badge alternating; Group cards Stacked / Categories only
+
+- What to expect, Chart: one badge, top left ("keep only the top left badge, alternate $name and $date; cursor writes and deletes letter to write the next label"): the report's name typed, held 2.2 s, deleted letter by letter (32 ms), the date typed, held, deleted, round again; the bottom-right date badge gone. Reduced motion: the name typed once, no cycling.
+- Group cards: "remove Top Row Stat": Stacked (the default) and Categories only; any saved Top / Row / Stat opens Stacked.
+- Stacked cards: the count badge +4 below the line (12); the title 16, the line 14.
