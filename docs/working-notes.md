@@ -22006,3 +22006,8 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 
 - **Phone top field (Field position: Concierge)**: the tap now opens the Concierge with its field focused and the phone keyboard up ("with active state and keyboard activated"). It calls `window._cc.fresh()` (Eva, the chat's home, `Concierge.focus()`), not `show()`.
 - **Ask sheet (the dock's star)**: new Tweaks row in Menu AI entry point, **Field tap**: Concierge (default) or Keys. With Concierge, a tap on the sheet's chat field (its + and arrow too) closes the sheet back into the star, then opens the Concierge the same way, field active and keys up ("Chat field tap should redirect to concierge active field and keyboard"). Keys keeps the old behaviour, the keys in the sheet. The Navigation doc's phone is unchanged.
+
+## Ask sheet as the standard bottom sheet; Insights visual 32
+
+- **Ask sheet Layout: Bottom sheet** ("Use bottom sheet standard"): the Menu AI entry point's Cards row is now **Layout**, with Bottom sheet first and the default (html class `askStd`; saves on One move to it once, `everlab:mig:askStd`). The sheet sits edge to edge on the phone with the standard sheet tokens (`--evShGap:0`, `--evShR:32`, top corners only), the notch, and the sheet header master (`EvSheetHead`, title "Ask Everlab", its 32 Close) in place of the floating ✕. It rises from the bottom (not from the star), closes on the header's Close, the scrim or a swipe down (`EvSheetSwipe`, off while typing). Title and Close wear neutral ink (#f4f4f4 dark, #000 light), not the card's warm one. The other layouts are unchanged.
+- **Insights, stacked tasks (XS)**: the empty card's 3D visual is 32px, down from 40 ("for this version reduce visual by 8px").
