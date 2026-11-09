@@ -21935,3 +21935,4 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - Merged: the list to the field 14 (was 12), either Section position ("section gap +2px").
 - Light mode: the Insights activation steps (empty state) white on hover ("Hover white bg on light mode"; was a 6% tint).
 - Light mode: the Object card (Centered) without the blurred service picture behind ("No bg img on light mode").
+- Container chat floating -> Blur: up to 256 (was 80).
