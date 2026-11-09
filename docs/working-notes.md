@@ -21945,3 +21945,16 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - "chat field 6% fff blur 26" then "256": the phone sheet's field while typing is white 6% over a 256 blur, with no ring (dark mode).
 - "Chipx fff 6% blur 64px": the sheet's non-primary chips are white 6% over a 64 blur. The desk Ask panel's chips, which wear the phone's chip style, follow.
 - "Blanket 96%": the phone sheet's blanket (`.aiDim`) is black 96%. The desk panel's blanket is unchanged at 50%.
+
+## Search first Active chip, Scheduled State, glow bleed 16, blanket 80 (v2277)
+
+- **Search first, Active chip tweak** (Tweaks > Biomarkers, under Search focus, shown only with Search first; `#stSrchRec`, `html.srchRecRow`):
+  - **Inside** (default): the chosen record's chip stays in the search, as before ("Chip stay inside even active one").
+  - **First in list**: once a record is chosen, the same `#mRecWrap` node (its button, its cross and their handlers) moves to the head of `#mChips`, in front of All ("Chips active goes into chip list below first in line").
+  - In the list it is 44 high in the range chips' active look (lighter plate, white 1.5 ring), with the cross at its right. Tapping it opens the filter sheet, and the cross clears it.
+  - While it is out, the search runs to its own edge (`#mSearch.recOut`). Cleared, it goes back into the search as All records. A MutationObserver on the wrap's `cleared` class drives the move.
+- **Scheduled State tweak** (`#stSchSt`; "Add tweak states related to DS doc"): Coming up / Today (default, as before) / Video call / Happening now. These are the Design system > Modules > Booked in states for the first row. Empty is Has data No, and One booking is Items 1.
+  - `bkList` maps the rows: Coming up clears today's highlight. Video call makes the first row a Doctor debrief at 2:30 pm with Join call. Happening now is the same call live (green).
+  - The row is hidden when Has data is No. The doc's intro now names Tweaks > Scheduled.
+- **Primary card glow**, Top right extra: the bleed beyond Top right goes from 30% to 16% (-26% top and right; "reduce to 16% bleed").
+- **Phone Ask sheet blanket**: 80% ("blanket 80%").

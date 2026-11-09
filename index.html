@@ -1824,6 +1824,13 @@
   html.srchChip #mSearch .msRecChev{flex:none;width:14px;height:14px;}
   html.srchChip #mSearch .msRecClear{display:none;} html.srchChip #mSearch .msRecWrap.cleared .msRecClear{display:flex;right:8px;width:22px;height:22px;background:rgba(255,255,255,.14);} html.srchChip #mSearch .msRecWrap.cleared .msRec{padding-right:38px;} html.srchChip body.light #mSearch .msRecWrap.cleared .msRecClear{background:rgba(46,31,26,.12);}   /* a record chosen: no chevron, a cross at the chip's right that resets it; the rest of the chip opens the sheet ("no chevron but cross. if click reset, if click the rest of the field open bottom sheet select") */
   html.srchChip body.light #mSearch .msRec{background:rgba(46,31,26,.06);}
+  /* Search first, Active chip: First in list (html.srchRecRow; "Chips active goes into chip list below first in line"): a chosen record's chip leaves the search for the chips' row, first in line, 44 high like the range chips, in their active look (a lighter plate, the white ring) with its cross at the right; the search then runs to its own edge (#mSearch.recOut). Cleared, it goes back into the search as All records */
+  html.srchChip #mSearch #mChips > .msRecWrap{position:relative;top:auto;right:auto;transform:none;flex:none;width:auto;max-width:none;z-index:auto;}
+  html.srchChip #mSearch #mChips > .msRecWrap .msRec{height:44px;padding:0 44px 0 16px;background:rgba(255,255,255,.16);box-shadow:inset 0 0 0 1.5px #fff;color:#fff;font-size:12.5px;}
+  html.srchChip #mSearch #mChips > .msRecWrap .msRec b{font-size:inherit;line-height:18px;font-weight:400;}
+  html.srchChip #mSearch #mChips > .msRecWrap .msRecClear{right:11px;width:24px;height:24px;}
+  html.srchChip body.light #mSearch #mChips > .msRecWrap .msRec{background:rgba(46,31,26,.17);box-shadow:inset 0 0 0 1.5px #2e241c;color:#000;}
+  html.srchChip #mSearch.recOut .msRow .msBox{padding-right:16px;}
   html.srchChip body.light #mSearch .msRec:hover, html.srchChip body.light #mSearch .msRec[aria-expanded="true"]{background:rgba(46,31,26,.1);}
   html.srchChip body.light #mSearch .msRecWrap.cleared .msRec{background:rgba(46,31,26,.12);}
   body.light .msRec{--msEdge:#ddd3bf;color:#000;}
@@ -2801,7 +2808,7 @@
      keyboard. */
   .aiWrap{position:absolute;inset:0;z-index:6;display:none;}
   .aiWrap.show{display:block;}
-  .aiDim{position:absolute;inset:0;background:rgba(0,0,0,.96);   /* 96 ("Blanket 96%") */-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);   /* the desk Ask panel's blanket exactly (.evSrchDim: black 50%, a 6 blur) ("Same as desktop") */   /* then -8 ("Blanket -8% opacity bg"): 83; then 12 ("Blanket 12%"); then 32 ("Blanket 32%") */   /* +12 ("+12% opacity blanket"), then +24 ("increase blanket by 24%", "same for the bottom chat"): 91 */opacity:0;transition:opacity .35s ease;}
+  .aiDim{position:absolute;inset:0;background:rgba(0,0,0,.8);   /* 96 ("Blanket 96%"), then 80 ("blanket 80%") */-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);   /* the desk Ask panel's blanket exactly (.evSrchDim: black 50%, a 6 blur) ("Same as desktop") */   /* then -8 ("Blanket -8% opacity bg"): 83; then 12 ("Blanket 12%"); then 32 ("Blanket 32%") */   /* +12 ("+12% opacity blanket"), then +24 ("increase blanket by 24%", "same for the bottom chat"): 91 */opacity:0;transition:opacity .35s ease;}
   .aiWrap.on .aiDim{opacity:1;}
   .aiCard{
     position:absolute;left:var(--evShGap);right:var(--evShGap);bottom:var(--evShGap);   /* floating, 12 off the edges ("a 12px gap so the card feels more like floating"): the bottom sheets' --evShGap */
@@ -13831,6 +13838,14 @@
             <option value="chip" selected>Search first</option>
           </select>
         </div>
+        <!-- Search first's chosen record ("Chip stay inside even active one" / "Chips active goes into chip list below first in line"): Inside, the chip stays in the search; First in list, once a record is chosen its chip leaves the search for the chips' row, first in line -->
+        <div class="tkRow">
+          <span class="lbl">Active chip</span>
+          <select id="stSrchRec" class="tkSegSel" aria-label="Where a chosen record's chip sits: inside the search, or first in the chips below">
+            <option value="in" selected>Inside</option>
+            <option value="row">First in list</option>
+          </select>
+        </div>
         <div class="tkRow">
           <span class="lbl">Biomarkers</span>
           <select id="stBio" aria-label="Biomarker card state">
@@ -14644,6 +14659,7 @@
         <div class="tkGroup" data-pages="ov"><div class="tkSub">Scheduled</div>
         <div class="tkRow"><span class="lbl">Has data</span><select id="stSchData" class="tkSegSel" aria-label="Scheduled: bookings, or none yet (its empty state)"><option value="yes" selected>Yes</option><option value="no">No</option></select></div>
         <div class="tkRow"><span class="lbl">Items</span><select id="stSchN" class="tkSegSel" aria-label="Scheduled: how many bookings it lists"><option value="1">1</option><option value="2" selected>2</option><option value="more">More</option></select></div>
+        <div class="tkRow"><span class="lbl">State</span><select id="stSchSt" aria-label="Scheduled: the first booking's state, as the Design system's Booked in states"><option value="up">Coming up</option><option value="today" selected>Today</option><option value="video">Video call</option><option value="live">Happening now</option></select></div>   <!-- the Design system -> Modules -> Booked in states ("Add tweak states related to DS doc"): Empty is Has data No, One booking Items 1; these the first row's: Coming up, Today (orange), Video call (Join call), Call happening now (green) -->
         </div>
         <div class="tkGroup" data-pages="ov" data-sec="svc">
         <div class="tkSub">Services</div>
@@ -41617,7 +41633,7 @@ hairline({
     document.documentElement.classList.add('hpCcVisFirst');
     [['stChipH', '--chipH'], ['stChipVis', '--chipVis']].forEach(([id, v]) => { const r = document.getElementById(id), o = document.getElementById(id + 'V'), set = () => { document.documentElement.style.setProperty(v, r.value + 'px'); if (o) o.textContent = r.value + 'px'; }; if (r){ r.addEventListener('input', set); r.addEventListener('change', set); set(); setTimeout(set, 800); } });   /* Chips: their height and the services' render in them (Tweaks -> Chips) */
     { const c = document.getElementById('stCfBg'), o = document.getElementById('stCfOp'), b = document.getElementById('stCfBlur'), oV = document.getElementById('stCfOpV'), bV = document.getElementById('stCfBlurV'), set = () => { const R = document.documentElement.style, v = ((c && c.value) || '#ffffff').replace('#', ''), a = o ? o.value / 100 : .04; R.setProperty('--cfBg', 'rgba(' + [0, 2, 4].map(k => parseInt(v.slice(k, k + 2), 16)).join(', ') + ', ' + a.toFixed(2) + ')'); if (b) R.setProperty('--cfBlur', b.value + 'px'); if (oV && o) oV.textContent = o.value + '%'; if (bV && b) bV.textContent = b.value + 'px'; }; [c, o, b].forEach(x => { if (x){ x.addEventListener('input', set); x.addEventListener('change', set); } }); set(); setTimeout(set, 800); }   /* Container chat floating: the desk Ask panel's ground colour, its opacity and its blur */
-    { const r = document.getElementById('stPcGlowPos'), P = { tr: ['-10%', '-10%', 'auto', '100% 100% at 100% 0%'], trx: ['-40%', '-40%', 'auto', '100% 100% at 100% 0%'] /* "top right extra: +30% outside" */, tl: ['-10%', 'auto', '-10%', '100% 100% at 0% 0%'], t: ['-10%', 'auto', '0%', '50% 100% at 50% 0%'], c: ['6%', 'auto', '0%', '50% 50% at 50% 50%'] }, set = () => { const v = P[r.value] || P.tr, R = document.documentElement.style; R.setProperty('--pgT', v[0]); R.setProperty('--pgR', v[1]); R.setProperty('--pgL', v[2]); R.setProperty('--pgM', v[3]); }; if (r){ r.addEventListener('change', set); set(); setTimeout(set, 800); } }   /* Primary card -> Service glow position ("Add tweak position top right"): Top right (default), Top left, Top, Centre */
+    { const r = document.getElementById('stPcGlowPos'), P = { tr: ['-10%', '-10%', 'auto', '100% 100% at 100% 0%'], trx: ['-26%', '-26%', 'auto', '100% 100% at 100% 0%'] /* "top right extra: +30% outside", then "reduce to 16% bleed": 16 beyond Top right */, tl: ['-10%', 'auto', '-10%', '100% 100% at 0% 0%'], t: ['-10%', 'auto', '0%', '50% 100% at 50% 0%'], c: ['6%', 'auto', '0%', '50% 50% at 50% 50%'] }, set = () => { const v = P[r.value] || P.tr, R = document.documentElement.style; R.setProperty('--pgT', v[0]); R.setProperty('--pgR', v[1]); R.setProperty('--pgL', v[2]); R.setProperty('--pgM', v[3]); }; if (r){ r.addEventListener('change', set); set(); setTimeout(set, 800); } }   /* Primary card -> Service glow position ("Add tweak position top right"): Top right (default), Top left, Top, Centre */
     { const r = document.getElementById('stPcBlur'), o = document.getElementById('stPcBlurV'), set = () => { document.documentElement.style.setProperty('--pcBlur', r.value + 'px'); if (o) o.textContent = r.value + 'px'; }; if (r){ r.addEventListener('input', set); r.addEventListener('change', set); set(); setTimeout(set, 800); } }   /* Primary card -> Service blur ("add tweak blur") */
     { const r = document.getElementById('stPcGlow'), o = document.getElementById('stPcGlowV'), set = () => { document.documentElement.style.setProperty('--pcGlow', (r.value / 100).toFixed(2)); if (o) o.textContent = r.value + '%'; }; if (r){ r.addEventListener('input', set); r.addEventListener('change', set); set(); setTimeout(set, 800); } }   /* Primary card -> Service glow: the blurred service picture's opacity (Object, Centered) */
     { const r = document.getElementById('stHpCcBubFs'), o = document.getElementById('stHpCcBubFsV'), set = () => { document.documentElement.style.setProperty('--ccBubFs', r.value + 'px'); if (o) o.textContent = r.value + 'px'; }; if (r){ r.addEventListener('input', set); r.addEventListener('change', set); set(); setTimeout(set, 800); } }   // the bubbles' text size, live
@@ -45139,6 +45155,8 @@ hairline({
     const bkList = () => document.querySelectorAll('#dOver .ovhero').forEach(hero => { const top = hero.parentElement; let el = document.querySelector('#dOver .ovBk');
       if (!BKON){ if (el) el.remove(); bkTabsOff(); return; }
       const t0 = tab, R0 = ROWS, S0 = SEC; let rs = []; tab = 'up'; SEC = null; ROWS = []; try { rs = planRows().filter(isApt).map(simRow).slice(0, BKN); } finally { tab = t0; ROWS = R0; SEC = S0; }
+      { const SS = (document.getElementById('stSchSt') || {}).value || 'today';   /* Tweaks -> Scheduled -> State, the Design system's Booked in states: Today as the rows come (the first lit orange); Coming up, nothing today; Video call, the first a doctor debrief to join; Happening now, that call live (green) */
+        if (rs.length && SS !== 'today') rs = rs.map((x, i) => { const y = Object.assign({}, x, { soon: false, live: false }); if (i || SS === 'up') return y; const b = bkOf(x); return Object.assign(y, { t: 'Doctor debrief', bk: [b[0], b[1], '2:30 pm', 'Join call'], soon: SS === 'video', live: SS === 'live' }); }); }
       if (!rs.length && BKPERS === 'off'){ if (el) el.remove(); bkTabsOff(); return; }   // Persistent off: no bookings, no card
       if (!el){ el = document.createElement('div'); el.className = 'ovBk'; el.setAttribute('aria-label', 'Your booked appointments'); }
       if (document.documentElement.classList.contains('bmSched')){ bkTabsOff(); el.classList.remove('ovOff'); el.classList.toggle('inCol', document.body.dataset.bp !== 'xs'); el.classList.add('bmOwn'); if (!el.isConnected){ const sv0 = document.querySelector('#dOver .ovSvc'); if (sv0) sv0.before(el); } } else { el.classList.remove('bmOwn');   /* a Bento module (Scheduled): the Bento places it, no folder tabs, not off with Next step */
@@ -46163,7 +46181,8 @@ hairline({
   /* Tweaks -> Scheduled: Has data (No: none booked, the card's empty state) and Items (1, 2, More: See more), through the Booked card's own switches (Persistent on, Booked items) */
   { const d = document.getElementById('stSchData'), n = document.getElementById('stSchN'), bn = document.getElementById('stBkN'), bp = document.getElementById('stBkPers');
     if (d && n && bn){ const ap = () => { if (bp && bp.value !== 'on'){ bp.value = 'on'; bp.dispatchEvent(new Event('change', { bubbles: true })); } const v = d.value === 'no' ? '0' : n.value; if (bn.value !== v){ bn.value = v; bn.dispatchEvent(new Event('change', { bubbles: true })); } n.closest('.tkRow').hidden = d.value === 'no'; };
-      d.addEventListener('change', ap); n.addEventListener('change', ap); ap(); } }
+      d.addEventListener('change', ap); n.addEventListener('change', ap); ap();
+      const sc = document.getElementById('stSchSt'); if (sc){ const sh = () => { sc.closest('.tkRow').hidden = d.value === 'no'; }; sh(); d.addEventListener('change', sh); sc.addEventListener('change', () => bn.dispatchEvent(new Event('change', { bubbles: true }))); } } }   /* State: the card redrawn (bkList, through Booked items' own change) */
   /* Tweaks -> First-time user -> Theme switch (html.hpThmOn): the membership screens' sun / moon switch, Off by default */
   { const s = document.getElementById('stHpThm'); if (s){ const ap = () => document.documentElement.classList.toggle('hpThmOn', s.value === 'on'); s.addEventListener('change', ap); ap(); } }
   // hover: cell and its organ fade together, .5 resting -> 1 hovered
@@ -46958,7 +46977,14 @@ hairline({
       const sk = document.getElementById('stAskStk'), tl = document.getElementById('stAskTools'); document.documentElement.classList.toggle('askV2Car', v2 && !!sk && sk.value === 'car'); document.documentElement.classList.toggle('askToolsRest', v2 && !(av && av.value === 'sheet'));   /* Tools at rest and Icons tweaks removed ("remove"): the + and Eva always on the field, the tiles always with their 3D render */
       [sk, tl].forEach(e => { const r = e && e.closest('.tkRow'); if (r) r.hidden = !v2; }); };   /* Version 2's own: Suggestions Stacked / Carousel (html.askV2Car), Tools at rest (html.askToolsRest) */   /* Version 2 has its own suggestions (the conversations' card): Suggestion and Conversation style are Version 1's */
     as.addEventListener('change', put); if (av) av.addEventListener('change', put); ['stAskStk', 'stAskTools'].forEach(id => { const e = document.getElementById(id); if (e) e.addEventListener('change', put); }); put(); } }   /* Ask sheet, Suggestion: Services / Conversation (html.askConv) */
-  { const sf = document.getElementById('stSrchFoc'); if (sf){ const put = () => { document.documentElement.classList.toggle('srchFull', sf.value === 'full'); document.documentElement.classList.toggle('srchChip', sf.value === 'chip'); }; sf.addEventListener('change', put); put(); } }   /* Search first (html.srchChip): the search the row, the records a chip inside it at the right; the chip's width kept as --msChipW so the typed text stops before it */
+  { const sf = document.getElementById('stSrchFoc'); if (sf){ const put = () => { document.documentElement.classList.toggle('srchFull', sf.value === 'full'); document.documentElement.classList.toggle('srchChip', sf.value === 'chip'); }; sf.addEventListener('change', put); put(); } }
+  { const sf = document.getElementById('stSrchFoc'), sr = document.getElementById('stSrchRec'), w = document.getElementById('mRecWrap'), m = document.getElementById('mSearch'), ch = document.getElementById('mChips'); if (sr && w && m && ch){ const row = w.parentNode, H = document.documentElement;
+      const put = () => { H.classList.toggle('srchRecRow', sr.value === 'row'); { const rr = sr.closest('.tkRow'); if (rr) rr.hidden = !sf || sf.value !== 'chip'; }
+        const out = H.classList.contains('srchChip') && sr.value === 'row' && w.classList.contains('cleared');
+        if (out && w.parentNode !== ch){ ch.insertBefore(w, ch.querySelector('.fchip')); ch.scrollLeft = 0; } else if (!out && w.parentNode !== row) row.insertBefore(w, row.querySelector('.msBox'));
+        m.classList.toggle('recOut', out); };
+      sr.addEventListener('change', put); if (sf) sf.addEventListener('change', put); new MutationObserver(put).observe(w, { attributes: true, attributeFilter: ['class'] }); put(); } }   /* Search first, Active chip (html.srchRecRow): Inside, the chosen record's chip stays in the search; First in list, the same chip (its button, its cross, their handlers) moves to the head of the range chips while a record is chosen, and back into the search once cleared */
+  /* Search first (html.srchChip): the search the row, the records a chip inside it at the right; the chip's width kept as --msChipW so the typed text stops before it */
   { const w = document.getElementById('mRecWrap'), m = document.getElementById('mSearch'); if (w && m && window.ResizeObserver) new ResizeObserver(() => m.style.setProperty('--msChipW', Math.ceil(w.getBoundingClientRect().width / (window.evK ? window.evK(w) : 1)) + 'px')).observe(w); }   /* Search focus: Split / Full width (html.srchFull, CSS by .msRecIc) */
   const stRepLaySel = document.getElementById('stRepLay');
   if (stRepLaySel) stRepLaySel.addEventListener('change', () => {
@@ -50289,7 +50315,7 @@ hairline({
           draw: x => { const c = document.createElement('div'); c.className = 'ovInsEmpty hpOvInsList'; c.innerHTML = window._hpCard.insList(x.st); return c; },
           anat: [['Header', 'Insights (eyebrow, 14, uppercase) and, with CTA position Top right, Generate my insights as a link with its chevron'], ['Tasks', 'Three tiles: the render (a ring of progress, or a tick once done), the name, the status badge: Completed / To complete, Connected / In progress / To connect, Found / In progress / To action'], ['Lock', 'Generate my insights disabled with a lock until the Health profile is done and past results found or none found'], ['Order', 'Any: the tasks are not steps']],
           used: ['Overview: the Insights section with Has data No (Tweaks → Insights)', 'Overview: inside the Insights hero card when it has no slides'] },
-        mbk: { t: 'Booked in', p: 'The member’s booked appointments: each row its date tile, the name over its hour, and its action as a 44 icon (directions, prepare, join); today’s row lit orange. Drawn by <code>_bkCard.html(rows, more)</code>, the Overview’s own; follows Tweaks → Next step (Booked object, how many, See more).',
+        mbk: { t: 'Booked in', p: 'The member’s booked appointments: each row its date tile, the name over its hour, and its action as a 44 icon (directions, prepare, join); today’s row lit orange. Drawn by <code>_bkCard.html(rows, more)</code>, the Overview’s own; follows Tweaks → Scheduled (Has data, Items, State: these states) and Next step (Booked object).',
           groups: () => [['States', [
             { t: 'Empty', s: 'Nothing booked (Persistent)', k: 'rows 0', rows: [] },
             { t: 'One booking', s: 'Coming up', k: 'rows 1', rows: [{ t: 'Onboarding Consultation', bk: ['23', 'Sep', '11:00 am', 'Prepare'] }] },
