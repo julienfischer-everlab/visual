@@ -21928,3 +21928,5 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - Merged sheet entrance: rises 32 as it fades in (.36s / .26s, 60ms after the keys) ("move up while fade in from -32px").
 - Plan's icon (dock, desk sidebar, More, Iconography: NAV_IC.plan): Lucide list-check (three lines, a check at the foot), the house 1.75 line, centred on 12; filled (active) a 5.5-round square with the same list and check cut out ('Use List Check icon here and filled version for active'). Drawn as fill outlines like the rest of NAV_IC (generated, see the note's script in the session scratchpad).
 - Tweaks -> Container chat floating -> Border beam (On / Off, default Off): the beam once round the desk Ask panel as it opens, now only when On.
+- Desk Ask panel: the Suggestions title and the first chip in line with the field's words (28 from the container's edge), 4 more above Suggestions (10); its chips as the phone's: the Chips tweak's height (40), 18 sides, 10 gap, pill, white 8% ground (Go to concierge white), 16 icons, regular weight.
+- The ask sheet's blanket black at 32% ("Blanket 32%").
