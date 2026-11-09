@@ -22045,3 +22045,8 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 ## Timeline V3: the decades back, after This year
 
 - **V3, established member** ("I need the rest. I need the decade"): the This year tab ends with the rest of life. After the months come the transition "Your health, decade by decade" and a locked card for each decade: its Hairline figure, its line, its years and number of checks, three of its checks, "Reviewed with Dr Lu every year". The cards are My journey's (V2's) markup and styles, the format approved for decades, in a list of their own under the timeline. Their figures and streams are drawn as before (the deco pass now walks every list). Tweaks -> Decades turns them off.
+
+## Timeline V3: the decades' introduction as My journey's loop transition
+
+- **Before the decades** ("I need a transition between just the introduction of the decade"): My journey's loop transition, its ring's third filling as it rises to the middle of the view and its dot lit once full, the same as Re-test & Refine's. It carries the concept's introduction: "Beyond this year", "Your health, decade by decade" (20), and "How we'll look after you through every stage of life. Each decade has its own focus, and your plan keeps adjusting as your results and the guidelines change." The ring is My journey's own (`EvJv.loop`), its gradient under an id of V3's (My journey's loop of the same name sits hidden in the page). V3 fills it on the page's scroll as My journey does.
+- The decade cards keep the locked phase card ("Decade can look like this"): figure, title, line, years and checks, three checks, the lock line.

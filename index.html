@@ -45695,7 +45695,7 @@ hairline({
         const svg = HL.mk('svg', { viewBox: '0 0 400 320', 'aria-hidden': 'true' }, stage), h = G.mount({ stage, svg, read: { textContent: '' } }, G.range ? G.range[1] : undefined); B.push(h);
         const fit = () => { try { const bb = svg.getBBox(), bx = stage.parentElement, W = bx ? bx.clientWidth : 0, H = bx ? bx.clientHeight : 0; if (!bb.width || !W || !H) return; const k = Math.min(W / bb.width, H / bb.height), st = stage.style; st.width = (400 * k).toFixed(1) + 'px'; st.left = (W / 2 - (bb.x + bb.width / 2) * k).toFixed(1) + 'px'; st.top = (H / 2 - (bb.y + bb.height / 2) * k).toFixed(1) + 'px'; } catch (e) {} };
         requestAnimationFrame(() => { fit(); if (!window.ResizeObserver || !stage.parentElement) return; const ro = new ResizeObserver(() => fit()); ro.observe(stage.parentElement); B.push({ destroy: () => ro.disconnect() }); }); }); }   /* refitted whenever its box changes (hidden when drawn on a phone; the tabs' width) */
-    window.EvJv = { art: JV_ART, ph: JV_MSPH, wi: JV_WI, lk: JV_LK, clk: JV_CLK, cal: JV_CAL, chev: JV_CHEV, str: (root, bag) => jvStrMount(root, bag), fig: (root, bag) => gvMount(root, bag), pat: c => jbDraw(c) };   /* My journey's pieces for Timeline V3, which is drawn in this page's own layout ("Use the exact same layout and plug bloc inside"): its pictures and glyphs, the locked card's streams and figures, the status card's cloud */
+    window.EvJv = { art: JV_ART, ph: JV_MSPH, wi: JV_WI, lk: JV_LK, clk: JV_CLK, cal: JV_CAL, chev: JV_CHEV, loop: pi => JV_LOOP(pi), str: (root, bag) => jvStrMount(root, bag), fig: (root, bag) => gvMount(root, bag), pat: c => jbDraw(c) };   /* My journey's pieces for Timeline V3, which is drawn in this page's own layout ("Use the exact same layout and plug bloc inside"): its pictures and glyphs, the locked card's streams and figures, the status card's cloud */
     function jrGo(n, pick){ const was = JST; JST = Math.max(0, Math.min(4, n)); if (!JR_S.includes(JST)) JST = JR_S.find(x => x > JST) || JR_S[JR_S.length - 1];   /* a step not shown: the next one that is */ const ps = document.getElementById('stJvPur'), v = JST === 0 ? 'none' : JST === 4 ? 'prot' : pick || (was === 4 ? 'base' : ps && ps.value !== 'none' ? ps.value : 'base');   /* the membership: Protocol; back from it, the Baseline again */   /* pick: the plan a Get button chose (Protocol too) */   // a step: what is paid for (the Purchased tweak follows), the page from its top
       if (ps && ps.value !== v){ ps.value = v; ps.dispatchEvent(new Event('change', { bubbles: true })); } else { JPUR = v; render(); } main.scrollTop = 0; }
     { const js = document.getElementById('stJvJr'), jr = document.getElementById('stJvJrRow');   // Real journey: on, the steps; off, the plan as it was
@@ -53324,6 +53324,7 @@ hairline({
   #tl3 .t3Focus .jbUpdA{margin-top:auto;padding-top:24px;} #tl3 .t3Focus .jbUpdA .tlBtn{height:44px;padding:0 20px;border-radius:999px;font-size:14px;}
   body[data-bp="xs"] #tl3 .t3Focus{min-height:220px;padding:24px;border-radius:18px;} body[data-bp="xs"] #tl3 .t3Focus .jbH{max-width:78%;font-size:20px;line-height:26px;} body[data-bp="xs"] #tl3 .t3Focus .jbP{max-width:70%;}
   #tl3 .tlTh.t3Ic{display:grid;place-items:center;color:var(--tlSub);} #tl3 .tlTh.t3Ic svg{width:32px;height:32px;}
+  #tl3 .t3DecX .t3XEy{display:block;margin-bottom:6px;font-size:14px;line-height:20px;color:var(--tlSub);} #tl3 .t3DecX .jvPhXT b{font-size:20px;line-height:26px;letter-spacing:-.01em;} #tl3 .t3DecX .jvPhXT p{margin-top:8px;}   /* the decades' introduction: eyebrow, title, its line */
   #tl3 .t3Empty{margin:28px 0;font-size:14px;line-height:20px;color:var(--tlSub);}
   #tl3 .tlRow{cursor:pointer;} #tl3 .tlRow.t3Out{opacity:0;transform:translateX(16px);transition:opacity .3s ease,transform .3s ease;}   /* put off: out, then the list drawn again */
   /* the sheets' own pieces */
@@ -53495,6 +53496,9 @@ hairline({
   const side = o => '<div class="jvSide"><span class="jvMsF" aria-hidden="true"' + (o.php ? ' style="--php:' + o.php + '"' : '') + '><img src="' + (o.img || '') + '" alt="" draggable="false"></span><div class="jvMsT"><div class="jvMsTe"><span>' + esc(o.r) + '</span>' + (o.focus ? '<em>Your focus</em>' : '') + '</div><h3>' + esc(o.n) + '</h3></div>' +
     '<div class="jvSideE">Why it matters</div><p class="jvSideP">' + esc(o.d) + '</p>' + (o.pts && o.pts.length ? '<ul class="jvSideL">' + o.pts.map(t => '<li>' + esc(t) + '</li>').join('') + '</ul>' : '') + eta(o.eta) + (o.cta || '') + '</div>';
   const phase = (k, o, body, empty) => '<section class="tlSec jvWrap" data-ms="' + k + '"><div class="jvList"><div class="jvCard jv2c jvPhC jvMsV">' + side(o) + (body || '<div class="jvBody"><p class="jvSideP">' + esc(empty || '') + '</p></div>') + '</div></div></section>';
+  /* the decades' introduction: My journey's loop transition, its ring filling as it comes up ("I need a transition between just the introduction of the decade"), with the concept's words: Beyond this year, the title, how the plan carries on */
+  const decX = () => { const L = J().loop; return '<div class="jvPhX t3DecX" role="note" data-pi="2"><span class="jvPhXIc' + (L ? ' jvLoop' : '') + '" aria-hidden="true">' + (L ? L(2).replace(/jvLg(\d)/g, 't3Lg$1') : FLAG) + '</span>' +   /* its gradient its own id: My journey's loop of the same name sits hidden in the page */
+    '<div class="jvPhXT"><span class="t3XEy">Beyond this year</span><b>Your health, decade by decade</b><p>How we’ll look after you through every stage of life. Each decade has its own focus, and your plan keeps adjusting as your results and the guidelines change.</p></div></div>'; };
   const phx = t => '<div class="jvPhX" role="note"><span class="jvPhXIc" aria-hidden="true">' + FLAG + '</span><div class="jvPhXT"><b>' + esc(t) + '</b></div></div>';   /* My journey's phase transition: here the check-in the plan hangs off, and the decades ahead */
   /* the locked phase card (its figure over the streams, the line, the time, three reasons, the lock): each decade ahead ("Use something this format for Decade cards") */
   const lockCard = (k, o) => '<section class="tlSec jvWrap jvLater" data-ms="' + k + '"><div class="jvList"><div class="jvCard jvPhEc jvTv"><span class="jvPhIl" aria-hidden="true"><span class="jvIlS" data-fig="' + o.fig + '"></span></span><div class="jvPhE"><b>' + esc(o.t) + '</b><p>' + esc(o.l) + '</p></div>' + eta(o.eta) +
@@ -53548,7 +53552,7 @@ hairline({
     else if (tab === 'later') body = later.length ? nsec('Saved for later', '', later.map(x => nrow(x))) : '<p class="t3Empty">Nothing put off. Anything you do later lands here.</p>';
     else body = nsec('Now', 'now', nowR, focusCard());
     /* the rest, after this year: the decades, each its locked card (My journey's markup and styles, in a list of their own under the timeline; "I need the rest. I need the decade"; Tweaks -> Decades) */
-    const dec = tab === 'year' && !S.q.trim() && T().dec && ages.length ? '<div class="tlList tlV2 jvMs t3Jv t3Decs">' + phx('Your health, decade by decade') + ages.map(g => decCard(g)).join('') + '</div>' : '';
+    const dec = tab === 'year' && !S.q.trim() && T().dec && ages.length ? '<div class="tlList tlV2 jvMs t3Jv t3Decs">' + decX() + ages.map(g => decCard(g)).join('') + '</div>' : '';
     return bar + '<div class="tlList t3N">' + body + '</div>' + dec; };
 
   /* a new member: the timeline being built, the four things that build it, what the doctor adds, a first sketch of the decades */
@@ -53576,7 +53580,13 @@ hairline({
   /* ---- the page: drawn into My journey's list markup, after My journey's own (its page-wide lookups find its own tabs first) ---- */
   let host = null; const BAG = [];
   const thumb = () => { if (!host) return; const tb = host.querySelector('.tlTab.on'), th = host.querySelector('.tlThumb'); if (!tb || !th || !tb.offsetWidth) return; th.style.width = tb.offsetWidth + 'px'; th.style.transform = 'translateX(' + tb.offsetLeft + 'px)'; };
-  const deco = () => { requestAnimationFrame(() => { const E = window.EvJv, L = host && host.querySelector('.tlList'); if (!E || !L) return; host.querySelectorAll('.tlList').forEach(x => { try { if (E.str) E.str(x, BAG); if (E.fig) E.fig(x, BAG); } catch (e) {} });   /* every list: the decades' sit in one of their own */
+  const rmq = matchMedia('(prefers-reduced-motion: reduce)'); let lq = 0;
+  const loopFill = () => { lq = 0; if (!host || !H.classList.contains('tlD3')) return; const vr = main.getBoundingClientRect(), vh = vr.height || innerHeight;   /* My journey's: the third fills as the ring rises to the middle of the view, its dot lit once full */
+    host.querySelectorAll('.jvPhX[data-pi]').forEach(x => { const ic = x.querySelector('.jvLoop'); if (!ic) return; const r = ic.getBoundingClientRect(); if (!r.height) return; const p = rmq.matches ? 1 : Math.max(0, Math.min(1, (vh * .9 - (r.top + r.height / 2 - vr.top)) / (vh * .45)));
+      ic.querySelectorAll('.g').forEach(e => { e.style.strokeDashoffset = String(1 - p); }); x.classList.toggle('lit', p > .98); }); };
+  const loopGo = () => { if (!lq) lq = requestAnimationFrame(loopFill); };
+  main.addEventListener('scroll', loopGo, { passive: true }); addEventListener('resize', loopGo);
+  const deco = () => { requestAnimationFrame(() => { loopGo(); const E = window.EvJv, L = host && host.querySelector('.tlList'); if (!E || !L) return; host.querySelectorAll('.tlList').forEach(x => { try { if (E.str) E.str(x, BAG); if (E.fig) E.fig(x, BAG); } catch (e) {} });   /* every list: the decades' sit in one of their own */
     host.querySelectorAll('canvas.jbPat').forEach(c => { if (!E.pat) return; E.pat(c); if (window.ResizeObserver){ const ro = new ResizeObserver(() => E.pat(c)); ro.observe(c); BAG.push(() => ro.disconnect()); } }); thumb(); }); };
   const build = () => {
     if (!host){ host = document.createElement('div'); host.className = 'tlCol tl3'; host.id = 'tl3'; main.appendChild(host); }
