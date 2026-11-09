@@ -10062,7 +10062,7 @@
   #phone2 .ovTop::before, #dOver .ovTop::before, .svTop::before, .svmNav::before, .tlBar::before{bottom:-32px !important;background:linear-gradient(180deg,rgba(var(--stkRGB),1) 0,rgba(var(--stkRGB),1) calc(50% - 16px),rgba(var(--stkRGB),0.93) calc(50% - 16px + 0.15 * (50% + 16px)),rgba(var(--stkRGB),0.8) calc(50% - 16px + 0.3 * (50% + 16px)),rgba(var(--stkRGB),0.62) calc(50% - 16px + 0.45 * (50% + 16px)),rgba(var(--stkRGB),0.43) calc(50% - 16px + 0.6 * (50% + 16px)),rgba(var(--stkRGB),0.25) calc(50% - 16px + 0.75 * (50% + 16px)),rgba(var(--stkRGB),0.09) calc(50% - 16px + 0.9 * (50% + 16px)),rgba(var(--stkRGB),0) calc(50% - 16px + 1 * (50% + 16px))) !important;}
   #dTl .tlBar::before, .tlShPanel .tlBar::before{bottom:calc(-32px - var(--stkExt, 0px)) !important;}
   #dTl .tlBar .ovGround{display:none !important;} #dTl .tlBar::before{bottom:0 !important;background:var(--pageBg) !important;} #dTl .tlH{z-index:4 !important;background:var(--pageBg) !important;box-shadow:0 -2px 0 var(--pageBg);}   /* each month its own solid ground, under the bar: pinned, it sits just below the tabs; pushed up by the next, it slides behind them ("z index issue, month should go behind the tabs on top") */ #dTl .tlSubTop .ovGround{display:none !important;} #dTl .tlSubTop::before{bottom:0 !important;background:var(--pageBg) !important;}   /* the Timeline's pinned bar (and the month stuck under it): a solid ground, its edge a clean cut, no blur and no fade at all ("solid bg on timeline scroll fixed, no blur at all") */   /* the Timeline's group: the tabs and the month pinned under them */
-  .tlCol{max-width:760px;margin:0 auto;} #dTl.tlVer2 .tlCol{max-width:var(--ctSm, 1080px);}   /* My journey: a 1080 container ("1080 container"); v1's list as it was */
+  .tlCol{max-width:var(--ctXs, 800px);margin:0 auto;} #dTl.tlVer2 .tlCol{max-width:var(--ctSm, 1080px);}   /* v1's list the xs token (was its own 760: "REMOVE OWN!") */   /* My journey: a 1080 container ("1080 container"); v1's list as it was */
   .tlH1{margin:0 0 14px;font-size:28px;font-weight:500;letter-spacing:-.4px;line-height:1.15;color:var(--tlInk);}
   /* the tabs and the search ride a bar like every top bar: sticky at the
      card's top once the title has gone under, the tint and the ten blur
@@ -13977,7 +13977,7 @@
         <div class="tkGroup" data-tl>
         <div class="tkSub">Timeline</div>
         <!-- the Timeline's design version ("Create a tweak Timeline V2 where I'll adjust some design later; Save tweak should save the version V1 and V2 setup associated with them"): V1 or V2 (html.tlD2, nothing drawn differently yet); each its own Timeline tweaks, kept in #stTlDSet (a hidden control the panel's Save stores and shares like the rest) -->
-        <div class="tkRow tlDRow"><span class="lbl">Timeline</span><select id="stTlD" class="tkSegSel" aria-label="The Timeline's design version: V3 (the Timeline Ahead concept), or V1 and V2, kept as the archive, each with its own setup"><option value="v3" selected>V3</option><option value="v1">V1 archive</option><option value="v2">V2 archive</option></select><input type="hidden" id="stTlDSet" value=""></div>
+        <div class="tkRow tlDRow"><span class="lbl">Timeline</span><select id="stTlD" aria-label="The Timeline's design version: V3 (the Timeline Ahead concept), or V1 and V2, kept as the archive, each with its own setup"><option value="v3" selected>V3</option><option value="v1">V1 archive</option><option value="v2">V2 archive</option></select><input type="hidden" id="stTlDSet" value=""></div>
         <!-- v2, My journey: Upcoming as milestones, not months, from the reference ("Timeline: create a v2 on tweak; forget about month grouping"; "that's the timeline v2; call it My journey in the menu"): the menu and the page's title follow; the tabs stay Upcoming / Later -->
         <div class="tkRow">
           <span class="lbl">Version</span>
@@ -33099,7 +33099,7 @@ hairline({
       ['planMed', 'Medical actions', 'own', () => q('#dPlan .plPPg[data-p="med"]'), 'plan'], ['planSup', 'Supplements', 'own', () => q('#dPlan .plPPg[data-p="sup"]'), 'plan'], ['planRtn', 'Wind-down routine', 'own', () => q('#dPlan .plPPg[data-p="rtn"]'), 'plan'],
       ['planSes', 'Activity session', '2xs', () => q('.aqWrap.plSesWrap'), 'plan'],
       ['mk', 'Services marketplace', 'md', () => q('#dMkt'), 'mk'],
-      ['tl', () => window.__tlName ? window.__tlName() : 'My journey', () => { const t = q('#dTl'); return t && !t.classList.contains('tlVer2') ? 'own' : 'sm'; }, () => q('#dTl'), 'tl'],   /* v1 (Timeline) its own 760 */
+      ['tl', () => window.__tlName ? window.__tlName() : 'My journey', () => { const t = q('#dTl'), H0 = document.documentElement.classList; if (H0.contains('tlD3')) return H0.contains('t3New') ? 'sm' : 'xs'; return t && t.classList.contains('tlVer2') ? 'sm' : 'xs'; }, () => q('#dTl'), 'tl'],   /* a token always, so no Own ("REMOVE OWN!"): V3's timeline xs (its new member's cards sm), My journey sm, v1 xs */
       ['svc', 'Service detail', 'sm', () => q('#dSvc'), 'svc'], ['apt', 'Appointment', 'md', () => q('#dApt'), 'svc'],
       ['acc', 'My account', 'md', () => tab() !== 'settings' ? q('#dAcc') : null, 'acc'], ['set', 'Settings', 'md', () => tab() === 'settings' ? q('#dAcc') : null, 'acc'],
       /* the full modals (EvCtx's, M and up: the column in --ct2xs): the open one's wrap */
@@ -33128,7 +33128,7 @@ hairline({
       if (s.value !== v){ s.value = v; s.setAttribute('data-v', v); }   /* data-v: the segments follow at once (they watch the select's attributes) */
       const seg = s.nextElementSibling; if (seg && seg.classList.contains('tkSegT')) seg.querySelectorAll('button').forEach(b => { const own = b.dataset.v === 'own' && d !== 'own'; if (b.hidden !== own) b.hidden = own; const fx = !!(p && p[5]); if (b.disabled !== fx) b.disabled = fx; const t = b.dataset.v === d ? 'This page’s container today (the default)' : ''; if (b.title !== t) b.title = t; }); };
     const keep = () => { const h = hid(); if (h) h.value = Object.keys(M).length ? JSON.stringify(M) : ''; };
-    const read = v => { let o = null; try { o = v ? JSON.parse(v) : {}; } catch (e){ o = {}; } M = {}; if (o && typeof o === 'object') Object.keys(o).forEach(k => { if (by(k) && OPTS.indexOf(o[k]) >= 0) M[k] = o[k]; }); };
+    const read = v => { let o = null; try { o = v ? JSON.parse(v) : {}; } catch (e){ o = {}; } M = {}; if (o && typeof o === 'object') Object.keys(o).forEach(k => { if (by(k) && OPTS.indexOf(o[k]) >= 0 && !(k === 'tl' && o[k] === 'own')) M[k] = o[k]; }); };   /* the Timeline's Own gone ("REMOVE OWN!"): a saved Own back to its default */
     const on = () => { const k = cur(); if (!k) return false; const c = window.EvCtx ? window.EvCtx.top() : null, x = by(k)[4]; return c ? x === c.key : !x; };   /* the row's: the page itself, or the context it lives in (never a modal or a sheet over it) */
     const sync = () => { apply(); row(); const g = document.getElementById('tkCtGrp'); if (g && window.__tkPages && g.hidden === on()) try { window.__tkPages(); } catch (e){} };   /* a page come or gone without Tweaks redrawn: drawn again */
     const set = (k, v) => { const p = by(k); if (!p || OPTS.indexOf(v) < 0) return; if (v === dOf(p)) delete M[k]; else M[k] = v; keep(); sync(); };
@@ -53299,7 +53299,7 @@ hairline({
   html:not(.tlD3) #tl3{display:none !important;}
   html.tlD3 #dTl:not(.tlPastOn) > .tlBar, html.tlD3 #dTl:not(.tlPastOn) > .tlCol:not(.tlHead):not(.tl3){display:none !important;}
   html.tlD3 #dTl.tlPastOn > #tl3{display:none !important;}
-  html.tlD3 #dTl .tlCol{max-width:var(--ctSm, 1080px);}
+  html.tlD3 #dTl:not([data-pg-ct]) .tlCol{max-width:var(--ctXs, 800px);} html.tlD3.t3New #dTl:not([data-pg-ct]) .tlCol{max-width:var(--ctSm, 1080px);}   /* the timeline xs, the new member's cards sm; Tweaks -> Container over either */
   html.tlD3 #dTl:not(.tlPastOn) .tlHead .tlSearch{display:none !important;}
   html.tlD3 .svFloatNav.jvSimNav{display:none !important;}
   html.tlD3 #tkMenu .tkGroup[data-tl]:not([data-tl3]):not(:has(.tlDRow)){display:none !important;}
@@ -53313,6 +53313,17 @@ hairline({
   #tl3{position:relative;}
   #tl3 .jvPhEv[data-n="2"]{grid-template-columns:repeat(2,minmax(0,1fr));max-width:476px;} #tl3 .jvPhEv[data-n="1"]{grid-template-columns:minmax(0,1fr);max-width:236px;}   /* a decade with fewer than three checks: its cards centred, the reason cards' own width */
   @container msl (max-width:600px){ #tl3 .jvPhEv[data-n]{grid-template-columns:minmax(0,1fr);max-width:none;} }
+  /* the established member's normal timeline (V1's bar, rail, months and rows): the bar in the column, a count on each tab ("v3 need these 3 tabs"), the focus card first in Now */
+  #dTl #tl3 > .tlBar.t3Bar{display:block !important;margin:0;padding:0;}
+  #tl3 .t3Bar .tlTab{display:inline-flex;align-items:center;}
+  #tl3 .t3Cnt{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;margin-left:8px;padding:0 6px;box-sizing:border-box;border-radius:6px;background:rgba(255,255,255,.1);color:var(--tlTx);font-style:normal;font-size:12px;font-weight:500;line-height:1;font-variant-numeric:tabular-nums;transition:background .16s ease,color .16s ease;}
+  #tl3 .tlTab.on .t3Cnt{background:#fff;color:#111;} body.light #tl3 .t3Cnt{background:rgba(46,31,26,.08);color:#000;} body.light #tl3 .tlTab.on .t3Cnt{background:#111;color:#fff;}
+  #tl3 .t3Focus{min-height:248px;margin:6px 0 12px;padding:32px;border-radius:20px;box-sizing:border-box;}
+  #tl3 .t3Focus .jbH{max-width:56%;margin:0;font-size:24px;line-height:30px;} #tl3 .t3Focus .jbP{max-width:48%;}
+  #tl3 .t3Focus .jbUpdA{margin-top:auto;padding-top:24px;} #tl3 .t3Focus .jbUpdA .tlBtn{height:44px;padding:0 20px;border-radius:999px;font-size:14px;}
+  body[data-bp="xs"] #tl3 .t3Focus{min-height:220px;padding:24px;border-radius:18px;} body[data-bp="xs"] #tl3 .t3Focus .jbH{max-width:78%;font-size:20px;line-height:26px;} body[data-bp="xs"] #tl3 .t3Focus .jbP{max-width:70%;}
+  #tl3 .tlTh.t3Ic{display:grid;place-items:center;color:var(--tlSub);} #tl3 .tlTh.t3Ic svg{width:32px;height:32px;}
+  #tl3 .t3Empty{margin:28px 0;font-size:14px;line-height:20px;color:var(--tlSub);}
   #tl3 .tlRow{cursor:pointer;} #tl3 .tlRow.t3Out{opacity:0;transform:translateX(16px);transition:opacity .3s ease,transform .3s ease;}   /* put off: out, then the list drawn again */
   /* the sheets' own pieces */
   .t3Ey{display:flex;align-items:center;gap:8px;font-size:13px;line-height:18px;letter-spacing:1.4px;text-transform:uppercase;color:var(--tlSub);}
@@ -53420,7 +53431,7 @@ hairline({
   const SUGK = { purchase: { l: 'Recommended by Dr Lu', ic: 'dr' }, stale: { l: 'Due a recheck', ic: 'clock', warn: 1 }, cadence: { l: 'Set by Dr Lu', ic: 'repeat' } };
 
   /* ---- state, from the Tweaks ---- */
-  const S = { items: null, tab: 'up', q: '', sec: {}, nm: { rec: 62, plan: false, wear: false, book: false } };
+  const S = { items: null, tab: 'now', q: '', sec: {}, nm: { rec: 62, plan: false, wear: false, book: false } };   /* tab: the established's now / year / later; the new member's Upcoming is any tab but later */
   const reset = () => { S.items = ITEMS0.map(x => Object.assign({}, x, { chips: (x.chips || []).slice(), st: 0 })); S.sec = {}; };
   reset();
   const tk = (id, d) => { const e = document.getElementById(id); return e ? e.value : d; };
@@ -53496,7 +53507,7 @@ hairline({
   const cloud = (ey, h, p, f, btn) => '<div class="jbCard jbHp jbHpE"><span class="jbEy">' + esc(ey) + '</span><h3 class="jbH">' + esc(h) + '</h3><p class="jbP">' + esc(p) + '</p><div class="jbHpV"><div class="jbPatW" aria-hidden="true"><canvas class="jbPat" data-f="' + Math.max(.1, Math.min(1, f)).toFixed(2) + '" data-v="1"></canvas></div>' + btn + '</div></div>';
   const bento = (a, b) => '<div class="jvBento"><div class="jbRowS">' + a + b + '</div></div>';
   const apHead = () => '<div class="jvH2Row"><h2 class="jvH2">Action plan</h2><label class="tlSearch' + (S.q ? ' open' : '') + '">' + SRCH + '<input class="t3Q" type="search" placeholder="Search" autocomplete="off" spellcheck="false" enterkeyhint="search" aria-label="Search your timeline" value="' + esc(S.q) + '"></label></div>' +
-    '<div class="jvTabsS"><div class="tlTabs" role="tablist" aria-label="Timeline"><i class="tlThumb" aria-hidden="true"></i>' + [['up', 'Upcoming'], ['later', 'Later']].map(([k, l]) => '<button class="tlTab' + (S.tab === k ? ' on' : '') + '" type="button" role="tab" aria-selected="' + (S.tab === k) + '" data-t3t="' + k + '">' + l + '</button>').join('') + '</div></div>';
+    '<div class="jvTabsS"><div class="tlTabs" role="tablist" aria-label="Timeline"><i class="tlThumb" aria-hidden="true"></i>' + [['up', 'Upcoming'], ['later', 'Later']].map(([k, l]) => { const on = k === 'later' ? S.tab === 'later' : S.tab !== 'later'; return '<button class="tlTab' + (on ? ' on' : '') + '" type="button" role="tab" aria-selected="' + on + '" data-t3t="' + k + '">' + l + '</button>'; }).join('') + '</div></div>';
 
   const laterView = () => { const L = S.items.filter(i => i.s === 'later');
     return '<section class="tlSec jvWrap jvClaim" data-ms="later"><div class="jvList"><div class="jvCard jv2c"><div class="jvSide"><div class="jvLbl">Saved for later</div><p class="jvSideP">' + (L.length ? L.length + (L.length === 1 ? ' service' : ' services') + ' put off. Nothing is cancelled.' : 'Nothing put off. Anything you do later lands here.') + '</p></div>' +
@@ -53505,19 +53516,37 @@ hairline({
     return '<section class="tlSec jvWrap jvClaim" data-ms="search"><div class="jvList"><div class="jvCard jv2c"><div class="jvSide"><div class="jvLbl">Results</div><p class="jvSideP">' + hits.length + (hits.length === 1 ? ' match' : ' matches') + ' for “' + esc(S.q.trim()) + '”</p></div>' +
       (hits.length ? '<div class="jvBody tlItems">' + hits.map(i => row(i)).join('') + '</div>' : '') + '</div></div></section>'; };
 
-  /* an established member: the focus and the check-in in the bento; Now (until the check-in), the check-in, This year, then the decades */
-  const estHTML = () => { const t = T(), a = t.cif === 'async', open = S.items.filter(i => i.s === 'open'), todo = open.filter(i => i.act && i.st === 0), prog = open.filter(i => !(i.act && i.st === 0)),
-      pre = S.items.filter(i => visible(i) && i.s === 'next' && i.at < LINE.at).sort((x, y) => x.at - y.at), { near, ages } = groups(), art = J().art || [], ph = J().ph || [];
-    const yr = near.length ? (m0 => { const m1 = ymo(near[near.length - 1].at); return m0[0] + (m0[1] !== m1[1] ? ' ' + m0[1] : '') + ' – ' + m1[0] + ' ' + m1[1]; })(ymo(near[0].at)) : 'The next 12 months';
-    const up = phase('now', { img: art[0], r: 'Until ' + LINE.d + ' ' + LINE.mo, focus: true, n: 'Before your check-in', d: 'Your ApoB is coming down, but not far enough yet, and your blood sugar has crept up. One more read before you talk with Dr Lu in ' + LINE.mo + '.', pts: open.map(i => PTS[i.id] || i.t), eta: 'Check-in in ' + LINE.days + ' days' },
-        secs('now', [['To action', 'a', todo.map((x, i) => row(x, i === 0)).join('')], ['In progress', 'p', prog.map(x => row(x)).join('')], ['Suggested', 'u', pre.map(x => row(x)).join('')]]), 'Nothing to do right now.') +
-      phx((a ? 'Your debrief from Dr Lu' : 'Your check-in with Dr Lu') + ' · ' + LINE.when) +
-      phase('year', { img: (ph[1] || [])[0] || art[1], php: (ph[1] || [])[1], r: yr, n: 'The rest of this year', d: 'What comes due for you this year, from your age, your history and Dr Lu’s plan.', pts: [...new Set(near.map(areaOf))], eta: near.length + (near.length === 1 ? ' check' : ' checks') },
-        secs('year', [['Coming up', 'u', near.map(x => row(x)).join('')]]), 'Nothing else this year.') +
-      (t.dec && ages.length ? phx('Your health, decade by decade') + ages.map(g => decCard(g)).join('') : '');
-    return bento(upd(GOAL.g.replace(/,? before [^.]*\./, '.'), 'Your focus until ' + LINE.d + ' ' + LINE.mo + ', set by Dr Lu after your results review on ' + GOAL.when + '.', '<button class="tlBtn msB jvB msP" type="button" data-a="why">Review</button>', 'consult'),
-        cloud('Your next check-in', a ? 'Insights debrief from Dr Lu' : 'Video check-in with Dr Lu', (a ? 'In your app by ' + LINE.when + '. Reply any time.' : LINE.when + ' · 20 min.') + ' In ' + LINE.days + ' days.', 1 - LINE.days / 365, '<button class="tlBtn msB jvB msP jbHpGo" type="button" data-a="prep">' + (a ? 'Add questions' : 'Prepare') + '</button>')) +
-      apHead() + (S.q.trim() ? searchView() : S.tab === 'later' ? laterView() : up); };
+  /* an established member: a normal timeline, as V1's and V2's ("v3 keep a normal timeline as v1 v2"): the tabs Now / This year / Later, each its count ("v3 need these 3 tabs"),
+     the months on the rail with their counts, V1's rows (picture, name, the bars and the step, the properties, the joined button and its more); the focus first in Now ("this card at the beginning of NOW");
+     no bento ("remove this for established", "keep only for new") */
+  const FULLM = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  const nmeta = (k, ic, t) => '<span data-k="' + k + '">' + ic + '<em>' + esc(t) + '</em></span>';
+  const nrow = (it, prim) => { const sk = sugKind(it), [sb, rest] = subOf(it), w = whenOf(it, rest), p = pic(it), cost = T().paid ? (it.chips || []).find(PAIDISH) : null, id = it.id, bars = barsOf(it);
+    const lab = it.s === 'later' ? 'Add to plan' : sk ? (it.sug ? 'Add to plan' : 'View') : it.s === 'open' && it.act && it.st === 0 ? ctaLabel(it) : 'View',
+      a = it.s === 'later' ? 'bring' : sk && it.sug ? 'adopt' : 'go', more = it.s === 'later' ? '' : sk ? 'sug' : it.s === 'open' ? 'later' : '',
+      cta = it.s === 'later' || !!it.sug || (it.s === 'open' && !!it.act && it.st === 0);   /* to do now, a suggestion to take or one to bring back: the white button */
+    return '<article class="tlRow noProg' + (prim ? ' t3Pri' : '') + '" data-id="' + id + '" tabindex="0">' + (p ? '<img class="tlTh" src="' + p + '" alt="" width="80" height="80">' : '<span class="tlTh t3Ic" aria-hidden="true">' + icon(it) + '</span>') +
+      '<div class="tlTx"><div class="tlTl"><b>' + esc(it.t) + '</b></div>' + (bars ? '<p class="tlSubB">' + bars + '<span class="tlSubT">' + esc(sb) + '</span></p>' : '<p>' + esc(sb) + '</p>') + '</div>' +
+      '<div class="tlMeta">' + (w ? nmeta('cal', w[0], w[1]) : '') + (cost ? nmeta('card', I.card, cost[0]) : '') + '</div>' +
+      '<div class="tlAct' + (more ? ' split' : '') + (cta ? ' cta' : '') + '"><button class="tlBtn' + (cta ? ' cta' : '') + '" type="button" data-a="' + a + '" data-id="' + id + '">' + esc(lab) + '</button>' +
+      (more ? '<button class="tlMore" type="button" aria-label="More options" aria-haspopup="menu" data-a="' + more + '" data-id="' + id + '">' + DOTS + '</button>' : '') + '</div></article>'; };
+  const nsec = (h, dot, rows, pre) => '<section class="tlSec' + (dot ? ' ' + dot : '') + '"><h2 class="tlH"><i class="tlDot" aria-hidden="true"></i>' + esc(h) + (rows.length ? '<span class="tlHn" aria-label="' + rows.length + (rows.length === 1 ? ' item' : ' items') + '">' + rows.length + '</span>' : '') + '</h2>' + (pre || '') + '<div class="tlItems">' + rows.join('') + '</div></section>';
+  const focusCard = () => '<div class="t3Focus jbCard jbUpd"><h3 class="jbH">' + esc(GOAL.g.replace(/,? before [^.]*\./, '.')) + '</h3><p class="jbP">Your focus until ' + LINE.d + ' ' + LINE.mo + ', set by Dr Lu after your results review on ' + GOAL.when + '.</p>' +
+    '<div class="jbUpdA"><button class="tlBtn cta" type="button" data-a="why">Review</button></div><div class="jbUpdPh" data-ph="consult" aria-hidden="true" style="background-image:url(' + ((window.EvStatusImg || {}).consult || '') + ')"></div></div>';   /* the bento's focus card (its photo, its words, Review), first in Now */
+  const estHTML = () => { const open = S.items.filter(i => i.s === 'open'), todo = open.filter(i => i.act && i.st === 0), prog = open.filter(i => !(i.act && i.st === 0)), later = S.items.filter(i => i.s === 'later'),
+      pre = S.items.filter(i => visible(i) && i.s === 'next' && i.at < LINE.at).sort((x, y) => x.at - y.at), { near } = groups();
+    const nowR = todo.map((x, i) => nrow(x, i === 0)).concat(prog.map(x => nrow(x)), pre.map(x => nrow(x))), C = { now: nowR.length, year: near.length, later: later.length }, tab = C[S.tab] == null ? 'now' : S.tab;
+    const bar = '<div class="tlBar t3Bar"><div class="tlBarIn"><div class="tlTabs" role="tablist" aria-label="Timeline"><i class="tlThumb" aria-hidden="true"></i>' +
+      [['now', 'Now'], ['year', 'This year'], ['later', 'Later']].map(([k, l]) => '<button class="tlTab' + (tab === k ? ' on' : '') + '" type="button" role="tab" aria-selected="' + (tab === k) + '" data-t3t="' + k + '">' + l + '<em class="t3Cnt">' + C[k] + '</em></button>').join('') + '</div>' +
+      '<label class="tlSearch' + (S.q ? ' open' : '') + '">' + SRCH + '<input class="t3Q" type="search" placeholder="Search" autocomplete="off" spellcheck="false" enterkeyhint="search" aria-label="Search your timeline" value="' + esc(S.q) + '"></label></div></div>';
+    let body = '';
+    if (S.q.trim()){ const q = S.q.trim().toLowerCase(), hits = S.items.filter(i => visible(i) && (i.t + ' ' + i.sub + ' ' + (i.why || '')).toLowerCase().includes(q));
+      body = hits.length ? nsec('Results', '', hits.map(x => nrow(x))) : '<p class="t3Empty">No matches for “' + esc(S.q.trim()) + '”.</p>'; }
+    else if (tab === 'year'){ const by = new Map(); near.forEach(i => { const y = Math.floor(i.at), k = FULLM[Math.min(11, Math.floor((i.at - y) * 12 + 1e-6))] + ' ' + y; if (!by.has(k)) by.set(k, []); by.get(k).push(i); });   /* month by month, as V1's */
+      body = by.size ? [...by].map(([k, L]) => nsec(k, '', L.map(x => nrow(x)))).join('') : '<p class="t3Empty">Nothing else this year.</p>'; }
+    else if (tab === 'later') body = later.length ? nsec('Saved for later', '', later.map(x => nrow(x))) : '<p class="t3Empty">Nothing put off. Anything you do later lands here.</p>';
+    else body = nsec('Now', 'now', nowR, focusCard());
+    return bar + '<div class="tlList t3N">' + body + '</div>'; };
 
   /* a new member: the timeline being built, the four things that build it, what the doctor adds, a first sketch of the decades */
   const NMT = () => [
@@ -53549,7 +53578,8 @@ hairline({
   const build = () => {
     if (!host){ host = document.createElement('div'); host.className = 'tlCol tl3'; host.id = 'tl3'; main.appendChild(host); }
     BAG.splice(0).forEach(f => { try { if (typeof f === 'function') f(); else if (f && f.destroy) f.destroy(); } catch (e) {} });
-    host.innerHTML = '<div class="tlList tlV2 jvMs t3Jv' + (S.q.trim() ? ' msQ' : '') + '">' + (T().mem === 'new' ? newHTML() : estHTML()) + '</div>';
+    const nw = T().mem === 'new'; H.classList.toggle('t3New', nw);   /* its container's default (EvCt): sm for the new member's cards, xs for the timeline */
+    host.innerHTML = nw ? '<div class="tlList tlV2 jvMs t3Jv' + (S.q.trim() ? ' msQ' : '') + '">' + newHTML() + '</div>' : estHTML();
     deco(); };
   const find = id => S.items.find(i => i.id === id);
   const rowEl = id => host && host.querySelector('.tlRow[data-id="' + id + '"]');

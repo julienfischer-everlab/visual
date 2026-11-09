@@ -22026,3 +22026,14 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - **Bottom** ("Focus on field (bottom)"): the focus goes to the bottom field. On the phone the Menu AI entry point's layout; on the desk the floating Eva field's own panel when that field is in view, else the same panel at the page's foot, 48 above the window's.
 - **Ask sheet, Bottom sheet: Services tiles** keep their 24 corners ("card must be rounded"). The concentric rule (sheet corner less 24) gave them 8 against the standard sheet's 32.
 - **Desk Ask panel's field**: white at 6% (was 8%), the 64 blur kept ("chat field bg fff 6%").
+
+## Timeline V3: a normal timeline for the established member; Container without Own; version as a select
+
+- **V3, established member** ("v3 keep a normal timeline as v1 v2"): V1's normal timeline, not My journey's cards. V1's bar with three tabs, **Now / This year / Later**, each with its count ("v3 need these 3 tabs"; the active count white, the others grey). Then the rail with sections and their counts, and V1's rows: picture, name, bars chip and step, properties, the joined button and ⋯. Built in the V3 script with V1's own classes (`tlBar`, `tlTabs`, `tlList`, `tlSec`, `tlH`, `tlRow`, `tlAct`), so V1's styles and phone layout apply.
+  - Now: the focus card first ("this card at the beginning of NOW": Get ApoB under 1.0…, its photo, Review), then the three to-dos (and Dr Lu's suggestions with Suggestions on).
+  - This year: month by month (June, July, October 2027).
+  - Later: Saved for later, each row with Add to plan.
+  - Rows open their service page, Book / Start the booking, ⋯ Do this later; the counts follow.
+- **No bento for the established member** ("remove this for established", "keep only for new"): the focus card and the check-in card are gone from the top. The new member keeps the bento and My journey's layout.
+- **Container**: V3's own width rule beat the Container pick (`html.tlD3 #dTl .tlCol`, same specificity, later); now the pick wins. The Timeline's default is always a token: xs for V3's timeline (sm for its new member), sm for My journey, xs for V1 (its column was its own 760). So the Timeline row has no **Own** ("REMOVE OWN!"); a saved Own goes back to the default.
+- **Timeline version** (V3 / V1 archive / V2 archive) is a select now ("select instead").
