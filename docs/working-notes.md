@@ -22066,3 +22066,8 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 
 - **The reel** ("roll from, maybe, 35 to 40. You should see the number vertically rotate ... a fade out on the top and on the bottom with a blurry effect"): before each decade, whole numbers from five years before (35, 36 ... 40) on a vertical reel, pinned in the middle of the view. Scrolling turns it a number at a time: the one in front sharp, its neighbours above and below squashed as they turn away, fainter and blurred (up to 9px), the reel's top and foot faded out. Then 40 holds and the card comes up under it. 2D transforms only: the 3D drum of the last build could draw as nothing in some browsers (the empty runway in the screenshot).
 - **Saved for later before the decades** ("Before the decade section", "Save for later before decade"): Now, This year, Later, then the decades, for the established member and the new member alike. While reading the decades, Later stays lit.
+
+## Timeline V3: the decade reel in the flow, glyph faded top and foot
+
+- **In the flow** ("The number shouldn't be fixed on scroll. It should just follow the flow. And the number should stay. You should have a mask on the top and on the bottom."): no pin any more. The reel sits in the page between the decades' intro and the card and scrolls with it. Its turn follows where it is in the view (35 as it comes in from the foot, 40 by the time it passes the middle), and 40 stays from there.
+- **The look** ("more like this", the 90): one number in a window the digits' own height, light weight (300), crisp (no blur). The window is masked solid in its middle and clear at its top and foot, so each glyph fades out at its top and bottom. The next number slides in from under it as you scroll.
