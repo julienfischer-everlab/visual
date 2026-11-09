@@ -2912,7 +2912,9 @@
   html.askV2.askDock body.light .aiWrap > .aiX{background:#fff;box-shadow:0 0 0 1px rgba(46,31,26,.08);}
   .mChat .mChatX{display:none !important;}   /* no cross on the star in any version: in Bottom sheet it stood beside the star, pushing it off centre ("Icon bug! need to be centered") */
   /* Ask sheet, Bottom sheet (Tweaks -> Ask sheet -> Version: Bottom sheet, html.askSheet with html.askV2): one edge-to-edge sheet over the dock, its notch, the field (the composer: words, +, Eva, send) then the conversations in it; the keys lift it when the field is tapped */
-  html.askSheet .aiWrap .aiCard{left:0 !important;right:0 !important;bottom:0;width:auto !important;max-width:none !important;padding:10px 16px calc(16px + var(--evHome, 34px)) !important;border-radius:32px 32px 0 0 !important;background:#181818 !important;box-shadow:0 -20px 60px -30px rgba(0,0,0,.9),0 0 0 1px rgba(255,255,255,.05) !important;}
+  /* floating, grown out of the star ("Clicking the star CTA will increase the CTA shape to form a floating bottom sheet that has the same padding from the viewport as the menu"): the dock's own inset at the sides (--navInset) and its lift at the foot (--navLift), round all over (the sheets' 44, concentric with the screen); a circle on the star while it opens and closes */
+  html.askSheet .aiWrap .aiCard{left:var(--navInset, 12px) !important;right:var(--navInset, 12px) !important;bottom:var(--navLift, 16px);width:auto !important;max-width:none !important;padding:10px 16px 16px !important;border-radius:var(--evShR, 44px) !important;background:#181818 !important;box-shadow:0 -20px 60px -30px rgba(0,0,0,.9),0 0 0 1px rgba(255,255,255,.05) !important;}
+  html.askSheet .aiWrap:not(.on) .aiCard{border-radius:50% !important;} html.askSheet .aiWrap .aiCard{overflow:hidden;}   /* the rows bled to its edges, cut by its round corners */
   html.askSheet body.light .aiWrap .aiCard{background:#fff !important;box-shadow:0 -20px 60px -30px rgba(46,31,26,.35),0 0 0 1px rgba(46,31,26,.06) !important;}
   html.askSheet .aiWrap.typing .aiCard{padding-bottom:16px !important;}
   html.askSheet .aiWrap .aiCard::before{content:"";display:block;width:36px;height:5px;margin:0 auto 14px;border-radius:3px;background:rgba(255,255,255,.24);}   /* the notch, the sheets' own */
@@ -36888,7 +36890,7 @@ hairline({
         wrap.classList.add('typing');
         if (k) void k.offsetWidth;
         if (dock()) dkUp((k ? k.offsetHeight : 0) + dkG - dkB);   /* Dock: the field and the cross up on the keys together, 10 over them */
-        else card.style.bottom = ((k ? k.offsetHeight : 0) + (document.documentElement.classList.contains('askSheet') ? 0 : 12)) + 'px';   // on the keys, keeping its 12px float (Bottom sheet: flush on them, edge to edge)
+        else card.style.bottom = ((k ? k.offsetHeight : 0) + 12) + 'px';   // on the keys, keeping its 12px float
         kbdOn(true);
       });
       dkKeys = on => { const k = on ? keyboard() : null; if (k) void k.offsetWidth; wrap.classList.toggle('typing', on); kbdOn(on); dkUp(on ? (k ? k.offsetHeight : 0) + dkG - dkB : 0);   /* over the keys by as much as the field stands in from the screen's sides ("padding bottom must be the same as the left right padding") */ if (on) ph._kbdTarget = inp; };
@@ -36909,7 +36911,7 @@ hairline({
       let from = null;
       const fromBtn = () => {
         if (dock()) return '';   /* Dock: the field fades in where the island was */
-        if (document.documentElement.classList.contains('askV2')) return 'translateY(56px)';   /* Version 2: the two cards rise from below as they fade in, not out of the star */
+        if (document.documentElement.classList.contains('askV2') && !document.documentElement.classList.contains('askSheet')) return 'translateY(56px)';   /* Version 2: the two cards rise from below as they fade in, not out of the star (the Bottom sheet grows out of it, below) */
         const B = from || btn.getBoundingClientRect(), C = card.getBoundingClientRect();
         if (!C.width || !B.width) return '';
         return 'translate(' + ((B.left + B.width / 2) - (C.left + C.width / 2)) + 'px,' + ((B.top + B.height / 2) - (C.top + C.height / 2)) + 'px) ' +

@@ -21886,3 +21886,4 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - XS: every Overview module hugs its content (no min-height at XS; the Meet Concierge card's 88 floor removed).
 - Bottom sheet service tiles: padding 20 (+8, "padding card +8px"), 128 wide so the name keeps its 88.
 - Phone dock 4 higher ("move up the nav by 4px"): --navLift = the side inset + 4, in the drawn phone, full screen and Auto alike.
+- Concierge / Inbox / Services: the sheet floats with the dock's own insets (--navInset 12 at the sides, --navLift 16 at the foot), round all over (44, concentric with the screen), and grows out of the star (a circle on the star, scaled up to the card; closing runs it back). The rows bled to its edges are cut by its corners. On the keys it keeps a 12 float.
