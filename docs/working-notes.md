@@ -21843,3 +21843,7 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - The secondary card's rows on one line each, short labels ("each item shouldn't stack, one line; use smaller label: Why, Type"): Why · the insight (ellipsis if long), Type · New action / Action adjusted. No divider between them; the card sits above the price row.
 - The card's description 14 / 20 (was 17 / 25). The visual 64 (was 80), its icon 28.
 - Swiping a card blurs its content with the distance, 8px at the threshold (`--sb` on the card, `filter: blur()` on its children but the progress cue `.arRcStkMk`); cleared when it springs back or the stack is reset.
+
+## Lifestyle: items grouped New plan action / Plan adjustment
+
+- "Inside card instead of label, use grouping: New plan action / Plan adjustment": each Lifestyle group card lists its new items under "New plan action", then its adjusted ones under "Plan adjustment" (13 / 18, ink 56%; a divider above the second heading); the rows lose their New / Adjusted badge. The item's line 14 / 19 ("sub item should be 14px").
