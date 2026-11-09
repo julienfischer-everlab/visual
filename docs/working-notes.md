@@ -21916,3 +21916,4 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - Merged: the dismiss at the top right of the screen (44, top 57, right 16) in every Floating cards option, the Top chat's Bottom too ("Keep dismiss top right cta").
 - The unread dots (the star's, the first conversation chip's): no orange halo ("remove halo orange").
 - Tweaks -> Container chat floating (Overview): Background (colour, default white), Opacity (default 4%), Blur (default 24): the desk Ask panel's container (--cfBg, --cfBlur).
+- Tweaks -> Chips (Overview): Chip height (28-56, default 40) and Visual size (16-48, default 32): the Menu AI sheet's list and the Top chat's chips (--chipH), the services' 3D render in every chip (--chipVis, its margins following so the chip keeps its height).
