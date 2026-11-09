@@ -22126,3 +22126,21 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **Timeline tabs**: Tweaks → Timeline → Tab style. Outline (the underline, as before) or Filled ("More filled rounded shape VS outline tab"): a rounded track with the tab that is on lifted on a pill that slides. One line each on the phone.
 - **Menu AI entry point** now holds Container chat floating (Background, Opacity, Blur, Border beam) and Chips (Chip height, Visual size) as two sections at its foot ("put this into Menu ai entry point"; it shows with the desk Ask panel too).
 - **Unread message** ("unread message 1 2 3+ If 3+ show 2 first item plus one 'X more'"): Off, 1, 2, 3+ on both the Menu AI entry point and Top Chat AI. The lists show that many unread conversations, each with its dot. With 3+, the first two show, then "X more", which opens the Concierge. An old On reads as 1.
+
+## Booked in CTA and icons, Share copies directly, unlink badge, decade mask, Decade style
+
+- **Booked in, Dates** ("cta right side, use SM button"): each row's action is now at its right, a 36 disc (the SM control size).
+  - The title is 16 regular, the More rows' type ("Same font style as this for the bookin in item").
+  - View has a filled eye ("Eye filled icon when it's View"). Directions has its arrow filled when the booking is approaching and in person ("Direction icon filled when approaching and physical").
+- **Share** in the Tweaks header ("No need the dropdown with the address, just copy directly, feedback inside CTA 'Copied' disappear after 2sec"):
+  - It copies the link straight away, and the button reads "Copied" (a green icon) for 2 seconds, then Share again.
+  - The link field shows only if the browser refuses the copy.
+- **Insights tasks badge**: "To connect" carries an unlink icon while the wearable isn't connected ("When inactive, use unlink icon"). Every badge icon sits 2 further from its word (7, was 5).
+- **Decade number** ("No I meant the overlapping fade out disappear, not the number totally"): the number stays.
+  - What goes, once it lands on the decade, is the fade at its top and bottom (the mask over the rolling digits). It clears with the scroll, gone by 28% of the view above the middle.
+- **Decade style** (Tweaks → Timeline V3 → Decade style; "Create a decade style tweak: Card #1 (current), Card #2. Card 2 use this format"):
+  - **Card #1**: the locked card, as before.
+  - **Card #2**: My journey's two-column phase card, the same one the new member's start uses.
+    - At its left: the picture in a 96 circle, the years ("40–49 years", with "Up next" on the first decade), the decade's title, Why it matters, three points, and its years and number of checks as a chip.
+    - At its right: its checks in the inner card under a Coming up chip, each row the timeline's own (picture, name, line, when, View and its ⋯).
+    - It keeps two columns from a 600 container (My journey's own stack under 860). On the phone it stacks as My journey's does.
