@@ -21996,3 +21996,8 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 
 - Tweaks → Top Chat AI → Field position has a new option, **Concierge**, and it is now the default ("Chat field goes directly to concierge"). On the phone, a tap on the Overview's top field (or Tab onto it) opens the Concierge (`window._cc.show()`), with no keyboard, chips or sheet first. Same (top) and Bottom are kept.
 - A setup saved on Same or Bottom moves to Concierge once (`everlab:mig:topCc`). Picking another option and saving still holds. The desk's top field is unchanged.
+
+## Insights search: the chosen record as its own row
+
+- Tweaks → Active chip (Search first) has a third option, **New row** ("Add a tweak in a new row, between search and chip filter"), as `html.srchRecCard`. Once a record is chosen, its chip leaves the search for a card of its own (`#mRecRow`) between the search and the range chips. The card shows the record's name (16, medium), its type and date ("Pathology | 13 Aug 2026", 14 at 56%) and a 32px cross at its right. The rest of the card still opens the record sheet; the cross clears it.
+- The card is the same element as the chip (`#mRecWrap`: its button, its cross, their handlers), moved there and back. Cleared, it goes back into the search as All records. It uses the search field's ground: white 6% in dark, rgba(46,31,26,.06) in light, 20px corners.

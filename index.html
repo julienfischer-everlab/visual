@@ -1826,6 +1826,17 @@
   html.srchChip body.light #mSearch .msRec{background:rgba(46,31,26,.06);}
   /* Search first, Active chip: First in list (html.srchRecRow; "Chips active goes into chip list below first in line"): a chosen record's chip leaves the search for the chips' row, first in line, 44 high like the range chips, in their active look (a lighter plate, the white ring) with its cross at the right; the search then runs to its own edge (#mSearch.recOut). Cleared, it goes back into the search as All records */
   html.srchChip #mSearch #mChips > .msRecWrap{position:relative;top:auto;right:auto;transform:none;flex:none;width:auto;max-width:none;z-index:auto;}
+  /* Search first, Active chip: New row (html.srchRecCard; "Add a tweak in a new row, between search and chip filter"): the chosen record a card of its own under the search, its name, its type and date (the eyebrow the chip hides), a 32 cross at its right; the rest of it opens the record sheet. Cleared, it goes back into the search as All records */
+  #mSearch > .msRecRow{margin:12px 0 0;} #mSearch > .msRecRow[hidden]{display:none;}
+  html.srchChip #mSearch .msRecRow > .msRecWrap.msRecWrap{position:relative;top:auto;right:auto;transform:none;flex:none;width:100%;max-width:none;z-index:auto;}
+  html.srchChip #mSearch .msRecRow > .msRecWrap.msRecWrap .msRec{display:flex;align-items:center;width:100%;height:auto;min-height:64px;padding:12px 60px 12px 20px;border-radius:20px;background:rgba(255,255,255,.06);box-shadow:none;color:#ececec;text-align:left;}
+  html.srchChip #mSearch .msRecRow > .msRecWrap.msRecWrap .msRec:hover{background:rgba(255,255,255,.08);} html.srchChip #mSearch .msRecRow > .msRecWrap.msRecWrap .msRec:active{background:rgba(255,255,255,.1);}
+  html.srchChip #mSearch .msRecRow > .msRecWrap.msRecWrap .msRec b{font-size:16px;line-height:22px;font-weight:500;color:#f4f4f4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  html.srchChip #mSearch .msRecRow > .msRecWrap.msRecWrap .msRec i#mRecEy:not([hidden]){display:block !important;margin-top:2px;font-size:14px;line-height:20px;color:rgba(236,236,236,.56);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  html.srchChip #mSearch .msRecRow > .msRecWrap.msRecWrap .msRecClear{right:16px;width:32px;height:32px;background:rgba(255,255,255,.1);color:#fff;} html.srchChip #mSearch .msRecRow > .msRecWrap.msRecWrap .msRecClear svg{width:14px;height:14px;}
+  html.srchChip body.light #mSearch .msRecRow > .msRecWrap.msRecWrap .msRec{background:rgba(46,31,26,.06);color:#000;} html.srchChip body.light #mSearch .msRecRow > .msRecWrap.msRecWrap .msRec:hover{background:rgba(46,31,26,.08);}
+  html.srchChip body.light #mSearch .msRecRow > .msRecWrap.msRecWrap .msRec b{color:#000;} html.srchChip body.light #mSearch .msRecRow > .msRecWrap.msRecWrap .msRec i#mRecEy:not([hidden]){color:rgba(0,0,0,.56);}
+  html.srchChip body.light #mSearch .msRecRow > .msRecWrap.msRecWrap .msRecClear{background:rgba(46,31,26,.08);color:#000;}
   html.srchChip #mSearch #mChips > .msRecWrap .msRec{height:44px;padding:0 44px 0 16px;background:rgba(255,255,255,.16);box-shadow:inset 0 0 0 1.5px #fff;color:#fff;font-size:12.5px;}
   html.srchChip #mSearch #mChips > .msRecWrap .msRec b{font-size:inherit;line-height:18px;font-weight:400;}
   html.srchChip #mSearch #mChips > .msRecWrap .msRecClear{right:11px;width:24px;height:24px;}
@@ -13853,9 +13864,10 @@
         <!-- Search first's chosen record ("Chip stay inside even active one" / "Chips active goes into chip list below first in line"): Inside, the chip stays in the search; First in list, once a record is chosen its chip leaves the search for the chips' row, first in line -->
         <div class="tkRow">
           <span class="lbl">Active chip</span>
-          <select id="stSrchRec" class="tkSegSel" aria-label="Where a chosen record's chip sits: inside the search, or first in the chips below">
+          <select id="stSrchRec" class="tkSegSel" aria-label="Where a chosen record sits: inside the search, first in the chips below, or a card of its own between the search and the chips">
             <option value="in" selected>Inside</option>
             <option value="row">First in list</option>
+            <option value="card">New row</option>
           </select>
         </div>
         <div class="tkRow">
@@ -47002,10 +47014,11 @@ hairline({
     as.addEventListener('change', put); if (av) av.addEventListener('change', put); ['stAskStk', 'stAskTools'].forEach(id => { const e = document.getElementById(id); if (e) e.addEventListener('change', put); }); put(); } }   /* Ask sheet, Suggestion: Services / Conversation (html.askConv) */
   { const sf = document.getElementById('stSrchFoc'); if (sf){ const put = () => { document.documentElement.classList.toggle('srchFull', sf.value === 'full'); document.documentElement.classList.toggle('srchChip', sf.value === 'chip'); }; sf.addEventListener('change', put); put(); } }
   { const sf = document.getElementById('stSrchFoc'), sr = document.getElementById('stSrchRec'), w = document.getElementById('mRecWrap'), m = document.getElementById('mSearch'), ch = document.getElementById('mChips'); if (sr && w && m && ch){ const row = w.parentNode, H = document.documentElement;
-      const put = () => { H.classList.toggle('srchRecRow', sr.value === 'row'); { const rr = sr.closest('.tkRow'); if (rr) rr.hidden = !sf || sf.value !== 'chip'; }
-        const out = H.classList.contains('srchChip') && sr.value === 'row' && w.classList.contains('cleared');
-        if (out && w.parentNode !== ch){ ch.insertBefore(w, ch.querySelector('.fchip')); ch.scrollLeft = 0; } else if (!out && w.parentNode !== row) row.insertBefore(w, row.querySelector('.msBox'));
-        m.classList.toggle('recOut', out); };
+      const card = document.createElement('div'); card.className = 'msRecRow'; card.id = 'mRecRow'; card.hidden = true; row.parentNode.insertBefore(card, row.nextSibling);   /* New row: the chosen record a card of its own, between the search and the chips */
+      const put = () => { H.classList.toggle('srchRecRow', sr.value === 'row'); H.classList.toggle('srchRecCard', sr.value === 'card'); { const rr = sr.closest('.tkRow'); if (rr) rr.hidden = !sf || sf.value !== 'chip'; }
+        const on = H.classList.contains('srchChip') && w.classList.contains('cleared'), out = on && sr.value === 'row', cd = on && sr.value === 'card';
+        if (out && w.parentNode !== ch){ ch.insertBefore(w, ch.querySelector('.fchip')); ch.scrollLeft = 0; } else if (cd && w.parentNode !== card) card.appendChild(w); else if (!out && !cd && w.parentNode !== row) row.insertBefore(w, row.querySelector('.msBox'));
+        card.hidden = !cd; m.classList.toggle('recOut', out || cd); };
       sr.addEventListener('change', put); if (sf) sf.addEventListener('change', put); new MutationObserver(put).observe(w, { attributes: true, attributeFilter: ['class'] }); put(); } }   /* Search first, Active chip (html.srchRecRow): Inside, the chosen record's chip stays in the search; First in list, the same chip (its button, its cross, their handlers) moves to the head of the range chips while a record is chosen, and back into the search once cleared */
   /* Search first (html.srchChip): the search the row, the records a chip inside it at the right; the chip's width kept as --msChipW so the typed text stops before it */
   { const w = document.getElementById('mRecWrap'), m = document.getElementById('mSearch'); if (w && m && window.ResizeObserver) new ResizeObserver(() => m.style.setProperty('--msChipW', Math.ceil(w.getBoundingClientRect().width / (window.evK ? window.evK(w) : 1)) + 'px')).observe(w); }   /* Search focus: Split / Full width (html.srchFull, CSS by .msRecIc) */
