@@ -22017,3 +22017,12 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **Insights task badges** (Tweaks -> Insights -> Badges): the icon (the check, the loader ring) now sits after the label ("icon on the right"), on every badge.
 - **Past results badge**: it reads the count, "12 found", not "Found". The count is `EvPastRec.recs.length`, the one set of past records, which now has twelve (Kidney function, May 2025; Inflammation markers, Dec 2022 added), so the task's line ("12 records, 2021 to 2025") and the Past records list agree. None found reads "None found".
 - **Ask sheet, Layout: Bottom sheet**: no title and no cross ("Remove title and cross"). The notch, then the field 20 under it; the dimmed area or a swipe down closes it.
+
+## Field position outcomes on every breakpoint; Ask tiles rounded; panel field 6%
+
+- **Top Chat AI -> Field position** now sets what a tap on the top chat field does on the desk too, not only on the phone:
+  - **Concierge** ("Concierge --> Concierge page"): the Concierge page, Eva's home, its field active (`_cc.fresh()`).
+  - **Same (top)** ("Focus on field (top)"): the focus stays on the top field. On the phone the chips over the keys; on the desk the Ask panel under the top field.
+  - **Bottom** ("Focus on field (bottom)"): the focus goes to the bottom field. On the phone the Menu AI entry point's layout; on the desk the floating Eva field's own panel when that field is in view, else the same panel at the page's foot, 48 above the window's.
+- **Ask sheet, Bottom sheet: Services tiles** keep their 24 corners ("card must be rounded"). The concentric rule (sheet corner less 24) gave them 8 against the standard sheet's 32.
+- **Desk Ask panel's field**: white at 6% (was 8%), the 64 blur kept ("chat field bg fff 6%").
