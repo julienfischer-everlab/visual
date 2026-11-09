@@ -21856,3 +21856,10 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - Modals doc: the page's own "Open the sheet" button did nothing: the closed modal's clear scrim and parked panel sat over it. Closed, they now take no pointer events.
 - The clinical swipe card's picture stays neutral (grey tile, ink icon): `.arRcStkPic[data-av]` resets `--avBg/--avFg`. The colour system stays on the other avatars (review list, lifestyle rows).
 - Lifestyle screen: no dividers at all (none between items, none above a group's second heading, so never one under a last item); rows 12 top/bottom instead of 16 to save height.
+
+## Design system → Modules (Onboarding consult, Insights, Booked in)
+
+- New nav group Modules in the Design system (`mhp`, `mins`, `mbk`; hashes `#module-consult`, `#module-insights`, `#module-booked`). One page per module: every state as a labelled preview at the card's width for the breakpoint (XS 361, S 552, M/L 528), then Anatomy and Used in.
+- Drawn by the module's own renderer: the primary card by `hpDocCard` (shared with Membership onboarding, its state list `HC_ST` lifted out of `hcDoc`); Insights by `_hpCard.insList(tasks)`; Booked in by `window._bkCard.html(rows, more)`, which the Overview's `bkList` now calls too (one markup).
+- The Overview's rules scoped to `#dOver` for these modules are copied once onto `.moOv` (`moCss`, like `nvSideCss`): `#dOver` → `.moOv`, `html.insEmpty` dropped from the chain, placement rules (`:has`, `.dvTop`, `.ovOff`, `.inCol`, `insHero`) skipped, and from bare `#dOver` rules only the tokens (`--ovCard`). Previews follow Tweaks (Insights badges / CTA position / visual; Booked in urgency) and redraw on a Tweak change or the breakpoint.
+- Tweaks → Primary card: "Desk alignment" renamed "Card alignment".
