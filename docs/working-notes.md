@@ -22050,3 +22050,7 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 
 - **Before the decades** ("I need a transition between just the introduction of the decade"): My journey's loop transition, its ring's third filling as it rises to the middle of the view and its dot lit once full, the same as Re-test & Refine's. It carries the concept's introduction: "Beyond this year", "Your health, decade by decade" (20), and "How we'll look after you through every stage of life. Each decade has its own focus, and your plan keeps adjusting as your results and the guidelines change." The ring is My journey's own (`EvJv.loop`), its gradient under an id of V3's (My journey's loop of the same name sits hidden in the page). V3 fills it on the page's scroll as My journey does.
 - The decade cards keep the locked phase card ("Decade can look like this"): figure, title, line, years and checks, three checks, the lock line.
+
+## Timeline V3 tabs on the phone: centred, filling the row
+
+- **Now / This year / Later on XS** ("bug spacing", "Fill the tab"): each tab takes a third of the row with its label and count centred in it, the underline the whole tab, as V1's phone tabs. The flex had pushed the labels to the left of their thirds. Desk unchanged.
