@@ -22001,3 +22001,8 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 
 - Tweaks → Active chip (Search first) has a third option, **New row** ("Add a tweak in a new row, between search and chip filter"), as `html.srchRecCard`. Once a record is chosen, its chip leaves the search for a card of its own (`#mRecRow`) between the search and the range chips. The card shows the record's name (16, medium), its type and date ("Pathology | 13 Aug 2026", 14 at 56%) and a 32px cross at its right. The rest of the card still opens the record sheet; the cross clears it.
 - The card is the same element as the chip (`#mRecWrap`: its button, its cross, their handlers), moved there and back. Cleared, it goes back into the search as All records. It uses the search field's ground: white 6% in dark, rgba(46,31,26,.06) in light, 20px corners.
+
+## Chat fields into the Concierge: field active, keys up
+
+- **Phone top field (Field position: Concierge)**: the tap now opens the Concierge with its field focused and the phone keyboard up ("with active state and keyboard activated"). It calls `window._cc.fresh()` (Eva, the chat's home, `Concierge.focus()`), not `show()`.
+- **Ask sheet (the dock's star)**: new Tweaks row in Menu AI entry point, **Field tap**: Concierge (default) or Keys. With Concierge, a tap on the sheet's chat field (its + and arrow too) closes the sheet back into the star, then opens the Concierge the same way, field active and keys up ("Chat field tap should redirect to concierge active field and keyboard"). Keys keeps the old behaviour, the keys in the sheet. The Navigation doc's phone is unchanged.
