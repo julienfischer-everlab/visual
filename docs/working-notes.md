@@ -21936,3 +21936,12 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - Light mode: the Insights activation steps (empty state) white on hover ("Hover white bg on light mode"; was a 6% tint).
 - Light mode: the Object card (Centered) without the blurred service picture behind ("No bg img on light mode").
 - Container chat floating -> Blur: up to 256 (was 80).
+
+## Ask: no submit beam, desk field just appears with no CTA, phone field / chips / blanket (v2276)
+
+- "No effect on chatfield submit (border beam --> no)": the phone Ask sheet's submit no longer plays the .5 s border beam. The chat opens straight away. The desk panel's opening beam stays behind its Tweak (Container chat floating > Border beam, Off by default).
+- "No need more effect, just appear": the desk floating Eva field (`.evFld`) no longer fades or rises 16px. On the Overview, past 128 of scroll it is simply there, and scrolling back up simply removes it (`.evfLow`: opacity 0 and hidden, no transition).
+- "No cta": the floating field has no mic and no send button (`EvFloat.make`), padding is 20 on both sides, and Enter still asks.
+- "chat field 6% fff blur 26" then "256": the phone sheet's field while typing is white 6% over a 256 blur, with no ring (dark mode).
+- "Chipx fff 6% blur 64px": the sheet's non-primary chips are white 6% over a 64 blur. The desk Ask panel's chips, which wear the phone's chip style, follow.
+- "Blanket 96%": the phone sheet's blanket (`.aiDim`) is black 96%. The desk panel's blanket is unchanged at 50%.
