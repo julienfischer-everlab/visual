@@ -21855,3 +21855,4 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - Every doc page's left list (`.ldPats`): titles only (sub explainers hidden), no notes under it (`.ldNotes` hidden), the selected row without its left bar.
 - Modals doc: the page's own "Open the sheet" button did nothing: the closed modal's clear scrim and parked panel sat over it. Closed, they now take no pointer events.
 - The clinical swipe card's picture stays neutral (grey tile, ink icon): `.arRcStkPic[data-av]` resets `--avBg/--avFg`. The colour system stays on the other avatars (review list, lifestyle rows).
+- Lifestyle screen: no dividers at all (none between items, none above a group's second heading, so never one under a last item); rows 12 top/bottom instead of 16 to save height.
