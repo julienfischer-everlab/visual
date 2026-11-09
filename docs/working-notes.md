@@ -22037,3 +22037,7 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **No bento for the established member** ("remove this for established", "keep only for new"): the focus card and the check-in card are gone from the top. The new member keeps the bento and My journey's layout.
 - **Container**: V3's own width rule beat the Container pick (`html.tlD3 #dTl .tlCol`, same specificity, later); now the pick wins. The Timeline's default is always a token: xs for V3's timeline (sm for its new member), sm for My journey, xs for V1 (its column was its own 760). So the Timeline row has no **Own** ("REMOVE OWN!"); a saved Own goes back to the default.
 - **Timeline version** (V3 / V1 archive / V2 archive) is a select now ("select instead").
+
+## Ask sheet field: 56 high, a pill
+
+- **Ask sheet, Layout: Bottom sheet**: the chat field at rest is 56 high and fully rounded ("56 high fully rounded"). It was 72 (its 56 box inside 8 of padding, 28 corners). The words stay 24 in, the send disc (40) sits 8 from the end. The other layouts are unchanged.
