@@ -21885,3 +21885,4 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - Tweaks header: "Latest 9 Nov 14:32 / by Name", the last Save. The shared Save stores `by` (the saver's user id) with `at`; each viewer sees the name from the user capability; a Save kept in this browser only reads "by you". Reset clears it.
 - XS: every Overview module hugs its content (no min-height at XS; the Meet Concierge card's 88 floor removed).
 - Bottom sheet service tiles: padding 20 (+8, "padding card +8px"), 128 wide so the name keeps its 88.
+- Phone dock 4 higher ("move up the nav by 4px"): --navLift = the side inset + 4, in the drawn phone, full screen and Auto alike.
