@@ -120,18 +120,27 @@ A host stylesheet that must keep its own selector (e.g. the HP's `.hpH`, the mai
 
 ## Cards
 
-**What.** Card grounds. Inside sheets and modals a grey card is ink 4% (light) / white 6% (dark). Standalone modals use an opaque secondary ground so dots and rings can sit in it. No card master, no doc tab.
+**What.** The Card master, `window.EvCard` (Design system › Core components › Cards, `#cards`). Every card in the app is one of two, by its name: a **Card static** (three slots, Header, Body and Footer, each optional; a look and a size) or a **Card interactive** (one slot that can hold anything; rest, hover and press, plus Selected). The user's rule: "every time we have a card, we're going to need to refer to this design system".
 
-**Where.** `grep -n -- "--ar-card-bg"`; `grep -n -- "--sgmCardBg"` (~5875, color-mix), `.sgmCard`, `.sgmRow`; `.arRsList > .arAcc`, `.arRsArea`; Doctor's suggestion `--dsgCard`; desk `.dash .dcard`; the Activity session's exercise cards `.plSesEx` (`--ar-card-bg`, 20 round).
+**Where.** The master `grep -n "window.EvCard = "` (just before `window.EvCtl`); its CSS `grep -n "Cards (window.EvCard"` (after the Core components' CSS, `.czLine`); the page `grep -n "const cdDoc = "` (DOCS key `cd`, in DSET/DORD and the nav's Core components after Chips).
 
-**API.** `.sgmCard`, `.sgmRow` (standalone modals); `.arAcc`, `.arRsArea`, `.arLfCardH` (sheets). Tokens `--ar-card-bg`, `--sgmCardBg` (`color-mix(in srgb, oklch(var(--ar-ink)) 6%, var(--ar-paper))`), `--sgmLine`, `--ar-card-invert-bg`, `--dsgCard` (#fff / `oklch(100% 0 0 / .07)`).
+**API.**
+- `EvCard.html({ look, size, header, body, footer, hd, ft, divided, img, tag, cls, attrs })`: a Card static. `hd` / `ft` set the Header's / Footer's own size (the card's by default). `img` is the photo of `look: 'media'`. `divided: true` draws a hairline under the Header and over the Footer.
+- `EvCard.item({ look, size, slot, selected, href, label, state, cls, attrs })`: a Card interactive, a `<button type="button">` (an `<a>` with `href`). `selected` sets `aria-pressed` and the 1.5 ink ring. `state: 'hover' | 'press'` only draws that state (the docs).
+- `EvCard.LOOKS`, `ILOOKS`, `SIZES`, `SECS` (the tables below), `EvCard.name(look)`, `EvCard.el(html)`.
+- Classes: `.evCard.evCard-{look}.evCard-{size}` with `.evCardHd` / `.evCardBd` / `.evCardFt` (`.evCardS-{size}` on a Header or Footer); `.evCardI.evCardI-{look}.evCard-{size}` with `.evCardSlot`, `.is-sel`, `.is-hover`, `.is-press`.
 
-**Rules.** Grey card #000 4% light / #fff 6% dark. `.sgmCard`: margin-top 8, padding 20 (24 at M/L), radius 20. Rows/areas radius 16 (`.sgmRow` padding 16 on `--sgmCardBg`). Secondary text ink .56 at 15/22.
+**Rules.**
+- Sizes (both): lg padding 24, corner 24 · md 20, 20 · sm 16, 16 · xs 12, 12. Corners inside: `--kRin` 12 / 12 / 8 / 6.
+- Header / Footer sizes: lg edge 24, gap 16 · md 20, 12 · sm 16, 8 · xs 12, 4 · 0 none (the Body then takes the card's padding at that edge). Their sides are always the card's padding, so the slots line up.
+- Static looks: Primary · Filled `filled` (ink 6% dark / 4% light, the default), Primary · Outlined `outlined` (1px hairline), Primary · Inverted `inverted` (filled on dark, outlined on light: the #380 style), Secondary · Plain `plain` (no ground), Secondary · Elevated `elevated` (opaque surface + shadow), Emphasis · Inverse `inverse` (the ink as ground), Emphasis · Glow `glow` (filled + the warm orange light at the top), Emphasis · Media `media` (photo, darkened to the foot, white words), Sentiment · Positive / Caution / Warning / Negative / Info (`--rgOpt` / `--rgSub` / #f78359 / `--rgOut` / blue, 12% ground, 30% hairline).
+- Interactive looks: Filled (hover the ink 9% / 7% light, press 12% / 10%), Outlined (hover 4% fill + 18% line, press 8%), Inverted, Plain (hover 5%, press 8%), Elevated (hover a lighter surface and a deeper shadow). Press scales to 98%. Selected: a 1.5 ring in the ink. Disabled 40%.
+- Static or interactive: the whole card does one thing → Card interactive. The card holds buttons → Card static with the buttons in its Footer. Never a button inside a Card interactive.
+- Size by context: lg for a page's lead card, md by default, sm in lists, sheets and grids, xs for small tiles. Look by context: Primary on a page's ground, Secondary inside something that is already a card, Emphasis once a page at most, Sentiment only when the card is about that state.
 
-**How to use.** In an `.arSheet`: `background: var(--ar-card-bg)`. In an EvSolo modal: `.sgmCard` (or `var(--sgmCardBg)` when a dot or ring cuts into it). Don't invent a new grey.
+**How to use.** Build every new card with `EvCard.html` or `EvCard.item`, and fill the slots with the other masters (`EvTitle`, `EvCtl.btn`, icons). Don't give a card its own ground, corner or padding. When you touch an existing card, move it onto `EvCard` (older grounds still in use: `--ar-card-bg`, `.sgmCard`, `.sgmRow`, `.arAcc`, `.arRsArea`, `--dsgCard`, `.dash .dcard`, `.plSesEx`, `.ovBk`, `.tlEmbC`, the Overview's cards).
 
-**Pitfalls.** The translucent `--ar-card-bg` lets dots and strokes show through, hence the opaque `--sgmCardBg`. Gift receipt / Overview / Send a gift plan cards have their own grounds: check the page's existing card first.
-
+**Pitfalls.** (1) The theme comes from `body.light` and `.arSheet(.arDark)`, as `EvCtl`'s does; a surface with its own mode toggle must set it. (2) Only `.evCard-media` clips its content; other cards don't, so a slot's ground keeps the card's corners through `border-radius: inherit` on the first and last slot. (3) `.is-hover` / `.is-press` are for the docs only; the real states come from `:hover` (hover devices) and `:active`. (4) The sentiment tones read the range colours set on `:root` / `body.light`, not on a sheet.
 ---
 
 ## Buttons

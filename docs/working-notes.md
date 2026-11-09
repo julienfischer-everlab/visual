@@ -22085,3 +22085,28 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **Closer** ("The numbers should be closer together vertically"): one number follows the next at .8 of its size (was 1.04), in a window .8 tall.
 - **Only two years** ("It should just go -2 years to end, stopping at the decade ... When you reach the middle of the screen ... you should land on the decade"): 38, 39, 40. The roll starts as the number comes up from the foot of the view and lands on 40 when it reaches the middle. 40 holds from there.
 - **Each digit its own reel** ("the 3 should be static, and only the 8 and 9 roll. After that, the 4 comes, the 3 goes away, and the 0 comes"): a column per digit. 38 to 39 turns only the units. 39 to 40 turns both columns together.
+
+## Design system: Cards (EvCard), Card static and Card interactive
+
+- **The master** ("Create the system card design so you can see this card interactively and the normal card static ... clearly name these cards, so I can reuse them in the UI in a proper and consistent way"): `window.EvCard`. Every card in the app is one of two:
+  - **Card static**, `EvCard.html({ look, size, header, body, footer, hd, ft, divided })`: three slots, Header, Body and Footer ("grouped by header, body, and footer").
+  - **Card interactive**, `EvCard.item({ look, size, slot, selected })`: a button with one slot that can hold anything ("for the interactive, it is just a slot").
+- **Sizes**:
+  - Cards: lg, md, sm, xs. Padding and corner are 24 / 20 / 16 / 12. Corners inside are 12 / 12 / 8 / 6 (`--kRin`).
+  - Header and Footer: lg, md, sm, xs or 0. Each sets its inset at the card's edge and its gap to the Body. Their sides always follow the card's padding.
+- **Static looks**:
+  - Primary: Filled (the default grey card), Outlined, Inverted (filled on dark, outlined on light).
+  - Secondary: Plain, Elevated.
+  - Emphasis: Inverse, Glow (the warm light at the top), Media (a photo).
+  - Sentiment: Positive, Caution, Warning, Negative, Info (the range colours).
+- **Interactive looks**: Filled, Outlined, Inverted, Plain, Elevated, each also Selected (a 1.5 ink ring).
+- **Interactive states** ("the first column is the rest state, the second column is the hover state, and the third column is the press state"): rest, hover, press. Press goes one step deeper and scales to 98%.
+- **The page**: Design system → Core components → Cards (`#cards`). It has:
+  - which card to use;
+  - Header and Footer sizes, with the padding hatched;
+  - the static grid (every look × every size, slots drawn as placeholders);
+  - the interactive grid (Rest / Hover / Press for every look, plain and selected, with a size switch);
+  - the cards in use with real content;
+  - names, anatomy and rules.
+  It works in dark and light.
+- **From now on** ("every time we have a card, we're going to need to refer to this design system"): the project's design-system skill now says every card is built with `EvCard`, and lists the older card grounds to move onto it when they are touched. The existing app cards are not migrated yet.

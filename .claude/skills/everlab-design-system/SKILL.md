@@ -15,6 +15,8 @@ The page menu `#versionSel` has Documentation (`'doc'`) and Design system (`'ds'
 
 ## How to work
 
+**Cards.** Every card is built with `window.EvCard`: `EvCard.html` (Card static: Header, Body, Footer) or `EvCard.item` (Card interactive: one slot; rest, hover, press). Never a card with its own ground, corner or padding (references/tokens-components.md, Cards).
+
 1. **Find the master first.** Look the element up in the table below and read its reference. Grep its anchor (`grep -n "window.EvSteps = " index.html`). Line numbers in the references drift: trust the grep pattern.
 2. **Build the instance from the master.** Call the module (`EvSteps.progress`, `EvPush.page`, `EvSheetSwipe`, `EvLoad.simple`, `EvSolo`, `EvTopNav.html`, `EvTitle.html`, `EvNavIc.svg`, ...) or read its tokens (`var(--ctPadX)`, `var(--evPhR)`, `--ar-*`, `--tg*`). Never re-implement a push, a swipe, a notch, a frame, a loader, a title or an icon. If no master fits, make one (below) rather than a one-off.
 3. **Document it on its doc page.** A new pattern or state goes on its Design system tab (or the Concierge Components tab), drawn by the same code. Update the doc's hand-written tables when numbers change (several are stale today: see each reference's pitfalls).
@@ -100,7 +102,7 @@ The page menu `#versionSel` has Documentation (`'doc'`) and Design system (`'ds'
 | Component tokens | `.arSheet --ar-*` | references/tokens-components.md |
 | Range colours, status pills | `--rg*`, `--mb*`, `.st`, `.arLfPill`, `.tdTag` | references/tokens-components.md |
 | Type, spacing, radius tokens | `--hdr*`, `--ct*`, `--evPh*`, `--tg*` | references/tokens-components.md |
-| Cards | `--ar-card-bg`, `.sgmCard` | references/tokens-components.md |
+| Cards (every card: Card static, Card interactive) | `window.EvCard` (`EvCard.html`, `EvCard.item`), `.evCard`, `.evCardI`, page `cdDoc` (`#cards`) | references/tokens-components.md |
 | Biomarker item (a reading in a list: name 16, value + date 14, range bar, status pill; Design system > Biomarker item) | `window.EvBio.row`, `.mbrow`, `--bioT/--bioTLh/--bioS/--bioSLh`, `biDoc` | references/tokens-components.md |
 | Buttons | `.arBtn.arBtnPrimary.arBtnLg`, `.svBtn`, `.sgmAsk` | references/tokens-components.md |
 | Vertical timeline | `window.EvTl` | references/tokens-components.md |

@@ -2824,6 +2824,49 @@ window.EvSeg = (function () {
    html builders: btn({ label, size, kind: primary | secondary | tertiary | ghost, icon: '' | 'l' | 'r' | 'both', iconOnly, disabled }), split({ label, size, kind }),
    badge({ label, size, kind: outline | tint | solid, icon }), input({ kind: text | search | select | area, size, placeholder }), chip({ label, size, on }), filter({ label, size, set }), seg({ size, n }).
    HAS: the sizes each component comes in (the rest "Not available"); sample(k, size): the row the Sizes page draws; wire(root): chips toggle on a press */
+/* Card master (Design system -> Core components -> Cards; window.EvCard): every card in the app is one of two, by its name ("clearly name these cards, so I can reuse them in the UI in a proper and consistent way";
+   "every time we have a card, we're going to need to refer to this design system").
+   Card static: three slots, Header, Body and Footer ("Each static is grouped by header, body, and footer"), a look and a size.
+   Card interactive: one slot, anything in it ("for the interactive, it is just a slot. It can be anything"), and its three states, rest, hover and press */
+window.EvCard = (function () {
+  var LOOKS = [
+    ['filled', 'Primary · Filled', 'The default card on a page: the ink at 6% (dark) / 4% (light)'],
+    ['outlined', 'Primary · Outlined', 'A 1px hairline and no fill: groups and lists that stay light'],
+    ['inverted', 'Primary · Inverted', 'Filled on the dark page, outlined on the light one (Action plan, Insights, Booked in)'],
+    ['plain', 'Secondary · Plain', 'No ground, no line: only the card’s padding and corners, on a ground that is already a card'],
+    ['elevated', 'Secondary · Elevated', 'An opaque surface lifted by a soft shadow: over a photo, or floating'],
+    ['inverse', 'Emphasis · Inverse', 'The ink as its ground, the words in the page’s colour: the one card a page must not miss'],
+    ['glow', 'Emphasis · Glow', 'Filled, with Everlab’s warm light at its top: a moment (a decade, a milestone)'],
+    ['media', 'Emphasis · Media', 'A photo, darkened towards its foot, the words white over it'],
+    ['positive', 'Sentiment · Positive', 'In range, done, confirmed'],
+    ['caution', 'Sentiment · Caution', 'Due soon, borderline'],
+    ['warning', 'Sentiment · Warning', 'Due now, needs an action'],
+    ['negative', 'Sentiment · Negative', 'Out of range, failed, cancelled'],
+    ['info', 'Sentiment · Info', 'A note, a tip, something to know']];
+  var ILOOKS = [
+    ['filled', 'Filled', 'Hover: the ink up to 9% (7% light) · Press: 12% (10%)'],
+    ['outlined', 'Outlined', 'Hover: a 4% fill, the hairline to 18% · Press: an 8% fill'],
+    ['inverted', 'Inverted', 'Filled’s states on the dark page, Outlined’s on the light one'],
+    ['plain', 'Plain', 'Hover: the ink at 5% · Press: 8%'],
+    ['elevated', 'Elevated', 'Hover: the surface a step lighter, the shadow deeper · Press: the shadow back down']];
+  var SIZES = [['lg', 24, 24, 12], ['md', 20, 20, 12], ['sm', 16, 16, 8], ['xs', 12, 12, 6]];   /* name, padding, corner, the corner of anything inside it */
+  var SECS = [['lg', 24, 16], ['md', 20, 12], ['sm', 16, 8], ['xs', 12, 4]];   /* a Header's or a Footer's size: its inset at the card's edge, its gap to the Body */
+  var keys = function (L) { var o = {}; L.forEach(function (x) { o[x[0]] = x; }); return o; };
+  var LK = keys(LOOKS), IK = keys(ILOOKS), SK = keys(SIZES), HK = keys(SECS);
+  var esc = function (t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  var on = function (x) { return x != null && x !== '' && x !== false; };
+  /* Card static: EvCard.html({ look, size, header, body, footer, hd, ft, divided, img, tag, cls, attrs }); hd / ft: the Header's / Footer's own size (the card's by default) */
+  var html = function (o) { o = o || {}; var look = LK[o.look] ? o.look : 'filled', size = SK[o.size] ? o.size : 'md', hd = HK[o.hd] ? o.hd : size, ft = HK[o.ft] ? o.ft : size, tag = o.tag || 'div';
+    var c = 'evCard evCard-' + look + ' evCard-' + size + (o.divided ? ' evCardDiv' : '') + (o.cls ? ' ' + o.cls : ''), st = look === 'media' && o.img ? ' style="--kImg:url(\'' + o.img + '\')"' : '';
+    return '<' + tag + ' class="' + c + '"' + st + (o.attrs || '') + '>' + (on(o.header) ? '<div class="evCardHd evCardS-' + hd + '">' + o.header + '</div>' : '') + (on(o.body) ? '<div class="evCardBd">' + o.body + '</div>' : '') + (on(o.footer) ? '<div class="evCardFt evCardS-' + ft + '">' + o.footer + '</div>' : '') + '</' + tag + '>'; };
+  /* Card interactive: EvCard.item({ look, size, slot, selected, href, label, state, cls, attrs }); a button (a link with href); state 'hover' | 'press' only to draw that state (the docs) */
+  var item = function (o) { o = o || {}; var look = IK[o.look] ? o.look : 'filled', size = SK[o.size] ? o.size : 'md', tag = o.href ? 'a' : 'button';
+    var c = 'evCardI evCardI-' + look + ' evCard-' + size + (o.selected ? ' is-sel' : '') + (o.state === 'hover' ? ' is-hover' : o.state === 'press' ? ' is-press' : '') + (o.cls ? ' ' + o.cls : '');
+    var a = tag === 'a' ? ' href="' + esc(o.href) + '"' : ' type="button"' + (o.selected != null ? ' aria-pressed="' + !!o.selected + '"' : '');
+    return '<' + tag + ' class="' + c + '"' + a + (o.label ? ' aria-label="' + esc(o.label) + '"' : '') + (o.attrs || '') + '><span class="evCardSlot">' + (o.slot || '') + '</span></' + tag + '>'; };
+  var el = function (h) { var t = document.createElement('div'); t.innerHTML = h; return t.firstElementChild; };
+  return { LOOKS: LOOKS, ILOOKS: ILOOKS, SIZES: SIZES, SECS: SECS, html: html, item: item, el: el, name: function (k) { return (LK[k] || IK[k] || [k, k])[1]; } };
+})();
 window.EvCtl = (function () {
   var SIZES = [['lg', 56], ['md', 44], ['sm', 36], ['xs', 28], ['2xs', 20]];
   var HAS = { btn: ['lg', 'md', 'sm', 'xs'], icon: ['lg', 'md', 'sm', 'xs'], split: ['lg', 'md', 'sm', 'xs'], badge: ['md', 'sm', 'xs', '2xs'], input: ['lg', 'md'], seg: ['lg', 'md', 'sm'], filter: ['md'], chip: ['md', 'sm'] };
