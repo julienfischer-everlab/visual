@@ -21869,3 +21869,6 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - Booked in: `live` rows (a call happening now): light green plate and date tile, a pulsing green dot and Happening now, the join button filled green. Modules → Booked in shows it.
 - Insights: once the Health profile is done, Past results shows In progress (searched for automatically), never To action (`insList`).
 - Lifestyle recommendations: sub under the title, "Select the actions you'd like to consider in your plan." (16/22 secondary, 8 under the title).
+- Primary card Object (DEXA / MRI): the service picture first (top right in Left, on top and centred in Centered), the booking's day folded into the line, no foot words, just the button.
+- Tweaks → Ask sheet → Version: V1 and V2 retired; Dock renamed Inbox only; Bottom sheet new (`html.askSheet` with `askV2`): an edge-to-edge sheet over the dock, its notch, the composer, then Conversations in the sheet; the keys lift it when the field is tapped. A saved V1 / V2 lands on Inbox only.
+- Inverted (a card style, `--cardInvLine`): filled on dark, a 1px inside outline and no fill on light. Worn by the Overview's Action plan cards (`.tlEmbC`), Insights before any insight (`.ovInsEmpty`) and Booked in (`.ovBk`); the Modules previews follow.
