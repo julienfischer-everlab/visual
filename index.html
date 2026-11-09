@@ -53535,7 +53535,7 @@ hairline({
   const focusCard = () => '<div class="t3Focus jbCard jbUpd"><h3 class="jbH">' + esc(GOAL.g.replace(/,? before [^.]*\./, '.')) + '</h3><p class="jbP">Your focus until ' + LINE.d + ' ' + LINE.mo + ', set by Dr Lu after your results review on ' + GOAL.when + '.</p>' +
     '<div class="jbUpdA"><button class="tlBtn cta" type="button" data-a="why">Review</button></div><div class="jbUpdPh" data-ph="consult" aria-hidden="true" style="background-image:url(' + ((window.EvStatusImg || {}).consult || '') + ')"></div></div>';   /* the bento's focus card (its photo, its words, Review), first in Now */
   const estHTML = () => { const open = S.items.filter(i => i.s === 'open'), todo = open.filter(i => i.act && i.st === 0), prog = open.filter(i => !(i.act && i.st === 0)), later = S.items.filter(i => i.s === 'later'),
-      pre = S.items.filter(i => visible(i) && i.s === 'next' && i.at < LINE.at).sort((x, y) => x.at - y.at), { near } = groups();
+      pre = S.items.filter(i => visible(i) && i.s === 'next' && i.at < LINE.at).sort((x, y) => x.at - y.at), { near, ages } = groups();
     const nowR = todo.map((x, i) => nrow(x, i === 0)).concat(prog.map(x => nrow(x)), pre.map(x => nrow(x))), C = { now: nowR.length, year: near.length, later: later.length }, tab = C[S.tab] == null ? 'now' : S.tab;
     const bar = '<div class="tlBar t3Bar"><div class="tlBarIn"><div class="tlTabs" role="tablist" aria-label="Timeline"><i class="tlThumb" aria-hidden="true"></i>' +
       [['now', 'Now'], ['year', 'This year'], ['later', 'Later']].map(([k, l]) => '<button class="tlTab' + (tab === k ? ' on' : '') + '" type="button" role="tab" aria-selected="' + (tab === k) + '" data-t3t="' + k + '">' + l + '<em class="t3Cnt">' + C[k] + '</em></button>').join('') + '</div>' +
@@ -53547,7 +53547,9 @@ hairline({
       body = by.size ? [...by].map(([k, L]) => nsec(k, '', L.map(x => nrow(x)))).join('') : '<p class="t3Empty">Nothing else this year.</p>'; }
     else if (tab === 'later') body = later.length ? nsec('Saved for later', '', later.map(x => nrow(x))) : '<p class="t3Empty">Nothing put off. Anything you do later lands here.</p>';
     else body = nsec('Now', 'now', nowR, focusCard());
-    return bar + '<div class="tlList t3N">' + body + '</div>'; };
+    /* the rest, after this year: the decades, each its locked card (My journey's markup and styles, in a list of their own under the timeline; "I need the rest. I need the decade"; Tweaks -> Decades) */
+    const dec = tab === 'year' && !S.q.trim() && T().dec && ages.length ? '<div class="tlList tlV2 jvMs t3Jv t3Decs">' + phx('Your health, decade by decade') + ages.map(g => decCard(g)).join('') + '</div>' : '';
+    return bar + '<div class="tlList t3N">' + body + '</div>' + dec; };
 
   /* a new member: the timeline being built, the four things that build it, what the doctor adds, a first sketch of the decades */
   const NMT = () => [
@@ -53574,8 +53576,8 @@ hairline({
   /* ---- the page: drawn into My journey's list markup, after My journey's own (its page-wide lookups find its own tabs first) ---- */
   let host = null; const BAG = [];
   const thumb = () => { if (!host) return; const tb = host.querySelector('.tlTab.on'), th = host.querySelector('.tlThumb'); if (!tb || !th || !tb.offsetWidth) return; th.style.width = tb.offsetWidth + 'px'; th.style.transform = 'translateX(' + tb.offsetLeft + 'px)'; };
-  const deco = () => { requestAnimationFrame(() => { const E = window.EvJv, L = host && host.querySelector('.tlList'); if (!E || !L) return; try { if (E.str) E.str(L, BAG); if (E.fig) E.fig(L, BAG); } catch (e) {}
-    L.querySelectorAll('canvas.jbPat').forEach(c => { if (!E.pat) return; E.pat(c); if (window.ResizeObserver){ const ro = new ResizeObserver(() => E.pat(c)); ro.observe(c); BAG.push(() => ro.disconnect()); } }); thumb(); }); };
+  const deco = () => { requestAnimationFrame(() => { const E = window.EvJv, L = host && host.querySelector('.tlList'); if (!E || !L) return; host.querySelectorAll('.tlList').forEach(x => { try { if (E.str) E.str(x, BAG); if (E.fig) E.fig(x, BAG); } catch (e) {} });   /* every list: the decades' sit in one of their own */
+    host.querySelectorAll('canvas.jbPat').forEach(c => { if (!E.pat) return; E.pat(c); if (window.ResizeObserver){ const ro = new ResizeObserver(() => E.pat(c)); ro.observe(c); BAG.push(() => ro.disconnect()); } }); thumb(); }); };
   const build = () => {
     if (!host){ host = document.createElement('div'); host.className = 'tlCol tl3'; host.id = 'tl3'; main.appendChild(host); }
     BAG.splice(0).forEach(f => { try { if (typeof f === 'function') f(); else if (f && f.destroy) f.destroy(); } catch (e) {} });

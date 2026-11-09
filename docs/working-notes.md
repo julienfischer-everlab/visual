@@ -22041,3 +22041,7 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 ## Ask sheet field: 56 high, a pill
 
 - **Ask sheet, Layout: Bottom sheet**: the chat field at rest is 56 high and fully rounded ("56 high fully rounded"). It was 72 (its 56 box inside 8 of padding, 28 corners). The words stay 24 in, the send disc (40) sits 8 from the end. The other layouts are unchanged.
+
+## Timeline V3: the decades back, after This year
+
+- **V3, established member** ("I need the rest. I need the decade"): the This year tab ends with the rest of life. After the months come the transition "Your health, decade by decade" and a locked card for each decade: its Hairline figure, its line, its years and number of checks, three of its checks, "Reviewed with Dr Lu every year". The cards are My journey's (V2's) markup and styles, the format approved for decades, in a list of their own under the timeline. Their figures and streams are drawn as before (the deco pass now walks every list). Tweaks -> Decades turns them off.
