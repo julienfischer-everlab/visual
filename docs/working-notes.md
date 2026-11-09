@@ -22071,3 +22071,9 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 
 - **In the flow** ("The number shouldn't be fixed on scroll. It should just follow the flow. And the number should stay. You should have a mask on the top and on the bottom."): no pin any more. The reel sits in the page between the decades' intro and the card and scrolls with it. Its turn follows where it is in the view (35 as it comes in from the foot, 40 by the time it passes the middle), and 40 stays from there.
 - **The look** ("more like this", the 90): one number in a window the digits' own height, light weight (300), crisp (no blur). The window is masked solid in its middle and clear at its top and foot, so each glyph fades out at its top and bottom. The next number slides in from under it as you scroll.
+
+## Timeline V3: This year as one group, the months on the rail
+
+- **This year** ("we need this year, and then below, just remove the dot and break down the months"): one group, This year, with its dot and its count, like Now and Saved for later. The months no longer have their own dotted headings. Each month's rows sit under a hairline where the month changes.
+- **The month on the rail** ("the months while you scroll on the left, kind of like a support tooltip on the left-side timeline"): each month has a small chip on the rail line (Jun / 2027) at its first row. While its rows scroll by, the chip pins under This year. The next month's chip pushes it out, and it slides behind the pinned group. On the phone there is no rail, so the month is a quiet line ("June 2027") above its rows that pins the same way.
+- **Jumps land right**: the tabs' jump measured the pinned bar without the page's top padding, so a group landed about 30px under the bar. It now lands just below the bar. The groups also pin right under the bar (as in V1), so rows no longer show through a gap above them.

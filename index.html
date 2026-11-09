@@ -53342,6 +53342,20 @@ hairline({
   #tl3 .t3Ghost > div{display:flex;align-items:center;gap:14px;} #tl3 .t3Ghost i{flex:none;width:40px;height:40px;border-radius:12px;background:var(--tlBox, rgba(255,255,255,.055));} #tl3 .t3Ghost span{flex:1 1 auto;display:flex;flex-direction:column;gap:8px;} #tl3 .t3Ghost b{display:block;height:9px;border-radius:5px;background:var(--tlBox, rgba(255,255,255,.055));} #tl3 .t3Ghost em{flex:none;width:44px;height:20px;border-radius:10px;background:var(--tlBox, rgba(255,255,255,.055));}
   #tl3 .t3More{position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:-72px;padding:0 24px;text-align:center;} #tl3 .t3More .ic{width:40px;height:40px;border-radius:50%;background:var(--t3OrS);color:var(--t3OrInk);display:grid;place-items:center;margin-bottom:2px;} #tl3 .t3More .ic svg{width:18px;height:18px;} #tl3 .t3More b{font-size:16px;font-weight:500;color:var(--tlInk);} #tl3 .t3More > span:last-child{max-width:420px;font-size:14px;line-height:20px;color:var(--tlSub);}
   #tl3 .t3Empty{margin:28px 0;font-size:14px;line-height:20px;color:var(--tlSub);}
+  /* This year's months: no heading of their own, a chip on the rail at each month's start that pins under This year while its month scrolls by and is pushed out by the next ("the months while you scroll on the left, kind of like a support tooltip on the left-side timeline") */
+  #tl3 .t3Mo{position:relative;display:grid;grid-template-columns:0 minmax(0,1fr);}
+  #tl3 .t3Mo > .tlItems{grid-column:2;grid-row:1;min-width:0;}
+  #tl3 .t3MoTip{grid-column:1;grid-row:1;align-self:start;position:sticky;top:calc(var(--tlHTop, 26px) + 54px);z-index:3;width:0;height:58px;pointer-events:none;}   /* under the pinned This year (54 tall); the chip and 12 above it, so the next month's chip pushes it out, never over it; under the pinned group (its 4), so a chip pushed out slides behind it */
+  #tl3 .t3MoP{position:absolute;top:12px;left:-44.5px;width:40px;padding:6px 0 7px;box-sizing:border-box;border-radius:10px;background:var(--tlCard);box-shadow:inset 0 0 0 1px var(--tlCardRing);display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center;line-height:1;}   /* centred on the rail (8.5 in from the list's edge, the list's rows 33 in) */
+  #tl3 .t3MoP > b{font-size:12px;font-weight:600;letter-spacing:-.1px;color:var(--tlInk);} #tl3 .t3MoP > b.l{display:none;} #tl3 .t3MoP > em{font-style:normal;font-size:10px;font-weight:500;color:var(--tlSub);font-variant-numeric:tabular-nums;}
+  #tl3 .t3Mo + .t3Mo{border-top:1px solid var(--tlLine);}   /* a hairline where a month turns */
+  #tl3 .t3Yr > .tlH{box-shadow:0 -2px 0 var(--pageBg),-16px -2px 0 var(--pageBg);}   /* the pinned group's ground 16 further left, over the chip's left half as it slides out behind it */
+  @container tl (max-width:540px) or style(--tlXs: 1){   /* XS: no rail, so the month a quiet line of its own above its rows, pinned under This year the same way */
+    #tl3 .t3Mo{display:block;} #tl3 .t3Mo + .t3Mo{border-top:0;}
+    #tl3 .t3MoTip{position:sticky;top:calc(var(--tlHTop, 26px) + 44px);width:auto;height:auto;margin:0 -16px;padding:10px 16px 2px;background:var(--pageBg);}
+    #tl3 .t3MoP{position:static;width:auto;padding:0;flex-direction:row;gap:5px;background:none;box-shadow:none;border-radius:0;font-size:13px;}
+    #tl3 .t3MoP > b{display:none;} #tl3 .t3MoP > b.l{display:inline;font-size:13px;font-weight:500;color:var(--tlSub);} #tl3 .t3MoP > em{font-size:13px;}
+  }
   #tl3 .tlRow{cursor:pointer;} #tl3 .tlRow.t3Out{opacity:0;transform:translateX(16px);transition:opacity .3s ease,transform .3s ease;}   /* put off: out, then the list drawn again */
   /* the sheets' own pieces */
   .t3Ey{display:flex;align-items:center;gap:8px;font-size:13px;line-height:18px;letter-spacing:1.4px;text-transform:uppercase;color:var(--tlSub);}
@@ -53567,8 +53581,12 @@ hairline({
     if (S.q.trim()){ const q = S.q.trim().toLowerCase(), hits = S.items.filter(i => visible(i) && (i.t + ' ' + i.sub + ' ' + (i.why || '')).toLowerCase().includes(q));
       return bar + '<div class="tlList t3N">' + (hits.length ? nsec('Results', '', hits.map(x => nrow(x))) : '<p class="t3Empty">No matches for “' + esc(S.q.trim()) + '”.</p>') + '</div>'; }
     const by = new Map(); near.forEach(i => { const y = Math.floor(i.at), k = FULLM[Math.min(11, Math.floor((i.at - y) * 12 + 1e-6))] + ' ' + y; if (!by.has(k)) by.set(k, []); by.get(k).push(i); });   /* month by month, as V1's */
+    /* This year one group, its dot and its count; the months under it with no dot, each its chip on the rail that holds while its month scrolls by ("we need this year, and then below, just remove the dot and break down the months ... the months while you scroll on the left, kind of like a support tooltip") */
+    const mos = [...by].map(([k, L]) => { const [m, y] = k.split(' ');
+      return '<div class="t3Mo" role="group" aria-label="' + esc(k) + '"><div class="t3MoTip" aria-hidden="true"><span class="t3MoP"><b>' + esc(m.slice(0, 3)) + '</b><b class="l">' + esc(m) + '</b><em>' + esc(y) + '</em></span></div><div class="tlItems">' + L.map(x => nrow(x)).join('') + '</div></div>'; }).join('');
     const body = nsec('Now', 'now', nowR, focusCard(), 'now') +
-      (by.size ? [...by].map(([k, L], n) => nsec(k, '', L.map(x => nrow(x)), '', n ? '' : 'year')).join('') : nsec('This year', '', [], '<p class="t3Empty">Nothing else this year.</p>', 'year'));
+      (by.size ? nsec('This year', 't3Yr', near.map(() => ''), mos, 'year').replace('<div class="tlItems"></div></section>', '</section>') : nsec('This year', '', [], '<p class="t3Empty">Nothing else this year.</p>', 'year'));
+    /* (nsec counts the rows it's given: the year's items as blanks, their rows drawn in their months above it) */
     /* the rest of life, in This year's group ("the decade should be in the same group, then later"): the decades, each its rolling age then its locked card (My journey's markup and styles, in a list of their own; Tweaks -> Decades) */
     const dec = T().dec && ages.length ? '<div class="tlList tlV2 jvMs t3Jv t3Decs">' + decX() + ages.map(g => '<div class="t3DecG" data-age="' + g.age + '">' + roll(g.age) + decCard(g) + '</div>').join('') + '</div>' : '';
     const late = nsec('Saved for later', '', later.map(x => nrow(x)), later.length ? '' : '<p class="t3Empty">Nothing put off. Anything you do later lands here.</p>', 'later');
@@ -53620,7 +53638,7 @@ hairline({
       w.querySelectorAll('.t3RollN > i').forEach(c => { const d = +c.dataset.i - p, ad = Math.abs(d); if (ad > 1.05){ if (c.style.opacity !== '0') c.style.opacity = '0'; return; }   /* crisp, one number in the window, the next rolling in from under it ("more like this") */
         c.style.opacity = '1'; c.style.transform = 'translateY(' + (d * 1.04).toFixed(3) + 'em) scaleY(' + (1 - Math.min(ad, 1) * .3).toFixed(3) + ')'; }); }); };
   main.addEventListener('scroll', loopGo, { passive: true }); addEventListener('resize', loopGo);
-  const deco = () => { requestAnimationFrame(() => { loopGo(); spy(); const E = window.EvJv, L = host && host.querySelector('.tlList'); if (!E || !L) return; host.querySelectorAll('.tlList').forEach(x => { try { if (E.str) E.str(x, BAG); if (E.fig) E.fig(x, BAG); } catch (e) {} });   /* every list: the decades' sit in one of their own */
+  const deco = () => { requestAnimationFrame(() => { hTop(); loopGo(); spy(); const E = window.EvJv, L = host && host.querySelector('.tlList'); if (!E || !L) return; host.querySelectorAll('.tlList').forEach(x => { try { if (E.str) E.str(x, BAG); if (E.fig) E.fig(x, BAG); } catch (e) {} });   /* every list: the decades' sit in one of their own */
     host.querySelectorAll('canvas.jbPat').forEach(c => { if (!E.pat) return; E.pat(c); if (window.ResizeObserver){ const ro = new ResizeObserver(() => E.pat(c)); ro.observe(c); BAG.push(() => ro.disconnect()); } }); thumb(); }); };
   const build = () => {
     if (!host){ host = document.createElement('div'); host.className = 'tlCol tl3'; host.id = 'tl3'; main.appendChild(host); }
@@ -53636,7 +53654,8 @@ hairline({
     if (q){ if (was) was.remove(); q.classList.add('t3HdQ'); hd.appendChild(q); } };
   let spyLock = 0;
   const tbar = () => host && (host.querySelector('.t3Bar') || host.querySelector('.jvTabsS'));   /* the established's bar, or the new member's tabs (My journey's) */
-  const barOff = b => { const cs = getComputedStyle(b); return cs.position === 'sticky' ? (parseFloat(cs.top) || 0) + b.offsetHeight : 8; };
+  const barOff = b => { const cs = getComputedStyle(b); return cs.position === 'sticky' ? (parseFloat(getComputedStyle(main).paddingTop) || 0) + (parseFloat(cs.top) || 0) + b.offsetHeight : 8; };   /* pinned, the bar sits at the page's top padding plus its top (32 - 32 on the desk): the jump lands the part's head just under it, not 32 behind it */
+  const hTop = () => { const b = host && host.querySelector('.t3Bar'); if (!b || !b.offsetHeight) return; const t = (parseFloat(getComputedStyle(b).top) || 0) + b.offsetHeight - 1; if (host.style.getPropertyValue('--tlHTop') !== t + 'px') host.style.setProperty('--tlHTop', t + 'px'); };   /* the groups (Now, This year, Saved for later) pin right under the bar, as V1's months under its tabs */
   const spy = () => { if (!host || !H.classList.contains('tlD3')) return; const bar = tbar(); if (!bar) return;   /* the tab lit is the part under the bar */
     if (Date.now() > spyLock){ const lim = main.getBoundingClientRect().top + barOff(bar) + 48; let k = (host.querySelector('[data-t3a]') || { dataset: {} }).dataset.t3a || 'now'; host.querySelectorAll('[data-t3a]').forEach(a => { if (a.getBoundingClientRect().top <= lim) k = a.dataset.t3a; }); if (main.scrollTop > 8 && main.scrollTop + main.clientHeight >= main.scrollHeight - 4) k = 'later';   /* at the foot: Later, the last part, however short */ S.tab = k; }
     let moved = false; bar.querySelectorAll('.tlTab').forEach(t => { const on = t.dataset.t3go === S.tab; if (t.classList.contains('on') !== on){ moved = true; t.classList.toggle('on', on); t.setAttribute('aria-selected', String(on)); } }); if (moved) thumb(); };
