@@ -22160,3 +22160,16 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - The signer at the foot with their photo, round, 24, when a doctor; anyone else (Kate Mercer) the Everlab mark on a rounded tile ("Add avatar IF doctor / IF not fallback"). The chevron disc moves 2 up to stay centred on the words.
   - New sits top right over the picture, 26 from the edges, as far as the words below are from theirs ("Badge new top right overlapping the img").
   - A video debrief has its player over the picture: 64, white at 24% on a 64 blur, the play icon filled ("Add Visual Player ... If video card").
+
+### Also in v2299 (the batch before the personas)
+
+- **Unread dots** ("need a orange dot for each unread"): with Tweaks → Unread message on 1, 2 or 3+, each unread conversation chip carries an orange dot, in the Ask sheet, the phone's top suggestions and the desk Ask panel.
+- **Ask sheet field**: no arrow at rest ("remove cta"); it shows once something is typed.
+- **Presets and Share in the top bar** ("This should be at the top level so we can inc the breakpiint"): out of the Tweaks panel, beside the page menu. A preset and a shared link now keep the page, the colour mode and the viewport (XS / S / M / L) with the tweaks. A shared #tk- link opens on the Overview before its setup applies. Narrow windows hide the labels (under 1400) and the Viewport label (under 1200) so the bar fits.
+- **Focus card: Bloc** (Tweaks → Timeline V3 → Focus card; "Create a bloc Focus card"): the card master (EvCard, Glow, md): Your focus until, the goal, then under a hairline Dr Lu's face, who set it and when, and Review. Photo keeps the old card.
+- **Decade number**: rolls over the longer stretch from entering the view to its middle ("numer should roll slower"), eased a tenth of a second behind the scroll so it stays smooth ("rolling is too laggy! should be smooth"); its window 1.1em tall so the digits aren't cut ("number is cutted ?").
+- **Decade Card #2**: no Coming up chip ("no need coming up"), rows' title 16 and sub 14 ("title 16 sub 14"), no picture ("remove visual").
+- **Menu AI entry point**: Container chat floating and Chips rows inside the group, no sub-headings ("Put this into Menu AI entry poitn tweak, inside the group").
+- **Desk chat field** (Tweaks → Navigation → Desk Eva field tap; "Open chat field in app (current) / Go to Chat experience"): App opens the field in the page, as before; Chat goes straight to the Chat experience (with what was typed, if anything).
+- **Due / date line** at the bottom of each timeline row's content ("Make sure the Due / Date indication aare positionned at the bottom of the content").
+- **Schedule module** (was Booked in): renamed, no chevron ("Rename Schedule / Remove chevron"); its rows' inner radius 4 less ("card inside reduce radius by 4px"); filled icons ("filled icon"); the day and month 4 closer ("reduce gap by 4px"). The DS Modules page lists every row variation on its own ("List all variation as independant object in the DS").
