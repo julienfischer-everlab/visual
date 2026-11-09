@@ -21923,3 +21923,6 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - Checked: the lowest block over the keys (the field with Carousel top, the list with Field top) stands as far over them as the field from the screen's sides, in every Floating cards option and with a 16 inset too.
 - Desk Ask panel: the field card with no border and no shadow (dark and light), flat in its container.
 - Desk Ask panel field: its ground white at 8% over a 64 blur (was #202020), no border, no shadow.
+- Primary card Object, Centered: visual to title 40 (+8), line to CTA 32 (+8; set by the CTA's own --hpCtrBtnT).
+- The ask sheet's blanket black at 12% ("Blanket 12%"; was 83).
+- Merged sheet entrance: rises 32 as it fades in (.36s / .26s, 60ms after the keys) ("move up while fade in from -32px").
