@@ -22077,3 +22077,11 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **This year** ("we need this year, and then below, just remove the dot and break down the months"): one group, This year, with its dot and its count, like Now and Saved for later. The months no longer have their own dotted headings. Each month's rows sit under a hairline where the month changes.
 - **The month on the rail** ("the months while you scroll on the left, kind of like a support tooltip on the left-side timeline"): each month has a small chip on the rail line (Jun / 2027) at its first row. While its rows scroll by, the chip pins under This year. The next month's chip pushes it out, and it slides behind the pinned group. On the phone there is no rail, so the month is a quiet line ("June 2027") above its rows that pins the same way.
 - **Jumps land right**: the tabs' jump measured the pinned bar without the page's top padding, so a group landed about 30px under the bar. It now lands just below the bar. The groups also pin right under the bar (as in V1), so rows no longer show through a gap above them.
+
+## Timeline V3: the decade number, digit by digit
+
+- **The face** ("Font weight is way too thin. Just use the same font as you had before. Reduce the letter spacing by 25%."): weight 500 again. The digits are 25% tighter than before (-.0625em, was -.05em).
+- **Room** ("a margin-bottom on this number of 64px and a margin-top of 24px"): 24 above the number and 64 to the decade's card, at every size.
+- **Closer** ("The numbers should be closer together vertically"): one number follows the next at .8 of its size (was 1.04), in a window .8 tall.
+- **Only two years** ("It should just go -2 years to end, stopping at the decade ... When you reach the middle of the screen ... you should land on the decade"): 38, 39, 40. The roll starts as the number comes up from the foot of the view and lands on 40 when it reaches the middle. 40 holds from there.
+- **Each digit its own reel** ("the 3 should be static, and only the 8 and 9 roll. After that, the 4 comes, the 3 goes away, and the 0 comes"): a column per digit. 38 to 39 turns only the units. 39 to 40 turns both columns together.
