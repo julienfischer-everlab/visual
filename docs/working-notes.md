@@ -22144,3 +22144,19 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
     - At its left: the picture in a 96 circle, the years ("40–49 years", with "Up next" on the first decade), the decade's title, Why it matters, three points, and its years and number of checks as a chip.
     - At its right: its checks in the inner card under a Coming up chip, each row the timeline's own (picture, name, line, when, View and its ⋯).
     - It keeps two columns from a 600 container (My journey's own stack under 860). On the phone it stacks as My journey's does.
+
+## Personas, presets, debrief cards and a batch of small changes (v2299)
+
+- **Timeline V3 personas** (Tweaks → Timeline V3 → Persona; "Add all personna provided in the zip. Consider the content attached to each of them"):
+  - The concept's five members, as a card picker (name, then age · sex · plan · focus, the selected one outlined): Leo, Priya, Julien (default), Sarah, Margaret. Each brings their own birth year, next check-in, the focus Dr Lu set (its source, date and note) and their items (Leo 13, Priya 10, Sarah 14, Margaret 16).
+  - The three new members when Member is New: Amira (default), Tom, Helen. Their facts from the concept (age, sex, state, plan, labs, goals, conditions, medicines, family history) set the bento's name, the past results line ("From 1 lab" / "From 2 labs", the percentage in so far, the labs named in the toast), "Book your diagnostics" for Helen's Diagnostics plan, the goal quoted under More to uncover, and the first sketch of the decades (the concept's own rules: screening by age and sex, the heart check earlier for Amira's father, bone density now for Helen's mother, a medication review for Helen's amlodipine).
+  - Member and Persona stay in step: New picks Amira, Established picks Julien, and picking a persona of the other kind moves Member with it.
+  - Decades: the 20s, 30s and 90s get the concept's words (Tom's 20s, Leo's 30s). The 50s points and the 60s line name the breast screen for women and the prostate question for men.
+  - Items from the other members open their service by kind (bloods: pathology, DEXA, calcium score, bowel, skin, dietitian, VO2 max or balance: physical assessment, else the check-in).
+- **Presets: Default always first** ("always keep the Default one as the first preset"): a built-in Default at the top of the Presets menu, the saved setup everyone opens on (the shared one; on its own, this browser's Save; else the Tweaks' defaults), with the Top nav's Sticky. Apply and Share only; the page, colour mode and viewport stay as they are.
+- **Eyebrows 1px apart** ("eyes brow 1px letter spacing"): every eyebrow (the Overview modules' Insights, Next step, Schedule, the cards' labels, My journey's) at 1px tracking, was 0.
+- **Debrief cards**:
+  - 20 between the cards ("Gap +4px", was 16).
+  - The signer at the foot with their photo, round, 24, when a doctor; anyone else (Kate Mercer) the Everlab mark on a rounded tile ("Add avatar IF doctor / IF not fallback"). The chevron disc moves 2 up to stay centred on the words.
+  - New sits top right over the picture, 26 from the edges, as far as the words below are from theirs ("Badge new top right overlapping the img").
+  - A video debrief has its player over the picture: 64, white at 24% on a 64 blur, the play icon filled ("Add Visual Player ... If video card").
