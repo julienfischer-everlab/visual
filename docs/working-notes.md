@@ -21918,3 +21918,6 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - Tweaks -> Container chat floating (Overview): Background (colour, default white), Opacity (default 4%), Blur (default 24): the desk Ask panel's container (--cfBg, --cfBlur).
 - Tweaks -> Chips (Overview): Chip height (28-56, default 40) and Visual size (16-48, default 32): the Menu AI sheet's list and the Top chat's chips (--chipH), the services' 3D render in every chip (--chipVis, its margins following so the chip keeps its height).
 - Merged sheet entrance: no ride up from the screen's foot; in its place over the keys, a 10px rise and a fade in (.26s / .24s) 60ms after the keys; out at once (.16-.18s) ('Too much delay for the content; within the keyboard but just a very small delay + fade in').
+- Chips (the sheet's list, the Top chat's): sides 18 (was 16), icon to label 10 (was 8); the conversation chip's message icon filled.
+- The ask sheet's blanket 8 points lighter: black at 83% (was 91).
+- Checked: the lowest block over the keys (the field with Carousel top, the list with Field top) stands as far over them as the field from the screen's sides, in every Floating cards option and with a 16 inset too.
