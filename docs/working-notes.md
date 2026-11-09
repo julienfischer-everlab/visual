@@ -21847,3 +21847,10 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 ## Lifestyle: items grouped New plan action / Plan adjustment
 
 - "Inside card instead of label, use grouping: New plan action / Plan adjustment": each Lifestyle group card lists its new items under "New plan action", then its adjusted ones under "Plan adjustment" (13 / 18, ink 56%; a divider above the second heading); the rows lose their New / Adjusted badge. The item's line 14 / 19 ("sub item should be 14px").
+
+## Clinical card footer, avatar colours, doc sidebars, Modals CTA
+
+- Clinical card: the Why card sits right above the footer (`margin-top: auto` moved from the price row to `.arRcWhyCard`); the footer divider lighter (ink 6%) and closer (12 top); Why / Type rows and the price row's label 14px; the description +8 top; title and sub centred on the 64px visual when shorter.
+- Avatar colour system (picture fallback, `.arRcPic.arRcIco[data-av]`): `rcGrp(it)` names the kind (work, nut, sup, clin, med, life, fb) from its category (`calm` items in Exercise & wellbeing are Lifestyle; `it.med` or the syringe icon is Medication). Light: pale tint + deep ink per kind; dark: ink 7% disc + bright ink; Fallback grey.
+- Every doc page's left list (`.ldPats`): titles only (sub explainers hidden), no notes under it (`.ldNotes` hidden), the selected row without its left bar.
+- Modals doc: the page's own "Open the sheet" button did nothing: the closed modal's clear scrim and parked panel sat over it. Closed, they now take no pointer events.
