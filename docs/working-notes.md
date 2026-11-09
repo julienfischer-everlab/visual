@@ -21854,3 +21854,4 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - Avatar colour system (picture fallback, `.arRcPic.arRcIco[data-av]`): `rcGrp(it)` names the kind (work, nut, sup, clin, med, life, fb) from its category (`calm` items in Exercise & wellbeing are Lifestyle; `it.med` or the syringe icon is Medication). Light: pale tint + deep ink per kind; dark: ink 7% disc + bright ink; Fallback grey.
 - Every doc page's left list (`.ldPats`): titles only (sub explainers hidden), no notes under it (`.ldNotes` hidden), the selected row without its left bar.
 - Modals doc: the page's own "Open the sheet" button did nothing: the closed modal's clear scrim and parked panel sat over it. Closed, they now take no pointer events.
+- The clinical swipe card's picture stays neutral (grey tile, ink icon): `.arRcStkPic[data-av]` resets `--avBg/--avFg`. The colour system stays on the other avatars (review list, lifestyle rows).
