@@ -21868,3 +21868,4 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - Desk bottom Eva field, open: the top field's state exactly (the dim and blur scrim, 640 wide, the beam), grown out of the field and anchored at the foot.
 - Booked in: `live` rows (a call happening now): light green plate and date tile, a pulsing green dot and Happening now, the join button filled green. Modules → Booked in shows it.
 - Insights: once the Health profile is done, Past results shows In progress (searched for automatically), never To action (`insList`).
+- Lifestyle recommendations: sub under the title, "Select the actions you'd like to consider in your plan." (16/22 secondary, 8 under the title).
