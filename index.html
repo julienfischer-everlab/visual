@@ -2808,7 +2808,7 @@
      keyboard. */
   .aiWrap{position:absolute;inset:0;z-index:6;display:none;}
   .aiWrap.show{display:block;}
-  .aiDim{position:absolute;inset:0;background:rgba(0,0,0,.8);   /* 96 ("Blanket 96%"), then 80 ("blanket 80%") */-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);   /* the desk Ask panel's blanket exactly (.evSrchDim: black 50%, a 6 blur) ("Same as desktop") */   /* then -8 ("Blanket -8% opacity bg"): 83; then 12 ("Blanket 12%"); then 32 ("Blanket 32%") */   /* +12 ("+12% opacity blanket"), then +24 ("increase blanket by 24%", "same for the bottom chat"): 91 */opacity:0;transition:opacity .35s ease;}
+  .aiDim{position:absolute;inset:0;background:rgba(0,0,0,.72);   /* 96 ("Blanket 96%"), then 80 ("blanket 80%"), then 72 ("blanket 72%") */-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);   /* the desk Ask panel's blanket exactly (.evSrchDim: black 50%, a 6 blur) ("Same as desktop") */   /* then -8 ("Blanket -8% opacity bg"): 83; then 12 ("Blanket 12%"); then 32 ("Blanket 32%") */   /* +12 ("+12% opacity blanket"), then +24 ("increase blanket by 24%", "same for the bottom chat"): 91 */opacity:0;transition:opacity .35s ease;}
   .aiWrap.on .aiDim{opacity:1;}
   .aiCard{
     position:absolute;left:var(--evShGap);right:var(--evShGap);bottom:var(--evShGap);   /* floating, 12 off the edges ("a 12px gap so the card feels more like floating"): the bottom sheets' --evShGap */
@@ -5874,6 +5874,11 @@
   body.repVisual .rcCard.rcBig.rcDb .rcTitle{margin-top:2px !important;font-size:16px !important;line-height:22px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:70px !important;}
   body.repVisual .rcCard.rcBig.rcDb .rcCta.rcCtaIc{position:absolute !important;right:22px !important;bottom:28px !important;margin:0 !important;}
   body.repVisual .rcCard.rcBig.rcDb{aspect-ratio:auto !important;container-type:inline-size;padding-bottom:24px !important;} body.repVisual .rcCard.rcBig.rcDb > .rcVis{flex:none !important;height:calc(75cqw - 54px) !important;} body.repVisual .rcCard.rcBig.rcDb .rcEyebrow:not(#_){margin-top:18px !important;padding-left:26px !important;padding-right:26px !important;} body.repVisual .rcCard.rcBig.rcDb .rcTitle{padding-left:26px !important;} body.repVisual .rcCard.rcBig.rcDb .rcCta.rcCtaIc{right:26px !important;bottom:32px !important;} .rcWrap.nCar:has(> .rcCard.rcDb){gap:16px !important;}   /* the debrief cards: the visual 32 taller ("visual +32px height"; was the 4:3 card less its words), the words 4 further in on every side ("+4px padding content"), the round chevron with them; 4 more between the cards ("+4px gap carousel item") */
+  body.repVisual .rcCard.rcBig.rcDb > .rcVis{height:75cqw !important;}   /* the visual a full 4:3 of the card ("increase ratio of the card (increase visual format)"; was 4:3 less 54) */
+  body.repVisual .rcCard.rcBig.rcDb .rcTitle{display:-webkit-box !important;-webkit-box-orient:vertical;-webkit-line-clamp:2;white-space:normal !important;overflow:hidden;height:44px;padding-right:76px !important;}   /* two lines of title, always that tall, so every card's words stand the same height ("2 line of title", "All content height should be the same") */
+  body.repVisual .rcCard.rcBig.rcDb .rcBy{margin-top:8px;padding:0 76px 0 26px;font-size:14px;line-height:20px;color:rgba(236,236,236,.56);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;} body.light.repVisual .rcCard.rcBig.rcDb .rcBy{color:rgba(0,0,0,.56);}   /* the doctor who signed it, one line at the foot ("Footer $doctorname") */
+  .rcBy{display:none;} body.repVisual .rcCard.rcBig.rcDb .rcBy{display:block;}
+  body.repVisual .rcCard.rcBig.rcDb .rcCta.rcCtaIc{bottom:53px !important;}   /* the chevron disc centred on the words (date, two lines, doctor) */
   /* the stack: the same card shell, holding the same list the bento's own
      "All reports" card scrolls -- report 2 onward, never report 1, which
      already has the big card beside this one */
@@ -11115,6 +11120,7 @@
   body[data-bp="xs"] #bpFrame > .ovSug.ovSugConv{padding-top:64px;background:linear-gradient(to bottom,rgba(13,13,12,0) 0,rgba(13,13,12,.9) 64px,#0d0d0c 100%);}   /* Suggestion: Conversation, the stack taller than the row: its black ground reaching up to its first badge (either mode, as the row's) */
   /* on that black ground the primary chip is the dark mode's (white, ink), so it doesn't sink into it */ body.light #bpFrame > .ovSug .aiChip.aiChipPri{background:#f2f2f2;color:#141414;} body.light #bpFrame > .ovSug .aiChip.aiChipPri:hover{background:#dcdcdc;color:#141414;}
   body[data-bp="xs"]:is(.ovKbd, .frKbd) #bpFrame > .mKbd, html:not(.bpAuto) body[data-bp="xs"]:has(.dash.chatOn.chKbd) #bpFrame > .mKbd{--kbY:0px;visibility:visible;pointer-events:auto;transition-delay:0s;} body[data-bp="xs"].ovKbd #bpFrame > .mTabs{display:none;}
+  #bpFrame:has(> .aiWrap.show) > .bpStatus{z-index:7;color:#fff !important;} #bpFrame:has(> .aiWrap.show) > .bpStatus svg{filter:none !important;}   /* the status bar stays over the Ask sheet's blanket, unblurred, in white on its black ("Home top need to stay visible") */
   #bpFrame > .aiWrap{pointer-events:auto;border-radius:inherit;overflow:hidden;} body:not([data-bp="xs"]):not([data-bp="s"]) #bpFrame > .aiWrap{display:none;}   /* the assistant's sheet in the XS frame, over the desk's Overview, its corners the screen's */
   body.hdrV3[data-bp="xs"] #dOver .ovAvatar{display:block;}
   body[data-bp="xs"] #dOver .ovInbox, body[data-bp="xs"] #dOver .ovBell{width:44px;height:44px;}
@@ -40392,7 +40398,7 @@ hairline({
           // corner badge serves the other dress
           '<div class="rcEyebrow">' + (dateTop ? r.date + (lbl === LATEST ? '<span class="rcNew rcNewInline">New</span>' : '') : lbl) + '</div>' +
           '<div class="rcTitle">' + r.label + (lbl === LATEST && !dateTop ? '<span class="rcNew rcNewInline">New</span>' : '') + '</div>' +
-          (dateTop ? '' /* the carousel card: no sub ("Title 16px No sub") */ : '<div class="rcMeta">' + r.date + ' &middot; ' + (r.media === 'video' ? 'Video' : r.n + ' biomarkers') + '</div>') +
+          (dateTop ? '<div class="rcBy">' + (r.by || 'Dr. Steven Lu') + '</div>' /* the carousel card: no sub ("Title 16px No sub"); its doctor at the foot ("Footer $doctorname") */ : '<div class="rcMeta">' + r.date + ' &middot; ' + (r.media === 'video' ? 'Video' : r.n + ' biomarkers') + '</div>') +
         '</div>' +
         // the way in: a rounded CTA, bottom right in the Visual dress; on the carousel card a chevron disc alone ("CTA chevron right only")
         (dateTop ? '<button class="rcCta rcCtaIc" type="button" data-r="' + r.id + '" aria-label="See report"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lc="chevron-right" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>'

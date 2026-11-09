@@ -21958,3 +21958,11 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - The row is hidden when Has data is No. The doc's intro now names Tweaks > Scheduled.
 - **Primary card glow**, Top right extra: the bleed beyond Top right goes from 30% to 16% (-26% top and right; "reduce to 16% bleed").
 - **Phone Ask sheet blanket**: 80% ("blanket 80%").
+
+## Debrief cards: bigger visual, date / 2-line title / doctor; status bar over the Ask sheet; blanket 72 (v2278)
+
+- **Debrief carousel card** (`.rcCard.rcDb`, phone and desk):
+  - The visual is a full 4:3 of the card (`75cqw`; it was 4:3 less 54px; "increase ratio of the card (increase visual format)").
+  - Content: the date eyebrow (with New), a two-line title clamped at a fixed 44px, and the doctor who signed it as a 14px secondary footer (`r.by`, new `.rcBy`; "Footer $doctorname").
+  - Every card's content stands the same height ("All content height should be the same"). The chevron disc is centred on the words.
+- **Phone Ask sheet**: the status bar sits over the blanket (z 7 while `.aiWrap.show`), unblurred and white ("Home top need to stay visible"). The blanket is 72% ("blanket 72%").
