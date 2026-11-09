@@ -3230,10 +3230,27 @@ window.EvTitle = (function () {
    Dragged by hand, a mouse as a finger (a mouse cannot pan a scroller, and a press-and-pull only selected the text); a drag more down than across is left to the page's scroll; the row's snapping off while it moves.
    Let go: half a card's travel (and its gap) or more goes on to the next, or back to the one before; less springs back to its own. The glide 240 ms off a quintic, as the Records carousel's; the last card stops at the row's end. A drag never opens a card. In a scaled frame (the XS frame, a doc's phone) the drag is divided by its scale (evK), so the row keeps under the finger and the half-card magnet counts in the row's own pixels.
    bind(row, { item, drag, onMove }) -> { go(i), at() }: item the cards' selector, drag the class the row wears while dragged, onMove() once a frame while the row moves (a glide, a drag, a scroll) */
+/* EvFade: a carousel's overflow fade, once for every row ("fade out carousel when overflow; fade out overflow when the container has available space around it"):
+   a side fades (a 48 gradient to nothing, the row's own mask) only while there is more of the row hidden past it, and only where the row stands in from its page (12 or more between the row and the panel's edge):
+   a row running to the screen's edge (the phone's, bled) shows its cut as the edge itself, no fade. bind(row) once; scan() binds the app's carousels (CARS) as they appear; the Design system -> Carousel page draws it */
+window.EvFade = (function () {
+  var PAN = '#dMain, #dOver, #dSvc, #dTl, #dApt, #dAcc, #dPlan, #dMkt, .mscroll, .crFrame, #bpFrame, .ldDoc';
+  var CARS = '.dRepCards.nCar, #dOver .ovcar, #dMkt .mkRec, #dPlan .plGoals, #dPlan .plRtns, .ov5Cards, .tlSugTrack, #dOver .ovSvc, .crRow';
+  function room(row) { var p = row.parentElement && row.parentElement.closest(PAN), r = row.getBoundingClientRect(), b = p ? p.getBoundingClientRect() : { left: 0, right: innerWidth }; return { l: r.left - b.left >= 12, r: b.right - r.right >= 12 }; }
+  function put(row) { var max = row.scrollWidth - row.clientWidth, over = max > 1, rm = over ? room(row) : { l: false, r: false };
+    var L = over && rm.l && row.scrollLeft > 2, R = over && rm.r && row.scrollLeft < max - 2;
+    row.classList.toggle('evFdL', L); row.classList.toggle('evFdR', R); row.classList.toggle('evFd', L || R); }
+  function bind(row) { if (!row || row._evFd) return; row._evFd = 1; var raf = 0, go = function () { if (!raf) raf = requestAnimationFrame(function () { raf = 0; put(row); }); };
+    row.addEventListener('scroll', go, { passive: true }); if (window.ResizeObserver) new ResizeObserver(go).observe(row); addEventListener('resize', go); go(); }
+  function scan() { try { document.querySelectorAll(CARS).forEach(bind); } catch (e) {} }
+  if (document.readyState !== 'loading') setTimeout(scan, 0); else addEventListener('DOMContentLoaded', scan);
+  setInterval(scan, 1500);   /* rows drawn later (a page opened, a Tweak changed) bound as they come */
+  return { bind: bind, scan: scan, put: put, CARS: CARS };
+})();
 window.EvMagnet = (function () {
   var red = function () { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
   function bind(row, o) {
-    o = o || {}; if (!row) return { go: function () {}, at: function () { return 0; } };
+    o = o || {}; if (!row) return { go: function () {}, at: function () { return 0; } }; if (window.EvFade) window.EvFade.bind(row);   /* every magnet row fades its overflow (EvFade) */
     var cs = function () { return [].slice.call(row.querySelectorAll(o.item)); };
     var posOf = function (i) { var c = cs(); if (!c[i]) return 0; return Math.min(row.scrollWidth - row.clientWidth, Math.max(0, c[i].offsetLeft - c[0].offsetLeft)); };
     var near = function () { var b = 0, d = Infinity; cs().forEach(function (x, i) { var v = Math.abs(posOf(i) - row.scrollLeft); if (v < d) { d = v; b = i; } }); return b; };

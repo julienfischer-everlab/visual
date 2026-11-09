@@ -1281,6 +1281,11 @@
   .evSrch{position:fixed;inset:0;z-index:950;pointer-events:auto;font-family:var(--ar-font,ui-sans-serif,system-ui,sans-serif);} .evSrchDim{position:absolute;inset:0;background:rgba(0,0,0,.5);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);opacity:0;transition:opacity .22s ease;} .evSrch.on .evSrchDim{opacity:1;}
   .evSrchP{position:absolute;left:50%;top:max(72px,18vh);width:min(640px,calc(100% - 48px));max-height:calc(100% - max(72px,18vh) - 48px);display:flex;flex-direction:column;border-radius:32px;background:#181818;color:#f2f2f2;box-shadow:0 0 0 1px rgba(255,255,255,.06),0 40px 120px -20px rgba(0,0,0,.85);overflow:hidden;opacity:0;transform:translate(-50%,-10px) scale(.98);transition:opacity .22s ease,transform .32s cubic-bezier(.2,.8,.2,1);} .evSrch.on .evSrchP{opacity:1;transform:translate(-50%,0);}
   /* grown from the desk's Eva field ("On click on the bottom field, trigger the full shape"; EvSearch.open(null, at)): the panel where the field is, its width, its foot on the field's foot, rising out of it; the field gone under it while it is open */
+  /* the desk Ask panel's Services: the sheet's tiles, five across, the render over the name (2 lines) */
+  .evSrch .evSrchSvcH{margin-top:20px;} .evSrch .evSrchSvc.evSrchSvc{display:grid;grid-template-columns:repeat(5,minmax(0,1fr)) !important;gap:8px;margin:10px 0 0;}
+  html body .evSrch .evSrchSvc .aiTile.aiSvc.aiSvc{flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:10px;height:auto;min-height:100px;padding:14px;border-radius:18px;font-size:14px;line-height:18px;text-align:left;}
+  html body .evSrch .evSrchSvc .aiSvc .aiSvc3d{display:flex;flex:none;width:32px;height:32px;} html body .evSrch .evSrchSvc .aiSvc .aiSvc3d img{width:32px;height:32px;object-fit:contain;} html body .evSrch .evSrchSvc .aiSvc .aiSvcVis{display:none;}
+  html body .evSrch .evSrchSvc .aiSvc .aiSvcT{white-space:normal;text-wrap:balance;}
   .evSrch.evSrchAt .evSrchP, .evSrch.on.evSrchAt .evSrchP{top:auto;bottom:var(--atB);left:var(--atX);width:min(640px,calc(100% - 48px));max-height:calc(100% - var(--atB) - 72px);opacity:1;transform:translateX(-50%);transition:none;}   /* morphed from the field (EvSearch's grow: its size to the panel's, its words in after), not faded */
   body:has(> .evSrch.evSrchAt) .dash > .evFld{opacity:0;transition:none;}
   /* grown from the bottom field: the top field's own state, its scrim and blur too, only placed at the foot ("bottom active chat state exactly as the top chat field, positioned at the bottom") */   /* from the bottom field, no blanket and no blur ("No blanket and blur when click on the bottom chat field"): the page stays as it is; a click on it still lets the panel go */
@@ -2911,6 +2916,34 @@
   html.askSheet .aiWrap .aiV2Sug::before{content:"Conversations";display:block;margin:0 0 10px 4px;font-size:14px;line-height:20px;color:rgba(255,255,255,.56);}
   html.askSheet body.light .aiWrap .aiV2Sug::before{color:rgba(0,0,0,.56);}
   html.askSheet .aiWrap .aiV2Stk{margin:0;padding:0 4px;}
+  /* Bottom sheet, grouped ("No keyboard. First section chat field inactive. Group inbox chip. Group services tiles. Both carousel horizontal"): the field at rest (a tap never lifts the keys), then Inbox, the conversations' chips in one row, then Services, the tiles (visual on top, the name on two lines) in one row; each row swiped or dragged (EvMagnet), bled to the sheet's edges so it runs under the screen's edge, its first item in line with the field */
+  html.askSheet .aiWrap .aiV2Sug::before{content:"Inbox";}
+  /* its field as the desktop's (EvSearch, "Field should be the same as the desktop one"): no box of its own, on the sheet; the words (17, 24 tall) then, 12 under them, + at the left, Eva and the send at the right (36 discs at 8%); the send lit once there are words. Its words, the rows' first item and the titles all 20 in from the sheet's edge */
+  html.askSheet.askV2 .aiWrap .aiRowTop.aiRowTop{background:none;box-shadow:none;border-radius:0;padding:12px 4px 0;cursor:text;}
+  html.askSheet.askV2 .aiWrap .aiCard .aiField.aiField{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"in in" "fb go";row-gap:12px;column-gap:8px;height:auto;padding:0;border-radius:0;background:none !important;box-shadow:none !important;}
+  html.askSheet.askV2 .aiWrap .aiCard .aiField.aiField input{grid-area:in;height:24px;padding:0;font-size:17px;}
+  html.askSheet.askV2 .aiWrap .aiCard .aiField.aiField .aiFb{display:flex;align-items:center;gap:8px;grid-area:fb;} html.askSheet.askV2 .aiWrap .aiFbSp{flex:1;}
+  html.askSheet.askV2 .aiWrap .aiCard .aiField :is(.aiFbPl, .aiFbWho){display:inline-flex;align-items:center;justify-content:center;flex:none;height:36px;border:0;border-radius:18px;background:rgba(255,255,255,.08);color:#ececec;font:inherit;font-size:15px;cursor:pointer;}
+  html.askSheet.askV2 .aiWrap .aiCard .aiField .aiFbPl{width:36px;padding:0;} html.askSheet.askV2 .aiWrap .aiCard .aiField .aiFbPl svg{width:16px;height:16px;} html.askSheet.askV2 .aiWrap .aiCard .aiField .aiFbWho{gap:6px;padding:0 12px 0 14px;} html.askSheet.askV2 .aiWrap .aiCard .aiField .aiFbWho svg{width:12px;height:12px;opacity:.7;}
+  html.askSheet.askV2 .aiWrap .aiCard .aiField.aiField .ovChatGo{grid-area:go;position:static;width:36px;height:36px;margin:0;opacity:1;transform:none;pointer-events:auto;background:rgba(255,255,255,.08);color:rgba(242,242,242,.4);}
+  html.askSheet.askV2 .aiWrap .aiCard .aiField.aiField.hasText .ovChatGo{background:#f2f2f2;color:#141414;}
+  html.askSheet.askV2 body.light .aiWrap .aiCard .aiField :is(.aiFbPl, .aiFbWho), html.askSheet.askV2 body.light .aiWrap .aiCard .aiField.aiField .ovChatGo{background:rgba(46,31,26,.07);color:#000;}
+  html.askSheet.askV2 body.light .aiWrap .aiCard .aiField.aiField:not(.hasText) .ovChatGo{color:rgba(0,0,0,.4);} html.askSheet.askV2 body.light .aiWrap .aiCard .aiField.aiField.hasText .ovChatGo{background:#141414;color:#fff;}
+  html.askSheet.askV2 .aiWrap .aiV2Sug{margin-top:24px;} html.askSheet.askV2 .aiWrap .aiV2Sug::before, html.askSheet.askV2 .aiWrap .aiServicesIn::before{margin-left:4px;}
+  html.askSheet.askV2 .aiWrap .aiV2Sug .aiV2Stk{flex-direction:row;align-items:center;flex-wrap:nowrap;gap:8px;margin:0 -16px;padding:0 20px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;scroll-snap-type:x proximity;scroll-padding-inline:20px;overscroll-behavior-x:contain;touch-action:pan-y;-webkit-mask-image:none;mask-image:none;}
+  html.askSheet.askV2 .aiWrap .aiV2Sug .aiV2Stk > .aiChip{flex:none;max-width:none;white-space:nowrap;scroll-snap-align:start;}
+  html.askSheet.askV2 .aiWrap .aiV2Sug .aiV2Stk > .aiChip span{overflow:visible;text-overflow:clip;}
+  html.askSheet.askV2 .aiWrap .aiCard .aiServices{display:grid !important;order:3;grid-template-rows:1fr;opacity:1;margin-top:24px;}
+  html.askSheet.askV2 .aiWrap .aiServicesIn{margin-inline:-16px;padding-inline:16px;}
+  html.askSheet.askV2 .aiWrap .aiServicesIn::before{content:"Services";display:block;margin:0 0 10px 4px;font-size:14px;line-height:20px;color:rgba(255,255,255,.56);}
+  html.askSheet.askV2 body.light .aiWrap .aiServicesIn::before{color:rgba(0,0,0,.56);}
+  html.askSheet.askV2 .aiWrap .aiServices :is(.aiEyebrow, .aiConvL, .shHome){display:none !important;}
+  html.askSheet.askV2 body .aiWrap .aiBento.aiSvcGrid{display:flex;align-items:stretch;gap:8px;margin:0 -16px;padding:0 20px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;scroll-snap-type:x mandatory;scroll-padding-inline:20px;overscroll-behavior-x:contain;touch-action:pan-y;-webkit-user-select:none;user-select:none;-webkit-mask-image:none;mask-image:none;}
+  html.askSheet.askV2 body .aiWrap .aiBento.aiSvcGrid::-webkit-scrollbar, html.askSheet.askV2 .aiWrap .aiV2Stk::-webkit-scrollbar{display:none;}
+  html.askSheet.askV2 body .aiWrap .aiTile.aiSvc.aiSvc.aiSvc.aiSvc{flex:none;width:112px;height:auto;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:10px;padding:14px 12px 16px;text-align:left;scroll-snap-align:start;}
+  html.askSheet.askV2 body .aiWrap .aiTile.aiSvc.aiSvc .aiSvcT.aiSvcT{flex:none;width:100%;min-height:36px;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;white-space:normal;overflow:hidden;text-overflow:ellipsis;font-size:14px;line-height:18px;letter-spacing:-.1px;text-wrap:pretty;overflow-wrap:break-word;}
+  html.askSheet.askV2 body .aiWrap .aiTile.aiSvc .aiSvcVis.aiSvcVis{display:flex;order:-1;width:32px;height:32px;border-radius:0;background:none;} html.askSheet.askV2 body .aiWrap .aiTile.aiSvc .aiSvcVis.aiSvcVis img{width:32px;height:32px;} html.askSheet.askV2 body .aiWrap .aiTile.aiSvc .aiSvcVis.aiSvcVis svg{width:22px;height:22px;}
+  html.askSheet.askV2.askIc3d body .aiWrap .aiTile.aiSvc .aiSvcVis.aiSvcVis{display:none;} html.askSheet.askV2.askIc3d body .aiWrap .aiTile.aiSvc .aiSvc3d.aiSvc3d{display:flex;order:-1;width:32px;height:32px;}
   @media (prefers-reduced-motion: reduce){ html.askDock .aiWrap .aiCard, html.askDock .mTabs .mDock{transition:none !important;} }
   html.askConv .aiConvL::-webkit-scrollbar{display:none;} html.askConv .aiConvL > .aiChip{flex:none;scroll-snap-align:start;}
   /* Conversation style: List (html.askConvList): no chips, a suggested-items list, one a line: its icon, its words, the date at the right, a hairline between ("avoid the bubbles, inline style instead, like a suggested item list") */
@@ -7554,6 +7587,17 @@
   .moItem header{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 8px;font-size:12.5px;line-height:1.3;} .moItem header b{font-weight:600;} .moItem header span{color:var(--ldMut);} .moItem header code{margin-left:auto;padding:2px 6px;border-radius:4px;background:var(--ldChip);font:10.5px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--ldMut);}
   .moOv{width:100%;} .moOv > *{box-sizing:border-box;margin:0 !important;width:100%;} .moOv .hpOvCard{background-color:var(--ovCard);cursor:default;} .moOv .ovInsEmpty{display:flex !important;} .moOv .ovBk{display:flex;}   /* its own ground (.ovBk, body.light .ovBk), as on the Overview */
   .moBp{margin-left:8px;font-size:12px;font-weight:400;color:var(--ldMut);}
+  /* Design system -> Carousel: each breakpoint a page of its width (zoomed to the column), its padding, the row inside */
+  .crDoc .ntIn{max-width:1200px;} .crFit{width:100%;overflow:hidden;} .crFrame{box-sizing:border-box;padding:24px 16px 28px;border-radius:20px;background:var(--sBg, #111);color:var(--sInk, #fff);}
+  .crFrame.crFrs{padding:24px;} .crFrame.crFrm{padding:32px 48px;} .crFrame.crFrl{padding:40px 80px;}
+  .crHd{display:flex;align-items:center;justify-content:space-between;min-height:36px;margin-bottom:16px;} .crHd b{font-size:20px;font-weight:500;}
+  .crArrs{display:none;gap:8px;} .crFrame.crOver .crArrs{display:flex;}
+  .crArr{display:grid;place-items:center;width:36px;height:36px;padding:0;border:0;border-radius:50%;background:rgba(255,255,255,.08);color:inherit;cursor:pointer;} .crArr svg{width:18px;height:18px;} .crArr:disabled{opacity:.32;cursor:default;}
+  .crRow{display:flex;gap:16px;overflow-x:auto;scrollbar-width:none;scroll-snap-type:x mandatory;cursor:grab;} .crRow::-webkit-scrollbar{display:none;}
+  .crFrame.crFrxs .crRow{margin:0 -16px;padding:0 16px;scroll-padding:0 16px;}   /* XS: bled to the screen's edges */
+  .crCard{flex:0 0 260px;scroll-snap-align:start;display:flex;flex-direction:column;overflow:hidden;border-radius:20px;background:rgba(255,255,255,.06);user-select:none;}
+  .crVis{display:block;aspect-ratio:4/3;} .crTx{display:flex;flex-direction:column;gap:4px;padding:14px 16px 18px;} .crTx small{font-size:12px;letter-spacing:.06em;text-transform:uppercase;opacity:.56;} .crTx b{font-size:16px;font-weight:500;}
+  body.light .crFrame{background:#fafafa;color:#000;} body.light .crCard{background:rgba(46,31,26,.05);} body.light .crArr{background:rgba(46,31,26,.07);}
   .hcItem header{display:flex;align-items:baseline;gap:8px;font-size:12.5px;line-height:1.3;} .hcItem header b{font-weight:600;} .hcItem header span{color:var(--ldMut);} .hcItem header code{margin-left:auto;padding:2px 6px;border-radius:4px;background:var(--ldChip);font:10.5px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--ldMut);}
   .hcItem .hpOvCard{box-sizing:border-box;margin:0;width:var(--hcW,528px);min-height:var(--hcH,250px);cursor:default;} .hcItem .hpOvCard{background-color:var(--ovCard);}
   .hcItem.hcOn header b{color:var(--ldFg);} .hcItem.hcOn > :not(header){outline:1.5px solid var(--ldMut);outline-offset:6px;border-radius:24px;}
@@ -11448,6 +11492,13 @@
   .ovInsChip{position:absolute;right:0;top:-6px;background:#ececec;color:#141414;font-size:11px;border-radius:7px;padding:3px 7px;white-space:nowrap;}
   .ovInsDots{position:absolute;left:0;right:0;bottom:17px;display:flex;justify-content:center;align-items:center;gap:4px;pointer-events:none;}
   .ovInsDots i{width:5px;height:5px;border-radius:3px;background:rgba(236,236,236,.25);pointer-events:auto;cursor:pointer;transition:width .2s ease,background .2s ease;}
+  /* EvFade: the overflowing side of a carousel fading out (48 wide), only while something is hidden past it and the row has room round it */
+  .evFd{--fdL:0px;--fdR:0px;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 var(--fdL),#000 calc(100% - var(--fdR)),transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 var(--fdL),#000 calc(100% - var(--fdR)),transparent 100%);}
+  .evFd.evFdL{--fdL:48px;} .evFd.evFdR{--fdR:48px;}
+  /* the arrows in the footer, at its two ends (36 round, the cards' own secondary fill); hidden on a single slide */
+  .ovInsArr{position:absolute;top:50%;display:grid;place-items:center;width:36px;height:36px;margin-top:-18px;padding:0;border:0;border-radius:50%;background:rgba(255,255,255,.08);color:#ececec;cursor:pointer;pointer-events:auto;transition:background .16s ease,opacity .16s ease;} .ovInsArr svg{width:18px;height:18px;} .ovInsArr:hover{background:rgba(255,255,255,.14);} .ovInsArr:disabled{opacity:.32;cursor:default;} .ovInsArr:disabled:hover{background:rgba(255,255,255,.08);}
+  .ovInsPrev{left:0;} .ovInsNext{right:0;} body.light .ovInsArr{background:rgba(46,31,26,.07);color:#000;} body.light .ovInsArr:hover{background:rgba(46,31,26,.12);} body.light .ovInsArr:disabled:hover{background:rgba(46,31,26,.07);}
+  .ovInsCard:not(.ovInsHero) .ovInsArr{display:none;}
   .ovInsDots i.on{width:14px;background:#ececec;}
   body.light .ovInsCard{background:rgba(46,31,26,.055);} body.light .ovInsTx b{color:#000;} body.light .ovInsSub{color:rgba(0,0,0,.56);}
   body.light .ovInsChart g{stroke:rgba(46,31,26,.1);} body.light .ovInsChip{background:#2e1f1a;color:#fff;}
@@ -11555,6 +11606,12 @@
   html.insRow body #dOver .ovInsCard.ovInsHero .ovInsCta{grid-area:go;display:grid;place-items:center;width:44px;height:44px;min-width:44px;margin:0;padding:0;border-radius:50%;align-self:center;}
   html.insRow body #dOver .ovInsCard.ovInsHero .ovInsCta .ovInsCtaL{display:none;} html.insRow body #dOver .ovInsCard.ovInsHero .ovInsCta .ovInsCtaC{display:block;width:20px;height:20px;}
   html.insRow body #dOver .ovInsCard.ovInsHero .ovInsDots{bottom:18px;}
+  /* the hero card's carousel ("move up CTA below content; nav dots centred; left arrow on the left of the footer, right arrow on the right"; "fade out inside the card"): the CTA under the words, the footer a row of its own, the slides fading out at the card's two sides as they move */
+  html:not(.insRow) body #dOver .ovInsCard.ovInsHero .ovInsCta{margin-top:16px;}
+  body #dOver .ovInsCard.ovInsHero:has(.ovInsArr) .ovInsSl{padding-bottom:76px;}
+  body #dOver .ovInsCard.ovInsHero:has(.ovInsArr) .ovInsDots{left:var(--insFx, 24px);right:var(--insFx, 24px);bottom:20px;height:36px;}
+  body[data-bp="xs"] #dOver .ovInsCard.ovInsHero{--insFx:20px;}
+  body #dOver .ovInsCard.ovInsHero:has(.ovInsArr) .ovInsTrack{-webkit-mask-image:linear-gradient(90deg,transparent,#000 24px,#000 calc(100% - 24px),transparent);mask-image:linear-gradient(90deg,transparent,#000 24px,#000 calc(100% - 24px),transparent);}
   html.insRow body #dOver .ovInsCard.ovInsHero .ovInsVis .ovIllImg{left:0;top:0;width:100%;height:100%;transform:none;object-fit:cover;}   /* a report's render fills its 72 tile */
   .ovInsHero .ovInsVis{container-type:size;} .ovInsHero .ovInsVis .ovIllImg{position:absolute;left:50%;top:50%;width:calc(min(170cqw, 210cqh) - 54px);height:auto;max-width:none;aspect-ratio:816 / 480;object-fit:contain;transform:translate(-50%, -50%);}
 
@@ -14532,7 +14589,7 @@
         <div class="tkRow"><span class="lbl">Style</span><select id="stSvcSty" class="tkSegSel" aria-label="The Overview's services: pills, or Apple's cards (the picture on top, the title under it)"><option value="pill" selected>Pills</option><option value="apple">Apple</option></select></div>   <!-- "the same style as Apple, with the image on the top and the title below" -->
         </div>
         <!-- the Ask Everlab sheet (the dock's assistant button): its Services tiles, the names alone, or each with its 3D render at the left and two lines of name at least ("add tweak with 3d icon on the left of each label") -->
-        <div class="tkGroup" data-pages="ov ins ask"><div class="tkSub">Ask sheet</div>   <!-- and alone while the sheet is up (EvCtx: ask) -->
+        <div class="tkGroup" data-pages="ov ins ask"><div class="tkSub">Menu AI entry point</div>   <!-- and alone while the sheet is up (EvCtx: ask) -->
         <div class="tkRow"><span class="lbl">Version</span><select id="stAskVer" class="tkSegSel" aria-label="The star's Ask sheet: Inbox only, the field in the dock's place with the conversations over it; Bottom sheet, an edge-to-edge sheet with the field and the conversations in it"><option value="dock" selected>Inbox only</option><option value="sheet">Bottom sheet</option></select></div>   <!-- V2 the star's rule now, the default ("star general menu rule"); "I want another totally different version: Version 1 keep what you have now; Version 2 two bottom sheet cards floating" -->
         <div class="tkRow"><span class="lbl">Suggestions</span><select id="stAskStk" class="tkSegSel" aria-label="Version 2: the suggestions over the field stacked, one a line, or a horizontal row"><option value="stack" selected>Stacked</option><option value="car">Carousel</option></select></div>   <!-- "Stacked suggestion" -->
         <div class="tkRow"><span class="lbl">Tools at rest</span><select id="stAskTools" class="tkSegSel" aria-label="Version 2: show the + and Eva on the field before it is focused"><option value="off" selected>Off</option><option value="on">On</option></select></div>   <!-- "show the PLUS icon and EVA on the unfocus state" -->
@@ -22294,10 +22351,27 @@ window.EvTitle = (function () {
    Dragged by hand, a mouse as a finger (a mouse cannot pan a scroller, and a press-and-pull only selected the text); a drag more down than across is left to the page's scroll; the row's snapping off while it moves.
    Let go: half a card's travel (and its gap) or more goes on to the next, or back to the one before; less springs back to its own. The glide 240 ms off a quintic, as the Records carousel's; the last card stops at the row's end. A drag never opens a card. In a scaled frame (the XS frame, a doc's phone) the drag is divided by its scale (evK), so the row keeps under the finger and the half-card magnet counts in the row's own pixels.
    bind(row, { item, drag, onMove }) -> { go(i), at() }: item the cards' selector, drag the class the row wears while dragged, onMove() once a frame while the row moves (a glide, a drag, a scroll) */
+/* EvFade: a carousel's overflow fade, once for every row ("fade out carousel when overflow; fade out overflow when the container has available space around it"):
+   a side fades (a 48 gradient to nothing, the row's own mask) only while there is more of the row hidden past it, and only where the row stands in from its page (12 or more between the row and the panel's edge):
+   a row running to the screen's edge (the phone's, bled) shows its cut as the edge itself, no fade. bind(row) once; scan() binds the app's carousels (CARS) as they appear; the Design system -> Carousel page draws it */
+window.EvFade = (function () {
+  var PAN = '#dMain, #dOver, #dSvc, #dTl, #dApt, #dAcc, #dPlan, #dMkt, .mscroll, .crFrame, #bpFrame, .ldDoc';
+  var CARS = '.dRepCards.nCar, #dOver .ovcar, #dMkt .mkRec, #dPlan .plGoals, #dPlan .plRtns, .ov5Cards, .tlSugTrack, #dOver .ovSvc, .crRow';
+  function room(row) { var p = row.parentElement && row.parentElement.closest(PAN), r = row.getBoundingClientRect(), b = p ? p.getBoundingClientRect() : { left: 0, right: innerWidth }; return { l: r.left - b.left >= 12, r: b.right - r.right >= 12 }; }
+  function put(row) { var max = row.scrollWidth - row.clientWidth, over = max > 1, rm = over ? room(row) : { l: false, r: false };
+    var L = over && rm.l && row.scrollLeft > 2, R = over && rm.r && row.scrollLeft < max - 2;
+    row.classList.toggle('evFdL', L); row.classList.toggle('evFdR', R); row.classList.toggle('evFd', L || R); }
+  function bind(row) { if (!row || row._evFd) return; row._evFd = 1; var raf = 0, go = function () { if (!raf) raf = requestAnimationFrame(function () { raf = 0; put(row); }); };
+    row.addEventListener('scroll', go, { passive: true }); if (window.ResizeObserver) new ResizeObserver(go).observe(row); addEventListener('resize', go); go(); }
+  function scan() { try { document.querySelectorAll(CARS).forEach(bind); } catch (e) {} }
+  if (document.readyState !== 'loading') setTimeout(scan, 0); else addEventListener('DOMContentLoaded', scan);
+  setInterval(scan, 1500);   /* rows drawn later (a page opened, a Tweak changed) bound as they come */
+  return { bind: bind, scan: scan, put: put, CARS: CARS };
+})();
 window.EvMagnet = (function () {
   var red = function () { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
   function bind(row, o) {
-    o = o || {}; if (!row) return { go: function () {}, at: function () { return 0; } };
+    o = o || {}; if (!row) return { go: function () {}, at: function () { return 0; } }; if (window.EvFade) window.EvFade.bind(row);   /* every magnet row fades its overflow (EvFade) */
     var cs = function () { return [].slice.call(row.querySelectorAll(o.item)); };
     var posOf = function (i) { var c = cs(); if (!c[i]) return 0; return Math.min(row.scrollWidth - row.clientWidth, Math.max(0, c[i].offsetLeft - c[0].offsetLeft)); };
     var near = function () { var b = 0, d = Infinity; cs().forEach(function (x, i) { var v = Math.abs(posOf(i) - row.scrollLeft); if (v < d) { d = v; b = i; } }); return b; };
@@ -36799,6 +36873,7 @@ hairline({
       // the card standing on the keys ("on field click the list of services
       // disappears and the keyboard appears"). Let go empty, they come back.
       inp.addEventListener('focus', () => {
+        if (document.documentElement.classList.contains('askSheet')) return;   /* Bottom sheet: the field stays at rest, no keys ("No keyboard") */
         const k = keyboard();
         wrap.classList.add('typing');
         if (k) void k.offsetWidth;
@@ -36838,8 +36913,9 @@ hairline({
         keyboard();   // built now, so its height is there to measure when the field is tapped
         wrap.classList.add('show');
         svcR.scrollLeft = 0; svcFade(svcR);   /* the carousel opens on its first tile, in line with the field */
+        { const st = wrap.querySelector('.aiV2Stk'); if (st && !st._mg && window.EvMagnet && document.documentElement.classList.contains('askSheet')) { st._mg = 1; window.EvMagnet.bind(st, { item: '.aiChip', drag: 'aiSvcDrag' }); } }   /* Bottom sheet: the Inbox row dragged by hand as the tiles' */
         wrap.querySelectorAll('.aiConvL').forEach(cl => { if (window.EvConvChips){ cl.innerHTML = window.EvConvChips(); cl.scrollLeft = 0; requestAnimationFrame(() => svcFade(cl)); } });
-        inp.placeholder = document.documentElement.classList.contains('askV2') ? 'Ask about anything' : 'Ask Everlab anything';   /* Version 2's field card ("Ask about anything") */   /* the conversations, as they stand now, from the first */
+        inp.placeholder = document.documentElement.classList.contains('askV2') && !document.documentElement.classList.contains('askSheet') ? 'Ask about anything' : 'Ask Everlab anything';   /* Bottom sheet: the desktop field's words */   /* Version 2's field card ("Ask about anything") */   /* the conversations, as they stand now, from the first */
         ph.classList.add('aiOpen');   // the sticky greeting steps under the dim
         card.style.transition = 'none';
         card.style.transform = fromBtn();
@@ -36869,7 +36945,10 @@ hairline({
       ph._askOpen = open; ph._askClose = close;
     };
     ['phone', 'phone2', 'bpFrame'].forEach(id => attach(document.getElementById(id), id));
-    window.EvAsk = { attach, svc: svcLay, list: svcSet, SVCS: ASK_SVC.map(x => ({ id: x.id, l: x.l })) };
+    /* the services as tiles for another host (the desk's Ask panel, EvSearch: "add a Services section with tile list of services"), the same tiles and order; start(id, el): its chat, as the sheet's tile does */
+    const tiles = () => '<div class="aiBento aiSvcGrid evSrchSvc">' + svcList.map(svcTileHtml).join('') + '</div>';
+    const start = (id, el) => { const d = svcDef(id), x = svcList.find(y => y.id === id), M = window.EvSvcChat || {}; let ctx = (d && M[d.l]) || M.Concierge; if (ctx && d && x && x.l !== d.l) ctx = Object.assign({}, ctx, { title: x.l }); const ch = document.querySelector('.dash'); if (ch && ch._chat && ctx) setTimeout(() => ch._chat.open(el, ctx.q, ctx), 300); };
+    window.EvAsk = { attach, svc: svcLay, list: svcSet, tiles, start, SVCS: ASK_SVC.map(x => ({ id: x.id, l: x.l })) };
   })();
   // ---- EvBeam: the Concierge intro's border beam, once round a field ---------
   // ("keep the exact same beam border effect as the concierge onboarding
@@ -37458,6 +37537,7 @@ hairline({
         (ccOn ? '<button type="button" class="evSrchR evSrchChip evSrchCc" data-cc="1">' + SP + '<span>Go to concierge</span></button>' : '') +
         (conv ? (window.EvRecentConv || []).map(c => '<button type="button" class="evSrchR evSrchChip evSrchConv" data-conv="' + c[0] + '"><svg class="aiConvIc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lc="message-circle" aria-hidden="true"><path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"/></svg><span>' + c[1] + '</span><i>' + c[2] + '</i></button>')   /* Tweaks -> Top Chat AI -> Suggestion: Conversation, stacked */
           : SUGS.map(t => '<button type="button" class="evSrchR evSrchChip" data-q="' + t + '"><span>' + t + '</span></button>')).join('') + '</div>' +
+        (!full && window.EvAsk && window.EvAsk.tiles ? '<div class="evSrchH evSrchSvcH">Services</div>' + window.EvAsk.tiles() : '') +   /* the desk: the services, the Ask sheet's tiles, under the conversations */
         '</div></div>';   /* (no past conversations: "remove past history") */   /* the suggestions a row of chips, then the past conversations as a list ("add suggestions as chips row; add group: past conversation, list items") */
       (host || document.body).appendChild(w); const inp = w.querySelector('input'), ask = w.querySelector('.evSrchAsk');
       if (w._at && w._at.val){ inp.value = w._at.val; w.querySelector('.evSrchFd').classList.add('on'); }   /* the field's words carried in */
@@ -37471,7 +37551,7 @@ hairline({
       { const fd = w.querySelector('.evSrchFd'), sd = w.querySelector('.evSrchGo'); fd.addEventListener('pointerdown', e => { if (!e.target.closest('button')){ e.preventDefault(); inp.focus({ preventScroll: true }); } }); sd.addEventListener('click', () => { const v = inp.value.trim(); if (v) go(v, false); }); inp.addEventListener('input', () => fd.classList.toggle('on', !!inp.value.trim())); }   /* the field as the documented one (the Concierge's: words on top; +, Eva and the send under them): its send lit once something is typed */
       inp.addEventListener('input', () => { const v = inp.value.trim(); ask.dataset.q = v; return;   /* not a search ("shouldn't have an auto completer, it's not a search"): no Ask row, the chips left as they are; Enter or the send asks what is typed */ const lv = v.toLowerCase(); ask.hidden = !v; ask.querySelector('span').textContent = v ? 'Ask “' + v + '”' : '';
         w.querySelectorAll('.evSrchR[data-q]:not(.evSrchAsk)').forEach(r => { r.hidden = !!v && !r.dataset.q.toLowerCase().includes(lv); }); mark(0); });   /* typed: Ask it first, the chips and the conversations narrowed to it */
-      w.addEventListener('click', e => { if (e.target.closest('.evSrchDim, .evSrchX')) return close(); const r = e.target.closest('.evSrchR'); if (r){ if (r.dataset.conv){ close(); window.EvOpenConv(r.dataset.conv); return; } if (r.dataset.past){ close(); if (window._cc) window._cc.show(); return; } go(r.dataset.q, !!r.dataset.cc); } });
+      w.addEventListener('click', e => { if (e.target.closest('.evSrchDim, .evSrchX')) return close(); { const sv = e.target.closest('.evSrchSvc .aiSvc'); if (sv){ close(); if (window.EvAsk && window.EvAsk.start) window.EvAsk.start(sv.dataset.svc, sv); return; } }   /* a service tile: its chat */ const r = e.target.closest('.evSrchR'); if (r){ if (r.dataset.conv){ close(); window.EvOpenConv(r.dataset.conv); return; } if (r.dataset.past){ close(); if (window._cc) window._cc.show(); return; } go(r.dataset.q, !!r.dataset.cc); } });
       w.addEventListener('pointermove', e => { const r = e.target.closest('.evSrchR'); if (r){ const k = rows().indexOf(r); if (k >= 0 && k !== at) mark(k); } });
       document.addEventListener('keydown', key, true); at = -1;   /* nothing marked at first: the first chip no longer lit as a search's top hit */
       if (full && window._frameKeys){ const k = window._frameKeys(); if (host) host._kbdTarget = inp; if (k){ void k.offsetWidth; w.style.setProperty('--kbH', k.offsetHeight + 'px'); } document.body.classList.add('frKbd', 'evSrchOn'); }   /* the phone: the field focused and the keyboard up the moment it opens ("focus state when entering this modal, keyboard active") */
@@ -45845,15 +45925,16 @@ hairline({
         '<g stroke="rgba(255,255,255,.08)" stroke-width="1" vector-effect="non-scaling-stroke"><path d="M0 22h240M0 52h240M0 82h240" vector-effect="non-scaling-stroke"/></g>' + segs + dots + '</svg>' +
         '<span class="ovInsChip">' + d.chip + '</span></div>';
     };
-    const vis = d => '<div class="ovInsChart ovInsVis" aria-hidden="true"><img class="ovIllImg" src="' + d.img + '" alt="" draggable="false"></div>';   // a Recent insights card's own render, as the rail shows it
+    const vis = d => '<div class="ovInsChart ovInsVis" aria-hidden="true"><img class="ovIllImg" src="' + d.img + '" alt="" draggable="false"></div>';
+    const AR = (c, l, d) => '<button type="button" class="ovInsArr ' + c + '" aria-label="' + l + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + d + '"/></svg></button>';   // a Recent insights card's own render, as the rail shows it
     card.innerHTML = '<div class="ovInsTrack">' + INS.map(d =>
       '<div class="ovInsSl"><div class="ovInsTx"><span class="lbl">Insights</span><b>' + d.t + '</b><span class="ovInsSub">' + d.s + '</span>' +
       '<button class="ovInsCta" type="button" aria-label="' + (d.cta || 'View results') + '"><span class="ovInsCtaL">' + (d.cta || 'View results') + '</span><svg class="ovInsCtaC" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" data-lc="chevron-right" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>'   /* every slide its View results button, the readings' too ("On the insights card, just use the same CTA like this: View results"): no See more link, no chevron */ + '</div>' + (d.img ? vis(d) : chart(d)) + '</div>').join('') +
-      '</div><div class="ovInsDots">' + INS.map(() => '<i></i>').join('') + '</div>';
-    const track = card.querySelector('.ovInsTrack'), dots = [].slice.call(card.querySelectorAll('.ovInsDots i'));
+      '</div><div class="ovInsDots">' + INS.map(() => '<i></i>').join('') + (INS.length > 1 ? AR('ovInsPrev', 'Previous', 'm15 18-6-6 6-6') + AR('ovInsNext', 'Next', 'm9 18 6-6-6-6') : '') + '</div>';   /* the footer: the dots centred, the arrows at its two ends ("left arrow on left footer, right arrow on right footer") */
+    const track = card.querySelector('.ovInsTrack'), dots = [].slice.call(card.querySelectorAll('.ovInsDots i')), prv = card.querySelector('.ovInsPrev'), nxt = card.querySelector('.ovInsNext');
     const n = INS.length, w = () => track.clientWidth;
     const idxAt = x => Math.max(0, Math.min(n - 1, Math.round(x / Math.max(1, w()))));
-    const sync = () => { const k = idxAt(track.scrollLeft); dots.forEach((d, i) => d.classList.toggle('on', i === k)); };
+    const sync = () => { const k = idxAt(track.scrollLeft); dots.forEach((d, i) => d.classList.toggle('on', i === k)); if (prv) prv.disabled = k <= 0; if (nxt) nxt.disabled = k >= n - 1; };
     sync();
     track.addEventListener('scroll', () => requestAnimationFrame(sync), { passive: true });
     let drag = null, dragged = false, glide = 0;
@@ -45885,6 +45966,7 @@ hairline({
     });
     card.addEventListener('click', e => {
       if (dragged){ dragged = false; e.preventDefault(); e.stopPropagation(); return; }
+      const ar = e.target.closest('.ovInsArr'); if (ar){ e.stopPropagation(); const k = idxAt(track.scrollLeft) + (ar.classList.contains('ovInsNext') ? 1 : -1); settle(Math.max(0, Math.min(n - 1, k)) * w()); return; }   /* the arrows: one slide on, or back */
       const dot = e.target.closest('.ovInsDots i'); if (dot) settle(dots.indexOf(dot) * w());
     });
     card._ovIns = { at: () => idxAt(track.scrollLeft), go: i => settle(Math.max(0, Math.min(n - 1, i)) * w()), n };
@@ -49726,10 +49808,10 @@ hairline({
       const doc = document.getElementById('docPage');
       const docHide = () => { if (!document.body.classList.contains('docOn')) return; document.body.classList.remove('docOn', 'docCc', 'docLd'); delete document.body.dataset.docSet; if (versionSel && (versionSel.value === 'doc' || versionSel.value === 'ds')) versionSel.value = String(version); };
       /* the documents, a tab each, each in its own frame kept as it was left: the Progress timeline's playground, and Concierge's components in each of their states (the chat page's gallery without its bar, in the prototype's theme) */
-      const DOCS = { pt: { src: 'components/progress-timeline/demo.html', t: 'Service timeline', hash: '#documentation' }, cc: { src: 'concierge.html#doc-components', t: 'Concierge components', hash: '#concierge-components' }, ld: { el: () => ldDoc(), t: 'Loading states', hash: '#loading-states' }, nt: { el: () => ntDoc(), t: 'Notes', hash: '#notes' }, bi: { el: () => biDoc(), t: 'Biomarker item', hash: '#biomarker-item' }, mhp: { el: () => moDoc('mhp'), t: 'Onboarding consult', hash: '#module-consult' }, mins: { el: () => moDoc('mins'), t: 'Insights', hash: '#module-insights' }, mbk: { el: () => moDoc('mbk'), t: 'Booked in', hash: '#module-booked' }, tg: { el: () => tgDoc(), t: 'Toggle', hash: '#toggle' }, sz: { el: () => czDoc('sz'), t: 'Sizes', hash: '#sizes' }, bt: { el: () => czDoc('bt'), t: 'Buttons', hash: '#buttons' }, in: { el: () => czDoc('in'), t: 'Inputs', hash: '#inputs' }, bd: { el: () => czDoc('bd'), t: 'Badges', hash: '#badges' }, ch: { el: () => czDoc('ch'), t: 'Chips', hash: '#chips' }, sg: { el: () => sgDoc(), t: 'Segmented', hash: '#segmented' }, hp: { el: () => hcDoc(), t: 'Membership onboarding', hash: '#health-profile-card' }, gf: { el: () => gfDoc(), t: 'Gifting', hash: '#gifting' }, gl: { el: () => glDoc(), t: 'General layout', hash: '#general-layout' }, sf: { el: () => sfDoc(), t: 'Step flow', hash: '#step-flow' }, md: { el: () => mdDoc(), t: 'Modals', hash: '#modals' }, bb: { el: () => bbDoc(), t: 'Chat bubbles', hash: '#chat-bubbles' }, nv: { el: () => nvDoc(), t: 'Main menu', hash: '#main-menu' } };   // gl: the layout every page shares, the source of truth ("create a documentation for general layout; start by header")   // hp: the card's every state, from the renderer the Overview uses   // ld: drawn here, with the module the pages use (EvLoad), not a frame
+      const DOCS = { pt: { src: 'components/progress-timeline/demo.html', t: 'Service timeline', hash: '#documentation' }, cc: { src: 'concierge.html#doc-components', t: 'Concierge components', hash: '#concierge-components' }, ld: { el: () => ldDoc(), t: 'Loading states', hash: '#loading-states' }, nt: { el: () => ntDoc(), t: 'Notes', hash: '#notes' }, bi: { el: () => biDoc(), t: 'Biomarker item', hash: '#biomarker-item' }, cr: { el: () => crDoc(), t: 'Carousel', hash: '#carousel' }, mhp: { el: () => moDoc('mhp'), t: 'Onboarding consult', hash: '#module-consult' }, mins: { el: () => moDoc('mins'), t: 'Insights', hash: '#module-insights' }, mbk: { el: () => moDoc('mbk'), t: 'Booked in', hash: '#module-booked' }, tg: { el: () => tgDoc(), t: 'Toggle', hash: '#toggle' }, sz: { el: () => czDoc('sz'), t: 'Sizes', hash: '#sizes' }, bt: { el: () => czDoc('bt'), t: 'Buttons', hash: '#buttons' }, in: { el: () => czDoc('in'), t: 'Inputs', hash: '#inputs' }, bd: { el: () => czDoc('bd'), t: 'Badges', hash: '#badges' }, ch: { el: () => czDoc('ch'), t: 'Chips', hash: '#chips' }, sg: { el: () => sgDoc(), t: 'Segmented', hash: '#segmented' }, hp: { el: () => hcDoc(), t: 'Membership onboarding', hash: '#health-profile-card' }, gf: { el: () => gfDoc(), t: 'Gifting', hash: '#gifting' }, gl: { el: () => glDoc(), t: 'General layout', hash: '#general-layout' }, sf: { el: () => sfDoc(), t: 'Step flow', hash: '#step-flow' }, md: { el: () => mdDoc(), t: 'Modals', hash: '#modals' }, bb: { el: () => bbDoc(), t: 'Chat bubbles', hash: '#chat-bubbles' }, nv: { el: () => nvDoc(), t: 'Main menu', hash: '#main-menu' } };   // gl: the layout every page shares, the source of truth ("create a documentation for general layout; start by header")   // hp: the card's every state, from the renderer the Overview uses   // ld: drawn here, with the module the pages use (EvLoad), not a frame
       let docCur = 'pt';
       /* two pages from the one shell ("put General layout / Modals / Chat bubbles / Navigation / Loading states in another page called Design system"): Documentation keeps the product's own (Service timeline, Concierge components, Membership onboarding), Design system the shared patterns; each page its own tabs, and the one last open on it */
-      const DSET = ['gl', 'sf', 'md', 'bb', 'bi', 'mhp', 'mins', 'mbk', 'sz', 'bt', 'in', 'bd', 'ch', 'tg', 'sg', 'nv', 'ld', 'nt'], DORD = ['pt', 'cc', 'hp', 'gf', 'gl', 'sf', 'md', 'bb', 'bi', 'mhp', 'mins', 'mbk', 'sz', 'bt', 'in', 'bd', 'ch', 'tg', 'sg', 'nv', 'ld', 'nt'], setOf = k => DSET.includes(k) ? 'ds' : 'doc', docLast = { doc: 'pt', ds: 'gl' };
+      const DSET = ['gl', 'sf', 'md', 'bb', 'cr', 'bi', 'mhp', 'mins', 'mbk', 'sz', 'bt', 'in', 'bd', 'ch', 'tg', 'sg', 'nv', 'ld', 'nt'], DORD = ['pt', 'cc', 'hp', 'gf', 'gl', 'sf', 'md', 'bb', 'cr', 'bi', 'mhp', 'mins', 'mbk', 'sz', 'bt', 'in', 'bd', 'ch', 'tg', 'sg', 'nv', 'ld', 'nt'], setOf = k => DSET.includes(k) ? 'ds' : 'doc', docLast = { doc: 'pt', ds: 'gl' };
       const docTheme = () => { const f = doc && doc.querySelector('iframe[data-doc="cc"]'), t = document.getElementById('themeSel'); try { const r = f && f.contentDocument && f.contentDocument.documentElement; if (!r) return; const v = t ? t.value : ''; if (v === 'dark' || v === 'light') r.dataset.theme = v; else delete r.dataset.theme; } catch (e){} };
       { const t = document.getElementById('themeSel'); if (t) t.addEventListener('change', docTheme); }
       /* Documentation -> Loading states: a small sidebar with the patterns and their notes ("allocate a small side bar for documentation support"), and the pattern itself, live, at the prototype's breakpoint
@@ -50116,6 +50198,32 @@ hairline({
         el._draw = draw; requestAnimationFrame(draw);
         const bpSel = document.getElementById('stBp'); if (bpSel) bpSel.addEventListener('change', () => { if (!el.hidden) draw(); });
         document.addEventListener('change', e => { if (!el.hidden && e.target && /^st/.test(e.target.id || '')) setTimeout(draw, 60); });   /* a Tweak changed: its variant shown at once */
+        return el;
+      };
+      /* Design system -> Patterns -> Carousel ("add carousel system doc on Design system pattern, all breakpoints"): one row of cards at XS, S, M and L, live (EvMagnet's swipe, EvFade's overflow fade, the arrows on the desk), and its rules */
+      const crDoc = () => {
+        const el = document.createElement('div'); el.className = 'ldDoc ntDoc biDoc crDoc';
+        const dark = () => el.classList.toggle('evDark', !document.body.classList.contains('light')); dark(); new MutationObserver(dark).observe(document.body, { attributes: true, attributeFilter: ['class'] });
+        const CARDS = [['12 Apr 2026', 'Nutritional review', 'linear-gradient(135deg,#6b8f5e,#c9a24a)'], ['8 Apr 2026', 'Microbiome report', 'linear-gradient(135deg,#9db3a0,#d8e2cf)'], ['2 Apr 2026', 'DEXA report', 'linear-gradient(135deg,#8a6a4a,#e2d3bf)'], ['28 Mar 2026', 'Blood panel', 'linear-gradient(135deg,#7a2c22,#e08a6a)'], ['14 Mar 2026', 'Sleep summary', 'linear-gradient(135deg,#2c3a5a,#8aa0c8)'], ['2 Mar 2026', 'Heart scan', 'linear-gradient(135deg,#5a2c4a,#c88aa8)']];
+        const card = c => '<article class="crCard"><span class="crVis" style="background:' + c[2] + '"></span><span class="crTx"><small>' + c[0] + '</small><b>' + c[1] + '</b></span></article>';
+        const AR = (k, d) => '<button type="button" class="crArr" data-cr="' + k + '" aria-label="' + (k > 0 ? 'Next' : 'Previous') + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + d + '"/></svg></button>';
+        const BP = [['xs', 'XS · 393 px', 393, 'The row runs to the screen’s edges (bled): the screen cuts it, no fade. Swipe, no arrows.'], ['s', 'S · 600 px', 600, 'The row inside the page’s padding: room round it, so the hidden side fades. Swipe, no arrows.'], ['m', 'M · 992 px', 992, 'In the page panel’s container: the hidden side fades; arrows at the header’s right while it overflows.'], ['l', 'L · 1440 px', 1440, 'The widest container (1280): the same, more cards in view; the arrows only while it overflows.']];
+        el.innerHTML = '<div class="ntIn"><header class="ntHd"><h1>Carousel</h1><p>A row of cards that overflows its container, swiped by hand or moved by its arrows. Every app carousel is built from the same code: <code>EvMagnet.bind(row, { item })</code> for the swipe (half a card goes on to the next) and <code>EvFade.bind(row)</code> for the fade at its overflowing edges.</p></header>' +
+          BP.map(b => '<section class="biSec crBp"><h2>' + b[1] + '</h2><p class="biNote">' + b[3] + '</p><div class="crFit"><div class="crFrame crFr' + b[0] + '" style="width:' + b[2] + 'px"><div class="crHd"><b>Reports</b>' + (b[0] === 'm' || b[0] === 'l' ? '<span class="crArrs">' + AR(-1, 'm15 18-6-6 6-6') + AR(1, 'm9 18 6-6-6-6') + '</span>' : '') + '</div><div class="crRow">' + CARDS.map(card).join('') + '</div></div></div></section>').join('') +
+          '<section class="biSec"><h2>Rules</h2><table class="biTbl"><tbody>' +
+          '<tr><th>Overflow fade</th><td>48 px, a gradient to nothing on the side with more cards hidden past it, gone once the row reaches that end; only where the row stands in from its page (12 or more of room), never on a bled row</td></tr>' +
+          '<tr><th>Bleed (XS)</th><td>The row runs to the screen’s edges, its first card in line with the page’s 16: the screen’s edge is the cut</td></tr>' +
+          '<tr><th>Swipe</th><td>By hand, a mouse as a finger: half a card and its gap goes on to the next, less springs back (EvMagnet, 240 ms quintic); a drag never opens a card</td></tr>' +
+          '<tr><th>Arrows</th><td>M and up, at the header’s right, 36 round; shown only while the row overflows; each end’s arrow off at its end</td></tr>' +
+          '<tr><th>Inside a card</th><td>A carousel of slides in a card (the Overview’s Insights): the slides fade at the card’s two sides; the footer the arrows at its ends and the dots centred</td></tr>' +
+          '</tbody></table></section>' +
+          '<section class="biSec"><h2>Used in</h2><ul class="biUse"><li>Insights → Reports (cards)</li><li>Overview → Recent insights, Services, Insights card</li><li>Services → Recommended</li><li>Plan → Goals, My routine</li></ul></section></div>';
+        const fit = () => el.querySelectorAll('.crFit').forEach(f => { const fr = f.firstElementChild, w = +fr.style.width.replace('px', ''), k = Math.min(1, (f.clientWidth || w) / w); fr.style.zoom = k; });
+        requestAnimationFrame(() => { fit(); el.querySelectorAll('.crFrame').forEach(fr => { const row = fr.querySelector('.crRow'), mag = window.EvMagnet ? window.EvMagnet.bind(row, { item: '.crCard', drag: 'crDrag', onMove: () => arr() }) : null, as = [...fr.querySelectorAll('.crArr')];
+          const arr = () => { const max = row.scrollWidth - row.clientWidth, sh = max > 1; fr.classList.toggle('crOver', sh); as.forEach(a => { a.disabled = +a.dataset.cr < 0 ? row.scrollLeft <= 2 : row.scrollLeft >= max - 2; }); };
+          as.forEach(a => a.addEventListener('click', () => { if (mag) mag.go(Math.max(0, mag.at() + (+a.dataset.cr))); }));
+          row.addEventListener('scroll', () => requestAnimationFrame(arr), { passive: true }); arr(); }); });
+        addEventListener('resize', fit);
         return el;
       };
       /* Design system -> Toggle: the master (window.EvToggle, .evTgl) in every state, both sizes, live ones to try, its tokens */
@@ -50993,7 +51101,7 @@ hairline({
           /* the Design system's left nav, in groups ("create a left nav in the design system ... where we will have groups"): Core components, Patterns, Feature components; Buttons coming soon. Loading states with the patterns, Notes at the foot */
           nav.innerHTML = DORD.filter(d => DOCS[d] && !DSET.includes(d)).map(d => tab(d)).join('') +
             '<div class="docNavG" role="presentation">Core components</div>' + tab('sz') + tab('bt') + tab('in') + tab('bd') + tab('ch') + tab('sg', 'Segment tab') + tab('tg') +
-            '<div class="docNavG" role="presentation">Patterns</div>' + tab('gl') + tab('md') + tab('bb', 'Chat bubble') + tab('sf') + tab('ld') + tab('nv') +
+            '<div class="docNavG" role="presentation">Patterns</div>' + tab('gl') + tab('md') + tab('bb', 'Chat bubble') + tab('sf') + tab('cr') + tab('ld') + tab('nv') +
             '<div class="docNavG" role="presentation">Feature components</div>' + tab('bi', 'Biomarkers') +
             '<div class="docNavG" role="presentation">Modules</div>' + tab('mhp') + tab('mins') + tab('mbk') +   /* the Overview's modules, each state ("design system (modules)") */
             '<div class="docNavG docNavRule" role="presentation"></div>' + tab('nt'); nav.addEventListener('click', e => { const b = e.target.closest('[data-doc]'); if (b) docShow(b.dataset.doc); }); doc.prepend(nav); }
@@ -51003,12 +51111,12 @@ hairline({
         if (!f){ f = document.createElement('iframe'); f.dataset.doc = k; if (k === 'pt') f.id = 'docFrame'; f.src = DOCS[k].src; f.title = 'Documentation: ' + DOCS[k].t; if (k === 'cc') f.addEventListener('load', docTheme); if (k === 'pt') f.addEventListener('load', () => ptPanel(f)); doc.appendChild(f); }
         doc.querySelectorAll('iframe, .ldDoc').forEach(x => { x.hidden = x !== f; }); doc.querySelectorAll('.docNav [data-doc]').forEach(b => { b.setAttribute('aria-selected', String(b.dataset.doc === k || (k === 'nv' && b.dataset.doc === 'gl'))); b.hidden = setOf(b.dataset.doc) !== dst || b.dataset.doc === 'nv'; });   /* Navigation is General layout's Main menu ("put Navigation inside general layout and rename navigation --> Main menu"): no tab of its own, General layout lit while it is up */ { const nv = doc.querySelector('.docNav'); if (nv) nv.setAttribute('aria-label', dst === 'ds' ? 'Design system' : 'Documentation'); }   // the page's own tabs only
         document.body.dataset.docSet = dst;
-        if (k === 'cc') docTheme(); document.body.classList.add('docOn'); document.body.classList.toggle('docCc', k === 'cc'); document.body.classList.toggle('docLd', k === 'ld' || k === 'hp' || k === 'gf' || k === 'nt' || k === 'bi' || k === 'tg' || k === 'sg' || /^m(hp|ins|bk)$/.test(k) || ['sz', 'bt', 'in', 'bd', 'ch'].includes(k)); if (versionSel) versionSel.value = dst; try { history.replaceState(null, '', DOCS[k].hash); } catch (e){} };
+        if (k === 'cc') docTheme(); document.body.classList.add('docOn'); document.body.classList.toggle('docCc', k === 'cc'); document.body.classList.toggle('docLd', k === 'ld' || k === 'hp' || k === 'gf' || k === 'nt' || k === 'bi' || k === 'tg' || k === 'sg' || /^m(hp|ins|bk)$/.test(k) || k === 'cr' || ['sz', 'bt', 'in', 'bd', 'ch'].includes(k)); if (versionSel) versionSel.value = dst; try { history.replaceState(null, '', DOCS[k].hash); } catch (e){} };
       /* the Service timeline's playground (its own page, in its frame): its controls in the same right panel (EvDocPanel, the CSS copied into the frame), docked at the frame's right edge, the stage and the gallery beside it */
       const ptPanel = f => { try { const d = f.contentDocument, m = d && d.querySelector('main'), c = d && d.getElementById('controls'); if (m && c && window.EvDocPanel && !d.querySelector('.dpRail')) window.EvDocPanel.mount(m, { root: d.body, fixed: true, wide: 900, before: c, label: 'Playground controls' }); } catch (e){} };
       window._doc = { show: docShow, hide: docHide };
       { const b = document.getElementById('tkDocSave'); if (b) b.addEventListener('click', () => { const f = document.getElementById('docFrame'); let ok = false; try { const M = docCur === 'sf' ? window.EvSteps : docCur === 'gl' ? (({ pt: window.EvPush, tg: window.EvTitle })[(() => { try { return localStorage.getItem('everlab:glPart'); } catch (x){ return ''; } })()] || window.EvOverlap) : docCur === 'md' ? window.EvDismiss : null; if (M && M.save) ok = !!M.save(); else { const w = f && f.contentWindow; if (w && w.PTDemo) ok = w.PTDemo.save(); } } catch (e){}   /* the masters' own Save setup on Step flow and General layout */ b.textContent = ok ? 'Saved' : 'Cannot save'; clearTimeout(b._t); b._t = setTimeout(() => { b.textContent = 'Save'; }, ok ? 1400 : 2600); }); }   // the bar's Save: the page's own, as Save presets on Report visuals
-      const docHash = () => ({ '#sizes': 'sz', '#buttons': 'bt', '#inputs': 'in', '#badges': 'bd', '#chips': 'ch' })[location.hash] || (location.hash === '#notes' ? 'nt' : location.hash === '#biomarker-item' ? 'bi' : location.hash === '#module-consult' ? 'mhp' : location.hash === '#module-insights' ? 'mins' : location.hash === '#module-booked' ? 'mbk' : location.hash === '#toggle' ? 'tg' : location.hash === '#segmented' ? 'sg' : location.hash === '#documentation' ? 'pt' : location.hash === '#concierge-components' ? 'cc' : location.hash === '#loading-states' ? 'ld' : location.hash === '#health-profile-card' ? 'hp' : location.hash === '#gifting' ? 'gf' : location.hash === '#general-layout' || location.hash === '#title-group' ? 'gl' : location.hash === '#step-flow' ? 'sf' : location.hash === '#modals' ? 'md' : location.hash === '#chat-bubbles' ? 'bb' : location.hash === '#navigation' || location.hash === '#main-menu' ? 'nv' : location.hash === '#design-system' ? docLast.ds : '');
+      const docHash = () => ({ '#sizes': 'sz', '#buttons': 'bt', '#inputs': 'in', '#badges': 'bd', '#chips': 'ch' })[location.hash] || (location.hash === '#notes' ? 'nt' : location.hash === '#biomarker-item' ? 'bi' : location.hash === '#carousel' ? 'cr' : location.hash === '#module-consult' ? 'mhp' : location.hash === '#module-insights' ? 'mins' : location.hash === '#module-booked' ? 'mbk' : location.hash === '#toggle' ? 'tg' : location.hash === '#segmented' ? 'sg' : location.hash === '#documentation' ? 'pt' : location.hash === '#concierge-components' ? 'cc' : location.hash === '#loading-states' ? 'ld' : location.hash === '#health-profile-card' ? 'hp' : location.hash === '#gifting' ? 'gf' : location.hash === '#general-layout' || location.hash === '#title-group' ? 'gl' : location.hash === '#step-flow' ? 'sf' : location.hash === '#modals' ? 'md' : location.hash === '#chat-bubbles' ? 'bb' : location.hash === '#navigation' || location.hash === '#main-menu' ? 'nv' : location.hash === '#design-system' ? docLast.ds : '');
       const tgHash = after => { if (location.hash !== '#title-group') return; try { localStorage.setItem('everlab:glPart', 'tg'); } catch (e){} const g = after && doc && doc.querySelector('.glDoc'); if (g && g._pick) g._pick('tg'); };   /* #title-group: General layout on its Title group (remembered before a first build, picked on one already built) */
       if (docHash()) { tgHash(); docShow(docHash()); tgHash(true); }
       addEventListener('hashchange', () => { const d = docHash(); if (d){ tgHash(); docShow(d); tgHash(true); } else docHide(); });
