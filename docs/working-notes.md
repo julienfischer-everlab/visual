@@ -21933,3 +21933,5 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - The ask sheet's blanket black at 80% ("blanket 80%").
 - The ask sheet's blanket the desk Ask panel's exactly: black 50% with a 6 blur ("Same as desktop"; after 80%).
 - Merged: the list to the field 14 (was 12), either Section position ("section gap +2px").
+- Light mode: the Insights activation steps (empty state) white on hover ("Hover white bg on light mode"; was a 6% tint).
+- Light mode: the Object card (Centered) without the blurred service picture behind ("No bg img on light mode").
