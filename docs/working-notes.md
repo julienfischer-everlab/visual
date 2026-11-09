@@ -22011,3 +22011,9 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 
 - **Ask sheet Layout: Bottom sheet** ("Use bottom sheet standard"): the Menu AI entry point's Cards row is now **Layout**, with Bottom sheet first and the default (html class `askStd`; saves on One move to it once, `everlab:mig:askStd`). The sheet sits edge to edge on the phone with the standard sheet tokens (`--evShGap:0`, `--evShR:32`, top corners only), the notch, and the sheet header master (`EvSheetHead`, title "Ask Everlab", its 32 Close) in place of the floating ✕. It rises from the bottom (not from the star), closes on the header's Close, the scrim or a swipe down (`EvSheetSwipe`, off while typing). Title and Close wear neutral ink (#f4f4f4 dark, #000 light), not the card's warm one. The other layouts are unchanged.
 - **Insights, stacked tasks (XS)**: the empty card's 3D visual is 32px, down from 40 ("for this version reduce visual by 8px").
+
+## Insights badges: icon on the right, "12 found"; Ask sheet without title and cross
+
+- **Insights task badges** (Tweaks -> Insights -> Badges): the icon (the check, the loader ring) now sits after the label ("icon on the right"), on every badge.
+- **Past results badge**: it reads the count, "12 found", not "Found". The count is `EvPastRec.recs.length`, the one set of past records, which now has twelve (Kidney function, May 2025; Inflammation markers, Dec 2022 added), so the task's line ("12 records, 2021 to 2025") and the Past records list agree. None found reads "None found".
+- **Ask sheet, Layout: Bottom sheet**: no title and no cross ("Remove title and cross"). The notch, then the field 20 under it; the dimmed area or a swipe down closes it.
