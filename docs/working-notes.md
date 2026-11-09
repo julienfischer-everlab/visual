@@ -21991,3 +21991,8 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - V3's own rail, sticky bar, side column, pin and journey sheet are gone; its sheets (focus, check-in, do later, suggestion, tour) stay.
 - **Overview Insights, stacked tasks (XS)**: each row is a ghost card, its ground 12px past the words on both sides, 16px corners, so it is no longer cut at the content's edge ("avoid cutted card ghost"). No rules between rows ("no divider").
 - **Phone dock under sheets**: the dock's tabs no longer catch taps meant for the bottom of a sheet. The dock was already faded out and set to `pointer-events:none`, but its tabs set their own pointer events.
+
+## Phone top chat field: straight to the Concierge
+
+- Tweaks → Top Chat AI → Field position has a new option, **Concierge**, and it is now the default ("Chat field goes directly to concierge"). On the phone, a tap on the Overview's top field (or Tab onto it) opens the Concierge (`window._cc.show()`), with no keyboard, chips or sheet first. Same (top) and Bottom are kept.
+- A setup saved on Same or Bottom moves to Concierge once (`everlab:mig:topCc`). Picking another option and saving still holds. The desk's top field is unchanged.
