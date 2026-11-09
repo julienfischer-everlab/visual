@@ -1339,6 +1339,8 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
    at rest it ends at the bar's foot (nothing under it veiled), and once the content scrolls under it (.evTnOn) it reaches --evTnBleed further, so what passes under fades and blurs in, never a hard cut.
    Type in longhands, the family on its own (a var() falling back to inherit inside a font shorthand voids the whole shorthand).
    Host tokens: --evTnTop (the status bar / safe area above the bar: 0 on the desk), --evTnX (the page's padding/left-right), --evTnGnd (the screen's colour), --evTnInk (its ink) */
+/* Sticky Off (EvTopNav.M.sticky, html.tnFree): every top nav scrolls away with its page, the master's and the pages' own bars alike (their place in the flow kept; no offset) */
+html.tnFree :is(.evTn, #dOver .ovTop, body.v4 .mHead, .svTop, .svmNav, #dPlan .plPBar, #dPlan .plNBar, #dPlan .plABar, .hoBand) { position: relative !important; top: auto !important; }
 :root { --evTnD: 44px; }   /* the Top nav master's disc, read by the bars that keep their own markup (the Service detail's, the in-app chat's) */
 .evTn { --evTnD: 44px; position: sticky; top: 0; z-index: 6; display: flex; align-items: center; gap: 16px; box-sizing: border-box; min-height: calc(var(--evTnTop, 0px) + 76px); margin: 0; padding: calc(var(--evTnTop, 0px) + 16px) var(--evTnX, 16px) 16px; color: var(--evTnInk, currentColor); isolation: isolate; pointer-events: none; }
 .evTn > :not(.evTnG) { pointer-events: auto; }
@@ -1396,7 +1398,7 @@ body #dPlan.plDesk[data-pg-ct] { --plMain: 1fr; }   /* the Plan: its sheet's col
 #dSvc[data-pg-ct] .svGrid, body #dTl[data-pg-ct] .tlCol { max-width: var(--ctPg); }   /* the Service detail's grid, My journey's column (their bars span the panel) */
 #dPlan .plAStage[data-pg-ct] :is(.plABarIn, .plATopIn, .plAIn) { max-width: calc(var(--ctPg) + 2 * var(--plAPad)); } #dPlan .plNStage[data-pg-ct] :is(.plNBarIn, .plNTopIn, .plNIn) { max-width: calc(var(--ctPg) + 2 * var(--plNPad)); } #dPlan .plPPg[data-pg-ct] .plPIn { max-width: calc(var(--ctPg) + 2 * var(--plPPad)); }   /* the Plan's Sub pages: their column (its padding inside it) */
 .aqWrap.plSesWrap[data-pg-ct], .aqWrap.aqFull[data-pg-ct] { --ct2xs: var(--ctPg); }   /* every full modal (the Async report, the profile, the standalones) the same way */   /* the Activity session (EvSolo): its body, its bar's title and its footer all on --ct2xs, the pick in its place */
-.topbar .tkCtRow { flex-wrap: wrap; row-gap: 6px; } .topbar .tkCtRow .tkSegT { flex: 1 1 100%; } .topbar .tkCtRow .tkSegT button { flex: 1 1 auto; padding: 0 6px; } .topbar .tkCtRow .tkSegT button[hidden] { display: none; }   /* the page's name, then its choices under it, the row's width */
+.topbar #stCtLbl[hidden] { display: none !important; } .topbar .tkCtRow { flex-wrap: wrap; row-gap: 6px; } .topbar .tkCtRow .tkSegT { flex: 1 1 100%; } .topbar .tkCtRow .tkSegT button { flex: 1 1 auto; padding: 0 6px; } .topbar .tkCtRow .tkSegT button[hidden] { display: none; }   /* the page's name, then its choices under it, the row's width */
 /* ---- Title group, the master (Design system -> General layout -> Title group; window.EvTitle builds it, its numbers saved as everlab:tgMaster). One title block for every page, each part an option ("some titles don't need that. That's just an option"):
    a level and its type (Display hero, Display, H1 and its Short hero, H2 to H6); the title, on H1 in two tones (the muted part on its own line; the Short hero's inline after the comma, wrapping on); a slot (an icon, a visual, a badge)
    above the group or at its right, vertically centred (the right one with left alignment only); a support line above the title (support top) and one under it (support bottom); an icon at either side of the words, its size the level's.
@@ -3204,7 +3206,22 @@ window.EvTopNav = (function () {
     if (window.ResizeObserver) new ResizeObserver(function () { if (!q) q = requestAnimationFrame(run); }).observe(sc);
     run(); return { update: run };
   }
-  return { html: html, mount: mount, watch: watch, titled: titled, variant: variant, IB: IB, IX: IX, IM: IM };
+  /* Sticky ("All top nav should have a tweak: Sticky ON / OFF. Put this as a design system level"): every top nav pinned at its scroller's top (On, the default) or scrolling away with the page (Off: html.tnFree,
+     which unpins the master's bars and the pages' own top bars: the Overview's, Insights', the Service detail's, the Plan's, the Header overlap's band). The master's setting: M.sticky, set(), save() as everlab:tnMaster
+     (read here at parse on every page, shared with the others through EvShared), reset(), load(); Tweaks -> Top nav -> Sticky and General layout -> Top nav set it live, their Save keeps it */
+  var TD = { sticky: 'on' }, TM = { sticky: 'on' };
+  var tApply = function () { document.documentElement.classList.toggle('tnFree', TM.sticky === 'off');
+    [].forEach.call(document.querySelectorAll('#stTnSticky'), function (s) { if (s.value === TM.sticky) return; s.value = TM.sticky; s.setAttribute('data-v', TM.sticky); var g = s.nextElementSibling; if (g && g.classList && g.classList.contains('tgl')) g.setAttribute('aria-checked', String(TM.sticky === 'on')); });
+    try { document.dispatchEvent(new CustomEvent('everlab:tn', { detail: { sticky: TM.sticky } })); } catch (e) {} };
+  var tLoad = function () { TM.sticky = TD.sticky; try { var v = JSON.parse(localStorage.getItem('everlab:tnMaster') || 'null'); if (v && (v.sticky === 'on' || v.sticky === 'off')) TM.sticky = v.sticky; } catch (e) {} tApply(); };
+  var tSet = function (k, v) { if (k === 'sticky' && (v === 'on' || v === 'off') && TM.sticky !== v) { TM.sticky = v; tApply(); } };
+  var tShare = function (v) { try { if (window.EvShared && window.EvShared.on()) window.EvShared.put('everlab:tnMaster', v); } catch (e) {} };
+  var tSave = function () { var ok = true; try { localStorage.setItem('everlab:tnMaster', JSON.stringify(TM)); } catch (e) { ok = false; } tShare({ sticky: TM.sticky }); return ok; };
+  var tReset = function () { try { localStorage.removeItem('everlab:tnMaster'); } catch (e) {} TM.sticky = TD.sticky; tApply(); tShare({ sticky: TD.sticky }); };
+  tLoad();
+  (function () { var ts = document.getElementById('stTnSticky'); if (ts) ts.addEventListener('change', function () { tSet('sticky', ts.value); }); })();
+  document.addEventListener('click', function (e) { var t = e.target; if (!t || !t.closest) return; if (t.closest('.stTkSave')) tSave(); else if (t.closest('.stTkReset')) tReset(); });   /* the Tweaks' Save and Reset keep it too */
+  return { html: html, mount: mount, watch: watch, titled: titled, variant: variant, IB: IB, IX: IX, IM: IM, M: TM, D: TD, set: tSet, save: tSave, reset: tReset, load: tLoad };
 })();
 /* EvSheetHead: the sheet header master (Design system -> Modals -> Bottom sheet; its CSS .evShHd in the report sheet's styles, after the Top nav's): a titled bottom sheet's header, the 24/30 title and the compact 32 close.
    html({ title, tag, id, cls, titleCls, close, closeCls, closeLabel, closeIcon, pre }) -> its markup (pre: what goes above the title in its column, an eyebrow). A sheet built elsewhere wears the classes: .evShHd on its row, .evShT on its title, .evShX on its close. */

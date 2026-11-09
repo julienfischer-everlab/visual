@@ -22110,3 +22110,19 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - names, anatomy and rules.
   It works in dark and light.
 - **From now on** ("every time we have a card, we're going to need to refer to this design system"): the project's design-system skill now says every card is built with `EvCard`, and lists the older card grounds to move onto it when they are touched. The existing app cards are not migrated yet.
+
+## Tweaks presets and Share, top nav Sticky, Booked in Dates, and smaller tweaks
+
+- **Presets and Share** ("I want to create a system where I can save preset tweak (can I name, edit and remove, add) + a share action ... uncorrelated to the general save and share at the page level"): a second line in the Tweaks header with Presets and Share.
+  - A preset is a named snapshot of every tweak, kept for the whole team in the artifact's store (in a browser on its own, that browser's).
+  - Apply puts it on the page (Save keeps it as the setup), Update writes the page's tweaks into it, Rename edits its name in place, and Delete asks for a second tap. The button shows the preset in use, with "· changed" once a tweak moves.
+  - Share copies a link (the artifact's link with `#tk-<id>`) to the setup as it stands, or to a preset. Whoever opens it sees the prototype with those tweaks for that visit, and the panel says so.
+- **Top nav Sticky** ("All top nav should have a tweak: Sticky ON / OFF. Put this as a design system level"): the Top nav master's setting.
+  - On (the default) pins every top nav at its scroller's top. Off lets them scroll away with the page: the master's bars and the pages' own (the Overview's, Insights', the Service detail's, the Plan's, the Header overlap's).
+  - It is set from General layout → Top nav (Sticky, Save setup) and from Tweaks → Top nav → Sticky, which shows on every app page. It is saved as `everlab:tnMaster` and shared.
+- **Container**: no "Overview · from M" line ("Remove overview from M"). Only a screen whose width is its own still says so.
+- **Booked in, Dates** ("booked in design review, follow this style", the events card): a "Booked in ›" header that opens the whole list, the date at the left on no ground (day 26 bold, month under it), each booking a rounded row (28 round) with its action's disc at its left, and See all centred at the foot. Today is orange, happening now is green, and light mode has its own colours. Tweaks → Scheduled → Style: Dates (new default) or Squares (as before).
+- **Decade number**: 64 above and below it ("make sure 64px margin top bottom"). Once it lands on the decade in the middle of the view, it fades out as the page goes on, gone by 28% of the view above the middle ("when number land on the decade, fade out disappear (based on scroll)").
+- **Timeline tabs**: Tweaks → Timeline → Tab style. Outline (the underline, as before) or Filled ("More filled rounded shape VS outline tab"): a rounded track with the tab that is on lifted on a pill that slides. One line each on the phone.
+- **Menu AI entry point** now holds Container chat floating (Background, Opacity, Blur, Border beam) and Chips (Chip height, Visual size) as two sections at its foot ("put this into Menu ai entry point"; it shows with the desk Ask panel too).
+- **Unread message** ("unread message 1 2 3+ If 3+ show 2 first item plus one 'X more'"): Off, 1, 2, 3+ on both the Menu AI entry point and Top Chat AI. The lists show that many unread conversations, each with its dot. With 3+, the first two show, then "X more", which opens the Concierge. An old On reads as 1.
