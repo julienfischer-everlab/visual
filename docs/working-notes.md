@@ -22254,3 +22254,4 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **No lock icons** ("never use lock icon"): every lock glyph in the app is hidden by one rule: `svg[data-lc^="lock"]` outside the top bar, the progress row's `.svLkd` mask, `.ovLockIc`, `.ovactTop .lk`, `.hpInsLk`. The next locked step is only greyed.
 - **Tweaks header**: "Preset" is an eyebrow (11px capitals, 1px spacing) with no bookmark icon, and the preset's name (15px) sits below it ("Use Eyebrow for preset, remove icon").
 - **Tweaks grid**: 12 between the cards, header included ("tweak gap grid. 12px").
+- **Service detail Tweaks**: the Service select has its own group, "Service example", above General ("Put service in a tweak Group, Service example").
