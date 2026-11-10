@@ -22373,3 +22373,8 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - Presets ("Remove the order arrow option and put a drag order on the left side"): each preset row has a grip at its left (`.tkPsDrag`, `IC.grip`). Dragging it above or below another preset of the same group reorders the group and writes `ord` 0..n on the presets (shared db or this browser); dropping it on another tab moves it into that group, first. The move icon and the group's ‹ › arrows are gone: the group tabs themselves drag left or right to reorder, writing `order` 1..n through `gUpd`. A preset's place is `pKey` (its `ord` once dragged, else newest first); a new one goes first in its group.
 - Schedule rows ("reduce border radius"): the pill behind each row 24 → 16 (`.ovBkR::before`, the card and the See more sheet).
 - Schedule eyebrow ("card eyebrow same style, ref insights card"): 12 / 18 like the Insights card's label (was 14), and in the same place: 24 from the card's top at XS, 20 above.
+
+## Primary card, Centered: Step 1 and Step 2 in the middle of the card
+
+- "Center!! vertically": in Centered (M and up), a card with nothing held at its foot (Step 1 "Start your health journey", Step 2 "Book your consultation") had its group pushed to the bottom: the visual's top margin is auto and nothing balanced it. The button now takes an auto bottom margin when the card has no consult line (`.ovBookWhen`), so the group sits in the middle (Step 2 at M: 130 above the sphere, 120 under the button). The states with the consult line keep it at the foot; the DEXA / MRI object cards keep their own centring (excluded).
+- The progress dashes (Step 2) sit 16 under the line instead of on it.
