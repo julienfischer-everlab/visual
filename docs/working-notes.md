@@ -22273,3 +22273,12 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - Docked, the app takes that width's breakpoint as a forced one would, within the room left (`data-bp` set, no `bpAuto`). Undocked, Auto is as before.
   - Docking or undocking re-reads it.
 - **Breakpoint picker as a segmented tab** ("use a segmented tab here vs a select"): `#stBp` wears `tkSegSel`: Auto · XS · S · M · L in the bar, 30 high.
+- **Ask sheet: the Inbox outside the sheet** ("The inbox Section outside the bottom sheet (still stacked)"):
+  - In the Bottom sheet layout (`html.askSheet.askV2.askStd`, not Merged), `.aiV2Sug` sits on the dim, 16 above the sheet's top and in line with the field. Its title is white 56% in both modes; in Light the chips get a white ground.
+  - The sheet keeps the field and Services. The Inbox rides up and down with the sheet: the closed transform adds the Inbox's height, so it never peeks.
+  - A tap beside the chips falls through to the dim and closes the sheet.
+- **Desk: the same, on top of the card** ("Align on desktop / Stacked Conversation on top of the card"):
+  - The desk's Menu AI entry point (`EvSearch.open(null, at)`, `.evSrchAt`) moves its Inbox title and chips out of the panel into `.evSrchIn`, stacked (`evSrchStack`). It sits 16 above the card (`--pH`, the panel's height, kept by a ResizeObserver), with the panel's fade and 10 drop.
+  - Services now leads the card, right under the field.
+  - The top field's own panel (Top Chat AI) is unchanged.
+- **"See more"**: the Unread 3+ chip at the end of the conversations reads See more (was "2 more"): the Ask sheet, the desk panel and the Merged list.
