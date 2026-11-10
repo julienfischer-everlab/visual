@@ -50092,10 +50092,10 @@ hairline({
         const GK = 'everlab:tkPsGroups', GCOL = 'tkPsGroups', TABK = 'everlab:tkPsTab', TABS = rdL(TABK) || {};
         let GRPS = (rdL(GK) || []).filter(g => g && g.id && g.name), EDITG = '', SUREG = '', NEWG = false, MOVE = '';
         /* per page ("the presets should work per PAGE. each page should have sets of presets"): a preset belongs to the page it was made on (its snapshot's page; one made before, the Overview's, where the app opens),
-           the menu lists that page's (Default first, on every page); the preset in use kept per page in this browser (everlab:tkPsOn) */
-        const ONK = 'everlab:tkPsOn', ONS = rdL(ONK) || {}, pgNow = () => (document.getElementById('versionSel') || {}).value || '', pgOf = x => x.pg || (x.snap && x.snap.pg) || '9', mine = () => BI_P.concat(PRE).filter(x => pgOf(x) === pgNow());
+           the menu lists that page's (Default first, on every page); the preset in use kept per page for this visit (a load lands on Default) */
+        const ONK = 'everlab:tkPsOn', ONS = {}, pgNow = () => (document.getElementById('versionSel') || {}).value || '', pgOf = x => x.pg || (x.snap && x.snap.pg) || '9', mine = () => BI_P.concat(PRE).filter(x => pgOf(x) === pgNow());
         const pgName = () => { const v = document.getElementById('versionSel'), o = v && v.selectedOptions && v.selectedOptions[0]; return o ? o.textContent.trim() : ''; };
-        const setOn = id => { ON = id || ''; ONS[pgNow()] = ON; wrL(ONK, ONS); };
+        const setOn = id => { ON = id || ''; ONS[pgNow()] = ON; };   /* this visit only: a load lands on Default ("When you load the page ... It should land on the default one"); a preset kept from the last visit named a setup the page no longer had */ try { localStorage.removeItem(ONK); } catch (e){}
         const gMine = () => BI_G.concat(GRPS).filter(g => (g.pg || '9') === pgNow()).sort((a, b) => (a.order || 0) - (b.order || 0) || (a.at || 0) - (b.at || 0));
         const gOf = x => x && x.grp && gMine().some(g => g.id === x.grp) ? x.grp : '';
         /* built in ("For timeline, Create few presets 'Personas' group instead of putting them in a tweak"): the Timeline's Personas, a group of its own with a preset per member

@@ -22450,3 +22450,8 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 
 - "Add the blur background by 32px on the items": the rows' backdrop blur 64 (was 32).
 - The blur had never shown: the fade mask sat on the list (`.hpDrRows`), and a masked element is a backdrop root, so the rows' `backdrop-filter` saw nothing behind them (a screenshot with the blur on and off came out byte-identical). The same fade now sits on the last row itself (`li:last-child`), so the list is no longer a backdrop root and the rows blur the photo (screenshots now differ).
+
+## Presets: a load lands on Default (2026-11-10)
+
+- "When I load a new page, I see this as a preset persona upgrade protocol, but it's actually not ... It should land on the default one": the preset in use was kept per page in this browser (`everlab:tkPsOn`) and named again on the next load, while the page opened on the saved setup (Default), so the button showed a preset the page wasn't on until it was applied again.
+- The preset in use is now kept for the visit only (per page, so switching pages and back still shows it); a load starts on Default (or the first preset the page matches), and the old stored key is removed. Checked: a stale stored preset loads as Default; applying a Persona shows it; switching pages and back keeps it; reloading lands on Default.
