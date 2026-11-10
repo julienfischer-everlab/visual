@@ -2176,6 +2176,33 @@ window.EvKbd = (function () {
         v.addEventListener('seeked', f, { once: true }); setTimeout(f, 2500); v.currentTime = tg;
       });
     };
+    /* a bubble the view's edge would cut fades out and stays hidden ("If a bubble speech cuts, just hide it, fade out, and hide it"), floating only: each piece of the thread
+       (a bubble with its name, a widget, the thinking line) read against the scroll in progress. Cut where the scroll is going: it fades out from the scroll's start; cut where it
+       came from and whole where it is going: back in at the scroll's end. Read from the time alone, so the MP4 has it; a filter, so it never fights the entrances' opacity.
+       The newest message stays, whole or not */
+    var edgeFade = function (t) {
+      var kids = Array.prototype.slice.call(col.children), V = geo.vh, s = null, i, fd = Math.min(MO.scroll, 320);
+      for (i = SEG.length - 1; i >= 0; i--) if (SEG[i].e <= t){ s = SEG[i]; break; }
+      var o = s ? null : offAt(t);
+      var topIn = function (el) { var y = 0, q = el; while (q && q !== col){ y += q.offsetTop; q = q.offsetParent; } return q === col ? y : null; };
+      var cutAt = function (y0, y1, off) { return y0 - off < -.5 || y1 - off > V + .5; };
+      kids.forEach(function (x, k) {
+        var parts = x.classList.contains('msg') && x.children.length > 1 ? Array.prototype.slice.call(x.children) : [x], last = k === kids.length - 1;
+        for (var j = 0; j < parts.length; j++){
+          var g = [parts[j]]; if (parts[j].classList.contains('ckHd') && parts[j + 1]) g.push(parts[++j]);   /* a name goes with its bubble */
+          var f = 1, y0 = topIn(g[0]), y1 = y0 == null ? null : topIn(g[g.length - 1]);
+          if (!last && y0 != null && y1 != null){
+            y1 += g[g.length - 1].offsetHeight;
+            if (!s) f = cutAt(y0, y1, o) ? 0 : 1;
+            else {
+              var cf = cutAt(y0, y1, s.from), ct = cutAt(y0, y1, s.to);
+              f = ct && cf ? 0 : ct ? 1 - EIN(clamp((t - s.e) / fd, 0, 1)) : cf ? EIN(clamp((t - s.e - (MO.scroll - fd)) / fd, 0, 1)) : 1;
+            }
+          }
+          g.forEach(function (el) { put(el, 'filter', f >= .999 ? '' : 'opacity(' + f.toFixed(4) + ')'); put(el, 'visibility', f <= .001 ? 'hidden' : ''); });
+        }
+      });
+    };
     var cur = 0;
     var seek = function (ms) {
       if (!C) return 0;
@@ -2201,7 +2228,7 @@ window.EvKbd = (function () {
         var L1 = leadAt(t), x1 = L1 ? shown(L1.n, t) : null;
         if (x1 && t >= L1.os){ var f = 1 - EIN(clamp((t - L1.os) / L1.od, 0, 1)); put(x1, 'opacity', f.toFixed(4)); put(x1, 'transform', 'translateY(' + (-10 * (1 - f)).toFixed(3) + 'px)'); }
         var Hc = col.offsetHeight, Vc = geo.vh; off = C.anchor === 'top' ? 0 : C.anchor === 'center' ? (Hc - Vc) / 2 : Hc - Vc;
-      } else off = offAt(t);
+      } else { off = offAt(t); if (!C.device) edgeFade(t); }
       composer(t); vidSync(t);
       putE(col, 'top', Math.abs(off) < .01 ? '' : (-off).toFixed(2) + 'px');   /* top, not a transform: no layer of its own, so a frame reached any way rasterises alike */
       if (hdEl) hdEl.classList.toggle('evTnOn', off > .5);   /* the head's ground reaches 24 further once the thread is under it, as the chat's does on scroll */
