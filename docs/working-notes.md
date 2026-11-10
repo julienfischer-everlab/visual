@@ -22389,3 +22389,4 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 ## Primary card, Centered: no progress dashes
 
 - "remove progress indicator for centered version": in Centered (M and up), Step 2's three dashes (`.hpOvBar`) are hidden; the title, line and button stay centred in the card. The left-aligned card (XS, S, or Desk alignment Left) keeps them.
+- Merged a publish from another session (07:11 UTC): the Insights page's titles "Health insights" → "Health" (desk `<h1>`, phone `<h2>`), now in the source too.
