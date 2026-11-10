@@ -22530,3 +22530,11 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - V3 What to expect: no back chevron (its welcome goes on by itself), the button "See results", a 24% black blanket over the picture (faded with it), the picture in from 1.1 and 56 px low, fading in as it rises and settles at 1. V3's welcome and What to expect dark in either mode, the picture at full strength (light mode had dimmed it to 32%: "Why depend on the mode?").
 - Shared setup links (#tk-<id>): the page is covered (dark, a small spinner) from its first paint until that setup is on it, so the Default (the phone) never shows first; the shared record is asked for at once, beside the page's own setup; 9 s at most. Checked: Default XS under the cover, the shared L when it lifts.
 - V3 What to expect: the title group placed from the picture where it rests (its entrance moved it when measured, so the title landed lower than meant); 64 px higher than seen (the title's top 233 on the phone); the picture in from 1.2, 64 px low, rising and settling at 1 as it fades in ("Scale down the background from 1.2 to 1 ... move up the background by 64px while it's fading").
+
+## Timeline check-in card, tab counts; debrief New badge and dots
+
+- Timeline V3: a second card just before This year, built like the focus card (EvCard glow, #252522 ground): "Your next check-in · in N days", "Video check-in with Dr Lu", Dr Lu with the date, and Prepare (opens the check-in sheet). With the Check-in Tweak on Async it reads as the next debrief. 8 px under Now's last row, 40 px above This year.
+- Timeline V3 Tweak "Tab counts" (Yes / No, No by default): the numbers beside Now, This year and Later.
+- Insights Results Tweak "New badge" (Yes / No, No by default): with No, the latest debrief card shows no New badge and no corner glow (class `repNoNew` on <html>, over the card's own placement rule).
+- Debrief carousel: the dots 24 px under the cards (were 16; "Increase the gap by 8px. Above the nav dot").
+- Checked at XS and L: the card sits between Now and This year and Prepare opens the sheet; tabs plain by default, numbered with Yes; New hidden by default, back with Yes; dots gap 24; no page errors.
