@@ -22348,3 +22348,8 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - **Live Concierge.** The Concierge screens are `concierge.html`, live, loaded once scrolled near and put in their state (embed, `#chat-protein`, the field's focus event, `Concierge.ask`). The phone ones carry the still's status bar.
   - **Fix.** The docs shell hid every iframe inside any doc page whenever a page was shown. It now hides only the pages themselves.
   - **To redo the stills** after the Overview or the Ask sheet changes: rerun the capture (the presets' Tweaks, XS and Auto at 1440) and replace the five files.
+- **Step 1 in Primary card → State** ("Step 1 where ?"):
+  - The State list now starts with Step 1. The option had been hidden because the Overview always moved itself on to Step 2 ("never step 1 on overview").
+  - Picking Step 1 in Tweaks now overrides that guard. The card shows its Step 1: Start your health journey / Add your details / Get started, the sphere unlit. Picking any other state puts the guard back, so the normal flow still starts the Overview at Step 2.
+  - Design system → Modules → Onboarding consult lists Step 1 first.
+- **Freemium card button** ("Use same CTA style as the other primary card"): Explore services is the primary card's own button (`.hpOvBtn`): 44 tall, pill, white on dark (dark on light), full width like Step 1's Get started. It no longer has its own grey 56 / 16 style.
