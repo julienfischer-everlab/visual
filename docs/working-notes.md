@@ -22401,3 +22401,11 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - The Persona picker is gone from Tweaks → Timeline V3 (the select stays as the state the presets set; Member stays).
 - Presets now keep the Timeline's tweaks too: the version (`stTlD`) and the V3 group, so a team preset made on the Timeline holds its member.
 - The menu: up to 560 tall (72% of the window), its rows never squeezed (the tabs were, under a long group).
+
+## Primary card: Doctor's plan (Protocol / Diagnostics)
+
+- "Create a Primary card where the Doctor $name protocol / diagnostics … Keep the bg from the membership experience" (the reference: Next step, Sarah's Everlab Plan, three pictures, the line, the services as rows, + 6 more, Review my plan): Tweaks → Primary card → Object has two more, Doctor's plan · Protocol and Doctor's plan · Diagnostics (`HPC.dr`, `.hpOvDr`).
+- The card: the Next step tag; "Dr Steven Lu's" over "Protocol plan" / "Diagnostics plan" (22 / 28, the plan's line lighter); three of its services' pictures overlapping at the top right (EvSvcPics, none written again); "Here are the services Dr Steven Lu has recommended, brought together into a plan to support your health goals."; three services as rows and "+ N more" (Protocol: Weight Management Program (GLP-1), Hormone Balance Panel, Nutrition Consult, + 6; Diagnostics: Whole Body MRI & CT Chest, Advanced Blood Panel, DEXA Body Composition & Bone Density, + 4); Review my plan, the primary card's own white button, full width. The card or its button opens the Doctor's suggestion (`_dsg`).
+- The ground: the membership experience's light, its own picture (card-glow), its orange at the top into the brown and the black under the rows, saturation .8 as there, a few motes; light mode the experience's light mode (the glow into #FAFAFA, the ink dark).
+- Centered (desk): the pictures on top, the words centred, the rows and the button across.
+- Design system → Modules → Onboarding consult → Object: the two drawn by the same `HPC.dr`.
