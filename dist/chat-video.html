@@ -156,7 +156,8 @@
     background-image: radial-gradient(circle at 1px 1px, var(--dot) 1px, transparent 1.3px); background-size: 16px 16px; overflow: hidden; }
   .cv { position: relative; box-shadow: 0 0 0 1px var(--line), 0 20px 50px var(--shadow); background: #000; margin-bottom: 18px; }
   .cv iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; pointer-events: none; }
-  .cvHit { position: absolute; inset: 0; cursor: pointer; }
+  .cvHit { position: absolute; inset: 0; cursor: pointer; touch-action: none; } .cvHit.pic { cursor: grab; } .cvHit.pic.drag { cursor: grabbing; }
+  .cvTip { position: absolute; left: 50%; top: 10px; transform: translateX(-50%); padding: 6px 10px; border-radius: 999px; background: var(--veil); color: var(--text); font-size: 11px; line-height: 14px; white-space: nowrap; pointer-events: none; opacity: 0; transition: opacity .2s ease; } .cv:hover .cvTip { opacity: 1; } .cv.drag .cvTip { opacity: 0; }   /* the background moved on the canvas itself ("drag the background and increase the background manually") */
   .res { position: absolute; left: 0; right: 0; bottom: 10px; display: flex; justify-content: center; gap: 10px; font: 11px/1 var(--mono); color: var(--muted); pointer-events: none; font-variant-numeric: tabular-nums; }
   .res b { color: var(--label); font-weight: 500; }
   .stErr { position: absolute; inset: auto 16px 40px; padding: 10px 12px; border-radius: 10px; background: var(--veil); color: var(--warn); text-align: center; }
@@ -1136,8 +1137,8 @@
         ${c.device !== false ? html`<${Field} label="Header title"><input className="in" aria-label="Phone header title" placeholder="Eva" value=${c.title || ''} onChange=${function (e) { ed(function (y) { if (e.target.value) y.title = e.target.value; else delete y.title; return y; }, 'title'); }} /><//>`
           : html`<div className="f2"><${Field} label="Column" aside=${(c.column || 440) + ' px'}><${Range} label="Column width" min=${280} max=${900} step=${10} value=${c.column || 440} fmt=${function (v) { return v; }} onChange=${function (v) { ed(function (y) { y.column = v; return y; }, 'col'); }} /><//>
             <${Field} label="Zoom" aside=${(c.zoom || 1).toFixed(2) + '×'}><${Range} label="Zoom" min=${.5} max=${2} step=${.05} value=${c.zoom || 1} fmt=${function (v) { return v.toFixed(2); }} onChange=${function (v) { ed(function (y) { y.zoom = v; return y; }, 'zoom'); }} /><//></div>
-            <${Field} label="Messages" hint=${c.flow === 'single' ? 'Each bubble comes, holds and goes before the next. No chat field: a typed question writes in its bubble.' : 'The messages pile up as in the chat. No chat field: a typed question writes in its bubble.'}><${Seg} label="Messages" value=${c.flow || 'thread'} options=${[['thread', 'Thread'], ['single', 'One at a time']]} onChange=${function (v) { ed(function (y) { if (v === 'single') { y.flow = 'single'; if (!y.anchor || y.anchor === 'bottom') y.anchor = 'center'; } else delete y.flow; return y; }); }} /><//>
-            <${Field} label=${c.flow === 'single' ? 'Where it shows' : 'Thread grows'}><${Seg} label="Anchor" value=${c.anchor || 'bottom'} options=${c.flow === 'single' ? [['bottom', 'Foot'], ['center', 'Centre'], ['top', 'Top']] : [['bottom', 'Up from the foot'], ['center', 'From the middle'], ['top', 'Down from the top']]} onChange=${function (v) { ed(function (y) { y.anchor = v; return y; }); }} /><//>`}</div>
+            <${Field} label="Messages" hint=${c.flow === 'single' ? 'Each bubble comes, holds and goes before the next. No chat field: a typed question writes in its bubble.' : 'The messages pile up as in the chat. No chat field: a typed question writes in its bubble.'}><${Seg} label="Messages" value=${c.flow || 'thread'} options=${[['thread', 'Thread'], ['single', 'One at a time']]} onChange=${function (v) { ed(function (y) { if (v === 'single') y.flow = 'single'; else delete y.flow; return y; }); }} /><//>
+            <${Field} label=${c.flow === 'single' ? 'Where it shows' : 'Thread grows'}><${Seg} label="Anchor" value=${c.anchor || 'center'} options=${c.flow === 'single' ? [['center', 'Centre'], ['bottom', 'Foot'], ['top', 'Top']] : [['center', 'Newest in the middle'], ['bottom', 'Up from the foot'], ['top', 'Down from the top']]} onChange=${function (v) { ed(function (y) { y.anchor = v; return y; }); }} /><//>`}</div>
       <div className="fs"><h3>Background</h3>
         <${Seg} label="Background kind" value=${bg.kind} options=${[['color', 'Colour'], ['image', 'Image'], ['video', 'Video']]} onChange=${function (v) { if (v === 'color') ed(function (y) { y.background = { kind: 'color', color: bgColor }; return y; }); else if (v === 'image' && bg.kind !== 'image') { if (p.lastPic) ed(function (y) { y.background = clone(p.lastPic); return y; }); else p.pickBg(); } else if (v === 'video' && bg.kind !== 'video') { if (p.lastVid) ed(function (y) { y.background = clone(p.lastVid); return y; }); else p.pickBg('video'); } }} />
         <div style=${{ height: '10px' }}></div>
@@ -1213,7 +1214,8 @@
   var DRAFT = 'everlab:chatVideoDraft', THEME = 'everlab:chatVideoTheme';
   function App() {
     var a = useState(null), S = a[0], setS = a[1], b = useState(null), cat = b[0], setCat = b[1], e0 = useState(''), stErr = e0[0], setStErr = e0[1];
-    var c = useState(function () { var d0 = ls.get(DRAFT, null); return d0 && d0.comp && Array.isArray(d0.comp.sequence) ? { comp: d0.comp, id: d0.id || null, shared: !!d0.shared, dirty: !!d0.dirty } : { comp: blank(), id: null, shared: false, dirty: false }; }), doc = c[0], setDoc = c[1];
+    var c = useState(function () { var d0 = ls.get(DRAFT, null);
+      if (d0 && d0.comp && d0.comp.device === false && d0.comp.anchor === 'bottom' && !ls.get('everlab:mig:cvMid', 0)) d0.comp.anchor = 'center'; ls.set('everlab:mig:cvMid', 1);   /* once: the draft's floating thread to the new default, the newest message in the middle ("should always appear in the middle") */ return d0 && d0.comp && Array.isArray(d0.comp.sequence) ? { comp: d0.comp, id: d0.id || null, shared: !!d0.shared, dirty: !!d0.dirty } : { comp: blank(), id: null, shared: false, dirty: false }; }), doc = c[0], setDoc = c[1];
     var comp = doc.comp, docRef = useRef(doc); docRef.current = doc;
     var s0 = useState(null), sel = s0[0], setSel = s0[1], selRef = useRef(sel); selRef.current = sel;
     var r0 = useState('canvas'), rtab = r0[0], setRtab = r0[1], l0 = useState('seq'), ltab = l0[0], setLtab = l0[1];
@@ -1247,6 +1249,35 @@
     var dup = function (id) { var i = idx(id); if (i < 0) return; var n = clone(items[i]); n.id = rid(); edit(function (x) { x.sequence.splice(i + 1, 0, n); return x; }); jump.current = n.id; setSel(n.id); setRtab('item'); };
     var del = function (id) { var i = idx(id); if (i < 0) return; edit(function (x) { x.sequence.splice(i, 1); return x; }); var nb = items[i + 1] || items[i - 1]; setSel(nb ? nb.id : null); if (!nb) setRtab('canvas'); };
     var move = function (from, to) { if (from === to) return; edit(function (x) { var it = x.sequence.splice(from, 1)[0]; x.sequence.splice(to, 0, it); return x; }); };
+
+    /* the background moved on the canvas ("drag the background and increase the background manually within Canvas"): drag pans its focal point, the wheel (or a pinch) scales it (Crop).
+       Live on the stage's own picture while the hand is on it, then one edit (one undo step); a click without a drag opens the Canvas settings as before */
+    var hitRef = useRef(null), bgD = useRef(null), bgZ = useRef(null);
+    var bgPic = !!(comp.background && (comp.background.kind === 'image' || comp.background.kind === 'video') && comp.background.src);
+    var bgEl = function () { try { var d = frameRef.current.contentDocument; return d && d.querySelector('.stgBgIm > img, .stgBgIm > video'); } catch (e) { return null; } };
+    var bgPaint = function (el, b) { el.style.objectPosition = b.x + '% ' + b.y + '%'; if (b.fit === 'crop' && b.scale !== 1) { el.style.transform = 'scale(' + b.scale + ')'; el.style.transformOrigin = b.x + '% ' + b.y + '%'; } else { el.style.transform = ''; el.style.transformOrigin = ''; } };
+    var bgPan = function (el, b, dx, dy) {   /* dx, dy in the composition's px: the picture's edge moves with the hand (its left = x% of (W - s * rw), object-position's own rule) */
+      var nw = el.tagName === 'VIDEO' ? el.videoWidth : el.naturalWidth, nh = el.tagName === 'VIDEO' ? el.videoHeight : el.naturalHeight, W = el.clientWidth, H = el.clientHeight; if (!nw || !nh || !W || !H) return b;
+      var c = b.fit === 'fit' ? Math.min(W / nw, H / nh) : Math.max(W / nw, H / nh), s = b.fit === 'crop' ? (b.scale || 1) : 1, ox = nw * c * s - W, oy = nh * c * s - H, cl = function (v) { return Math.max(0, Math.min(100, v)); };
+      return Object.assign({}, b, { x: Math.abs(ox) > .5 ? cl(b.x - dx * 100 / ox) : b.x, y: Math.abs(oy) > .5 ? cl(b.y - dy * 100 / oy) : b.y });
+    };
+    var bgK = function () { var cv = hitRef.current && hitRef.current.parentNode, w = cv ? cv.getBoundingClientRect().width : 0; return w ? ((comp.format || {}).w || 1080) / w : 1; };
+    var bgDown = function (e) { bgD.current = { x: e.clientX, y: e.clientY, on: false, b: clone(comp.background), k: bgK(), id: e.pointerId }; };
+    var bgMove = function (e) { var D0 = bgD.current; if (!D0 || !bgPic) return; var dx = e.clientX - D0.x, dy = e.clientY - D0.y;
+      if (!D0.on) { if (Math.hypot(dx, dy) < 4) return; D0.on = true; try { hitRef.current.setPointerCapture(D0.id); } catch (er) {} hitRef.current.classList.add('drag'); hitRef.current.parentNode.classList.add('drag'); if (S) S.pause(); }
+      var el = bgEl(); if (!el) return; D0.nb = bgPan(el, D0.b, dx * D0.k, dy * D0.k); bgPaint(el, D0.nb); };
+    var bgUp = function () { var D0 = bgD.current; bgD.current = null; if (!D0) return; if (hitRef.current) { hitRef.current.classList.remove('drag'); hitRef.current.parentNode.classList.remove('drag'); }
+      if (!D0.on) { setRtab('canvas'); return; }
+      if (D0.nb) { var nb = D0.nb; edit(function (y) { y.background.x = Math.round(nb.x * 10) / 10; y.background.y = Math.round(nb.y * 10) / 10; return y; }, 'bgpan'); } };
+    useEffect(function () {   /* the wheel, not passive (a pinch is a wheel with ctrl): the scale, at the focal point; Fill and Fit become Crop to take it */
+      var el0 = hitRef.current; if (!el0) return;
+      var onW = function (e) { var b0 = docRef.current.comp.background; if (!b0 || (b0.kind !== 'image' && b0.kind !== 'video') || !b0.src) return; e.preventDefault();
+        var Z = bgZ.current || (bgZ.current = { b: clone(b0) }), el = bgEl(); clearTimeout(Z.t);
+        Z.b.fit = 'crop'; Z.b.scale = Math.max(1, Math.min(4, (Z.b.scale || 1) * Math.exp(-e.deltaY * (e.ctrlKey ? .01 : .0015))));
+        if (el) bgPaint(el, Z.b);
+        Z.t = setTimeout(function () { var nb = Z.b; bgZ.current = null; edit(function (y) { y.background.fit = 'crop'; y.background.scale = Math.round(nb.scale * 100) / 100; return y; }, 'bgzoom'); }, 280); };
+      el0.addEventListener('wheel', onW, { passive: false }); return function () { el0.removeEventListener('wheel', onW); };
+    }, []);
 
     /* the stage: the iframe's Concierge.stage, its catalogue, its clock */
     var onStageLoad = function () {
@@ -1410,7 +1441,8 @@
       <main className="centre" ref=${centreRef} aria-label="Canvas">
         <div className="cv" style=${{ width: dw + 'px', height: dh + 'px' }}>
           <iframe ref=${frameRef} src=${STAGE_SRC} title="Chat video preview" tabIndex="-1" onLoad=${onStageLoad}></iframe>
-          <div className="cvHit" title="Canvas settings" onClick=${function () { setRtab('canvas'); }}></div>
+          <div className=${'cvHit' + (bgPic ? ' pic' : '')} ref=${hitRef} onPointerDown=${bgDown} onPointerMove=${bgMove} onPointerUp=${bgUp} onPointerCancel=${bgUp}></div>
+          ${bgPic ? html`<div className="cvTip">Drag to move the background · scroll to zoom</div>` : null}
         </div>
         <div className="res"><b>${fw} × ${fh}</b><span>${(comp.format || {}).ratio === 'custom' ? 'Custom' : (comp.format || {}).ratio}</span><span>${comp.device !== false ? 'iPhone frame' : 'Floating'}</span><span>${hasPic ? 'Image' : (comp.background || {}).color}</span></div>
         ${stErr ? html`<div className="stErr">${stErr}</div>` : null}

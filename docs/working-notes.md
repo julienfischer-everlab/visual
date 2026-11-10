@@ -22496,3 +22496,16 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - The title written as the Send a gift intro's ("word by word, with the blur effect"): the writing master (`EvWrite`, letters out of a blur, warm till sharp); the master's two rules now also cover `.arSheet.arWtw`.
 - No button on it ("there's no CTA": `.arWtNoCta` hides the foot). Written, held 1.1 s, it goes on by itself; back on it (or a Tweak's redraw), on again after 2.2 s.
 - In place, no push ("we transition directly to the What to Expect, and then the image comes, and then the title changes"): the welcome held over the new page (`.arWtOut`), the picture in at once, the welcome blurring away from 0.5 s as What to expect's title is written in its place, then the bullets and Next.
+
+## Chat video: the newest bubble in the middle, no fade, no white edge, the background moved on the canvas
+
+- Floating, the thread keeps its newest message (with its widgets) at the middle of the frame ("the active one always in the middle"); the earlier ones go up and are cut by the frame's edge, no fade or blur at the top. Middle is now the default anchor (the draft moved once, `everlab:mig:cvMid`); Up from the foot and Down from the top stay as options.
+- No white sliver at the canvas's sides: the stage fills it to its edges when the ratios differ only by the canvas's whole-pixel rounding.
+- Drag the canvas to move an image or video background, scroll or pinch to zoom it (Crop, 1 to 4). Live while dragging, one undo step after; a plain click still opens the Canvas settings. The canvas's "Canvas settings" tooltip is gone (a hint shows on hover instead).
+
+## Async V3 What to expect: the welcome's title goes up into the picture
+
+- The welcome's title group (tag and title) is What to expect's own: it starts exactly where the welcome left it and moves up into the picture as the picture comes in ("the image should appear at the same time as the title moves up").
+- "We'll walk you through it, one finding at a time." is its line under it ("just a subtitle"); the What to expect eyebrow is gone.
+- The three rows sit at the foot, in the dark under the picture, and rise one after another (36 px, 0.16 s apart), then Next.
+- Landing on it directly (Flow panel), the title is written in the middle first, then the same move.

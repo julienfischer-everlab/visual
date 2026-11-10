@@ -17240,7 +17240,7 @@
 @keyframes arFadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
 @keyframes arHeroZoom { from { transform: scale(1.12); } to { transform: none; } }
 @keyframes arFade { from { opacity: 0; } to { opacity: 1; } }
-@keyframes arEnFade { from { opacity: 0; } to { opacity: 1; } }   /* the page's entrance, its parts after the title: its own name, so the push (which finishes the page's own rises) leaves it running */
+@keyframes arEnFade { from { opacity: 0; } to { opacity: 1; } } @keyframes arEnRise { from { opacity: 0; translate: 0 36px; } to { opacity: 1; translate: 0 0; } }   /* the page's entrance, its parts after the title: its own name, so the push (which finishes the page's own rises) leaves it running */
 .arSheet .arAnimRise { animation: arRise .5s var(--ar-ease) both; }
 .arSheet .arAnimRise6 { animation: arRise .6s var(--ar-ease) both; }
 .arSheet .arAnimUp { animation: arFadeUp .5s var(--ar-ease) both; }
@@ -18074,7 +18074,7 @@ body.light .arSheet .arRcStkMk, .arSheet:not(.arDark) .arRcStkMk { background: r
 .aqWrap.aqFull:is(.aqBpM, .aqBpL) .arSheet .arDbmLay { left: calc((100% - 100cqw) / 2); right: auto; width: 100cqw; }
 .arSheet .arDbmLab { position: absolute; left: 0; top: 0; width: 0; height: 0; } .arSheet .arDbmLay .arOrbTx { color: #fff; text-shadow: 0 1px 10px rgb(0 0 0 / .55), 0 0 2px rgb(0 0 0 / .35); }   /* the Sphere hero's marker, no badge ("remove the background" of the marker): its words white on the picture, a soft shadow to read them */
 .arSheet .arDbmLay .arOrbBox.arOrbOn .arOrbSq { background: #ff7a1a; }
-.arSheet .arStack.arWtStack { min-height: 100%; box-sizing: border-box; justify-content: center; align-items: center; text-align: center; } .arSheet.arSheet .arWtStack > .arWtHead { align-items: center; align-self: stretch; text-align: center; } .arSheet.arSheet .arWtHead > .arH700.arWtT { max-width: 320px; margin: 0 auto; text-align: center; font-size: 32px; line-height: 38px; text-wrap: balance; }   /* V3's welcome: the title alone, centred */ .arSheet.arWtw .arWtHead > .arWtTag { align-self: center; margin: 0 0 20px; } .arSheet.arWtNoCta .arFoot { visibility: hidden; }   /* its tag over the title; no button on it ("there's no CTA") */
+.arSheet .arStack.arWtStack { min-height: 100%; box-sizing: border-box; justify-content: center; align-items: center; text-align: center; } .arSheet.arSheet .arWtStack > .arWtHead { align-items: center; align-self: stretch; text-align: center; } .arSheet.arSheet .arWtHead > .arH700.arWtT { max-width: 320px; margin: 0 auto; text-align: center; font-size: 32px; line-height: 38px; text-wrap: balance; }   /* V3's welcome: the title alone, centred */ .arSheet .arStack.arDbfFade.arDbfWt { justify-content: flex-end; padding-bottom: 8px; } .arSheet.arSheet .arDbfWt > .arWtHead { align-items: center; text-align: center; } .arSheet.arSheet.arSheet .arDbfWt .arRsHead.arRsHead.arWtHead > .arWtTag { align-self: center; width: auto; margin: 0 0 20px; }   /* the tag as wide as its words (the head's children are full width) */ .arSheet.arSheet .arDbfWt .arWtSub { align-self: center; max-width: 300px; margin: 12px auto 0; text-align: center; text-wrap: balance; }   /* V3's What to expect: the welcome's title group (lifted into the picture), its line under it; the rows at the foot, in the dark under the picture */ .arSheet.arWtw .arWtHead > .arWtTag { align-self: center; margin: 0 0 20px; } .arSheet.arWtNoCta .arFoot { visibility: hidden; }   /* its tag over the title; no button on it ("there's no CTA") */
 .arSheet.arNoNavT .arNavT { visibility: hidden; }   /* the report's name and date away from the bar (V3: welcome, What to expect) */
  @media (prefers-reduced-motion: reduce) { .arSheet .arDbfTop { scale: 1; } } .arSheet:not(.arDark).arDbfFadeOn .arDbfTop { opacity: .32; }   /* Light: the picture a wash, the ink over it legible */
 .aqWrap.aqFull:is(.aqBpM, .aqBpL) .arSheet .arDbfTop { left: calc((100% - 100cqw) / 2); right: auto; width: 100cqw; }
@@ -19479,8 +19479,8 @@ window.EvCtl = (function () {
     };
     var uid = ++mountSeq, evSeq = 0, still = false;   // still: a remount back on its screen, its typing written at once
     var DBF = 1, I0 = DBF + 1, REST = NEWI.length + I0, REC = REST + 1, NEXT = REC + 1, STEP_COUNT = NEXT + 1;   /* DBF: In your debrief, after the intro ("after the intro add a step: what the user will see"); the insights from I0 */   // the welcome, the insights, everything else, here's what we recommend, that's your debrief (9) (the insights' list removed: "remove this step and delete")
-    var W0 = o.welcome === 'none' ? DBF : 0;   /* Intro screen None (V3: "there is no welcome. There's directly the What to expect"): the report starts on What to expect, never below it */
-    var DF = o.dbf === 'fade' || o.dbf === 'mark', DM = o.dbf === 'mark', dfP = 0, dfCta = null, dmLay = null, enDir = 0;   /* What to expect over a picture: Image fade, or Marker overlapping image (DM: the picture the top part, its markers one at a time, the words under it); dfP: when its picture comes in (s, 0 settled); enDir: the way the last step change went */
+    var W0 = o.welcome === 'none' ? DBF : 0; var wtY = null;   /* Intro screen None (V3: "there is no welcome. There's directly the What to expect"): the report starts on What to expect, never below it */
+    var DF = o.dbf === 'fade' || o.dbf === 'mark', DM = o.dbf === 'mark', WTH = DF && !DM && o.welcome === 'title', dfP = 0, dfCta = null, dmLay = null, enDir = 0;   /* What to expect over a picture: Image fade, or Marker overlapping image (DM: the picture the top part, its markers one at a time, the words under it); dfP: when its picture comes in (s, 0 settled); enDir: the way the last step change went */
     var step = W0;
     var alive = true;
     var revOn = false, stkAt = 0, stkDec = [], stkAll = [], rcPh = 'dr', rcBuild = null, rcLifeSeen = false;   /* dr: the doctor's screen first ("split this in 2 screens, doctor first") */   /* rcLifeSeen: the Lifestyle screen gone through (its card Reviewed) */   /* rcPh: the Stacked step's phase, intro (the two cards), clin (the stack), life (Later / Now) */   /* Stacked recommendations: where the deck stands (kept when the review pops back to it), and the review of what was added over the recommendations step */
@@ -19929,7 +19929,9 @@ window.EvCtl = (function () {
       if (DM) st.style.paddingTop = Math.max(0, Math.round(aB - 80 - (y(st.getBoundingClientRect().top) - m42))) + 'px';   /* 80 up into the picture's fade (40, then "push the title up by 40 pixels") */
       var ct = getComputedStyle(hd).translate, cy = ct && ct !== 'none' ? parseFloat(ct.split(' ')[1]) || 0 : 0, hh = hd.offsetHeight, top = y(hd.getBoundingClientRect().top) - m42 - cy, mid = top + hh / 2;
       if (!hh || !dfTop.offsetHeight) return;
-      var dy = root.classList.contains('arDbfHold') ? root.offsetHeight / 2 - mid : DM ? 0 : Math.min(0, Math.max((aT + aB) / 2, hb + 24 + hh / 2) - mid);
+      var hold = root.classList.contains('arDbfHold'), wtt = WTH ? hd.querySelector('.arWtT') : null, wtT = wtt ? y(wtt.getBoundingClientRect().top) - m42 - cy : 0;
+      if (wtt && hold) mid = (top + y(wtt.getBoundingClientRect().bottom) - m42 - cy) / 2;   /* V3: the tag and the title in the middle while held, its line under them still to come */
+      var dy = hold ? (wtt && wtY != null ? wtY - wtT : root.offsetHeight / 2 - mid) : DM ? 0 : Math.min(0, Math.max((aT + aB) / 2, hb + 24 + hh / 2) - mid);
       hd.style.translate = Math.abs(dy) >= 1 ? '0 ' + Math.round(dy) + 'px' : ''; };
     if (window.ResizeObserver) new ResizeObserver(function () { if (root.classList.contains('arDbfFadeOn')) dfPlace(); }).observe(root);
     /* Marker overlapping image (Tweak What to expect: "the same system as the sphere marker and the square marker, but you're not moving the marker"): one marker at a time on the picture, the Sphere hero's own (its orange square
@@ -20338,13 +20340,13 @@ window.EvCtl = (function () {
     function enter(stack, hd, title, only, after) {   // hd: the title's block (its own rise off; its other children parts too); only: the parts, if not every child of the stack in turn; after: a wait before the parts (Image fade: the picture comes in between)
       var dfk = stack.classList.contains('arDbfFade'); if (dfk) root.style.setProperty('--dfT', '0s');
       if (still || reducedMotion() || (dfk && enDir < 0)) return stack;   /* back onto it: the page as it settles */
-      var t = enTitle(title.textContent), wi = 0, P = 0, W = dfk && wtIn ? .72 : 0;   /* W: from V3's welcome, the new title's words start once the welcome's title is going */
-      if (dfk) { P = W ? .1 : t + .5; dfP = P; if (!W) root.classList.add('arDbfHold');
+      var t = enTitle(title.textContent), wi = 0, P = 0, WH = dfk && WTH, WI = WH && wtIn, W = dfk && wtIn && !WH ? .72 : 0;   /* W: from V3's welcome, the new title's words start once the welcome's title is going */   /* WH: V3's own (the welcome's title group); WI: come from its welcome, the title already written */
+      if (dfk) { P = WI ? .12 : W ? .1 : t + .5; dfP = P; if (!W) root.classList.add('arDbfHold'); if (WI) [].forEach.call(hd.children, function (k) { if (k !== title) k.style.animation = 'none'; });
         if (dfTop && dfTop.animate) { dfTop.style.transition = 'none'; var dfE = 'cubic-bezier(.16, 1, .3, 1)'; dfTop.animate([{ opacity: 0, offset: 0 }], { duration: 350, delay: Math.round(P * 1000), easing: 'ease', fill: 'backwards' }); dfTop.animate([{ scale: '.9', offset: 0 }], { duration: 1300, delay: Math.round(P * 1000), easing: dfE, fill: 'backwards' }); }   /* by the clock, not a transition: on opening (no style before) and on a replay (the class kept) alike; to whatever the page's own (light: its wash) */   /* What to expect over a picture: the title written at the middle of the screen, a 0.5 s pause, then the picture in at once, growing, as the title goes to its place ("once it's done, just pause for 0.5 seconds, and then suddenly the background appears and scales up") */
         if (!W) later(function () { root.classList.remove('arDbfHold'); root.classList.add('arDbfMv'); dfPlace(); later(function () { root.classList.remove('arDbfMv'); }, 1100); }, Math.round(P * 1000));
         else [].forEach.call(hd.children, function (k) { if (k !== title) k.style.animation = 'arEnFade .55s var(--ar-ease) ' + W.toFixed(2) + 's both'; }); }   /* from the welcome: the title already in its place, the picture in at once; its eyebrow with the words */
       if (!title.getAttribute('aria-label')) title.setAttribute('aria-label', title.textContent);
-      [].slice.call(title.childNodes).forEach(function (n) {   // each word its span, the line breaks kept
+      if (!WI) [].slice.call(title.childNodes).forEach(function (n) {   // each word its span, the line breaks kept
         if (n.nodeType !== 3) return;
         var f = document.createDocumentFragment();
         n.nodeValue.split(/(\s+)/).forEach(function (w) { if (!w) return; f.appendChild(/^\s+$/.test(w) ? document.createTextNode(w) : h('span', { class: 'arRvW', 'aria-hidden': 'true', style: { 'animation-delay': (W + EN_T0 + (wi++) * EN_DW).toFixed(2) + 's' }, text: w })); });
@@ -20353,8 +20355,8 @@ window.EvCtl = (function () {
       hd.style.animation = 'none';
       var parts = only || [];
       if (!only) [].forEach.call(stack.children, function (c) { if (c === hd) [].forEach.call(hd.children, function (k) { if (k !== title) parts.push(k); }); else parts.push(c); });
-      var p0 = dfk ? (W ? W + t : P + .45) : t + (after || 0), gap = dfk ? .2 : EN_GAP;   /* over a picture: the bullets one by one once it is in and the title on its way */
-      parts.forEach(function (x, i) { x.style.animation = 'arEnFade .55s var(--ar-ease) ' + (p0 + i * gap).toFixed(2) + 's both'; });
+      var p0 = WH ? P + .7 : dfk ? (W ? W + t : P + .45) : t + (after || 0), gap = WH ? .16 : dfk ? .2 : EN_GAP;   /* over a picture: the bullets one by one once it is in and the title on its way */
+      parts.forEach(function (x, i) { x.style.animation = (WH ? 'arEnRise .7s cubic-bezier(.16, 1, .3, 1) ' : 'arEnFade .55s var(--ar-ease) ') + (p0 + i * gap).toFixed(2) + 's both'; });   /* V3: its line, then the rows, each up from below, one after another ("appear from the bottom to the top, one after each other") */
       if (dfk && cta.animate) dfCta = cta.animate([{ transform: 'translateY(40px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 640, delay: Math.round((p0 + parts.length * gap + .1) * 1000), easing: 'cubic-bezier(.16, 1, .3, 1)', fill: 'backwards' });   /* then the button, up from the foot ("then the CTA appears at the bottom") */
       return stack;
     }
@@ -20473,6 +20475,12 @@ window.EvCtl = (function () {
         return h('ul', { class: 'arDbcL' }, B.map(function (b) { var ic = h('span', { class: 'arDbcIc', 'aria-hidden': 'true' }); ic.innerHTML = '<svg viewBox="0 0 24 24" fill="none">' + IC[b[0]].replace(/@/g, 'arDbcCut' + (window.__arDbcN = (window.__arDbcN || 0) + 1)) + '</svg>';   /* the tick cut out by a mask (the circle shows through), one id per copy */ return h('li', {}, ic, h('span', { class: 'arDbcTx' }, h('b', { text: b[1] }), h('span', { text: b[2] }))); }));   /* each its icon in a filled circle, its title over its line ("a circle filled secondary + icon instead of the bullet; title and sub stacked, no dash") */
     }
     function buildDbf() {
+      if (WTH) {   /* V3 (its welcome the title alone): the welcome's title group goes on up into the picture as it comes in ("this title should move up into the image ... at the same time"), its tag with it;
+                      "We'll walk you through it, one finding at a time" its line under it ("just a subtitle"), no eyebrow ("Remove the What to expect eyebrow"); the rows at the foot in the dark under the picture, rising one after another */
+        var wg = WEL.count ? h('span', { class: 'arRvBadge arWtTag', text: WEL.count }) : null, wt = h('h2', { class: 'arH700 arWtT' }, WEL.title), ws = h('p', { class: 'arPara arWtSub', text: 'We\u2019ll walk you through it, one finding at a time.' });
+        var whd = h('div', { class: 'arIntroBlock arRsHead arDbfHead arDbcHead arWtHead' }, wg, wt, ws), wbl = dbcBullets();
+        return enter(h('div', { class: 'arStack arGap24 arDbfStack arDbcStack arDbfFade arDbfWt' }, whd, wbl), whd, wt, [ws].concat([].slice.call(wbl.children)));
+      }
       if (DF) {   /* Image fade (V3: "put a visual at the top that fade out in the center. Content centered vertically. remove sphere and square system"): the eyebrow, the title and the three rows, centred on the screen; the welcome's picture behind the top (.arDbfTop, render's), no chart, no sphere */
         var ft = h('h2', { class: 'arH700', 'aria-label': 'We\u2019ll walk you through it, one finding at a time.' }, 'We\u2019ll walk you through it,', h('br'), 'one finding at a time.'), fhd = h('div', { class: 'arIntroBlock arRsHead arDbfHead arDbcHead' }, h('span', { class: 'arDbkEy arDbcEy', text: 'What to expect' }), ft);
         var fbl = dbcBullets(); return enter(h('div', { class: 'arStack arGap24 arDbfStack arDbcStack arDbfFade' + (DM ? ' arDbfMark' : '') }, fhd, fbl), fhd, ft, [].slice.call(fbl.children), .6);   /* the bullets one by one once the picture is mostly in */
@@ -21122,7 +21130,9 @@ window.EvCtl = (function () {
       var gone = pushFrom();
       /* V3's welcome on by itself to What to expect: no push; the welcome held where it stands over the new page, then away in a blur as the picture comes in and the new title is written ("we transition directly to the What to Expect, and then the image comes, and then the title changes") */
       var wtX = wtGo && step === DBF && DF, wtG = null, wOld = body.firstChild; wtGo = false; [].forEach.call(stage.querySelectorAll('.arWtOut'), function (e) { e.parentNode.removeChild(e); });
-      if (wtX && wOld && wOld.classList && wOld.classList.contains('arWtStack') && !reducedMotion() && wOld.animate) { var wr = wOld.getBoundingClientRect(), wsr = stage.getBoundingClientRect(), wk = wsr.width / (stage.offsetWidth || 1) || 1;
+      wtY = null;
+      if (wtX && WTH && wOld && wOld.querySelector) { var wtt0 = wOld.querySelector('.arWtT'), wrk = (window.evK ? window.evK(root) : 1) || 1; if (wtt0) wtY = (wtt0.getBoundingClientRect().top - root.getBoundingClientRect().top) / wrk; }   /* V3: What to expect's title group starts where the welcome's stands, then goes up */
+      else if (wtX && wOld && wOld.classList && wOld.classList.contains('arWtStack') && !reducedMotion() && wOld.animate) { var wr = wOld.getBoundingClientRect(), wsr = stage.getBoundingClientRect(), wk = wsr.width / (stage.offsetWidth || 1) || 1;
         wtG = h('div', { class: 'arPushOut arWtOut', 'aria-hidden': 'true', inert: '', style: { left: ((wr.left - wsr.left) / wk) + 'px', top: ((wr.top - wsr.top) / wk) + 'px', width: (wr.width / wk) + 'px', height: (wr.height / wk) + 'px', 'z-index': '3' } }); wtG.appendChild(wOld); }
       wtIn = wtX;
       while (timers.length) clearTimeout(timers.pop());

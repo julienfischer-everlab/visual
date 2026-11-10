@@ -42,7 +42,7 @@ type Composition = {
   tail?: number;                     // ms held after the last item (1500)
   column?: number;                   // floating: the thread's width in chat px (440)
   zoom?: number;                     // floating: a scale on top of the fitted one (1)
-  anchor?: 'bottom' | 'top' | 'center';  // floating: the thread grows up from the foot, down from the top, or sits in the middle
+  anchor?: 'center' | 'bottom' | 'top';  // floating: the newest message held in the middle (default), the thread up from the foot, or down from the top
   flow?: 'thread' | 'single';        // floating: 'single' shows one message (with its widget) at a time, then fades it out
   sequence: Item[];
 };
@@ -111,7 +111,7 @@ type Item =
 - **Phone (`device: true`)**: the stage draws the whole phone itself, so the preview and the MP4 are the same pixels. That covers the XS screen (393 x 852), the master frame's look (`--evPhR` 56 round, the `--evPhBz` bezel, no shadow), the status bar (9:41, the island, signal, wifi, battery) and the chat's own head, cloned from the page's `.main > .hd` (menu, title, close: the chat dropped its minimise button, so the video did too). It also covers the thread, the composer (field, +, Eva ▾, send) and the home indicator. The phone is scaled to fit the canvas inside `padding`. The builder draws no frame of its own.
   - **The head's ground** is the chat's: the Top nav master's gradient blur (`.evTnG`, "Top nav always gradient blur by default"). The thread runs up under the head by its height (`--hdH`), and the head takes its scrolled state (`.evTnOn`, the ground 24 px longer) once the thread is under it, set from the time like everything else. The scroll keeps new content below the head.
   - **In `frame()`** (the MP4), the ground's `backdrop-filter` can't be drawn through `foreignObject`. A copy of the thread, blurred 9 px on the page's ground and fading out over the ground's last third, stands in for it under the ground's tint, so the video's head reads as the preview's. The preview's DOM is not touched. The 32 px glass on the head's round buttons is still not drawn in the video.
-- **Floating (`device: false`)**: no phone and no ground of the chat's own. Only the thread (bubbles, Eva's answers, avatars, the clinician card, widgets) at the chat's spacing, in a 440 px column scaled to the canvas, anchored at the foot (or the top, or the centre). The top edge fades out under 56 px. "One at a time" (`flow: 'single'`) shows one message at a time in place of the thread. Eva's words and the thinking line take the card ground so they read on a picture. In light theme the cards take the chat's raised surface (the booking card's white and `--bkShadow`).
+- **Floating (`device: false`)**: no phone and no ground of the chat's own. Only the thread (bubbles, Eva's answers, avatars, the clinician card, widgets) at the chat's spacing, in a 440 px column scaled to the canvas, its newest message (with its widgets) held at the middle of the frame, the earlier ones going up and out (or the thread up from the foot, or down from the top). No fade: the frame's edge cuts it ("I don't want any kind of blur or fade-out on the top"). "One at a time" (`flow: 'single'`) shows one message at a time in place of the thread. Eva's words and the thinking line take the card ground so they read on a picture. In light theme the cards take the chat's raised surface (the booking card's white and `--bkShadow`).
 
 ## Specialists
 
@@ -164,6 +164,8 @@ type Item =
 | Foot: playback | Play / pause, Restart, Loop, 1× / 0.5×, the scrubber with a mark per item (click to jump), the time and the total |
 | Right: settings | **Item**: its text (multiline, emoji), name, avatar, typing style, think time, thinking line, reveal, specialist and overrides, the widget's fields, delay, hold, bubble width. **Canvas**: the format (5 and custom), iPhone frame, chat theme, padding, header title or the floating column, zoom, Messages (Thread / One at a time; One at a time moves the anchor to Centre) and the anchor (foot, middle, top); the background (Colour / Image / Video: DS colours, hex, a picture or a video with Fill / Fit / Crop, X, Y, scale, blur and overlay); lead and tail |
 
+- **The background on the canvas** ("drag the background and increase the background manually"): with a picture or a video behind, drag the canvas to move its focal point (X, Y) and scroll (or pinch) to scale it (Fill and Fit become Crop, scale 1 to 4). It moves live on the stage, then lands as one edit (one undo step). A click without a drag opens the Canvas settings.
+- The stage fills the canvas to its edges: within 1% of the canvas's ratio (its whole-pixel rounding) it scales each way on its own, so no sliver of the page shows at the sides.
 - Selecting a row jumps the playhead to the moment it is fully in. Editing an item redraws the canvas and holds it there.
 - Empty timing fields are **Auto**: the stage's motion defaults, shown as the hint ("Auto · 0.4 s").
 - **Keyboard**: Space play / pause, Delete removes, Cmd/Ctrl+D duplicates, Cmd/Ctrl+Z undo, Shift+Cmd/Ctrl+Z redo, Cmd/Ctrl+S save, ↑ / ↓ select, Alt+↑ / ↓ move, Esc deselect.

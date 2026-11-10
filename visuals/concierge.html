@@ -701,8 +701,8 @@
   .stgOwn > .blk:first-child { margin-top: 0; }
   .stgThW { margin-top: 24px; } .stgThW:first-child { margin-top: 8px; } .stgThW > .think { margin-top: 0; }   /* the thinking line in the thread: the chat's .think, held so it can take a ground when floating */
   .stgW { display: inline; }
-  /* floating: no phone, the thread on the ground. Its grounds solid (the chat's washes put over its page colour), Eva's words on the cards' ground so they read on a picture, the top edge faded */
-  .stgFlV { overflow: hidden; -webkit-mask-image: linear-gradient(transparent, #000 var(--stgFade, 56px)); mask-image: linear-gradient(transparent, #000 var(--stgFade, 56px)); }
+  /* floating: no phone, the thread on the ground. Its grounds solid (the chat's washes put over its page colour), Eva's words on the cards' ground so they read on a picture; cut by the frame's own edge, no fade ("I don't want any kind of blur or fade-out on the top") */
+  .stgFlV { overflow: hidden; }
   .stgFloat { position: absolute; inset: 0; background: none; overflow: visible; }
   .stgFloat .col { max-width: none; padding: 0; }
   .stgFloat { --card: color-mix(in srgb, var(--fg) 6%, var(--bg)); --bubble: color-mix(in srgb, var(--fg) 10%, var(--bg)); --input: color-mix(in srgb, var(--fg) 6%, var(--bg)); }
@@ -1816,7 +1816,7 @@
       c.device = c.device !== false;
       c.padding = c.padding === '' || c.padding == null || isNaN(+c.padding) ? null : Math.max(0, +c.padding);
       c.lead = num(c.lead, 500); c.tail = num(c.tail, 1500);
-      c.column = clamp(num(c.column, 440), 280, 900); c.zoom = clamp(num(c.zoom, 1), .3, 3); c.anchor = c.anchor === 'top' || c.anchor === 'center' ? c.anchor : 'bottom';
+      c.column = clamp(num(c.column, 440), 280, 900); c.zoom = clamp(num(c.zoom, 1), .3, 3); c.anchor = c.anchor === 'top' || c.anchor === 'bottom' ? c.anchor : 'center';   /* the middle by default ("the active one always in the middle") */
       c.flow = c.flow === 'single' && !c.device ? 'single' : 'thread';   /* floating: Thread (the messages pile up as a chat) or One at a time (each bubble comes, holds and goes before the next: "just the speech bubble that appears and disappears") */
       var seen = {};
       c.sequence = (Array.isArray(c.sequence) ? c.sequence : []).filter(function (it) { return it && typeof it === 'object'; }).map(function (it, i) {
@@ -1958,9 +1958,10 @@
     };
     var fit = function () {
       if (!host || !geo) return;
-      var k = fitOn ? Math.min(innerWidth / geo.W, innerHeight / geo.H) : 1, x = fitOn ? (innerWidth - geo.W * k) / 2 : 0, y = fitOn ? (innerHeight - geo.H * k) / 2 : 0;
+      var kx = innerWidth / geo.W, ky = innerHeight / geo.H, k = fitOn ? Math.min(kx, ky) : 1, x = fitOn ? (innerWidth - geo.W * k) / 2 : 0, y = fitOn ? (innerHeight - geo.H * k) / 2 : 0;
       host.style.width = geo.W + 'px'; host.style.height = geo.H + 'px';
-      host.style.transform = 'translate(' + x.toFixed(2) + 'px,' + y.toFixed(2) + 'px) scale(' + k.toFixed(5) + ')';
+      if (fitOn && Math.abs(kx / ky - 1) < .01) host.style.transform = 'scale(' + kx.toFixed(5) + ',' + ky.toFixed(5) + ')';   /* the frame's own ratio within a pixel's rounding (the builder's canvas is whole px): to its edges, no sliver of the page at the sides ("a white gap on the left and right") */
+      else host.style.transform = 'translate(' + x.toFixed(2) + 'px,' + y.toFixed(2) + 'px) scale(' + k.toFixed(5) + ')';
     };
     addEventListener('resize', function () { if (root.classList.contains('stg')) fit(); });
 
@@ -2007,8 +2008,10 @@
         N.forEach(function (n) { if (n.bt) bubType(n, e); });
         var list = layout(e), H = col.offsetHeight, tgt, fresh = null;
         N.forEach(function (n) { var p = n.p; if (p.typeIn === e || p.thinkIn === e || p.presIn === e || p.in === e){ var x = n.blk && n.host && p.in === e ? n.blk : shown(n, e); if (x) fresh = x; } });
-        if (C.device || C.anchor === 'top') tgt = Math.max(0, H - V); else if (C.anchor === 'center') tgt = H <= V ? (H - V) / 2 : H - V; else tgt = H - V;   /* centre: the thread grows from the middle, then scrolls */
-        if (fresh && fresh.isConnected){
+        if (C.device || C.anchor === 'top') tgt = Math.max(0, H - V); else tgt = H - V;
+        var act = !C.device && C.anchor === 'center' ? list[list.length - 1] : null;   /* centre: the newest message (its widgets with it) held at the middle of the view, the earlier ones going up and out past the frame's edge ("the active one always in the middle") */
+        if (act && act.isConnected){ var at0 = 0, ao = act; while (ao && ao !== col){ at0 += ao.offsetTop; ao = ao.offsetParent; } if (ao === col) tgt = act.offsetHeight > V - 2 * pad ? at0 - pad : at0 + act.offsetHeight / 2 - V / 2; }
+        else if (fresh && fresh.isConnected){
           var top = 0, o = fresh; while (o && o !== col){ top += o.offsetTop; o = o.offsetParent; }
           if (o === col && fresh.offsetHeight > V - 2 * pad) tgt = Math.min(tgt, top - pad);
         }
