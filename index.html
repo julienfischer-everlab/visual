@@ -190,12 +190,15 @@
   .topbar .tkPanel > .tkRow.tkFootAll.tkHead{top:-8px;bottom:auto;justify-content:flex-start;margin:-8px -8px 4px;padding:8px 8px 8px 10px;border-top:0;border-bottom:1px solid rgba(255,255,255,.08);background:#131316;}
   /* XS: every Overview module its content's height ("On XS all module can be hug content (height)"): no floor of its own, the Meet Concierge card's 88 included */ body[data-bp="xs"] #dOver :is(.ovCcCard, .hpOvCard, .ovhero, .ovSvc, .ovTasks, .ovInsCard, .ovBk){min-height:0 !important;}
   .topbar .tkHead .tkLog{flex:1 1 auto;min-width:0;margin:0 4px 0 6px;overflow:hidden;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;white-space:normal;font-size:11px;line-height:14px;color:#71717a;font-variant-numeric:tabular-nums;} .topbar .tkHead .tkLog:empty{display:none;} .topbar .tkHead .tkLog{white-space:pre-line;}
+  .topbar .tkHead .tkPsCur{order:9;flex:1 1 100%;display:flex;align-items:center;gap:6px;min-width:0;margin:0 0 0 2px;font-size:12px;line-height:16px;color:#a1a1aa;} .topbar .tkHead .tkPsCur:empty{display:none;} .topbar .tkHead .tkPsCur svg{flex:none;width:13px;height:13px;} .topbar .tkHead .tkPsCur b{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;color:#f4f4f5;} .topbar .tkHead .tkPsCur em{flex:none;font-style:normal;color:#a1a1aa;}
+  .topbar .tkHead .tkDocsSee{order:10;flex:1 1 100%;justify-content:center;height:34px;font-weight:600;} .topbar .tkHead .tkDocsSee[hidden]{display:none;}
+  .topbar .tkSub .tkCtMax{margin-left:6px;font-weight:400;letter-spacing:0;text-transform:none;color:#a1a1aa;font-variant-numeric:tabular-nums;}   /* Container (1080px): the picked container's max width at this breakpoint ("Indicate in bracket the Max width") */
   .topbar .tkHead .tkX{margin-left:auto;width:30px;height:30px;padding:0;display:grid;place-items:center;color:#a1a1aa;}
   .topbar .tkHead .tkX:hover{color:#e4e4e7;background:#1c1c20;border-color:#3f3f46;}
   /* Presets and Share, the header's second line (the presets' menu under it, over the rows) */
   .topbar .tkPanel > .tkHead{flex-wrap:wrap;row-gap:8px;}
   .topbar .tkPs{position:relative;flex:none;display:flex;align-items:center;gap:8px;}
-  @media (max-width:1400px){ .topbar .tkPs :is(.tkPsNm, .tkPsCh), .topbar .tkPsShare > span{display:none;} .topbar .tkPs .tkBtn{padding-left:9px;padding-right:9px;} }   /* a narrower window: Presets and Share as their icons (their titles say what they are), the bar's right end kept on screen */ @media (max-width:1200px){ .topbar #bpGrp > .lbl{display:none;} }   /* on the bar, after the viewport */ .topbar .tkPs .tkPsBtn{max-width:220px;} .topbar .tkPs :is(.tkPsMenu, .tkPsMsg){right:auto;width:340px;}
+  @media (max-width:1400px){ .topbar .tkPs :is(.tkPsNm, .tkPsCh), .topbar .tkPsShare > span{display:none;} .topbar .tkPs .tkBtn{padding-left:9px;padding-right:9px;} }   /* a narrower window: Presets and Share as their icons (their titles say what they are), the bar's right end kept on screen */ @media (max-width:1200px){ .topbar #bpGrp > .lbl{display:none;} }   /* on the bar, after the viewport */ .topbar .tkPs .tkPsBtn{max-width:220px;} .topbar .tkPs :is(.tkPsMenu, .tkPsMsg){position:fixed;right:auto;width:340px;}   /* fixed, placed under the button as it opens: the bar scrolls sideways, so it clipped them ("dropdown not visiable") */
   .topbar .tkPs .tkBtn{display:inline-flex;align-items:center;gap:6px;} .topbar .tkPs .tkBtn svg{flex:none;color:#a1a1aa;}
   .topbar .tkPsBtn{flex:1 1 auto;min-width:0;} .topbar .tkPsNm{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;text-align:left;} .topbar .tkPsBtn[aria-expanded="true"]{border-color:#52525b;background:#1c1c20;} .topbar .tkPsBtn[aria-expanded="true"] .tkPsCh{transform:rotate(180deg);}
   .topbar .tkPsMenu{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:20;display:flex;flex-direction:column;gap:2px;max-height:min(60vh,460px);overflow:auto;padding:6px;border:1px solid #2a2a2e;border-radius:12px;background:#17171a;box-shadow:0 12px 32px rgba(0,0,0,.5);}
@@ -1237,7 +1240,9 @@
   .mDock{display:flex;align-items:center;gap:8px;pointer-events:auto;position:relative;}
   /* More open: the bottom nav goes down out of the way while its cards rise and stack, and comes back as they go ("on click More, the bottom nav should go down while the cards come and stack") */
   .mDock{transition:transform .45s cubic-bezier(.32,.72,0,1),opacity .3s ease;}
-  :is(#bpFrame, #phone, #phone2, .nvFr):has(> .mvWrap.on) .mDock{transform:translateY(calc(100% + 48px));opacity:0;pointer-events:none;transition:transform .4s cubic-bezier(.4,0,.8,.4),opacity .3s ease .05s;}
+  /* now it stays ("Dont move down the nav when click More"): over the More sheet's scrim, its cards stacking above it, a tap on More again closing them */
+  :is(#bpFrame, #phone, #phone2, .nvFr):has(> .mvWrap.on) .mTabs{z-index:41;}
+  :is(#bpFrame, #phone, #phone2, .nvFr) > .mvWrap .mvStack{bottom:calc(var(--navLift) + var(--navH) + 8px);}
   .mIsland{flex:1;min-width:0;height:var(--navH);border-radius:calc(var(--navH)/2);display:flex;align-items:center;padding:0 4px;}
   /* the iPhone's home indicator, in the frame only -- the device draws its
      own in the safe area -- under the dock, with room for both */
@@ -5922,6 +5927,16 @@
   body.repVisual .rcCard.rcBig.rcDb .rcNew.rcNewInline{display:none !important;} body.repVisual .rcCard.rcBig.rcDb > .rcNew:not(.rcNewInline){display:block !important;position:absolute !important;top:26px !important;right:26px !important;bottom:auto !important;left:auto !important;margin:0 !important;z-index:3;}   /* the debrief card's New: top right over the picture, as far from the edges as the words below are from theirs ("Badge new top right overlapping the img") */
   body.repVisual .rcCard.rcBig.rcDb.rcVidC .rcVis .rcPlay{display:flex;align-items:center;justify-content:center;position:absolute;left:50%;top:50%;width:64px;height:64px;margin:-32px 0 0 -32px;border-radius:50%;background:rgba(255,255,255,.24);color:#fff;box-shadow:none;backdrop-filter:blur(64px);-webkit-backdrop-filter:blur(64px);z-index:2;transition:transform .18s ease;}
   body.repVisual .rcCard.rcBig.rcDb.rcVidC .rcVis .rcPlay svg{display:block;width:24px;height:24px;margin-left:2px;} body.repVisual .rcCard.rcBig.rcDb:not(.rcVidC) .rcVis .rcPlay{display:none;} @media (hover:hover){ body.repVisual .rcCard.rcBig.rcDb.rcVidC .rcVis:hover .rcPlay{transform:scale(1.06);} }   /* a video debrief: its player over the picture, 64, white 24% on a 64 blur, the icon filled ("Add Visual Player ... If video card") */
+  /* the debrief card answers the hand ("this is an interactive card, so need hover press"): the whole card opens its debrief; hover a 3% lighter ground, press 98% and 5% lighter;
+     its chevron disc only on hover (or focus), at the bottom right, centred on the signer's line ("Cta arrow appear on hover / also move to bottom right"), the title free to run the card's width */
+  html body.repVisual .rcCard.rcBig.rcDb{cursor:pointer;transition:background .18s ease,transform .15s ease;}
+  @media (hover:hover){ html body.repVisual .rcCard.rcBig.rcDb:hover{background:rgba(255,255,255,.08);} html body.light.repVisual .rcCard.rcBig.rcDb:hover{background:rgba(46,31,26,.09);} }
+  html body.repVisual .rcCard.rcBig.rcDb:active{transform:scale(.98);background:rgba(255,255,255,.1);} html body.light.repVisual .rcCard.rcBig.rcDb:active{background:rgba(46,31,26,.11);}
+  html body.repVisual .rcCard.rcBig.rcDb .rcCta.rcCtaIc{right:26px !important;bottom:18px !important;opacity:0;transform:scale(.9);transition:opacity .18s ease,transform .18s ease;pointer-events:none;}
+  @media (hover:hover){ html body.repVisual .rcCard.rcBig.rcDb:hover .rcCta.rcCtaIc{opacity:1;transform:none;pointer-events:auto;} }
+  html body.repVisual .rcCard.rcBig.rcDb:focus-within .rcCta.rcCtaIc{opacity:1;transform:none;pointer-events:auto;}
+  html body.repVisual .rcCard.rcBig.rcDb .rcTitle{padding-right:26px !important;}
+  html body.repTab #phone :is(#mHeroOrgan,#mRepCarHost) .rcWrap.nCar:has(> .rcCard.rcDb) + .rcDots{margin-top:16px;}   /* the dots 16 under the cards ("gap 16px"; were 14) */
   .rcByAv{flex:none;width:24px;height:24px;border-radius:50%;object-fit:cover;} .rcByMk{display:grid;place-items:center;border-radius:7px;background:rgba(255,255,255,.12);color:#fff;} .rcByMk svg{width:14px;height:14px;display:block;} body.light .rcByMk{background:rgba(0,0,0,.08);color:#111;}   /* the signer: a doctor's photo round, or the Everlab mark on its tile ("Add avatar IF doctor / IF not fallback") */
   body.repVisual .rcCard.rcBig.rcDb .rcCta.rcCtaIc{bottom:55px !important;}   /* the chevron disc centred on the words (date, two lines, doctor); 2 higher with the foot's 24 line (the signer's avatar) */
   /* the stack: the same card shell, holding the same list the bento's own
@@ -13916,6 +13931,8 @@
           <button class="tkBtn stTkSave" type="button">Save</button>
           <button class="tkBtn stTkReset" type="button">Reset</button>
           <span class="tkLog" aria-live="polite"></span>   <!-- the last Save: when and who ("Show log Latest $date $hour by $name") -->
+          <span class="tkPsCur" aria-live="polite"></span>   <!-- the preset in use, the top bar's ("Here indicate What preset is selected") -->
+          <button class="tkBtn tkDocsSee" type="button" hidden>See documentation</button>   <!-- the page's own documentation, when it has one ("Docs should go in Tweak panel Below Save reset. As a full CTA See documentation. Only if documentation in this page is available") -->
           <button class="tkBtn tkX" type="button" aria-label="Close tweaks" title="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" data-lc="x" width="14" height="14" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
         </div>
         <!-- the page's Container ("FOR EACH PAGE Main page or sub page I want a Container tweak to select the container of the content 2xs s m l etc (design system rules)"): on every Main page and Sub page, the page up named;
@@ -15540,7 +15557,6 @@
     <!-- the report pop-up's illustration drafts, a page of their own in the artifact ("treat these inside a page of the main artifact") -->
     <!-- Report visuals: every card's settings saved as a preset at once ("add Save presets action") -->
     <span class="tkGrow" aria-hidden="true"></span>
-    <button class="tkBtn" id="tkDocsGo" type="button" title="Open the Documentation">Docs</button>
     <!-- Screenshot: the frame as a 3x JPG ("need a CTA in the top nav controller to take a screenshot of the frame, 3x jpg") -->
     <button class="tkBtn tkIcoBtn" id="tkShot" type="button" title="Screenshot of the frame" aria-label="Screenshot of the frame: the screen, or the screen in its device frame"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" data-lc="camera" width="15" height="15" aria-hidden="true"><path d="M13.997 4a2 2 0 0 1 1.76 1.05l.486.9A2 2 0 0 0 18.003 7H20a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h1.997a2 2 0 0 0 1.759-1.048l.489-.904A2 2 0 0 1 10.004 4z"/><circle cx="12" cy="13" r="3"/></svg></button>   <!-- the right cluster ("Docs, Comments (icon), divider, Save, Refresh (icon)") -->
     <span class="tkDiv" aria-hidden="true"></span>   <!-- Save, Comments and Refresh pushed to the bar's far right, always ("Save Refresh on the far right always, with comment") -->
@@ -33501,7 +33517,27 @@ hairline({
     addEventListener('resize', close);
     window._shot = { frame: frame, take: take, dev: () => devOf(frame()) };
   })();
-  { const d = document.getElementById('tkDocsGo'); if (d) d.addEventListener('click', () => { const v = document.getElementById('versionSel'); if (!v) return; v.value = 'doc'; v.dispatchEvent(new Event('change', { bubbles: true })); }); }   /* Docs: the Documentation page */
+  /* See documentation (the Tweaks panel, under Save and Reset; was the bar's Docs): shown only on a page that has its documentation, and it opens that page's doc:
+     the Overview its modules, Insights the biomarker item, a service page its timeline, the onboarding the Membership onboarding doc, the Concierge and chat their components, the gift pages Gifting */
+  { const PAGE_DOC = { '9': 'mhp', '18': 'bi', '20': 'bi', svcD: 'pt', welc: 'hp', hp: 'hp', ci: 'cc', cc: 'cc', gf: 'gf', sgf: 'gf' }, DS_KEYS = ['gl', 'sf', 'md', 'bb', 'cr', 'bi', 'mhp', 'mins', 'mbk', 'sz', 'bt', 'in', 'bd', 'ch', 'cd', 'tg', 'sg', 'nv', 'ld', 'nt'];
+    const docOf = () => { const b = document.body.classList, v = (document.getElementById('versionSel') || {}).value || ''; if (b.contains('docOn') || v === 'doc' || v === 'ds') return '';
+      if (b.contains('gfOn') || v === 'sgf' || v === 'gf') return 'gf'; if (b.contains('hpOn')) return document.querySelector('.hpOpen [class*="hpGf"]') ? 'gf' : 'hp';   /* Send a gift runs in the onboarding's sheet: Gifting, not the onboarding doc */ if (b.contains('ccOn') && !b.contains('ccOut')) return 'cc';
+      if (b.contains('tlOn') || b.contains('mkOn') || b.contains('plOn') || b.contains('accOn') || b.contains('rfOn')) return '';   /* the app's other pages: no documentation of their own yet */
+      if (b.contains('svcOn')) return 'pt'; return PAGE_DOC[v] || ''; };
+    const sync = () => { const k = docOf(); document.querySelectorAll('.tkDocsSee').forEach(x => { x.hidden = !k; x.dataset.doc = k; x.title = k ? 'Open this page’s documentation' : ''; }); };
+    document.addEventListener('click', e => { const t = e.target.closest && e.target.closest('.tkDocsSee'); if (!t || !t.dataset.doc) return; const k = t.dataset.doc, v = document.getElementById('versionSel'), set = DS_KEYS.includes(k) ? 'ds' : 'doc';
+      const tk = document.getElementById('tkMenu'); if (tk && tk.open) tk.open = false;
+      if (v && v.value !== set){ v.value = set; v.dispatchEvent(new Event('change', { bubbles: true })); } setTimeout(() => { if (window._doc) window._doc.show(k); }, 60); });
+    new MutationObserver(sync).observe(document.body, { attributes: true, attributeFilter: ['class'] }); document.addEventListener('change', e => { if (e.target && e.target.id === 'versionSel') setTimeout(sync, 0); }); requestAnimationFrame(sync); }
+  /* Tweaks -> Container: its heading names the picked container's max width at this breakpoint, in brackets ("Indicate in bracket the Max width Xpx based on the selection"): the token's value (EvCt's names), Full 100%, the page's own its width; XS and S the full width */
+  { const upd = () => { const s0 = document.getElementById('stCt'), g = s0 && s0.closest('.tkGroup'), h = g && g.querySelector(':scope > .tkSub'); if (!h) return; let m = h.querySelector('.tkCtMax');
+      if (!m){ m = document.createElement('span'); m.className = 'tkCtMax'; }
+      { const nm = h.querySelector('.nm'), bt = h.querySelector(':scope > button'); if (nm){ if (nm.nextSibling !== m) nm.after(m); } else if (bt){ if (bt.previousSibling !== m) h.insertBefore(m, bt); } else if (m.parentNode !== h) h.appendChild(m); }   /* beside the name, before the collapse chevron */
+      const v = s0.value, N = (window.EvCt && window.EvCt.names) || {}, f = document.body.dataset.bp, desk = f ? /^(m|l|xl)$/.test(f) : innerWidth >= 992; let t = '';
+      if (!desk || v === 'full') t = '100%'; else if (N[v]){ const px = parseFloat(getComputedStyle(document.body).getPropertyValue(N[v])); t = px ? Math.round(px) + 'px' : '100%'; }
+      else if (v === 'own'){ t = 'own width'; }
+      if (m.textContent !== (t ? '(' + t + ')' : '')) m.textContent = t ? '(' + t + ')' : ''; };
+    document.addEventListener('change', e => { if (e.target && /^(stCt|stBp|versionSel)$/.test(e.target.id)) setTimeout(upd, 60); }); addEventListener('resize', upd); setInterval(upd, 600); requestAnimationFrame(upd); }
   { const c = document.getElementById('stHpLtrCard'), set = () => document.documentElement.classList.toggle('hpLtrNoCard', !!c && c.value === 'no'); if (c){ c.addEventListener('change', set); set(); setTimeout(set, 800); } }   /* the Letter's Card tweak, live */
   /* the Health profile at a forced XS: the journey's rows (Step 1, 2, 3 pages, Past results) in a panel beside the phone, at its left, from its top; back in Tweaks otherwise, or with no room */
   const jny = (() => { let el = null;
@@ -36902,11 +36938,11 @@ hairline({
           if (t === 'My account' && window._acc) go(() => window._acc.open({ tab: 'profile' }));
           else if (t === 'Settings' && window._acc) go(() => window._acc.open({ tab: 'settings' }));
           else if (t === 'Gift Everlab' && window._hp && window._hp.gift) go(() => window._hp.gift());   /* the Send a gift experience ("Gift Everlab -> Send a gift experience"), over the page */
-          else if (t === 'Contact us' && window._cc && window._cc.run) go(() => window._cc.run(c => { if (c.model) c.model('care'); if (c.go) c.go('new'); if (c.focus) c.focus(); })); } if (e.target.closest('.mvScrim, .mvX, .mvRow')) close(); }); return { el: w, close }; }
+          else if (t === 'Contact us' && window._cc && window._cc.run) go(() => window._cc.run(c => { if (c.model) c.model('care'); if (c.go) c.go('new'); if (c.focus) c.focus(); })); } if (e.target.closest('.mvScrim, .mvX, .mvRow')) close(); }); host._mvClose = close; return { el: w, close }; }
     return { open };
   })();
   document.addEventListener('click', e => { const t = e.target.closest && e.target.closest('#bpFrame .mTab, #phone .mTab, #phone2 .mTab'); if (!t) return; const lab = t.querySelector('i'); if (!lab || lab.textContent.trim() !== 'More') return;
-    e.preventDefault(); e.stopPropagation(); const host = t.closest('#bpFrame, #phone, #phone2'); window.EvMore.open(host); }, true);   // More opens its sheet; the lit tab stays where it is
+    e.preventDefault(); e.stopPropagation(); const host = t.closest('#bpFrame, #phone, #phone2'); if (host.querySelector(':scope > .mvWrap.on') && host._mvClose){ host._mvClose(); return; } window.EvMore.open(host); }, true);   // More opens its sheet, and closes it again (the dock stays up with it); the lit tab stays where it is
   (function mountNav(){
     const hosts = ['phone', 'phone2', 'bpFrame'].map(id => document.getElementById(id)).filter(Boolean);   // bpFrame: the forced XS breakpoint's iPhone carries the dock too
     hosts.forEach((host, k) => {
@@ -39865,7 +39901,7 @@ hairline({
     // second table beside it, so a report is one row wherever it is shown.
     { id: 'r1',  label: 'Advanced blood panel',    cat: 'Pathology', date: '13 Aug 2026', n: 44, short: 'Aug 2026',   /* a record's name, not the review's ("Diagnostic review shouldn't be a record") */
       by: 'Dr. Steven Lu',    art: ['#6f5a4e', '#241a16'], media: 'img' },
-    { id: 'r2',  label: 'Lipid panel',              cat: 'Pathology', date: '15 May 2026', n: 15, short: 'May 2026', isNew: true,   /* flagged new: the badge in the stack row and the menu ("add NEW badge on the Lipid panel") */
+    { id: 'r2',  label: 'Lipid panel with ApoB, Lp(a) and heart risk markers', cat: 'Pathology',   /* two lines on its card ("simulate the 2nd card with 2 line of text") */ date: '15 May 2026', n: 15, short: 'May 2026', isNew: true,   /* flagged new: the badge in the stack row and the menu ("add NEW badge on the Lipid panel") */
       by: 'Dr. Amara Osei',   art: ['#4a5d63', '#151d20'], media: 'video' },
     { id: 'r3',  label: 'Nutritional review',      cat: 'Other',     date: '12 Apr 2026', n: 2,  short: 'Apr 2026',
       by: 'Dr. Steven Lu',    art: ['#6a5570', '#1d1622'], media: 'img' },
@@ -40623,7 +40659,7 @@ hairline({
     // it; the card's text then sits under it, on the page. It is in the
     // markup always and shown by body.repVisual, so the tweak is CSS alone.
     const big = (r, row, lbl, dateTop) =>
-      '<div class="rcCard rcBig' + (row ? ' rcRow' : '') + (dateTop ? ' rcDb' + (r.media === 'video' ? ' rcVidC' : '') : '') + (lbl === LATEST ? ' rcNewCard' : '') + '">' +
+      '<div class="rcCard rcBig' + (row ? ' rcRow' : '') + (dateTop ? ' rcDb' + (r.media === 'video' ? ' rcVidC' : '') : '') + (lbl === LATEST ? ' rcNewCard' : '') + '"' + (dateTop ? ' data-r="' + r.id + '"' : '') + '>' +   /* the debrief card: the whole card opens it ("this is an interactive card") */
         (lbl === LATEST ? '<span class="rcNew">New</span>' : '') +
         '<button class="rcVis hasImg" type="button" data-r="' + r.id + '" aria-label="View ' + r.label + '" ' +
           'style="--a0:' + r.art[0] + ';--a1:' + r.art[1] + ';background-image:url(' + repImg(r) + ')">' + repArtHTML(r, 'v') +
@@ -49795,7 +49831,8 @@ hairline({
         const snapNow = () => { const v = {}; Object.keys(DEF).forEach(id => { const el = document.getElementById(id); if (el) v[id] = el.value; }); const all = {}; ctl().forEach(el => { all[el.id] = valOf(el); }); const bar = id => (document.getElementById(id) || {}).value; return { v, all, tn: window.EvTopNav && window.EvTopNav.M ? window.EvTopNav.M.sticky : 'on', pg: bar('versionSel'), th: bar('themeSel'), bp: bar('stBp') }; };   /* the bar's too: the page, the colour mode, the viewport ("so we can inc the breakpoint") */
         const barPut = (id, v) => { const el = document.getElementById(id); if (!el || v == null || el.value === String(v) || (el.options && ![...el.options].some(o => o.value === String(v)))) return; el.value = String(v); el.dispatchEvent(new Event('change', { bubbles: true })); };
         const putSnap = s => { if (!s || !s.all) return; barPut('themeSel', s.th); Object.keys(s.v || {}).forEach(id => put(id, s.v[id])); Object.keys(DEF2).forEach(id => { if (!(id in s.all) && !(id in (s.v || {}))) put2(id, DEF2[id]); }); Object.keys(s.all).forEach(id => put2(id, s.all[id])); if (s.tn && window.EvTopNav) window.EvTopNav.set('sticky', s.tn); barPut('versionSel', s.pg); barPut('stBp', s.bp); };   /* the tweaks, then the page, the viewport last; a value the snapshot doesn't hold (a tweak added since): its default */
-        const same = s => { if (!s || !s.all) return false; const n = snapNow(); return Object.keys(s.all).every(id => !(id in n.all) || n.all[id] === s.all[id]) && (!s.tn || s.tn === n.tn) && ['pg', 'th', 'bp'].every(k => !s[k] || s[k] === n[k]); };
+        const eqv = (a, b) => { if (a === b) return true; if (typeof a !== 'string' || typeof b !== 'string' || a.indexOf(',') < 0) return false; const B = b.split(','); let i = 0; return a.split(',').every(x => { const j = B.indexOf(x, i); if (j < 0) return false; i = j + 1; return true; }); };   /* an order list the page has grown since (modules added to the Overview's order) still matches */
+        const same = s => { if (!s || !s.all) return false; const n = snapNow(); return Object.keys(s.all).every(id => !(id in n.all) || eqv(s.all[id], n.all[id])) && (!s.tn || s.tn === n.tn) && ['pg', 'th', 'bp'].every(k => !s[k] || s[k] === n[k]); };
         const newId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
         const rdL = k => { try { const a = JSON.parse(localStorage.getItem(k) || 'null'); return a && typeof a === 'object' ? a : null; } catch (e){ return null; } }, wrL = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e){ return false; } };
         let PRE = (rdL(PK) || []).filter(x => x && x.id && x.snap), ON = '', live = false, NAMES = {};
@@ -49808,7 +49845,14 @@ hairline({
         const when = at => { try { return new Date(at).toLocaleDateString('en-AU', { day: 'numeric', month: 'short' }); } catch (e){ return ''; } };
         const sub = x => x.fixed ? (live ? 'The setup everyone opens on' : 'The saved setup') : [when(x.at), x.by ? (NAMES[x.by] || '') : (x.local ? 'this browser' : '')].filter(Boolean).join(' · ');
         const names = () => { if (!UZ || !UZ.profiles) return; const ids = [...new Set(PRE.map(x => x.by).filter(Boolean))].filter(id => !(id in NAMES)); if (!ids.length) return; Promise.resolve(UZ.profiles(ids)).then(p => { ids.forEach(id => { NAMES[id] = (p && p[id] && p[id].name) || 'Someone'; }); paint(); }, () => {}); };
-        const label = () => { const o = ON ? getP(ON) : null; nm.textContent = o && same(o.snap) ? o.name : o ? o.name + ' · changed' : 'Presets'; };
+        /* the preset in use, on the button and in the Tweaks header ("Here indicate What preset is selected (from above controller)"): the one applied last, else the first the page matches (Default first), else Default · changed */
+        const BM = (btn.querySelector('svg') || { outerHTML: '' }).outerHTML;
+        const label = () => { let o = ON ? getP(ON) : null; if (!o){ const all = [getP(DEFID)].concat(PRE); o = all.find(x => x && same(x.snap)) || all[0]; } const ok = !!o && same(o.snap);
+          nm.textContent = o ? (ok ? o.name : o.name + ' · changed') : 'Presets';
+          document.querySelectorAll('.tkPsCur').forEach(x => { x.innerHTML = BM + '<span>Preset</span><b>' + esc(o ? o.name : 'None') + '</b>' + (o && !ok ? '<em>· changed</em>' : ''); x.title = o ? (ok ? 'The page is on the preset ' + o.name : 'Changed since the preset ' + o.name + ' was applied') : ''; }); };
+        let LT = 0; const labelSoon = () => { clearTimeout(LT); LT = setTimeout(label, 80); };
+        const place = () => { const r = btn.getBoundingClientRect(), x = Math.max(8, Math.min(r.left, innerWidth - 348)); [menu, msg].forEach(m => { m.style.top = Math.round(r.bottom + 6) + 'px'; m.style.left = Math.round(x) + 'px'; }); };
+        addEventListener('resize', place); { const tb = btn.closest('.topbar'); if (tb) tb.addEventListener('scroll', place, { passive: true }); }
         let EDIT = '', SURE = '';
         const paint = () => { label(); if (menu.hidden) return;
           const list = [{ id: DEFID, name: 'Default', fixed: 1 }].concat(PRE.slice().sort((a, b) => (b.at || 0) - (a.at || 0)));
@@ -49822,8 +49866,8 @@ hairline({
               (x.fixed ? '' : '<button type="button" class="tkPsIc del' + (SURE === x.id ? ' sure' : '') + '" data-a="del" title="Delete" aria-label="Delete ' + esc(x.name) + '">' + (SURE === x.id ? 'Delete?' : IC.del) + '</button>') + '</div>').join('') : '') +
             (PRE.length ? '' : '<p class="tkPsNone">No presets of your own yet. Name the tweaks as they are now to keep them as one.</p>') +
             '<form class="tkPsAdd"><input type="text" placeholder="New preset from the page’s tweaks" aria-label="New preset name" maxlength="60"><button class="tkBtn" type="submit">Add</button></form>';
-          const ed = menu.querySelector('.tkPsEd'); if (ed){ ed.focus(); ed.select(); } names(); };
-        const say = (html, ms) => { msg.innerHTML = html; msg.hidden = false; clearTimeout(msg._t); if (ms) msg._t = setTimeout(() => { msg.hidden = true; }, ms); };
+          const ed = menu.querySelector('.tkPsEd'); if (ed){ ed.focus({ preventScroll: true }); ed.select(); } names(); };
+        const say = (html, ms) => { place(); msg.innerHTML = html; msg.hidden = false; clearTimeout(msg._t); if (ms) msg._t = setTimeout(() => { msg.hidden = true; }, ms); };
         const keepL = () => { if (!live) wrL(PK, PRE); };
         const col = n => SDB.collection(n);
         /* the store: the team's presets, live */
@@ -49844,7 +49888,7 @@ hairline({
           if (copied) copied.then(() => shSay('Copied'), manual); else manual();
           if (live) me().then(by => { if (by) body.by = by; return col(SCOL).doc(id).set(body); }).catch(() => { msg.hidden = true; shSay('Not shared'); say('The link could not be saved: try Share again', 4000); });
           else { const m = rdL(SK2) || {}; m[id] = body; wrL(SK2, m); } };
-        btn.addEventListener('click', () => { const open = menu.hidden; menu.hidden = !open; btn.setAttribute('aria-expanded', String(open)); msg.hidden = true; EDIT = ''; SURE = ''; paint(); if (open){ const i = menu.querySelector('.tkPsAdd input'); if (i && !PRE.length) i.focus(); } });
+        btn.addEventListener('click', () => { const open = menu.hidden; if (open) place(); menu.hidden = !open; btn.setAttribute('aria-expanded', String(open)); msg.hidden = true; EDIT = ''; SURE = ''; paint(); if (open){ const i = menu.querySelector('.tkPsAdd input'); if (i && !PRE.length) i.focus({ preventScroll: true }); } });
         shBtn.addEventListener('click', () => { menu.hidden = true; btn.setAttribute('aria-expanded', 'false'); const o = ON ? getP(ON) : null; share(snapNow(), o && same(o.snap) ? o.name : ''); });
         menu.addEventListener('submit', e => { e.preventDefault(); const i = menu.querySelector('.tkPsAdd input'); if (i && i.value.trim()) add(i.value); });
         menu.addEventListener('click', e => { const b = e.target.closest('[data-a]'), it = e.target.closest('.tkPsIt'); if (!b || !it) return; const id = it.dataset.id, o = getP(id); if (!o) return; const a = b.dataset.a; if (o.fixed && a !== 'apply' && a !== 'share') return;
@@ -49857,7 +49901,7 @@ hairline({
         menu.addEventListener('keydown', e => { const i = e.target.closest('.tkPsEd'); if (!i) return; if (e.key === 'Enter'){ e.preventDefault(); const id = i.closest('.tkPsIt').dataset.id, v = i.value.trim().slice(0, 60); EDIT = ''; if (v) upd(id, { name: v }); else paint(); } else if (e.key === 'Escape'){ e.preventDefault(); EDIT = ''; paint(); } });
         menu.addEventListener('focusout', e => { const i = e.target.closest && e.target.closest('.tkPsEd'); if (!i) return; setTimeout(() => { if (EDIT && !menu.contains(document.activeElement)){ const id = EDIT, v = i.value.trim().slice(0, 60); EDIT = ''; if (v) upd(id, { name: v }); else paint(); } }, 0); });
         document.addEventListener('pointerdown', e => { if (!ps.contains(e.target)){ msg.hidden = true; if (!menu.hidden){ menu.hidden = true; btn.setAttribute('aria-expanded', 'false'); EDIT = ''; SURE = ''; } } }, true);
-        document.addEventListener('change', e => { if (ON && e.target && e.target.closest && e.target.closest('.topbar .tkPanel, #versionSel, #themeSel, #stBp')) setTimeout(label, 0); });   /* a tweak moved off the preset: “changed” */
+        document.addEventListener('change', e => { if (e.target && e.target.closest && e.target.closest('.topbar .tkPanel, #versionSel, #themeSel, #stBp')) labelSoon(); });   /* a tweak moved off the preset: “changed” */
         /* a shared link opened (#tk-<id>): its setup on the page, over the shared one, said in the panel */
         const m = /^#tk-([A-Za-z0-9]{6,40})$/.exec(location.hash || '');
         if (m){ const id = m[1], take = d => { if (!d || !d.snap) return; putSnap(d.snap); say('A shared setup' + (d.name ? ', “' + esc(d.name) + '”,' : '') + ' is on this page. Save keeps it as the setup.', 8000); };
@@ -49872,7 +49916,12 @@ hairline({
     const go = (isl, j, anim) => { const p = isl._pill, t = isl._tabs[j];
       if (!t || !t.offsetWidth){ p.style.opacity = '0'; return; }
       if (!anim) p.style.transition = 'none';
-      Object.assign(p.style, { opacity: '1', top: t.offsetTop + 'px', width: t.offsetWidth + 'px', height: t.offsetHeight + 'px', borderRadius: getComputedStyle(t).borderRadius, transform: 'translateX(' + t.offsetLeft + 'px)' });
+      /* never tighter than 4 either side of the label, never narrower than its tab ("The active bg should at least have 4px padding left right based on the label. With a minimum width based on the fill container width"):
+         the label's own text measured (a range, back to layout px past the frame's scale), the pill centred on the tab and kept inside the island */
+      const lb = t.querySelector(':scope > i'), tw = t.offsetWidth, k = tw / (t.getBoundingClientRect().width || tw || 1);
+      let lw = 0; if (lb && lb.offsetWidth){ const rg = document.createRange(); rg.selectNodeContents(lb); lw = rg.getBoundingClientRect().width * k; }
+      const w = Math.max(tw, Math.ceil(lw) + 8), W = isl.clientWidth, lo = Math.min(t.offsetLeft, 4), hi = W - w - Math.min(W - t.offsetLeft - tw, 4), x = Math.max(lo, Math.min(t.offsetLeft - (w - tw) / 2, hi));
+      Object.assign(p.style, { opacity: '1', top: t.offsetTop + 'px', width: w + 'px', height: t.offsetHeight + 'px', borderRadius: getComputedStyle(t).borderRadius, transform: 'translateX(' + x + 'px)' });
       if (!anim){ void p.offsetWidth; p.style.transition = ''; } };
     const sync = (isl, anim) => {
       if (!isl.offsetWidth){ isl._seen = false; return; }   // hidden: shown again later, it slides in from the last
@@ -50504,6 +50553,7 @@ hairline({
         const B4 = ['xs', 's', 'm', 'l'], px = v => v ? String(v) : 'Full (100%)';
         const T = [['layout/container/padding/top-bottom'].concat(B4.map(k => String(CT_BP[k].py)), ['Vertical padding of the page: the body clear of the screen’s bottom edge (and its top where there is no top nav: the top nav’s band takes the top).']),
           ['layout/container/padding/left-right'].concat(B4.map(k => String(CT_BP[k].px)), ['Horizontal padding of the page: the top nav, the body and the footer clear of the screen’s left and right edges.']),
+          ['layout/container/gap/xl'].concat(B4.map(k => 'unit/' + CT_BP[k].gap), ['The gap between stacked sections in a container: --ctGap ("Need to add the container gap with breakpoints value").']),
           ['layout/container/max-width/2xs'].concat(B4.map(k => px(CT_MAX['2xs'][k])), ['A flow’s page (a questionnaire, a step, a standalone modal’s body): data-container="2xs", --ct2xs. The standalone modals’ body and CTA.']),
           ['layout/container/max-width/xs'].concat(B4.map(k => px(CT_MAX.xs[k])), ['data-container="xs", --ctXs. None yet.']),
           ['layout/container/max-width/sm'].concat(B4.map(k => px(CT_MAX.sm[k])), ['--ctSm (read as a var in their own rules): the Overview’s content, the Service detail’s grid, My journey (V2).']),
@@ -50518,7 +50568,7 @@ hairline({
             '<div class="glCtOpts">' + O.map((o, i) => '<button type="button" class="glOpt' + (i === 0 ? ' on' : '') + '"><b>' + o[0] + '</b><span>' + o[1] + '</span></button>').join('') + '</div></div></div>' +
             '<div class="glPart glCtFoot" data-sz="Footer"><button type="button" class="glCtCta">Continue</button></div></div></div></div></div><p class="glCtNote"></p></section>' +
           '<section class="glSec"><h4>Tokens</h4><p>Values that change with the viewport, per breakpoint (the design file’s table). A page names its container (data-container) instead of a max-width of its own; the app’s CSS custom properties take each breakpoint’s value.</p><div class="glTabW"><table class="glTab glTok"><thead><tr><th>Token</th><th>xs · 393</th><th>s · 600</th><th>m · 992</th><th>l · 1440</th><th>Use</th></tr></thead><tbody>' +
-            T.map(r => '<tr><th><code>' + r[0] + '</code></th><td>' + r[1] + '</td><td>' + r[2] + '</td><td>' + r[3] + '</td><td>' + r[4] + '</td><td>' + r[5] + '</td></tr>').join('') + '</tbody></table></div><p class="glCtNote">Between the body’s major sections: gap/xl, ' + B4.map(k => CT_BP[k].gap).join(' · ') + ' (--ctGap).</p><p class="glCtNote">Widths that match no token yet: My journey (V1) 760; the Async report’s and the Health profile’s desk columns 536 (M) and 568 (L), and the profile sheet’s 560.</p><p class="glCtNote">Every page and sub page has a Container tweak (Tweaks → Container, from M; XS and S keep the full width), its default the one it has today (own: its own width, no token yet): ' + (window.EvCt ? window.EvCt.pages().map(p => p.name + ' ' + p.def).join(' · ') : '') + '.</p></section></div>'; };
+            T.map(r => '<tr><th><code>' + r[0] + '</code></th><td>' + r[1] + '</td><td>' + r[2] + '</td><td>' + r[3] + '</td><td>' + r[4] + '</td><td>' + r[5] + '</td></tr>').join('') + '</tbody></table></div><p class="glCtNote">Widths that match no token yet: My journey (V1) 760; the Async report’s and the Health profile’s desk columns 536 (M) and 568 (L), and the profile sheet’s 560.</p><p class="glCtNote">Every page and sub page has a Container tweak (Tweaks → Container, from M; XS and S keep the full width), its default the one it has today (own: its own width, no token yet): ' + (window.EvCt ? window.EvCt.pages().map(p => p.name + ' ' + p.def).join(' · ') : '') + '.</p></section></div>'; };
       /* General layout -> Top nav ("General TOP NAV rule (DS). IF no h1 title, keep a safe space at the top. h1 is then part of the Body"; "Top nav always gradient blur by default"; the Service detail's bar, "fixed gradient blur with title appearing"):
          the master (window.EvTopNav, .evTn) drawn by its own code: A, B and C (Back, Close, both) at the board's 400; live in the XS phone and at the desk's width, a scroller each (scroll them, or Play): the ground always the gradient blur, the H1 coming into the bar as it goes under it */
       const glTn = sb => { const TN = window.EvTopNav; if (!TN) return '<div data-glv="tn" hidden></div>';
@@ -51546,7 +51596,7 @@ hairline({
           const isl = nav.querySelector('.mIsland'); let pl = isl && isl.querySelector('.mPill'); if (isl && !pl){ pl = document.createElement('i'); pl.className = 'mPill'; pl.setAttribute('aria-hidden', 'true'); isl.prepend(pl); } if (isl) isl.classList.add('mPillOn');
           const slide = (t, now) => { if (!pl || !t) return; if (now) pl.style.transition = 'none'; pl.style.width = t.offsetWidth + 'px'; pl.style.transform = 'translateX(' + t.offsetLeft + 'px)'; pl.style.opacity = '1'; if (now){ void pl.offsetWidth; pl.style.transition = ''; } };   /* the lit tab's layer sliding across to the tab tapped, as in the app ("the active bg should translate horizontally when the state changes") */
           requestAnimationFrame(() => slide(nav.querySelector('.mTab.on'), true)); fr._reslide = () => slide(nav.querySelector('.mTab.on'), true);
-          nav.addEventListener('click', e => { const t = e.target.closest('.mTab'); if (!t) return; e.preventDefault(); const lb = t.querySelector('i'); if (lb && lb.textContent.trim() === 'More'){ window.EvMore && window.EvMore.open(fr); return; } delete fr.dataset.mvCur; nav.querySelectorAll('.mTab').forEach(x => { x.classList.toggle('on', x === t); x.setAttribute('aria-selected', String(x === t)); }); slide(t); });   /* a tab: the phone's page is no longer one of More's */
+          nav.addEventListener('click', e => { const t = e.target.closest('.mTab'); if (!t) return; e.preventDefault(); const lb = t.querySelector('i'); if (lb && lb.textContent.trim() === 'More'){ if (fr.querySelector(':scope > .mvWrap.on') && fr._mvClose){ fr._mvClose(); return; } window.EvMore && window.EvMore.open(fr); return; } delete fr.dataset.mvCur; nav.querySelectorAll('.mTab').forEach(x => { x.classList.toggle('on', x === t); x.setAttribute('aria-selected', String(x === t)); }); slide(t); });   /* a tab: the phone's page is no longer one of More's */
           fr._mvLit = () => { const m = [...nav.querySelectorAll('.mTab')].find(x => x.querySelector('i') && x.querySelector('i').textContent.trim() === 'More'); if (!m) return; nav.querySelectorAll('.mTab').forEach(x => { x.classList.toggle('on', x === m); x.setAttribute('aria-selected', String(x === m)); }); slide(m); };   /* a row of More's sheet tapped in this phone (EvMore): it is the phone's page now, More lit as in the app (window.__litMore), its row lit when More opens again */
           const lab0 = document.getElementById('dkLab'); if (lab0) lab0.addEventListener('change', () => requestAnimationFrame(() => slide(nav.querySelector('.mTab.on'), true)));
           if (window.EvChat) window.EvChat.attach(fr, 'doc'); if (window.EvAsk) window.EvAsk.attach(fr, 'doc'); }   /* the AI button's card and the chat it hands to, the very code the Overview runs ("in the doc we need the interaction on the star icon, ref from overview; this doc will be the source of truth") */
