@@ -18074,7 +18074,7 @@ body.light .arSheet .arRcStkMk, .arSheet:not(.arDark) .arRcStkMk { background: r
 .aqWrap.aqFull:is(.aqBpM, .aqBpL) .arSheet .arDbmLay { left: calc((100% - 100cqw) / 2); right: auto; width: 100cqw; }
 .arSheet .arDbmLab { position: absolute; left: 0; top: 0; width: 0; height: 0; } .arSheet .arDbmLay .arOrbTx { color: #fff; text-shadow: 0 1px 10px rgb(0 0 0 / .55), 0 0 2px rgb(0 0 0 / .35); }   /* the Sphere hero's marker, no badge ("remove the background" of the marker): its words white on the picture, a soft shadow to read them */
 .arSheet .arDbmLay .arOrbBox.arOrbOn .arOrbSq { background: #ff7a1a; }
-.arSheet .arStack.arWtStack { min-height: 100%; box-sizing: border-box; justify-content: center; align-items: center; text-align: center; } .arSheet.arSheet .arWtStack > .arWtHead { align-items: center; align-self: stretch; text-align: center; } .arSheet.arSheet .arWtHead > .arH700.arWtT { max-width: 320px; margin: 0 auto; text-align: center; font-size: 32px; line-height: 38px; text-wrap: balance; }   /* V3's welcome: the title alone, centred */
+.arSheet .arStack.arWtStack { min-height: 100%; box-sizing: border-box; justify-content: center; align-items: center; text-align: center; } .arSheet.arSheet .arWtStack > .arWtHead { align-items: center; align-self: stretch; text-align: center; } .arSheet.arSheet .arWtHead > .arH700.arWtT { max-width: 320px; margin: 0 auto; text-align: center; font-size: 32px; line-height: 38px; text-wrap: balance; }   /* V3's welcome: the title alone, centred */ .arSheet.arWtw .arWtHead > .arWtTag { align-self: center; margin: 0 0 20px; } .arSheet.arWtNoCta .arFoot { visibility: hidden; }   /* its tag over the title; no button on it ("there's no CTA") */
 .arSheet.arNoNavT .arNavT { visibility: hidden; }   /* the report's name and date away from the bar (V3: welcome, What to expect) */
  @media (prefers-reduced-motion: reduce) { .arSheet .arDbfTop { scale: 1; } } .arSheet:not(.arDark).arDbfFadeOn .arDbfTop { opacity: .32; }   /* Light: the picture a wash, the ink over it legible */
 .aqWrap.aqFull:is(.aqBpM, .aqBpL) .arSheet .arDbfTop { left: calc((100% - 100cqw) / 2); right: auto; width: 100cqw; }
@@ -19511,7 +19511,7 @@ window.EvCtl = (function () {
     var sphL = o.welcome === 'sphere' || o.welcome === 'orbit' ? (opts.svis === 'stream' ? streamLayer : sphereLayer)(o.welcome === 'orbit') : o.welcome === 'halftone' ? ditherLayer() : null; if (sphL) stage.insertBefore(sphL.el, head);   // the Sphere welcome's ground and its turning ball; the Halftone's creme and its dithered picture
     if (sphL && o.welcome === 'orbit' && opts.orbImg) stage.insertBefore(h('div', { class: 'arOrbPic', 'aria-hidden': 'true' }, h('img', { src: o.hero, alt: '', decoding: 'async', draggable: 'false' })), sphL.el);   /* Sphere hero, Imagery: the picture across the top, fading out at its foot; the particles hidden, the squares and labels riding over it */
     if (RVW || !sphL) stage.insertBefore(h('div', { class: 'arRvBg', 'aria-hidden': 'true' }, h('img', { src: o.hero, alt: '', decoding: 'async', draggable: 'false' })), head);   // the picture also for the last page, unless the Sphere or Halftone ground is its own   // the full-bg intro's picture, under the head, the flow and the foot
-    var root = h('div', { class: 'arSheet' + (o.theme === 'dark' ? ' arDark' : '') + (o.welcome === 'gift' ? ' arGfw' : '') + (o.welcome === 'halftone' ? ' arHtw' : '') + (o.welcome === 'orbit' ? ' arOrbit' + (o.lbg ? ' arOrbBdg' : '') + (opts.orbImg ? ' arOrbImg' : '') : '') + (o.welcome === 'orbit' || o.welcome === 'sphere' || o.welcome === 'halftone' ? ' arPill' : '') + window.EvSteps.cls(o) + (o.wvis === 'halftone' && ['reveal', 'sphere'].indexOf(o.welcome) < 0 ? ' arHtOn' : ''), 'data-ar-mount': uid }, stage);
+    var root = h('div', { class: 'arSheet' + (o.theme === 'dark' ? ' arDark' : '') + (o.welcome === 'gift' ? ' arGfw' : '') + (o.welcome === 'title' ? ' arWtw' : '') + (o.welcome === 'halftone' ? ' arHtw' : '') + (o.welcome === 'orbit' ? ' arOrbit' + (o.lbg ? ' arOrbBdg' : '') + (opts.orbImg ? ' arOrbImg' : '') : '') + (o.welcome === 'orbit' || o.welcome === 'sphere' || o.welcome === 'halftone' ? ' arPill' : '') + window.EvSteps.cls(o) + (o.wvis === 'halftone' && ['reveal', 'sphere'].indexOf(o.welcome) < 0 ? ' arHtOn' : ''), 'data-ar-mount': uid }, stage);
     /* The sticky gradient, one rule for both fixed groups ("solid bg until 70% of the last section; after that a gradient, ending 40px bleeding past the last section"):
        the bar's last section is the pinned anchors when they are pinned, else the progress; the footer's, read from its foot, is its button.
        --ar-gs: where the solid ends, --ar-ge: where the gradient ends, both from the group's own edge; an optional blur in ten bands under it */
@@ -19960,11 +19960,17 @@ window.EvCtl = (function () {
     var gfSeen = false, gfWel = null;   /* gfWel: the welcome built last (a hold left from one rebuilt stops) */
     /* V3's welcome ("On this welcome screen, I just want the title to appear ... Your Advanced Blood Test results have arrived"): the report's title alone, written word by word at the middle of the black screen; See my results up from the foot once it is.
        Back onto it, or a Tweak's redraw: as it settles */
+    /* Its tag over it ("89 biomarkers analysed", the Full bg's mono orange badge) and the title written as the Send a gift intro's ("word by word, with the blur effect": EvWrite, each letter out of a blur, warm till sharp).
+       No button ("on this screen, there's no CTA"): once written and read, on by itself to What to expect, in place (wtGo: no push; the picture comes in, then the title changes) */
+    var wtGo = false, wtIn = false;
     function buildWelTitle() {
-      var t = h('h1', { class: 'arH700 arWtT' }, WEL.title), hd = h('div', { class: 'arIntroBlock arWtHead' }, t), st = h('div', { class: 'arStack arWtStack' }, hd);
-      if (still || reducedMotion() || enDir < 0) return st;
-      enter(st, hd, t, []);
-      if (cta.animate) dfCta = cta.animate([{ transform: 'translateY(40px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 640, delay: Math.round((enTitle(WEL.title) + .25) * 1000), easing: 'cubic-bezier(.16, 1, .3, 1)', fill: 'backwards' });
+      var Wr = window.EvWrite ? window.EvWrite() : null, ent = !!Wr && !still && !reducedMotion() && enDir >= 0, T = WEL.title;
+      var t = h('h1', { class: 'arH700 arWtT hpLtrT', 'aria-label': T }, ent ? h('span', { 'aria-hidden': 'true' }, Wr.sp(T)) : T), tag = WEL.count ? h('span', { class: 'arRvBadge arWtTag', style: { 'animation-delay': '.1s' }, text: WEL.count }) : null;
+      var hd = h('div', { class: 'arIntroBlock arWtHead' }, tag, t), st = h('div', { class: 'arStack arWtStack' }, hd);
+      var adv = function () { if (!alive || step !== 0 || o.welcome !== 'title' || DBF >= STEP_COUNT) return; wtGo = true; go(DBF, true); };
+      if (!ent) { if (tag) tag.style.animation = 'none'; later(adv, 2200); return st; }   /* back on it, a Tweak's redraw, reduced motion: as it settles, then on */
+      later(function () { t.classList.add('on'); }, 380);   /* the tag first, then the letters */
+      later(adv, 380 + Wr.end() + 1100);   /* written, held a beat, on */
       return st;
     }
     function buildWelGift() {
@@ -20332,21 +20338,22 @@ window.EvCtl = (function () {
     function enter(stack, hd, title, only, after) {   // hd: the title's block (its own rise off; its other children parts too); only: the parts, if not every child of the stack in turn; after: a wait before the parts (Image fade: the picture comes in between)
       var dfk = stack.classList.contains('arDbfFade'); if (dfk) root.style.setProperty('--dfT', '0s');
       if (still || reducedMotion() || (dfk && enDir < 0)) return stack;   /* back onto it: the page as it settles */
-      var t = enTitle(title.textContent), wi = 0, P = 0;
-      if (dfk) { P = t + .5; dfP = P; root.classList.add('arDbfHold');
+      var t = enTitle(title.textContent), wi = 0, P = 0, W = dfk && wtIn ? .72 : 0;   /* W: from V3's welcome, the new title's words start once the welcome's title is going */
+      if (dfk) { P = W ? .1 : t + .5; dfP = P; if (!W) root.classList.add('arDbfHold');
         if (dfTop && dfTop.animate) { dfTop.style.transition = 'none'; var dfE = 'cubic-bezier(.16, 1, .3, 1)'; dfTop.animate([{ opacity: 0, offset: 0 }], { duration: 350, delay: Math.round(P * 1000), easing: 'ease', fill: 'backwards' }); dfTop.animate([{ scale: '.9', offset: 0 }], { duration: 1300, delay: Math.round(P * 1000), easing: dfE, fill: 'backwards' }); }   /* by the clock, not a transition: on opening (no style before) and on a replay (the class kept) alike; to whatever the page's own (light: its wash) */   /* What to expect over a picture: the title written at the middle of the screen, a 0.5 s pause, then the picture in at once, growing, as the title goes to its place ("once it's done, just pause for 0.5 seconds, and then suddenly the background appears and scales up") */
-        later(function () { root.classList.remove('arDbfHold'); root.classList.add('arDbfMv'); dfPlace(); later(function () { root.classList.remove('arDbfMv'); }, 1100); }, Math.round(P * 1000)); }
+        if (!W) later(function () { root.classList.remove('arDbfHold'); root.classList.add('arDbfMv'); dfPlace(); later(function () { root.classList.remove('arDbfMv'); }, 1100); }, Math.round(P * 1000));
+        else [].forEach.call(hd.children, function (k) { if (k !== title) k.style.animation = 'arEnFade .55s var(--ar-ease) ' + W.toFixed(2) + 's both'; }); }   /* from the welcome: the title already in its place, the picture in at once; its eyebrow with the words */
       if (!title.getAttribute('aria-label')) title.setAttribute('aria-label', title.textContent);
       [].slice.call(title.childNodes).forEach(function (n) {   // each word its span, the line breaks kept
         if (n.nodeType !== 3) return;
         var f = document.createDocumentFragment();
-        n.nodeValue.split(/(\s+)/).forEach(function (w) { if (!w) return; f.appendChild(/^\s+$/.test(w) ? document.createTextNode(w) : h('span', { class: 'arRvW', 'aria-hidden': 'true', style: { 'animation-delay': (EN_T0 + (wi++) * EN_DW).toFixed(2) + 's' }, text: w })); });
+        n.nodeValue.split(/(\s+)/).forEach(function (w) { if (!w) return; f.appendChild(/^\s+$/.test(w) ? document.createTextNode(w) : h('span', { class: 'arRvW', 'aria-hidden': 'true', style: { 'animation-delay': (W + EN_T0 + (wi++) * EN_DW).toFixed(2) + 's' }, text: w })); });
         title.replaceChild(f, n);
       });
       hd.style.animation = 'none';
       var parts = only || [];
       if (!only) [].forEach.call(stack.children, function (c) { if (c === hd) [].forEach.call(hd.children, function (k) { if (k !== title) parts.push(k); }); else parts.push(c); });
-      var p0 = dfk ? P + .45 : t + (after || 0), gap = dfk ? .2 : EN_GAP;   /* over a picture: the bullets one by one once it is in and the title on its way */
+      var p0 = dfk ? (W ? W + t : P + .45) : t + (after || 0), gap = dfk ? .2 : EN_GAP;   /* over a picture: the bullets one by one once it is in and the title on its way */
       parts.forEach(function (x, i) { x.style.animation = 'arEnFade .55s var(--ar-ease) ' + (p0 + i * gap).toFixed(2) + 's both'; });
       if (dfk && cta.animate) dfCta = cta.animate([{ transform: 'translateY(40px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 640, delay: Math.round((p0 + parts.length * gap + .1) * 1000), easing: 'cubic-bezier(.16, 1, .3, 1)', fill: 'backwards' });   /* then the button, up from the foot ("then the CTA appears at the bottom") */
       return stack;
@@ -21113,6 +21120,11 @@ window.EvCtl = (function () {
       if (step === DBF && o.dbf === 'chart' && root.classList.contains('arIsWelcome') && !reducedMotion()) { var sr0 = stage.getBoundingClientRect(), k0 = sr0.width / (stage.offsetWidth || 1); sqFrom = [].slice.call(root.querySelectorAll('.arOrbSq')).map(function (e) { var r = e.getBoundingClientRect(); return r.width && r.left >= sr0.left && r.right <= sr0.right && r.top >= sr0.top && r.bottom <= sr0.bottom && getComputedStyle(e.closest('.arOrbBox') || e).opacity > .05 ? { x: (r.left + r.width / 2 - sr0.left) / k0, y: (r.top + r.height / 2 - sr0.top) / k0, s: Math.max(2, r.width / k0), bg: getComputedStyle(e).backgroundColor } : null; }).filter(Boolean).sort(function (a, b) { return a.x - b.x; }); if (!sqFrom.length) sqFrom = null; }   /* only the squares seen in the frame */
       dbcN = sqFrom ? sqFrom.length : 5;   /* as many squares on the chart as on the sphere ("5 squares on the sphere, 5 on the line chart") */
       var gone = pushFrom();
+      /* V3's welcome on by itself to What to expect: no push; the welcome held where it stands over the new page, then away in a blur as the picture comes in and the new title is written ("we transition directly to the What to Expect, and then the image comes, and then the title changes") */
+      var wtX = wtGo && step === DBF && DF, wtG = null, wOld = body.firstChild; wtGo = false; [].forEach.call(stage.querySelectorAll('.arWtOut'), function (e) { e.parentNode.removeChild(e); });
+      if (wtX && wOld && wOld.classList && wOld.classList.contains('arWtStack') && !reducedMotion() && wOld.animate) { var wr = wOld.getBoundingClientRect(), wsr = stage.getBoundingClientRect(), wk = wsr.width / (stage.offsetWidth || 1) || 1;
+        wtG = h('div', { class: 'arPushOut arWtOut', 'aria-hidden': 'true', inert: '', style: { left: ((wr.left - wsr.left) / wk) + 'px', top: ((wr.top - wsr.top) / wk) + 'px', width: (wr.width / wk) + 'px', height: (wr.height / wk) + 'px', 'z-index': '3' } }); wtG.appendChild(wOld); }
+      wtIn = wtX;
       while (timers.length) clearTimeout(timers.pop());
       dropFigs();
       qaClose(true);   // a step change closes the questionnaire's sheet
@@ -21138,7 +21150,9 @@ window.EvCtl = (function () {
       if (gone && gone.el.parentNode === body) body.removeChild(gone.el);
       navTt.textContent = REPORT.name; navTs.textContent = REPORT.date; navTs.hidden = false;   /* the report's name and date, unless the step writes its own */
       body.textContent = '';
-      body.appendChild(build(step));
+      root.classList.toggle('arWtNoCta', welcome && o.welcome === 'title');
+      body.appendChild(build(step)); wtIn = false;
+      if (wtG) { stage.appendChild(wtG); var wa = wtG.animate([{ opacity: 1, filter: 'blur(0px)', transform: 'none' }, { opacity: 0, filter: 'blur(10px)', transform: 'translateY(-16px)' }], { duration: 520, delay: 520, easing: 'cubic-bezier(.4, 0, .2, 1)', fill: 'both' }), wrm = function () { if (wtG.parentNode) wtG.parentNode.removeChild(wtG); }; wa.onfinish = wrm; wa.oncancel = wrm; }
       if (step === DBF && DF) { dfPlace(); if (DM) later(dmNext, Math.round((dfP ? dfP + 1.1 : .7) * 1000)); }   /* at once, its title where it starts; the markers once the picture is in */
       body.scrollTop = 0;
       if (dbfSph) root.style.setProperty('--arBodyTop', body.offsetTop + 'px');   /* where the body starts under the parked ball */
@@ -21301,7 +21315,7 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
 .arSheet.hpSheet .hpLtrPlay.hpLtrS2 .hpLtrHiT, .arSheet.hpSheet .hpLtrPlay.hpLtrS2 .hpLtrHi p { opacity: 0; transform: translateY(-8px); filter: blur(3px); transition: opacity .4s ease, transform .5s cubic-bezier(.4, 0, .9, .6), filter .4s ease; transition-delay: 0s; }
 .arSheet.hpSheet .hpLtrPlay .hpLtrHdT { opacity: 0; transform: translateY(-4px);   /* down into place, 4 px ("titles appear with fade in, 4px top to bottom") */ transition: opacity .5s ease, transform .6s cubic-bezier(.16, 1, .3, 1); }   /* in from below once the avatar is up ("avatar move up, then title and sub appear below, then letter") */ .arSheet.hpSheet .hpLtrPlay.hpLtrS3 .hpLtrHdT { opacity: 1; transform: none; }
 .arSheet.hpSheet .hpLtrPlay .hpLw { position: relative; opacity: 0; top: 3px; filter: blur(7px); --warm: var(--hpEmber, #D98B4A); --halo: rgba(240, 130, 50, .55); } .arSheet.hpSheet .hpLtrPlay .hpLw.on { animation: hpWelRes 1800ms cubic-bezier(.45, 0, .2, 1) both, hpWelEmb 1260ms cubic-bezier(.3, 0, .5, 1) both; }   /* written slowly ("need to write slowly": a word every 180 ms, was 104; each resolving over 1.8 s) */   /* the letter written word by word as the reveal's titles are, each word resolving warm, then ink ("same as h1 intro") */
-.arSheet:is(.hpSheet, .arGfw) .hpLtrT { grid-area: 1 / 1; margin: 0; font-size: 26px; line-height: 30px; text-align: center; } .arSheet.hpSheet .hpLtrHiT { display: grid; justify-items: center; } .arSheet:is(.hpSheet, .arGfw) .hpLtrT .hpWelC { position: relative; display: inline; opacity: 0; top: 3px; filter: blur(7px); --warm: var(--hpEmber, #D98B4A); --halo: rgba(240, 130, 50, .55); } .arSheet:is(.hpSheet, .arGfw) .hpLtrT.on .hpWelC { animation: hpWelRes var(--dur, 1300ms) cubic-bezier(.45, 0, .2, 1) var(--d) both, hpWelEmb calc(var(--dur, 1300ms) * .7) cubic-bezier(.3, 0, .5, 1) var(--d) both; } .arSheet.hpSheet .hpLtrT.out { opacity: 0; translate: 0 -18px; filter: blur(4px); transition: opacity .45s ease, translate .5s cubic-bezier(.4, 0, .9, .6), filter .45s ease; }   /* the greeting's titles: the reveal's, stacked in one place, the first away (up, blurred) as the second is written */
+.arSheet:is(.hpSheet, .arGfw) .hpLtrT { grid-area: 1 / 1; margin: 0; font-size: 26px; line-height: 30px; text-align: center; } .arSheet.hpSheet .hpLtrHiT { display: grid; justify-items: center; } .arSheet:is(.hpSheet, .arGfw, .arWtw) .hpLtrT .hpWelC { position: relative; display: inline; opacity: 0; top: 3px; filter: blur(7px); --warm: var(--hpEmber, #D98B4A); --halo: rgba(240, 130, 50, .55); } .arSheet:is(.hpSheet, .arGfw, .arWtw) .hpLtrT.on .hpWelC { animation: hpWelRes var(--dur, 1300ms) cubic-bezier(.45, 0, .2, 1) var(--d) both, hpWelEmb calc(var(--dur, 1300ms) * .7) cubic-bezier(.3, 0, .5, 1) var(--d) both; } .arSheet.hpSheet .hpLtrT.out { opacity: 0; translate: 0 -18px; filter: blur(4px); transition: opacity .45s ease, translate .5s cubic-bezier(.4, 0, .9, .6), filter .45s ease; }   /* the greeting's titles: the reveal's, stacked in one place, the first away (up, blurred) as the second is written */
 .arSheet.hpSheet .hpLtrPlay.hpLtrAll :is(.hpLtrHi, .hpLtrHi p, .hpLtrHdT, .hpLw) { transition: none !important; } .arSheet.hpSheet .hpLtrPlay.hpLtrAll .hpLw { animation: none; opacity: 1; top: 0; filter: none; }
  .arSheet.hpSheet .hpLtrPlay.hpLtrLetter .hpLw { filter: none; top: 6px; transition: opacity .33s ease, top .42s cubic-bezier(.16, 1, .3, 1); } .arSheet.hpSheet .hpLtrPlay.hpLtrLetter .hpLw.on { animation: none; opacity: 1; top: 0; }   /* the Letter's lines: up and in, no blur, no ember */ .arSheet.hpSheet .hpLtrPlay.hpLtrAll .hpLtrHi { display: none; }   /* tapped: all at once */
 .arSheet.hpSheet.hpAtLtr:not(.hpLtrWait) .arFoot { transition: opacity .55s ease, transform .6s cubic-bezier(.16, 1, .3, 1); }   /* in, eased; out at once */ .arSheet.hpSheet.hpAtLtr.hpLtrWait .arFoot { opacity: 0; transform: translateY(12px); pointer-events: none; }   /* Let's begin in once the last paragraph is there */

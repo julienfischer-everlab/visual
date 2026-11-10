@@ -22489,3 +22489,10 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - Background → Video ("a video in the background and not just an image"): upload an MP4 or WebM; muted, looped on the timeline, the image's fit, focal point, blur and overlay. The stage pauses it at the playhead's frame, plays it with the preview, and the MP4 export captures each frame (a JPEG of the video at that time). Kept with `assets.upload` in the app (20 MB at most); otherwise for this session only (the builder says so).
 - The TSX export carries `flow`, the centre anchor and the video kind. docs/chat-video.md updated.
 - Checked: one group at a time, typing in the bubble, the video's frames in `frame()` at 1.1 s, 6 s and 11.5 s; the builder's Messages / Anchor / Video controls and the upload.
+
+## Async V3 welcome: tag, gift writing, no CTA, straight into What to expect
+
+- The welcome's tag over the title ("89 biomarkers analysed"): the Full bg's mono orange badge (`.arRvBadge`), the persona's own count.
+- The title written as the Send a gift intro's ("word by word, with the blur effect"): the writing master (`EvWrite`, letters out of a blur, warm till sharp); the master's two rules now also cover `.arSheet.arWtw`.
+- No button on it ("there's no CTA": `.arWtNoCta` hides the foot). Written, held 1.1 s, it goes on by itself; back on it (or a Tweak's redraw), on again after 2.2 s.
+- In place, no push ("we transition directly to the What to Expect, and then the image comes, and then the title changes"): the welcome held over the new page (`.arWtOut`), the picture in at once, the welcome blurring away from 0.5 s as What to expect's title is written in its place, then the bullets and Next.
