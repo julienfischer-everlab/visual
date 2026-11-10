@@ -22394,3 +22394,10 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 ## Full modals cover the app in Auto with a docked panel
 
 - "Full modal should cover the full viewport": in Auto with the Flow (or Tweaks) panel docked (`html.bpAutoD`), the app fills the room beside the panel, but full modals (`.aqWrap.aqBpM/L`) kept the M / L frame's width (992 / 1440, `min(992px, …)`), centred, so the Membership reveal stood in the middle with the sidebar and the page showing either side. They now take the same width as the app (`html.bpAutoD .aqWrap:is(.aqBpS, .aqBpM, .aqBpL){--bpW: the room}`). Checked at 1280, 1700 and 2200 wide: the reveal = the app's window. A forced M or L keeps its frame (the modal = the frame).
+
+## Timeline: Personas as built-in presets
+
+- "For timeline, Create few presets 'Personas' group instead of putting them in a tweak": the Presets menu on the Timeline page has a built-in group, Personas (first tab, "Built in": no rename, no remove, not dragged), with a preset per member: Leo, Priya, Julien, Sarah, Margaret (Established) and Amira, Tom, Helen (New), each with its line (age, sex, plan, focus). Applying one sets Timeline V3, Established or New, and the member, and leaves every other tweak as it is (a partial snapshot, `part`). Apply and Share only, like Default; there for everyone, nothing written to the shared presets. Built from the member list itself (`#stT3Per`'s options), so a member added there joins the group.
+- The Persona picker is gone from Tweaks → Timeline V3 (the select stays as the state the presets set; Member stays).
+- Presets now keep the Timeline's tweaks too: the version (`stTlD`) and the V3 group, so a team preset made on the Timeline holds its member.
+- The menu: up to 560 tall (72% of the window), its rows never squeezed (the tabs were, under a long group).
