@@ -22315,3 +22315,11 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - Every step is a wireframe, with what is tapped ringed in orange, in dark and light. The left list jumps to each section.
   - Go to prototype puts the option's Tweaks on the page (Top Chat AI Concierge; Menu AI entry point Bottom sheet / Bottom sheet / Field tap Concierge / Stacked / Separate; Desk Eva field Floating; Desktop field tap Concierge for #1, In app for #2), opens the Overview at XS or Auto, then opens the sheet (phone) or the card (Option #2).
   - Found while checking: the two shared presets (`tkPresets`) are identical, both with Desktop field tap In app, so applying Option #1 does not yet behave as #1.
+- **Schedule rows smaller** ("reduce font size"): under Booked in's Dates layout, the title is 15/20 and its line 14/18.
+- **Primary card, Freemium · Explore** ("Create this primary card for Freemium", "In 'Object'"): a fourth option in Tweaks → Primary card → Object.
+  - The card: an Explore tag, "Build your own / health journey with Everlab" (second line at 56%), the line under it, two rows of service chips drifting opposite ways (picture + name, the services' own pictures through `window.EvSvcPics`), and Explore services, which opens the Services page.
+  - Drawn by `HPC.free()`, also on the Design system's Modules page (Object group).
+- **See more → the Inbox** ("See more --> Go to inbox"): the See more chip at the end of the stacked Inbox (phone sheet and desk card) opens the Concierge on its Inbox (`window._cc.inbox()`), not its home. Its chips carry `data-inbox`.
+- **Account tweak removed** ("remove"): the Freemium / Member row is gone from Tweaks, with the `html.freemium` toggle it drove (nothing used it).
+- **Records card removed from the Overview** ("Remove this Your past record card!"): "Your past records are in" / "We've started looking for your past results" no longer shows on the Overview at any breakpoint, whatever Records processing says. The Health profile's own Past results row and the Past records page are unchanged.
+- **Schedule row CTA** ("Not Orange cta, Use same treatment as the view below. fff opacity bg"): an approaching appointment's direction button wears the eye button's white wash (dark rgba(255,255,255,.1), white icon; light a dark wash, black icon), no longer orange. The row's warm ground stays.
