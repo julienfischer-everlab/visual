@@ -22481,3 +22481,11 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - Recommendation cards: no divider over "Retest & review · February 2027 / Included" ("Remove the divider"); the deck's foot shows Later / Add to plan first, "You can change your mind later in Plan." under them ("Invert the order").
 - Ask sheet (Bottom sheet): the messages stacked over it roll in from the bottom up, one after another, quick (340 ms each, 55 ms apart) ("appear from the bottom to the top ... roll one after another quickly").
 - Ask sheet Inbox: a third option, Button ("I just want a Go to inbox label on the button ... on the right side of the chat field"): no messages over the sheet, a Go to inbox pill right of the field (html.askInbBtn); it closes the sheet and opens the Concierge inbox (as See more).
+
+## Chat video builder: no phone, one bubble at a time, video background
+
+- Floating ("an option without the phone, without the frame"): Canvas → Messages, Thread or One at a time (`flow: 'single'`). One at a time shows one message (with its widget) at a time; it fades out over the last 260 ms before the next one ("just the speech bubble that appears and disappears"). Picking it moves the anchor to the new Centre (foot / middle / top).
+- No chat field when floating ("just remove the chat field when you type into it"): Typing → "Types in the bubble": the bubble comes in empty and the words type inside it, with a caret.
+- Background → Video ("a video in the background and not just an image"): upload an MP4 or WebM; muted, looped on the timeline, the image's fit, focal point, blur and overlay. The stage pauses it at the playhead's frame, plays it with the preview, and the MP4 export captures each frame (a JPEG of the video at that time). Kept with `assets.upload` in the app (20 MB at most); otherwise for this session only (the builder says so).
+- The TSX export carries `flow`, the centre anchor and the video kind. docs/chat-video.md updated.
+- Checked: one group at a time, typing in the bubble, the video's frames in `frame()` at 1.1 s, 6 s and 11.5 s; the builder's Messages / Anchor / Video controls and the upload.

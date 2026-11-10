@@ -672,7 +672,8 @@
   #stg *, #stg *::before, #stg *::after { animation: none !important; transition: none !important; }   /* the time sets everything */
   .stgBg, .stgBgOv { position: absolute; inset: 0; }
   .stgBgIm { position: absolute; inset: 0; overflow: hidden; }
-  .stgBgIm img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; }
+  .stgBgIm :is(img, video) { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; }
+  .stgBt { white-space: pre-wrap; } .stgBc { display: inline-block; width: 2px; height: 1.05em; margin-left: 1px; vertical-align: -.16em; border-radius: 1px; background: currentColor; }   /* floating: the words typed in the bubble, the caret after them */
   .stgDev, .stgFlV { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
   .stgPhone { position: relative; width: 393px; height: 852px; border-radius: var(--evPhR); box-shadow: var(--evPhBz); overflow: hidden; background: var(--bg); color: var(--fg); isolation: isolate; }
   .stgApp { position: absolute; inset: 0; display: block; width: auto; height: auto; overflow: hidden; background: var(--bg); color: var(--fg); --safeT: 54px; --safeB: 22px; }
@@ -1810,12 +1811,13 @@
       c.format = { ratio: r, w: clamp(w, 16, 7680), h: clamp(h, 16, 7680) };
       c.theme = c.theme === 'light' ? 'light' : 'dark';
       var bg = c.background || {};
-      c.background = bg.kind === 'image' && bg.src ? { kind: 'image', src: String(bg.src), fit: bg.fit === 'fit' || bg.fit === 'crop' ? bg.fit : 'fill', x: clamp(num(bg.x, 50), 0, 100), y: clamp(num(bg.y, 50), 0, 100), scale: clamp(num(bg.scale, 1), .2, 6), blur: clamp(num(bg.blur, 0), 0, 200), overlay: clamp(num(bg.overlay, 0), 0, 1), overlayColor: bg.overlayColor || '#000000', color: bg.color || (c.theme === 'dark' ? '#0d0d0c' : '#f4f2ed') }
+      c.background = (bg.kind === 'image' || bg.kind === 'video') && bg.src ? { kind: bg.kind, src: String(bg.src), fit: bg.fit === 'fit' || bg.fit === 'crop' ? bg.fit : 'fill', x: clamp(num(bg.x, 50), 0, 100), y: clamp(num(bg.y, 50), 0, 100), scale: clamp(num(bg.scale, 1), .2, 6), blur: clamp(num(bg.blur, 0), 0, 200), overlay: clamp(num(bg.overlay, 0), 0, 1), overlayColor: bg.overlayColor || '#000000', color: bg.color || (c.theme === 'dark' ? '#0d0d0c' : '#f4f2ed') }
         : { kind: 'color', color: bg.color || (c.theme === 'dark' ? '#0d0d0c' : '#f4f2ed') };
       c.device = c.device !== false;
       c.padding = c.padding === '' || c.padding == null || isNaN(+c.padding) ? null : Math.max(0, +c.padding);
       c.lead = num(c.lead, 500); c.tail = num(c.tail, 1500);
-      c.column = clamp(num(c.column, 440), 280, 900); c.zoom = clamp(num(c.zoom, 1), .3, 3); c.anchor = c.anchor === 'top' ? 'top' : 'bottom';
+      c.column = clamp(num(c.column, 440), 280, 900); c.zoom = clamp(num(c.zoom, 1), .3, 3); c.anchor = c.anchor === 'top' || c.anchor === 'center' ? c.anchor : 'bottom';
+      c.flow = c.flow === 'single' && !c.device ? 'single' : 'thread';   /* floating: Thread (the messages pile up as a chat) or One at a time (each bubble comes, holds and goes before the next: "just the speech bubble that appears and disappears") */
       var seen = {};
       c.sequence = (Array.isArray(c.sequence) ? c.sequence : []).filter(function (it) { return it && typeof it === 'object'; }).map(function (it, i) {
         var o = copy(it), id = o.id == null || o.id === '' || seen[o.id] ? 'i' + (i + 1) : String(o.id); while (seen[id]) id += '_'; seen[id] = 1; o.id = id;
@@ -1836,11 +1838,12 @@
       c.sequence.forEach(function (it, i) {
         var s = t + Math.max(0, num(it.delay, i ? DEL[it.type] : 0)), p = { start: s }, e;
         if (it.type === 'user'){
-          var ty = it.typing === 'text' && !c.device ? 'dots' : it.typing;
+          var ty = it.typing === 'text' && !c.device ? 'bub' : it.typing;   /* floating: no field to type in, so the words are typed in the bubble itself ("remove the chat field when you type into it") */
           if (ty === 'dots'){ p.typeIn = s; p.typeMs = Math.max(200, num(it.typeMs, 1300)); p.in = s + p.typeMs; }
+          else if (ty === 'bub'){ p.typeIn = s; p.typeMs = Math.max(200, num(it.typeMs, clamp(chars(it.text).length * 45, 700, 2600))); p.in = s; p.typed = s + p.typeMs; }
           else if (ty === 'text'){ p.typeIn = s; p.typeMs = Math.max(200, num(it.typeMs, clamp(chars(it.text).length * 45, 700, 2600))); p.sent = s + p.typeMs + 280; p.in = p.sent; }
           else p.in = s;
-          p.typing = ty; p.inEnd = p.in + MO.bubble; e = p.inEnd + Math.max(0, num(it.hold, 600));
+          p.typing = ty; p.inEnd = p.in + MO.bubble; e = Math.max(p.inEnd, p.typed || 0) + Math.max(0, num(it.hold, 600));
         } else if (it.type === 'eva'){
           p.thinkIn = it.think > 0 ? s : null; p.in = s + it.think;
           p.streamMs = it.reveal === 'stream' ? clamp(nWords(it.text) * 45, 300, 3000) : 0;
@@ -1854,7 +1857,7 @@
     };
 
     /* ---------- the DOM: the canvas, its ground, the phone or the floating thread; each item's nodes, made once per load ---------- */
-    var host = null, C = null, SCH = null, N = [], col = null, view = null, thread = null, field = null, send = null, beam = null, hdEl = null, geo = null, ready = Promise.resolve(), sizeO = null, fitOn = true;
+    var bgV = null, host = null, C = null, SCH = null, N = [], col = null, view = null, thread = null, field = null, send = null, beam = null, hdEl = null, geo = null, ready = Promise.resolve(), sizeO = null, fitOn = true;
     var SB = '<span class="tm">9:41</span><span class="isl"></span><svg viewBox="0 0 66 12" aria-hidden="true"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="5" y="5" width="3" height="7" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="1" width="3" height="11" rx="1"/><path d="M29 4.6a8.4 8.4 0 0 1 11 0l-1.6 1.9a5.9 5.9 0 0 0-7.8 0Zm2.6 3.1a4.4 4.4 0 0 1 5.8 0l-2.9 3.4Z"/><rect x="46" y="2" width="17" height="8" rx="2.5" fill="none" stroke="currentColor" stroke-opacity=".5"/><rect x="47.5" y="3.5" width="12" height="5" rx="1.4"/></svg>';
     var GRIDT = [[-300, 1300], [500, 1700], [100, 1500], [800, 1400], [-600, 1900], [650, 1300], [400, 1600], [-950, 1500], [0, 1800]];   /* each dot's delay and length, the master's */
     var enter = function () { root.classList.add('stg', 'emb'); if (!host){ host = D.createElement('div'); host.id = 'stg'; host.setAttribute('aria-hidden', 'true'); D.body.appendChild(host); } };
@@ -1873,10 +1876,13 @@
       var c = C, bg = c.background;
       host.innerHTML = '';
       var g = D.createElement('div'); g.className = 'stgBg'; g.style.background = bg.color; host.appendChild(g);
-      if (bg.kind === 'image'){
+      bgV = null;
+      if (bg.kind === 'image' || bg.kind === 'video'){
         var bl = bg.blur, im = D.createElement('div'); im.className = 'stgBgIm';
         if (bl) im.style.inset = (-bl * 2) + 'px';
-        var img = new Image(); img.alt = ''; img.decoding = 'sync'; img.src = imgSrc(bg.src) || bg.src;
+        var img;
+        if (bg.kind === 'video'){ img = bgV = D.createElement('video'); img.className = 'stgVid'; img.muted = true; img.defaultMuted = true; img.loop = true; img.playsInline = true; img.setAttribute('playsinline', ''); img.setAttribute('muted', ''); img.preload = 'auto'; img.src = imgSrc(bg.src) || bg.src; }   /* a video ground ("be able to have a video in the background"): its time is the composition's, set from seek */
+        else { img = new Image(); img.alt = ''; img.decoding = 'sync'; img.src = imgSrc(bg.src) || bg.src; }
         img.style.objectFit = bg.fit === 'fit' ? 'contain' : 'cover'; img.style.objectPosition = bg.x + '% ' + bg.y + '%';
         if (bg.fit === 'crop' && bg.scale !== 1){ img.style.transform = 'scale(' + bg.scale + ')'; img.style.transformOrigin = bg.x + '% ' + bg.y + '%'; }
         if (bl) img.style.filter = 'blur(' + bl + 'px)';
@@ -1902,7 +1908,8 @@
         if (it.type === 'user'){
           var who = it.name ? '<div class="stgWho">' + esc(it.name) + '</div>' : '', av = it.avatar ? avHtml(it.avatar, 'stgUAv') : '';
           var bub = function (inner, cls) { var b = '<div class="bub' + (cls || '') + '"' + (it.width ? ' style="max-width:' + (+it.width) + 'px"' : '') + '>' + inner + '</div>'; return '<div class="msg u">' + who + (av ? '<div class="stgURow">' + b + av + '</div>' : b) + '</div>'; };
-          n.msg = node(bub(esc(it.text)));
+          n.msg = node(bub(p.typing === 'bub' ? '<span class="stgBt"></span><i class="stgBc"></i>' : esc(it.text)));
+          if (p.typing === 'bub'){ n.bt = $('.stgBt', n.msg); n.bc = $('.stgBc', n.msg); }
           if (p.typing === 'dots') n.typ = node(bub(DOTS, ' stgTyp'));
           last = null;
         } else if (it.type === 'eva'){
@@ -1927,6 +1934,14 @@
         return n;
       });
       N.forEach(function (n) { [n.msg, n.typ, n.think, n.pres, n.blk].forEach(function (x) { if (x) x._st = {}; }); n.base = n.msg ? Array.prototype.slice.call(n.msg.childNodes) : []; });
+      /* One at a time: the leads (every item but a widget joined to the answer before it), each from its first sign (dots, thinking line, the specialist's card, itself) to the next lead's,
+         fading out and up 10 over the last 260 ms before it (from the end of its own and its widgets' holds at the earliest, 120 ms at least) */
+      LEADS = [];
+      if (C.flow === 'single'){
+        N.forEach(function (n) { if (n.it.type === 'widget' && n.host) return; var p = n.p, fa = Math.min.apply(null, [p.typeIn, p.thinkIn, p.presIn, p.in].filter(function (x) { return x != null; })); LEADS.push({ n: n, fa: fa, end: p.end }); });
+        N.forEach(function (n) { if (n.it.type === 'widget' && n.host){ var L = LEADS.filter(function (l) { return l.n === n.host; })[0]; if (L) L.end = Math.max(L.end, n.p.end); } });
+        LEADS.forEach(function (L, i) { var nx = LEADS[i + 1]; if (!nx){ L.os = Infinity; L.od = 1; return; } var os = Math.max(L.end, nx.fa - 260), od = Math.max(120, nx.fa - os); L.os = nx.fa - od; L.od = od; L.next = nx.fa; });
+      }
       return app;
     };
 
@@ -1950,6 +1965,12 @@
     addEventListener('resize', function () { if (root.classList.contains('stg')) fit(); });
 
     /* ---------- the layout at a time: which nodes are in the thread (in order), each answer's widgets ---------- */
+    var LEADS = [];
+    var leadAt = function (t) { var L = null; for (var i = 0; i < LEADS.length; i++){ if (LEADS[i].fa <= t) L = LEADS[i]; else break; } return L && (L.next == null || t < L.next) ? L : null; };
+    var bubType = function (n, t) {   /* typed in the bubble (floating): its words at an even pace, the caret steady while typing, gone once it is all written */
+      var p = n.p, cs = chars(n.it.text), k = Math.round(cs.length * clamp((t - p.typeIn) / p.typeMs, 0, 1)), tx = cs.slice(0, k).join('');
+      if (n.bt.textContent !== tx) n.bt.textContent = tx; putE(n.bc, 'opacity', t < p.typed ? '1' : '0');
+    };
     var shown = function (n, t) {   /* the node of item n laid out at t, or null */
       var p = n.p, it = n.it;
       if (it.type === 'user') return t >= p.in ? n.msg : n.typ && t >= p.typeIn ? n.typ : null;
@@ -1959,9 +1980,9 @@
     };
     var same = function (a, b) { if (a.length !== b.length) return false; for (var i = 0; i < a.length; i++) if (a[i] !== b[i]) return false; return true; };
     var layout = function (t) {
-      var list = [];
+      var list = [], L1 = C.flow === 'single' ? leadAt(t) : null;
       N.forEach(function (n) {
-        var x = shown(n, t); if (!x) return; list.push(x);
+        var x = shown(n, t); if (!x) return; if (C.flow === 'single' && (!L1 || n !== L1.n)) return; list.push(x);
         if (x === n.msg && n.kids){   /* an answer (or a widget's own message): its words, then the widgets come in so far */
           var want = (n.it.type === 'widget' ? [] : n.base).concat(n.kids.filter(function (k) { return t >= k.p.in; }).map(function (k) { return k.blk; }));
           if (!same(Array.prototype.slice.call(x.childNodes), want)) x.replaceChildren.apply(x, want);
@@ -1976,15 +1997,17 @@
     var SEG = [];
     var events = function () {
       var ts = { 0: 1 };
-      N.forEach(function (n) { var p = n.p; [p.typeIn, p.thinkIn, p.presIn, p.in].forEach(function (x) { if (x != null) ts[x] = 1; }); });
+      N.forEach(function (n) { var p = n.p; [p.typeIn, p.thinkIn, p.presIn, p.in, p.typed].forEach(function (x) { if (x != null) ts[x] = 1; }); });
       return Object.keys(ts).map(Number).sort(function (a, b) { return a - b; });
     };
     var measure = function () {
+      SEG = []; if (C.flow === 'single') return;   /* one at a time: placed per seek, no scroll */
       var ev = events(), V = C.device ? thread.clientHeight - (parseFloat(getComputedStyle(thread).paddingTop) || 0) : geo.vh, pad = 16, prev = null; SEG = [];   /* the phone: the thread under the head (it runs up behind it by --hdH, its padding), so the view is below the head */
       ev.forEach(function (e) {
+        N.forEach(function (n) { if (n.bt) bubType(n, e); });
         var list = layout(e), H = col.offsetHeight, tgt, fresh = null;
         N.forEach(function (n) { var p = n.p; if (p.typeIn === e || p.thinkIn === e || p.presIn === e || p.in === e){ var x = n.blk && n.host && p.in === e ? n.blk : shown(n, e); if (x) fresh = x; } });
-        if (C.device || C.anchor === 'top') tgt = Math.max(0, H - V); else tgt = H - V;
+        if (C.device || C.anchor === 'top') tgt = Math.max(0, H - V); else if (C.anchor === 'center') tgt = H <= V ? (H - V) / 2 : H - V; else tgt = H - V;   /* centre: the thread grows from the middle, then scrolls */
         if (fresh && fresh.isConnected){
           var top = 0, o = fresh; while (o && o !== col){ top += o.offsetTop; o = o.offsetParent; }
           if (o === col && fresh.offsetHeight > V - 2 * pad) tgt = Math.min(tgt, top - pad);
@@ -2052,6 +2075,22 @@
         var bu = bn ? (t - bn.p.sent) / BEAM : 0, bo = !bn ? 0 : bu < .08 ? EASE(bu / .08) : bu < .86 ? 1 : 1 - EASE((bu - .86) / .14);
         putE(beam, 'opacity', bo.toFixed(3)); var ba = (360 * bu).toFixed(2) + 'deg'; beam._m.forEach(function (m) { if (m._a !== ba){ m._a = ba; m.style.setProperty('--hpBm', ba); } }); }
     };
+    /* the video ground: its time the composition's (looped over its own length). Paused or seeking, set to the frame; playing, left to play and pulled back when it drifts 0.3 s */
+    var vidSync = function (t) {
+      var v = bgV; if (!v || !(v.duration > 0)) return;
+      var tg = mod(t / 1000, v.duration); if (v.playbackRate !== rateV) v.playbackRate = rateV;
+      if (playing){ if (v.paused){ try { v.currentTime = tg; } catch (e) {} var pr = v.play(); if (pr && pr.catch) pr.catch(function () {}); } else if (Math.abs(v.currentTime - tg) > .3) v.currentTime = tg; }
+      else { if (!v.paused) v.pause(); if (Math.abs(v.currentTime - tg) > .02) try { v.currentTime = tg; } catch (e) {} }
+    };
+    var vidAt = function (t) {   /* the frame (MP4): the video set to its time and decoded before it is drawn */
+      return new Promise(function (res) {
+        var v = bgV; if (!v || !(v.duration > 0)) return res(false);
+        var tg = mod(t / 1000, v.duration), done = false, f = function () { if (done) return; done = true; res(true); };
+        if (!v.paused) v.pause();
+        if (!v.seeking && Math.abs(v.currentTime - tg) < .002 && v.readyState >= 2) return f();
+        v.addEventListener('seeked', f, { once: true }); setTimeout(f, 2500); v.currentTime = tg;
+      });
+    };
     var cur = 0;
     var seek = function (ms) {
       if (!C) return 0;
@@ -2070,9 +2109,15 @@
           n.words.forEach(function (w, k) { putE(w, 'opacity', clamp((t - p.in - k * per) / 120, 0, 1).toFixed(3)); });
         }
         else rise(x, p.in, t, MO.bubble, MO.rise);
+        if (n.bt && x === n.msg) bubType(n, t);
       });
-      composer(t);
-      var off = offAt(t);
+      var off;
+      if (C.flow === 'single'){   /* one at a time: the bubble on screen fades out and up before the next; placed at the foot, the top or the middle of the view */
+        var L1 = leadAt(t), x1 = L1 ? shown(L1.n, t) : null;
+        if (x1 && t >= L1.os){ var f = 1 - EIN(clamp((t - L1.os) / L1.od, 0, 1)); put(x1, 'opacity', f.toFixed(4)); put(x1, 'transform', 'translateY(' + (-10 * (1 - f)).toFixed(3) + 'px)'); }
+        var Hc = col.offsetHeight, Vc = geo.vh; off = C.anchor === 'top' ? 0 : C.anchor === 'center' ? (Hc - Vc) / 2 : Hc - Vc;
+      } else off = offAt(t);
+      composer(t); vidSync(t);
       putE(col, 'top', Math.abs(off) < .01 ? '' : (-off).toFixed(2) + 'px');   /* top, not a transform: no layer of its own, so a frame reached any way rasterises alike */
       if (hdEl) hdEl.classList.toggle('evTnOn', off > .5);   /* the head's ground reaches 24 further once the thread is under it, as the chat's does on scroll */
       LIS2.slice().forEach(function (f) { try { f(t, playing); } catch (e) {} });
@@ -2085,10 +2130,12 @@
       root.dataset.theme = C.theme;
       build(); place(); measure(); carSync(host);
       cur = clamp(cur, 0, SCH.duration); seek(cur);
+      if (bgV) bgV.addEventListener('loadedmetadata', function () { if (bgV) vidSync(cur); });
       var c0 = C;
       var all = $$('img', host); N.forEach(function (n) { [n.msg, n.typ, n.think, n.pres, n.blk].forEach(function (x) { if (x) all = all.concat($$('img', x)); }); });   /* every picture, shown yet or not */
       var imgs = all.filter(function (im, i) { return all.indexOf(im) === i; }).map(function (im) { return im.decode ? im.decode().catch(function () {}) : Promise.resolve(); });
-      ready = Promise.all([D.fonts && D.fonts.ready ? D.fonts.ready.catch(function () {}) : Promise.resolve()].concat(imgs)).then(function () {
+      var vids = bgV ? [new Promise(function (res) { var v = bgV; if (v.readyState >= 2) return res(); v.addEventListener('loadeddata', res, { once: true }); v.addEventListener('error', res, { once: true }); setTimeout(res, 5000); })] : [];   /* the video ground's first frame */
+      ready = Promise.all([D.fonts && D.fonts.ready ? D.fonts.ready.catch(function () {}) : Promise.resolve()].concat(imgs, vids)).then(function () {
         if (C !== c0) return info();
         measure(); carSync(host); seek(cur); return info();
       });
@@ -2134,9 +2181,15 @@
     };
     var frame = function (ms, o) {
       o = o || {}; if (!C) return Promise.reject(new Error('Nothing loaded'));
-      return ready.then(function () {
+      return ready.then(function () { return bgV ? vidAt(ms) : null; }).then(function () {
         seek(ms);
-        var W = geo.W, H = geo.H, sc = Math.max(.1, +o.scale || 1), x = new XMLSerializer().serializeToString(headBlur()), urls = {};
+        var src = headBlur();
+        if (bgV && bgV.videoWidth){   /* a video can't be drawn through foreignObject: its frame at this time as a picture in its place */
+          if (src === host) src = host.cloneNode(true);
+          var vv = src.querySelector('video.stgVid'), k = Math.min(1, 1920 / Math.max(bgV.videoWidth, bgV.videoHeight)), cv0 = D.createElement('canvas'); cv0.width = Math.round(bgV.videoWidth * k); cv0.height = Math.round(bgV.videoHeight * k);
+          try { cv0.getContext('2d').drawImage(bgV, 0, 0, cv0.width, cv0.height); var pic = D.createElement('img'); pic.setAttribute('style', vv.getAttribute('style') || ''); pic.className = 'stgVid'; pic.src = cv0.toDataURL('image/jpeg', .9); if (vv) vv.parentNode.replaceChild(pic, vv); } catch (e) {}
+        }
+        var W = geo.W, H = geo.H, sc = Math.max(.1, +o.scale || 1), x = new XMLSerializer().serializeToString(src), urls = {};
         x.replace(/\ssrc="([^"]+)"/g, function (m, u) { urls[u.replace(/&amp;/g, '&')] = 1; return m; }).replace(/url\((?:&quot;|["'])?([^"')&]+)(?:&quot;|["'])?\)/g, function (m, u) { urls[u] = 1; return m; });
         var keys = Object.keys(urls).filter(function (u) { return !/^data:/.test(u); });
         return Promise.all(keys.map(toData)).then(function (ds) {

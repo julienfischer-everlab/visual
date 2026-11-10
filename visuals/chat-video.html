@@ -803,7 +803,7 @@
     "export type Ratio = '16:9' | '9:16' | '4:3' | '3:4' | '1:1' | 'custom';",
     'export type Background =',
     "  | { kind: 'color'; color: string }",
-    "  | { kind: 'image'; src: string; fit?: 'fill' | 'fit' | 'crop'; x?: number; y?: number; scale?: number; blur?: number; overlay?: number; overlayColor?: string; color?: string };",
+    "  | { kind: 'image' | 'video'; src: string; fit?: 'fill' | 'fit' | 'crop'; x?: number; y?: number; scale?: number; blur?: number; overlay?: number; overlayColor?: string; color?: string };",
     'export interface Timing { id?: string; /** ms after the item before ends (Auto when left out) */ delay?: number; /** ms the item stays before the next one starts */ hold?: number }',
     "export interface UserMessageProps extends Timing { children?: React.ReactNode; name?: string; /** a picture URL or initials */ avatar?: string; typing?: 'none' | 'dots' | 'text'; typeMs?: number; /** max bubble width, chat px */ width?: number }",
     "export interface EvaMessageProps extends Timing { children?: React.ReactNode; /** ms of Eva's thinking state */ think?: number; step?: string; reveal?: 'fade' | 'stream'; /** Eva's label over the answer */ avatar?: boolean }",
@@ -811,10 +811,10 @@
     'export type WidgetData = Record<string, unknown>;',
     'export type WidgetProps = WidgetData & Timing & { /** false: a message of its own, not part of the answer above */ attach?: boolean };',
     "export interface Item { id: string; type: 'user' | 'eva' | 'specialist' | 'widget'; [key: string]: unknown }",
-    "export interface Composition { v: 1; name: string; title?: string; format: { ratio: Ratio; w: number; h: number }; background: Background; device: boolean; padding?: number; theme: 'dark' | 'light'; lead?: number; tail?: number; column?: number; zoom?: number; anchor?: 'bottom' | 'top'; sequence: Item[] }",
+    "export interface Composition { v: 1; name: string; title?: string; format: { ratio: Ratio; w: number; h: number }; background: Background; device: boolean; padding?: number; theme: 'dark' | 'light'; lead?: number; tail?: number; column?: number; zoom?: number; anchor?: 'bottom' | 'top' | 'center'; flow?: 'thread' | 'single'; sequence: Item[] }",
     'export interface ChatVideoProps {',
     "  name?: string; title?: string; aspectRatio?: Ratio; width?: number; height?: number; background?: string | Background; deviceFrame?: boolean; theme?: 'dark' | 'light';",
-    "  padding?: number; lead?: number; tail?: number; column?: number; zoom?: number; anchor?: 'bottom' | 'top';",
+    "  padding?: number; lead?: number; tail?: number; column?: number; zoom?: number; anchor?: 'bottom' | 'top' | 'center'; flow?: 'thread' | 'single';",
     "  /** where the Everlab stage is served: the Concierge page in stage mode */ stageSrc?: string; autoPlay?: boolean; loop?: boolean; className?: string; style?: React.CSSProperties; children?: React.ReactNode;",
     '}',
     '',
@@ -853,7 +853,7 @@
     '  return defined({',
     "    v: 1 as const, name: props.name || 'Untitled video', title: props.title, format: { ratio, w: props.width || size[0], h: props.height || size[1] }, background,",
     "    device: props.deviceFrame !== false, padding: props.padding, theme: props.theme === 'light' ? 'light' as const : 'dark' as const,",
-    '    lead: props.lead, tail: props.tail, column: props.column, zoom: props.zoom, anchor: props.anchor, sequence',
+    '    lead: props.lead, tail: props.tail, column: props.column, zoom: props.zoom, anchor: props.anchor, flow: props.flow, sequence',
     '  });',
     '}',
     '',
@@ -886,7 +886,7 @@
     var f = c.format || {}, bg = c.background || {};
     var top = attr('name', c.name) + attr('title', c.title) + (f.ratio && f.ratio !== 'custom' ? attr('aspectRatio', f.ratio) : attr('width', f.w) + attr('height', f.h)) +
       (bg.kind === 'color' ? attr('background', bg.color) : attr('background', bg)) + (c.device === false ? ' deviceFrame={false}' : ' deviceFrame') + attr('theme', c.theme || 'dark') +
-      attr('padding', c.padding) + attr('lead', c.lead) + attr('tail', c.tail) + (c.device === false ? attr('column', c.column) + attr('zoom', c.zoom) + attr('anchor', c.anchor) : '');
+      attr('padding', c.padding) + attr('lead', c.lead) + attr('tail', c.tail) + (c.device === false ? attr('column', c.column) + attr('zoom', c.zoom) + attr('anchor', c.anchor) + (c.flow === 'single' ? attr('flow', 'single') : '') : '');
     var T = function (it) { return attr('delay', it.delay) + attr('hold', it.hold); };
     var rows = (c.sequence || []).map(function (it) {
       if (it.type === 'user') return '<UserMessage' + attr('name', it.name) + attr('avatar', it.avatar) + (it.typing && it.typing !== 'none' ? attr('typing', it.typing) : '') + attr('typeMs', it.typeMs) + attr('width', it.width) + T(it) + '>' + kid(it.text) + '</UserMessage>';
@@ -1072,7 +1072,7 @@
       <${Field} label="Avatar"><${Seg} label="Member avatar" value=${!it.avatar ? 'none' : /^(data:|https?:|blob:|\/)/.test(it.avatar) ? 'pic' : 'ini'} options=${[['none', 'None'], ['ini', 'Initials'], ['pic', 'Picture']]} onChange=${function (v) { if (v === 'none') set({ avatar: undefined }); else if (v === 'ini') set({ avatar: (it.name || 'Sam Lee').split(/\s+/).map(function (x) { return x[0]; }).join('').slice(0, 2).toUpperCase() }); else p.pickAvatar(); }} />
         ${it.avatar && !/^(data:|https?:|blob:|\/)/.test(it.avatar) ? html`<input className="in" style=${{ marginTop: '6px' }} aria-label="Initials" maxLength="3" value=${it.avatar} onChange=${function (e) { set({ avatar: e.target.value || undefined }, 'av'); }} />` : null}
         ${it.avatar && /^(data:|https?:|blob:|\/)/.test(it.avatar) ? html`<div style=${{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '6px' }}><img className="av" src=${it.avatar} alt="" /><button type="button" className="btn sm" onClick=${p.pickAvatar}>Replace</button></div>` : null}<//>
-      <${Field} label="Before it appears"><${Seg} label="Typing state" value=${it.typing || 'none'} options=${[['none', 'Nothing'], ['dots', 'Typing dots'], ['text', 'Types the text', !p.comp.device, 'Needs the iPhone frame']]} onChange=${function (v) { set({ typing: v }); }} /><//>
+      <${Field} label="Before it appears"><${Seg} label="Typing state" value=${it.typing || 'none'} options=${[['none', 'Nothing'], ['dots', 'Typing dots'], ['text', p.comp.device === false ? 'Types in the bubble' : 'Types the text']]} onChange=${function (v) { set({ typing: v }); }} /><//>
       ${it.typing && it.typing !== 'none' ? html`<${Field} label="Typing time"><${SecIn} label="Typing time, seconds" ms=${it.typeMs} auto=${s && s.phases.typeMs} onChange=${function (v) { set({ typeMs: v }); }} /><//>` : null}
       <${Field} label="Bubble width" aside=${it.width ? it.width + ' px' : 'Auto'}><${Range} label="Bubble width" min=${0} max=${360} step=${10} value=${it.width || 0} fmt=${function (v) { return v ? v : 'Auto'; }} onChange=${function (v) { set({ width: v >= 120 ? v : undefined }, 'w'); }} /><//>
       <p className="hint">Alignment: the member’s bubble sits on the right, as in the chat.</p></div>`;
@@ -1120,7 +1120,7 @@
     var colors = p.cat ? p.cat.colors : [];
     var bgColor = bg.kind === 'color' ? bg.color : (bg.color || '#0d0d0c');
     var hex = /^#[0-9a-f]{6}$/i.test(bgColor) ? bgColor : '#000000';
-    var isPic = bg.kind === 'image', picKey = isPic && !/^(data:|https?:|blob:|\/)/.test(bg.src);
+    var isPic = bg.kind === 'image' || bg.kind === 'video', isVid = bg.kind === 'video', picKey = isPic && !/^(data:|https?:|blob:|\/)/.test(bg.src);
     return html`<div>
       <div className="fs"><h3>Format</h3>
         <div className="seg" role="group" aria-label="Aspect ratio" style=${{ flexWrap: 'wrap' }}>${fmts.map(function (x) { return html`<button type="button" key=${x.ratio} aria-pressed=${String(f.ratio === x.ratio)} title=${x.w + ' × ' + x.h} onClick=${function () { ed(function (y) { y.format = { ratio: x.ratio, w: x.w, h: x.h }; return y; }); }}>${x.ratio}</button>`; }).concat(html`<button type="button" key="custom" aria-pressed=${String(f.ratio === 'custom')} onClick=${function () { ed(function (y) { y.format = { ratio: 'custom', w: f.w || 1080, h: f.h || 1350 }; return y; }); }}>Custom</button>`)}</div>
@@ -1136,17 +1136,18 @@
         ${c.device !== false ? html`<${Field} label="Header title"><input className="in" aria-label="Phone header title" placeholder="Eva" value=${c.title || ''} onChange=${function (e) { ed(function (y) { if (e.target.value) y.title = e.target.value; else delete y.title; return y; }, 'title'); }} /><//>`
           : html`<div className="f2"><${Field} label="Column" aside=${(c.column || 440) + ' px'}><${Range} label="Column width" min=${280} max=${900} step=${10} value=${c.column || 440} fmt=${function (v) { return v; }} onChange=${function (v) { ed(function (y) { y.column = v; return y; }, 'col'); }} /><//>
             <${Field} label="Zoom" aside=${(c.zoom || 1).toFixed(2) + '×'}><${Range} label="Zoom" min=${.5} max=${2} step=${.05} value=${c.zoom || 1} fmt=${function (v) { return v.toFixed(2); }} onChange=${function (v) { ed(function (y) { y.zoom = v; return y; }, 'zoom'); }} /><//></div>
-            <${Field} label="Thread grows"><${Seg} label="Anchor" value=${c.anchor || 'bottom'} options=${[['bottom', 'Up from the foot'], ['top', 'Down from the top']]} onChange=${function (v) { ed(function (y) { y.anchor = v; return y; }); }} /><//>`}</div>
+            <${Field} label="Messages" hint=${c.flow === 'single' ? 'Each bubble comes, holds and goes before the next. No chat field: a typed question writes in its bubble.' : 'The messages pile up as in the chat. No chat field: a typed question writes in its bubble.'}><${Seg} label="Messages" value=${c.flow || 'thread'} options=${[['thread', 'Thread'], ['single', 'One at a time']]} onChange=${function (v) { ed(function (y) { if (v === 'single') { y.flow = 'single'; if (!y.anchor || y.anchor === 'bottom') y.anchor = 'center'; } else delete y.flow; return y; }); }} /><//>
+            <${Field} label=${c.flow === 'single' ? 'Where it shows' : 'Thread grows'}><${Seg} label="Anchor" value=${c.anchor || 'bottom'} options=${c.flow === 'single' ? [['bottom', 'Foot'], ['center', 'Centre'], ['top', 'Top']] : [['bottom', 'Up from the foot'], ['center', 'From the middle'], ['top', 'Down from the top']]} onChange=${function (v) { ed(function (y) { y.anchor = v; return y; }); }} /><//>`}</div>
       <div className="fs"><h3>Background</h3>
-        <${Seg} label="Background kind" value=${bg.kind} options=${[['color', 'Colour'], ['image', 'Image']]} onChange=${function (v) { if (v === 'color') ed(function (y) { y.background = { kind: 'color', color: bgColor }; return y; }); else if (bg.kind !== 'image') { if (p.lastPic) ed(function (y) { y.background = clone(p.lastPic); return y; }); else p.pickBg(); } }} />
+        <${Seg} label="Background kind" value=${bg.kind} options=${[['color', 'Colour'], ['image', 'Image'], ['video', 'Video']]} onChange=${function (v) { if (v === 'color') ed(function (y) { y.background = { kind: 'color', color: bgColor }; return y; }); else if (v === 'image' && bg.kind !== 'image') { if (p.lastPic) ed(function (y) { y.background = clone(p.lastPic); return y; }); else p.pickBg(); } else if (v === 'video' && bg.kind !== 'video') { if (p.lastVid) ed(function (y) { y.background = clone(p.lastVid); return y; }); else p.pickBg('video'); } }} />
         <div style=${{ height: '10px' }}></div>
         ${!isPic ? html`<div>
             <div className="sw" role="group" aria-label="Design system colours">${colors.map(function (x) { return html`<button type="button" key=${x.value} aria-label=${x.name} title=${x.name + ' ' + x.value} aria-pressed=${String(bgColor.toLowerCase() === x.value.toLowerCase())} style=${{ background: x.value }} onClick=${function () { setBg({ color: x.value }); }}></button>`; })}</div>
             <div className="hexRow"><input type="color" aria-label="Pick a colour" value=${hex} onChange=${function (e) { setBg({ color: e.target.value }, 'hex'); }} /><${LooseIn} label="Hex colour" value=${bgColor} parse=${function (v) { v = v.trim(); return /^#?[0-9a-f]{3}([0-9a-f]{3})?$/i.test(v) ? (v[0] === '#' ? v : '#' + v).toLowerCase() : null; }} onChange=${function (v) { setBg({ color: v }, 'hex'); }} /></div></div>`
           : html`<div>
-            <div className="bgPrev"><span className="th" style=${{ backgroundImage: picKey ? null : 'url("' + bg.src + '")' }}>${picKey ? bg.src : null}</span>
-              <div className="acts"><span className="btn sm upl"><${Ic} n="upload" />Replace<input type="file" accept="image/*" aria-label="Upload a background image" onChange=${function (e) { var fl = e.target.files && e.target.files[0]; e.target.value = ''; if (fl) p.uploadBg(fl); }} /></span><button type="button" className="btn sm" onClick=${function () { ed(function (y) { y.background = { kind: 'color', color: bg.color || '#0d0d0c' }; return y; }); }}>Remove</button></div></div>
-            <${Field} label="Fit"><${Seg} label="Image fit" value=${bg.fit || 'fill'} options=${[['fill', 'Fill'], ['fit', 'Fit'], ['crop', 'Crop']]} onChange=${function (v) { setBg({ fit: v }); }} /><//>
+            <div className="bgPrev"><span className="th" style=${{ backgroundImage: picKey || isVid ? null : 'url("' + bg.src + '")' }}>${isVid ? html`<video src=${bg.src} muted playsinline preload="metadata" style=${{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', borderRadius: 'inherit' }}></video>` : picKey ? bg.src : null}</span>
+              <div className="acts"><span className="btn sm upl"><${Ic} n="upload" />Replace<input type="file" accept=${isVid ? 'video/*' : 'image/*'} aria-label=${isVid ? 'Upload a background video' : 'Upload a background image'} onChange=${function (e) { var fl = e.target.files && e.target.files[0]; e.target.value = ''; if (fl) p.uploadBg(fl); }} /></span><button type="button" className="btn sm" onClick=${function () { ed(function (y) { y.background = { kind: 'color', color: bg.color || '#0d0d0c' }; return y; }); }}>Remove</button></div></div>
+            <${Field} label="Fit"><${Seg} label=${isVid ? 'Video fit' : 'Image fit'} value=${bg.fit || 'fill'} options=${[['fill', 'Fill'], ['fit', 'Fit'], ['crop', 'Crop']]} onChange=${function (v) { setBg({ fit: v }); }} /><//>
             <div className="f2"><${Field} label="Position X"><${Range} label="Position X" min=${0} max=${100} value=${bg.x == null ? 50 : bg.x} fmt=${function (v) { return v + '%'; }} onChange=${function (v) { setBg({ x: v }, 'bx'); }} /><//>
             <${Field} label="Position Y"><${Range} label="Position Y" min=${0} max=${100} value=${bg.y == null ? 50 : bg.y} fmt=${function (v) { return v + '%'; }} onChange=${function (v) { setBg({ y: v }, 'by'); }} /><//></div>
             <${Field} label="Scale" hint=${bg.fit === 'crop' ? null : 'Scale applies to Crop.'}><${Range} label="Scale" min=${1} max=${4} step=${.05} value=${bg.scale || 1} disabled=${bg.fit !== 'crop'} fmt=${function (v) { return v.toFixed(2) + '×'; }} onChange=${function (v) { setBg({ scale: v }, 'bs'); }} /><//>
@@ -1155,7 +1156,7 @@
               <div className="sw" style=${{ marginTop: '6px' }} role="group" aria-label="Overlay colour">${['#000000', '#0d0d0c', '#2e1f1a', '#ffffff', '#f4f2ed'].map(function (x) { return html`<button type="button" key=${x} aria-label=${'Overlay ' + x} aria-pressed=${String((bg.overlayColor || '#000000').toLowerCase() === x)} style=${{ background: x }} onClick=${function () { setBg({ overlayColor: x }); }}></button>`; })}</div><//>
             ${bg.fit === 'fit' ? html`<${Field} label="Behind the picture"><div className="sw">${colors.map(function (x) { return html`<button type="button" key=${x.value} aria-label=${x.name} aria-pressed=${String((bg.color || '').toLowerCase() === x.value.toLowerCase())} style=${{ background: x.value }} onClick=${function () { setBg({ color: x.value }); }}></button>`; })}</div><//>` : null}
             ${p.bgNote ? html`<p className="hint">${p.bgNote}</p>` : null}</div>`}
-        ${!isPic ? html`<div style=${{ display: 'flex', gap: '6px', marginTop: '10px', flexWrap: 'wrap' }}><span className="btn sm upl"><${Ic} n="image" />Upload an image<input type="file" accept="image/*" aria-label="Upload a background image" onChange=${function (e) { var fl = e.target.files && e.target.files[0]; e.target.value = ''; if (fl) p.uploadBg(fl); }} /></span><button type="button" className="btn sm" onClick=${function () { ed(function (y) { y.background = { kind: 'image', src: 'clinic', fit: 'fill', x: 50, y: 50, scale: 1, blur: 12, overlay: .4, overlayColor: '#000000', color: bgColor }; return y; }); }}>Sample photo</button></div>` : null}</div>
+        ${!isPic ? html`<div style=${{ display: 'flex', gap: '6px', marginTop: '10px', flexWrap: 'wrap' }}><span className="btn sm upl"><${Ic} n="image" />Upload an image<input type="file" accept="image/*" aria-label="Upload a background image" onChange=${function (e) { var fl = e.target.files && e.target.files[0]; e.target.value = ''; if (fl) p.uploadBg(fl); }} /></span><span className="btn sm upl"><${Ic} n="upload" />Upload a video<input type="file" accept="video/*" aria-label="Upload a background video" onChange=${function (e) { var fl = e.target.files && e.target.files[0]; e.target.value = ''; if (fl) p.uploadBg(fl); }} /></span><button type="button" className="btn sm" onClick=${function () { ed(function (y) { y.background = { kind: 'image', src: 'clinic', fit: 'fill', x: 50, y: 50, scale: 1, blur: 12, overlay: .4, overlayColor: '#000000', color: bgColor }; return y; }); }}>Sample photo</button></div>` : null}</div>
       <div className="fs"><h3>Timing</h3><div className="f2">
         <${Field} label="Before the first"><${SecIn} label="Lead, seconds" ms=${c.lead} auto=${500} onChange=${function (v) { ed(function (y) { if (v == null) delete y.lead; else y.lead = v; return y; }, 'lead'); }} /><//>
         <${Field} label="After the last"><${SecIn} label="Tail, seconds" ms=${c.tail} auto=${1500} onChange=${function (v) { ed(function (y) { if (v == null) delete y.tail; else y.tail = v; return y; }, 'tail'); }} /><//></div></div>
@@ -1219,7 +1220,7 @@
     var t0 = useState(function () { return document.documentElement.dataset.theme || ls.get(THEME, 'dark'); }), theme = t0[0], setTheme = t0[1];
     var m0 = useState(false), menu = m0[0], setMenu = m0[1], g0 = useState(null), dlg = g0[0], setDlg = g0[1];
     var q0 = useState([]), toasts = q0[0], setToasts = q0[1], p0 = useState(null), pending = p0[0], setPending = p0[1], n0 = useState(''), bgNote = n0[0], setBgNote = n0[1];
-    var v0 = useState('idle'), saving = v0[0], setSaving = v0[1], lastPic = useRef(null);
+    var v0 = useState('idle'), saving = v0[0], setSaving = v0[1], lastPic = useRef(null), lastVid = useRef(null);
     var hist = useRef({ past: [], future: [], key: null, at: 0 }), jump = useRef(null), frameRef = useRef(null), centreRef = useRef(null), avRef = useRef(null);
     var x0 = useState({ w: 900, h: 600 }), box = x0[0], setBox = x0[1];
 
@@ -1294,7 +1295,18 @@
 
     /* pictures */
     var uploadBg = function (file) {
-      if (!/^image\//.test(file.type)) { toast('That file isn’t an image.', 'warn'); return; }
+      if (/^video\//.test(file.type)){   /* a video ground: the app's assets when it can (every viewer sees it), else this session only (a blob URL: not kept with a saved composition after a reload) */
+        setBgNote('Uploading…');
+        cap('assets').then(function (as) { return as && file.size < 20 * 1048576 ? as.upload(file).then(function (r) { return { src: '/_blob/' + r.id, shared: true }; }, function () { return null; }) : null; }).then(function (r) {
+          r = r || { src: URL.createObjectURL(file), shared: false };
+          var bgv = { kind: 'video', src: r.src, fit: 'fill', x: 50, y: 50, scale: 1, blur: 0, overlay: .2, overlayColor: '#000000', color: (comp.background || {}).color || '#0d0d0c' };
+          if (comp.background && comp.background.kind !== 'color') ['fit', 'x', 'y', 'scale', 'blur', 'overlay', 'overlayColor'].forEach(function (q) { if (comp.background[q] != null) bgv[q] = comp.background[q]; });
+          lastVid.current = bgv; edit(function (y) { y.background = bgv; return y; });
+          setBgNote(r.shared ? 'Stored in the app’s assets: every viewer sees it.' : 'Kept for this session only: upload it again after a reload (or open the builder in the app to store it).');
+        }, function () { setBgNote(''); toast('The video could not be read.', 'warn'); });
+        return;
+      }
+      if (!/^image\//.test(file.type)) { toast('That file isn’t an image or a video.', 'warn'); return; }
       setBgNote('Uploading…');
       putImage(file).then(function (r) {
         var bgp = { kind: 'image', src: r.src, fit: 'fill', x: 50, y: 50, scale: 1, blur: 0, overlay: 0, overlayColor: '#000000', color: (comp.background || {}).color || '#0d0d0c' };
@@ -1303,7 +1315,7 @@
         setBgNote(r.shared ? 'Stored in the app’s assets: every viewer sees it.' : r.src.length > 1500000 ? 'Kept in this browser (large: it may not fit the saved list).' : 'Kept in this browser with the composition.');
       }, function () { setBgNote(''); toast('The picture could not be read.', 'warn'); });
     };
-    var pickBg = function () { var i = document.createElement('input'); i.type = 'file'; i.accept = 'image/*'; i.onchange = function () { var f = i.files && i.files[0]; if (f) uploadBg(f); }; i.click(); };
+    var pickBg = function (kind) { var i = document.createElement('input'); i.type = 'file'; i.accept = kind === 'video' ? 'video/*' : 'image/*'; i.onchange = function () { var f = i.files && i.files[0]; if (f) uploadBg(f); }; i.click(); };
     var pickAvatar = function () { var i = avRef.current; if (i) i.click(); };
     var onAvatar = function (e) { var f = e.target.files && e.target.files[0]; e.target.value = ''; if (!f || !sel) return; var id = sel; shrink(f, 160, 'image/png').then(function (src) { setItem(id, { avatar: src }); }); };
 
@@ -1413,7 +1425,7 @@
       <aside className="right" aria-label="Settings">
         <div className="pTabs" style=${{ paddingTop: '12px' }}><${Seg} label="Settings" value=${rtab} options=${[['item', selItem ? 'Item ' + (selIdx + 1) : 'Item'], ['canvas', 'Canvas']]} onChange=${setRtab} /></div>
         <div className="scroll">
-          ${rtab === 'canvas' ? html`<${CanvasPanel} comp=${comp} cat=${cat} edit=${edit} uploadBg=${uploadBg} pickBg=${pickBg} bgNote=${bgNote} lastPic=${lastPic.current} />`
+          ${rtab === 'canvas' ? html`<${CanvasPanel} comp=${comp} cat=${cat} edit=${edit} uploadBg=${uploadBg} pickBg=${pickBg} bgNote=${bgNote} lastPic=${lastPic.current} lastVid=${lastVid.current} />`
             : selItem ? html`<${ItemPanel} key=${selItem.id} item=${selItem} index=${selIdx} comp=${comp} S=${S} cat=${cat} sch=${schById[selItem.id]} wById=${wById} specById=${specById} P=${P}
                 set=${function (patch, key) { setItem(selItem.id, patch, key); }} onDup=${function () { dup(selItem.id); }} onDel=${function () { del(selItem.id); }} pickAvatar=${pickAvatar} />`
             : html`<div className="noSel"><span>Select an item in the sequence to edit it, or click the canvas for its format and background.</span><button type="button" className="btn sm" onClick=${function () { setRtab('canvas'); }}>Canvas settings</button></div>`}

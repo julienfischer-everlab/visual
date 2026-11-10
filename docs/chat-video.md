@@ -32,7 +32,9 @@ type Composition = {
         scale: number;               // crop only, 1 = as fitted
         blur: number;                // px
         overlay: number;             // 0..1 of overlayColor over the picture
-        overlayColor: string; color?: string };               // color: the letterbox under 'fit'
+        overlayColor: string; color?: string }                // color: the letterbox under 'fit'
+    | { kind: 'video'; src: string;  // a blob or /_blob/ URL (an MP4 or WebM), muted, looped on the timeline
+        fit; x; y; scale; blur; overlay; overlayColor; color? };  // as the image
   device: boolean;                   // true: the phone; false: floating
   padding?: number;                  // canvas px kept clear (default 7% of the shorter side)
   theme: 'dark' | 'light';
@@ -40,7 +42,8 @@ type Composition = {
   tail?: number;                     // ms held after the last item (1500)
   column?: number;                   // floating: the thread's width in chat px (440)
   zoom?: number;                     // floating: a scale on top of the fitted one (1)
-  anchor?: 'bottom' | 'top';         // floating: the thread grows up from the foot (bottom) or down from the top
+  anchor?: 'bottom' | 'top' | 'center';  // floating: the thread grows up from the foot, down from the top, or sits in the middle
+  flow?: 'thread' | 'single';        // floating: 'single' shows one message (with its widget) at a time, then fades it out
   sequence: Item[];
 };
 type Item =
@@ -56,7 +59,9 @@ type Item =
 ```
 
 - `delay`: ms after the item before ends. `hold`: ms the item stays before the next one starts. Leave both out for the motion defaults.
-- `typing: 'text'` types the words into the composer. That needs the phone; floating falls back to `'dots'`.
+- `typing: 'text'` types the words into the composer on the phone. Floating has no composer ("just remove the chat field"): the bubble comes in empty and the words type inside it, with a caret (`typing: 'bub'` in the schedule, `typeIn` to `typed`).
+- `flow: 'single'` (floating only, "just the speech bubble that appears and disappears"): each lead message (a question, Eva's answer, a specialist) is on screen alone, its widget with it. It fades out over the last 260 ms before the next lead (at least 120 ms, never before its own entrance ends). The phone keeps the thread.
+- A video background is drawn under the chat, muted and looped. In `seek` it is paused at the time's frame (`vidSync`); while playing it runs at the playback rate and is corrected when it drifts over 0.3 s. `frame()` waits for that frame (`vidAt`) and swaps the video for a JPEG of it, so the MP4 has the video.
 - When a typed message is sent, the composer's beam goes once round its edge (the chat's own `.evBeam`, Care team → Eva's), 1.9 s from `sent`, fading in over its first 8% and out over its last 14%. It is painted from the time in `seek`, like everything else, so the MP4 has it.
 - A widget joins the answer just before it (Eva's or the specialist's), as a block of that answer. With `attach: false` it is a message of its own.
 - `stage.normalize(comp)` returns the composition made whole: every field set, every item given a unique id.
@@ -106,7 +111,7 @@ type Item =
 - **Phone (`device: true`)**: the stage draws the whole phone itself, so the preview and the MP4 are the same pixels. That covers the XS screen (393 x 852), the master frame's look (`--evPhR` 56 round, the `--evPhBz` bezel, no shadow), the status bar (9:41, the island, signal, wifi, battery) and the chat's own head, cloned from the page's `.main > .hd` (menu, title, close: the chat dropped its minimise button, so the video did too). It also covers the thread, the composer (field, +, Eva ▾, send) and the home indicator. The phone is scaled to fit the canvas inside `padding`. The builder draws no frame of its own.
   - **The head's ground** is the chat's: the Top nav master's gradient blur (`.evTnG`, "Top nav always gradient blur by default"). The thread runs up under the head by its height (`--hdH`), and the head takes its scrolled state (`.evTnOn`, the ground 24 px longer) once the thread is under it, set from the time like everything else. The scroll keeps new content below the head.
   - **In `frame()`** (the MP4), the ground's `backdrop-filter` can't be drawn through `foreignObject`. A copy of the thread, blurred 9 px on the page's ground and fading out over the ground's last third, stands in for it under the ground's tint, so the video's head reads as the preview's. The preview's DOM is not touched. The 32 px glass on the head's round buttons is still not drawn in the video.
-- **Floating (`device: false`)**: no phone and no ground of the chat's own. Only the thread (bubbles, Eva's answers, avatars, the clinician card, widgets) at the chat's spacing, in a 440 px column scaled to the canvas, anchored at the foot. The top edge fades out under 56 px. Eva's words and the thinking line take the card ground so they read on a picture. In light theme the cards take the chat's raised surface (the booking card's white and `--bkShadow`).
+- **Floating (`device: false`)**: no phone and no ground of the chat's own. Only the thread (bubbles, Eva's answers, avatars, the clinician card, widgets) at the chat's spacing, in a 440 px column scaled to the canvas, anchored at the foot (or the top, or the centre). The top edge fades out under 56 px. "One at a time" (`flow: 'single'`) shows one message at a time in place of the thread. Eva's words and the thinking line take the card ground so they read on a picture. In light theme the cards take the chat's raised surface (the booking card's white and `--bkShadow`).
 
 ## Specialists
 
@@ -157,7 +162,7 @@ type Item =
 | Left: Composition | **Sequence**: + Question, + EVA, + Specialist, + Widget, then the rows. Each row has a drag handle (mouse, pen and touch, by pointer events), the type, a preview, its duration and delay, and Edit, Duplicate and Delete. A dot marks the item on screen. **Widgets**: search and Health / Services / Actions, each widget drawn by the real component. **Saved**: the saved compositions (open, Rename, Duplicate, Delete) and the five templates |
 | Centre: canvas | The stage in the format's frame, with the resolution, the ratio, phone or floating, and the ground under it. With no items, the templates and "Add a question" |
 | Foot: playback | Play / pause, Restart, Loop, 1× / 0.5×, the scrubber with a mark per item (click to jump), the time and the total |
-| Right: settings | **Item**: its text (multiline, emoji), name, avatar, typing style, think time, thinking line, reveal, specialist and overrides, the widget's fields, delay, hold, bubble width. **Canvas**: the format (5 and custom), iPhone frame, chat theme, padding, header title or the floating column, zoom and anchor; the background (DS colours, hex, image with Fill / Fit / Crop, X, Y, scale, blur and overlay); lead and tail |
+| Right: settings | **Item**: its text (multiline, emoji), name, avatar, typing style, think time, thinking line, reveal, specialist and overrides, the widget's fields, delay, hold, bubble width. **Canvas**: the format (5 and custom), iPhone frame, chat theme, padding, header title or the floating column, zoom, Messages (Thread / One at a time; One at a time moves the anchor to Centre) and the anchor (foot, middle, top); the background (Colour / Image / Video: DS colours, hex, a picture or a video with Fill / Fit / Crop, X, Y, scale, blur and overlay); lead and tail |
 
 - Selecting a row jumps the playhead to the moment it is fully in. Editing an item redraws the canvas and holds it there.
 - Empty timing fields are **Auto**: the stage's motion defaults, shown as the hint ("Auto · 0.4 s").
@@ -169,6 +174,7 @@ type Item =
 |---|---|---|
 | Saved compositions | `db`, collection `chatVideos`, one document `{ v, name, updated, comp }` each, shared by the team (live) | `localStorage` `everlab:chatVideos` |
 | Background pictures | `assets.upload`, kept as `/_blob/<id>` in the composition | a data URL, scaled to 1920 px |
+| Background videos | `assets.upload` (20 MB at most), kept as `/_blob/<id>` | a `blob:` URL, for this session only (the builder says so) |
 | Files (code, JSON, the video) | `downloads.save` (the viewer confirms) | a plain download link |
 | The draft being edited, the builder's theme | `localStorage` (`everlab:chatVideoDraft`, `everlab:chatVideoTheme`) | the same |
 
@@ -202,7 +208,7 @@ Export → **MP4 video**. One rendering system: the frames are the stage's own, 
 - **Saving**: `downloads.save` in the app (the viewer confirms), a plain link elsewhere.
 - `exportMp4({ comp?, saveFile?, toast?, prefer? })` returns the result (`{ blob, filename, mime, codec, label, container, encoder: 'WebCodecs' | 'software' | 'MediaRecorder', w, h, fps, frames, duration, bitrate, bytes, renderMs, msPerVideoSecond }`, also `ChatVideo.lastExport`), or null when cancelled or failed. `prefer` (the checks): `'vp9-mp4'` puts VP9 in the MP4 first, to run the WebCodecs MP4 path in a browser without H.264; `'soft'`, `'webm'` and `'mr'` start from that fallback.
 - **Over 16 MB** in the app: the bitrate is lowered (WebCodecs) or QP raised by 5 (software), and the video made again, twice at most.
-- **Known gaps**: a background picture on another host whose fetch is blocked comes out blank; the glass blur behind the phone header's round buttons (`backdrop-filter`) is not drawn by the SVG route (the head's ground is: see Phone); Safari may refuse a canvas drawn from an SVG `foreignObject` (it would then fail with a message). 60 fps and 4K are later.
+- **Known gaps**: a video over 20 MB, or one picked without the assets capability, lives for the session only (a `blob:` URL); a video in a codec the browser can't play (H.264 in headless Chromium) shows no frames; a background picture on another host whose fetch is blocked comes out blank; the glass blur behind the phone header's round buttons (`backdrop-filter`) is not drawn by the SVG route (the head's ground is: see Phone); Safari may refuse a canvas drawn from an SVG `foreignObject` (it would then fail with a message). 60 fps and 4K are later.
 
 ## The export's check (`tools/mp4-check.js`)
 
