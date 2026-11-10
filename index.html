@@ -18067,11 +18067,11 @@ body.light .arSheet .arRcStkMk, .arSheet:not(.arDark) .arRcStkMk { background: r
 .arSheet .arDbfTop { scale: .9; transform-origin: 50% 0%; transition: opacity .5s ease, scale .5s ease; } .arSheet.arDbfFadeOn .arDbfTop { opacity: 1; scale: 1; transition: opacity .35s ease var(--dfT, 0s), scale 1.3s cubic-bezier(.16, 1, .3, 1) var(--dfT, 0s); }   /* in at once 0.5 s after the title is written (--dfT, set by enter), growing from 90% at the top ("suddenly the background appears and scales up, appearing at the top of the screen"; was settling from 104%) */
 .arSheet .arDbfFade > .arDbfHead { position: relative; z-index: 1; } .arSheet.arDbfMv .arDbfFade > .arDbfHead { transition: translate 1s cubic-bezier(.65, 0, .35, 1); }   /* the title from the middle of the screen to its place, as the picture comes in */
 /* Marker overlapping image: the picture the top part (46%, its last 45% fading into the page), the markers over it (.arDbmLay, unmasked), the title and the bullets under it (the stack padded by dfPlace) */
-.arSheet.arDbmOn .arDbfTop { height: 46%; -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 55%, transparent 100%); mask-image: linear-gradient(180deg, #000 0%, #000 55%, transparent 100%); }
+.arSheet.arDbmOn .arDbfTop { height: 46%; -webkit-mask-image: linear-gradient(180deg, #000 0%, rgb(0 0 0 / .92) 14%, rgb(0 0 0 / .72) 32%, rgb(0 0 0 / .46) 52%, rgb(0 0 0 / .22) 70%, rgb(0 0 0 / .07) 86%, transparent 100%); mask-image: linear-gradient(180deg, #000 0%, rgb(0 0 0 / .92) 14%, rgb(0 0 0 / .72) 32%, rgb(0 0 0 / .46) 52%, rgb(0 0 0 / .22) 70%, rgb(0 0 0 / .07) 86%, transparent 100%); }   /* the fade from near the top, eased all the way down ("more diffused ... the gradient should be more intense and go more on the top, so there is a smoother fade out"; was solid to 55%) */
 .arSheet .arStack.arDbfFade.arDbfMark { justify-content: flex-start; }
 .arSheet .arDbmLay { position: absolute; left: 0; right: 0; top: 0; height: 46%; z-index: 0; pointer-events: none; opacity: 0; transition: opacity .3s ease; } .arSheet.arDbmOn .arDbmLay { opacity: 1; }
 .aqWrap.aqFull:is(.aqBpM, .aqBpL) .arSheet .arDbmLay { left: calc((100% - 100cqw) / 2); right: auto; width: 100cqw; }
-.arSheet .arDbmLab { position: absolute; left: 0; top: 0; width: 0; height: 0; } .arSheet .arDbmLay .arOrbGd { display: block; } .arSheet .arDbmLay .arOrbTx { color: #fff; }   /* the Sphere hero's marker, its badge always (the words white on black over the picture) */
+.arSheet .arDbmLab { position: absolute; left: 0; top: 0; width: 0; height: 0; } .arSheet .arDbmLay .arOrbTx { color: #fff; text-shadow: 0 1px 10px rgb(0 0 0 / .55), 0 0 2px rgb(0 0 0 / .35); }   /* the Sphere hero's marker, no badge ("remove the background" of the marker): its words white on the picture, a soft shadow to read them */
 .arSheet .arDbmLay .arOrbBox.arOrbOn .arOrbSq { background: #ff7a1a; }
  @media (prefers-reduced-motion: reduce) { .arSheet .arDbfTop { scale: 1; } } .arSheet:not(.arDark).arDbfFadeOn .arDbfTop { opacity: .32; }   /* Light: the picture a wash, the ink over it legible */
 .aqWrap.aqFull:is(.aqBpM, .aqBpL) .arSheet .arDbfTop { left: calc((100% - 100cqw) / 2); right: auto; width: 100cqw; }
@@ -19923,7 +19923,7 @@ window.EvCtl = (function () {
     var dfPlace = function () { var hd = root.querySelector('.arDbfFade > .arDbfHead'), st = hd && hd.parentNode; if (!hd || !dfTop || !root.classList.contains('arDbfFadeOn')) return;
       var k = (window.evK ? window.evK(hd) : 1) || 1, R = root.getBoundingClientRect(), m42 = 0; try { m42 = new DOMMatrixReadOnly(getComputedStyle(body).transform).m42 || 0; } catch (e) { m42 = 0; }
       var y = function (v) { return (v - R.top) / k; }, aT = y(dfTop.getBoundingClientRect().top), aB = aT + dfTop.offsetHeight, bar = root.querySelector('.arHead'), hb = bar ? y(bar.getBoundingClientRect().bottom) : aT;
-      if (DM) st.style.paddingTop = Math.max(0, Math.round(aB - 40 - (y(st.getBoundingClientRect().top) - m42))) + 'px';
+      if (DM) st.style.paddingTop = Math.max(0, Math.round(aB - 80 - (y(st.getBoundingClientRect().top) - m42))) + 'px';   /* 80 up into the picture's fade (40, then "push the title up by 40 pixels") */
       var ct = getComputedStyle(hd).translate, cy = ct && ct !== 'none' ? parseFloat(ct.split(' ')[1]) || 0 : 0, hh = hd.offsetHeight, top = y(hd.getBoundingClientRect().top) - m42 - cy, mid = top + hh / 2;
       if (!hh || !dfTop.offsetHeight) return;
       var dy = root.classList.contains('arDbfHold') ? root.offsetHeight / 2 - mid : DM ? 0 : Math.min(0, Math.max((aT + aB) / 2, hb + 24 + hh / 2) - mid);
@@ -19932,7 +19932,7 @@ window.EvCtl = (function () {
     /* Marker overlapping image (Tweak What to expect: "the same system as the sphere marker and the square marker, but you're not moving the marker"): one marker at a time on the picture, the Sphere hero's own (its orange square
        growing from 1 to 6, its black badge, its words written out in the mono caps with the cursor), the report's areas in turn; read, the whole group fades and the next comes up somewhere else on the picture.
        Its spots: a column of the picture at most 560 wide (centred on a wide screen), clear of the top bar, the words room on their right */
-    var dmSpots = [[.08, .46], [.52, .34], [.26, .62], [.6, .58], [.12, .76], [.44, .48]], dmLast = -1, dmIt = -1;
+    var dmSpots = [[.08, .4], [.52, .3], [.26, .52], [.6, .46], [.12, .58], [.44, .36]], dmLast = -1, dmIt = -1;   /* the upper part, clear of the title under it */
     function dmNext() {
       if (!alive || !dmLay || step !== DBF || !root.classList.contains('arDbmOn')) return;
       var items = NEWI.map(function (L) { return L.short || L.headline; }).concat(['Everything else we checked', 'What we recommend']);
@@ -19940,7 +19940,7 @@ window.EvCtl = (function () {
       while (si === dmLast) si = Math.floor(Math.random() * dmSpots.length); dmLast = si;
       var k = (window.evK ? window.evK(dmLay) : 1) || 1, w = dmLay.offsetWidth, hh = dmLay.offsetHeight, col = Math.min(w, 560), x0 = (w - col) / 2, bar = root.querySelector('.arHead');
       var top = bar ? (bar.getBoundingClientRect().bottom - dmLay.getBoundingClientRect().top) / k + 28 : 28, sp = dmSpots[si];
-      var x = Math.round(x0 + 24 + sp[0] * Math.max(0, col - 24 - 190)), y = Math.round(Math.min(hh - 40, Math.max(top, sp[1] * hh)));
+      var x = Math.round(x0 + 24 + sp[0] * Math.max(0, col - 24 - 190)), y = Math.round(Math.min(hh * .6, Math.max(top, sp[1] * hh)));
       var tx = h('span', { class: 'arOrbTx' }), sq = h('i', { class: 'arOrbSq' }), gd = h('i', { class: 'arOrbGd' }), box = h('div', { class: 'arOrbBox arOrbR' }, gd, sq, tx), el = h('div', { class: 'arDbmLab' }, box);
       el.style.transform = 'translate(' + x + 'px, ' + y + 'px)'; dmLay.appendChild(el);
       var fit = function () { var g = gd.style; if (!tx.textContent) { g.left = '-11px'; g.top = '-7px'; g.width = '18px'; g.height = '14px'; return; } g.left = '-11px'; g.top = '-13px'; g.width = (tx.offsetWidth + 32) + 'px'; g.height = (tx.offsetHeight + 8) + 'px'; };
