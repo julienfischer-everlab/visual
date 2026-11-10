@@ -22385,3 +22385,7 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - Its page: Design system → Patterns → Empty state (`emDoc`, `#empty-state`): in a card (the Schedule's), on a page (Reports), title only; anatomy; used in.
 - The Schedule card with nothing booked (Tweaks → Scheduled → Has data: No) and its See more sheet draw it: "You don’t have any appointments yet" / "Once you’ve booked a test or a consult, it will show up here.", the calendar icon. In the card it fills the space under the eyebrow, 16 over and 52 under, so it sits in the middle of the whole card (L: 81 above the icon, 72 under the line). The Design system's Modules → Schedule → Empty shows it too (same `_bkCard.html`).
 - Skill table: a row for the Empty state.
+
+## Primary card, Centered: no progress dashes
+
+- "remove progress indicator for centered version": in Centered (M and up), Step 2's three dashes (`.hpOvBar`) are hidden; the title, line and button stay centred in the card. The left-aligned card (XS, S, or Desk alignment Left) keeps them.
