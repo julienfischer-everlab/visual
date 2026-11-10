@@ -22358,3 +22358,12 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - **Freemium · Explore:** the tag, title and line are centred, and the service rows still run to the card's edges.
   - **Left alone:** the task rows keep their in-row layout (Skip and the chevrons at the right).
   - Centered is a desk option (M and up), so XS and S keep the left layout.
+- **Preset groups** ("Need to be able to create group of presets, Rename and delete group, re order group. Put each group in a tab. Default should be in a standalone card"):
+  - **Default** sits in a card of its own at the top of the menu, with Apply and Copy link.
+  - **Tabs.** Under Default, each group is a tab showing its count. Presets with no group (all the existing ones) are in "Other", or "All" while there are no groups.
+  - **New group.** The "+" tab names one; it is created after the others and opened.
+  - **The open group's bar.** It shows the group's name, ‹ › to move it left or right (the order is rewritten 1..n), rename, and remove (with Yes / No). Removing a group deletes no presets: they go to Other.
+  - **Presets.** Add puts a new preset into the open group. A new "move" icon on each preset offers the other groups (and Other) to move it.
+  - **Storage.** Groups are per page, like the presets: in the shared store (`tkPsGroups`, docs `{ name, pg, order, at, by }`), or in this browser (`everlab:tkPsGroups`) where the store isn't available. A preset's group is its `grp`.
+  - **Opening the menu** shows the tab of the preset in use; the open tab is remembered per page in this browser (`everlab:tkPsTab`).
+  - The menu is 380 wide (was 340).
