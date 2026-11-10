@@ -22509,3 +22509,12 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - "We'll walk you through it, one finding at a time." is its line under it ("just a subtitle"); the What to expect eyebrow is gone.
 - The three rows sit at the foot, in the dark under the picture, and rise one after another (36 px, 0.16 s apart), then Next.
 - Landing on it directly (Flow panel), the title is written in the middle first, then the same move.
+
+## Report picture library, Insights arrows top right, decade age in the card, the focus card simpler, chat video blanket
+
+- Async report → Picture (Tweaks): Default, then every picture added (newest first), + to add one; click one to use it, the bin on hover to delete it ("upload a new image ... the previous image saved ... put the image in the trash"). In the app each picture goes to the artifact's asset store and its record to the shared store (collection `arPics`, any device); elsewhere a 1600 px JPEG in this browser (`everlab:arPics`). The one in use is this browser's (`everlab:arPic`); the report (phone and desk) is drawn again on the same screen with it as its picture (V3's What to expect, the welcome's and the end's grounds).
+- Insights → Arrow position (was Next / prev): Bottom (beside the dots), Top right (new: the two 32 discs at the card's top right, centred on the eyebrow's line; the dots alone at the foot), Edges.
+- Timeline V3 → Age number: Section (the big rolling number before each decade) or In card (the age at 56, 48 on the phone, first in the card's left column on Card #2, over the title on Card #1; no rolling number).
+- Timeline focus card: no border or warm light, #252522 ground (#f2f0ec light), the goal 16, Review a full-round secondary button with no arrow.
+- V3 What to expect: the picture's fade eased out over 128 px more, no edge where it meets the ground.
+- Chat video: Canvas → Background → Blanket: swatches, a colour picker and hex, opacity. Floating, Eva's name over her bubble is white in light theme and near-black in dark, 2 px over the bubble.
