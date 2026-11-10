@@ -198,7 +198,8 @@
   /* Presets and Share, the header's second line (the presets' menu under it, over the rows) */
   .topbar .tkPanel > .tkHead{flex-wrap:wrap;row-gap:8px;}
   .topbar .tkPs{position:relative;flex:none;display:flex;align-items:center;gap:8px;}
-  @media (max-width:1400px){ .topbar .tkPs :is(.tkPsNm, .tkPsCh), .topbar .tkPsShare > span{display:none;} .topbar .tkPs .tkBtn{padding-left:9px;padding-right:9px;} }   /* a narrower window: Presets and Share as their icons (their titles say what they are), the bar's right end kept on screen */ @media (max-width:1200px){ .topbar #bpGrp > .lbl{display:none;} }   /* on the bar, after the viewport */ .topbar .tkPs .tkPsBtn{max-width:220px;} .topbar .tkPs :is(.tkPsMenu, .tkPsMsg){position:fixed;right:auto;width:340px;}   /* fixed, placed under the button as it opens: the bar scrolls sideways, so it clipped them ("dropdown not visiable") */
+  @media (max-width:1400px){ .topbar .tkPs :is(.tkPsNm, .tkPsCh), .topbar .tkPsShare > span{display:none;} .topbar .tkPs .tkBtn{padding-left:9px;padding-right:9px;} }   /* a narrower window: Presets and Share as their icons (their titles say what they are), the bar's right end kept on screen */ @media (max-width:1200px){ .topbar #bpGrp > .lbl{display:none;} }   /* on the bar, after the viewport */ .topbar .tkPs .tkPsBtn{max-width:220px;} .topbar .tkPs :is(.tkPsMenu, .tkPsMsg){position:fixed;right:auto;width:340px;z-index:45;}   /* over the Tweaks panel (30), docked or not: each preset's icons (Update, Rename, Copy link, Delete) never under it */
+  .tkSnack{position:fixed;left:50%;bottom:24px;z-index:100;display:flex;align-items:center;gap:8px;max-width:calc(100vw - 32px);box-sizing:border-box;padding:10px 16px;border-radius:999px;background:#f4f4f5;color:#111;font:500 13px/18px Inter, system-ui, sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.35);translate:-50% 12px;opacity:0;pointer-events:none;transition:opacity .2s ease, translate .25s cubic-bezier(.2, .7, .2, 1);} .tkSnack.on{opacity:1;translate:-50% 0;} .tkSnack svg{flex:none;width:16px;height:16px;}   /* the snackbar: a copied link said at the foot of the window ("add snackbar feedback") */   /* fixed, placed under the button as it opens: the bar scrolls sideways, so it clipped them ("dropdown not visiable") */
   .topbar .tkPs .tkBtn{display:inline-flex;align-items:center;gap:6px;} .topbar .tkPs .tkBtn svg{flex:none;color:#a1a1aa;}
   .topbar .tkPsBtn{flex:1 1 auto;min-width:0;} .topbar .tkPsNm{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;text-align:left;} .topbar .tkPsBtn[aria-expanded="true"]{border-color:#52525b;background:#1c1c20;} .topbar .tkPsBtn[aria-expanded="true"] .tkPsCh{transform:rotate(180deg);}
   .topbar .tkPsMenu{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:20;display:flex;flex-direction:column;gap:2px;max-height:min(60vh,460px);overflow:auto;padding:6px;border:1px solid #2a2a2e;border-radius:12px;background:#17171a;box-shadow:0 12px 32px rgba(0,0,0,.5);}
@@ -209,6 +210,7 @@
   .topbar .tkPsIt.on .tkPsGo b::after{content:" · on";color:#a1a1aa;font-weight:400;}
   .topbar .tkPsIc{flex:none;display:grid;place-items:center;width:28px;height:28px;padding:0;border:0;border-radius:7px;background:none;color:#a1a1aa;cursor:pointer;} .topbar .tkPsIc:hover{background:#2a2a2e;color:#f4f4f5;} .topbar .tkPsIc svg{width:14px;height:14px;} .topbar .tkPsIc.warn{color:#fca5a5;}
   .topbar .tkPsIc.del.sure{width:auto;padding:0 8px;background:#7f1d1d;color:#fff;font-size:11px;font-weight:600;}
+  .topbar .tkPsSure{flex:none;display:flex;align-items:center;gap:4px;padding-right:2px;font-size:12px;color:#d4d4d8;} .topbar .tkPsSure > span{padding:0 4px;} .topbar .tkPsSure button{height:26px;padding:0 10px;border:0;border-radius:7px;font:600 12px/1 inherit;cursor:pointer;} .topbar .tkPsYes{background:#b91c1c;color:#fff;} .topbar .tkPsYes:hover{background:#dc2626;} .topbar .tkPsNo{background:#2a2a2e;color:#e4e4e7;} .topbar .tkPsNo:hover{background:#34343a;}
   .topbar .tkPsEd{flex:1 1 auto;min-width:0;margin:3px 4px;padding:5px 8px;border:1px solid #52525b;border-radius:7px;background:#0f0f11;color:#f4f4f5;font:inherit;font-size:12.5px;outline:none;}
   .topbar .tkPsNone{margin:0;padding:6px 8px 8px;font-size:12px;line-height:16px;color:#71717a;}
   .topbar .tkPsAdd{display:flex;gap:6px;margin-top:4px;padding:8px 2px 2px;border-top:1px solid #26262a;} .topbar .tkPsAdd input{flex:1 1 auto;min-width:0;padding:6px 9px;border:1px solid #2e2e33;border-radius:8px;background:#0f0f11;color:#f4f4f5;font:inherit;font-size:12px;outline:none;} .topbar .tkPsAdd input:focus{border-color:#52525b;} .topbar .tkPsAdd .tkBtn{flex:none;}
@@ -13908,7 +13910,7 @@
           </div>
           <div class="tkRow tkFoot tkFootAll">
             <button class="tkBtn stTkSave" type="button">Save</button>
-            <button class="tkBtn stTkReset" type="button">Reset</button>
+            <button class="tkBtn stTkReset" type="button" title="Back to the default setup">Reset to default</button>
           </div>
         </div>
       </details>
@@ -13922,7 +13924,7 @@
              header (fixed). Add dismiss cta right side that close this panel") -->
         <div class="tkRow tkFoot tkFootAll tkHead">
           <button class="tkBtn stTkSave" type="button">Save</button>
-          <button class="tkBtn stTkReset" type="button">Reset</button>
+          <button class="tkBtn stTkReset" type="button" title="Back to the default setup">Reset to default</button>
           <span class="tkLog" aria-live="polite"></span>   <!-- the last Save: when and who ("Show log Latest $date $hour by $name") -->
           <span class="tkPsCur" aria-live="polite"></span>   <!-- the preset in use, the top bar's ("Here indicate What preset is selected") -->
           <button class="tkBtn tkDocsSee" type="button" hidden>See documentation</button>   <!-- the page's own documentation, when it has one ("Docs should go in Tweak panel Below Save reset. As a full CTA See documentation. Only if documentation in this page is available") -->
@@ -33576,12 +33578,12 @@ hairline({
       const tk = document.getElementById('tkMenu'); if (tk && tk.open) tk.open = false;
       if (v && v.value !== set){ v.value = set; v.dispatchEvent(new Event('change', { bubbles: true })); } setTimeout(() => { if (window._doc) window._doc.show(k); }, 60); });
     new MutationObserver(sync).observe(document.body, { attributes: true, attributeFilter: ['class'] }); document.addEventListener('change', e => { if (e.target && e.target.id === 'versionSel') setTimeout(sync, 0); }); requestAnimationFrame(sync); }
-  /* Tweaks -> Container: its heading names the picked container's max width at this breakpoint, in brackets ("Indicate in bracket the Max width Xpx based on the selection"): the token's value (EvCt's names), Full 100%, the page's own its width; XS and S the full width */
+  /* Tweaks -> Container: its heading names the picked container's max width at this breakpoint, in brackets ("Indicate in bracket the Max width Xpx based on the selection"): the token's value (EvCt's names) at every breakpoint, Full 100%, the page's own its width */
   { const upd = () => { const s0 = document.getElementById('stCt'), g = s0 && s0.closest('.tkGroup'), h = g && g.querySelector(':scope > .tkSub'); if (!h) return; let m = h.querySelector('.tkCtMax');
       if (!m){ m = document.createElement('span'); m.className = 'tkCtMax'; }
       { const nm = h.querySelector('.nm'), bt = h.querySelector(':scope > button'); if (nm){ if (nm.nextSibling !== m) nm.after(m); } else if (bt){ if (bt.previousSibling !== m) h.insertBefore(m, bt); } else if (m.parentNode !== h) h.appendChild(m); }   /* beside the name, before the collapse chevron */
       const v = s0.value, N = (window.EvCt && window.EvCt.names) || {}, f = document.body.dataset.bp, desk = f ? /^(m|l|xl)$/.test(f) : innerWidth >= 992; let t = '';
-      if (!desk || v === 'full') t = '100%'; else if (N[v]){ const px = parseFloat(getComputedStyle(document.body).getPropertyValue(N[v])); t = px ? Math.round(px) + 'px' : '100%'; }
+      void desk; if (v === 'full') t = '100%'; else if (N[v]){ const raw = getComputedStyle(document.body).getPropertyValue(N[v]).trim(), px = parseFloat(raw); t = /%$/.test(raw) ? raw : px ? Math.round(px) + 'px' : '100%'; }   /* a token in % (2xs at XS: the DS's 100%) as it is; the token's value at every breakpoint ("Container is not max width 100%, there is a value for that"): Full alone 100% */
       else if (v === 'own'){ t = 'own width'; }
       if (m.textContent !== (t ? '(' + t + ')' : '')) m.textContent = t ? '(' + t + ')' : ''; };
     document.addEventListener('change', e => { if (e.target && /^(stCt|stBp|versionSel)$/.test(e.target.id)) setTimeout(upd, 60); }); addEventListener('resize', upd); setInterval(upd, 600); requestAnimationFrame(upd); }
@@ -49858,6 +49860,7 @@ hairline({
       else { say(ok ? 'Saved' : 'Not saved · storage blocked', ok ? 1400 : 5000); if (ok) logSet({ at: Date.now(), local: 1 }); }
     }));
     document.querySelectorAll('.stTkReset').forEach(b => b.addEventListener('click', () => {
+      if (window.EvPresets && window.EvPresets.toDefault) window.EvPresets.toDefault();   /* "Reset to default": the preset in use Default again */
       try { localStorage.removeItem(KEY); localStorage.removeItem(KEY2); } catch (e){}
       if ((SDB || dbWait) && !canShare()){ Object.keys(DEF2).forEach(id => put2(id, DEF2[id])); dbReady().then(db => db && db.doc(SK).get().then(sn => { if (sn && sn.exists){ lastAt = 0; takeShared(sn.data()); } })).catch(() => {}); return; }   /* a viewer: back to the owner's shared setup (never deleting it for everyone) */
       dbReady().then(db => { if (db) db.doc(SK).delete().catch(() => {}); }); logSet(null);   // the owner: the shared one too, everyone back to the defaults
@@ -49919,8 +49922,9 @@ hairline({
                 : '<button type="button" class="tkPsGo" data-a="apply" title="Put this preset on the page"><b>' + esc(x.name) + '</b><small>' + esc(sub(x)) + '</small></button>') +
               (x.fixed ? '' : '<button type="button" class="tkPsIc" data-a="update" title="Update: keep the page’s tweaks in this preset" aria-label="Update ' + esc(x.name) + '">' + IC.up + '</button>' +
               '<button type="button" class="tkPsIc" data-a="rename" title="Rename" aria-label="Rename ' + esc(x.name) + '">' + IC.ed + '</button>') +
-              '<button type="button" class="tkPsIc" data-a="share" title="Copy a link to this preset" aria-label="Share ' + esc(x.name) + '">' + IC.ln + '</button>' +
-              (x.fixed ? '' : '<button type="button" class="tkPsIc del' + (SURE === x.id ? ' sure' : '') + '" data-a="del" title="Delete" aria-label="Delete ' + esc(x.name) + '">' + (SURE === x.id ? 'Delete?' : IC.del) + '</button>') + '</div>').join('') : '') +
+              '<button type="button" class="tkPsIc" data-a="share" title="Copy link" aria-label="Copy a link to ' + esc(x.name) + '">' + IC.ln + '</button>' +
+              (x.fixed ? '' : SURE === x.id ? '<span class="tkPsSure" role="group" aria-label="Remove ' + esc(x.name) + '?"><span>Remove?</span><button type="button" class="tkPsYes" data-a="delYes">Yes</button><button type="button" class="tkPsNo" data-a="delNo">No</button></span>'
+                : '<button type="button" class="tkPsIc del" data-a="del" title="Remove" aria-label="Remove ' + esc(x.name) + '">' + IC.del + '</button>') + '</div>').join('') : '') +   /* the bin, then Remove? Yes / No ("Bin icon to remove. Ask Yes no before clicking") */
             (mine().length ? '' : '<p class="tkPsNone">No presets for this page yet. Name the tweaks as they are now to keep them as one.</p>') +
             '<form class="tkPsAdd"><input type="text" placeholder="New preset from the page’s tweaks" aria-label="New preset name" maxlength="60"><button class="tkBtn" type="submit">Add</button></form>';
           const ed = menu.querySelector('.tkPsEd'); if (ed){ ed.focus({ preventScroll: true }); ed.select(); } names(); };
@@ -49938,11 +49942,13 @@ hairline({
           if (live) col(PCOL).doc(id).delete().catch(() => say('Could not delete the preset', 3000)); else keepL(); paint(); };
         /* Share: a snapshot stored, its link copied (the clipboard inside the tap; refused, the link shown to copy by hand) */
         /* Share: the link copied at once, the button says Copied for 2 s ("just copy directly, feedback inside CTA 'Copied' disappear after 2sec"); the setup stored behind it. Only if the clipboard refuses, the link shown to copy by hand */
+        const snack = t => { let sb = document.querySelector('.tkSnack'); if (!sb){ sb = document.createElement('div'); sb.className = 'tkSnack'; sb.setAttribute('role', 'status'); sb.setAttribute('aria-live', 'polite'); document.body.appendChild(sb); }
+          sb.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span></span>'; sb.lastChild.textContent = t; clearTimeout(sb._t); requestAnimationFrame(() => sb.classList.add('on')); sb._t = setTimeout(() => sb.classList.remove('on'), 2200); };   /* the snackbar (.tkSnack) */
         const shSay = t => { const sp = shBtn.querySelector('span'); if (!sp) return; clearTimeout(shBtn._t); sp.textContent = t; shBtn.classList.toggle('done', t !== 'Share'); if (t !== 'Share') shBtn._t = setTimeout(() => { sp.textContent = 'Share'; shBtn.classList.remove('done'); }, 2000); };
         const share = (snap, name) => { const id = newId(), url = (/^(localhost|127\.0\.0\.1)$/.test(location.hostname) ? location.href.split('#')[0] : LINK) + '#tk-' + id, body = { snap, name: name || '', at: Date.now() };
           const manual = () => { say('Copy this link' + (name ? ' · ' + esc(name) : '') + '. Whoever opens it sees the prototype with these tweaks.<input type="text" readonly value="' + esc(url) + '" aria-label="Link to this setup">', 0); const i = msg.querySelector('input'); if (i){ i.addEventListener('focus', () => i.select()); i.focus(); } };
           let copied = null; try { copied = navigator.clipboard && navigator.clipboard.writeText ? navigator.clipboard.writeText(url) : null; } catch (e){ copied = null; }
-          if (copied) copied.then(() => shSay('Copied'), manual); else manual();
+          if (copied) copied.then(() => { shSay('Copied'); snack(name ? 'Link to “' + name + '” copied' : 'Link copied'); }, manual); else manual();
           if (live) me().then(by => { if (by) body.by = by; return col(SCOL).doc(id).set(body); }).catch(() => { msg.hidden = true; shSay('Not shared'); say('The link could not be saved: try Share again', 4000); });
           else { const m = rdL(SK2) || {}; m[id] = body; wrL(SK2, m); } };
         btn.addEventListener('click', () => { const open = menu.hidden; if (open) place(); menu.hidden = !open; btn.setAttribute('aria-expanded', String(open)); msg.hidden = true; EDIT = ''; SURE = ''; paint(); if (open){ const i = menu.querySelector('.tkPsAdd input'); if (i && !mine().length) i.focus({ preventScroll: true }); } });
@@ -49954,7 +49960,7 @@ hairline({
           else if (a === 'update'){ upd(id, { snap: snapNow(), at: Date.now() }); setOn(id); say('“' + esc(o.name) + '” updated with the page’s tweaks', 2200); }
           else if (a === 'rename'){ EDIT = id; paint(); }
           else if (a === 'share'){ menu.hidden = true; btn.setAttribute('aria-expanded', 'false'); share(o.snap, o.name); }
-          else if (a === 'del'){ if (SURE === id){ SURE = ''; del(id); } else { SURE = id; paint(); } } });
+          else if (a === 'del'){ SURE = id; paint(); } else if (a === 'delYes'){ SURE = ''; del(id); snack('“' + o.name + '” removed'); } else if (a === 'delNo'){ SURE = ''; paint(); } });
         menu.addEventListener('keydown', e => { const i = e.target.closest('.tkPsEd'); if (!i) return; if (e.key === 'Enter'){ e.preventDefault(); const id = i.closest('.tkPsIt').dataset.id, v = i.value.trim().slice(0, 60); EDIT = ''; if (v) upd(id, { name: v }); else paint(); } else if (e.key === 'Escape'){ e.preventDefault(); EDIT = ''; paint(); } });
         menu.addEventListener('focusout', e => { const i = e.target.closest && e.target.closest('.tkPsEd'); if (!i) return; setTimeout(() => { if (EDIT && !menu.contains(document.activeElement)){ const id = EDIT, v = i.value.trim().slice(0, 60); EDIT = ''; if (v) upd(id, { name: v }); else paint(); } }, 0); });
         document.addEventListener('pointerdown', e => { if (!ps.contains(e.target)){ msg.hidden = true; if (!menu.hidden){ menu.hidden = true; btn.setAttribute('aria-expanded', 'false'); EDIT = ''; SURE = ''; } } }, true);
@@ -49965,7 +49971,7 @@ hairline({
           dbReady().then(db => { if (!db){ setTimeout(() => take((rdL(SK2) || {})[id]), 400); return; } return db.doc(SK).get().catch(() => null).then(() => new Promise(r => setTimeout(r, 500))).then(() => db.doc(SCOL + '/' + id).get()).then(sn => { if (sn && sn.exists) take(sn.data()); else say('That shared setup is not here any more.', 5000); }); }).catch(() => {}); }
         /* the bar's Save, top right ("when I save the top right Save it saves the active preset"): a preset of this page in use, the page's tweaks written into it; Default, the setup itself (the Tweaks' Save).
            changed(): the page moved off the preset in use (the Save's dot) */
-        window.EvPresets = { changed: () => { const o = cur(); return !!o && !same(o.snap); },
+        window.EvPresets = { toDefault: () => { setOn(DEFID); labelSoon(); }, changed: () => { const o = cur(); return !!o && !same(o.snap); },
           save: () => { const o = cur(); if (o && !o.fixed){ upd(o.id, { snap: snapNow(), at: Date.now() }); setOn(o.id); say('“' + esc(o.name) + '” saved with the page’s tweaks', 2200); return o.name; }
             const b = document.querySelector('.stTkSave'); if (b) b.click(); setOn(DEFID); return 'Default'; } };
         label();

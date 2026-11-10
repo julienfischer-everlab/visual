@@ -22210,3 +22210,10 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **The top-right Save keeps the preset in use** ("when I save the top right Save it saves the active preset"): besides the viewport, it writes the page's tweaks into the preset in use on this page (a preset of your own: updated for the team; Default: the setup itself, as the Tweaks' Save). Its dot now also shows when the tweaks have moved off that preset.
 - **"AI --> Go to concierge"** ("This preset has CONCIERGE here"): it had been saved with Desktop field tap on In app; the stored preset now holds Concierge.
 - **Theme switch** removed from Tweaks → First-time user ("remove in membership"): the membership screens' sun / moon switch stays off.
+
+## Container value, preset link and remove, Reset to default (v2304)
+
+- **Container (max width)** ("Container is not max width 100%, there is a value for that"): the Tweaks Container heading now names the picked token's value at every breakpoint (XS: 2xs 100%, as the token is there; xs 800px; sm 1080px...); only Full is 100%. It said 100% for every size at XS and S before.
+- **Each preset's link** ("Add a link icon that on click copy the link (add snackbar feedback)"): the icons were there but the Tweaks panel covered the menu's right end; the menu is above the panel now. The link icon copies the preset's link and a snackbar at the foot of the window says "Link to “<name>” copied". The top bar's Share shows it too.
+- **Remove** ("Bin icon to remove. Ask Yes no before clicking"): the bin turns the row's icons into "Remove? Yes / No"; Yes removes it (snackbar "“<name>” removed"), No puts the icons back.
+- **Reset to default** ("reset to default"): the Tweaks' Reset is labelled Reset to default (what it does is unchanged), and the preset in use becomes Default.
