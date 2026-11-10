@@ -22353,3 +22353,8 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - Picking Step 1 in Tweaks now overrides that guard. The card shows its Step 1: Start your health journey / Add your details / Get started, the sphere unlit. Picking any other state puts the guard back, so the normal flow still starts the Overview at Step 2.
   - Design system → Modules → Onboarding consult lists Step 1 first.
 - **Freemium card button** ("Use same CTA style as the other primary card"): Explore services is the primary card's own button (`.hpOvBtn`): 44 tall, pill, white on dark (dark on light), full width like Step 1's Get started. It no longer has its own grey 56 / 16 style.
+- **Primary card: everything centred in Centered** ("Make sure All content on the primary card are centered!"). Every State and Object was checked at M and L, each element's centre measured against the card's. The three fixes:
+  - **First insights:** the sphere sits above the title (it was top right) and its eyebrow is hidden, as on the other states. "Build my insights" is centred (its own `margin-left: auto` pushed it right at L). Every primary card button now centres with auto margins.
+  - **Freemium · Explore:** the tag, title and line are centred, and the service rows still run to the card's edges.
+  - **Left alone:** the task rows keep their in-row layout (Skip and the chevrons at the right).
+  - Centered is a desk option (M and up), so XS and S keep the left layout.
