@@ -22217,3 +22217,8 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **Each preset's link** ("Add a link icon that on click copy the link (add snackbar feedback)"): the icons were there but the Tweaks panel covered the menu's right end; the menu is above the panel now. The link icon copies the preset's link and a snackbar at the foot of the window says "Link to “<name>” copied". The top bar's Share shows it too.
 - **Remove** ("Bin icon to remove. Ask Yes no before clicking"): the bin turns the row's icons into "Remove? Yes / No"; Yes removes it (snackbar "“<name>” removed"), No puts the icons back.
 - **Reset to default** ("reset to default"): the Tweaks' Reset is labelled Reset to default (what it does is unchanged), and the preset in use becomes Default.
+
+## Tweaks header without Save / Reset, roomier groups (v2305)
+
+- **No Save / Reset in the Tweaks header** ("no need save reset here because the Save at the top saves the presets from now"): the top bar's Save keeps the preset in use (Default: the setup everyone opens on); applying Default from Presets is the reset. The header keeps the preset in use, the last save's log, See documentation and the close.
+- **Tweaks groups** ("4px more padding ... left right and gap between cards"): each group card 6 at its sides (was 2) and 8 between cards (was 4).
