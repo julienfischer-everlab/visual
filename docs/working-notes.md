@@ -22518,3 +22518,8 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - Timeline focus card: no border or warm light, #252522 ground (#f2f0ec light), the goal 16, Review a full-round secondary button with no arrow.
 - V3 What to expect: the picture's fade eased out over 128 px more, no edge where it meets the ground.
 - Chat video: Canvas → Background → Blanket: swatches, a colour picker and hex, opacity. Floating, Eva's name over her bubble is white in light theme and near-black in dark, 2 px over the bubble.
+
+## V3 title 48 higher; the Chart's Tweaks only on V2
+
+- V3 What to expect: the title group rests 48 px above the picture's middle ("Push the title up by 48px"), never under the bar.
+- Tweaks → Intro: Dot gap, Dot opacity, Dot ripple and Line shape (the Chart's own) shown only with the V2 preset ("Remove this tweak for v3. It's only used for V2"); Line shape a dropdown ("use the select instead").
