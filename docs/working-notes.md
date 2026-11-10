@@ -22282,3 +22282,10 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - Services now leads the card, right under the field.
   - The top field's own panel (Top Chat AI) is unchanged.
 - **"See more"**: the Unread 3+ chip at the end of the conversations reads See more (was "2 more"): the Ask sheet, the desk panel and the Merged list.
+- **Merged the live artifact's Health profile copy pass.** Another session published to Everlab App - Latest (04:08Z) on top of the previous build, with copy changes that were not in git. They are now in the source, so the next build keeps them:
+  - Steps: Add your details (was Our promise and your details) and Build your health profile (was Tell us about you), in the home, the Tweaks labels, the Overview card's Step 1 line and the doc.
+  - All set: Next: your past results. Booked: "Last step, help your doctor prepare for your consult by answering a few quick questions about you." Great start: no "It takes about a minute". Getting started: Continue. Step 3 on the card: "It will help your doctor prepare for your call."
+  - Review: "Tap Edit to make changes." Past results search: "We’re searching for your past results" / "Checking labs across … We’ll tell you as soon as they arrive." Upload: no "You can also add them later". Records card: "We’ll let you know when they arrive."
+  - Card screen: Continue (was Get started), no line under it. Copy #1's title is "Welcome to Everlab, {name}." (was Your commitment / to a healthier life…).
+  - The doc's captions follow.
+- **Debriefs carousel: dots 16 under the cards** ("Nav carousel gap with carousel above 16px"; was 8).
