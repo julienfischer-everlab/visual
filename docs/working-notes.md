@@ -22468,3 +22468,7 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - "remove the background ... the marker overlapping the image": the markers lose their black badge; the words white on the picture with a soft shadow, the orange square kept.
 - "make the image and the background more diffused. The gradient should be more intense and go more on the top, so there is a smoother fade out": the picture's mask fades from near its top (92% at 14%, 72% at 32%, 46% at 52%, 22% at 70%, 7% at 86%), was solid to 55% then out.
 - "push the title up by 40 pixels": the words start 80 above the picture's foot (was 40): the title 352 → 312 on the 852 phone, the bullets with it. The markers' spots kept in the picture's upper 60%, clear of the title.
+
+## Async V3: no Welcome whatever the saved Intro screen (2026-11-10)
+
+- "For the V3, remove the welcome step entirely ... just keep one screen: What to Expect": V3 (the report's Preset) now means no welcome by itself, not only through Intro screen None. An older saved setup (the panel's Save, a shared preset) could put another Intro screen back after the V3 preset, so the report still opened on the gift Welcome, and on it Tweaks hid the What to expect row, where "Marker overlapping image" is ("where is the variation?"). Picking a preset remounts the report even when no tweak changed; the Intro screen row is hidden while V3 is picked. Checked: V3 opens on What to expect, its title on the black screen, then up; still so with Intro screen forced to Imagery and after a reload; V2 keeps its Welcome.
