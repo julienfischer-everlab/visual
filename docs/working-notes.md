@@ -22523,3 +22523,4 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 
 - V3 What to expect: the title group rests 48 px above the picture's middle ("Push the title up by 48px"), never under the bar.
 - Tweaks → Intro: Dot gap, Dot opacity, Dot ripple and Line shape (the Chart's own) shown only with the V2 preset ("Remove this tweak for v3. It's only used for V2"); Line shape a dropdown ("use the select instead").
+- V3 title group: the tag 8 closer to the title (welcome and What to expect alike, so the hand-off holds), the subtitle 4 closer.
