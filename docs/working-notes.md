@@ -22256,3 +22256,20 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **Tweaks grid**: 12 between the cards, header included ("tweak gap grid. 12px").
 - **Service detail Tweaks**: the Service select has its own group, "Service example", above General ("Put service in a tweak Group, Service example").
 - **No push on the desk** ("on desktop no push transition"): `EvPush.page` switches at once whenever the desk sidebar is showing (M and up). The phone (XS, S) keeps the push and pop. The Page types doc's rules say so (Push: on the phone; At once: every Sub page on the desk). Checked: a Timeline row opens its service page without `evPushing` at L, and with it at XS.
+
+## V3 intro on imagery, Flow names, viewport without the panels (v2310)
+
+- **V3's picture** ("v3 image"): `assets/async/hero-v3.webp`, the hand photo (840 wide, 28KB). It is V3's `o.hero`: the Imagery intro's banner, the Image fade's top and the new Sphere hero imagery.
+- **V3's first screen** ("use the same layout, content at the top in the center, an imagery on the top (gradient fade out bottom). Remove sphere animation"; "keep the square but overlap the top imagery"; "v3 dont need that in the first screen"):
+  - V3 is now the Sphere hero layout (tag, title, doctor and date chips, See my results, the note) with a new Tweak, "Sphere hero visual: Sphere / Imagery" (`stArOrbVis`, shown with the Sphere hero only, kept in presets).
+  - Imagery puts the photo across the top 78%. It is darkened for the words (lightened in Light) and fades out at its foot (`.arOrbPic`).
+  - The particle canvas is hidden; the orange squares and their labels still ride over the photo.
+  - No "What we found / Peace of mind / Talk" list on the first screen.
+  - V3 preset: `stArList: 'orbit', stArOrbVis: 'img'`, with a one-time migration of saved V3s (`everlab:mig:arV3orbImg`).
+- **Flow panel group names mirror Your progress** ("title step should Always be mirrored on the left flow nav"): one shared `JNM` map (Questionnaire, Assessment, Report, DEXA scan, Diagnostics Review, Member Check-In…) is used by Your progress and by the Flow panel's groups.
+- **Microbiome questionnaire done** ("when done, the progress need to be green fully"): its own row is fully green. The Assessment after it shows as up next (grey, its "At-home stool test…" line), with no part filled.
+- **Viewport without the docked panels** ("The viewport size shouldn't include the tweak and flow panel!"):
+  - Auto measures the window less the docked Tweaks and Flow panel (320 each). The readout shows that width: Tweaks docked at 1382 reads 1062 px · M; both docked, 742 px · S.
+  - Docked, the app takes that width's breakpoint as a forced one would, within the room left (`data-bp` set, no `bpAuto`). Undocked, Auto is as before.
+  - Docking or undocking re-reads it.
+- **Breakpoint picker as a segmented tab** ("use a segmented tab here vs a select"): `#stBp` wears `tkSegSel`: Auto · XS · S · M · L in the bar, 30 high.
