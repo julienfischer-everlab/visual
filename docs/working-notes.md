@@ -22294,3 +22294,9 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - The top field's own panel keeps its own setting.
 - **Bottom sheet: dismiss at the top nav's right** ("Add top nav right dismiss cta"): the Bottom sheet layout (`askStd`) moves `.aiX` onto the wrap, 44 at the top nav's right (57 down, 16 in), as the floating-card layouts. Tapping the dim and swiping down still close it.
 - **Inbox chips on the dim: white 10%** ("chip fff opacity +4%"; were 6%), the phone's Inbox above the sheet and the desk's above the card. Light mode keeps its white chips.
+- **Desk Ask card centred, the Inbox under it** ("Centre the chat field card and put the chips below it"):
+  - The Menu AI entry point's card (`.evSrchAt`) sits in the middle of the window: `--pT`, clamped so the chips under it stay in view. At 1600×1000 the card's middle is at 500; at 760 tall it rises to 155 from the top and the chips end at 736.
+  - The Inbox (`.evSrchIn`) is 16 under the card. Its chips come down from the card, the nearest first (`evStackDn`).
+  - The JS keeps `--pH` and `--inH` (the card's and the Inbox's heights).
+- **Card foot = its sides** ("Increase the padding on the bottom so it's the same as the padding left and right", on the card): the Services tiles now end 28 above the card's foot (were 20), as they sit 28 in from its sides.
+- **Desk chat field white 2%** ("Reduce the opacity of the chat field by 4%"; was 6%): the field inside every desk Ask card, the top field's panel too (one rule). Light mode keeps its white field.
