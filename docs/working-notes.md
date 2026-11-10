@@ -22329,3 +22329,12 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - The rows: Tell us about you (About you, Health profile), Add your past results (Past results), Book your first test (the Services page). A row opens its place and, back on the Overview, reads Done.
   - One builder, `window.EvAct.html(done)`, draws it on the Overview (`.ovAct`, hidden unless a Bento slot holds it; `html.bmAct`) and on the new Design system → Modules → Get started page (`#module-get-started`): Not started, Part way, Almost there, All done, plus its anatomy.
 - **Bento: Insights always pickable** ("why cant pick insight"): Module 1 / 2 hid Insights while Tweaks → Insights → Dedicated section was On (Insights its own section then). It is now always in the list. Picking it gives Insights the Hero Format and turns Dedicated section Off; turning Dedicated section On again takes it out of its slot.
+- **Schedule title as an eyebrow** ("title next eyebrow like insights"): under the Dates layout, Schedule's title is styled like the Insights card's eyebrow: 14 / 18, uppercase, 1 px tracking, secondary. It is still the button that opens the full list.
+- **Documentation renamed Documentation flow** ("Rename Documentation flow"): in the page menu. It now holds the flows only: Concierge entry points (opened first), Membership onboarding, Gifting.
+- **Service timeline and Concierge components → Design system → Modules** ("Put this into Design system Modules", "same as this"): both are in the Design system's left nav under Modules, after Get started. Their hashes are unchanged. The page gallery lists them under Design system.
+  - Locally the Service timeline's playground (`components/progress-timeline/demo.html`) is a 404 because `dist/` never had it. The artifact still serves the copy published earlier.
+- **Get started card content from the Timeline V2 archive** ("Replace content of get started card by the one from the timeline v2 archive"):
+  - The card is now V2's status card: "Start your health journey.", its line (two lines at most), Get started, over the status cards' MRI photo (`window.EvStatusImg.mri`) with V2's brown gradient (cream in light).
+  - Get started opens the membership experience, as in V2 (`data-jrn="welc"`).
+  - The three-step checklist is gone. The Modules page shows its one state and the new anatomy.
+  - The first screenshot's "Become a member · $299 per year · Start my membership" is not in the prototype or its history, so it was not used.
