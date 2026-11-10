@@ -22409,3 +22409,11 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - The ground: the membership experience's light, its own picture (card-glow), its orange at the top into the brown and the black under the rows, saturation .8 as there, a few motes; light mode the experience's light mode (the glow into #FAFAFA, the ink dark).
 - Centered (desk): the pictures on top, the words centred, the rows and the button across.
 - Design system → Modules → Onboarding consult → Object: the two drawn by the same `HPC.dr`.
+
+## Doctor's plan card: the photo, the fading list, a hugging button
+
+- "Instead of this background, use an image with a gradient on the bottom": the runner photo (`assets/overview/plan-run.webp`, 800 wide, 24 KB) the whole card, dimmed under the words and into the dark at the foot (rgba(14,8,6) .5 → .42 → .78 → solid by 82%). Light mode the same photo card, its words white.
+- "remove the thumbnail on the top": no pictures in the head; the tag and the title alone.
+- "+4 more ... doesn't need to be a card ... a gradient overlapping the list, with a fade-out on the list on the third item": three rows, the third fading out from its top (a mask on the list), "+ N more" as words just under it on the fade (15 / 20, white 72%), the rows' own inset; centred in Centered.
+- "review my plan to be hug content, not the full CTA": the button its words' width, at the foot (left; centred in Centered).
+- Housekeeping: twelve verification screenshots that had been saved in the repo's root (and committed in the last three commits) are removed; the scripts write to the scratchpad now.
