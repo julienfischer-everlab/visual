@@ -22222,3 +22222,29 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 
 - **No Save / Reset in the Tweaks header** ("no need save reset here because the Save at the top saves the presets from now"): the top bar's Save keeps the preset in use (Default: the setup everyone opens on); applying Default from Presets is the reset. The header keeps the preset in use, the last save's log, See documentation and the close.
 - **Tweaks groups** ("4px more padding ... left right and gap between cards"): each group card 6 at its sides (was 2) and 8 between cards (was 4).
+
+## Async V2/V3 visuals, Microbiome and Onboarding progress, top bar and Tweaks header, debrief cards (v2306)
+
+- **Async report V2, What to expect "Image + chart"**: the picture on top, the chart in a mini frame overlapping its bottom right (`.arDbiVis`, `.arDbiImg`, `.arDbiMini`). V2 preset: `stArDbf: 'img'`.
+- **Async report V3**: no Everlab logo on the gift intro at either breakpoint. What to expect "Image fade" (`stArDbf: 'fade'`): a top visual that fades out towards the centre, content centred vertically, no sphere or squares (`.arDbfTop`, `.arDbfFadeOn`).
+- **Unread 3+** ("If 3+ need a Chip X more at the end of the list"): the conversation lists end with a "2 more" chip that opens the Concierge. It sits in `EvConvChips` and the desk Ask panel, and only shows under `html.askUn3` / `topUn3`. Merged lists don't count it as a conversation.
+- **Microbiome** ("assement is missing on step 2!!!"): once the questionnaire is done, Your progress stays. It lists the Questionnaire (Completed) and the Assessment in hand, where it used to hide the whole column (`QDN()` in `grpProg` / `allDone`).
+- **Onboarding Consultation** ("the Complete quest is not mandatory"): the questionnaire is no longer a step (`DPOOL.consult = []`). It sits in the Book your call status block as an "Optional" item, the same card as the Questionnaire-optional task, and stays there until it is completed, then moves to Documents.
+- **Top bar**:
+  - The page select is 40px narrower (189).
+  - The moon / sun sits inside the colour-mode switch's knob.
+  - Preset and Share moved to the right cluster, left of the camera.
+  - Camera, comment and preset icons are filled; the comment icon is centred.
+  - The Service select moved into Tweaks, at the top of Service detail > General (`.tkSvcPickRow`, a `tkProxy`: not saved in presets).
+- **Tweaks header**:
+  - A card at 8% white, with the Preset on top and the close as a filled secondary circle.
+  - "Latest … by …" on one line below.
+  - The Build note at the panel's foot is removed.
+- **Debrief cards**:
+  - The doctor's photo is 32 × 32 with 8px corners and an 8px gap.
+  - The date is plain 14 (no spaced capitals).
+  - The title sits 2px higher.
+  - The New badge is white.
+  - The dots are 8 under the carousel.
+  - VO2 Max Test has its own photo (`assets/reports/vo2max.webp`, `REP_OWN`).
+- **Medical records**: no Upload records link in the header on the phone either.
