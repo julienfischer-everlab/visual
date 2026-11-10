@@ -1151,7 +1151,7 @@
             <${Field} label="Fit"><${Seg} label=${isVid ? 'Video fit' : 'Image fit'} value=${bg.fit || 'fill'} options=${[['fill', 'Fill'], ['fit', 'Fit'], ['crop', 'Crop']]} onChange=${function (v) { setBg({ fit: v }); }} /><//>
             <div className="f2"><${Field} label="Position X"><${Range} label="Position X" min=${0} max=${100} value=${bg.x == null ? 50 : bg.x} fmt=${function (v) { return v + '%'; }} onChange=${function (v) { setBg({ x: v }, 'bx'); }} /><//>
             <${Field} label="Position Y"><${Range} label="Position Y" min=${0} max=${100} value=${bg.y == null ? 50 : bg.y} fmt=${function (v) { return v + '%'; }} onChange=${function (v) { setBg({ y: v }, 'by'); }} /><//></div>
-            <${Field} label="Scale" hint=${bg.fit === 'crop' ? null : 'Scale applies to Crop.'}><${Range} label="Scale" min=${1} max=${4} step=${.05} value=${bg.scale || 1} disabled=${bg.fit !== 'crop'} fmt=${function (v) { return v.toFixed(2) + '×'; }} onChange=${function (v) { setBg({ scale: v }, 'bs'); }} /><//>
+            <${Field} label="Scale"><${Range} label="Scale" min=${1} max=${4} step=${.05} value=${bg.scale || 1} fmt=${function (v) { return v.toFixed(2) + '×'; }} onChange=${function (v) { setBg({ scale: v }, 'bs'); }} /><//>
             <${Field} label="Blur"><${Range} label="Blur" min=${0} max=${60} value=${bg.blur || 0} fmt=${function (v) { return v + 'px'; }} onChange=${function (v) { setBg({ blur: v }, 'bb'); }} /><//>
             <${Field} label="Blanket" aside=${Math.round((bg.overlay || 0) * 100) + '%'} hint="A colour laid over the picture or video, under the chat."><${Range} label="Blanket opacity" min=${0} max=${100} value=${Math.round((bg.overlay || 0) * 100)} fmt=${function (v) { return v + '%'; }} onChange=${function (v) { setBg({ overlay: v / 100 }, 'bo'); }} />
               <div className="sw" style=${{ marginTop: '6px' }} role="group" aria-label="Blanket colour">${['#000000', '#0d0d0c', '#2e1f1a', '#ffffff', '#f4f2ed'].concat(colors.map(function (x) { return x.value.toLowerCase(); }).filter(function (v, i, A) { return ['#000000', '#0d0d0c', '#2e1f1a', '#ffffff', '#f4f2ed'].indexOf(v) < 0 && A.indexOf(v) === i; })).map(function (x) { return html`<button type="button" key=${x} aria-label=${'Blanket ' + x} aria-pressed=${String((bg.overlayColor || '#000000').toLowerCase() === x)} style=${{ background: x }} onClick=${function () { setBg({ overlayColor: x, overlay: bg.overlay > 0 ? bg.overlay : .3 }); }}></button>`; })}</div>
@@ -1251,15 +1251,15 @@
     var del = function (id) { var i = idx(id); if (i < 0) return; edit(function (x) { x.sequence.splice(i, 1); return x; }); var nb = items[i + 1] || items[i - 1]; setSel(nb ? nb.id : null); if (!nb) setRtab('canvas'); };
     var move = function (from, to) { if (from === to) return; edit(function (x) { var it = x.sequence.splice(from, 1)[0]; x.sequence.splice(to, 0, it); return x; }); };
 
-    /* the background moved on the canvas ("drag the background and increase the background manually within Canvas"): drag pans its focal point, the wheel (or a pinch) scales it (Crop).
+    /* the background moved on the canvas ("drag the background and increase the background manually within Canvas"): drag pans its focal point, the wheel (or a pinch) scales it, whatever its fit.
        Live on the stage's own picture while the hand is on it, then one edit (one undo step); a click without a drag opens the Canvas settings as before */
     var hitRef = useRef(null), bgD = useRef(null), bgZ = useRef(null);
     var bgPic = !!(comp.background && (comp.background.kind === 'image' || comp.background.kind === 'video') && comp.background.src);
     var bgEl = function () { try { var d = frameRef.current.contentDocument; return d && d.querySelector('.stgBgIm > img, .stgBgIm > video'); } catch (e) { return null; } };
-    var bgPaint = function (el, b) { el.style.objectPosition = b.x + '% ' + b.y + '%'; if (b.fit === 'crop' && b.scale !== 1) { el.style.transform = 'scale(' + b.scale + ')'; el.style.transformOrigin = b.x + '% ' + b.y + '%'; } else { el.style.transform = ''; el.style.transformOrigin = ''; } };
+    var bgPaint = function (el, b) { el.style.objectPosition = b.x + '% ' + b.y + '%'; if ((b.scale || 1) !== 1) { el.style.transform = 'scale(' + b.scale + ')'; el.style.transformOrigin = b.x + '% ' + b.y + '%'; } else { el.style.transform = ''; el.style.transformOrigin = ''; } };
     var bgPan = function (el, b, dx, dy) {   /* dx, dy in the composition's px: the picture's edge moves with the hand (its left = x% of (W - s * rw), object-position's own rule) */
       var nw = el.tagName === 'VIDEO' ? el.videoWidth : el.naturalWidth, nh = el.tagName === 'VIDEO' ? el.videoHeight : el.naturalHeight, W = el.clientWidth, H = el.clientHeight; if (!nw || !nh || !W || !H) return b;
-      var c = b.fit === 'fit' ? Math.min(W / nw, H / nh) : Math.max(W / nw, H / nh), s = b.fit === 'crop' ? (b.scale || 1) : 1, ox = nw * c * s - W, oy = nh * c * s - H, cl = function (v) { return Math.max(0, Math.min(100, v)); };
+      var c = b.fit === 'fit' ? Math.min(W / nw, H / nh) : Math.max(W / nw, H / nh), s = b.scale || 1, ox = nw * c * s - W, oy = nh * c * s - H, cl = function (v) { return Math.max(0, Math.min(100, v)); };
       return Object.assign({}, b, { x: Math.abs(ox) > .5 ? cl(b.x - dx * 100 / ox) : b.x, y: Math.abs(oy) > .5 ? cl(b.y - dy * 100 / oy) : b.y });
     };
     var bgK = function () { var cv = hitRef.current && hitRef.current.parentNode, w = cv ? cv.getBoundingClientRect().width : 0; return w ? ((comp.format || {}).w || 1080) / w : 1; };
@@ -1270,13 +1270,13 @@
     var bgUp = function () { var D0 = bgD.current; bgD.current = null; if (!D0) return; if (hitRef.current) { hitRef.current.classList.remove('drag'); hitRef.current.parentNode.classList.remove('drag'); }
       if (!D0.on) { setRtab('canvas'); return; }
       if (D0.nb) { var nb = D0.nb; edit(function (y) { y.background.x = Math.round(nb.x * 10) / 10; y.background.y = Math.round(nb.y * 10) / 10; return y; }, 'bgpan'); } };
-    useEffect(function () {   /* the wheel, not passive (a pinch is a wheel with ctrl): the scale, at the focal point; Fill and Fit become Crop to take it */
+    useEffect(function () {   /* the wheel, not passive (a pinch is a wheel with ctrl): the scale, at the focal point, in any fit ("I should be able to scale the image as well, not only the video") */
       var el0 = hitRef.current; if (!el0) return;
       var onW = function (e) { var b0 = docRef.current.comp.background; if (!b0 || (b0.kind !== 'image' && b0.kind !== 'video') || !b0.src) return; e.preventDefault();
         var Z = bgZ.current || (bgZ.current = { b: clone(b0) }), el = bgEl(); clearTimeout(Z.t);
-        Z.b.fit = 'crop'; Z.b.scale = Math.max(1, Math.min(4, (Z.b.scale || 1) * Math.exp(-e.deltaY * (e.ctrlKey ? .01 : .0015))));
+        Z.b.scale = Math.max(1, Math.min(4, (Z.b.scale || 1) * Math.exp(-e.deltaY * (e.ctrlKey ? .01 : .0015))));
         if (el) bgPaint(el, Z.b);
-        Z.t = setTimeout(function () { var nb = Z.b; bgZ.current = null; edit(function (y) { y.background.fit = 'crop'; y.background.scale = Math.round(nb.scale * 100) / 100; return y; }, 'bgzoom'); }, 280); };
+        Z.t = setTimeout(function () { var nb = Z.b; bgZ.current = null; edit(function (y) { y.background.scale = Math.round(nb.scale * 100) / 100; return y; }, 'bgzoom'); }, 280); };
       el0.addEventListener('wheel', onW, { passive: false }); return function () { el0.removeEventListener('wheel', onW); };
     }, []);
 

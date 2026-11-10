@@ -89,6 +89,7 @@ if (/^#tk-[A-Za-z0-9]{6,40}$/.test(location.hash)) { document.documentElement.cl
 .tkArPicRow{align-items:flex-start;} .tkArPics{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px;max-width:208px;}
 .tkArPic{position:relative;flex:none;width:44px;height:44px;margin:0;padding:0;border:0;border-radius:8px;background:#262626 center / cover no-repeat;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1);color:rgba(255,255,255,.72);font:inherit;font-size:10px;line-height:1;cursor:pointer;}
 .tkArPic[aria-pressed="true"]{box-shadow:0 0 0 2px #fff;} .tkArPicAdd{background:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.22);font-size:20px;color:rgba(255,255,255,.8);} .tkArPicAdd:hover{background:rgba(255,255,255,.06);}
+.tkCcVid::after{content:'';position:absolute;left:6px;bottom:6px;width:0;height:0;border-style:solid;border-width:4px 0 4px 7px;border-color:transparent transparent transparent rgba(255,255,255,.9);filter:drop-shadow(0 0 2px rgba(0,0,0,.6));pointer-events:none;} .tkCcVidBusy{background:#262626;cursor:progress;} .tkCcVidBusy::after{content:'';position:absolute;inset:13px;border-radius:50%;border:2px solid rgba(255,255,255,.2);border-top-color:#fff;animation:tkCcSpin .8s linear infinite;} @keyframes tkCcSpin{to{transform:rotate(360deg);}}   /* the Concierge's videos (Tweaks -> Onboarding consult -> Video): a still each, a play mark; a spinner while one is added */
 .tkArPicDel{position:absolute;top:-7px;right:-7px;display:none;place-items:center;width:20px;height:20px;padding:0;border:0;border-radius:50%;background:#111;color:#fff;box-shadow:0 0 0 1px rgba(255,255,255,.24);cursor:pointer;} .tkArPic:is(:hover, :focus-within) .tkArPicDel{display:grid;} .tkArPicDel:hover{background:#b3261e;}   /* the report's pictures (Tweaks -> Async report -> Picture): the one in use ringed, the bin on hover */
   .topbar .tkPreCtl{display:inline-flex;align-items:center;gap:6px;} .topbar .tkPreBtn{padding:5px 10px;font-size:11.5px;} .topbar .tkPreBtn[data-dirty]{color:#fff;border-color:#52525b;} .topbar .tkPreBtn[data-dirty]::after{content:"";display:inline-block;width:5px;height:5px;margin:0 0 1px 6px;border-radius:50%;background:#f59e0b;vertical-align:middle;}   /* the preset row: V1 / V2, Save (a dot while the tweaks differ from the preset), Reset */
   .topbar .tkBtn:hover{border-color:#3f3f46;}
@@ -15016,6 +15017,8 @@ if (/^#tk-[A-Za-z0-9]{6,40}$/.test(location.hash)) { document.documentElement.cl
         <!-- the Health profile on its own ("when I'm on the health profile page I want to control only the health profile tweaks"): while the profile is showing, the panel is this group alone, the profile's rows (Primary card's $299 part) moved in here, and back when it goes -->
         <div class="tkGroup" data-pages="hp" id="tkHpGrp"><div class="tkSub">Onboarding consult</div>   <!-- "change the name of this card to Onboarding consult; also on the tweak; the health profile is just one step of the onboarding consult" -->
         <div class="tkRow"><span class="lbl">Background video</span><select id="stHpCcVid" class="tkSegSel" aria-label="The Concierge's video behind the screen: shown, or hidden (the screen on its own dark ground)"><option value="on" selected>On</option><option value="off">Off</option></select></div>   <!-- the Concierge's first row, a general one ("on concierge, a general tweak so we can just hide the video in the background") -->
+        <!-- the Concierge's video, quick to try ("a place where I can change the video ... add another one ... select the previous one or just trash one"): Default, then every video added, + to add one (window.CcVid) -->
+        <div class="tkRow tkArPicRow"><span class="lbl">Video</span><div class="tkArPics" id="tkCcVids" role="group" aria-label="The Concierge's video"></div><input type="file" id="tkCcVidF" accept="video/*" hidden></div>
         <div class="tkRow"><span class="lbl">Bubble text</span><span class="tkSlide"><input type="range" id="stHpCcBubFs" min="12" max="20" step="1" value="15" aria-label="The Concierge's bubbles, their text size"><i class="tkVal" id="stHpCcBubFsV">15px</i></span></div>   <!-- "tweak font size bubble speech" -->
         <div class="tkRow"><span class="lbl">Bubble line height</span><span class="tkSlide"><input type="range" id="stHpCcBubLh" min="1.1" max="1.7" step="0.02" value="1.34" aria-label="The Concierge's bubbles, their line height"><i class="tkVal" id="stHpCcBubLhV">1.34</i></span></div>
         <div class="tkRow"><span class="lbl">Bubble padding X</span><span class="tkSlide"><input type="range" id="stHpCcBubPx" min="8" max="32" step="1" value="18" aria-label="The Concierge's bubbles, their side padding"><i class="tkVal" id="stHpCcBubPxV">18px</i></span></div>
@@ -22620,6 +22623,64 @@ html.gfPlLeft .arSheet.hpSheet .hpPlTab { align-items: flex-start; text-align: l
 </style>
 <script>
 window.__ccVid = [null, 'assets/hp/concierge.mp4'];   /* H.264 alone now: the WebM copy dropped to keep the built page under its 16 MB (the slot kept, empty, so every reader still finds the MP4 second) */   /* the Concierge's video, named once: the intro and the Overview's Concierge card both play it (each path written is inlined in full by the build) */
+/* the Concierge's video, quick to try (Tweaks -> Onboarding consult -> Video: "a place where I can change the video in the background ... once it's selected, it adds the video to the tweak. Then I can add another one ... select the previous one or just trash one",
+   the system the Async report's Picture has): Default, then every video added (a still of each), + to add one, a bin on hover. Kept in the artifact's asset store and its shared table (ccVids) where the page has them,
+   else in this browser (IndexedDB); the choice per viewer (everlab:ccVid). The pick is the Concierge's video everywhere it is read (window.__ccVid), and the ones already on screen change at once */
+window.CcVid = (function () {
+  var DEF = (window.__ccVid || []).slice(), SK = 'everlab:ccVid', COL = 'ccVids', MAX = 20 * 1024 * 1024, subs = [], DB = null, AS = null, REMOTE = [], LOCAL = [], busy = false, idb = null;
+  var box = function () { return document.getElementById('tkCcVids'); }, fin = function () { return document.getElementById('tkCcVidF'); };
+  var all = function () { return REMOTE.concat(LOCAL).sort(function (a, b) { return (b.at || 0) - (a.at || 0); }); };
+  var cur = function () { try { return localStorage.getItem(SK) || ''; } catch (e) { return ''; } };
+  var rec = function () { var c = cur(); return c ? all().filter(function (x) { return x.id === c; })[0] || null : null; };
+  var TRASH = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>';
+  var esc = function (s) { return String(s).replace(/"/g, '%22'); };
+  var paint = function () { var b = box(); if (!b) return; var r = rec(), on = r ? r.id : '', L = all();
+    b.innerHTML = '<button type="button" class="tkArPic tkArPic0" data-id="" aria-pressed="' + (!on) + '" title="The Concierge’s own video">Default</button>' +
+      L.map(function (x, i) { return '<span class="tkArPic tkCcVid" role="button" tabindex="0" data-id="' + x.id + '" aria-pressed="' + (x.id === on) + '" aria-label="Video ' + (L.length - i) + (x.name ? ': ' + String(x.name).replace(/[<>"&]/g, '') : '') + '"' + (x.t ? ' style="background-image:url(&quot;' + esc(x.t) + '&quot;)"' : '') + '><button type="button" class="tkArPicDel" data-del="' + x.id + '" aria-label="Delete this video" title="Delete">' + TRASH + '</button></span>'; }).join('') +
+      (busy ? '<span class="tkArPic tkCcVidBusy" aria-label="Adding the video"></span>' : '') +
+      '<button type="button" class="tkArPic tkArPicAdd" aria-label="Add a video" title="Add a video">+</button>'; };
+  var srcs = function () { var r = rec(), u = r ? (r.u || r.o || '') : ''; if (!u) return DEF; return /webm/.test(r.type || '') ? [u, u] : [null, u]; };
+  var apply = function () { var V = srcs(); window.__ccVid = V.slice();
+    [].forEach.call(document.querySelectorAll('video.hpCcVid, .ovCcV video, video.hpGfVid'), function (v) { var cs = v.querySelectorAll('source'), now = cs.length ? cs[cs.length - 1].getAttribute('src') : v.getAttribute('src'); if (now === V[1]) return;
+      var was = !v.paused, kids = []; if (V[0]) { var a = document.createElement('source'); a.src = V[0]; a.type = 'video/webm'; kids.push(a); } var m = document.createElement('source'); m.src = V[1]; m.type = 'video/mp4'; kids.push(m);
+      v.removeAttribute('src'); v.replaceChildren.apply(v, kids); try { v.load(); if (was) { var p = v.play(); if (p && p.catch) p.catch(function () {}); } } catch (e) {} });
+    subs.forEach(function (f) { try { f(); } catch (e) {} }); };
+  var use = function (id) { try { if (id) localStorage.setItem(SK, id); else localStorage.removeItem(SK); } catch (e) {} paint(); apply(); };
+  var toast = function (t) { if (window.__tkToast) window.__tkToast(t); };
+  /* a still of the video, its first second, for its tile */
+  var still = function (url) { return new Promise(function (res) { var v = document.createElement('video'), done = false, end = function (d) { if (done) return; done = true; res(d || ''); try { v.removeAttribute('src'); v.load(); } catch (e) {} };
+    v.muted = true; v.playsInline = true; v.preload = 'auto';
+    v.addEventListener('loadeddata', function () { try { v.currentTime = Math.min(1, (v.duration || 3) / 3); } catch (e) { end(''); } });
+    v.addEventListener('seeked', function () { try { var k = 132 / Math.max(v.videoWidth || 1, v.videoHeight || 1), c = document.createElement('canvas'); c.width = Math.max(1, Math.round(v.videoWidth * k)); c.height = Math.max(1, Math.round(v.videoHeight * k)); c.getContext('2d').drawImage(v, 0, 0, c.width, c.height); end(c.toDataURL('image/jpeg', .72)); } catch (e) { end(''); } });
+    v.addEventListener('error', function () { end(''); }); setTimeout(function () { end(''); }, 8000); v.src = url; }); };
+  /* this browser's copies (no asset store): IndexedDB, the file itself kept */
+  var store = function () { return idb || (idb = new Promise(function (res) { try { var q = indexedDB.open('everlab-ccvid', 1); q.onupgradeneeded = function () { q.result.createObjectStore('v', { keyPath: 'id' }); }; q.onsuccess = function () { res(q.result); }; q.onerror = function () { res(null); }; } catch (e) { res(null); } })); };
+  var tx = function (mode, f) { return store().then(function (d) { if (!d) throw new Error('no store'); return new Promise(function (res, rej) { var t = d.transaction('v', mode), s = t.objectStore('v'), out = f(s); t.oncomplete = function () { res(out && out.result); }; t.onerror = function () { rej(t.error); }; }); }); };
+  var loadLocal = function () { return tx('readonly', function (s) { return s.getAll(); }).then(function (rows) { LOCAL.forEach(function (x) { if (x.o) URL.revokeObjectURL(x.o); }); LOCAL = (rows || []).map(function (x) { return { id: x.id, at: x.at, name: x.name, type: x.type, t: x.t, o: URL.createObjectURL(x.blob), local: true }; }); paint(); if (rec()) apply(); }).catch(function () {}); };
+  var add = function (file) { if (!file || !/^video\//.test(file.type)) { if (file) toast('That isn’t a video'); return; }
+    var remote = !!(AS && DB); if (remote && file.size > MAX) { toast('Videos up to 20 MB'); return; }
+    var id = 'v' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), at = Date.now(), name = String(file.name || '').slice(0, 80), o = URL.createObjectURL(file);
+    busy = true; paint();
+    still(o).then(function (t) {
+      if (remote) return AS.upload(file).then(function (r) { var x = { id: id, u: r.url, aid: r.id, at: at, name: name, type: file.type, t: t }; REMOTE = [x].concat(REMOTE.filter(function (y) { return y.id !== id; })); URL.revokeObjectURL(o); return DB.doc(COL + '/' + id).set(x); });
+      return tx('readwrite', function (s) { return s.put({ id: id, at: at, name: name, type: file.type, t: t, blob: file }); }).then(function () { LOCAL.unshift({ id: id, at: at, name: name, type: file.type, t: t, o: o, local: true }); });
+    }).then(function () { busy = false; use(id); }).catch(function () { busy = false; paint(); URL.revokeObjectURL(o); toast('Could not add that video'); }); };
+  var del = function (id) { var r = REMOTE.filter(function (x) { return x.id === id; })[0], l = LOCAL.filter(function (x) { return x.id === id; })[0];
+    if (r) { REMOTE = REMOTE.filter(function (x) { return x.id !== id; }); try { if (DB) DB.doc(COL + '/' + id).delete(); if (AS && r.aid) AS.delete(r.aid); } catch (e) {} }
+    if (l) { LOCAL = LOCAL.filter(function (x) { return x.id !== id; }); if (l.o) setTimeout(function () { URL.revokeObjectURL(l.o); }, 1500); tx('readwrite', function (s) { return s.delete(id); }).catch(function () {}); }
+    if (cur() === id) use(''); else paint(); };
+  var wire = function () { var b = box(), f = fin(); if (!b || b._wired) return; b._wired = true;
+    b.addEventListener('click', function (e) { var d = e.target.closest('[data-del]'); if (d) { e.stopPropagation(); del(d.dataset.del); return; } var t = e.target.closest('.tkArPic'); if (!t || t.classList.contains('tkCcVidBusy')) return; if (t.classList.contains('tkArPicAdd')) { if (f) f.click(); return; } use(t.dataset.id || ''); });
+    b.addEventListener('keydown', function (e) { var t = e.target.closest('.tkArPic[role="button"]'); if (t && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); use(t.dataset.id); } });
+    if (f) f.addEventListener('change', function () { var x = f.files && f.files[0]; f.value = ''; add(x); }); };
+  var link = function () { try { if (!(window.claude && typeof window.claude.use === 'function')) return false;
+      window.claude.use('assets').then(function (a) { AS = a || null; }).catch(function () {});
+      window.claude.use('db').then(function (db) { if (!db) return; DB = db; db.collection(COL).onSnapshot(function (qs) { var was = (rec() || {}).id + '|' + ((rec() || {}).u || ''); REMOTE = qs.docs.map(function (d) { var x = d.data() || {}; return x.u ? { id: d.id, u: x.u, aid: x.aid, at: x.at || 0, name: x.name || '', type: x.type || '', t: x.t || '' } : null; }).filter(Boolean); paint(); if ((rec() || {}).id + '|' + ((rec() || {}).u || '') !== was) apply(); }, function () {}); }).catch(function () {});
+      return true; } catch (e) { return false; } };
+  var boot = function () { wire(); paint(); loadLocal(); if (!link()) addEventListener('load', link, { once: true }); };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+  return { url: function () { return srcs()[1]; }, paint: paint, apply: apply, on: function (f) { subs.push(f); } };
+})();
 /*
  * Loading states, one source for the whole experience (Documentation -> Loading states):
  *   EvLoad.simple(button, { slow, after }) Simple loader, no label: the same button, lighter, its exact width, a spinner in place of its words; past `after` ms (5 s) the label `slow` ("Hang tight…") beside it;

@@ -29,7 +29,7 @@ type Composition = {
     | { kind: 'color'; color: string }
     | { kind: 'image'; src: string;  // a data/blob/https URL, or a key of the Concierge's pictures (clinic, mriRoom, steven, ...)
         fit: 'fill' | 'fit' | 'crop'; x: number; y: number;   // focal point in % (50, 50)
-        scale: number;               // crop only, 1 = as fitted
+        scale: number;               // any fit, 1 = as fitted
         blur: number;                // px
         overlay: number;             // 0..1 of overlayColor over the picture
         overlayColor: string; color?: string }                // color: the letterbox under 'fit'
@@ -166,7 +166,7 @@ type Item =
 
 - **Blanket** (Canvas → Background, with a picture or a video): a colour laid over it, under the chat (`overlay` 0 to 1, `overlayColor`): the DS swatches, a colour picker and a hex field, and its opacity. Picking a colour with the blanket at 0 sets it to 30%.
 - Floating, the name over an answer (Eva's line) is the bubble's opposite: white in light theme, near-black in dark, 2 px over its bubble.
-- **The background on the canvas** ("drag the background and increase the background manually"): with a picture or a video behind, drag the canvas to move its focal point (X, Y) and scroll (or pinch) to scale it (Fill and Fit become Crop, scale 1 to 4). It moves live on the stage, then lands as one edit (one undo step). A click without a drag opens the Canvas settings.
+- **The background on the canvas** ("drag the background and increase the background manually"): with a picture or a video behind, drag the canvas to move its focal point (X, Y) and scroll (or pinch) to scale it (scale 1 to 4, in any fit: Fill, Fit or Crop; the Scale slider too, for a picture as for a video). It moves live on the stage, then lands as one edit (one undo step). A click without a drag opens the Canvas settings.
 - The stage fills the canvas to its edges: within 1% of the canvas's ratio (its whole-pixel rounding) it scales each way on its own, so no sliver of the page shows at the sides.
 - Selecting a row jumps the playhead to the moment it is fully in. Editing an item redraws the canvas and holds it there.
 - Empty timing fields are **Auto**: the stage's motion defaults, shown as the hint ("Auto · 0.4 s").
