@@ -22255,3 +22255,4 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **Tweaks header**: "Preset" is an eyebrow (11px capitals, 1px spacing) with no bookmark icon, and the preset's name (15px) sits below it ("Use Eyebrow for preset, remove icon").
 - **Tweaks grid**: 12 between the cards, header included ("tweak gap grid. 12px").
 - **Service detail Tweaks**: the Service select has its own group, "Service example", above General ("Put service in a tweak Group, Service example").
+- **No push on the desk** ("on desktop no push transition"): `EvPush.page` switches at once whenever the desk sidebar is showing (M and up). The phone (XS, S) keeps the push and pop. The Page types doc's rules say so (Push: on the phone; At once: every Sub page on the desk). Checked: a Timeline row opens its service page without `evPushing` at L, and with it at XS.
