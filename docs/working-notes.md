@@ -22390,3 +22390,7 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 
 - "remove progress indicator for centered version": in Centered (M and up), Step 2's three dashes (`.hpOvBar`) are hidden; the title, line and button stay centred in the card. The left-aligned card (XS, S, or Desk alignment Left) keeps them.
 - Merged a publish from another session (07:11 UTC): the Insights page's titles "Health insights" → "Health" (desk `<h1>`, phone `<h2>`), now in the source too.
+
+## Full modals cover the app in Auto with a docked panel
+
+- "Full modal should cover the full viewport": in Auto with the Flow (or Tweaks) panel docked (`html.bpAutoD`), the app fills the room beside the panel, but full modals (`.aqWrap.aqBpM/L`) kept the M / L frame's width (992 / 1440, `min(992px, …)`), centred, so the Membership reveal stood in the middle with the sidebar and the page showing either side. They now take the same width as the app (`html.bpAutoD .aqWrap:is(.aqBpS, .aqBpM, .aqBpL){--bpW: the room}`). Checked at 1280, 1700 and 2200 wide: the reveal = the app's window. A forced M or L keeps its frame (the modal = the frame).
