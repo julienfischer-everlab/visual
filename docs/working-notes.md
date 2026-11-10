@@ -22417,3 +22417,21 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - "+4 more ... doesn't need to be a card ... a gradient overlapping the list, with a fade-out on the list on the third item": three rows, the third fading out from its top (a mask on the list), "+ N more" as words just under it on the fade (15 / 20, white 72%), the rows' own inset; centred in Centered.
 - "review my plan to be hug content, not the full CTA": the button its words' width, at the foot (left; centred in Centered).
 - Housekeeping: twelve verification screenshots that had been saved in the repo's root (and committed in the last three commits) are removed; the scripts write to the scratchpad now.
+
+## Async report V3, What to expect: title first, then the picture, then the bullets; the title in the middle of the picture
+
+- "the title comes first, and then the background appears below, and then the text and the bullet point appear one by one": the title's words come in alone; the picture (`.arDbfTop`) fades in and settles from 104% once the title is in (`--dfT`, set by `enter` from the title's own timing); the three bullets after it, one by one (`enter(..., after)`, .6 s after the picture starts). Reduced motion: all at once.
+- "push the title up so the title is kind of in the middle of the top part": the eyebrow and the H1 lifted to the middle of the picture (`dfPlace`: measured, never under the top bar, again on resize), the bullets where they were. XS: the title 250 → 194 (its centre at the picture's).
+
+## Doctor's plan card: the H1, its line, the rows, the photos
+
+- H1 "Your doctor Steven Lu has reviewed your plan." (the plan's own name gone from the title).
+- The line 14 / 20, 340 wide (40 narrower).
+- The gradient starts earlier (dimmed .5 to 16%, .84 by 40%, solid by 62%) so the list reads.
+- Rows: 32 background blur, 14 px, corners 16 (+4); "+ N more" 14 px.
+- The button 32 up from the card's foot on the desk.
+- Each plan its photo: Protocol the runner, Diagnostics the hands (`assets/async/hero-v3.webp`, the Async report's own). The third photo (the orange shirt) did not come through as a file: to add once it does.
+
+## Overview Insights card: Apple Watch first
+
+- "Use these insights as the first insights": the carousel opens on New insights from your Apple Watch (then the Oura ring, the Dexa report, the questionnaire, the blood panel).
