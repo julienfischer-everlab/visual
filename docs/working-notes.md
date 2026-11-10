@@ -22305,3 +22305,13 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - It was the forced frame, 992 wide and centred in a 1141 room. Measured: Tweaks docked at 1461×900, the app spans 0–1141 and 47–900 (top bar to window foot); at 1600, 0–1280.
   - XS fills too, docked or not (`bpAuto`). Its full-screen layers (`.dash`, `#bpFrame`, `.lp`, the desk modal, the Overview dim) sit between `--flDockW` and `--tkDockW`: a 540 room at 860 wide is 0–540, no phone frame.
   - Undocked is as before: no `data-bp` from 600 up, the window filled.
+- **Documentation → Concierge entry points** ("Create a documentation that describe the flow on each preset option 1 and 2"): a new Documentation tab (`ce`, `ceDoc`, `#concierge-entry-points`), after Concierge components.
+  - **Summary:** the two shared presets (Chat Option #1 → Go to concierge, Chat Option #2 → In-page experience) and a table of each entry point: where it lives, then Mobile, Desktop #1 and Desktop #2.
+  - **Mobile, the same in both:**
+    - Top chat field (Overview only) → the Concierge, no typing state.
+    - Bottom AI button (menu right, every main page) → the bottom sheet, which branches three ways: latest unread → its conversation; Ask Everlab anything → the Concierge typing (keys up); shortcut tile → a message started for it.
+  - **Desktop Option #1:** top field and the bottom floating field both → the Concierge, no typing state.
+  - **Desktop Option #2:** top field as #1; the floating field expands into the centred card, which branches three ways: type and send; shortcut tile; latest unread (stacked under the card).
+  - Every step is a wireframe, with what is tapped ringed in orange, in dark and light. The left list jumps to each section.
+  - Go to prototype puts the option's Tweaks on the page (Top Chat AI Concierge; Menu AI entry point Bottom sheet / Bottom sheet / Field tap Concierge / Stacked / Separate; Desk Eva field Floating; Desktop field tap Concierge for #1, In app for #2), opens the Overview at XS or Auto, then opens the sheet (phone) or the card (Option #2).
+  - Found while checking: the two shared presets (`tkPresets`) are identical, both with Desktop field tap In app, so applying Option #1 does not yet behave as #1.
