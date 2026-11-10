@@ -22445,3 +22445,8 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 ## Doctor's plan: title group 20 lower, subtitle 20 closer (2026-11-10)
 
 - "Reduce the gap between the title and the subtitle by 20px. And push down ... the title group, starting from Next Step at the top, by 20px": the title group (tag + H1) has 20 above it, and the line under it sits 12 below the H1 (was 32: the group's 16 + the line's 16). The line, the list and the button stay where they were. Same in both alignments and at every breakpoint.
+
+## Doctor's plan rows: blur 64, and it now actually blurs (2026-11-10)
+
+- "Add the blur background by 32px on the items": the rows' backdrop blur 64 (was 32).
+- The blur had never shown: the fade mask sat on the list (`.hpDrRows`), and a masked element is a backdrop root, so the rows' `backdrop-filter` saw nothing behind them (a screenshot with the blur on and off came out byte-identical). The same fade now sits on the last row itself (`li:last-child`), so the list is no longer a backdrop root and the rows blur the photo (screenshots now differ).
