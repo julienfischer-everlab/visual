@@ -22338,3 +22338,13 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - Get started opens the membership experience, as in V2 (`data-jrn="welc"`).
   - The three-step checklist is gone. The Modules page shows its one state and the new anatomy.
   - The first screenshot's "Become a member · $299 per year · Start my membership" is not in the prototype or its history, so it was not used.
+- **Concierge entry points: Skeleton / Real design** ("same presentation then Gifting flow", "Tweak · Skeleton (current) · Real design (new) · XS · L"):
+  - **Controls.** The doc's head has a Skeleton / Real design switch; Real design adds XS / L and a zoom. All three are remembered in this browser: `everlab:ceView`, `everlab:ceBp`, `everlab:ceZoom`. Real design is the default.
+  - **Skeleton** is the wireframe doc as before.
+  - **Real design** is the Gifting doc's canvas (hcFlows): a row per entry point with a sticky head and Go to prototype, numbered captions, arrows, and "or" between the branches. The left list jumps to the rows and switches to their breakpoint.
+    - XS: Top chat field (Overview, then the Concierge with no typing state). Bottom AI button (Overview, then the bottom sheet with a latest unread / b field / c shortcuts ringed, then 3a its message, 3b the Concierge typing with the keys up, 3c a message started for Script renewal).
+    - L: Option #1 (1a top field or 1b floating field, then the Concierge home). Option #2 (floating field, then the expanded card with a type / b shortcuts / c latest unread ringed, then 3a message sent, 3b shortcut, 3c its message).
+  - **Screens.** App screens are WebP stills taken from the prototype with the shared presets' Tweaks, in dark: `assets/overview/ce-*.webp`, about 67 KB together. The spot tapped is ringed in orange.
+  - **Live Concierge.** The Concierge screens are `concierge.html`, live, loaded once scrolled near and put in their state (embed, `#chat-protein`, the field's focus event, `Concierge.ask`). The phone ones carry the still's status bar.
+  - **Fix.** The docs shell hid every iframe inside any doc page whenever a page was shown. It now hides only the pages themselves.
+  - **To redo the stills** after the Overview or the Ask sheet changes: rerun the capture (the presets' Tweaks, XS and Auto at 1440) and replace the five files.
