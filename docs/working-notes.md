@@ -22524,3 +22524,8 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - V3 What to expect: the title group rests 48 px above the picture's middle ("Push the title up by 48px"), never under the bar.
 - Tweaks → Intro: Dot gap, Dot opacity, Dot ripple and Line shape (the Chart's own) shown only with the V2 preset ("Remove this tweak for v3. It's only used for V2"); Line shape a dropdown ("use the select instead").
 - V3 title group: the tag 8 closer to the title (welcome and What to expect alike, so the hand-off holds), the subtitle 4 closer.
+
+## V3 What to expect polish; a shared setup opens on itself
+
+- V3 What to expect: no back chevron (its welcome goes on by itself), the button "See results", a 24% black blanket over the picture (faded with it), the picture in from 1.1 and 56 px low, fading in as it rises and settles at 1. V3's welcome and What to expect dark in either mode, the picture at full strength (light mode had dimmed it to 32%: "Why depend on the mode?").
+- Shared setup links (#tk-<id>): the page is covered (dark, a small spinner) from its first paint until that setup is on it, so the Default (the phone) never shows first; the shared record is asked for at once, beside the page's own setup; 9 s at most. Checked: Default XS under the cover, the shared L when it lifts.
