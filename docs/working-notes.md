@@ -22251,3 +22251,6 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **Async report Intro screen**: the "Gift intro" option is now named "Imagery" ("Rename Imagery"). Its value is still `gift`, so saved setups keep working.
 - **Debrief cards**: 8 more under the title before the doctor ("+8px margin bottom", "title"), so title to doctor is now 16.
 - **Tweaks header card**: not pinned any more. It scrolls away with the rows ("No need to be fixed!"). Plain 8% white, no masking shadow.
+- **No lock icons** ("never use lock icon"): every lock glyph in the app is hidden by one rule: `svg[data-lc^="lock"]` outside the top bar, the progress row's `.svLkd` mask, `.ovLockIc`, `.ovactTop .lk`, `.hpInsLk`. The next locked step is only greyed.
+- **Tweaks header**: "Preset" is an eyebrow (11px capitals, 1px spacing) with no bookmark icon, and the preset's name (15px) sits below it ("Use Eyebrow for preset, remove icon").
+- **Tweaks grid**: 12 between the cards, header included ("tweak gap grid. 12px").
