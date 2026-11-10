@@ -22289,3 +22289,8 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - Card screen: Continue (was Get started), no line under it. Copy #1's title is "Welcome to Everlab, {name}." (was Your commitment / to a healthier life…).
   - The doc's captions follow.
 - **Debriefs carousel: dots 16 under the cards** ("Nav carousel gap with carousel above 16px"; was 8).
+- **Go to concierge On / Off** ("Go to concierge ON FF"): Tweaks › Menu AI entry point › Go to concierge (`stAskCc`, On by default).
+  - Off, the Inbox starts with the conversations: the phone's sheet (`EvConvChips(askCc())`, and the Merged list), and the desk's card from the floating field (`EvSearch.open(null, at)` reads `stAskCc`).
+  - The top field's own panel keeps its own setting.
+- **Bottom sheet: dismiss at the top nav's right** ("Add top nav right dismiss cta"): the Bottom sheet layout (`askStd`) moves `.aiX` onto the wrap, 44 at the top nav's right (57 down, 16 in), as the floating-card layouts. Tapping the dim and swiping down still close it.
+- **Inbox chips on the dim: white 10%** ("chip fff opacity +4%"; were 6%), the phone's Inbox above the sheet and the desk's above the card. Light mode keeps its white chips.
