@@ -22248,3 +22248,4 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - The dots are 8 under the carousel.
   - VO2 Max Test has its own photo (`assets/reports/vo2max.webp`, `REP_OWN`).
 - **Medical records**: no Upload records link in the header on the phone either.
+- **Async report Intro screen**: the "Gift intro" option is now named "Imagery" ("Rename Imagery"). Its value is still `gift`, so saved setups keep working.
