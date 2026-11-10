@@ -22367,3 +22367,9 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - **Storage.** Groups are per page, like the presets: in the shared store (`tkPsGroups`, docs `{ name, pg, order, at, by }`), or in this browser (`everlab:tkPsGroups`) where the store isn't available. A preset's group is its `grp`.
   - **Opening the menu** shows the tab of the preset in use; the open tab is remembered per page in this browser (`everlab:tkPsTab`).
   - The menu is 380 wide (was 340).
+
+## Presets drag to order; Schedule rows radius; Schedule eyebrow as Insights'
+
+- Presets ("Remove the order arrow option and put a drag order on the left side"): each preset row has a grip at its left (`.tkPsDrag`, `IC.grip`). Dragging it above or below another preset of the same group reorders the group and writes `ord` 0..n on the presets (shared db or this browser); dropping it on another tab moves it into that group, first. The move icon and the group's ‹ › arrows are gone: the group tabs themselves drag left or right to reorder, writing `order` 1..n through `gUpd`. A preset's place is `pKey` (its `ord` once dragged, else newest first); a new one goes first in its group.
+- Schedule rows ("reduce border radius"): the pill behind each row 24 → 16 (`.ovBkR::before`, the card and the See more sheet).
+- Schedule eyebrow ("card eyebrow same style, ref insights card"): 12 / 18 like the Insights card's label (was 14), and in the same place: 24 from the card's top at XS, 20 above.
