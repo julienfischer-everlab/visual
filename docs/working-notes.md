@@ -22378,3 +22378,10 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 
 - "Center!! vertically": in Centered (M and up), a card with nothing held at its foot (Step 1 "Start your health journey", Step 2 "Book your consultation") had its group pushed to the bottom: the visual's top margin is auto and nothing balanced it. The button now takes an auto bottom margin when the card has no consult line (`.ovBookWhen`), so the group sits in the middle (Step 2 at M: 130 above the sphere, 120 under the button). The states with the consult line keep it at the foot; the DEXA / MRI object cards keep their own centring (excluded).
 - The progress dashes (Step 2) sit 16 under the line instead of on it.
+
+## Empty state master (EvEmpty); the Schedule card's empty state
+
+- "empty state centered with iconography" (the reports empty state as the reference): a new Design system master, `window.EvEmpty.html({ ic, t, p, cls })` (`.evEmpty`): centred, a Lucide icon 24 in a 56 disc (ink 8% dark / 6% light), 16 under it the title 16 / 22 medium, 4 under that the line 14 / 20 secondary, 36 characters a line at most. Icons: `cal`, `rep`, `doc`, `msg`, `search`, or any svg.
+- Its page: Design system → Patterns → Empty state (`emDoc`, `#empty-state`): in a card (the Schedule's), on a page (Reports), title only; anatomy; used in.
+- The Schedule card with nothing booked (Tweaks → Scheduled → Has data: No) and its See more sheet draw it: "You don’t have any appointments yet" / "Once you’ve booked a test or a consult, it will show up here.", the calendar icon. In the card it fills the space under the eyebrow, 16 over and 52 under, so it sits in the middle of the whole card (L: 81 above the icon, 72 under the line). The Design system's Modules → Schedule → Empty shows it too (same `_bkCard.html`).
+- Skill table: a row for the Empty state.

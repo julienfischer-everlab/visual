@@ -70,6 +70,7 @@ The page menu `#versionSel` has Documentation flow (`'doc'`, renamed from Docume
 | A modal that takes over owns Tweaks and Flow while it is up | `window.EvCtx`, `html[data-tk]`, `__flowOk` | references/flows-modals.md |
 | Consent | `window.EvConsent` | references/flows-modals.md |
 | Loading states (Simple on Send a gift's Continue to payment) | `window.EvLoad` | references/flows-modals.md |
+| Empty state (icon disc, title, line, centred; Schedule card and sheet; Design system → Patterns → Empty state) | `window.EvEmpty.html({ ic, t, p, cls })`, `.evEmpty`, `emDoc` | references/tokens-components.md |
 | Biomarker detail sheet (Insights rows, Async report, Plan's What this moves) | `window.BioDetail` | references/flows-modals.md |
 | Send a gift (the Health profile module's gift flow: intro, note, envelope, plans) | `_hp.gift()`, `BUILD['gift.*']`, `gfEnv`, `gfNc`, `stGf*` | references/flows-modals.md |
 | Desk sidebar (and its icons; retract rail 52) | `.dash .side`, `body.sideMin`, `body.sideMove`, `lit()` | references/navigation-icons-motion.md |
