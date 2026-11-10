@@ -22435,3 +22435,9 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 ## Overview Insights card: Apple Watch first
 
 - "Use these insights as the first insights": the carousel opens on New insights from your Apple Watch (then the Oura ring, the Dexa report, the questionnaire, the blood panel).
+
+## Doctor's plan spacing, bento gap +4, plan inclusions (2026-11-10)
+
+- Doctor's plan card ("Push down the 6 more by 32px and push down the list of products by 20px. Align the next step centre. Add a 16px margin-bottom under the title group."): the list 40 below the line (was 20), "+ N more" 22 under the list (was -10, so +32), 16 under the title group (tag + H1), and the Next step tag centred in Centered mode.
+- Overview bento ("Add 4px on the grid bento for the padding/grid gap."): one token `--bnGap` on `#dOver`, 20px (was 16), for every gap of the desk bento: the two columns, the right column's rows (lead row, Insights, Schedule, Tasks, Services in any order), the lead row's own gap and the services 2 x 2. XS keeps its stacked margins.
+- Doctor's plan rows from the plans' inclusions ("Use this as a content base ... diagnostic and protocol"): Protocol = Physical assessment and VO₂ max, 10 consultations with doctors, dietitians and more, Structured re-testing, Prescriptions and ongoing specialist coordination; Diagnostic = Advanced blood testing including OrganAge, DEXA scan, A diagnostic review with your doctor, Written answers from our clinical team. Three rows show, the rest is counted in "+ N more" (now worked out from the list).
