@@ -22300,3 +22300,8 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - The JS keeps `--pH` and `--inH` (the card's and the Inbox's heights).
 - **Card foot = its sides** ("Increase the padding on the bottom so it's the same as the padding left and right", on the card): the Services tiles now end 28 above the card's foot (were 20), as they sit 28 in from its sides.
 - **Desk chat field white 2%** ("Reduce the opacity of the chat field by 4%"; was 6%): the field inside every desk Ask card, the top field's panel too (one rule). Light mode keeps its white field.
+- **Auto fills the whole room** ("Auto breakpoint should fill the entire available viewport space in width and height"):
+  - Docked at S / M, Auto now adds `html.bpAutoD`: the room's breakpoint styles (`data-bp`), with `--bpW` the whole room (100vw less the docked Tweaks / Flow panel) and no frame ring.
+  - It was the forced frame, 992 wide and centred in a 1141 room. Measured: Tweaks docked at 1461×900, the app spans 0–1141 and 47–900 (top bar to window foot); at 1600, 0–1280.
+  - XS fills too, docked or not (`bpAuto`). Its full-screen layers (`.dash`, `#bpFrame`, `.lp`, the desk modal, the Overview dim) sit between `--flDockW` and `--tkDockW`: a 540 room at 860 wide is 0–540, no phone frame.
+  - Undocked is as before: no `data-bp` from 600 up, the window filled.
