@@ -22690,3 +22690,12 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **Insights tweaks:** Tasks (Columns / Stacked) removed; always Stacked (every saved setup had it).
 - **Schedule card (Dates style):** See more at the title's right (section link, 16 regular), no See all at the foot.
 - **Desk floating field tap:** In app by default. Every saved setup and preset held Concierge (even "Chat Option #2 → In-page experience"); the shared setup and those presets now hold In app, "Chat Option #1 → Go to concierge" keeps Concierge.
+
+## Ask sheet Inbox: See more a ghost button under the cards; the count from Unread message
+
+- **See more** is a ghost button stacked under the inbox cards (transparent, a 16% hairline, full round, 48 high, as wide as the cards); it opens the Concierge's Inbox page ("have more as a ghost button stacked below the items").
+- **How many cards: Menu AI entry point → Unread message** ("This is basically the unread message"; `html[data-ask-un]` from `__unN('ask')`):
+  - Off: no Inbox section.
+  - 1 / 2: that many cards, no See more.
+  - 3+: two cards, then See more (Large sheet: every card, then See more).
+- The sheet hugs whatever is left (Small).
