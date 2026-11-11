@@ -22748,3 +22748,9 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 ## Insights stack: 4 between title and line, no tile behind the visual
 
 - Desk stacked rows (Amount 2+): `row-gap: 4px` between the title and its line; the visual's grey tile (`.ovInsChart` background) removed, the render on the card's own ground ("add a 4px gap between the title and the subtitle. Also remove the background [of] the visual on the left").
+
+## Insights empty: no stack; Schedule empty hugs; one insight as the stack's row
+
+- **Empty state On** ("If there are no insights, why have ... the list of insights?"): the desk's Amount no longer turns the stack on (`insStat` / `insStk` / `insStk4` / `insStk1` only while Empty state is Off, re-run on `stInsData` change), so the hero card holds the activation list alone. The Amount's rebuild of the hero card also re-paints the activation list (`everlab:insAmt` → `paint2`): the card was left blank before.
+- **Schedule, nothing booked**: no "Schedule" eyebrow (desktop and mobile; dropped from `_bkCard.html`'s empty markup, so the DS module draws the same), no floor (the 256 desk minimum off), the card hugs its message with 32 above and below. The Empty state doc's "In a card" example follows (no eyebrow, 32 / 32) and its Layout row says so.
+- **Amount 1 on the desk** (`html.insStk1`): the stack's structure (card padding, eyebrow, the ghost row, press anywhere), the visual 120 at the row's right, title and line at its left (4 apart) and the See insights pill 16 under them ("Keep the same structure as the stacked object, but the visual should be bigger on the right side ... a CTA with a margin-top of 16px").
