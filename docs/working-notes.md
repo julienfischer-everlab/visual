@@ -22552,3 +22552,9 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 ## Async V3: Welcome -> What to expect in two beats
 
 - The title moves up on its own first (0.9 s, ease in-out). Just before it lands (0.72 s into its move) the picture comes in: fading over 0.7 s, from 1.2 and 64 px low, settling round the title. With it the subtitle, then the rows from the last up (Talk it through, Peace of mind, What we found), each fading in and rising 16 px, 0.12 s apart; the button after them ("the background should just start to come when the title lands on the final position, or just before"; "fading in and moving up 16px ... at the same time as the background"). Checked frame by frame at XS: title 342 -> 209, picture from 0.84 s, rows in that order.
+
+## Timeline bar solid; rows off the rail; Concierge Tweaks without the Overview card's rows
+
+- Timeline V3: the pinned tabs' bar (Now / This year / Later, Search) on a solid ground at once, the panel's (#0f0f0f dark, #fafafa light), its full width: no fade in as the page scrolls, nothing showing at its sides ("The top header should be solid black ... when I scroll, I see some transparency"). Checked at L and XS, dark and light.
+- Timeline V3 rows 8 px further off the rail: each row's hover tile (the ghost card, 12 round the row) now clears the month chip (was 7.5 over it), and the dividers run on the tile's edges (between rows and where a month turns), not the content's ("Detach the ghost card from the vertical line on the timeline by 8px ... the divider should follow the ghost card"). XS (no rail) as it was. Checked at L: tile 461..1244, dividers 461..1244, rows from 473, chip ends 460.5.
+- Tweaks: the Overview primary card's Object, Service glow, Service blur and Service glow position rows no longer come over into the Onboarding consult group when the Concierge (or the profile) is up ("Why do I have this on the Concierge?"); they stay under the Overview's Primary card.

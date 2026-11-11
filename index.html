@@ -86,6 +86,7 @@ if (/^#tk-[A-Za-z0-9]{6,40}$/.test(location.hash)) { document.documentElement.cl
   .topbar .tkVw{font-size:12px;color:#a1a1aa;white-space:nowrap;font-variant-numeric:tabular-nums;}
   body.archived .topbar .tkGrp#arcGrp{display:contents;}
   .topbar a.tkBtn{display:inline-block;text-decoration:none;}
+#tkHpGrp .tkRow:is(:has(#stPcObj), :has(#stPcGlow), :has(#stPcBlur), :has(#stPcGlowPos)){display:none !important;}   /* the Overview card's own rows (Object, Service glow / blur / glow position) stay on the Overview: not in the Concierge's or the profile's Tweaks when its rows come over ("Why do I have this on the Concierge? ... about the full modal") */
 .tkArPicRow{align-items:flex-start;} .tkArPics{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px;max-width:208px;}
 .tkArPic{position:relative;flex:none;width:44px;height:44px;margin:0;padding:0;border:0;border-radius:8px;background:#262626 center / cover no-repeat;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1);color:rgba(255,255,255,.72);font:inherit;font-size:10px;line-height:1;cursor:pointer;}
 .tkArPic[aria-pressed="true"]{box-shadow:0 0 0 2px #fff;} .tkArPicAdd{background:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.22);font-size:20px;color:rgba(255,255,255,.8);} .tkArPicAdd:hover{background:rgba(255,255,255,.06);}
@@ -54427,6 +54428,7 @@ hairline({
   @container msl (max-width:600px){ #tl3 .jvPhEv[data-n]{grid-template-columns:minmax(0,1fr);max-width:none;} }
   /* the established member's normal timeline (V1's bar, rail, months and rows): the bar in the column, a count on each tab ("v3 need these 3 tabs"), the focus card first in Now */
   #dTl #tl3 > .tlBar.t3Bar{display:block !important;margin:0;padding:0;}
+  #dTl #tl3 > .tlBar.t3Bar::before{opacity:1 !important;transition:none !important;background:var(--pageBg) !important;box-shadow:0 0 0 100vmax var(--pageBg);clip-path:inset(0 -100vmax);}   /* the tabs' ground solid at once, the panel's full width ("The top header should be solid black ... when I scroll, I see some transparency"): no fade in on scroll, nothing showing at its sides; the shadow, not a wider box, so nothing scrolls sideways */
   #tl3 .t3Bar .tlTab{display:inline-flex;align-items:center;justify-content:center;}
   /* Tab style: Filled (html.t3TabFill; Tweaks -> Timeline -> Tab style; "More filled rounded shape VS outline tab"): the tabs in a rounded track (the ink at 6%), the one on lifted on a pill (12%; white on the light page) that slides as the underline did; no rule under them */
   html.t3TabFill #tl3 .tlTabs{gap:2px;padding:4px;border-radius:999px;background:rgba(255,255,255,.06);box-shadow:none !important;}
@@ -54490,9 +54492,11 @@ hairline({
   #tl3 .t3MoP{position:absolute;top:12px;left:-44.5px;width:40px;padding:6px 0 7px;box-sizing:border-box;border-radius:10px;background:var(--tlCard);box-shadow:inset 0 0 0 1px var(--tlCardRing);display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center;line-height:1;}   /* centred on the rail (8.5 in from the list's edge, the list's rows 33 in) */
   #tl3 .t3MoP > b{font-size:12px;font-weight:600;letter-spacing:-.1px;color:var(--tlInk);} #tl3 .t3MoP > b.l{display:none;} #tl3 .t3MoP > em{font-style:normal;font-size:10px;font-weight:500;color:var(--tlSub);font-variant-numeric:tabular-nums;}
   #tl3 .t3Mo + .t3Mo{border-top:1px solid var(--tlLine);}   /* a hairline where a month turns */
+  #tl3 .tlItems{padding-left:8px;} #tl3 .tlItems .tlRow + .tlRow::after{left:-12px;right:-12px;}   /* each row 8 further off the rail, its hover tile (the ghost card, 12 round it) with it, clear of the month chips; the divider on the tile's edges, not the content's ("Detach the ghost card from the vertical line on the timeline by 8px ... the divider should follow the ghost card") */
+  #tl3 .t3Mo + .t3Mo{border-top-color:transparent;} #tl3 .t3Mo + .t3Mo::after{content:"";position:absolute;top:-1px;left:-4px;right:-12px;height:1px;background:var(--tlLine);pointer-events:none;}   /* the month's hairline on the tiles' edges too */
   #tl3 .t3Yr > .tlH{box-shadow:0 -2px 0 var(--pageBg),-16px -2px 0 var(--pageBg);}   /* the pinned group's ground 16 further left, over the chip's left half as it slides out behind it */
   @container tl (max-width:540px) or style(--tlXs: 1){   /* XS: no rail, so the month a quiet line of its own above its rows, pinned under This year the same way */
-    #tl3 .t3Mo{display:block;} #tl3 .t3Mo + .t3Mo{border-top:0;}
+    #tl3 .t3Mo{display:block;} #tl3 .t3Mo + .t3Mo{border-top:0;} #tl3 .tlItems{padding-left:0;} #tl3 .tlItems .tlRow + .tlRow::after{left:0;right:0;} #tl3 .t3Mo + .t3Mo::after{display:none;}   /* XS, no rail: as it was */
     #tl3 .t3MoTip{position:sticky;top:calc(var(--tlHTop, 26px) + 44px);width:auto;height:auto;margin:0 -16px;padding:10px 16px 2px;background:var(--pageBg);}
     #tl3 .t3MoP{position:static;width:auto;padding:0;flex-direction:row;gap:5px;background:none;box-shadow:none;border-radius:0;font-size:13px;}
     #tl3 .t3MoP > b{display:none;} #tl3 .t3MoP > b.l{display:inline;font-size:13px;font-weight:500;color:var(--tlSub);} #tl3 .t3MoP > em{font-size:13px;}
