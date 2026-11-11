@@ -60,6 +60,7 @@ The page menu `#versionSel` has Documentation flow (`'doc'`, renamed from Docume
 | Viewport centring with docked panels | `--vwC`, `html.tkDocked/flowDocked` | references/layout.md |
 | Flow panel (closed on load, opened by its button) | `#tkFlowBtn`, `html.flowOff`, `window.__flowPanel`, `__flowOk` | references/layout.md |
 | Step flow (Linear / Fade; the Questionnaire Header: step titles `--sfQh` lower) | `window.EvSteps` | references/flows-modals.md |
+| Intro flow: every intro screen is A Gradient fade (picture fading into the content, the Async report's What to expect V3) or B Bottom sheet (picture header, content on a sheet over it, Send a gift's intro); no third layout | `itDoc` (Design system → Patterns → Intro flow), `AsyncReport.mount({ dbf: 'fade', welcome: 'title' })`, `_hp.gift()` on `EvOverlap` | Design system → Patterns → Intro flow |
 | Modals doc | `mdDoc` | references/flows-modals.md |
 | Full modal shell, standalone full modals (Suggestion, Doctor's suggestion, Personal recommendation, Activity session) | `.aqWrap.aqDesk.aqFull`, `window.EvSolo` (`dark`, `bar`, `paint`) | references/flows-modals.md |
 | Full bottom sheet stacking | `iosLay1` / `iosStk` script | references/flows-modals.md |
