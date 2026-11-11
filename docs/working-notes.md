@@ -22929,3 +22929,4 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - The badge sits 12 under the sub ("Badge +4 margin top").
   - When on an adjusted item shows the old month struck through, an arrow, then the new month (`it.wasM` → `it.when`).
   - The price is regular weight, like the other values ("Keep regular").
+- "need 24px safe padding on fixed tab top": on desk, the pinned Timeline tabs now sit 24 below the panel's top (bar padding 10 → 24). The title's margin went from 30 to 16, so title to tabs at rest is still Health's 40.
