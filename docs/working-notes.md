@@ -22566,3 +22566,7 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - Async V3: the Welcome hands over to What to expect 1 s sooner (written, then on at once; 1.2 s when shown settled), and the title's rise 1.2x faster (900 -> 750 ms), the picture and rows from 600 ms.
 - Async V3 What to expect: the picture 25% shorter (calc(42% + 96px), was calc(56% + 128px)); the title 32 lower than before (70 under the picture's middle: its top 241 on the phone, 262 at L).
 - Async report Tweaks -> Picture: videos too (+ takes a picture or a video). A video gets a still and a play mark on its tile, sits in the artifact's asset store (20 MB) or this browser's IndexedDB, and plays muted and looping wherever the report shows its picture as a photo (What to expect's top, the last page's ground, the hero, the orbit's picture); the halftone and the gift-style header keep the picture. Checked: add a clip, What to expect plays it, reload (kept), delete (back to the picture).
+
+## Async V3 What to expect: title 40 lower
+
+- The title group 40 lower ("Push down the title by 40px"): 110 under the picture's middle, the title's top 281 on the phone (was 241), 48 clear of the first row; S 282, M/L 302.
