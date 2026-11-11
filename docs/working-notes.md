@@ -22826,3 +22826,14 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 
 - **Arrows went to the AI sheet**: the hidden dock (opacity 0) still took taps, because its pieces (the AI star, the tabs) set their own `pointer-events`. Now nothing inside `.mTabs` or the desk `.evFld` answers a tap while the walk runs (`html.t3CmOn :is(.mTabs, .evFld) *{pointer-events:none !important}`), so ← / → reach the island. Checked with real mouse clicks at XS and L.
 - **Island stayed on other pages**: the island and close live in the page shell, outside the Timeline. The walk now ends itself as soon as the Timeline panel (`#dTl`) is no longer shown, whichever way the member leaves (dock, sidebar, More, a link), not only on the page select or the viewport change.
+
+## v2391: Timeline right column (L); recommendation card batch
+
+- **Timeline -> Right column** (`#stT3Side`, On by default; `html.tlSideOn`): at L only (forced L, or Auto from 1440: `body:not([data-bp])` in a media query, Auto sets no `html.bpAuto`) the Timeline panel turns into two columns: the timeline (head, tabs, list) on the left, 760 wide in a 1200 panel, and a 320 column 40 to its right, sticky 32 under the page's top. It holds a dashed placeholder card ("Information") until its content is decided. M, S, XS and Off: unchanged.
+- **Confirm your updated plan, timeline cards**: the title and sub centred on the picture when shorter (`align-items:center`).
+- **Recommendation card**:
+  - Opened from the review: one answer only. In the plan: Maybe later alone; under Later: Add to my plan alone (full width).
+  - All in card: the Plan row is now **When**, its month and year ("July 2027", or Now).
+  - Properties card Off: a 0.5 divider between the rows, on their words' edges.
+  - New **Picture bleed: On / Off** (`#stArRcBld`, Off by default): Off keeps the Centred picture inside the card, no shadow, no room above the deck.
+  - Desk (M, L): the deck screen centred in the page's height; the footer's Later / Add to plan and its note become a row just under the card, the card's width (`.arRcDkRow`, its buttons press the footer's own, which hides there); the card at least 400 high.
