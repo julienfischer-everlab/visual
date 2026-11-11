@@ -11027,6 +11027,7 @@ if (/^#tk-[A-Za-z0-9]{6,40}$/.test(location.hash)) { document.documentElement.cl
   .tlAct.split .tlMore{width:34px;border-radius:0 10px 10px 0;background:var(--tlPill);color:var(--tlTx);box-shadow:inset 1px 0 0 var(--tlSplit);}
   .tlAct.split .tlMore:hover{background:var(--tlPillH);}
   .tlAct.split.cta .tlMore{background:var(--tlCta);color:var(--tlCtaInk);box-shadow:inset 1px 0 0 var(--tlSplitC);} .tlAct.split.cta .tlMore:hover{background:var(--tlCta);opacity:.9;}
+  #tl3 .tlAct .tlBtn{padding:0 16px;border-radius:999px;} #tl3 .tlAct .tlMore{border-radius:999px;} #tl3 .tlAct.split .tlBtn{border-radius:999px 0 0 999px;} #tl3 .tlAct.split .tlMore{width:38px;padding-right:2px;border-radius:0 999px 999px 0;}   /* Timeline V3: the rows' CTA fully rounded ("CTA rounded"), the split's ⋯ 4 wider for its round end */
   /* suggestions: a tray of their own, a card of rows inside it */
   .tlSug{margin:10px -12px 6px -12px;padding:0 8px 8px;border-radius:20px;background:var(--tlBox);}   /* 8 round the card ("add 4px padding inside"), the tray 4 further out so the pictures stay on the rows' line */
   .tlSugHead{display:flex;align-items:center;gap:7px;padding:12px 10px 10px;font-size:12.5px;color:var(--tlSub);}
@@ -14532,10 +14533,16 @@ html.insMini[data-ins-amt="2"]:not(.insEmpty) body[data-bp="xs"] #dOver .ovcar.o
         <div class="tkRow"><span class="lbl">Decade scroll</span><select id="stT3Stk" class="tkSegSel" aria-label="The decade cards while scrolling: stacked (each one stops 16 under the one before, over it) or in the page's flow"><option value="stack" selected>Stacked</option><option value="flow">Normal</option></select></div>   <!-- "Use a stacked style here ... For each card, you stack it, and then you can see a stack gap on the top by 16px ... While you scroll, you stack the card" -->
         <div class="tkRow"><span class="lbl">Age number</span><select id="stT3Age" class="tkSegSel" aria-label="Each decade's age: big and rolling, a section of its own before the card (Section), or small at the top of the card's left column (In card)"><option value="sec" selected>Section</option><option value="card">In card</option></select></div>
         <div class="tkRow"><span class="lbl">Tab counts</span><select id="stT3Cnt" class="tkSegSel" aria-label="The number of items beside each tab (Now, This year, Later)"><option value="yes">Yes</option><option value="no" selected>No</option></select></div>   <!-- ("Remove the counter on the tab. Just add a tweak counter. Yes/no") -->   <!-- ("this number is part of the colon left on the card below, way smaller ... one number as a section, ... the number part of the colon left") -->
+        <div class="tkRow"><span class="lbl">Tabs fixed</span><select id="stT3TabFix" class="tkSegSel" aria-label="The Now / This year / Later tabs: pinned at the top while the page scrolls (On), or scrolling away with the page (Off; the group heads pin at the top instead)"><option value="on" selected>On</option><option value="off">Off</option></select></div>   <!-- "tweak the top nav tab fixed ON OFF" -->
         <div class="tkRow"><span class="lbl">Right column</span><select id="stT3Side" class="tkSegSel" aria-label="At L only: a 320 column at the timeline's right, for information (the timeline narrows beside it); Off, the timeline alone, centred"><option value="off">Off</option><option value="on" selected>On</option></select></div>   <!-- "On breakpoint L (only) Add a 320px right column where we will use this space for informations" -->
-        <div class="tkRow"><span class="lbl">Plan updates</span><select id="stT3Upd" class="tkSegSel" aria-label="What the Async report changed (Physical assessment and Colonoscopy new, DEXA moved), as after its Pay. Modal: the updated plan (Confirm your updated plan) opens over the timeline, the card's Check it out opens it again. Coachmark: the card above the tabs, its Check it out walking through the items. None: nothing"><option value="modal">Modal</option><option value="on">Coachmark</option><option value="off" selected>None</option></select></div>   <!-- "a card at the top, above the tab ... Check it out ... coachmark style"; "Put this experience inside Plan update tweak: Modal, Coachmark (the current ON), None (current OFF)" -->
         <div class="tkRow"><span class="lbl">Suggestions</span><select id="stT3Sug" class="tkSegSel" aria-label="Dr Lu's suggestions and due rechecks in the list"><option value="off" selected>Hidden</option><option value="on">Shown</option></select></div>
         <div class="tkRow"><span class="lbl">Cost on items</span><select id="stT3Cost" class="tkSegSel" aria-label="What an item costs, on its row and in its sheet"><option value="off" selected>Hidden</option><option value="on">Shown</option></select></div>
+        </div>
+        <!-- the Plan updates card and its experience, a group of their own ("create a group tweak for that") -->
+        <div class="tkGroup" data-tl data-tl3>
+        <div class="tkSub">Plan updates</div>
+        <div class="tkRow"><span class="lbl">Experience</span><select id="stT3Upd" class="tkSegSel" aria-label="What the Async report changed (Physical assessment and Colonoscopy new, DEXA moved), as after its Pay. Modal: the updated plan (Confirm your updated plan) opens over the timeline, the card's Check it out opens it again. Coachmark: the card (above the tabs, or the right column at L), its Check it out walking through the items. None: nothing"><option value="modal">Modal</option><option value="on">Coachmark</option><option value="off" selected>None</option></select></div>   <!-- "a card at the top, above the tab ... Check it out ... coachmark style"; "Put this experience inside Plan update tweak: Modal, Coachmark (the current ON), None (current OFF)" -->
+        <div class="tkRow"><span class="lbl">Card position</span><select id="stT3UpdAt" class="tkSegSel" aria-label="Where the Plan updates card sits at L: the right column's first card, or above the tabs as on the smaller breakpoints (at XS, S and M it is always above the tabs)"><option value="side" selected>Right column</option><option value="top">Above tabs</option></select></div>   <!-- "put the new update card on the right col on L" -->
         </div>
         <div class="tkGroup" data-tl>
         <div class="tkSub">Hero Bento</div>
@@ -37973,7 +37980,7 @@ hairline({
       /* the conversation chips: Go to concierge opens the Concierge, a conversation opens itself there, the sheet closing back into the star first (as a service tile does) */
       wrap.querySelectorAll('.aiConvL').forEach(cl => { if (window.EvMagnet) window.EvMagnet.bind(cl, { item: '.aiChip', drag: 'aiSvcDrag' }); cl.addEventListener('scroll', () => svcFade(cl), { passive: true }); });   /* the conversations' row: swiped by hand, its edges faded, as the services' carousel */
       wrap.querySelectorAll('.aiConvL').forEach(L => L.addEventListener('click', e => { const c = e.target.closest('.aiChip'); if (!c) return; e.preventDefault(); close();
-        setTimeout(() => { if (c.dataset.svc){ const d = svcDef(c.dataset.svc), x = svcList.find(y => y.id === c.dataset.svc), M = window.EvSvcChat || {}, ch = chatOf(); let ctx = (d && M[d.l]) || M.Concierge; if (ctx && d && x && x.l !== d.l) ctx = Object.assign({}, ctx, { title: x.l }); if (ch && ch._chat && ctx) ch._chat.open(c, ctx.q, ctx); } else if (c.dataset.conv && window.EvOpenConv) window.EvOpenConv(c.dataset.conv); else if (c.dataset.inbox && window._cc && window._cc.inbox) window._cc.inbox(); else if (window._cc) window._cc.show(); }, 300); }));   /* See more: the Concierge's Inbox ("See more --> Go to inbox") */   /* a service chip (Sections: Merged) starts its service's chat, as its tile does */   /* the Conversation row and Version 2's suggestion card alike */
+        setTimeout(() => { if (c.dataset.svc){ const d = svcDef(c.dataset.svc), x = svcList.find(y => y.id === c.dataset.svc), M = window.EvSvcChat || {}, ch = chatOf(); let ctx = (d && M[d.l]) || M.Concierge; if (ctx && d && x && x.l !== d.l) ctx = Object.assign({}, ctx, { title: x.l }); if (window.EvAiGo) window.EvAiGo(c, ctx, ch, isDoc); } else if (c.dataset.conv && window.EvOpenConv) window.EvOpenConv(c.dataset.conv); else if (c.dataset.inbox && window._cc && window._cc.inbox) window._cc.inbox(); else if (window._cc) window._cc.show(); }, 300); }));   /* See more: the Concierge's Inbox ("See more --> Go to inbox") */   /* a service chip (Sections: Merged) starts its service's chat, as its tile does */   /* the Conversation row and Version 2's suggestion card alike */
       /* Version 2: a tap anywhere on the field card (its arrow too) opens the field: the keys come, the suggestion card goes */
       /* Field tap: Concierge (the default; "Chat field tap should redirect to concierge active field and keyboard"): a tap on the field (its + and its arrow too) closes the sheet back into the star and opens the Concierge, on its home with Eva, its field active and the keys up (window._cc.fresh, as the top field's); Keys: the keys in the sheet, as before. The app's sheet only, not the Navigation doc's phone */
       const ccFld = () => !isDoc && (document.getElementById('stAskFld') || {}).value !== 'keys';
@@ -37987,7 +37994,7 @@ hairline({
         const d = svcDef(t.dataset.svc), x = svcList.find(y => y.id === t.dataset.svc), M = window.EvSvcChat || {}, ch = chatOf();
         let ctx = (d && M[d.l]) || M.Concierge; if (ctx && d && x && x.l !== d.l) ctx = Object.assign({}, ctx, { title: x.l });
         close();
-        if (ch && ch._chat && ctx) setTimeout(() => ch._chat.open(t, ctx.q, ctx), 300);   /* most of the way into the sheet's close (.46), the chat fading in as it lands */
+        if (ctx) setTimeout(() => { if (window.EvAiGo) window.EvAiGo(t, ctx, ch, isDoc); }, 300);   /* most of the way into the sheet's close (.46), the Concierge (EvAiGo) fading in as it lands */
       });
       // Typing: the field is tapped, the services go and the keyboard comes,
       // the card standing on the keys ("on field click the list of services
@@ -38089,7 +38096,7 @@ hairline({
       const ic = d => '<img class="aiChipSvcIc" src="' + SVC_IMG[d.img || 'symp'] + '" alt="" width="360" height="360" decoding="async">';
       if (srch) return (pc ? '<button type="button" class="evSrchR evSrchChip evSrchCc" data-cc="1">' + (pc.querySelector('svg') || { outerHTML: '' }).outerHTML + '<span>Go to concierge</span></button>' : '') + cvs.map(c => '<button type="button" class="evSrchR evSrchChip evSrchConv aiUn" data-conv="' + c.dataset.conv + '">' + c.innerHTML + '</button>').join('') + (more ? '<button type="button" class="evSrchR evSrchChip evSrchMore" data-inbox="1"><span>' + more + ' more</span></button>' : '') + svcList.map(x => { const d = svcDef(x.id); return d ? '<button type="button" class="evSrchR evSrchChip evSrchSvcC" data-svc="' + d.id + '">' + ic(d) + '<span>' + svcEsc(x.l) + '</span></button>' : ''; }).join('');
       return (pc ? pc.outerHTML : '') + cvs.map(c => c.outerHTML).join('') + (more ? '<button class="aiChip aiChipConv aiChipMore" type="button" data-inbox="1"><span>See more</span></button>' : '') + svcList.map(x => { const d = svcDef(x.id); return d ? '<button class="aiChip aiChipSvc" type="button" data-svc="' + d.id + '">' + ic(d) + '<span>' + svcEsc(x.l) + '</span></button>' : ''; }).join(''); };
-    const start = (id, el) => { const d = svcDef(id), x = svcList.find(y => y.id === id), M = window.EvSvcChat || {}; let ctx = (d && M[d.l]) || M.Concierge; if (ctx && d && x && x.l !== d.l) ctx = Object.assign({}, ctx, { title: x.l }); const ch = document.querySelector('.dash'); if (ch && ch._chat && ctx) setTimeout(() => ch._chat.open(el, ctx.q, ctx), 300); };
+    const start = (id, el) => { const d = svcDef(id), x = svcList.find(y => y.id === id), M = window.EvSvcChat || {}; let ctx = (d && M[d.l]) || M.Concierge; if (ctx && d && x && x.l !== d.l) ctx = Object.assign({}, ctx, { title: x.l }); const ch = document.querySelector('.dash'); if (ctx) setTimeout(() => { if (window.EvAiGo) window.EvAiGo(el, ctx, ch); }, 300); };
     window.EvAsk = { attach, svc: svcLay, list: svcSet, tiles, start, merged: mergedChips, SVCS: ASK_SVC.map(x => ({ id: x.id, l: x.l })) };
   })();
   // ---- EvBeam: the Concierge intro's border beam, once round a field ---------
@@ -44158,7 +44165,7 @@ hairline({
       // trigger the chat in the context of the card, ideate discussion"):
       // the question the tile stands for, Eva's opening on it, the title
       const ph = row.closest('#phone2') || (row.closest('#dOver') && document.querySelector('.dash')), tile = e.target.closest('.ovSvcChip');
-      if (tile && ph && ph._chat){ const ctx = SERVICE_CHAT[tile.querySelector('b').textContent] || SERVICE_CHAT.Concierge; ph._chat.open(tile, ctx.q, ctx); }
+      if (tile && ph){ const ctx = SERVICE_CHAT[tile.querySelector('b').textContent] || SERVICE_CHAT.Concierge; window.EvAiGo(tile, ctx, ph); }
     });
   }
   // what each service opens the chat with: the ask, and Eva's opening --
@@ -44177,6 +44184,8 @@ hairline({
     'Check Symptoms': { title: 'Check symptoms', q: 'I’d like to check some symptoms', answer: ['Tell me what you’re feeling, where, and since when. I’ll read it against your latest results and your history, and ask a few questions to narrow it down.', 'If anything points to something urgent, I’ll say so straight away; if not, I can set up a telehealth call with an Everlab doctor, usually within the hour.', 'What’s been bothering you?'] }   /* the Ask sheet's sixth tile */
   };
   window.EvSvcChat = SERVICE_CHAT;   /* the same openings for the Ask sheet's service tiles (aiSheet) */
+  /* an AI object (a service tile or chip: the Ask sheet's, the desk Ask panel's, the Overview's services row) opens the full AI experience ("Click on object ai redirect to full ai experience"): the Concierge on Eva, a new chat, the object's ask sent (window._cc.ask), not the in-page chat card; keep (the Navigation doc's phone) or no Concierge: the in-page chat, as before */
+  window.EvAiGo = (el, ctx, host, keep) => { if (!ctx) return; const c = window._cc; if (!keep && c && c.ask && ctx.q){ c.ask(ctx.q); return; } if (host && host._chat) host._chat.open(el, ctx.q, ctx); };
   // an observation's Contact care team: the chat, with the care team, on the results ("contact care team CTA for all observation cards")
   document.addEventListener('click', e => { const b = e.target.closest('.svObCare'); if (!b) return;
     const ph = b.closest('#phone2') || document.querySelector('.dash'); if (!ph || !ph._chat) return;
@@ -54976,16 +54985,16 @@ hairline({
   body.light .t3Sh{--tlInk:#000;--tlTx:#000;--tlSub:rgba(0,0,0,.56);--tlLine:rgba(46,31,26,.08);--tlHover:rgba(46,31,26,.045);--tlRail:rgba(46,31,26,.16);--tlField:rgba(46,31,26,.05);--tlPill:rgba(46,31,26,.07);--tlPillH:rgba(46,31,26,.11);--tlCta:#111;--tlCtaInk:#fff;--tlBox:rgba(46,31,26,.05);--t3Bg:#f6ece6;}
   #tl3{position:relative;}
   /* Plan updates card (above the tabs) and its coachmark walk */
-  #tl3 > .t3Upd{position:relative;display:grid;grid-template-columns:104px minmax(0,1fr);align-items:center;column-gap:16px;margin:0 0 16px;padding:20px 48px 20px 16px;border-radius:24px;background:#22221f;color:#ececec;}
-  body.light #tl3 > .t3Upd{background:#fff;color:#111;box-shadow:0 1px 2px rgba(46,31,26,.06),0 8px 24px rgba(46,31,26,.06);}
-  #tl3 > .t3Upd.in{animation:t3UpdIn .5s cubic-bezier(.32,.72,0,1) both;} #tl3 > .t3Upd.gone{opacity:0;transform:translateY(-8px);transition:opacity .25s ease,transform .3s ease;}
+  :is(#tl3, .tlSide) > .t3Upd{position:relative;display:grid;grid-template-columns:104px minmax(0,1fr);align-items:center;column-gap:16px;margin:0 0 16px;padding:20px 48px 20px 16px;border-radius:24px;background:#22221f;color:#ececec;}
+  body.light :is(#tl3, .tlSide) > .t3Upd{background:#fff;color:#111;box-shadow:0 1px 2px rgba(46,31,26,.06),0 8px 24px rgba(46,31,26,.06);}
+  :is(#tl3, .tlSide) > .t3Upd.in{animation:t3UpdIn .5s cubic-bezier(.32,.72,0,1) both;} :is(#tl3, .tlSide) > .t3Upd.gone{opacity:0;transform:translateY(-8px);transition:opacity .25s ease,transform .3s ease;}
   @keyframes t3UpdIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:none;}}
   .t3UpdVis{position:relative;width:104px;height:84px;} .t3UpdVis::before{content:"";position:absolute;inset:-10px -6px;background:radial-gradient(closest-side,rgba(245,164,122,.26),transparent 72%);pointer-events:none;}   /* a warm glow behind the fan */
   html.t3CmOn :is(.mTabs, .evFld){opacity:0 !important;transition:opacity .25s ease;} html.t3CmOn :is(.mTabs, .evFld), html.t3CmOn :is(.mTabs, .evFld) *{pointer-events:none !important;}   /* the island takes the dock's place (and the desk Eva field's) while the walk runs; nothing in them answers a tap, their children included (the island's arrows were landing on the AI star and the tabs: "It goes to the bottom sheet AI from the nav") */
   .t3UpdTile{position:absolute;top:14px;left:30px;display:grid;place-items:center;width:48px;height:48px;border-radius:14px;background:#3a3a36 center / cover no-repeat;box-shadow:0 0 0 3px #22221f,0 6px 14px rgba(0,0,0,.35);color:#ececec;transition:transform .5s cubic-bezier(.34,1.56,.64,1);}
   body.light .t3UpdTile{background-color:#f3efed;box-shadow:0 0 0 3px #fff,0 6px 14px rgba(46,31,26,.16);color:#111;}
   .t3UpdTile svg{width:22px;height:22px;} .t3UpdTile.t0{transform:translateX(-26px) rotate(-12deg);z-index:1;} .t3UpdTile.t2{transform:translateX(26px) rotate(12deg);z-index:2;} .t3UpdTile.t1{transform:translateY(-6px) scale(1.08);z-index:3;}
-  #tl3 > .t3Upd.in .t3UpdTile{animation:t3UpdFan .7s cubic-bezier(.34,1.56,.64,1) .15s both;} @keyframes t3UpdFan{from{transform:none;}}
+  :is(#tl3, .tlSide) > .t3Upd.in .t3UpdTile{animation:t3UpdFan .7s cubic-bezier(.34,1.56,.64,1) .15s both;} @keyframes t3UpdFan{from{transform:none;}}
   .t3UpdSp{position:absolute;top:0;right:6px;z-index:4;width:20px;height:20px;color:#F5A47A;animation:t3UpdTw 2.4s ease-in-out infinite;} .t3UpdSp svg{width:100%;height:100%;}
   @keyframes t3UpdTw{0%,100%{transform:scale(1) rotate(0);opacity:1;}50%{transform:scale(.72) rotate(18deg);opacity:.7;}}
   .t3UpdN{position:absolute;right:10px;bottom:6px;z-index:4;display:grid;place-items:center;min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:oklch(72% .15 150);color:#0b0b0b;font-family:inherit;font-size:12px;font-weight:600;line-height:1;font-style:normal;box-shadow:0 0 0 3px #22221f;}
@@ -55003,6 +55012,12 @@ hairline({
     html.tlD3.tlSideOn body:not([data-bp]) #dTl > :not(.tlSide){grid-column:1;min-width:0;} html.tlD3.tlSideOn body:not([data-bp]) #dTl > .tlCol{width:auto;max-width:none;margin-inline:0;}
     html.tlD3.tlSideOn body:not([data-bp]) #dTl > .tlSide{display:block;grid-column:2;grid-row:1 / span 40;position:sticky;top:32px;}
   }
+  /* the Plan updates card in the right column ("put the new update card on the right col on L"): its first card, stacked and centred for the 320 (the fan, the title, the line, Check it out); the placeholder goes while it is there; the column dims with the timeline while its walk runs */
+  #dTl > .tlSide > .t3Upd{grid-template-columns:minmax(0,1fr);justify-items:center;row-gap:12px;margin:0;padding:32px 24px 24px;text-align:center;}
+  #dTl > .tlSide > .t3Upd .t3UpdTx{align-items:center;} #dTl > .tlSide > .t3Upd .t3UpdGo{margin-top:12px;}
+  .tlSide:has(> .t3Upd) > .tlSideCard{display:none;}
+  html.tlD3.tlSideOn body[data-bp="l"] #dTl #tl3 > .tlBar.t3Bar::before{clip-path:inset(0 -20px 0 -100vmax) !important;} @media (min-width:1440px){ html.tlD3.tlSideOn body:not([data-bp]) #dTl #tl3 > .tlBar.t3Bar::before{clip-path:inset(0 -20px 0 -100vmax) !important;} }   /* with the right column, the tabs' ground ends half way into the 40 gap */
+  .tlSide{transition:opacity .3s ease;} html.t3CmOn .tlSide{opacity:.24;pointer-events:none;}
   .tlSideCard{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:320px;padding:24px;box-sizing:border-box;border:1px dashed rgba(255,255,255,.14);border-radius:20px;text-align:center;}
   .tlSideCard b{font-size:15px;line-height:20px;font-weight:500;color:rgba(255,255,255,.72);} .tlSideCard span{max-width:220px;font-size:13px;line-height:18px;color:rgba(255,255,255,.4);}
   body.light .tlSideCard{border-color:rgba(46,31,26,.16);} body.light .tlSideCard b{color:rgba(0,0,0,.72);} body.light .tlSideCard span{color:rgba(0,0,0,.44);}
@@ -55019,11 +55034,12 @@ hairline({
   .t3IsTx{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;text-align:center;} .t3IsTx > *{max-width:100%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;} .t3IsTx b{font-size:15px;line-height:20px;font-weight:500;} .t3IsTx span{font-size:13px;line-height:18px;color:rgba(255,255,255,.56);} body.light .t3IsTx span{color:rgba(0,0,0,.56);}
   .t3IsTx i{font-style:normal;font-weight:500;color:oklch(80% .13 150);} .t3IsTx i.adj{color:oklch(80% .1 240);} body.light .t3IsTx i{color:oklch(48% .13 150);} body.light .t3IsTx i.adj{color:oklch(48% .12 240);}
   .t3CmCl{position:absolute;z-index:62;display:grid;place-items:center;width:64px;height:64px;padding:0;border:0;border-radius:50%;background:rgba(38,38,35,.94);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);box-shadow:0 0 0 1px rgba(255,255,255,.06),0 12px 32px rgba(0,0,0,.36);color:#fff;cursor:pointer;opacity:0;transform:translateY(16px);transition:opacity .3s ease,transform .45s cubic-bezier(.32,.72,0,1);} .t3CmCl.on{opacity:1;transform:none;} .t3CmCl:active{transform:scale(.94);} .t3CmCl svg{width:22px;height:22px;} body.light .t3CmCl{background:rgba(255,255,255,.97);box-shadow:0 0 0 1px rgba(46,31,26,.06),0 12px 32px rgba(0,0,0,.22);color:#111;}   /* the island's glass, round, beside it */
-  @media (prefers-reduced-motion: reduce){ #tl3 > .t3Upd.in, #tl3 > .t3Upd.in .t3UpdTile, .t3UpdSp{animation:none;} #tl3 > .t3CmSp, .t3Is{transition:opacity .2s ease;} }
+  @media (prefers-reduced-motion: reduce){ :is(#tl3, .tlSide) > .t3Upd.in, :is(#tl3, .tlSide) > .t3Upd.in .t3UpdTile, .t3UpdSp{animation:none;} #tl3 > .t3CmSp, .t3Is{transition:opacity .2s ease;} }
   #tl3 .jvPhEv[data-n="2"]{grid-template-columns:repeat(2,minmax(0,1fr));max-width:476px;} #tl3 .jvPhEv[data-n="1"]{grid-template-columns:minmax(0,1fr);max-width:236px;}   /* a decade with fewer than three checks: its cards centred, the reason cards' own width */
   @container msl (max-width:600px){ #tl3 .jvPhEv[data-n]{grid-template-columns:minmax(0,1fr);max-width:none;} }
   /* the established member's normal timeline (V1's bar, rail, months and rows): the bar in the column, a count on each tab ("v3 need these 3 tabs"), the focus card first in Now */
   #dTl #tl3 > .tlBar.t3Bar{display:block !important;margin:0;padding:0;}
+  html.t3TabFree #dTl #tl3 > .tlBar.t3Bar{position:relative !important;top:auto !important;}   /* Tabs fixed: Off, the tabs scroll away with the page (their ground kept, behind them only) */
   #dTl #tl3 > .tlBar.t3Bar::before{opacity:1 !important;transition:none !important;background:var(--pageBg) !important;box-shadow:0 0 0 100vmax var(--pageBg);clip-path:inset(0 -100vmax);}   /* the tabs' ground solid at once, the panel's full width ("The top header should be solid black ... when I scroll, I see some transparency"): no fade in on scroll, nothing showing at its sides; the shadow, not a wider box, so nothing scrolls sideways */
   #tl3 .t3Bar .tlTab{display:inline-flex;align-items:center;justify-content:center;}
   /* Tab style: Filled (html.t3TabFill; Tweaks -> Timeline -> Tab style; "More filled rounded shape VS outline tab"): the tabs in a rounded track (the ink at 6%), the one on lifted on a pill (12%; white on the light page) that slides as the underline did; no rule under them */
@@ -55099,6 +55115,7 @@ hairline({
     #tl3 .t3MoP{position:static;width:auto;padding:0;flex-direction:row;gap:5px;background:none;box-shadow:none;border-radius:0;font-size:13px;}
     #tl3 .t3MoP > b{display:none;} #tl3 .t3MoP > b.l{display:inline;font-size:13px;font-weight:500;color:var(--tlSub);} #tl3 .t3MoP > em{font-size:13px;}
   }
+  #tl3 .tlRow::before{top:16px;bottom:16px;left:-8px;right:-8px;} @container tl (max-width:540px) or style(--tlXs: 1){ #tl3 .tlRow::before{top:12px;bottom:12px;} }   /* the item's ghost card 8 round what is in it, every side ("timeline item use ghost card 8px padding"; was 12, 10 at XS): the rows' 24 (XS 20) less 8 */
   #tl3 .tlRow{cursor:pointer;} #tl3 .tlRow.t3Out{opacity:0;transform:translateX(16px);transition:opacity .3s ease,transform .3s ease;}   /* put off: out, then the list drawn again */
   /* the sheets' own pieces */
   .t3Ey{display:flex;align-items:center;gap:8px;font-size:13px;line-height:18px;letter-spacing:1.4px;text-transform:uppercase;color:var(--tlSub);}
@@ -55452,7 +55469,7 @@ hairline({
     BAG.splice(0).forEach(f => { try { if (typeof f === 'function') f(); else if (f && f.destroy) f.destroy(); } catch (e) {} });
     usePer(); const nw = T().mem === 'new'; H.classList.toggle('t3New', nw);   /* its container's default (EvCt): sm for the new member's cards, xs for the timeline */
     host.innerHTML = nw ? '<div class="tlList tlV2 jvMs t3Jv' + (S.q.trim() ? ' msQ' : '') + '">' + newHTML() + '</div>' : estHTML();
-    placeQ(); if (window.__t3UpdPlace) window.__t3UpdPlace(); if (window.__t3Side) window.__t3Side();
+    placeQ(); if (window.__t3Side) window.__t3Side(); if (window.__t3UpdPlace) window.__t3UpdPlace();
     deco(); if (window.__t3Fit){ requestAnimationFrame(window.__t3Fit); setTimeout(window.__t3Fit, 400); } };   /* Decade scroll: the cards' sticky tops, once drawn */
   /* the phone: the bar's search in the page head, beside Past, as V1's (the tabs fill the bar's row; it had wrapped to a row of its own under them) */
   const isXs = () => { const b = document.body.dataset.bp; return b ? b === 'xs' : innerWidth < 600; };
@@ -55462,7 +55479,7 @@ hairline({
   let spyLock = 0;
   const tbar = () => host && (host.querySelector('.t3Bar') || host.querySelector('.jvTabsS'));   /* the established's bar, or the new member's tabs (My journey's) */
   const barOff = b => { const cs = getComputedStyle(b); return cs.position === 'sticky' ? (parseFloat(getComputedStyle(main).paddingTop) || 0) + (parseFloat(cs.top) || 0) + b.offsetHeight : 8; };   /* pinned, the bar sits at the page's top padding plus its top (32 - 32 on the desk): the jump lands the part's head just under it, not 32 behind it */
-  const hTop = () => { const b = host && host.querySelector('.t3Bar'); if (!b || !b.offsetHeight) return; const t = (parseFloat(getComputedStyle(b).top) || 0) + b.offsetHeight - 1; if (host.style.getPropertyValue('--tlHTop') !== t + 'px') host.style.setProperty('--tlHTop', t + 'px'); };   /* the groups (Now, This year, Saved for later) pin right under the bar, as V1's months under its tabs */
+  const hTop = () => { const b = host && host.querySelector('.t3Bar'); if (!b || !b.offsetHeight) return; const t = H.classList.contains('t3TabFree') ? -(parseFloat(getComputedStyle(main).paddingTop) || 0) : (parseFloat(getComputedStyle(b).top) || 0) + b.offsetHeight - 1;   /* Tabs fixed Off: the groups pin where the tabs would, flush at the page's top */ if (host.style.getPropertyValue('--tlHTop') !== t + 'px') host.style.setProperty('--tlHTop', t + 'px'); };   /* the groups (Now, This year, Saved for later) pin right under the bar, as V1's months under its tabs */
   const spy = () => { if (!host || !H.classList.contains('tlD3')) return; const bar = tbar(); if (!bar) return;   /* the tab lit is the part under the bar */
     if (Date.now() > spyLock){ const lim = main.getBoundingClientRect().top + barOff(bar) + 48; let k = (host.querySelector('[data-t3a]') || { dataset: {} }).dataset.t3a || 'now'; host.querySelectorAll('[data-t3a]').forEach(a => { if (a.getBoundingClientRect().top <= lim) k = a.dataset.t3a; }); if (main.scrollTop > 8 && main.scrollTop + main.clientHeight >= main.scrollHeight - 4) k = 'later';   /* at the foot: Later, the last part, however short */ S.tab = k; }
     let moved = false; bar.querySelectorAll('.tlTab').forEach(t => { const on = t.dataset.t3go === S.tab; if (t.classList.contains('on') !== on){ moved = true; t.classList.toggle('on', on); t.setAttribute('aria-selected', String(on)); } }); if (moved) thumb(); };
@@ -55594,8 +55611,11 @@ hairline({
   const updIt = id => (S.items || []).find(i => i.id === id);
   const updIds = () => updL.filter(id => { const it = updIt(id); return it && it.chg && rowEl(id); });
   const cmShut = () => { H.classList.remove('t3CmOn'); if (host) host.querySelectorAll('.tlRow.t3CmMe').forEach(r => r.classList.remove('t3CmMe')); if (!cm) return; const c = cm; cm = null; removeEventListener('keydown', c.key); clearInterval(c.chk); [c.sp, c.is, c.x].forEach(e => e.classList.remove('on')); setTimeout(() => { [c.sp, c.is, c.x, c.bk].forEach(e => e.remove()); }, 320); };
-  const updDone = () => { cmShut(); updL = []; const e = host && host.querySelector(':scope > .t3Upd'); if (e){ e.classList.add('gone'); setTimeout(() => e.remove(), 320); } };
-  const updPlace = () => { if (!host) return; const had = host.querySelector(':scope > .t3Upd'); if (had) had.remove(); const ids = updIds(); if (!ids.length || T().mem === 'new' || S.q.trim()) return;
+  const updDone = () => { cmShut(); updL = []; const e = main.querySelector('.t3Upd'); if (e){ e.classList.add('gone'); setTimeout(() => e.remove(), 320); } };
+  const updSide = () => { const at = document.getElementById('stT3UpdAt'); if (at && at.value === 'top') return null; const sd = main.querySelector(':scope > .tlSide'); return sd && getComputedStyle(sd).display !== 'none' ? sd : null; };   /* the right column, when it shows (L) and Card position is Right column */
+  const updHome = () => { const el = main.querySelector('.t3Upd'), bar = host && host.querySelector('.t3Bar'); if (!el || !bar) return; const sd = updSide(); if (sd){ if (el.parentElement !== sd) sd.prepend(el); } else if (el.nextElementSibling !== bar) bar.before(el); };
+  addEventListener('resize', updHome); { const b = document.getElementById('stBp'), sdT = document.getElementById('stT3Side'), atT = document.getElementById('stT3UpdAt'); [b, sdT, atT].forEach(t => { if (t) t.addEventListener('change', () => setTimeout(updHome, 60)); }); }
+  const updPlace = () => { if (!host) return; const had = main.querySelector('.t3Upd'); if (had) had.remove(); const ids = updIds(); if (!ids.length || T().mem === 'new' || S.q.trim()) return;
     const bar = host.querySelector('.t3Bar'); if (!bar) return; const its = ids.map(updIt), n = its.length, nN = its.filter(i => i.chg === 'new').length, nA = n - nN;
     const tile = (it, j) => { const pc = pic(it); return '<i class="t3UpdTile t' + j + (pc ? '' : ' ico') + '"' + (pc ? ' style="background-image:url(' + pc + ')"' : '') + '>' + (pc ? '' : icon(it)) + '</i>'; };
     const v = its.slice(0, 3).sort((a, b) => !!pic(a) - !!pic(b)), pos = v.length === 1 ? [1] : v.length === 2 ? [0, 2] : [0, 2, 1];
@@ -55605,7 +55625,7 @@ hairline({
     el.innerHTML = '<div class="t3UpdVis" aria-hidden="true">' + v.map((it, j) => tile(it, pos[j])).join('') + '<i class="t3UpdSp">' + SPK + '</i><i class="t3UpdN">' + n + '</i></div>' +
       '<div class="t3UpdTx"><b>' + esc(title) + '</b><span>' + esc('Dr Lu ' + said + '. See where ' + (n === 1 ? 'it sits' : 'they sit') + ' on your timeline.') + '</span><button class="t3UpdGo" type="button">Check it out</button></div>' +
       '<button class="t3UpdX" type="button" aria-label="Dismiss">' + WIC.x + '</button>';
-    bar.before(el);
+    const sd = updSide(); if (sd) sd.prepend(el); else bar.before(el);   /* L: the right column's first card */
     el.querySelector('.t3UpdGo').addEventListener('click', () => { const m = document.getElementById('stT3Upd'); if (m && m.value === 'modal') updModal(); else cmGo(0); });   /* Plan updates: Modal, the updated plan over the page; Coachmark, the walk */
     el.querySelector('.t3UpdX').addEventListener('click', updDone); };
   window.__t3UpdPlace = updPlace;
@@ -55673,6 +55693,8 @@ hairline({
   ver();
   window.EvTl3 = { build, reset: () => { reset(); build(); }, news };
   /* Tweaks -> Timeline -> Plan updates: the card as after the report's Pay (the clinical changes), or none */
+  /* Tweaks -> Timeline V3 -> Tabs fixed ("tweak the top nav tab fixed ON OFF"): On, the tabs pinned at the top; Off, they scroll away (html.t3TabFree), the groups and the stacked decades pinning at the top instead */
+  { const e = document.getElementById('stT3TabFix'); const f = () => { H.classList.toggle('t3TabFree', !!e && e.value === 'off'); requestAnimationFrame(() => { hTop(); if (window.__t3Fit) window.__t3Fit(); }); }; if (e) e.addEventListener('change', f); f(); }
   /* Right column (L only): a 320 column at the timeline's right, sticky under the page's top, for information; a placeholder card until its content is decided */
   { const e = document.getElementById('stT3Side'), side = document.createElement('aside'); side.className = 'tlSide'; side.setAttribute('aria-label', 'Information');
     side.innerHTML = '<div class="tlSideCard"><b>Information</b><span>This column is kept for information beside the timeline.</span></div>';

@@ -22860,3 +22860,13 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **Desk Ask panel** ("Padding on the section below chat field --> 24px"): the section under the field (Services, Inbox, See more) 24 all round (was 8 at the sides, 0 below); the services row still runs edge to edge, its first chip / tile on the labels' line (28). The Inbox rows there are the phone's ghost rows already (the same Inbox Cards setting drives both).
 - **Stacked decade cards**: the blur under them 128 (was 64).
 - **Decade cards**: no "2032 to 2041 · 2 checks" chip on any decade, in both Decade styles ("remove for all decades").
+
+## v2396: Plan updates in the right column and its own Tweaks group; rounded row CTAs; Tabs fixed; ghost card 8; AI objects open the Concierge
+
+- "put the new update card on the right col on L": at L, with the Right column on, the Plan updates card (`.t3Upd`) is the column's first card, stacked and centred (fan, title, line, Check it out); the placeholder hides while it is there. `updSide()` / `updHome()` move it between the column and above the tabs on breakpoint, window or column changes. The column dims to 24% while the coachmark walk runs.
+- The tabs' solid ground (`.t3Bar::before`, a 100vmax shadow) covered the column's top at L: clipped to end 20 into the 40 gap when the column shows.
+- "CTA rounded": the V3 rows' split CTA (action + ⋯) and lone CTAs are fully rounded (`#tl3 .tlAct`), the ⋯ 38 wide.
+- "create a group tweak for that": Tweaks has a Plan updates group (Timeline V3 pages): Experience (Modal / Coachmark / None, the old `stT3Upd` row) and Card position (`stT3UpdAt`: Right column / Above tabs, at L).
+- "tweak the top nav tab fixed ON OFF": Timeline V3 → Tabs fixed (`stT3TabFix`, On default). Off (`html.t3TabFree`) lets the Now / This year / Later bar scroll away; the group heads pin flush at the page's top instead (`--tlHTop` = minus the page's top padding), and the stacked decades fit to them.
+- "timeline item use ghost card 8px padding": each V3 item's ghost card (its hover / press ground, also the walk's highlight) sits 8 round what is in it (was 12; 10 at XS).
+- "Click on object ai redirect to full ai experience": every AI service object (Ask sheet tiles and chips, the desk Ask panel's Services, the Overview's services row) goes through `window.EvAiGo`, which opens the Concierge on Eva with the object's ask sent (`window._cc.ask`) instead of the in-page chat card. The Navigation doc's phone keeps the in-page chat.
