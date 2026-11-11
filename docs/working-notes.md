@@ -22664,3 +22664,16 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - A card taller than the room stops by its foot (`--stkT` set by `window.__t3Fit`: after a build, a click in the page, a resize, a breakpoint, or the first scroll).
 - **Concierge intro services grid:** 24 higher ("Up these visual items by 24px").
 - **Primary card visual on the phone (and the doc's phone card boxes):** 80 with 20 corners (was 64 / 24; "Increase the visual on mobile by 16px and reduce the radius by 4px").
+
+## Insights tweaks regrouped; Ask sheet Services as chips; Large sheet close in its top bar; Tweaks stay right with the sheet up
+
+- **Insights tweaks** (`.tkGroup[data-sec="ins"]`):
+  - **Empty state** On / Off on top (was Has data; the select keeps its values, `no` = On). On shows its three tasks under it: Health profile, Health data, Past results.
+  - **Mobile / Desktop tabs** (`.tkInsTabs`, `data-ins-tab` on the group, rows by `data-ins-t`); the breakpoint's tab at load and each time it crosses XS.
+  - Mobile: **Format** Section / Mini cards (`stInsPosM`, Mini cards by default), and with Empty state On: Tasks, Badges, Empty visuals.
+  - Desktop: Dedicated section (On / Off, its old Mobile option hidden and read as Off), Format, Desktop style, Card layout, Arrow position; with Empty state On: CTA position, Badges, Empty visuals.
+  - The phone is always a section of its own with the Mobile Format: `window.__insFmt()` (XS: `stInsPosM`, else `stInsPos`) drives `insHero` and `insMini`; `everlab:insFmt` fires when either moves or the breakpoint crosses XS.
+- **Ask sheet Services: Chips** (`EvAsk.svc('chip')`, `html.askCar.askChip`; Navigation doc → Ask Everlab → Services: Grid / Carousel / Tiles / Chips): the conversation chips' pill (Chip height, 18 sides, white 10%), each service's glyph drawn filled at 16 (`SVC_FI`: pill, heart, person, droplet, bone), one swipeable row. The shared Navigation setup set to Chips.
+- **Large sheet:** the close in the sheet's own top bar at its right (36, 10 under the sheet's edge, inside the card so it rides with it); the field 56 under the sheet's top.
+- **Tweaks with the Ask sheet up:** its groups now go into the panel's body (`.tkPanel`), so the panel stays docked at the right (they were landing under the top-bar button, mid-screen).
+- **Navigation doc:** Main nav desktop moved into the Eva group (the Desk sidebar group is gone).
