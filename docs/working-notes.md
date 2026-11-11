@@ -22732,3 +22732,9 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - The clinical card's Why / Type card: 4 padding, 18 corners; each row a ghost card with all corners round (14, concentric); Why keeps its press, Type the same card with no action (cursor default, no hover).
 - Ask sheet (Small and Large): See more 56 high, 16 corners (a button's, not a pill).
 - Review → Segmented: Advanced removed, Simple only (the option forced in the mount, the row hidden for older saves).
+
+## Insights on the desk: the Amount decides the card
+
+- Tweaks → Insights: **Desktop style** (Carousel / Static) and **Card layout** (Stacked / Row) removed ("Remove these tweak"); the rows stay hidden so older saves don't break, their values ignored, `html.insRow` never set.
+- The desk follows **Amount**: 1 → the carousel's item as it is, no dots, no arrows (`html.insAmt1`), the card hugging its content (no 256 floor, no room for dots; `flex: 0 0 auto`), so the Schedule under it takes the rest of the column ("The schedule can fill more space"). 2 to 4 → every item stacked as rows, visual / title / chevron (`insStat` + `insStk`, the old Static stack, now showing all of them, no See more).
+- Checked at L with the shared saved setup: Amount 1 hero 207 with the Schedule growing to fill a 640 primary; 2, 3, 4 stacked rows (335, 402, 506).
