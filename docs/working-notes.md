@@ -22930,3 +22930,16 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - When on an adjusted item shows the old month struck through, an arrow, then the new month (`it.wasM` → `it.when`).
   - The price is regular weight, like the other values ("Keep regular").
 - "need 24px safe padding on fixed tab top": on desk, the pinned Timeline tabs now sit 24 below the panel's top (bar padding 10 → 24). The title's margin went from 30 to 16, so title to tabs at rest is still Health's 40.
+
+## v2404: Timeline ghost items, focus card (no footer, Thumbnail tweak), decade age tweaks and list padding; recommendation glow sliders
+
+- "Item service in timeline must be ghost, cant see hover and press": V3 rows show their ghost card on hover on the phone frame too (V1 rows still don't), and on press at every size. On press the ground is a touch stronger (9% white, 7% ink on light) and the row scales to .99. Pressing a row's own buttons doesn't trigger it.
+- **Focus card**:
+  - The text is regular weight.
+  - No footer ("Remove footer, Put CTA right side, Reduce avatar by 2px"). The by-line now sits under the words with no rule above it, and Review (Prepare on the check-in twin) is on the right, centred on the words. The avatar is 26.
+  - The card is a grid with the card's own padding.
+- **Focus card: Thumbnail** (Tweaks → Your focus → Focus card: Bloc / Thumbnail / Photo): the timeline item's layout. The doctor's photo is on the left (96 on desk, 72 on phone, 64 in the right column), the words sit where the rows' words sit, and the button is on the right. The card keeps the ghost's 8 inset and 20 corners and lines up with the rows' pictures (on the phone the card reaches 8 out each side, as the ghosts do). The check-in twin follows the same layout.
+- **Decades**:
+  - No "Up next" badge on the first decade card ("remove").
+  - **Age size** (24–120, default 56) and **Age opacity** (default 100%) sliders in the Decades group (`--t3AgeFs`, `--t3AgeOp`). The phone shows 6/7 of the size.
+  - The checks' card in Card #2 now has an even 8 around each item's ghost ("padding issue with main container": it was 6 / 12 / 16 / 8). The body is padded 8 28 and the items have no left pad.
