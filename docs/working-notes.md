@@ -22643,3 +22643,12 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - **3+:** two stacked cards and a See more at the foot (16 regular, no underline) that opens the Insights page ("If it's only one insight ... without the carousel navigation. If it's more than one ... stack cards inside. If it's more than two ... a See more on the bottom of the card").
 - **Ask bottom sheet (XS):** the sheet's foot takes the screen's own corners (`--evPhR`, 56), and its layer is clipped with `clip-path: inset(0 round 56px)` in the app's phone and the doc phones. A blurred layer can escape a parent's rounded overflow clip on the GPU ("masked by the frame with the corner radius on the bottom").
 - **Menu AI entry point → Content removed** ("Remove this tweak"): it is always Concierge / Inbox / Services (the bottom sheet). A saved "Concierge / Inbox" opens on it too.
+
+## Ask sheet Format: Small / Large; picker tiles 50% when inactive
+
+- **Menu AI entry point → Format: Small sheet / Large sheet** (`stAskSize`, `html.askLg`).
+  - **Small:** the sheet as it was, the conversation chips above it ("Leave the conversation chip above the bottom sheet").
+  - **Large:** the sheet over almost the whole screen, its top 108 from the screen's (its close above it, under the status bar). Inside, it holds the chat field, Services, then "Conversations" as stacked cards; the chips over the sheet are gone and its inside scrolls ("the large bottom sheet is a sheet that covers almost the entire screen. Inside ... the chat field, the service, and then, below, the stacked conversation with the avatar and the title/subtitle").
+  - A card opens the Concierge's Inbox.
+- **`window.EvInbox` / `window.EvInboxRow(x)`:** the Concierge Inbox's items (the Concierge page's ATTN: Dr. Steven L · Doctor, Everlab · Care team, Prescription, Referral, Suggestion) and one card each ("cards similar to the doctor avatar card item"). Each card has a 48 avatar or icon tile (r14), Name · Role and the orange unread dot, the line (14, 56%), and the status at the right; 20 corners on 5% white, 8 apart.
+- **Picker tiles (`.tkArPic`):** the Primary card media, Async report pictures and Concierge videos pickers. Inactive tiles are at 50% (80% on hover) and the active one at 100% ("inactive items are at 50% opacity and the active item is at 100% opacity").
