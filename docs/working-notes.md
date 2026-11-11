@@ -22875,3 +22875,8 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 
 - The screen recording showed whole areas going blank while scrolling the Timeline (the top bar, the sidebar's items, cards drawn as empty boxes): the GPU running out with too many backdrop blurs at once. Every timeline button (`.tlBtn`, `.tlMore`, `.msB`) carried a 32 blur from the shared secondary-button rule, dozens per tab, nested inside the 128-blurred sticky decade cards.
 - Fix: no backdrop blur on the timeline's buttons, Past and search (`#dTl#dTl :is(...)`; their grounds are solid or 8% over a flat page, so nothing visible changes), and a decade card blurs only while within 400 of the screen (`.t3Vis`, an IntersectionObserver set up by the stack's `fit`). Measured in Chromium on the Later tab: 38 blurred elements before, 0 at rest and 1 to 4 while the decades stack.
+
+## v2398: decade keywords
+
+- "Add some decade keyword in the cards": each decade card (both Decade styles) shows the areas its checks cover as chips, as the timeline-ahead concept's decade cards do (its `AREAS` and `areaOf`, matched on each check's name and id; Reviews when none fits). Card #2: under why it matters and its points; Card #1: under its line, centred. 32 tall, 8 apart, 8% ground. The shared `AREAS` now also counts breast, cervical and eye checks, as the concept's.
+- The Release switch (V1 Today / V2 / V3 / V4) was dropped at the user's word: versions are managed with presets.
