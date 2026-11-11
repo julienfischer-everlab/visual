@@ -228,6 +228,7 @@ if (/^#tk-[A-Za-z0-9]{6,40}$/.test(location.hash)) { document.documentElement.cl
   .topbar .tkPsMenu[hidden]{display:none;}
   .topbar .tkPsHd{display:flex;align-items:center;justify-content:space-between;padding:6px 8px 4px;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:#71717a;} .topbar .tkPsHd span{text-transform:none;letter-spacing:0;}
   .topbar .tkPsIt{display:flex;align-items:center;gap:2px;border-radius:8px;}
+  .tkBlanket{position:fixed;inset:0;z-index:2147483600;display:grid;place-items:center;background:rgba(12,12,12,.62);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);opacity:0;transition:opacity .18s ease;pointer-events:auto;color:#fff;} .tkBlanket.on{opacity:1;} .tkBlanket .evSpin{width:32px;height:32px;border-width:2.5px;} body.light .tkBlanket{background:rgba(250,250,250,.66);color:#111;}   /* a preset picked: the page under a blanket, the master's spinner in the middle, 1 s ("I need to see a loader so I know the page changes: an overlay, a blanket, plus a loader in the middle for 1 second") */
   /* Default's own card; the groups as tabs (+ a new one); the open group's bar; Move to (a preset into another group) */
   .topbar .tkPsIt.tkPsDef{margin:2px 0 8px;padding:2px;border-radius:10px;background:#1f1f23;box-shadow:inset 0 0 0 1px #2c2c31;} .topbar .tkPsIt.tkPsDef:hover{background:#232327;} .topbar .tkPsIt.tkPsDef.on{background:#26262b;}
   .topbar .tkPsTabs{display:flex;align-items:center;gap:4px;margin:0 0 4px;padding:2px 2px 8px;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid #2a2a2e;} .topbar .tkPsTabs::-webkit-scrollbar{display:none;}
@@ -15341,7 +15342,7 @@ if (/^#tk-[A-Za-z0-9]{6,40}$/.test(location.hash)) { document.documentElement.cl
             <option value="3" selected>On</option>
           </select>
         </div>
-        <div class="tkRow"><span class="lbl">Dedicated section</span><select id="stInsDed" class="tkSegSel" aria-label="Insights in a section of their own under the Bento (On), or a module in the Bento (Off)"><option value="on" selected>On</option><option value="off">Off</option></select></div>   <!-- "Dedicated section ON: a section with its title below the bento, Insights can't be a Bento module; OFF: Insights can be a Bento secondary module" -->
+        <div class="tkRow"><span class="lbl">Dedicated section</span><select id="stInsDed" class="tkSegSel" aria-label="Insights in a section of their own under the Bento (On), a module in the Bento (Off), or a section on the phone and a Bento module on desktop (Mobile)"><option value="on" selected>On</option><option value="off">Off</option><option value="xs">Mobile</option></select></div>   <!-- "Dedicated section ON: a section with its title below the bento, Insights can't be a Bento module; OFF: Insights can be a Bento secondary module" -->
         <div class="tkRow" id="tkInsPosRow">   <!-- where the insights sit: their own full section, or one card up top in the services' place -- words left, the visual right, dots under ("remove Content and replace this tweak in Insights: Position: Full section, Hero (above Coming up instead of service)"; "a select: Section, like the Recent insights we have; Hero: the whole Recent insights section disappears, the insights come above the appointment card instead of the service card") -->
           <span class="lbl">Format</span>   <!-- ("the tweak Position, you can rename by Format") -->
           <select id="stInsPos" aria-label="The insights' format on the Overview">
@@ -47012,14 +47013,19 @@ hairline({
       const sec = document.getElementById('stInsDed');
       if (sec && pos){ let busy = false;
         const isHero = () => /^hero/.test(pos.value);
-        const opts = () => { const on = sec.value === 'on'; [...pos.options].forEach(o => { o.hidden = on === /^hero/.test(o.value); });
+        const xsNow = () => { const b = document.body.dataset.bp; return b ? b === 'xs' : innerWidth < 600; };
+        const eff = () => sec.value === 'on' || (sec.value === 'xs' && xsNow());   /* Mobile ("on mobile it should be dedicated section, but not on desktop"): the section on the phone, a Bento module (Hero) from S up */
+        const opts = () => { const on = eff(); [...pos.options].forEach(o => { o.hidden = on === /^hero/.test(o.value); });
           document.querySelectorAll('#stBm1 option[value="ins"], #stBm2 option[value="ins"]').forEach(o => { o.disabled = false; o.hidden = false; }); };   /* Insights stays pickable in the Bento ("why cant pick insight"): picked there, it takes the Hero Format and Dedicated section goes Off (EvBento's apply); Dedicated On again takes it out of its slot */
-        const fromSec = () => { if (busy) return; busy = true; const on = sec.value === 'on';
-          if (on && isHero()){ pos.dataset.secHero = pos.value; pos.value = 'full'; pos.dispatchEvent(new Event('change', { bubbles: true })); }
+        const fromSec = () => { if (busy) return; busy = true; const on = eff();
+          if (on && isHero()){ pos.dataset.secHero = pos.value; pos.value = pos.dataset.secSec || 'full'; pos.dispatchEvent(new Event('change', { bubbles: true })); }
           else if (!on && !isHero()){ pos.dataset.secSec = pos.value; pos.value = pos.dataset.secHero || 'hero'; pos.dispatchEvent(new Event('change', { bubbles: true })); }
           opts(); busy = false; };
-        const fromPos = () => { if (busy) return; const v = isHero() ? 'off' : 'on'; if (sec.value !== v){ sec.value = v; } opts(); };   /* the Format (or the Bento) moved it: the switch follows */
-        sec.addEventListener('change', fromSec); pos.addEventListener('change', fromPos); fromPos(); } } }
+        const fromPos = () => { if (busy) return;
+          if (sec.value === 'xs'){ if (isHero() === eff()){ if (isHero()) pos.dataset.secHero = pos.value; else pos.dataset.secSec = pos.value; requestAnimationFrame(fromSec); } else opts(); return; }   /* Mobile holds: a Format (a restored save, the Bento) of the other kind is kept for that side, this side's put back */
+          const v = isHero() ? 'off' : 'on'; if (sec.value !== v){ sec.value = v; } opts(); };   /* the Format (or the Bento) moved it: the switch follows */
+        sec.addEventListener('change', fromSec); pos.addEventListener('change', fromPos); fromPos();
+        { let was = xsNow(); const bp = () => { const n = xsNow(); if (n === was) return; was = n; if (sec.value === 'xs') fromSec(); }; new MutationObserver(bp).observe(document.body, { attributes: true, attributeFilter: ['data-bp'] }); addEventListener('resize', bp); }   /* Mobile: the breakpoint moves it (the Viewport select, or Auto with the window) */ } } }
   /* Tweaks -> Bento (window.EvBento): the secondary modules beside the primary card, each slot Insights (the Insights hero card), Tasks (the Tasks card), Services (the services row) or None, in the slots' order.
      It drives the switches that already show them (Services -> Content: Tasks or Services; Insights -> Format: a Hero or Section) and orders the visible cards among the places they hold (the hidden ones stay put, so the page's gaps hold);
      the old keepers (Tasks after the Insights card, the Insights card after the services) defer to it. Changing those switches by hand updates the slots */
@@ -50536,7 +50542,10 @@ hairline({
         menu.addEventListener('submit', e => { e.preventDefault(); const i = menu.querySelector('.tkPsAdd input'); if (i && i.value.trim()) add(i.value); });
         menu.addEventListener('click', e => { const b = e.target.closest('[data-a]'), it = e.target.closest('.tkPsIt'); if (!b || !it) return; const id = it.dataset.id, o = getP(id); if (!o) return; const a = b.dataset.a; if (o.fixed && a !== 'apply' && a !== 'share') return;
           if (a !== 'del') SURE = ''; if (a !== 'move') MOVE = '';
-          if (a === 'apply'){ putSnap(o.snap); setOn(id); setTimeout(paint, 60); say('“' + esc(o.name) + '” on the page. Save keeps it as the setup.', 2600); }
+          if (a === 'apply'){ menu.hidden = true; btn.setAttribute('aria-expanded', 'false');   /* the page under a blanket for 1 s, the preset put on under it, then lifted */
+            const bk = document.createElement('div'); bk.className = 'tkBlanket'; bk.setAttribute('role', 'status'); bk.setAttribute('aria-label', 'Loading ' + o.name); bk.innerHTML = '<i class="evSpin" aria-hidden="true"></i>'; document.body.appendChild(bk);
+            requestAnimationFrame(() => { bk.classList.add('on'); setTimeout(() => { putSnap(o.snap); setOn(id); setTimeout(paint, 60); }, 80); });
+            setTimeout(() => { bk.classList.remove('on'); setTimeout(() => { bk.remove(); say('“' + esc(o.name) + '” on the page. Save keeps it as the setup.', 2600); }, 200); }, 1000); }
           else if (a === 'update'){ upd(id, { snap: snapNow(), at: Date.now() }); setOn(id); say('“' + esc(o.name) + '” updated with the page’s tweaks', 2200); }
           else if (a === 'rename'){ EDIT = id; paint(); }
           else if (a === 'move'){ MOVE = MOVE === id ? '' : id; paint(); }

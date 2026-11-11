@@ -22626,3 +22626,11 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 
 - **The change:** Cover's title group to button gap is 32 (24 + 8, "Add an 8px gap between the title group and the button"), on the phone and on desktop, centred or left.
 - **How:** the foot's margin-top is 32 where the foot is a box. On the centred desktop card the foot is `display: contents` and the button reads `--hpCtrBtnT`, so Cover sets that variable to 32.
+
+## Insights Dedicated section: Mobile option; preset change under a blanket
+
+- **Insights → Dedicated section, new option Mobile:** a section on the phone and a Bento module (Hero) from S up ("on mobile it should be dedicated section, but not on desktop").
+  - It follows the breakpoint: the Viewport select, or Auto with the window (a `data-bp` observer plus resize).
+  - Each side keeps its own Format choice: Section or Mini cards on the phone, a Hero variant on desktop.
+  - A restored save or a Bento pick of the other kind is remembered for that side, and the current side is put back.
+- **Presets:** picking one in the list closes the menu and puts the page under a blanket (a 62% dim with a 6px blur) with the design system's spinner (`.evSpin`, 32) in the middle for 1s. The preset goes on under it, then the blanket lifts and the toast shows ("I need to see a loader so I know the page changes").
