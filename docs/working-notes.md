@@ -22610,3 +22610,9 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **Insights dots and padding:** the dots are 12px lower ("the nav dots should be down by 12px"). The card padding is 8px more on every side ("Increase the card padding by 8px"): 32 on desktop, 28 on the phone. The eyebrow, the top-right arrows (`--insFx`, `--insEbC`), the dots and See more all move with it. The foot is the same with the arrows beside the dots or Top right.
 - **Primary card avatar:** 118 on desktop ("Increase this avatar by 32px"); still 64 on the phone and in the doc card boxes.
 - **Primary card Cover:** the content sits at the foot, centred on every breakpoint and in either alignment. The bottom padding is 56 ("Bottom padding + 16px"). There is no progress bar or eyebrow. The picture covers at least 70% of the card. The fade is radial ("Can we have a radial fade-out?"): a 100% × 100% ellipse from the top centre, solid to 42%, then soft to transparent, so the lower corners go first.
+
+## Primary card Cover on the phone: hugs its content, 256 at least, 24 to the button
+
+- **Phone padding:** on the phone the Cover card has the card's own 20px on every side ("keep the card with the same padding as the inside card"). It no longer has the 200 top and 56 bottom.
+- **Phone height:** it hugs its content ("hug content") with a min-height of 256. The words sit at the foot, and the picture still covers at least 70% (179 of 256).
+- **Title group to button:** 24px at every breakpoint ("make the title group more connected to the CTA with a gap of 24px"). The foot's own 32px top padding is off for Cover. Desktop keeps its 56 bottom padding.
