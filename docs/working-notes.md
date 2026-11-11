@@ -22799,3 +22799,6 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **Confirm your updated plan, new items** (`.arRvwTlC`, a grid now: picture, words, badge; the footer across): the picture 16 from the words (was 12); New / Adjusted at the right in the pill Included wore (green ground for New, the blue one for Adjusted), level with the title's first line; Included or the price the card's footer, at its left, plain words (Included in the green, a price in the ink) over a hairline.
 - **Hover**: no border; the card a touch lighter (pointer devices only).
 - **Plan timeline picture**: 64 square, 16 corners (was 48): as tall as the title and two lines of its line (22 + 2 + 40, "just a fit with two lines of sub"); every item's (the debrief's, the plan's, the new ones').
+- **Plan timeline footers**: every card's badge in its footer, at the right (New, Adjusted, In your plan, Completed); at the left Included or the price, both white ("the included one needs to be white font"); the cards one grid (picture, words; the footer across).
+- **Months**: no line beside them, 8 more above each (the rail drawn through the extra).
+- **Later -> Add to plan**: the plus on a Later item switches to the Add to plan tab and brings the item to the middle of the sheet where it now sits on the timeline, a brief light on its card (`rvFocus`).
