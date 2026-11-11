@@ -22777,3 +22777,14 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **Insights carousel dots (phone)**: 8 more above them, 24 under the cards (was 16).
 - **Menu AI entry point -> Inbox -> Cards**: Ghost (default) / Filled. Ghost: the conversations without a fill, 4 inset so they sit on the Inbox label, a 1px divider between them (8% white, 10% warm ink in light), hover dims; Filled, the cards as before. Phone sheet and desk panel (`html.askIbxGh`).
 - **See more links**: 14 regular everywhere (the Section links rule, Schedule, the Insights hero and its stack's See more, the Plan's, Your debriefs').
+
+## v2382: Bento hugs one booking, a 4th insight, phone insights 1 and 2, Tweaks order, Async pictures
+
+- **Desk Bento, one booking**: the Schedule card drops the Bento's 256 floor and hugs its one row (`.ovBk.bkOne`), so the row, and the primary card beside it, come down to the column (654 to 559 at L).
+- **Desk Bento, nothing booked**: the Insights stack shows a 4th row (`html.bkNone`, set by `bkList` when there are no bookings or no Schedule at all); See more only past what is shown (Amount 5+, `insStk5`).
+- **Phone, one insight** (`.ovIns1`): hugs its content (20 all round, no spacer rows, words centred on the visual), title to line 16 (was 20), visual 112 (was 120), See insights one size up on the Design system's scale (sm 36: `evCtl-sm` tokens), 32 under the line.
+- **Phone, two insights** (Mini format): side by side, sharing the width, no dots.
+- **Tweaks**: the Concierge card and Past result card groups always at the very end of Tweaks; dragging another group leaves their place on the page as it was.
+- **Async report**: Colonoscopy gets its photo (`assets/async/rec-colon.webp`, the pasted micrograph, 168 px); the clinical photographs (gut, allergy, review, colonoscopy) fill their tile (out of the cut-out list). Swipe card picture 72 (was 64), 20 corners, 16 more to its left (32 from the words).
+- **Confirm your updated plan**: every item its picture at the left (48): the recommendation's photo or icon tile, the pathology photo for a recheck, the doctor's avatar for the debrief and visits; Included or the price under the line, New / Adjusted at the right; the dots ringed in the ground's colour (a gap between the rail and the dot), the existing plan's dots dimmer rather than see-through.
+- **Size**: the microbiome cover was inlined twice; now one copy in `window.EvSvcImg.microc` (dist 15.72 MB, was 15.99).
