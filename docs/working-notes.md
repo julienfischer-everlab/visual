@@ -22788,3 +22788,8 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **Async report**: Colonoscopy gets its photo (`assets/async/rec-colon.webp`, the pasted micrograph, 168 px); the clinical photographs (gut, allergy, review, colonoscopy) fill their tile (out of the cut-out list). Swipe card picture 72 (was 64), 20 corners, 16 more to its left (32 from the words).
 - **Confirm your updated plan**: every item its picture at the left (48): the recommendation's photo or icon tile, the pathology photo for a recheck, the doctor's avatar for the debrief and visits; Included or the price under the line, New / Adjusted at the right; the dots ringed in the ground's colour (a gap between the rail and the dot), the existing plan's dots dimmer rather than see-through.
 - **Size**: the microbiome cover was inlined twice; now one copy in `window.EvSvcImg.microc` (dist 15.72 MB, was 15.99).
+
+## v2383: Items 0 and Amount 0 replace the empty-state switches
+
+- **Scheduled -> Items**: 0 / 1 / 2 / More; 0 is the empty state ("remove the Has data and put item 0 instead"). Has data is gone from Tweaks (kept hidden: an older save's No reads as Items 0, Yes over 0 as 2); State hides at 0.
+- **Insights -> Amount**: 0 / 1 / 2 / 3 / 4 / 5+, its tabs beside the label (`tkRowInl`: kept inline past four options); 0 is the empty state ("the empty state on is equal to 0, and the off is 1 2 3 4 5+"). Empty state is gone from Tweaks (kept hidden, set from the Amount; an older save's On reads as 0, Off over 0 back to the last count). The Amount row stays visible in the empty state.
