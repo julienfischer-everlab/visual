@@ -3519,8 +3519,10 @@ window.EvMagnet = (function () {
   var red = function () { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
   function bind(row, o) {
     o = o || {}; if (!row) return { go: function () {}, at: function () { return 0; } }; if (window.EvFade) window.EvFade.bind(row);   /* every magnet row fades its overflow (EvFade) */
-    var cs = function () { return [].slice.call(row.querySelectorAll(o.item)); };
-    var posOf = function (i) { var c = cs(); if (!c[i]) return 0; return Math.min(row.scrollWidth - row.clientWidth, Math.max(0, c[i].offsetLeft - c[0].offsetLeft)); };
+    var cs = function () { return [].slice.call(row.querySelectorAll(o.item)).filter(function (x) { return x.getClientRects().length; }); };   /* the cards drawn (a hidden one has no place) */
+    var posOf = function (i) { var c = cs(); if (!c[i]) return 0; var p = c[i].offsetLeft - c[0].offsetLeft;
+      if (/center/.test(getComputedStyle(c[i]).scrollSnapAlign || '')) p += (parseFloat(getComputedStyle(row).paddingLeft) || 0) - (row.clientWidth - c[i].offsetWidth) / 2;   /* a card snapping to its centre rests centred, as its snap has it (the phone's Section cards) */
+      return Math.min(row.scrollWidth - row.clientWidth, Math.max(0, p)); };
     var near = function () { var b = 0, d = Infinity; cs().forEach(function (x, i) { var v = Math.abs(posOf(i) - row.scrollLeft); if (v < d) { d = v; b = i; } }); return b; };
     var an = 0, d0 = null, pend = 0, mq = 0;
     var glide = function (to) { if (an) cancelAnimationFrame(an); var from = row.scrollLeft, d = to - from, t0 = performance.now(); if (Math.abs(d) < .5 || red()) { row.scrollLeft = to; row.style.scrollSnapType = ''; return; }

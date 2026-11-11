@@ -22699,3 +22699,11 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - 1 / 2: that many cards, no See more.
   - 3+: two cards, then See more (Large sheet: every card, then See more).
 - The sheet hugs whatever is left (Small).
+
+## Insights carousels swipe by hand: the carousels' magnet (EvMagnet)
+
+- **Recent insights rail** (`#dOver .ovcar`) and the **Insights hero card's slides** (`.ovInsTrack`) are bound to `window.EvMagnet`, the carousels' master ("It needs to actually take the card and move it right to left ... more than 50% of the card, it just goes to the next one. If less, you go back"):
+  - the cards follow the finger or the mouse while dragged; let go at half a card (and its gap) or more, the next; less, back; a 240 ms quintic glide; a drag never opens a card;
+  - `touch-action: pan-y` on both, so a sideways pan is the magnet's on a touch screen too, the page keeping the vertical scroll.
+  - The rail had no drag of its own (native scroll only: a mouse could not move it); the hero card's own mouse drag (nearest slide, a velocity flick) is replaced by the magnet; its arrows and dots unchanged.
+- **EvMagnet (master):** only drawn cards count (a hidden one has no place), and a card whose snap is its centre rests centred (the phone's Section cards), so the snap never jumps it after the glide.
