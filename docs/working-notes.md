@@ -22707,3 +22707,11 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - `touch-action: pan-y` on both, so a sideways pan is the magnet's on a touch screen too, the page keeping the vertical scroll.
   - The rail had no drag of its own (native scroll only: a mouse could not move it); the hero card's own mouse drag (nearest slide, a velocity flick) is replaced by the magnet; its arrows and dots unchanged.
 - **EvMagnet (master):** only drawn cards count (a hidden one has no place), and a card whose snap is its centre rests centred (the phone's Section cards), so the snap never jumps it after the glide.
+
+## Insights: Amount tweak, hero card spacing
+
+- "The content plus the bottom carousel by 16px": the hero card's first grid row 32 → 48 and its slide 16 taller (min-height 300, XS 309), so the words, the picture and the dots sit 16 lower; the eyebrow and See more stay. "12px margin-top on the CTA": `.ovInsCta` margin-top 16 → 12.
+- New Tweaks → Insights → **Amount** (1 / 2 / 3 / 4, under Empty state, shown only when Empty state is Off): how many insights show, the same count on the desktop hero card (its slides, rebuilt from `list.slice(0, n)`) and in the section (`car._ovExp.setCount(n)`, the dots redrawn). `window.__insAmtN()`, `html[data-ins-amt]`, event `everlab:insAmt`. It also sets the desktop Static style's Items (1 / 2 / 3+), whose own row is now gone (`tkGone`).
+- One item: no arrows and no carousel dots, desktop and mobile (`html.insAmt1` hides the hero's `.ovInsDots` / `.ovInsArr` and the rail's `.railNav`; a rail's dots hide whenever there is only one). More than one: arrows and dots as before.
+- The retired Insights count handler now reads the Amount, so it no longer resets the section past it.
+- Checked at L (hero 4/3/2/1 slides, arrows and dots gone at 1; section 4/2/1 cards, nav and dots gone at 1) and XS (Section and Mini cards, 4/3/2/1 cards, dots gone at 1). Hero content measured at 76 from the slide top (was 60).
