@@ -22842,3 +22842,9 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 
 - **Desk deck row waits for the stack** ("this should appear once the card stacked are in place! not before"): the Later / Add to plan row and its note stay hidden through the opening shuffle (as the phone's footer does, `.arSheet.arRcShufing`) and fade in .5 s after the cards behind have settled; when the stack is dealt in from the summary card, the row comes 1.5 s in, once the last card has landed.
 - **Property rows** (Properties card Off): 2 px between the rows, the 0.5 divider centred in it.
+
+## v2393: review timeline grow-in; desk deck title; review sheet in the card's format
+
+- **Back from Later** ("the card should integrate inside 2 objects so the card should increase the height of the timeline"): pressing + under Later switches to Add to plan, scrolls to where the item now sits, then opens the timeline between its two neighbours (the item's height from 0, the ones under it pushed down, the rail longer, .52 s), the card settling into the room (fade, 10 up, .42 s), then its brief light. `rvFocus(i, true)`.
+- **Desk deck title** ("on desktop keep the title as a step title at the top"): the title stays at the top where the other steps' titles sit (40 under the body's top, as Lifestyle's); the card and its row of buttons are centred in the room under it.
+- **Review sheet**: in the plan, no button for now ("remove for now"); under Later, Add to my plan alone. The sheet's card in the swiped card's format (Layout Centred): the picture on top inside it (88, no bleed in a sheet), the title and sub centred, the rows under them.
