@@ -22652,3 +22652,15 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - A card opens the Concierge's Inbox.
 - **`window.EvInbox` / `window.EvInboxRow(x)`:** the Concierge Inbox's items (the Concierge page's ATTN: Dr. Steven L · Doctor, Everlab · Care team, Prescription, Referral, Suggestion) and one card each ("cards similar to the doctor avatar card item"). Each card has a 48 avatar or icon tile (r14), Name · Role and the orange unread dot, the line (14, 56%), and the status at the right; 20 corners on 5% white, 8 apart.
 - **Picker tiles (`.tkArPic`):** the Primary card media, Async report pictures and Concierge videos pickers. Inactive tiles are at 50% (80% on hover) and the active one at 100% ("inactive items are at 50% opacity and the active item is at 100% opacity").
+
+## Tweaks for the star's sheet only; Overlapping modal desktop group; Field tap gone; stacked decades; phone visual 80/20
+
+- **Ask sheet up (EvCtx `ask` / `srch`):** Tweaks shows only its own groups. Menu AI entry point and Overlapping modal desktop come into the Tweaks panel from the Navigation doc while it is up and go back after; no Container or Top nav groups ("I want to see only the tweak about this overlapping screen, not the whole tweak about what is behind the menu").
+- **Overlapping modal desktop:** Container background, opacity, blur and beam are a group of their own (`#tkAskGrp2`; "This needs to be a group, and you can call that overlapping modal desktop"). It travels with Menu AI entry point: the hold, the Navigation doc panel, Tweaks while the sheet is up, and the saved setup.
+- **Field tap removed** ("Remove this field tab"): always Concierge, a saved Keys too.
+- **Large sheet:** its class is applied on `input` as well as `change`, and again as the sheet opens.
+- **Timeline V3 → Decade scroll: Stacked (default) / Normal** (`stT3Stk`, `html.t3Stk`).
+  - The decade groups are laid flat (`display: contents`) and each card is sticky, 16 under the one before, under the page's sticky header; the next slides over it with a 16 strip of each one before showing ("For each card, you stack it, and then you can see a stack gap on the top by 16px ... While you scroll, you stack the card").
+  - A card taller than the room stops by its foot (`--stkT` set by `window.__t3Fit`: after a build, a click in the page, a resize, a breakpoint, or the first scroll).
+- **Concierge intro services grid:** 24 higher ("Up these visual items by 24px").
+- **Primary card visual on the phone (and the doc's phone card boxes):** 80 with 20 corners (was 64 / 24; "Increase the visual on mobile by 16px and reduce the radius by 4px").
