@@ -22887,3 +22887,7 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - The focus and check-in cards left the list (they were first in Now and before This year): with the update card they are info modules (`[data-t3m]`) in `.t3Info`, above the tabs. `placeMods()` moves the slotted ones into the right column in slot order when it shows (L, On); the rest, and all of them with the column Off or below L, stay above the timeline ("IF OFF put all info above the timeline"). The slot rows show only with the column On. Clicks on modules in the column reach the timeline's handler (Review, Prepare).
 - Card styles for the focus / check-in cards now apply in the column too (`:is(#tl3, .tlSide)`); the column is a 16-gap stack; its placeholder hides once it holds a module.
 - "remove right block for new member": the right column rules carry `:not(.t3New)`, so a new member's timeline is full width again.
+
+## v2400: More sheet overlaps the main nav
+
+- "Card should overlap the main nav": the More cards (`.mvStack`) sit at the phone's foot, 8 in like every floating sheet, over the dock and the scrim; the dock is no longer raised over the scrim (the two rules that lifted the stack above it and put `.mTabs` at z 41 are gone). It closes by the scrim, a swipe down, Esc or a row. Same in the Navigation doc's phones (same rules).
