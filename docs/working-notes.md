@@ -22634,3 +22634,12 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - Each side keeps its own Format choice: Section or Mini cards on the phone, a Hero variant on desktop.
   - A restored save or a Bento pick of the other kind is remembered for that side, and the current side is put back.
 - **Presets:** picking one in the list closes the menu and puts the page under a blanket (a 62% dim with a 6px blur) with the design system's spinner (`.evSpin`, 32) in the middle for 1s. The preset goes on under it, then the blanket lifts and the toast shows ("I need to see a loader so I know the page changes").
+
+## Insights Desktop style: Static; Ask sheet foot on the screen's corners; Content tweak removed
+
+- **Insights → Desktop style: Carousel / Static** (desktop only; the phone keeps its carousel). Static has an Items tweak:
+  - **1:** the one insight as the carousel draws it, with no dots or arrows and a 28 foot.
+  - **2:** stacked cards in the card, Row-style (a 72 visual, the title and its line, a round 44 chevron), 8 apart, under the eyebrow.
+  - **3+:** two stacked cards and a See more at the foot (16 regular, no underline) that opens the Insights page ("If it's only one insight ... without the carousel navigation. If it's more than one ... stack cards inside. If it's more than two ... a See more on the bottom of the card").
+- **Ask bottom sheet (XS):** the sheet's foot takes the screen's own corners (`--evPhR`, 56), and its layer is clipped with `clip-path: inset(0 round 56px)` in the app's phone and the doc phones. A blurred layer can escape a parent's rounded overflow clip on the GPU ("masked by the frame with the corner radius on the bottom").
+- **Menu AI entry point → Content removed** ("Remove this tweak"): it is always Concierge / Inbox / Services (the bottom sheet). A saved "Concierge / Inbox" opens on it too.
