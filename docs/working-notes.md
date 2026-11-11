@@ -22854,3 +22854,9 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **Stacked decade cards** ("Use blur 64px on cards stacked"): each decade card (`.jvCard.jvPhC` under `html.t3Stk`) blurs what slides under it at 64.
 - **Walk close** ("put the cross cta on the right side of the bottom nav"): the close is no longer at the top; it sits at the island's right, 8 from it, 64 round in the island's glass, as the AI button beside the bottom nav (the island narrows by 72 on the phone; on the desk the pair is centred where the Eva field floats). A move within the same year reads "Oct → Jun 2027".
 - **Timeline -> Plan updates: Modal / Coachmark / None** (`#stT3Upd`: `modal` / `on` / `off`): Modal opens the Async report's Confirm your updated plan over the timeline (and the card's Check it out opens it again); Coachmark is the walk (the old On); None, nothing (the old Off).
+
+## v2395: desk Ask panel padding; decade stack blur 128; no decade chip
+
+- **Desk Ask panel** ("Padding on the section below chat field --> 24px"): the section under the field (Services, Inbox, See more) 24 all round (was 8 at the sides, 0 below); the services row still runs edge to edge, its first chip / tile on the labels' line (28). The Inbox rows there are the phone's ghost rows already (the same Inbox Cards setting drives both).
+- **Stacked decade cards**: the blur under them 128 (was 64).
+- **Decade cards**: no "2032 to 2041 · 2 checks" chip on any decade, in both Decade styles ("remove for all decades").
