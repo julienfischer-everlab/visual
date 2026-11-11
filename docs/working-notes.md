@@ -22848,3 +22848,9 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **Back from Later** ("the card should integrate inside 2 objects so the card should increase the height of the timeline"): pressing + under Later switches to Add to plan, scrolls to where the item now sits, then opens the timeline between its two neighbours (the item's height from 0, the ones under it pushed down, the rail longer, .52 s), the card settling into the room (fade, 10 up, .42 s), then its brief light. `rvFocus(i, true)`.
 - **Desk deck title** ("on desktop keep the title as a step title at the top"): the title stays at the top where the other steps' titles sit (40 under the body's top, as Lifestyle's); the card and its row of buttons are centred in the room under it.
 - **Review sheet**: in the plan, no button for now ("remove for now"); under Later, Add to my plan alone. The sheet's card in the swiped card's format (Layout Centred): the picture on top inside it (88, no bleed in a sheet), the title and sub centred, the rows under them.
+
+## v2394: decade stack blur; walk close beside the island; Plan updates Modal / Coachmark / None
+
+- **Stacked decade cards** ("Use blur 64px on cards stacked"): each decade card (`.jvCard.jvPhC` under `html.t3Stk`) blurs what slides under it at 64.
+- **Walk close** ("put the cross cta on the right side of the bottom nav"): the close is no longer at the top; it sits at the island's right, 8 from it, 64 round in the island's glass, as the AI button beside the bottom nav (the island narrows by 72 on the phone; on the desk the pair is centred where the Eva field floats). A move within the same year reads "Oct → Jun 2027".
+- **Timeline -> Plan updates: Modal / Coachmark / None** (`#stT3Upd`: `modal` / `on` / `off`): Modal opens the Async report's Confirm your updated plan over the timeline (and the card's Check it out opens it again); Coachmark is the walk (the old On); None, nothing (the old Off).
