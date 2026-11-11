@@ -22677,3 +22677,16 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **Large sheet:** the close in the sheet's own top bar at its right (36, 10 under the sheet's edge, inside the card so it rides with it); the field 56 under the sheet's top.
 - **Tweaks with the Ask sheet up:** its groups now go into the panel's body (`.tkPanel`), so the panel stays docked at the right (they were landing under the top-bar button, mid-screen).
 - **Navigation doc:** Main nav desktop moved into the Eva group (the Desk sidebar group is gone).
+
+## Ask sheet: one structure for Small and Large; Inbox cards open their conversation; mini cards wider; Schedule See more in the header; desk field In app by default
+
+- **Ask sheet, Bottom sheet layout (both Formats):** the same structure inside the sheet, no chips over it.
+  - Top bar: the app's top nav inside the sheet: the field (48 high), 10 to the close (a 44 disc, the top nav's bell), 24 under the sheet's edge, under its handle; while typing, the close stays beside the field.
+  - Services (Chips: outline glyphs now, "Don't use filled ... just use outline icon": pill, activity, stethoscope, flask, scan at 18), then **Inbox** (was Conversations) with its cards (`.aiIbxH` + `.aiIbxL`).
+  - **Large:** 52 from the screen's top (the Design system's level-1 full bottom sheet), every card, See more at the title's right.
+  - **Small:** hugs its content, three cards, See more at the title's right past three.
+  - A card opens **its conversation** in the Concierge (`EvInbox[].conv`: Dr. Steven L the ferritin thread, Care team the nutrition review, Suggestion the protein answer; the two requests ask about themselves, `q`); See more opens the Concierge's **Inbox page**.
+- **Insights mini cards (XS):** the first card whole and the second less 30 of its right side (`calc(50% + 17px)`), the CTA fully rounded, the dots 8 lower (24), no fade at the rail's right.
+- **Insights tweaks:** Tasks (Columns / Stacked) removed; always Stacked (every saved setup had it).
+- **Schedule card (Dates style):** See more at the title's right (section link, 16 regular), no See all at the foot.
+- **Desk floating field tap:** In app by default. Every saved setup and preset held Concierge (even "Chat Option #2 → In-page experience"); the shared setup and those presets now hold In app, "Chat Option #1 → Go to concierge" keeps Concierge.
