@@ -22793,3 +22793,8 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 
 - **Scheduled -> Items**: 0 / 1 / 2 / More; 0 is the empty state ("remove the Has data and put item 0 instead"). Has data is gone from Tweaks (kept hidden: an older save's No reads as Items 0, Yes over 0 as 2); State hides at 0.
 - **Insights -> Amount**: 0 / 1 / 2 / 3 / 4 / 5+, its tabs beside the label (`tkRowInl`: kept inline past four options); 0 is the empty state ("the empty state on is equal to 0, and the off is 1 2 3 4 5+"). Empty state is gone from Tweaks (kept hidden, set from the Amount; an older save's On reads as 0, Off over 0 back to the last count). The Amount row stays visible in the empty state.
+
+## v2384: plan timeline cards, footer and badge
+
+- **Confirm your updated plan, new items** (`.arRvwTlC`, a grid now: picture, words, badge; the footer across): the picture 16 from the words (was 12); New / Adjusted at the right in the pill Included wore (green ground for New, the blue one for Adjusted), level with the title's first line; Included or the price the card's footer, at its left, plain words (Included in the green, a price in the ink) over a hairline.
+- **Hover**: no border; the card a touch lighter (pointer devices only).
