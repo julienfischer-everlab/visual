@@ -22837,3 +22837,8 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - Properties card Off: a 0.5 divider between the rows, on their words' edges.
   - New **Picture bleed: On / Off** (`#stArRcBld`, Off by default): Off keeps the Centred picture inside the card, no shadow, no room above the deck.
   - Desk (M, L): the deck screen centred in the page's height; the footer's Later / Add to plan and its note become a row just under the card, the card's width (`.arRcDkRow`, its buttons press the footer's own, which hides there); the card at least 400 high.
+
+## v2392: desk deck row timing; property rows gap
+
+- **Desk deck row waits for the stack** ("this should appear once the card stacked are in place! not before"): the Later / Add to plan row and its note stay hidden through the opening shuffle (as the phone's footer does, `.arSheet.arRcShufing`) and fade in .5 s after the cards behind have settled; when the stack is dealt in from the summary card, the row comes 1.5 s in, once the last card has landed.
+- **Property rows** (Properties card Off): 2 px between the rows, the 0.5 divider centred in it.
