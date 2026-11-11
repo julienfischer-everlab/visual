@@ -22891,3 +22891,26 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 ## v2400: More sheet overlaps the main nav
 
 - "Card should overlap the main nav": the More cards (`.mvStack`) sit at the phone's foot, 8 in like every floating sheet, over the dock and the scrim; the dock is no longer raised over the scrim (the two rules that lifted the stack above it and put `.mTabs` at z 41 are gone). It closes by the scrim, a swipe down, Esc or a row. Same in the Navigation doc's phones (same rules).
+
+## v2401: Timeline header as Health's, rail through the decades, group switches, XS line tweak; Async recommendation card; report cards; live desk demos
+
+- **Navigation doc, live desk viewports**: M, L and XL now show the app itself in an iframe (`.nvLiveD`, `#nav-demo`, synced theme and nav master), as XS and S already did; the skeleton dashboard stays under it until the frame is ready.
+- **Bug fixed**: the right column's `#dTl{display:grid}` rules lacked `body.tlOn`, so at L the Timeline showed over every page. Every right-column rule now needs `body.tlOn`.
+- **Tweaks for the Timeline**: the old group is **Page** (Timeline version, Member, Persona, **Timeline line (XS)**, then Item: Cost on items). **Tab top** holds Fixed, Counts, Tab style and a **Top nav sticky** proxy that drives `stTnSticky`; the design-system Top nav group hides on the Timeline. **Decades** comes last.
+- **Group switches** ("Need OFF ON toggle on group level"): Decades, Your focus, Plan updates and Right column (L) carry an On/Off switch in their header (`.tkSwH .tgl[data-sw-for]`). Each drives its group's select (`stT3Dec`, `stT3FocOn`, `stT3Upd`, `stT3Side`). For Plan updates, Off is None and On restores the last Modal or Coachmark. The old first rows are hidden (`.tkSwRow`), but their selects stay in place, so Save and presets still work. A group's rows are dimmed while it is Off.
+- **Focus and check-in back in the list**: the focus card is first in Now and the check-in comes after it, as asked; the Plan updates card stays in `.t3Info`. Right column On still moves the slotted modules out (`placeMods`).
+- **Header as Health's** ("Timeline should follow this header … Title / Tab"), at M and wider:
+  - The title sits at the panel's 32 and Past is centred on it.
+  - The tabs are 40 below the title and 44 tall, and the list starts 28 below them.
+  - Tab style **Filled** is now Health's segmented tab: a 44 track, 36 pills padded 20, 14 medium, the light ground at .07 and a plain white thumb. The search becomes a 44 pill.
+  - The shared setup still has Tab style on **Outline**. Switch it to Filled to see Health's tabs.
+- **Rail through the decades** ("Continue the left timeline on decade as well"): `.t3Decs` gets the list's rail (8 in, `--tlRail`) and is inset 33. Each decade card has a dot on the rail, level with its age number, and the dots stack with the cards.
+- **Section titles**: with the tabs fixed, Now, This year and the month chips scroll with their rows. With the tabs free, they stick as before.
+- **Timeline line (XS)** (`stT3RailXs`, `html.t3RailXs`, default Off): On shows the rail and the group dots on the phone, rows 28 in, and the decades too.
+- **Tab lit at load**: the scroll-spy ran while the page was hidden, every part read top 0, and Later won. Spy now skips a hidden page and runs once after each build.
+- **Async recommendation card**:
+  - Property dividers are at half opacity (.07).
+  - The card's foot padding is 24 (was 28).
+  - The product picture is blurred into the top right (`.arRcGlow`, the Overview primary card's `.hpObjBg` rule and its Service glow, position and blur settings; dark only).
+  - All in card drops the Plan impact row and shows a **New action** / **Adjustment** badge under the title, centred in the Centred layout.
+- **Report (debrief) cards**: the content inset is 4 less ("reduce content padding by 4px"): 22 at the sides, 14 above, 20 at the foot, and the CTA moves with it.
