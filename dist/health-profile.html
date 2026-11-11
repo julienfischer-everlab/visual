@@ -3031,6 +3031,76 @@ window.CcVid = (function () {
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
   return { url: function () { return srcs()[1]; }, paint: paint, apply: apply, on: function (f) { subs.push(f); }, still: still };   /* still: the Async report's Picture library takes its videos' stills from here too */
 })();
+/* the primary card's visual, quick to try, per Object (Tweaks -> Primary card -> Visual: "For each card ... a way to add a video and/or an image ... placed on the tweak placement ... add a few images and delete some images,
+   like image management, the same as we have for the async report"): Default (the card's own: the sphere, the service's picture), then every picture or video added for that Object, + to add one, a bin on hover.
+   Kept in the artifact's asset store and its shared table (pcMedia, each with its Object) where the page has them, else in this browser (IndexedDB); the choice per viewer and Object (everlab:pcMedia:<object>).
+   The pick is laid over the card's own visual, its size and place (the visual kept, unseen, so nothing moves); the service's blurred ground takes the picture (a video's still) */
+window.PcMedia = (function () {
+  var OBJS = { consult: 1, dexa: 1, mri: 1 }, COL = 'pcMedia', MAX = 20 * 1024 * 1024, DB = null, AS = null, REMOTE = [], LOCAL = [], busy = false, idb = null;
+  var box = function () { return document.getElementById('tkPcMedia'); }, fin = function () { return document.getElementById('tkPcMediaF'); };
+  var obj = function () { var s = document.getElementById('stPcObj'); return s ? s.value : 'consult'; };
+  var isV = function (r) { return /^video\//.test(r.type || ''); }, src = function (r) { return r.u || r.o || ''; };
+  var all = function (o) { return REMOTE.concat(LOCAL).filter(function (x) { return x.obj === o; }).sort(function (a, b) { return (b.at || 0) - (a.at || 0); }); };
+  var cur = function (o) { try { return localStorage.getItem('everlab:pcMedia:' + o) || ''; } catch (e) { return ''; } };
+  var rec = function (o) { var c = cur(o); return c ? all(o).filter(function (x) { return x.id === c; })[0] || null : null; };
+  var TRASH = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>';
+  var q = function (s) { return String(s).replace(/"/g, '%22'); };
+  var paint = function () { var b = box(); if (!b) return; var o = obj(), row = b.closest('.tkRow'); if (row) row.hidden = !OBJS[o]; if (!OBJS[o]) return; var r = rec(o), on = r ? r.id : '', L = all(o);
+    b.innerHTML = '<button type="button" class="tkArPic tkArPic0" data-id="" aria-pressed="' + (!on) + '" title="The card’s own visual">Default</button>' +
+      L.map(function (x, i) { var t = isV(x) ? x.t : src(x); return '<span class="tkArPic' + (isV(x) ? ' tkCcVid' : '') + '" role="button" tabindex="0" data-id="' + x.id + '" aria-pressed="' + (x.id === on) + '" aria-label="' + (isV(x) ? 'Video ' : 'Picture ') + (L.length - i) + '"' + (t ? ' style="background-image:url(&quot;' + q(t) + '&quot;)"' : '') + '><button type="button" class="tkArPicDel" data-del="' + x.id + '" aria-label="Delete it" title="Delete">' + TRASH + '</button></span>'; }).join('') +
+      (busy ? '<span class="tkArPic tkCcVidBusy" aria-label="Adding it"></span>' : '') + '<button type="button" class="tkArPic tkArPicAdd" aria-label="Add a picture or a video" title="Add a picture or a video">+</button>'; };
+  /* on the card: over its visual (the sphere, the service's picture), the same box */
+  var target = function (card) { return card.querySelector(':scope > canvas.hpSph') || card.querySelector(':scope > img.hpObjPic'); };
+  var clear = function (card) { var m = card.querySelector(':scope > .pcMediaV'); if (m) m.remove(); [].forEach.call(card.querySelectorAll(':scope > [data-pcm-hid]'), function (t) { t.style.visibility = ''; t.removeAttribute('data-pcm-hid'); });
+    var bg = card.querySelector(':scope > img.hpObjBg[data-pcm-orig]'); if (bg) { bg.src = bg.getAttribute('data-pcm-orig'); bg.removeAttribute('data-pcm-orig'); } };
+  var place = function (card) {
+    var o = obj(), r = OBJS[o] ? rec(o) : null, t = target(card);
+    if (!r || !t || !card.isConnected){ clear(card); return; }
+    var u = src(r), m = card.querySelector(':scope > .pcMediaV');
+    if (!m || m.getAttribute('data-src') !== u){ if (m) m.remove();
+      if (isV(r)){ m = document.createElement('video'); m.muted = true; m.defaultMuted = true; m.loop = true; m.autoplay = true; m.playsInline = true; m.setAttribute('muted', ''); m.setAttribute('playsinline', ''); m.preload = 'auto'; }
+      else { m = document.createElement('img'); m.alt = ''; m.decoding = 'async'; m.draggable = false; }
+      m.className = 'pcMediaV'; m.setAttribute('aria-hidden', 'true'); m.setAttribute('data-src', u); m.src = u; card.appendChild(m);
+      if (isV(r)) try { var pp = m.play(); if (pp && pp.catch) pp.catch(function () {}); } catch (e) {} }
+    t.style.visibility = 'hidden'; t.setAttribute('data-pcm-hid', '');
+    var k = (window.evK ? window.evK(card) : 1) || 1, cr = card.getBoundingClientRect(), tr = t.getBoundingClientRect(), rad = t.tagName === 'CANVAS' ? '24px' : getComputedStyle(t).borderRadius;
+    m.style.left = ((tr.left - cr.left) / k - card.clientLeft).toFixed(1) + 'px'; m.style.top = ((tr.top - cr.top) / k - card.clientTop).toFixed(1) + 'px';
+    m.style.width = (tr.width / k).toFixed(1) + 'px'; m.style.height = (tr.height / k).toFixed(1) + 'px'; m.style.borderRadius = rad;
+    var bg = card.querySelector(':scope > img.hpObjBg'), bu = isV(r) ? r.t : u; if (bg && bu){ if (!bg.hasAttribute('data-pcm-orig')) bg.setAttribute('data-pcm-orig', bg.getAttribute('src') || ''); if (bg.getAttribute('src') !== bu) bg.src = bu; } };
+  var cards = function () { return [].slice.call(document.querySelectorAll('.hpOvCard')); };
+  var applyAll = function () { cards().forEach(function (c) {
+    if (!c._pcm){ c._pcm = new MutationObserver(function () { if (c._pcmT) return; c._pcmT = requestAnimationFrame(function () { c._pcmT = 0; place(c); }); }); c._pcm.observe(c, { childList: true }); }
+    place(c); }); };
+  var use = function (id) { try { var k = 'everlab:pcMedia:' + obj(); if (id) localStorage.setItem(k, id); else localStorage.removeItem(k); } catch (e) {} paint(); applyAll(); };
+  var toast = function (t) { if (window.__tkToast) window.__tkToast(t); };
+  var store = function () { return idb || (idb = new Promise(function (res) { try { var r = indexedDB.open('everlab-pcmedia', 1); r.onupgradeneeded = function () { r.result.createObjectStore('m', { keyPath: 'id' }); }; r.onsuccess = function () { res(r.result); }; r.onerror = function () { res(null); }; } catch (e) { res(null); } })); };
+  var tx = function (mode, f) { return store().then(function (d) { if (!d) throw new Error('no store'); return new Promise(function (res, rej) { var t = d.transaction('m', mode), out = f(t.objectStore('m')); t.oncomplete = function () { res(out && out.result); }; t.onerror = function () { rej(t.error); }; }); }); };
+  var loadLocal = function () { return tx('readonly', function (s) { return s.getAll(); }).then(function (rows) { LOCAL = (rows || []).map(function (x) { return { id: x.id, obj: x.obj, at: x.at, name: x.name, type: x.type, t: x.t, o: URL.createObjectURL(x.blob) }; }); paint(); applyAll(); }).catch(function () {}); };
+  var add = function (file) { var o = obj(); if (!file || !OBJS[o]) return; if (!/^(image|video)\//.test(file.type)) { toast('That isn’t a picture or a video'); return; }
+    var remote = !!(AS && DB); if (remote && file.size > MAX) { toast('Up to 20 MB'); return; }
+    var id = 'm' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), at = Date.now(), name = String(file.name || '').slice(0, 80), ou = URL.createObjectURL(file), vid = /^video\//.test(file.type);
+    busy = true; paint();
+    (vid && window.CcVid && window.CcVid.still ? window.CcVid.still(ou) : Promise.resolve('')).then(function (t) {
+      if (remote) return AS.upload(file).then(function (rr) { var x = { id: id, obj: o, u: rr.url, aid: rr.id, at: at, name: name, type: file.type, t: t }; REMOTE = [x].concat(REMOTE.filter(function (y) { return y.id !== id; })); URL.revokeObjectURL(ou); return DB.doc(COL + '/' + id).set(x); });
+      return tx('readwrite', function (s) { return s.put({ id: id, obj: o, at: at, name: name, type: file.type, t: t, blob: file }); }).then(function () { LOCAL.unshift({ id: id, obj: o, at: at, name: name, type: file.type, t: t, o: ou }); });
+    }).then(function () { busy = false; use(id); }).catch(function () { busy = false; paint(); URL.revokeObjectURL(ou); toast('Could not add that'); }); };
+  var del = function (id) { var r = REMOTE.filter(function (x) { return x.id === id; })[0], l = LOCAL.filter(function (x) { return x.id === id; })[0];
+    if (r) { REMOTE = REMOTE.filter(function (x) { return x.id !== id; }); try { if (DB) DB.doc(COL + '/' + id).delete(); if (AS && r.aid) AS.delete(r.aid); } catch (e) {} }
+    if (l) { LOCAL = LOCAL.filter(function (x) { return x.id !== id; }); setTimeout(function () { URL.revokeObjectURL(l.o); }, 1500); tx('readwrite', function (s) { return s.delete(id); }).catch(function () {}); }
+    if (cur(obj()) === id) use(''); else paint(); };
+  var wire = function () { var b = box(), f = fin(); if (!b || b._wired) return; b._wired = true;
+    b.addEventListener('click', function (e) { var d = e.target.closest('[data-del]'); if (d) { e.stopPropagation(); del(d.dataset.del); return; } var t = e.target.closest('.tkArPic'); if (!t || t.classList.contains('tkCcVidBusy')) return; if (t.classList.contains('tkArPicAdd')) { if (f) f.click(); return; } use(t.dataset.id || ''); });
+    b.addEventListener('keydown', function (e) { var t = e.target.closest('.tkArPic[role="button"]'); if (t && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); use(t.dataset.id); } });
+    if (f) f.addEventListener('change', function () { var x = f.files && f.files[0]; f.value = ''; add(x); });
+    var so = document.getElementById('stPcObj'); if (so) so.addEventListener('change', function () { paint(); setTimeout(applyAll, 60); }); };
+  var link = function () { try { if (!(window.claude && typeof window.claude.use === 'function')) return false;
+      window.claude.use('assets').then(function (a) { AS = a || null; }).catch(function () {});
+      window.claude.use('db').then(function (db) { if (!db) return; DB = db; db.collection(COL).onSnapshot(function (qs) { REMOTE = qs.docs.map(function (d) { var x = d.data() || {}; return x.u && x.obj ? { id: d.id, obj: x.obj, u: x.u, aid: x.aid, at: x.at || 0, name: x.name || '', type: x.type || '', t: x.t || '' } : null; }).filter(Boolean); paint(); applyAll(); }, function () {}); }).catch(function () {});
+      return true; } catch (e) { return false; } };
+  var boot = function () { wire(); paint(); loadLocal(); applyAll(); setInterval(applyAll, 900); addEventListener('resize', function () { setTimeout(applyAll, 60); }); if (!link()) addEventListener('load', link, { once: true }); };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+  return { paint: paint, apply: applyAll };
+})();
 /*
  * Loading states, one source for the whole experience (Documentation -> Loading states):
  *   EvLoad.simple(button, { slow, after }) Simple loader, no label: the same button, lighter, its exact width, a spinner in place of its words; past `after` ms (5 s) the label `slow` ("Hang tight…") beside it;
