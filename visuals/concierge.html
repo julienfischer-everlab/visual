@@ -702,7 +702,10 @@
   .stgThW { margin-top: 24px; } .stgThW:first-child { margin-top: 8px; } .stgThW > .think { margin-top: 0; }   /* the thinking line in the thread: the chat's .think, held so it can take a ground when floating */
   .stgW { display: inline; }
   /* floating: no phone, the thread on the ground. Its grounds solid (the chat's washes put over its page colour), Eva's words on the cards' ground so they read on a picture; cut by the frame's own edge, no fade ("I don't want any kind of blur or fade-out on the top") */
-  .stgFlV { overflow: hidden; }
+  .stgFlV { overflow: visible; }   /* cut by the frame itself (#stg), not the view's box inside it ("That should never happen ... The bubble speech should appear from the edge of the frame") */
+  .stgFloat .msg.a.stgAvOn, .stgFloat .stgThW.stgAvOn { margin-left: 36px; } .stgFloat .stgAvOn > .txt, .stgFloat .stgAvOn > .clin, .stgFloat .stgThW.stgAvOn { position: relative; }
+  .stgFloat .stgAv { position: absolute; left: -36px; bottom: 0; width: 28px; height: 28px; border-radius: 50%; object-fit: cover; display: grid; place-items: center; background: var(--card); color: var(--fg); font-size: 11px; } .stgFloat .stgAvEva .ic { width: 15px; height: 15px; }
+  html[data-theme="light"] .stgFloat .stgAv { box-shadow: var(--bkShadow); } .stgFloat .stgAvOn .clin .doc > :is(img, .drIni) { display: none; }   /* the avatar at the bubble's left, its foot on the bubble's (as yours at the right); the doctor's photo there, not again in the name line */
   .stgFloat { position: absolute; inset: 0; background: none; overflow: visible; }
   .stgFloat .col { max-width: none; padding: 0; }
   .stgFloat { --card: color-mix(in srgb, var(--fg) 6%, var(--bg)); --bubble: color-mix(in srgb, var(--fg) 10%, var(--bg)); --input: color-mix(in srgb, var(--fg) 6%, var(--bg)); }
@@ -1914,15 +1917,17 @@
           if (p.typing === 'dots') n.typ = node(bub(DOTS, ' stgTyp'));
           last = null;
         } else if (it.type === 'eva'){
-          var hd = it.avatar === true || (it.avatar == null && !C.device) ? '<div class="ckHd">' + ic('spark') + '<span>Eva</span></div>' : '';
+          var evH = it.avatar === true || (it.avatar == null && !C.device), hd = evH && C.device ? '<div class="ckHd">' + ic('spark') + '<span>Eva</span></div>' : '', eav = evH && !C.device ? '<span class="stgAv stgAvEva" aria-hidden="true">' + ic('spark') + '</span>' : '';   /* floating: Eva's avatar at the bubble's left, not her name over it ("Instead of on the top, just put an avatar on the left side of the speech bubble") */
           var words = it.reveal === 'stream' ? String(it.text).split(/(\s+)/).map(function (w) { return /^\s*$/.test(w) ? esc(w) : '<span class="stgW">' + esc(w) + '</span>'; }).join('') : esc(it.text);
-          n.msg = node('<div class="msg a">' + hd + '<div class="txt">' + words + '</div></div>');
-          if (p.thinkIn != null) n.think = node('<div class="stgThW">' + thinkHtml(it.step) + '</div>');
+          n.msg = node('<div class="msg a' + (eav ? ' stgAvOn' : '') + '">' + hd + '<div class="txt">' + eav + words + '</div></div>');
+          if (p.thinkIn != null) n.think = node('<div class="stgThW' + (eav ? ' stgAvOn' : '') + '">' + eav + thinkHtml(it.step) + '</div>');   /* the avatar there from the thinking line on */
           n.words = $$('.stgW', n.msg); last = n;
         } else if (it.type === 'specialist'){
           var d = specOf(it.specialist, it), dr = { n: d.n, r: it.when ? d.r : '', av: d.av, ini: d.ini, sub: it.when ? '' : d.r };
-          n.msg = node('<div class="msg a">' + answerHtml({ r: 'a', who: 'doctor', text: it.text, when: it.when || '', dr: dr, blocks: [] }) + '</div>');
-          n.pres = node('<div class="msg a"><div class="clin stgPres">' + (it.typing ? DOTS : '') + '<div class="doc">' + drAv(d) + '<div><b>' + esc(d.n) + '</b><span>' + esc(d.r) + '</span></div></div></div></div>');
+          var sav = C.device ? '' : drAv(d, 'stgAv'), son = sav ? ' stgAvOn' : '';   /* floating: the doctor's photo where Eva's avatar is ("When it's the doctor, you should replace the Eva avatar with the doctor avatar") */
+          n.msg = node('<div class="msg a' + son + '">' + answerHtml({ r: 'a', who: 'doctor', text: it.text, when: it.when || '', dr: dr, blocks: [] }) + '</div>');
+          if (sav){ var scl = $('.clin', n.msg); if (scl) scl.insertAdjacentHTML('afterbegin', sav); }
+          n.pres = node('<div class="msg a' + son + '"><div class="clin stgPres">' + sav + (it.typing ? DOTS : '') + '<div class="doc">' + drAv(d) + '<div><b>' + esc(d.n) + '</b><span>' + esc(d.r) + '</span></div></div></div></div>');
           last = n;
         } else {
           var b = Object.assign({}, it.data, { t: it.widget }), html = '';
@@ -2010,7 +2015,7 @@
         var list = layout(e), H = col.offsetHeight, tgt, fresh = null;
         N.forEach(function (n) { var p = n.p; if (p.typeIn === e || p.thinkIn === e || p.presIn === e || p.in === e){ var x = n.blk && n.host && p.in === e ? n.blk : shown(n, e); if (x) fresh = x; } });
         if (C.device || C.anchor === 'top') tgt = Math.max(0, H - V); else tgt = H - V;
-        var act = !C.device && C.anchor === 'center' ? list[list.length - 1] : null;   /* centre: the newest message (its widgets with it) held at the middle of the view, the earlier ones going up and out past the frame's edge ("the active one always in the middle") */
+        var lx = list[list.length - 1], act = !C.device && C.anchor === 'center' ? (lx && lx.classList.contains('msg') && lx.children.length > 1 && lx.lastElementChild.classList.contains('blk') ? lx.lastElementChild : lx) : null;   /* the newest piece: a widget come into an answer, else the message */   /* centre: the newest message (its widgets with it) held at the middle of the view, the earlier ones going up and out past the frame's edge ("the active one always in the middle") */
         if (act && act.isConnected){ var at0 = 0, ao = act; while (ao && ao !== col){ at0 += ao.offsetTop; ao = ao.offsetParent; } if (ao === col) tgt = act.offsetHeight > V - 2 * pad ? at0 - pad : at0 + act.offsetHeight / 2 - V / 2; }
         else if (fresh && fresh.isConnected){
           var top = 0, o = fresh; while (o && o !== col){ top += o.offsetTop; o = o.offsetParent; }
@@ -2100,17 +2105,17 @@
        came from and whole where it is going: back in at the scroll's end. Read from the time alone, so the MP4 has it; a filter, so it never fights the entrances' opacity.
        The newest message stays, whole or not */
     var edgeFade = function (t) {
-      var kids = Array.prototype.slice.call(col.children), V = geo.vh, s = null, i, fd = Math.min(MO.scroll, 320);
+      var kids = Array.prototype.slice.call(col.children), V = geo.vh, s = null, i, fd = Math.min(MO.scroll, 320), E = Math.max(0, (geo.H - geo.vh * geo.s) / 2 / geo.s);   /* E: the frame's edges past the view's, in the view's px (the view clips at the frame now) */
       for (i = SEG.length - 1; i >= 0; i--) if (SEG[i].e <= t){ s = SEG[i]; break; }
       var o = s ? null : offAt(t);
       var topIn = function (el) { var y = 0, q = el; while (q && q !== col){ y += q.offsetTop; q = q.offsetParent; } return q === col ? y : null; };
-      var cutAt = function (y0, y1, off) { return y0 - off < -.5 || y1 - off > V + .5; };
+      var cutAt = function (y0, y1, off) { return y0 - off < -E - .5 || y1 - off > V + E + .5; };
       kids.forEach(function (x, k) {
         var parts = x.classList.contains('msg') && x.children.length > 1 ? Array.prototype.slice.call(x.children) : [x], last = k === kids.length - 1;
         for (var j = 0; j < parts.length; j++){
           var g = [parts[j]]; if (parts[j].classList.contains('ckHd') && parts[j + 1]) g.push(parts[++j]);   /* a name goes with its bubble */
-          var f = 1, y0 = topIn(g[0]), y1 = y0 == null ? null : topIn(g[g.length - 1]);
-          if (!last && y0 != null && y1 != null){
+          var f = 1, y0 = topIn(g[0]), y1 = y0 == null ? null : topIn(g[g.length - 1]), newest = last && j === parts.length - 1;   /* only the piece coming in may be cut, by the frame's edge ("When it appears, it's okay to show the entire thing. When it's not the active state ... hide it totally") */
+          if (!newest && y0 != null && y1 != null){
             y1 += g[g.length - 1].offsetHeight;
             if (!s) f = cutAt(y0, y1, o) ? 0 : 1;
             else {
