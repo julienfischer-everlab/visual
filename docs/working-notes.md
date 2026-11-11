@@ -22920,3 +22920,12 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - "Tweak blur and opavity on the bg img": the Async report's Recommendation card group has two new sliders. **Picture glow** (`stArRcGlow`, 0–100, default 70%) and **Picture blur** (`stArRcBlur`, 0–120, default 48px) set `--rcGlowOp` / `--rcGlowBlur`. The card's glow no longer borrows the primary card's values. Both sliders are kept with the report's presets.
 - "Badge below sub / Size up for the badge": New action / Adjustment now sits under the sub, 8 below it, at 15 on 20 with 4 by 12 padding (was 13 on 18, 2 by 8). It is still centred in the Centred layout.
 - "Reduce padding bottom by 4px": the card's foot is 20 (was 24; 28 before that).
+
+## v2403: Plan review List as Timeline cards; recommendation card details
+
+- "For List style use the same style as the timeline objects": in Confirm your updated plan, Layout **List** now draws each item as the Timeline layout's card, without the rail. Each card has its picture, its title and line, and a footer: price or Included on the left, New / Adjusted on the right, or the plus for an item saved for later. The cards sit 8 apart under plain Included / Extra headings (`.arRvwLst` with `.arRvwTlW`'s tokens). The Timeline layout's card rules now read `:is(.arRvwTl, .arRvwLst)`, so both layouts are drawn by the same CSS.
+- Recommendation card (Async report):
+  - Property rows are 4 apart, with the divider centred in the gap ("Row gap +2px").
+  - The badge sits 12 under the sub ("Badge +4 margin top").
+  - When on an adjusted item shows the old month struck through, an arrow, then the new month (`it.wasM` → `it.when`).
+  - The price is regular weight, like the other values ("Keep regular").
