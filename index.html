@@ -7799,9 +7799,12 @@ if (/^#tk-[A-Za-z0-9]{6,40}$/.test(location.hash)) { document.documentElement.cl
   /* Design system -> Intro flow (itDoc): the two frameworks side by side, each its flow's own screen in the app's XS frame (.hcScr, the master) */
   .itDoc .ntIn{max-width:1080px;} .itDoc .ntHd p b{color:var(--ldFg);font-weight:600;}
   .itQuote{margin:0;padding:16px 20px;border-radius:16px;background:var(--ldChip);font-size:15px;line-height:22px;color:var(--ldFg);} .itQuote small{display:block;margin-bottom:6px;font-size:12px;line-height:16px;letter-spacing:1px;text-transform:uppercase;color:var(--ldMut);} .itQuote p{margin:0;} .itQuote ul{margin:4px 0 6px;padding-left:20px;}
-  .itPair{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:40px 32px;--hcSW:393px;--hcSH:852px;--hcS:.66;} .itCol{display:flex;flex-direction:column;align-items:flex-start;gap:12px;min-width:0;}
+  .itPlayers, .itBpGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:40px 32px;} .itPlayers:is([data-bp="m"], [data-bp="l"]), .itBpRow:is([data-bp="m"], [data-bp="l"]) .itBpGrid{grid-template-columns:minmax(0,1fr);} .itCol{display:flex;flex-direction:column;align-items:flex-start;gap:12px;min-width:0;} .itSlot{align-self:stretch;}
+  .itFig{display:flex;flex-direction:column;gap:10px;margin:0;align-self:stretch;} .itFig figcaption{font-size:12px;line-height:16px;color:var(--ldMut);} .itBpRow{display:flex;flex-direction:column;gap:14px;margin-top:20px;} .itBpRow h3{margin:0;font-size:14px;line-height:20px;font-weight:600;color:var(--ldFg);}
+  .itBar{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:20px 0 20px;} .itDoc .itPlay{position:static;display:inline-flex;align-items:center;gap:6px;margin-left:0;}
+  .itBeats{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:0;padding:0;list-style:none;} .itBeats li{display:flex;flex-direction:column;gap:4px;padding:14px 16px;border-radius:14px;background:var(--ldChip);} .itBeats b{font-size:14px;font-weight:600;} .itBeats span{font-size:13px;line-height:19px;color:var(--ldMut);}
   .itLab{display:flex;align-items:center;gap:10px;} .itLab b{font-size:18px;line-height:24px;font-weight:600;} .itK{display:grid;place-items:center;width:26px;height:26px;border-radius:8px;background:var(--ldAcc);color:var(--ldAccFg);font-size:13px;font-weight:600;}
-  .itLine{margin:0;max-width:420px;font-size:14px;line-height:20px;color:var(--ldMut);} .itShot figcaption span{color:var(--ldMut);} .itDoc .itGo{position:static;display:inline-flex;align-items:center;gap:6px;margin-left:0;}
+  .itLine{margin:0;max-width:420px;font-size:14px;line-height:20px;color:var(--ldMut);} .itDoc .itGo{position:static;display:inline-flex;align-items:center;gap:6px;margin-left:0;}
   .itTblW{overflow-x:auto;} .itTbl{min-width:640px;} .itTbl thead th{padding:0 12px 10px 0;font-size:13px;font-weight:600;color:var(--ldFg);text-align:left;} .itTbl tbody td{width:41%;padding-right:16px;vertical-align:top;} .itTbl tbody th{width:110px;}
   .crDoc .ntIn{max-width:1200px;} .crFit{width:100%;overflow:hidden;} .crFrame{box-sizing:border-box;padding:24px 16px 28px;border-radius:20px;background:var(--sBg, #111);color:var(--sInk, #fff);}
   .crFrame.crFrs{padding:24px;} .crFrame.crFrm{padding:32px 48px;} .crFrame.crFrl{padding:40px 80px;}
@@ -23668,7 +23671,7 @@ window.EvConsent = (function () {
     try {
       S = build(o.state || 'none');
       (o.fill || []).forEach(function (k) { if (S.a[k] && DEMO[k]) S.a[k].ans = JSON.parse(JSON.stringify(DEMO[k])); });
-      inst = mount(host, { theme: o.theme, name: o.name, snap: true, dism: true, wide: o.wide, note: !!o.note, greet: o.greet || 0, solo: o.solo || null, soloI: o.solo ? o.i || 0 : 0, ccPh: o.ccPh || null, gfFill: (o.fill || []).indexOf('gift') >= 0, gfSeal: o.gfSeal || 0 });   // gfSeal: Send a gift's merge held at that time (ms), Docs' still of it   // ccPh: a Concierge phase still (Docs' Concierge row)   // greet: the note's greeting, its first or second title (Docs' stills)   // wide: the desk's layout (the canvas's Desktop), told rather than measured: the still is drawn zoomed
+      inst = mount(host, { theme: o.theme, name: o.name, snap: true, play: !!o.play, dism: true, wide: o.wide, note: !!o.note, greet: o.greet || 0, solo: o.solo || null, soloI: o.solo ? o.i || 0 : 0, ccPh: o.ccPh || null, gfFill: (o.fill || []).indexOf('gift') >= 0, gfSeal: o.gfSeal || 0 });   // gfSeal: Send a gift's merge held at that time (ms), Docs' still of it   // ccPh: a Concierge phase still (Docs' Concierge row)   // greet: the note's greeting, its first or second title (Docs' stills)   // wide: the desk's layout (the canvas's Desktop), told rather than measured: the still is drawn zoomed
       if (o.area && !o.solo) inst.go(o.area, o.i || 0);
     } finally { S = keepS; INST = keepI; SNAP = false; }
     return inst;
@@ -25057,7 +25060,7 @@ window.EvConsent = (function () {
          both written by the Concierge's writing (ltrW); then the Concierge's video behind them ("include the video to complete the behind-the-scenes of the demo"), the photo till it plays (and if it cannot). A still (Documentation) or reduced motion: the words shown, the photo */
       scr.classList.add('hpGfIn');
       var rpl = window.__gfReplay; window.__gfReplay = 0;
-      var still = !!opts.snap || reduced(), ent = !still && (!shown || !!rpl), FULL = !opts.snap && (!shown || !!rpl) && (document.getElementById('stGfIntroBg') || {}).value === 'full', RM = FULL && still, LW = ltrW(), T1a = 'Treat someone you love', T1b = 'to a year of Everlab', T1 = T1a + ' ' + T1b;   /* the H1 alone, no line under it ("Treat someone you love to a year of Everlab; h1 no sub"), broken at its phrase */
+      var still = (!!opts.snap && !opts.play) || reduced(), ent = !still && (!shown || !!rpl), FULL = (!opts.snap || !!opts.play) && (!shown || !!rpl) && (document.getElementById('stGfIntroBg') || {}).value === 'full', RM = FULL && still, LW = ltrW(), T1a = 'Treat someone you love', T1b = 'to a year of Everlab', T1 = T1a + ' ' + T1b;   /* the H1 alone, no line under it ("Treat someone you love to a year of Everlab; h1 no sub"), broken at its phrase */
       var wr = function (t) { return still ? t : [h('span', { class: 'hpSr', text: t }), h('span', { 'aria-hidden': 'true' }, LW.sp(t))]; };   /* the letters hidden from a reader, the words read whole */
       var hT = h('h1', { class: 'hpH hpLtrT hpCcIntroT hpGfH' }, still ? [T1a, h('br'), T1b] : [h('span', { class: 'hpSr', text: T1 }), h('span', { 'aria-hidden': 'true' }, LW.sp(T1a).concat([h('br')], LW.sp(T1b)))]), tEnd = LW.end(), tUp = 80 + LW.end();   /* the move up the moment the title is written ("no pause when the title is fully written") */   /* tUp: the sub's last letter fully in, then held 2 s on the empty screen ("stay for 2sec then Body appear from the bottom and push the title group up"): the move up ("the title should appear first with the sub, THEN move up while the body appears and the video fades in") */   /* the Concierge intro's title classes: its size, weight, line height and tracking at every breakpoint; the line carrying the cascade on */
       var pic = h('i', { class: 'hoPic hpGfPicI' });
@@ -51477,61 +51480,88 @@ hairline({
           '<section class="biSec"><h2>Used in</h2><ul class="biUse"><li>Overview → Schedule, nothing booked (Tweaks → Scheduled → Has data: No)</li><li>Schedule → See more sheet, nothing booked</li><li>Design system → Modules → Schedule → Empty</li></ul></section></div>';
         return el;
       };
-      /* Design system -> Patterns -> Intro flow: the two frameworks every intro screen plugs into ("In terms of framework now we have two different types of introduction screens with two different image placements ... for any kind of intro experience we can plug into one of these two frameworks"):
-         A Gradient fade (the Async report's What to expect, V3) and B Bottom sheet (Send a gift's intro). Each drawn live by its own flow's code (AsyncReport.mount, HealthProfile.snap) with the current Tweaks, so the page shows what the app shows */
+      /* Design system -> Patterns -> Intro flow: the two frameworks every intro screen plugs into ("In terms of framework now we have two different types of introduction screens with two different image placements ... for any kind of intro experience we can plug into one of these two frameworks"),
+         and the entrance before them ("the text on a black screen at the entrance that moves to the next screen. This is part of the intro flow as well"): A Gradient fade (the Async report's What to expect, V3), B Bottom sheet (Send a gift's intro).
+         Every screen drawn live by its own flow's code (AsyncReport.mount, HealthProfile.snap) with the current Tweaks, at every breakpoint ("I also need the web version, so we need all of the breakpoints"), in the Step flow doc's frames */
       const itDoc = () => {
         const el = document.createElement('div'); el.className = 'ldDoc ntDoc biDoc itDoc';
         const dark = () => el.classList.toggle('evDark', !document.body.classList.contains('light')); dark();
         const LT = () => document.body.classList.contains('light'), stat = () => (document.querySelector('#bpFrame .bpStatus') || {}).innerHTML || '';
         const nameOf = () => { const n = document.querySelector('#dOver .dvH1 span'); return (n && n.textContent.trim()) || 'Julien'; };
+        /* the frames: the Step flow doc's (sfDev: the phone's and the tablet's bezels, the desk's 16 round), the screen's size per breakpoint and the bezel round it */
+        const FR = { xs: [393, 852, 12, 'XS · 393'], s: [600, 860, 17, 'S · 600'], m: [992, 720, 1, 'M · 992'], l: [1440, 900, 1, 'L · 1440'] }, BK = Object.keys(FR);
         const GO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lc="arrow-up-right" width="14" height="14" aria-hidden="true"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>';
-        const col = (k, l, t, s, eg, go) => '<div class="itCol" data-it="' + k + '"><div class="itLab"><span class="itK">' + l + '</span><b>' + t + '</b></div><p class="itLine">' + s + '</p>' +
-          '<figure class="hcShot itShot"><div class="hcScr" inert><div class="aqWrap aqFull aqDev aqBpXS on hcAq"><div class="aqFrame"></div><div class="aqStat"></div></div></div><figcaption><b>' + eg + '</b><span>XS · 393 × 852, drawn by the flow itself with the current Tweaks</span></figcaption></figure>' +
-          '<button type="button" class="hcGo itGo" data-go="' + go + '">Open in the prototype ' + GO + '</button></div>';
+        const PLAY = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lc="rotate-ccw" width="14" height="14" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>';
+        const NM = { a: ['A', 'Gradient fade', 'Async report · What to expect (V3)'], b: ['B', 'Bottom sheet', 'Send a gift · Intro'] };
+        /* a screen: the frame at its breakpoint, the flow's own wrapper in it (the desk's report: aqDesk; the profile's full modal: aqFull), a caption */
+        const fig = (k, bp, cap) => { const d = FR[bp], ph = bp === 'xs' || bp === 's', w = (k === 'a' ? 'aqDesk ' : '') + 'aqFull' + (ph ? ' aqDev' : (k === 'b' ? ' hcDk' : '')) + ' aqBp' + bp.toUpperCase();
+          return '<figure class="itFig" data-k="' + k + '" data-bp="' + bp + '"><div class="sfFit"><div class="sfSc" inert><div class="sfDev sfDev' + bp.toUpperCase() + '" style="width:' + d[0] + 'px;height:' + d[1] + 'px"><div class="aqWrap ' + w + ' on sfAq hcAq"><div class="aqFrame"></div>' + (ph ? '<div class="aqStat" aria-hidden="true"></div>' : '') + '</div></div></div></div>' + (cap ? '<figcaption>' + cap + '</figcaption>' : '') + '</figure>'; };
+        const head = k => '<div class="itLab"><span class="itK">' + NM[k][0] + '</span><b>' + NM[k][1] + '</b></div>';
         const row = (p, a, b) => '<tr><th>' + p + '</th><td>' + a + '</td><td>' + b + '</td></tr>';
-        el.innerHTML = '<div class="ntIn"><header class="ntHd"><h1>Intro flow</h1><p>The first screen of a flow: what it is, what comes next in a few rows, one button to start. Every intro is built on one of two frameworks, told apart by where the picture sits: <b>A</b>, a picture that fades out into the content; <b>B</b>, a picture with the content on a bottom sheet over it. A new intro picks one of the two; there is no third layout.</p></header>' +
-          '<blockquote class="itQuote"><small>From the design discussion</small><p>In terms of framework now we have two different types of introduction screens with two different image placements:</p><ul><li>one with a gradient that fades out to the content, e.g. Async</li><li>one more with the bottom sheet, e.g. Send gift</li></ul><p>I think for any kind of intro experience we can plug into one of these two frameworks.</p></blockquote>' +
-          '<section class="biSec"><h2>The two frameworks</h2><div class="itPair">' +
-            col('a', 'A', 'Gradient fade', 'The picture at the top melts into the page’s ground; the title group sits on its fading tail, the rows and the button on the ground under it. No edge, no card.', 'Async report · What to expect (V3)', 'ar') +
-            col('b', 'B', 'Bottom sheet', 'The picture is the header, the title on it; the content comes on a sheet that overlaps its foot with rounded top corners, and scrolls up over it.', 'Send a gift · Intro', 'sgf') +
-          '</div></section>' +
+        let pbp = 'xs'; try { const v = localStorage.getItem('everlab:itBp'); if (FR[v]) pbp = v; } catch (e){}
+        el.innerHTML = '<div class="ntIn"><header class="ntHd"><h1>Intro flow</h1><p>How a flow begins. First the <b>entrance</b>: a black screen with only the title, written in; then the title moves into the <b>intro screen</b>, which is built on one of two frameworks, told apart by where the picture sits: <b>A</b>, a picture that fades out into the content; <b>B</b>, a picture with the content on a bottom sheet over it. A new intro uses the entrance and picks A or B; there is no third layout.</p></header>' +
+          '<blockquote class="itQuote"><small>From the design discussion</small><p>In terms of framework now we have two different types of introduction screens with two different image placements:</p><ul><li>one with a gradient that fades out to the content, e.g. Async</li><li>one more with the bottom sheet, e.g. Send gift</li></ul><p>I think for any kind of intro experience we can plug into one of these two frameworks.</p><p>The intro flow will also have the text on a black screen at the entrance that moves to the next screen.</p></blockquote>' +
+          '<section class="biSec"><h2>The flow</h2><ol class="itBeats"><li><b>1 · Entrance</b><span>A black screen, nothing on it but the title (and Close): the title written in, letter by letter, at the screen’s middle. No button: it moves on by itself once written.</span></li><li><b>2 · The move</b><span>The title travels to its place on the intro screen as the picture comes in behind it and the content rises from the foot. One screen turning into the next, never a cut or a push.</span></li><li><b>3 · Intro screen</b><span>At rest: A or B, the button at the foot waiting.</span></li></ol>' +
+            '<div class="itBar"><div class="glCtBps itBps" role="group" aria-label="Breakpoint">' + BK.map(b => '<button type="button" data-itbp="' + b + '" aria-pressed="' + (b === pbp) + '">' + b.toUpperCase() + '</button>').join('') + '</div><button type="button" class="hcGo itPlay">' + PLAY + ' Play again</button></div>' +
+            '<div class="itPlayers" data-bp="' + pbp + '">' + ['a', 'b'].map(k => '<div class="itCol">' + head(k) + '<div class="itSlot" data-k="' + k + '"></div><button type="button" class="hcGo itGo" data-go="' + (k === 'a' ? 'ar' : 'sgf') + '">Open in the prototype ' + GO + '</button></div>').join('') + '</div></section>' +
+          '<section class="biSec"><h2>The entrance</h2><table class="biTbl"><tbody>' +
+            '<tr><th>Screen</th><td>Black (#111, the flow’s dark ground; in Light too): no picture, no wordmark, no button; only Close at the top right (44). A may wear its tag over the title (“64 biomarkers analysed”)</td></tr>' +
+            '<tr><th>Title</th><td>The intro screen’s own title, centred on the screen’s middle, at its intro size (A 32 / 38, B 26 / 30), white</td></tr>' +
+            '<tr><th>Writing</th><td><code>window.EvWrite</code>, the one writer (the Concierge intro’s title, Send a gift’s, the Async report’s): each letter out of a blur to sharp, warm till it is, 34 ms after the one before, 1.3 s each; it starts 80 ms in (A: 380, after its tag)</td></tr>' +
+            '<tr><th>The move</th><td>As soon as the title is written (A: 100 ms after). A: the title rises into the picture’s fading tail (750 ms) as the picture fades in from 1.2 to 1, 64 up; the line and rows rise 16 one after another. B: the title rises into the header as the sheet and its button slide up from the foot (0.73 s) and the picture fades in, 1.15 to 1</td></tr>' +
+            '<tr><th>Once only</th><td>On opening the flow. Back onto the intro, or a Tweak’s redraw, shows the intro screen at rest; reduced motion skips the writing and the move</td></tr>' +
+          '</tbody></table></section>' +
+          '<section class="biSec"><h2>The intro screen, every breakpoint</h2><p class="biNote">Each framework at rest, drawn by its flow at the breakpoint’s width and height: the phone (XS) and the tablet (S) whole, the desk (M, L) as the full modal.</p>' +
+            BK.map(b => '<div class="itBpRow" data-bp="' + b + '"><h3>' + FR[b][3] + '</h3><div class="itBpGrid">' + ['a', 'b'].map(k => '<div class="itCol">' + head(k) + fig(k, b, NM[k][2]) + '</div>').join('') + '</div></div>').join('') + '</section>' +
           '<section class="biSec"><h2>Anatomy</h2><div class="itTblW"><table class="biTbl itTbl"><thead><tr><th></th><th>A · Gradient fade</th><th>B · Bottom sheet</th></tr></thead><tbody>' +
             row('Picture', 'Full width at the top, 42% of the screen + 96 (454 at XS); a 24% black blanket on it; masked from solid at the top to nothing at its foot, so it melts into the ground', 'The header, full width, 586 tall at XS, pinned while the sheet moves (the Header overlap’s hero); a photo, or the Concierge video (Tweaks → Send a gift → Header)') +
             row('Top nav', 'Close only, 44, at the top right; no title in the bar', 'The Everlab wordmark centred, Close at the right (44)') +
             row('Title group', 'Centred, under the picture’s middle (its top 281 at XS), over the fading tail: a tag (10 / 14, orange, “64 biomarkers analysed”), the title 32 / 38 (320 wide at most, balanced), its line 16 / 20 at 56%, 8 under it', 'Centred on the picture: the title 26 / 30 on two lines, white; no tag, no line') +
             row('Content', 'On the page’s ground under the title group, no card: three rows, each an icon, a title (15 / 20, medium) and a line (14 / 20, 56%)', 'On a sheet over the picture’s foot: 28 over it, 24 top corners, the page’s ground; three rows (Tweaks → Send a gift → Intro: List, Cards or Detail)') +
             row('Button', 'One primary button at the foot, full width less 16 a side, 56 tall (See results)', 'One primary button at the sheet’s foot (Choose a gift), a line under it (Takes about two minutes)') +
-            row('Entrance', 'From the Welcome: its title moves up into place (750 ms) as the picture comes in (fades in, 1.2 → 1, 64 up); the line and the rows rise 16 one after another (0.6 s each, 0.12 s apart) as the title lands', 'The title written in word by word with a blur (the Concierge intro’s reveal), then the picture and the sheet rise from the foot; scrolling, the sheet moves over the pinned picture and the title drifts up and fades') +
-            row('Desktop', 'The full modal: the picture the screen’s width at the top, the column centred', 'A banner (the wordmark) at the top, the content one XS column centred on the screen') +
-            row('Built from', '<code>AsyncReport.mount(host, { dbf: \'fade\', welcome: \'title\' })</code>: <code>.arWtw</code>, the picture <code>.arDbfTop</code>', '<code>_hp.gift()</code> on the Header overlap master (<code>EvOverlap</code>: <code>.hoHero</code>, <code>.hoWords</code>, <code>.hoSheet</code>): <code>.hpGfHero</code>, <code>.hpGfBody</code>') +
+            row('XS · S', 'The phone and the tablet: the screen whole, its status bar; the column the screen’s width less 16 a side (S: the same column, centred)', 'The phone and the tablet: the header the screen’s width, the sheet over its foot') +
+            row('M · L', 'The full modal: the picture the screen’s width at the top, the title group, rows and button in one column centred', 'The full modal: a banner (the wordmark) at the top, the content one XS column, the block centred on the screen’s height') +
+            row('Built from', '<code>AsyncReport.mount(host, { dbf: \'fade\', welcome: \'title\' })</code>: the entrance <code>.arWtw</code> (step 0), the picture <code>.arDbfTop</code>', '<code>_hp.gift()</code> on the Header overlap master (<code>EvOverlap</code>: <code>.hoHero</code>, <code>.hoWords</code>, <code>.hoSheet</code>): <code>.hpGfHero</code>, <code>.hpGfBody</code>; the entrance <code>.hpGfPre</code> then <code>.hpGfMv</code>') +
           '</tbody></table></div></section>' +
           '<section class="biSec"><h2>Picking one</h2><table class="biTbl"><tbody>' +
             '<tr><th>A · Gradient fade</th><td>The intro opens something to read or watch (a report, a debrief, a reveal). The picture sets the mood and gives way to the words; nothing to fill in after it.</td></tr>' +
             '<tr><th>B · Bottom sheet</th><td>The intro opens a task with steps (a form, a purchase, a booking). The sheet is the surface the steps go on with; the picture stays a header.</td></tr>' +
           '</tbody></table></section>' +
           '<section class="biSec"><h2>Rules for both</h2><table class="biTbl"><tbody>' +
+            '<tr><th>Entrance</th><td>Always first, on opening: the title alone on black, written, then moving into place</td></tr>' +
             '<tr><th>Picture</th><td>One picture (or video), full width, never boxed in a card; the words never sit on its busy part (A on the fading tail, B on the sheet or the blanketed picture)</td></tr>' +
             '<tr><th>Title group</th><td>Centred; the title says what this is, in the member’s words</td></tr>' +
             '<tr><th>Rows</th><td>Three, each an icon, a title and one line: what the flow holds, in the order it comes</td></tr>' +
-            '<tr><th>Button</th><td>One primary at the foot, the whole width; nothing beside it</td></tr>' +
+            '<tr><th>Button</th><td>One primary at the foot, the whole width (the column’s on the desk); nothing beside it</td></tr>' +
             '<tr><th>Close</th><td>At the top right, 44, always; no Back (the intro is the flow’s first screen)</td></tr>' +
           '</tbody></table></section>' +
-          '<section class="biSec"><h2>Used in</h2><ul class="biUse"><li>A · Async report → What to expect (preset V3)</li><li>B · Send a gift → Intro</li><li>A new intro: pick A or B and add it here</li></ul></section></div>';
-        let insts = [];
-        const draw = () => { insts.forEach(i => { try { i.destroy(); } catch (e){} }); insts = [];
-          el.querySelectorAll('.itShot').forEach(f => { const w = f.querySelector('.aqWrap'), fr = f.querySelector('.aqFrame'), k = f.closest('.itCol').dataset.it; fr.textContent = ''; fr.style.background = ''; w.classList.toggle('aqInk', LT()); f.querySelector('.aqStat').innerHTML = stat();
-            try {
-              if (k === 'a' && window.AsyncReport){ const pic = (window.__arPicUrl && window.__arPicUrl()) || window.EvArHero, vid = (window.__arPicVid && window.__arPicVid()) || '';
-                const me = window.AsyncReport.mount(fr, Object.assign({}, window.__arO || {}, { dbf: 'fade', welcome: 'title', theme: LT() ? 'light' : 'dark', hero: pic, heroVid: vid, onClose: () => {}, onSubmit: () => {} }));
-                if (me){ insts.push(me); if (me.at) me.at({ t: 'd', wk: 'title' }); } }   /* the report's own ground decides the status bar's ink (V3 stays dark in Light) */
-              if (k === 'b' && window.HealthProfile && window.HealthProfile.snap){ const me = window.HealthProfile.snap(fr, { area: 'gift', solo: 'gift', i: 0, fill: ['gift'], theme: LT() ? 'light' : 'dark', name: nameOf(), wide: false });
-                if (me){ insts.push(me); fr.style.background = getComputedStyle(me.el).backgroundColor; } }
-            } catch (e){ fr.textContent = ''; }
-            const sh = fr.querySelector('.arSheet'); if (sh) w.classList.toggle('aqInk', !sh.classList.contains('arDark')); }); };
+          '<section class="biSec"><h2>Used in</h2><ul class="biUse"><li>A · Async report → What to expect (preset V3)</li><li>B · Send a gift → Intro</li><li>A new intro: the entrance, then A or B; add it here</li></ul></section></div>';
+        let still = [], live = [];
+        const kill = L => { L.forEach(i => { try { i.destroy(); } catch (e){} }); L.length = 0; };
+        /* one screen of a flow into a figure's frame: at rest (the intro screen) or playing from its first frame (the entrance, then the move) */
+        const put = (f, play) => { const k = f.dataset.k, bp = f.dataset.bp, w = f.querySelector('.aqWrap'), fr = f.querySelector('.aqFrame'), st = f.querySelector('.aqStat'), L = play ? live : still; fr.textContent = ''; fr.style.background = ''; if (st) st.innerHTML = stat();
+          try {
+            if (k === 'a' && window.AsyncReport){ const pic = (window.__arPicUrl && window.__arPicUrl()) || window.EvArHero, vid = (window.__arPicVid && window.__arPicVid()) || '';
+              const me = window.AsyncReport.mount(fr, Object.assign({}, window.__arO || {}, { dbf: 'fade', welcome: 'title', theme: LT() ? 'light' : 'dark', hero: pic, heroVid: vid, onClose: () => {}, onSubmit: () => {} }));
+              if (me){ L.push(me); if (!play && me.at) me.at({ t: 'd', wk: 'title' }); } }
+            if (k === 'b' && window.HealthProfile && window.HealthProfile.snap){ const me = window.HealthProfile.snap(fr, { area: 'gift', solo: 'gift', i: 0, fill: ['gift'], theme: LT() ? 'light' : 'dark', name: nameOf(), wide: bp === 'm' || bp === 'l', play: !!play });
+              if (me){ L.push(me); fr.style.background = getComputedStyle(me.el).backgroundColor; } }
+          } catch (e){ fr.textContent = ''; }
+          const sh = fr.querySelector('.arSheet'); w.classList.toggle('aqInk', !!sh && !sh.classList.contains('arDark')); };
+        /* fitted to its column: the frame and its bezel scaled to the room, no larger than a readable cap per breakpoint */
+        const CAP = { xs: .66, s: .62, m: .8, l: .72 };
+        const fit = () => el.querySelectorAll('.itFig').forEach(f => { const d = FR[f.dataset.bp], fw = d[0] + 2 * d[2], fh = d[1] + 2 * d[2], room = f.parentElement.clientWidth || fw, k = Math.min(CAP[f.dataset.bp], room / fw);
+          const ft = f.querySelector('.sfFit'), sc = f.querySelector('.sfSc'); ft.style.width = Math.round(fw * k) + 'px'; ft.style.height = Math.round(fh * k) + 'px'; sc.style.transform = 'scale(' + k + ')'; });
+        const players = () => { kill(live); const box = el.querySelector('.itPlayers'); box.dataset.bp = pbp; el.querySelectorAll('[data-itbp]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.itbp === pbp)));
+          el.querySelectorAll('.itSlot').forEach(s => { s.innerHTML = fig(s.dataset.k, pbp, 'Playing from its first frame: the entrance, then the move'); }); fit(); el.querySelectorAll('.itSlot .itFig').forEach(f => put(f, true)); };
+        const draw = () => { kill(still); fit(); el.querySelectorAll('.itBpRow .itFig').forEach(f => put(f, false)); players(); };
         requestAnimationFrame(draw);
+        addEventListener('resize', () => { if (el.isConnected) fit(); });
         new MutationObserver(() => { const was = el.classList.contains('evDark'); dark(); if (was !== el.classList.contains('evDark') && el.isConnected) draw(); }).observe(document.body, { attributes: true, attributeFilter: ['class'] });   /* the theme switched: drawn again in it */
-        el.addEventListener('click', e => { const b = e.target.closest('.itGo'); if (!b) return; const put = (id, v) => { const x = document.getElementById(id); if (!x || v == null || x.value === v) return; x.value = v; x.dispatchEvent(new Event('change', { bubbles: true })); };
-          put('stBp', 'xs'); if (b.dataset.go === 'ar') put('stArPre', 'v3'); put('versionSel', b.dataset.go); });   /* into the prototype on the phone: the Async report on V3 (its What to expect is A), Send a gift on its intro */
+        el.addEventListener('click', e => { const p = e.target.closest('[data-itbp]'); if (p){ pbp = p.dataset.itbp; try { localStorage.setItem('everlab:itBp', pbp); } catch (x){} players(); return; }
+          if (e.target.closest('.itPlay')){ players(); return; }
+          const b = e.target.closest('.itGo'); if (!b) return; const put2 = (id, v) => { const x = document.getElementById(id); if (!x || v == null || x.value === v) return; x.value = v; x.dispatchEvent(new Event('change', { bubbles: true })); };
+          put2('stBp', pbp); if (b.dataset.go === 'ar') put2('stArPre', 'v3'); put2('versionSel', b.dataset.go); });   /* into the prototype at the player's breakpoint: the Async report on V3 (its What to expect is A), Send a gift on its intro */
         return el;
       };
       /* Design system -> Toggle: the master (window.EvToggle, .evTgl) in every state, both sizes, live ones to try, its tokens */
