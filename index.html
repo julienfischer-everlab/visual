@@ -54952,7 +54952,7 @@ hairline({
   #tl3 > .t3Upd.in{animation:t3UpdIn .5s cubic-bezier(.32,.72,0,1) both;} #tl3 > .t3Upd.gone{opacity:0;transform:translateY(-8px);transition:opacity .25s ease,transform .3s ease;}
   @keyframes t3UpdIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:none;}}
   .t3UpdVis{position:relative;width:104px;height:84px;} .t3UpdVis::before{content:"";position:absolute;inset:-10px -6px;background:radial-gradient(closest-side,rgba(245,164,122,.26),transparent 72%);pointer-events:none;}   /* a warm glow behind the fan */
-  html.t3CmOn :is(.mTabs, .evFld){opacity:0 !important;pointer-events:none !important;transition:opacity .25s ease;}   /* the island takes the dock's place (and the desk Eva field's) while the walk runs */
+  html.t3CmOn :is(.mTabs, .evFld){opacity:0 !important;transition:opacity .25s ease;} html.t3CmOn :is(.mTabs, .evFld), html.t3CmOn :is(.mTabs, .evFld) *{pointer-events:none !important;}   /* the island takes the dock's place (and the desk Eva field's) while the walk runs; nothing in them answers a tap, their children included (the island's arrows were landing on the AI star and the tabs: "It goes to the bottom sheet AI from the nav") */
   .t3UpdTile{position:absolute;top:14px;left:30px;display:grid;place-items:center;width:48px;height:48px;border-radius:14px;background:#3a3a36 center / cover no-repeat;box-shadow:0 0 0 3px #22221f,0 6px 14px rgba(0,0,0,.35);color:#ececec;transition:transform .5s cubic-bezier(.34,1.56,.64,1);}
   body.light .t3UpdTile{background-color:#f3efed;box-shadow:0 0 0 3px #fff,0 6px 14px rgba(46,31,26,.16);color:#111;}
   .t3UpdTile svg{width:22px;height:22px;} .t3UpdTile.t0{transform:translateX(-26px) rotate(-12deg);z-index:1;} .t3UpdTile.t2{transform:translateX(26px) rotate(12deg);z-index:2;} .t3UpdTile.t1{transform:translateY(-6px) scale(1.08);z-index:3;}
@@ -55551,7 +55551,7 @@ hairline({
   const updMo = at => { if (at == null) return ''; const y = Math.floor(at); return FULLM[Math.min(11, Math.floor((at - y) * 12 + 1e-6))] + ' ' + y; };
   const updIt = id => (S.items || []).find(i => i.id === id);
   const updIds = () => updL.filter(id => { const it = updIt(id); return it && it.chg && rowEl(id); });
-  const cmShut = () => { H.classList.remove('t3CmOn'); if (host) host.querySelectorAll('.tlRow.t3CmMe').forEach(r => r.classList.remove('t3CmMe')); if (!cm) return; const c = cm; cm = null; removeEventListener('keydown', c.key); [c.sp, c.is, c.x].forEach(e => e.classList.remove('on')); setTimeout(() => { [c.sp, c.is, c.x, c.bk].forEach(e => e.remove()); }, 320); };
+  const cmShut = () => { H.classList.remove('t3CmOn'); if (host) host.querySelectorAll('.tlRow.t3CmMe').forEach(r => r.classList.remove('t3CmMe')); if (!cm) return; const c = cm; cm = null; removeEventListener('keydown', c.key); clearInterval(c.chk); [c.sp, c.is, c.x].forEach(e => e.classList.remove('on')); setTimeout(() => { [c.sp, c.is, c.x, c.bk].forEach(e => e.remove()); }, 320); };
   const updDone = () => { cmShut(); updL = []; const e = host && host.querySelector(':scope > .t3Upd'); if (e){ e.classList.add('gone'); setTimeout(() => e.remove(), 320); } };
   const updPlace = () => { if (!host) return; const had = host.querySelector(':scope > .t3Upd'); if (had) had.remove(); const ids = updIds(); if (!ids.length || T().mem === 'new' || S.q.trim()) return;
     const bar = host.querySelector('.t3Bar'); if (!bar) return; const its = ids.map(updIt), n = its.length, nN = its.filter(i => i.chg === 'new').length, nA = n - nN;
@@ -55577,7 +55577,8 @@ hairline({
       is.innerHTML = '<button class="t3IsB l" type="button" aria-label="Previous">' + WIC.l + '</button><div class="t3IsTx" aria-live="polite"><b></b><span></span></div><button class="t3IsB r" type="button" aria-label="Next">' + WIC.r + '</button>';
       host.append(bk, sp); shell.append(is, x);
       const key = e => { if (!cm || e.defaultPrevented) return; if (e.key === 'Escape') cmShut(); else if (e.key === 'ArrowLeft' && cmAt > 0) cmGo(cmAt - 1); else if (e.key === 'ArrowRight') cm.is.querySelector('.t3IsB.r').click(); };
-      cm = { bk, sp, is, x, key }; H.classList.add('t3CmOn'); addEventListener('keydown', key);
+      const chk = setInterval(() => { if (cm && (!main.isConnected || !main.getClientRects().length)) cmShut(); }, 200);   /* the island is the Timeline's only ("the island stays on the other page"): any way off the page (the dock, the sidebar, More, a sheet's link) ends the walk */
+      cm = { bk, sp, is, x, key, chk }; H.classList.add('t3CmOn'); addEventListener('keydown', key);
       bk.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); });
       x.addEventListener('click', cmShut);
       is.querySelector('.t3IsB.l').addEventListener('click', () => { if (cmAt > 0) cmGo(cmAt - 1); });
