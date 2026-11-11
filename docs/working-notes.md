@@ -22621,3 +22621,8 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 
 - **The change:** the Cover picture sits 48px higher on the card at every breakpoint ("push the image 48px up on the canvas"). It now starts at top −48 and is 48 taller, so its foot and the radial fade stay where they were, and it still covers at least 70% of the card.
 - **Side effect:** with `object-fit: cover`, a picture that fills the height grows a touch (48 more height). For example, at L centred the box is 530 × 434 instead of 530 × 386.
+
+## Primary card Cover: title group to button 32
+
+- **The change:** Cover's title group to button gap is 32 (24 + 8, "Add an 8px gap between the title group and the button"), on the phone and on desktop, centred or left.
+- **How:** the foot's margin-top is 32 where the foot is a box. On the centred desktop card the foot is `display: contents` and the button reads `--hpCtrBtnT`, so Cover sets that variable to 32.
