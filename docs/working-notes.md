@@ -22798,3 +22798,4 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 
 - **Confirm your updated plan, new items** (`.arRvwTlC`, a grid now: picture, words, badge; the footer across): the picture 16 from the words (was 12); New / Adjusted at the right in the pill Included wore (green ground for New, the blue one for Adjusted), level with the title's first line; Included or the price the card's footer, at its left, plain words (Included in the green, a price in the ink) over a hairline.
 - **Hover**: no border; the card a touch lighter (pointer devices only).
+- **Plan timeline picture**: 64 square, 16 corners (was 48): as tall as the title and two lines of its line (22 + 2 + 40, "just a fit with two lines of sub"); every item's (the debrief's, the plan's, the new ones').
