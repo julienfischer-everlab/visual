@@ -22914,3 +22914,9 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - The product picture is blurred into the top right (`.arRcGlow`, the Overview primary card's `.hpObjBg` rule and its Service glow, position and blur settings; dark only).
   - All in card drops the Plan impact row and shows a **New action** / **Adjustment** badge under the title, centred in the Centred layout.
 - **Report (debrief) cards**: the content inset is 4 less ("reduce content padding by 4px"): 22 at the sides, 14 above, 20 at the foot, and the CTA moves with it.
+
+## v2402: Recommendation card glow tweaks, badge under the sub, foot 20
+
+- "Tweak blur and opavity on the bg img": the Async report's Recommendation card group has two new sliders. **Picture glow** (`stArRcGlow`, 0–100, default 70%) and **Picture blur** (`stArRcBlur`, 0–120, default 48px) set `--rcGlowOp` / `--rcGlowBlur`. The card's glow no longer borrows the primary card's values. Both sliders are kept with the report's presets.
+- "Badge below sub / Size up for the badge": New action / Adjustment now sits under the sub, 8 below it, at 15 on 20 with 4 by 12 padding (was 13 on 18, 2 by 8). It is still centred in the Centred layout.
+- "Reduce padding bottom by 4px": the card's foot is 20 (was 24; 28 before that).
