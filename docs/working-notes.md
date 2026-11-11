@@ -22570,3 +22570,7 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 ## Async V3 What to expect: title 40 lower
 
 - The title group 40 lower ("Push down the title by 40px"): 110 under the picture's middle, the title's top 281 on the phone (was 241), 48 clear of the first row; S 282, M/L 302.
+
+## Async V3 What to expect: picture with the title's move
+
+- The picture's entrance (fade 0.7 s, 1.2 -> 1, up 64) now starts with the title's move up, not just before it lands ("The title should move up at the same time the background appears on the top"). The subtitle and rows still rise in as the title lands (0.6 s in). Checked at XS frame by frame.
