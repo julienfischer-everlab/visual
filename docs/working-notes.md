@@ -23341,3 +23341,13 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 
 - **Roll effect** ("Once reach the decade number stop the roll"): the number rolls from the year before to the decade (39 to 40, column by column, the tens slower) and stops there. It no longer turns on to the year after (41) as it nears the top. It lands on the decade a little before the middle of the screen.
 - **Parallax** ("Parallax move up"): once the roll has stopped, the number goes on rising behind its fade with the parallax alone (0.4em under at the foot of the screen, home at the top). Checked on L: 36px, then 31, 27, 23, 19, 16 as it moves from the foot to the top, the digits on 40 from the middle on.
+
+## v2450: Preset switch in the Tweaks header, tighter Tweaks cards, Ask panel, ghost divider gap, focus card width, decade eyebrow, Outline tabs
+
+- **Tweaks header preset switch** ("Arrow chevron down CTA where we can switch the preset from there too. Via dropdown, no preset edit from here"): the preset's name in the header card is now a button with a 22px chevron disc. It opens a list under it: Default first, then each group's presets under the group's name (the Timeline's Personas), with a tick on the one in use. A pick puts the preset on exactly as the top bar's Apply does (`applyP`: the 1s blanket, then the toast). The list has no rename, move, update or delete: those stay in the top bar's Presets menu. It closes on a pick, an outside click, Escape, or closing Tweaks. Arrow keys move through the list.
+- **Tweaks cards** ("reduce gap by 2x between tweak card"): 6px between the cards, was 12.
+- **Desk Ask panel, Bottom sheet layout** ("reduce width by 64px"; "Bottom padding same as left right"): 576 wide (592 with the card's padding), was 640. Its foot under View inbox is now 24, as its sides; it was 40, with the button's own 8 under it.
+- **Inbox ghost rows** ("4px gap between card ghost and divider"): the divider stays when a card next to it lights. There is 4px between the lit card and the line on each side, so the rows sit 9 apart (4, the line, 4). This applies to the phone sheet and the desk panel alike.
+- **Focus photo card** ("Content max width 512px"): its title and line are 512px wide at most. Before, they ran the card's full width.
+- **Decade eyebrow** ("eyebrow regular"): "Your 40s" over the decade's number is set regular (400), was 600.
+- **Timeline tabs, Outline** ("Outline, remove line bottom full width"): no hairline across the bar's whole width any more, the on tab's underline alone. Filled is unchanged.
