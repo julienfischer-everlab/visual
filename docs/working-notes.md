@@ -23669,3 +23669,32 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - The column now holds at every size. The Health profile's sheets and the standalone modals keep their own column, as at M and L.
   - Container picks in Tweaks now apply from S (they were M and up). XS keeps the page's own width and padding.
   - Checked at 1300 wide, both panels docked (660px · S): the review and Clinical sit in a 552 column, centred.
+
+## v2478: Save for all presets, the V3 intro centred, review colours, Header / Body / Footer containers, All included
+
+- **Save split button** ("I want a split button on the Save ... when I click on the arrow, it says Save for all presets ... disabled if this is only [the] default one"):
+  - The top bar's Save now has an arrow beside it. The arrow opens a menu with one item, **Save for all presets**.
+  - The item copies only the tweaks moved off the preset in use into Default and every preset on this page. Each preset keeps the rest of its own setup.
+  - It is disabled when the page has no preset besides Default, or when nothing has changed. A Save just before it still counts, so Save and then Save for all works.
+  - The Timeline's version store (`#stTlDSet`) is patched for the version the change was made on, so applying a preset can't put the old value back.
+  - Checked with a stubbed shared store:
+    - Both Timeline presets and Default took the change, and the Overview preset was left alone.
+    - Applying preset B afterwards showed the new value and B's own Tabs setting.
+- **Async V3 intro** (What to expect after the title-only Welcome):
+  - "Title group max width should be 512": the title and its line are now held to 512 (were 320 and 300). The title runs on two lines at L.
+  - "The CTA is not a footer in this case ... everything should be centred on the screen": See results now sits in the column under the three rows. The footer is hidden on this screen (`.arWtInCta`), and the tag, title, line, rows and button are centred together.
+  - The button still rises in after the rows, and it moves on to Insight 1 as before. Checked at L and XS.
+- **Review timeline colours** ("the object that has changed and swapped ... on the yellow shade, the same as the animation on the timeline page. The added one on the green ... the icon on the right side for the swap and the add"):
+  - The Adjusted card takes the Plan updates animation's yellow (`.t3UvM`), and its pill is yellow (was blue).
+  - New cards keep their green pill.
+  - Each card has the animation's icon at its right: a green plus for added, yellow swap arrows for adjusted.
+  - Checked in Dark and Light.
+- **Container: Header / Body / Footer** ("on the container tweak, different containers, like the header container and the footer container ... rename the current container to body container"):
+  - On a full modal, the Container group shows three rows: **Body** (the existing pick), **Header** and **Footer**.
+  - Header and Footer each take Own (as today) or 2xs to Full. Header sizes the top nav's row (Back and Close) and Footer sizes the footer, each centred, from S.
+  - They are kept per modal in the same saved setup (`ar/hd`, `ar/ft` in `#stCtPg`).
+  - Checked at L: Header 2xs put Back and Close on the 576 column's edges, and Footer xs gave an 800 Pay button. At S both stay within the frame.
+- **All included** ("If everything ... is free and included, and there's nothing to pay, the CTA will be Confirm Plan, and then it goes straight to the timeline. There's no checkout"):
+  - New Tweak in Confirm your updated plan: **Pricing**, With extras (default) / All included.
+  - All included drops the prices, so every card reads Included. The CTA reads **Confirm plan**, and it goes to the Timeline with no checkout.
+  - With extras still goes Pay, then the checkout. The nothing-to-pay label is "Confirm plan" (was "Confirm my plan").
