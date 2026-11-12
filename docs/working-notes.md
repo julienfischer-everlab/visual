@@ -23698,3 +23698,16 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - New Tweak in Confirm your updated plan: **Pricing**, With extras (default) / All included.
   - All included drops the prices, so every card reads Included. The CTA reads **Confirm plan**, and it goes to the Timeline with no checkout.
   - With extras still goes Pay, then the checkout. The nothing-to-pay label is "Confirm plan" (was "Confirm my plan").
+
+## v2479: Intro CTA hugs, Added badge, condensed review row, containers fill
+
+- **Async V3 intro** ("I want a CTA hug and margin-top 32px"): See results hugs its words (154 wide) and sits 32 under the last row (the stack's 24 + 8). It is still centred with the group.
+- **Review cards** ("Instead of new, can do added, and remove the plus icon and the swap icon. And the badge needs to be secondary ... just neutral"):
+  - New is now **Added**, in a neutral secondary pill (ink at 8%, words at 72%).
+  - The plus and swap icons are gone.
+  - Adjusted keeps its yellow card and pill.
+- **Condensed** ("remove the footer and then put the badge on the right side of the title with the price"): the card is one 60px row: picture, name, then the price (or Included) and the badge at the right. Normal keeps its footer.
+- **Containers fill** ("the container should be full width all the time. It should fill the container ... xs is actually the max width"):
+  - At S the footer's button was capped at 478 (an old sheet width), so it was narrower than the 512 body.
+  - It now fills its container (520), and a pick is only ever its maximum. The profile's own sheet keeps 478.
+  - Header and Footer picks were already max widths (min of the space and the pick).
