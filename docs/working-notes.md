@@ -23418,3 +23418,16 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 
 - **Get your timeline started** ("Check padding to be 12px"; "+4px gap between cards as well"): each step card 12 inside on every side (was 20 above and below, 16 at the sides), 12 between cards (was 8). Desk: a card is 88 high (64 visual + 12 + 12), the words and the button still centred on it. The phone takes the same 12.
 - Checked at L and XS: padding 12, gap 12, visual at 12 / 12.
+
+## v2458 — Step cards 20 inside; Personas presets gone; the starred preset opens again; Plan updates: drag-and-drop plug, card spacing
+
+- **Get your timeline started** ("padding 20px cards"): each step card 20 inside on every side (was 12), still 12 apart. Desk: 104 high.
+- **Presets** ("remove persona"): the built-in Personas group (a preset per Timeline member) is gone from the menu and the header's dropdown. The member a preset was saved with still comes with it (stT3Per); the Persona tweak stays hidden.
+- **The starred preset on load** ("Default v4 doesnt open v4"): with the shared store, the presets and the shared setup load side by side; when the presets came first, V4 went on and the shared setup, landing a moment later, put the Default's tweaks back over it (the label then read "V4 · changed"). The starred preset now waits until the shared setup and the docs' masters are on (window.__tkShOk, set after takeMasters; starTry checks it when live). Reproduced with a stand-in store (shared setup 5 s late: ended on the Default's values), then fixed: V4's values both when the shared setup lands late (5 s) and early (0.3 s). Offline unchanged.
+- **Plan updates → Visual → Timeline**:
+  - "Padding +2 in cards skeleton": the cards 26 high (was 22), their thumb and lines 2 further in, 32 apart.
+  - "Plug card animation should be like a card that someone drag between 2 cards, show dotted slot to place the card, then release and the card fit between the list of cards": the stack parts, a dotted slot shows between the two cards, the new card comes in lifted (tilted 5°, 6% bigger, its shadow under it), is carried over the slot and let go into it (1.4 s); the slot fades as it lands. The canvas's track runs 12 past each side so the lifted card is not cut.
+  - "+16 margin left": the visual 16 further in on the desk (its column 160: 16 + 128 + 16).
+  - "Gap +4 title group": 8 between the title and its line (was 4).
+  - "size up CTA / +4px gap": Got it and See update 44 high (were 36), 20 at their sides, 12 apart (was 8). On the phone they keep their own row.
+- Checked at L and XS (frames through a drop), dark.
