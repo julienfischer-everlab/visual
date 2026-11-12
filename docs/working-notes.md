@@ -23761,3 +23761,12 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - The adjusted cards get the review's yellow tint and the added the review's class (`arRvwAdj` / `arRvwNew`), as on the review.
   - On the phone, the hidden dock's island and tabs no longer catch the taps meant for Got it.
 - Checked at L and XS: opens, closes, focus back on the button, the timeline unchanged after it, and the Timeline page's own modal still opens and closes.
+
+## v2483: Review timeline: In your plan On / Off
+
+- **In your plan** (Tweaks -> Confirm your updated plan -> Timeline, after Type; "Tweak option to hide existing Object ON OFF"):
+  - On (default): as before, the items already in the plan shown greyed with their In your plan pill.
+  - Off: only the added and adjusted items, after the completed debrief. A month that held only existing items goes too.
+  - The row hides with Simple list, as Added card and Type. It is saved with the report's tweaks (both key lists).
+  - The Timeline's Plan updates modal (and the Overview's See my plan) follows the same setting, being built on the review's timeline.
+- Checked at XS: On 3 existing rows and 7 months, Off none and 5 months; the row hidden with Simple list; the modal Off with no existing rows.
