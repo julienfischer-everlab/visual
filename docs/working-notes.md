@@ -23124,3 +23124,8 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 
 - The footer's two count lines ("5 new markers added", "5 re-tests") are gone. The "10 biomarkers" badge moves down from the header into their place, at the left and level with the price ("Remove this and put the 10 biomarkers from the top, here"). The header keeps the title and the photo.
 - The Follow-up blood test costs $129 ("Price $129", `RC_PRICE`). The hero card's footer, the review's card, the Pay total (now including it, e.g. "Pay $673.00 (3 items)") and the checkout all show it.
+
+## v2423: Multi-step loader without blur
+
+- "Remove blur" (the Pay loader picked): the Loading states' multi-step loader (`EvLoad.multi`, `.evMs`) no longer blurs the page under it. The page shows through the plain wash (55% of the sheet's ground) under the spinner, its line and the track.
+- This is the master, so Send a gift's checkout loader loses its blur too. Comments updated ("washed (no blur)").

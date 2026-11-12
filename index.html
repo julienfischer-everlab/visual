@@ -20972,7 +20972,7 @@ window.EvCtl = (function () {
       paint(); sg.pick(0);
       return enter(h('div', { class: 'arStack arGap24 arRvwStack' + (o.rvwg === 'plain' ? ' arRvwPlain' : '') }, hd, seg, card, dgrp), hd, title, [seg, card, dgrp]);
     }
-    /* Pay: the Loading states' multi-step wait in the middle of the screen, over the page blurred ("When I click the Pay button, I need to see the loading state in the middle of the screen"; EvLoad.multi, as Send a gift's checkout);
+    /* Pay: the Loading states' multi-step wait in the middle of the screen, over the page washed ("When I click the Pay button, I need to see the loading state in the middle of the screen"; EvLoad.multi, as Send a gift's checkout);
        from the review with something to pay, on to the checkout; there, or with nothing to pay, the timeline ("once submitted, redirect to timeline"), or the end */
     function revPay() {
       if (payBusy) return; var t = revTotal(), fin = function () { if (o.onSubmit) o.onSubmit(rcSubmitted()); else go(NEXT); };
@@ -22720,8 +22720,8 @@ body.hdrV4[data-bp="xs"] #dOver .dvTop > .hpOvCard { margin-top: 6px; margin-bot
 .evBusyL { display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
 .evBusyS { cursor: progress !important; opacity: .42; } :is(.evBusyS, .evOk) > :not(.evBusyL) { display: none !important; }   /* Simple loader: the same button, its emphasis kept, lighter ("keeps the button's original emphasis and exact width; the spinner replaces the label, including any icons") */
 .evOk { opacity: .56; cursor: default !important; } .evOkI { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }   /* done in place (inline validation): a tick and Saved on the button */
-/* Multi-step loading: over the page, the page blurred under a progress of each backend step: a spinner and the step's line, a track with a node for each */
-.evMs { position: absolute; inset: 0; z-index: 40; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; color: var(--evInk, #111); background: var(--evWash, rgba(255, 255, 255, .55)); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border-radius: inherit; opacity: 0; transition: opacity .32s ease; }
+/* Multi-step loading: over the page, washed (no blur), a progress of each backend step: a spinner and the step's line, a track with a node for each */
+.evMs { position: absolute; inset: 0; z-index: 40; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; color: var(--evInk, #111); background: var(--evWash, rgba(255, 255, 255, .55)); border-radius: inherit; opacity: 0; transition: opacity .32s ease; }   /* the wash alone, no blur under it ("remove blur") */
 .evMs.on { opacity: 1; }
 .arSheet .evMs { --evInk: oklch(var(--ar-ink)); --evWash: color-mix(in oklab, var(--ar-paper) 55%, transparent); }
 .evDark .evMs { --evInk: #ececec; --evWash: rgba(17, 17, 17, .55); }
@@ -23258,7 +23258,7 @@ window.PcMedia = (function () {
  *   EvLoad.simple(button, { slow, after }) Simple loader, no label: the same button, lighter, its exact width, a spinner in place of its words; past `after` ms (5 s) the label `slow` ("Hang tight…") beside it;
  *                                       returns done(ok): the button as it was, or with ok first a tick and ok on it ("Saved"), done(ok) then returning the way back; done.slow() the label now
  *   EvLoad.label(button, text)          Loader with label: the button turns into a spinner and its action ("Submitting"); returns done(), the button as it was
- *   EvLoad.multi(host, steps, { step }) Multi-step loading: over host (positioned), the page blurred under each backend step in turn (a spinner and its line, a track with a node each);
+ *   EvLoad.multi(host, steps, { step }) Multi-step loading: over host (positioned), the page washed (no blur) under each backend step in turn (a spinner and its line, a track with a node each);
  *                                       returns { el, done (a promise, once the last step is through, as the overlay fades), stop() }
  */
 /* EvOverlap: the header overlap ("the common pattern that we use on other pages that overlap the header and have a small parallax"; "this needs to be in the design system"), once for every page.
