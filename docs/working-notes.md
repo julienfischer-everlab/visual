@@ -23024,3 +23024,27 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - The chart's other dots dim (`filter: opacity(.18)`). The cards fade up as the tab changes.
   - The tab stays put while the report is open.
 - Off: the cards as before, every group in full.
+
+## v2413: Recommendations switches, blood panel polish, biomarker tags and trend, blood panel in the review
+
+- **Tweaks → Recommendations**: "Add toggle for each VS this structure". The two old rows (Groups shown, Next blood panel) become four switches: All, Clinical, Lifestyle, Blood panel.
+  - All is on when the other three are; pressing it turns all three on or all off.
+  - The switches set the old selects, now hidden (`stArRcG` with a new `none` value, `stArBp`), so saved setups and presets still restore them.
+- **The report with any mix of groups**: `rcOne()` is now "the one phase there is" (Clinical, Blood panel or Lifestyle).
+  - Blood panel alone: doctor's note → blood panel → review.
+  - Nothing on: the doctor's note goes straight to the wrap-up.
+  - Toggling Blood panel off while on it moves on to what follows. The Flow panel lists only the phases there are (`seq`).
+- **Blood panel screen**:
+  - Tabs inside the hero card, under the chart ("Tab inside"), 12px from the card's edges so all four fit.
+  - Each group's title group (dot, name, count, line) sits above its card, and the card holds only the rows ("Put title group outside card").
+  - A press on a title group folds its rows away or opens them, with a chevron at its right ("Option to collapse group"). The fold state is kept while the report is open.
+  - Header: the sub line is gone. The biomarkers badge is neutral (ink 8% / 80%). The visual is a 68px photo at the top right. It is a stand-in (the pathology tubes, `EvSvcImg.path`) until the requested blood-draw photo arrives as a file.
+- **Biomarker item master (`EvBio.row`)**, documented on Design system → Biomarker item (states, anatomy, Used in):
+  - `tag: 'add' | 'opt'`: a badge after the name, "Added for you" (blue tint) or "Optional" (dashed warm outline). When it wraps, it starts its own line.
+  - `right: 'trend'`: the right side becomes a 72 × 28 line of the last readings (`pts`) over a faint optimal band, ending in a dot, then the reading in the status's colour. A marker never tested shows the band and a dash.
+- **Blood panel uses them**:
+  - "Optional" on the never-tested marker.
+  - "Added for you" on markers outside the healthy range that the member's usual panel (PANELS) doesn't hold.
+  - New Tweak "Biomarker right": Ranges + badge (default) / Trend.
+- **The blood panel in the review** ("IF I add the blood panel it should be in the next screen, review plan screen"): when on, it is the last item of `stkAll`, a Clinical item named "Follow-up blood test" (its biomarker count · Fast 8 hours, Included, in its month).
+  - Its answer on the blood panel screen is its decision, so "Add to plan" puts it in Confirm your updated plan, and Maybe later puts it under Later.
