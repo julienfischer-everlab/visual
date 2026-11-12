@@ -23276,3 +23276,7 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 
 - **Tweaks → Your focus → Focus card: Hero** (new, beside Bloc / Thumbnail / Photo; "Focus hero: Add tweak for another style"): the focus card is the Design system's Media card (EvCard look media, size lg) with the focus picture as its ground, darkened towards its foot, the words white at the bottom (eyebrow, the goal at 22 / 20 on the phone, Dr Lu and the date), Review a white-glass pill. 280 tall (260 on the phone), 30 corners (28). The Next check-in, a service, keeps the Thumbnail layout with it ("Keep as it is for Next checkin object which is a service"). Works in the timeline and the right column.
 - **Decade number** (Number styles): the moving light is gone. Now the number itself drifts down into its fade as the page scrolls (up to .4em, slower than the page), and the fade stays still on its box ("no parallax on the fade but the number behind the fade"). The number back to the ink at the Age opacity.
+
+## v2439: Plan updates card spacing
+
+- The info slot above the tabs (the Plan updates card, and the focus and check-in when they sit there): 16 more above it, from the page title, and 16 less below it, to the tabs ("-16px bottom +16px top", "on the hero card"): margin 0 / 24 → 16 / 8 (the card's own 16 under it stays, so 24 to the tabs).
