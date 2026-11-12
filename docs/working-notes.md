@@ -23431,3 +23431,8 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - "Gap +4 title group": 8 between the title and its line (was 4).
   - "size up CTA / +4px gap": Got it and See update 44 high (were 36), 20 at their sides, 12 apart (was 8). On the phone they keep their own row.
 - Checked at L and XS (frames through a drop), dark.
+
+## v2459 — Default puts the starred preset on; step cards: hover fill without outline, +2 under titles
+
+- **Presets** ("Default is not triggering the right Version as starred!! v4"): on a page with a starred preset, picking Default (the header's dropdown, or Apply in the menu) puts that preset on, the one the page opens on (V4 on the Timeline), its name in the header. A page with no star keeps the saved setup as Default. Checked with a stand-in shared store: V4 changed, Default picked, V4's values back and "V4" in the header.
+- **Get your timeline started** ("Hover card no border, just filled secondary bg"): hovered, pressed or focused, a step card loses its outline and shows only the item card's fill. ("+2px gap titles"): 5 between a step's title and its line (was 3), 9 above the records' bars (was 7).
