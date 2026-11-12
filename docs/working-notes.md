@@ -23793,3 +23793,12 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - Tweaks writes to the step up; the Container group names it ("This step: What to expect"). Changing step applies its containers at once (a 120 ms watch).
   - Saved with the rest of the containers (the same store).
 - Checked: What to expect set to 3xs + Footer Full, the first insight to sm; back and forth each keeps its own; the review untouched (2xs).
+
+## v2487: Full-width picture at S, Tweaks order and step-only groups, phone CTA in the footer
+
+- **Picture at S** ("Visual shouldnt take the container max width but cover the full width of viewport"): at S the sheet's own overflow was hidden and clipped the What to expect picture to the body's column; the sheet lets its parts out at S as at M and L. Checked at 760 (S): the picture 760 wide.
+- **Tweaks order** ("General on top 1st in tweak After container"): the report's General group first, Container after it, then the step's own groups (Confirm your updated plan on the review), Top nav, the rest.
+- **Picture into Intro screen** ("Picture should be in a tweak group. Intro screen"): the Picture row leaves General for the Intro group, renamed Intro screen, first in it; shown on the welcome, What to expect and the end (the screens that use the picture).
+- **Only on their step** ("Only displayed when we navigate on the related step/page"): a group or row tied to a phase (`data-ar-ph`) shows on that phase alone. Confirm your updated plan showed on every screen (the phase filter cleared the screen filter); now on the review alone. Blood panel on its step alone.
+- **Phone: the CTA in the footer** ("on mobile the CTA part of the footer"): at XS (and the phone mode) What to expect's See results is the footer's button again; the in-body CTA stays from S up.
+- Checked at S (760) and XS: groups per step (What to expect: General, Container, Top nav, Intro screen; insight: … Insight; review: … Confirm your updated plan, Recommendations; blood: … Recommendations, Blood panel).
