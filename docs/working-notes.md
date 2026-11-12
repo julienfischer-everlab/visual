@@ -23231,3 +23231,12 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **Tab top → Tabs**: now a select reading **Now / This year / Later** or **Upcoming / Later**. The panel's generic rule had turned it into an unlabelled On/Off switch (any two-option select becomes a switch), which is why it looked like a toggle that belonged in the group header. It isn't an on/off, so it stays a row ("Do we have a tweak for Upcoming and later tab ?").
 - **Presets**: when another preset is starred, Default's line reads "Everyone opens on ★ <name>" (this browser's, without the shared store) instead of "The setup everyone opens on" ("mention the Default version here. The starred one").
 - **Timeline V3 rows**, every breakpoint as the phone ("8 padding as mobiel"): 16 above and below each row, so the ghost card sits 8 clear of the dividers and 8 round its content (was 12 clear at the desk). Pictures 4 rounder ("+4px radius": desk 14 → 18, phone 12 → 16), the ghost card concentric with them (26 desk, 24 phone).
+
+## v2432: Doctor's note quote, blood panel dot sweep, badge and doctor footer
+
+- **Doctor's note, Card style**: the words in quote marks (“ … ”), 2 smaller and closer lines (20 / 28 → 18 / 24) ("Add quote mark, Reduce font by 2px, reduce line height").
+- **Your next blood panel**, the hero card:
+  - The chart's dots come in from the left, one after another across: each slides 12 in from the left as it fades and grows, its delay set by its place (a 0.9s sweep). It starts once the chart is on screen (IntersectionObserver), not while the screen is still coming in, which is why the old bottom-up stagger was never seen ("make the dot appearing from left to right").
+  - The biomarkers badge sits under the title ("Put badge biomarkers below title").
+  - The footer: Steven Lu's avatar (28, round) and "Recommended by Steven Lu" at the left, the price at the right, now 16 / 22 ("price 16px"). Steven's photo is written once (`BP_DR_AV`) for the groups' notes and this footer, so dist doesn't grow.
+  - 20 between each group's title and its card (+4, "+4px row gap").
