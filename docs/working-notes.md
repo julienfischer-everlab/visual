@@ -23014,3 +23014,13 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - Follow-up blood test header: the drop visual sits at the right ("Visual right side"). Under the date line, an "N biomarkers" badge counts every marker in the groups, in the drop's warm tint ("badge X biomarkers").
 - No divider between the header and the chart ("no bottom divider"). The chart sits 24 under the header.
 - Chart dots are 10px, 2px smaller ("Dot -2px"). Each has a 1px ring outside it in the card's own colour (the card's grey over the sheet's ground), so dots that touch read apart ("Border outside 1px, same colour as card bg"). The never-tested ring is filled with the card's colour, so the guide line no longer runs through it.
+
+## v2412: Blood panel tabs under the chart (Tweak)
+
+- "Tab below chart: All, Optimal, Sub optimal, Out of range. Active tab will update the content shown below". New Tweak: Async report → Blood panel tabs, On (default) / Off. Saved with the setup (preset KEYS) and the report remounts on change.
+- On: the Design system's Segmented tabs (`EvSeg.el`, size sm) sit right under the hero card: All · Optimal · Suboptimal · Out of range. To fit four at XS, the labels are 13px with 4px padding.
+  - The active tab keeps the rows of its status (each row carries `data-lv`). All also shows the never-tested one.
+  - Each group card's count follows the tab. A group left with nothing hides. A short "Nothing to retest in this range." card shows if every group is empty.
+  - The chart's other dots dim (`filter: opacity(.18)`). The cards fade up as the tab changes.
+  - The tab stays put while the report is open.
+- Off: the cards as before, every group in full.
