@@ -22992,3 +22992,10 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - Its swipe cue says "Swipe to adjust / Release to adjust", or "Swipe to keep / Release to keep".
   - Its result reads "Plan adjusted" or "Kept as it was".
 - **Blood panel**. "Your next blood panel" sits on one line ("in one line"). The sub is now "Based on your latest results, here's what we recommend testing next."
+
+## v2409: Blood panel hero card, every marker at a glance
+
+- "A big picture of all markers listed below inside this main hero card: dots spread horizontally, up and down. Up good optimal, middle yellow suboptimal, down red out of range". Under the Follow-up blood test's header, a chart shows three bands, each labelled at the left: Optimal at the top, Suboptimal, Out of range at the foot.
+  - Each marker in the groups below is a dot. The dots run across in the groups' order, each at its status's height, nudged a few px up or down from its name so they don't line up flat.
+  - Colours: green (`--rgOpt`), yellow (`--rgSub`), red (`--rgOut`). An out-of-date reading is fainter. The never-tested one is a hollow ring.
+  - The dots rise in one after another, and a dot opens the marker's detail (`bioOpen`), as its row does.
