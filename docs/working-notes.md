@@ -23436,3 +23436,13 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 
 - **Presets** ("Default is not triggering the right Version as starred!! v4"): on a page with a starred preset, picking Default (the header's dropdown, or Apply in the menu) puts that preset on, the one the page opens on (V4 on the Timeline), its name in the header. A page with no star keeps the saved setup as Default. Checked with a stand-in shared store: V4 changed, Default picked, V4's values back and "V4" in the header.
 - **Get your timeline started** ("Hover card no border, just filled secondary bg"): hovered, pressed or focused, a step card loses its outline and shows only the item card's fill. ("+2px gap titles"): 5 between a step's title and its line (was 3), 9 above the records' bars (was 7).
+
+## v2460 — Plan updates visual: the slot first, the card in smoothly; bigger cards, plain skeleton
+
+- **The plug** ("Make the drag drop more snappy"; then "Need to see more the drag area to drop. then the card should come in smoothly, no shadow"):
+  - The stack parts faster (0.42 s, was 0.7) and springs a touch past before settling (easeOutBack).
+  - The dotted slot then shows on its own for about half a second, its dashes stronger (50% white, was 34).
+  - The card comes into it in one smooth ease (easeOutQuint) from slightly above right and tilted 3°. There is no shadow and no bounce, and the slot fades as the card arrives (1.25 s in all).
+- **Cards** ("Increase padding card by 2px"): 30 high (was 26), their visual and lines 2 further in, 36 apart.
+- **Inside a card** ("Skeleton same colour inside card"; "Visual +2px inside skeleton"; "Visual skeleton keep it fff opacity, no icon or img"): the visual is a 14 square (was 12), and the visual and both lines share one colour (white 10%). The new card has the same plain square (white 16% on its green) and no photo or icon, with both its lines one green.
+- Checked: the spacing holds at 36 through each parting over 16 s; frames through a drop (slot alone, card coming in, card settled, no outline left).
