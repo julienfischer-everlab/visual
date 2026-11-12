@@ -3208,6 +3208,45 @@ window.EvBeamStar.press = (function () {
     var o = live(b); if (o) drop(o); return fn(); } };   /* the action at once, no beam round over it ("Remove beam effect on press") */   /* no wait ("no delay on click, beam should happen fast"): the action at once, the beam's quick round (350) played over it */
 })();
 /* EvFullView: a modal over the whole app, never only the page it opened from ("modal should ALWAYS cover the full viewport, not just the body"): on the desk, fixed over the app's own window (.dash: the sidebar too), re-fitted on resize; on the phone (XS, S) it already covers the screen */
+/* EvPicLib(cfg): a Tweak's picture library, one code for the next ones (the Async report's and the Primary card's still their own): Default (the card's own picture), then every picture added, newest first, each a tile to pick,
+   a bin on hover, + to add one; the tiles the Async report's (.tkArPics, .tkArPic). In the app a picture goes to the artifact's asset store and its record to the shared table cfg.col, so it is there on any device;
+   elsewhere a 1600 px JPEG kept in this browser (cfg.lk). The pick is this browser's (cfg.sk) and a tweak value too (cfg.sel, a hidden input): Save keeps it, a saved setup puts it back.
+   cfg: { box, fin, sel (element ids), col, lk, sk, def (Default's title) } -> { url(), paint(), on(f) } */
+window.EvPicLib = function (cfg) {
+  var subs = [], DB = null, AS = null, REMOTE = [], LOCAL = [];
+  try { LOCAL = JSON.parse(localStorage.getItem(cfg.lk) || '[]') || []; } catch (e) { LOCAL = []; }
+  var $ = function (id) { return document.getElementById(id); };
+  var all = function () { return REMOTE.concat(LOCAL).sort(function (a, b) { return (b.at || 0) - (a.at || 0); }); };
+  var cur = function () { try { return localStorage.getItem(cfg.sk) || ''; } catch (e) { return ''; } };
+  var url = function () { var c = cur(), r = c ? all().filter(function (x) { return x.id === c; })[0] : null; return r ? r.u : ''; };
+  var keepL = function () { try { localStorage.setItem(cfg.lk, JSON.stringify(LOCAL)); return true; } catch (e) { return false; } };
+  var fire = function () { subs.forEach(function (f) { try { f(); } catch (e) {} }); };
+  var q = function (v) { return String(v).replace(/"/g, '%22'); };
+  var TRASH = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>';
+  var paint = function () { var b = $(cfg.box); if (!b) return; var c = cur(), L = all(), on = c && L.some(function (x) { return x.id === c; }) ? c : '';
+    b.innerHTML = '<button type="button" class="tkArPic tkArPic0" data-id="" aria-pressed="' + (!on) + '" title="' + (cfg.def || 'The card’s own picture') + '">Default</button>' +
+      L.map(function (r, i) { return '<span class="tkArPic" role="button" tabindex="0" data-id="' + r.id + '" aria-pressed="' + (r.id === on) + '" aria-label="Picture ' + (L.length - i) + '" style="background-image:url(&quot;' + q(r.u) + '&quot;)"><button type="button" class="tkArPicDel" data-del="' + r.id + '" aria-label="Delete this picture" title="Delete">' + TRASH + '</button></span>'; }).join('') +
+      '<button type="button" class="tkArPic tkArPicAdd" aria-label="Add a picture" title="Add a picture">+</button>'; };
+  var sync = function () { var h = $(cfg.sel); if (!h || h.value === cur()) return; h.value = cur(); h.dispatchEvent(new Event('change', { bubbles: true })); };   /* picking marks the setup changed */
+  var use = function (id) { try { if (id) localStorage.setItem(cfg.sk, id); else localStorage.removeItem(cfg.sk); } catch (e) {} paint(); fire(); sync(); };
+  var shrink = function (file, max) { return new Promise(function (res, rej) { var im = new Image(), u = URL.createObjectURL(file); im.onload = function () { var k = Math.min(1, max / Math.max(im.naturalWidth, im.naturalHeight)), cv = document.createElement('canvas'); cv.width = Math.round(im.naturalWidth * k); cv.height = Math.round(im.naturalHeight * k); cv.getContext('2d').drawImage(im, 0, 0, cv.width, cv.height); URL.revokeObjectURL(u); cv.toBlob(function (bl) { if (bl) res({ b: bl, d: function () { return cv.toDataURL('image/jpeg', .82); } }); else rej(new Error('no image')); }, 'image/jpeg', .86); }; im.onerror = function () { URL.revokeObjectURL(u); rej(new Error('not an image')); }; im.src = u; }); };
+  var add = function (file) { if (!file || !/^image\//.test(file.type)) return; var id = 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), at = Date.now(), name = String(file.name || '').slice(0, 80);
+    shrink(file, AS && DB ? 2400 : 1600).then(function (sh) {
+      if (AS && DB) return AS.upload(sh.b).then(function (r) { var rec = { id: id, u: r.url, aid: r.id, at: at, name: name }; REMOTE = [rec].concat(REMOTE.filter(function (x) { return x.id !== id; })); return DB.doc(cfg.col + '/' + id).set(rec); });
+      LOCAL.unshift({ id: id, u: sh.d(), at: at, name: name }); while (!keepL() && LOCAL.length > 1) LOCAL.pop(); }).then(function () { use(id); }).catch(function () { if (window.__tkToast) window.__tkToast('Could not add that picture'); }); };
+  var del = function (id) { var r = REMOTE.filter(function (x) { return x.id === id; })[0];
+    if (r){ REMOTE = REMOTE.filter(function (x) { return x.id !== id; }); try { if (DB) DB.doc(cfg.col + '/' + id).delete().catch(function () {}); if (AS && r.aid) AS.delete(r.aid).catch(function () {}); } catch (e) {} }
+    else { LOCAL = LOCAL.filter(function (x) { return x.id !== id; }); keepL(); }
+    if (cur() === id) use(''); else paint(); };
+  var b = $(cfg.box), fin = $(cfg.fin), h = $(cfg.sel);
+  if (b){ b.addEventListener('click', function (e) { var d = e.target.closest('[data-del]'); if (d){ e.stopPropagation(); del(d.dataset.del); return; } var t = e.target.closest('.tkArPic'); if (!t) return; if (t.classList.contains('tkArPicAdd')){ if (fin) fin.click(); return; } use(t.dataset.id || ''); });
+    b.addEventListener('keydown', function (e) { var t = e.target.closest('.tkArPic[role="button"]'); if (t && (e.key === 'Enter' || e.key === ' ')){ e.preventDefault(); use(t.dataset.id); } }); }
+  if (fin) fin.addEventListener('change', function () { var f = fin.files && fin.files[0]; fin.value = ''; add(f); });
+  if (h){ h.value = cur(); h.addEventListener('change', function () { if (h.value === cur()) return; try { if (h.value) localStorage.setItem(cfg.sk, h.value); else localStorage.removeItem(cfg.sk); } catch (e) {} paint(); fire(); }); }   /* a saved setup or a preset puts its pick back */
+  try { if (window.claude && typeof window.claude.use === 'function'){ window.claude.use('assets').then(function (a) { AS = a || null; }).catch(function () {});
+    window.claude.use('db').then(function (db) { if (!db) return; DB = db; db.collection(cfg.col).onSnapshot(function (qs) { var was = url(); REMOTE = qs.docs.map(function (d) { var x = d.data() || {}; return x.u ? { id: d.id, u: x.u, aid: x.aid, at: x.at || 0, name: x.name || '' } : null; }).filter(Boolean); paint(); if (url() !== was) fire(); }, function () {}); }).catch(function () {}); } } catch (e) {}
+  paint(); return { url: url, paint: paint, on: function (f) { subs.push(f); } };
+};
 window.EvFullView = (function () {
   var held = []; var phone = function () { return /^(xs|s)$/.test(document.body.dataset.bp || ''); };
   var fit = function (el) { var st = el.style; if (phone()) { ['position', 'left', 'top', 'right', 'bottom', 'width', 'height'].forEach(function (k) { st[k] = ''; }); return; }
