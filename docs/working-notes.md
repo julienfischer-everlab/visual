@@ -23085,3 +23085,9 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - The Flow panel lists "Checkout" after "Review recommendations".
 - **Timeline V3, pinned tabs**: once the page scrolls, the bar's foot gets a header fade, 32 tall: the page colour melting away, with the rows blurred as they pass under it ("a blurry gradient, like a normal header gradient"). It is off when Tabs fixed is Off, and it stops at the right column at L.
 - **Decade number**: a new Tweak "Age spacing" (Decades), from −0.10 to +0.20em, added to the design's own spacing. It spreads the digits of the big rolling number (the hero "40") and the small in-card number alike. At 0 the number looks as before.
+
+## v2417: Blood panel rows: dividers
+
+- "The divider here and no divider on the last element": in each blood panel group card, every row has a hairline under it (ink 8%), except the last row shown.
+  - The rule counts only visible rows, so it still holds when a tab filters rows out.
+  - Between "Added for you" and "Other", the last added row's own divider separates them. The "Other" heading no longer draws a line of its own, so there is never a double line.
