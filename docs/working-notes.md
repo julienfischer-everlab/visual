@@ -23152,3 +23152,19 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - **V2** (default): the new member's timeline as before (bento, Get your timeline started, Later, the decades sketch).
   - **V1**: the page's empty state alone, centred under the Timeline header: a calendar crossed out (Lucide calendar-x, 40, secondary), "You’re all caught up" (20 / 26 medium) and "Nothing to book right now." (16 / 22, secondary). The capture's grey "V2: incremental on the production page" line is the board's note, so it is not drawn.
 - It only applies when Member is New, and rebuilds the timeline on change, as the other Timeline V3 tweaks do.
+
+## v2426: Timeline line Yes / No, Top nav sticky off the Timeline, blood panel labels, Add to plan to the review
+
+- New Tweak **Timeline line** in Timeline → Page (Yes / No, default Yes; "Add a variation on the timeline, like line, line, yes/no", "On the page group"). It applies from the tablet up; the phone keeps its own "Timeline line (XS)".
+  - **No** (`html.t3NoRail`): no rail, no group dots, no decade dots. The rows and the decades take the full width, and the group titles' ground runs 14 either side.
+  - Each month drops its chip on the rail and gets the phone's quiet line above its rows ("June 2027").
+  - The rules sit in `@container tl not ((max-width:540px) or style(--tlXs: 1))`, so the XS layout and its own line tweak are untouched.
+- **Top nav sticky** row removed from Timeline → Tab top ("Remove this"), with the proxy's two-way sync. The setting itself stays on the Design system's Top nav master (`stTnSticky`, `everlab:tnMaster`), and the Top nav group stays hidden on the Timeline.
+- **Blood panel** group cards:
+  - Steven's note: the line is 16 / 22 ("The sub should be 16") and the gap under "Note from Steven Lu" is 10, 4 more ("Add a 40% gap", read as 4px). There is no divider under the note any more ("I don't want any dividing them after the note from the doctor").
+  - Section labels:
+    - Both sections are now a label one size up: 14 / 20 in 28, radius 10 ("Increase by one size"), each with a 6px dot at its start ("a dot for each at the beginning of the label").
+    - "New markers to test" stays green. "Markers to re-test" is now a neutral label (ink 8% ground, ink 72% text) instead of the eyebrow.
+    - The first label sits 4 under the note.
+  - **Never tested**: an "Optional" label in the same style (warm: #fbe9dc / #b8622a light, #3a2416 / #f2b896 dark) now sits at the top of the group, and the dashed "Optional" badge on each row is gone ("This optional should be in a badge ... the same thing at the top of the group"). The rows carry `data-sec="opt"`, so the tabs hide the label with its rows.
+- **Async report → Add to plan on the blood panel** now opens the review (Confirm your updated plan, Pay $129.00) when the blood panel is the last phase, even if earlier cards were left unanswered. Before, it fell through to the wrap-up ("After adding a plan, you should move to review recommendation, not the wrap-up"). Maybe later with nothing added still goes to the wrap-up.
