@@ -23711,3 +23711,26 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - At S the footer's button was capped at 478 (an old sheet width), so it was narrower than the 512 body.
   - It now fills its container (520), and a pick is only ever its maximum. The profile's own sheet keeps 478.
   - Header and Footer picks were already max widths (min of the space and the pick).
+
+## v2480: Containers without Own + 3xs, insight title left, doctor card padding, Blood panel group, review rail and condensed
+
+- **Containers** ("Remove own. Also add 3xs, max width 384"):
+  - New token `--ct3xs`: 384 from S, 100% at XS. It is in every Container row, the `[data-container="3xs"]` rule and the Container doc's table (the doc's sizes come from `EvCt.names`).
+  - Header and Footer no longer offer Own. Header defaults to Full (the top nav at the screen's edges, as before). Footer defaults to the Body's pick.
+  - A pick equal to its default is not stored, so returning to the defaults clears `ar/hd`, `ar/ft`.
+  - Checked: 3xs puts Back/Close and the Pay button in a 384 column at L.
+- **Insight title group** ("align left"): the insight's headline and its line are at the column's left (they were centred), every version.
+- **Doctor card** ("16px padd top, +32 padd bottom"): 28 / 32 is now 44 / 64 (+16 top, +32 bottom).
+- **Blood panel group** ("IN another tweak group BLOOD PANEL"): Biomarker right, Rows card, Blood panel tabs and Blood test card are now in their own Blood panel group, after Recommendations. Same ids, so saves are unchanged.
+- **Swipe card On/Off**: there is no such tweak yet (asked).
+- **Green rail** ("make this green line progressing"):
+  - The done step's line grows down from its tick as the review comes in, and fades into the grey rail below.
+  - A soft green light runs down it, past the step towards Now, on a loop.
+  - It is shared by the review and the Doctor's suggestion. With reduced motion there is no movement.
+- **Condensed**:
+  - The debrief follows it too ("This should also follow the condensed card style"): small picture, no line under the name, Completed on the title row.
+  - Padding is 2 tighter all round ("Condensed padding -2px"): 14/16 to 12/14, the In your plan rows 10/14/10/10 to 8/12/8/8. Every row is 56.
+  - The picture has +2 on its right ("+2px margin right img"; the gap to the name is 14).
+- **Adjusted in yellow** ("adjusted use yellow"):
+  - The recommendation card's Adjusted badge (was blue) and the Timeline's `.tlChg.adj` change tags now use the review's yellow.
+  - The Plan updates modal's New is now Added, as on the review.
