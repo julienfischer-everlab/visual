@@ -23106,3 +23106,12 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - The doctor sits at the top left (avatar 48, name, "Longevity GP · your doctor").
   - The note is under them, in the brand serif (Tobias stack), 20 / 28, upright, full ink, aligned left, in our card.
   - The avatar no longer overlaps the card's top. The Letter variant is unchanged.
+
+## v2420: Blood panel group cards: Steven's note, green badge, no counter
+
+- The note at the top of each group card is now "Note from Steven Lu", with his avatar (`assets/overview/avatar-steven.webp`).
+  - The avatar is 40px (+8), its top on the title's top.
+  - The title and its line are both 14 / 20, and 6 apart (+4, "Add 4px row gap").
+- "New markers to test" is the review's green New badge ("Use green badge"): 13 / 18 medium, 3 / 10 padding, 8 corners, green on dark green, or green on pale green in light mode. "Markers to re-test" stays an eyebrow.
+- The group title loses its counter ("Remove counter"). The tabs still keep the count in code, unseen.
+- The dot to title gap is 12 (+4).
