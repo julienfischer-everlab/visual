@@ -23325,3 +23325,10 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **No tabs** ("Below no need Action plan, just the Tab", then "never show any tab for new member"): the Action plan heading, its search and the Upcoming / Later tabs are gone from both formats. The header's own search still works.
 - **No decades** ("No decade for ALL new member version"): the "A first sketch, decade by decade" part is gone. Minimal never had it.
 - On the phone, the new member's page no longer keeps the timeline line's 28px left indent (no line is drawn there), so the card and the steps share the page's edge. The established timeline is unchanged.
+
+## v2447: New member's first two weeks in the decades' format
+
+- **Same format as the decade** ("Keep same format as the decade"): with Decade style Number + items or Number + card, the new member's "Get your timeline started" block is now drawn like a decade. It has the decade's centred eyebrow and title ("Your first 2 weeks", "Get your timeline started"), then the Main focus card (`fcCard`, as the decade's, with Dr Lu's line and four area chips: Past results, Your doctor, Wearable, Blood test). The four steps follow as the timeline's own rows (`.tlRow`), each its own card (Number + items) or all in one (Number + card). Card #1 keeps the phase card as before.
+- **No number** ("Get your timeline started, Title below the hero new card"): the title group sits straight under the Amira card, 32px below it ("+16px margin top" on the 16 it had).
+- **Steps** ("no bg outlined"; "+32px btn group margin left"; "Content max width 512px"): each step's card has no fill and a 1px outline (white 12%, warm ink 14% in light). Its words are 512px wide at most, and its buttons sit 32px clear of them. A step's row opens its action as before (`data-nt`): View for the records (secondary), Start, Connect and Book white.
+- Scoped to the new member's block (`.t3NmH`): the established timeline's decades are unchanged.
