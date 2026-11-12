@@ -23770,3 +23770,26 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - The row hides with Simple list, as Added card and Type. It is saved with the report's tweaks (both key lists).
   - The Timeline's Plan updates modal (and the Overview's See my plan) follows the same setting, being built on the review's timeline.
 - Checked at XS: On 3 existing rows and 7 months, Off none and 5 months; the row hidden with Simple list; the modal Off with no existing rows.
+
+## v2484: Plan updates banner: Variation (See plan updated / Purchase plan)
+
+- **Variation** (Tweaks -> Plan updates, under Experience; "Variation of this bloc: Current, See plan updated; New, Purchase plan"):
+  - See plan updated (default): as before, "3 updates to your plan", Got it / See update (the walk).
+  - Purchase plan: "Dr Steven recommends this plan", "He has brought 3 services together into a plan to support your health goals. Review it before it joins your timeline.", Not now / Review plan. Review plan opens the Doctor's suggestion (the plan, its total, its checkout).
+  - Same card, same timeline visual. The row shows with Experience Coachmark only (the banner is Coachmark's); a value set by Save or a preset redraws the banner.
+- Checked at L (right column) and XS.
+
+## v2485: Full modals at S: full-width parts reach the viewport
+
+- At S the full modal's sheet is the body's column (its container), and nothing could leave it: the What to expect picture, a Full header and the sheet overlay stayed inside the column ("Visual should cover the width", "Dont restricted by container here", "Full header and footer ... should cover the full viewport").
+- S now does what M and L do: the frame is measured (container-type) at S always, the stage is let out to the frame's sides, and these parts break out to 100cqw at S too: the Image fade picture (`.arDbfTop`), the markers' layer, the welcome's picture (`.arOrbPic`), the sphere's ground and foot, the sheet overlay (`.arQa`), and the Full header row (at the viewport's edges, inside the page padding).
+- Checked at 760 (S) and 1200 (M), V3, Body 3xs: the picture 760 / 1200 wide, Header Full 16 / 24 from the edges, Footer Full the whole width; Header xs and Footer 3xs still held to their containers.
+
+## v2486: Container per step of the flow
+
+- "The container setup is per step of the flow. not common to the entire flow": a full modal with steps (the Async report, Send a gift) keeps Body, Header and Footer per step.
+  - Each flow says the step it is on (`window.__flowM[key]()`, from its Flow panel model: the step's id and name).
+  - EvCt stores a step's picks as `key:step` (`ar:1`, `ar:1/hd`, `ar:1/ft`), beside the flow's own (`ar`, `ar/hd`, `ar/ft`). A step with no pick takes the flow's own, else the default; picking that value again drops the step's.
+  - Tweaks writes to the step up; the Container group names it ("This step: What to expect"). Changing step applies its containers at once (a 120 ms watch).
+  - Saved with the rest of the containers (the same store).
+- Checked: What to expect set to 3xs + Footer Full, the first insight to sm; back and forth each keeps its own; the review untouched (2xs).
