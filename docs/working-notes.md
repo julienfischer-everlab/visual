@@ -23129,3 +23129,19 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 
 - "Remove blur" (the Pay loader picked): the Loading states' multi-step loader (`EvLoad.multi`, `.evMs`) no longer blurs the page under it. The page shows through the plain wash (55% of the sheet's ground) under the spinner, its line and the track.
 - This is the master, so Send a gift's checkout loader loses its blur too. Comments updated ("washed (no blur)").
+
+## v2424: Decade styles (Card #1, Number + card, Number + items); Blood test card variation
+
+- **Timeline V3 → Decades → Style** has three versions. Card #2, the two-column phase card, is removed along with its code (`decCard2`, its points). A saved "card2" falls back to Card #1.
+  - **Card #1**: the locked phase card, unchanged.
+  - **Number + card** ("Title on the top, centred. Big number on the top with a fade-out on the bottom of the number, and then below the card of the item directly"):
+    - The decade's age is big and centred (2.15 × Age size, 120 at the default), fading out at its foot.
+    - The title ("Your 40s: get ahead of your heart.") sits centred over that fade (20 / 26).
+    - Then the decade's checks come straight after, as the timeline's own item cards (`nrow`, as in Now / This year), together in one card (`--msPanel`, 20 corners).
+  - **Number + items**: the same number and title, with each check in its own card, 8 apart. The card is the row's hover tile.
+  - Both have no sticky stacking (flow) and no separate rolling number. Age size, opacity and spacing still drive the number.
+- **Async report → Blood test card** (new Tweak, next to Blood panel tabs): Chart (the current hero) or Clinical card.
+  - Clinical card is the clinical recommendation card itself (`rcStkCard`: the picture, the title, the New action badge, the glow).
+  - Its rows and buttons are taken off. In their place: the number of biomarkers it captures, big ("10"), with "biomarkers to test" under it, over a hairline.
+  - Its sub reads "Fast 8 hours · <month>", since the count is now below.
+  - The tabs sit under the card and the groups follow. Maybe later / Add to plan stay the footer's. Wired through the KEYS and remount lists and the mount (`bph`).
