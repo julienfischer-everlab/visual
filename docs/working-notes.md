@@ -23119,3 +23119,8 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 ## v2421: Follow-up blood test title +2
 
 - The hero card's title, "Follow-up blood test", is 20 / 26 (was 18 / 24): "title font +2px".
+
+## v2422: Blood panel hero card footer: biomarkers badge + $129
+
+- The footer's two count lines ("5 new markers added", "5 re-tests") are gone. The "10 biomarkers" badge moves down from the header into their place, at the left and level with the price ("Remove this and put the 10 biomarkers from the top, here"). The header keeps the title and the photo.
+- The Follow-up blood test costs $129 ("Price $129", `RC_PRICE`). The hero card's footer, the review's card, the Pay total (now including it, e.g. "Pay $673.00 (3 items)") and the checkout all show it.
