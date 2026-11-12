@@ -23168,3 +23168,15 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
     - The first label sits 4 under the note.
   - **Never tested**: an "Optional" label in the same style (warm: #fbe9dc / #b8622a light, #3a2416 / #f2b896 dark) now sits at the top of the group, and the dashed "Optional" badge on each row is gone ("This optional should be in a badge ... the same thing at the top of the group"). The rows carry `data-sec="opt"`, so the tabs hide the label with its rows.
 - **Async report → Add to plan on the blood panel** now opens the review (Confirm your updated plan, Pay $129.00) when the blood panel is the last phase, even if earlier cards were left unanswered. Before, it fell through to the wrap-up ("After adding a plan, you should move to review recommendation, not the wrap-up"). Maybe later with nothing added still goes to the wrap-up.
+
+## v2427: drag preset groups left / right; Timeline line for every breakpoint
+
+- **Presets → groups reorder by drag** ("I need a way to also reorder the group ... drag the group left and right").
+  - Press a group's tab and drag it along the row. It lifts and follows the pointer (clamped to the row), and the others slide aside to make room. Its leading edge passing a neighbour's middle swaps them, whatever their widths. Dropped, it takes that place, with a "Groups reordered" snackbar.
+  - A press without a move still opens the tab. Alt + ← / → moves the focused group from the keyboard.
+  - The built-in **Personas** group moves too; before, it was pinned first, so dragging another group next to it did nothing. Its place is kept in `bi-order` (a doc in the shared `tkPsGroups` collection with no name, so it is never a group itself; `everlab:tkPsBiOrd` in this browser). User groups keep their `order` 1..n.
+  - "Other" stays at the end. Presets still drag by their handle within a group or onto a tab, as before (HTML5 drag; the tabs no longer use it).
+- **Timeline line** now covers every breakpoint ("that will concern the whole breakpoints"), and the phone's own "Timeline line (XS)" row is gone.
+  - Yes (the default): the rail on the desk and the phone (`html.t3RailXs` for the phone's).
+  - No: no line anywhere (`html.t3NoRail` from the tablet up, the phone's own no-rail layout).
+  - Checked at XS, S and L.
