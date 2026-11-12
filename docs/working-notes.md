@@ -23392,3 +23392,8 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - A viewer's Save ("Saved for you") never touches the team's preset.
   - A snackbar says "“V4” saved too: the page opens on it".
 - Checked offline with a local starred V4 on the Timeline: Default changed → Save → V4 holds it, a reload lands on V4 with it; V4 changed → the panel's Save → V4 updated; another preset in use → V4 unchanged.
+
+## v2455 — New member steps: four cards, never one card round them
+
+- **Get your timeline started** ("No card ! 4x cards instead"): with the decade style Card #1, the four steps sat in one outlined card with dividers between them. Each step is now its own outlined card (8 apart, no ground), whatever the decade style, as Card #2 already drew them.
+- Checked at XS and L with Card #1: four separate outlined cards, no outline on the list round them.
