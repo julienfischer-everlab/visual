@@ -23048,3 +23048,9 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - New Tweak "Biomarker right": Ranges + badge (default) / Trend.
 - **The blood panel in the review** ("IF I add the blood panel it should be in the next screen, review plan screen"): when on, it is the last item of `stkAll`, a Clinical item named "Follow-up blood test" (its biomarker count · Fast 8 hours, Included, in its month).
   - Its answer on the blood panel screen is its decision, so "Add to plan" puts it in Confirm your updated plan, and Maybe later puts it under Later.
+
+## v2414: Blood panel photo, sub break, bigger badge
+
+- The Follow-up blood test's visual is now the photo the user sent ("THIS IMG!": the nurse at the patient's arm), cropped a little and saved 320 square as a webp (about 7 KB). It replaces the stand-in on the blood panel's header (68 at the top right) and on the review's "Follow-up blood test" item.
+- The H1's sub breaks after "help us": "Your latest results help us / identify what to test next."
+- The biomarkers badge is a size up: 14 / 20 type, 4 / 10 padding (28 tall), still neutral.
