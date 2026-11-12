@@ -6385,13 +6385,13 @@ if (/^#tk-[A-Za-z0-9]{6,40}$/.test(location.hash)) { document.documentElement.cl
   .aqWrap.aqDev:is(.aqFull, .aqPhone) .arSheet, .sfPh .arSheet{--ar-head-top:58px;}   /* and the Step flow master's phone (Design system -> Step flow): the same XS rules as the app's */
   .aqWrap.aqDev.aqBpS.aqFull .arSheet{--ar-head-top:44px;}
   /* XS and S: the content full width, 16 in, the title at the left; S's button narrower, centred */
-  .aqWrap:is(.aqFull, .aqPhone):is(.aqBpXS, .aqBpS) .aqFrame > .arSheet.arSheet.arSheet.arSheet{max-width:none;}
+  .aqWrap.aqPhone:is(.aqBpXS, .aqBpS) .aqFrame > .arSheet.arSheet.arSheet.arSheet, .aqWrap.aqFull:is(.aqBpXS, .aqBpS) .aqFrame > .arSheet.arSheet.arSheet.arSheet:is(.hpSheet, .sgmSheet), .aqWrap.aqFull.evSolo:is(.aqBpXS, .aqBpS) .aqFrame > .arSheet.arSheet.arSheet.arSheet{max-width:none;}   /* the full modals' column at every size (below): the profile's and the standalones' keep their own, as at M and L */
   .aqWrap:is(.aqFull, .aqPhone):is(.aqBpXS, .aqBpS) .arSheet :is(.arHead, .arBody, .arFoot), .sfPh .arSheet :is(.arHead, .arBody, .arFoot){padding-left:16px;padding-right:16px;}
   .aqWrap:is(.aqFull, .aqPhone):is(.aqBpXS, .aqBpS) .arSheet :is(.arH700, .arLede, .arLfLede), .sfPh .arSheet :is(.arH700, .arLede, .arLfLede){text-align:left;}
   .aqWrap:is(.aqFull, .aqPhone):is(.aqBpXS, .aqBpS) .arSheet .arLfHead{align-items:stretch;}   /* the insight's head the column's width, so a short title (one line) sits at the left too, not centred as a box (the full modal's centring, 0,4,0) */
   .aqWrap.aqFull.aqBpS .arSheet .arFoot{align-items:center;} .aqWrap.aqFull.aqBpS .arSheet .arFoot > *{width:100%;max-width:478px;} .aqWrap.aqFull.evSolo.aqBpS .arSheet.sgmSheet .arFoot.sgmFoot > *{max-width:none;}   /* the standalone modals: the CTA the body's 2xs column (512), not the S sheet's 478 */
   /* M and L: a centred column, the title centred (above); 496 wide at M, 528 at L, the back and close at its edges */
-  .aqWrap.aqFull:is(.aqBpM, .aqBpL) .aqFrame > .arSheet.arSheet.arSheet.arSheet{max-width:calc(var(--ct2xs) + 40px);}   /* the content in the 2xs container (544 M, 576 L; was 496 / 528), the sheet's own 20 either side ("the max width container is on the body content") */
+  .aqWrap.aqFull:is(.aqBpXS, .aqBpS, .aqBpM, .aqBpL) .aqFrame > .arSheet.arSheet.arSheet.arSheet{max-width:calc(var(--ct2xs) + 40px);}   /* whatever the size ("The 2xs in the container size here should be a max width, so whatever screen we are on, it should be max width"; it held from M only, so Auto with a panel docked, at S, ran the report the whole width) */   /* the content in the 2xs container (544 M, 576 L; was 496 / 528), the sheet's own 20 either side ("the max width container is on the body content") */
   .aqWrap:not(.hpWrap) .arSheet .arClose{cursor:default;} .aqWrap:not(.hpWrap) .arSheet .arClose:hover{opacity:1;} .aqWrap.evSolo .arSheet .arClose{cursor:pointer;transition:box-shadow .15s ease;} .aqWrap.evSolo .arSheet .arClose:hover{box-shadow:inset 0 0 0 40px oklch(var(--ar-ink) / .09);}   /* the async report's close does nothing, so it doesn't look clickable; the Health profile's closes */
   /* ---- the standalone full modals' shell (.evSolo: the Suggestion's and the Doctor's suggestion's head, scroller, footer), then the Suggestion (Standalone flow -> Suggestion, #suggestion; "create a standalone modal, Suggestion full modal, based on that UI"): the Full modal shell as the report's and the profile's (above: its ground, its device, the 64 rise on the phone, the fade on the desk, the dip), on the report's paper and type (.arSheet);
      the mock's parts on it: the eyebrow, the title beside the close, the signals card and its chart, the rule, what we suggest next and its three numbered rows, the footer's View your recommendations and Not now. Its colours: the mock's (pink, green, the blue CTA) in dark, deeper in light */
@@ -14258,7 +14258,7 @@ html.insMini[data-ins-amt="2"]:not(.insEmpty) body[data-bp="xs"] #dOver .ovcar.o
              its choices the General layout master's (window.EvCt fills them: 2xs, xs, sm, md, lg, Full, and Own where the page has a width of its own today), from M. #stCt shows the page's own; #stCtPg keeps every page's for Save -->
         <div class="tkGroup" data-pages="ct" id="tkCtGrp">
           <div class="tkSub">Container</div>
-          <div class="tkRow tkCtRow" title="This page’s content container, from M (XS and S keep the full width with the breakpoint’s padding)">
+          <div class="tkRow tkCtRow" title="This page’s content container: a max width at every size from S (XS keeps the full width with the breakpoint’s padding)">
             <span class="lbl" id="stCtLbl">Page</span>
             <select id="stCt" class="tkSegSel tkProxy" aria-label="Container of this page’s content"></select>
             <input type="hidden" id="stCtPg" value="">
@@ -34387,7 +34387,7 @@ hairline({
       if (B('mkOn')) return 'mk'; if (B('accOn')) return tab() === 'settings' ? 'set' : 'acc';
       if (B('tlOn')) return 'tl'; if (B('svcOn')) return 'svc'; if (B('aptOn')) return 'apt';
       const g = MODES[version] && MODES[version].group; return g === 'Overview page' ? 'ov' : g === 'Insights' ? 'ins' : ''; };
-    const desk = () => { const f = document.body.dataset.bp; return f ? /^(m|l|xl)$/.test(f) : innerWidth >= 992; };   /* from M: a forced M or L, or Auto on a window of 992 or more (the tokens' own breakpoint) */
+    const desk = () => { const f = document.body.dataset.bp; return f ? f !== 'xs' : innerWidth >= 600; };   /* from S ("whatever screen we are on, it should be max width"; was from M): XS keeps the page's own width and padding */   /* from M: a forced M or L, or Auto on a window of 992 or more (the tokens' own breakpoint) */
     const pick = p => { const v = M[p[0]]; return v && OPTS.indexOf(v) >= 0 ? v : dOf(p); };
     const apply = () => { const dk = desk(), seen = new Set(); P.forEach(p => { const el = p[3](); if (!el || (p[3] === fm && p[0] !== cur()) || seen.has(el)) return; seen.add(el); const v = pick(p), c = dk && v !== dOf(p) ? css(v) : '';
       if (c){ if (el.getAttribute('data-pg-ct') !== v) el.setAttribute('data-pg-ct', v); if (el.style.getPropertyValue('--ctPg') !== c) el.style.setProperty('--ctPg', c); }

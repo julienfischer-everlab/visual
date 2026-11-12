@@ -23661,3 +23661,11 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - The debrief card and the mini In your plan rows are unchanged.
   - Saved with the Async report's tweaks and presets.
   - Checked at XS: both ways, live.
+
+## v2477: Container 2xs is a max width at every size
+
+- "When the container is 2xs, it should be on auto ... At the moment, it's only become 2xs when the screen is a big desktop. The 2xs in the container size here should be a max width, so whatever screen we are on":
+  - The full modals' 2xs column (`--ct2xs` + their 20 sides, 552) applied from M only. At S (Auto with a panel docked: 973 or 660px · S) the Async report ran the whole width.
+  - The column now holds at every size. The Health profile's sheets and the standalone modals keep their own column, as at M and L.
+  - Container picks in Tweaks now apply from S (they were M and up). XS keeps the page's own width and padding.
+  - Checked at 1300 wide, both panels docked (660px · S): the review and Clinical sit in a 552 column, centred.
