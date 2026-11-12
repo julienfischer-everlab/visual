@@ -23265,3 +23265,9 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 ## v2436: Decades only in Upcoming
 
 - Upcoming / Later tabs: the decades (Your health, decade by decade, then each decade) close the Upcoming panel; the Later tab holds the saved-for-later items only ("Later tab never inc Decade", "Only upcoming"). Now / This year / Later is unchanged.
+
+## v2437: Focus cards' button stacked, no blur under the tabs, first month on the picture
+
+- **Your focus / Next check-in cards** (Thumbnail style): the button sits under the words, not beside them ("Stack CTA on Focus card"), on the phone and in the right column at L, so the eyebrow ("Your next check-in · in 187 days") takes two lines, not three.
+- **Pinned tabs**: no blur under them ("remove blur effecrt"); the page's soft fade stays.
+- **Month chips**: the first month of a group sits level with its item's picture (20 down, the row's padding; "month first in the list align with thumbnail"); the later months stay centred on their divider.
