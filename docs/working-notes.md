@@ -23533,3 +23533,20 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
     - Outline: a hairline, the line in secondary ink, the dot orange.
     - In card: as before.
   - The header follows the card's corners (30 on Thumbnail, 28 on XS, 20 on Bloc). There is a light mode variant.
+
+## v2468: Check-in card clickable, header padding, banner visual stops and icons
+
+- **Check-in card** ("The card body, not the header, should be a clickable card ... the hover state should change as well"):
+  - The card's body opens Prepare's sheet; the header strip above it doesn't.
+  - Hover is a 4% white wash (3% black in light mode), so the card stays neutral, not orange. Press is a little stronger (7% / 5%).
+  - The hover rule beats the card's "no border" rule.
+  - Checked: a header click opens nothing, a card click opens the Prepare sheet, and hover gives the 4% wash.
+- **Check-in header** ("Add the 4px padding on all sides on the header"): 16 / 24 on desktop (was 12 / 20), 14 / 22 on the phone (was 10 / 18). It still runs 30 under the card.
+- **Banner visual** ("limit the rotation on the scroll to a maximum of 5 items. Sometimes two, sometimes five, sometimes four"):
+  - The scrolls are 2, 5, 4 and 3 cards, then repeat (was 4, 7, 2, 5).
+  - The order is still add, swap, add, swap.
+- **Banner visual icons** ("On the green one ... a plus that appears on the right when it's fixed ... a filled icon plus ... scale up a little bit. For the swap ... a calendar icon fill"):
+  - The added card gets a filled plus at its right (green disc, dark plus), 14px.
+  - The swapped card gets a filled calendar (yellow, with a 3 × 2 day grid).
+  - Each pops in as its card settles, overshooting slightly to 118% before settling (plus about 1.2 s after the card drops in, calendar about 0.9 s after the swap starts).
+  - Light mode and reduced-motion variants are included.
