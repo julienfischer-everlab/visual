@@ -23650,3 +23650,14 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
     - no footer or divider;
     - still faded and grey.
   - About 60px tall, where new items are 141px.
+
+## v2476: Review Timeline, Added card Condensed / Normal
+
+- "On the timeline, can you try a version with half the size of the avatar and remove the sub? I want it for the added items. Create a tweak timeline group, and then you have added card style: condense or normal":
+  - New Tweaks sub-group **Timeline** in Confirm your updated plan (first in the panel on the review), with **Added card**: Condensed (default) / Normal.
+  - It shows with the Timeline layout only and hides with Simple list.
+  - **Condensed**: the new and adjusted cards' picture is 32px (half of 64) and the line under the name is gone. The footer (price or Included, New / Adjusted) stays, and the cards drop from 141px to 109px.
+  - **Normal**: as before.
+  - The debrief card and the mini In your plan rows are unchanged.
+  - Saved with the Async report's tweaks and presets.
+  - Checked at XS: both ways, live.
