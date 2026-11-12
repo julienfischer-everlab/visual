@@ -23815,3 +23815,11 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **Clinical recommendation group** ("Recommendation Clinical"): the Recommendation card rows leave Recommendations for their own group, named as the Flow panel names the step, shown on that step.
 - **Swipe** (in it; "Add a tweak Swipe avail. ON OFF"): On (default) the Clinical cards swipe to decide; Off they don't, the footer's buttons decide.
 - Checked: What to expect off skipped from the welcome; insight 2 dragged over insight 1, the walk 0 → 3 → 2 → 4; Doctor note off lands on the summary, Lifestyle moved first comes first, Back out of the recommendations to Everything else; the Clinical switch from the panel turns the Recommendations' Clinical off; Swipe Off a drag leaves the card, On it decides it.
+
+## v2489: Async report Version V1 / V2; Plan updates Variation as tabs
+
+- **Version** (Tweaks -> General, after Preset; "Just a tweak V1 V2, where I can turn off some steps for some version, and then later save these 2 versions into presets"): V1 the new one, V2 the current one (default).
+  - Each version keeps its own arrangement of the steps (on or off, their order), set in the Flow panel while it is picked: `stArFlow` holds `{ v1: {...}, v2: {...} }` (an older single arrangement reads as V2's).
+  - Both are report tweaks (the preset keys), so Save and the presets keep the version and its arrangements.
+- **Plan updates Variation as tabs** ("Tab: Review plan, See update"): Review plan (Dr Steven's recommended plan, to buy) / See update (what Dr Lu changed, the walk; default), named by their CTA, a segmented row instead of the switch it showed.
+- Checked: V1 What to expect off, V2 untouched, back on V1 still off; the tabs drawn, Review plan giving the purchase banner.
