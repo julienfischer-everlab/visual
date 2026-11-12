@@ -23317,3 +23317,11 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 
 - **Inbox module button** ("See more, View inbox"): the button under the Ask sheet's Inbox rows now reads "View inbox" (`.aiIbxMore`, both the phone sheet and the desk Ask card).
 - **Ghost rows' divider**: with the ghost card hover on, the line between rows was the row's top border, so it bent at the 16px corners. It is now a straight 1px line drawn by `::before`, inset 8px to match the text edge. It hides next to a lit (hover, press, focus) row, as before.
+
+## v2446: New member Format tweak (Minimal / Card and suggestions), no tabs, no decades
+
+- **Tweaks, New member > Format** ("Format: Minimal (all caught up), Card and suggestions"; "Remove New member V1 V2 once you have the tweak"): the V1 / V2 row is gone. A "New member" sub-heading with a Format row now sits under the Page rows, shown only when Member is New. Its options are Minimal (all caught up) and Card and suggestions. The select keeps its id (`stT3NewV`) and values (`v1`, `v2`), so saved setups and presets still land.
+- **Card and suggestions** ("Remove your timeline 44% card ... add just the Amira card. Same position as the updated plan card"): the "Your timeline, 44% built" card is gone. The "Amira, your timeline is being built" card now stands alone across the page, at the Plan updates card's place (same top and edges: 78 / 16 on the phone, 78 / 40 at M). The steps follow under it.
+- **No tabs** ("Below no need Action plan, just the Tab", then "never show any tab for new member"): the Action plan heading, its search and the Upcoming / Later tabs are gone from both formats. The header's own search still works.
+- **No decades** ("No decade for ALL new member version"): the "A first sketch, decade by decade" part is gone. Minimal never had it.
+- On the phone, the new member's page no longer keeps the timeline line's 28px left indent (no line is drawn there), so the card and the steps share the page's edge. The established timeline is unchanged.
