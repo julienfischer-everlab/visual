@@ -23096,3 +23096,13 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 
 - The two sections inside a blood panel group card are renamed: "New markers to test" (was "Added for you") and "Markers to re-test" (was "Other"). Each is singular when it holds one marker.
 - "Use eyebrow": the headings wear the Title group's eyebrow level (H5 tokens `--tgH5*`: 12 / 16, 600, 1px letter spacing, capitals), in secondary ink.
+
+## v2419: Blood panel group titles and doctor's notes; the doctor's note card merged with the reference
+
+- **Blood panel group titles** ("Outside the healthy range", "Getting better"…) use the Title group's H3 tokens: 20 / 26, medium. The user picked 20px; a literal +16 would have made them 32, bigger than the page title.
+- **Each group's line moves into its card** as a doctor's note, at the top: the doctor's avatar (32, the report's `.arRcDrAv`), "Note from the doctor" (14, medium), the line under it (14 / 20, secondary), and a hairline below as between the rows. The title row over the card keeps only the dot, the title, the count and the chevron.
+  - The never-tested group's line no longer names the doctor in the third person: "Optional. A one-off baseline to compare your future results against."
+- **The doctor's note card** (the recommendations' first screen, Doctor note: Card), merged with the reference ("Merge these two"):
+  - The doctor sits at the top left (avatar 48, name, "Longevity GP · your doctor").
+  - The note is under them, in the brand serif (Tobias stack), 20 / 28, upright, full ink, aligned left, in our card.
+  - The avatar no longer overlaps the card's top. The Letter variant is unchanged.
