@@ -23446,3 +23446,13 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **Cards** ("Increase padding card by 2px"): 30 high (was 26), their visual and lines 2 further in, 36 apart.
 - **Inside a card** ("Skeleton same colour inside card"; "Visual +2px inside skeleton"; "Visual skeleton keep it fff opacity, no icon or img"): the visual is a 14 square (was 12), and the visual and both lines share one colour (white 10%). The new card has the same plain square (white 16% on its green) and no photo or icon, with both its lines one green.
 - Checked: the spacing holds at 36 through each parting over 16 s; frames through a drop (slot alone, card coming in, card settled, no outline left).
+
+## v2461 — New member steps open the Health profile's flows in its full modal
+
+- **Get your timeline started** ("redirect to the flow full modal from health profile"): the steps' buttons now open the Health profile module's own flow in its full modal, over the Timeline (window._hp; the page's link kept as it was):
+  - Collect your past results → View: Past results ("We're searching for your past results", _hp.past()).
+  - Tell us how you'd like to look after your health → Start: Tell us about you, its four questions then your answers (Sleep and energy, About you, Smoking, Alcohol; _hp.ina('hp')).
+  - Connect a wearable → Connect: Health data, connect a wearable (_hp.ina('data')).
+  - Book your blood test → Book: unchanged (the service's own page).
+- Closing the modal ticks Start's and Connect's step (their done line, as before). Past results stays as it is: collecting, nothing to do.
+- Checked at L: each opens on its flow's first page; after closing, the two are ticked and the page's link is unchanged.
