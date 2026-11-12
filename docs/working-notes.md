@@ -23748,3 +23748,16 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - Each icon keeps its label for screen readers.
   - The row hides with Simple list and is saved with the report's tweaks.
 - Checked at L in Dark and Light, Condensed, Badge and Icon.
+
+## v2482: Overview Doctor's plan card: See my plan opens the timeline preview
+
+- **See my plan** ("when I click on "See my plan", I want to see the modal with the timeline preview"):
+  - The Doctor's plan primary card (Object: Doctor's plan, Protocol or Diagnostics) reads See my plan (was Review my plan).
+  - It opens the Timeline's Plan updates modal ("Your updated plan": the review's timeline, Completed review, each month, In your plan, Added / Adjusted) over the Overview. Floating and centred on the desk, the floating sheet on the phone.
+  - It is the same modal as the Timeline page's (`EvTl3.preview`, built by `updModal`), opened in preview mode: the cards don't open anything, and Got it only closes it.
+  - With no plan changes on the timeline, the sample's (DEXA moved, Physical assessment and Colonoscopy added) go on it for the modal, with no banner, and come off when it closes. Changes the timeline already has are shown as they are and kept.
+  - A new member, or Timeline V1 / V2, falls back to the Doctor's suggestion (the old behaviour).
+- **Modal fixes** (the Timeline page's too):
+  - The adjusted cards get the review's yellow tint and the added the review's class (`arRvwAdj` / `arRvwNew`), as on the review.
+  - On the phone, the hidden dock's island and tabs no longer catch the taps meant for Got it.
+- Checked at L and XS: opens, closes, focus back on the button, the timeline unchanged after it, and the Timeline page's own modal still opens and closes.
