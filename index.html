@@ -18013,6 +18013,11 @@ html.insMini[data-ins-amt="2"]:not(.insEmpty) body[data-bp="xs"] #dOver .ovcar.o
 .arSheet .arRcStkC { --k: 0; position: relative; z-index: calc(10 - var(--k)); display: flex; flex-direction: column; gap: 16px; min-width: 0; padding: 20px; border-radius: 24px; background: linear-gradient(var(--ar-card-bg), var(--ar-card-bg)), var(--ar-paper); transform-origin: 50% 100%; transform: translateY(calc(var(--k) * 12px)) scale(calc(1 - var(--k) * .05)); opacity: calc(1 - var(--k) * .45); transition: transform .5s cubic-bezier(.32, .72, 0, 1), opacity .35s ease; }
 .arSheet .arRcStkC > * { transition: opacity .25s ease; } .arSheet .arRcStkC:not(.arOn) > * { opacity: 0; } .arSheet .arRcStkC.arRcStkPeek:not(.arOn) > * { opacity: var(--rv, 0); transition: none; } .arSheet .arRcStkC.arRcStkPeek.arRcStkPeekGo:not(.arOn) > * { transition: opacity .3s ease; } .arSheet .arRcStkC.arOn > * { transition-delay: .12s; }
 .arSheet .arRcStkC.arRcStkFar { opacity: 0; }
+/* back to the card before ("Go back on the top left (circle arrow) ... ONLY IF there is prev cards"): a 36 disc at the card's top left, over its picture's glow; Side layout: a row of its own above the head */
+.arSheet .arRcStkC > .arRcStkBk { appearance: none; -webkit-appearance: none; position: absolute; top: 12px; left: 12px; z-index: 4; display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; margin: 0; padding: 0; border: 0; border-radius: 9999px; background: oklch(var(--ar-ink) / .08); color: oklch(var(--ar-ink) / .8); cursor: pointer; -webkit-tap-highlight-color: transparent; transition: opacity .25s ease, background-color .15s ease, transform .15s ease; }
+.arSheet .arRcStkC > .arRcStkBk:hover { background: oklch(var(--ar-ink) / .12); } .arSheet .arRcStkC > .arRcStkBk:active { transform: scale(.94); } .arSheet .arRcStkC > .arRcStkBk:focus-visible { outline: 2px solid oklch(var(--ar-ink) / .6); outline-offset: 2px; }
+.arSheet .arRcStkC > .arRcStkBk svg { width: 18px; height: 18px; } .arSheet .arRcStkC:not(.arOn) > .arRcStkBk { pointer-events: none; }
+.arSheet .arRcStkC:not(.arRcStkCtr):not(.arRcStkDone) > .arRcStkBk { position: relative; top: auto; left: auto; margin: -8px 0 -4px -8px; }
 .arSheet .arRcStkC.arRcStkOutL, .arSheet .arRcStkC.arRcStkOutR { z-index: 11; opacity: 0; pointer-events: none; transition: transform .5s cubic-bezier(.32, .72, 0, 1), opacity .4s ease .1s; } .arSheet .arRcStkC.arRcStkOutL { transform: translateX(-115%) rotate(-8deg); } .arSheet .arRcStkC.arRcStkOutR { transform: translateX(115%) rotate(8deg); }
 .arSheet .arRcStkC.arRcStkOutL > *, .arSheet .arRcStkC.arRcStkOutR > * { opacity: 1; transition: none; }
 /* the decision shown on the card before it goes ("on tap we should have a small visual cue saying that it's been added or not; overlap the card with a check if added, then the card goes on the right"): a veil over it, a disc popping in (a check, added; a clock, later), its words under it; then off right (added) or left */
@@ -21195,6 +21200,15 @@ window.EvCtl = (function () {
       var done = h('div', { class: 'arRcStkC arRcStkDone', 'aria-live': 'polite' }, h('span', { class: 'arRcStkTick', 'aria-hidden': 'true' }, strokeIcon(24, 24, 2, ['m5 12.5 4.5 4.5L19 7.5'])), doneT, doneS, again);
       var cards = its.map(function (x, i) { return rcStkCard(x, i, n, decide); });
       cards.forEach(function (c) { deck.appendChild(c); }); deck.appendChild(done); if (rcPhased()) deck.classList.add('arRcNoDone');   /* no closing card when Lifestyle follows ("we don't need the final card ... Just go to the next screen") */
+      /* back to the card before ("Add a Go back on the top left (circle arrow) to go to previous card. ONLY IF there is prev cards"): a disc at the top left of every card but the first (and of the end card), only seen on the card on top;
+         it brings the card before back from the side it left, undecided, the footer's words its own again. Cards already decided (a rebuild part way) sit off at their side, ready to come back */
+      var shufBusy = false;   /* the opening shuffle playing: the answers wait */
+      var goBack = function (b) { if (shufBusy || at <= 0) return; var top = cards[at]; if (top && top.classList.contains('arRcStkMkOn')) return; var kb = document.activeElement === b && b.matches(':focus-visible');
+        at--; dec = dec.slice(); dec[at] = undefined; var c = cards[at], mk = c.querySelector('.arRcStkMk'); if (mk) mk.remove();
+        c.classList.remove('arRcStkOutL', 'arRcStkOutR', 'arRcStkMkOn'); c.style.transform = ''; c.style.removeProperty('--sb'); c.style.zIndex = ''; c.style.transition = ''; lay();
+        if (kb) setTimeout(function () { var f = c.querySelector('.arRcStkBk') || cta; f.focus({ preventScroll: true }); }, 60); };
+      var bkOf = function () { var b = h('button', { type: 'button', class: 'arRcStkBk', 'aria-label': 'Previous card' }, strokeIcon(18, 24, 2, ['m12 19-7-7 7-7', 'M19 12H5'])); on(b, 'click', function (e) { e.stopPropagation(); goBack(b); }); return b; };
+      cards.forEach(function (c, i) { if (i > 0) c.insertBefore(bkOf(), c.firstChild); if (i < at) c.classList.add(dec[i] ? 'arRcStkOutR' : 'arRcStkOutL'); }); if (n) done.insertBefore(bkOf(), done.firstChild);
       function lay() {
         if (foot) foot.hidden = at >= n;
         cards.forEach(function (c, i) { if (c.classList.contains('arRcStkPeek')) { c.classList.remove('arRcStkPeek', 'arRcStkPeekGo'); c.style.removeProperty('--rv'); c.style.transition = ''; } var k = i - at; c.style.setProperty('--k', Math.max(0, Math.min(k, 3))); c.classList.toggle('arOn', k === 0); c.classList.toggle('arRcStkFar', k > 2); if (k === 0) c.removeAttribute('inert'); else c.setAttribute('inert', ''); c.setAttribute('aria-hidden', k === 0 ? 'false' : 'true'); });
@@ -21241,7 +21255,6 @@ window.EvCtl = (function () {
       var aft = cta.parentNode, fSec = aft.querySelector('.arRcFtSec'), fNote = aft.querySelector('.arRcFtNote');
       if (!fNote) { fNote = h('p', { class: 'arRcFtNote', text: 'You can change your mind later in Plan.' }); aft.insertBefore(fNote, cta); }
       if (!fSec) { fSec = h('button', { type: 'button', class: 'arRcFtSec', text: 'Later' }); aft.insertBefore(fSec, cta.nextSibling); on(fSec, 'click', function () { if (rcStkFt) rcStkFt(false); }); }
-      var shufBusy = false;   /* the opening shuffle playing: the answers wait */
       rcStkFt = function (yes) { if (shufBusy) return true; if (!deck.isConnected || at >= n) return false; decide(at, yes); return true; };
       fSec.textContent = its[at] && its[at].it.adj ? 'Keep as it was' : 'Later'; fNote.hidden = false; foot = fSec; foot.hidden = at >= n;   /* its own word (the blood panel's is Maybe later) */
       var wrap = h('div', { class: 'arRcStkWrap arRcStkFtOn' }, deck);

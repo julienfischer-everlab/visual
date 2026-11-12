@@ -22999,3 +22999,11 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - Each marker in the groups below is a dot. The dots run across in the groups' order, each at its status's height, nudged a few px up or down from its name so they don't line up flat.
   - Colours: green (`--rgOpt`), yellow (`--rgSub`), red (`--rgOut`). An out-of-date reading is fainter. The never-tested one is a hollow ring.
   - The dots rise in one after another, and a dot opens the marker's detail (`bioOpen`), as its row does.
+
+## v2410: Clinical deck, go back to the card before
+
+- "Add a Go back on the top left (circle arrow) to go to previous card. ONLY IF there is prev cards". Every Clinical card but the first carries a 36px disc with a left arrow at its top left (12 in). The first card has none, so the arrow only shows once a card has been decided.
+  - A press brings the card before back from the side it left (right if it was added, left if it went to Later), undecided, its cue gone. The footer's words follow it (Later / Add to plan, or Keep as it was / Adjust for an Adjustment), and so does the "N of M" count.
+  - It waits while a card's cue is showing and during the opening shuffle. A press on it is never a swipe.
+  - Side layout: the disc is a row of its own above the card's head, so it never sits on the title.
+  - When the deck is rebuilt part way (a Tweak change), the cards already decided now sit off at their side, so going back slides them in as well.
