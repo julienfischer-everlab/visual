@@ -23007,3 +23007,10 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - It waits while a card's cue is showing and during the opening shuffle. A press on it is never a swipe.
   - Side layout: the disc is a row of its own above the card's head, so it never sits on the title.
   - When the deck is rebuilt part way (a Tweak change), the cards already decided now sit off at their side, so going back slides them in as well.
+
+## v2411: Blood panel header and chart polish
+
+- Sub under the H1: "Your latest results help us identify what to test next." It replaces the earlier lede and the longer "Below, you'll find the recommended panels…" line, which was set briefly and then superseded.
+- Follow-up blood test header: the drop visual sits at the right ("Visual right side"). Under the date line, an "N biomarkers" badge counts every marker in the groups, in the drop's warm tint ("badge X biomarkers").
+- No divider between the header and the chart ("no bottom divider"). The chart sits 24 under the header.
+- Chart dots are 10px, 2px smaller ("Dot -2px"). Each has a 1px ring outside it in the card's own colour (the card's grey over the sheet's ground), so dots that touch read apart ("Border outside 1px, same colour as card bg"). The never-tested ring is filled with the card's colour, so the guide line no longer runs through it.
