@@ -23332,3 +23332,7 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **No number** ("Get your timeline started, Title below the hero new card"): the title group sits straight under the Amira card, 32px below it ("+16px margin top" on the 16 it had).
 - **Steps** ("no bg outlined"; "+32px btn group margin left"; "Content max width 512px"): each step's card has no fill and a 1px outline (white 12%, warm ink 14% in light). Its words are 512px wide at most, and its buttons sit 32px clear of them. A step's row opens its action as before (`data-nt`): View for the records (secondary), Start, Connect and Book white.
 - Scoped to the new member's block (`.t3NmH`): the established timeline's decades are unchanged.
+
+## v2448: Tweaks button pen icon
+
+- **Top bar Tweaks button** ("Add Pen icon"): a 14px pen (Lucide pencil, stroke 2, current colour) now sits before the word, 6px from it. The button is an inline flex row, so the icon centres on the text. Its open and hover states are unchanged.
