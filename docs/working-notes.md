@@ -23456,3 +23456,14 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - Book your blood test → Book: unchanged (the service's own page).
 - Closing the modal ticks Start's and Connect's step (their done line, as before). Past results stays as it is: collecting, nothing to do.
 - Checked at L: each opens on its flow's first page; after closing, the two are ticked and the page's link is unchanged.
+
+## v2462 — Plan updates visual: scroll in runs, a real dashed slot, green square, 4 between lines
+
+- **Motion** ("Instead of constant scroll same speed, speed up the scroll and before landing to the spot slow down. then scroll again, like 6-8 item then pause again. Can be more or less scroll"):
+  - The stack now moves in runs of 4 to 9 cards (picked at random each time), easing in and out (easeInOutCubic, about 1.4 to 2 s a run).
+  - Each run lands a seam exactly on the middle. There the stack parts, the slot shows, and the card comes into it.
+  - It holds 2.1 s, then the next run.
+- **The slot** ("Weird dashed card area, need to be white low opacity, and bug on rounded radius. ... filled bg 4% ... increase a bit the thickness of dash lines"): a real dashed border, so the corners follow the 10 radius (the gradients drawn before cut them square). It is white at 26%, 1.5 thick, filled white 4%. Light mode is the same in ink.
+- **The new card** ("In added card, skeleton visual should be same colour as skeleton content"): its square is the same green as its lines.
+- **Skeleton lines** ("add 2px gap between skeleton line content"): 4 between the two lines (was 2), the pair still centred in the card.
+- Checked over 16 s: runs and holds alternate, each stop puts a seam on the middle, and the spacing holds at 36 (only shifting during a parting). Frames of the empty slot (rounded dashes, fill) and of the card in.
