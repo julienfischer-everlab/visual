@@ -23061,3 +23061,27 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - A card with no added marker keeps a plain list, with no headings.
   - The section heading says it now, so the rows lose their "Added for you" badge. The never-tested marker keeps its "Optional" badge.
 - The tabs filter by section too: a section with no rows left under the active tab loses its heading.
+
+## v2416: Recommendation card doc, blood panel footer, checkout, Timeline header fade
+
+- **Recommendation card**, a new Design system → Modules page (`#module-recommendation-card`), drawn by the report's own code (`AsyncReport.cards(opts)` mounts a hidden report and asks it for real cards):
+  - States: New action (Included, then priced); Adjustment with the date changed, the dosage changed (Supplements & medications) or the routine changed (any other category); Go back.
+  - An adjusted card says what changed: a "Dosage" or "Routine" row with the old value struck through, an arrow, then the new one (as the When row does for dates).
+- **Swipe cards**: the Go back disc at the top left (only when there is a previous card) is outlined, with no filled background. The doctor's note card is 16 taller at its foot.
+- **Blood panel**:
+  - The title breaks as "Your next blood panel / recommendation".
+  - The sub names the count: "Your latest results help us / identify the 10 biomarkers to test next."
+  - The header block has 8 more space below it.
+  - The chart dots are 8px, with a 1px ring in the card's colour.
+  - The hero card has a footer, like the review's cards: a divider, then on the left "N new markers added" (a green dot; added for you or never tested) and "N re-tests" (a grey dot; the rest), and on the right the price ("Included").
+- **Confirm your updated plan** groups what was added by type, Clinical, Blood panel and Lifestyle (the order of the screens before), instead of Included / Extra. Each card's footer still shows Included or its price.
+- **Checkout** ("a fake skeleton checkout, the same as the membership onboarding at the end"):
+  - With something to pay, Pay on the review leads to a Checkout screen: the Membership onboarding's placeholder sketch ("Placeholder" tag, Checkout, a "Your plan" box with the total, a Payment box of grey bars). Its button reads "Pay $544.00". Back returns to the review.
+  - Both screens draw the sketch from one function, `window.EvCoSkel`, which also draws the membership one in Documentation.
+  - Every Pay press shows the Loading states' multi-step loader (`EvLoad.multi`) in the middle of the screen, over the page blurred:
+    - Review → checkout: "Securing your order", "Opening checkout".
+    - Checkout → done: "Processing payment", "Confirming your order", "Updating your plan", then on to the Timeline as before.
+    - With nothing to pay, "Confirm my plan" skips the checkout: "Confirming your plan", "Updating your timeline".
+  - The Flow panel lists "Checkout" after "Review recommendations".
+- **Timeline V3, pinned tabs**: once the page scrolls, the bar's foot gets a header fade, 32 tall: the page colour melting away, with the rows blurred as they pass under it ("a blurry gradient, like a normal header gradient"). It is off when Tabs fixed is Off, and it stops at the right column at L.
+- **Decade number**: a new Tweak "Age spacing" (Decades), from −0.10 to +0.20em, added to the design's own spacing. It spreads the digits of the big rolling number (the hero "40") and the small in-card number alike. At 0 the number looks as before.
