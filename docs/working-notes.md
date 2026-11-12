@@ -23823,3 +23823,12 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - Both are report tweaks (the preset keys), so Save and the presets keep the version and its arrangements.
 - **Plan updates Variation as tabs** ("Tab: Review plan, See update"): Review plan (Dr Steven's recommended plan, to buy) / See update (what Dr Lu changed, the walk; default), named by their CTA, a segmented row instead of the switch it showed.
 - Checked: V1 What to expect off, V2 untouched, back on V1 still off; the tabs drawn, Review plan giving the purchase banner.
+
+## v2490: What to expect CTA +32; report Preset row removed; Review and Checkout switches, Doctor note and Summary movable
+
+- **What to expect's CTA** ("+32 margin top"): margin-top 40 (was 8): 64 from the last row.
+- **Preset removed** ("remove"): the report's Preset (V1 / V2 / V3) row is hidden; its select stays for older saves. General is now Version, Persona, Step shortcuts, Member.
+- **Flow panel, the recommendations** ("Also need toggle and order"):
+  - Doctor note and Summary now have a grip too: the note, the summary and the three groups reorder freely among themselves (`rcLin()`, the recommendations' own order); the report enters on the first of them that is on, and Back walks the order back (past the ones off, out of the recommendations before the first).
+  - Review recommendations and Checkout have a switch (they stay last, closing the plan): Review off, the last step goes straight to the checkout (its button "Continue to checkout"; Back from the checkout to that step); Checkout off, the review's Pay / Confirm finishes the plan at once; both off, the plan is confirmed and the report moves on. One way in for all four places that open the review (`rcEnd()`).
+- Checked: the default walk unchanged (Everything else → Doctor note → Summary); Summary moved first comes first and Back leaves to Everything else; Review off on a decided Lifestyle: "Continue to checkout" → the checkout, Back → Lifestyle; Checkout off: Pay on the review finishes.
