@@ -23194,3 +23194,13 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - On the phone they sit under the text. In the right column (L) they are centred under the text.
 - **Decade number styles**: 48 more above each decade's big number (`.t3DecH` padding-top 24 → 72; "Add +48px above number hero decade").
 - **Not done:** the new picture for the Your focus card. The photo (a woman on a sofa with her phone) came with a message sent while I was working, and those images are not saved here, so it is not in the repo. The card still shows Dr Lu's avatar.
+
+## v2429: Timeline top nav tabs, two versions
+
+- New Tweak **Tabs**, first in Timeline → Tab top ("New two version for top nav: Now this year and later; Upcoming Later"):
+  - **Now / This year / Later** (the default, as before).
+  - **Upcoming / Later**:
+    - Upcoming takes you to Now and stays lit while you scroll through Now and This year. Later lights on Saved for later and the decades, as before.
+    - With Counts on, Upcoming shows Now plus This year (7), and Later its own (2).
+    - The sections in the list keep their headings (Now, This year).
+- A plain select (the labels are too long for the segmented control). Kept in the Timeline's saves and presets (`stT3Tabs`), and the timeline rebuilds when it changes. Checked at L and XS, by clicks and by scrolling.
