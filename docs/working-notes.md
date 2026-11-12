@@ -23493,3 +23493,8 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - Got it, then a page switch: no card.
   - Off then on: the card is back.
   - New member: no card. Established again: the card is back.
+
+## v2465: Plan updates, no Visual choice with Coachmark
+
+- "IF coachmark the Visual below cant be visible to select": in Tweaks > Plan updates, the Visual row (Stack / Timeline) only shows with Experience set to Modal. With Coachmark it is hidden, and it follows a preset or Save as they set Experience.
+- Checked: Coachmark hides it, Modal shows it, then Coachmark hides it again.
