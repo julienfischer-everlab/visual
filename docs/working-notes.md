@@ -23054,3 +23054,10 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - The Follow-up blood test's visual is now the photo the user sent ("THIS IMG!": the nurse at the patient's arm), cropped a little and saved 320 square as a webp (about 7 KB). It replaces the stand-in on the blood panel's header (68 at the top right) and on the review's "Follow-up blood test" item.
 - The H1's sub breaks after "help us": "Your latest results help us / identify what to test next."
 - The biomarkers badge is a size up: 14 / 20 type, 4 / 10 padding (28 tall), still neutral.
+
+## v2415: Blood panel cards: Added for you / Other sections
+
+- "Group the added for you and Other inside the card". In a blood panel group card that holds any added marker, the rows split into two sections, each with a small heading (13 medium, secondary): "Added for you" first, then "Other" under a hairline.
+  - A card with no added marker keeps a plain list, with no headings.
+  - The section heading says it now, so the rows lose their "Added for you" badge. The never-tested marker keeps its "Optional" badge.
+- The tabs filter by section too: a section with no rows left under the active tab loses its heading.
