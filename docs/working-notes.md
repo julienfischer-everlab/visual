@@ -23734,3 +23734,17 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **Adjusted in yellow** ("adjusted use yellow"):
   - The recommendation card's Adjusted badge (was blue) and the Timeline's `.tlChg.adj` change tags now use the review's yellow.
   - The Plan updates modal's New is now Added, as on the review.
+
+## v2481: Review timeline in the Timeline page's style, Type tweak (Badge / Icon)
+
+- **Timeline style** ("Use the exact same timeline style than the timeline page"):
+  - The review's rail is now the Timeline page's: 1px, `--tlRail`'s tones (white 9.5% dark, warm 16% light).
+  - The items have no dot. Each month gets the 17px filled dot (`--tlDotRing` over the ground), and Now is the ink ring (`.tlSec.now`).
+  - The debrief done is the green disc with its 10px tick (`.tlSec.done`, #42be65).
+  - The green progressing line and its running light are kept, at 1px.
+  - It applies to `.arRvwTlW`: the review and the Timeline's Plan updates modal.
+- **Type** (Tweaks -> Confirm your updated plan -> Timeline): Badge (current) / Icon ("Added: check icon circle filled; Adjust: swap arrow icon circle filled").
+  - Icon puts a 20px filled circle where the badge was: a neutral one with a check for added, the yellow one with swap arrows for adjusted.
+  - Each icon keeps its label for screen readers.
+  - The row hides with Simple list and is saved with the report's tweaks.
+- Checked at L in Dark and Light, Condensed, Badge and Icon.
