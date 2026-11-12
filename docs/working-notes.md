@@ -23091,3 +23091,8 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - "The divider here and no divider on the last element": in each blood panel group card, every row has a hairline under it (ink 8%), except the last row shown.
   - The rule counts only visible rows, so it still holds when a tab filters rows out.
   - Between "Added for you" and "Other", the last added row's own divider separates them. The "Other" heading no longer draws a line of its own, so there is never a double line.
+
+## v2418: Blood panel sections: eyebrow headings, new names
+
+- The two sections inside a blood panel group card are renamed: "New markers to test" (was "Added for you") and "Markers to re-test" (was "Other"). Each is singular when it holds one marker.
+- "Use eyebrow": the headings wear the Title group's eyebrow level (H5 tokens `--tgH5*`: 12 / 16, 600, 1px letter spacing, capitals), in secondary ink.
