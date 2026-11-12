@@ -22943,3 +22943,24 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - No "Up next" badge on the first decade card ("remove").
   - **Age size** (24–120, default 56) and **Age opacity** (default 100%) sliders in the Decades group (`--t3AgeFs`, `--t3AgeOp`). The phone shows 6/7 of the size.
   - The checks' card in Card #2 now has an even 8 around each item's ghost ("padding issue with main container": it was 6 / 12 / 16 / 8). The body is padded 8 28 and the items have no left pad.
+
+## v2405: Your next blood panel (a category after Clinical); glow saturation; badge +4
+
+- **Your next blood panel** ("Add after clinical / Your next blood panel to test. / Add to tweak as well"; "Based on your latest results here are what to check next. Use our biomarker component"). It is a new phase of the Async report's recommendations, `rcPh = 'blood'`, between Clinical and Lifestyle.
+  - Title "Your next / blood panel". Sub: "Based on your latest results, here's what to check next."
+  - One card, **Follow-up blood test**: a drop icon, then the date (about 3 months after the latest reading, on a Tuesday), "Included", "Fast 8 hours".
+  - The markers come from the persona's insights, in four groups. Each group has a dot, its name, a count and a line:
+    - **Outside the healthy range**: anything not Optimal now. The line says why: above / below range, was optimal, borderline.
+    - **Getting better**: the status is better than where its trend started ("Down from 3").
+    - **Out of date**: read more than 6 months before the latest.
+    - **Never tested**: one optional one-off the member has no reading for (Lp(a), else Omega-3 index, else Homocysteine).
+  - Every row is the Design system's Biomarker item (`EvBio.row`) and opens the marker's detail, as the insights' rows do. Empty groups are left out.
+  - `EvBio.row` takes a new `stw`: the badge's own word ("Not tested"). The Biomarker item doc lists the new use.
+- **The summary grid presents it** ("if more than one category is present, we need the intro screen with grid card presenting what we're going to show"). Here are your recommendations now shows a **Blood panel** card (the pathology render, "N markers", To review / Reviewed, the edit disc reopens it) between Clinical and Lifestyle.
+  - The blood panel counts as a category. With Groups shown = Clinical, Clinical + Blood panel are two categories, so the summary screen now shows (it was skipped for one group).
+  - Phases run in turn, Clinical → Blood panel → Lifestyle, each only when present (`rcSeq` / `rcNext`). From the summary, Continue goes to the first one not yet gone through; after the last, the review. The deck's last card and the blood panel's CTA say Continue or Review my plan accordingly. Back from the blood panel goes to the summary, as Lifestyle's does.
+  - The Flow panel has a Blood panel row. It is kept across tweak remounts (`bpS`).
+- Tweaks → Async report → **Next blood panel** On / Off (`stArBp`, default On; saved in presets).
+- "Also add saturation on bg img tweak": a **Picture saturation** slider (`stArRcSat`, 0–300%, default 150) in the Recommendation card group drives `--rcGlowSat` in the glow's filter.
+- "Badge add top margin 4px": the New action / Adjustment badge sits 16 under the sub (was 12).
+- "Need footer to 'Maybe later'": in Confirm your updated plan, an item's sheet (opened from its row) now ends on its one answer. An item in the plan shows **Maybe later** full width, which moves it to Later. An item under Later still shows Add to my plan alone. Before, an item in the plan had no button.
