@@ -23240,3 +23240,9 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - The biomarkers badge sits under the title ("Put badge biomarkers below title").
   - The footer: Steven Lu's avatar (28, round) and "Recommended by Steven Lu" at the left, the price at the right, now 16 / 22 ("price 16px"). Steven's photo is written once (`BP_DR_AV`) for the groups' notes and this footer, so dist doesn't grow.
   - 20 between each group's title and its card (+4, "+4px row gap").
+
+## v2433: Upcoming / Later tabs drop the group titles
+
+- With Tab top → Tabs set to **Upcoming / Later**, the timeline is one list: the Now, This year and Saved for later titles (and their counts) are gone ("IF Tabs Upcoming / Later, remove Now / This year group", "And saved for later"). This year's month labels already break the list down ("Actually month are there already"), so nothing replaces the titles.
+- The empty lines that only read under a title ("Nothing else this year.", "Nothing put off…") hide with them; Now's stays.
+- The sections stay in the markup, so the tabs still jump and light up as you scroll (checked at L and XS). Now / This year / Later is unchanged.
