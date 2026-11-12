@@ -23336,3 +23336,8 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 ## v2448: Tweaks button pen icon
 
 - **Top bar Tweaks button** ("Add Pen icon"): a 14px pen (Lucide pencil, stroke 2, current colour) now sits before the word, 6px from it. The button is an inline flex row, so the icon centres on the text. Its open and hover states are unchanged.
+
+## v2449: Decade number roll stops at the decade
+
+- **Roll effect** ("Once reach the decade number stop the roll"): the number rolls from the year before to the decade (39 to 40, column by column, the tens slower) and stops there. It no longer turns on to the year after (41) as it nears the top. It lands on the decade a little before the middle of the screen.
+- **Parallax** ("Parallax move up"): once the roll has stopped, the number goes on rising behind its fade with the parallax alone (0.4em under at the foot of the screen, home at the top). Checked on L: 36px, then 31, 27, 23, 19, 16 as it moves from the foot to the top, the digits on 40 from the middle on.
