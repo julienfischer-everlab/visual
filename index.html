@@ -219,6 +219,7 @@ if (/^#tk-[A-Za-z0-9]{6,40}$/.test(location.hash)) { document.documentElement.cl
   .topbar .tkPanel > .tkHead .tkX{order:2;flex:none;margin-left:auto;width:32px;height:32px;border:0;border-radius:50%;background:rgba(255,255,255,.1);color:#f4f4f5;} .topbar .tkPanel > .tkHead .tkX:hover{background:rgba(255,255,255,.16);color:#fff;}
   .topbar .tkPanel > .tkHead .tkLog{order:3;flex:1 1 100%;margin:0;display:block;-webkit-line-clamp:unset;white-space:nowrap !important;overflow:hidden;text-overflow:ellipsis;font-size:12px;line-height:16px;color:#a1a1aa;} .topbar .tkPanel > .tkHead .tkLog:empty{display:none;}
   .topbar .tkPanel > .tkHead .tkDocsSee{order:10;margin-top:6px;}
+  .topbar .tkPanel > .tkHead .tkPsNote{order:4;flex:1 1 100%;display:block;box-sizing:border-box;width:100%;min-height:36px;max-height:180px;margin:4px 0 0;padding:8px 10px;border:0;border-radius:10px;background:rgba(0,0,0,.22);box-shadow:inset 0 0 0 1px rgba(255,255,255,.06);color:#e4e4e7;font:inherit;font-size:13px;line-height:18px;resize:none;outline:none;overflow-y:auto;field-sizing:content;transition:box-shadow .15s ease;} .topbar .tkPanel > .tkHead .tkPsNote::placeholder{color:#71717a;} .topbar .tkPanel > .tkHead .tkPsNote:hover{box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);} .topbar .tkPanel > .tkHead .tkPsNote:focus{box-shadow:inset 0 0 0 1px rgba(255,255,255,.32);} .topbar .tkPanel > .tkHead .tkPsNote[hidden]{display:none;}   /* the preset's note under its Latest line: a quiet field, growing with its text */
   /* Presets and Share, the header's second line (the presets' menu under it, over the rows) */
   .topbar .tkPanel > .tkHead{flex-wrap:wrap;row-gap:8px;}
   .topbar .tkPs{position:relative;flex:none;display:flex;align-items:center;gap:8px;}
@@ -14202,6 +14203,7 @@ html.insMini[data-ins-amt="2"]:not(.insEmpty) body[data-bp="xs"] #dOver .ovcar.o
           <!-- no Save / Reset here ("no need save reset here because the Save at the top saves the presets from now"): the top bar's Save keeps the preset in use (Default: the setup); Default applied from Presets is the reset -->
           <span class="tkLog" aria-live="polite"></span>   <!-- the last Save: when and who ("Show log Latest $date $hour by $name") -->
           <span class="tkPsCur" aria-live="polite"></span>   <!-- the preset in use, the top bar's ("Here indicate What preset is selected") -->
+          <textarea class="tkPsNote" rows="1" maxlength="600" placeholder="Add a note on this preset" aria-label="Note on this preset" spellcheck="true" hidden></textarea>   <!-- a note on the preset in use ("Add a way to comment this, textarea"), kept per preset -->
           <button class="tkBtn tkDocsSee" type="button" hidden>See documentation</button>   <!-- the page's own documentation, when it has one ("Docs should go in Tweak panel Below Save reset. As a full CTA See documentation. Only if documentation in this page is available") -->
           <button class="tkBtn tkX" type="button" aria-label="Close tweaks" title="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" data-lc="x" width="14" height="14" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
         </div>
@@ -51007,6 +51009,8 @@ hairline({
         const newId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
         const rdL = k => { try { const a = JSON.parse(localStorage.getItem(k) || 'null'); return a && typeof a === 'object' ? a : null; } catch (e){ return null; } }, wrL = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e){ return false; } };
         let PRE = (rdL(PK) || []).filter(x => x && x.id && x.snap), ON = '', live = false, NAMES = {};
+        /* a note per preset ("Add a way to comment this, textarea"): any preset, Default and the built-in ones too, in tkPsNotes (doc per preset, shared with the team) or this browser's */
+        const NK = 'everlab:tkPsNotes', NCOL = 'tkPsNotes', nid = id => String(id).replace(/[^A-Za-z0-9_-]/g, '_'); let NOTES = rdL(NK) || {};
         /* groups of presets ("Need to be able to create group of presets, Rename and delete group, re order group. Put each group in a tab"): per page as the presets, shared (tkPsGroups) or this browser's;
            a preset's group its grp; one with none (or whose group is gone) in Other. The tab open kept per page in this browser */
         const GK = 'everlab:tkPsGroups', GCOL = 'tkPsGroups', TABK = 'everlab:tkPsTab', TABS = rdL(TABK) || {};
@@ -51042,12 +51046,20 @@ hairline({
         /* the preset in use, on the button and in the Tweaks header ("Here indicate What preset is selected (from above controller)"): the one applied last, else the first the page matches (Default first), else Default · changed */
         const BM = (btn.querySelector('svg') || { outerHTML: '' }).outerHTML;
         const cur = () => { let o = ON ? getP(ON) : null; if (o && o.id !== DEFID && pgOf(o) !== pgNow()) o = null; if (!o){ const all = [getP(DEFID)].concat(mine()); o = all.find(x => x && same(x.snap)) || all[0]; } return o; };   /* the preset in use on this page */
+        const noteGrow = ta => { ta.style.height = 'auto'; ta.style.height = Math.min(180, Math.max(36, ta.scrollHeight)) + 'px'; };
+        const notePaint = o => { const ta = document.querySelector('.tkPsNote'); if (!ta) return; const id = o ? o.id : ''; if (ta.dataset.pid === id && document.activeElement === ta) return;   /* never under the typing */
+          ta.dataset.pid = id; ta.hidden = !o; const n = NOTES[id], v = n && n.t ? n.t : ''; if (ta.value !== v) ta.value = v; ta.placeholder = 'Add a note on ' + (o ? o.name : 'this preset');
+          ta.title = n && n.at ? 'Note edited ' + new Date(n.at).toLocaleString('en-AU') + (n.by && NAMES[n.by] ? ' by ' + NAMES[n.by] : '') : ''; if (ta.offsetParent) noteGrow(ta); };
+        const noteSave = (id, t) => { if (!id) return; t = String(t || '').slice(0, 600); const o = { pid: id, t, at: Date.now() }; NOTES[id] = o;
+          if (live) me().then(by => { if (by) o.by = by; return col(NCOL).doc(nid(id)).set(o); }).catch(() => say('Could not save the note: try again', 3000)); else wrL(NK, NOTES); };
         const label = () => { const o = cur(), ok = !!o && same(o.snap); if (window.__bpMark) window.__bpMark();
           nm.textContent = o ? (ok ? o.name : o.name + ' · changed') : 'Presets';
-          document.querySelectorAll('.tkPsCur').forEach(x => { x.innerHTML = BM + '<span>Preset</span><b>' + esc(o ? o.name : 'None') + '</b>' + (o && !ok ? '<em>· changed</em>' : ''); x.title = o ? (ok ? 'The page is on the preset ' + o.name : 'Changed since the preset ' + o.name + ' was applied') : ''; }); };
+          document.querySelectorAll('.tkPsCur').forEach(x => { x.innerHTML = BM + '<span>Preset</span><b>' + esc(o ? o.name : 'None') + '</b>' + (o && !ok ? '<em>· changed</em>' : ''); x.title = o ? (ok ? 'The page is on the preset ' + o.name : 'Changed since the preset ' + o.name + ' was applied') : ''; }); notePaint(o); };
         let LT = 0; const labelSoon = () => { clearTimeout(LT); LT = setTimeout(label, 80); };
         const place = () => { const r = btn.getBoundingClientRect(), x = Math.max(8, Math.min(r.left, innerWidth - 388)); [menu, msg].forEach(m => { m.style.top = Math.round(r.bottom + 6) + 'px'; m.style.left = Math.round(x) + 'px'; }); };
         addEventListener('resize', place); { const tb = btn.closest('.topbar'); if (tb) tb.addEventListener('scroll', place, { passive: true }); }
+        { const ta = document.querySelector('.tkPsNote'); if (ta){ let nt = 0; const go = () => { clearTimeout(nt); const id = ta.dataset.pid; if (!id) return; const v = ta.value.trim(), was = (NOTES[id] && NOTES[id].t) || ''; if (v !== was) noteSave(id, v); };
+          ta.addEventListener('focus', () => noteGrow(ta)); { const dm = ta.closest('details'); if (dm) dm.addEventListener('toggle', () => { if (dm.open) requestAnimationFrame(() => noteGrow(ta)); }); } if (window.ResizeObserver){ let w0 = 0; new ResizeObserver(() => { const w = ta.clientWidth; if (w && w !== w0){ w0 = w; noteGrow(ta); } }).observe(ta); }   /* measured again once the panel opens or the field changes width (sized while hidden, it clipped) */ ta.addEventListener('input', () => { noteGrow(ta); clearTimeout(nt); nt = setTimeout(go, 700); }); ta.addEventListener('blur', () => { go(); label(); }); ta.addEventListener('keydown', e => { e.stopPropagation(); if (e.key === 'Escape') ta.blur(); }); } }   /* saved a beat after typing stops and on leaving the field; its keys kept from the page's shortcuts */
         let EDIT = '', SURE = '';
         const row = x => '<div class="tkPsIt' + (x.id === DEFID ? ' tkPsDef' : '') + (x.bi ? ' tkPsBi' : '') + (x.id === ON ? ' on' : '') + '" data-id="' + esc(x.id) + '">' +
               (x.fixed ? '' : '<span class="tkPsDrag" title="Drag to reorder, or onto a tab to move it there" aria-hidden="true">' + IC.grip + '</span>') +   /* the drag handle at the left ("put a drag order on the left side that will allow the reorder manually") */
@@ -51080,7 +51092,7 @@ hairline({
         const keepL = () => { if (!live) wrL(PK, PRE); };
         const col = n => SDB.collection(n);
         /* the store: the team's presets, live */
-        dbReady().then(db => { if (!db) return; live = true; PRE = []; GRPS = []; paint(); try { col(PCOL).onSnapshot(sn => { PRE = sn.docs.map(d => Object.assign({ id: d.id }, d.data())).filter(x => x.snap && x.name); paint(); }, () => {}); col(GCOL).onSnapshot(sn => { GRPS = sn.docs.map(d => Object.assign({ id: d.id }, d.data())).filter(g => g.name); const bo = sn.docs.find(d => d.id === 'bi-order'); if (bo) BIO = Object.assign({}, (bo.data() || {}).ord || {}); paint(); }, () => {});   /* bi-order: the built-in groups' places, no name, so never a group itself */ } catch (e){} }).catch(() => {});
+        dbReady().then(db => { if (!db) return; live = true; PRE = []; GRPS = []; paint(); try { col(PCOL).onSnapshot(sn => { PRE = sn.docs.map(d => Object.assign({ id: d.id }, d.data())).filter(x => x.snap && x.name); paint(); }, () => {}); col(NCOL).onSnapshot(sn => { const m = {}; sn.docs.forEach(d => { const x = d.data() || {}; if (x.pid) m[x.pid] = x; }); NOTES = m; label(); }, () => {}); col(GCOL).onSnapshot(sn => { GRPS = sn.docs.map(d => Object.assign({ id: d.id }, d.data())).filter(g => g.name); const bo = sn.docs.find(d => d.id === 'bi-order'); if (bo) BIO = Object.assign({}, (bo.data() || {}).ord || {}); paint(); }, () => {});   /* bi-order: the built-in groups' places, no name, so never a group itself */ } catch (e){} }).catch(() => {});
         /* the groups: add, rename, move left / right (their order rewritten 1..n), remove (its presets to Other, none deleted) */
         const gKeep = () => { if (!live) wrL(GK, GRPS); };
         const gAdd = name => { name = String(name || '').trim().slice(0, 40); if (!name) return; const G = gMine(), o = { name, pg: pgNow(), order: G.reduce((m, g) => Math.max(m, g.order || 0), 0) + 1, at: Date.now() }, id = newId(); GRPS.push(Object.assign({ id }, o, live ? {} : { local: 1 })); setTab(id);
@@ -55275,7 +55287,7 @@ hairline({
   body.light .t3Sh{--tlInk:#000;--tlTx:#000;--tlSub:rgba(0,0,0,.56);--tlLine:rgba(46,31,26,.08);--tlHover:rgba(46,31,26,.045);--tlRail:rgba(46,31,26,.16);--tlField:rgba(46,31,26,.05);--tlPill:rgba(46,31,26,.07);--tlPillH:rgba(46,31,26,.11);--tlCta:#111;--tlCtaInk:#fff;--tlBox:rgba(46,31,26,.05);--t3Bg:#f6ece6;}
   #tl3{position:relative;}
   /* Plan updates card (above the tabs) and its coachmark walk */
-  :is(#tl3, .tlSide) .t3Upd{position:relative;display:grid;grid-template-columns:104px minmax(0,1fr);align-items:center;column-gap:16px;margin:0 0 16px;padding:20px 48px 20px 16px;border-radius:24px;background:#22221f;color:#ececec;}
+  :is(#tl3, .tlSide) .t3Upd{position:relative;display:grid;grid-template-columns:104px minmax(0,1fr) auto;align-items:center;column-gap:16px;margin:0 0 16px;padding:20px 24px 20px 16px;border-radius:24px;background:#22221f;color:#ececec;}
   body.light :is(#tl3, .tlSide) .t3Upd{background:#fff;color:#111;box-shadow:0 1px 2px rgba(46,31,26,.06),0 8px 24px rgba(46,31,26,.06);}
   :is(#tl3, .tlSide) .t3Upd.in{animation:t3UpdIn .5s cubic-bezier(.32,.72,0,1) both;} :is(#tl3, .tlSide) .t3Upd.gone{opacity:0;transform:translateY(-8px);transition:opacity .25s ease,transform .3s ease;}
   @keyframes t3UpdIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:none;}}
@@ -55290,8 +55302,9 @@ hairline({
   .t3UpdN{position:absolute;right:10px;bottom:6px;z-index:4;display:grid;place-items:center;min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:oklch(72% .15 150);color:#0b0b0b;font-family:inherit;font-size:12px;font-weight:600;line-height:1;font-style:normal;box-shadow:0 0 0 3px #22221f;}
   body.light .t3UpdN{box-shadow:0 0 0 3px #fff;}
   .t3UpdTx{display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-width:0;} .t3UpdTx b{font-size:17px;line-height:22px;font-weight:500;} .t3UpdTx span{font-size:14px;line-height:20px;opacity:.64;}
-  .t3UpdGo{height:36px;margin-top:12px;padding:0 16px;border:0;border-radius:999px;background:#fff;color:#111;font:inherit;font-size:14px;font-weight:500;cursor:pointer;transition:transform .15s ease,opacity .15s ease;} body.light .t3UpdGo{background:#111;color:#fff;} .t3UpdGo:active{transform:scale(.97);}
-  .t3UpdX{position:absolute;top:12px;right:12px;display:grid;place-items:center;width:28px;height:28px;padding:0;border:0;border-radius:50%;background:rgba(255,255,255,.08);color:inherit;cursor:pointer;} body.light .t3UpdX{background:rgba(46,31,26,.06);} .t3UpdX svg{width:14px;height:14px;}
+  .t3UpdGo{height:36px;padding:0 16px;border:0;border-radius:999px;background:#fff;color:#111;font:inherit;font-size:14px;font-weight:500;cursor:pointer;transition:transform .15s ease,opacity .15s ease;} body.light .t3UpdGo{background:#111;color:#fff;} .t3UpdGo:active{transform:scale(.97);}
+  .t3UpdAct{display:flex;align-items:center;gap:8px;} .t3UpdOk{height:36px;padding:0 16px;border:0;border-radius:999px;background:rgba(255,255,255,.1);color:inherit;font:inherit;font-size:14px;font-weight:500;cursor:pointer;transition:transform .15s ease,background .15s ease;} .t3UpdOk:hover{background:rgba(255,255,255,.16);} .t3UpdOk:active{transform:scale(.97);} body.light .t3UpdOk{background:rgba(46,31,26,.06);} body.light .t3UpdOk:hover{background:rgba(46,31,26,.1);}   /* Got it: the secondary, beside Check it out */
+  @container tl (max-width:540px) or style(--tlXs: 1){ :is(#tl3, .tlSide) .t3Upd{grid-template-columns:104px minmax(0,1fr);padding:20px 20px 20px 16px;} :is(#tl3, .tlSide) .t3Upd .t3UpdAct{grid-column:2;margin-top:12px;} }   /* the phone: the two under the text */  
   /* Timeline -> Right column (html.tlSideOn, L only: forced L, or Auto from 1440): the panel in two columns, the timeline (its head, tabs and list, the full width left of the column) and a 320 column 40 to its right, sticky 32 under the page's top ("On breakpoint L (only) Add a 320px right column") */
   .tlSide{display:none;}
   html.tlD3.tlSideOn:not(.t3New) body.tlOn[data-bp="l"] #dTl{display:grid;grid-template-columns:minmax(0,1fr) 320px;column-gap:40px;align-items:start;}
@@ -55304,7 +55317,7 @@ hairline({
   }
   /* the Plan updates card in the right column ("put the new update card on the right col on L"): its first card, stacked and centred for the 320 (the fan, the title, the line, Check it out); the placeholder goes while it is there; the column dims with the timeline while its walk runs */
   #dTl > .tlSide > .t3Upd{grid-template-columns:minmax(0,1fr);justify-items:center;row-gap:12px;margin:0;padding:32px 24px 24px;text-align:center;}
-  #dTl > .tlSide > .t3Upd .t3UpdTx{align-items:center;} #dTl > .tlSide > .t3Upd .t3UpdGo{margin-top:12px;}
+  #dTl > .tlSide > .t3Upd .t3UpdTx{align-items:center;} #dTl > .tlSide > .t3Upd .t3UpdAct{grid-column:auto;justify-content:center;margin-top:12px;}
   .tlSide:has(> [data-t3m]) > .tlSideCard{display:none;}   /* a new member's timeline has no right column (html.t3New; "remove right block for new member") */
   #tl3 > .t3Info{display:flex;flex-direction:column;gap:16px;margin:0 0 24px;} #tl3 > .t3Info:empty{display:none;} :is(#tl3 > .t3Info, .tlSide) > :is(.t3Upd, .t3FocusB, .t3Focus, .t3CiW){margin:0;}   /* the info modules: above the timeline, 16 apart, 24 over the tabs; in the right column, its stack */
   html:not(.tlSideOn) .tkRow.tkT3Slot{display:none;}   /* the slots only with the column On */
@@ -55389,7 +55402,7 @@ hairline({
   #tl3 .t3RollC > i{position:absolute;left:0;right:0;top:50%;height:1em;margin-top:-.56em;display:block;font-style:normal;text-align:center;transform-origin:50% 50%;will-change:transform,opacity;} #tl3 .t3RollC > i:not([data-i="0"]){opacity:0;}
   #dTl #tl3 .jvBody.t3DecB{padding:8px 28px;} #tl3 .t3DecB > .tlItems{padding-left:0;}   /* the checks' card: each item's ghost 8 inside it on every side ("padding issue with main container": it was 6 above, 12 below, 16 left, 8 right): 8 above and below, the rows 28 in, their ghosts 20 out of them */
   /* Decade style Number + card / Number + items: the age big and centred, fading out at its foot, the title centred over that fade, then the checks (the timeline's item cards) in one card or each its own */
-  #tl3 .t3DecH{display:flex;flex-direction:column;gap:20px;padding-top:24px;} #tl3 .t3DecHd{display:flex;flex-direction:column;align-items:center;text-align:center;}
+  #tl3 .t3DecH{display:flex;flex-direction:column;gap:20px;padding-top:72px;}   /* 48 more above the decade's number ("Add +48px above number hero decade"; was 24) */ #tl3 .t3DecHd{display:flex;flex-direction:column;align-items:center;text-align:center;}
   #tl3 .t3DecNum{display:block;font-size:calc(var(--t3AgeFs, 56px) * 2.15);line-height:.9;font-weight:500;letter-spacing:calc(-.03em + var(--t3AgeLs, 0em));color:var(--tlInk);opacity:var(--t3AgeOp, 1);font-variant-numeric:tabular-nums;-webkit-mask-image:linear-gradient(to bottom,#000 30%,transparent 92%);mask-image:linear-gradient(to bottom,#000 30%,transparent 92%);}   /* 120 at the default Age size, its foot faded out ("Big number on the top with a fade-out on the bottom of the number"); Age size, opacity and spacing still drive it */
   #tl3 .t3DecT{margin:-14px 0 0;max-width:28ch;font-size:20px;line-height:26px;font-weight:500;letter-spacing:-.2px;color:var(--tlInk);text-wrap:balance;position:relative;}   /* centred, over the number's faded foot ("Title on the top, centred") */
   #tl3 .t3DecH > .tlItems.t3DecCd{padding:4px 16px;border-radius:20px;background:var(--msPanel);}   /* Number + card: the checks in one card, the rows' ghost tiles inside it */
@@ -55959,11 +55972,11 @@ hairline({
     const said = [nN ? 'added ' + (n === 1 ? its[0].t : nN === 1 ? 'a new item' : nN + ' new items') : '', nA ? 'moved ' + (n === 1 ? its[0].t : nA === 1 ? 'a date' : nA + ' dates') : ''].filter(Boolean).join(' and ');
     const el = document.createElement('section'); el.className = 't3Upd' + (had ? '' : ' in'); el.setAttribute('aria-label', 'Updates to your plan'); el.dataset.t3m = 'upd';
     el.innerHTML = '<div class="t3UpdVis" aria-hidden="true">' + v.map((it, j) => tile(it, pos[j])).join('') + '<i class="t3UpdSp">' + SPK + '</i><i class="t3UpdN">' + n + '</i></div>' +
-      '<div class="t3UpdTx"><b>' + esc(title) + '</b><span>' + esc('Dr Lu ' + said + '. See where ' + (n === 1 ? 'it sits' : 'they sit') + ' on your timeline.') + '</span><button class="t3UpdGo" type="button">Check it out</button></div>' +
-      '<button class="t3UpdX" type="button" aria-label="Dismiss">' + WIC.x + '</button>';
+      '<div class="t3UpdTx"><b>' + esc(title) + '</b><span>' + esc('Dr Lu ' + said + '. See where ' + (n === 1 ? 'it sits' : 'they sit') + ' on your timeline.') + '</span></div>' +
+      '<div class="t3UpdAct"><button class="t3UpdOk" type="button">Got it</button><button class="t3UpdGo" type="button">Check it out</button></div>';   /* Got it, a secondary, in place of the close ("Add secondary instead of dismiss: Got it"); the two at the card's right on the desk ("Desktop CTA right side"), under the text on the phone */
     const inf = host.querySelector(':scope > .t3Info'); if (inf) inf.prepend(el); else bar.before(el); placeMods();   /* a module: above the timeline, or in the right column by its slot */
     el.querySelector('.t3UpdGo').addEventListener('click', () => { const m = document.getElementById('stT3Upd'); if (m && m.value === 'modal') updModal(); else cmGo(0); });   /* Plan updates: Modal, the updated plan over the page; Coachmark, the walk */
-    el.querySelector('.t3UpdX').addEventListener('click', updDone); };
+    el.querySelector('.t3UpdOk').addEventListener('click', updDone); };
   window.__t3UpdPlace = updPlace;
   /* Plan updates -> Modal ("Add a tweak where we trigger this modal - adjusted plan update"): the Async report's Confirm your updated plan opened over the timeline, as a modal */
   const updModal = () => { cmShut(); const ar = window._ar; if (!ar || !ar.open) return; ar.open(); let n = 0; const go = () => { const i = ar.inst && ar.inst(); if (i && i.recGo) i.recGo('rev'); else if (n++ < 20) setTimeout(go, 100); }; setTimeout(go, 120); };

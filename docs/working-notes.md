@@ -23180,3 +23180,17 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - Yes (the default): the rail on the desk and the phone (`html.t3RailXs` for the phone's).
   - No: no line anywhere (`html.t3NoRail` from the tablet up, the phone's own no-rail layout).
   - Checked at XS, S and L.
+
+## v2428: a note on each preset; Plan updates card Got it + CTAs right; decade number +48
+
+- **Tweaks header → a note on the preset** ("Add a way to comment this, textarea"): a field under "Latest … by …" in the preset card, placeholder "Add a note on <preset>".
+  - The note belongs to the preset in use and follows it: apply another preset and its own note shows. Every preset can have one, Default and the built-in Personas included.
+  - It saves a beat after typing stops and when the field loses focus. Esc leaves the field, and its keys never reach the page's shortcuts.
+  - It grows with its text, up to 180px, and is measured again when the panel opens. Its title says when it was last edited and by whom.
+  - Kept in `tkPsNotes` (one doc per preset, shared with the team, live) or `everlab:tkPsNotes` in this browser.
+- **Timeline → Plan updates card** ("Desktop CTA right side. Add secondary instead of dismiss: Got it"):
+  - The close X is gone. A secondary **Got it** (8% wash, 36 tall, round) sits left of **Check it out** and dismisses the card as the X did.
+  - From the tablet up the two sit at the card's right, centred on its height (picture | text | actions).
+  - On the phone they sit under the text. In the right column (L) they are centred under the text.
+- **Decade number styles**: 48 more above each decade's big number (`.t3DecH` padding-top 24 → 72; "Add +48px above number hero decade").
+- **Not done:** the new picture for the Your focus card. The photo (a woman on a sofa with her phone) came with a message sent while I was working, and those images are not saved here, so it is not in the repo. The card still shows Dr Lu's avatar.
