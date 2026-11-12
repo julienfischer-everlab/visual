@@ -22964,3 +22964,17 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - "Also add saturation on bg img tweak": a **Picture saturation** slider (`stArRcSat`, 0–300%, default 150) in the Recommendation card group drives `--rcGlowSat` in the glow's filter.
 - "Badge add top margin 4px": the New action / Adjustment badge sits 16 under the sub (was 12).
 - "Need footer to 'Maybe later'": in Confirm your updated plan, an item's sheet (opened from its row) now ends on its one answer. An item in the plan shows **Maybe later** full width, which moves it to Later. An item under Later still shows Add to my plan alone. Before, an item in the plan had no button.
+
+## v2406: Saving every tweak; wrap-up picture; Timeline coachmark on arrival; blood panel cards
+
+- **Saving tweaks ("The tweak async doesn't seem to Save well"; "ALL tweak affect the save action")**. I reproduced it with the shared saved setup.
+  - Cause: the shared store returns the setup with its keys in alphabetical order, so on restore the Async Preset (`stArPre`) is put back after Intro screen, Max biomarkers and the like. Its change handler then re-applied the V3 preset (defaults plus V3's keys, plus an old copy from the block's removed Save, `everlab.arPresets`) and reset those values.
+  - Fix: every put-back now marks itself (`window.__tkPut`, set by the panel's `put` / `put2`).
+    - The Async Preset no longer re-applies anything while a setup is being put back, and its old per-preset copy is ignored.
+    - The same goes for the other per-variant stores: Intro screen presets, the membership card per tier (it also no longer loads its tier copy at start when a saved setup exists), the search map style, and the Timeline version memory.
+  - Tested by loading the real shared setup into a clean browser: every Async and membership-card value comes back as saved. Only `dkLab` changes, which the Navigation doc master sets over Tweaks by design.
+- **Picture libraries are tweak values ("Changing this should always impact the unsaved version of the current preset")**. The Async report's Picture, the Concierge Video and the primary card's media each mirror their pick in a hidden tweak input (`stArPicSel`, `stCcVidSel`, `stPcMediaSel` as JSON per Object). Picking one now marks "Default · changed" with the Save dot, Save keeps it, and a saved setup puts it back over this browser's own pick.
+- **Wrap-up screen ("Next step put the bg same placement as the what to expect")**. When What to expect is Image fade (V3), That wraps up your debrief uses What to expect's picture layer (`.arDbfTop`, top part fading out) instead of the full-bleed ground (`.arEndFade`), dark in either mode.
+- **See my updated plan → Timeline with the coachmark ("If trigger See updated plan, go to Timeline Coachmark triggered")**. The submit (the end's See my updated plan, and the review's Pay) calls `_tl.news(its, { walk: true })`. Timeline V3 places the Plan updates card, then starts the coachmark walk through what changed by itself (`cmGo(0)`).
+- **Blood panel ("1 card for each group")**. The Follow-up blood test is its own card at the top, then each group (Outside the healthy range, Getting better, Out of date, Never tested) is its own card.
+- **Recommendation card Why ("remove dot")**. The coloured dot before the Why value is gone.
