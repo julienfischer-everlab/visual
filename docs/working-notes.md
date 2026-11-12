@@ -23498,3 +23498,15 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 
 - "IF coachmark the Visual below cant be visible to select": in Tweaks > Plan updates, the Visual row (Stack / Timeline) only shows with Experience set to Modal. With Coachmark it is hidden, and it follows a preset or Save as they set Experience.
 - Checked: Coachmark hides it, Modal shows it, then Coachmark hides it again.
+
+## v2466: Plan updates, Coachmark or Modal, one or the other
+
+- "Remove visual!! Its one or another. Coachmark / Modal" and "Coachmark go with the Banner at the top": Tweaks > Plan updates has Experience only; the Visual row is gone.
+- **Coachmark:** the banner at the top, always with the Timeline visual (the animated skeleton timeline). Its "See update" starts the coachmark walk, never the modal ("If coachmark, see update CTA lead to coachmark"). Switching from Modal closes any open modal.
+- **Modal:** no banner. The updated plan modal opens over the Timeline when it shows (on choosing Modal, or on opening the Timeline with Modal saved), once a visit. Once closed, it stays closed until Experience is set again.
+- Saved setups and presets that still carry a Visual value are ignored for it (the setting no longer exists).
+- Checked at XS and L:
+  - Coachmark: the banner with the Timeline visual; "See update" starts the walk.
+  - Modal: no banner and the modal open; closed, it stays closed after leaving and coming back.
+  - Back to Coachmark: the banner returns.
+  - Modal saved at load: nothing on the Overview, the modal on opening the Timeline.

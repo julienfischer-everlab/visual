@@ -14591,8 +14591,8 @@ html.insMini[data-ins-amt="2"]:not(.insEmpty) body[data-bp="xs"] #dOver .ovcar.o
         <!-- the Plan updates card and its experience, a group of their own ("create a group tweak for that") -->
         <div class="tkGroup" data-tl data-tl3>
         <div class="tkSub tkSwH"><span>Plan updates</span><button type="button" class="tgl" role="switch" aria-checked="true" data-sw-for="stT3Upd" data-sw-on="on" data-sw-off="off" aria-label="Plan updates: on or off"><i></i></button></div>
-        <div class="tkRow"><span class="lbl">Experience</span><select id="stT3Upd" class="tkSegSel" aria-label="What the Async report changed (Physical assessment and Colonoscopy new, DEXA moved), as after its Pay. Modal: the updated plan (Confirm your updated plan) opens over the timeline, the card's Check it out opens it again. Coachmark: the card (above the tabs, or the right column at L), its Check it out walking through the items. None: nothing"><option value="modal">Modal</option><option value="on">Coachmark</option><option value="off" selected>None</option></select></div>   <!-- "a card at the top, above the tab ... Check it out ... coachmark style"; "Put this experience inside Plan update tweak: Modal, Coachmark (the current ON), None (current OFF)" -->
-        <div class="tkRow"><span class="lbl">Visual</span><select id="stT3UpdVis" class="tkSegSel" aria-label="The Plan updates card&#39;s picture: Stack, the updated items&#39; tiles fanned; Timeline, a skeleton timeline that scrolls down a step, then the updated items fly in from the left and the right and plug into it, on a loop"><option value="stack" selected>Stack</option><option value="tl">Timeline</option></select></div>   <!-- "tweak a Version with a animation skeleton style visual where we can see a timeline with object that plug in to it, like a scroll down then object goes into two object from left and right" -->
+        <div class="tkRow"><span class="lbl">Experience</span><select id="stT3Upd" class="tkSegSel" aria-label="What the Async report changed (Physical assessment and Colonoscopy new, DEXA moved), as after its Pay. One or the other: Modal, the updated plan opens over the timeline (no banner); Coachmark, the banner at the top, its See update walking through the items. None: nothing"><option value="modal">Modal</option><option value="on">Coachmark</option><option value="off" selected>None</option></select></div>   <!-- "a card at the top, above the tab ... Check it out ... coachmark style"; "Put this experience inside Plan update tweak: Modal, Coachmark (the current ON), None (current OFF)" -->
+        <!-- no Visual row: the banner always the Timeline visual ("Remove visual!! Its one or another. Coachmark / Modal") -->
         </div>
         <div class="tkGroup" data-tl data-tl3>
         <div class="tkSub tkSwH"><span>Right column (L)</span><button type="button" class="tgl" role="switch" aria-checked="true" data-sw-for="stT3Side" data-sw-on="on" data-sw-off="off" aria-label="Right column (L): on or off"><i></i></button></div>
@@ -56182,7 +56182,7 @@ hairline({
      the card over the tabs, the changed items' pictures fanned (a sparkle, their count), what moved in a line, Check it out; the walk then goes through them top to bottom: a blanket over the page, the item lit through a hole in it, a tip under it
      (New: added for its month; Adjusted: "This was June before, now it's September"), Back / Next / Done, the page gliding to each. Done puts the card away; the tip's close only stops the walk */
   const SPK = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2c.5 4.8 2.7 7 7.5 7.5C14.7 10 12.5 12.2 12 17c-.5-4.8-2.7-7-7.5-7.5C9.3 9 11.5 6.8 12 2z"/><path d="M19 15c.2 2 1.1 2.8 3 3-1.9.2-2.8 1.1-3 3-.2-1.9-1.1-2.8-3-3 1.9-.2 2.8-1 3-3z"/></svg>';
-  let updL = [], cm = null, cmAt = 0, updGone = false;   /* updGone: its Got it / Done pressed this visit, the card not put back by itself */
+  let updL = [], cm = null, cmAt = 0, updGone = false, umSeen = false;   /* updGone: its Got it / Done pressed this visit, the card not put back by itself */
   const updMo = at => { if (at == null) return ''; const y = Math.floor(at); return FULLM[Math.min(11, Math.floor((at - y) * 12 + 1e-6))] + ' ' + y; };
   const updIt = id => (S.items || []).find(i => i.id === id);
   const updIds = () => updL.filter(id => { const it = updIt(id); return it && it.chg && rowEl(id); });
@@ -56198,20 +56198,20 @@ hairline({
     Object.keys(M).filter(k => !sl.includes(k)).forEach(k => { const h = host.querySelector('[data-t3h="' + k + '"]'); if (h && h.nextElementSibling !== M[k]) h.after(M[k]); }); };   /* the rest back home */
   window.__t3Mods = placeMods;
   addEventListener('resize', placeMods); ['stBp', 'stT3Side', 'stT3Slot1', 'stT3Slot2', 'stT3Slot3'].forEach(id => { const t = document.getElementById(id); if (t) t.addEventListener('change', () => setTimeout(placeMods, 60)); });
-  const updPlace = () => { if (!host) return; const had = main.querySelector('.t3Upd'); if (had) had.remove(); const ids = updIds(); if (!ids.length || T().mem === 'new' || S.q.trim()) return;
+  const updPlace = () => { if (!host) return; const had = main.querySelector('.t3Upd'); if (had) had.remove(); const ids = updIds(); if (!ids.length || T().mem === 'new' || S.q.trim() || (document.getElementById('stT3Upd') || {}).value === 'modal') return;   /* the banner goes with Coachmark; Modal is the modal alone ("Its one or another", "Coachmark go with the Banner at the top") */
     const bar = host.querySelector('.t3Bar'); if (!bar) return; const its = ids.map(updIt), n = its.length, nN = its.filter(i => i.chg === 'new').length, nA = n - nN;
     const tile = (it, j) => { const pc = pic(it); return '<i class="t3UpdTile t' + j + (pc ? '' : ' ico') + '"' + (pc ? ' style="background-image:url(' + pc + ')"' : '') + '>' + (pc ? '' : icon(it)) + '</i>'; };
     const v = its.slice(0, 3).sort((a, b) => !!pic(a) - !!pic(b)), pos = v.length === 1 ? [1] : v.length === 2 ? [0, 2] : [0, 2, 1];
     const title = n === 1 ? (nN ? 'New in your plan' : 'A date moved in your plan') : n + ' updates to your plan';
     const said = [nN ? 'added ' + (n === 1 ? its[0].t : nN === 1 ? 'a new item' : nN + ' new items') : '', nA ? 'moved ' + (n === 1 ? its[0].t : nA === 1 ? 'a date' : nA + ' dates') : ''].filter(Boolean).join(' and ');
     const el = document.createElement('section'); el.className = 't3Upd' + (had ? '' : ' in'); el.setAttribute('aria-label', 'Updates to your plan'); el.dataset.t3m = 'upd';
-    const uvTl = (document.getElementById('stT3UpdVis') || {}).value === 'tl';
+    const uvTl = true;   /* always the Timeline visual ("Remove visual!!"); the Stack's tiles kept below, unused */
     const visTl = () => '<div class="t3UpdVis t3UvTl" aria-hidden="true"><div class="t3UvTrack"><div class="t3UvMove"></div></div></div>';   /* Visual -> Timeline: the canvas, its cards drawn and moved by uvRun */
     el.innerHTML = (uvTl ? visTl() : '<div class="t3UpdVis" aria-hidden="true">' + v.map((it, j) => tile(it, pos[j])).join('') + '<i class="t3UpdSp">' + SPK + '</i><i class="t3UpdN">' + n + '</i></div>') +
       '<div class="t3UpdTx"><b>' + esc(title) + '</b><span>' + esc('Dr Lu ' + said + '. See where ' + (n === 1 ? 'it sits' : 'they sit') + ' on your timeline.') + '</span></div>' +
       '<div class="t3UpdAct"><button class="t3UpdOk" type="button">Got it</button><button class="t3UpdGo" type="button">See update</button></div>';   /* Got it, a secondary, in place of the close ("Add secondary instead of dismiss: Got it"); the two at the card's right on the desk ("Desktop CTA right side"), under the text on the phone */
     const inf = host.querySelector(':scope > .t3Info'); if (inf) inf.prepend(el); else bar.before(el); placeMods();   /* a module: above the timeline, or in the right column by its slot */
-    el.querySelector('.t3UpdGo').addEventListener('click', () => { const m = document.getElementById('stT3Upd'); if (m && m.value === 'modal') updModal(); else cmGo(0); });   /* Plan updates: Modal, the updated plan over the page; Coachmark, the walk */
+    el.querySelector('.t3UpdGo').addEventListener('click', () => { umClose(true); cmGo(0); });   /* the banner is Coachmark's: its See update the walk, never the modal ("If coachmark, see update CTA lead to coachmark") */
     el.querySelector('.t3UpdOk').addEventListener('click', updDone);
     if (uvTl){ el.classList.add('t3UvOn'); uvRun(el.querySelector('.t3UvMove'), ['']); } };   /* the new card bare: a skeleton's square, no photo, no icon */
   /* the Timeline visual's motion: skeleton cards (22 high, 28 apart) going up at 10px a second, for ever, recycled at the top and added at the foot; every 3.6 s the stack parts at the seam nearest the middle
@@ -56241,8 +56241,6 @@ hairline({
       cs.forEach(put); requestAnimationFrame(tick); };
     requestAnimationFrame(tick); };
   window.__t3UpdPlace = updPlace;
-  { const t = document.getElementById('stT3UpdVis'); if (t) t.addEventListener('change', () => { if (updIds().length) updPlace(); }); }
-  { const u = document.getElementById('stT3Upd'), t = document.getElementById('stT3UpdVis'), r = t && t.closest('.tkRow'), f = () => { if (r) r.hidden = !!u && u.value === 'on'; }; if (u) u.addEventListener('change', f); f(); }   /* "IF coachmark the Visual below cant be visible to select": the Visual row only with Modal */   /* Plan updates -> Visual: the card drawn again with the other picture */
   /* Plan updates -> Modal ("Modal Updated timeline shouldnt Open the Async report but instead a floating modal with the timeline version designed on async report"): a floating modal over the page (Modals -> Bottom sheet · Floating: centred on the desk; on the phone the floating sheet, 8 in, its notch and its swipe down),
      the plan drawn as the Async report's Confirm your updated plan, Layout Timeline (its markup, .dsgTl in .arRvwTlW, and its CSS, the master): the debrief done, then each month that changed, what was there already faded and grey ("In your plan"), the new and the moved in colour, their price or Included and New / Adjusted.
      A changed card takes the page to that item on the timeline; Got it closes it and puts the updates card away, as the walk's Done */
@@ -56355,9 +56353,11 @@ hairline({
     const put = () => { if (!side.isConnected) main.append(side); }; window.__t3Side = put;
     const f = () => { H.classList.toggle('tlSideOn', !e || e.value !== 'off'); put(); }; if (e) e.addEventListener('change', f); f(); }
   { const u = document.getElementById('stT3Upd'), SAMPLE = [{ g: 'Clinical', svc: 'dexa', t: 'DEXA scan', adj: 1 }, { g: 'Clinical', svc: 'phys', t: 'Physical assessment', s: 'Strength, mobility and fitness \u00b7 90 min' }, { g: 'Clinical', svc: 'colon', t: 'Colonoscopy', s: 'Your 5-yearly screening, now due' }];
-    if (u) u.addEventListener('change', () => { updGone = false; if (!H.classList.contains('tlD3')) return; const on = u.value === 'on' || u.value === 'modal'; if (u.value !== 'on'){ cmShut(); if (!on) updL = []; } news(on ? SAMPLE : []); if (u.value === 'modal') updModal(); });
+    if (u) u.addEventListener('change', () => { updGone = false; umSeen = false; if (u.value !== 'modal') umClose(true); if (!H.classList.contains('tlD3')) return; const on = u.value === 'on' || u.value === 'modal'; if (u.value !== 'on'){ cmShut(); if (!on) updL = []; } news(on ? SAMPLE : []); if (u.value === 'modal' && main.getClientRects().length){ umSeen = true; updModal(); } });
     /* "Show the Plan update card by default on V4 member": the card follows the setting, not only its change: Coachmark or Modal already set when the page loads (a saved setup, a preset with the same value), or set before the Timeline turned V3 or the member established, the card is there; not after its Got it this visit */
-    const sync = () => { if (!u || updGone || !H.classList.contains('tlD3') || T().mem === 'new' || (u.value !== 'on' && u.value !== 'modal') || main.querySelector('.t3Upd')) return; if (updIds().length) updPlace(); else news(SAMPLE); };   /* its changes still on the rows: the card put back; else the sample's */
+    const sync = () => { if (!u || updGone || !H.classList.contains('tlD3') || T().mem === 'new' || (u.value !== 'on' && u.value !== 'modal')) return;
+      if (u.value === 'modal'){ if (umSeen || um || !main.getClientRects().length) return; if (!updIds().length) news(SAMPLE); umSeen = true; updModal(); return; }   /* Modal: no banner, the modal itself when the Timeline shows, once a visit (closed, it stays closed until Experience is set again) */
+      if (main.querySelector('.t3Upd')) return; if (updIds().length) updPlace(); else news(SAMPLE); };   /* Coachmark: its changes still on the rows, the banner put back; else the sample's */
     ['stTlD', 'stT3Mem', 'versionSel'].forEach(q => { const e = document.getElementById(q); if (e) e.addEventListener('change', () => setTimeout(sync, 0)); });
     if (document.readyState === 'complete') setTimeout(sync, 0); else addEventListener('load', () => setTimeout(sync, 0)); }   /* Modal: the card too, its Check it out the modal; the modal opened now */
 })();
