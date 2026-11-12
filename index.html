@@ -51046,6 +51046,7 @@ hairline({
       const col = window.__tkCol ? window.__tkCol.get() : null;   /* the folded groups too */
       if (SHD) SHD = { v, all, at: Date.now(), col };   /* the Presets' Default is what was just saved (it held the shared setup taken on load, so the Save's dot and "Default · changed" stayed after a Save: "If it's saved, the orange dot should disappear") */
       setTimeout(() => { if (window.EvPresets && window.EvPresets.relabel) window.EvPresets.relabel(); }, 0);
+      if (!((SDB || dbWait) && !canShare()) && window.EvPresets && window.EvPresets.star) window.EvPresets.star();   /* "If I change the default and SAVE it should ALSO save the preset related to this version eg here v4": the page's starred preset (the one it opens on) takes the tweaks too; a viewer's Save stays theirs */
       const say = (t, ms) => document.querySelectorAll('.stTkSave').forEach(x => { x.textContent = t; clearTimeout(x._t); x._t = setTimeout(() => { x.textContent = 'Save'; }, ms); });
       if ((SDB || dbWait) && !canShare()){ say('Saved for you', 2200); logSet({ at: Date.now(), local: 1 }); return; }   /* a viewer: their own browser only, the shared setup untouched */
       if (SDB || dbWait){ const at = Date.now(); lastAt = at; say('Saving…', 12000); Promise.resolve(UZ && UZ.id ? UZ.id() : null).catch(() => null).then(by => { logSet({ at, by: by || '', local: by ? 0 : 1 }); const body = by ? { v, all, at, by } : { v, all, at }; if (col) body.col = col; return dbSet(SK, body); }).then(() => say('Saved for everyone', 1800), e => { try { console.warn('[everlab] Tweaks save', e); } catch (x){} say(ok ? 'Saved here only' : 'Not saved · ' + why(e), 5000); }); }   // shared: every browser opens with it
@@ -51297,6 +51298,8 @@ hairline({
         dbReady().then(db => { if (db) return; STAR = Object.assign({}, STARL); starOk.p = starOk.s = true; starTry(); }).catch(() => { STAR = Object.assign({}, STARL); starOk.p = starOk.s = true; starTry(); });
         document.addEventListener('change', e => { if (e.target && e.target.id === 'versionSel') setTimeout(starTry, 60); });   /* another page: its own star, the first time this visit */
         window.EvPresets = { toDefault: () => { setOn(DEFID); labelSoon(); }, relabel: () => labelSoon(), changed: () => { const o = cur(); return !!o && !same(o.snap); },
+          star: () => { const sid = STAR[pgNow()], o = sid && sid !== DEFID ? PRE.find(x => x.id === sid) : null; if (!o) return ''; const c = cur(); if (c && c.id !== DEFID && c.id !== o.id) return '';   /* Save on Default (or on the starred preset itself): the starred one updated with it, so the page opens on what was saved; another preset in use: left alone */
+            upd(o.id, { snap: snapNow(), at: Date.now() }); labelSoon(); snack('“' + o.name + '” saved too: the page opens on it'); return o.name; },
           save: () => { const o = cur(); if (o && !o.fixed){ upd(o.id, { snap: snapNow(), at: Date.now() }); setOn(o.id); say('“' + esc(o.name) + '” saved with the page’s tweaks', 2200); return o.name; }
             const b = document.querySelector('.stTkSave'); if (b) b.click(); setOn(DEFID); return 'Default'; } };
         label();

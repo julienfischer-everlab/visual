@@ -23383,3 +23383,12 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - No window ground or border, no glow, no count badge, no sparkle. The stack fades at its top and foot. With reduced motion, it shows both items already in place. Light mode has its own tones.
 - **Plan updates card text** ("reduce max width by 128px"): 308px at most, was 436 on the desk. At M it was already 308; the phone and the right column are narrower and unchanged.
 - **Timeline rows** ("Always add another badge From recent results"): the New / Adjusted badge always has a second one beside it, "From recent results" (a neutral pill), both in a wrapping row (`.tlChgW`). It sits under the text on the desk and at the foot's left beside the buttons on the phone. Checked: no overlap with the buttons.
+
+## v2454 — Save also updates the page's starred preset
+
+- **Presets** ("If I change the default and SAVE it should ALSO save the preset related to this version eg here v4"): the Tweaks' Save now also writes the page's tweaks into the page's starred preset (★, the one the page opens on), so the next visit opens on what was saved. Before, Save on Default kept the shared setup only, and the page then opened on the starred preset without the change.
+  - It applies when the preset in use is Default or the starred preset itself, from the top bar's Save and from the panel's Save (`EvPresets.star()`).
+  - Another preset in use: the starred one is left alone (the top bar's Save still updates the preset in use, as before).
+  - A viewer's Save ("Saved for you") never touches the team's preset.
+  - A snackbar says "“V4” saved too: the page opens on it".
+- Checked offline with a local starred V4 on the Timeline: Default changed → Save → V4 holds it, a reload lands on V4 with it; V4 changed → the panel's Save → V4 updated; another preset in use → V4 unchanged.
