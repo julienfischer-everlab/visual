@@ -19751,7 +19751,7 @@ window.EvCtl = (function () {
     var DF = o.dbf === 'fade' || o.dbf === 'mark', DM = o.dbf === 'mark', WTH = DF && !DM && o.welcome === 'title', dfP = 0, dfCta = null, dmLay = null, enDir = 0;   /* What to expect over a picture: Image fade, or Marker overlapping image (DM: the picture the top part, its markers one at a time, the words under it); dfP: when its picture comes in (s, 0 settled); enDir: the way the last step change went */
     var step = W0;
     var alive = true;
-    var revOn = false, stkAt = 0, stkDec = [], stkAll = [], rcPh = 'dr', rcBuild = null, rcLifeSeen = false, bpSeen = false;   /* dr: the doctor's screen first ("split this in 2 screens, doctor first") */   /* rcLifeSeen: the Lifestyle screen gone through (its card Reviewed) */   /* rcPh: the Stacked step's phase, intro (the two cards), clin (the stack), life (Later / Now) */   /* Stacked recommendations: where the deck stands (kept when the review pops back to it), and the review of what was added over the recommendations step */
+    var revOn = false, stkAt = 0, stkDec = [], stkAll = [], rcPh = 'dr', rcBuild = null, rcLifeSeen = false, bpSeen = false, bpDec;   /* dr: the doctor's screen first ("split this in 2 screens, doctor first") */   /* rcLifeSeen: the Lifestyle screen gone through (its card Reviewed) */   /* rcPh: the Stacked step's phase, intro (the two cards), clin (the stack), life (Later / Now) */   /* Stacked recommendations: where the deck stands (kept when the review pops back to it), and the review of what was added over the recommendations step */
     var timers = [], figs = [];   // figs: the Hairline figures drawn on the step, let go with it
 
     function later(fn, ms) {
@@ -21160,7 +21160,13 @@ window.EvCtl = (function () {
           : window.EvBio.row({ name: esc(m.name), st: m.status === 'Out of range' ? 'out' : m.status === 'Suboptimal' ? 'sub' : 'ok', val: esc(m.value), sub: sub(g[0], m), attrs: ' data-k="' + k + '" role="button" tabindex="0" aria-haspopup="dialog"' }); }).join('');
         [].forEach.call(rows.querySelectorAll('.mbrow[data-k]'), function (r) { var m = list[+r.getAttribute('data-k')]; on(r, 'click', function () { bioOpen(m, r); }); on(r, 'keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); bioOpen(m, r); } }); });   /* each its detail, as the insights' rows */
         cards.push(h('section', { class: 'arBpCard arBpG', style: { '--bpDot': g[3] }, 'aria-label': g[1] }, h('p', { class: 'arBpGH' }, h('i', { 'aria-hidden': 'true' }), g[1], h('span', { text: String(list.length) })), h('p', { class: 'arBpGS', text: g[2] }), rows)); });   /* a card each group ("1 card for each group") */
-      if (step === REC && !revOn) { ctaLabel.textContent = rcNext('blood') === 'rev' ? 'Review my plan' : 'Continue'; cta.disabled = false; navTt.textContent = 'Plan recommendation'; navTs.hidden = true; }
+      if (step === REC && !revOn) { ctaLabel.textContent = 'Add to plan'; cta.disabled = false; navTt.textContent = 'Plan recommendation'; navTs.hidden = true;
+        /* the Clinical deck's standard footer ("Blood panel reco: Maybe later, Add to plan; same as Clinical"): Maybe later beside Add to plan, the note under them; either answer, on to what follows */
+        var aft = cta.parentNode, fSec = aft.querySelector('.arRcFtSec'), fNote = aft.querySelector('.arRcFtNote');
+        if (!fNote) { fNote = h('p', { class: 'arRcFtNote', text: 'You can change your mind later in Plan.' }); aft.insertBefore(fNote, cta); }
+        if (!fSec) { fSec = h('button', { type: 'button', class: 'arRcFtSec', text: 'Later' }); aft.insertBefore(fSec, cta.nextSibling); on(fSec, 'click', function () { if (rcStkFt) rcStkFt(false); }); }
+        fSec.textContent = 'Maybe later'; fSec.hidden = false; fNote.hidden = false;
+        rcStkFt = function (yes) { if (!card.isConnected || rcPh !== 'blood') return false; bpDec = !!yes; var nx = rcNext('blood'); if (nx === 'rev') { if (!stkFin()) return false; revOn = true; } else rcPh = nx; rcBuild = null; pushDir = 1; render(); return true; }; }
       return enter(h('div', { class: 'arStack arGap24 arRcStack arBpStack' }, hd, h('div', { class: 'arRcStkWrap arBpWrap' }, [card].concat(cards))), hd, title, [card].concat(cards));
     }
     function buildRecStack() {
@@ -21221,7 +21227,7 @@ window.EvCtl = (function () {
       if (!fSec) { fSec = h('button', { type: 'button', class: 'arRcFtSec', text: 'Later' }); aft.insertBefore(fSec, cta.nextSibling); on(fSec, 'click', function () { if (rcStkFt) rcStkFt(false); }); }
       var shufBusy = false;   /* the opening shuffle playing: the answers wait */
       rcStkFt = function (yes) { if (shufBusy) return true; if (!deck.isConnected || at >= n) return false; decide(at, yes); return true; };
-      fNote.hidden = false; foot = fSec; foot.hidden = at >= n;
+      fSec.textContent = 'Later'; fNote.hidden = false; foot = fSec; foot.hidden = at >= n;   /* its own word (the blood panel's is Maybe later) */
       var wrap = h('div', { class: 'arRcStkWrap arRcStkFtOn' }, deck);
       /* the desk (M, L): the footer's buttons and note as a row in the content, the card's width, just under it ("the CTA group and sub should only take the width of the card and be just below the card. Its not a footer it's a row in the content"); the row's buttons press the footer's, its words and states copied from them */
       (function () { var dN = h('button', { type: 'button', class: 'arRcDkN' }), dY = h('button', { type: 'button', class: 'arBtn arBtnPrimary arBtnLg arRcDkY' }), dT = h('p', { class: 'arRcDkT' }), row = h('div', { class: 'arRcDkRow' }, h('div', { class: 'arRcDkBtns' }, dN, dY), dT), seen = false, mo = null;

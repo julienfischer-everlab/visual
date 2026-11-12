@@ -22978,3 +22978,9 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **See my updated plan → Timeline with the coachmark ("If trigger See updated plan, go to Timeline Coachmark triggered")**. The submit (the end's See my updated plan, and the review's Pay) calls `_tl.news(its, { walk: true })`. Timeline V3 places the Plan updates card, then starts the coachmark walk through what changed by itself (`cmGo(0)`).
 - **Blood panel ("1 card for each group")**. The Follow-up blood test is its own card at the top, then each group (Outside the healthy range, Getting better, Out of date, Never tested) is its own card.
 - **Recommendation card Why ("remove dot")**. The coloured dot before the Why value is gone.
+
+## v2407: Blood panel footer as Clinical's
+
+- "Blood panel reco: Maybe later, Add to plan, same as Clinical": the blood panel uses the Clinical deck's standard footer. **Maybe later** sits beside **Add to plan**, with "You can change your mind later in Plan." under them.
+  - Either answer is kept (`bpDec`) and moves on to what follows: Lifestyle, or the review when Clinical is the only other group.
+  - The Clinical deck's own secondary button still reads "Later".
