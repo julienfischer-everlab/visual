@@ -23584,3 +23584,11 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
     - both rows are lit in the menu;
     - Default reads "Same as <home> · saving one saves both".
   - Updating any preset now refreshes the "· changed" label straight away.
+
+## v2471: Presets home icon; smaller banner icons
+
+- "There's no house in the default one. No need for that. Below, on the preset, the house should be filled when it's blue and active":
+  - The Default row has no house any more.
+  - The home preset's house is filled and blue (Lucide's house shape, the door cut from its foot). The others keep the outline.
+  - Clicking the lit house still gives the page back to Default; its tooltip now says so.
+- "Reduce the plus icon and the calendar icon by 60%": the Plan updates banner's plus (added card) and calendar (swapped card) go from 14px to 5.6px, centred where they were.
