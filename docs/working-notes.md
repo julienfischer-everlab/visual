@@ -23413,3 +23413,8 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - Reduced motion: still, one new card in the middle.
 - **Plan updates buttons** ("Got it / See update"): Check it out is now See update.
 - Checked at L (over the timeline and in the right column) and XS, dark and light: the stack keeps its 28 spacing through every parting over 23 s, about 7 cards at any time; no overlaps; buttons on one line.
+
+## v2457 — New member step cards: 12 inside, 12 apart
+
+- **Get your timeline started** ("Check padding to be 12px"; "+4px gap between cards as well"): each step card 12 inside on every side (was 20 above and below, 16 at the sides), 12 between cards (was 8). Desk: a card is 88 high (64 visual + 12 + 12), the words and the button still centred on it. The phone takes the same 12.
+- Checked at L and XS: padding 12, gap 12, visual at 12 / 12.
