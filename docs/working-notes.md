@@ -23204,3 +23204,23 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
     - With Counts on, Upcoming shows Now plus This year (7), and Later its own (2).
     - The sections in the list keep their headings (Now, This year).
 - A plain select (the labels are too long for the segmented control). Kept in the Timeline's saves and presets (`stT3Tabs`), and the timeline rebuilds when it changes. Checked at L and XS, by clicks and by scrolling.
+
+## v2430: Preset star, review and blood panel polish, Divider rule, Timeline row pictures
+
+- **Presets**:
+  - A **star** at the start of each row ("Add a way to Star one preset to become the default"). The starred preset (filled yellow) is applied when the page opens or is first visited, unless a `#tk-` link is open or a preset is already applied. Saved with the groups in the shared store (`tkPsGroups/star`), and locally when there is no store. Fixed rows can be starred too.
+  - The ↻ Update button stays, without its tooltip ("Remove", then "Icon → Circle back").
+- **Async report**:
+  - Doctor's note, Card style: avatar, text and quote centred ("Centered").
+  - Adjustment card: the yes button reads **Add to my plan**, the badge **Adjusted** / New action; the footer CTA always **Add to plan** ("Adjust to plan", "Adjusted").
+  - Blood panel:
+    - 4 more above each group's body (12 → 16, "+4px gap").
+    - Card variant: the sub ("Your latest results help us identify the … to test next.") sits inside the card, 16px centred, in place of the count block; the lede above is removed.
+    - Dividers at 4% (was 8%), and only between two rows of the same section, never after the last ("Never divider on a last item"). The label dot is gone ("no icon").
+  - Review: 8 more under each group title, the later rows' button reads **Add to plan**, the tab **Added to plan**, cards 20 radius (+4). Pay shows the loader in the button (EvLoad.simple) and moves to the checkout, no overlay ("Just loading state in CTA").
+- **Design system → General layout → Divider**: a new part. Rules (between items only, never after the last or before the first, 1px at 4% ink, by section) with Do / Don't examples.
+- **Timeline V3**:
+  - Rows 8 tighter (padding 20, 16 on the phone); the ghost card keeps 8 round the content ("Reduce gap betwen item by 8px", "Card 8px padding").
+  - Recommendations added from the report keep their picture on the Timeline row ("USe the image from the recommendation flow!").
+  - The New / Adjusted badge moves from the title to the row's footer, left, 14px with 12 side padding ("Badhe size up and on the footer", "left side"). On the phone it shares the button row.
+  - Your focus card, Thumbnail style: the sofa photo (the report's review picture) replaces Dr Lu's avatar ("Change img").
