@@ -23224,3 +23224,10 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - Recommendations added from the report keep their picture on the Timeline row ("USe the image from the recommendation flow!").
   - The New / Adjusted badge moves from the title to the row's footer, left, 14px with 12 side padding ("Badhe size up and on the footer", "left side"). On the phone it shares the button row.
   - Your focus card, Thumbnail style: the sofa photo (the report's review picture) replaces Dr Lu's avatar ("Change img").
+
+## v2431: Iterations group, Tabs select, Default names the starred preset, Timeline rows as the phone
+
+- **Tweaks → Iterations**: a new group at the top of the panel, above Container ("Put Timeline inside a dedicated group Iterations", "Above container"). It holds the Timeline's version (V3 / V1 archive / V2 archive), its label renamed **Version** ("Timeline → Version"). It shows on the Timeline page only, in every version; switching still keeps each version's own tweaks.
+- **Tab top → Tabs**: now a select reading **Now / This year / Later** or **Upcoming / Later**. The panel's generic rule had turned it into an unlabelled On/Off switch (any two-option select becomes a switch), which is why it looked like a toggle that belonged in the group header. It isn't an on/off, so it stays a row ("Do we have a tweak for Upcoming and later tab ?").
+- **Presets**: when another preset is starred, Default's line reads "Everyone opens on ★ <name>" (this browser's, without the shared store) instead of "The setup everyone opens on" ("mention the Default version here. The starred one").
+- **Timeline V3 rows**, every breakpoint as the phone ("8 padding as mobiel"): 16 above and below each row, so the ghost card sits 8 clear of the dividers and 8 round its content (was 12 clear at the desk). Pictures 4 rounder ("+4px radius": desk 14 → 18, phone 12 → 16), the ghost card concentric with them (26 desk, 24 phone).
