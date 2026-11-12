@@ -23510,3 +23510,26 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - Modal: no banner and the modal open; closed, it stays closed after leaving and coming back.
   - Back to Coachmark: the banner returns.
   - Modal saved at load: nothing on the Overview, the modal on opening the Timeline.
+
+## v2467: Timeline batch (banner visual, months, presets, roll, visuals, check-in header)
+
+- **Plan updates banner visual** ("The first interaction should be an add. The second interaction should be a swap, and then add, swap, add, swap"): the loop is add, swap, add, swap (stops 4, 7, 2 and 5 cards apart). It was add, add, add, then swap. Measured: swap at 3.0 s, add at 6.3 s, swap at 9.5 s, add at 12.8 s.
+- **Month chips** ("Keep the months static, fixed on scroll ... It's like a stack fix"): with the tabs fixed, the month chips now pin 16px under the tabs; before, they scrolled away. Each stays pinned through its month, and the next one pushes it out. On XS, the month line pins flush under the tabs.
+  - Checked at L: June holds at 144, then July takes its place as June slides out; October follows.
+- **Presets** ("Highlight the one with the light blue background for the active one"): the preset on the page has a light blue ground (14%) in the Presets menu and in the top bar's list, with its "· on" in light blue.
+- **Decade number roll** ("The first number should roll slower than the second one"):
+  - The tens now take twice as long as the units (.4 against .2 of the run), landing as the number reaches the middle. They were already a little slower (.377 against .26).
+  - Measured at 50: the units land by 90% of the way, the tens at the middle.
+  - The Section style's reel does the same: a digit that changes once turns over the whole run.
+- **Item visuals** ("Increase the visual height by 8 px. Keeping the ratio ... only on desktop"): 104 × 104 on the desk (was 96). The phone stays at 72, and the new member's step cards are unchanged.
+- **Next check-in CTA** ("Display the CTA on the top"):
+  - Bloc card: Prepare (and Review on the focus card) sits at the top, level with the first line.
+  - Thumbnail card: it stays centred on the picture, as in the header reference.
+- **Check-in header** ("use a style like this with a header behind the card ... The orange should be way lighter"; "Maybe we can just have an outline header"):
+  - The line "Your next check-in is in 187 days" is a header strip behind the card's top. The strip runs 30 under the card, so it shows round the card's rounded corners.
+  - The card underneath keeps the service-item structure: picture, title, sub, Prepare.
+  - New tweak, Your focus > Check-in header:
+    - Light orange (default): a pale orange ground and line.
+    - Outline: a hairline, the line in secondary ink, the dot orange.
+    - In card: as before.
+  - The header follows the card's corners (30 on Thumbnail, 28 on XS, 20 on Bloc). There is a light mode variant.
