@@ -23299,3 +23299,10 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 
 - **Design system menu: search** ("add a search to search item from menu"): a search field at the top of the left menu, held there while the list scrolls. As you type, only the items whose name (or their page's title) contains the words stay, with their group headings. "No match" shows when nothing fits. Enter opens the first item and Escape clears the field. It appears in the Design system only.
 - **Main focus card**: no footer ("Remove footer"): "Reviewed with Dr Lu every year" and the avatar are gone; `fcCard` takes `by = null` for no who-and-when line. 24px less space below it ("-24px gap"): 44 → 20 to the first item.
+
+## v2443: Focus Photo padding, row button in the footer, staggered roll, Inbox ghost cards
+
+- **Focus → Photo card**: the goal and its line now run the full width of the card, so the right padding equals the left ("padding right same as padding left"). They were capped at 56% / 48% (78% / 70% on the phone). Now it is 24 / 24 on the phone and 32 / 32 on desktop, and the line is no longer cut short.
+- **Timeline rows on the phone**: the button (Book, View, ⋯) now sits in the footer, on the date line ("Book by 27 Apr") at its right ("in the footer"), instead of on a line of its own below. Rows without a date keep the button on its own line. The CTA position Bottom tweak still wins.
+- **Roll effect, staggered** ("the 67 and 90 ... 67 slower than 90"): each digit column has its own speed. The units roll quickest; the tens roll over a longer stretch of the scroll (about 1.45× as long), like a counter rather than one block. Both land on the decade by the middle of the screen.
+- **Ask sheet Inbox, Ghost cards** ("Ghost card, bg on hover and press"): no fill at rest. Hover shows the card's ground (white 6%, light mode warm 5%) and press a step more (white 10% / 9%), with 16px corners. Each card reaches 8px out on either side, so the words stay in place. The dividers on either side of the lit card disappear. It replaces the 72% fade on hover.
