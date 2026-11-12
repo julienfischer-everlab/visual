@@ -23550,3 +23550,10 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - The swapped card gets a filled calendar (yellow, with a 3 × 2 day grid).
   - Each pops in as its card settles, overshooting slightly to 118% before settling (plus about 1.2 s after the card drops in, calendar about 0.9 s after the swap starts).
   - Light mode and reduced-motion variants are included.
+
+## v2469: Top bar icons, filled and one size
+
+- "Use the filled icon everywhere, even on the tweak, and make the icon the same size everywhere. I feel like the comment is too big": every top bar icon is 14 × 14.
+  - Filled shapes: Tweaks' pen (was an outline), Presets' bookmark (its stroke ring removed), Screenshot's camera (was 16), Comments (was 15 with a stroke ring, so the biggest).
+  - No filled form exists for Share's link and Refresh, so they use a heavy stroke (2.8) to match the solid weight. Refresh also gets a filled arrowhead.
+  - Checked at 1440 and 1100 wide: all six measure 14 × 14.
