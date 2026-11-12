@@ -23592,3 +23592,7 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - The home preset's house is filled and blue (Lucide's house shape, the door cut from its foot). The others keep the outline.
   - Clicking the lit house still gives the page back to Default; its tooltip now says so.
 - "Reduce the plus icon and the calendar icon by 60%": the Plan updates banner's plus (added card) and calendar (swapped card) go from 14px to 5.6px, centred where they were.
+
+## v2472: Banner icons 2x
+
+- "We increase the icon now by 2x": the Plan updates banner's plus and calendar go from 5.6px to 11.2px, still centred where they were.
