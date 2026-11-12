@@ -23802,3 +23802,16 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **Only on their step** ("Only displayed when we navigate on the related step/page"): a group or row tied to a phase (`data-ar-ph`) shows on that phase alone. Confirm your updated plan showed on every screen (the phase filter cleared the screen filter); now on the review alone. Blood panel on its step alone.
 - **Phone: the CTA in the footer** ("on mobile the CTA part of the footer"): at XS (and the phone mode) What to expect's See results is the footer's button again; the in-body CTA stays from S up.
 - Checked at S (760) and XS: groups per step (What to expect: General, Container, Top nav, Intro screen; insight: … Insight; review: … Confirm your updated plan, Recommendations; blood: … Recommendations, Blood panel).
+
+## v2488: Flow panel: switch steps off and reorder them; Clinical recommendation group; Swipe On/Off
+
+- **Steps on/off and order, from the Flow panel** ("Need a way to turn off and change order of steps in general in this kind of structure on the flow"):
+  - General: a flow opts in with `arrange: true` on its `window.__flowPanel(key, cfg)`. Its rows then show a grip at the left (drag to reorder) and a switch at the right (in the flow, or skipped; an off step greyed). Rows carry `id`, `sc` (the scope they reorder in), `fix` (no grip), `nosw` (no switch), `off`.
+  - The arrangement `{ off: [ids], order: { scope: [ids] } }` is read by `window.__flowArr(key)`, kept in the flow's own store (`cfg.store`), else this browser's. `window.EvFlowOrd(ids, ord)` lays a saved order over the steps there are now (a new one in after the one before it). A flow can switch some steps its own way (`cfg.sw`).
+  - The Async report: every step listed (Welcome, What to expect, each insight, Everything else, Here's what we recommend with its phases, the end), its arrangement in a Tweak (`stArFlow`, in General: kept by Save and the presets).
+    - Next and Back follow the order and skip what is off (the end where the order ends; Back hidden on the first step on; Replay from it).
+    - Inside the recommendations: Doctor note and Summary can be switched off (in place); Clinical, Blood panel and Lifestyle reorder among themselves and their switches are the Recommendations group's own; the review and the checkout stay last.
+  - Dragging a top step carries its sub-steps with it.
+- **Clinical recommendation group** ("Recommendation Clinical"): the Recommendation card rows leave Recommendations for their own group, named as the Flow panel names the step, shown on that step.
+- **Swipe** (in it; "Add a tweak Swipe avail. ON OFF"): On (default) the Clinical cards swipe to decide; Off they don't, the footer's buttons decide.
+- Checked: What to expect off skipped from the welcome; insight 2 dragged over insight 1, the walk 0 → 3 → 2 → 4; Doctor note off lands on the summary, Lifestyle moved first comes first, Back out of the recommendations to Everything else; the Clinical switch from the panel turns the Recommendations' Clinical off; Swipe Off a drag leaves the card, On it decides it.
