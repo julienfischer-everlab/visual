@@ -23397,3 +23397,19 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 
 - **Get your timeline started** ("No card ! 4x cards instead"): with the decade style Card #1, the four steps sat in one outlined card with dividers between them. Each step is now its own outlined card (8 apart, no ground), whatever the decade style, as Card #2 already drew them.
 - Checked at XS and L with Card #1: four separate outlined cards, no outline on the list round them.
+
+## v2456 — New member step cards as the timeline's item card; Plan updates visual: endless scroll, green plug-in, 128 canvas; See update
+
+- **New member steps** ("Same card as the member card in the timeline, difference is that the rest state is outlined. And gap 8px"; "Reduce visual by 32px and center vertically the content inside"): each step is the timeline's item card (its ghost hover and press), outlined at rest, 8 apart (already 8).
+  - Desk: its visual 64 (was 96; the icon 24), the visual, the words and the button centred on one line, 24 between visual and words, the empty due line out. A card is 104 high (was 136).
+  - Phone: its visual 40 (was 72), the words beside it, the button on its own line under them (no extra margin above it). The records' bars stay at the title's right, as on every timeline row on the phone.
+- **Plan updates → Visual → Timeline** ("Iterate this visual"):
+  - "always scroll forever": no loop, no fade. The skeleton cards go up at 10px a second for ever (uvRun, requestAnimationFrame), recycled at the top and added at the foot; the loop ends when its card is gone.
+  - "Card should arrive and plug from the timeline, not from left right": every 3.6 s the stack parts at the seam nearest the middle (above up 14, below down 14, 0.7 s) and a new card grows out of the seam (from a line to a card), then scrolls on with the rest. Never next to the last one plugged. The updated items' pictures in turn.
+  - "Visual bigger 128 128 canva": the canvas is 128 x 128, its cards 22 high and 6 apart.
+  - "Card +4px padding": the card 24 / 28 / 24 / 20 (was 20 / 24 / 20 / 16), the right column's 36 / 28 / 28. "Margin right visual +16px": its column 144 for the 128 canvas (32 to the words). Both with the Timeline visual only; Stack keeps its 104 fan.
+  - "Use green colour and no orange, and no border on new card": the new card green (the app's green, 20% in dark, 16% in light), its lines green-tinted, no outline.
+  - Phone: the canvas leaves the words 173, so the two buttons take their own row under both, side by side.
+  - Reduced motion: still, one new card in the middle.
+- **Plan updates buttons** ("Got it / See update"): Check it out is now See update.
+- Checked at L (over the timeline and in the right column) and XS, dark and light: the stack keeps its 28 spacing through every parting over 23 s, about 7 cards at any time; no overlaps; buttons on one line.
