@@ -23607,3 +23607,17 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - Grid is gone. An older save of Grid opens, and shows in Tweaks, as Simple list.
   - Groups (Card / No card) only shapes the list's group cards, so it shows with Simple list and hides with Timeline.
   - Checked at XS: switching in Tweaks redraws the screen in place, both ways; Timeline stays the default.
+
+## v2474: Decade Main focus, no avatar, its own tweak
+
+- "For the decade, remove the avatar and also create a tweak for the dedicated focus card in the decade":
+  - The decade's Main focus card no longer takes Tweaks → Focus's Thumbnail and its doctor photo. It is always the words card: dot, "Main focus", the decade's line and its area chips.
+  - New tweak, Timeline → Decades → **Main focus**, for the Number styles:
+    - **Card** (default): the focus card's ground.
+    - **No card**: the same dot, eyebrow, words and chips plain on the page, lined up with the column's edge.
+    - **Off**: none.
+  - It is saved with the rest of Tweaks and the presets.
+  - Checked at L in the Later tab, with Focus on Thumbnail: no picture in any decade.
+    - Card: four focus cards on the #252522 ground.
+    - No card: transparent.
+    - Off: none.
