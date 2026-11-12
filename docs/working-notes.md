@@ -23145,3 +23145,10 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - Its rows and buttons are taken off. In their place: the number of biomarkers it captures, big ("10"), with "biomarkers to test" under it, over a hairline.
   - Its sub reads "Fast 8 hours · <month>", since the count is now below.
   - The tabs sit under the card and the groups follow. Maybe later / Add to plan stay the footer's. Wired through the KEYS and remount lists and the mount (`bph`).
+
+## v2425: Timeline V3 new member: V1 (simple message) / V2
+
+- New Tweak **New member** under Member (Timeline V3): V1 / V2 ("This is version 2, and I want a version 1 with a simple message. See the capture").
+  - **V2** (default): the new member's timeline as before (bento, Get your timeline started, Later, the decades sketch).
+  - **V1**: the page's empty state alone, centred under the Timeline header: a calendar crossed out (Lucide calendar-x, 40, secondary), "You’re all caught up" (20 / 26 medium) and "Nothing to book right now." (16 / 22, secondary). The capture's grey "V2: incremental on the production page" line is the board's note, so it is not drawn.
+- It only applies when Member is New, and rebuilds the timeline on change, as the other Timeline V3 tweaks do.
