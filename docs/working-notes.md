@@ -23360,3 +23360,15 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - "NO main focus on New member": the Main focus card is gone.
   - "Title margin top +16px", "No eyebrow align left": the title "Get your timeline started" has no "Your first 2 weeks" eyebrow, sits at the left, and is 48px below the Amira card (was 32).
 - **New member, foot** ("Remove that" twice): the teaser ("More to uncover with your doctor", its ghost rows and stethoscope) and the "Saved for later" block are gone. The page is now the Amira card, the title and the four steps.
+
+## v2452: Plan updates card, Visual tweak: Timeline (animated skeleton)
+
+- **Tweaks -> Plan updates -> Visual** ("tweak a Version with a animation skeleton style visual where we can see a timeline with object that plug in to it, like a scroll down then object goes into two object from left and right"): Stack (the fanned tiles, default) or Timeline.
+- **Timeline** (`.t3UvTl`, the card's 104 x 84 picture) is a 5s loop:
+  - It starts as a skeleton timeline in a dark window: the rail down the middle, a dot every 14px, a bar on alternate sides, faded at the top and the foot. Two of the slots are empty (dashed outlines).
+  - It scrolls down one step.
+  - The first updated item flies in from the left into the left slot (overshoot easing), its orange line draws to the rail and the rail's dot lights.
+  - Then the second item flies in from the right into the right slot, with its line and dot.
+  - It holds, fades and starts again.
+- The items wear their own pictures, or their icon on a tile when they have none (the first two updated items). The sparkle stays at the top right. The count moves to the bottom left so it doesn't cover the right-hand item. With reduced motion, the slots show already filled and nothing moves. Light mode has its own tones.
+- Switching the tweak redraws the card in place (Save, presets and Share keep it like any other tweak).
