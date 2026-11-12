@@ -23557,3 +23557,30 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - Filled shapes: Tweaks' pen (was an outline), Presets' bookmark (its stroke ring removed), Screenshot's camera (was 16), Comments (was 15 with a stroke ring, so the biggest).
   - No filled form exists for Share's link and Refresh, so they use a heavy stroke (2.8) to match the solid weight. Refresh also gets a filled arrowhead.
   - Checked at 1440 and 1100 wide: all six measure 14 × 14.
+
+## v2470: Documentation flow → Overview bento; Default follows the home preset
+
+- **Overview bento** (new Documentation flow tab, after Gifting), from the request: "document all of the state here based on every preset ... on desktop and mobile, every state of the bento ... interactive ... not a screenshot ... mobile and desktop next to each other ... Each row is a preset".
+  - One row per Overview preset:
+    - Default comes first: the page as it opens, on its home preset when one is set.
+    - Then every preset by its group, in the Presets menu's order (ungrouped ones go under Other).
+  - Each row runs the app itself in two frames, Mobile 393 × 852 and Desktop 1440 × 900, with that preset put on.
+    - Then the Overview is shown at the frame's own width, so a preset saved at XS or L doesn't draw a frame inside the frame.
+    - Frames are live: tap, scroll, open things.
+  - The frames load with `#ob-demo`: embed mode, plus their own in-memory storage.
+    - Only the design-system masters are copied in.
+    - A preset put on inside a frame never touches this browser's setup or the team's.
+  - Rows load as they come near (within 200px of the doc's scroller), two at a time. They unload once 1400px away, with six frames live at most. Everything unloads when the doc is hidden.
+  - The rows follow the presets as they arrive or change.
+  - The left list jumps to a row. Zoom runs 30 to 100% (default 50%) and is kept in this browser.
+  - `EvPresets.list(page)` and `EvPresets.apply(snap)` feed it.
+  - Checked with five presets in two groups:
+    - every frame carries its preset (Insights amount 4 / 1 / 0 / 2 / 3);
+    - a preset saved at L still shows at 393 and 1440;
+    - the viewer's storage is untouched.
+- **Default = the home preset** ("Make sure the default is the preset from the home ... If I change something ... it automatically also replicates the change on the preset in the home"):
+  - Saving on Default already saved the home preset. Now:
+    - updating the home preset from its row in the menu also saves Default (Save first, then the snapshot, so the label isn't left on "· changed");
+    - both rows are lit in the menu;
+    - Default reads "Same as <home> · saving one saves both".
+  - Updating any preset now refreshes the "· changed" label straight away.
