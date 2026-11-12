@@ -22984,3 +22984,11 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - "Blood panel reco: Maybe later, Add to plan, same as Clinical": the blood panel uses the Clinical deck's standard footer. **Maybe later** sits beside **Add to plan**, with "You can change your mind later in Plan." under them.
   - Either answer is kept (`bpDec`) and moves on to what follows: Lifestyle, or the review when Clinical is the only other group.
   - The Clinical deck's own secondary button still reads "Later".
+
+## v2408: Adjustment answers; blood panel title on one line, new sub
+
+- **Adjustments ("When Adjustment CTA: Keep as it was, Adjust")**. When the card on top of the Clinical deck is an Adjustment, the footer reads **Keep as it was** / **Adjust** instead of Later / Add to plan.
+  - The card's own buttons in sheets use the same words.
+  - Its swipe cue says "Swipe to adjust / Release to adjust", or "Swipe to keep / Release to keep".
+  - Its result reads "Plan adjusted" or "Kept as it was".
+- **Blood panel**. "Your next blood panel" sits on one line ("in one line"). The sub is now "Based on your latest results, here's what we recommend testing next."
