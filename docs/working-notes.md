@@ -23596,3 +23596,14 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 ## v2472: Banner icons 2x
 
 - "We increase the icon now by 2x": the Plan updates banner's plus and calendar go from 5.6px to 11.2px, still centred where they were.
+
+## v2473: Confirm your updated plan, Simple list or Timeline
+
+- "For the 'Confirm your updated plan,' I want to tweak ... two options here: Simple list, Timeline. If yes to timeline, you show the timeline that we designed before":
+  - Tweaks → Async report: the review's sub-group is now titled "Confirm your updated plan", with Layout first.
+  - Layout has two options:
+    - **Simple list**: the grouped list (Clinical / Lifestyle, each item with its picture, sub, price or Included, New / Adjusted).
+    - **Timeline**: the review timeline designed earlier (the rail; your results debrief as done; Now, then the months; each item with its picture and footer).
+  - Grid is gone. An older save of Grid opens, and shows in Tweaks, as Simple list.
+  - Groups (Card / No card) only shapes the list's group cards, so it shows with Simple list and hides with Timeline.
+  - Checked at XS: switching in Tweaks redraws the screen in place, both ways; Timeline stays the default.
