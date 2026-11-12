@@ -23621,3 +23621,32 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
     - Card: four focus cards on the #252522 ground.
     - No card: transparent.
     - Off: none.
+
+## v2475: Blood panel rows card; Auto breakpoint frame fix; review Layout first; mini "In your plan" rows
+
+- **Blood panel rows card** ("a dark card that has all of this object ... small padding with the main card on the left, right, and bottom ... black background with an opacity of 16, maybe, or maybe 24"):
+  - Each group's markers (the New markers to test / Markers to re-test labels and their rows) now sit in a dark card of their own inside the group card.
+  - It is 8px in from the card's sides and foot, with a radius 8 less (concentric).
+  - Its content stays 20px in, lined up with Dr Lu's note above.
+  - New tweak, Async report → **Rows card**: Off / 16% (default) / 24% black. Light mode uses a quarter of it.
+  - Checked: 16% and 24%, inset 8/8/8; Off is the flat rows as before.
+- **Auto breakpoint frame** ("There is a bug on the auto breakpoint. I can still see the frame around the device"):
+  - The cause: Auto with Tweaks or the flow panel docked resolves to S in the room that's left, but S still drew the tablet.
+  - Frame effects at S: bezel, 48px above and below, a 9:41 status bar, 28px corners. This hit the app pages and the Async report's device (`aqDev`).
+  - Auto at S is now a window, like Auto XS:
+    - `bpAuto` is set;
+    - the app, the report and `#bpFrame` fill the room;
+    - no bezel and no status bar.
+  - S picked by hand keeps its tablet frame, and Auto XS is unchanged.
+  - Checked at 1000 wide with a panel docked (680px · S), on the review and the Overview.
+- **Review Layout at the top** ("The layout here: I want this to be at the top of the list"):
+  - Confirm your updated plan's Tweaks (Layout: Simple list / Timeline, then Groups) are now their own group, first in the panel above Container.
+  - Shown on the review step only (hidden on Clinical and the rest).
+- **Mini "In your plan" rows** ("For the current object on the timeline, it wants a mini version, so it should be condensed"):
+  - In the review's Timeline and the Timeline page's Plan updates modal, what's already in the plan is now a one-line row:
+    - a 36px picture;
+    - the name and its line, each on one line with an ellipsis;
+    - In your plan at the right;
+    - no footer or divider;
+    - still faded and grey.
+  - About 60px tall, where new items are 141px.
