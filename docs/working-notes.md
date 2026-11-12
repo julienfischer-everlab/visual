@@ -23481,3 +23481,15 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **Timeline month line** ("Divider need to be like the 2nd one with a gap"): a month's hairline starts 16 clear of its chip (was touching it), as the items' dividers stand clear of the rail.
 - **Item visuals** ("Radius visual +2px"): 20 radius (was 18), 18 on the phone (was 16).
 - Checked: the cycle over 19 s (adds at the 4, 7 and 2 stops, then the move; spacing 36 held), a frame of the move, the month line from 317 with the chip ending at 301 (L), and the presets with a stand-in store.
+
+## v2464: the Plan updates card shows by default on Member - V4
+
+- "Show the Plan update card by default on V4" / "member": the shared Member - V4 preset already had Plan updates on Coachmark (with the Timeline visual), but the card was only drawn when the setting *changed* while the Timeline was V3. When Coachmark was already set at load (a saved setup, or a preset carrying the same value, which applies nothing), or set before the Timeline turned V3, the card never appeared.
+- The card now follows the setting. With Coachmark or Modal set, the Timeline V3 and an established member, it is there on load, on switching to the Timeline, on the Timeline turning V3, and on the member switching back from New. If its changes are still on the rows, the card is put back; otherwise the sample (DEXA moved, Physical assessment and Colonoscopy added) is used. The Modal variant doesn't open itself.
+- Got it / Done keeps it away for the visit. Turning the setting off and on brings it back. The preset data was not touched.
+- Checked:
+  - The real Member - V4 preset with a stand-in store.
+  - Coachmark already saved at load: the card shows on the Timeline (it was missing before the fix).
+  - Got it, then a page switch: no card.
+  - Off then on: the card is back.
+  - New member: no card. Established again: the card is back.

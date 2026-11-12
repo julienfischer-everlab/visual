@@ -56182,12 +56182,12 @@ hairline({
      the card over the tabs, the changed items' pictures fanned (a sparkle, their count), what moved in a line, Check it out; the walk then goes through them top to bottom: a blanket over the page, the item lit through a hole in it, a tip under it
      (New: added for its month; Adjusted: "This was June before, now it's September"), Back / Next / Done, the page gliding to each. Done puts the card away; the tip's close only stops the walk */
   const SPK = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2c.5 4.8 2.7 7 7.5 7.5C14.7 10 12.5 12.2 12 17c-.5-4.8-2.7-7-7.5-7.5C9.3 9 11.5 6.8 12 2z"/><path d="M19 15c.2 2 1.1 2.8 3 3-1.9.2-2.8 1.1-3 3-.2-1.9-1.1-2.8-3-3 1.9-.2 2.8-1 3-3z"/></svg>';
-  let updL = [], cm = null, cmAt = 0;
+  let updL = [], cm = null, cmAt = 0, updGone = false;   /* updGone: its Got it / Done pressed this visit, the card not put back by itself */
   const updMo = at => { if (at == null) return ''; const y = Math.floor(at); return FULLM[Math.min(11, Math.floor((at - y) * 12 + 1e-6))] + ' ' + y; };
   const updIt = id => (S.items || []).find(i => i.id === id);
   const updIds = () => updL.filter(id => { const it = updIt(id); return it && it.chg && rowEl(id); });
   const cmShut = () => { H.classList.remove('t3CmOn'); if (host) host.querySelectorAll('.tlRow.t3CmMe').forEach(r => r.classList.remove('t3CmMe')); if (!cm) return; const c = cm; cm = null; removeEventListener('keydown', c.key); clearInterval(c.chk); [c.sp, c.is, c.x].forEach(e => e.classList.remove('on')); setTimeout(() => { [c.sp, c.is, c.x, c.bk].forEach(e => e.remove()); }, 320); };
-  const updDone = () => { cmShut(); updL = []; const e = main.querySelector('.t3Upd'); if (e){ e.classList.add('gone'); setTimeout(() => e.remove(), 320); } };
+  const updDone = () => { cmShut(); updL = []; updGone = true; const e = main.querySelector('.t3Upd'); if (e){ e.classList.add('gone'); setTimeout(() => e.remove(), 320); } };
   /* Tweaks -> Right column (L): the info modules (Plan updates, Your focus, Next check-in; [data-t3m]) in the column by its three slots, in their order, when it shows (L, On); the rest, and all of them with the column Off or below L, above the timeline (.t3Info, before the tabs) ("IF OFF put all info above the timeline"; "IF ON create 3 select slot where I can select a module to display") */
   const SLOTS = () => [...new Set(['stT3Slot1', 'stT3Slot2', 'stT3Slot3'].map(id => (document.getElementById(id) || {}).value).filter(v => v && v !== 'none'))];
   const modSide = () => { const sd = main.querySelector(':scope > .tlSide'); return sd && getComputedStyle(sd).display !== 'none' ? sd : null; };
@@ -56354,6 +56354,10 @@ hairline({
     const put = () => { if (!side.isConnected) main.append(side); }; window.__t3Side = put;
     const f = () => { H.classList.toggle('tlSideOn', !e || e.value !== 'off'); put(); }; if (e) e.addEventListener('change', f); f(); }
   { const u = document.getElementById('stT3Upd'), SAMPLE = [{ g: 'Clinical', svc: 'dexa', t: 'DEXA scan', adj: 1 }, { g: 'Clinical', svc: 'phys', t: 'Physical assessment', s: 'Strength, mobility and fitness \u00b7 90 min' }, { g: 'Clinical', svc: 'colon', t: 'Colonoscopy', s: 'Your 5-yearly screening, now due' }];
-    if (u) u.addEventListener('change', () => { if (!H.classList.contains('tlD3')) return; const on = u.value === 'on' || u.value === 'modal'; if (u.value !== 'on'){ cmShut(); if (!on) updL = []; } news(on ? SAMPLE : []); if (u.value === 'modal') updModal(); }); }   /* Modal: the card too, its Check it out the modal; the modal opened now */
+    if (u) u.addEventListener('change', () => { updGone = false; if (!H.classList.contains('tlD3')) return; const on = u.value === 'on' || u.value === 'modal'; if (u.value !== 'on'){ cmShut(); if (!on) updL = []; } news(on ? SAMPLE : []); if (u.value === 'modal') updModal(); });
+    /* "Show the Plan update card by default on V4 member": the card follows the setting, not only its change: Coachmark or Modal already set when the page loads (a saved setup, a preset with the same value), or set before the Timeline turned V3 or the member established, the card is there; not after its Got it this visit */
+    const sync = () => { if (!u || updGone || !H.classList.contains('tlD3') || T().mem === 'new' || (u.value !== 'on' && u.value !== 'modal') || main.querySelector('.t3Upd')) return; if (updIds().length) updPlace(); else news(SAMPLE); };   /* its changes still on the rows: the card put back; else the sample's */
+    ['stTlD', 'stT3Mem', 'versionSel'].forEach(q => { const e = document.getElementById(q); if (e) e.addEventListener('change', () => setTimeout(sync, 0)); });
+    if (document.readyState === 'complete') setTimeout(sync, 0); else addEventListener('load', () => setTimeout(sync, 0)); }   /* Modal: the card too, its Check it out the modal; the modal opened now */
 })();
 </script>
