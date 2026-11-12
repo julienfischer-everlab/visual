@@ -23115,3 +23115,7 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - "New markers to test" is the review's green New badge ("Use green badge"): 13 / 18 medium, 3 / 10 padding, 8 corners, green on dark green, or green on pale green in light mode. "Markers to re-test" stays an eyebrow.
 - The group title loses its counter ("Remove counter"). The tabs still keep the count in code, unseen.
 - The dot to title gap is 12 (+4).
+
+## v2421: Follow-up blood test title +2
+
+- The hero card's title, "Follow-up blood test", is 20 / 26 (was 18 / 24): "title font +2px".
