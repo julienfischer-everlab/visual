@@ -23467,3 +23467,17 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **The new card** ("In added card, skeleton visual should be same colour as skeleton content"): its square is the same green as its lines.
 - **Skeleton lines** ("add 2px gap between skeleton line content"): 4 between the two lines (was 2), the pair still centred in the card.
 - Checked over 16 s: runs and holds alternate, each stop puts a seam on the middle, and the spacing holds at 36 (only shifting during a parting). Frames of the empty slot (rounded dashes, fill) and of the card in.
+
+## v2463 — Default is the home preset; a house, not a star; Plan updates visual: 4 / 7 / 2 then a yellow move; month line clear of its chip; rounder visuals
+
+- **Presets** ("Defualt still not the V4!!!"): on a page with a home (starred) preset, Default is that preset everywhere:
+  - The header, the switch's tick and "· changed" all follow it, whether the page was opened, Default was picked, or Reset or Save put Default on. When both match the page, the home preset is named, not Default.
+  - Checked with a stand-in shared store: Default picked or put on, the header reads "V4" with V4's values.
+- **Home icon** ("instead of star Use home icon, blue if active"): each preset's star is now a house (lucide house). The one the page opens on is blue (#5aa2ff, a 22% blue fill). Default's line reads "Everyone opens on Member - V4" (no ★).
+- **Plan updates → Visual → Timeline**:
+  - "Alternate the scroll to a new add: scroll 4 items add, scroll 7 item add, scroll 2 item add. Repeat": the runs now go 4, 7, 2, each ending in an add.
+  - "another variation, when an existing object change the position. Like one card it moved after the next one" / "Can do this one in yellow shade": a fourth run of 5 ends in a move. The card above the middle lifts (4% bigger, 6 to the right) in yellow, goes down past the next one as that one rises into its place (0.75 s, easeInOutCubic), and stays yellow. Then the cycle starts again.
+  - "Reduce the dashed line opacity to 12%": the slot's dashes are white 12% (ink 12% in light mode).
+- **Timeline month line** ("Divider need to be like the 2nd one with a gap"): a month's hairline starts 16 clear of its chip (was touching it), as the items' dividers stand clear of the rail.
+- **Item visuals** ("Radius visual +2px"): 20 radius (was 18), 18 on the phone (was 16).
+- Checked: the cycle over 19 s (adds at the 4, 7 and 2 stops, then the move; spacing 36 held), a frame of the move, the month line from 317 with the chip ending at 301 (L), and the presets with a stand-in store.
