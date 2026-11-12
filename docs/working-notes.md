@@ -23351,3 +23351,12 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **Focus photo card** ("Content max width 512px"): its title and line are 512px wide at most. Before, they ran the card's full width.
 - **Decade eyebrow** ("eyebrow regular"): "Your 40s" over the decade's number is set regular (400), was 600.
 - **Timeline tabs, Outline** ("Outline, remove line bottom full width"): no hairline across the bar's whole width any more, the on tab's underline alone. Filled is unchanged.
+
+## v2451: Plan updates card 16 lower; new member page trimmed
+
+- **Plan updates card** ("card +16 margin top"): the card over the timeline now sits 16px lower (top 94, was 78, on the phone and the desk). A later rule that zeroes margins on the info slot's modules had the same specificity, so the rule is now `#dTl #tl3 > .t3Info > .t3Upd`. The card in the right column at L is unchanged.
+- **New member, Amira card** ("same as update card feedback (margin top +16"): 16px lower too, so it still sits exactly where the Plan updates card does.
+- **New member, first two weeks**:
+  - "NO main focus on New member": the Main focus card is gone.
+  - "Title margin top +16px", "No eyebrow align left": the title "Get your timeline started" has no "Your first 2 weeks" eyebrow, sits at the left, and is 48px below the Amira card (was 32).
+- **New member, foot** ("Remove that" twice): the teaser ("More to uncover with your doctor", its ghost rows and stethoscope) and the "Saved for later" block are gone. The page is now the Amira card, the title and the four steps.
