@@ -23372,3 +23372,14 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - It holds, fades and starts again.
 - The items wear their own pictures, or their icon on a tile when they have none (the first two updated items). The sparkle stays at the top right. The count moves to the bottom left so it doesn't cover the right-hand item. With reduced motion, the slots show already filled and nothing moves. Light mode has its own tones.
 - Switching the tweak redraws the card in place (Save, presets and Share keep it like any other tweak).
+
+## v2453: Plan updates Timeline visual as a stacked-card flow; card text narrower; "From recent results" badge
+
+- **Plan updates -> Visual: Timeline**, reworked ("More a Stacked card and sometimes through the scroll a new card plug and collapse the stacked card flow to let one item goes into 2 objects"; "Should be no bg or border"; "Remove 3 badge and stars"). It is now a 10s loop:
+  - A stack of skeleton cards (20 high, 4 apart, a thumb and two lines each) scrolls a card.
+  - The stack parts between two cards (those above move up 12, those below down 12) and the first updated item slides in from the left into the gap. It has its picture, an orange outline and brighter lines.
+  - The stack scrolls on and parts again, and the second item slides in from the right.
+  - It holds, fades and starts again.
+- No window ground or border, no glow, no count badge, no sparkle. The stack fades at its top and foot. With reduced motion, it shows both items already in place. Light mode has its own tones.
+- **Plan updates card text** ("reduce max width by 128px"): 308px at most, was 436 on the desk. At M it was already 308; the phone and the right column are narrower and unchanged.
+- **Timeline rows** ("Always add another badge From recent results"): the New / Adjusted badge always has a second one beside it, "From recent results" (a neutral pill), both in a wrapping row (`.tlChgW`). It sits under the text on the desk and at the foot's left beside the buttons on the phone. Checked: no overlap with the buttons.
