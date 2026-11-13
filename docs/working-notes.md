@@ -23852,3 +23852,16 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - Save for all on a preset in use, and again on Default, after a select switch and a flow change (counted as 2 and 3 tweaks): no dot afterwards, and the other preset took both changes.
   - A long name wraps to 2 lines.
   - The search screen shows Continue only.
+
+## v2492 · Clinical deck with select Off: "Added to plan", Continue goes right; What to expect bullets at the foot (phone); blood panel: no rows card, sub with month, Doctor note tweak
+
+- **"Added to plan"** ("new action --> Added to plan"): with Clinical's Allow to select Off, each card's badge reads "Added to plan" ("Plan adjusted" for an adjustment), in both the card's badge and the footer type. The blood test card does the same with the Blood panel's Allow to select Off.
+- **Continue sends the card right** ("Continue move card to right side, Prev to left side"): with select Off, Continue sends the card off to the right. Prev brings it back from there, moving left into place.
+- **What to expect bullets at the bottom on mobile** ("On mobile bullet point position at the botton"), V3 title welcome at XS / phone: the free space is split between above the title and above the rows. The title stays where it was and the three rows sit at the foot, just above See results. Desk unchanged.
+- **No card round the biomarkers** ("Remove biomarker card group, no card"): the blood panel groups' dark rows card is gone. The rows sit on the group's card, and the Rows card tweak row is hidden (its select kept so older saves still load; it no longer does anything).
+- **Blood test card sub** ("This part replace the sub above ... to test next in Dec 2027"): the card's line under "Follow-up blood test" (was "Fast 8 hours · month") now reads "Your latest results help us identify the N biomarkers to test next in <Mon YYYY>." The paragraph at the card's foot is gone.
+- **Doctor note On/Off** ("Tweak Doctor note in blood panel, on off"): `#stArBpDr`, first row of the Blood panel group. Off removes Steven's note from each group's card.
+- Checked at XS:
+  - Clinical with select Off: badge "Added to plan" (On: "New action"); Continue → card out right; Prev → it comes back from the right.
+  - What to expect V3: rows end at the body's foot (605–829 of 200–853), title unmoved (299); M unchanged.
+  - Blood panel with the card hero: sub "…to test next in Jan 2027.", badge "Added to plan" (select Off), no foot paragraph. Doctor note Off: 0 notes. Rows card gone, even with 24% saved.
