@@ -24002,6 +24002,17 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **Confirm plan only** ("Should be able to select Only confirm plan so doctor note --> confirm plan, Just use Clinical and blood object to put in review"): in the Flow panel (or Tweaks → Recommendations), Clinical, Blood panel and Lifestyle can all be off while Confirm plan stays on. The doctor's note's See recommendations then goes straight to Confirm your updated health plan, which lists the clinical items and the follow-up blood test as added (the demo's 5 Now / 2 Later). Lifestyle items stay out. Confirm plan and Checkout stay in the Flow panel's list; switch Confirm plan off too and the recommendations are skipped as before.
 - Checked at XS: Flow rows Doctor note, Clinical (off), Blood panel (off), Lifestyle (off), Confirm plan, Checkout; See recommendations → Confirm plan lit, Now 5 / Later 2, Physical assessment and Follow-up blood test Added, footer Skip for now + Pay $129.00.
 
+## v2519: Doctor note V2, three H1s on screen 1, Phase 2 rewritten
+
+- **Screen 1 ("PHASE 1")**, one H1 after another, each written word by word at 32/38, centred:
+  1. The doctor's photo alone, then "Hi Julien, / Dr Maylyn here." under it (the report's doctor by first name: "Dr Steven" when it is Steven).
+  2. It fades, and "I hope this report helps you understand what your results mean for your health." is written in its place; the photo eases up over the longer H1. ("what they mean" became "what your results mean", so the sentence reads alone.)
+  3. Photo and H1 fade together. "Next, I recommend our Diagnostics programme." is written at the centre, held, then moves up and stays ("H1 (Stays)"; "For next I recommend" reworded).
+  4. The card rises in under it, then Continue.
+- **The card** is the Confirm plan review's List card ("Align with style like this"): picture at the left (the MRI photo), "Diagnostics programme" and "Full body diagnostics, with a focus on your heart health" (the persona's focus), a divider, then $1,199 and a Recommended pill. It is not a button. The old Diagnostics tile and its rows are gone.
+- **Phase 2**: H1 "One thing at a time" (32, as screen 1), sub "Let's focus on what matters most now. Your other recommendations are saved on your timeline for us to revisit together later." One card of three items saved for later (the review card's ground and outline, 48 pictures, title 16, line 14), the third fading out. "We'll talk it through" is removed. CTA stays See my plan.
+- Checked at XS, dark and light: the sequence sampled at 0.7 / 2.3 / 3.9 / 5.6 / 8 / 9.6 / 11.2 s, Phase 2, and Back to screen 1 (settled, no replay).
+
 ## v2518: Doctor note V2, screen 1 as a sequence
 
 - **Screen 1 comes in step by step** ("Need to appear element gradually"):
