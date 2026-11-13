@@ -7,6 +7,14 @@ this is the part you need before you change it.
 
 ---
 
+## v2528 · Doctor note V2: Greeting tweak, doctor byline, Phase 2 card, H1 copy
+
+- **Greeting tweak** (Tweaks → Doctor note → Greeting, On by default, `stArDrGr`): On writes "Hi Julien, Dr Steven here." then "Let's look at…"; Off skips the greeting and writes the photo with "Let's look at…" straight away ("Create a tweak for this first phase title").
+- **Doctor byline** on both settled screens: 24 photo + "Dr Steven Lu" (14, medium, ink .72), centred, 20 above the H1. Phase 1: it fades in as the H1 is written at the centre and moves up with it. Phase 2: it fades in with the H1 and moves up with it ("Keep the avatar and Steven's name on the top above the H1 … minimal").
+- **Phase 1 H1**: "Based on your results and risk areas, here are my recommendations", no full stop ("s and no full stop"; "is" made "are" for the plural).
+- **Phase 2 card**: pictures 56 (−8); rows 16 top and bottom (+2 each side of the dividers); the blur layer removed; square at the foot (22 22 0 0); the fade 32 longer (`--fh` = half the 3rd row + 52) on eased stops (1 → .74 → .4 → .14 → 0).
+- From the previous round (built, not yet noted): CTCA picture = the MRI image, Pathology = the pathology image, list rows gap 18 (+2); the H1 moves up snappier (560ms, 250 hold) and the cards roll in one by one; the Everlab mark at the top of the card header; divider 26 above (+6), 24 below (+4).
+
 ## 1. The shape of the file
 
 One `index.html`. Engine, every page, every theme, every control. No build, no
