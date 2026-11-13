@@ -7,6 +7,17 @@ this is the part you need before you change it.
 
 ---
 
+## v2549 — Overview bento: Modules nav; Image size arrow row; timeline rows centred on the picture; fixed tabs' fade; Hero tiles blur; condensed cards; Confirm plan V1/V2
+
+- "In this documentation, create a module section on the left side (the nav) ... list every module ... With the link to the module on the design system": Documentation → Overview bento's left nav has Modules under the presets: Onboarding consult, Insights, Schedule, Get started, Recommendation card, Service timeline, Concierge components, each opening its Design system page. One list (DMOD) feeds both this and the Design system's Modules group.
+- "Image size here: you need an arrow indentation style because this is dependent on the breakpoint above": a dependent row style for Tweaks (.tkDepRow: a corner arrow before the label, set in); Image size wears it under Breakpoint.
+- "Add a 4px right margin to the image ... if you have available space, just centre it vertically. If there's no available space, the content should be on the top, aligned with the start of the image": Timeline items, the picture's column 4 wider; the words centred on the picture when shorter, at its top when taller. Desk: a flexible row above the words and one under share what the picture leaves (none when the words are taller); phone: the title block centred on the picture.
+- "If there's a fixed nav below the home nav, the home nav should always be filled with the background": phone Timeline with the tabs fixed, the status bar stays the page's ground (no content under it); with the tabs scrolling away the faded content under it stays.
+- "for the tab top nav, the gradient should start the same way as the other gradient on the top nav, at 20% from the high": the fixed tabs' ground is solid for the bar's top 20%, then eased out to nothing 32 under it (was solid over the bar, then 32 of fade), once the page has scrolled.
+- "The button should have BG blur 32px, 64px, and this should be a white 8px opacity": Confirm plan Hero tiles, the ink at 8% (white in dark) over a 32 blur of the list under the footer (used 32).
+- "For the condensed version of the card, reduce the padding by 2px, reduce the image by 2px, and add 4px padding on the right": Confirm plan condensed cards 10 / 16 / 10 / 12 (were 12 / 14), the picture 30 (38 with Type Subtitle).
+- "Try a version with the now and later inside the card of the doctor. Also, this version should remove the title ... a version V1/V2 on the Confirm your updated plan": Tweaks → Confirm plan → Version. V1 as it was; V2, no title, the doctor's card holding the doctor's line (a press opens the note) and the Now / Later tabs under it (not pinned).
+
 ## v2548 — Doctor card in the reference's style; Condensed rows' small CTA; Image size per breakpoint; Tweaks panel 2 tighter
 
 - "This is the card for the doctor on top of the timeline and the async report. Design something in this style.": the doctor's card over the Confirm plan's timeline (the Async report's review and the Timeline's Review plan modal, one function) is now a card the column wide: 20 corners, a hairline, the ink at 5%; the doctor's photo a 48 rounded square (12), the name 16/22 bold over "Longevity GP · your doctor" 14/20 at 56%, a long arrow at the right. A press still opens the doctor's note sheet.
