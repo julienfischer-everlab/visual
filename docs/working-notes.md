@@ -7,6 +7,10 @@ this is the part you need before you change it.
 
 ---
 
+## v2538 · Confirm plan: title +8 side padding, balanced on two lines
+
+- The Confirm plan title has 8 padding each side (inside its −8 margins: the body's width), and no forced break, so it balances on two lines: "Here's how your / health plan look like" ("+8px padding left right"). With the break kept, the first line (364 wide) would not fit in 361 and the title would go back to three lines.
+
 ## v2537 · Confirm plan: title on two lines
 
 - The Confirm plan title has no side padding and runs 8 past the body's edge on each side (377 wide on XS), so "Here's how your health plan" fits on one line and "look like" sits under it: two lines instead of three ("reduce left right padding").
