@@ -7,6 +7,13 @@ this is the part you need before you change it.
 
 ---
 
+## v2533 · Doctor note V2: Later items tweak (3 / 5)
+
+- **Tweaks → Doctor note → Later items** (`stArDrLt`, default 3): 5 lists five things saved for later on the next screen's card.
+  - Each item shows its title only (no line under it), with the picture 32 (56 − 24, radius 10): "add a tweak 5 product display … keep the main title, reduce the image by 24px, and no subtitle".
+  - The card is cut at the last item's middle, as with 3; the fade is the last item's half + 36.
+  - The items come in 150 apart (220 with 3).
+
 ## v2532 · Doctor note V2: photo .8 on the first title, small line after the second, H1 copy, 32 radius
 
 - **Phase 1 intro:**
