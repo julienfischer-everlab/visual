@@ -24002,6 +24002,17 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **Confirm plan only** ("Should be able to select Only confirm plan so doctor note --> confirm plan, Just use Clinical and blood object to put in review"): in the Flow panel (or Tweaks → Recommendations), Clinical, Blood panel and Lifestyle can all be off while Confirm plan stays on. The doctor's note's See recommendations then goes straight to Confirm your updated health plan, which lists the clinical items and the follow-up blood test as added (the demo's 5 Now / 2 Later). Lifestyle items stay out. Confirm plan and Checkout stay in the Flow panel's list; switch Confirm plan off too and the recommendations are skipped as before.
 - Checked at XS: Flow rows Doctor note, Clinical (off), Blood panel (off), Lifestyle (off), Confirm plan, Checkout; See recommendations → Confirm plan lit, Now 5 / Later 2, Physical assessment and Follow-up blood test Added, footer Skip for now + Pay $129.00.
 
+## v2514: Doctor note V2, a letter with the recommendation tile
+
+- **New tweak** Tweaks → Doctor note → **Version: V1 / V2** ("In the doctor note add a Tile Inside note. Tweak V2"). V1 is the note as before; V2 is a letter laid out from the reference ("e.g."). Saved with the setup (both preset key lists).
+- **No title** ("v2 remove title"): V2 opens on "Hi Julien," (24/30, left aligned), still written word by word as the screen's heading; then the sections fade in one after another.
+- **Short intro** ("Above more concise"): "Your results are one part of the picture. I've considered them alongside what we know about you to help make your next steps clearer."
+- **My recommendation tile** (green, dark and light): scan icon and MY RECOMMENDATION eyebrow, "Start with Diagnostics", a serif line "I recommend our Diagnostics programme to focus on *your heart health*" (persona #2: the raised pelvic protein, #3: your bowel health), a divider, then what it takes in: the clinical items kept for now, with ticks (up to four, then "And N more").
+- **Rows in the What to expect style** ("use this style": 52 disc, filled icon, title, line): "Some things can wait" (clock), with the parked items in a small card under it ("another card with some items": Gut microbiome test and Allergy test, Later); "We'll talk it through" (camera): the video consultation with the doctor on Tuesday 28 October.
+- **Signature**: the doctor's photo in the disc column, the name in serif italic, "Here to help you take the next step."; then a divider and "Questions before then? Ask Eva in the app. She can also connect you with our Care Team."
+- See recommendations goes on to the summary as before.
+- Checked at XS (dark and light) and L: V1 unchanged; switching to V2 live redraws the screen as the letter; the CTA goes on to "Here are your recommendations".
+
 ## v2513: Do it later only on paid items
 
 - **Do it later on the paid one only** ("Can do it later the included one", then "I mean action to do later only apply on the paid one"): in Confirm your updated plan, a Now item's sheet offers Do it later only when the item has a price (the $129 Follow-up blood test). Included items show their card alone, with no button. Items under Later keep Add to plan. With Pricing on All included, nothing can be moved to Later.
