@@ -24002,6 +24002,12 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **Confirm plan only** ("Should be able to select Only confirm plan so doctor note --> confirm plan, Just use Clinical and blood object to put in review"): in the Flow panel (or Tweaks → Recommendations), Clinical, Blood panel and Lifestyle can all be off while Confirm plan stays on. The doctor's note's See recommendations then goes straight to Confirm your updated health plan, which lists the clinical items and the follow-up blood test as added (the demo's 5 Now / 2 Later). Lifestyle items stay out. Confirm plan and Checkout stay in the Flow panel's list; switch Confirm plan off too and the recommendations are skipped as before.
 - Checked at XS: Flow rows Doctor note, Clinical (off), Blood panel (off), Lifestyle (off), Confirm plan, Checkout; See recommendations → Confirm plan lit, Now 5 / Later 2, Physical assessment and Follow-up blood test Added, footer Skip for now + Pay $129.00.
 
+## v2511: Confirm plan fade-in slower, same entrance on Later → Now
+
+- **Slower** ("Tmeline object need to appear slower"): each row of Confirm your updated plan now takes 850 ms to rise in (was 520) and starts 160 ms after the one before (was 90); the footer CTA still comes last, over 700 ms (was 480), about 2.8 s after opening.
+- **Same animation from Later to Now** ("Same animation when I come from later tab to now tab"): switching tabs replays the list exactly as on opening (same 280 ms lead-in, same timing), and if you had scrolled past the pinned tabs, the list first comes back to its top under them, so you see it come in from the first row.
+- Checked at XS (standalone Confirm plan, Timeline and List layouts, async flow): open and Later → Now both start at about 300 ms, rows 160 ms apart; after scrolling 382 down, back on Now the list starts 12 under the tabs.
+
 ## v2510: Confirm plan fades in item by item, sticky tabs, blood test in standalone, smaller fixes
 
 - **Fade-in** ("Make the time appearing nicely with each object after each other Fade in", "Then CTA footer appear at the end"): Confirm your updated plan now brings its rows in one after another (dates, cards, the Later note; 90 ms apart, 520 ms rise of 14px), Timeline and List layouts alike; switching Now / Later replays it. The footer CTA rises in last, once the list has landed. Off with reduced motion.
