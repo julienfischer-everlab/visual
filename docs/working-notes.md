@@ -24002,6 +24002,30 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **Confirm plan only** ("Should be able to select Only confirm plan so doctor note --> confirm plan, Just use Clinical and blood object to put in review"): in the Flow panel (or Tweaks → Recommendations), Clinical, Blood panel and Lifestyle can all be off while Confirm plan stays on. The doctor's note's See recommendations then goes straight to Confirm your updated health plan, which lists the clinical items and the follow-up blood test as added (the demo's 5 Now / 2 Later). Lifestyle items stay out. Confirm plan and Checkout stay in the Flow panel's list; switch Confirm plan off too and the recommendations are skipped as before.
 - Checked at XS: Flow rows Doctor note, Clinical (off), Blood panel (off), Lifestyle (off), Confirm plan, Checkout; See recommendations → Confirm plan lit, Now 5 / Later 2, Physical assessment and Follow-up blood test Added, footer Skip for now + Pay $129.00.
 
+## v2523: Diagnostics Membership card, Phase 2 always three items, Confirm plan comes in step by step
+
+- **Phase 1 card**:
+  - Titled "Diagnostics Membership" ("Diagnostics membership NOT Diagnostics programme").
+  - It lists what it includes, the same on every persona ("Put CTCA, DEXA, and pathology test"):
+    - CTCA heart scan: "Looks directly at the heart's arteries", the scan room photo.
+    - DEXA scan: "Body composition and bone density".
+    - Pathology test: "Advanced bloods and follow-up re-tests", the blood photo.
+- **Priority line**:
+  - Now "A program for your heart health, which in my opinion is the best next step for you." ("A program [for] your heart health").
+  - 4 more above it; 18 between it and the chips (-2).
+- **Phase 2**:
+  - The line reads "I've put together other recommendations that are saved on your timeline for us to revisit together later."
+  - The card always holds three items ("I want to see three items"): the priced ones, then lifestyle, then the other clinical items, none of the Membership's own. So Persona #2 shows its third too, cut at its middle.
+  - Items 4 further apart (rows 14 top and bottom); the card 8 lower.
+- **Confirm plan**, in order ("the title first, then the subtitle, then the tab, and then the rest below, with items one after another ... and the footer"):
+  1. The title written word by word.
+  2. "Please confirm to continue."
+  3. The Now / Later tab.
+  4. The items one after another (from the title's end plus two steps).
+  5. The footer last.
+- Persona #3 has no doctor note: its recommendations are a plain list (not phased), as before.
+- Checked at XS: Persona #1 and #2 Phase 2 cards (three items, cut, maxH 244); Confirm plan opacities sampled at 0.3 / 0.8 / 1.2 / 1.5 / 1.9 / 2.5 / 3.2 / 4.2 s.
+
 ## v2522: Doctor note V2, Phase 1 card header at the left; H1s 16 each side
 
 - **Phase 1 card**:
