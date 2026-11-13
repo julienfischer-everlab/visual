@@ -23905,3 +23905,17 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 
 - "Remove not now for this card", then "Instead put See updates": on the Timeline's Plan updates banner, Purchase plan variation (`#stT3UpdV` buy), the secondary button is now "See updates" (was "Not now"). It starts the walk through what changed, as the Plan update variation's "See update" does. "Review plan" stays the primary (the Doctor's suggestion). The Plan update variation keeps Got it + See update.
 - Checked at XS after Do it later: Plan update shows Got it + See update; Purchase plan shows See updates + Review plan; See updates starts the coachmark walk.
+
+## v2498 · Do it later keeps the report's setup; Version row removed; blood panel paddings; See updates
+
+- **The intro changed after Do it later** ("Why this version ??? the intro shouldn't look like this"):
+  - Cause: Do it later put on the Timeline's "Member - V1 (next version)" preset, whose snapshot carries every tweak, the Async report's included (Preset V1, Intro Split bg, What to expect Cards). It overwrote the report's own V3 setup, so the report showed the old intro and the preset read "· changed".
+  - Fix: Do it later now applies that preset without the Async report's tweaks (`applyBy(rx, 'tl', /^stAr/)`, a partial snap). Only the Timeline's own tweaks change.
+  - The saved presets were never touched: "V1 - Clinical + Blood reco (NO SELECTION)" still holds Preset V3, Imagery, Image fade. Putting it on again restores the screen.
+- **Version row removed** ("Remove."): the Async report's Version (V1 / V2) is hidden. Its select stays, so each preset keeps its own step arrangement from the Flow panel.
+- **Blood test card +12 bottom** ("+12px pad bottom"): 32 under the badge (was 20).
+- **Blood panel group +12 top** ("Padding +12px top"): a group card that opens on its rows (Doctor note Off) has 16 above its first label row (was 4).
+- Checked:
+  - Do it later with a local Member - V1 preset holding V1 report tweaks: the report's Preset V3 / Imagery / Image fade kept, the Timeline tweak applied, and the Version row is hidden.
+  - Blood test card: padding 28 28 32.
+  - Doctor note Off: the rows' top padding is 16.
