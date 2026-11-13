@@ -7,6 +7,21 @@ this is the part you need before you change it.
 
 ---
 
+## v2534 · Doctor note V2: photo + name only at the top, Phase 2 top to bottom, 5 · mini lists, Confirm plan line
+
+- **Phase 1:**
+  - The photo stays the normal round photo (72 alone, then 58) with no name through every title at the centre, including the last one written there.
+  - It turns into the small photo + "Dr Steven Lu" only as that last title moves up to the top ("The avatar and the text should only appear when the text is going on top of the screen").
+  - Its room (17 / 21) is given back in that same move.
+- **Phase 2:** nothing at the centre. The doctor's line, then the title written in its place at the top, then the card, the items, the line under it and Continue, top to bottom ("This title doesn't need to appear in the middle of the screen").
+- **Later items "5 · mini":**
+  - Picture to title 12 (−4); the fade 64 longer (last item's half + 100); the line under the card 8 higher (32 below it).
+  - The Diagnostics Membership list takes the same mini format: 32 picture, title only, 12 gap ("Here also … the same style as the later item mini style").
+- **Confirm plan (Doctor note V2):**
+  - The doctor's line over "Here's what your plan will look like", 20 above it, fading in first.
+  - Sub: "Please confirm or skip to continue."
+  - The tab and the timeline 8 higher (no margin under the header).
+
 ## v2533 · Doctor note V2: Later items tweak (3 / 5)
 
 - **Tweaks → Doctor note → Later items** (`stArDrLt`, default 3): 5 lists five things saved for later on the next screen's card.
