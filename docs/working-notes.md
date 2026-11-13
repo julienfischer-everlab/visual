@@ -7,6 +7,12 @@ this is the part you need before you change it.
 
 ---
 
+## v2541 — Doctor note: Additional product tweak
+
+- "Add a tweak ... additional product, yes/no. If yes, you just show two other products below": Tweaks -> Doctor note -> Additional product (No by default). Yes adds two standalone products under the Diagnostics Membership card (Phase 1), each its own card in the Membership card's style (title 18 medium and its line at the left, the picture 42 at the right where the mark is), 16 apart, following the Card ground tweak; they roll in with the other cards, the programme line stays last.
+- Products: Skin Check+ ("A full body skin check with a doctor") and Microbiome & Gut Health Assessment ("An at-home gut test and a doctor’s review"), the real standalone products named before.
+- The skin check's photo is now one copy (`EvSvcImg.skin`), read by the timelines too: dist about 30 KB lighter.
+
 ## v2540 — Flow panel step links; V3 title padding above XS
 
 - "Can you also have a link shortcut from the specific step?": every step row of the Flow panel (Async report, Send a gift, a service page's steps) has a link icon at its end, shown on hover. A tap copies a `#tk-st<id>` link; the share (tkShares, and this browser's copy) holds the setup as it stands and the step (`fl: { k, go, ctx }`; a service's page also the service it is on). Opened, the setup goes on, the flow opens and goes to that step, and the cover lifts once it is there. The preset links and the step links share one copy helper (`cpLink`); `window.__tkStepLink(fl, name, button)`.
