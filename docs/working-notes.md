@@ -23928,3 +23928,19 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **Later as the Now cards** ("Later should be the same card style as the added to plan, but without timeline"): on Layout Timeline, Later is the timeline's own list (`ol.dsgTl.arRvwTl.arRvwNoRail`) with the same cards, condensed when Now is, with no rail and no node. Each card has its price, then Add to plan (32 high when condensed). A tap opens its card in the sheet, as before.
 - **5 in Now, 2 in Later** ("Add 5 in added and 2 on later"): when nothing was chosen by hand (Allow to select Off, or landing straight on the review), two priced clinical items wait under Later and the rest are added (`rvDemo`). With 6 clinical items + the blood test that is 5 / 2. Choices made in the deck (Allow to select On) are kept as made.
 - Checked at XS with the V1 (no selection) tweaks: walking the flow and jumping to the review both give Now 5 / Later 2 (Gut microbiome test $349, Allergy test $195), Pay $129.00; the Later cards 56 high, full width; the blood card padding 36 / 32 at XS and L.
+
+## v2500: the Ask sheet follows the Navigation master everywhere; blood panel H3 titles; Allow move object; Skip for now
+
+- **One Ask sheet everywhere** ("Make sure all nav in the experience follow this pattern master"):
+  - Cause: each preset saved its own Menu AI entry point tweaks, and the shared Default held the Large sheet with the Expanded field. So the sheet changed from page to page (the Timeline presets had the Small sheet with the Compact field, the Async report and Default the Large one).
+  - `window.EvAskM`: the Ask sheet's tweaks (IDS: Format, Sections, Layout, Suggestion, chips, order, Field, Title groups, Inbox layout / Go to concierge / Unread / Cards / style, the desk container), with the pattern as default (D: Small sheet, Compact field with its close, Services then Inbox, ghost rows, View inbox, 3+ unread). Desktop field tap is left out: the Chat Option presets differ on it.
+  - The Navigation doc's Save setup now saves them in `everlab:navMaster` (`ask`), shared like the rest of that setup. `_navMaster` puts them on every page as it opens; the shared Tweaks, taken live, are followed by them again.
+  - Presets neither save nor put on these tweaks (`putSnap` / `snapNow` skip them), so no preset changes the sheet any more, and none reads as changed because of it.
+  - Navigation doc table: a row "Ask Everlab · setup".
+- **Blood panel titles** ("Change these titles with h3 with left icon. same for the title below"): New markers to test, Markers to re-test and Optional are the Title group's H3 (EvTitle, 20 / 26, 500) with a Lucide icon at the left (circle-plus green, refresh-cw grey, circle-dashed warm), in place of the pills.
+- **Allow move object** (Tweaks → Confirm your updated plan, On by default): On, a Now item's sheet has Do it later, a Later item's sheet has Add to plan, and Later cards keep their Add to plan. Off, no sheet CTA and no Add to plan on the cards.
+- **Skip for now** ("Skip for now NOT Do it later"): the review footer's left button.
+- Checked at XS:
+  - Ask sheet on Overview, Timeline and Insights after a preset holding the Large sheet + Expanded field: Small, Compact, Inbox with View inbox, identical. A saved `ask` with Expanded comes back on reload.
+  - Blood panel: three H3s with icons, no pill ground.
+  - Review: Now 5 / Later 2; Do it later in a Now sheet moves it (4 / 3); Later cards have Add to plan and their sheet Add to plan; Off removes both. The footer reads Skip for now.
