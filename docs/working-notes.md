@@ -23952,3 +23952,9 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - Persona #1: Now (Physical assessment), January 2027 (Follow-up blood test, Gut microbiome, Allergy test), June 2027 (DEXA scan, moved from October; Colonoscopy; Diagnostic review). Colonoscopy was July, the review August.
   - Persona #3 has no clinical deck (its plain list), unchanged.
 - Checked at XS, the review for each persona: Now plus two months as above.
+
+## v2502: blood panel section titles as eyebrows; Later's note
+
+- **Section titles** ("h3 smaller and icon white", then "Eyebrow use"): New markers to test, Markers to re-test and Optional are the Title group's eyebrow (H5: 12 / 16, 600, 1px, capitals; still an h3 element). Their Lucide icon sits at the left, 14, in the title's ink (white in dark), 6 before the words.
+- **Later's note** ("Add a note centered below tab"): Later opens on "These aren’t a priority right now. Your doctor will discuss them with you at a future review.", centred under the tabs (14 / 20, secondary ink, 320 wide at most, 16 above the cards). It shows only when something is under Later.
+- Checked at XS: the three titles 12 / 16 / 600 with icons; the note hidden on Now, centred on Later above the two cards.
