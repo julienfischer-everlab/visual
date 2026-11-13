@@ -7,6 +7,16 @@ this is the part you need before you change it.
 
 ---
 
+## v2532 · Doctor note V2: photo .8 on the first title, small line after the second, H1 copy, 32 radius
+
+- **Phase 1 intro:**
+  - The photo appears alone at 72.
+  - It scales to .8 (58) and moves up as "Hi Julien, Dr Steven here." is written.
+  - It stays at 58 while "Let's look at…" is written, then shrinks to the small photo with the name just after that title is done ("When the title enters, scale down by 0.8 … Go to the mini … just after the title is displayed").
+  - The room round it (17 / 21) is given back at that moment, with the line and the H1 eased to their places.
+- **Phase 1 H1:** "Based on your results and risk areas, here is recommendations" (the user's wording).
+- **Cards:** 32 radius on the Diagnostics Membership card (and Risk areas with it) and on the next screen's card (square foot kept).
+
 ## v2531 · Doctor note V2: big photo through the first title, Card ground tweak, card margins, Phase 2 padding
 
 - **Phase 1 intro:** the doctor's photo stays big (72) and alone through "Hi Julien, Dr Steven here." (room kept round it: margin 24 / 28, 24 between it and the H1). It turns into the small photo with the name beside it when the second title is written ("For the first title, keep the big avatar. Change to the second mini avatar and text when the second title appears"). With Greeting Off it stays big through its one title and shrinks into the final title's line.
