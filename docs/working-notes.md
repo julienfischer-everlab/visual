@@ -7,6 +7,19 @@ this is the part you need before you change it.
 
 ---
 
+## v2547 — Timeline: item tweaks group, focus/check-in at Image size, CTA centred, eased trail with circles that fill, phone top fade under the status bar
+
+Timeline V3:
+- "Create a new tweak group timeline item. And remove the groupie inside this.": Tweaks → Timeline item (its own group): Image size, Item layout, Cost on items. The Page group loses its Item sub-heading.
+- "Apply the size of the image on this one as well. And next, checking as well": the Your focus card and the Next check-in (Thumbnail) take the items' Image size (64 by default, was 72) in the timeline's column.
+- "Visuals ... a normal margin between": the picture's column hugs the picture since v2546 (12 on the phone, 18 wider); checked again on the phone and at L.
+- "Align verticalement de cité": the row's button is centred on its words (desk: was at the top).
+- "The trail movement should be smoother": the rail's dot now glides to the scroll's point (eased, 70 ms) instead of jumping with each scroll event; snaps under reduced motion.
+- "When the dot reaches a new group ... fill the circle and then continue the trail": a group's circle (Now, This year, …) fills with ink from its centre (.t3Hit) once the dot reaches its centre, then the trail goes on; Now's ring closes the same way.
+- "this should be transparent at the top and should have a gradient as well, 20% from the top, the same as a normal top header gradient": on the phone (XS frame) the Timeline runs up under the status bar (#dTl up by --tlSb, 47, a spacer keeping the content where it was, the pinned tab bar, the groups and svTop as low as before). Once scrolled, the flow fades from transparent at 20% of the status bar to whole 32 under it, stopping at a pinned tab bar or group head so they never fade (--tlFs, --tlFe from the page's scroll); none at rest. Desk and tablet unchanged. Only the Timeline so far: the other main pages keep their solid status bar.
+
+Async report (question): the Doctor's note text box (v2546) is live: V1's Doctor note step and the Confirm plan's doctor card sheet. V2's Doctor note step is its animated card sequence (risk areas, the Membership, the priority) with no quote, so the text box does not feed it.
+
 ## v2546 — Doctor's note tweak; fades from 20%, footer mirrored; Hero without Pay; Confirm plan gap; Flow panel; Timeline hug + Condensed
 
 Async report:
