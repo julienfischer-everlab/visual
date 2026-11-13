@@ -23900,3 +23900,8 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - Checked:
   - What to expect XS: the title group moves 40 CSS px lower (33 on screen in the scaled frame); the rows stay at the foot.
   - Do it later, with a local "Member - V1 (next version)" Timeline preset: page Timeline, that preset on, viewport kept XS, no coachmark. Confirm plan: coachmark on.
+
+## v2497 · Plan updates banner, Purchase plan: See updates in place of Not now
+
+- "Remove not now for this card", then "Instead put See updates": on the Timeline's Plan updates banner, Purchase plan variation (`#stT3UpdV` buy), the secondary button is now "See updates" (was "Not now"). It starts the walk through what changed, as the Plan update variation's "See update" does. "Review plan" stays the primary (the Doctor's suggestion). The Plan update variation keeps Got it + See update.
+- Checked at XS after Do it later: Plan update shows Got it + See update; Purchase plan shows See updates + Review plan; See updates starts the coachmark walk.
