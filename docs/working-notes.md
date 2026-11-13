@@ -24002,6 +24002,26 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **Confirm plan only** ("Should be able to select Only confirm plan so doctor note --> confirm plan, Just use Clinical and blood object to put in review"): in the Flow panel (or Tweaks → Recommendations), Clinical, Blood panel and Lifestyle can all be off while Confirm plan stays on. The doctor's note's See recommendations then goes straight to Confirm your updated health plan, which lists the clinical items and the follow-up blood test as added (the demo's 5 Now / 2 Later). Lifestyle items stay out. Confirm plan and Checkout stay in the Flow panel's list; switch Confirm plan off too and the recommendations are skipped as before.
 - Checked at XS: Flow rows Doctor note, Clinical (off), Blood panel (off), Lifestyle (off), Confirm plan, Checkout; See recommendations → Confirm plan lit, Now 5 / Later 2, Physical assessment and Follow-up blood test Added, footer Skip for now + Pay $129.00.
 
+## v2520: Doctor note V2, written in orange; H1s at the flow's size with 32 each side; Dr Steven Lu
+
+- **H1 size** ("Is this the same size as the H1 at the beginning of the flow and other steps?"): it was not (32/38, weight 500 against the steps' 28/29.6, weight 570). The doctor note's H1s now take the step H1's own size from `.arH700` and are only centred.
+- **32 each side** ("All H1s should have more padding left and right: 32px"): every centred H1 of the Async report has `padding-inline: 32px` (What to expect, Everything else, Clinical, Lifestyle, Confirm plan, the wrap-up, the doctor note). The left-set ones (welcome hero, insights) keep their edge.
+- **Written in orange** ("Use the orange style and blur ... to write the text for Steven"): the doctor note's H1s are written by `window.EvWrite`, the Async intro's writer (each letter out of a blur, warm orange until sharp). Its CSS scope gains `.arDrWr`.
+- **Phase 1 card**:
+  - The price is at the top right, on the title's line.
+  - The footer, its divider and the Recommended pill are gone; padding is 24.
+  - Under the header, three of the clinical items it takes in (40 pictures, no lines), the last fading out.
+  - Under the card, in the secondary colour: "It prioritises your heart health, which in my opinion is the best next step for you." and the area chips (Heart health, Cholesterol, Blood vessels; Persona #2 Pelvic health, Women's health; #3 Bowel health, Iron).
+- **Phase 2 as a sequence**:
+  1. "One thing at a time" written at the centre (EvWrite).
+  2. It moves up, and the line comes under it at 16.
+  3. The card, 16 in from each side and 24 inside, its items 16 off the right; the items come in one after another, fading.
+  4. See my plan last.
+- **Phase 2 lists**: Later lists the priced items, then lifestyle; Phase 1's card lists the included clinical items, so the two never share an item.
+- **Dr Joshua Martin → Dr Steven Lu** (Persona #2: the doctor, the intro line, the Assets library note).
+- The footer a doctor-note sequence holds hidden is released on any render, so leaving mid-sequence never leaves the button hidden.
+- Checked at XS dark and light, and at L for the H1 padding.
+
 ## v2519: Doctor note V2, three H1s on screen 1, Phase 2 rewritten
 
 - **Screen 1 ("PHASE 1")**, one H1 after another, each written word by word at 32/38, centred:
