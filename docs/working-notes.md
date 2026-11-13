@@ -23973,3 +23973,8 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **Shorter message** ("Concise msg"): the Review plan card reads "5 services for your health goals. Review before it joins your timeline." (was "He has brought 5 services together into a plan to support your health goals. Review it before it joins your timeline."). One service: "One service for…".
 - **See updates On/Off** ("See update ON OFF for this type of card"): Tweaks → Plan updates → See updates (On by default), shown only with the Review plan variation. Off: Review plan alone, the full width of the card on the phone. A change draws the card again.
 - Checked at XS: On, See updates and Review plan side by side (155 each); Off, Review plan alone (321); the row hidden with the See update variation.
+
+## v2505: Review plan card spacing on the phone
+
+- ("Cta margin top +12px", "Title group padding left right +24", "margin top title group +12"): on the phone's stacked card the title group sits 12 lower (24 under the visual), with 24 inside at its left and right, and the CTAs 12 lower (32 under the text).
+- Checked at XS (See updates Off): visual → title 24, title padding 24 / 24, title → CTA 32.
