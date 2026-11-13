@@ -7,6 +7,20 @@ this is the part you need before you change it.
 
 ---
 
+## v2545 — Confirm plan: doctor card, Hero footer, no months, no sub, nav fade; Timeline: rail trail, image size, check-in card
+
+Confirm plan (Async review):
+- "Add a steven lu Card min at the top … Open full bottom sheet": the doctor's byline over the title is now a mini card (photo 36, name, "Longevity GP · your doctor", a chevron, a pill on the secondary ground). A press opens the doctor's note card (the Doctor note step's, now one function `drNoteFig`) in a full sheet.
+- Footer tweak "#3 Hero" ("Use 3 tiles: Talk to Eva, Do it later, Discuss with Doctor"): Pay full width with three tiles over it. Talk to Eva opens the chat with Eva (`_cc.fresh`), Do it later is Skip for now's, Discuss with Doctor opens the chat with the care team (`_cc.care`). The marks are Eva's star (orange), a clock and the doctor's photo. A long name wraps to two lines.
+- "Remove month breakdown": the timeline keeps its Now line only, no month separators.
+- "Please confirm or skip to continue." removed.
+- Top nav fade ("the gradient should start at 50% of the height and bleed 32px after the top nav"): with the solid bar, the flow now runs up under the bar to its middle (22 of 44) and fades from there to 32 under the bar (54 px, as it scrolls). This applies to every report screen.
+
+Timeline V3:
+- "left line should show a dot with a trail filled of white line": each list's rail has a white trail from its top to a dot (9, a soft ring) that follows the scroll (the point 40% down the view). A list not reached yet shows nothing; a list scrolled past shows its line whole without a dot. It sits on the list's ::after (--t3Tr), black in light mode, and is off with Timeline line No.
+- Tweaks -> Page -> Image size: 48 / 64 (default) / 72 / 96 for the items' pictures, a quarter of the size round ("reduce imagery to be 64 64 (create a tweak …").
+- Check-in header "Secondary" (the default, was Light orange; Light orange kept as an option): the line and the card in one secondary card (#252522, 8 round the card), the card inside on the page's ground ("Background secondary and card inside black (body bg)").
+
 ## v2544 — Doctor note H1 and area dots; Membership object: price, plain rows, no picture
 
 - Phase 1's H1 now reads "Based on your results and risk areas, here’s where I recommend we focus first." (verbatim).
