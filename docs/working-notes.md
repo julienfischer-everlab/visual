@@ -24001,3 +24001,13 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 
 - **Confirm plan only** ("Should be able to select Only confirm plan so doctor note --> confirm plan, Just use Clinical and blood object to put in review"): in the Flow panel (or Tweaks → Recommendations), Clinical, Blood panel and Lifestyle can all be off while Confirm plan stays on. The doctor's note's See recommendations then goes straight to Confirm your updated health plan, which lists the clinical items and the follow-up blood test as added (the demo's 5 Now / 2 Later). Lifestyle items stay out. Confirm plan and Checkout stay in the Flow panel's list; switch Confirm plan off too and the recommendations are skipped as before.
 - Checked at XS: Flow rows Doctor note, Clinical (off), Blood panel (off), Lifestyle (off), Confirm plan, Checkout; See recommendations → Confirm plan lit, Now 5 / Later 2, Physical assessment and Follow-up blood test Added, footer Skip for now + Pay $129.00.
+
+## v2509: What to expect title width, review sheet blanket and spacing, plus CTA, Type Subtitle, Tab information
+
+- **Same title on both intro screens** ("Title should have any size difference!"): both titles were already 32/38, but on the phone What to expect's title sat inside the body's 16px side padding (361 wide), so with the brand font it broke on 3 lines where the Welcome (393 wide) broke on 2. The What to expect title now spans the same width as the Welcome's (out of the side padding), so it keeps the same lines through the move. Desk unchanged (512 both).
+- **Review item sheet:** blanket +12 again ("Blanket +12%"): the report's content-height sheets 34 → 46%, the second layer 36 → 48%. 32 under the Added to plan badge before the Why / When / Price rows ("+32 margin bottom"; 16 → 48).
+- **Later items** ("Just a plus icon cta"): Add to plan is a 36 round plus button (its words in its label and tooltip).
+- **No yellow shade** on adjusted cards in Confirm your updated plan: an adjusted card wears the same ground as an added one.
+- **Type → Subtitle** ("Tweak Type: Added, Adjusted as sub title for each card"): Tweaks → Confirm your updated plan → Type now Badge / Icon / Subtitle / Off; Subtitle puts Added or Adjusted under each card's title (shown in the condensed layout too), no badge or icon.
+- **Tab information** ("Tab information content ON OFF"): new On/Off row; Off hides the "These aren't a priority right now…" line on Later. Saved with the setup (both preset key lists).
+- Checked at XS / L: title 393 / 512 on both screens; sheet blanket .46, badge margin 32 (gap 48); Later plus buttons 36×36; Subtitle: five cards Added / Adjusted, no pills, adjusted ground = added ground; Tab information On shows the line, Off hides it.
