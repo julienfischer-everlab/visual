@@ -23967,3 +23967,9 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - Standalone: no back on the review (the checkout still goes back to it); Skip for now closes it as its X does, the Timeline back under it; Pay goes on as the report's own (checkout, then the Timeline with the walk). Any other open of the report clears it (`reset`).
 - **Banner on the phone** ("Mobile stack element", "Visual top reduce 2x", "centered"): stacked and centred, the visual on top at half its size (the Timeline visual 64 for its 128, scaled), the text centred, the two buttons side by side under it.
 - Checked at XS on the Timeline (V3, Coachmark, Review plan): the banner one column, visual 64 × 64, centred; Review plan opens Confirm your updated health plan with no back and Skip for now / Pay; still there 6 s later; Skip for now closes it and the Timeline is back.
+
+## v2504: Review plan card, shorter message and See updates On/Off
+
+- **Shorter message** ("Concise msg"): the Review plan card reads "5 services for your health goals. Review before it joins your timeline." (was "He has brought 5 services together into a plan to support your health goals. Review it before it joins your timeline."). One service: "One service for…".
+- **See updates On/Off** ("See update ON OFF for this type of card"): Tweaks → Plan updates → See updates (On by default), shown only with the Review plan variation. Off: Review plan alone, the full width of the card on the phone. A change draws the card again.
+- Checked at XS: On, See updates and Review plan side by side (155 each); Off, Review plan alone (321); the row hidden with the See update variation.
