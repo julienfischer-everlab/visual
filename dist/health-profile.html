@@ -208,6 +208,14 @@ body { margin: 0; overflow: hidden; background: var(--pg); color: var(--pgFg); f
 .arSheet .arGround { position: absolute; left: 0; right: 0; top: 0; height: var(--ar-ge, calc(100% + 40px)); z-index: -1; pointer-events: none; opacity: 0; transition: opacity .28s ease; background: linear-gradient(180deg, var(--ar-paper) 0, var(--ar-paper) var(--ar-gs, 50%), color-mix(in srgb, var(--ar-paper) 88%, transparent) calc(var(--ar-gs, 50%) + (var(--ar-ge, 100%) - var(--ar-gs, 50%)) * .2), color-mix(in srgb, var(--ar-paper) 62%, transparent) calc(var(--ar-gs, 50%) + (var(--ar-ge, 100%) - var(--ar-gs, 50%)) * .45), color-mix(in srgb, var(--ar-paper) 30%, transparent) calc(var(--ar-gs, 50%) + (var(--ar-ge, 100%) - var(--ar-gs, 50%)) * .7), color-mix(in srgb, var(--ar-paper) 9%, transparent) calc(var(--ar-gs, 50%) + (var(--ar-ge, 100%) - var(--ar-gs, 50%)) * .9), transparent var(--ar-ge, 100%)); }   /* the sticky rule: the paper solid through 70% of the last section (the pinned anchors, else the progress), then eased out to nothing 40 under it */
 .arSheet.arNoBlur :is(.arGround, .arFootGround) i { display: none; }   /* Blur off: the gradient alone */   /* Blur on: the bands only over the fade, from where the paper stops being solid; the solid stays plain paper, so no blur reads the phone's dark corners into it ("weird black shade, should be solid until 70%") */
 .arSheet.arBarGrad.arScrolled:not(.arIsWelcome) .arGround { opacity: 1; } .arSheet.arIsWelcome .arGround { display: none; }
+/* Top nav Style on the step flows' bar (Tweaks -> Top nav -> Style, html[data-tnbg]; the Async report, the Onboarding consult, Send a gift...): Filled, the flow starts at the bar's foot, no fade, the bar on the screen's colour;
+   Transparent, the flow runs on under the whole bar, no fade, no ground (Gradient: the Fixed bar setting's own, Solid's 20% fade or the Gradient's blur) */
+html[data-tnbg="fill"] .arSheet.arEdge:not(.arIsWelcome) .arBody { --ar-tfx: 0px; }
+html[data-tnbg="fill"] .arSheet.arEdge:not(.arIsWelcome):not(.arBarGrad) .arBody { margin-top: 0; padding-top: 24px; scroll-padding-top: 0; }
+html[data-tnbg="fill"] .arSheet.arBarGrad:not(.arIsWelcome) .arGround { background: var(--ar-paper) !important; height: 100% !important; -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+html[data-tnbg="clear"] .arSheet.arEdge:not(.arIsWelcome) .arBody { --ar-tfx: 0px; }
+html[data-tnbg="clear"] .arSheet.arEdge:not(.arIsWelcome):not(.arBarGrad) .arBody { margin-top: calc(-1 * var(--ar-hh, 72px)); padding-top: calc(var(--ar-hh, 72px) + 24px); scroll-padding-top: var(--ar-hh, 72px); }
+html[data-tnbg="clear"] .arSheet .arGround { display: none !important; }
 .arSheet .arGround i { position: absolute; left: 0; right: 0; top: var(--ar-gs, 50%); display: block; -webkit-mask-image: linear-gradient(#000 82%, transparent); mask-image: linear-gradient(#000 82%, transparent); }
 .arSheet .arGround i:nth-child(1) { height: calc((100% - var(--ar-gs, 50%)) * 1); -webkit-backdrop-filter: blur(1.5px); backdrop-filter: blur(1.5px); } .arSheet .arGround i:nth-child(2) { height: calc((100% - var(--ar-gs, 50%)) * .92); -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); }
 .arSheet .arGround i:nth-child(3) { height: calc((100% - var(--ar-gs, 50%)) * .84); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); } .arSheet .arGround i:nth-child(4) { height: calc((100% - var(--ar-gs, 50%)) * .76); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
@@ -845,6 +853,7 @@ body { margin: 0; overflow: hidden; background: var(--pg); color: var(--pgFg); f
 .arSheet .arRcDeckArc > .arRcStkC > * { opacity: 1; }
 /* Confirm your updated plan (the Stacked recommendations' review): the title left, 32 / 38, its line under it; one card of the added items, each its name and phase at the left, its price at the right, a hairline between, Total today last */
 .arSheet.arIsRev .arNavT { visibility: hidden; }
+.arSheet.arIsRev.arRvNavT .arNavT { visibility: visible; }   /* Review V2: its title in the top nav, the H1 gone */
 .arSheet:not(.hpSheet) .arFoot .arBtnPrimary { transition: opacity .3s ease, transform .4s cubic-bezier(.32, .72, 0, 1), visibility 0s; }
 .arSheet:not(.hpSheet) .arFoot .arBtnPrimary:disabled:not(.evBusyS):not(.evOk) { opacity: 0; visibility: hidden; transform: translateY(12px); pointer-events: none; transition: opacity .2s ease, transform .2s ease, visibility 0s .2s; }   /* Stacked / Arc recommendations: no Next until every card is decided ("remove Next until it is enabled"), then it rises in */
 .arSheet .arRvwHd { display: flex; flex-direction: column; gap: 8px; } .arSheet .arRvwHd > .arDrBy { margin-bottom: 12px; }   /* the doctor's line 20 over the title, as on the doctor's screens */ /* the tab, and the timeline with it, 8 higher ("Push up the tab by 8px, and then also the timeline"): no margin under the header */ .arSheet.arSheet .arRvwHd > .arRvwLede { margin: 0; text-align: center; color: oklch(var(--ar-ink) / .56); }   /* its line under it, centred ('Sub Please confirm to continue') */ .arSheet .arStack.arRvwStack { gap: 32px; } .arSheet .arStack.arRvwStack > :nth-child(2) ~ * { margin-top: -8px; }   /* 8 less under the segmented tabs ("-8px on the gap on the segmented tab"): 24 */
@@ -1459,6 +1468,18 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
    Host tokens: --evTnTop (the status bar / safe area above the bar: 0 on the desk), --evTnX (the page's padding/left-right), --evTnGnd (the screen's colour), --evTnInk (its ink) */
 /* Sticky Off (EvTopNav.M.sticky, html.tnFree): every top nav scrolls away with its page, the master's and the pages' own bars alike (their place in the flow kept; no offset) */
 html.tnFree :is(.evTn, #dOver .ovTop, body.v4 .mHead, .svTop, .svmNav, #dPlan .plPBar, #dPlan .plNBar, #dPlan .plABar, .hoBand) { position: relative !important; top: auto !important; }
+/* Style (Tweaks -> Top nav -> Style, this page's; EvTopNav.M.bg the master's default; html[data-tnbg]): Filled, the screen's own colour solid to the bar's foot, no blur bands, no bleed under it; Transparent, no ground at all
+   ("If it's fixed, have two variants: gradient or field or transparent"). Gradient (no attribute) is the gradient blur above. The master's bar, the Overview's, the Service detail's, the Plan's, the Header overlap's band, the Timeline's tabs */
+html[data-tnbg="fill"] .evTnG::before { opacity: 1 !important; -webkit-mask-image: none !important; mask-image: none !important; }
+html[data-tnbg="fill"] .evTnG i { display: none !important; }
+html[data-tnbg="fill"] .evTn.evTnOn > .evTnG { bottom: 0; }
+html[data-tnbg="fill"] .evTnC.evTnOn > .evTnG { bottom: calc(-1 * (var(--evTnD) - 16px)); }   /* C: to the floating controls' foot, no bleed */
+html[data-tnbg="clear"] .evTnG { display: none !important; }
+html[data-tnbg] :is(#phone2 .ovTop, #dOver .ovTop, .svTop, .svmNav, #dPlan .plPBar, .hoBand) .ovGround, html[data-tnbg] .hoBand > .ovGround, html[data-tnbg] #dTl .tlBar .ovGround { display: none !important; }
+html[data-tnbg="fill"] :is(#phone2 .ovTop, #dOver .ovTop, .svTop, .svmNav)::before { background: var(--tnFill, var(--pageBg, #0f0f0f)) !important; bottom: 0 !important; -webkit-mask-image: none !important; mask-image: none !important; }
+html[data-tnbg="fill"] :is(#dPlan .plPBar, .hoBand)::before { bottom: 0 !important; -webkit-mask-image: none !important; mask-image: none !important; }
+html[data-tnbg="fill"] body.plPUnder #dPlan .plPBar::before { opacity: 1 !important; } html[data-tnbg="fill"] .hoBand.on::before { opacity: var(--hoK, 1) !important; }
+html[data-tnbg="clear"] :is(#phone2 .ovTop, #dOver .ovTop, .svTop, .svmNav, #dPlan .plPBar, .hoBand, #dPlan .plStBar)::before { display: none !important; } html[data-tnbg="clear"] #dPlan .plStBar { opacity: 0 !important; }
 :root { --evTnD: 44px; }   /* the Top nav master's disc, read by the bars that keep their own markup (the Service detail's, the in-app chat's) */
 .evTn { --evTnD: 44px; position: sticky; top: 0; z-index: 6; display: flex; align-items: center; gap: 16px; box-sizing: border-box; min-height: calc(var(--evTnTop, 0px) + 76px); margin: 0; padding: calc(var(--evTnTop, 0px) + 16px) var(--evTnX, 16px) 16px; color: var(--evTnInk, currentColor); isolation: isolate; pointer-events: none; }
 .evTn > :not(.evTnG) { pointer-events: auto; }
@@ -3329,6 +3350,7 @@ window.EvSteps = (function () {
       var fitF = function () { var f = foot.getBoundingClientRect(), b = cta.getBoundingClientRect(); root.style.setProperty('--ar-foot-h', foot.offsetHeight + 'px');
         root.style.setProperty('--ar-fs', Math.round(f.bottom - (b.bottom - b.height * .7)) + 'px'); root.style.setProperty('--ar-cta-b', Math.round(f.bottom - b.top) + 'px'); root.style.setProperty('--ar-fe', Math.round(f.height + 40) + 'px'); };
       if (RO) new RO(fitF).observe(foot); later(fitF, 0); }
+    { var fitH = function () { root.style.setProperty('--ar-hh', head.offsetHeight + 'px'); }; if (RO) new RO(fitH).observe(head); later(fitH, 0); }   /* the bar's height for Top nav Style Transparent (the flow under all of it) */
     if (o.bar === 'grad') { head.insertBefore(ground('arGround'), head.firstChild);
       fitG = function () { var hd = head.getBoundingClientRect(), ch = root.classList.contains('arChipsStuck') ? body.querySelector('.arLfChips') : null, last = (ch || stepWrap).getBoundingClientRect();
         root.style.setProperty('--ar-head-h', head.offsetHeight + 'px');
@@ -3546,17 +3568,39 @@ window.EvTopNav = (function () {
   /* Sticky ("All top nav should have a tweak: Sticky ON / OFF. Put this as a design system level"): every top nav pinned at its scroller's top (On, the default) or scrolling away with the page (Off: html.tnFree,
      which unpins the master's bars and the pages' own top bars: the Overview's, Insights', the Service detail's, the Plan's, the Header overlap's band). The master's setting: M.sticky, set(), save() as everlab:tnMaster
      (read here at parse on every page, shared with the others through EvShared), reset(), load(); Tweaks -> Top nav -> Sticky and General layout -> Top nav set it live, their Save keeps it */
-  var TD = { sticky: 'on' }, TM = { sticky: 'on' };
-  var tApply = function () { document.documentElement.classList.toggle('tnFree', TM.sticky === 'off');
-    [].forEach.call(document.querySelectorAll('#stTnSticky'), function (s) { if (s.value === TM.sticky) return; s.value = TM.sticky; s.setAttribute('data-v', TM.sticky); var g = s.nextElementSibling; if (g && g.classList && g.classList.contains('tgl')) g.setAttribute('aria-checked', String(TM.sticky === 'on')); });
-    try { document.dispatchEvent(new CustomEvent('everlab:tn', { detail: { sticky: TM.sticky } })); } catch (e) {} };
-  var tLoad = function () { TM.sticky = TD.sticky; try { var v = JSON.parse(localStorage.getItem('everlab:tnMaster') || 'null'); if (v && (v.sticky === 'on' || v.sticky === 'off')) TM.sticky = v.sticky; } catch (e) {} tApply(); };
-  var tSet = function (k, v) { if (k === 'sticky' && (v === 'on' || v === 'off') && TM.sticky !== v) { TM.sticky = v; tApply(); } };
+  /* Style ("I want to have a control on the top navigation for each page ... If it's fixed, have two variants: gradient or field or transparent"): the fixed bar's ground, Gradient (the gradient blur, as before),
+     Filled (the screen's own colour, solid, ending at the bar's foot) or Transparent (no ground). M.bg is the master's default (General layout -> Top nav), as M.sticky; each page can pick its own in Tweaks -> Top nav
+     (Fixed, Style), kept by the Tweaks' Save as one hidden value (#stTnPg, JSON { page: { fx, bg } }, the page as Tweaks -> Container names it, window.EvCt.cur()); a page with no pick of its own follows the master.
+     The Timeline V3's Fixed is its tabs' own (Tweaks -> Tab top -> Fixed, #stT3TabFix): the row stands in for it there. html.tnFree and html[data-tnbg] carry the page's (CSS beside the master's .evTnG) */
+  var TD = { sticky: 'on', bg: 'grad' }, TM = { sticky: 'on', bg: 'grad' }, BGS = ['grad', 'fill', 'clear'], PG = {}, tPk = '';
+  var tCur = function () { try { return window.EvCt && window.EvCt.cur ? window.EvCt.cur() || '' : ''; } catch (e) { return ''; } };
+  var tTl = function (k) { return k === 'tl' && document.documentElement.classList.contains('tlD3') ? document.getElementById('stT3TabFix') : null; };
+  var tEff = function (k) { var o = (k && PG[k]) || {}, t = tTl(k); return { fx: t ? (t.value === 'off' ? 'off' : 'on') : (o.fx === 'on' || o.fx === 'off' ? o.fx : TM.sticky), bg: BGS.indexOf(o.bg) >= 0 ? o.bg : TM.bg }; };
+  var tRow = function (id, v) { [].forEach.call(document.querySelectorAll('#' + id), function (s) { if (s.value === v) return; s.value = v; s.setAttribute('data-v', v); var g = s.nextElementSibling; if (g && g.classList && g.classList.contains('tgl')) g.setAttribute('aria-checked', String(v === 'on')); }); };
+  var tApply = function () { var k = tCur(), e = tEff(k), H = document.documentElement; tPk = k;
+    H.classList.toggle('tnFree', e.fx === 'off' && !tTl(k) && !/^(ar|hp|wel|sgf)$/.test(k)); if (e.bg === 'grad') { if (H.hasAttribute('data-tnbg')) H.removeAttribute('data-tnbg'); } else if (H.getAttribute('data-tnbg') !== e.bg) H.setAttribute('data-tnbg', e.bg);
+    tRow('stTnSticky', e.fx); tRow('stTnBg', e.bg);
+    var sf = /^(ar|hp|wel|sgf)$/.test(k), fr = document.getElementById('stTnFxRow'), br = document.getElementById('stTnBgRow'); if (fr && fr.hidden !== sf) fr.hidden = sf;   /* the step flows' bar is always pinned: no Fixed there, Style only */
+    if (br){ var bh = !sf && e.fx === 'off'; if (br.hidden !== bh) br.hidden = bh; br.classList.toggle('tkDepRow', !sf); }   /* Style only while it is fixed; under Fixed, the dependent row's arrow */
+    var lb = document.getElementById('stTnPgLbl'), nm = ''; try { var P = window.EvCt && window.EvCt.pages ? window.EvCt.pages() : [], f = P.find(function (p) { return p.key === k; }); nm = f ? f.name : (window.EvCtx && window.EvCtx.top() ? window.EvCtx.top().label || '' : ''); } catch (x) {} if (lb && lb.textContent !== nm) lb.textContent = nm;
+    try { document.dispatchEvent(new CustomEvent('everlab:tn', { detail: { sticky: e.fx, bg: e.bg, page: k } })); } catch (x) {} };
+  var tKeep = function () { var h = document.getElementById('stTnPg'); if (h) h.value = Object.keys(PG).length ? JSON.stringify(PG) : ''; };
+  var tRead = function (v) { var o = null; try { o = v ? JSON.parse(v) : {}; } catch (e) { o = {}; } PG = {}; if (o && typeof o === 'object') Object.keys(o).forEach(function (k) { var x = o[k] || {}, y = {}; if (x.fx === 'on' || x.fx === 'off') y.fx = x.fx; if (BGS.indexOf(x.bg) >= 0) y.bg = x.bg; if (y.fx || y.bg) PG[k] = y; }); };
+  var tPg = function (f, v) { var k = tCur(); if (!k) return; if (f === 'fx' && tTl(k)) { var t = tTl(k); if (t.value !== v) { t.value = v; t.dispatchEvent(new Event('change', { bubbles: true })); } tApply(); return; }   /* the Timeline's tabs: their own Fixed */
+    var o = PG[k] || {}; if (v === (f === 'fx' ? TM.sticky : TM.bg)) delete o[f]; else o[f] = v; if (o.fx || o.bg) PG[k] = o; else delete PG[k]; tKeep(); tApply(); };   /* the master's again: no pick of its own */
+  var tLoad = function () { TM.sticky = TD.sticky; TM.bg = TD.bg; try { var v = JSON.parse(localStorage.getItem('everlab:tnMaster') || 'null'); if (v && (v.sticky === 'on' || v.sticky === 'off')) TM.sticky = v.sticky; if (v && BGS.indexOf(v.bg) >= 0) TM.bg = v.bg; } catch (e) {} tApply(); };
+  var tSet = function (k, v) { if (k === 'sticky' && (v === 'on' || v === 'off') && TM.sticky !== v) { TM.sticky = v; tApply(); } else if (k === 'bg' && BGS.indexOf(v) >= 0 && TM.bg !== v) { TM.bg = v; tApply(); } };
   var tShare = function (v) { try { if (window.EvShared && window.EvShared.on()) window.EvShared.put('everlab:tnMaster', v); } catch (e) {} };
-  var tSave = function () { var ok = true; try { localStorage.setItem('everlab:tnMaster', JSON.stringify(TM)); } catch (e) { ok = false; } tShare({ sticky: TM.sticky }); return ok; };
-  var tReset = function () { try { localStorage.removeItem('everlab:tnMaster'); } catch (e) {} TM.sticky = TD.sticky; tApply(); tShare({ sticky: TD.sticky }); };
+  var tSave = function () { var ok = true; try { localStorage.setItem('everlab:tnMaster', JSON.stringify({ sticky: TM.sticky, bg: TM.bg })); } catch (e) { ok = false; } tShare({ sticky: TM.sticky, bg: TM.bg }); return ok; };
+  var tReset = function () { try { localStorage.removeItem('everlab:tnMaster'); } catch (e) {} TM.sticky = TD.sticky; TM.bg = TD.bg; tApply(); tShare({ sticky: TD.sticky, bg: TD.bg }); };
   tLoad();
-  (function () { var ts = document.getElementById('stTnSticky'); if (ts) ts.addEventListener('change', function () { tSet('sticky', ts.value); }); })();
+  (function () { var ts = document.getElementById('stTnSticky'), tb = document.getElementById('stTnBg'), th = document.getElementById('stTnPg');
+    if (ts) ts.addEventListener('change', function () { tPg('fx', ts.value); }); if (tb) tb.addEventListener('change', function () { tPg('bg', tb.value); });
+    if (th) th.addEventListener('change', function () { tRead(th.value); tApply(); });   /* a Save put back, a preset, Reset */
+    var tick = function () { if (tCur() !== tPk) tApply(); };   /* a page come or gone: its own */
+    var go = function () { tick(); if (document.body) new MutationObserver(tick).observe(document.body, { attributes: true, attributeFilter: ['class', 'data-pl-page'] }); document.addEventListener('everlab:ctx', function () { setTimeout(tick, 0); }); setInterval(tick, 400);
+      var tf = document.getElementById('stT3TabFix'); if (tf) tf.addEventListener('change', function () { setTimeout(tApply, 0); }); };
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', go); else setTimeout(go, 0); })();
   document.addEventListener('click', function (e) { var t = e.target; if (!t || !t.closest) return; if (t.closest('.stTkSave')) tSave(); else if (t.closest('.stTkReset')) tReset(); });   /* the Tweaks' Save and Reset keep it too */
   return { html: html, mount: mount, watch: watch, titled: titled, variant: variant, IB: IB, IX: IX, IM: IM, M: TM, D: TD, set: tSet, save: tSave, reset: tReset, load: tLoad };
 })();
