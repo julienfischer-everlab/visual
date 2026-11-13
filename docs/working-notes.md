@@ -24002,6 +24002,13 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **Confirm plan only** ("Should be able to select Only confirm plan so doctor note --> confirm plan, Just use Clinical and blood object to put in review"): in the Flow panel (or Tweaks → Recommendations), Clinical, Blood panel and Lifestyle can all be off while Confirm plan stays on. The doctor's note's See recommendations then goes straight to Confirm your updated health plan, which lists the clinical items and the follow-up blood test as added (the demo's 5 Now / 2 Later). Lifestyle items stay out. Confirm plan and Checkout stay in the Flow panel's list; switch Confirm plan off too and the recommendations are skipped as before.
 - Checked at XS: Flow rows Doctor note, Clinical (off), Blood panel (off), Lifestyle (off), Confirm plan, Checkout; See recommendations → Confirm plan lit, Now 5 / Later 2, Physical assessment and Follow-up blood test Added, footer Skip for now + Pay $129.00.
 
+## v2516: Doctor note V2: doctor and greeting centred at the top, recommendation as a row
+
+- **Top** ("Keep steven centered and title sub at the top"): the doctor centred as in V1 (photo 56, name, "Longevity GP · your doctor"), then "Hi Julien," and the intro under it, all centred.
+- **Signature and Ask Eva removed** ("kill").
+- **My recommendation** ("Card should be like a bullet point below with a title My recommendation outside the card"): the green card is gone. "My recommendation" is a title (18px) over the rows, and the recommendation is the first row in the What to expect style: a flask in the disc, "Start with Diagnostics", "I recommend our Diagnostics programme to focus on **your heart health**." What it takes in now sits in a small card under it (the items kept, with their pictures, "Now"), the same card as the parked items under "Some things can wait" ("Later"). Then "We'll talk it through".
+- Checked at XS: the top centred; three rows; Now card (Colonoscopy, DEXA scan, Diagnostic review, Physical assessment), Later card (Gut microbiome test, Allergy test); no signature, no Eva line.
+
 ## v2515: Confirm plan heading, Screenshot and Share removed
 
 - **Confirm plan heading** ("Here is how you plan will look like. Sub Please confirm to continue"): the review's title is now "Here's what your plan will look like" (two lines), with "Please confirm to continue." under it, centred, 16px secondary, 8 below the title. Standalone Confirm plan and the async flow alike.
