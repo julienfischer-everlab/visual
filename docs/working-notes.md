@@ -7,6 +7,12 @@ this is the part you need before you change it.
 
 ---
 
+## v2544 — Doctor note H1 and area dots; Membership object: price, plain rows, no picture
+
+- Phase 1's H1 now reads "Based on your results and risk areas, here’s where I recommend we focus first." (verbatim).
+- "Add orange dot inside": each risk area chip (Heart health, Cholesterol) has a 6px orange dot (#ff7a1a, the report's orange) before its words, 8 apart.
+- Membership object (Confirm plan): "Need the price $1,999" at the card's right, level with its name (15, medium); "Diagnostic item dont have new or adjust type" and "remove date on right": its rows are the picture and the name only; "remove Visual left": no mark tile at the card's left. Pay still totals the extras only ($129).
+
 ## v2543 — Confirm plan: Membership object; Flow panel without counters
 
 - "I need a tweak ON OFF: Membership object in timeline. This card should include a list item that you put in the footer": Tweaks -> Confirm plan -> Membership object (Off by default). On, the Diagnostics Membership is one card on the timeline, first under Now: the Everlab mark, its name and line, then in its footer (over the 8% divider) what it includes, a row each: the picture (32), the name, Adjusted when it is, its month at the right. Those items (the added ones with no price of their own: Included) leave the timeline's own rows; the priced ones and the items already in the plan stay. A row's press opens its card in the sheet, as on the timeline. The tab counts and Pay are unchanged.
