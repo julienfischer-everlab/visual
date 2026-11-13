@@ -7,6 +7,15 @@ this is the part you need before you change it.
 
 ---
 
+## v2539 · Presets menu: a link on every preset, no Update, no Duplicate on Default, blue dot
+
+- **Link icon on every row, Default too:** a tap copies the artifact's link with `#tk-ps<page><preset id>` and the icon turns into a tick for 2 s, with a "Link to … copied" snack. If the clipboard refuses, the link is shown to copy by hand.
+  - The link is stored in `tkShares` (the team's store, and this browser) with the preset's id and its snapshot.
+  - Opened, it puts the preset on the page as it is at that moment, falling back to the stored snapshot.
+- **Removed:** ↻ Update on every row ("Remove this option"); the bar's Save still writes the page's tweaks into the preset in use.
+- **Removed on Default:** Duplicate.
+- **Preset in use:** marked with an 8px blue dot (#5aa2ff, the home icon's blue) after its name, in place of "· on".
+
 ## v2538 · Confirm plan: title +8 side padding, balanced on two lines
 
 - The Confirm plan title has 8 padding each side (inside its −8 margins: the body's width), and no forced break, so it balances on two lines: "Here's how your / health plan look like" ("+8px padding left right"). With the break kept, the first line (364 wide) would not fit in 361 and the title would go back to three lines.
