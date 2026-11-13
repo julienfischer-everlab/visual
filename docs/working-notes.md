@@ -7,6 +7,26 @@ this is the part you need before you change it.
 
 ---
 
+## v2551 — Insights module doc: demo, two sections, wearable, warning badges; doc headers title-only; Confirm plan cards; doctor note → doctor card; Tweaks/Flow panels 320
+
+Design system → Modules:
+- Onboarding consult: "Remove that one, the right module is insight, already covered": the "After the call: Your first insights" section is gone (its tasks are the Insights module's page).
+- Insights: "Add a demo card at the top where I can toggle the state of each item. Module should be bigger than the one below": a Demo section first, the module drawn by the same insList at 1.25 times the states' size; each task's state picked in the right panel (Health profile To complete / 40% / Completed, Health data To connect / In progress / Connected, Past results To action / In progress / Found / None found). The states in two sections: "Insights not ready to generate" (Not started, Part way, Profile done) and "Insights ready to generate" (Unlocked, All done, No past results).
+- "remove for all, the sub and these properties": every module page's states (and Membership onboarding's card states) show their title alone, no sub-line or code pill.
+
+Insights module (Overview and docs, one renderer):
+- "Use wearable 3d for health data": Health data's render is the wearable, the Garmin watch's 3D tile (the Connect sheet's own), a little larger to match the others; was the glass layers.
+- "Put warning grey icon for not completed yet": with Badges on, To complete / To connect / To action carry a grey circle-alert (was the loader ring, and the unlink for To connect); In progress keeps its loader, done its check.
+
+Async report:
+- "reduce padding 2px top left bottom": Confirm plan's condensed cards 8 / 16 / 8 / 10 (were 10 / 16 / 10 / 12).
+- "included secondary fg": Included in the ink at 56%; a price stays primary.
+- "need a transition between this card and the top card on the next screen, moving the avatar on top left": going on from the Doctor note to a page that opens on the doctor's card (Confirm plan; V2 its card holding Now / Later), the note card's ground shrinks into that card and the doctor's photo travels from its centre to the card's top left, the circle becoming the 12-round square (640 ms); the pages' words cross-fade as before and the card's name, line, arrow and tabs come in as it lands. Other next pages keep the usual push.
+
+Tweaks and Flow panels:
+- "avoid scroll horizontal. Set fixed width tweak panel AND flow panel to 320px": both 320 wide, docked or floating, no sideways scroll; a segmented control too wide for its label's line drops under it at the right, and wraps if wider than the panel.
+- "panel padding left right 8px": the Tweaks panel's sides 8 (were 6 docked, 4 floating).
+
 ## v2550 — Decade roll: units fast, tens slow; XS item title 14; Review V2 nav title; Top nav per page: Fixed + Style (Gradient / Filled / Transparent)
 
 - "The second decimal should rotate faster than the first one ... the 3 and 4 are slower than the 9 and 0": both rolls. The Number styles' age (39 → 40): the units flip 9 → 0 over .12 of the run, the tens roll 3 → 4 over .44, both starting together, the tens landing as the number reaches the middle (were .2 / .4). The big reel over Card #1 (38 → 39 → 40): each units step a quick eased flip at the start of its stretch, then held; the tens roll over the whole run.
