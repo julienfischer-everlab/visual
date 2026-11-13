@@ -7,6 +7,11 @@ this is the part you need before you change it.
 
 ---
 
+## v2540 — Flow panel step links; V3 title padding above XS
+
+- "Can you also have a link shortcut from the specific step?": every step row of the Flow panel (Async report, Send a gift, a service page's steps) has a link icon at its end, shown on hover. A tap copies a `#tk-st<id>` link; the share (tkShares, and this browser's copy) holds the setup as it stands and the step (`fl: { k, go, ctx }`; a service's page also the service it is on). Opened, the setup goes on, the flow opens and goes to that step, and the cover lifts once it is there. The preset links and the step links share one copy helper (`cpLink`); `window.__tkStepLink(fl, name, button)`.
+- "For everything which is above XS, remove the padding left and right on the title": the V3 `.arWtT` title has no side padding from S up (32px stays on XS).
+
 ## v2539 · Presets menu: a link on every preset, no Update, no Duplicate on Default, blue dot
 
 - **Link icon on every row, Default too:** a tap copies the artifact's link with `#tk-ps<page><preset id>` and the icon turns into a tick for 2 s, with a "Link to … copied" snack. If the clipboard refuses, the link is shown to copy by hand.
