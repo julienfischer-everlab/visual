@@ -7,6 +7,10 @@ this is the part you need before you change it.
 
 ---
 
+## v2542 — V3 What to expect: +32 under the title group on desktop
+
+- "Desktop +32px margin bottom title group": on M and L, the V3 What to expect's title group (tag, H1, line) has 32 below it, so 56 from the line to the first row (was 24). XS and S unchanged.
+
 ## v2541 — Doctor note: Additional product tweak
 
 - "Add a tweak ... additional product, yes/no. If yes, you just show two other products below": Tweaks -> Doctor note -> Additional product (No by default). Yes adds two standalone products under the Diagnostics Membership card (Phase 1), each its own card in the Membership card's style (title 18 medium and its line at the left, the picture 42 at the right where the mark is), 16 apart, following the Card ground tweak; they roll in with the other cards, the programme line stays last.
