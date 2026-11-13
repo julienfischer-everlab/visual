@@ -7,6 +7,13 @@ this is the part you need before you change it.
 
 ---
 
+## v2548 — Doctor card in the reference's style; Condensed rows' small CTA; Image size per breakpoint; Tweaks panel 2 tighter
+
+- "This is the card for the doctor on top of the timeline and the async report. Design something in this style.": the doctor's card over the Confirm plan's timeline (the Async report's review and the Timeline's Review plan modal, one function) is now a card the column wide: 20 corners, a hairline, the ink at 5%; the doctor's photo a 48 rounded square (12), the name 16/22 bold over "Longevity GP · your doctor" 14/20 at 56%, a long arrow at the right. A press still opens the doctor's note sheet.
+- "For the condensed version, use the smaller size for CTA": Item layout Condensed, the row's split button at 36 (was 44), its label 14, the ··· 34 wide.
+- "I need a different size per breakpoint, so find a way to select inside the breakpoint for each size": Tweaks → Timeline item → Breakpoint (XS S M L) over Image size. Image size sets the picked breakpoint's size; the switch follows the viewport (Viewport select). Four sizes kept (stT3ThXs/S/M/L, saved with presets; the two visible rows stand in for them), each read by its breakpoint (body[data-bp] → --t3Th; Auto wide = L). The items, the focus and the check-in thumbnails follow.
+- "the padding on the card, the gap by 2, and then the padding left and right on this container by 2": Tweaks cards' sides 6 → 4, the gap between cards 6 → 4, the panel's sides 8 → 6 docked (6 → 4 floating).
+
 ## v2547 — Timeline: item tweaks group, focus/check-in at Image size, CTA centred, eased trail with circles that fill, phone top fade under the status bar
 
 Timeline V3:
