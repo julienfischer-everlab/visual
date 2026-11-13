@@ -7,6 +7,21 @@ this is the part you need before you change it.
 
 ---
 
+## v2530 · Doctor note V2: CTCA photo, DS divider, chips, logo, byline intro, Phase 2 card and line
+
+- **Phase 1 intro:** the doctor's line is there from the start. The photo appears alone, 72 at the centre. As the first H1 is written it shrinks to 24 and moves into the line, and the name fades in beside it ("The avatar should reduce once the first title appears, and then the name next"). The same line stays through the second H1 and is carried over the final H1 (no blink); intro gap 20.
+- **Phase 1 card:**
+  - CTCA picture: the consult photo (a doctor and a member at the scan), cropped square to 160 at `assets/overview/plan-ctca.webp` and named `EvSvcImg.ctca`.
+  - List pictures 42 (+2); title to sub 1 (−1).
+  - Divider: the Design system's Divider in a card (ink 4%).
+  - Chips: radius 8 (not a pill).
+  - Everlab mark at 24%.
+- **Phase 2 card:**
+  - Divider at 4% (DS).
+  - Pictures radius 16 (−4); picture to words 16 (+2); row padding-right 4 (−12).
+  - Card corners 26 (+4).
+  - The line "I've put together other recommendations…" moved under the card, 16 below its faded foot, and comes in last: title → up → card → rows → line → Continue.
+
 ## v2529 · Doctor note V2: second line copy
 
 - Phase 1's second line now reads "Let's look at what it means for you and where you should focus next." (was "…what your results mean for you and where I'd focus next."). It is written after the greeting, or on its own when Greeting is Off.
