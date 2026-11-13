@@ -7,6 +7,11 @@ this is the part you need before you change it.
 
 ---
 
+## v2543 — Confirm plan: Membership object; Flow panel without counters
+
+- "I need a tweak ON OFF: Membership object in timeline. This card should include a list item that you put in the footer": Tweaks -> Confirm plan -> Membership object (Off by default). On, the Diagnostics Membership is one card on the timeline, first under Now: the Everlab mark, its name and line, then in its footer (over the 8% divider) what it includes, a row each: the picture (32), the name, Adjusted when it is, its month at the right. Those items (the added ones with no price of their own: Included) leave the timeline's own rows; the priced ones and the items already in the plan stay. A row's press opens its card in the sheet, as on the timeline. The tab counts and Pay are unchanged.
+- "Remove counters": the Flow panel's steps have no numbers any more (a phase still indented under its step); a long name no longer drops under its number.
+
 ## v2542 — V3 What to expect: +32 under the title group on desktop
 
 - "Desktop +32px margin bottom title group": on M and L, the V3 What to expect's title group (tag, H1, line) has 32 below it, so 56 from the line to the first row (was 24). XS and S unchanged.
