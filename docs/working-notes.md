@@ -24002,6 +24002,16 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **Confirm plan only** ("Should be able to select Only confirm plan so doctor note --> confirm plan, Just use Clinical and blood object to put in review"): in the Flow panel (or Tweaks → Recommendations), Clinical, Blood panel and Lifestyle can all be off while Confirm plan stays on. The doctor's note's See recommendations then goes straight to Confirm your updated health plan, which lists the clinical items and the follow-up blood test as added (the demo's 5 Now / 2 Later). Lifestyle items stay out. Confirm plan and Checkout stay in the Flow panel's list; switch Confirm plan off too and the recommendations are skipped as before.
 - Checked at XS: Flow rows Doctor note, Clinical (off), Blood panel (off), Lifestyle (off), Confirm plan, Checkout; See recommendations → Confirm plan lit, Now 5 / Later 2, Physical assessment and Follow-up blood test Added, footer Skip for now + Pay $129.00.
 
+## v2522: Doctor note V2, Phase 1 card header at the left; H1s 16 each side
+
+- **Phase 1 card**:
+  - "Diagnostics programme" (18, medium now) and its line are set at the left ("Align left ... 18px medium").
+  - 20 above and below the divider (+4 each).
+  - Its item pictures are back to radius 11 ("Reduce -4px").
+- **Every centred H1 of the report**: 16 in from each side ("H1 padding left and right: 16px"; was 32): the doctor note's and What to expect, Everything else, Clinical, Lifestyle, Confirm plan, the wrap-up.
+- **Priority line and chips**: 16 in from each side (was 24).
+- Checked at XS.
+
 ## v2521: Doctor note V2, new H1s, a simpler Phase 1 card, Phase 2 cut at two and a half items
 
 - **H1s**:
