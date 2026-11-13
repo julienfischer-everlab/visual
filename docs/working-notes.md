@@ -7,6 +7,10 @@ this is the part you need before you change it.
 
 ---
 
+## v2529 · Doctor note V2: second line copy
+
+- Phase 1's second line now reads "Let's look at what it means for you and where you should focus next." (was "…what your results mean for you and where I'd focus next."). It is written after the greeting, or on its own when Greeting is Off.
+
 ## v2528 · Doctor note V2: Greeting tweak, doctor byline, Phase 2 card, H1 copy
 
 - **Greeting tweak** (Tweaks → Doctor note → Greeting, On by default, `stArDrGr`): On writes "Hi Julien, Dr Steven here." then "Let's look at…"; Off skips the greeting and writes the photo with "Let's look at…" straight away ("Create a tweak for this first phase title").
