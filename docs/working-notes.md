@@ -23869,3 +23869,17 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 ## v2493 · Flow panel: Review recommendations → Confirm plan
 
 - The Async report's review step is named "Confirm plan" in the Flow panel (was "Review recommendations"), with its switch and its place last before Checkout unchanged. Checked: the panel lists "Confirm plan" then "Checkout".
+
+## v2494 · Confirm your updated plan: Footer #1 / #2, Tab sub, green checks, regular titles, centred H1; Show existing items; Recommendations switches off Tweaks
+
+- **Footer** ("Need 2 footer version"): `#stArRvFt` in the Confirm your updated plan group.
+  - #1 Pay + Later (default): "Do it later" at the left (secondary) and "Pay $673.00" at the right. Do it later ends the review the way Pay's end does (the app goes to the Timeline), nothing paid now.
+  - #2 Pay only: "Pay $673.00 (3 items)" alone, as before.
+  - Nothing to pay: "Confirm plan" alone either way. The checkout screen keeps its single Pay.
+- **Tab sub** ("Tab tweak, Show sub ON OFF"): `#stArRvSub`. Off: the Added to plan / Later tabs are one line, without "7 actions".
+- **Show existing items** ("Show exisiting items ON OFF"): the "In your plan" row renamed, same switch (`#stArRvCur`).
+- **Recommendations switches removed from Tweaks** ("as we can now turn off inside the Flow panel"): the All / Clinical / Lifestyle / Blood panel rows are hidden. They stay in the page because the Flow panel's switches press them.
+- **Green checks** ("Check green"): the added rows' check disc is the debrief node's green (`--dsgOk`). Adjusted rows keep their yellow.
+- **Regular titles** ("Reuglar title"): the review rows' titles at 400.
+- **H1 centred** ("h1 centered"): "Confirm your updated plan" centred.
+- Checked at XS and L: #1 shows Do it later | Pay $673.00 side by side, and #2 Pay $673.00 (3 items) full width; Do it later ends the review. Tab sub Off: tabs 38 tall (50 with the sub). H1 centred, titles 400, checks green, switch rows hidden; the Flow panel's Clinical switch still toggles.
