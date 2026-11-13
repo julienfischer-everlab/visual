@@ -23978,3 +23978,9 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 
 - ("Cta margin top +12px", "Title group padding left right +24", "margin top title group +12"): on the phone's stacked card the title group sits 12 lower (24 under the visual), with 24 inside at its left and right, and the CTAs 12 lower (32 under the text).
 - Checked at XS (See updates Off): visual → title 24, title padding 24 / 24, title → CTA 32.
+
+## v2506: Confirm plan, a standalone page; review Type Off
+
+- **Confirm plan page** ("Create this page as a standalone Page"): Page menu → Standalone flow → Confirm plan (`cpl`, #confirm-plan), after Async report. It opens the Async report on Confirm your updated health plan alone over whatever page is showing (`_ar.open({ at: 'rev' })`, the same as the Timeline's Review plan): no back, Skip for now / its X close it and the page under it is back; Pay goes on as the report's. A link with #confirm-plan opens it; the hash follows it (`hashchange` too). The menu reads Confirm plan while it is up, and the page under it again after.
+- **Type: Off** ("tweak option Icon off"): Tweaks → Confirm your updated plan → Type now Badge / Icon / Off; Off leaves the price or Included alone at the card's right (an adjusted card keeps its yellow ground).
+- Checked at XS: Confirm plan picked from the Timeline (open, menu cpl, hash #confirm-plan, no back); its X back to the Timeline; the #confirm-plan link opens it. Type Icon 5 icons, Badge 5 badges, Off none.
