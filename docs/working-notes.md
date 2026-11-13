@@ -24002,6 +24002,13 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **Confirm plan only** ("Should be able to select Only confirm plan so doctor note --> confirm plan, Just use Clinical and blood object to put in review"): in the Flow panel (or Tweaks → Recommendations), Clinical, Blood panel and Lifestyle can all be off while Confirm plan stays on. The doctor's note's See recommendations then goes straight to Confirm your updated health plan, which lists the clinical items and the follow-up blood test as added (the demo's 5 Now / 2 Later). Lifestyle items stay out. Confirm plan and Checkout stay in the Flow panel's list; switch Confirm plan off too and the recommendations are skipped as before.
 - Checked at XS: Flow rows Doctor note, Clinical (off), Blood panel (off), Lifestyle (off), Confirm plan, Checkout; See recommendations → Confirm plan lit, Now 5 / Later 2, Physical assessment and Follow-up blood test Added, footer Skip for now + Pay $129.00.
 
+## v2512: Confirm plan rows with Type Subtitle: title group gap, bigger picture, centred
+
+- **Title group gap +4** ("Title group gap +4px"): Added / Adjusted sits 4 lower under the item's name.
+- **Picture +8** ("Img +8px"): in the condensed rows with Type Subtitle, the picture is 40 (was 32), corners 11.
+- **Centred** ("Content centered verticlalt if space avail"): the name and Added / Adjusted now sit at the card's middle, level with the picture and the price; the two lines were 3px high, because the subtitle line kept its leading while the name was trimmed to its letters. The subtitle is now trimmed the same way.
+- Checked at XS, condensed rows: card 64, picture, text and price centres all at 32; name cap to subtitle cap 22 (the +4 gap kept). Badge mode unchanged (56 rows).
+
 ## v2511: Confirm plan fade-in slower, same entrance on Later → Now
 
 - **Slower** ("Tmeline object need to appear slower"): each row of Confirm your updated plan now takes 850 ms to rise in (was 520) and starts 160 ms after the one before (was 90); the footer CTA still comes last, over 700 ms (was 480), about 2.8 s after opening.
