@@ -7,6 +7,13 @@ this is the part you need before you change it.
 
 ---
 
+## v2536 · Confirm plan: entrance only on landing, title copy
+
+- **Entrance only on landing:** the Confirm plan screen animates once, when you land on it. Switching Now / Later and taking an item back to Now with + no longer replay the timeline's staggered entrance; the green rail is not drawn in again on a redraw (`.arRvwNoIn`).
+  - Kept: the one item taken back still opens its place in the timeline and settles in.
+  - Kept: the Completed row's rail light loop.
+- **Title:** "Here's how your health plan / look like" (the user's wording).
+
 ## v2535 · Doctor note V2: Phase 1 title copy
 
 - Phase 1's title now reads "Based on your results and risk areas, here is your first focus to prioritise" (the user's wording).
