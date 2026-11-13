@@ -23944,3 +23944,11 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - Ask sheet on Overview, Timeline and Insights after a preset holding the Large sheet + Expanded field: Small, Compact, Inbox with View inbox, identical. A saved `ask` with Expanded comes back on reload.
   - Blood panel: three H3s with icons, no pill ground.
   - Review: Now 5 / Later 2; Do it later in a Now sheet moves it (4 / 3); Later cards have Add to plan and their sheet Add to plan; Off removes both. The footer reads Skip for now.
+
+## v2501: Confirm plan timeline in Now + two months
+
+- **Fewer months** ("Combine more object into same month. Have now and 2 months"): the clinical items' own months are grouped, so the review's timeline, the cards' When and the Timeline after it all agree.
+  - Persona #2: Now (Physical assessment), January 2027 (Follow-up blood test, DEXA scan; Gut microbiome and Allergy test too when added), March 2027 (Colonoscopy; Diagnostic review, moved from June). DEXA was February, the review April.
+  - Persona #1: Now (Physical assessment), January 2027 (Follow-up blood test, Gut microbiome, Allergy test), June 2027 (DEXA scan, moved from October; Colonoscopy; Diagnostic review). Colonoscopy was July, the review August.
+  - Persona #3 has no clinical deck (its plain list), unchanged.
+- Checked at XS, the review for each persona: Now plus two months as above.
