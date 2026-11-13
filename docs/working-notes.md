@@ -24002,6 +24002,11 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **Confirm plan only** ("Should be able to select Only confirm plan so doctor note --> confirm plan, Just use Clinical and blood object to put in review"): in the Flow panel (or Tweaks → Recommendations), Clinical, Blood panel and Lifestyle can all be off while Confirm plan stays on. The doctor's note's See recommendations then goes straight to Confirm your updated health plan, which lists the clinical items and the follow-up blood test as added (the demo's 5 Now / 2 Later). Lifestyle items stay out. Confirm plan and Checkout stay in the Flow panel's list; switch Confirm plan off too and the recommendations are skipped as before.
 - Checked at XS: Flow rows Doctor note, Clinical (off), Blood panel (off), Lifestyle (off), Confirm plan, Checkout; See recommendations → Confirm plan lit, Now 5 / Later 2, Physical assessment and Follow-up blood test Added, footer Skip for now + Pay $129.00.
 
+## v2513: Do it later only on paid items
+
+- **Do it later on the paid one only** ("Can do it later the included one", then "I mean action to do later only apply on the paid one"): in Confirm your updated plan, a Now item's sheet offers Do it later only when the item has a price (the $129 Follow-up blood test). Included items show their card alone, with no button. Items under Later keep Add to plan. With Pricing on All included, nothing can be moved to Later.
+- Checked at XS, standalone and in the async flow: Physical assessment, Colonoscopy, DEXA scan and Diagnostic review sheets have no button; Follow-up blood test has Do it later; Gut microbiome test and Allergy test (Later) have Add to plan.
+
 ## v2512: Confirm plan rows with Type Subtitle: title group gap, bigger picture, centred
 
 - **Title group gap +4** ("Title group gap +4px"): Added / Adjusted sits 4 lower under the item's name.
