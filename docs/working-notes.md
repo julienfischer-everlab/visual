@@ -24002,6 +24002,20 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **Confirm plan only** ("Should be able to select Only confirm plan so doctor note --> confirm plan, Just use Clinical and blood object to put in review"): in the Flow panel (or Tweaks → Recommendations), Clinical, Blood panel and Lifestyle can all be off while Confirm plan stays on. The doctor's note's See recommendations then goes straight to Confirm your updated health plan, which lists the clinical items and the follow-up blood test as added (the demo's 5 Now / 2 Later). Lifestyle items stay out. Confirm plan and Checkout stay in the Flow panel's list; switch Confirm plan off too and the recommendations are skipped as before.
 - Checked at XS: Flow rows Doctor note, Clinical (off), Blood panel (off), Lifestyle (off), Confirm plan, Checkout; See recommendations → Confirm plan lit, Now 5 / Later 2, Physical assessment and Follow-up blood test Added, footer Skip for now + Pay $129.00.
 
+## v2525: Doctor note V2, a Risk areas card, the Everlab mark on the Membership card
+
+- **Phase 1's H1**: "Based on your results and risk areas, here is my recommendation." ("Based on your result and risk area, here is my recommendation").
+- **Risk areas card** ("Put this in a card: Risk areas ... above the card Diagnostic Membership"):
+  - The area chips are in their own card, titled "Risk areas" (18, medium) with the chips at the left.
+  - It sits 12 above the Diagnostics Membership card, in the same style.
+  - The priority line stays under the Membership card, now alone.
+- **Membership card**:
+  - The mini membership card and its tweak are removed ("Doesn't make sense").
+  - The Everlab mark, 32, sits at the title's right ("Put the Everlab logo on the right side. Logo mark like 32, 32").
+  - The title stays on one line, at 18 ("put this into line, bigger font 18").
+  - The mark comes from the membership module's paths (`window.EvMarkPaths`).
+- Checked at XS: the Risk areas card above the Membership card, 12 apart; the mark; the page scrolls to the priority line.
+
 ## v2524: Doctor note V2, a mini membership card on the Diagnostics Membership card; new priority line
 
 - **Mini membership card** ("the mini card from the membership ... on the right side here. It's a small one"):
