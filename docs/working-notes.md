@@ -7,6 +7,10 @@ this is the part you need before you change it.
 
 ---
 
+## v2537 · Confirm plan: title on two lines
+
+- The Confirm plan title has no side padding and runs 8 past the body's edge on each side (377 wide on XS), so "Here's how your health plan" fits on one line and "look like" sits under it: two lines instead of three ("reduce left right padding").
+
 ## v2536 · Confirm plan: entrance only on landing, title copy
 
 - **Entrance only on landing:** the Confirm plan screen animates once, when you land on it. Switching Now / Later and taking an item back to Now with + no longer replay the timeline's staggered entrance; the green rail is not drawn in again on a redraw (`.arRvwNoIn`).
