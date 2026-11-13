@@ -23919,3 +23919,12 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - Do it later with a local Member - V1 preset holding V1 report tweaks: the report's Preset V3 / Imagery / Image fade kept, the Timeline tweak applied, and the Version row is hidden.
   - Blood test card: padding 28 28 32.
   - Doctor note Off: the rows' top padding is 16.
+
+## v2499: Confirm plan Now / Later, Later cards without the rail, 5 + 2 demo; blood test card +8 top
+
+- **Blood test card +8 top** ("+8px top padd"): the Follow-up blood test card has 36 above its picture (was 28; bottom stays 32).
+- **Title on two lines** ("Confirm your updated / health plan"): the review's H1 reads Confirm your updated health plan, broken after updated.
+- **Now / Later** ("Now"): the review's first tab is Now (was Added to plan), in both tab styles (the shared `rcSegTabs`, so the Lifestyle list's too).
+- **Later as the Now cards** ("Later should be the same card style as the added to plan, but without timeline"): on Layout Timeline, Later is the timeline's own list (`ol.dsgTl.arRvwTl.arRvwNoRail`) with the same cards, condensed when Now is, with no rail and no node. Each card has its price, then Add to plan (32 high when condensed). A tap opens its card in the sheet, as before.
+- **5 in Now, 2 in Later** ("Add 5 in added and 2 on later"): when nothing was chosen by hand (Allow to select Off, or landing straight on the review), two priced clinical items wait under Later and the rest are added (`rvDemo`). With 6 clinical items + the blood test that is 5 / 2. Choices made in the deck (Allow to select On) are kept as made.
+- Checked at XS with the V1 (no selection) tweaks: walking the flow and jumping to the review both give Now 5 / Later 2 (Gut microbiome test $349, Allergy test $195), Pay $129.00; the Later cards 56 high, full width; the blood card padding 36 / 32 at XS and L.
