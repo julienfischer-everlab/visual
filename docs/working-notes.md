@@ -24002,6 +24002,14 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **Confirm plan only** ("Should be able to select Only confirm plan so doctor note --> confirm plan, Just use Clinical and blood object to put in review"): in the Flow panel (or Tweaks → Recommendations), Clinical, Blood panel and Lifestyle can all be off while Confirm plan stays on. The doctor's note's See recommendations then goes straight to Confirm your updated health plan, which lists the clinical items and the follow-up blood test as added (the demo's 5 Now / 2 Later). Lifestyle items stay out. Confirm plan and Checkout stay in the Flow panel's list; switch Confirm plan off too and the recommendations are skipped as before.
 - Checked at XS: Flow rows Doctor note, Clinical (off), Blood panel (off), Lifestyle (off), Confirm plan, Checkout; See recommendations → Confirm plan lit, Now 5 / Later 2, Physical assessment and Follow-up blood test Added, footer Skip for now + Pay $129.00.
 
+## v2517: Doctor note V2 in two screens
+
+- **Two screens** ("Break the v2 experience in 2 step"), inside the doctor note step (the Flow panel and the progress bar unchanged):
+  - **Screen 1** ("write a h1 title then the Card diagnostic appear below"): the doctor centred, the H1 "Hi Julien, here's my recommendation" written word by word, the intro under it, then the Diagnostics card fades in: the flask, "Start with Diagnostics", "I recommend our Diagnostics programme to focus on **your heart health**.", and what it takes in now (pictures, "Now") in the same card. CTA **Continue**.
+  - **Screen 2** ("Do it later context with also a h1 appearing and list of product below"): the H1 "Some things can wait", its line ("I've saved other recommendations for later on your timeline. Let's focus on fewer things at a time."), then the list of what waits (Gut microbiome test, Allergy test, "Later"), then "We'll talk it through". CTA **See my plan** ("Phase 2 CTA See my plan"), which goes on as before (to the recommendations summary).
+- Back on screen 2 returns to screen 1; a Tweaks redraw keeps the screen you are on; arriving on the doctor note (or the Flow panel's Doctor note) starts on screen 1.
+- Checked at XS: screen 1 (doctor, H1, Diagnostics card, Continue), screen 2 (H1, Later list, We'll talk it through, See my plan), Back to screen 1, See my plan on to "Here are your recommendations".
+
 ## v2516: Doctor note V2: doctor and greeting centred at the top, recommendation as a row
 
 - **Top** ("Keep steven centered and title sub at the top"): the doctor centred as in V1 (photo 56, name, "Longevity GP · your doctor"), then "Hi Julien," and the intro under it, all centred.
