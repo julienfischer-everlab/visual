@@ -23958,3 +23958,12 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **Section titles** ("h3 smaller and icon white", then "Eyebrow use"): New markers to test, Markers to re-test and Optional are the Title group's eyebrow (H5: 12 / 16, 600, 1px, capitals; still an h3 element). Their Lucide icon sits at the left, 14, in the title's ink (white in dark), 6 before the words.
 - **Later's note** ("Add a note centered below tab"): Later opens on "These aren’t a priority right now. Your doctor will discuss them with you at a future review.", centred under the tabs (14 / 20, secondary ink, 320 wide at most, 16 above the cards). It shows only when something is under Later.
 - Checked at XS: the three titles 12 / 16 / 600 with icons; the note hidden on Now, centred on Later above the two cards.
+
+## v2503: rail light stops at Now; Review plan opens Confirm plan standalone; banner stacked on the phone
+
+- **No green past the Now dot** ("Shouldnt have grene line after white dot"): the light running down the review's rail ran 40 past the debrief row, through the white Now dot. In the review it now ends just above the dot (`arRvwRailRun`, its last top `100% - 17px`); measured, its lowest visible point is 83 against the dot's top at 83.5.
+- **Review plan, standalone** ("Review plan Open a standalone Confirmation plan modal. same as the last step of the Async step but standalone"): the Timeline banner's Review plan (Dr Steven recommends this plan) now opens the Async report on Confirm your updated plan, alone. It was the Doctor's suggestion modal.
+  - `_ar.open({ at: 'rev' })` resets the report, sets it standalone (`inst.solo(true)`), then `recGo('rev')`.
+  - Standalone: no back on the review (the checkout still goes back to it); Skip for now closes it as its X does, the Timeline back under it; Pay goes on as the report's own (checkout, then the Timeline with the walk). Any other open of the report clears it (`reset`).
+- **Banner on the phone** ("Mobile stack element", "Visual top reduce 2x", "centered"): stacked and centred, the visual on top at half its size (the Timeline visual 64 for its 128, scaled), the text centred, the two buttons side by side under it.
+- Checked at XS on the Timeline (V3, Coachmark, Review plan): the banner one column, visual 64 × 64, centred; Review plan opens Confirm your updated health plan with no back and Skip for now / Pay; still there 6 s later; Skip for now closes it and the Timeline is back.
