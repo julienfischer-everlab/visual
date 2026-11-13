@@ -24002,6 +24002,13 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **Confirm plan only** ("Should be able to select Only confirm plan so doctor note --> confirm plan, Just use Clinical and blood object to put in review"): in the Flow panel (or Tweaks → Recommendations), Clinical, Blood panel and Lifestyle can all be off while Confirm plan stays on. The doctor's note's See recommendations then goes straight to Confirm your updated health plan, which lists the clinical items and the follow-up blood test as added (the demo's 5 Now / 2 Later). Lifestyle items stay out. Confirm plan and Checkout stay in the Flow panel's list; switch Confirm plan off too and the recommendations are skipped as before.
 - Checked at XS: Flow rows Doctor note, Clinical (off), Blood panel (off), Lifestyle (off), Confirm plan, Checkout; See recommendations → Confirm plan lit, Now 5 / Later 2, Physical assessment and Follow-up blood test Added, footer Skip for now + Pay $129.00.
 
+## v2515: Confirm plan heading, Screenshot and Share removed
+
+- **Confirm plan heading** ("Here is how you plan will look like. Sub Please confirm to continue"): the review's title is now "Here's what your plan will look like" (two lines), with "Please confirm to continue." under it, centred, 16px secondary, 8 below the title. Standalone Confirm plan and the async flow alike.
+- **Screenshot and Share removed** ("Can kill all capture share to save space", then "Keep the teaser audio", "KILL"): the top bar's camera button and its code, the top bar's Share button, and the Copy link action on each preset are gone. Links shared before still open their setup. The Teaser page's audio is kept as it was.
+- Space: the file went from 15.96 MB to 15.95 MB (about 20 KB). The big items remain the Teaser audio (3.8 MB), the Concierge video (1.4 MB) and pictures built in twice (about 0.4 MB).
+- Checked at XS: the heading and its line centred, gap 8; top bar without camera or Share; Presets menu opens (rows: apply, duplicate), Save menu present, no errors.
+
 ## v2514: Doctor note V2, a letter with the recommendation tile
 
 - **New tweak** Tweaks → Doctor note → **Version: V1 / V2** ("In the doctor note add a Tile Inside note. Tweak V2"). V1 is the note as before; V2 is a letter laid out from the reference ("e.g."). Saved with the setup (both preset key lists).
