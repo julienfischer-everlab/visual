@@ -24002,6 +24002,12 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **Confirm plan only** ("Should be able to select Only confirm plan so doctor note --> confirm plan, Just use Clinical and blood object to put in review"): in the Flow panel (or Tweaks → Recommendations), Clinical, Blood panel and Lifestyle can all be off while Confirm plan stays on. The doctor's note's See recommendations then goes straight to Confirm your updated health plan, which lists the clinical items and the follow-up blood test as added (the demo's 5 Now / 2 Later). Lifestyle items stay out. Confirm plan and Checkout stay in the Flow panel's list; switch Confirm plan off too and the recommendations are skipped as before.
 - Checked at XS: Flow rows Doctor note, Clinical (off), Blood panel (off), Lifestyle (off), Confirm plan, Checkout; See recommendations → Confirm plan lit, Now 5 / Later 2, Physical assessment and Follow-up blood test Added, footer Skip for now + Pay $129.00.
 
+## v2526: Doctor note V2, the second H1 reworded; Blood vessels out of the risk areas
+
+- **Phase 1's second H1**: "Let's look at what your results mean for you and where I'd focus next." (was "I hope this report helps you understand what your results mean for your health."). It is still written by EvWrite, in place of the first.
+- **Risk areas** (Persona #1): Heart health and Cholesterol; Blood vessels removed ("Remove the blood vessel").
+- Checked at XS: the new H1 written (57 letters), the sequence ending on Continue, the Risk areas card with two chips.
+
 ## v2525: Doctor note V2, a Risk areas card, the Everlab mark on the Membership card
 
 - **Phase 1's H1**: "Based on your results and risk areas, here is my recommendation." ("Based on your result and risk area, here is my recommendation").
