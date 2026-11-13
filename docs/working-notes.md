@@ -23865,3 +23865,7 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - Clinical with select Off: badge "Added to plan" (On: "New action"); Continue → card out right; Prev → it comes back from the right.
   - What to expect V3: rows end at the body's foot (605–829 of 200–853), title unmoved (299); M unchanged.
   - Blood panel with the card hero: sub "…to test next in Jan 2027.", badge "Added to plan" (select Off), no foot paragraph. Doctor note Off: 0 notes. Rows card gone, even with 24% saved.
+
+## v2493 · Flow panel: Review recommendations → Confirm plan
+
+- The Async report's review step is named "Confirm plan" in the Flow panel (was "Review recommendations"), with its switch and its place last before Checkout unchanged. Checked: the panel lists "Confirm plan" then "Checkout".
