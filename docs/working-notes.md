@@ -23888,3 +23888,15 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 
 - "Verrically aligne content pls": the picture, title, price and check were already centred as boxes. But the title (16, regular) and the price (15, bold) sit differently inside their line boxes, so the words looked off by about a pixel. The one-line rows (Condensed) now trim the title and the price to their cap height and baseline (`text-box: trim-both cap alphabetic`), so the letters centre on the picture and the check.
 - Checked at XS: the trimmed title (12 tall) and price (10 tall) centre at the row's middle (689.6), the same as the picture and the check.
+
+## v2496 · What to expect title 40 lower (phone); Do it later → Timeline on Member - V1, no walkthrough
+
+- **Title 40px lower** ("Push down the title by 40px"): V3's What to expect on the phone (XS / phone). The title group (tag, title, sub) sits 40px lower (`position: relative; top: 40px`). The rows stay at the foot.
+- **Do it later** ("should go to the timeline but not trigger the walkthrough directly"; "Do it later --> go to timeline member v1"):
+  - Goes to the Timeline and puts on the page's preset named "Member - V1 …" (`EvPresets.applyBy(/member - v1/i, 'tl')`), keeping the viewport and colour mode as they are.
+  - Shows the plan's changes (the Plan updates banner) without starting the coachmark walk (`news(its, { walk: false })`).
+  - Pay / Confirm plan still starts the walk.
+  - If there is no such preset, it simply goes to the Timeline.
+- Checked:
+  - What to expect XS: the title group moves 40 CSS px lower (33 on screen in the scaled frame); the rows stay at the foot.
+  - Do it later, with a local "Member - V1 (next version)" Timeline preset: page Timeline, that preset on, viewport kept XS, no coachmark. Confirm plan: coachmark on.
