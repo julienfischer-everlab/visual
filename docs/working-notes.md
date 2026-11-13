@@ -23832,3 +23832,23 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
   - Doctor note and Summary now have a grip too: the note, the summary and the three groups reorder freely among themselves (`rcLin()`, the recommendations' own order); the report enters on the first of them that is on, and Back walks the order back (past the ones off, out of the recommendations before the first).
   - Review recommendations and Checkout have a switch (they stay last, closing the plan): Review off, the last step goes straight to the checkout (its button "Continue to checkout"; Back from the checkout to that step); Checkout off, the review's Pay / Confirm finishes the plan at once; both off, the plan is confirmed and the report moves on. One way in for all four places that open the review (`rcEnd()`).
 - Checked: the default walk unchanged (Everything else → Doctor note → Summary); Summary moved first comes first and Back leaves to Everything else; Review off on a decided Lifestyle: "Continue to checkout" → the checkout, Back → Lifestyle; Checkout off: Pay on the review finishes.
+
+## v2491 · Presets: Duplicate, Save for all clears its dot, two-line names; Allow to select (Clinical, Blood panel); past results search: Continue
+
+- **Duplicate a preset** ("Need option to duplicate"): every row of the Presets manager has a copy icon before Share. The copy is named "<name> copy", keeps the original's setup and page, and sits right under it in the same tab (a copy of Default or a built-in goes to the top of the open tab).
+- **Save for all presets leaves no dot** ("When Save for all presetn, still have orange dot after"):
+  - Tweaks that are stores of settings (the Async report's flow arrangement, `#stArFlow`) used to be left out of "Save for all". So the preset in use still differed from the page, and the dot stayed. Their changed entries (per version) are now copied over each preset's own; the Timeline versions' store keeps its one-by-one handling.
+  - The preset in use (or Default) now gets the whole page, as Save does. The other presets and Default get only the changed tweaks.
+- **Preset names on two lines** ("Allow Title 2 line max"): in the manager and in the Tweaks header's dropdown, a name wraps to two lines, then ellipses.
+- **Allow to select, Clinical recommendation** ("Allow to select ON OFF. If OFF CTA is continue"): `#stArRcSel`, first row of the group. With it Off:
+  - The footer is just Continue (no Later, no "You can change your mind" line).
+  - Continue moves on to the next card with no cue, and every card counts as in the plan.
+  - A swipe moves on in its own direction, with no add or later cue.
+  - The end card reads "N recommendations in your plan".
+- **Allow to select, Blood panel** ("OFF --> CTA just Continue"): `#stArBpSel`, first row of the Blood panel group. With it Off, the footer is just Continue (no Maybe later, no note), and the panel counts as in the plan.
+- **Past results search** ("This part of the onboarding, CTA --> Continue. Nothing else"): "We're searching for your past results" ends on one Continue, searching or found. See your records and Got it are gone; the records still open from the Overview's records card.
+- Checked:
+  - Clinical with select Off: Continue through all 6 cards, no cues, then Blood panel. Blood panel Off: Continue → Lifestyle. Both On: Add to plan, Later / Maybe later and the note are back.
+  - Save for all on a preset in use, and again on Default, after a select switch and a flow change (counted as 2 and 3 tweaks): no dot afterwards, and the other preset took both changes.
+  - A long name wraps to 2 lines.
+  - The search screen shows Continue only.

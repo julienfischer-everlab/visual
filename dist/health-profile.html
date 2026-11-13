@@ -5268,7 +5268,7 @@ window.EvConsent = (function () {
         var p = pending('search'), al = live(tick), lab = h('span', { class: 'hpSr', role: 'status', text: p.label });   // al: this page's tick (show() counted it before building); lab: the search's state, for screen readers only (the line under the map removed: "remove")
         var hd = q('', 'We’re searching for your past results',   /* the same title, found or not ("We’ve started looking for your past results") */ 'Checking labs across ' + CTRY[ctry()][0] + ' under your name and ' + CTRY[ctry()][1] + ' number. We’ll tell you as soon as they arrive.', true);   // centred ("title centred")
         var map = ausMap({ country: ctry(), from: S.a.wear.ans.state, done: p.done, still: !!opts.snap, alive: al, isDone: function () { var x = pending('search'); return !!(x && x.done); },
-          onDone: function () { lab.textContent = '4 past results found'; recFoot(); } });   // found while it shows: the status says so (for screen readers); the map goes round the four
+          onDone: function () { lab.textContent = '4 past results found'; } });   // found while it shows: the status says so (for screen readers); the map goes round the four
         var mw = h('div', { class: 'hpSearch' }, map.el, lab);
         scr.classList.add('hpSearchP'); scr.appendChild(mw); scr.appendChild(hd);   /* the map up in the header, over the title ("push the visual above the title, in the header") */
         var nb = h('button', { type: 'button', class: 'hpSw', role: 'switch', 'aria-checked': String(!!S.notif), 'aria-label': 'Tell me when they’re ready', on: { click: function () { S.notif = !S.notif; nb.setAttribute('aria-checked', String(S.notif)); save(true); } } }, h('i', { 'aria-hidden': 'true' }));   // a switch, not a button ("toggle")
@@ -5304,8 +5304,7 @@ window.EvConsent = (function () {
           h('div', { class: 'hpCard' }, row('Tell me when they’re ready', 'Turns on notifications for results and reminders', nb)),
           h('div', { class: 'hpCard' }, h('div', { class: 'hpRow' }, h('div', null, h('b', { text: 'Have a report from somewhere else?' }), upD), upB), fl));
         scr.appendChild(acts);
-        var recFoot = function () { if (window._pastRec) foot2('See your records', true, function () { if (window._hp) window._hp.close(true); setTimeout(function () { window._pastRec.open(); }, 0); }, 'Got it', fwd); };   /* found: the records collected, their own full modal (Past records), Got it under it */
-        if (p.done && window._pastRec) recFoot(); else foot2('Got it', true, fwd);   // after the three: the profile done with ("Got it CTA"; was Go to overview)
+        foot2('Continue', true, fwd);   /* "CTA --> Continue. Nothing else": one Continue, searching or found (See your records and Got it gone; the records open from the Overview's records card) */   // after the three: the profile done with ("Got it CTA"; was Go to overview)
         /* in turn ("title centred, appearing, fade in, then the map, then the CTA"): the title, the map (its ripples once it is there), the rows and the Continue */
         if (opts.snap || reduced() || !scr.animate) map.start(0);
         else {
