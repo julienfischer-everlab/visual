@@ -24002,6 +24002,19 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **Confirm plan only** ("Should be able to select Only confirm plan so doctor note --> confirm plan, Just use Clinical and blood object to put in review"): in the Flow panel (or Tweaks → Recommendations), Clinical, Blood panel and Lifestyle can all be off while Confirm plan stays on. The doctor's note's See recommendations then goes straight to Confirm your updated health plan, which lists the clinical items and the follow-up blood test as added (the demo's 5 Now / 2 Later). Lifestyle items stay out. Confirm plan and Checkout stay in the Flow panel's list; switch Confirm plan off too and the recommendations are skipped as before.
 - Checked at XS: Flow rows Doctor note, Clinical (off), Blood panel (off), Lifestyle (off), Confirm plan, Checkout; See recommendations → Confirm plan lit, Now 5 / Later 2, Physical assessment and Follow-up blood test Added, footer Skip for now + Pay $129.00.
 
+## v2518: Doctor note V2, screen 1 as a sequence
+
+- **Screen 1 comes in step by step** ("Need to appear element gradually"):
+  1. The doctor's photo alone, centred (72), fading and growing in ("Avatar only centered").
+  2. The big H1 (32/38, centred) written word by word under it, the photo pushed up as it comes ("push the avatar up"): "Hi Julien, Dr Maylyn here. I've put together a plan aligned with your recent results." (the report's doctor by first name: "Dr Steven here" when the doctor is Steven).
+  3. Both fade out ("disappear (+avatar disappear)").
+  4. "Here is my recommendation." written at the centre, held, then moves up to the top ("Stay and move up").
+  5. The Diagnostics card rises in under it, then the Continue button ("rest appear below").
+  About 9 s in all. The intro paragraph and the name and role under the photo are gone from this screen.
+- Back from screen 2, a Tweaks redraw, or reduced motion: screen 1 as it settles (no replay).
+- The two H1s are centred on the phone too (the XS/S rule that sets titles left is outranked here).
+- Checked at XS: photo alone at 0.7 s; H1 writing, photo pushed up at 2.3 s; recommendation H1 at the centre at 5.2 s; settled at 9.5 s (H1 at the top, card, Continue); Back and a tweak show it settled.
+
 ## v2517: Doctor note V2 in two screens
 
 - **Two screens** ("Break the v2 experience in 2 step"), inside the doctor note step (the Flow panel and the progress bar unchanged):

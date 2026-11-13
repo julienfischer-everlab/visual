@@ -18284,6 +18284,8 @@ body.light .arSheet .arRcStkMk, .arSheet:not(.arDark) .arRcStkMk { background: r
 .arSheet.arSheet .arRcHead.arDrV2Hd { display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; margin-bottom: 8px; } .arSheet.arSheet .arRcHead.arDrV2Hd .arH700.arDrV2Hi { margin: 8px 0 0; font-size: 24px; line-height: 30px; font-weight: 500; letter-spacing: -.2px; text-align: center; } .arSheet.arSheet .arRcHead.arDrV2Hd .arDrV2P { margin: 0; max-width: 34em; text-align: center; }
 .arSheet .arDrV2Dr { display: flex; flex-direction: column; align-items: center; gap: 2px; } .arSheet .arDrV2DrAv { width: 56px; height: 56px; margin-bottom: 10px; border-radius: 50%; object-fit: cover; } .arSheet .arDrV2Dr b { font-size: 16px; line-height: 22px; font-weight: 500; color: oklch(var(--ar-ink)); } .arSheet .arDrV2Dr span { font-size: 14px; line-height: 20px; color: oklch(var(--ar-ink) / .56); }   /* V1's doctor, centred over Hi */
 .arSheet .arDrV2 { display: flex; flex-direction: column; gap: 32px; text-align: left; } .arSheet .arDrV2P { margin: 0; font-size: 18px; line-height: 27px; color: oklch(var(--ar-ink) / .88); text-wrap: pretty; }
+.arSheet .arDrV2Stage { position: relative; } .arSheet .arDrV2Intro { position: absolute; left: 0; right: 0; top: 0; z-index: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; text-align: center; pointer-events: none; } .arSheet .arDrV2Intro .arDrV2DrAv { width: 72px; height: 72px; margin: 0; }
+:is(.aqWrap, .sfPh) .arSheet.arSheet .arDrV2Stage .arH700.arDrV2Big, .arSheet .arH700.arDrV2Big { margin: 0; font-size: 32px; line-height: 38px; font-weight: 500; letter-spacing: -.01em; text-align: center; text-wrap: balance; } .arSheet .arDrV2Fin { display: flex; flex-direction: column; gap: 32px; } .arSheet .arDrW { display: inline-block; }   /* screen 1's sequence: the intro over the screen's middle, the words each their own */
 .arSheet .arDrDx { display: flex; flex-direction: column; gap: 12px; padding: 16px; border-radius: 24px; background: oklch(var(--ar-ink) / .06); } .arSheet .arDrDxHd { display: flex; align-items: center; gap: 14px; } .arSheet .arDrDxHd .arDbcTx { margin-top: 0; min-height: 0; }
 .arSheet .arDrDx .arDrPark { margin: 0; padding: 4px 0 0; border-radius: 0; background: none; border-top: 1px solid oklch(var(--ar-ink) / .08); }   /* the Diagnostics card ("Card diagnostic"): its row, then what it takes in now, one card */ .arSheet .arDrV2 > .arDrPark { margin: 0; }   /* screen 2: the list on its own */ .arSheet .arDrV2 .arDbcTx .arDrHl { font: inherit; font-weight: 500; color: oklch(var(--ar-ink)); }
 .arSheet .arDbcL.arDrV2L { padding: 0; gap: 24px; } .arSheet .arDrV2L .arDbcTx { justify-content: flex-start; }
@@ -21298,6 +21300,31 @@ window.EvCtl = (function () {
           var L1 = h('div', { class: 'arDrV2' }, dx); L1._parts = [dx]; return L1; }
         var pk = itemCard(park, 'Later', 'Saved for later'), w2 = h('li', {}, ico('talk'), h('div', { class: 'arDbcTx' }, h('b', { text: 'We\u2019ll talk it through' }), h('span', { text: 'At your video consultation with ' + WEL.dr + ' on Tuesday 28 October, you can discuss the plan and revisit anything saved for later.' }))), wl = h('ul', { class: 'arDbcL arDrV2L' }, w2);
         var L = h('div', { class: 'arDrV2' }, pk, wl); L._parts = [pk, wl].filter(Boolean); return L; }
+      if (DV2 && !drSub) {   /* screen 1 as a sequence ("Need to appear element gradually"): the avatar alone at the centre; the big H1 written under it, pushing it up; both go; "Here is my recommendation." written at the centre, held, then up to its place ("Stay and move up"); the card under it, then the button */
+        var dfn = String(WEL.dr || '').replace(/^Dr\.?\s+/i, '').split(' ')[0] || 'Steven';   /* the report's doctor ("Hi Julien, Dr Steven here.") */
+        var sAv = h('img', { class: 'arDrV2DrAv', src: WEL.av || o.avatar, alt: '', decoding: 'async' });
+        var sA = h('h2', { class: 'arH700 arDrV2Big' }, 'Hi Julien, Dr ' + dfn + ' here.', h('br'), 'I\u2019ve put together a plan aligned with your recent results.');
+        var sIn = h('div', { class: 'arDrV2Intro' }, sAv, sA), sB = h('h2', { class: 'arH700 arDrV2Big arDrV2Rec' }, 'Here is my recommendation.');
+        var sL = drLetter(), sFin = h('div', { class: 'arDrV2Fin' }, sB, sL), sSt = h('div', { class: 'arDrV2Stage' }, sIn, sFin), sStack = h('div', { class: 'arStack arRcStack arDrV2Stack' }, sSt);
+        if (step === REC && !revOn) { ctaLabel.textContent = 'Continue'; cta.disabled = false; navTt.textContent = 'Plan recommendation'; navTs.hidden = true; }
+        if (still || reducedMotion() || navDir < 0 || !sSt.animate) { sIn.hidden = true; return sStack; }   /* a redraw, back from screen 2, reduced motion: the screen as it settles */
+        var wds = function (el) { var W = []; [].slice.call(el.childNodes).forEach(function (n) { if (n.nodeType !== 3) return; var f = document.createDocumentFragment(); n.nodeValue.split(/(\s+)/).forEach(function (w) { if (!w) return; if (/^\s+$/.test(w)) { f.appendChild(document.createTextNode(w)); return; } var sp = h('span', { class: 'arDrW', text: w }); W.push(sp); f.appendChild(sp); }); el.replaceChild(f, n); }); return W; };
+        var wA = wds(sA), wB = wds(sB), EZ = 'cubic-bezier(.22, 1, .36, 1)', ftEl = cta && cta.closest ? cta.closest('.arFoot') : null;
+        sSt.style.visibility = 'hidden'; if (ftEl && ftEl.animate) ftEl.animate([{ opacity: 0 }, { opacity: 0 }], { duration: 60000 }).id = 'drV2Hold';
+        later(function () {
+          var k = (window.evK ? window.evK(sSt) : 1) || 1, st = (sSt.getBoundingClientRect().top - body.getBoundingClientRect().top) / k, pb = parseFloat(getComputedStyle(body).paddingBottom) || 0, vis = Math.max(360, Math.round(body.clientHeight - st - pb));
+          sSt.style.minHeight = vis + 'px'; sIn.style.height = vis + 'px'; sSt.style.visibility = '';
+          var dA = Math.round((sA.offsetHeight + 24) / 2), t1 = 1100, wr = function (W, t0, gap) { W.forEach(function (sp, i) { sp.animate([{ opacity: 0, transform: 'translateY(10px)', filter: 'blur(6px)' }, { opacity: 1, transform: 'none', filter: 'blur(0)' }], { duration: 560, delay: t0 + i * gap, easing: EZ, fill: 'backwards' }); }); return t0 + W.length * gap + 560; };
+          sAv.animate([{ opacity: 0, transform: 'translateY(' + dA + 'px) scale(.85)', offset: 0, easing: EZ }, { opacity: 1, transform: 'translateY(' + dA + 'px) scale(1)', offset: .4 }, { transform: 'translateY(' + dA + 'px)', offset: .62, easing: EZ }, { opacity: 1, transform: 'none', offset: 1 }], { duration: 1500, delay: 200, fill: 'backwards' });   /* alone at the centre, then pushed up as the H1 comes ("push the avatar up") */
+          var tA = wr(wA, t1, 70), t2 = tA + 1400;
+          sIn.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateY(-16px)' }], { duration: 520, delay: t2, easing: 'ease', fill: 'forwards' });   /* both go ("disappear (+avatar disappear)") */
+          var off = Math.round(vis / 2 - sB.offsetHeight / 2 - sB.offsetTop), t3 = t2 + 480, tB = wr(wB, t3, 90), t4 = tB + 600;
+          sB.animate([{ transform: 'translateY(' + off + 'px)' }, { transform: 'none' }], { duration: 900, delay: t4, easing: EZ, fill: 'backwards' });   /* written at the centre, held, then up to its place */
+          sL.animate([{ opacity: 0, transform: 'translateY(24px)' }, { opacity: 1, transform: 'none' }], { duration: 650, delay: t4 + 380, easing: EZ, fill: 'backwards' });   /* the card under it */
+          if (ftEl && ftEl.animate) { ftEl.getAnimations().forEach(function (a) { if (a.id === 'drV2Hold') a.cancel(); }); ftEl.animate([{ opacity: 0, transform: 'translateY(16px)' }, { opacity: 1, transform: 'none' }], { duration: 520, delay: t4 + 760, easing: EZ, fill: 'backwards' }); }   /* then the button */
+          later(function () { sIn.hidden = true; sSt.style.minHeight = ''; }, t4 + 1500);
+        }, 0);
+        return sStack; }
       if (DV2) { var ltr = drLetter(), lw = h('div', { class: 'arRcGrpsW arDrV2W' }, ltr);
         if (step === REC && !revOn) { ctaLabel.textContent = drSub ? 'See my plan' : 'Continue'; cta.disabled = false; navTt.textContent = 'Plan recommendation'; navTs.hidden = true; }   /* "Phase 2 CTA See my plan" */
         return enter(h('div', { class: 'arStack arGap24 arRcStack arDrV2Stack' }, H.hd, lw), H.hd, H.title, ltr._parts); }
@@ -21750,9 +21777,9 @@ window.EvCtl = (function () {
     function dropFigs() { while (figs.length) { var f = figs.pop(); try { if (f && f.destroy) f.destroy(); } catch (e) {} } }
     /* between the flow's pages, a push left or right ("transition between flow pages should be left right"): Next, the new page in from the right over the old, which drifts a third to the left and dims; Back, the old page out to the right over the new, coming in from a third to the left.
        The old page is kept as it stood, moved into a layer in the body's place, and let go when it is out; the new page's own small rises are played through at once, its reveals left to play. Not on a tweak's remount, a reset or with reduced motion */
-    var pushDir = 0;
+    var pushDir = 0, navDir = 0;   /* navDir: the way the last screen change went, kept for the builders (pushFrom clears pushDir) */
     function pushFrom() {   // the leaving page, read before the step changes the layout
-      var old = body.firstChild, d = pushDir; pushDir = 0;
+      var old = body.firstChild, d = pushDir; navDir = d; pushDir = 0;
       if (!old || !d || reducedMotion() || !old.animate) return null;
       var sc = [].slice.call(old.querySelectorAll('*')).filter(function (e) { return e.scrollTop > 0; }).map(function (e) { return [e, e.scrollTop]; });
       var cg = null;   // the Sphere hero's and the Sphere's pill (See my results): a copy where it stood, to leave with its page
