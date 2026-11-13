@@ -7,6 +7,22 @@ this is the part you need before you change it.
 
 ---
 
+## v2546 — Doctor's note tweak; fades from 20%, footer mirrored; Hero without Pay; Confirm plan gap; Flow panel; Timeline hug + Condensed
+
+Async report:
+- "Add a tweak where I can Add content by myself for the quote and break with rich element": Tweaks → Doctor note → Doctor's note, a text area holding the letter as given ("Your results and next steps / Hi Julien, …"). A blank line starts a paragraph, `# ` a title, `**bold**`, `*italic*`, `==orange==`; [inclusions], [consult doctor] and [date and time] are filled in (a CTCA heart scan, a DEXA scan and a pathology test · the persona's doctor · Tuesday 11 May at 10:30am, a demo time). Empty: the report's own note. It writes the quote of the doctor's note (V1's Doctor note step, the Confirm plan's doctor card sheet); custom text drops the quote marks and sits left. The report follows as it is typed (half a second after the last key, the field keeps focus). The default keeps its paragraphs in the build (newlines as `&#10;`).
+- "Gradient start at 20% of height": Solid top nav, the flow now runs up under the nav to 20% of its height (was 50%) and fades in by 32 under it. "Same logic apply to footer with reserved": the Solid footer mirrored, the flow running on under it to 20% of its height from its bottom, solid again 32 above it, the footer's ground clear. EvSteps.shell measures both (`fitE`: --ar-tu, --ar-bu and the fades' stretch --ar-tk, --ar-bk) from layout offsets, so the frame's scale and a footer still rising in change nothing; none at rest, none at the end, as before. Hero tiles opaque over it. Documented in Design system → Step flow → Edges (its live master uses the same shell).
+- "Hero, no pay!": Footer #3 Hero shows the three tiles alone (Pay hidden while they show).
+- "reduce gap by 2px": Confirm plan timeline cards 8 → 6 apart.
+
+Flow panel:
+- "Bg blue and blue dot for Active state": the step it is on, a blue ground (rgba(90,162,255,.16), its 1px ring) and a blue dot.
+- "why indendation ?": the recommendation's sub-steps kept the 20 of the removed numbers; aligned with the rest now.
+
+Timeline V3:
+- "hug the visual": the picture's column is the picture's width (Image size, 64 by default), every breakpoint; it was 78 on the phone, 102 wider.
+- "try a condensed on XS where the CTA sit on the right of the content. no footer": Tweaks → Page → Item layout, Default / Condensed. Condensed (phone rows): picture, words, the button at the right, centred; no date line; the steps chip under the sub-line.
+
 ## v2545 — Confirm plan: doctor card, Hero footer, no months, no sub, nav fade; Timeline: rail trail, image size, check-in card
 
 Confirm plan (Async review):
