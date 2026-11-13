@@ -23883,3 +23883,8 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **Regular titles** ("Reuglar title"): the review rows' titles at 400.
 - **H1 centred** ("h1 centered"): "Confirm your updated plan" centred.
 - Checked at XS and L: #1 shows Do it later | Pay $673.00 side by side, and #2 Pay $673.00 (3 items) full width; Do it later ends the review. Tab sub Off: tabs 38 tall (50 with the sub). H1 centred, titles 400, checks green, switch rows hidden; the Flow panel's Clinical switch still toggles.
+
+## v2495 · Confirm your updated plan: one-line rows centred on their letters
+
+- "Verrically aligne content pls": the picture, title, price and check were already centred as boxes. But the title (16, regular) and the price (15, bold) sit differently inside their line boxes, so the words looked off by about a pixel. The one-line rows (Condensed) now trim the title and the price to their cap height and baseline (`text-box: trim-both cap alphabetic`), so the letters centre on the picture and the check.
+- Checked at XS: the trimmed title (12 tall) and price (10 tall) centre at the row's middle (689.6), the same as the picture and the check.
