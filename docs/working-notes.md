@@ -24002,6 +24002,24 @@ Each line swaps 3.2 s apart (out with a blur, the next in 0.5 s later, the visua
 - **Confirm plan only** ("Should be able to select Only confirm plan so doctor note --> confirm plan, Just use Clinical and blood object to put in review"): in the Flow panel (or Tweaks → Recommendations), Clinical, Blood panel and Lifestyle can all be off while Confirm plan stays on. The doctor's note's See recommendations then goes straight to Confirm your updated health plan, which lists the clinical items and the follow-up blood test as added (the demo's 5 Now / 2 Later). Lifestyle items stay out. Confirm plan and Checkout stay in the Flow panel's list; switch Confirm plan off too and the recommendations are skipped as before.
 - Checked at XS: Flow rows Doctor note, Clinical (off), Blood panel (off), Lifestyle (off), Confirm plan, Checkout; See recommendations → Confirm plan lit, Now 5 / Later 2, Physical assessment and Follow-up blood test Added, footer Skip for now + Pay $129.00.
 
+## v2521: Doctor note V2, new H1s, a simpler Phase 1 card, Phase 2 cut at two and a half items
+
+- **H1s**:
+  - Phase 1's lasting H1 is now "Based on your profile, this is what I recommend you do next."
+  - Phase 2's H1 is now "Then later, we'll focus on other things."
+  - "Let's focus on what matters most now." is removed from Phase 2's line.
+- **Phase 1 card**:
+  - No picture, no price. "Diagnostics programme" (18) and its line are centred.
+  - A divider sits above the item list, and the items are 16 apart (+4).
+  - Card radius 22 (+4), item pictures radius 15 (+4).
+- **Priority line and chips** (under the Phase 1 card): 24 in from each side, 20 between the line and the chips (+8), chip words bold (570) in the ink.
+- **Phase 2**:
+  - The line is in the secondary ink, 16, 24 in from each side.
+  - The card shows two items whole and the third cut at its middle; its height is set from the rows after layout. It fades out through a 6px blur (a masked backdrop-filter layer).
+  - Item pictures are 64 (+16), 4 in from the left, radius 20; the card radius is 22.
+- **Button**: Continue on both phases ("Just --> continue").
+- Checked at XS: the sequence, the cut and the blur, the radii and Continue.
+
 ## v2520: Doctor note V2, written in orange; H1s at the flow's size with 32 each side; Dr Steven Lu
 
 - **H1 size** ("Is this the same size as the H1 at the beginning of the flow and other steps?"): it was not (32/38, weight 500 against the steps' 28/29.6, weight 570). The doctor note's H1s now take the step H1's own size from `.arH700` and are only centred.
