@@ -7,6 +7,17 @@ this is the part you need before you change it.
 
 ---
 
+## v2531 · Doctor note V2: big photo through the first title, Card ground tweak, card margins, Phase 2 padding
+
+- **Phase 1 intro:** the doctor's photo stays big (72) and alone through "Hi Julien, Dr Steven here." (room kept round it: margin 24 / 28, 24 between it and the H1). It turns into the small photo with the name beside it when the second title is written ("For the first title, keep the big avatar. Change to the second mini avatar and text when the second title appears"). With Greeting Off it stays big through its one title and shrinks into the final title's line.
+- **Card ground tweak** (Tweaks → Doctor note → Card ground, `stArDrBg`):
+  - Default: the review's card.
+  - #534C46: the Diagnostics Membership card and the next screen's card in #534C46 (Dark); a 14% tint of it in Light.
+- **Phase 1 cards:** 16 in from each side (the Risk areas card with them). List pictures 16 from their words (+2).
+- **Phase 2 card:**
+  - Words and pictures 24 from every edge: card padding 8 / 20, plus the row's 16 above, the picture's 4 at the left and the row's 4 at the right ("24px padding on the main card").
+  - The line under it is 40 below the card's foot (+24).
+
 ## v2530 · Doctor note V2: CTCA photo, DS divider, chips, logo, byline intro, Phase 2 card and line
 
 - **Phase 1 intro:** the doctor's line is there from the start. The photo appears alone, 72 at the centre. As the first H1 is written it shrinks to 24 and moves into the line, and the name fades in beside it ("The avatar should reduce once the first title appears, and then the name next"). The same line stays through the second H1 and is carried over the final H1 (no blink); intro gap 20.
