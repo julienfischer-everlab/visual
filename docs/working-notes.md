@@ -7,6 +7,10 @@ this is the part you need before you change it.
 
 ---
 
+## v2535 · Doctor note V2: Phase 1 title copy
+
+- Phase 1's title now reads "Based on your results and risk areas, here is your first focus to prioritise" (the user's wording).
+
 ## v2534 · Doctor note V2: photo + name only at the top, Phase 2 top to bottom, 5 · mini lists, Confirm plan line
 
 - **Phase 1:**
