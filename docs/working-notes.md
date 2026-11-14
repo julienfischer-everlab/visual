@@ -14,6 +14,12 @@ this is the part you need before you change it.
 
 
 
+
+## v2572 — Doctor note: Everlab mark on the photo; Notes from card: no outline on hover
+
+- The doctor's photo in the note's header wears Everlab's mark at its top right: the mark (EvMarkPaths, white) 14 in a 22 black disc, 4 padding, a 2 ring of the page's ground, 4 out from the photo's corner ("Add a Everlab logomark top right in a circle black bg. padding 4px").
+- The "Notes from Dr …" card on Review My Plan loses its outline on hover and press, keeping its fill ("no border on hover").
+- Checked at XS.
 ## v2571 — Doctor note: the date as a mono label over the subject
 
 - The note's date leaves the doctor's header and sits in the note card, 8 over "Your results and next steps", in the house mono label (arMonoLabel: Saans Mono 12, caps, 1px tracking, secondary): "This mono above Your results and next steps". The doctor's header is the name, the role and the photo.
