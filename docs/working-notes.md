@@ -7,6 +7,17 @@ this is the part you need before you change it.
 
 ---
 
+## v2553: Footer Style for every footer; the Top nav Style on the Health profile's sheets
+
+- **Footer Style** ("Need the same for ALL footer. Gradient - Filled - transaprent"; "footer Always fixed"): every footer stays fixed; its ground is Gradient (its own fade, as before), Filled (the screen's colour solid from the footer's top, content ending there, no fade) or Transparent (no ground, the content runs on under the buttons).
+  - Master: `EvTopNav.M.fb` (Design system → General layout → Top nav, new Footer buttons under Style; Save setup keeps it in `everlab:tnMaster`; presets carry `tfb`).
+  - Per page: Tweaks → Footer → Style (`#stFtBg`), stored with the page's Top nav picks in `#stTnPg` as `fb`. The group shows only when a footer is on screen.
+  - `html[data-tfbg="fill"|"clear"]`. Covers the shell footers (Async report: `.arFootGround` or the `.arEdge` bleed), the Health profile family's footers (`.hpSheet`: steps, Membership reveal, Send a gift, Past results) and the standalone full modals (`.sgmSheet`). `tMeas()` writes each open sheet's `--ar-fh` and, on `.hpSheet`, `--ar-hh`.
+  - The Note from Steven's letter fade at its foot is tokenised (`--ltrB1`, `--ltrB2`), so Filled / Transparent drop it.
+- **Top nav Style on the Health profile's sheets** ("This top nav doesnt react"): Filled now draws a solid bar (`.arHead::before`, visible even where the bar's controls are hidden, as on the note) and the note starts at the bar's foot; Transparent sets the bar over the page, the page padded by the bar's height so it rests where it was and scrolls under it. Gradient unchanged.
+- Checked at XS: the note (Filled, Transparent), a Step 1 page scrolled (all three), an Async report insight scrolled (Footer all three).
+- Skill: references/layout.md gains the Footer Style paragraph.
+
 ## v2552: every Health profile flow page reorders and switches; V3 title hand-off 0.5 s sooner
 
 - **Flow panel, Health profile journey** ("ALL flow item should have a reorder option and toggle"): every page row of Step 1, Step 2 and Step 3 has its grip and a switch at its end (the Async report panel's size, scale .78). Step 2's two pages (Choose a time, Review and confirm) now reorder too (they were fixed). A page switched off is dimmed and skipped: `HealthProfile.<wear|past|you>.order(list, off)` sets the stage's `AREA[k].steps` to the pages on, in order; the last page on can't be switched off. Pressing an off page does nothing (`goId` finds no page).
