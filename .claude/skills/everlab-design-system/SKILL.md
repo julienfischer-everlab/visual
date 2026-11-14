@@ -108,6 +108,7 @@ The page menu `#versionSel` has Documentation flow (`'doc'`, renamed from Docume
 | Biomarker item (a reading in a list: name 16, value + date 14, range bar, status pill; Design system > Biomarker item) | `window.EvBio.row`, `.mbrow`, `--bioT/--bioTLh/--bioS/--bioSLh`, `biDoc` | references/tokens-components.md |
 | Buttons | `.arBtn.arBtnPrimary.arBtnLg`, `.svBtn`, `.sgmAsk` | references/tokens-components.md |
 | Vertical timeline | `window.EvTl` | references/tokens-components.md |
+| Action card (the Service timeline's item: the Overview's Action plan cards, the Timeline's rows) | the Timeline module's `row()`, exposed as `window._tlItem.fill(el, rows, grid)`; Design system → Feature components → Action card (`aiDoc`, `#action-card`) | references/tokens-components.md |
 | The Plan module (tiles, Sub pages, sheets, Activity session) | `#dPlan`, `window._plan`, `--plATileBg`, `--plPTileBg`, `detSoloShow` | references/tokens-components.md |
 | Assets library | `window.EvAssets`, `META`, `window.EvSvcImg` | references/tokens-components.md |
 | Tweaks panel | `.tkGroup[data-pages]`, `st*` ids | references/tokens-components.md |

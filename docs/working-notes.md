@@ -7,6 +7,20 @@ this is the part you need before you change it.
 
 ---
 
+## v2555 · Design system: Action card (the Service timeline's item)
+
+- New Design system page, **Feature components → Action card** (`#action-card`), built like Biomarker item. It has these sections:
+  - States: to do (Start), requested (View), booked today (Get directions), booked later (View), done.
+  - Breakpoints: XS 361, S 568, M two cards of 474, L two cards of 534 in the 1080 container.
+  - Anatomy (card, picture, title, sub, properties, action) and Used in.
+- Every card is drawn by the Timeline's own `row()`, the same code as the Overview's Action plan, now exposed as `window._tlItem.fill(el, rows, grid)`. A change to the item changes the page too. Clicks on the page show hover and press but don't navigate.
+- Breakpoints, as measured from the master:
+  - Every size stacks the card the same way: the picture (76, 12 round) beside the title (16 medium) and sub, then the properties at the left and the action at the right.
+  - XS: 22 round, 20 above.
+  - XS and S: the action is 44 and the sub 14.
+  - M and L: two cards a row, the compact action (36), the sub 13, 16 under the picture.
+- Timeline pages point their "See documentation" to it (PAGE_DOC tl → ai). Added to the design-system skill's table.
+
 ## v2554 · Docs framework merged; Concierge entry points live; WIP; General layout tweak; Overview and dock at S; debrief tweaks
 
 - **Docs framework** (merged): every Documentation and Design system page uses the stacked title groups (EvDocHd: page, section, caption), each section scrolls sideways on its own, captions 24px under their frames.
