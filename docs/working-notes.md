@@ -8,6 +8,12 @@ this is the part you need before you change it.
 ---
 
 
+
+## v2566 — Confirm your plan: Save for later outlined, the doctor's card outline only
+
+- Save for later (top right of the review) is an outline button: no fill, a 1px ring at ink 24%, the same 44 pill; hover fills it lightly ("Outline CTA").
+- The doctor's card at the top of the review has no fill any more, only its outline (1px, ink 12%, up from 6% so it still reads with no fill), and 4px more padding: 16 round (16 22 16 16 on the single-row card, 16 on V2's card holding the tabs). "Remove the background here. You just outline and add 4px padding." V1, V2 Inside and V2 Outside; V3 keeps its grey outer card.
+- Checked at XS dark and light.
 ## v2565 — Confirm your plan: V3, Plan title and Top nav title tweaks, Eva star on Discuss
 
 - Version V3 ("Try another style v3 like this for the content"): one outer card (grey card ground, 44 round) with the doctor at its top. Inside it, 16 in from its sides and foot, the plan sits in a card on the page's ground (28 round, concentric with the outer card) holding the H2, the tabs and the list. Tabs Inside puts them under the H2; Outside puts them on the outer card between the doctor and the plan. V2 and V1 unchanged.
