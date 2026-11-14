@@ -18,6 +18,12 @@ this is the part you need before you change it.
 
 
 
+
+## v2576 — Confirm your plan: Included in the tertiary ink; Control object tweak (a checkbox on every product)
+
+- "Included" on the plan's product cards is in the tertiary ink (ink 36%, from 56%), quieter than a price ("Use a tertiary colour for Included. It should be less prominent").
+- New Tweaks row in Confirm your updated plan: Control object No (default) / Yes (`#stArRvCtl`, saved and restored with the others). Yes: a 24 checkbox (7 round) at the right of every product in the plan, after its badge (Timeline layout, List and Rows). A paid product's box can be unticked: the product dims to 45% and leaves the purchase, the total and the footer follow (no paid product left: the footer becomes Confirm plan). An included product's box is ticked and disabled ("If yes, add a checkbox on the right side of all of the product, and if it's included, the checkbox is disabled"). Later items have no box.
+- Checked at XS (V2, tabs outside): 5 boxes, 4 locked, unticking the $129 one takes the footer to Confirm plan.
 ## v2575 — Doctor note: "A few notes from your doctor", letter 28 high, outer outline the note card's ground
 
 - The doctor note page's title reads "A few notes from / your doctor" ("A few notes from your doctor."; was "… your Dr Steven Lu").
