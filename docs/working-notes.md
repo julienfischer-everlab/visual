@@ -7,6 +7,14 @@ this is the part you need before you change it.
 
 ---
 
+## v2552: every Health profile flow page reorders and switches; V3 title hand-off 0.5 s sooner
+
+- **Flow panel, Health profile journey** ("ALL flow item should have a reorder option and toggle"): every page row of Step 1, Step 2 and Step 3 has its grip and a switch at its end (the Async report panel's size, scale .78). Step 2's two pages (Choose a time, Review and confirm) now reorder too (they were fixed). A page switched off is dimmed and skipped: `HealthProfile.<wear|past|you>.order(list, off)` sets the stage's `AREA[k].steps` to the pages on, in order; the last page on can't be switched off. Pressing an off page does nothing (`goId` finds no page).
+- The orders and the pages off are hidden inputs (`stHpW1Ord`, `stHpW1Off`, `stHpW2pOrd`, `stHpW2pOff`, `stHpW3Ord`, `stHpW3Off`) placed before `#stHpJnyMk`, so they stay in the Tweaks panel (saved with Tweaks and presets) while the rows sit in the Flow panel. `stHpW1Ord` and `stHpW3Ord` moved there from inside their rows.
+- The "Health profile home" rows are each step's start, not one of its pages: no grip or switch.
+- **Async report V3** ("title should come in .5 earlier"): the welcome's title now goes up into What to expect's picture 0.5 s sooner (`later(adv, 380 + Wr.end() - 400)`, was `+ 100`), its last letters still settling as it moves.
+- Skill: references/layout.md, Flow panel, gains "Arranging steps".
+
 ## v2551 — Insights module doc: demo, two sections, wearable, warning badges; doc headers title-only; Confirm plan cards; doctor note → doctor card; Tweaks/Flow panels 320
 
 Design system → Modules:

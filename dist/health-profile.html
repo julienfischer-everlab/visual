@@ -4139,12 +4139,15 @@ window.EvConsent = (function () {
   var gfDate = function (v) { var m = /^(\d{4})-(\d\d)-(\d\d)$/.exec(v || ''); return m ? new Date(+m[1], +m[2] - 1, +m[3]) : null; };
   var gfIso = function (d) { return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); };
   var INST = null;   // the profile mounted last, drawn again when step 1's order changes
-  function wearOrder(list) {   // step 1's pages in this order: the known ones as listed, any left out after them
-    var ks = (list || []).filter(function (k, i, a) { return W1[k] && a.indexOf(k) === i; }); W1D.forEach(function (k) { if (ks.indexOf(k) < 0) ks.push(k); });
-    AREA.wear.steps = ks; AREA.wear.sub = ks.map(function (k) { return W1[k]; }); if (INST && INST.refresh) INST.refresh(); return ks; }
-  function youOrder(list) {   // step 3's pages in this order, the same way
-    var ks = (list || []).filter(function (k, i, a) { return Y3[k] && a.indexOf(k) === i; }); Y3D.forEach(function (k) { if (ks.indexOf(k) < 0) ks.push(k); });
-    AREA.you.steps = ks; AREA.you.sub = ks.map(function (k) { return Y3[k]; }); if (INST && INST.refresh) INST.refresh(); return ks; }
+  /* a stage's pages in this order, the known ones as listed, any left out after them; the ones switched off skipped (the Flow panel's switch: "ALL flow item should have a reorder option and toggle"), one page at least kept. off left out: the last one kept */
+  var P2 = { time: 'Choose a time', review: 'Review and confirm' }, P2D = ['time', 'review'], OFF = { wear: [], past: [], you: [] };
+  function stageOrder(k, N, D, list, off) { if (off) OFF[k] = off.filter(function (x) { return N[x]; });
+    var ks = (list || []).filter(function (x, i, a) { return N[x] && a.indexOf(x) === i; }); D.forEach(function (x) { if (ks.indexOf(x) < 0) ks.push(x); });
+    var on = ks.filter(function (x) { return OFF[k].indexOf(x) < 0; }); if (!on.length) on = [ks[0]];
+    AREA[k].steps = on; AREA[k].sub = on.map(function (x) { return N[x]; }); if (INST && INST.refresh) INST.refresh(); return ks; }
+  function wearOrder(list, off) { return stageOrder('wear', W1, W1D, list, off); }   // step 1's pages
+  function pastOrder(list, off) { return stageOrder('past', P2, P2D, list, off); }   // step 2's
+  function youOrder(list, off) { return stageOrder('you', Y3, Y3D, list, off); }   // step 3's
   var SEARCH_MS = 60000;   // the past results search: how long it runs in the background before it is done
   function blank() { return { v: 2, a: { wear: { st: 'not', i: 0, ans: {} }, past: { st: 'not', i: 0, ans: {} }, you: { st: 'not', i: 0, ans: {} }, res: { st: 'not', i: 0, ans: {} } }, pend: {}, notif: false, files: [], when: '' }; }   // when: all complete, how near the call is: '' more than a day off, 'soon' today (under 24 h), 'now' within the hour
   var S = blank();
@@ -6862,7 +6865,7 @@ window.EvConsent = (function () {
     return { el: root, welcome: true, v2: V2, cp2: CP2, deskT: !!opts.desk, stage: function () { return root.classList.contains('hpW2Ready') ? 3 : ph; }, card2: w2, bg2: bg2, look2: look2, sphere: V2 ? null : sp, sphT0: V2 ? null : sp.t0, place: place, flip: flip, logo: logo, hold: function () { held = true; }, theme: function (t) { root.classList.toggle('arDark', t === 'dark'); if (V2) readCol(); }, home: function () {}, area: function () {}, destroy: function () { if (plRo) plRo.disconnect(); tm.forEach(clearTimeout); tm = []; held = true; if (wv) wv.stop(); if (st) st.stop(); if (mt2) mt2.stop(); if (fp2) fp2.stop(); if (kt2) kt2.stop(); if (tx2) tx2.stop(); if (sgRo) sgRo.disconnect(); window.removeEventListener('deviceorientation', onOri); if (tlt.raf) cancelAnimationFrame(tlt.raf); if (root.parentNode) root.parentNode.removeChild(root); } };
   }
 
-  window.HealthProfile = { gift: { steps: GF.slice(), names: JSON.parse(JSON.stringify(GFN)) }, cal: cal, mount: mount, snap: snap, welcome: welcome, dots: dots, sphere: sphere, halftone: halftone, look: look, dismiss: function (v) { ASK = !(v === false || v === 'off'); document.documentElement.classList.toggle('hpNoDism', !ASK); return ASK; }, stepTitle: function (v) { var on = v === true || v === 'on'; document.documentElement.classList.toggle('hpStepTOn', on); return on; }, wear: { order: wearOrder, names: function () { return JSON.parse(JSON.stringify(W1)); }, def: W1D.slice() }, you: { order: youOrder, names: function () { return JSON.parse(JSON.stringify(Y3)); }, def: Y3D.slice() }, store: { get: function () { return S; }, summary: summary, summaryOf: summaryOf, preset: preset, reset: function () { preset('none'); }, pending: pending, areas: AREAS } };
+  window.HealthProfile = { gift: { steps: GF.slice(), names: JSON.parse(JSON.stringify(GFN)) }, cal: cal, mount: mount, snap: snap, welcome: welcome, dots: dots, sphere: sphere, halftone: halftone, look: look, dismiss: function (v) { ASK = !(v === false || v === 'off'); document.documentElement.classList.toggle('hpNoDism', !ASK); return ASK; }, stepTitle: function (v) { var on = v === true || v === 'on'; document.documentElement.classList.toggle('hpStepTOn', on); return on; }, wear: { order: wearOrder, names: function () { return JSON.parse(JSON.stringify(W1)); }, def: W1D.slice() }, you: { order: youOrder, names: function () { return JSON.parse(JSON.stringify(Y3)); }, def: Y3D.slice() }, past: { order: pastOrder, names: function () { return JSON.parse(JSON.stringify(P2)); }, def: P2D.slice() }, store: { get: function () { return S; }, summary: summary, summaryOf: summaryOf, preset: preset, reset: function () { preset('none'); }, pending: pending, areas: AREAS } };
 })();
 
 </script>
