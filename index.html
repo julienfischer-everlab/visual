@@ -116,7 +116,7 @@ if (/^#tk-[A-Za-z0-9]{6,40}$/.test(location.hash)) { document.documentElement.cl
   .topbar .tkMenu summary:hover,.topbar .tkMenu[open] summary{border-color:#3f3f46;}
   /* Tweaks open: a column docked at the right, the screen centred in what is left of the window, so the page is always seen beside it ("when I select Tweaks, can this be a right column so we always see the screen on the left") */
   html.tkDocked{--tkDockW:320px;--vwC:calc((100vw - var(--tkDockW)) / 2);}
-  html.tkDocked .topbar #tkMenu > .tkPanel{top:var(--tkTop, 57px) !important;left:auto !important;right:0 !important;width:var(--tkDockW);height:calc(100vh - var(--tkTop, 57px));max-height:none;box-sizing:border-box;border-radius:0;border-width:0 0 0 1px;padding:8px 8px 0;}   /* 8 at its sides ("panel padding left right 8px"; was 6) */
+  html.tkDocked .topbar #tkMenu > .tkPanel{top:var(--tkTop, 57px) !important;left:auto !important;right:0 !important;width:var(--tkDockW);height:calc(100vh - var(--tkTop, 57px));max-height:none;box-sizing:border-box;border-radius:0;border-width:0 0 0 1px;padding:8px 10px 0;}   /* 8 at its sides ("panel padding left right 8px"; was 6) */
   html.tkDocked body:not([data-bp]) .dash{right:var(--tkDockW);}
   /* the Flow panel docked as a column at the left, as Tweaks at the right ("left panel shouldn't float, should be a column, same as the right panel"): the screen centred in what is left between the two */
   html.flowDocked{--flDockW:320px;   /* both columns 320 ("tweak and flow panel 320px width") */--vwC:calc(var(--flDockW) + (100vw - var(--flDockW) - var(--tkDockW, 0px)) / 2);}
@@ -134,7 +134,7 @@ if (/^#tk-[A-Za-z0-9]{6,40}$/.test(location.hash)) { document.documentElement.cl
   .topbar .tkFlowBtn{flex:none;font:inherit;font-size:12px;font-weight:500;color:#e4e4e7;background:#131316;border:1px solid #232326;border-radius:8px;padding:6px 12px;cursor:pointer;white-space:nowrap;}
   .topbar .tkFlowBtn:hover{border-color:#3f3f46;} .topbar .tkFlowBtn:focus-visible{outline:none;border-color:#71717a;} .topbar .tkFlowBtn[hidden]{display:none;}
   .topbar .tkPanel{
-    position:fixed;z-index:30;min-width:232px;padding:6px 8px;
+    position:fixed;z-index:30;min-width:232px;padding:6px 10px;
     background:#131316;border:1px solid #232326;border-radius:12px;
     display:flex;flex-direction:column;gap:2px;
     /* the Dock panel carries fourteen rows since the material moved into it,
@@ -152,7 +152,7 @@ if (/^#tk-[A-Za-z0-9]{6,40}$/.test(location.hash)) { document.documentElement.cl
   /* a group of rows as a card of its own: the page's card wash on the
      panel's ground, the heading inside it at the top */
   .topbar .tkGroup{
-    display:flex;flex-direction:column;gap:0;margin-top:2px;padding:2px 4px 3px;   /* 2 less: the card's sides, the gap between cards (4 with the panel's 2) ("the padding on the card, the gap by 2, and then the padding left and right on this container by 2") */   /* half the gap between the cards ("reduce gap by 2x between tweak card"): 6 with the panel's 2, was 12 */   /* 4 more at the sides and between the cards ("4px more padding ... left right and gap between cards") */   /* 12 between the cards with the panel's 2 ("tweak gap grid. 12px") */
+    display:flex;flex-direction:column;gap:0;margin-top:10px;padding:2px 4px 3px;   /* 2 less: the card's sides, the gap between cards (4 with the panel's 2) ("the padding on the card, the gap by 2, and then the padding left and right on this container by 2") */   /* half the gap between the cards ("reduce gap by 2x between tweak card"): 6 with the panel's 2, was 12 */   /* 4 more at the sides and between the cards ("4px more padding ... left right and gap between cards") */   /* 12 between the cards with the panel's 2 ("tweak gap grid. 12px") */
     border-radius:10px;background:rgba(255,255,255,.045);
   }
   /* condensed inside the card: rows 4px closer, and the card's title set
@@ -1326,6 +1326,8 @@ if (/^#tk-[A-Za-z0-9]{6,40}$/.test(location.hash)) { document.documentElement.cl
     color:rgba(236,236,234,calc(.63 * var(--navInactK)));   /* .42, then +50% ("increase opacity nav inactive by 50%") */text-decoration:none;cursor:pointer;
     transition:color .24s ease,background .24s ease,box-shadow .24s ease,transform .16s ease;
   }
+  .mTab.mTabTl{display:none;} body[data-bp="s"] #bpFrame .mTab.mTabTl{display:flex;}   /* the Timeline in the dock at S only; More keeps it everywhere else */
+  body[data-bp="s"] #bpFrame .mvRow[data-mv="timeline"], body[data-bp="s"] #bpFrame .mvRow[data-mv="timeline"] + .mvDiv{display:none;}   /* and More at S without it */
   .mTab:hover{color:rgba(236,236,234,.85);}
   .mTab:active{transform:scale(.955);}
   .mTab.on{
@@ -5678,7 +5680,7 @@ if (/^#tk-[A-Za-z0-9]{6,40}$/.test(location.hash)) { document.documentElement.cl
      the one gap between the cards and what follows. */
   body.v25Tab.repTab:not(.v3Tab) #phone #mV4{padding-top:0;padding-bottom:0;}
   body.v25Tab.repTab:not(.v3Tab) #phone :is(#mHeroOrgan,#mRepCarHost) .rcHeroHead{
-    display:flex;position:relative;z-index:4;padding:8px 13px 0;margin:0 0 20px;   /* 12 + 8: "add margin bottom +8px" */
+    display:flex;position:relative;z-index:4;padding:8px 13px 0;margin:0 0 25px;   /* 12 + 8: "add margin bottom +8px" */   /* then +5, the title's words 26 from the cards as Medical records' ("Increase the gap between the content and the H2 so it's the same as the one on the medical record") */
   }
   /* title off: the heading's own 8px top stays as the hero's, so the cards
      sit in the hero the way they did under the heading */
@@ -6068,7 +6070,7 @@ if (/^#tk-[A-Za-z0-9]{6,40}$/.test(location.hash)) { document.documentElement.cl
   html body.repVisual .rcCard.rcBig.rcDb:focus-within .rcCta.rcCtaIc{opacity:1;transform:none;pointer-events:auto;}
   html body.repVisual .rcCard.rcBig.rcDb .rcTitle{padding-right:22px !important;}
   html body.repTab #phone :is(#mHeroOrgan,#mRepCarHost) .rcWrap.nCar:has(> .rcCard.rcDb) + .rcDots{margin-top:24px;}   /* 24 ("Increase the gap by 8px. Above the nav dot"; was 16) */   /* 16 ("Nav carousel gap with carousel above 16px"; was 8: "8px gap between carousel and nav") */   /* the dots 16 under the cards ("gap 16px"; were 14) */
-  .rcByAv{flex:none;width:32px;height:32px;border-radius:8px;object-fit:cover;margin-right:0;} .rcByMk{display:grid;place-items:center;border-radius:8px;background:rgba(255,255,255,.12);color:#fff;} .rcByMk svg{width:14px;height:14px;display:block;} body.light .rcByMk{background:rgba(0,0,0,.08);color:#111;}   /* the signer: a doctor's photo round, or the Everlab mark on its tile ("Add avatar IF doctor / IF not fallback") */
+  .rcByAv{flex:none;width:32px;height:32px;border-radius:10px;object-fit:cover;margin-right:2px;} .rcByMk{display:grid;place-items:center;border-radius:10px;background:rgba(255,255,255,.12);color:#fff;} .rcByMk svg{width:14px;height:14px;display:block;} body.light .rcByMk{background:rgba(0,0,0,.08);color:#111;}   /* the signer: a doctor's photo round, or the Everlab mark on its tile ("Add avatar IF doctor / IF not fallback") */
   body.repVisual .rcCard.rcBig.rcDb .rcCta.rcCtaIc{bottom:55px !important;}   /* the chevron disc centred on the words (date, two lines, doctor); 2 higher with the foot's 24 line (the signer's avatar) */
   /* the stack: the same card shell, holding the same list the bento's own
      "All reports" card scrolls -- report 2 onward, never report 1, which
@@ -8012,7 +8014,11 @@ if (/^#tk-[A-Za-z0-9]{6,40}$/.test(location.hash)) { document.documentElement.cl
   /* Documentation -> Concierge entry points (ceDoc): flows of wireframes on the docs' canvas */
   /* Concierge entry points, Real design (Skeleton / Real design in its head; XS / L and zoom for Real design): the Gifting doc's canvas (hcFlows, hcRow, hcShot), stills ringed where tapped, the Concierge live */
   .ceDoc[data-cv="rd"] .ceBody, .ceDoc:not([data-cv="rd"]) .ceFlows, .ceDoc:not([data-cv="rd"]) :is(.ceBpSw, .ceZoom){display:none !important;}
-  .ceStill, .ceLive{background:#0d0d0c;} .ceStill img{display:block;width:100%;height:100%;object-fit:cover;}
+  .ceStill, .ceLive, .ceApp{background:#0d0d0c;} .ceStill img{display:block;width:100%;height:100%;object-fit:cover;}
+  .hcScr:is(.ceApp, .ceLive){pointer-events:auto;} .ceApp .ceAppF{position:absolute;left:0;top:0;width:100%;height:100%;border:0;display:block;background:transparent;} .ceApp:has(> .ceAppSb) .ceAppF{top:54px;height:calc(100% - 54px);}   /* live and interactive ("it should be the actual interactive screen"): the app under the phone's status bar */
+  .ceAppSb{position:absolute;z-index:3;left:0;top:0;right:0;height:54px;display:flex;align-items:center;justify-content:space-between;padding:4px 34px 0;box-sizing:border-box;color:#fff;background:#0d0d0c;pointer-events:none;} .ceAppSb .tm{font-size:15px;font-weight:600;letter-spacing:.02em;} .ceAppSb .isl{position:absolute;left:50%;transform:translateX(-50%);top:13px;width:96px;height:27px;background:#000;border-radius:16px;border:1px solid #1a1a19;} .ceLive .ceAppSb{background:#121212;}
+  .ceAppVeil{position:absolute;inset:0;z-index:2;display:grid;place-items:center;background:#0d0d0c;transition:opacity .4s ease;pointer-events:none;} .ceAppVeil i{width:28px;height:28px;border-radius:50%;border:2px solid rgba(255,255,255,.14);border-top-color:rgba(255,255,255,.6);animation:ceSpin .9s linear infinite;} @keyframes ceSpin{to{transform:rotate(360deg);}} .ceApp.ready .ceAppVeil{opacity:0;}
+  .ceApp .ceHs{z-index:4;transition:opacity .3s ease;} .ceApp.ceTouched .ceHs{opacity:0;}   /* the rings go once the screen is touched */
   .ceHs{position:absolute;box-sizing:border-box;border-radius:var(--ceR, 999px);outline:calc(3px / var(--hcS)) solid #f78359;outline-offset:calc(4px / var(--hcS));box-shadow:0 0 0 calc(12px / var(--hcS)) rgba(247,131,89,.16);pointer-events:none;}
   .ceHs b{position:absolute;right:calc(10px / var(--hcS));top:50%;transform:translateY(-50%);display:grid;place-items:center;width:calc(24px / var(--hcS));height:calc(24px / var(--hcS));border-radius:50%;background:#f78359;color:#1c0d06;font-size:calc(13px / var(--hcS));line-height:1;font-weight:600;box-shadow:0 0 0 calc(3px / var(--hcS)) #0d0d0c;}
   .ceSb{position:absolute;z-index:3;left:0;top:0;width:393px;height:50px;background-size:393px 852px;background-repeat:no-repeat;background-position:0 0;pointer-events:none;}
@@ -11439,6 +11445,14 @@ if (/^#tk-[A-Za-z0-9]{6,40}$/.test(location.hash)) { document.documentElement.cl
   body[data-bp="s"] #dOver .ovSvcChip, body[data-bp="xs"] #dOver .ovSvcChip{flex:0 0 calc((100% - 64px) / 2);}   /* two cards, two 8px gaps and 48 of the third */
   body[data-bp="s"] #dOver .dvPlanGrid{grid-template-columns:repeat(2,1fr);}
   body[data-bp="s"] #dOver .ovBook, body[data-bp="xs"] #dOver .ovBook{min-height:260px;}
+  /* the Overview at S ("the hero primary card should be full width, and the two other cards on the right should be next to each other below the hero primary. The primary should be in two columns inside"):
+     the primary card the whole row, its words at the left (eyebrow, title, line), what it holds and its action at the right; the column beside it now a row under it, its cards side by side */
+  body[data-bp="s"] #dOver > .dvTop{grid-template-columns:minmax(0,1fr) !important;align-items:start;} body[data-bp="s"] #dOver > .dvTop > *{grid-column:1 / -1 !important;}
+  body[data-bp="s"] #dOver > .dvTop > div:last-child:not(.hpOvCard):not(.ovhero):not(.ovBk):not(.ovOff){display:grid !important;grid-template-columns:repeat(2,minmax(0,1fr)) !important;grid-template-rows:none !important;grid-auto-rows:auto !important;gap:var(--bnGap);align-items:stretch;height:auto !important;}
+  body[data-bp="s"] #dOver > .dvTop > div:last-child:not(.hpOvCard):not(.ovhero):not(.ovBk) > *{grid-column:auto !important;grid-row:auto !important;min-width:0;margin:0 !important;height:auto !important;} body[data-bp="s"] #dOver > .dvTop > div:last-child:not(.hpOvCard):not(.ovhero):not(.ovBk) > :is(.dvLead, .ovrow2){grid-column:1 / -1 !important;}
+  body[data-bp="s"] #dOver > .dvTop > .hpOvCard{display:grid !important;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto auto auto 1fr auto;column-gap:40px;row-gap:0;align-content:stretch;min-height:0 !important;height:auto !important;}
+  body[data-bp="s"] #dOver > .dvTop > .hpOvCard > :is(.hpOvEy, .hpFrTag, .hpDrHd){grid-column:1;grid-row:1;} body[data-bp="s"] #dOver > .dvTop > .hpOvCard > :is(h3, .hpFrT){grid-column:1;grid-row:2;} body[data-bp="s"] #dOver > .dvTop > .hpOvCard > :is(.hpOvSub, .hpFrP){grid-column:1;grid-row:3;}
+  body[data-bp="s"] #dOver > .dvTop > .hpOvCard > :is(.hpDrList, .hpFrRows, .hpInsRows){grid-column:2;grid-row:1 / 5;align-self:start;margin-top:0;} body[data-bp="s"] #dOver > .dvTop > .hpOvCard > :is(.ovBookFoot, .hpOvBtn){grid-column:2;grid-row:5;align-self:end;} body[data-bp="s"] #dOver > .dvTop > .hpOvCard > .hpOvBtn{justify-self:start;width:auto;}
   #dOver .dvTop > *, #dOver .ovrow2 > *{min-width:0;}   /* the grid's cells shrink with it; a card's own content never holds a column open */
   body[data-bp="xs"] #dOver .ovBookFoot{flex-wrap:wrap;}
   body[data-bp="xs"] #dOver .ovBook h3{max-width:none;}
@@ -11468,6 +11482,8 @@ if (/^#tk-[A-Za-z0-9]{6,40}$/.test(location.hash)) { document.documentElement.cl
   body:is([data-bp="xs"], [data-bp="s"]) #bpFrame > .dash::before{content:"";position:absolute;left:0;right:0;top:0;z-index:30;height:calc(var(--hdrSb, 54px) + 24px);pointer-events:none;background:linear-gradient(180deg,var(--pageBg) 0,var(--pageBg) calc(100% - 24px),color-mix(in srgb, var(--pageBg) 86%, transparent) calc(100% - 19px),color-mix(in srgb, var(--pageBg) 58%, transparent) calc(100% - 12px),color-mix(in srgb, var(--pageBg) 24%, transparent) calc(100% - 5px),transparent 100%);}
   body.plOn:is([data-bp="xs"], [data-bp="s"]) #bpFrame > .dash::before, body:is([data-bp="xs"], [data-bp="s"]) #bpFrame > .dash.chatOn::before{display:none;}
   #bpFrame .bpStatus .tm{font-size:15px;font-weight:600;letter-spacing:.02em;}
+  html.tnWip #bpFrame .bpStatus .tm{display:inline-flex;align-items:center;gap:6px;} html.tnWip #bpFrame .bpStatus .tm::after{content:"WIP";display:inline-block;padding:2px 6px;border-radius:5px;background:#e5484d;color:#fff;font-size:10px;line-height:12px;font-weight:700;letter-spacing:.04em;}   /* Tweaks -> Top nav -> WIP: a red label beside the time ("Add a red label badge next to the hour ... like WIP") */
+  #tkMenu #stTnWipRow > .tgl{margin-left:auto;}
   #bpFrame .bpStatus .isl{position:absolute;left:50%;transform:translateX(-50%);top:13px;width:96px;height:27px;background:#000;border-radius:16px;border:1px solid #1a1a19;}
   body[data-bp="s"] #bpFrame .bpStatus{padding:10px 22px 0;}
   /* the tablet keeps the phone's nav island at its foot ("Overview S, keeping the nav island at the bottom"): centred at the phone's width rather than stretched across the tablet, the page's foot clearing it */
@@ -14303,7 +14319,10 @@ html.insMini[data-ins-amt="2"]:not(.insEmpty) body[data-bp="xs"] #dOver .ovcar.o
         </div>
         <!-- the page's Container ("FOR EACH PAGE Main page or sub page I want a Container tweak to select the container of the content 2xs s m l etc (design system rules)"): on every Main page and Sub page, the page up named;
              its choices the General layout master's (window.EvCt fills them: 2xs, xs, sm, md, lg, Full, and Own where the page has a width of its own today), from M. #stCt shows the page's own; #stCtPg keeps every page's for Save -->
-        <div class="tkGroup" data-pages="ct" id="tkCtGrp">
+        <!-- one group, General layout ("For all pages, you can mix and merge these two and call this general layout. Then put these two properties, with the title, inside the same tweak"): the page's Container, its Top nav and its Footer, each under its own title -->
+        <div class="tkGroup tkGlGrp" data-pages="ct tn" id="tkGlGrp">
+        <div class="tkSub">General layout</div>
+        <div class="tkGlPart" data-pages="ct" id="tkCtGrp">
           <div class="tkSub">Container</div>
           <div class="tkCtStep" id="stCtStep" hidden></div>   <!-- the step of the flow these picks are for ("The container setup is per step of the flow") -->
           <div class="tkRow tkCtRow" title="This page’s content container: a max width at every size from S (XS keeps the full width with the breakpoint’s padding)">
@@ -14314,6 +14333,43 @@ html.insMini[data-ins-amt="2"]:not(.insEmpty) body[data-bp="xs"] #dOver .ovcar.o
           <!-- a full modal's own three ("on the container tweak, different containers, like the header container and the footer container ... rename the current container to body container"): its top nav's row and its footer, each its own max width; Own: as today (the top nav at the viewport's edges from M, the footer the body's) -->
           <div class="tkRow tkCtRow tkCtPart" data-part="hd" hidden><span class="lbl">Header</span><select id="stCtHd" class="tkSegSel tkProxy" aria-label="Container of this screen’s top nav"></select></div>
           <div class="tkRow tkCtRow tkCtPart" data-part="ft" hidden><span class="lbl">Footer</span><select id="stCtFt" class="tkSegSel tkProxy" aria-label="Container of this screen’s footer"></select></div>
+        </div>
+        <!-- every top nav's Sticky ("All top nav should have a tweak: Sticky ON / OFF. Put this as a design system level"): the Top nav master's setting (EvTopNav.M.sticky, everlab:tnMaster), on every page; a proxy here, the master keeps it -->
+        <div class="tkGlPart" data-pages="tn" id="tkTnGrp">
+          <div class="tkSub">Top nav <span class="tkTnPg" id="stTnPgLbl"></span></div>   <!-- this page's own ("a control on the top navigation for each page"), its name beside the heading -->
+          <div class="tkRow" id="stTnFxRow" title="This page’s top nav: pinned at the top as the page scrolls (On) or scrolling away with it (Off). Unpicked, the Design system’s Top nav master (General layout → Top nav)">
+            <span class="lbl">Fixed</span>
+            <select id="stTnSticky" class="tkSegSel tkProxy" aria-label="This page’s top nav fixed">
+              <option value="on" selected>On</option>
+              <option value="off">Off</option>
+            </select>
+          </div>
+          <div class="tkRow tkDepRow" id="stTnBgRow" title="This page’s fixed top nav: the gradient blur, the screen’s colour solid, or nothing under it">
+            <span class="lbl">Style</span>
+            <select id="stTnBg" class="tkSegSel tkProxy" aria-label="This page’s fixed top nav ground">
+              <option value="grad" selected>Gradient</option>
+              <option value="fill">Filled</option>
+              <option value="clear">Transparent</option>
+            </select>
+          </div>
+          <div class="tkRow" id="stTnWipRow" title="This page is a work in progress: a red WIP label beside the time in the phone's status bar">
+            <span class="lbl">WIP</span>
+            <select id="stTnWip" class="tkProxy" hidden aria-label="This page is a work in progress"><option value="off" selected>No</option><option value="on">Yes</option></select><button type="button" class="tgl" id="stTnWipSw" role="switch" aria-checked="false" aria-label="This page is a work in progress: a WIP label beside the time"><i></i></button>
+          </div>   <!-- "I want to have a tweak on the top nav for work in progress ... WIP: yes/no, like a toggle" -->
+          <input type="hidden" id="stTnPg" value="">   <!-- every page's picks (JSON), for Save and the presets -->
+        </div>
+        <!-- every footer's Style ("Need the same for ALL footer. Gradient - Filled - transaprent"; "footer Always fixed"): this page's, else the master's (EvTopNav.M.fb); shown where the screen has a footer -->
+        <div class="tkGlPart tkFtNo" data-pages="tn" id="tkFtGrp">
+          <div class="tkSub">Footer <span class="tkTnPg" id="stFtPgLbl"></span></div>
+          <div class="tkRow" id="stFtBgRow" title="This page’s footer, always fixed: its gradient fade, the screen’s colour solid, or nothing under the buttons">
+            <span class="lbl">Style</span>
+            <select id="stFtBg" class="tkSegSel tkProxy" aria-label="This page’s footer ground">
+              <option value="grad" selected>Gradient</option>
+              <option value="fill">Filled</option>
+              <option value="clear">Transparent</option>
+            </select>
+          </div>
+        </div>
         </div>
         <!-- Confirm your updated plan, first in the panel on the review ("The layout here: I want this to be at the top of the list"): Simple list / Timeline over everything else, on that screen alone -->
         <div class="tkGroup" data-pages="ar" data-ar-at="c" data-ar-ph="rev" id="tkArRvwGrp">
@@ -14333,38 +14389,6 @@ html.insMini[data-ins-amt="2"]:not(.insEmpty) body[data-bp="xs"] #dOver .ovcar.o
         <div class="tkRow" data-ar-ph="rev"><span class="lbl">Show existing items</span><select id="stArRvCur" class="tkSegSel" aria-label="The timeline's items already in your plan (greyed, In your plan) beside the added and adjusted ones: shown (On) or hidden (Off), a month with only those then gone too"><option value="on" selected>On</option><option value="off">Off</option></select></div>   <!-- "Tweak option to hide existing Object ON OFF" -->
         <div class="tkRow" data-ar-ph="rev"><span class="lbl">Membership object</span><select id="stArRvMb" class="tkSegSel" aria-label="The Diagnostics Membership as an object on the timeline: On, its card under Now, the items it includes listed in its footer (each with its month), off the timeline's own rows; Off, each on its own"><option value="off" selected>Off</option><option value="on">On</option></select></div>   <!-- "a tweak ON OFF: Membership object in timeline. This card should include a list item that you put in the footer" -->
         <div class="tkRow" data-ar-ph="rev" hidden><span class="lbl">Segmented</span><select id="stArSeg" class="tkSegSel" aria-label="Confirm your updated plan: the Add to plan / Later tabs"><option value="simple" selected>Simple</option></select></div>   <!-- Advanced removed ("Move the advanced one. Just keep the simple"): the Design system's segmented tabs only; the row kept hidden for older saves -->   <!-- "the segmented tab could look like the intro cards, more horizontal; create a tweak (segmented advanced)" -->
-        </div>
-        <!-- every top nav's Sticky ("All top nav should have a tweak: Sticky ON / OFF. Put this as a design system level"): the Top nav master's setting (EvTopNav.M.sticky, everlab:tnMaster), on every page; a proxy here, the master keeps it -->
-        <div class="tkGroup" data-pages="tn" id="tkTnGrp">
-          <div class="tkSub">Top nav <span class="tkTnPg" id="stTnPgLbl"></span></div>   <!-- this page's own ("a control on the top navigation for each page"), its name beside the heading -->
-          <div class="tkRow" id="stTnFxRow" title="This page’s top nav: pinned at the top as the page scrolls (On) or scrolling away with it (Off). Unpicked, the Design system’s Top nav master (General layout → Top nav)">
-            <span class="lbl">Fixed</span>
-            <select id="stTnSticky" class="tkSegSel tkProxy" aria-label="This page’s top nav fixed">
-              <option value="on" selected>On</option>
-              <option value="off">Off</option>
-            </select>
-          </div>
-          <div class="tkRow tkDepRow" id="stTnBgRow" title="This page’s fixed top nav: the gradient blur, the screen’s colour solid, or nothing under it">
-            <span class="lbl">Style</span>
-            <select id="stTnBg" class="tkSegSel tkProxy" aria-label="This page’s fixed top nav ground">
-              <option value="grad" selected>Gradient</option>
-              <option value="fill">Filled</option>
-              <option value="clear">Transparent</option>
-            </select>
-          </div>
-          <input type="hidden" id="stTnPg" value="">   <!-- every page's picks (JSON), for Save and the presets -->
-        </div>
-        <!-- every footer's Style ("Need the same for ALL footer. Gradient - Filled - transaprent"; "footer Always fixed"): this page's, else the master's (EvTopNav.M.fb); shown where the screen has a footer -->
-        <div class="tkGroup tkFtNo" data-pages="tn" id="tkFtGrp">
-          <div class="tkSub">Footer <span class="tkTnPg" id="stFtPgLbl"></span></div>
-          <div class="tkRow" id="stFtBgRow" title="This page’s footer, always fixed: its gradient fade, the screen’s colour solid, or nothing under the buttons">
-            <span class="lbl">Style</span>
-            <select id="stFtBg" class="tkSegSel tkProxy" aria-label="This page’s footer ground">
-              <option value="grad" selected>Gradient</option>
-              <option value="fill">Filled</option>
-              <option value="clear">Transparent</option>
-            </select>
-          </div>
         </div>
         <!-- The panel reads top-down the way the page does: the Layout first,
              since it decides what every row under it is dressing; then the
@@ -24035,12 +24059,13 @@ window.EvTopNav = (function () {
   var TD = { sticky: 'on', bg: 'grad', fb: 'grad' }, TM = { sticky: 'on', bg: 'grad', fb: 'grad' }, BGS = ['grad', 'fill', 'clear'], PG = {}, tPk = '';
   var tCur = function () { try { return window.EvCt && window.EvCt.cur ? window.EvCt.cur() || '' : ''; } catch (e) { return ''; } };
   var tTl = function (k) { return k === 'tl' && document.documentElement.classList.contains('tlD3') ? document.getElementById('stT3TabFix') : null; };
-  var tEff = function (k) { var o = (k && PG[k]) || {}, t = tTl(k); return { fx: t ? (t.value === 'off' ? 'off' : 'on') : (o.fx === 'on' || o.fx === 'off' ? o.fx : TM.sticky), bg: BGS.indexOf(o.bg) >= 0 ? o.bg : TM.bg, fb: BGS.indexOf(o.fb) >= 0 ? o.fb : TM.fb }; };
-  var tRow = function (id, v) { [].forEach.call(document.querySelectorAll('#' + id), function (s) { if (s.value === v) return; s.value = v; s.setAttribute('data-v', v); var g = s.nextElementSibling; if (g && g.classList && g.classList.contains('tgl')) g.setAttribute('aria-checked', String(v === 'on')); }); };
+  var tEff = function (k) { var o = (k && PG[k]) || {}, t = tTl(k); return { fx: t ? (t.value === 'off' ? 'off' : 'on') : (o.fx === 'on' || o.fx === 'off' ? o.fx : TM.sticky), bg: BGS.indexOf(o.bg) >= 0 ? o.bg : TM.bg, fb: BGS.indexOf(o.fb) >= 0 ? o.fb : TM.fb, wip: o.wip === 'on' ? 'on' : 'off' }; };   /* WIP: this page's alone ("a tweak on the top nav for work in progress ... WIP: yes/no"), off unless set */
+  var tRow = function (id, v) { [].forEach.call(document.querySelectorAll('#' + id), function (s) { var g = s.nextElementSibling; if (g && g.classList && g.classList.contains('tgl') && g.getAttribute('aria-checked') !== String(v === 'on')) g.setAttribute('aria-checked', String(v === 'on')); if (s.value === v) return; s.value = v; s.setAttribute('data-v', v); }); };   /* a switch follows its select even when the select already holds the value (its own click set it) */
   var tApply = function () { var k = tCur(), e = tEff(k), H = document.documentElement; tPk = k;
     H.classList.toggle('tnFree', e.fx === 'off' && !tTl(k) && !/^(ar|hp|wel|sgf)$/.test(k)); if (e.bg === 'grad') { if (H.hasAttribute('data-tnbg')) H.removeAttribute('data-tnbg'); } else if (H.getAttribute('data-tnbg') !== e.bg) H.setAttribute('data-tnbg', e.bg);
     if (e.fb === 'grad') { if (H.hasAttribute('data-tfbg')) H.removeAttribute('data-tfbg'); } else if (H.getAttribute('data-tfbg') !== e.fb) H.setAttribute('data-tfbg', e.fb);
-    tRow('stTnSticky', e.fx); tRow('stTnBg', e.bg); tRow('stFtBg', e.fb); tMeas();
+    H.classList.toggle('tnWip', e.wip === 'on');   /* a red WIP label beside the status bar's time ("Add a red label badge next to the hour at the top when it's a work-in-progress") */
+    tRow('stTnSticky', e.fx); tRow('stTnBg', e.bg); tRow('stFtBg', e.fb); tRow('stTnWip', e.wip); tMeas();
     var sf = /^(ar|hp|wel|sgf)$/.test(k), fr = document.getElementById('stTnFxRow'), br = document.getElementById('stTnBgRow'); if (fr && fr.hidden !== sf) fr.hidden = sf;   /* the step flows' bar is always pinned: no Fixed there, Style only */
     if (br){ var bh = !sf && e.fx === 'off'; if (br.hidden !== bh) br.hidden = bh; br.classList.toggle('tkDepRow', !sf); }   /* Style only while it is fixed; under Fixed, the dependent row's arrow */
     var lb = document.getElementById('stTnPgLbl'), nm = ''; try { var P = window.EvCt && window.EvCt.pages ? window.EvCt.pages() : [], f = P.find(function (p) { return p.key === k; }); nm = f ? f.name : (window.EvCtx && window.EvCtx.top() ? window.EvCtx.top().label || '' : ''); } catch (x) {} if (lb && lb.textContent !== nm) lb.textContent = nm; var lf = document.getElementById('stFtPgLbl'); if (lf && lf.textContent !== nm) lf.textContent = nm;
@@ -24052,9 +24077,9 @@ window.EvTopNav = (function () {
       if (hd && sh.classList.contains('hpSheet')) { var w = hd.offsetHeight + 'px'; if (sh.style.getPropertyValue('--ar-hh') !== w) sh.style.setProperty('--ar-hh', w); } });
     var g = document.getElementById('tkFtGrp'); if (g && g.classList.contains('tkFtNo') === any) g.classList.toggle('tkFtNo', !any); };
   var tKeep = function () { var h = document.getElementById('stTnPg'); if (h) h.value = Object.keys(PG).length ? JSON.stringify(PG) : ''; };
-  var tRead = function (v) { var o = null; try { o = v ? JSON.parse(v) : {}; } catch (e) { o = {}; } PG = {}; if (o && typeof o === 'object') Object.keys(o).forEach(function (k) { var x = o[k] || {}, y = {}; if (x.fx === 'on' || x.fx === 'off') y.fx = x.fx; if (BGS.indexOf(x.bg) >= 0) y.bg = x.bg; if (BGS.indexOf(x.fb) >= 0) y.fb = x.fb; if (y.fx || y.bg || y.fb) PG[k] = y; }); };
+  var tRead = function (v) { var o = null; try { o = v ? JSON.parse(v) : {}; } catch (e) { o = {}; } PG = {}; if (o && typeof o === 'object') Object.keys(o).forEach(function (k) { var x = o[k] || {}, y = {}; if (x.fx === 'on' || x.fx === 'off') y.fx = x.fx; if (BGS.indexOf(x.bg) >= 0) y.bg = x.bg; if (BGS.indexOf(x.fb) >= 0) y.fb = x.fb; if (x.wip === 'on') y.wip = 'on'; if (y.fx || y.bg || y.fb || y.wip) PG[k] = y; }); };
   var tPg = function (f, v) { var k = tCur(); if (!k) return; if (f === 'fx' && tTl(k)) { var t = tTl(k); if (t.value !== v) { t.value = v; t.dispatchEvent(new Event('change', { bubbles: true })); } tApply(); return; }   /* the Timeline's tabs: their own Fixed */
-    var o = PG[k] || {}; if (v === (f === 'fx' ? TM.sticky : f === 'fb' ? TM.fb : TM.bg)) delete o[f]; else o[f] = v; if (o.fx || o.bg || o.fb) PG[k] = o; else delete PG[k]; tKeep(); tApply(); };   /* the master's again: no pick of its own */
+    var o = PG[k] || {}; if (v === (f === 'fx' ? TM.sticky : f === 'fb' ? TM.fb : f === 'wip' ? 'off' : TM.bg)) delete o[f]; else o[f] = v; if (o.fx || o.bg || o.fb || o.wip) PG[k] = o; else delete PG[k]; tKeep(); tApply(); };   /* the master's again: no pick of its own */
   var tLoad = function () { TM.sticky = TD.sticky; TM.bg = TD.bg; TM.fb = TD.fb; try { var v = JSON.parse(localStorage.getItem('everlab:tnMaster') || 'null'); if (v && (v.sticky === 'on' || v.sticky === 'off')) TM.sticky = v.sticky; if (v && BGS.indexOf(v.bg) >= 0) TM.bg = v.bg; if (v && BGS.indexOf(v.fb) >= 0) TM.fb = v.fb; } catch (e) {} tApply(); };
   var tSet = function (k, v) { if (k === 'sticky' && (v === 'on' || v === 'off') && TM.sticky !== v) { TM.sticky = v; tApply(); } else if (k === 'bg' && BGS.indexOf(v) >= 0 && TM.bg !== v) { TM.bg = v; tApply(); } else if (k === 'fb' && BGS.indexOf(v) >= 0 && TM.fb !== v) { TM.fb = v; tApply(); } };
   var tShare = function (v) { try { if (window.EvShared && window.EvShared.on()) window.EvShared.put('everlab:tnMaster', v); } catch (e) {} };
@@ -24062,6 +24087,7 @@ window.EvTopNav = (function () {
   var tReset = function () { try { localStorage.removeItem('everlab:tnMaster'); } catch (e) {} TM.sticky = TD.sticky; TM.bg = TD.bg; TM.fb = TD.fb; tApply(); tShare({ sticky: TD.sticky, bg: TD.bg, fb: TD.fb }); };
   tLoad();
   (function () { var ts = document.getElementById('stTnSticky'), tb = document.getElementById('stTnBg'), th = document.getElementById('stTnPg'), tf = document.getElementById('stFtBg'); if (tf) tf.addEventListener('change', function () { tPg('fb', tf.value); });
+    var tw = document.getElementById('stTnWip'), twb = document.getElementById('stTnWipSw'); if (tw) tw.addEventListener('change', function () { tPg('wip', tw.value === 'on' ? 'on' : 'off'); }); if (twb && tw) twb.addEventListener('click', function () { tw.value = tw.value === 'on' ? 'off' : 'on'; tw.dispatchEvent(new Event('change', { bubbles: true })); });   /* WIP: its switch, this page's */
     if (ts) ts.addEventListener('change', function () { tPg('fx', ts.value); }); if (tb) tb.addEventListener('change', function () { tPg('bg', tb.value); });
     if (th) th.addEventListener('change', function () { tRead(th.value); tApply(); });   /* a Save put back, a preset, Reset */
     var tick = function () { if (tCur() !== tPk) tApply(); };   /* a page come or gone: its own */
@@ -34933,7 +34959,7 @@ hairline({
       if (v && v.value !== set){ v.value = set; v.dispatchEvent(new Event('change', { bubbles: true })); } setTimeout(() => { if (window._doc) window._doc.show(k); }, 60); });
     new MutationObserver(sync).observe(document.body, { attributes: true, attributeFilter: ['class'] }); document.addEventListener('change', e => { if (e.target && e.target.id === 'versionSel') setTimeout(sync, 0); }); requestAnimationFrame(sync); }
   /* Tweaks -> Container: its heading names the picked container's max width at this breakpoint, in brackets ("Indicate in bracket the Max width Xpx based on the selection"): the token's value (EvCt's names) at every breakpoint, Full 100%, the page's own its width */
-  { const upd = () => { const s0 = document.getElementById('stCt'), g = s0 && s0.closest('.tkGroup'), h = g && g.querySelector(':scope > .tkSub'); if (!h) return; let m = h.querySelector('.tkCtMax');
+  { const upd = () => { const s0 = document.getElementById('stCt'), g = s0 && (s0.closest('.tkGlPart') || s0.closest('.tkGroup')), h = g && g.querySelector(':scope > .tkSub'); if (!h) return; let m = h.querySelector('.tkCtMax');
       if (!m){ m = document.createElement('span'); m.className = 'tkCtMax'; }
       { const nm = h.querySelector('.nm'), bt = h.querySelector(':scope > button'); if (nm){ if (nm.nextSibling !== m) nm.after(m); } else if (bt){ if (bt.previousSibling !== m) h.insertBefore(m, bt); } else if (m.parentNode !== h) h.appendChild(m); }   /* beside the name, before the collapse chevron */
       const v = s0.value, N = (window.EvCt && window.EvCt.names) || {}, f = document.body.dataset.bp, desk = f ? /^(m|l|xl)$/.test(f) : innerWidth >= 992; let t = '';
@@ -38301,7 +38327,7 @@ hairline({
     document.dispatchEvent(new CustomEvent('everlab:navIns')); return navIns(); };
   window.EvNavIc.ins = navIns;
   try { const m = JSON.parse(localStorage.getItem('everlab:navMaster') || 'null'); if (m && m.ins === 'heart') navIns('heart'); } catch (x){}
-  const MOBILE_NAV = '<nav class="mTabs" id="mTabs" aria-label="Sections">\n  <div class="mDock">\n    <!-- the island: the four destinations, evenly in one pill -->\n    <div class="mIsland lgGlass" role="tablist">\n      <a class="mTab on" role="tab" aria-selected="true">' + navIc('home') + '<i>Home</i></a>\n      <a class="mTab" role="tab" aria-selected="false">' + navIc('insights') + '<i>' + (NAV_IC.insights === NAV_IC.heart ? 'Health' : 'Insights') + '</i></a>\n      <a class="mTab" role="tab" aria-selected="false">' + navIc('plan') + '<i>Plan</i></a>\n      <a class="mTab" role="tab" aria-selected="false">' + navIc('services') + '<i>Services</i></a>\n      <a class="mTab" role="tab" aria-selected="false">' + navIc('more') + '<i>More</i></a>\n    </div>\n    <!-- and the assistant, its own pill beside them -- a sparkle rather than a speech bubble, since it opens something that answers rather than a thread. The same material, a little\n         brighter, so it reads as part of the system and not of the four -->\n    <button class="mChat lgGlass" type="button" aria-label="Ask Everlab">\n      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11.5455 3.74292C11.5455 3.74292 11.9878 7.42388 14.3179 9.62452C16.648 11.8251 20.5455 12.2429 20.5455 12.2429C20.5455 12.2429 16.648 12.6607 14.3179 14.8613C11.9878 17.062 11.5455 20.7429 11.5455 20.7429C11.5455 20.7429 11.1031 17.062 8.77304 14.8613C6.44296 12.6607 2.54547 12.2429 2.54547 12.2429C2.54547 12.2429 6.44296 11.8251 8.77304 9.62452C11.1031 7.42388 11.5455 3.74292 11.5455 3.74292Z"/><path d="M18.0455 0.542969C18.0455 0.542969 18.1896 2.38044 18.9488 3.13964C19.708 3.89884 21.5455 4.04297 21.5455 4.04297C21.5455 4.04297 19.708 4.1871 18.9488 4.9463C18.1896 5.7055 18.0455 7.54297 18.0455 7.54297C18.0455 7.54297 17.9013 5.7055 17.1421 4.9463C16.3829 4.1871 14.5455 4.04297 14.5455 4.04297C14.5455 4.04297 16.3829 3.89884 17.1421 3.13964C17.9013 2.38044 18.0455 0.542969 18.0455 0.542969Z"/></svg>\n    </button>\n  </div>\n  <!-- the iPhone\'s home indicator, drawn in the frame where the device would\n       draw its own; the dock keeps the same distance above it either way -->\n  <i class="mHome" aria-hidden="true"></i>\n</nav>';
+  const MOBILE_NAV = '<nav class="mTabs" id="mTabs" aria-label="Sections">\n  <div class="mDock">\n    <!-- the island: the four destinations, evenly in one pill -->\n    <div class="mIsland lgGlass" role="tablist">\n      <a class="mTab on" role="tab" aria-selected="true">' + navIc('home') + '<i>Home</i></a>\n      <a class="mTab" role="tab" aria-selected="false">' + navIc('insights') + '<i>' + (NAV_IC.insights === NAV_IC.heart ? 'Health' : 'Insights') + '</i></a>\n      <a class="mTab" role="tab" aria-selected="false">' + navIc('plan') + '<i>Plan</i></a>\n      <a class="mTab" role="tab" aria-selected="false">' + navIc('services') + '<i>Services</i></a>\n      <a class="mTab mTabTl" role="tab" aria-selected="false">' + navIc('timeline') + '<i>Timeline</i></a>\n      <a class="mTab" role="tab" aria-selected="false">' + navIc('more') + '<i>More</i></a>\n    </div>\n    <!-- and the assistant, its own pill beside them -- a sparkle rather than a speech bubble, since it opens something that answers rather than a thread. The same material, a little\n         brighter, so it reads as part of the system and not of the four -->\n    <button class="mChat lgGlass" type="button" aria-label="Ask Everlab">\n      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11.5455 3.74292C11.5455 3.74292 11.9878 7.42388 14.3179 9.62452C16.648 11.8251 20.5455 12.2429 20.5455 12.2429C20.5455 12.2429 16.648 12.6607 14.3179 14.8613C11.9878 17.062 11.5455 20.7429 11.5455 20.7429C11.5455 20.7429 11.1031 17.062 8.77304 14.8613C6.44296 12.6607 2.54547 12.2429 2.54547 12.2429C2.54547 12.2429 6.44296 11.8251 8.77304 9.62452C11.1031 7.42388 11.5455 3.74292 11.5455 3.74292Z"/><path d="M18.0455 0.542969C18.0455 0.542969 18.1896 2.38044 18.9488 3.13964C19.708 3.89884 21.5455 4.04297 21.5455 4.04297C21.5455 4.04297 19.708 4.1871 18.9488 4.9463C18.1896 5.7055 18.0455 7.54297 18.0455 7.54297C18.0455 7.54297 17.9013 5.7055 17.1421 4.9463C16.3829 4.1871 14.5455 4.04297 14.5455 4.04297C14.5455 4.04297 16.3829 3.89884 17.1421 3.13964C17.9013 2.38044 18.0455 0.542969 18.0455 0.542969Z"/></svg>\n    </button>\n  </div>\n  <!-- the iPhone\'s home indicator, drawn in the frame where the device would\n       draw its own; the dock keeps the same distance above it either way -->\n  <i class="mHome" aria-hidden="true"></i>\n</nav>';
   /* the dock's master, from Documentation -> Navigation (Save setup): every page's dock takes it once everything else has restored (Tweaks, saved setups), so the doc stays the source of truth; Below · 12px until one is saved */
   /* the light dock's numbers (Navigation doc, Island): background opacity, blur, active background, shadow; on <html>, so every dock takes them */
   window._nvDk = (() => { const D = { bg: 100, blur: 16, act: 6, sh: 100, bgD: 100, blurD: 16, actD: 20, shD: 100, bgc: '#ffffff', actc: '#2e1f1a', bgcD: '#101011', actcD: '#ffffff', fgc: '#000000', fgic: '#000000', fgcD: '#ffffff', fgicD: '#ececea' }, V = Object.assign({}, D);   /* the Island's numbers, light (bg, blur, act, sh) and dark (…D: "need to be able to save a different setup on light and dark mode"), saved together; and its colours (bgc, actc; bgcD, actcD: "a colour selector for bg and bg active item") */
@@ -38325,7 +38351,7 @@ hairline({
   if (document.documentElement.classList.contains('evEmbed')) addEventListener('load', () => { const v = document.getElementById('versionSel'); if (v && v.value !== '9'){ v.value = '9'; v.dispatchEvent(new Event('change', { bubbles: true })); } const s = document.getElementById('stBp'); if (s && s.value !== 'auto'){ s.value = 'auto'; s.dispatchEvent(new Event('change', { bubbles: true })); } window.__evEmbedOk = true; });   /* in the Navigation doc's phone: the app edge to edge at the frame's width, as on a phone */
   /* the dock's More: a bottom sheet of the rest of the app ("more icon needs to open a bottom sheet"), over the phone it is tapped in; the scrim, its close, a row or Escape put it away. Shared by the app and Documentation -> Navigation */
   /* More lit ("if I'm on the plan page, the More needs to be highlighted because it's one of these pages; the same for account, Contact us, Settings, and all of the stuff"): every dock's More tab, its pill and its filled icon, while a page More opens is up */
-  window.__litMore = () => document.querySelectorAll('#bpFrame .mTab, #phone .mTab, #phone2 .mTab').forEach(t => { const m = !!t.querySelector('i') && t.querySelector('i').textContent.trim() === 'More'; t.classList.toggle('on', m); t.setAttribute('aria-selected', String(m)); });
+  window.__litMore = () => { const tlS = document.body.dataset.bp === 's' && document.body.classList.contains('tlOn'); document.querySelectorAll('#bpFrame .mTab, #phone .mTab, #phone2 .mTab').forEach(t => { const lb = t.querySelector('i') ? t.querySelector('i').textContent.trim() : '', m = tlS && t.closest('#bpFrame') ? t.classList.contains('mTabTl') : lb === 'More'; t.classList.toggle('on', m); t.setAttribute('aria-selected', String(m)); }); };   /* at S the Timeline lights its own tab */
   /* the page you are on, when More is the way to it ("When a menu is active inside the dropdown MORE, the item should have the active icon"): the same truth that lights More (window.__litMore's callers), the body's page classes.
      plOn the Plan and its subpages; accOn My account, Settings when its Settings tab is the one up; gfOn the Gift page; rfOn the Gift referral; the Concierge up with Care team picked, Contact us (with Eva picked, none: the page up is not one of More's) */
   window.__morePage = () => { const b = document.body.classList;
@@ -38388,7 +38414,7 @@ hairline({
       // phone (m20). Plan, Services and More have no screen in the prototype,
       // so a tap on them does nothing -- the lit tab keeps saying where the
       // reader actually is rather than moving to a place that does not exist.
-      const DEST = [6, 20, 'plan', 'mkt', null];   // Plan: the Plan page ("Swap Menu : Timeline <> Plan": the dock's third tab the Plan, My journey in More)   // Timeline: the Timeline page ("replace Plan by Timeline and redirect to the timeline page")   // Services: the marketplace ("on the bottom navigation, Services redirects to the service marketplace"; it was the Service detail, now the Timeline's alone)
+      const DEST = [6, 20, 'plan', 'mkt', 'tl', null];   /* 'tl': the Timeline, its own tab at S only ("On S, the navigation can have five spots ... Home, Health, Plan, Service, and Timeline ... Everything Else under the More, only for the S breakpoint") */   // Plan: the Plan page ("Swap Menu : Timeline <> Plan": the dock's third tab the Plan, My journey in More)   // Timeline: the Timeline page ("replace Plan by Timeline and redirect to the timeline page")   // Services: the marketplace ("on the bottom navigation, Services redirects to the service marketplace"; it was the Service detail, now the Timeline's alone)
       tabs.forEach((t, i) => t.addEventListener('click', e => {
         e.preventDefault();
         // The format stays ("navigating from the main nav should stay on the same format: Auto -> new page Auto; XS -> new page XS"). In XS --
@@ -38409,6 +38435,7 @@ hairline({
           if (host.id !== 'bpFrame'){ const bs = document.getElementById('stBp'); if (bs && document.body.dataset.bp !== 'xs'){ bs.value = 'xs'; bs.dispatchEvent(new Event('change', { bubbles: true })); } }   // a phone has no Plan of its own: the desk's, in the XS device
           if (version !== 9){ setMode(9); resize(); } window._plan.open(); return;
         }
+        if (DEST[i] === 'tl'){ if (window._plan) window._plan.close(); if (window._mkt) window._mkt.close(); if (window._svc) window._svc.close(); if (window._acc) window._acc.close(); if (version !== 9){ setMode(9); resize(); } if (window._tl) window._tl.open(); return; }
         if (DEST[i] === 'mkt'){
           if (!window._mkt) return;
           if (host.id !== 'bpFrame'){ const bs = document.getElementById('stBp'); if (bs && document.body.dataset.bp !== 'xs'){ bs.value = 'xs'; bs.dispatchEvent(new Event('change', { bubbles: true })); } }   // a phone has no marketplace of its own: the desk's, in the XS device, as the Timeline
@@ -53078,7 +53105,7 @@ hairline({
         const WF = {
           'ph-top': () => PAGE('top'),
           'ph-ai': () => PAGE('ai'),
-          'ph-sheet': () => PAGE('') + R(0, 0, 100, 100, 0, 'd') + R(6, 33, 60, 5, 99, 'c') + R(6, 40, 54, 5, 99, 'c') + R(6, 47, 64, 5, 99, 'c') + R(6, 54, 30, 5, 99, 'c') + R(0, 63, 100, 37, '16px 16px 0 0', 's') + R(43, 65, 14, 0.8, 99, 't') + R(6, 69, 88, 6.5, 99, 'f') + R(6, 79, 20, 2.2, 2, 't') + R(6, 83, 28, 13, 10, '') + R(37, 83, 28, 13, 10, '') + R(68, 83, 32, 13, '10px 0 0 10px', ''),
+          'ph-sheet': () => PAGE('') + R(0, 0, 100, 100, 0, 'd') + R(0, 34, 100, 66, '16px 16px 0 0', 's') + R(45, 35.3, 10, 0.6, 99, 't') + R(5, 37.5, 76, 5.6, 99, 'f') + R(84, 37.5, 11, 5.6, 99, '') + R(6, 45.6, 16, 1.8, 2, 't') + R(5, 48.5, 30, 14, 10, '') + R(37, 48.5, 30, 14, 10, '') + R(69, 48.5, 31, 14, '10px 0 0 10px', '') + R(6, 65.4, 12, 1.8, 2, 't') + R(5, 68.6, 12, 5.6, 10, '') + R(20, 69.2, 56, 1.9, 2, 't') + R(20, 72.4, 70, 1.5, 2, 't') + R(5, 78.6, 12, 5.6, 10, '') + R(20, 79.2, 48, 1.9, 2, 't') + R(20, 82.4, 66, 1.5, 2, 't') + R(4, 88.5, 92, 6.5, 12, 'f'),   /* the sheet as it is now ("We have a new design now"): the field and its close, Services, the Inbox and View inbox */
           'cc-rest': () => R(42, 26, 16, 7.4, 99, 'w') + R(20, 38, 60, 2.6, 3, 't') + R(30, 43, 40, 2.6, 3, 't') + R(6, 74, 40, 5, 99, '') + R(50, 74, 44, 5, 99, '') + R(6, 87, 88, 7, 99, 'f'),
           'cc-key': () => R(42, 14, 16, 7.4, 99, 'w') + R(20, 26, 60, 2.6, 3, 't') + R(6, 55, 88, 9, 14, 'h') + R(10, 58.5, 30, 2, 2, 't') + R(0, 67, 100, 33, 0, 'k'),
           'cc-conv': () => R(30, 5, 40, 2.6, 3, 't') + R(44, 13, 50, 6, 12, 'u') + R(6, 23, 72, 13, 12, '') + R(50, 40, 44, 6, 12, 'u') + R(6, 50, 66, 17, 12, '') + R(6, 87, 88, 7, 99, 'f'),
@@ -53097,30 +53124,26 @@ hairline({
         const br = list => '<div class="ceBr">' + list.map(b => '<div class="ceBrRow"><span class="ceTrig">' + b[0] + '</span>' + ARR + dest(b[1], b[2], b[3]) + '</div>').join('') + '</div>';
         const flow = (t, s, go, steps) => '<article class="ceFlow"><header class="ceFlowH"><div><b>' + t + '</b><span>' + s + '</span></div><button type="button" class="hcGo" data-go="' + JSON.stringify(go).replace(/"/g, '&quot;') + '">Go to prototype</button></header><div class="ceSteps">' + steps.join(ARR) + '</div></article>';
         const TOP_PH = flow('Top chat field', 'On the Overview only, under the greeting', { bp: 'xs', opt: 1 }, [node('ph-top', 'Tap the field', 'Ask Everlab anything, at the Overview’s top'), node('cc-rest', 'The Concierge', 'Its home, no typing state: the field at rest, no keyboard')]);
-        const TOP_DK = (o) => flow('Top chat field', 'On the Overview only, in the top nav · the same in both options, and as the phone', { bp: 'desk', opt: o }, [node('dk-top', 'Click the field', 'Ask Everlab anything, at the top nav’s right'), node('dk-cc', 'The Concierge', 'Its home, no typing state')]);
+        const TOP_DK = () => flow('Top chat field', 'On the Overview only, in the top nav, as the phone', { bp: 'desk', opt: 2 }, [node('dk-top', 'Click the field', 'Ask Everlab anything, at the top nav’s right'), node('dk-cc', 'The Concierge', 'Its home, no typing state')]);
         el.innerHTML = '<aside class="ldSide" aria-label="Concierge entry points"><div class="ldSideH">Concierge entry points</div><div class="ldPats cePats" role="tablist" aria-label="Sections">' +
-            '<button type="button" role="tab" data-ce="sum" aria-selected="true"><b>Summary</b></button><button type="button" role="tab" data-ce="ph"><b>Mobile</b></button><button type="button" role="tab" data-ce="o1"><b>Desktop · Option #1</b></button><button type="button" role="tab" data-ce="o2"><b>Desktop · Option #2</b></button></div></aside>' +
-          '<section class="ldMain">' + DH.page('Concierge entry points', 'Option #1 · Option #2', '' +
+            '<button type="button" role="tab" data-ce="sum" aria-selected="true"><b>Summary</b></button><button type="button" role="tab" data-ce="ph"><b>Mobile</b></button><button type="button" role="tab" data-ce="dk"><b>Desktop</b></button></div></aside>' +
+          '<section class="ldMain">' + DH.page('Concierge entry points', 'Mobile · Desktop', '' +
             '<div class="hcView ceVw" role="tablist" aria-label="View"><button type="button" role="tab" data-cv="sk">Skeleton</button><button type="button" role="tab" data-cv="rd">Real design</button></div>' +
             '<div class="hcView ceBpSw" role="tablist" aria-label="Breakpoint"><button type="button" role="tab" data-cb="xs">XS</button><button type="button" role="tab" data-cb="l">L</button></div>' +
             '<span class="hcZoom ceZoom"><button type="button" data-z="-1" aria-label="Zoom out">−</button><b aria-live="polite"></b><button type="button" data-z="1" aria-label="Zoom in">+</button></span>') + '<div class="ceBody">' +
-          '<section class="ceSec" data-ce="sum">' + DH.sec('Two presets, one difference', 'The shared presets <b>Chat Option #1 → Go to concierge</b> and <b>Chat Option #2 → In-page experience</b> set the entry points up. The phone is the same in both. On the desk, only the bottom floating field differs: Tweaks → Menu AI entry point → Desktop field tap, <b>Concierge</b> (#1) or <b>In app</b> (#2).') + '' +
-          '<div class="ceTblW"><table class="ceTbl"><thead><tr><th>Entry point</th><th>Where</th><th>Mobile</th><th>Desktop · Option #1</th><th>Desktop · Option #2</th></tr></thead><tbody>' +
-          '<tr><td><b>Top chat field</b></td><td>Overview only</td><td>The Concierge, no typing state</td><td>The Concierge, no typing state</td><td>The Concierge, no typing state</td></tr>' +
-          '<tr><td><b>Bottom AI</b><span>Phone: the AI button, the menu’s right. Desk: the floating chat field</span></td><td>Every main page</td><td>A bottom sheet: the latest unread, stacked above it; the field; the shortcuts</td><td>The Concierge, no typing state</td><td>The field grows into a card in place: type and send, the shortcuts, the latest unread stacked under it</td></tr>' +
+          '<section class="ceSec" data-ce="sum">' + DH.sec('Two entry points, on every main page', 'The Top chat field on the Overview, and the Bottom AI entry point: the phone’s AI button, the desk’s floating chat field. Set up as the shared preset <b>Chat Option #2 → In-page experience</b>.') + '' +
+          '<div class="ceTblW"><table class="ceTbl"><thead><tr><th>Entry point</th><th>Where</th><th>Mobile</th><th>Desktop</th></tr></thead><tbody>' +
+          '<tr><td><b>Top chat field</b></td><td>Overview only</td><td>The Concierge, no typing state</td><td>The Concierge, no typing state</td></tr>' +
+          '<tr><td><b>Bottom AI</b><span>Phone: the AI button, the menu’s right. Desk: the floating chat field</span></td><td>Every main page</td><td>A bottom sheet: the field; Services; the Inbox (the latest unread) and View inbox</td><td>The field grows into a card in place: type and send, Services, the latest unread</td></tr>' +
           '</tbody></table></div></section>' +
           '<section class="ceSec" data-ce="ph">' + DH.sec('Mobile · 2 entry points', 'Option #1 and #2', { long: false, note: 'Tweaks → Top Chat AI → Field position: Concierge. Menu AI entry point → Content: Bottom sheet, Layout: Bottom sheet, Field tap: Concierge, Inbox: Stacked.' }) + '' +
             TOP_PH +
-            flow('Bottom AI button', 'The menu’s right, on every main page', { bp: 'xs', opt: 1, open: 'sheet' }, [node('ph-ai', 'Tap the AI button', 'The star at the menu’s right'), node('ph-sheet', 'The bottom sheet', 'The latest unread, stacked and floating above it; the field Ask Everlab anything; the shortcuts (Services)'),
-              br([['Latest unread', 'cc-conv', 'Its message', 'The conversation, opened in the Concierge'], ['Ask Everlab anything', 'cc-key', 'The Concierge, typing', 'The field focused, the keyboard up'], ['A shortcut tile', 'cc-svc', 'A message started', 'The Concierge begins the chat for that service']])]) +
+            flow('Bottom AI button', 'The menu’s right, on every main page', { bp: 'xs', opt: 1, open: 'sheet' }, [node('ph-ai', 'Tap the AI button', 'The star at the menu’s right'), node('ph-sheet', 'The bottom sheet', 'The field Ask Everlab anything; Services, the shortcuts; the Inbox, the latest unread, and View inbox'),
+              br([['Ask Everlab anything', 'cc-key', 'The Concierge, typing', 'The field focused, the keyboard up'], ['A service', 'cc-svc', 'A message started', 'The Concierge begins the chat for that service'], ['Latest unread', 'cc-conv', 'Its message', 'The conversation, opened in the Concierge']])]) +
           '</section>' +
-          '<section class="ceSec" data-ce="o1">' + DH.sec('Desktop · Option #1', 'Chat Option #1 → Go to concierge', { long: false, note: 'Every way in goes to the Concierge. Tweaks → Menu AI entry point → Desktop field tap: Concierge.' }) + '' +
-            TOP_DK(1) +
-            flow('Bottom floating chat field', 'Floating at the page’s foot, on every main page', { bp: 'desk', opt: 1 }, [node('dk-float', 'Click the field', 'Ask Everlab anything, floating at the foot'), node('dk-cc', 'The Concierge', 'Its home, no typing state')]) +
-          '</section>' +
-          '<section class="ceSec" data-ce="o2">' + DH.sec('Desktop · Option #2', 'Chat Option #2 → In-page experience', { long: false, note: 'The top field as Option #1; the floating field opens in the page instead. Tweaks → Menu AI entry point → Desktop field tap: In app.' }) + '' +
-            TOP_DK(2) +
-            flow('Bottom floating chat field', 'Floating at the page’s foot, on every main page', { bp: 'desk', opt: 2, open: 'card' }, [node('dk-float', 'Click the field', 'Ask Everlab anything, floating at the foot'), node('dk-card', 'The field expands', 'A card in the middle of the page: the field, the shortcuts (Services); the latest unread stacked under it'),
+          '<section class="ceSec" data-ce="dk">' + DH.sec('Desktop · 2 entry points', 'In-page experience', { long: false, note: 'The top field opens the Concierge; the floating field opens a card in the page. Tweaks → Menu AI entry point → Desktop field tap: In app.' }) + '' +
+            TOP_DK() +
+            flow('Bottom floating chat field', 'Floating at the page’s foot, on every main page', { bp: 'desk', opt: 2, open: 'card' }, [node('dk-float', 'Click the field', 'Ask Everlab anything, floating at the foot'), node('dk-card', 'The field expands', 'A card in place: the field, Services, the latest unread'),
               br([['Type and send', 'dk-conv', 'The message sent', 'Straight from the card, into the Concierge'], ['A shortcut tile', 'dk-svc', 'A message started', 'The Concierge begins the chat for that service'], ['Latest unread', 'dk-conv', 'Its message', 'The conversation, opened in the Concierge']])]) +
           '</section></div><div class="hcFlows ceFlows" tabindex="0" aria-label="Every screen of the Concierge entry points"><div class="hcRows"></div></div></section>';
         const body = el.querySelector('.ceBody');
@@ -53129,43 +53152,67 @@ hairline({
         /* into the prototype: the option's Tweaks, the Overview at XS or the desk (Auto), then the entry point opened where it opens something */
         const goH = e => { const b = e.target.closest('.hcGo'); if (!b) return; let g = null; try { g = JSON.parse(b.dataset.go); } catch (x){} if (!g) return;
           const put = (id, v) => { const x = document.getElementById(id); if (!x || x.value === v) return; x.value = v; x.dispatchEvent(new Event('change', { bubbles: true })); };
-          [['stTopChat', 'cc'], ['stAskVer', 'sheet'], ['stAskCards', 'sheet'], ['stAskFld', 'cc'], ['stAskStk', 'stack'], ['stAskMerge', 'apart'], ['dkEvf', 'float'], ['stEvfTap', 'app']].forEach(([id, v]) => put(id, v));   /* the floating field: always the panel in the middle */
+          [['stTopChat', 'cc'], ['stAskVer', 'sheet'], ['stAskCards', 'sheet'], ['stAskFld', 'cc'], ['stAskStk', 'stack'], ['stAskMerge', 'apart'], ['dkEvf', g.open === 'card' ? 'float' : 'off'], ['stEvfTap', 'app']].forEach(([id, v]) => put(id, v));   /* the floating field: always the panel in the middle */
           put('stBp', g.bp === 'xs' ? 'xs' : 'auto'); const vs = document.getElementById('versionSel'); if (vs){ vs.value = '9'; vs.dispatchEvent(new Event('change', { bubbles: true })); }
           setTimeout(() => { if (g.open === 'sheet'){ const fr = document.getElementById('bpFrame'); if (fr && fr._askOpen) fr._askOpen(); }
             else if (g.open === 'card' && window.EvSearch){ const pn = [...document.querySelectorAll('.dash .dvMain, #dOver')].find(x => x.offsetWidth); if (pn){ const r = pn.getBoundingClientRect(); window.EvSearch.open(null, { x: r.left + r.width / 2, b: 48, w: 640, w0: 448, h: 64, val: '', back: () => {} }); } } }, 700); };
         body.addEventListener('click', goH);
         /* Real design ("Tweak: Skeleton (current) / Real design (new): XS, L"): the flows as the Gifting doc draws them, a row per entry point, each screen numbered and captioned, sticky row heads with Go to prototype.
            The app's screens are stills of the prototype with the shared presets' Tweaks (dark), the spot tapped ringed (a, b, c where it branches); the Concierge's are the Concierge page itself (concierge.html), live, drawn once scrolled near */
-        { const IMG = { phOv: 'assets/overview/ce-ph-ov.webp', phSheet: 'assets/overview/ce-ph-sheet.webp', dkTop: 'assets/overview/ce-dk-top.webp', dkFloat: 'assets/overview/ce-dk-float.webp', dkCard: 'assets/overview/ce-dk-card.webp' };
-          const HS = { phTop: [4.07, 6.46, 78.12, 5.63], phAi: [81.68, 91.08, 15.27, 7.04], phUnread: [4.07, 38.26, 91.86, 25.12], phField: [4.07, 69.25, 91.86, 6.57], phSvc: [4.07, 78.64, 91.86, 17.37], dkTop: [73.47, 4.44, 17.78, 5.33], dkFloat: [42.22, 87.56, 31.11, 7.11], dkField: [35, 32.5, 45.56, 13.5], dkSvc: [34.72, 47.5, 46.11, 17], dkUnread: [35.56, 69.28, 44.44, 23.33] };   /* where each spot sat on the still, in % of the screen */
+        { const SB = (document.querySelector('#bpFrame .bpStatus') || {}).innerHTML || '';   /* the phone's status bar over a live screen: the app's own */
           const ZS = [.35, .5, .65, .75, .9, 1]; let cv = 'rd', cb = 'xs', zi = 1, built = '';
           try { const v = localStorage.getItem('everlab:ceView'), w = localStorage.getItem('everlab:ceBp'), z = +localStorage.getItem('everlab:ceZoom'); if (v === 'sk' || v === 'rd') cv = v; if (w === 'xs' || w === 'l') cb = w; if (ZS.indexOf(z) >= 0) zi = ZS.indexOf(z); } catch (x){}
           const flows = el.querySelector('.ceFlows'), rows = flows.querySelector('.hcRows');
           const ARR = '<i class="hcArr" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-lc="arrow-right" width="22" height="22"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></i>', OR = '<i class="hcArr ceOr" aria-hidden="true"><span>or</span></i>';
           const ring = (r, l, rad) => '<i class="ceHs" style="left:' + r[0] + '%;top:' + r[1] + '%;width:' + r[2] + '%;height:' + r[3] + '%;--ceR:' + (rad || '999px') + '">' + (l ? '<b>' + l + '</b>' : '') + '</i>';
           const cap = (n, t, sub) => DH.cap(n, t, sub);
-          const still = (n, t, sub, k, rings) => '<figure class="hcShot"><div class="hcScr ceStill" inert><img src="' + IMG[k] + '" alt="" draggable="false">' + rings + '</div>' + cap(n, t, sub) + '</figure>';
-          const live = (n, t, sub, st) => '<figure class="hcShot"><div class="hcScr gfScr ceLive" inert><iframe title="' + t + '" data-ce="' + JSON.stringify(st).replace(/"/g, '&quot;') + '"></iframe>' + (st.dev === 'phone' ? '<i class="ceSb" style="background-image:url(' + IMG.phOv + ')"></i>' : '') + '</div>' + cap(n, t, sub) + '</figure>';   /* the phone's status bar: the still's own top, over the page */
+          /* the app itself, live and interactive ("it should be the actual interactive screen"), as the Overview bento doc's frames (#ob-demo: its storage in memory): put in its state (the sheet or the card open), the spots to tap ringed from its own layout; the rings go once it is touched */
+          const app = (n, t, sub, st) => '<figure class="hcShot"><div class="hcScr gfScr ceApp" data-app="' + JSON.stringify(st).replace(/"/g, '&quot;') + '">' + (st.dev === 'phone' ? '<div class="ceAppSb bpStatus">' + SB + '</div>' : '') + '<span class="ceAppVeil" aria-hidden="true"><i></i></span></div>' + cap(n, t, sub) + '</figure>';
+          const live = (n, t, sub, st) => '<figure class="hcShot"><div class="hcScr gfScr ceLive"><iframe title="' + t + '" data-ce="' + JSON.stringify(st).replace(/"/g, '&quot;') + '"></iframe>' + (st.dev === 'phone' ? '<div class="ceAppSb bpStatus">' + SB + '</div>' : '') + '</div>' + cap(n, t, sub) + '</figure>';   /* the Concierge, live and interactive */
           const rowH = (k, t, sub, go) => '<section class="hcRow" data-row="' + k + '">' + DH.sec(t, sub, { hc: 'hcRowH', long: false, right: '<button type="button" class="hcGo" data-go="' + JSON.stringify(go).replace(/"/g, '&quot;') + '">Go to prototype</button>' }) + '<div class="hcStrip">';
           const ROWS = {
-            xs: () => rowH('m-top', 'Top chat field', 'Mobile · Option #1 and #2 · on the Overview only', { bp: 'xs', opt: 1 }) +
-                still(1, 'Tap the top chat field', 'Ask Everlab anything, at the Overview’s top', 'phOv', ring(HS.phTop)) + ARR + live(2, 'The Concierge', 'Its home, no typing state: the field at rest, no keyboard', { dev: 'phone' }) + '</div></section>' +
-              rowH('m-ai', 'Bottom AI button', 'Mobile · Option #1 and #2 · the menu’s right, on every main page', { bp: 'xs', opt: 1, open: 'sheet' }) +
-                still(1, 'Tap the AI button', 'The star at the menu’s right', 'phOv', ring(HS.phAi)) + ARR +
-                still(2, 'The bottom sheet', 'The latest unread, stacked and floating above it (a); the field (b); the shortcuts (c)', 'phSheet', ring(HS.phUnread, 'a', '24px') + ring(HS.phField, 'b') + ring(HS.phSvc, 'c', '20px')) + ARR +
-                live('3a', 'Latest unread', 'Its message, opened in the Concierge (See more: the Inbox)', { dev: 'phone', chat: 'protein' }) + OR +
-                live('3b', 'Ask Everlab anything', 'The Concierge typing: the field focused, the keyboard up', { dev: 'phone', type: 1 }) + OR +
-                live('3c', 'A shortcut', 'A message started for the tile (here Script renewal)', { dev: 'phone', svc: 'Script renewal' }) + '</div></section>',
-            l: () => rowH('d1', 'Desktop · Option #1', 'Chat Option #1 → Go to concierge · every way in goes to the Concierge', { bp: 'desk', opt: 1 }) +
-                still('1a', 'Top chat field', 'In the top nav, on the Overview only', 'dkTop', ring(HS.dkTop)) + OR +
-                still('1b', 'Bottom floating field', 'At the page’s foot on every main page (on the Overview once it scrolls past the top field)', 'dkFloat', ring(HS.dkFloat)) + ARR +
-                live(2, 'The Concierge', 'Its home, no typing state, from either field', { dev: 'desk' }) + '</div></section>' +
-              rowH('d2', 'Desktop · Option #2', 'Chat Option #2 → In-page experience · the top field as Option #1', { bp: 'desk', opt: 2, open: 'card' }) +
-                still(1, 'Bottom floating field', 'At the page’s foot, on every main page', 'dkFloat', ring(HS.dkFloat)) + ARR +
-                still(2, 'The field expands', 'A card in the middle of the page: type and send (a); the shortcuts (b); the latest unread, stacked under it (c)', 'dkCard', ring(HS.dkField, 'a', '24px') + ring(HS.dkSvc, 'b', '16px') + ring(HS.dkUnread, 'c', '20px')) + ARR +
+            xs: () => rowH('m-top', 'Top chat field', 'Mobile · on the Overview only', { bp: 'xs', opt: 2 }) +
+                app(1, 'Tap the top chat field', 'Ask Everlab anything, at the Overview’s top', { dev: 'phone', rings: [['.ovChatBox']] }) + ARR + live(2, 'The Concierge', 'Its home, no typing state: the field at rest, no keyboard', { dev: 'phone' }) + '</div></section>' +
+              rowH('m-ai', 'Bottom AI button', 'Mobile · the menu’s right, on every main page', { bp: 'xs', opt: 2, open: 'sheet' }) +
+                app(1, 'Tap the AI button', 'The star at the menu’s right', { dev: 'phone', rings: [['.mChat']] }) + ARR +
+                app(2, 'The bottom sheet', 'The field (a); Services, the shortcuts (b); the Inbox, the latest unread, and View inbox (c)', { dev: 'phone', open: 'sheet', rings: [['.aiRowTop', 'a'], ['.aiServices', 'b', '20px'], ['.aiIbxMod', 'c', '20px']] }) + ARR +
+                live('3a', 'Ask Everlab anything', 'The Concierge typing: the field focused, the keyboard up', { dev: 'phone', type: 1 }) + OR +
+                live('3b', 'A service', 'A message started for the tile (here Script renewal)', { dev: 'phone', svc: 'Script renewal' }) + OR +
+                live('3c', 'Latest unread', 'Its message, opened in the Concierge (View inbox: the Inbox)', { dev: 'phone', chat: 'protein' }) + '</div></section>',
+            l: () => rowH('d-top', 'Top chat field', 'Desktop · on the Overview only, in the top nav', { bp: 'desk', opt: 2 }) +
+                app(1, 'Click the top chat field', 'Ask Everlab anything, at the top nav’s right', { dev: 'desk', rings: [['.ovChatBox']] }) + ARR + live(2, 'The Concierge', 'Its home, no typing state', { dev: 'desk' }) + '</div></section>' +
+              rowH('d-float', 'Bottom floating chat field', 'Desktop · at the page’s foot, on every main page', { bp: 'desk', opt: 2, open: 'card' }) +
+                app(1, 'Click the floating field', 'Ask Everlab anything, floating at the page’s foot (on the Overview once it scrolls past the top field)', { dev: 'desk', float: 1, rings: [['.evFld']] }) + ARR +
+                app(2, 'The field expands', 'A card in place: type and send (a); Services, the shortcuts (b); the latest unread (c)', { dev: 'desk', float: 1, open: 'card', rings: [['.evSrchP .evSrchF', 'a', '16px'], ['.evSrchShSvc, .evSrch .aiServices', 'b', '16px'], ['.evSrch .aiIbxMod', 'c', '16px']] }) + ARR +
                 live('3a', 'Type and send', 'Straight from the card into the Concierge, the message sent', { dev: 'desk', ask: 'When will my Microbiome results arrive?' }) + OR +
-                live('3b', 'A shortcut', 'A message started for the tile (here Script renewal)', { dev: 'desk', svc: 'Script renewal' }) + OR +
+                live('3b', 'A service', 'A message started for the tile (here Script renewal)', { dev: 'desk', svc: 'Script renewal' }) + OR +
                 live('3c', 'Latest unread', 'Its message, opened in the Concierge (See more: the Inbox)', { dev: 'desk', chat: 'protein' }) + '</div></section>' };
+          /* a live app screen: loaded when near (two at a time), gone when far, each a whole copy of the app in a 393 (under the status bar) or 1440 window; then the shared preset's Tweaks, the Overview, its state, its rings */
+          const OPT = [['stTopChat', 'cc'], ['stAskVer', 'sheet'], ['stAskCards', 'sheet'], ['stAskFld', 'cc'], ['stAskStk', 'stack'], ['stAskMerge', 'apart'], ['stEvfTap', 'app']];
+          let AQ = [], abusy = 0;
+          const vis = (d, sel) => [...d.querySelectorAll(sel)].find(x => { const r = x.getBoundingClientRect(); return r.width > 0 && r.height > 0; });
+          const aring = (scr, f, st) => { let d = null; try { d = f.contentDocument; } catch (x){} if (!d) return; scr.querySelectorAll('.ceHs').forEach(x => x.remove()); const top = st.dev === 'phone' ? 54 : 0;
+            (st.rings || []).forEach(rg => { const e = vis(d, rg[0]); if (!e) return; const r = e.getBoundingClientRect(), i = document.createElement('i'); i.className = 'ceHs'; i.style.cssText = 'left:' + Math.round(r.left) + 'px;top:' + Math.round(r.top + top) + 'px;width:' + Math.round(r.width) + 'px;height:' + Math.round(r.height) + 'px;--ceR:' + (rg[2] || '999px'); if (rg[1]) i.innerHTML = '<b>' + rg[1] + '</b>'; scr.appendChild(i); }); };
+          const adone = scr => { if (!scr._busy) return; scr._busy = false; abusy--; apump(); };
+          const amount = scr => { let st = {}; try { st = JSON.parse(scr.dataset.app); } catch (x){} abusy++; scr._busy = true; const f = document.createElement('iframe'); f.className = 'ceAppF'; f.title = 'The app, live'; scr._f = f; scr.insertBefore(f, scr.firstChild);
+            f.addEventListener('load', () => { let n = 0; const up = () => { if (scr._f !== f) return adone(scr); let w = null; try { w = f.contentWindow; } catch (x){}
+                if (!w || !w.__evEmbedOk){ if (++n < 160) setTimeout(up, 250); else { scr.classList.add('ready'); adone(scr); } return; }
+                const d = w.document, put = (id, v) => { const x = d.getElementById(id); if (x && x.value !== v){ x.value = v; x.dispatchEvent(new w.Event('change', { bubbles: true })); } };
+                OPT.forEach(o => put(o[0], o[1])); put('dkEvf', st.float ? 'float' : 'off'); put('versionSel', '9'); put('stBp', 'auto');
+                setTimeout(() => { if (scr._f !== f) return adone(scr);
+                  if (st.float){ const pn = d.getElementById('dOver'); if (pn) pn.scrollTop = 520; }   /* the floating field shows once the Overview has scrolled past its top field */
+                  if (st.open === 'sheet'){ const c = vis(d, '.mChat'); if (c) c.click(); }
+                  setTimeout(() => { if (scr._f !== f) return adone(scr);
+                    if (st.open === 'card'){ const fl = vis(d, '.evFld'), ip = fl && fl.querySelector('input'); if (ip){ ip.dispatchEvent(new w.PointerEvent('pointerdown', { bubbles: true })); ip.focus(); ip.click(); } }
+                    setTimeout(() => { if (scr._f !== f) return adone(scr); const sb = scr.querySelector('.ceAppSb'); try { if (sb) sb.style.background = w.getComputedStyle(d.body).backgroundColor; } catch (x){}
+                      aring(scr, f, st); scr.classList.add('ready'); adone(scr);
+                      const gone = () => scr.classList.add('ceTouched'); d.addEventListener('pointerdown', gone, { once: true, capture: true }); d.addEventListener('wheel', gone, { once: true, capture: true, passive: true }); }, 900); }, st.open ? 700 : 300); }, 1200); }; up(); });
+            f.src = location.pathname + location.search + '#ob-demo'; };
+          const aunmount = scr => { if (scr._f){ scr._f.remove(); scr._f = null; } scr.querySelectorAll('.ceHs').forEach(x => x.remove()); scr.classList.remove('ready', 'ceTouched'); adone(scr); };
+          const apump = () => { while (abusy < 2 && AQ.length){ const sc = AQ.shift(); if (sc._want && !sc._f && sc.isConnected) amount(sc); } };
+          let aio = null; const alazy = () => { if (aio) aio.disconnect(); AQ = []; if (!window.IntersectionObserver) return;
+            aio = new IntersectionObserver(es => es.forEach(x => { const sc = x.target; sc._want = x.isIntersecting; if (x.isIntersecting){ if (!sc._f && AQ.indexOf(sc) < 0) AQ.push(sc); } else if (sc._f) aunmount(sc); }) || apump(), { rootMargin: '600px' });
+            flows.querySelectorAll('.ceApp').forEach(sc => aio.observe(sc)); apump(); };   /* near: loaded; far (600 past the window): gone */
           /* a Concierge screen: told where it is (embed), then put in its state (a chat by its hash; typing: the field's focus as the page takes it, the keys up, no focus taken from this page; a message asked) */
           const drive = (f, st) => { let n = 0; const go = () => { let w = null; try { w = f.contentWindow; } catch (x){} const C = w && w.Concierge; if (!C){ if (++n < 60) setTimeout(go, 150); return; }
               try { w.document.documentElement.dataset.theme = 'dark'; C.embed(st.dev);
@@ -53176,13 +53223,13 @@ hairline({
             flows.querySelectorAll('iframe[data-ce]').forEach(f => io.observe(f)); };
           const zoom = () => { flows.style.setProperty('--hcZ', ZS[zi]); el.querySelector('.ceZoom b').textContent = Math.round(ZS[zi] * 100) + '%'; try { localStorage.setItem('everlab:ceZoom', String(ZS[zi])); } catch (x){} };
           const draw = () => { el.dataset.cv = cv; el.querySelectorAll('.ceVw [data-cv]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.cv === cv))); el.querySelectorAll('.ceBpSw [data-cb]').forEach(b => b.setAttribute('aria-selected', String(b.dataset.cb === cb)));
-            flows.classList.toggle('hcDkOn', cb === 'l'); el.querySelector('.ldMainH .ldBp').textContent = cv === 'rd' ? (cb === 'l' ? 'L · 1440' : 'XS · 393') : 'Option #1 · Option #2';
-            if (cv !== 'rd' || built === cb) return; built = cb; rows.innerHTML = ROWS[cb](); flows.scrollTo(0, 0); lazy(); };
+            flows.classList.toggle('hcDkOn', cb === 'l'); el.querySelector('.ldMainH .ldBp').textContent = cv === 'rd' ? (cb === 'l' ? 'L · 1440' : 'XS · 393') : 'Mobile · Desktop';
+            if (cv !== 'rd' || built === cb) return; built = cb; flows.querySelectorAll('.ceApp').forEach(aunmount); rows.innerHTML = ROWS[cb](); flows.scrollTo(0, 0); lazy(); alazy(); };
           el.querySelector('.ceVw').addEventListener('click', e => { const b = e.target.closest('[data-cv]'); if (!b) return; cv = b.dataset.cv; try { localStorage.setItem('everlab:ceView', cv); } catch (x){} draw(); });
           el.querySelector('.ceBpSw').addEventListener('click', e => { const b = e.target.closest('[data-cb]'); if (!b) return; cb = b.dataset.cb; try { localStorage.setItem('everlab:ceBp', cb); } catch (x){} draw(); });
           el.querySelector('.ceZoom').addEventListener('click', e => { const b = e.target.closest('[data-z]'); if (!b) return; zi = Math.max(0, Math.min(ZS.length - 1, zi + +b.dataset.z)); zoom(); });
-          el._rdGo = k => { if (cv !== 'rd') return false; const w = k === 'ph' ? 'xs' : k === 'o1' || k === 'o2' ? 'l' : cb; if (w !== cb){ cb = w; try { localStorage.setItem('everlab:ceBp', cb); } catch (x){} } draw();
-            const r = rows.querySelector('.hcRow[data-row="' + ({ ph: 'm-top', o1: 'd1', o2: 'd2' })[k] + '"]'); flows.scrollTo({ top: r ? r.offsetTop : 0, left: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); return true; };
+          el._rdGo = k => { if (cv !== 'rd') return false; const w = k === 'ph' ? 'xs' : k === 'dk' ? 'l' : cb; if (w !== cb){ cb = w; try { localStorage.setItem('everlab:ceBp', cb); } catch (x){} } draw();
+            const r = rows.querySelector('.hcRow[data-row="' + ({ ph: 'm-top', dk: 'd-top' })[k] + '"]'); flows.scrollTo({ top: r ? r.offsetTop : 0, left: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); return true; };
           flows.addEventListener('click', goH);
           DH.pan(flows);   /* the canvas dragged about, as Gifting's */
           zoom(); draw(); }
@@ -56169,7 +56216,9 @@ hairline({
   .t3UmB::-webkit-scrollbar{display:none;}
   .t3UmF{flex:none;padding:16px 24px 24px;}
   .t3Um .arRcIco svg{width:24px;height:24px;}
-  .tkCtStep{margin:-2px 0 6px;font-size:13px;line-height:18px;opacity:.6;} .topbar .tkGroup > .tkSub .tkTnPg{margin-left:6px;font-weight:400;opacity:.6;} .topbar .tkGroup > .tkSub .tkTnPg:empty{display:none;}   /* Top nav: the page these picks are for */
+  .tkCtStep{margin:-2px 0 6px;font-size:13px;line-height:18px;opacity:.6;} .topbar :is(.tkGroup, .tkGlPart) > .tkSub .tkTnPg{margin-left:6px;font-weight:400;opacity:.6;} .topbar :is(.tkGroup, .tkGlPart) > .tkSub .tkTnPg:empty{display:none;}
+  .topbar .tkGlPart{display:flex;flex-direction:column;} .topbar .tkGlPart[hidden]{display:none;} .topbar .tkGlPart > .tkSub{padding:8px 10px 2px;font-size:12px;line-height:16px;font-weight:600;letter-spacing:0;text-transform:none;color:#e4e4e7;} .topbar .tkGlPart > .tkSub .tkCtMax, .topbar .tkGlPart > .tkSub .tkTnPg{margin-left:6px;font-weight:400;color:#a1a1aa;opacity:1;}
+  .topbar .tkGlPart:not([hidden]) ~ .tkGlPart:not([hidden]){margin-top:6px;padding-top:4px;border-top:1px solid rgba(255,255,255,.06);}   /* General layout's parts: each its own title (Container (1080px), Top nav and the page, Footer), a hairline between */   /* Top nav: the page these picks are for */
   .tkRow.tkArPreRow{display:none !important;}   /* the report's Preset (V1 / V2 / V3) removed ("remove"): the row kept hidden, its select still read by older saves; the Version and the top bar's presets in its place */
   .topbar .hpFl .tkOrd.hpFlArr li{gap:6px;align-items:center;} .topbar .hpFl .tkOrd.hpFlArr li .hpFlGr{flex:none;display:grid;place-items:center;width:16px;height:20px;margin:0 -2px 0 -4px;color:#8b8b86;cursor:grab;touch-action:none;border-radius:4px;} .topbar .hpFl .tkOrd.hpFlArr li .hpFlGr:hover{color:#ececec;background:rgba(255,255,255,.08);} .topbar .hpFl .tkOrd.hpFlArr li .hpFlGr.fix{visibility:hidden;cursor:default;}
   .topbar .hpFl .tkOrd li.now{background:rgba(90,162,255,.16);box-shadow:inset 0 0 0 1px rgba(90,162,255,.32);} .topbar .hpFl .tkOrd li.now .tkNowDot{background:#5aa2ff;box-shadow:0 0 0 3px rgba(90,162,255,.22);}   /* the step it is on: blue ground, blue dot ("Bg blue and blue dot for Active state") */ .topbar .hpFl .tkOrdN li .nm::before{content:none;display:none;} .topbar .hpFl .tkOrdN li.hpFlSub .nm, .topbar .hpFl .tkOrd li .nm small{padding-left:0;}   /* the numbers' 20 gone with them ("why indendation ?") */   /* no counters in the Flow panel ("Remove counters"); a phase still indented under its step */ .topbar .hpFl .tkOrd li .nm{flex:1 1 auto;min-width:0;} .topbar .hpFl .tkOrd li .hpFlLk{flex:none;display:grid;place-items:center;width:24px;height:24px;margin:-4px -2px;padding:0;border:0;border-radius:6px;background:none;color:#8b8b86;cursor:pointer;opacity:0;transition:opacity .15s ease, background .15s ease, color .15s ease;} .topbar .hpFl .tkOrd li:is(:hover, :focus-within) .hpFlLk, .topbar .hpFl .tkOrd li .hpFlLk.ok{opacity:1;} .topbar .hpFl .tkOrd li .hpFlLk:hover{color:#ececec;background:rgba(255,255,255,.1);} .topbar .hpFl .tkOrd li .hpFlLk.ok{color:#4ade80;} .topbar .hpFl .tkOrd li .hpFlLk:focus-visible{opacity:1;outline:2px solid #8ab4ff;outline-offset:-2px;} @media (hover: none){ .topbar .hpFl .tkOrd li .hpFlLk{opacity:.7;} }   /* a step's link: at the row's end, shown on hover (a tick for 2 s once copied) */

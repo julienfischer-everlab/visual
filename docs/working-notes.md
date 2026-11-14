@@ -7,6 +7,16 @@ this is the part you need before you change it.
 
 ---
 
+## v2554 · Docs framework merged; Concierge entry points live; WIP; General layout tweak; Overview and dock at S; debrief tweaks
+
+- **Docs framework** (merged): every Documentation and Design system page uses the stacked title groups (EvDocHd: page, section, caption), each section scrolls sideways on its own, captions 24px under their frames.
+- **Concierge entry points**: Desktop · Option #1 removed everywhere; Option #2 is now "Desktop". The Real design rows are the app itself, live and interactive (each frame a whole copy of the app under the shared preset, loaded when near, two at a time, unloaded when far): Mobile top field → Concierge; Mobile AI button → the current bottom sheet (field a, Services b, Inbox and View inbox c) → three live Concierge states; Desktop top field → Concierge; Desktop floating field → the card in place (a, b, c) → three live Concierge states. Rings come from the live layout and go once the screen is touched. Skeleton: the sheet wireframe redrawn; the summary table is Mobile / Desktop. The five old stills are deleted.
+- **WIP** (Tweaks → General layout → Top nav → WIP): a red "WIP" label beside 9:41 in the status bar, per page. The switch now shows its state when clicked.
+- **Tweaks**: Container, Top nav and Footer are one group, "General layout", each under its own title (Container (1080px), Top nav and the page, Footer). The panel has 10px sides (was 8), and the cards have 12px between them (was 4).
+- **Overview at S**: the primary card spans the row, its words at the left and its list and action at the right; the cards beside it now sit side by side under it.
+- **Dock at S**: Home, Health/Insights, Plan, Services, Timeline, More. Timeline lights its own tab, and More drops My journey. Other breakpoints are unchanged.
+- **Debriefs**: the signer's avatar has a 10px radius (was 8) and a 2px right margin. On the phone's Results tab, the "Your debriefs" title sits 26px above its cards (was 21), as Medical records does.
+
 ## v2553: Footer Style for every footer; the Top nav Style on the Health profile's sheets
 
 - **Footer Style** ("Need the same for ALL footer. Gradient - Filled - transaprent"; "footer Always fixed"): every footer stays fixed; its ground is Gradient (its own fade, as before), Filled (the screen's colour solid from the footer's top, content ending there, no fade) or Transparent (no ground, the content runs on under the buttons).
