@@ -90,6 +90,10 @@ Flow pages cap at the 2xs column on the desk (544 M, 576 L, inside 20 sides: 584
 
 ---
 
+## Header group (General layout > Header group; `--hdr*`, `.hgSim`)
+
+**Header group (live).** The tab item is "Header group" (sub-line "Home, Navigation, Header"; was "Header", same `data-gl="hdr"`). Its first section, "Header group · XS · live", is a Home page in the app's XS frame (`.hgSim`, 393 × 852, `EvDocPanel.room`): Home (the status bar, the frame's `.bpStatus`, 47), Navigation (`EvTopNav.html({ more: true })`, C; its title comes in through `EvTopNav.watch`), Header (`EvTitle` H2 level, h1 tag), then `EvCard` cards so it scrolls. Its ground is the app's own: the Navigation wears `.hgT` with `.hgGround` + `.ovGround.tfBand`, the scroller `.hgScr` once scrolled, and the app's header-group rules list `.hgSim` beside the main pages' (the XS `--tfS` gradient, Filled, Transparent, the Fixed Off status band); never a copied gradient. Panel group "Header group": Fixed On/Off, Style Gradient/Filled/Transparent, WIP label, plus Play, Save setup, Reset; they call `EvTopNav.set('sticky' | 'bg' | 'wip', v)` (the Top nav master: `M.wip` default off, saved in `everlab:tnMaster`, presets carry `twip`), which writes `html.tnFree`, `html[data-tnbg]`, `html.tnWip` and the Tweaks rows `#stTnSticky` / `#stTnBg` / `#stTnWip`, and fires `everlab:tn`; the doc repaints on it. A page's own pick in Tweaks still wins over the master. No XS / S switch yet (the tablet's rules differ). The static modal-header diagrams below are kept.
+
 ## Header (General layout > Header; `--hdr*`)
 
 **What.** The documented head every page shares. Phone (XS/S): status bar, nav bar (Back, modal title, Close), page title (questionnaire 32 or page 24). Desk (M/L): no status bar, Back/Close (44, as the phone's: "CTA top nav always 44px") at the column's edges, 20 page title. Drawn live from `--hdr*`, with Show sizes labels, demo frames and a Sizes table. Its side description was removed ("remove desc").

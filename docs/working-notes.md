@@ -15,6 +15,13 @@ this is the part you need before you change it.
 
 
 
+
+## v2573 — Design system: General layout's Header becomes Header group, with a live Home to tweak
+
+- "call that header Group * Home * Navigation * Header": the tab item is "Header group" (section titles "Header group · XS · S", "· M · L"). Its first section, "Header group · XS · live", is a Home page in the app's XS frame: Home (the status bar), Navigation (the Top nav master, C with a More disc; the title comes into the bar once the page title goes under it) and Header (the page title, Title group H2), over cards to scroll.
+- "Simulate a screen where We can tweak the Header group with the properties present on each page, Fixed ON OFF style etc": the right panel's Header group has Fixed On/Off, Style Gradient/Filled/Transparent and WIP label, plus Play, Save setup and Reset. They set the Top nav master (the same values as Tweaks' Top nav rows), so every page follows unless it has its own pick in Tweaks. The sim draws its ground with the app's own header-group rules (.hgSim added beside the pages'), not a copy.
+- WIP joined the Top nav master (saved with it, carried by presets). XS only for now; an S switch is a follow-up. The static modal-header diagrams stay below.
+- references/layout.md: the Header group paragraph.
 ## v2572 — Doctor note: Everlab mark on the photo; Notes from card: no outline on hover
 
 - The doctor's photo in the note's header wears Everlab's mark at its top right: the mark (EvMarkPaths, white) 14 in a 22 black disc, 4 padding, a 2 ring of the page's ground, 4 out from the photo's corner ("Add a Everlab logomark top right in a circle black bg. padding 4px").
