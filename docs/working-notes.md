@@ -11,6 +11,13 @@ this is the part you need before you change it.
 
 
 
+
+## v2569 — Doctor note email: photo top right, no To line, "A few notes from your Dr Steven Lu", tighter paragraphs
+
+- The email's header now has the doctor's photo at its top right (48, round), beside the name and role; "To: Julien" is gone ("Put the avatar on the top right here and remove To: Julien"). The signature keeps the name, role and wordmark, without the photo. The email-to-review fly reads the header photo now.
+- The doctor note page's title reads "A few notes from / your Dr Steven Lu" (the persona's doctor; was "Your doctor suggests updating your plan"), as asked: "A few notes from your Dr. Steven Lu." Written with "Dr" and no full stop, as the app writes it.
+- The letter's paragraphs sit 16 apart, 8 less ("Reduce the paragraph margin by 8px").
+- The same email shows in the Confirm plan's doctor card sheet. Checked at XS.
 ## v2568 — Confirm your plan: "Notes from Dr Steven Lu", smaller photo, secondary chevron
 
 - The doctor's card reads "Notes from" and the doctor's full name ("Notes from Dr Steven Lu"; the other demo doctor "Notes from Dr Maylyn Goh"), as asked ("Note with S from Dr. Steven Lu"). The name is written as the app writes it everywhere, "Dr" with no full stop.
