@@ -12,6 +12,13 @@ this is the part you need before you change it.
 
 
 
+
+## v2570 — Doctor note: the doctor as the card's header, the note in a card inside it, the date; no flight to the next screen
+
+- The email is two cards, as the frame shows ("Put a doctor info as a header of the card like this"): an Outlined card (EvCard outlined lg, 24 round) whose header is the doctor (name 16, "Longevity GP · Everlab" 14, photo 48 round at the right), and inside it the note in a Filled card (EvCard filled lg) that meets its sides and foot, its top corners 24 round. The note card holds the subject, the letter, Warm regards, the signature and the wordmark. 20 in at the header's top and foot; 24 in on the phone, 36 on the desk, as before.
+- The note's date sits under the doctor's role, 13 secondary ("Insert the Note Date as well"): the report's date (20 Oct 2026 in the demo; the persona's date when it has one).
+- No doctor-card flight from the note to the next screen any more ("forget about transition with next screen"): the next page pushes in like any other.
+- Checked at XS (dark, light) and L.
 ## v2569 — Doctor note email: photo top right, no To line, "A few notes from your Dr Steven Lu", tighter paragraphs
 
 - The email's header now has the doctor's photo at its top right (48, round), beside the name and role; "To: Julien" is gone ("Put the avatar on the top right here and remove To: Julien"). The signature keeps the name, role and wordmark, without the photo. The email-to-review fly reads the header photo now.
