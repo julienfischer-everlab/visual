@@ -13,6 +13,11 @@ this is the part you need before you change it.
 
 
 
+
+## v2571 — Doctor note: the date as a mono label over the subject
+
+- The note's date leaves the doctor's header and sits in the note card, 8 over "Your results and next steps", in the house mono label (arMonoLabel: Saans Mono 12, caps, 1px tracking, secondary): "This mono above Your results and next steps". The doctor's header is the name, the role and the photo.
+- Checked at XS dark and light.
 ## v2570 — Doctor note: the doctor as the card's header, the note in a card inside it, the date; no flight to the next screen
 
 - The email is two cards, as the frame shows ("Put a doctor info as a header of the card like this"): an Outlined card (EvCard outlined lg, 24 round) whose header is the doctor (name 16, "Longevity GP · Everlab" 14, photo 48 round at the right), and inside it the note in a Filled card (EvCard filled lg) that meets its sides and foot, its top corners 24 round. The note card holds the subject, the letter, Warm regards, the signature and the wordmark. 20 in at the header's top and foot; 24 in on the phone, 36 on the desk, as before.
