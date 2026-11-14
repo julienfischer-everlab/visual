@@ -1484,7 +1484,7 @@ html:not(#_m):not(#_d) .dbM.v9 .dbX { top: calc(var(--rvSqT, 10.4cqw) + 4px - 18
    Type in longhands, the family on its own (a var() falling back to inherit inside a font shorthand voids the whole shorthand).
    Host tokens: --evTnTop (the status bar / safe area above the bar: 0 on the desk), --evTnX (the page's padding/left-right), --evTnGnd (the screen's colour), --evTnInk (its ink) */
 /* Sticky Off (EvTopNav.M.sticky, html.tnFree): every top nav scrolls away with its page, the master's and the pages' own bars alike (their place in the flow kept; no offset) */
-html.tnFree :is(.evTn, #dOver .ovTop, body.v4 .mHead, .svTop, .svmNav, #dPlan .plPBar, #dPlan .plNBar, #dPlan .plABar, .hoBand, #dAcc .acHead) { position: relative !important; top: auto !important; }
+html.tnFree :is(.evTn, #dOver .ovTop, body.v4 .mHead, .svTop, .svmNav, #dPlan .plPBar, #dPlan .plNBar, #dPlan .plABar, .hoBand, #dAcc .acHead, #dMkt .mkTRow) { position: relative !important; top: auto !important; }
 /* Style (Tweaks -> Top nav -> Style, this page's; EvTopNav.M.bg the master's default; html[data-tnbg]): Filled, the screen's own colour solid to the bar's foot, no blur bands, no bleed under it; Transparent, no ground at all
    ("If it's fixed, have two variants: gradient or field or transparent"). Gradient (no attribute) is the gradient blur above. The master's bar, the Overview's, the Service detail's, the Plan's, the Header overlap's band, the Timeline's tabs */
 html[data-tnbg="fill"] .evTnG::before { opacity: 1 !important; -webkit-mask-image: none !important; mask-image: none !important; }
@@ -1493,10 +1493,39 @@ html[data-tnbg="fill"] .evTn.evTnOn > .evTnG { bottom: 0; }
 html[data-tnbg="fill"] .evTnC.evTnOn > .evTnG { bottom: calc(-1 * (var(--evTnD) - 16px)); }   /* C: to the floating controls' foot, no bleed */
 html[data-tnbg="clear"] .evTnG { display: none !important; }
 html[data-tnbg] :is(#phone2 .ovTop, #dOver .ovTop, .svTop, .svmNav, #dPlan .plPBar, .hoBand) .ovGround, html[data-tnbg] .hoBand > .ovGround, html[data-tnbg] #dTl .tlBar .ovGround { display: none !important; }
-html[data-tnbg="fill"] :is(#phone2 .ovTop, #dOver .ovTop, .svTop, .svmNav, #dAcc .acHead)::before { background: var(--tnFill, var(--pageBg, #0f0f0f)) !important; bottom: 0 !important; -webkit-mask-image: none !important; mask-image: none !important; }
+html[data-tnbg="fill"] :is(#phone2 .ovTop, #dOver .ovTop, .svTop, .svmNav, #dAcc .acHead, #dMkt .mkTRow)::before { background: var(--tnFill, var(--pageBg, #0f0f0f)) !important; bottom: 0 !important; -webkit-mask-image: none !important; mask-image: none !important; }
 html[data-tnbg="fill"] :is(#dPlan .plPBar, .hoBand)::before { bottom: 0 !important; -webkit-mask-image: none !important; mask-image: none !important; }
 html[data-tnbg="fill"] body.plPUnder #dPlan .plPBar::before { opacity: 1 !important; } html[data-tnbg="fill"] .hoBand.on::before { opacity: var(--hoK, 1) !important; }
-html[data-tnbg="clear"] :is(#phone2 .ovTop, #dOver .ovTop, .svTop, .svmNav, #dPlan .plPBar, .hoBand, #dPlan .plStBar, #dAcc .acHead)::before { display: none !important; } html[data-tnbg="clear"] #dPlan .plStBar { opacity: 0 !important; }
+html[data-tnbg="clear"] :is(#phone2 .ovTop, #dOver .ovTop, .svTop, .svmNav, #dPlan .plPBar, .hoBand, #dPlan .plStBar, #dAcc .acHead, #dMkt .mkTRow)::before { display: none !important; } html[data-tnbg="clear"] #dPlan .plStBar { opacity: 0 !important; }
+/* The phone's main pages under the status bar ("I should see the top nav with the gradient and the top home with the gradient as well. The gradient should start at 20% of the full height of home and top nav"; "Home iPhone frame: top nav is always fixed"):
+   the Overview, Services and My account run up under the frame's 47 status strip (as the Timeline and the Plan do), a 47 spacer keeping their content where it was, the screen's corners still clipping them.
+   Fixed On: the page's top nav pins under the status bar, its ground reaching up to the screen's top. Gradient: solid for 20% of the status bar and the top nav together (--tfS), then eased out to nothing 32 under the nav, once the page has scrolled.
+   Filled: solid to the nav's foot. Transparent: none. Fixed Off: the nav scrolls away and the status bar keeps a ground of its own (the spacer, pinned): solid for 20% of its 47, eased out 32 under it (Filled: solid 47; Transparent: none) */
+html:not(.bpAuto) body[data-bp="xs"] .dash { overflow: visible; }
+html:not(.bpAuto) body[data-bp="xs"] .dash { border-radius: 0; }
+html.tlD3:not(.bpAuto):not(.t3TabFree) body[data-bp="xs"] #dTl #tl3 > .tlBar.t3Bar.t3Bar::before { top: calc(-1 * var(--tlSb, 47px)) !important; }   /* the Timeline: its fixed tabs and the status bar one header group, the tabs' ground (solid for 20% of the two, eased out 32 under the tabs) reaching the screen's top */   /* "What is this arc on the background here? It should be straight": the screen's 56 corners with its 47 status strip as a top border made the clip at the strip's foot an arc (the inner radius); the corners are its clip-path's alone */
+html:not(.bpAuto) body[data-bp="xs"] :is(#dOver, #dMkt, #dAcc) { top: -47px; --tfPt: 17px; }
+html:not(.bpAuto) body[data-bp="xs"] #dOver { --tfPt: 0px; }
+html:not(.bpAuto) body[data-bp="xs"] :is(#dOver, #dMkt, #dAcc)::before { content: ""; display: block; height: 47px; pointer-events: none; }
+html:not(.bpAuto) body[data-bp="xs"] #dOver .ovTop { top: calc(47px - var(--ctPadY)); }
+html:not(.bpAuto) body[data-bp="xs"] #dAcc { --acHdT: 47px; --acHdUp: 64px; }
+#dMkt { --stkRGB: 15,15,15; } body.light #dMkt { --stkRGB: 255,255,255; }
+html:not(.bpAuto) body[data-bp="xs"] #dMkt .mkHead { display: contents; }   /* Services: the title row is its top nav (the recommended services' line scrolls under it) */
+html:not(.bpAuto) body[data-bp="xs"] #dMkt .mkTRow { position: sticky; top: 47px; z-index: 5; isolation: isolate; }
+html:not(.bpAuto) body[data-bp="xs"] #dMkt .mkTRow::before { content: ""; position: absolute; left: -16px; right: -16px; top: -64px; bottom: -32px; z-index: -1; pointer-events: none; background: rgba(var(--stkRGB),1); opacity: 0; transition: opacity .28s ease; }
+html:not(.bpAuto) body[data-bp="xs"] #dMkt.tnScr .mkTRow::before { opacity: 1; } html.tnFree body[data-bp="xs"] #dMkt .mkTRow::before { display: none; }
+html:not(.bpAuto) body[data-bp="xs"] #dOver .ovTop::before, html:not(.bpAuto) body[data-bp="xs"] #dOver .ovTop .ovGround { top: calc(var(--ctPadY) - 47px) !important; }   /* pinned 24 above the status bar's foot (its own padding), the ground from the screen's top */
+html:not(.bpAuto):not([data-tnbg]) body[data-bp="xs"] :is(#dOver .ovTop, #dMkt .mkTRow, #dAcc .acHead)::before { --tfS: calc((100% - 32px) * .2); bottom: -32px !important; -webkit-mask-image: none !important; mask-image: none !important;
+  background: linear-gradient(180deg, rgba(var(--stkRGB),1) 0, rgba(var(--stkRGB),1) var(--tfS), rgba(var(--stkRGB),.93) calc(var(--tfS) + (100% - var(--tfS)) * .15), rgba(var(--stkRGB),.8) calc(var(--tfS) + (100% - var(--tfS)) * .3), rgba(var(--stkRGB),.62) calc(var(--tfS) + (100% - var(--tfS)) * .45), rgba(var(--stkRGB),.43) calc(var(--tfS) + (100% - var(--tfS)) * .6), rgba(var(--stkRGB),.25) calc(var(--tfS) + (100% - var(--tfS)) * .75), rgba(var(--stkRGB),.09) calc(var(--tfS) + (100% - var(--tfS)) * .9), rgba(var(--stkRGB),0) 100%) !important; }
+html.tnFree:not(.bpAuto) body[data-bp="xs"] :is(#dOver, #dMkt, #dAcc)::before { --tfS: calc((100% - 32px) * .2); position: sticky; top: calc(-1 * var(--tfPt)); z-index: 7; height: 79px; margin-bottom: -32px; transition: opacity .28s ease;
+  background: linear-gradient(180deg, rgba(var(--stkRGB),1) 0, rgba(var(--stkRGB),1) var(--tfS), rgba(var(--stkRGB),.93) calc(var(--tfS) + (100% - var(--tfS)) * .15), rgba(var(--stkRGB),.8) calc(var(--tfS) + (100% - var(--tfS)) * .3), rgba(var(--stkRGB),.62) calc(var(--tfS) + (100% - var(--tfS)) * .45), rgba(var(--stkRGB),.43) calc(var(--tfS) + (100% - var(--tfS)) * .6), rgba(var(--stkRGB),.25) calc(var(--tfS) + (100% - var(--tfS)) * .75), rgba(var(--stkRGB),.09) calc(var(--tfS) + (100% - var(--tfS)) * .9), rgba(var(--stkRGB),0) 100%); }
+/* and the blur the Overview's bar has (its .ovGround bands): what passes under Services' and My account's navs blurs as it fades, full to the 20% and easing out to the nav's foot (Gradient only, once scrolled) */
+html:not(.bpAuto):not([data-tnbg]):not(.tnFree) body[data-bp="xs"] :is(#dMkt .mkTRow, #dAcc .acHead)::after { content: ""; position: absolute; left: -16px; right: -16px; top: -64px; bottom: -32px; z-index: -1; pointer-events: none; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  -webkit-mask-image: linear-gradient(180deg, #000 0, #000 calc((100% - 32px) * .2), rgba(0,0,0,.55) calc(100% - 32px), transparent 100%); mask-image: linear-gradient(180deg, #000 0, #000 calc((100% - 32px) * .2), rgba(0,0,0,.55) calc(100% - 32px), transparent 100%); opacity: 0; transition: opacity .28s ease; }
+html:not(.bpAuto):not([data-tnbg]):not(.tnFree) body[data-bp="xs"] :is(#dMkt.tnScr .mkTRow, #dAcc.tnScr .acHead)::after { opacity: 1; }
+html.tnFree:not(.bpAuto) body[data-bp="xs"] :is(#dOver:not(.ovScrolled), #dMkt:not(.tnScr), #dAcc:not(.tnScr))::before { opacity: 0; }   /* none at rest: the page's own title is under it then */
+html.tnFree[data-tnbg="fill"]:not(.bpAuto) body[data-bp="xs"] :is(#dOver, #dMkt, #dAcc)::before { height: 47px; margin-bottom: 0; background: rgba(var(--stkRGB),1); }
+html.tnFree[data-tnbg="clear"]:not(.bpAuto) body[data-bp="xs"] :is(#dOver, #dMkt, #dAcc)::before { background: none; }
 :root { --evTnD: 44px; }   /* the Top nav master's disc, read by the bars that keep their own markup (the Service detail's, the in-app chat's) */
 .evTn { --evTnD: 44px; position: sticky; top: 0; z-index: 6; display: flex; align-items: center; gap: 16px; box-sizing: border-box; min-height: calc(var(--evTnTop, 0px) + 76px); margin: 0; padding: calc(var(--evTnTop, 0px) + 16px) var(--evTnX, 16px) 16px; color: var(--evTnInk, currentColor); isolation: isolate; pointer-events: none; }
 .evTn > :not(.evTnG) { pointer-events: auto; }

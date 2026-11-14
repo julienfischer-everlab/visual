@@ -7,6 +7,22 @@ this is the part you need before you change it.
 
 ---
 
+## v2557 · One Container control everywhere; the Insights demo's controls in the page; the phone's header group (status bar + top nav); no arc under the status bar
+
+- **Container** ("This container should be the same everywhere ... The own doesn't exist"; "This is how it should look for every page"): every page's Container row offers the same seven, 3xs 2xs xs sm md lg Full, on one line. Own is gone. The Plan and its sub pages now sit on the tokens: Plan md, Activity plan xs, Nutrition sm, Medical actions, Supplements and Wind-down 2xs (their old widths, to the nearest token). Screens with no container (sheets, the chat) hide the row.
+- **Design system → Modules → Insights** ("Put this tweak inside the page, not in the tweak panel ... Have a section next to it with a controller box"): the Demo's controls now sit in the page, in a Controls box beside the card: Health profile (To complete, 40%, Completed), Health data (To connect, In progress, Connected), Past results (To action, In progress, Found, None found). They no longer appear in the right panel.
+- **The phone's header group** ("The home plus the top nav is a group ... the background style is applied to this top header, not individually to one element inside"; "The gradient should start at 20% of the full height of home and top nav"):
+  - At XS, the Overview, Services and My account now run up under the status bar, as the Timeline and the Plan do. Their content shows faded under the status bar instead of a hard cut.
+  - Fixed On: the top nav stays pinned under the status bar. On Services, the pinned part is the title row ("Everlab Services" and the cart); the recommended services' line scrolls under it.
+  - Gradient: one ground covers the status bar and the nav together. It is solid for the top 20% of their combined height, then eases out to nothing 32 under the nav, and appears once the page has scrolled. Services and My account also blur what passes under (10 px), like the Overview's bar.
+  - Filled: solid from the screen's top to the nav's foot. Transparent: no ground; content shows under the status bar and the nav.
+  - Fixed Off: the nav scrolls away, and the status bar keeps its own ground (the same 20% rule over its 47), shown once scrolled.
+  - Timeline: its fixed tabs carry the group's ground up through the status bar (it used to mask the status bar solid and fade the tabs separately).
+  - Plan: the status band follows the same rule (solid for 20% of the status bar, eased out 32 under it; it was solid to 40).
+  - Not yet: Insights (the older phone screen) keeps its solid status strip.
+- **The arc** ("What is this arc on the background here? It should be straight"): the phone screen had 56 rounded corners and its 47 status strip as a top border, so anything cut at the strip's foot got a wide elliptical curve. The screen's box radius is now 0 at XS; its corners stay round through its clip-path. The cut is straight on every page.
+- Verified at XS (Services, My account, Overview, Timeline, Plan; dark and light; Gradient, Filled, Transparent, Fixed Off), More sheet, S and desk unchanged, no page errors. Skill reference (layout.md, Top nav) has the header group rule.
+
 ## v2556 · Ghost cards on the DS tokens; the Plan's status-bar gradient; My account's top nav fixed
 
 - **Ghost cards**: every ghost card now uses the DS backgrounds: hover bg/neutral/tertiary (white 6%), press bg/neutral/secondary (white 24%). They come from two tokens, `--gcHov` and `--gcPrs`; light mode uses the warm ink at the same 6% and 24%, and sheets use their own ink.
