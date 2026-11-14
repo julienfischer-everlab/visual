@@ -10,6 +10,12 @@ this is the part you need before you change it.
 
 
 
+
+## v2568 — Confirm your plan: "Notes from Dr Steven Lu", smaller photo, secondary chevron
+
+- The doctor's card reads "Notes from" and the doctor's full name ("Notes from Dr Steven Lu"; the other demo doctor "Notes from Dr Maylyn Goh"), as asked ("Note with S from Dr. Steven Lu"). The name is written as the app writes it everywhere, "Dr" with no full stop.
+- Its round photo is 4px smaller, 36 ("Reduce the circle by 4px"), and the chevron is in the secondary ink, 56% ("make the chevron the secondary colour").
+- Checked at XS: V2 Outside and V3.
 ## v2567 — Confirm your plan: the doctor's card as one line, "Note from Steven"
 
 - The doctor's card at the top of the review is one line: a round photo (40), "Note from" and the doctor's first name ("Note from Steven", "Note from Maylyn"), and a chevron right in place of the long arrow. No sub line ("Reduce this card to one card with a circle avatar, say Note from Steven, and then just a chevron right, not an arrow ... No sub").
