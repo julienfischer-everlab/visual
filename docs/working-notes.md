@@ -7,6 +7,15 @@ this is the part you need before you change it.
 
 ---
 
+## v2556 · Ghost cards on the DS tokens; the Plan's status-bar gradient; My account's top nav fixed
+
+- **Ghost cards**: every ghost card now uses the DS backgrounds: hover bg/neutral/tertiary (white 6%), press bg/neutral/secondary (white 24%). They come from two tokens, `--gcHov` and `--gcPrs`; light mode uses the warm ink at the same 6% and 24%, and sheets use their own ink.
+  - The master is Design system → Cards → Card interactive, its "Plain" look now named **Ghost**.
+  - In the app, one block routes them all through the tokens: biomarker rows, Timeline items (and the Action plan's cards), More's rows, the Inbox ghost rows, service kits, the Insights stack and tasks, the Health profile card's rows, profile slides, the Plan's rows, and the report's and sheets' rows.
+  - Verified: a biomarker row is 6% on hover and 24% on press; a Timeline item is 6% on hover.
+- **Plan (XS, S), top nav Style Gradient**: the band under the phone's status bar now fades out below the bar (the main pages' gradient steps) instead of cutting hard. The status bar itself stays fixed, as it is the frame's. Filled keeps the solid band; Transparent shows none.
+- **My account**: its top nav (the title with the bell and the gear) now follows Fixed. With On, it stays where it rests as the page scrolls, with the main pages' gradient under it; Filled, Transparent and Off work as on every top nav. Before, it scrolled away with Fixed On.
+
 ## v2555 · Design system: Action card (the Service timeline's item)
 
 - New Design system page, **Feature components → Action card** (`#action-card`), built like Biomarker item. It has these sections:

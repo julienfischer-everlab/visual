@@ -192,6 +192,23 @@ window.EvMagnet.bind(rec, { item: '.mkRc', drag: 'mkDrag', onMove: arrowsSet });
 
 ## Hover / press conventions
 
+**Ghost cards (every one):** no ground at rest. Hover uses bg/neutral/tertiary and press uses bg/neutral/secondary, through the tokens `--gcHov` and `--gcPrs`.
+
+| Ground | `--gcHov` | `--gcPrs` |
+|---|---|---|
+| `:root` (dark) | `#fff` at 6% | `#fff` at 24% |
+| `body.light` | the warm ink at 6% | the warm ink at 24% |
+| `.arSheet` | `--ar-ink` at 6% | `--ar-ink` at 24% |
+
+- The master is Design system → Cards → Card interactive → Ghost (`EvCard.item({ look: 'plain' })`).
+- One CSS block, "Ghost cards, one rule" (grep it), routes the app's ghost cards through the tokens. It covers:
+  - biomarker rows, More rows, the Inbox ghost rows, service kits;
+  - the Insights stack and the Insights tasks;
+  - the Health profile card's rows, profile slides;
+  - the report's and the sheets' rows.
+- Timeline items take the hover through `--tlHover` and the press through the same block. The Plan takes them through `--plHov` and `--plPrs`.
+- A new ghost card goes into that block, never with its own alphas.
+
 **What.** Every nav item and tappable answers the hand: a hover tint and a press scale/tint. Plain CSS (`:hover`, `:active`, some under `@media (hover: hover)`); no app-wide JS master or token. The Plan (#269, merged) has one rule set of its own for every control on the Plan, its subpages, their sheets and the Activity session (a full modal over it), after the More rows' feel.
 
 **Where.** Sidebar `.dash .side .nv:hover/:active`; dock `.mTab:hover`, `.mTab:active{transform:scale(.955);}`; `.mChat:active{transform:scale(.94);}`; More rows (`.mvRow`, `[aria-current]`); `.mvX:hover`; `.rcCard:active` scale(.97); `.aiChip:active` scale(.96). Plan: the CSS block `grep -n "the Plan's interaction states (\"In plan"` (~8635, after the Nutrition plan's sheet, scoped `:is(#dPlan, .plSesSheet)`) and the `.plPress` script `grep -n "const press = (() => { const SEL"` (~45842).
