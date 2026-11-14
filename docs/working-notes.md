@@ -19,6 +19,27 @@ this is the part you need before you change it.
 
 
 
+## v2579 — Design system → Modules → Plan update (Recommended plan / Walkthrough); Variation a select; desk Filled / Transparent fixed
+
+- New module page, Design system → Modules → Plan update (`#module-plan-update`): the Timeline's update card in its two variations ("Create this in the component module design system"). Recommended plan, a batch of services Dr Steven has just offered (Review plan; See updates when On); Walkthrough, what Dr Lu changed (See update starts the coachmark walk; Got it). Each in Card and Image style, with anatomy and where it is used. XS draws the phone's stacked card, S and up the row (720 at M/L).
+- The card's markup has one builder, `window.EvPlanUpd.el(o)` (inside the Timeline's script, with its scrolling skeleton visual); the Timeline's card and the doc page both call it. Its CSS scope takes `.t3UpdDoc` too (a `tl` container, so the card's own width picks its layout).
+- Tweaks → Plan updates → Variation is a plain select ("Just use select instead of a segmented tab on the variation tweak"), options renamed Recommended plan / Walkthrough. It was kept out of the two-option switch converter.
+- Fix (found while merging the Header group page): on desk pages, Top nav Style Filled and Transparent did nothing (the gradient stayed). Their rules lost to the base ground rule (0,5,1) and, on the Timeline, to its id rule; both raised. Checked on Services (M): Gradient, Filled solid, Transparent gone.
+
+## v2578 — Async report: Eva widget on every insight page (Ask Eva sheet with the chat inside)
+
+- Tweaks → Insight → Eva widget, On (default) / Off (`#stArEva`, saved with the report's keys). On: an orange "What does <value> mean for me?" link at the biomarker card's foot (every card layout), and Ask Eva (24 orange disc) beside a wider Next in the footer.
+- Both open the Ask Eva sheet (the report's sheet: notch and swipe on the phone, centred modal on M/L): 48 disc header, the result as context (range dot, Insight N · marker · value, CONTEXT), three "Questions members ask here", and a composer at the foot.
+- The chat runs in the sheet with the Chat bubbles master's bubbles and thinking loader; an asked question leaves the list; the sheet grows to full height. Questions and answers live per insight in the persona data (`L.eva`); CA 125 uses the design's three.
+- New shared helper `window.EvEvaMark` (star / orange disc), shown in Design system → Navigation → Iconography.
+- Built by a helper; merged with v2576's Control object key (both kept). Not checked: S and M, a real touch device.
+
+## v2577 — Design system: Header group and Top nav as one page; every screen side by side, Breakpoint XS / S / M / L, skeleton pages
+
+- "Group the header group and the top nav. It is actually the same thing": General layout lists one Header group page (Top nav's links and #top-nav lead there). Its demo draws the four screens side by side (Main page, Sub page, Modal · sheet, No title), each live with the master's Fixed, Style, WIP label and Footer.
+- Breakpoint XS / S / M / L on the page (saved as `everlab:hgBp`): XS phones in a row, S tablets and M / L desks two by two. The pages behind are skeletons ("Just use skeleton here ... a card, bento"). The Top nav anatomy sits below the demo.
+- Built by a helper; checked at XS, S and M, no errors.
+
 ## v2576 — Confirm your plan: Included in the tertiary ink; Control object tweak (a checkbox on every product)
 
 - "Included" on the plan's product cards is in the tertiary ink (ink 36%, from 56%), quieter than a price ("Use a tertiary colour for Included. It should be less prominent").
