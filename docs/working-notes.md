@@ -7,6 +7,10 @@ this is the part you need before you change it.
 
 ---
 
+## v2558 · Overview (XS): the top nav stacked under the status bar
+
+- "The top nav should be below the home nav. It's a group: the top header is a group of sections inside, stacked": on the phone, the Overview's bar (the ask field and the bell) pinned 24 too high once scrolled, over the status bar. The cause was v2557's offset, which took the larger screens' bar offset (−24) where the phone's bar pins at its own top (0, 8 above the field). It now pins at 47, right under the status bar, at rest and scrolled (status 0–41, bar 47–113). The group's single ground still starts at the screen's top. Services and My account were already stacked.
+
 ## v2557 · One Container control everywhere; the Insights demo's controls in the page; the phone's header group (status bar + top nav); no arc under the status bar
 
 - **Container** ("This container should be the same everywhere ... The own doesn't exist"; "This is how it should look for every page"): every page's Container row offers the same seven, 3xs 2xs xs sm md lg Full, on one line. Own is gone. The Plan and its sub pages now sit on the tokens: Plan md, Activity plan xs, Nutrition sm, Medical actions, Supplements and Wind-down 2xs (their old widths, to the nearest token). Screens with no container (sheets, the chat) hide the row.
