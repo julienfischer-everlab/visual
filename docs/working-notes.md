@@ -17,6 +17,13 @@ this is the part you need before you change it.
 
 
 
+
+## v2575 — Doctor note: "A few notes from your doctor", letter 28 high, outer outline the note card's ground
+
+- The doctor note page's title reads "A few notes from / your doctor" ("A few notes from your doctor."; was "… your Dr Steven Lu").
+- The letter's lines are 28 high, 2 more ("Use the letter line high by 2px"), the sign-off with them.
+- The outer card's hairline is the note card's own ground (the Filled card's ink, 6% dark / 4% light), not the Outlined card's line ("The border should be the same colour as the background on the email below").
+- Checked at XS dark and light.
 ## v2574 — Discuss opens "Talk through your plan"; Timeline item ghost card 16 round
 
 - Review My Plan's Discuss (footer #5) opens the reference's sheet ("Discuss bottom sheet"): the report's sheet (sheet header master: title, its line, the Close; notch and swipe on the phone, centred on the desk) titled "Talk through your plan", line "A little clarity before you decide.", two cards (EvCard interactive, filled, 24 round, 12 apart): Ask Eva with an AI badge (EvCtl outline badge) and Eva's beam star, "Discuss your results and plan with your AI assistant."; Book a consultation with the doctor's photo, "Talk through your next steps with your doctor." Visuals 64, titles 18, lines 14 secondary, a secondary chevron right. Under them, centred: a check in a circle and "Your selections are saved." Ask Eva opens Eva's chat, Book a consultation the care team's, as before. The title stays the sheet header master's 24 (one line), not the reference's two-line display size.
