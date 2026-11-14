@@ -19,6 +19,14 @@ this is the part you need before you change it.
 
 
 
+## v2580 — Presets follow every page change; Async report: "What does it mean for me?" card with Ask Eva (Tweak On / Off), no Ask Eva in the footer
+
+- Presets: a page reached without the Page menu (the dock, the sidebar, a card's link, a standalone closing) now takes its own preset in use, or its starred one on the first visit, on the top bar's preset button and in the Tweaks header, as picking it in the Page menu does ("I come from the timeline page, and then I click to home, and I end up with the preset of the timeline page"). The menu's value was set without a change event; the presets now check the page every 300 ms. Checked: a Timeline preset applied, the dock's Home tapped, the button reads the Overview's Default.
+- Insight pages: the orange "What does 69 U/mL mean for me?" link at the biomarker card's foot is now its own card under that card: the question as its title, one plain sentence of what it means (the first sentence of Eva's first answer for that result), and Ask Eva at the title's right as a secondary button (ink 10%, Eva's orange star) opening the Ask Eva sheet ("create a card ... what it means for me, and then ask Eva as a secondary CTA on the right side").
+- Tweaks → Insight → Ask Eva (was Eva widget), On by default ("it should be a tweak on and off"): Off leaves the card without the button.
+- The footer is Next alone again: no Ask Eva beside it.
+- Checked at XS on CA 125 (persona #2), dark and light, On and Off; the sheet opens from the button.
+
 ## v2579 — Design system → Modules → Plan update (Recommended plan / Walkthrough); Variation a select; desk Filled / Transparent fixed
 
 - New module page, Design system → Modules → Plan update (`#module-plan-update`): the Timeline's update card in its two variations ("Create this in the component module design system"). Recommended plan, a batch of services Dr Steven has just offered (Review plan; See updates when On); Walkthrough, what Dr Lu changed (See update starts the coachmark walk; Got it). Each in Card and Image style, with anatomy and where it is used. XS draws the phone's stacked card, S and up the row (720 at M/L).
