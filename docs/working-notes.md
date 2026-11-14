@@ -7,6 +7,14 @@ this is the part you need before you change it.
 
 ---
 
+## v2559 · Top nav Fixed: one row on every page
+
+- "Every page should have a fixed on/off option. It should be the same tweak everywhere": Tweaks → General layout → Top nav → Fixed now shows on every page, under the Container row, with Style and WIP beside it.
+  - Timeline: Fixed is no longer hidden there. It drives the Now / This year / Later tabs (Off: they scroll away and the group heads pin instead), and Tab top's own Fixed row is gone (its value still kept for Save and presets).
+  - Step flows (Async report, Onboarding consult, Membership reveal, Send a gift): they had no Fixed row because their bar was always pinned. Off now makes the bar scroll away with the step's content, and it comes back at the top of the next step; On pins it as before. Verified on the Async report: Off moves the bar up as the step scrolls, On puts it back.
+  - Style shows only while Fixed is On, on every page.
+- Container: the same row on every page that has a container (the main pages, the Plan's pages, the full modals). Sheets and the chat have no container of their own yet, so their Container row stays hidden.
+
 ## v2558 · Overview (XS): the top nav stacked under the status bar
 
 - "The top nav should be below the home nav. It's a group: the top header is a group of sections inside, stacked": on the phone, the Overview's bar (the ask field and the bell) pinned 24 too high once scrolled, over the status bar. The cause was v2557's offset, which took the larger screens' bar offset (−24) where the phone's bar pins at its own top (0, 8 above the field). It now pins at 47, right under the status bar, at rest and scrolled (status 0–41, bar 47–113). The group's single ground still starts at the screen's top. Services and My account were already stacked.
