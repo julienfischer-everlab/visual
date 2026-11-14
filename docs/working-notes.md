@@ -16,6 +16,13 @@ this is the part you need before you change it.
 
 
 
+
+## v2574 — Discuss opens "Talk through your plan"; Timeline item ghost card 16 round
+
+- Review My Plan's Discuss (footer #5) opens the reference's sheet ("Discuss bottom sheet"): the report's sheet (sheet header master: title, its line, the Close; notch and swipe on the phone, centred on the desk) titled "Talk through your plan", line "A little clarity before you decide.", two cards (EvCard interactive, filled, 24 round, 12 apart): Ask Eva with an AI badge (EvCtl outline badge) and Eva's beam star, "Discuss your results and plan with your AI assistant."; Book a consultation with the doctor's photo, "Talk through your next steps with your doctor." Visuals 64, titles 18, lines 14 secondary, a secondary chevron right. Under them, centred: a check in a circle and "Your selections are saved." Ask Eva opens Eva's chat, Book a consultation the care team's, as before. The title stays the sheet header master's 24 (one line), not the reference's two-line display size.
+- Footer #4's Continue sheet (three cards) is unchanged.
+- Timeline items: the ghost card (hover / press) is 16 round at every breakpoint ("radius 16px"; was 30 desk, 28 phone).
+- Checked at XS (dark, light) and L.
 ## v2573 — Design system: General layout's Header becomes Header group, with a live Home to tweak
 
 - "call that header Group * Home * Navigation * Header": the tab item is "Header group" (section titles "Header group · XS · S", "· M · L"). Its first section, "Header group · XS · live", is a Home page in the app's XS frame: Home (the status bar), Navigation (the Top nav master, C with a More disc; the title comes into the bar once the page title goes under it) and Header (the page title, Title group H2), over cards to scroll.
