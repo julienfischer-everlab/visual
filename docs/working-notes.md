@@ -7,6 +7,14 @@ this is the part you need before you change it.
 
 ---
 
+
+## v2565 — Confirm your plan: V3, Plan title and Top nav title tweaks, Eva star on Discuss
+
+- Version V3 ("Try another style v3 like this for the content"): one outer card (grey card ground, 44 round) with the doctor at its top. Inside it, 16 in from its sides and foot, the plan sits in a card on the page's ground (28 round, concentric with the outer card) holding the H2, the tabs and the list. Tabs Inside puts them under the H2; Outside puts them on the outer card between the doctor and the plan. V2 and V1 unchanged.
+- New tweak Plan title Shown / Hidden ("Add a tweak to remove the 'Your Personalised Plan' display"), `#stArRvH2` (on/off), for V2 and V3.
+- New tweak Top nav title Yes / No ("If no, the title goes below as a body title"), `#stArRvNavT`: No leaves the back button and Save for later in the top nav and puts "Review My Plan" as the page's H1 (EvTitle, H1 level) above the doctor card. V2 and V3.
+- Footer #5's Discuss has Eva's star before the word (20px, 8 gap, the pill's ink): "Put an Eva star icon in the discuss".
+- Checked at XS (dark and light) and L: V3 Inside / Outside, Plan title Hidden, Top nav title No, V2 with both new tweaks. At XS the V3 inner card leaves less room, so the list titles cut shorter than in V2.
 ## v2564 · Confirm your plan: Discuss + Purchase, Save for later, Review My Plan, Tabs tweak; the doctor note as an email
 
 - **Footer** ("3x options on the footer it is going to be too much"; then "Put an action on the top right: 'Save for later', and on the footer, have 'Discuss' + 'Purchase'"): Footer #5 Discuss + Purchase is the new default (Tweaks -> Confirm your updated plan -> Footer, `#stArRvFt` `disc`), with "Save for later" in the top nav's right in place of the X (it does what Do it later does). Discuss opens "Who would you like to talk to?" (Discuss with the doctor, Talk to Eva); Purchase goes straight to checkout ("Purchase · $129"). #4 Do it later + Continue (Continue opens "What do you want to do?": the doctor, Eva, Purchase now) stays selectable; new Footer layout row (`#stArRvFtL`): Side by side / Stacked. The Discuss pill is solid (it showed the list through it).
