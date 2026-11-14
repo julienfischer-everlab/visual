@@ -511,13 +511,18 @@
   /* the components, laid out as the boards lay them out */
   .cmpPage { position: absolute; inset: 0; overflow-y: auto; background: var(--bg); }
   .cmpPage[hidden] { display: none; }
-  .cmpIn { max-width: 1240px; margin: 0 auto; padding-inline: 24px; padding-block: 28px 80px; display: grid; gap: 44px; }
-  .cmpIn > header h2 { margin: 0; font-size: 22px; font-weight: 500; letter-spacing: -.02em; }
-  .cmpIn > header p { margin: 6px 0 0; max-width: 64ch; color: var(--muted); text-wrap: pretty; }
-  .sec { display: grid; gap: 16px; min-width: 0; }
-  .sec > h3 { margin: 0; padding-bottom: 10px; border-bottom: 1px solid var(--line); font-size: 13px; font-weight: 500; }
-  .sub { display: grid; gap: 10px; min-width: 0; }
-  .sub > span { font: 11px/1 var(--mono); color: var(--faint); letter-spacing: .04em; text-transform: uppercase; }
+  /* the prototype's doc headers (EvDocHd in index.html, "use this for ALL documentation, same patterns"), drawn here by this page's own CSS: the page's head held at the top (its title, a rule under it),
+     each section's head held under it until the next pushes it out (its bar and rule across the page), each specimen's caption 24 under it (n · its name) */
+  .cmpPage > .dhP { position: sticky; top: 0; z-index: 5; box-sizing: border-box; display: flex; align-items: center; gap: 16px; min-height: 62px; padding: 14px 20px; background: var(--bg); border-bottom: 1px solid var(--line); }
+  .cmpPage > .dhP h2 { margin: 0; font-size: 16px; font-weight: 600; letter-spacing: 0; }
+  .cmpIn { max-width: 1240px; margin: 0; padding-inline: 32px; padding-block: 28px 80px; display: grid; gap: 20px; }
+  .cmpIn > .dhLead { margin: 0; max-width: 64ch; font-size: 15px; line-height: 22px; color: var(--muted); text-wrap: pretty; }
+  .sec { display: grid; gap: 24px; min-width: 0; padding-bottom: 12px; }
+  .sec > .dhS { position: sticky; top: 46px; z-index: 3; display: flex; align-items: center; gap: 16px; margin: 0 -32px; padding: 36px 32px 18px; background: var(--bg);
+    border-image-source: linear-gradient(to top, color-mix(in srgb, var(--fg) 9%, var(--bg)) 1px, var(--bg) 1px); border-image-slice: 0 fill; border-image-outset: 0 100vmax; }
+  .dhST { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; min-width: 0; font-size: 14px; line-height: 20px; } .dhST > b { font-size: 20px; line-height: 24px; font-weight: 600; letter-spacing: -.01em; color: var(--fg); } .dhST > span { color: var(--muted); }
+  .sub { display: grid; gap: 0; min-width: 0; align-content: start; }
+  .sub > .dhI { display: flex; flex-direction: column; gap: 2px; margin-top: 24px; font-size: 12px; line-height: 1.35; color: var(--muted); } .sub > .dhI > b { color: var(--fg); font-weight: 500; }
   .wrapRow { display: flex; flex-wrap: wrap; gap: 12px; align-items: stretch; }
   .wrapRow > .sub { align-content: start; }
   .wrapRow > .apt:not(.cmp) { width: min(100%, 380px); }
@@ -1527,9 +1532,10 @@ window.EvKbd = (function () {
   var buildCmp = function () {
     var states = [['booked', 'Fri 30 Oct, 2:30 PM AEDT'], ['open'], ['done'], ['blocked'], ['soon', 'Today, 2:30 PM AEDT'], ['review', 'Requested 20 Oct']];
     var keys = ['review', 'dexa', 'physical', 'nutri', 'review', 'mri'];
-    var sec = function (t, body) { return '<section class="sec"><h3>' + t + '</h3>' + body + '</section>'; };
-    var sub = function (t, body) { return '<div class="sub"><span>' + t + '</span>' + body + '</div>'; };
-    $('#cmpPage').innerHTML = '<div class="cmpIn"><header><h2>Concierge components</h2><p>Everything Eva can answer with, in each of its states. Every one of them works here as it does in the chat.</p></header>' +
+    /* the prototype's doc headers (EvDocHd): a section's head held under the page's, each specimen its caption under it (numbered in its section below) */
+    var sec = function (t, body) { return '<section class="sec"><header class="dhS"><div class="dhST"><b>' + t + '</b></div></header>' + body + '</section>'; };
+    var sub = function (t, body) { return '<div class="sub">' + body + '<div class="dhI"><b>' + t + '</b></div></div>'; };
+    $('#cmpPage').innerHTML = '<header class="dhP"><h2>Concierge components</h2></header><div class="cmpIn"><p class="dhLead">Everything Eva can answer with, in each of its states. Every one of them works here as it does in the chat.</p>' +
       sec('Field', sub('The chat\u2019s model menu: from Care team to Eva, the Concierge intro\u2019s beam once round the field, 1.9 s', '<div class="boxDemo"><div class="box"><span class="boxPh">Message your care team…</span><div class="boxRow"><button class="round" type="button" data-act="plus" aria-label="Add a file">' + ic('plus') + '</button><span class="sp"></span><button class="pill" type="button" data-act="model" data-demo="care" aria-haspopup="menu" aria-expanded="false"><span>Care team</span>' + ic('chevD') + '</button><button class="send" type="button" aria-label="Send" tabindex="-1">' + ic('send') + '</button></div></div></div>')) +
       sec('Appointments',
         sub('Card · wide', '<div class="wrapRow">' + states.map(function (s, i) { return aptCard(keys[i], s[0], s[1]); }).join('') + '</div>') +
@@ -1548,6 +1554,7 @@ window.EvKbd = (function () {
         sub('Group', imGroup()) + sub('Group with attachments', '<div>' + atts(['mriRep', 'study']) + '<div class="blk">' + imGroup() + '</div></div>')) +
       cmpCheckins(sec, sub) + cmpStage(sec, sub) +
       '</div>';
+    [].forEach.call(document.querySelectorAll('#cmpPage .sec'), function (s) { [].forEach.call(s.querySelectorAll('.sub > .dhI > b'), function (b, i) { b.textContent = (i + 1) + ' \u00b7 ' + b.textContent; }); });
     cmpBuilt = true; carSync($('#cmpPage'));
   };
   var setTab = function (t) {
