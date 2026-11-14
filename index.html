@@ -55440,7 +55440,15 @@ hairline({
       const st = document.querySelector('#phone .mstatus');
       if (!st) return 0;
       const cs = getComputedStyle(st);
-      return (cs.display !== 'none' && cs.position === 'absolute') ? st.offsetHeight : 0;
+      if (cs.display === 'none') return 0;
+      // the phone's header group (the page runs up under the status bar): the bar stacks under it,
+      // and under the tabs too while they are pinned ("Needs to be stacked in the section that is inside the top header")
+      if (parseFloat(cs.marginBottom) < 0){
+        const t = document.getElementById('mTabsV2'), tc = t && getComputedStyle(t);
+        if (t && t.offsetHeight && tc.position === 'sticky') return Math.round((parseFloat(tc.top) || 0) + t.offsetHeight);
+        return st.offsetHeight;
+      }
+      return cs.position === 'absolute' ? st.offsetHeight : 0;
     };
     // the min-height that ends the page exactly a screen under the pinned
     // bar: what follows `ref` (the list, or the skeleton standing in for it)
@@ -55469,6 +55477,7 @@ hairline({
     // everything below is written against a bar rather than against THE bar.
     const bars = () => [wrap, document.getElementById('mMedBar')].filter(
       b => b && b.offsetWidth > 0);   // laid out, so there is something to measure
+    document.addEventListener('everlab:tn', () => setTimeout(() => placeBar(), 0));   /* Fixed or Style changed: the bar's stack again */
     const placeBar = (w) => {
       (w ? [w] : bars()).forEach(b => {
         b.style.setProperty('--msTop', statusH() + 'px');

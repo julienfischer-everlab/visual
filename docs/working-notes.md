@@ -7,6 +7,10 @@ this is the part you need before you change it.
 
 ---
 
+## v2561 · Insights search bar stacks in the header group
+
+"The home top needs to be stacked. It's not an absolute element. Needs to be stacked in the section that is inside the top header." At XS the Insights search bar (`#mSearch.msWrap`) pinned at the top of the scroller, under the 9:41 status bar (and under the pinned tabs with Fixed On), because `statusH()` returned 0 once `.mstatus` stopped being absolute. `statusH()` now reads the header group: with the page running under the status bar (`.mstatus` margin-bottom below 0) it returns the pinned tabs' foot (`top + height`, 103) when `#mTabsV2` is sticky (Fixed On), or the status bar's height (41) when it is not (Fixed Off). The bar re-places on `everlab:tn` (Fixed or Style changed). Checked at XS: Fixed On, tabs 60–108 and the bar pins at 108; Fixed Off, the bar pins at 46 under 9:41. No errors.
+
 ## v2560 · Header group: Style always, Filled to the group's foot, the chat's blur, Insights' top nav fixed
 
 - "Why No Style tweak??": Style (Gradient / Filled / Transparent) shows on every page whatever Fixed is. It is the header group's ground (status bar + top nav). With Fixed Off it stays on the status bar alone, including the Timeline's status bar when its tabs are free (Filled solid, Transparent none).
