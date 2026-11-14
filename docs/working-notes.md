@@ -7,6 +7,15 @@ this is the part you need before you change it.
 
 ---
 
+## v2560 · Header group: Style always, Filled to the group's foot, the chat's blur, Insights' top nav fixed
+
+- "Why No Style tweak??": Style (Gradient / Filled / Transparent) shows on every page whatever Fixed is. It is the header group's ground (status bar + top nav). With Fixed Off it stays on the status bar alone, including the Timeline's status bar when its tabs are free (Filled solid, Transparent none).
+- "Filled should fill the entire top header (Home, Top nav)": on Services and My account the ground now reaches 8 under the row's 44 buttons (the cart, the bell and the gear), not the 30 title line. The Gradient's fade is measured to the same foot.
+- "Gradient doesnt fill the width": with Fixed Off, the status bar's own ground spans the screen's whole width (it stopped at the page's 16 margins).
+- "When style gradient, inc blur with it, like the chat experience": Gradient now carries the master's progressive blur, the ten stacked bands the chat's and the Overview's bars use (strong at the top, easing out to nothing 32 under the nav). It is on Services' title row, My account's head, Insights' tabs, the Timeline's fixed tabs and the Plan's status band. The single flat blur on Services and My account is gone. Filled, Transparent and Fixed Off have no blur.
+- "fixed doesnt work, top nav inc the tab and cta" (Insights, the phone): the Biomarkers / Results tabs and Upload are its top nav. The page now runs up under the status bar, and the row pins under it for the whole page (it used to sit inside the hero and scroll away), with the header group's ground and blur. The ground takes the screen's own colour, which darkens as the page scrolls. The status bar stays above it. Fixed Off lets it scroll away. Layout at rest unchanged (tabs 60, hero 138, list 530).
+- Verified at XS: Services, My account, Insights, Timeline, Plan, in Gradient, Filled, Transparent and Fixed Off; no page errors.
+
 ## v2559 · Top nav Fixed: one row on every page
 
 - "Every page should have a fixed on/off option. It should be the same tweak everywhere": Tweaks → General layout → Top nav → Fixed now shows on every page, under the Container row, with Style and WIP beside it.
