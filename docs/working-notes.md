@@ -9,6 +9,12 @@ this is the part you need before you change it.
 
 
 
+
+## v2567 — Confirm your plan: the doctor's card as one line, "Note from Steven"
+
+- The doctor's card at the top of the review is one line: a round photo (40), "Note from" and the doctor's first name ("Note from Steven", "Note from Maylyn"), and a chevron right in place of the long arrow. No sub line ("Reduce this card to one card with a circle avatar, say Note from Steven, and then just a chevron right, not an arrow ... No sub").
+- Same card in V1, V2 (tabs inside or outside) and V3; a press still opens the doctor's note. The email note's photo still flies into the card's photo (the flight reads the new round corners).
+- Checked at XS: V1, V2 Inside, V2 Outside, V3.
 ## v2566 — Confirm your plan: Save for later outlined, the doctor's card outline only
 
 - Save for later (top right of the review) is an outline button: no fill, a 1px ring at ink 24%, the same 44 pill; hover fills it lightly ("Outline CTA").
