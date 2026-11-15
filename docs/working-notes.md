@@ -19,6 +19,19 @@ this is the part you need before you change it.
 
 
 
+## v2627: Link by breakpoint; accent dot ring; desktop header = phone's; decade halo; Tweaks blue; S dock scrim; check-in date; Braze XS
+
+- **Copy link by breakpoint** ("The link should have a dropdown by breakpoint"): the bar's link icon (now with a chevron) opens Auto, XS, S, M, L, the viewport showing marked Now; a pick copies the preset's link with that breakpoint (`#tk-<id>-xs`), which opens at it over the preset's own. The boot cover and the opener read the suffix.
+- **Accent trail**: the dot has a 4px outline in the page's colour, clear of the line, and the ripple runs inside it, between the dot and the outline (ring 11, outline to 15); the completed trail goes from full orange at the dot to 32% over 128px and stays at 32% above.
+- **Breakpoint switch → viewport**: checked with real clicks (S, XS, M, L each move the Viewport); it was already wired in v2625.
+- **S dock scrim** ("The background should fill the full width"): the dock is 420 wide at S and its scrim was drawn inside it; the scrim now spans the tablet's width, its bottom corners the frame's.
+- **Timeline header on desktop = the phone's** ("This effect should be the same exactly on desktop"): S, M, L used the header group's ground (solid to 8 under the discs, then a 32 fade) and a solid band behind the pinned tabs. The title row's ground now uses the phone's profile (solid for its first 20%, then the long eased fade 40 under), and the pinned tabs get the phone's gradient (solid 20%, out 32 under) with the blur bands, panel-wide (beside the right column at L, it stops 20 into the gap). Filled / Transparent unchanged. Other pages' desktop headers keep the header group's ground (it was made solid after rows showed through "My account" on the tablet).
+- **Tweaks panel**: a selected option takes the Tweaks button's blue (rgba(96,165,250,.2) fill, #93c5fd ink); the panel's left border is gone.
+- **Decades, Mini Item in Focus**: 24 between the cards; padding 48 (was 32), 24 on the phone; the rail dot beside the card the trail is in at 100%, the others 32%. New **Tweaks → Decades → Halo** (default No): an orange light from the card's top-left corner, fading in from when the trail's dot reaches the card's top and whole at half its height, only on the card the dot is in. Mini items List: pictures 28 (was 40), 2 more after them.
+- **Next check-in date** ("Keep it super consistent"): the date line takes an item's sub-line size and gap: 13/18.2, 9 under the title on S–L; 14/19.6, 10 under on XS (was 15/20, 12).
+- **Braze card, XS**: 96 padding at its right.
+- Checked: link menu copies `…-xs` and opens at XS, `-l` at L; accent ring at XS; S scrim; desktop header at M and L at 40/120/400 scrolled; panel computed styles; decade gap 24, padding 48 / 24, dots 1 / .32, halo .5 at a quarter, 1 at half, 0 on the card left behind; check-in sizes at XS, S, M, L; Braze 20/96/20/20. No errors.
+
 ## v2626: Item layout [XS] Condensed: the CTA full width on its own row
 
 - "For the condensed put the CTA full width in another row below the image and the content": Condensed rows are now two columns (picture, words) with the button on a row of its own under both, as wide as the row (the split button's More stays at its right), G (12 at XS) under the picture and words. Still no footer and no date line; the 36 button kept. A row without a button shows no empty row.
