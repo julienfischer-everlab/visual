@@ -19,6 +19,10 @@ this is the part you need before you change it.
 
 
 
+## v2618: Timeline: Accent trail tweak
+
+- "The current dot ... is orange and has a ripple effect on it, and also has a trailed orange trail that fades out after 128px ... Accent trail: yes/no": Tweaks > Timeline > Accent trail (No by default). Yes: the dot that follows the scroll down the rail is orange (#f78359) with a 24% ring and a ripple widening out of it every 1.8s, and its trail is orange from the dot, fading to nothing 128 above it (the white trail otherwise). Past the list's end, only the trail. No ripple with reduced motion.
+
 ## v2617: Timeline rows +2 title/sub and steps/sub; a divider at each new month
 
 - "Add a 2px gap between the row here, and also add a 2px gap between the steps indicator and the sub": the sub line 9 under the title (was 7; the phone's sub too), the steps chip 10 from the sub (was 8). On the shared row rule, so every timeline row has it.
