@@ -19,6 +19,15 @@ this is the part you need before you change it.
 
 
 
+## v2628: Save without the breakpoint; consult-summary doctor's note; Review My Plan tweak groups; halo and trail
+
+- **Save is tweaks and flow only** ("the top controller's Save should only save the tweak, not the breakpoint"): presets no longer record the viewport, applying one (or a page's starred one) leaves the viewport as it is, the Save dot ignores it, and the bar's Save / Save for all no longer keep it (the old kept value, `everlab.bp`, is cleared and no longer reopened). A breakpoint travels only in a shared link picked at one (`#tk-<id>-xs`), applied after the setup. A page's own opening viewport (the Overview's XS) is unchanged.
+- **Doctor's note, Consult summary** ("Create another example of a doctor's note based on this one"): Tweaks → Doctor note → Examples: Results (the report's note) or Consult summary, written into the note box (still editable). The new one follows the pasted format: Our priorities for you (numbered, biomarker chips with their range dots), Your actions, My actions (a Done chip), Booking your review (Care Team in orange), To consider next time (keyword chips), the sign-off. The format learnt numbered lists (`1.`), and an item led by a **bold term** reads regular after it (short bullets stay medium).
+- **Review My Plan tweaks** ("it should be broken down by different types of tweaks"): five groups: Confirm your updated plan (Layout, Pricing, Groups, Footer, Footer layout), Notes from Dr Steven Lu (Version, Top nav title), Tabs (Tabs, Tab sub), Note (Tab information), Timeline (Plan title, Added card, Type, Show existing items, Membership object, Control object, Allow move object). The Doctor's note box and Examples show on the Doctor note step only; an Async report group with nothing to show on a step is hidden (the empty "Recommendations" heading).
+- **Decade halo**: no orange border; 20% stronger (.26/.09 to .31/.11) and 20% wider (70% to 84%).
+- **Accent trail**: the line behind the orange dot white at 32% (black at 32% in light).
+- Checked: Doctor note step groups and the rendered consult summary (3 numbered, 11 bullets, 7 chips, 5 headings); the review's groups; Save with an old kept XS (cleared), the dot after a viewport change (off), presets applied (viewport kept). No errors.
+
 ## v2627: Link by breakpoint; accent dot ring; desktop header = phone's; decade halo; Tweaks blue; S dock scrim; check-in date; Braze XS
 
 - **Copy link by breakpoint** ("The link should have a dropdown by breakpoint"): the bar's link icon (now with a chevron) opens Auto, XS, S, M, L, the viewport showing marked Now; a pick copies the preset's link with that breakpoint (`#tk-<id>-xs`), which opens at it over the preset's own. The boot cover and the opener read the suffix.
