@@ -19,6 +19,10 @@ this is the part you need before you change it.
 
 
 
+## v2587 · Decade roll: the tens slower, only in its own step
+
+- Timeline decades, Roll effect ("The left number should rotate slower than the right number ... the 9 coming to 0 and then, faster than the 5, become 6"): each digit turns only in the step where it changes. 58 to 59: the tens still, the units flip. 59 to 60: the units flip 9 to 0 in the step's first 40%, the tens turn 5 to 6 over the whole step (slower), both landing on 60. Before, the tens crept over the whole run from 58. `rollPaint`.
+
 ## v2586 · Timeline rail structure at every breakpoint; Timeline list module page; Braze marketing card merged
 
 - Timeline (V3), every breakpoint ("Make sure you follow this structure for all of the breakpoints"): the rail 16 in from the list's edge, each row's ghost card 8 off the rail (25), the content 8 inside it (33); each group title's 17 dot centred on the rail, the title at 33. Decades: their cards 8 off the rail (25), their dot on it. XS with the line: the same numbers. Line No: no rail, no dot, no padding (content and title at 0, the ghost card 8 outside). The ghost card is now 8 round the content (was 12), its dividers with it.
