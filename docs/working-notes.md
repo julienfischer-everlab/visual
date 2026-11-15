@@ -19,6 +19,14 @@ this is the part you need before you change it.
 
 
 
+## v2592 · Unsaved marks for newer tweaks; Ask Eva card; doctor note 20; timeline rows on the container's top-bottom padding
+
+- **Unsaved marks** ("When I change something in the tweak, it should automatically have an orange background"). A tweak added after a preset was saved (Control object, `stArRvCtl`, newer than every Async preset) was never compared, so changing it marked nothing. `want(s, id)` now gives a tweak the preset doesn't hold the value applying the preset puts on (its default, `DEF2`). `offP()` lists every tweak off the preset; `same()` (Save's dot, "· changed") and `__tkUnsv` (the orange group and the row dot) both use it. The Timeline versions' hidden memory (`#stTlDSet`) is still saved and put back but no longer compared: its rewrite marked "Version" orange for nothing.
+- **Ask Eva card** ("Add a 6em space between the title and the Ask Eva, and then remove the subtitle", read as 16): the title and Ask Eva are 16 apart (was 12), and the line under them is gone. With Ask Eva Off, the whole card is removed ("we should remove the entire module"), not just the button.
+- **Doctor note**: line height 26 → 20 ("Reduce line height by 25%": 19.5, rounded).
+- **Timeline rows** ("The padding here across the timeline line vertically is based on the container padding"): each item's space above and below is `var(--ctPadY)`, so 24 / 28 / 32 / 36 at XS / S / M / L (was 20). The ghost card keeps its 8 inset.
+- Checked with the team's presets in a local browser: the Overview, Async report and Timeline open with no marks; changing Control object marks it and its group. Ask Eva card at XS: 16 gap, no subtitle, none when Off. Doctor note at 20.
+
 ## v2591 · Default really is the home preset; Default is not saved when a preset is home
 
 "The default still doesn't work ... the default displays same as v4, but it's not v4 because when I click on the member v4, it's different." Then: "You can only save default if it's not home-based on a preset. If it's a preset associated with the default, you cannot save the default."
