@@ -19,6 +19,11 @@ this is the part you need before you change it.
 
 
 
+## v2581 — Closing the Async report no longer marks the Overview unsaved; unsaved Save is a light orange button
+
+- Fix: opening the Async report over the Overview, then closing it, left Save marked unsaved and the preset "· changed" although nothing was touched ("I didn't change anything under the homepage"). Since v2580 the report's opening counted as a page change, so the report's starred preset was put on, and a preset's snapshot holds the Overview's tweaks too. Now only a page proper (set by setMode: the Page menu, the dock, the sidebar; `window.__pgMode`) switches the presets; a modal over a page (the Async report, the Health profile, Past results, Send a gift) leaves them as they are. Checked with a starred Async report preset: open and close, Save clean, Default, the Overview's tweak unchanged; the dock still switches the preset.
+- Save when unsaved: a light orange button (orange 18% fill, its edge 42%, warm text; 26% on hover) in place of the white text and orange dot ("Use an orange light background button when it's unsaved").
+
 ## v2580 — Presets follow every page change; Async report: "What does it mean for me?" card with Ask Eva (Tweak On / Off), no Ask Eva in the footer
 
 - Presets: a page reached without the Page menu (the dock, the sidebar, a card's link, a standalone closing) now takes its own preset in use, or its starred one on the first visit, on the top bar's preset button and in the Tweaks header, as picking it in the Page menu does ("I come from the timeline page, and then I click to home, and I end up with the preset of the timeline page"). The menu's value was set without a change event; the presets now check the page every 300 ms. Checked: a Timeline preset applied, the dock's Home tapped, the button reads the Overview's Default.
