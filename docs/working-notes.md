@@ -19,6 +19,12 @@ this is the part you need before you change it.
 
 
 
+## v2613: Timeline tabs above the header fade; New row alignment; Braze card badge / title / subline / CTAs
+
+- "This is a z-index problem on the hero. The gradient should be below the tab": once the Timeline scrolls, the head's ground (z 6) lit and bled over the pinned tabs and search (z 5). With the tabs fixed, from S up the bar sits at z 7, above the head's ground; the content still fades under both.
+- "What happened here with the vertical alignment?": a New / Adjusted row put its badge in the grid's spare 1fr row under the words, so the two spare rows grew alike and pushed the title 40 below the picture's top. The badge now has its own auto row (chg) under the date, inside the words' block: the words start level with the picture when taller, centred on it when shorter. "Also remove them from recent results": the From recent results chip is gone.
+- Braze marketing card ("badge, title, subtitle, and then put the CTA on the right side"): a badge (Just launched, 24 high, #FFF 16%), the title (18 / 24 medium), the subline (14 / 20, 2 lines; 3 on the phone), then Try Concierge (white, 40, radius 12) and Learn more (text) at the right; on the phone stacked, the CTAs under the words as the reference. Tweaks -> Braze marketing card: Badge On / Off, Subline On / Off (html.ccNoBdg / ccNoSub).
+
 ## v2612: Timeline Later pill tabs; one item corner radius per breakpoint; viewport switch active blue
 
 - Tab top -> Tabs: a third option "Now / This year + Later" ("Later is another rounded button, fully rounded, next to the tab"). Now and This year stay in the track (scroll anchors in one timeline, the thumb following); Later is its own pill beside it, 8 apart, as tall as the track (44 desk), 6% ground, lit 12% when on. Pressing Later draws the Later panel in place (the saved items only, no decades), as Upcoming / Later does; Now or This year bring the timeline back and go to their part. The thumb fades while Later is on.
