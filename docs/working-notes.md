@@ -19,6 +19,21 @@ this is the part you need before you change it.
 
 
 
+## v2599: one tweak saved for every preset; keyword / biomarker chips, inline chips and lists in the note; the controller's buttons
+
+- **Save one tweak for all presets** (#603: "a system where I can save the property at a module level ... that concerns every preset"). An unsaved tweak's orange dot is now a button. Hovering the row shows "Save for all"; clicking writes that tweak alone into Default and every preset of the page. The other unsaved tweaks keep their dots, and the preset in use keeps its own other values. Code: `EvPresets.saveOne(ids, name)` -> `saveAll(only)`, which filters the diff to those ids (the preset in use and Default are merged, not overwritten). Checked on the Timeline: changing Months and Check-in header, then saving Months for all, put Months into all 7 Timeline presets; the Check-in header stayed unsaved.
+- **Doctor's note markup** ("The keyword shouldn't have any dot ... Buy marker will have the optimal, suboptimal, and out-of-range colour dot", "I can integrate that manually in my sentence", "a way to create a bullet point list"):
+  - `[[Heart health, Sleep]]` gives keyword chips with no dot.
+  - `[[ApoB: out, LDL-C: suboptimal, HDL: optimal]]` gives biomarker chips with the range dot (`--rgOpt` / `--rgSub` / `--rgOut`). Range words accepted: optimal / opt / normal / in range, suboptimal / sub / borderline, out / out of range / high / low. Keywords and biomarkers can be mixed in one group.
+  - On its own line, `[[...]]` is a group between paragraphs. Inside a sentence, it renders as 24-high chips in the line.
+  - Lines starting `- ` (or a bullet) form a bullet list (`.arDrUl`); list items can hold chips too.
+  - Tweaks: + Keywords, + Biomarkers, + List insert after the paragraph the cursor is in, with the first word selected. Hint updated.
+- **Controller (top bar) buttons** ("secondary colour background ... with percentage opacity and no outline. And when it's active, like the flow or the tweak, it should be blue, light blue"):
+  - Every button, plus the page select, is #fff 6% with no outline; hover 10%, press 14% (`--tbBg*` on `.topbar`).
+  - On states (Flow on, Tweaks open, an open menu, comments on) are light blue: rgba(96,165,250,.2) ground, #93c5fd ink.
+  - Save keeps its orange when changed.
+- **Link icon** filled (a filled link glyph) and centred: a `display:flex` from #tkPs had pushed it to the button's left edge.
+
 ## v2598: one outline for the whole app (#FFF 16% dark, #000 10% light)
 
 - "Make sure all of the borders on this application are outlined secondary ... Follow the same 16% FFF", "000 10% on light mode". A master pair on `:root`: `--olD: rgba(255,255,255,.16)`, `--olL: rgba(0,0,0,.1)`.
