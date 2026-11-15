@@ -19,6 +19,13 @@ this is the part you need before you change it.
 
 
 
+## v2584 · Doctor note text, Confirm plan entrance, dark outlines 16%, preset Copy link
+
+- Doctor note (Async report, Email): body line height 28 → 26, 12 between paragraphs (was 16). The 34em cap and "pretty" wrapping are gone, so lines run to the card's right padding as they start at its left (24 each side at XS, 36 at M/L).
+- Confirm plan: the doctor's card no longer shows at once. It comes in after the title is written (and its sub-line), then the tabs, the H2 and the list follow one gap later.
+- Dark mode outlines on cards and CTAs: #FFFFFF at 16%. EvCard outlined uses a new `--kStroke` (dividers keep `--kLine`); My account `--acStroke`, Marketplace `--mkStroke`, `--mkChipB` and `--apBd` at 16%; the Async report's card / CTA outlines read `--ar-stroke` (set on `.arSheet.arDark` only). Light mode unchanged. The doctor email's outer hairline keeps the note card's ground (an earlier ask).
+- Save menu (the arrow by Save): a Copy link item copies the link to the preset in use ("Opens this page on <preset>"), the same link as the preset list's link icon (`EvPresets.link()`, `EvPresets.curName()`).
+
 ## v2583 · Optional badge gone; Flow and Tweaks open by default; no Flow title
 
 - "Remove the badge option now": the Health profile's "Help us understand you better" heading loses its Optional badge.
