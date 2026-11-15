@@ -19,6 +19,12 @@ this is the part you need before you change it.
 
 
 
+## v2597: doctor note chips, a Recommended tweak, the Ask Eva card outlined
+
+- **Chips in the doctor's note.** "Create a system where I can insert a chips group between paragraphs ... two or three chips that have a keyword in them with a red-orange dot." A line `[[Heart health, ApoB, Blood sugar]]` in the note (Tweaks -> Doctor note text) renders a row of chips between the paragraphs (qRich: a chips line closes the paragraph before it; keywords split on `,`, `|` or `·`). Chip: 32 high pill, ink 8% ground, 14/20 medium, a 6px #ff5a36 dot. A "+ Chips" button under the textarea inserts `[[Keyword, Keyword, Keyword]]` after the paragraph the cursor is in, the first keyword selected to type over. The default note carries one group after the focus line. Hint updated.
+- **Recommended tweak** (Tweaks -> Insight, `stArRxS`): "What we recommend for this" on an insight's page as **Card** (as before), **Plain** (rows on the page's ground, no card, pictures on the text edge) or **Off**. Through opt -> `rxs` -> `o.rxs`; in both remount lists.
+- **Ask Eva card**: outline, no ground ("Just use an outline without a background"), the outline token (#fff 16% in dark); 24 between the words and the button (+8); the star white (the page's ink); a border beam going round Ask Eva very slowly (one lap in 16 s, Eva's orange, off with reduced motion).
+
 ## v2596 · Doctor note line height +5%
 
 - **Doctor note (Async report, Email version)** ("Line height more by 5%"): the letter's body line height 21 (was 20), 16 type. Checked in the browser: 16 / 21 on the note.
