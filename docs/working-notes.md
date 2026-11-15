@@ -19,6 +19,10 @@ this is the part you need before you change it.
 
 
 
+## v2611: Preset button always light blue
+
+- "Always put this preset icon blue ... it has to have a home. Put a blue background by default": the top bar's preset button (bookmark, preset name, chevron) wears the active light blue at all times: `--tbOn` ground, `--tbOnFg` text and icon; hover and open `--tbOnH`. The other controller buttons stay on #FFF 12%.
+
 ## v2610: Controller buttons 12% white; doctor notes title on one line
 
 - "The CT should be 12% FFF background": the top bar's controller buttons (pages, presets, link, comments, Save, reset) sit on `--tbBg` #FFF 12% (was 6%); hover 16%, press 20%. Active (Flow, Tweaks) stays light blue.
