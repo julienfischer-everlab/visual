@@ -19,6 +19,10 @@ this is the part you need before you change it.
 
 
 
+## v2615: Timeline row dividers aligned with the content
+
+- "The divider should be aligned vertically with the start of the content inside the ghost card, which is the image here. The same on the right side needs to align with the button": the line between two items ran from the ghost card's edges (G, 16 desk / 12 phone, outside the content); it now runs from the picture's left to the button's right at every breakpoint.
+
 ## v2614: Braze card text 420 max; Recent insights always above Schedule
 
 - "A max width of the content on the left side should be 420": the Braze marketing card's badge / title / subline column caps at 420 (was 640); the CTAs stay at the right.
