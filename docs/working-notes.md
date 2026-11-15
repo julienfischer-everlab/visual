@@ -19,6 +19,12 @@ this is the part you need before you change it.
 
 
 
+## v2589 · Presets: a page's preset leaves other pages' tweaks alone
+
+- "The default state still doesn't work" (Timeline: home preset Member - V4, yet "Member - V4 · changed", Timeline line No): a preset's snapshot holds every tweak, so the Overview's home preset, put on when the Overview opened, also set the Timeline's tweaks (its Timeline line); back on the Timeline (its home preset already put on this visit) the page kept the Overview's values. Now putting a preset on skips tweaks that belong only to other pages (their group hidden on this page, `fgn`), the "changed" test (`same`) and the unsaved marks ignore them too. A preset applied with another page (a shared link) still sets everything.
+- Default on a page with a home preset is that preset's setup in `getP` too (the list and the label agree with applyP).
+- Checked: Overview home O1 (Timeline line No) and Timeline home T4 (Yes): reload, Timeline, Overview, Timeline again: each page on its own preset, no "changed", Timeline line Yes on the Timeline.
+
 ## v2588 · Size: three duplicated pictures embedded once (-460 KB)
 
 - The build inlines a picture at every place its path is written, so a path written twice ships twice. The Microbiome cells and the card-4 document picture now live once in `window.EvSvcImg` (`micro`, `doc4`) and are read from there; the welcome card's spinning mark is one `--hpMkS` url read by both mask properties. dist/index.html 15,999,663 -> 15,537,081 bytes.
