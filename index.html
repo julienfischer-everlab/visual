@@ -7916,8 +7916,8 @@ if (/^#tk-[A-Za-z0-9]{6,40}$/.test(location.hash)) { document.documentElement.cl
 .obDoc .obPair{display:flex;align-items:flex-start;flex-wrap:wrap;gap:32px;}
 .obDoc .obCell{margin:0;display:flex;flex-direction:column;gap:10px;flex:none;} .obDoc .obCell figcaption{font-size:12px;line-height:16px;color:var(--ldMut);font-variant-numeric:tabular-nums;}
 .obDoc .obFr{position:relative;width:calc(var(--w) * var(--obZ) * 1px);height:calc(var(--h) * var(--obZ) * 1px);overflow:hidden;border-radius:calc(var(--r, 20) * var(--obZ) * 1px);background:var(--ldCanvas);box-shadow:inset 0 0 0 1px var(--ol-ldLine);isolation:isolate;} .obDoc .obCph .obFr{--r:56;} .obDoc .obCdk .obFr{--r:24;}
-.obDoc .obFr > iframe{position:absolute;left:0;top:0;width:calc(var(--w) * 1px);height:calc(var(--h) * 1px);border:0;transform:scale(var(--obZ));transform-origin:0 0;opacity:0;transition:opacity .35s ease;background:#000;}
-.obDoc .obFr.ready > iframe{opacity:1;} .obDoc .obVeil{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:12px;font-size:12px;line-height:16px;text-align:center;color:var(--ldMut);transition:opacity .3s ease;} .obDoc .obFr.ready .obVeil{opacity:0;}
+.obDoc .obFr > iframe{position:absolute;left:0;top:0;width:calc(var(--w) * 1px);height:calc(var(--vh, var(--h)) * 1px);border:0;transform:scale(var(--obZ));transform-origin:0 0;opacity:0;transition:opacity .35s ease;background:#000;}
+.obDoc .obFr.obFr.obCrop{--r:24;width:calc(var(--cw) * var(--obZ) * 1px);height:calc(var(--ch) * var(--obZ) * 1px);} .obDoc .obFr.obCrop > iframe{left:calc(var(--cx) * var(--obZ) * -1px);top:calc(var(--cy) * var(--obZ) * -1px);}   /* the bento alone: the box its size, the app slid under it */ .obDoc .obFr.ready > iframe{opacity:1;} .obDoc .obVeil{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:12px;font-size:12px;line-height:16px;text-align:center;color:var(--ldMut);transition:opacity .3s ease;} .obDoc .obFr.ready .obVeil{opacity:0;}
 .obDoc .obVeil i{width:18px;height:18px;border-radius:50%;border:2px solid var(--ldLine);border-top-color:var(--ldMut);animation:obSpin .9s linear infinite;} @keyframes obSpin{to{transform:rotate(360deg);}}
 .obDoc .obList{display:flex;flex-direction:column;gap:2px;} .obDoc .obModH{margin-top:20px;} .obDoc .obList.obMods button{flex-direction:row;align-items:center;justify-content:space-between;gap:8px;} .obDoc .obMods svg{flex:none;width:14px;height:14px;color:var(--ldMut);} .obDoc .obMods button:hover svg{color:var(--ldFg);}   /* Modules: each a link to its Design system page */ .obDoc .obList button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;padding:8px 10px;border:0;border-radius:10px;background:none;color:var(--ldFg);font:inherit;text-align:left;cursor:pointer;} .obDoc .obList button:hover{background:var(--ldChip);} .obDoc .obList b{font-size:13px;font-weight:500;} .obDoc .obList span{font-size:11.5px;color:var(--ldMut);}   /* Overview bento: a row a preset, the app live at a phone's and the desk's width */
   .hcGal{flex:1;min-height:0;overflow-y:auto;padding:28px 24px 48px;background:var(--ldBg);scrollbar-width:thin;}
@@ -48965,7 +48965,7 @@ hairline({
   // overlap.
   {
     const menus = [].slice.call(document.querySelectorAll('.topbar .tkMenu')), tk = document.getElementById('tkMenu');
-    const dock = on => { const de = document.documentElement; de.classList.toggle('tkDocked', on); if (on) de.style.setProperty('--tkTop', Math.round(document.querySelector('.topbar').getBoundingClientRect().bottom) + 'px'); requestAnimationFrame(() => dispatchEvent(new Event('resize'))); };   // Tweaks docks at the right, the page re-centred beside it
+    const dock = on => { const de = document.documentElement; on = on && !de.classList.contains('evEmbed'); de.classList.toggle('tkDocked', on);   /* never in an embedded copy (the docs' live frames): its Tweaks aren't shown, so they keep no room (the Overview bento's phone frame had the page 73 wide) */ if (on) de.style.setProperty('--tkTop', Math.round(document.querySelector('.topbar').getBoundingClientRect().bottom) + 'px'); requestAnimationFrame(() => dispatchEvent(new Event('resize'))); };   // Tweaks docks at the right, the page re-centred beside it
     const place = menu => {
       const panel = menu.querySelector('.tkPanel');
       const s = menu.querySelector('summary').getBoundingClientRect();
@@ -53650,7 +53650,7 @@ hairline({
         const ZS = [.3, .4, .5, .6, .75, 1]; let zi = 2; try { const z = +localStorage.getItem('everlab:obZoom'); if (ZS.indexOf(z) >= 0) zi = ZS.indexOf(z); } catch (e){}
         el.innerHTML = '<aside class="ldSide" aria-label="Overview bento"><div class="ldSideH">Overview bento</div><div class="ldPats obList" role="list" aria-label="Presets"></div>' +
             '<div class="ldSideH obModH">Modules</div><div class="obList obMods" role="list" aria-label="The modules, each its page in the Design system">' + DMOD.filter(d => DOCS[d]).map(d => '<button type="button" role="listitem" data-ds="' + d + '" title="Open ' + esc(DOCS[d].t) + ' in the Design system"><b>' + esc(DOCS[d].t) + '</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg></button>').join('') + '</div>' +
-            '<div class="ldNotes"><h3>Every preset, live</h3><p>Each row is an Overview preset: Default first (the page as it opens, on its home preset), then every preset by its group in the Presets menu. Each runs the app itself, at a phone’s width (393) and at the desk’s (1440), with that preset put on.</p><p>Tap, scroll and open things inside: it is the real Overview. Nothing here changes your setup or the team’s presets.</p><p>Rows load as they come into view.</p></div></aside>' +
+            '<div class="ldNotes"><h3>Every preset, live</h3><p>Each row is an Overview preset, by its group in the Presets menu. Each runs the app itself, at a phone’s width (393) and at the desk’s (1440), with that preset put on, and shows its bento alone: the primary card, Insights and the schedule.</p><p>Tap, scroll and open things inside: it is the real Overview. Nothing here changes your setup or the team’s presets.</p><p>Rows load as they come into view.</p></div></aside>' +
           '<section class="ldMain">' + DH.page('Overview bento', 'Mobile 393 · Desktop 1440', '<span class="hcZoom" data-dp="Zoom" data-dpg="Canvas"><button type="button" data-z="-1" aria-label="Zoom out">−</button><b aria-live="polite"></b><button type="button" data-z="1" aria-label="Zoom in">+</button></span>') +
           '<div class="hcFlows obFlows" tabindex="0" aria-label="Every Overview preset at a phone’s and the desk’s width"><div class="obRows"></div></div></section>';
         const flowsEl = el.querySelector('.obFlows'), rowsEl = el.querySelector('.obRows'), listEl = el.querySelector('.obList'), zb = el.querySelector('.hcZoom b');
@@ -53658,7 +53658,7 @@ hairline({
         const zoom = () => { rowsEl.style.setProperty('--obZ', String(ZS[zi])); zb.textContent = Math.round(ZS[zi] * 100) + '%'; };
         el.querySelector('.hcZoom').addEventListener('click', e => { const b = e.target.closest('[data-z]'); if (!b) return; zi = Math.max(0, Math.min(ZS.length - 1, zi + (+b.dataset.z))); try { localStorage.setItem('everlab:obZoom', String(ZS[zi])); } catch (x){} zoom(); });
         zoom();
-        const W = [['ph', 'Mobile', 393, 852], ['dk', 'Desktop', 1440, 900]];
+        const W = [['ph', 'Mobile', 393, 600, 2000], ['dk', 'Desktop', 1440, 560, 1200]];   /* width, the box's height till cropped, the app's own height (tall, so the whole bento lays out unscrolled) */
         let cells = [], sig = '', Q = [], busy = 0; const MAXB = 2, MAXL = 6;
         const live = () => cells.filter(c => c.f).length;
         const fin = c => { if (!c.busy) return; c.busy = false; busy--; pump(); };
@@ -53667,9 +53667,15 @@ hairline({
           f.addEventListener('load', () => { let n = 0; const up = () => { if (c.f !== f) return fin(c); let w = null; try { w = f.contentWindow; } catch (x){}
             if (w && w.__evEmbedOk && w.EvPresets && w.EvPresets.apply){ try { w.EvPresets.apply(c.p.snap); } catch (x){}
               const put = (id, v) => { try { const x = w.document.getElementById(id); if (x && x.value !== v){ x.value = v; x.dispatchEvent(new w.Event('change', { bubbles: true })); } } catch (x){} };
-              setTimeout(() => { put('versionSel', '9'); put('stBp', 'auto'); setTimeout(() => { if (c.f === f) c.fr.classList.add('ready'); fin(c); }, 1300); }, 250); return; }   /* the preset on, then the Overview at the frame's own width (a preset saved at XS or L would draw its own frame inside), shown once the preset's blanket has gone */
+              setTimeout(() => { put('versionSel', '9'); put('stBp', 'auto'); setTimeout(() => { if (c.f === f){ c.fr.classList.add('ready'); crop(c); } fin(c); }, 1300); }, 250); return; }   /* the preset on, then the Overview at the frame's own width (a preset saved at XS or L would draw its own frame inside), shown once the preset's blanket has gone */
             if (++n < 160) setTimeout(up, 250); else { c.fr.classList.add('ready'); fin(c); } }; up(); });
           f.src = location.pathname + location.search + '#ob-demo'; };
+        /* the bento alone ("I don't want to see the full screen. I just want to see the bento on XS ... and on desktop. Just the section"): the frame cropped to the Overview's bento in the app inside, its primary card, Insights and the schedule (the desk's .dvTop; the phone's .dvTop, then Recent insights and the bookings under it), 16 round; measured again each second, as the app moves */
+        const crop = c => { if (!c.f || !c.fr.classList.contains('ready')) return; let d = null; try { d = c.f.contentWindow.document; } catch (x){} const O = d && d.getElementById('dOver'); if (!O) return;
+          const els = [...O.querySelectorAll(':scope > .dvTop, :scope > .dvSecIns, :scope > .ovIns1, :scope > .ovBk')].filter(e => e.getClientRects().length); if (!els.length) return;
+          let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9; els.forEach(e => { const r = e.getBoundingClientRect(); x0 = Math.min(x0, r.left); y0 = Math.min(y0, r.top); x1 = Math.max(x1, r.right); y1 = Math.max(y1, r.bottom); });
+          const P = 16; x0 = Math.max(0, x0 - P); y0 = Math.max(0, y0 - P); x1 = Math.min(c.w[2], x1 + P); y1 = Math.min(c.w[4], y1 + P);
+          const st = c.fr.style, v = { '--cx': x0, '--cy': y0, '--cw': x1 - x0, '--ch': y1 - y0 }; Object.keys(v).forEach(k => { const n = String(Math.round(v[k])); if (st.getPropertyValue(k) !== n) st.setProperty(k, n); }); c.fr.classList.add('obCrop'); };
         const pump = () => { while (busy < MAXB && Q.length){ const c = Q.shift(); if (!c.want || c.f || !el.isConnected) continue; mount(c); }
           if (live() > MAXL){ const far = cells.filter(c => c.f && !c.want); far.slice(0, live() - MAXL).forEach(unmount); } };
         let stT = 0;
@@ -53677,15 +53683,15 @@ hairline({
           const R = flowsEl.getBoundingClientRect();
           [...rowsEl.querySelectorAll('.obRow')].forEach(r => { const b = r.getBoundingClientRect(), nr = b.bottom > R.top - 200 && b.top < R.bottom + 200, far = b.bottom < R.top - 1400 || b.top > R.bottom + 1400;
             (r._cs || []).forEach(c => { c.want = nr; if (far) unmount(c); else if (nr && !c.f && !Q.includes(c)) Q.push(c); }); });
-          pump(); };   /* a row loads once within 200 px of the doc's scroller, goes once 1400 px away: measured, not observed */
+          cells.forEach(crop); pump(); };   /* a row loads once within 200 px of the doc's scroller, goes once 1400 px away: measured, not observed */
         flowsEl.addEventListener('scroll', () => { clearTimeout(stT); stT = setTimeout(check, 120); }, { passive: true });
         const render = () => { const L = window.EvPresets && window.EvPresets.list ? window.EvPresets.list('9') : null; if (!L) return;
-          const ps = [Object.assign({}, L.def, { gname: L.home ? 'Same as ' + L.home.name + ', the page’s home' : 'The page as it opens' })].concat(...L.groups.map(g => g.items.map(x => Object.assign({}, x, { gname: g.name }))));
+          const OBX = /^\s*chat option\s*#?\s*[12]\b/i, ps = [].concat(...L.groups.map(g => g.items.filter(x => !OBX.test(x.name || '')).map(x => Object.assign({}, x, { gname: g.name }))));   /* every group's presets, without Default and the two Chat Option presets ("Remove this in the overview bento. And also the default one"; the presets themselves kept) */
           const s2 = ps.map(x => x.id + ':' + (x.at || 0)).join('|') + '#' + (L.home ? L.home.id : ''); if (s2 === sig) return; sig = s2;
           cells.forEach(unmount); cells = []; Q = [];
           rowsEl.innerHTML = ps.map((x, i) => '<section class="obRow" data-i="' + i + '" aria-label="' + esc(x.name) + '">' + DH.sec(esc(x.name), esc(x.gname || ''), { hc: 'obRowH', long: false }) + '<div class="obPair dhStrip">' +
-            W.map(w => '<figure class="obCell obC' + w[0] + '"><div class="obFr" style="--w:' + w[2] + ';--h:' + w[3] + '"><span class="obVeil" aria-hidden="true"><i></i>' + esc(x.name) + '</span></div>' + DH.cap(null, w[1], w[2] + ' px') + '</figure>').join('') + '</div></section>').join('');
-          listEl.innerHTML = ps.map((x, i) => '<button type="button" role="listitem" data-i="' + i + '"><b>' + esc(x.name) + '</b><span>' + esc(i ? x.gname : 'Default') + '</span></button>').join('');
+            W.map(w => '<figure class="obCell obC' + w[0] + '"><div class="obFr" style="--w:' + w[2] + ';--h:' + w[3] + ';--vh:' + w[4] + '"><span class="obVeil" aria-hidden="true"><i></i>' + esc(x.name) + '</span></div>' + DH.cap(null, w[1], w[2] + ' px') + '</figure>').join('') + '</div></section>').join('');
+          listEl.innerHTML = ps.map((x, i) => '<button type="button" role="listitem" data-i="' + i + '"><b>' + esc(x.name) + '</b><span>' + esc(x.gname || '') + '</span></button>').join('');
           [...rowsEl.querySelectorAll('.obRow')].forEach((r, i) => { r._cs = W.map((w, j) => { const c = { p: ps[i], w, fr: r.querySelectorAll('.obFr')[j], f: null, want: false, busy: false }; cells.push(c); return c; }); }); requestAnimationFrame(check); };
         listEl.addEventListener('click', e => { const b = e.target.closest('button[data-i]'); if (!b) return; const r = rowsEl.querySelector('.obRow[data-i="' + b.dataset.i + '"]'); if (r) r.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
         render(); let tn = 0; setInterval(() => { if (el.isConnected && !el.hidden && ++tn % 3 === 0) render(); check(); }, 1000);   /* the presets arrive from the team's store after the page: the rows follow them, and any preset changed since */

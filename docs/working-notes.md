@@ -19,6 +19,12 @@ this is the part you need before you change it.
 
 
 
+## v2622: Overview bento doc: the bento alone; no Default, no Chat Option presets
+
+- Design system -> Overview bento ("Remove this in the overview bento. And also the default one"): the rows list the groups' presets only; Default and the two "Chat Option #1 / #2" presets are left out (matched by name; the presets themselves are kept in the Presets menu and the team's store).
+- "I don't want to see the full screen. I just want to see the bento on XS ... and on desktop. Just the section": each live frame is cropped to the Overview's bento in the app inside, 16 round: the desk's .dvTop (primary card, Insights, Schedule); the phone's .dvTop, then Recent insights and the bookings under it. The app inside laid out tall (2000 on the phone, 1200 on the desk) so the whole bento is drawn unscrolled; the crop measured again each second. Still the live app: tap and open things inside.
+- An embedded copy of the app (the docs' live frames, #ob-demo / #nav-demo) no longer docks its Tweaks column: it kept 320 of room though hidden, leaving the phone frame's page 73 wide.
+
 ## v2621: Mini decade list: 4 rows, then a fade, how often on each; radius tweaks regrouped, Image corner radius
 
 - Decade style Mini Item in Focus ("4 items max and then the fade-out ... a small indication on the right side, like every 2 years, every 5 years"): up to four rows in full, a fifth peeking under the fade only when a decade has more (no fade otherwise; the last row was always faded). Each row a small pill at its right: how often, from its own words (Every N years, Annual = Every year, Once), else the usual Australian interval for its kind (bowel, PSA, mammogram, bone density every 2 years; cervical every 5; vaccines once); none for a check that ends ("Bowel screening finishes"). On a narrow list (the phone) the pill under the title, right of the picture.
