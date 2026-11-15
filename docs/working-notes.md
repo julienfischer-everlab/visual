@@ -19,6 +19,11 @@ this is the part you need before you change it.
 
 
 
+## v2614: Braze card text 420 max; Recent insights always above Schedule
+
+- "A max width of the content on the left side should be 420": the Braze marketing card's badge / title / subline column caps at 420 (was 640); the CTAs stay at the right.
+- "The recent insights should always be on top of the schedule": the Overview's order (the reader every saved or dragged order goes through) never puts Schedule above Recent insights; when it would, Schedule moves right under them. On the phone (where Schedule is a section of its own) that is Recent insights, its card, then Schedule 12 below; on the desk the bento already had the insights above the Schedule.
+
 ## v2613: Timeline tabs above the header fade; New row alignment; Braze card badge / title / subline / CTAs
 
 - "This is a z-index problem on the hero. The gradient should be below the tab": once the Timeline scrolls, the head's ground (z 6) lit and bled over the pinned tabs and search (z 5). With the tabs fixed, from S up the bar sits at z 7, above the head's ground; the content still fades under both.
