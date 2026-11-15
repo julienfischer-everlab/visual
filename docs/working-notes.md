@@ -19,6 +19,14 @@ this is the part you need before you change it.
 
 
 
+## v2634 · Overview bento doc: the bento alone, nothing to scroll; a control per module
+
+"I want only the bento, not the scroll. I don't want any scroll inside ... Action Plan, I don't want to see it. And I want to have a tweak so that I can control each module."
+
+- Inside the doc's frames (html.evObDemo), the Overview keeps only its bento: the primary card and its modules. On the phone that is Insights and the schedule (and Services, Tasks or Get started when a slot holds them). Action plan, Available, the marketing card and the rest are gone, and nothing scrolls inside a frame (the app, its page and #dOver all overflow hidden; measured: no scroll height left at either width). The crop takes any module the bento holds on the phone.
+- Modules, in the doc's right panel (EvDocPanel; the Zoom moved there too, as on the other docs). Each control is the Overview's own Tweak, its options read from it: Primary card Object and State, Bento Module 1 and Module 2, Insights Amount, Scheduled Items and State. A module set here applies in every frame at once, over each preset; "As the preset" leaves it to the preset (the preset is put on again, then the others). Frames that load later take them too, and so does a frame still loading. Reset modules (the panel's header) puts every one back. Kept in this browser (everlab:obMods), never in the presets.
+- Checked: the panel groups Canvas / Primary card / Bento / Insights / Scheduled; Module 2 to Services and Items to 1 changed both frames of the first row (the phone's schedule gone, Services shown); Reset brought back each preset's own (Insights, Scheduled, More); no errors.
+
 ## v2633 · Desk Timeline: pinned tabs on a solid ground
 
 "The problem here and the section should be black background." On S, M and L, the ground behind the pinned Timeline tabs (Gradient style) was solid for only its top 20% and then faded, so the card scrolling under it (the focus card's grey) showed through behind the tabs. It is now the page's colour, solid down to the tabs' foot, then the same eased fade over the 32 under them. The phone keeps its own 20%-then-fade (asked for there earlier). Filled and Transparent styles are unchanged. Checked at M and L with the Silhouette card under the tabs.
