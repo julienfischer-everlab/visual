@@ -19,6 +19,16 @@ this is the part you need before you change it.
 
 
 
+## v2619: Focus Silhouette; card corner radius; Braze CTAs; Insights CTAs; pinned tabs ground; decade number
+
+- Timeline item -> Card corner radius: a number per breakpoint (the Breakpoint switch picks which, as Image size; hidden stT3CRadXs/S/M/L saved with presets) for the focus card, the check-in card and the suggestions card (--t3CR, concentric inner cards kept). The old field is now "Item corner radius" and drives the rows' ghost cards only (--t3R).
+- Your focus -> Focus: Silhouette ("another version with the dotted illustration ... remove the thumbnail ... padding 24 more ... the biomarker silhouette dot on the right ... square markers with their label ... no rotation ... different markers highlight every 3 or 4 seconds"). No picture, the card padded G + 24, the words and Review at the left, the Biomarkers' own dotted body (__bodyOrgan, as on the membership card's back) at the right, its foot fading. Over it four of the Sphere hero's square markers (ApoB on the heart, HbA1c lower chest, Glucose upper chest, LDL-C the neck), small and orange; every 3.6 s the next lights white and its name is written out in mono caps with the cursor, labels on alternate sides. On the phone the bust is smaller and sits under the eyebrow, which runs over its column. Light mode: the dots drawn dark. One figure per card, made once and moved into each rebuilt card.
+- Braze marketing card: the words' max width 360 (was 420). New CTAs tweak: 1 (the primary alone) or 2 (a ghost secondary with it, default); the primary at the right of the pair on the desk, at the left on the phone.
+- Overview Insights (Badges On): a task not done shows a CTA where its badge was: Complete (Health profile), Connect (Health data), Find (Past results, "Find your past blood tests"). Done and in-progress states keep their badges.
+- Timeline item: "Item layout" renamed "Item layout [XS]".
+- Timeline XS, tabs pinned: their gradient ground fills the full width of the header group (it stopped at the content's edges, the cards showing in the side strips).
+- Decade number (In card): fades out more (from its top, gone at 78%) and sits 16 higher, the words under it unmoved.
+
 ## v2618: Timeline: Accent trail tweak
 
 - "The current dot ... is orange and has a ripple effect on it, and also has a trailed orange trail that fades out after 128px ... Accent trail: yes/no": Tweaks > Timeline > Accent trail (No by default). Yes: the dot that follows the scroll down the rail is orange (#f78359) with a 24% ring and a ripple widening out of it every 1.8s, and its trail is orange from the dot, fading to nothing 128 above it (the white trail otherwise). Past the list's end, only the trail. No ripple with reduced motion.
