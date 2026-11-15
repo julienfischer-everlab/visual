@@ -19,6 +19,14 @@ this is the part you need before you change it.
 
 
 
+## v2621: Mini decade list: 4 rows, then a fade, how often on each; radius tweaks regrouped, Image corner radius
+
+- Decade style Mini Item in Focus ("4 items max and then the fade-out ... a small indication on the right side, like every 2 years, every 5 years"): up to four rows in full, a fifth peeking under the fade only when a decade has more (no fade otherwise; the last row was always faded). Each row a small pill at its right: how often, from its own words (Every N years, Annual = Every year, Once), else the usual Australian interval for its kind (bowel, PSA, mammogram, bone density every 2 years; cervical every 5; vaccines once); none for a check that ends ("Bowel screening finishes"). On a narrow list (the phone) the pill under the title, right of the picture.
+- Radius tweaks ("The item corner radius should be the card corner radius, and the card corner radius should be part of the focused card ... below image size ... image corner radius"):
+  - Timeline item -> Card corner radius (was "Item corner radius", --t3R): the rows' cards, and now the check-in and the suggestions cards too (item cards).
+  - Your focus -> Card corner radius (--t3CR, moved from Timeline item): the focus card alone. Per breakpoint, the one picked by Timeline item's Breakpoint switch (it follows the viewport).
+  - Timeline item -> Image corner radius (new, under Image size, per breakpoint, stT3ImRXs/S/M/L saved with presets): the items' pictures and the Thumbnail focus / check-in pictures; empty = Auto (a quarter of the picture, as before).
+
 ## v2620: Outlined check-in card halved; Mini decade card columns 48 apart, words 24 higher
 
 - Next check-in -> Check-in header: Outlined card ("the padding should be half of the padding of the ghost card of the item. The card inside ... should also be half"): G/2 round the inner card (was 4) and G/2 inside it (was G): 8 and 8 at M/L, 6 and 6 at XS/S, so its picture lands where the rows' pictures do; the header's words G/2 in, the dot over the picture; the inner card's corners the outer less G/2. The suggestions' card in the same style gets the same outer padding.
