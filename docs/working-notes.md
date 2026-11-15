@@ -19,6 +19,11 @@ this is the part you need before you change it.
 
 
 
+## v2620: Outlined check-in card halved; Mini decade card columns 48 apart, words 24 higher
+
+- Next check-in -> Check-in header: Outlined card ("the padding should be half of the padding of the ghost card of the item. The card inside ... should also be half"): G/2 round the inner card (was 4) and G/2 inside it (was G): 8 and 8 at M/L, 6 and 6 at XS/S, so its picture lands where the rows' pictures do; the header's words G/2 in, the dot over the picture; the inner card's corners the outer less G/2. The suggestions' card in the same style gets the same outer padding.
+- Decade style Mini Item in Focus: the two columns 48 apart (was 24; "Add a 24px gap on these two columns"), and the left column's words (title, line, chips) 24 higher under the number ("push up the content by 24px").
+
 ## v2619: Focus Silhouette; card corner radius; Braze CTAs; Insights CTAs; pinned tabs ground; decade number
 
 - Timeline item -> Card corner radius: a number per breakpoint (the Breakpoint switch picks which, as Image size; hidden stT3CRadXs/S/M/L saved with presets) for the focus card, the check-in card and the suggestions card (--t3CR, concentric inner cards kept). The old field is now "Item corner radius" and drives the rows' ghost cards only (--t3R).
