@@ -19,6 +19,11 @@ this is the part you need before you change it.
 
 
 
+## v2588 · Size: three duplicated pictures embedded once (-460 KB)
+
+- The build inlines a picture at every place its path is written, so a path written twice ships twice. The Microbiome cells and the card-4 document picture now live once in `window.EvSvcImg` (`micro`, `doc4`) and are read from there; the welcome card's spinning mark is one `--hpMkS` url read by both mask properties. dist/index.html 15,999,663 -> 15,537,081 bytes.
+- Found: about 2.1 MB more of duplicates (plan-nutrition x10, plan-dexa x14, avatar-steven x16, ...): a build change to embed each picture once is in progress. Also the Teaser video storyboard's three sound files (3.8 MB) and the Concierge video (1.4 MB) are inlined.
+
 ## v2587 · Decade roll: the tens slower, only in its own step
 
 - Timeline decades, Roll effect ("The left number should rotate slower than the right number ... the 9 coming to 0 and then, faster than the 5, become 6"): each digit turns only in the step where it changes. 58 to 59: the tens still, the units flip. 59 to 60: the units flip 9 to 0 in the step's first 40%, the tens turn 5 to 6 over the whole step (slower), both landing on 60. Before, the tens crept over the whole run from 58. `rollPaint`.
