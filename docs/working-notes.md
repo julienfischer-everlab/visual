@@ -19,6 +19,11 @@ this is the part you need before you change it.
 
 
 
+## v2617: Timeline rows +2 title/sub and steps/sub; a divider at each new month
+
+- "Add a 2px gap between the row here, and also add a 2px gap between the steps indicator and the sub": the sub line 9 under the title (was 7; the phone's sub too), the steps chip 10 from the sub (was 8). On the shared row rule, so every timeline row has it.
+- "If it's months, we still need a divider on the month, aligned with the chip on the left": a month after the first opens on the rows' divider (picture to button), at its top edge, where its chip on the rail is centred. Not with Months Stacked, which draws its own line.
+
 ## v2616: Decade cards: no stacking, number fades, no foot line, chips +8
 
 - "Don't stack the card on scroll": the decade cards scroll in the page's flow. Decade -> Scroll is retired (kept hidden with Normal its only option), so a preset saved with Stacked (Member - V4) lands on Normal too; the stacking code stays behind html.t3Stk, now never set.
