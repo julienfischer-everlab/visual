@@ -19,6 +19,10 @@ this is the part you need before you change it.
 
 
 
+## v2631 · Silhouette focus card: 12 less above and below
+
+"Reduce padding top and bottom by 12px." The Silhouette focus card's padding is G − 4 above and below (it was G + 8; 12 at L, 8 on the phone), the sides as they were. Its least height drops 24 with it (216 → 192; 232 → 208 on the phone and in the right column), or the card would have stayed the same height. Checked at L (192 high, 12 / 12) and XS (208, 8 / 8).
+
 ## v2630: Decade number orange with the halo, dimmed inactive decades, badge on the right; silhouette lighter; note chips spacing; logo disc; accent trail starts at Now
 
 - **Decades (Mini Item in Focus)**: the age number turns orange as the halo comes in (Halo on), fully at half the card, its fade kept ("when the halo comes, the number should be orange"); the decade cards the trail's dot is not in at 32% opacity, the active one whole ("The inactive decade should be 32% opacity"; only while the rail and trail show); the list items' badge (Every year) always at the row's right, the title cut short beside it on narrow cards (it stacked under the title).
