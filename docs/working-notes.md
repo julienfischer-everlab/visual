@@ -19,6 +19,12 @@ this is the part you need before you change it.
 
 
 
+## v2583 · Optional badge gone; Flow and Tweaks open by default; no Flow title
+
+- "Remove the badge option now": the Health profile's "Help us understand you better" heading loses its Optional badge.
+- "Open the flow and the tweak by default. For all pages": on every load Tweaks is open (docked right) and the Flow panel is open on any page that has a flow. The Flow button still folds it, and a page with no tweaks still shuts Tweaks.
+- "Remove the title on the top": the Flow panel no longer shows the flow's name (ASYNC REPORT and the rest) above its steps. Its first group or step sits at the top.
+
 ## v2582 — Tweaks: a Module link beside the switch on groups that have a Design system module
 
 - "If a tweak has a module, you need to have a link next to the toggle": the Tweaks groups whose element has a page in Design system → Modules wear "Module ↗" in their header, before the switch (or the fold when there is no switch). It opens that module's page (`window.__dsOpen(k)`, the same as the Overview bento's Modules list).
