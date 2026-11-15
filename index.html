@@ -52191,9 +52191,9 @@ hairline({
           Object.keys(n.v).forEach(id => { const r = ref.v && id in ref.v ? ref.v[id] : DEF[id]; if (r !== undefined && r !== n.v[id]) v[id] = n.v[id]; });
           const tn = (ref.tn || 'on') !== n.tn ? n.tn : '';
           return { all, v, js, tn, pg: pgNow(), tlv: (document.getElementById('stTlD') || {}).value, k: new Set(Object.keys(all).concat(Object.keys(v), Object.keys(js))).size + (tn ? 1 : 0) }; };
-        window.__tkUnsv = () => { let d; try { d = diffOf(); } catch (e) { return; }   /* what is unsaved ("Highlight the unsaved property ... So I know what is unsaved"): each tweak off the preset in use, its row an orange dot by its name, its card a light orange wash */
+        window.__tkUnsv = () => { let ids = []; try { const o = cur(), S = o && o.snap && o.snap.all, n = snapNow(); if (S) ids = Object.keys(S).filter(id => id in n.all && !eqv(S[id], n.all[id])); } catch (e) { return; }   /* what is unsaved ("Highlight the unsaved property ... So I know what is unsaved"): each tweak off the preset in use, by the Save button's own test (same), its row an orange dot by its name, its card a light orange wash */
           document.querySelectorAll('.topbar [data-unsv]').forEach(x => x.removeAttribute('data-unsv'));
-          Object.keys(d.all).concat(Object.keys(d.v), Object.keys(d.js || {})).forEach(id => { const el = document.getElementById(id); if (!el || !el.closest('.topbar .tkPanel')) return; const r = el.closest('.tkRow'), g = el.closest('.tkGroup'); if (r) r.setAttribute('data-unsv', ''); if (g) g.setAttribute('data-unsv', ''); }); };
+          ids.forEach(id => { const el = document.getElementById(id); if (!el || !el.closest('.topbar .tkPanel')) return; const r = el.closest('.tkRow'), g = el.closest('.tkGroup'); if (r) r.setAttribute('data-unsv', ''); if (g) g.setAttribute('data-unsv', ''); }); };
         const pagePs = () => mine().filter(x => !x.fixed && PRE.some(p => p.id === x.id));
         const diffAll = () => { const d = diffOf(); return !d.k && LASTD && LASTD.pg === pgNow() ? LASTD : d; };
         const saveAll = () => { const d = diffAll(); if (!d.k) return 0;

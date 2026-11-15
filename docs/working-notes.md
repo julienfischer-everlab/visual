@@ -19,6 +19,12 @@ this is the part you need before you change it.
 
 
 
+## v2585 · Unsaved tweaks highlighted; Past results V2 merged
+
+- Tweaks: an unsaved property has an orange dot after its name and its card a light orange wash (rgba(245,140,40,.1)), so it is clear what Save would keep ("Highlight the unsaved property ... So I know what is unsaved"). Same test as the Save button's orange (the preset in use's snapshot vs the page, `eqv`), so both agree; Save or a preset switch clears it. `window.__tkUnsv`, called from the presets' `label()`.
+- Past results V2 (helper, merged): Tweaks on the Past results screen, Version V1 / V2 (default V1); with V2, Results: Auto / Found / Found, still looking / Still looking, none yet / None found. "We found X results in the past 10 years", the records (`EvPastRec`, last 10 years, newest first) in one EvCard; still searching adds "We are still looking for some more." with EvLoad's spinner; none yet / none found have their own titles. Auto follows the search and redraws when it ends. The Documentation still follows the Version. V2 leaves out V1's two cards (Tell me when they're ready, Upload).
+- dist/index.html at 15,999,365 bytes: under 1 KB of room left.
+
 ## v2584 · Doctor note text, Confirm plan entrance, dark outlines 16%, preset Copy link
 
 - Doctor note (Async report, Email): body line height 28 → 26, 12 between paragraphs (was 16). The 34em cap and "pretty" wrapping are gone, so lines run to the card's right padding as they start at its left (24 each side at XS, 36 at M/L).

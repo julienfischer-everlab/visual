@@ -1907,6 +1907,10 @@ body.hpOn .topbar { z-index: 71; }   /* the bar and its Tweaks over the profile 
 /* the search: its radar and its label; the card of two rows */
 .arSheet.hpSheet .hpSearchP > .hpQ { padding: 0 24px; }   /* the title and its words 24 in from either side ("title group +24px padding left right") */
 .arSheet.hpSheet .hpSearch { position: relative; display: flex; flex-direction: column; align-items: center; margin: 0 0 32px; } .arSheet.hpSheet .hpSearchP > .hpSearch { margin-top: -32px; margin-bottom: 12px; }   /* 20 closer to the title ("-20px gap between map and title": 32 -> 12) */   /* in the header, 32 higher ("push up visual by 32px") */ .arSheet:is(.hpSheet, .arGfw) .hpSr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+/* Past results V2 (BUILD['res.v2']): the still-looking line's spinner (EvLoad's .evSpin) before its words; the records in one card, a hairline between them, the name over its date and lab */
+.arSheet.hpSheet .hpPr2 .evTgBot .evSpin { margin-right: 8px; vertical-align: -2px; }
+.arSheet.hpSheet .hpPr2L { margin: 0; padding: 0; list-style: none; } .arSheet.hpSheet .hpPr2L li { display: flex; flex-direction: column; gap: 2px; padding: 14px 0; box-shadow: inset 0 -1px 0 var(--kLine); } .arSheet.hpSheet .hpPr2L li:first-child { padding-top: 0; } .arSheet.hpSheet .hpPr2L li:last-child { padding-bottom: 0; box-shadow: none; }
+.arSheet.hpSheet .hpPr2L b { font-size: 16px; line-height: 20px; font-weight: 570; } .arSheet.hpSheet .hpPr2L span { font-size: 14px; line-height: 19px; color: oklch(var(--ar-ink) / .56); font-variant-numeric: tabular-nums; }
 .arSheet.hpSheet .hpScr.hpCcP { align-items: stretch; } .arSheet.hpSheet .hpCcT { padding-left: 32px; padding-right: 32px; }
  .arSheet.hpSheet .hpCcWip { align-self: center; display: inline-flex; align-items: center; height: 22px; margin: 0 auto 12px; padding: 0 9px; border-radius: 11px; background: rgba(255, 122, 26, .16); color: #FF8A3D; font-size: 11px; line-height: 1; font-weight: 600; letter-spacing: .08em; } .arSheet.hpSheet .hpCcChat { position: relative; flex: none; height: 340px; margin: 24px 0 24px; overflow: visible; } .arSheet.hpSheet .hpCcChat::before { content: ''; position: absolute; inset: 0 20px 20px;   /* the frame 320 high ("height 320px frame visual") */ border-radius: 24px; border: 1px solid oklch(var(--ar-ink) / .14); background: oklch(var(--ar-ink) / .02); pointer-events: none; }   /* a frame round the visual ("a frame, rounded outline, 24 radius; elements inside can overflow"): set in from the sides and up from the foot, so the field and the bubbles run past its edges */ .arSheet.hpSheet .hpCcTh { z-index: 1; } .arSheet.hpSheet .hpCcF { z-index: 2; }
  /* Tweaks -> Concierge -> Container guide: the content column (Content max width) shown as a red area */
@@ -5559,6 +5563,7 @@ window.EvConsent = (function () {
       },
       'res.search': function (scr) {
         if (!S.pend.search) S.pend.search = { at: Date.now() };
+        if ((document.getElementById('stHpPrVer') || {}).value === 'v2') { BUILD['res.v2'](scr); return; }   /* Tweaks -> Past results -> Version V2: its own page (below) */
         var p = pending('search'), al = live(tick), lab = h('span', { class: 'hpSr', role: 'status', text: p.label });   // al: this page's tick (show() counted it before building); lab: the search's state, for screen readers only (the line under the map removed: "remove")
         var hd = q('', 'We’re searching for your past results',   /* the same title, found or not ("We’ve started looking for your past results") */ 'Checking labs across ' + CTRY[ctry()][0] + ' under your name and ' + CTRY[ctry()][1] + ' number. We’ll tell you as soon as they arrive.', true);   // centred ("title centred")
         var map = ausMap({ country: ctry(), from: S.a.wear.ans.state, done: p.done, still: !!opts.snap, alive: al, isDone: function () { var x = pending('search'); return !!(x && x.done); },
@@ -5607,6 +5612,23 @@ window.EvConsent = (function () {
           map.start(700);
         }
       }
+    };
+    /* Past results V2 (Tweaks -> Past results -> Version; "a V2 with a simple way to tell the user if some result has been retrieved or not"): "We found X results in the past 10 years", then the records (window.EvPastRec, newest first) in one card (EvCard);
+       the search still running, "We are still looking for some more." beside the loader master's spinner (.evSpin). Results (Tweaks): Auto follows the search (running: the first two labs' records in; done: all of them), or a state picked.
+       None yet and still looking, or none found: the title alone and a line, no list. The bar and the Continue as V1 has them */
+    BUILD['res.v2'] = function (scr) {
+      var p = pending('search'), rv = (document.getElementById('stHpPrRes') || {}).value || 'auto', E = window.EvPastRec || { recs: [], labs: [] }, t0 = Date.now() - 3156e8;   // t0: ten years back
+      var run = rv === 'auto' ? !p.done : rv === 'some' || rv === 'wait', all = E.recs.filter(function (r) { return Date.parse(r.d) >= t0; }).sort(function (a, b) { return a.d < b.d ? 1 : -1; });
+      var R = rv === 'wait' || rv === 'none' ? [] : run ? all.filter(function (r) { return E.labs.indexOf(r.lab) < 2; }) : all, n = R.length, sp = '<i class="evSpin" aria-hidden="true"></i>';
+      var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], C = CTRY[ctry()];
+      var hd = n ? q('', 'We found ' + n + ' result' + (n === 1 ? '' : 's') + ' in the past 10 years', run ? { html: sp + 'We are still looking for some more.' } : '')
+        : run ? q('', 'We’re still looking for your past results', { html: sp + 'Checking labs across ' + C[0] + ' under your name and ' + C[1] + ' number.' })
+        : q('', 'We didn’t find any results in the past 10 years', 'Your new tests will be the start of your history.');
+      var ls = n ? window.EvCard.el(window.EvCard.html({ look: 'filled', size: 'md', cls: 'hpPr2C', body: '<ul class="hpPr2L" aria-label="Past results found">' + R.map(function (r) { var d = r.d.split('-'); return '<li><b>' + r.t + '</b><span>' + (+d[2]) + ' ' + MON[d[1] - 1] + ' ' + d[0] + ' · ' + r.lab + '</span></li>'; }).join('') + '</ul>' })) : null;
+      scr.classList.add('hpPr2'); scr.appendChild(hd); if (ls) scr.appendChild(ls);
+      foot2('Continue', true, fwd);
+      if (rv === 'auto' && run && !S.pend.search.hold) { var al = live(tick); setTimeout(function () { if (al()) step(0); }, Math.max(0, S.pend.search.at + SEARCH_MS - Date.now()) + 60); }   // found while it shows: drawn again, all of them
+      if (!opts.snap && !reduced() && scr.animate) { var fx = function (el, d) { return el && el.animate([{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }], { duration: 720, delay: d, easing: 'cubic-bezier(.2, .7, .2, 1)', fill: 'backwards' }); }; fx(hd, 80); fx(ls, 240); ctaFx = fx(cta, 400) || null; }
     };
 
     /* ---------- Send a gift (solo 'gift'; "Create the Send Gift Page flow in standalone flow"): its pages, each built here from the profile's own parts (q, choice, field, telF, lbl, two, the summary rows, the calendar),
