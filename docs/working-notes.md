@@ -19,6 +19,10 @@ this is the part you need before you change it.
 
 
 
+## v2596 · Doctor note line height +5%
+
+- **Doctor note (Async report, Email version)** ("Line height more by 5%"): the letter's body line height 21 (was 20), 16 type. Checked in the browser: 16 / 21 on the note.
+
 ## v2595 · Default card hidden with a home preset; check-in on the cards' edges; Outlined card header; months back on the line; suggestions in a card; decade roll 38-39-40; Mini list trimmed
 
 - **Presets** ("We cannot have a default if there's a default selected in the preset somewhere ... remove the default card on the top in this case"): while a preset is the page's home (the filled home icon), the Default card is not drawn. Its home icon again (un-home) brings Default back. Pages without a home preset keep it.
