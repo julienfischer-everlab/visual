@@ -19,6 +19,19 @@ this is the part you need before you change it.
 
 
 
+## v2635 · Overview bento doc: a Demo section first, a select per module; the right panel gone
+
+"Create the first section as a demo section, and then put all of the tweaks in this demo section so we can control each module. I have three modules: Primary, Insights, and Schedule, and then have a select for each. And remove the tweak on the right side."
+
+- The right panel's Modules (v2634) are gone, and so is the panel: the zoom is back in the header, and the preset rows are each preset as it is again.
+- Demo, the first section (and first in the left list): its own phone and desktop frames running the app on its own setup (no preset), with Insights and Schedule in the Bento's two slots. Over the frames, a box with three selects:
+  - Primary: the Onboarding consult's states (Tweaks → Primary card → State) and the other objects (DEXA, Whole Body MRI & CT Chest, Freemium · Explore, the two Doctor's plans).
+  - Insights: Empty (no insights yet), 1 insight … 5+ insights (Amount).
+  - Schedule: the Design system's Schedule states, Empty, One booking, Today, Video call, Call happening now (Items and State).
+  The options are read from the Overview's own Tweaks and set through them, so the frames draw the real modules. A pick changes both Demo frames at once and is kept in this browser (everlab:obDemo).
+- Inside every frame, the bento-only rule now hides the Overview's non-bento sections by name (its own section list: Braze card, Past result card, profile, Action plan, Later) instead of keeping a short list. The phone's Insights empty state and carousel were being hidden by that list; they show now. Still no scrolling inside.
+- Checked: the Demo first with its three selects (16 / 6 / 5 options); DEXA + Empty + Call happening now put in both frames (the phone: DEXA card, the schedule live in green, the three insight tasks); no panel; no errors.
+
 ## v2634 · Overview bento doc: the bento alone, nothing to scroll; a control per module
 
 "I want only the bento, not the scroll. I don't want any scroll inside ... Action Plan, I don't want to see it. And I want to have a tweak so that I can control each module."
