@@ -19,6 +19,10 @@ this is the part you need before you change it.
 
 
 
+## v2605: doctor note's V2-only tweaks shown for V2 only
+
+- "This property concerns only the V2" (Card ground, Later items, Additional product). The three rows carry `data-ar-drv2` and show only while Tweaks -> Doctor note -> Version is V2: a CSS rule hides them while `#stArDrV` has no V2 option checked (`.tkPanel:not(:has(#stArDrV > option[value="v2"]:checked))`), so they follow a preset or a load as well as a click. Checked: Email and V1 show Doctor note and Version only; V2 adds the three.
+
 ## v2604: Greeting and Risk areas tweaks removed
 
 - "Remove this" (Tweaks -> Doctor note: Greeting On/Off, Risk areas Yes/No). Both rows are gone and no longer read. The note keeps the setup they stood at in the user's screenshot: the greeting on (`drgr: 'on'`) and the risk areas as badges in the Membership card's line, with no card of their own (`drrk: 'no'`). They are out of both remount lists. Checked: no Greeting / Risk areas rows; the V2 note step renders with no errors.
