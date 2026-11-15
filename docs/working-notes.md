@@ -19,6 +19,13 @@ this is the part you need before you change it.
 
 
 
+## v2616: Decade cards: no stacking, number fades, no foot line, chips +8
+
+- "Don't stack the card on scroll": the decade cards scroll in the page's flow. Decade -> Scroll is retired (kept hidden with Normal its only option), so a preset saved with Stacked (Member - V4) lands on Normal too; the stacking code stays behind html.t3Stk, now never set.
+- "A fade-out on the big number on the left side, at the bottom of the number": the decade's age number (In card) masks from solid at 30% of its height to clear at its foot.
+- "Remove this line at the end": no "Reviewed with Dr Lu every year" at the decade card's foot (the new member's sketch line, Filled in with your doctor after your first review, kept).
+- "Above the chip group, add 8px top": the decade card's chips 24 under the text (was 16).
+
 ## v2615: Timeline row dividers aligned with the content
 
 - "The divider should be aligned vertically with the start of the content inside the ghost card, which is the image here. The same on the right side needs to align with the button": the line between two items ran from the ghost card's edges (G, 16 desk / 12 phone, outside the content); it now runs from the picture's left to the button's right at every breakpoint.
