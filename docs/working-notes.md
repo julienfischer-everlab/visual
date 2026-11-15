@@ -19,6 +19,30 @@ this is the part you need before you change it.
 
 
 
+## v2595 · Default card hidden with a home preset; check-in on the cards' edges; Outlined card header; months back on the line; suggestions in a card; decade roll 38-39-40; Mini list trimmed
+
+- **Presets** ("We cannot have a default if there's a default selected in the preset somewhere ... remove the default card on the top in this case"): while a preset is the page's home (the filled home icon), the Default card is not drawn. Its home icon again (un-home) brings Default back. Pages without a home preset keep it.
+- **Next check-in alignment** ("There's an alignment problem with the next checking card"): the check-in card (and the new suggestions card) sits G out of the content, on the ghost cards' and dividers' edges, 8 under the card above. Its Thumbnail style inside a card no longer doubles the offset.
+- **Badges stacked** ("There is a bug here. Should be stacked"): Adjusted / New and From recent results sit on their own row under the date line at S, M and L (they shared the date's row and overlapped it). XS already stacked them.
+- **Check-in header Outlined card** ("another card outlined with padding and have 4px padding, so the card inside is 4px from the main card with an outline"): a new Check-in header option. The line and the card in one card outlined at 16% white (12% black in light), the inner card 4 inside the outline, 26 round (the card 22).
+- **Months** ("Keep the months overlapping the timeline as we had before. Maybe we can have a tweak here: months in the timeline or stacked with items"): a new tweak, Page → Months: On the line (default) or Stacked.
+  - On the line brings back the 40-wide month chip centred on the rail. It sits level with the month's first picture, a later month's on the divider above its first item, pinned under the tabs while its month scrolls by.
+  - It had been dropped in v2581 because it no longer fit 8 off the rail. With the line 24 / 32 off the cards it fits again.
+  - Stacked keeps the line above the items.
+- **Group title** ("Increase the title by 2px here. This should actually be an H2"): Now / This year / Later 16 (was 14), still an h2. The design system's H2 type is 24; I took the 2px as the size.
+- **Suggestions in a card** ("Suggested items should be grouped in a card in the same way we handle the next check-in"): with Suggestion items On, Dr Lu's suggestions leave the list and sit together in one card at the end of Now, before the check-in. The card has a "Suggested by Dr Lu · N" line and the rows in an inner card, dressed by the same Check-in header setting (Secondary, Light orange, Outline, Outlined card, In card). Now's count includes them.
+- **Decade roll** ("Why doesn't the zero rotate? It should rotate even faster than the first digit. It should go 890"): the Number styles' roll runs 38, 39, 40, the units turning 8, 9, 0 (.1 of the run a digit) and the tens 3 to 4 over .3. It starts as the number enters the screen's foot, not before. It was 39, 40, 41, the units one 9-to-0 flip mostly off screen.
+- **Mini Item in Focus** ("remove the sub-subline and just keep the title regular size. The product should be placed at the top, should be limited to 5, and should have a gradient at the end of the list that fades out"): each product its picture and title only (no Included or price), five at most, the list at the top of its column, its last 72 fading out. On a narrow card the title is centred on its picture.
+- Checked in the browser at L and XS:
+  - The check-in and suggestions cards' edges equal the ghost cards' (49 / 816 at L, 41 / 373 at XS).
+  - The DEXA badges 12 under its date.
+  - The month chip centred on the rail (17 against 16.5), 40 wide.
+  - The title 16.
+  - The Outlined card header.
+  - The roll's units seen at 8, 9, 0 before the tens turns.
+  - The Mini list at both sizes.
+  - Default hidden on the Timeline (home V4), back when un-homed, still on the Overview.
+
 ## v2594 · Rail 24/12 and 32/16, 8 round each divider; Next check-in group; Copy link icon; Not used bucket; Move to; Ask Eva header
 
 - **Line to card, card padding** ("On mobile, the distance between the line and the card should be 24, and then the card should have a 12px padding"; "The gap between the timeline and the item should be 32, and then the padding in the card should be 16"). Two tokens now: `--t3G` (the card's padding) = `--ctPadX` / 2 + 4, so 12 at XS and S, 16 at M and L; `--t3Gap` (the line to the card) = 2G, so 24 and 32. Content sits at 17 + 3G (53 / 65). The rows' ghost cards, the focus card, the dividers, the decade dots and the Design system's Timeline list read them. I read the M/L message the same way as the XS one (32 from the line to the card), not 16 + 16 as in v2593.
