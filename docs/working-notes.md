@@ -19,6 +19,11 @@ this is the part you need before you change it.
 
 
 
+## v2608: doctor's note: list items 6 apart, __underline__
+
+- "Reduce the gap between the list items by 2px": `.arDrUl > li` margin-bottom 8 -> 6.
+- "have a way to underline text": `__text__` in the note renders underlined (`<u>`, 1px line, 3px offset), next to **bold**, *italic* and ==orange==. Hint and aria label updated. Checked: the underline renders; list items 6 apart.
+
 ## v2607: 8 more below every rich element in the doctor's note
 
 - "an 8px margin-bottom below the rich element, such as a list, keyword, or biomarker": the keyword and biomarker chip groups (`.arDrChips`, margin-bottom 12 -> 20, on top of their 8 padding) and the bullet list (`.arDrUl`, 20 -> 28) now each leave 28 before the next paragraph (was 20). Above stays as it was (chips 20, list 12). Inline chips in a sentence unchanged. Checked: keywords, biomarkers and list each 28 below.
