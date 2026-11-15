@@ -189,6 +189,7 @@ if (/^#tk-[A-Za-z0-9]{6,40}$/.test(location.hash)) { document.documentElement.cl
   .topbar .hpFl .hpFlG[data-go]:hover{background:rgba(255,255,255,.06);color:#fff;} .topbar .hpFl .hpFlG[data-go]:focus-visible{outline:2px solid #71717a;outline-offset:-2px;}   /* another service of the journey: a row that opens it */
   .topbar .hpFl li.hpFlDoc .nm{color:#a1a1aa;font-style:normal;} .topbar .hpFl li.hpFlDoc.now .nm{color:#fff;}   /* a document among the steps, quieter */ .topbar .hpJny .tkJnyRows{display:flex;flex-direction:column;gap:2px;}
   .topbar .tkRow .lbl{color:#e4e4e7;white-space:nowrap;}
+  .topbar .tkGroup[data-unsv]{background:rgba(245,140,40,.1);} .topbar .tkRow[data-unsv] > .lbl::after{content:"";display:inline-block;width:6px;height:6px;margin:0 0 1px 6px;border-radius:50%;background:#ff8a2a;vertical-align:middle;}   /* unsaved: the card a light orange wash, an orange dot by the property's name (the Save button's orange) */
   .topbar .tkRow .tkBuild{margin-left:auto;font-size:10.5px;color:#8b8b90;white-space:nowrap;font-variant-numeric:tabular-nums;}
   .topbar .tkRow .tkPerRef{display:flex;flex-direction:column;align-items:flex-end;gap:2px;white-space:normal;text-align:right;user-select:text;-webkit-user-select:text;} .topbar .tkRow .tkPerRef b{font-weight:500;color:#c9c9cc;} .topbar .tkRow .tkPerRef code{font-family:var(--ar-font-mono, ui-monospace, monospace);font-size:10px;user-select:all;-webkit-user-select:all;}   /* the persona's member, name over ID, the ID selected whole on a click */
   /* a slider row carries its own reading, so a value can be taken off the bar
@@ -51970,7 +51971,7 @@ hairline({
         const starSet = id => { const pg = pgNow(); if (id) STAR[pg] = id; else delete STAR[pg]; STARDONE[pg] = 1; wrL(STK, STAR); if (live) col(GCOL).doc('star').set({ star: STAR }).catch(() => say('Could not save the default', 3000)); paint(); };
         const starTry = () => { const pg = pgNow(); if (STARDONE[pg] || !starOk.p || !starOk.s || (live && !window.__tkShOk)) return; if (/^#tk-/.test(location.hash || '') || ONS[pg]){ STARDONE[pg] = 1; return; } const id = STAR[pg]; if (!id){ STARDONE[pg] = 1; return; }
           const o = getP(id); if (!o || !o.snap){ if (live) return; STARDONE[pg] = 1; return; } STARDONE[pg] = 1; putSnap(o.snap); setOn(id); labelSoon(); };   /* the page opened, or first visited this visit, on its starred preset; a preset already put on, or a shared link, wins */
-        const label = () => { const o = cur(), ok = !!o && same(o.snap); if (window.__bpMark) window.__bpMark();
+        const label = () => { const o = cur(), ok = !!o && same(o.snap); if (window.__bpMark) window.__bpMark(); if (window.__tkUnsv) window.__tkUnsv();
           nm.textContent = o ? (ok ? o.name : o.name + ' · changed') : 'Presets';
           document.querySelectorAll('.tkPsCur').forEach(x => { x.innerHTML = BM + '<span>Preset</span><button type="button" class="tkPsSw" aria-haspopup="listbox" aria-expanded="' + String(!!(window.__tkPsDd && !window.__tkPsDd.hidden)) + '" title="Switch preset"><b>' + esc(o ? o.name : 'None') + '</b>' + (o && !ok ? '<em>· changed</em>' : '') + '<i aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" data-lc="chevron-down"><path d="m6 9 6 6 6-6"/></svg></i></button>';   /* the name and a chevron: the presets to switch to ("Arrow chevron down CTA where we can switch the preset from there too") */ x.title = o ? (ok ? 'The page is on the preset ' + o.name : 'Changed since the preset ' + o.name + ' was applied') : ''; }); notePaint(o); };
         let LT = 0; const labelSoon = () => { clearTimeout(LT); LT = setTimeout(label, 80); };
@@ -52163,6 +52164,9 @@ hairline({
           Object.keys(n.v).forEach(id => { const r = ref.v && id in ref.v ? ref.v[id] : DEF[id]; if (r !== undefined && r !== n.v[id]) v[id] = n.v[id]; });
           const tn = (ref.tn || 'on') !== n.tn ? n.tn : '';
           return { all, v, js, tn, pg: pgNow(), tlv: (document.getElementById('stTlD') || {}).value, k: new Set(Object.keys(all).concat(Object.keys(v), Object.keys(js))).size + (tn ? 1 : 0) }; };
+        window.__tkUnsv = () => { let d; try { d = diffOf(); } catch (e) { return; }   /* what is unsaved ("Highlight the unsaved property ... So I know what is unsaved"): each tweak off the preset in use, its row an orange dot by its name, its card a light orange wash */
+          document.querySelectorAll('.topbar [data-unsv]').forEach(x => x.removeAttribute('data-unsv'));
+          Object.keys(d.all).concat(Object.keys(d.v), Object.keys(d.js || {})).forEach(id => { const el = document.getElementById(id); if (!el || !el.closest('.topbar .tkPanel')) return; const r = el.closest('.tkRow'), g = el.closest('.tkGroup'); if (r) r.setAttribute('data-unsv', ''); if (g) g.setAttribute('data-unsv', ''); }); };
         const pagePs = () => mine().filter(x => !x.fixed && PRE.some(p => p.id === x.id));
         const diffAll = () => { const d = diffOf(); return !d.k && LASTD && LASTD.pg === pgNow() ? LASTD : d; };
         const saveAll = () => { const d = diffAll(); if (!d.k) return 0;
