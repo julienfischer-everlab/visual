@@ -19,6 +19,18 @@ this is the part you need before you change it.
 
 
 
+## v2640 — Insights: Cards style, Stacked reworked, the doc's Save setup (master), Placement; trail and decade fixes
+
+"Cards --> new variation. Next to each other >XS, Stacked on XS" / "Overall for stacked and Cards, no outline on the element" / "Use Badges tweak instead of Sub for Stacked and Cards" / "Need to be able to Save a setup, so the design is replicated everywhere FROM THIS source of truth" / "Add a Placement section ... on XS and Desktop, all other objects around need to be skeleton" / "orange trail in the past should be here" / "Once passed the decade black card should stay opacity 100"
+
+- **Bug fixed**: the Empty style select (v2637) had reused the id `stInsSty` of Insights → Desktop style (Carousel / Static), so that tweak's code read the wrong select. Empty style is `#stInsEmSty` now; Desktop style works again.
+- **Cards** (Empty style: Cards, `html.insPhCrd`): above XS the three tasks side by side, each a glass card (8% white, the picture blurred through it), its icon on a soft square, the name, the pill at the card's foot (the card's width); on XS the Stacked rows.
+- **Stacked and Cards**: no outline on the rows, cards or icon squares. The Badges tweak decides what follows the name: Badges on, the Photo's pill (Complete / Connect / Find, Completed / 12 found), 128 wide in rows; Badges off, the sub line, the name and sub stacked, a chevron.
+- **Save setup** (the Insights doc is the master): `window.EvInsM`, `everlab:insMaster` = Empty style, Background pick, Overlay, Badges. Save setup in the doc's Controls box (and the top bar's Save on this doc). Read on every page as it opens and put back over the restored Tweaks and the shared ones; while saved, presets leave these four tweaks alone (as the Ask sheet's, via `askM`); kept in the shared store (masters/) for everyone.
+- **Placement** in the Insights doc: an XS phone and a desktop Overview, everything round the module in skeleton, the module itself drawn by the Overview's code from the demo's states. moCss now gives a phone rule (`body[data-bp="xs"]`) to `.moOv.moXs` and a desktop rule (`body:not([data-bp="xs"])`) to `.moOv.moDk` whatever the doc page's width, so both show at once.
+- **Trail**: a list the dot has gone past no longer has an orange foot of its own: its line is the completed colour, and the dot's 128 px fade carries over its foot while the dot is within 128 px past it (`--t3TrX`), one trail across the lists.
+- **Decades**: a decade the dot has gone past stays at 100% (`t3DecPast`); only the ones ahead are at 32%.
+
 ## v2639 — Insights empty state: Arc and Stacked styles; one pill for chips and CTAs
 
 "Try also a version with an arc. The chip should have the same size, and you need to increase the padding on the chip. The chip and the CTA should have the same style." / "Create another version: more minimal, stacked, the item simple, with outline. Still with an image in the background"
