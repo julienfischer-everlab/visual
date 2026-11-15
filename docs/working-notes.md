@@ -19,6 +19,14 @@ this is the part you need before you change it.
 
 
 
+## v2586 · Timeline rail structure at every breakpoint; Timeline list module page; Braze marketing card merged
+
+- Timeline (V3), every breakpoint ("Make sure you follow this structure for all of the breakpoints"): the rail 16 in from the list's edge, each row's ghost card 8 off the rail (25), the content 8 inside it (33); each group title's 17 dot centred on the rail, the title at 33. Decades: their cards 8 off the rail (25), their dot on it. XS with the line: the same numbers. Line No: no rail, no dot, no padding (content and title at 0, the ghost card 8 outside). The ghost card is now 8 round the content (was 12), its dividers with it.
+- This year's months: the quiet label line above their rows at every breakpoint (the desk's 40 chip on the rail no longer fits the 8 between the rail and the ghost card); it pins under This year as before. The chip rules are gone.
+- Design system -> Modules -> Timeline list (new, after Plan update, #module-timeline-list): the structure, Line Yes / Line No, at the breakpoint's width, with the numbers.
+- Braze marketing card (helper, merged): the Meet Concierge video card is its own full-width module above the Action plan at every breakpoint, Tweaks group "Braze marketing card" (On by default, Video On/Off), in the page order between Insights and Action plan; older saved orders put it above the Action plan. Copy stays "Meet Concierge".
+- dist/index.html at 15,999,692 bytes.
+
 ## v2585 · Unsaved tweaks highlighted; Past results V2 merged
 
 - Tweaks: an unsaved property has an orange dot after its name and its card a light orange wash (rgba(245,140,40,.1)), so it is clear what Save would keep ("Highlight the unsaved property ... So I know what is unsaved"). Same test as the Save button's orange (the preset in use's snapshot vs the page, `eqv`), so both agree; Save or a preset switch clears it. `window.__tkUnsv`, called from the presets' `label()`.
