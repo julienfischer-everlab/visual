@@ -19,6 +19,11 @@ this is the part you need before you change it.
 
 
 
+## v2629: Accent trail: orange from the dot, then white at 20%
+
+- "On the line with the accent, I still need a trail orange, and then after that ... a trail with a white opacity of 20%": the completed line is orange at the dot, fading into white at 20% over 128px, and white at 20% the rest of the way up (black at 20% in light). The dot, its ring and ripple, and the 4px outline are unchanged.
+- Checked at XS: orange under the month chip into the faint white line above. Focus → Silhouette checked too (L and XS: the dotted figure, four markers, the label cycling).
+
 ## v2628: Save without the breakpoint; consult-summary doctor's note; Review My Plan tweak groups; halo and trail
 
 - **Save is tweaks and flow only** ("the top controller's Save should only save the tweak, not the breakpoint"): presets no longer record the viewport, applying one (or a page's starred one) leaves the viewport as it is, the Save dot ignores it, and the bar's Save / Save for all no longer keep it (the old kept value, `everlab.bp`, is cleared and no longer reopened). A breakpoint travels only in a shared link picked at one (`#tk-<id>-xs`), applied after the setup. A page's own opening viewport (the Overview's XS) is unchanged.
