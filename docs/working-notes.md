@@ -19,6 +19,17 @@ this is the part you need before you change it.
 
 
 
+## v2639 — Insights empty state: Arc and Stacked styles; one pill for chips and CTAs
+
+"Try also a version with an arc. The chip should have the same size, and you need to increase the padding on the chip. The chip and the CTA should have the same style." / "Create another version: more minimal, stacked, the item simple, with outline. Still with an image in the background"
+
+- Tweaks → Insights → Empty style now Default / Photo / **Arc** / **Stacked** (`#stInsSty`; `html.insPhoto` for all three picture styles, plus `html.insArc` or `html.insPhStk`). Same options in Design system → Modules → Insights → Demo → Style. Background and Overlay are shared.
+- **Chips = CTAs (Photo and Arc):** Completed / 12 found / In progress and Complete / Connect / Find are one outlined pill: 36 high, 20 a side, 15 medium, the same width in a card (148 at most; 128 on the phone's rows; the column's width on the phone's Arc).
+- **Arc:** the reference: "A fuller picture of you" (30 / 26 on the phone), an arc across the card (`.insArcL`, a quadratic curve fading at both ends) with a yellow dot over each task, the reference's line icons (user, activity, file-text), names full white, the tasks in three columns at every width, the overlay darker toward the foot, Generate my insights a plain link.
+- **Stacked:** minimal rows at every width: each a glass row (6% white, the picture blurred through it) with a 1 px outline, a square outlined icon tile, the name and its state as a quiet line under it (To complete, To connect, Completed ✓, 12 found ✓), a chevron; the whole row is the button; Generate my insights a plain link.
+- Pitfall found and fixed: the arc element first shared the class name `insArc` with the page switch `html.insArc`, so `.insArc{display:none}` hid the page. Element class names must never match an html state class.
+- The leaf picture from the message did not reach this session as a file; add it with + in Background.
+
 ## v2638 — Timeline trail: the dot moves with the scroll itself (compositor), no lag
 
 "Timeline movement on the dots is not so smooth. It's super, super laggy. Can you make it way smoother?"
