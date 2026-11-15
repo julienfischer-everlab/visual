@@ -19,6 +19,10 @@ this is the part you need before you change it.
 
 
 
+## v2624: Mini decade card: the item list at the card's foot
+
+- "See the product group on the bottom of the card": in Decade style Mini Item in Focus the right column's list sits at the foot of the card, its last row level with the chips at the left (was at the top of its column). The phone unchanged (the words, then the list).
+
 ## v2623: Image corner radius Auto = the card's radius less its padding
 
 - "The card corner radius doesn't work, and the image corner radius should be automatic based on the padding, internal padding, and the card": Image corner radius on Auto (empty) is now concentric with the card it sits in: the card's corner radius less the card's padding (G: 12 at XS/S, 16 at M/L). Rows and the check-in: Timeline item -> Card corner radius less G (24 -> 8 at L, 12 at XS; 0 -> a square picture); the focus card's Thumbnail: Your focus -> Card corner radius less G. A number typed in still wins. (Card corner radius did set the rows' card, but that card only shows as a ground on hover / press, so with the picture keeping its own quarter-size rounding nothing seemed to move.)
