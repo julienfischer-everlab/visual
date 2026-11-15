@@ -19,6 +19,12 @@ this is the part you need before you change it.
 
 
 
+## v2612: Timeline Later pill tabs; one item corner radius per breakpoint; viewport switch active blue
+
+- Tab top -> Tabs: a third option "Now / This year + Later" ("Later is another rounded button, fully rounded, next to the tab"). Now and This year stay in the track (scroll anchors in one timeline, the thumb following); Later is its own pill beside it, 8 apart, as tall as the track (44 desk), 6% ground, lit 12% when on. Pressing Later draws the Later panel in place (the saved items only, no decades), as Upcoming / Later does; Now or This year bring the timeline back and go to their part. The thumb fades while Later is on.
+- Timeline item -> Corner radius: a number field per breakpoint (the Breakpoint switch above picks which one it sets, as Image size; hidden stT3RadXs/S/M/L carry the four, saved with presets). --t3R (default 24) on the focus card, the check-in card, the suggestions card and every row's ghost card; a card inside another stays concentric (Secondary 8 in: R - 8; Outlined 4 in: R - 4).
+- The controller's viewport switch: its track #FFF 12% like the other controls, the active segment light blue (--tbOn / --tbOnFg) like Flow and Tweaks.
+
 ## v2611: Preset button always light blue
 
 - "Always put this preset icon blue ... it has to have a home. Put a blue background by default": the top bar's preset button (bookmark, preset name, chevron) wears the active light blue at all times: `--tbOn` ground, `--tbOnFg` text and icon; hover and open `--tbOnH`. The other controller buttons stay on #FFF 12%.
