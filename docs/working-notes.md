@@ -19,6 +19,10 @@ this is the part you need before you change it.
 
 
 
+## v2607: 8 more below every rich element in the doctor's note
+
+- "an 8px margin-bottom below the rich element, such as a list, keyword, or biomarker": the keyword and biomarker chip groups (`.arDrChips`, margin-bottom 12 -> 20, on top of their 8 padding) and the bullet list (`.arDrUl`, 20 -> 28) now each leave 28 before the next paragraph (was 20). Above stays as it was (chips 20, list 12). Inline chips in a sentence unchanged. Checked: keywords, biomarkers and list each 28 below.
+
 ## v2606: email note: Doctor header Yes / No
 
 - "For the email, add the property ... doctor header: yes/no. If yes, keep it like this. If no, just put the avatar and the logo inside the card on the top right, and remove the doctor name, the subtext, and the card outside."
