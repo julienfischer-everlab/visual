@@ -19,6 +19,11 @@ this is the part you need before you change it.
 
 
 
+## v2602: doctor's note list: bullet on the edge, more space after
+
+- "2px less gap between the bullet point and the margin": the 4px square moved from 2px in to the text column's own left edge (`left: 0`), the words 2 nearer with it (`padding-left` 16 -> 14), so the gap between bullet and words stays 10.
+- "plus 8px margin-bottom after the list": `.arDrUl` margin-bottom 12 -> 20. Checked: bullet on the column's edge, words 14 in, 20 from the list to the next paragraph.
+
 ## v2601: doctor's note: chips spacing, the bullet list
 
 - "Add an 8px margin top and bottom on the chips section": a chips group (`.arDrChips`, not the inline ones) gets 8px of padding above and below. Padding, because a margin would fold into the paragraph's own 12. The group now sits 20 from the text above and 20 from the text below.
