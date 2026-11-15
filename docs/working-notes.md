@@ -19,6 +19,15 @@ this is the part you need before you change it.
 
 
 
+## v2638 — Timeline trail: the dot moves with the scroll itself (compositor), no lag
+
+"Timeline movement on the dots is not so smooth. It's super, super laggy. Can you make it way smoother?"
+
+- Why it lagged: the dot and its line were the list's `::after`, placed by a main-thread frame callback after the browser had already scrolled, then eased 70 ms behind on purpose. Each frame also set an inherited custom property (`--t3Tr`) on the whole list (the entire timeline restyled every frame), interleaved reads and writes (forced layouts), and the ripple was a custom-property animation that repainted the whole tall trail box every frame.
+- Now: two small elements per list, `.t3TrK` (a 1 wide window on the rail, the line sliding in it) and `.t3TrD` (the dot, ring, page-colour outline; the ripple a scale + opacity animation on its `::before`), moved by transforms only. Where supported (`@supports (animation-timeline: scroll())`), a scroll-driven animation on the scroller's named timeline `--t3Sc` moves them: the compositor runs it, frame for frame with the page. The code sets each list's stretch of the scroll (`--t3Ra` / `--t3Rb`) and the dot at its ends (`--t3Yf` / `--t3Yt`) only when geometry changes. Elsewhere it sets `--t3Y` on the two elements each frame (no easing).
+- Same behaviour: the dot waits on Now's dot until the tabs pin, then runs a little quicker than the page to reach the 70s at the foot; past a list its line is whole with no dot; groups' circles fill on reach; decades light and dim as before. The JS now reads everything first and writes after (one layout a frame), and writes only changed values.
+- Measured in headless Chromium over a full scroll: the trail's frame callback went from about 1 s of script (the top cost) to under the next six handlers; frames came out about a third shorter. Fallback (no scroll-driven animations) checked: same positions to the pixel.
+
 ## v2637 — Insights empty state: Photo style (picture or video behind, overlay, line icons, white outlines)
 
 "try a tweak with an image in the background, chips with a white outline, and a button with a white outline and a white label ... just use iconography ... change the image and the background easily with an overlay ... Upload video on the background and be able to control the overlay"
