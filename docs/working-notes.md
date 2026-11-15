@@ -19,6 +19,14 @@ this is the part you need before you change it.
 
 
 
+## v2632 · Timeline trail: starts when the tabs pin, reaches the 70s; no decade dots
+
+"The dot moving on the timeline should only start once the scroll hits the dot on the top ... when the fixed bar appears"; "I need a way to scroll until the 70 because I cannot scroll more"; "we don't need a dot on the timeline for each decade."
+
+- The trail's point was 40% down the view: already part way down the line at the top, and short of the last decade at the page's foot. Now (`pace()` in the trail script) the dot waits on the first rail's top dot until the tab bar pins (the scroll it pins at, read from the bar's sticky shift), with Now's dot orange (t3TrTop) until then. From there it runs down a little quicker than the page (at L about 1.15×), so it reaches the end of the last rail as the page reaches its foot. At L it sets off about 120 under the top and ends near the bottom of the view, with the 70s card lit and its halo whole. No extra space is added under the page. A page too short to pin the bar starts from the first pixel. Held 1 inside the line's end so the dot stays on at the foot.
+- No rail dot beside each decade card, at every breakpoint and decade style (the line and the trail's own dot only). The decade still lights from the same point.
+- Checked at L and XS: still at scroll 0–70 (Now's dot orange), moving from the pin (L 78, XS 64), 70s active with halo 1 at the bottom, no errors.
+
 ## v2631 · Silhouette focus card: 12 less above and below
 
 "Reduce padding top and bottom by 12px." The Silhouette focus card's padding is G − 4 above and below (it was G + 8; 12 at L, 8 on the phone), the sides as they were. Its least height drops 24 with it (216 → 192; 232 → 208 on the phone and in the right column), or the card would have stayed the same height. Checked at L (192 high, 12 / 12) and XS (208, 8 / 8).
