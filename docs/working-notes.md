@@ -19,6 +19,15 @@ this is the part you need before you change it.
 
 
 
+## v2637 — Insights empty state: Photo style (picture or video behind, overlay, line icons, white outlines)
+
+"try a tweak with an image in the background, chips with a white outline, and a button with a white outline and a white label ... just use iconography ... change the image and the background easily with an overlay ... Upload video on the background and be able to control the overlay"
+
+- Tweaks → Insights → **Empty style** Default / Photo (`#stInsSty`, `html.insPhoto`). Photo lays a picture or a video (`.insPhBg`) under the empty state's card (the section's `.ovInsEmpty`, the desk widget's `.ovInsHeroE`), a black overlay over it at **Overlay** (`#stInsOv`, 0–90 %, `--insOv`), Lucide line icons (id-card, watch, test-tube-diagonal) in place of the 3D renders, the chips and Generate my insights outlined in white with white labels.
+- **Background**: a picture library (EvPicLib, now with `video: true`): Default is the runner photo they sent (720 wide webp); + or **Upload video** adds a picture or a video (20 MB at most). In the app, files go to the asset store (shared); elsewhere a video's file stays in this browser's IndexedDB (`everlab-piclib`). Video tiles show a still with a play mark.
+- EvPicLib gained `attach(box, fileInput)` (one library shown in several boxes) and `rec()`.
+- Design system → Modules → Insights: the demo's controller box has Style, Background (the same library, Upload video) and Overlay, set through the Overview's own Tweaks, so the doc and the app stay one.
+
 ## v2636 · Bento: three insights at most, always; Demo desktop primary centred
 
 - "Also, always limit to three insights.": the desk Insights card's stack shows three rows at most, always, with See more at the top right past three. It used to show a fourth row (and no See more) when nothing was booked; that exception is gone. This is the Overview's own rule, so the app and every doc frame follow it.
