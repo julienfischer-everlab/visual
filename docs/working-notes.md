@@ -19,6 +19,10 @@ this is the part you need before you change it.
 
 
 
+## v2609: email note card padding at S = M
+
+- Auto at a 921 px window resolves to S (M starts at 992), where the email note card's padding was 24 against M's 36, so the two looked different. "Okay, go ahead": the card's `--kP` is 36 at S as at M and L (`.aqWrap:is(.aqBpS, .aqBpM, .aqBpL)`); XS keeps 24. Checked: XS 24, S/M/L 36.
+
 ## v2608: doctor's note: list items 6 apart, __underline__
 
 - "Reduce the gap between the list items by 2px": `.arDrUl > li` margin-bottom 8 -> 6.
