@@ -19,6 +19,10 @@ this is the part you need before you change it.
 
 
 
+## v2626: Item layout [XS] Condensed: the CTA full width on its own row
+
+- "For the condensed put the CTA full width in another row below the image and the content": Condensed rows are now two columns (picture, words) with the button on a row of its own under both, as wide as the row (the split button's More stays at its right), G (12 at XS) under the picture and words. Still no footer and no date line; the 36 button kept. A row without a button shows no empty row.
+
 ## v2625: Breakpoint switch follows the viewport; Silhouette back under Your focus; Mini items: List
 
 - "The card corner radius doesn't work": my earlier reading (the row card only showed its radius on hover) was wrong. The Timeline item Breakpoint switch could sit on M while the viewport was L, so a value typed into Card corner radius went to M and nothing on screen changed. Picking a breakpoint in that switch now moves the Viewport (stBp) to it, so the edit shows where it lands.
