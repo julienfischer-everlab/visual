@@ -19,6 +19,14 @@ this is the part you need before you change it.
 
 
 
+## v2606: email note: Doctor header Yes / No
+
+- "For the email, add the property ... doctor header: yes/no. If yes, keep it like this. If no, just put the avatar and the logo inside the card on the top right, and remove the doctor name, the subtext, and the card outside."
+- Tweaks -> Doctor note -> **Doctor header** (`stArDrHd`, Yes by default), shown for Version Email only (`data-ar-drem`, the same `:has()` rule as the V2-only rows). Through opt -> `drhd` -> `o.drhd` (normalised in the report's options), in both remount lists.
+- **Yes**: as before (the outlined card, the doctor's name, "Longevity GP · Everlab" and the photo as its header, the note card inside).
+- **No** (`drMail`, `.arDrMailNoHd`): no header row, the outer card without its outline or ground; the note card alone with full corners; the photo with Everlab's mark inside it at the top right, at the card's padding (36 at M/L, 24 at XS, level with the date); the date and subject kept 64 clear of it.
+- Checked at L and XS: Yes unchanged; No photo 36/36 (L) and 24/24 (XS) from the card's top right, date at the padding, no errors.
+
 ## v2605: doctor note's V2-only tweaks shown for V2 only
 
 - "This property concerns only the V2" (Card ground, Later items, Additional product). The three rows carry `data-ar-drv2` and show only while Tweaks -> Doctor note -> Version is V2: a CSS rule hides them while `#stArDrV` has no V2 option checked (`.tkPanel:not(:has(#stArDrV > option[value="v2"]:checked))`), so they follow a preset or a load as well as a click. Checked: Email and V1 show Doctor note and Version only; V2 adds the three.
