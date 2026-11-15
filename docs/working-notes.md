@@ -19,6 +19,11 @@ this is the part you need before you change it.
 
 
 
+## v2610: Controller buttons 12% white; doctor notes title on one line
+
+- "The CT should be 12% FFF background": the top bar's controller buttons (pages, presets, link, comments, Save, reset) sit on `--tbBg` #FFF 12% (was 6%); hover 16%, press 20%. Active (Flow, Tweaks) stays light blue.
+- "Can put in one line": "A few notes from your doctor" no longer has a forced break. One line at S, M and L; at XS (361 wide, 28px) it wraps on its own.
+
 ## v2609: email note card padding at S = M
 
 - Auto at a 921 px window resolves to S (M starts at 992), where the email note card's padding was 24 against M's 36, so the two looked different. "Okay, go ahead": the card's `--kP` is 36 at S as at M and L (`.aqWrap:is(.aqBpS, .aqBpM, .aqBpL)`); XS keeps 24. Checked: XS 24, S/M/L 36.
