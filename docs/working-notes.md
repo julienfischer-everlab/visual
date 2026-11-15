@@ -19,6 +19,14 @@ this is the part you need before you change it.
 
 
 
+## v2603: the doctor's note insert buttons' defaults
+
+- The Tweaks' insert buttons under the Doctor's note text now put in the user's own examples:
+  - **+ Keywords**: `[[Heart health, Cardiovascular]]` ("That's for the keyword"), "Heart health" selected.
+  - **+ Biomarkers**: `[[ApoB-C: Out of range, LDL-C: suboptimal]]` ("Use this for biomarker as a default"), "ApoB-C" selected; ApoB-C draws the out-of-range dot, LDL-C the suboptimal one.
+  - **+ List**: `- Dexa Scan / - CTCA Scan / - Pathology test` ("That's for the list"), "Dexa Scan" selected.
+- The hint shows the biomarker example. Checked: the three inserts in a row render two keyword chips, the two biomarker chips with their range dots, and the three-item list.
+
 ## v2602: doctor's note list: bullet on the edge, more space after
 
 - "2px less gap between the bullet point and the margin": the 4px square moved from 2px in to the text column's own left edge (`left: 0`), the words 2 nearer with it (`padding-left` 16 -> 14), so the gap between bullet and words stays 10.
