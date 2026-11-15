@@ -19,6 +19,13 @@ this is the part you need before you change it.
 
 
 
+## v2593 · Home preset from the sidebar; one gap for the line, the cards and their padding
+
+- **Home preset from the sidebar** ("When I click on the timeline on the left side and then on the breakpoints auto, it's still default"). The sidebar's (and the dock's) Timeline, Plan, Services and appointment open inside the Overview's shell: they set the page menu without `setMode`, so `__pgMode` stayed '9'. `pgSync` read that as a modal over the Overview and skipped the starred preset. `inShell(p)` now counts `tl`, `plan`, `svcMkt` and `aptM` opened in the shell as pages proper, so the Timeline opened from the sidebar lands on Member - V4. Checked with the team's presets: Timeline line Yes, three tabs, V4's decades; still V4 after Auto.
+- **Line, card, padding** ("The gap between the line and the ghost card, or the card ... has to be the same as the padding inside the card"; "L breakpoint: ... 12px padding inside ... a gap ... of 12px as well"; "Each image should be vertically aligned"). A new token, `--t3G` = half the container's side padding (`--ctPadX` / 2): 8 at XS and S, 12 at M and L. The line stays at 16 (1 wide). Every card sits G off it with G inside: the rows' ghost cards (`::before` at -G, top and bottom `--ctPadY` - G) and the focus card (`.t3FocusB.t3FcTh`: margin-inline -G, padding G). Content is at `--t3In` = 17 + 2G (33 XS·S, 41 M·L); decades are at 17 + G, their dot at -(9 + G); group titles move with `--t3In`. Measured: the focus picture and the rows' pictures at 41 (L, M) and 33 (S, XS).
+- **Focus picture = Image size** ("when you change the timeline item image size, the image size should be the same on the focus card as well"): `.t3FcPic` and its grid column use `--t3Th` at every breakpoint (it was 96 from S up).
+- Design system → Modules → Timeline list draws the same token (`.tlsD`), and its text and anatomy name G.
+
 ## v2592 · Unsaved marks for newer tweaks; Ask Eva card; doctor note 20; timeline rows on the container's top-bottom padding
 
 - **Unsaved marks** ("When I change something in the tweak, it should automatically have an orange background"). A tweak added after a preset was saved (Control object, `stArRvCtl`, newer than every Async preset) was never compared, so changing it marked nothing. `want(s, id)` now gives a tweak the preset doesn't hold the value applying the preset puts on (its default, `DEF2`). `offP()` lists every tweak off the preset; `same()` (Save's dot, "· changed") and `__tkUnsv` (the orange group and the row dot) both use it. The Timeline versions' hidden memory (`#stTlDSet`) is still saved and put back but no longer compared: its rewrite marked "Version" orange for nothing.
