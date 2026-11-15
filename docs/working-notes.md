@@ -19,6 +19,12 @@ this is the part you need before you change it.
 
 
 
+## v2625: Breakpoint switch follows the viewport; Silhouette back under Your focus; Mini items: List
+
+- "The card corner radius doesn't work": my earlier reading (the row card only showed its radius on hover) was wrong. The Timeline item Breakpoint switch could sit on M while the viewport was L, so a value typed into Card corner radius went to M and nothing on screen changed. Picking a breakpoint in that switch now moves the Viewport (stBp) to it, so the edit shows where it lands.
+- Your focus: the Card corner radius row kept the timeline-detail row classes, which hid every other row of the group (Focus: Thumbnail / Photo / Silhouette). It is a plain row now; the Focus select is back.
+- Decades: Tweaks -> Decades -> Mini items, Cards (as before) or List: no card, list items with a hairline divider between them, first and last flush.
+
 ## v2624: Mini decade card: the item list at the card's foot
 
 - "See the product group on the bottom of the card": in Decade style Mini Item in Focus the right column's list sits at the foot of the card, its last row level with the chips at the left (was at the top of its column). The phone unchanged (the words, then the list).
