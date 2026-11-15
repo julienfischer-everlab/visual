@@ -19,6 +19,15 @@ this is the part you need before you change it.
 
 
 
+## v2630: Decade number orange with the halo, dimmed inactive decades, badge on the right; silhouette lighter; note chips spacing; logo disc; accent trail starts at Now
+
+- **Decades (Mini Item in Focus)**: the age number turns orange as the halo comes in (Halo on), fully at half the card, its fade kept ("when the halo comes, the number should be orange"); the decade cards the trail's dot is not in at 32% opacity, the active one whole ("The inactive decade should be 32% opacity"; only while the rail and trail show); the list items' badge (Every year) always at the row's right, the title cut short beside it on narrow cards (it stacked under the title).
+- **Focus card, Silhouette**: the dotted body at 30% (70% lighter), the markers and their label unchanged; the words' padding 16 less (G + 8).
+- **Doctor's note**: a chips group (keywords, biomarkers) always on its own line, 12 above and 16 below, in a sentence or between paragraphs; the Consult summary example has no orange text (Care Team in bold).
+- **Doctor's mark** on the photo: its disc the card's ground (the sheet's paper; the note card's when the header is off), the mark in the ink, 2 more padding (26 disc, 6 round the mark).
+- **Accent trail start** ("On the top, the orange should actually be the Now ... when you go down, the Now becomes white"): at the top of the page (scrolled under 8px), Now's dot is orange and the trail dot is hidden; scrolled, Now's dot is white and the orange dot fades in below and follows.
+- Checked: number color orange at half / white before; card opacities 1 / .32 / .32; badge 0 from the right at L and XS; Silhouette at L and XS; chip groups 12/16, no mark; Now dot orange at 0, white at 260 with the trail dot shown. No errors.
+
 ## v2629: Accent trail: orange from the dot, then white at 20%
 
 - "On the line with the accent, I still need a trail orange, and then after that ... a trail with a white opacity of 20%": the completed line is orange at the dot, fading into white at 20% over 128px, and white at 20% the rest of the way up (black at 20% in light). The dot, its ring and ripple, and the 4px outline are unchanged.
