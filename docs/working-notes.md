@@ -19,6 +19,11 @@ this is the part you need before you change it.
 
 
 
+## v2601: doctor's note: chips spacing, the bullet list
+
+- "Add an 8px margin top and bottom on the chips section": a chips group (`.arDrChips`, not the inline ones) gets 8px of padding above and below. Padding, because a margin would fold into the paragraph's own 12. The group now sits 20 from the text above and 20 from the text below.
+- "add a margin-bottom of 8px on every list. Also, the list should be white, with a 4px square bullet that is white": `.arDrUl` items 8 apart (the last none, the list keeps the paragraph's 12 after it), the words the ink (white in dark), a 4px square in the ink for the bullet (`li::before`, centred on the first line). Applies to the note wherever it renders (the email and the note card), not the email alone. Checked: above 20, below 20, between items 8, bullet 4x4 white.
+
 ## v2600: the Async report's Next always goes to the row below in the Flow panel
 
 - "After this [Everything else we checked], we need to transition to Doctor note. The flow should always transition to the steps that are below." With "Here's what we recommend" switched off, the Flow panel listed Doctor note, Recommendation summary, Clinical, ... right under Everything else, but the switch dropped the whole recommendations step from the sequence: Next ("See my updated plan") jumped to That wraps up your debrief.
