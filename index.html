@@ -22552,7 +22552,8 @@ window.EvCtl = (function () {
     function fOrd(ids, ord) { return window.EvFlowOrd ? window.EvFlowOrd(ids, ord) : ids.slice(); }
     function sId(n) { return n === 0 ? 'w' : n === DBF ? 'd' : n < I0 + NEWI.length ? 'i' + (n - I0) : n === REST ? 'r' : n === REC ? 'c' : 'n'; }
     function seqTop() { var all = [], n, a = fArr(), off = (a && a.off) || [], byId = {}; for (n = W0; n < STEP_COUNT; n++) { all.push(sId(n)); byId[sId(n)] = n; }
-      var q = fOrd(all, a && a.order && a.order.top).filter(function (k) { return off.indexOf(k) < 0; }).map(function (k) { return byId[k]; }); return q.length ? q : all.map(function (k) { return byId[k]; }); }
+      var recIn = function () { try { return rcPhased() && rcLin().some(function (k) { return !rcOffP(k); }); } catch (e) { return false; } };   /* the recommendations' own steps listed under Everything else in the Flow panel while their header row is off: the flow still goes into them, the one below next ("After this, we need to transition to Doctor note. The flow should always transition to the steps that are below") */
+      var q = fOrd(all, a && a.order && a.order.top).filter(function (k) { return off.indexOf(k) < 0 || (k === 'c' && recIn()); }).map(function (k) { return byId[k]; }); return q.length ? q : all.map(function (k) { return byId[k]; }); }
     function nextOf(n) { var q = seqTop(), i = q.indexOf(n); if (i < 0) { for (i = 0; i < q.length; i++) if (q[i] > n) return q[i]; return null; } return i + 1 < q.length ? q[i + 1] : null; }
     function prevOf(n) { var q = seqTop(), i = q.indexOf(n); if (i < 0) { for (i = q.length - 1; i >= 0; i--) if (q[i] < n) return q[i]; return null; } return i > 0 ? q[i - 1] : null; }
     function firstOf() { return seqTop()[0]; }

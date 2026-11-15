@@ -19,6 +19,11 @@ this is the part you need before you change it.
 
 
 
+## v2600: the Async report's Next always goes to the row below in the Flow panel
+
+- "After this [Everything else we checked], we need to transition to Doctor note. The flow should always transition to the steps that are below." With "Here's what we recommend" switched off, the Flow panel listed Doctor note, Recommendation summary, Clinical, ... right under Everything else, but the switch dropped the whole recommendations step from the sequence: Next ("See my updated plan") jumped to That wraps up your debrief.
+- Now (`seqTop`) the recommendations stay in the sequence while any of their own steps is on (`rcPhased()` and a phase in `rcLin()` not off), so Next goes to the first of them that is on, in the panel's order. Checked: Everything else -> Doctor note -> Recommendation summary -> Clinical; Back from Doctor note -> Everything else. With every sub-step off too, the old skip still applies.
+
 ## v2599: one tweak saved for every preset; keyword / biomarker chips, inline chips and lists in the note; the controller's buttons
 
 - **Save one tweak for all presets** (#603: "a system where I can save the property at a module level ... that concerns every preset"). An unsaved tweak's orange dot is now a button. Hovering the row shows "Save for all"; clicking writes that tweak alone into Default and every preset of the page. The other unsaved tweaks keep their dots, and the preset in use keeps its own other values. Code: `EvPresets.saveOne(ids, name)` -> `saveAll(only)`, which filters the diff to those ids (the preset in use and Default are merged, not overwritten). Checked on the Timeline: changing Months and Check-in header, then saving Months for all, put Months into all 7 Timeline presets; the Check-in header stayed unsaved.
