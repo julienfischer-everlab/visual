@@ -19,6 +19,13 @@ this is the part you need before you change it.
 
 
 
+## v2582 — Tweaks: a Module link beside the switch on groups that have a Design system module
+
+- "If a tweak has a module, you need to have a link next to the toggle": the Tweaks groups whose element has a page in Design system → Modules wear "Module ↗" in their header, before the switch (or the fold when there is no switch). It opens that module's page (`window.__dsOpen(k)`, the same as the Overview bento's Modules list).
+- Mapped: Insights → Insights, Primary card and Onboarding consult → Onboarding consult, Scheduled → Schedule, Plan updates → Plan update, Clinical recommendation → Recommendation card. The map is `MODLK` (grep it) next to the section headers' builder.
+- Section headers are drawn from their title text, so a link waits for its header to be built (it had copied "Module" into the title). The section drag skips the link.
+- Checked: the six links present, Insights' opens Design system → Modules → Insights (#module-insights).
+
 ## v2581 — Closing the Async report no longer marks the Overview unsaved; unsaved Save is a light orange button
 
 - Fix: opening the Async report over the Overview, then closing it, left Save marked unsaved and the preset "· changed" although nothing was touched ("I didn't change anything under the homepage"). Since v2580 the report's opening counted as a page change, so the report's starred preset was put on, and a preset's snapshot holds the Overview's tweaks too. Now only a page proper (set by setMode: the Page menu, the dock, the sidebar; `window.__pgMode`) switches the presets; a modal over a page (the Async report, the Health profile, Past results, Send a gift) leaves them as they are. Checked with a starred Async report preset: open and close, Save clean, Default, the Overview's tweak unchanged; the dock still switches the preset.
