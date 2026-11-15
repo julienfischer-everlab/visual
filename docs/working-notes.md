@@ -19,6 +19,15 @@ this is the part you need before you change it.
 
 
 
+## v2598: one outline for the whole app (#FFF 16% dark, #000 10% light)
+
+- "Make sure all of the borders on this application are outlined secondary ... Follow the same 16% FFF", "000 10% on light mode". A master pair on `:root`: `--olD: rgba(255,255,255,.16)`, `--olL: rgba(0,0,0,.1)`.
+- Swept index.html and the app's pages (gift, clinic, gift-receipt, referral, concierge) with a script: every full outline (a 0.5 to 1.5px solid `border`, `border-color`, `outline`, or a `0 0 0 1px` ring) whose colour was a white or black alpha between 3% and 30% (also the warm inks rgba(242,229,224) / rgba(46,31,26) and the opaque dark greys #161616 to #5a5a5a) now reads `var(--olD, ...)` on dark grounds or `var(--olL, ...)` on light ones. That is 228 literals. Report-sheet outlines in `--ar-ink` use `var(--ar-stroke, oklch(var(--ar-ink) / .1))`.
+- Module line tokens shared with dividers (`--ldLine`, `--alLine`, `--acLine`, `--tlLine`, `--kStroke`, `--sLine`, `--mkStroke`, ... 29 in index.html, 6 in the pages) got an outline twin `--ol-<token>` defined beside each definition (dark -> `--olD`, light -> `--olL`). The outlines use the twin, so dividers keep their own line.
+- Left as they were: hover / selected / focus / error rules, 2px rings, accent and warm-tinted outlines, the phone's Dynamic Island, device frames, and the prototype's own chrome (top bar, Tweaks, Flow panel, doc control panel, comments, conversation editor).
+- Checked by computed style on Overview, Timeline, Plan, Services, Onboarding consult, Send a gift, Confirm plan, Design system and the Async report, dark and light: outlines draw at #fff 16% / #000 10%; no page errors. Documented in the design-system skill (tokens-components, Outlines).
+- Ask Eva card: its light-mode outline fallback is now .10 (was .12).
+
 ## v2597: doctor note chips, a Recommended tweak, the Ask Eva card outlined
 
 - **Chips in the doctor's note.** "Create a system where I can insert a chips group between paragraphs ... two or three chips that have a keyword in them with a red-orange dot." A line `[[Heart health, ApoB, Blood sugar]]` in the note (Tweaks -> Doctor note text) renders a row of chips between the paragraphs (qRich: a chips line closes the paragraph before it; keywords split on `,`, `|` or `·`). Chip: 32 high pill, ink 8% ground, 14/20 medium, a 6px #ff5a36 dot. A "+ Chips" button under the textarea inserts `[[Keyword, Keyword, Keyword]]` after the paragraph the cursor is in, the first keyword selected to type over. The default note carries one group after the focus line. Hint updated.

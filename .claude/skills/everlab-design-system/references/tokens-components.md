@@ -118,6 +118,10 @@ A host stylesheet that must keep its own selector (e.g. the HP's `.hpH`, the mai
 
 ---
 
+## Outlines (`--olD` / `--olL`)
+
+Every full outline (a card's, a CTA's, a field's, a chip's 1px border or `inset 0 0 0 1px` ring) is `var(--olD, rgba(255,255,255,.16))` on a dark ground and `var(--olL, rgba(0,0,0,.1))` on a light one, defined once on `:root` in index.html. A module with its own line token has an outline twin `--ol-<token>` defined beside it (dark value `--olD`, light `--olL`) and its outlines use the twin, so its dividers (single-side borders, `inset 0 -1px 0`) keep the module's own line. Inside the report sheet use `var(--ar-stroke, oklch(var(--ar-ink) / .1))`. Not covered: hover/selected/focus states, 2px rings, accent outlines, the prototype's own chrome (top bar, Tweaks, Flow panel, doc control panel, comments).
+
 ## Cards
 
 **What.** The Card master, `window.EvCard` (Design system › Core components › Cards, `#cards`). Every card in the app is one of two, by its name: a **Card static** (three slots, Header, Body and Footer, each optional; a look and a size) or a **Card interactive** (one slot that can hold anything; rest, hover and press, plus Selected). The user's rule: "every time we have a card, we're going to need to refer to this design system".
