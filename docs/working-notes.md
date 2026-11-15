@@ -19,6 +19,10 @@ this is the part you need before you change it.
 
 
 
+## v2633 · Desk Timeline: pinned tabs on a solid ground
+
+"The problem here and the section should be black background." On S, M and L, the ground behind the pinned Timeline tabs (Gradient style) was solid for only its top 20% and then faded, so the card scrolling under it (the focus card's grey) showed through behind the tabs. It is now the page's colour, solid down to the tabs' foot, then the same eased fade over the 32 under them. The phone keeps its own 20%-then-fade (asked for there earlier). Filled and Transparent styles are unchanged. Checked at M and L with the Silhouette card under the tabs.
+
 ## v2632 · Timeline trail: starts when the tabs pin, reaches the 70s; no decade dots
 
 "The dot moving on the timeline should only start once the scroll hits the dot on the top ... when the fixed bar appears"; "I need a way to scroll until the 70 because I cannot scroll more"; "we don't need a dot on the timeline for each decade."
