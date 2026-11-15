@@ -19,6 +19,10 @@ this is the part you need before you change it.
 
 
 
+## v2604: Greeting and Risk areas tweaks removed
+
+- "Remove this" (Tweaks -> Doctor note: Greeting On/Off, Risk areas Yes/No). Both rows are gone and no longer read. The note keeps the setup they stood at in the user's screenshot: the greeting on (`drgr: 'on'`) and the risk areas as badges in the Membership card's line, with no card of their own (`drrk: 'no'`). They are out of both remount lists. Checked: no Greeting / Risk areas rows; the V2 note step renders with no errors.
+
 ## v2603: the doctor's note insert buttons' defaults
 
 - The Tweaks' insert buttons under the Doctor's note text now put in the user's own examples:
