@@ -19,6 +19,16 @@ this is the part you need before you change it.
 
 
 
+## v2591 · Default really is the home preset; Default is not saved when a preset is home
+
+"The default still doesn't work ... the default displays same as v4, but it's not v4 because when I click on the member v4, it's different." Then: "You can only save default if it's not home-based on a preset. If it's a preset associated with the default, you cannot save the default."
+
+- **Cause:** the Timeline's Image size has a Breakpoint switch (`stT3ThBp`). It is a stand-in that follows the viewport, but the presets saved it through `XT()` (`.tkT3Only select[id]`) and put it back on apply. When V4 was applied on opening, its saved Breakpoint was put back, which wrote one breakpoint's picture size into another's, and the page read "Member - V4 · changed". When you clicked V4 later it no longer differed, so it looked like a different setup.
+- **Fix:** `XT()` leaves out every `.tkProxy`, and `fgn()` treats a `.tkProxy` as foreign. A stand-in is now never put back by `putSnap`, never counted as a change by `same()`, and never marked unsaved by `__tkUnsv`. Older presets that hold the value are ignored.
+- **Save on a page with a home preset** (`EvPresets.homeSave`): the Tweaks' Save writes the preset in use (Default being the home preset) and never the shared Default setup. The button reads "Saved to Member - V4". A built-in preset is not saved; the message says to duplicate it. A page without a home preset still saves Default, as before.
+- The home preset's row Update no longer saves Default with it. Default's line now reads "Same as Member - V4 · Save updates Member - V4".
+- Checked with the team's saved presets copied into a local browser: opening the Timeline on Default gives exactly V4 (no tweak differs, same classes and picture sizes as clicking V4). Save on the Timeline updated V4 and left Default untouched. Save on the Overview still wrote Default.
+
 ## v2590 · Decade style: Mini Item in Focus
 
 "Create a new style for the decade. Call that Mini Item in Focus. Keep the card focus, and on the left side, you have all the text content chips. On the right side, you just have a list of products in a mini way."
