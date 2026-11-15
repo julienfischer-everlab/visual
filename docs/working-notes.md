@@ -19,6 +19,12 @@ this is the part you need before you change it.
 
 
 
+## v2636 · Bento: three insights at most, always; Demo desktop primary centred
+
+- "Also, always limit to three insights.": the desk Insights card's stack shows three rows at most, always, with See more at the top right past three. It used to show a fourth row (and no See more) when nothing was booked; that exception is gone. This is the Overview's own rule, so the app and every doc frame follow it.
+- "On desktop, use the centred primary variation.": the Overview bento doc's Demo puts Tweaks → Primary card → Card alignment on Centred. That alignment only applies on the desk, so the phone frame is unchanged. The preset rows keep their own presets' alignment.
+- Checked in the Demo with Your plan is ready, 4 insights and an empty schedule: the desk frame shows the card centred, three insight rows, See more and the schedule's empty state; no errors.
+
 ## v2635 · Overview bento doc: a Demo section first, a select per module; the right panel gone
 
 "Create the first section as a demo section, and then put all of the tweaks in this demo section so we can control each module. I have three modules: Primary, Insights, and Schedule, and then have a select for each. And remove the tweak on the right side."
