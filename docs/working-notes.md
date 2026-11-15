@@ -19,6 +19,16 @@ this is the part you need before you change it.
 
 
 
+## v2590 · Decade style: Mini Item in Focus
+
+"Create a new style for the decade. Call that Mini Item in Focus. Keep the card focus, and on the left side, you have all the text content chips. On the right side, you just have a list of products in a mini way."
+
+- Tweaks › Decades › Style gains **Mini Item in Focus** (`stT3DecSty = mini`). The row is now a dropdown because four long names do not fit a segmented row.
+- `decMini(g)` is Card #1's card (`decCardB`) with a `t3MiniC` class. Its check list is replaced by `.t3MiniL`: one mini row per check (picture or icon 40 with radius 10, the name, then Included or the price). The rows are 20 round on a 5% wash, and a price is shown in ink.
+- From S up, the card is a grid (.9fr / 1.1fr, 24 gap, 32 padding). The figure, words, chips and foot sit left-aligned in the left column; the mini list sits in the right column, vertically centred. On the phone (timeline ≤ 480) the card stacks: words, then the list, then the foot.
+- When the list column is narrower than 340 (L's ~600 timeline, XS), Included or the price sits under the name, so names are not cut.
+- Light mode: rows at 5% ink, icon tiles at 7%.
+
 ## v2589 · Presets: a page's preset leaves other pages' tweaks alone
 
 - "The default state still doesn't work" (Timeline: home preset Member - V4, yet "Member - V4 · changed", Timeline line No): a preset's snapshot holds every tweak, so the Overview's home preset, put on when the Overview opened, also set the Timeline's tweaks (its Timeline line); back on the Timeline (its home preset already put on this visit) the page kept the Overview's values. Now putting a preset on skips tweaks that belong only to other pages (their group hidden on this page, `fgn`), the "changed" test (`same`) and the unsaved marks ignore them too. A preset applied with another page (a shared link) still sets everything.
