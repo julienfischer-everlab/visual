@@ -19,6 +19,14 @@ this is the part you need before you change it.
 
 
 
+## v2689 · Padding guide sections; phone tab row: 12 padding, Paused at its right
+
+"Header group should be an entire section with container inside. And the body also": the Padding guide draws two sections the page's full width, solid (Header section, blue, from the page's top to under the top nav; Body section, white, from there to after the content), named at their top right, and in each its container, dashed (the top nav's at the container's width, named above it; the body's with its token padding, Container · padding Y / X).
+
+"Tab section should have 12px padd top bottom": the phone's Timeline tab section 12 above and below (was 4 / 10).
+
+"Place the Snooze CTA on the same row than the tab on the right side": on the phone (Search Off) Paused's snooze icon leaves the head (it sat beside Past) for the tab row's right end, a 44 round Secondary disc (Primary while Paused is open), the tabs taking the rest of the row (8 between). The desk keeps its outlined Paused button at the bar's right.
+
 ## v2688 · Focus card: 32 padding; Plan not confirmed copy
 
 "Padding 32px on the Focus card": from S up (the Timeline's container over 540) every focus card is 32 all round: Thumbnail (was 16), Silhouette (was 12 / 24; its right is still the body's 260), Plan Not confirmed (was 24, its column gap 32 too). The phone keeps its padding (12, Silhouette 8 / 20, Not confirmed 20); the side column too.
