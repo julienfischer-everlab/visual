@@ -19,6 +19,10 @@ this is the part you need before you change it.
 
 
 
+## v2672 · Confirm plan: Included in white
+
+- The rows' footer **Included** is the full ink (white on dark), like the prices ("Put included the white"; was 36%). Rows saved for later or unticked still dim as a whole.
+
 ## v2671 · Notes from Dr Lu: Discuss my plan
 
 - The note's CTA under the signature reads **Discuss my plan** ("CTA Discuss my plan"; was Book a consultation). Same action: the sheet closes and the Care Team chat opens.
