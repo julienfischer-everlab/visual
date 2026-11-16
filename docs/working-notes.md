@@ -19,6 +19,15 @@ this is the part you need before you change it.
 
 
 
+## v2642 — Timeline: item dots on the line, focus card Plan states (Not confirmed / Confirmed), desktop silhouette inside, video badge on the check-in
+
+"Tweak timeline with a small 4px circle dot same colour as the line for each object present on the timeline (centered vertically with the related object)" / "ON the focus card, Tweak. Not confirmed yet: add few object (stacked object), Review my plan. Confirmed: As it is, CTA 'Doctor notes', Open modal / bottom sheet with the Note" / "On desktop the Silhouette doesnt need to bleed" / "IF digital, video call, add a layer on the top right of the img doctor"
+
+- **Tweaks → Timeline → Item dots** (`html.t3RlDots`, Off by default): a 4 px dot on the timeline line, the line's colour (`--tlRail`), level with the middle of each item on it (rows, the focus card, the check-in). Placed by the trail's own pass (read, then write only what changed), in a `.t3RDs` layer at the end of each list.
+- **Tweaks → Your focus → Plan** (Confirmed by default): **Not confirmed**, the plan's first three items stacked in the focus card (the decade cards' mini rows: picture, name, how often), then **Review my plan**, which opens the standalone Confirm plan; **Confirmed**, the card as it was with **Doctor notes**, which opens Dr Lu's note in the page's sheet (bottom sheet on the phone, modal on the desk): who and when, his words, then what is in the plan and why.
+- **Silhouette**: on the desk the body sits whole inside the card (16 off its right), its shoulders still on the card's foot; the phone's still bleeds off the right.
+- **Next check-in, Thumbnail, video call**: a small glass disc with a camera over the top right of Dr Lu's picture (none for the in-app debrief).
+
 ## v2641 — Timeline items (Minimal XS, gaps, centring), Silhouette Rotate and bleed, trail fade, plan card order, Cards refined
 
 "Reduce gap by 4px between title and sub" / "Create a Minimal variation for XS. Remove CTA footer and put a simple chevron right secondary full circle on the right side of the card centered vertically" / "For all XS version +4 px above progress indicator" / "Sub full width" / "Next review --> Remove dot" / "White dot bg cutted. Can use a radial fade out" / "Primary card should have in order: Avatar / IMG rounded of the service, Title group, CTA" / "Visual should bleed on the right and sit on the bottom of the card" / "Tweak, Rotate ON OFF ... with the marker attached" / "Show the value in bracket even if disabled" / "Item doesnt seem vertically centered" / "Remove border on the modal" / Cards: "0.5 border thickness, Hug content, Icon no bg, Card +4px radius"
