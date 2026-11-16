@@ -19,6 +19,21 @@ this is the part you need before you change it.
 
 
 
+## v2641 — Timeline items (Minimal XS, gaps, centring), Silhouette Rotate and bleed, trail fade, plan card order, Cards refined
+
+"Reduce gap by 4px between title and sub" / "Create a Minimal variation for XS. Remove CTA footer and put a simple chevron right secondary full circle on the right side of the card centered vertically" / "For all XS version +4 px above progress indicator" / "Sub full width" / "Next review --> Remove dot" / "White dot bg cutted. Can use a radial fade out" / "Primary card should have in order: Avatar / IMG rounded of the service, Title group, CTA" / "Visual should bleed on the right and sit on the bottom of the card" / "Tweak, Rotate ON OFF ... with the marker attached" / "Show the value in bracket even if disabled" / "Item doesnt seem vertically centered" / "Remove border on the modal" / Cards: "0.5 border thickness, Hug content, Icon no bg, Card +4px radius"
+
+- **Timeline items, XS**: the sub-line 4 closer to the title (5, was 9) and across the whole words' block (under the steps chip's column too); the steps chip 12 under the sub-line where it sits under it (Condensed, Minimal; Default's chip stays level with the title at the right).
+- **Item layout [XS] → Minimal** (`html.t3LayMin`): no footer (no date line, no button), a chevron in a 32 round secondary button (`--tlPill`) at the card's right, centred on its height; the whole card opens the item as before; the chip under the sub-line. The chevron is in every row's markup (`.t3Chv`), shown only by Minimal at XS.
+- **Items centred**: V3 rows lose V1's 6 px above the title, so the words sit centred on the picture as they read (L: picture mid = words mid).
+- **Next check-in**: no dot before its line (in the card or as its header).
+- **Trail through a group's circle**: the group title is no longer a solid box over the rail (when Fixed is On); the circle carries its own soft ground (a 12 px fade), so the trail's dot and line pass under it bit by bit instead of being cut.
+- **Primary card, After the call: plan, Centered**: the doctor's photo first, then the title group, then Review my plan (the photo was under the words); at XS it stays top right.
+- **Focus Silhouette**: the body bleeds off the card's right (about a quarter) and its shoulders sit on the card's foot (no fade); labels on the left. **Rotate** (Your focus → Rotate, Silhouette only, Off by default): one turn in 40 s about the vertical axis; each marker is pinned to the body's front at its spot and turns with it, fading round the back; the lit-marker cycle skips the ones behind; Off eases back to face front. `makeOrganView` takes `yaw` (a function of time) and exposes `pts()`. Fixed a canvas that escaped its box once the figure lost its transform.
+- **Tweaks → Timeline item → Image corner radius**: empty shows the value Auto gives, e.g. "Auto (12)" (card radius less its padding at the picked breakpoint), live with the card radius.
+- **Desk Ask card**: no outline.
+- **Insights empty, Cards**: hairline (0.5) pill outline, pills hug their word on the desk, icons on no tile, cards 20 round.
+
 ## v2640 — Insights: Cards style, Stacked reworked, the doc's Save setup (master), Placement; trail and decade fixes
 
 "Cards --> new variation. Next to each other >XS, Stacked on XS" / "Overall for stacked and Cards, no outline on the element" / "Use Badges tweak instead of Sub for Stacked and Cards" / "Need to be able to Save a setup, so the design is replicated everywhere FROM THIS source of truth" / "Add a Placement section ... on XS and Desktop, all other objects around need to be skeleton" / "orange trail in the past should be here" / "Once passed the decade black card should stay opacity 100"
