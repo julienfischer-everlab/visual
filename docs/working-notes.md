@@ -19,6 +19,13 @@ this is the part you need before you change it.
 
 
 
+## v2646: Primary card (Centered): 32 from the visual to the title, 32 from the title group to the button
+
+- Picture or video in the sphere's place (`.pcmOn`): visual → title 32px (was 40).
+- Every Centered primary card that uses the default (`--hpCtrBtnT`): title group → button 32px (was 24). The Doctor plan and Object cards already had their own 32.
+- The plain sphere keeps its own gap. It is drawn 1.6x past its box, and its gap was set on purpose earlier ("visual to content gap -64px").
+- Checked at L with an uploaded picture on the Onboarding consult card (All complete): 32 / 32.
+
 ## v2645: Doctor plan centred; check-in badge bleeds; Split titles back; Later intro as a Braze-style card; Stacked overlap decades; unsaved tweaks orange; consult line as the subtitle
 
 - **Doctor plan primary card (Centered, desk)**: the group sits in the middle of the card's height. Next step's top margin and the button's bottom margin are `auto` (the button's 32px bottom margin is gone). Measured equal at L (128/128 on a 720 card) and M (104/104 on a 760 card).
