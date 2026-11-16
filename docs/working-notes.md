@@ -19,6 +19,16 @@ this is the part you need before you change it.
 
 
 
+## v2659 — Padding guide on the container; Now / Next / Later (decades) + Suggested; decade V2 area tabs
+
+- **Padding guide** ("The container is the Centered section around the content of the page"): the red bands run from the page panel's edges to the sides of its centred container (the widest centred box narrower than the panel with a max width or a data-container: the Timeline's 800 column), the panel's own padding when nothing narrower holds the content.
+- **Tabs: Now / Next / Later (decades)** (a new Tabs option, `stT3Tabs = dec`, `T().decs`): Later scrolls down to the decades (the decades list carries `data-t3a="dec"`, lit while you are in them and at the foot); the saved items leave the timeline for a **Suggested** button beside Past (`.t3SugBtn`, the Past button's height, ground and corner at each breakpoint, 8 from it, its count chip), which draws their panel in place (titled Suggested) and lights while it is up; a tab brings the timeline back. "Do later" toasts "Moved to Suggested." The other options read Next for This year.
+- **Decade V2**: 16 less padding round the card above the phone (48 to 32, `t3DecV2`; the phone keeps 24); the right column a tab per area (EvSeg sm, short names: Heart / Diabetes / Screening in the 40s, Bones / Falls / Immunity in the 60s), each with its checks as the V1 card's rows (icon, title, sub-line, how often); Julien's 40s and 60s got fuller checks per area (`DJ().at`, illustrative copy to review), other decades group their own items by area; the tab picked kept through redraws (`S.decTb`).
+- **Halo** ("less orange more yellowish"): the active decade's glow and age number amber-yellow #f4bd63 (light mode number #c98a1c).
+- **Beyond this year**: +16 below it (56 above the sources).
+- **Right column check-in / focus thumbnail** follows the item thumbnail (Thumbnail size and Image radius tokens) instead of a fixed 64 / 14.
+- **Ask Eva**: no border beam. **What we recommend for this** footer: "You can choose which to add at the end of this debrief."
+
 ## v2658 — "This year" is "Next"; the Confirmed focus card on landing, hardened
 
 - **Timeline tab and group renamed** ("This year --> Next"): the tabs read Now / Next / Later (and Now | Next + Later in Split), the group title Next with its count, its empty line "Nothing else coming up."; the Tweaks labels and the Assets library's usage line follow.
