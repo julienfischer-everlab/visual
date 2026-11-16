@@ -19,6 +19,10 @@ this is the part you need before you change it.
 
 
 
+## v2690 · Timeline: sections spaced by the container gap
+
+"This gap is a Container gap ... its based on breakpoint ... all section in a container has a gap between of these values" (layout / container / gap / xl: 24 / 28 / 32 / 36). The Timeline's sections above the tabs (`#tl3 > .t3Info`: Your focus Above tabs, Plan updates, the check-in when placed there) now sit `--ctGap` from the title group, `--ctGap` from each other, and the last `--ctGap` from the tabs, the tab section's own top padding counted in (`--t3BarPt` on #tl3: 12 phone, 10 S, 24 M / L). Measured: title group to card and card to tabs 24 / 28 / 32 / 36 at XS / S / M / L (were 32 / 40 / 32 / 32 and 20 / 18 / 32 / 32), with the Silhouette card and with Plan Not confirmed. The Container doc's gap/xl row now states the rule for every page.
+
 ## v2689 · Padding guide sections; phone tab row: 12 padding, Paused at its right
 
 "Header group should be an entire section with container inside. And the body also": the Padding guide draws two sections the page's full width, solid (Header section, blue, from the page's top to under the top nav; Body section, white, from there to after the content), named at their top right, and in each its container, dashed (the top nav's at the container's width, named above it; the body's with its token padding, Container · padding Y / X).
