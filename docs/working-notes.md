@@ -19,6 +19,19 @@ this is the part you need before you change it.
 
 
 
+## v2675 · Decade header on mobile, chips to the card edge, source cards beam
+
+- **Decade card (V3), phone**: the number and the title share the header: the number 16 lower and 8 further right than before (`.t3DecAgeR` margin `0 -8px -80px 0`, its 48 and the card's 32 gap taken back), the title 64 clear of it on the right.
+- **Area chips**: the row runs to the card's own edges (32 desk, 24 phone, `scroll-padding-inline` the same) and fades where more is hidden: `#tl3 .t3DecChips` added to the Carousel master's `EvFade` rows.
+- **Source cards** (Medical records, Family history, RACGP Red Book) on the phone: icon and words centred.
+- **Border beam** on each source card (`.t3FeedC::before`, a conic ring masked to the 1px border, `@property --t3Bm`): once round the outline, ending on the card's foot at the moment its line's orange light leaves (the lines take turns, 3.6s apart over 10.8s; card 1 -3.6s, 2 0s, 3 3.6s). Off with reduced motion.
+- **The 40s decade title**: "Where your family history tells us to focus in your 40s." (`DHEAD[40]`, was Get ahead of your heart health).
+- **Beyond this year**: 32 between the ring and the eyebrow (was 20; read "2032px" as 20 → 32).
+
+## v2674 · Decade items on mobile: sub-line under the row
+
+- Decade mini items (Mini Item in Focus, V1 to V3 lists) on the phone (`msl` ≤ 480): one row of visual, title and how-often badge, the title vertically centred on the visual; the sub-line below the whole row, full width (`.t3MiniTx` as `display: contents` in a 3-column grid). Desktop unchanged.
+
 ## v2673 · Footer #7: the loader on Continue
 
 - Continue + Discuss: **Continue** (to the checkout) shows the button loader; **Discuss** never does, it only opens the sheet with the 3 options ("The Discuss shouldn't have a loading state. The Continue should"). `revPay(btn)` draws `EvLoad.simple` on the button that goes to the checkout (Continue under #7, also when Purchase is picked in the Discuss sheet); the other footers keep it on the primary.
