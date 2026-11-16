@@ -19,6 +19,28 @@ this is the part you need before you change it.
 
 
 
+## v2648: Decades copy review; three source cards that feed the first decade
+
+- **Copy (from the reference).** Product sub-lines and the "Looking ahead" badge are left out, as asked.
+  - Intro: "Prevention shaped by your story." / "Your age sets the starting point. Your medical records, past results and family history shape which checks matter to you — and when."
+  - Heads: 40s "Get ahead of your heart health", 60s "Protect your strength and mobility". The 60s words ("Alongside ongoing screening, prevention broadens to bones, balance and immunisation...") apply to every member, both sexes.
+  - The badge reads "Your current decade".
+- **Julien only** (`DJ()`; other personas keep theirs):
+  - 40s words: "Heart disease and type 2 diabetes run in your family...".
+  - 40s keywords: Heart health, Diabetes, Early detection.
+  - 40s checks: Cardiovascular risk assessment, Type 2 diabetes screening, Bowel cancer screening (heart, droplet, shield icons).
+  - 60s keywords: Bone health, Falls prevention, Immunity.
+  - 60s checks: Osteoporosis risk assessment, Falls prevention, Age-appropriate immunisations (bone, footprints, syringe).
+  - The checks show icons only: no picture and no how-often badge (`ic`, `noPic`, `noF`).
+  - The 40s card has a folded "How your records personalise this decade" note at its foot.
+- **Mini style:** the title drops "Your 40s:", since the number already says it.
+- **Not done:** the small "s" of "40s". The number's fade (gone at 78%) hides anything at its foot, so it is left out.
+- **Feed (`feed()`, after the intro):**
+  - Three cards: Medical records, Family history, RACGP Red Book. Each has an orange icon tile, a name and a line; on the phone, the name only.
+  - A line runs down from each card. The three meet and run on as one into the top of the first decade card (the `::after` tail).
+  - An orange pulse travels each line down: 2.7s, staggered 0.9s, stopped for reduced motion.
+  - The intro's dashed line below is hidden, and its bottom padding is 40.
+
 ## v2647: Decade cards: "Current decade" badge (orange) on the member's own decade
 
 - `decCard` wraps the decade styles (`decCard0`). When `g.age` is the member's current decade (`floor(ageAt(NOW) / 10) * 10`, the 40s for Julien at 44), it adds `.t3DecNowB` "Current decade" to the card (`.t3DecCur`): an orange pill (16% orange fill, #f78359 text; light mode #c4532a).
