@@ -19,6 +19,18 @@ this is the part you need before you change it.
 
 
 
+## v2643 — Modules page; Later bucket intro (no timeline); XS container padding; padding guide; halo on the active decade only; tab and check-in gaps
+
+"Put All modules in a Modules page, below design system" / "For later bucket: Add a Intro card, that explain that these item are ready to action when you are. Use outlined card on top of the list. Remove the Timeline style for later bucket list." / "Gap + 8px" (split tabs) / "Add extra gap above next checkin item +16px top" / "Container padding right is missing, need to be 16px" / "Add a tweak Show container padding guide. Show the guide if ON on Red opacity 32% on the ui" / "Abandon the progressive halo on scroll, Halo appear WHEN the card become opacity 100% ... And Disappear when non active decade card"
+
+- **Modules** is its own page in the Page menu, right after Design system: Onboarding consult, Insights, Schedule, Get started, Recommendation card, Plan update, Timeline list, Service timeline, Concierge components. The docs shell has a third set (`mod`: `setOf`, `docLast.mod`, `body[data-doc-set="mod"]` wears the Design system's shell); the Design system page no longer lists them; module hashes (#module-insights…), the Overview bento's Modules links and `__dsOpen` land on the Modules page.
+- **Later** (Split / Upcoming–Later tabs): an outlined intro card on top ("Ready when you are" and a line on what Later holds); the panel is a plain list, no timeline line, dots or trail, its cards' edges on the tabs' edges.
+- **Split tabs**: 16 between Now | This year and Later (was 8).
+- **Next check-in**: 16 more above it.
+- **XS container padding**: the timeline's lists take G (12) on the right on the phone, so the cards (focus, check-in, the rows' ghost cards) end on the container's 16 instead of 4 off the screen's edge.
+- **Tweaks → General layout → Padding guide** (Off by default): the visible page panel's side padding as two red bands at 32% over the screen (16 on the phone), following scroll, resize and page changes.
+- **Decade halo**: no longer grows with the scroll; it fades in (0.45 s) when its card becomes the active one (full opacity) and out when it isn't.
+
 ## v2642 — Timeline: item dots on the line, focus card Plan states (Not confirmed / Confirmed), desktop silhouette inside, video badge on the check-in
 
 "Tweak timeline with a small 4px circle dot same colour as the line for each object present on the timeline (centered vertically with the related object)" / "ON the focus card, Tweak. Not confirmed yet: add few object (stacked object), Review my plan. Confirmed: As it is, CTA 'Doctor notes', Open modal / bottom sheet with the Note" / "On desktop the Silhouette doesnt need to bleed" / "IF digital, video call, add a layer on the top right of the img doctor"
