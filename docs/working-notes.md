@@ -19,6 +19,16 @@ this is the part you need before you change it.
 
 
 
+## v2645: Doctor plan centred; check-in badge bleeds; Split titles back; Later intro as a Braze-style card; Stacked overlap decades; unsaved tweaks orange; consult line as the subtitle
+
+- **Doctor plan primary card (Centered, desk)**: the group sits in the middle of the card's height. Next step's top margin and the button's bottom margin are `auto` (the button's 32px bottom margin is gone). Measured equal at L (128/128 on a 720 card) and M (104/104 on a 760 card).
+- **Check-in video badge**: 26px (was 24), overhanging the picture's top right corner by 7px each way.
+- **Now / This year titles (Split tabs)**: the rule that hides group titles in the two-panel Upcoming / Later tabs (`.t3N.t3One`) also caught Split's Now | This year panel. That panel now carries `.t3SpL` and keeps its titles. Upcoming / Later is unchanged.
+- **Later intro card** in the Braze marketing card's format (its own markup, not the Braze card): the dark warm ground (#2a1a11), the first saved item's picture fading in at the right at 40%, a badge ("2 saved"), an 18/24 title, a two-line 14px subline, and CTAs at the right. How it works (ghost) opens the timeline tour; Remind me (white primary) shows a toast. On the phone it stacks with 96px clear at the right, the primary first, as the Braze card does.
+- **Tweaks -> Decades -> Stacked overlap (Off / On)**: On brings back the sticky stack, each card 16px under the one before. Each card sits on the page's ground with its own corners (`--stkR`), so the card sliding over hides it whole, with no blur. The card it covers drops to 50% (`.t3Bhd`, set from positions on scroll).
+- **Tweaks: unsaved tweaks in orange**: on a row marked unsaved (`data-unsv`), the picked segment, an On switch and a plain select or number field turn orange instead of blue.
+- **Primary card, Onboarding consult (booked: step 3 and all done)**: "Onboarding consultation · Thu 29 Oct, 10:00am" is the subtitle, one line with non-breaking spaces in the date. The foot has the button only, in both the Centered and Left layouts.
+
 ## v2644 — Timeline items (XS): title to sub-line 2 closer
 
 "Reduce gap title and sub by 2px": the sub-line under a steps chip's row now sits 3 under the title (was 5), at every Item layout on the phone, the same as the rows without a chip.
