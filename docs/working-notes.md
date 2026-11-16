@@ -19,6 +19,10 @@ this is the part you need before you change it.
 
 
 
+## v2686 · Review my plan: paid items always live in Now
+
+"IN NOW Paid item always live in NOW checked OR unchecked". With checkboxes on (Control object Yes) and the Now / Later tabs shown, a paid item is never under Later: `rvPaidNow()`, run at the top of every review paint, turns any paid item saved for later (the demo's two, a deck's Maybe later, its sheet's Do it later) into a Now item, unticked at 70%. Unticking a ticked paid item no longer moves it to Later with the "Moved to later" snackbar: it stays where it is, unticked. The Now tab's count includes the unticked paid items; Later keeps only what is not paid. Checked at XS and L: Gut microbiome test, Allergy test and Follow-up blood test sit in Now unticked, a tap ticks one (Purchase · $349 | Discuss), a second tap unticks it in place, Later says Nothing saved for later.
+
 ## v2685 · Review my plan: one CTA is always Discuss
 
 "Always use Discuss when ONE CTA". With nothing to pay (all included, or every paid item unticked) the footer used to fall back to a lone Confirm plan; it is now Discuss with Eva's star (as Footer #6), whatever the Footer tweak, the standalone Confirm plan included. `rvTalk()` is true whenever the total is 0 (and on #6 as before). Its sheet, Talk through your plan, keeps Ask Eva and Book a consultation; its third card is Confirm plan (circle tick, "Your timeline updates with this plan.") instead of Purchase $0, running the same confirm path (Confirming your plan, then the Timeline). Ticking a paid item brings back the footer's two CTAs (Discuss + Purchase on #5). Checked at XS and L, footers #5 and #4.

@@ -21631,6 +21631,7 @@ window.EvCtl = (function () {
     function money(v) { return '$' + Math.round(v).toLocaleString('en-AU'); }
     /* the review holds what the swiped cards decided ("all of the objects here need to come from the swipeable cards stacked on the screen before ... Just need the clinical result"): with clinical cards in the stack, its clinical ones only; a Lifestyle-only report, its own */
     function rvIn(x) { return RC_CLIN.indexOf(x.c.t) >= 0 || !stkAll.some(function (y) { return RC_CLIN.indexOf(y.c.t) >= 0; }); }
+    function rvPaidNow() { if (o.rvctl !== 'yes' || rvNoTabs()) return; stkAll.forEach(function (x, i) { if (rvIn(x) && RC_PRICE[x.it.t] && stkDec[i] === false) { stkDec[i] = true; rvOff[i] = true; } }); }   /* "IN NOW Paid item always live in NOW checked OR unchecked": a paid one saved for later (the demo, the deck, its sheet's Do it later) sits in Now, unticked, at 70% */
     function revItems() { return stkAll.filter(function (x, i) { return stkDec[i] && rvIn(x) && !(o.rvctl === 'yes' && rvOff[i]); }); }   /* a product unticked (Control object) left out of the purchase */
     /* Control object ("If yes, add a checkbox on the right side of all of the product, and if it's included, the checkbox is disabled"): a checkbox at the right of every product, ticked; a paid one untick-able (out of the total, Purchase follows), an included one ticked and locked */
     var rvMvLater = null, rvAddBack = null;   /* set by the review as it is drawn: an item to Later and the review redrawn */
@@ -21639,7 +21640,7 @@ window.EvCtl = (function () {
     function rvChk(x, i) { var lt = !stkDec[i] && rvNoTabs(); if ((o.rvctl !== 'yes' && !lt) || (!stkDec[i] && !lt)) return null; var inc = !lt && !RC_PRICE[x.it.t], b = h('button', { type: 'button', class: 'arRvChk evChk evChk-md', role: 'checkbox', 'aria-checked': String(!lt && (inc || !rvOff[i])), 'aria-label': (inc ? 'Included: ' : 'Include ') + x.it.t });
       if (inc) { b.setAttribute('aria-disabled', 'true'); b.tabIndex = -1; }
       b.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-      on(b, 'click', function (e) { e.stopPropagation(); if (inc) return; if (lt) { stkDec[i] = true; rvOff[i] = false; if (rvAddBack) rvAddBack(i); return; }   /* Show tabs Off: ticked, back in the plan where it stands */ if (rvMvLater && o.rvmv !== 'off' && !rvOff[i]) { rvMvLater(i); return; }   /* unticked: the item to Later, as its sheet's Do it later, and a snackbar ("Untick will move object to later. Snackbar 'Moved to later' when untick") */ rvOff[i] = !rvOff[i]; b.setAttribute('aria-checked', String(!rvOff[i])); var c = b.closest('.arRvwTlC, .arRvwRow'); if (c) c.classList.toggle('arRvOff', !!rvOff[i]); revFoot(); });
+      on(b, 'click', function (e) { e.stopPropagation(); if (inc) return; if (lt) { stkDec[i] = true; rvOff[i] = false; if (rvAddBack) rvAddBack(i); return; }   /* Show tabs Off: ticked, back in the plan where it stands */ /* unticked, it stays in Now ("Paid item always live in NOW checked OR unchecked"; was moved to Later with a snackbar) */ rvOff[i] = !rvOff[i]; b.setAttribute('aria-checked', String(!rvOff[i])); var c = b.closest('.arRvwTlC, .arRvwRow'); if (c) c.classList.toggle('arRvOff', !!rvOff[i]); revFoot(); });
       on(b, 'keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') e.stopPropagation(); });
       return b; }
     function payLabel() { var t = revTotal(), k = revItems().filter(function (x) { return RC_PRICE[x.it.t]; }).length; return t ? 'Pay $' + t.toFixed(2) : 'Confirm plan'; }   /* nothing to pay: "Confirm Plan", no checkout */   /* "Pay $xx.xx (X items)": the extras paid for */
@@ -21726,7 +21727,7 @@ window.EvCtl = (function () {
           [].forEach.call(r.children, function (ch) { ch.animate([{ opacity: 0, transform: 'translateY(10px) scale(.97)' }, { opacity: 1, transform: 'none' }], { duration: 420, delay: 780, easing: ez, fill: 'backwards' }); }); }
         if (c.animate && !reducedMotion()) { var bg = getComputedStyle(c).backgroundColor; c.animate([{ backgroundColor: 'oklch(var(--ar-ink) / .16)' }, { backgroundColor: bg }], { duration: 1200, delay: gw ? 1100 : 300, easing: 'ease-out', fill: 'backwards' }); }
       }
-      function paint(moved) {
+      function paint(moved) { rvPaidNow();
         var was = {}; Object.keys(rows).forEach(function (k) { if (rows[k].isConnected) was[k] = rows[k].getBoundingClientRect(); });
         rows = {}; card.textContent = ''; dcard.textContent = ''; if (card._p1) card.classList.add('arRvwNoIn'); card._p1 = true;   /* redrawn after a move: the timeline as it is, no rail drawn in again ("Animation occur ONLY at the begining when we land on the screen") */
         /* what was added grouped by its type, Clinical, Blood panel, Lifestyle, the order of the screens before ("Instead of grouping included or extra: just group by type, like clinical or blood panel"), each its heading; each card's footer still says Included or its price; then Total today */
@@ -21745,7 +21746,7 @@ window.EvCtl = (function () {
         /* no Total today row ("remove total today"): the Pay button says it */
         ltrN.hidden = o.rvnt === 'off' || rvNoTabs() || !stkAll.some(function (x, i) { return rvIn(x) && !stkDec[i]; });   /* Tab information Off: no note ("Tab information content ON OFF") */   /* nothing under Later: no note */
         if (!dcard.childNodes.length) dcard.appendChild(h(tlv ? 'li' : 'div', { class: 'arRvwRow arRvwNone' }, h('span', { class: 'arRvwTx' }, h('span', { text: 'Nothing saved for later.' }))));
-        if (sg) { var nIn = revItems().length; sg.count(nIn, stkAll.filter(rvIn).length - nIn); }   /* the cards' counts follow a move */
+        if (sg) { var nIn = stkAll.filter(function (x, i) { return rvIn(x) && stkDec[i]; }).length; sg.count(nIn, stkAll.filter(rvIn).length - nIn); }   /* Now counts its unticked paid items too: they live there */   /* the cards' counts follow a move */
         if (rvNoTabs()) tv = 0; if (seg) seg.hidden = rvNoTabs(); card.hidden = tv !== 0; dgrp.hidden = tv !== 1; if (rvH2) rvH2.hidden = !rvH2Lt && tv !== 0;   /* the plan under Add to plan, what was saved for later under Later, each with its Add to plan */
         if (step === REC && revOn) revFoot();
         if (moved == null || reducedMotion()) return;
