@@ -19,6 +19,18 @@ this is the part you need before you change it.
 
 
 
+## v2650 — Timeline decades feed restyle, doctor notes badge, check sub-lines; Plan / Services swapped; modals without a border; Dr Steven Lu's notes as the Async email; Not confirmed focus list
+
+- **Feed cards** under the decades intro: rounded 28 (20 on XS), padding 20, no border, a neutral icon frame, 20 between cards, 64 side padding (`--feedX`; 0 on XS).
+- **Decade Mini cards**: "How your records personalise this decade" and the footer doctor card removed. "Notes from Dr Steven Lu" is now a pill in the top right (`.t3DecTR`), beside "Your current decade" when both show; it opens the decade's note sheet. On narrow cards the pair sits above the list.
+- **Check sub-lines** (`li` 3rd value, 4th = orange dot): 14px secondary. Cardiovascular risk and Type 2 diabetes (40s) and Osteoporosis (60s) carry the orange dot; Bowel cancer screening has none. Titles wrap when a sub-line is present.
+- **Intro eyebrow** "Beyond this year": uppercase 13/18, 1.4 letter spacing, 8 above.
+- **Plan / Services** ("Inverse Plan and service order, Also on mobile"): the desk sidebar, the XS dock and the S dock read Home, Insights, Services, Plan (then Timeline at S, More). `DEST` follows; the Plan lights the 4th tab, the marketplace the 3rd; the Live version's nth-child "Plan" relabel dropped.
+- **Focus card**: the "Dr Lu · 4 Nov" line removed; the Confirmed button reads "Dr Steven Lu’s notes".
+- **Modals never wear a border**: the 1px ring is gone from the shared sheet / centred modal (`.ibCard`), the chat modal, the Ask card and sheet, the More card and the desk Ask panel (dark and light). Shadows stay.
+- **Dr Steven Lu's notes = the Async report's email** ("Use the Same email from the Asyn Doctor note"): the email builder moved to the report module's top level as `window.EvDrMail` (`make(p)`, `rich`, `fill`, `q0`); the report's Doctor note step and the Confirm plan sheet call it, and so does the Timeline's notes modal, with the same words (Tweaks > Doctor note > Doctor's note, else the default) and Doctor header setting, signed by Dr Steven Lu with the note's date. The email's CSS applies on any `.evDrMailH` host (tokens for ink, paper, faces, mono label, dark and light).
+- **Plan Not confirmed focus** ("Put the list of product on the right side. Instead of the visual"): no silhouette or picture; the words and Review on the left, the plan's objects on the right (stacked under the words on the phone and in the side column). Equal padding all round, from the sides (24 at L, 20 at XS).
+
 ## v2649: Decade cards (Mini Item in Focus): "Notes from Dr Steven Lu" footer opening his note on that decade
 
 - **Footer** (`.t3DecDr`, `data-a="drdec"`): every decade card in the Mini style ends with the Confirm plan's doctor row. It has a round photo (36), "Notes from Dr Steven Lu" (16/22, 500) and a chevron, inside an outlined card (1px `--olD`, 20 radius, padding 16 22 16 16).
