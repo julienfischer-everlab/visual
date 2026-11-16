@@ -19,6 +19,20 @@ this is the part you need before you change it.
 
 
 
+## v2663 — Confirm plan in the Flow panel, decade V3 layout, Search tweak, Discuss sheet, untick to Later
+
+- **Flow panel (Async report)**: Confirm plan and Checkout are always listed, also when Blood panel is the only recommendation group ("Confirm plan and checkout IS GONE!"); the report already went on into them.
+- **Decade V3** ("40 right side, content title desc on left col, below in a new row the Tab and products without card"): the age number (Age number: In card) at the right of the title and description, the chips and their product rows a full row under them, on the card itself (no outline, no grey ground, dividers kept). Phone: one column, the number at the right.
+- **Beyond this year ring**: fills the whole circle on scroll, the arc being drawn orange, the arcs done white, each dot orange once reached.
+- **Feed lines** under Beyond this year: larger corner radius, one solid colour (no doubled opacity where lines overlap), the orange light running inside the line one line after another (no halo outside), fading out at the end.
+- **Fill**: Beyond this year (ring, words, source cards) and the decade cards run to the items' ghost-card right edge at every breakpoint (they stopped 12/16 short).
+- **Rail gap** +8 on the phone: line to card back to 24 (2 G), as the other breakpoints.
+- **Search On/Off** (Tweaks → Tab top → Search): Off hides the search; with Now / Next / Later (decades) tabs, Other products takes its place: an outlined (Tertiary) CTA at the tab bar's right on the desk, a 44 icon-only disc (Lucide layout-grid) after Past on the phone.
+- **Confirm plan checks**: a 44 tap area round the check; an Included (locked) check lets the tap through to its card (the card opens its sheet). Unticking a paid item moves it to Later (as its sheet's Do it later) with a "Moved to later" snackbar (the app's `.svToast`) above the footer. With Allow move object Off, untick still only leaves it out of the total.
+- **Footer #6 Discuss sheet**: a third card, Purchase $total, "You'll be redirected to the checkout." (Pay's path); the sheet's foot: Your selections are saved, then a centred ghost Review plan later (as Do it later). Full-height bottom sheet on the phone, content-tall modal on the desk. No Save for later at the top right on #6.
+- **Next check-in card** = a timeline item: G padding (12 / 16), the items' radius (`--t3R`), the same picture and title positions; flush in its header wrap (Secondary and Outlined card styles), the header words on G.
+- **Desk pinned tabs**: their ground fades as the phone's (the system Gradient): solid for the top 20%, eased out 32 under the bar (it was solid to the bar's foot, then a short fade).
+
 ## v2662 — Primary card module sections + uploads, decade V3 chips card, feed light, scroll reveal, Confirm plan footer #6, Other products
 
 - **Modules → Primary card (overview)**: no lead paragraph or section chips ("remove"); a select after the title lists the sections (Onboarding consult, Services, Freemium · Explore, Doctor's plan) and scrolls to the one picked, following the scroll ("Put a select after the title ... on select scroll through the section"). Each section has its picture library (upload, pick, trash; `PcMedia.lib(box, obj)`, one per Object: consult, dexa, mri, free, drp, drd) and the top bar's Save keeps the picks as the saved setup `everlab:pcMaster` (+ db `pcMaster/v`), applied on every page over Tweaks ("need the save top right save the changes on this page").
