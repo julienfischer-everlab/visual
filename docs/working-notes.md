@@ -19,6 +19,10 @@ this is the part you need before you change it.
 
 
 
+## v2644 — Timeline items (XS): title to sub-line 2 closer
+
+"Reduce gap title and sub by 2px": the sub-line under a steps chip's row now sits 3 under the title (was 5), at every Item layout on the phone, the same as the rows without a chip.
+
 ## v2643 — Modules page; Later bucket intro (no timeline); XS container padding; padding guide; halo on the active decade only; tab and check-in gaps
 
 "Put All modules in a Modules page, below design system" / "For later bucket: Add a Intro card, that explain that these item are ready to action when you are. Use outlined card on top of the list. Remove the Timeline style for later bucket list." / "Gap + 8px" (split tabs) / "Add extra gap above next checkin item +16px top" / "Container padding right is missing, need to be 16px" / "Add a tweak Show container padding guide. Show the guide if ON on Red opacity 32% on the ui" / "Abandon the progressive halo on scroll, Halo appear WHEN the card become opacity 100% ... And Disappear when non active decade card"
