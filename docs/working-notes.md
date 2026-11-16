@@ -19,6 +19,16 @@ this is the part you need before you change it.
 
 
 
+## v2679 — Paused (snoozed icon), focus visual 80, frequency as a sub-line, Age on mobile, 32 above the chips, lighter dividers
+
+- **Paused** ("Have a icon Snoozzed for the Later top right icon", "Paused", "title", "Replace label by Paused", "With Snoozed icon"): the Other products button and its Sub page are now **Paused**: the page's H1 and crumb, the section, the Do this later sheet's lines, the button's label (desk: the snoozed icon before Paused; phone: the icon alone) and its aria-label. The icon is Lucide's alarm-clock with a Z for hands, added to the Buttons master as `EvCtl` icon `snooze` (the desk button is `EvCtl.btn({ label: 'Paused', icon: 'l', ic: 'snooze' })`).
+- **Focus card visual** ("Reduce visual to be 80 80"): the Minimal skeleton (`.t3FcUv > .t3UpdVis`) zoom 1.25 → .625: an 80 square (was 160).
+- **Mini rows on the phone** ("On mobile replace the Badge by Sub title"): under `@container msl (max-width:480px)` how often (`em.t3MiniF`) is no longer a badge but the title's sub-line (14/20, `--tlSub`, 2 under the title), the two centred on the visual; the item's own sub-line spans the row under them, 8 below. Desktop keeps the badge.
+- **Dividers** ("Reduce divider opacity by 50%"): the mini rows' hairlines (`.t3DecGrp > li + li`, the List style's `.t3MiniL li + li`) .08 → .04, dark and light.
+- **Age on mobile** (Tweaks, decades group, `stT3AgeXs`: Above default / Beside → `html.t3AgeTop`; "Tweak mobile where the Big number is above aligned left, above the title and the title without right padding"): Above puts the number above the title at the left (its 16 under it taken back), the title the card's full width (no 64 padding). Beside is v2678's (number at the right, level with the title).
+- **Title group → chips 32** ("Unconsistent gap between title group and tab group. Should be 32px gap"): the age number spans the chips' row too (`grid-row:1 / span 2`), so its height never sets the title row's; the chips' block `margin-top` 2 → 0. Measured 32 on all four decade cards at L and XS.
+- Asked: the check-in card's doctor picture and the timeline items' thumbnails are the same: both read `--t3Th` (Image size) and `--t3ImR` (radius); measured 64 × 64, radius 12 at XS, 8 at L.
+
 ## v2678 — Decade header on the phone, Border beam tweak, mini icons −4
 
 - **Phone decade header** ("The title should be on top of the card so that we can see it. It's at the same level as the number"): under `@container msl (max-width:480px)` the age number (`.t3DecAgeR`) takes no room (0 tall, the card's 32 gap taken back, its `top:-16px` nudge dropped), so the title starts at the card's top, level with the number (measured 2px apart at XS), drawn over it (`.jvPhE` z-index 1), whatever the age size. Its 64 right padding still keeps it clear. M/L unchanged.
