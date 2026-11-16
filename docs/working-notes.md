@@ -19,6 +19,11 @@ this is the part you need before you change it.
 
 
 
+## v2693 · Paused icon: filled Sleeping and a ZZZ option; decade mini items: visual +2 right, dot 8
+
+- **Paused · Icon** ("Sleeping icon filled. Also tweak another version with ZZZ icon"): Sleeping's moon is filled now (its z still a line); a third option, ZZZ, draws three z's rising from large to small. Both are the Buttons master's (`EvCtl.IC.sleep`, `EvCtl.IC.zzz`), on the desk button and the phone's disc alike. Options: Alarm (default), Sleeping, ZZZ.
+- **Decade mini items, List style**: the visual 2 further from the words ("Visual margin right +2px": 4, was 2; the margin moved from the picture to the visual's box, so the dot keeps to the picture's corner); the orange dot 8 (was 10, "Dot reudce by 2px"), its centre where it was in the List style.
+
 ## v2692 · Save label after a modal, Paused icon tweak, focus card 32 on the phone, bigger Not confirmed visual, new card copy
 
 - **"Changed" after closing a modal** ("WHen I can from a modal that overlap this page and close the modal the save indicate a unsavedstate"): the tweaks were never changed. While the Confirm plan modal is up, the Save label compares the preset with the modal's own page (Confirm plan), so it reads "changed"; on close, the label was repainted before the Timeline's tweaks came back (the 580 ms restore) and nothing repainted it after. Now `_ar.close` relabels 150 ms after its restore, and every `everlab:ctx` change relabels 700 ms later. `window.__tkOff()` (debug) lists the tweaks a preset differs on.
