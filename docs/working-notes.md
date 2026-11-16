@@ -19,6 +19,11 @@ this is the part you need before you change it.
 
 
 
+## v2666: Discuss sheet: centred H1 title group, no "selections saved" line
+
+- Async report → Confirm plan → Discuss (#6) sheet: the header is a row of its own (the close at its right); the title group sits under it, centred, its title the Title group's H1 (`--tgH1FsS/LhS` 26/30, desk M/L `--tgH1FsL/LhL` 28/32). `sheetOpen` sets `.arQaTc` on the layer when the list is `.arRvTkS`.
+- Its footer is the ghost "Review plan later" alone: "Your selections are saved." is gone.
+
 ## v2665: Dotted circle primary card, feed lines, decade card tweaks, focus card skeleton
 
 - Primary card (Overview, Modules): Tweaks → Primary card → Visual: Sphere / Dotted circle. Dotted circle is `HealthProfile.flat()`: flat rings of white dots, alternate rings turning slowly in opposite directions, filled bottom-up with orange shaded dots as the progress grows. `sphere({ edge })` hands over to it when `LOOK.vis === 'flat'`.
