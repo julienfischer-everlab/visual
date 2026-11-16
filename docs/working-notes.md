@@ -19,6 +19,11 @@ this is the part you need before you change it.
 
 
 
+## v2671 · Notes from Dr Lu: Discuss my plan
+
+- The note's CTA under the signature reads **Discuss my plan** ("CTA Discuss my plan"; was Book a consultation). Same action: the sheet closes and the Care Team chat opens.
+- The Everlab wordmark beside the signature is gone in this note ("remove everlab logo"; `.t3ShMail .arDrMailWmW`); the Async report's doctor note keeps it.
+
 ## v2670 · Dr Lu's note copy + Book a consultation; Show tabs Off; Footer #7; Why On/Off; card roll; radius, CTA and tab bar fixes
 
 - **Notes from Dr Lu (Timeline, Plan Confirmed)**: the user's copy ("Align copy For doctors note to this"): Hi Julien, the plan prioritises **your heart health and reducing your cardiovascular risk** (bold), next steps and checks on the timeline; questions → book a consultation. New `DRQ_DONE`, exposed as `EvDrMail.qDone`; `noteSheet` uses it (the pre-confirm Confirm plan keeps `qPlan`). Under the signature a **Book a consultation** primary lg CTA (`EvCtl.btn`, `.t3MailBk`, `data-a="drbook"`) → closes the sheet, opens the Care Team chat (`_cc.care()`, as the Discuss sheet's card).
