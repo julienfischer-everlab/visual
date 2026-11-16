@@ -57555,6 +57555,55 @@ hairline({
   .t3Toast{pointer-events:none;} .t3Toast.on{pointer-events:auto;} .t3Toast button{margin-left:14px;padding:0;border:0;background:none;color:#f78359;font:inherit;font-weight:600;cursor:pointer;} body.light .t3Toast button{color:#ffb08f;}
   body[data-bp="xs"] .dash > .t3Toast{bottom:108px;}
 
+
+  /* ===== Container gap between sections on every page (layout / container / gap / xl: 24 / 28 / 32 / 36 by breakpoint; "This gap is a Container gap ... all section in a container has a gap between of these values"), from the per-page audit, measured at XS / S / M / L ===== */
+  /* Overview */
+  /* Overview: every section --ctGap from the title group and from the next one (layout / container / gap / xl: 24 / 28 / 32 / 36) */
+  html body #dOver#dOver > :is(.dvSec, .ovBk, .ovCcCard, .ovSvc, .ovTasks, .ovAct, .ovInsCard, .dvLead, .hpRecOut){margin-top:var(--ctGap);}
+  html body[data-bp="xs"] #dOver#dOver > .dvSec{padding-top:0;}
+  html body[data-bp="xs"] #dOver#dOver > .dvH1{margin-bottom:var(--ctGap);}
+  html body[data-bp="xs"] #dOver#dOver > .dvH1 + .dvTop > :first-child{margin-top:0;}
+  html body[data-bp="xs"] #dOver#dOver > .dvTop > .hpOvCard:not(:has(+ .hpRecOut)), html body[data-bp="xs"] #dOver#dOver > .dvTop > .hpOvCard + .hpRecOut{margin-bottom:0;}
+  html body:not([data-bp="xs"]) #dOver#dOver > .ovTop + .dvTop{margin-top:calc(var(--ctGap) - 12px);}   /* .ovTop keeps its own 12px padding-bottom (the sticky bar's band), counted in */
+  /* Insights */
+  /* Insights: sections spaced by the container gap (layout / container / gap / xl: 24 / 28 / 32 / 36, "all section in a container has a gap between of these values") */
+  /* desk: the header group (H1 + the pinned tab row) to the bento, collapsing with the tab row's 28 */
+  .dash #dMain > .dgrid{margin-top:var(--ctGap);}
+  /* desk: the bento to the filter bar. The select's lead-in inside the sticky bar shrinks; its pinned top moves by the same amount, so the pinned bar sits where it did */
+  body.b2 .dash #dMain > #dFilters > .dRow{margin-top:calc(var(--ctGap) - 24px);}
+  body.b2 .dash #dMain > #dFilters{top:calc(-8px - var(--ctGap));}
+  html.hgOn:not(.tnFree) .dash #dMain:has(> #dTabsV2.hgT) > #dFilters#dFilters{top:calc(86px - var(--ctGap));}
+  /* desk: the pinned bar's plate reaches back up to where it started (no rows showing between the tabs' foot and the bar) */
+  body.b2 .dash #dMain > #dFilters.stuck{box-shadow:0 calc(var(--ctGap) - 58px) 0 var(--pageBg);}
+  /* desk: the filter bar to the list (the chips' 18 collapsed out of the bar; the first group keeps its 30 top padding) */
+  .dash #dMain > #dFilters .filters{margin-bottom:0;}
+  .dash #dMain > #dRecsList{margin-top:calc(var(--ctGap) - 30px);}
+  /* phone: the header group (tabs + hero, its label strip 38 above the hero's foot) to the cards row (mBody 14 + mV4 2 above the cards) */
+  body.v4.v25Tab:not(.v3Tab):not(.repTab) #phone #mScroll #mHeroOrgan{margin-bottom:calc(var(--ctGap) - 54px);}
+  /* phone: the cards to the filter bar (the sticky bar keeps its 12 plate) */
+  body.v5.v8:not(.repTab) #phone #mBody > #mV4{padding-bottom:calc(var(--ctGap) - 12px);}
+  /* phone: the filter bar's chips to the first group title (chips' 10 + h3's 14 kept) */
+  body:not(.repTab) #phone #mBody > #mRecs{padding-top:calc(var(--ctGap) - 24px);}
+  /* Services */
+  .dash #dMkt > .mkRec, .dash #dMkt > .mkTools, .dash #dMkt > .mkNote{margin-top:var(--ctGap);}   /* layout / container / gap / xl between the sections: title group, recommended row, catalogue (tools + grid), note */
+  @container mkt (max-width:639.98px){
+    .dash #dMkt .mkHead > .mkSubRow{min-height:0;margin-top:12px;}   /* no arrows here: the row hugs its one line (still 12 under the title), so the gap counts from the words */
+    .dash #dMkt > .mkTools:not(.mkSrchOpen){margin-top:calc(var(--ctGap) - 12px);}   /* the closed search's empty grid row still draws its 12 row gap */
+  }
+  @container mkt (max-width:479.98px){
+    .dash #dMkt > .mkGrid:not([hidden]):has(> .mkC:not(.mkBun):last-child) ~ .mkNote{margin-top:calc(var(--ctGap) - 16px);}   /* XS list: the last plain row's 16 bottom padding is not drawn */
+    .dash #dMkt > .mkGrid:not([hidden]):has(> .mkC.mkBun:last-child) ~ .mkNote{margin-top:calc(var(--ctGap) - 4px);}   /* the bundle card's own 4 bottom margin */
+  }
+  /* Plan */
+  /* Plan: the sections in the sheet --ctGap apart, and on the desk its title group to the first section --ctGap (layout / container / gap / xl: 24 / 28 / 32 / 36; was 36 on the phone and tablet, 40 and the title's 28 on the desk) */
+  html body #dPlan#dPlan > .plSheet > .plSheetIn > .plSec + .plSec{margin-top:var(--ctGap);}
+  html body #dPlan#dPlan.plDesk > .plSheet > .plSheetIn > .plPgT{margin-bottom:var(--ctGap);}
+  /* My account */
+  /* My account: the title group to the tabs, the tabs to the first section, each section to the next --ctGap (layout / container / gap / xl: 24 / 28 / 32 / 36; was 28 / 32 / 40 on the desk, 20 / 24 / 40 on the phone and tablet). Under 880 the title row's 44 discs hang 7 below it, so the tabs clear the discs by the gap */
+  html body #dAcc#dAcc .acTabs{margin-top:var(--ctGap);}
+  @container acc (max-width:880px){ html body #dAcc#dAcc .acTabs{margin-top:calc(var(--ctGap) + 7px);} }
+  html body #dAcc#dAcc .acPane{padding-top:var(--ctGap);}
+  html body #dAcc#dAcc .acPrG + .acPrG{margin-top:var(--ctGap);}
 </style>
 <script>
 /* ---- Timeline V3: the "Timeline Ahead" concept (its V4, the check-in loop) in this app's own pieces.

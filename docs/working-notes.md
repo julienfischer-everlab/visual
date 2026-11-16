@@ -19,6 +19,17 @@ this is the part you need before you change it.
 
 
 
+## v2694 · Container gap between sections on every page (Overview, Insights, Services, Plan, My account)
+
+"This gap is a Container gap ... its based on breakpoint. SO this concern all Design, all section in a container has a gap between of these values": every page's stacked sections now sit `--ctGap` apart (24 XS · 28 S · 32 M · 36 L), from the title group to the first section and from each section to the next, as the Timeline already did (v2690). One CSS block at the end of the last style sheet ("Container gap between sections on every page"), one part per page; measured from the built file at XS / S / M / L, every gap exact, no page errors.
+
+- **Overview** (`#dOver`): title to the bento, bento to Action plan, Action plan to Plan ahead. At XS the stacked modules (primary card, Recent insights, Schedule, Tasks / Get started / Services) are sections of the page column, so 24 between them (was 12 between bento modules, 50 / 38 / 58 round the headed sections). At S / M / L the title group ends at the foot of the whole top row (H1, ask field, bell); the bento's own 20 grid gap is kept.
+- **Insights** (`#dMain` desk, `#mScroll` phone): header group (H1 + pinned tabs) to the bento, bento to the filter bar, filter bar to the list; the pinned filter bar sits where it did. H1 to tabs stays 40, the biomarker groups keep their own rhythm.
+- **Services** (`#dMkt`): title group to Recommended, Recommended to the catalogue (tools + grid), catalogue to the note. At M / L the arrows in the subtitle row count as the title group's foot.
+- **Plan** (`#dPlan`): every section in the sheet; on the desk the sticky title to Activity. The phone's photo header and the desk's photo card are unchanged.
+- **My account** (`#dAcc`): title row to the tabs (under 880 from the foot of the 44 discs), tabs to the first section, each group to the next, on every tab.
+- Not changed: spacing inside a section (heading to content, rows, card padding), bento grids' own gaps, the last section's space to the page foot. Appointment has no stacked sections to space.
+
 ## v2693 · Paused icon: filled Sleeping and a ZZZ option; decade mini items: visual +2 right, dot 8
 
 - **Paused · Icon** ("Sleeping icon filled. Also tweak another version with ZZZ icon"): Sleeping's moon is filled now (its z still a line); a third option, ZZZ, draws three z's rising from large to small. Both are the Buttons master's (`EvCtl.IC.sleep`, `EvCtl.IC.zzz`), on the desk button and the phone's disc alike. Options: Alarm (default), Sleeping, ZZZ.
