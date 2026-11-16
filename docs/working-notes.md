@@ -19,6 +19,18 @@ this is the part you need before you change it.
 
 
 
+## v2670 · Dr Lu's note copy + Book a consultation; Show tabs Off; Footer #7; Why On/Off; card roll; radius, CTA and tab bar fixes
+
+- **Notes from Dr Lu (Timeline, Plan Confirmed)**: the user's copy ("Align copy For doctors note to this"): Hi Julien, the plan prioritises **your heart health and reducing your cardiovascular risk** (bold), next steps and checks on the timeline; questions → book a consultation. New `DRQ_DONE`, exposed as `EvDrMail.qDone`; `noteSheet` uses it (the pre-confirm Confirm plan keeps `qPlan`). Under the signature a **Book a consultation** primary lg CTA (`EvCtl.btn`, `.t3MailBk`, `data-a="drbook"`) → closes the sheet, opens the Care Team chat (`_cc.care()`, as the Discuss sheet's card).
+- **Confirm plan → Show tabs (On / Off)** (`stArRvTabOn`, `o.rvtabon`, in both option lists and the presets' KEYS): Off hides the Now / Later tabs, the Later pane and its note; what was saved for later sits in the one timeline in its month, **unticked** and dimmed (`rvNoTabs()`, `tlOf`, `paint`, `rvChk`, `tlFtC`). Ticking it adds it back (`rvAddBack`, toast "Added to your plan"); unticking a Now item moves it to later and it stays in place, unticked.
+- **Footer #7 Continue + Discuss** (`stArRvFt` = `cd`, `rvCd()`): secondary **Continue** → the checkout (`revPay`), primary **Discuss** (Eva star) → the Discuss sheet with the 3 options (Ask Eva, Book a consultation, Purchase). Footer layout row shows for it.
+- Confirm plan rows on XS: the M / L padding (12 20 12 14).
+- **Decades → Why (On / Off)** (`stT3Why`, `html.t3NoWhy`): hides Why this concerns me.
+- **Roll effect on the card's age** ("Roll effect doenst work"): `ageIn` writes `decDig(age)` reels into `.t3AgeN`; `lit()` turns `.t3AgeN` as well as `.t3DecNum`; `v3Age`'s regex takes the reels. Verified 48 → 49 → 50 at L and XS.
+- Mini decade card radius 24 (+4).
+- **Other products** in the tabs' bar: md (44), the tabs' height ("Cta size +1"); beside Past stays sm.
+- **Bug: rows showing blurred inside the pinned tab bar (desk)**: its ground was solid for its top 20% only (`--t3Bs`), so content passed visibly, smeared by the blur bands, under the tabs. Now solid to the bar's foot, the fade and blur only in the 32 under it.
+
 ## v2669: Dotted circle as big as the sphere
 
 - Primary card Visual → Dotted circle (`HealthProfile.flat`): drawn at the sphere's own 1.6 scale over its box (CSS `scale(1.6)`, backing store at dpr × 1.6 so the dots stay sharp, radius .92 of the box like the sphere's), so it fills the same footprint (189 at L, 128 at XS) instead of reading 1.6 smaller. Only when used as the card visual (`opts.edge`).
