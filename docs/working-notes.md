@@ -19,6 +19,11 @@ this is the part you need before you change it.
 
 
 
+## v2669: Dotted circle as big as the sphere
+
+- Primary card Visual → Dotted circle (`HealthProfile.flat`): drawn at the sphere's own 1.6 scale over its box (CSS `scale(1.6)`, backing store at dpr × 1.6 so the dots stay sharp, radius .92 of the box like the sphere's), so it fills the same footprint (189 at L, 128 at XS) instead of reading 1.6 smaller. Only when used as the card visual (`opts.edge`).
+- The Visual tweak still defaults to Sphere (Tweaks → Primary card → Visual → Dotted circle to see it).
+
 ## v2668: Why title as H4, decade item icons 4 smaller
 
 - Decades: "Why this concerns me" uses the Title group's H4 (`--tgH4FsS/LhS/W`, 17/24, 400) in the ink, 4px margin under it (was the H3).
