@@ -19,6 +19,11 @@ this is the part you need before you change it.
 
 
 
+## v2676 · Other products as a Sub page
+
+- The Timeline's **Other products** button (the icon disc beside Past on the phone, the outlined CTA in the tabs' bar on the desk) opens a Sub page the way Past activity does: pushed in by the master (`EvPush.page`), Past's bar with the back and the breadcrumb (Timeline › Other products), the dock hidden on the phone; the H1 reads **Other products**, no tabs, no section title, the "Ready when you are" intro card and the saved items. Back (or the breadcrumb) pops it out onto the Timeline. Adding an item back to the plan leaves the Sub page for the timeline where the item lands.
+- How: `#dTl.tlPastOn.t3OthOn` (Past's Sub page chrome, #tl3 kept, its tab bar and the Later section's title hidden), `othGo / othSet / othOff` in the V3 script; `sugGo` goes there whenever the Now / Next / Later (decades) tabs are on.
+
 ## v2675 · Decade header on mobile, chips to the card edge, source cards beam
 
 - **Decade card (V3), phone**: the number and the title share the header: the number 16 lower and 8 further right than before (`.t3DecAgeR` margin `0 -8px -80px 0`, its 48 and the card's 32 gap taken back), the title 64 clear of it on the right.
