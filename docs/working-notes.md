@@ -19,6 +19,18 @@ this is the part you need before you change it.
 
 
 
+## v2691 · Timeline batch: focus card visual and CTA, Paused, decade tweaks, alignment; Review my plan Later
+
+- "Not confirmed visual + 25% size and put on the right side +24px padding safe": the skeleton visual 100 square (zoom .78125, was 80), at the card's right with 24 more inside its padding on the desk (right gap 56 at L).
+- "+24px gap between title group and cta": Review my plan 44 under the title group on the desk (was 20).
+- Phone, "Visual right and cta hug on left": Review my plan hugs its words at the left (was full width); with the skeleton visual the CTA and the visual share the row under the words, the visual at the right 24 in.
+- "Left alignment issue": the Later / Paused intro card (`.t3LtIn`) no longer bleeds 12 / 16 past the section: level with the section title and the rows' pictures.
+- "icon right": the desk's Paused button reads Paused then the snooze icon. "+4px gap": the phone's tab row 12 between the tabs and the snooze disc (was 8).
+- Decade card, Age on mobile Above, "reduce row gap by 24px / Push number on left by 12px": the number's margin -40 under (was -16) and -12 at its left.
+- "Tweak deca with light orange colour on the icon frame bg": Tweaks -> Decades -> Icon frame, Grey (default) / Light orange (html.t3IcOr: the frame the brand orange at 18%, 16% on light, its icon light orange).
+- "ALIGNMENT issue!!!": on the phone a month's rows (months on the line) sat 12.5 left of every other section's (they had been pulled to 4 from the month pill); now level with Now's rows and the section titles (513 / 513 in the XS frame).
+- Review my plan, "need some items here always": once per review, when nothing is under Later, the last two included checks (never paid, never adjusted, one kept in Now) are saved for later (`rvLaterFill`): Later shows DEXA scan and Physical assessment in the demo.
+
 ## v2690 · Timeline: sections spaced by the container gap
 
 "This gap is a Container gap ... its based on breakpoint ... all section in a container has a gap between of these values" (layout / container / gap / xl: 24 / 28 / 32 / 36). The Timeline's sections above the tabs (`#tl3 > .t3Info`: Your focus Above tabs, Plan updates, the check-in when placed there) now sit `--ctGap` from the title group, `--ctGap` from each other, and the last `--ctGap` from the tabs, the tab section's own top padding counted in (`--t3BarPt` on #tl3: 12 phone, 10 S, 24 M / L). Measured: title group to card and card to tabs 24 / 28 / 32 / 36 at XS / S / M / L (were 32 / 40 / 32 / 32 and 20 / 18 / 32 / 32), with the Silhouette card and with Plan Not confirmed. The Container doc's gap/xl row now states the rule for every page.
