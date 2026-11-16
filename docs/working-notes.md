@@ -19,6 +19,10 @@ this is the part you need before you change it.
 
 
 
+## v2664 — Primary card (overview): a section per service
+
+- Modules → Primary card (overview): the Services section broken down ("Need a section for each services so on the select should see Dexa Scan, MRI Scan"): **DEXA Scan** and **MRI Scan** are their own sections, each in the jump select and each with its own Visual picture row (the DEXA and Whole Body MRI & CT Chest picture libraries, unchanged).
+
 ## v2663 — Confirm plan in the Flow panel, decade V3 layout, Search tweak, Discuss sheet, untick to Later
 
 - **Flow panel (Async report)**: Confirm plan and Checkout are always listed, also when Blood panel is the only recommendation group ("Confirm plan and checkout IS GONE!"); the report already went on into them.
