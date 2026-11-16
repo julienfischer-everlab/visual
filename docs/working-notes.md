@@ -19,6 +19,10 @@ this is the part you need before you change it.
 
 
 
+## v2684 — Review my plan cards: 4 less at the right
+
+- "padding right card -4px": the condensed review cards (`.arRvwTlW.arRvwCnd .arRvwTl > li > .dsgCard`, phone and M/L) 12 16 12 14 (right was 20); the checkbox now 16 from the card's edge. Checked at XS and L.
+
 ## v2683 — Padding guide shows both containers and their DS padding; Circle checkbox master in Review my plan
 
 - **Padding guide** ("Indicate each container here. One on the top nav and one in the body. The one in the body need to have a Top bottom gap based on the DS token", "Also need to see the padding left right container on the red area, or line"): besides the red outside bands it now draws the **Top nav** container (blue dashed, named above it: the page head, `.tlHead` / `.ovTop` / … or the H1's row) and the **Body** container (white dashed, "Body · padding Y / X"), with the DS tokens `layout / container / padding` as darker red bands carrying their values: left-right `--ctPadX` (16 16 24 24) against the content inside each red band, a line on its outer edge; top-bottom `--ctPadY` (24 28 32 36) under the top nav (where it sits unscrolled) and after the last content. At L on the Timeline it shows the body's content starting 16 under the top nav where the token asks 36.
