@@ -19,6 +19,15 @@ this is the part you need before you change it.
 
 
 
+## v2692 · Save label after a modal, Paused icon tweak, focus card 32 on the phone, bigger Not confirmed visual, new card copy
+
+- **"Changed" after closing a modal** ("WHen I can from a modal that overlap this page and close the modal the save indicate a unsavedstate"): the tweaks were never changed. While the Confirm plan modal is up, the Save label compares the preset with the modal's own page (Confirm plan), so it reads "changed"; on close, the label was repainted before the Timeline's tweaks came back (the 580 ms restore) and nothing repainted it after. Now `_ar.close` relabels 150 ms after its restore, and every `everlab:ctx` change relabels 700 ms later. `window.__tkOff()` (debug) lists the tweaks a preset differs on.
+- **Paused · Icon** (Tweaks, Paused group; "Icon tweak add / Sleeping icon"): Alarm (the snooze clock, default) or Sleeping (a moon and a z). The icon is the Buttons master's (`EvCtl.IC.sleep`, now exposed as `EvCtl.IC`), used by the desk button and the phone's disc alike.
+- **Focus card 32 on the phone too** ("Padding 32px"): Thumbnail, Photo, Plan Not confirmed 32 all round, Silhouette 32 with its body's width at the right, at every size (was from S up). The right column's card is unchanged.
+- **Plan Not confirmed, desk: the skeleton visual 64 larger** ("Increase by 64px the visu"): 164 square (zoom 1.28125, was 100). The phone keeps 100.
+- **Plan Not confirmed copy**: title "Dr Steven Lu has updated your plan.", sub "Review the changes and confirm your next steps to stay on top of your health." (no eyebrow).
+- Phone, Plan Not confirmed with the skeleton: Review my plan stays on one line (its column takes the button's width, the visual's the rest, 16 between); with the 32 padding it had wrapped.
+
 ## v2691 · Timeline batch: focus card visual and CTA, Paused, decade tweaks, alignment; Review my plan Later
 
 - "Not confirmed visual + 25% size and put on the right side +24px padding safe": the skeleton visual 100 square (zoom .78125, was 80), at the card's right with 24 more inside its padding on the desk (right gap 56 at L).
