@@ -3341,9 +3341,12 @@ window.EvCtl = (function () {
     if (k === 'seg') return seg({ size: s });
     if (k === 'filter') return filter({ size: s });
     return chip({ size: s }) + chip({ size: s, on: true }); };
-  var wire = function (root) { (root || document).addEventListener('click', function (e) { var c = e.target.closest && e.target.closest('.evChip:not(.evChipF)'); if (c) c.setAttribute('aria-pressed', String(c.getAttribute('aria-pressed') !== 'true'));
+  /* Checkbox · circle ("Add circle checkbox ... Small checkbox size 16 16, Medium 20 20"): its own two sizes (not the control heights), sm 16 and md 20; a ring when off, the ink with the ground's tick when on; hover a 2px ink ring (off) or the ink at 64% (on), pressed 14% / 48%, disabled the ink at 12% (its tick at 45% when on). o.state 'h' or 'p' draws hover or pressed at rest (the doc) */
+  var check = function (o) { o = o || {}; var st = o.state === 'h' ? ' is-h' : o.state === 'p' ? ' is-p' : '';
+    return '<button type="button" role="checkbox" class="evChk evChk-' + (o.size === 'sm' ? 'sm' : 'md') + st + (o.cls ? ' ' + o.cls : '') + '" aria-checked="' + !!o.on + '" aria-label="' + esc(o.label || 'Select') + '"' + (o.disabled ? ' disabled' : '') + '><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>'; };
+  var wire = function (root) { (root || document).addEventListener('click', function (e) { var k = e.target.closest && e.target.closest('.evChk[data-ev-tgl]:not(:disabled)'); if (k) k.setAttribute('aria-checked', String(k.getAttribute('aria-checked') !== 'true')); var c = e.target.closest && e.target.closest('.evChip:not(.evChipF)'); if (c) c.setAttribute('aria-pressed', String(c.getAttribute('aria-pressed') !== 'true'));
     var t = e.target.closest && e.target.closest('.evSeg .evSegT'); if (t && window.EvSeg) { var g = t.parentNode; window.EvSeg.pick(g, [].indexOf.call(g.querySelectorAll('.evSegT'), t)); } }); };
-  return { SIZES: SIZES, HAS: HAS, NAMES: NAMES, btn: btn, split: split, badge: badge, mono: mono, MONO: Object.keys(MK), input: input, chip: chip, filter: filter, seg: seg, sample: sample, wire: wire, icon: ic };
+  return { SIZES: SIZES, HAS: HAS, NAMES: NAMES, btn: btn, split: split, badge: badge, mono: mono, check: check, MONO: Object.keys(MK), input: input, chip: chip, filter: filter, seg: seg, sample: sample, wire: wire, icon: ic };
 })();
 
 </script>

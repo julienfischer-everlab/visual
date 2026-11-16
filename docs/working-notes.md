@@ -19,6 +19,13 @@ this is the part you need before you change it.
 
 
 
+## v2683 — Padding guide shows both containers and their DS padding; Circle checkbox master in Review my plan
+
+- **Padding guide** ("Indicate each container here. One on the top nav and one in the body. The one in the body need to have a Top bottom gap based on the DS token", "Also need to see the padding left right container on the red area, or line"): besides the red outside bands it now draws the **Top nav** container (blue dashed, named above it: the page head, `.tlHead` / `.ovTop` / … or the H1's row) and the **Body** container (white dashed, "Body · padding Y / X"), with the DS tokens `layout / container / padding` as darker red bands carrying their values: left-right `--ctPadX` (16 16 24 24) against the content inside each red band, a line on its outer edge; top-bottom `--ctPadY` (24 28 32 36) under the top nav (where it sits unscrolled) and after the last content. At L on the Timeline it shows the body's content starting 16 under the top nav where the token asks 36.
+- **Circle checkbox** (DS master `EvCtl.check({ size: 'sm' | 'md', on, disabled, label, cls })`, `.evChk`; "Small checkbox size 16 16, Medium 20 20"): off a 1.5 ring (ink 24%), on the ink with the ground's tick; hover 2px ink ring on 8% / on at 64%; pressed 14% / 48%; disabled 12%, its tick at 45%. Documented on Design system → Inputs ("Checkbox · circle": the four states × Small / Medium, off and on, plus a live pair) with its anatomy.
+- **Review my plan rows** use it (md 20, was the 24 one-off): Included white with its tick, locked (aria-disabled, the tap through to the card); a paid item **not chosen yet** starts unticked ("This object is no selected so no check icon"), the review's demo now leaving every paid item in the plan unticked (the blood panel's too); a tap ticks it white ("On tap the Check circle, turn to white and check icon as the other one") and the footer's total follows; unselected rows at 70% ("Also add opacity 70% on unselected"; was 45%). A tap on an unticked item now ticks it rather than moving it to Later.
+- **Title** "Review my plan" in sentence case (was Review My Plan), the top nav and the H1.
+
 ## v2682 — Confirm plan ticks flipped, Tab style White
 
 - **Confirm plan ticks** ("flip the colours and show everything included with a white tick and the paid one with a greyed out one"): Included (`.arRvChk:disabled`) now the full ink disc with the paper tick (white on dark); a paid item ticked (`:not(:disabled)[aria-checked="true"]`) the grey (ink 20% disc, 70% tick); unticked still the 1.5 ring.
