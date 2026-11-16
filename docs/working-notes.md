@@ -19,6 +19,12 @@ this is the part you need before you change it.
 
 
 
+## v2680 — Paused Opens tweak, ghost head icons, focus Placement
+
+- **Paused** (Tweaks, new **Paused** group, `stT3PsOpen` → `T().psIn`; "Tweak For Paused (group): Open sub page / Stay in the page just change the content below"): **Sub page** (default, v2678's push with a back and the Paused H1) or **Same page**: no Sub page, the content under the tabs changes to the Paused list in place (`S.tab = 'later'`), the title and tabs stay, Paused goes Primary; Paused again or any tab brings the timeline back. Changing the tweak puts the timeline back either way.
+- **Ghost CTA** (phone head): the Paused icon button is the Buttons master's Ghost (`evBtnGho`, was Secondary), Primary while its list is up; Past beside it Ghost too (transparent, 6% ink on hover), in the phone's `tl` container only.
+- **Your focus, Placement** (Tweaks, Your focus group, `stT3FocPos` → `T().focTop`; "Tweak Placement: In Now / Above Tabs section"): **In Now** (default, first in Now) or **Above tabs**: the focus card in the info slot over the tabs (`.t3Info`), full width, out of Now (and out of the parked copy in the Later panel). The Right column still takes it at L when its slot asks.
+
 ## v2679 — Paused (snoozed icon), focus visual 80, frequency as a sub-line, Age on mobile, 32 above the chips, lighter dividers
 
 - **Paused** ("Have a icon Snoozzed for the Later top right icon", "Paused", "title", "Replace label by Paused", "With Snoozed icon"): the Other products button and its Sub page are now **Paused**: the page's H1 and crumb, the section, the Do this later sheet's lines, the button's label (desk: the snoozed icon before Paused; phone: the icon alone) and its aria-label. The icon is Lucide's alarm-clock with a Z for hands, added to the Buttons master as `EvCtl` icon `snooze` (the desk button is `EvCtl.btn({ label: 'Paused', icon: 'l', ic: 'snooze' })`).
