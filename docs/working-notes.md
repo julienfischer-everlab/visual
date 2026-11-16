@@ -19,6 +19,10 @@ this is the part you need before you change it.
 
 
 
+## v2661 — Modules: "Primary card (overview)" with every primary card
+
+- **Modules → Primary card (overview)** (was Onboarding consult; "Rename this by Primary card (overview)"; "I want all card present on the primary card module, Dexa, etc"): the page shows every card the Overview's primary card can be (Tweaks → Primary card → Object), each kind its own section: Onboarding consult (Step 1 to After the call: plan), Services (DEXA, Whole Body MRI & CT Chest), Freemium · Explore, Doctor's plan (Protocol, Diagnostics). A row of chips under the lead (`.moJump`, the Design system's chip, sm) jumps to each section. Lead text updated (`_hpCard.obj()`, `.free()`, `.dr()`). The Tweaks' "See in docs" links still land on it (same key `mhp`).
+
 ## v2660 — Badge Mono, decade content V3, H1 safe padding + Main title on the disc, Demo without First insights
 
 - **Demo (Documentation → Overview bento)** ("REMOVE THESe urgent ! on docu"): the Primary select no longer lists First insights · To do / In progress / Ready to build; a saved First insights pick falls back to Step 1.
