@@ -19,6 +19,11 @@ this is the part you need before you change it.
 
 
 
+## v2695 · Plan Not confirmed card: two columns on the phone, visual on the card's padding only
+
+- **Phone** ("1 col left / Content stacked with CTA / 2 col right Visual"): with the skeleton visual, the card is two columns as on the desk: the title, the sub and Review my plan stacked at the left (24 above the button), the visual at the right, centred on them, 16 from the words. Was the words across the card, then the button and the visual in one row under them.
+- **Desk and phone** ("No padding right on the visual. just the padding from the card"): the visual sits on the card's 32 padding, no extra 24 at its right.
+
 ## v2694 · Container gap between sections on every page (Overview, Insights, Services, Plan, My account)
 
 "This gap is a Container gap ... its based on breakpoint. SO this concern all Design, all section in a container has a gap between of these values": every page's stacked sections now sit `--ctGap` apart (24 XS · 28 S · 32 M · 36 L), from the title group to the first section and from each section to the next, as the Timeline already did (v2690). One CSS block at the end of the last style sheet ("Container gap between sections on every page"), one part per page; measured from the built file at XS / S / M / L, every gap exact, no page errors.
