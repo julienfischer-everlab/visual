@@ -19,6 +19,12 @@ this is the part you need before you change it.
 
 
 
+## v2688 · Focus card: 32 padding; Plan not confirmed copy
+
+"Padding 32px on the Focus card": from S up (the Timeline's container over 540) every focus card is 32 all round: Thumbnail (was 16), Silhouette (was 12 / 24; its right is still the body's 260), Plan Not confirmed (was 24, its column gap 32 too). The phone keeps its padding (12, Silhouette 8 / 20, Not confirmed 20); the side column too.
+
+"Plan not confirmed card copy": the Not confirmed card no longer shows the focus (no eyebrow, no goal): its title "Your health plan has been updated" (16 / 22 medium), under it "Dr Steven Lu has updated your plan. Review the changes and confirm your next steps to stay on top of your health." (14 / 20 secondary, 4 above), then Review my plan; its products (or the skeleton) at the right as before. `fcCard`'s todo branch drops the eyebrow when none is given and takes `by` as the line.
+
 ## v2687 · Focus card (Silhouette): words at the top, CTA at the bottom
 
 "Gap auto. Top part on top. CTA on bottom". The Silhouette focus card (min height 192, 208 on the phone, set by the dotted body) centred its eyebrow, title and Doctor notes together; its grid now spreads them (`align-content:space-between`): the eyebrow and title on the card's top padding, the CTA on its bottom padding, the gap between them whatever is left (20 at least, the CTA's margin). Checked at L (eyebrow 12 under the top, CTA 12 above the bottom) and XS (8 / 8, the card's own padding). The Plan Not confirmed card already put Review at the bottom.
