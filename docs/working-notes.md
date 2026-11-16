@@ -19,6 +19,13 @@ this is the part you need before you change it.
 
 
 
+## v2652 — Phone dock: Home, Health, Timeline, Services, More; Plan in More
+
+- "Put plan under More and Timeline here isntead of Plan", "HOme Health Timeline Services": the dock (XS and S alike) is Home, Health (Insights), Timeline, Services, then More. The Timeline is a tab at every size (it was S only); the Plan left the dock.
+- More's first group is now **Plan** (was My journey): its row opens the Plan (closing the Timeline, service, account or marketplace pages on the way). On the Plan More is lit, and the Plan row is lit inside the sheet (`__morePage` returns `plan`).
+- The Timeline lights its own tab at every size (`__litMore`); Services lights the 4th tab (`lightDock(3)`); `DEST = [6, 20, 'tl', 'mkt', null]`.
+- The desk sidebar is unchanged (Overview, Insights, Services, Plan, Timeline).
+
 ## v2651 — Decade feed: filled white icons, 24 padding, fading lines, a gradient pulse; decade rows: filled icons +12, centred when room; no note on the 50s and 70s; Later intro: words only
 
 - **Feed cards**: the three icons are filled glyphs in the ink (white on dark): the file with its heart cut out and corner folded, two people (the one behind at half), the open book (`FEEDI`). Padding 24 (16 on the phone).
