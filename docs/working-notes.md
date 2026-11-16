@@ -19,6 +19,10 @@ this is the part you need before you change it.
 
 
 
+## v2685 · Review my plan: one CTA is always Discuss
+
+"Always use Discuss when ONE CTA". With nothing to pay (all included, or every paid item unticked) the footer used to fall back to a lone Confirm plan; it is now Discuss with Eva's star (as Footer #6), whatever the Footer tweak, the standalone Confirm plan included. `rvTalk()` is true whenever the total is 0 (and on #6 as before). Its sheet, Talk through your plan, keeps Ask Eva and Book a consultation; its third card is Confirm plan (circle tick, "Your timeline updates with this plan.") instead of Purchase $0, running the same confirm path (Confirming your plan, then the Timeline). Ticking a paid item brings back the footer's two CTAs (Discuss + Purchase on #5). Checked at XS and L, footers #5 and #4.
+
 ## v2684 — Review my plan cards: 4 less at the right
 
 - "padding right card -4px": the condensed review cards (`.arRvwTlW.arRvwCnd .arRvwTl > li > .dsgCard`, phone and M/L) 12 16 12 14 (right was 20); the checkbox now 16 from the card's edge. Checked at XS and L.
