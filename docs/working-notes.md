@@ -19,6 +19,16 @@ this is the part you need before you change it.
 
 
 
+## v2651 — Decade feed: filled white icons, 24 padding, fading lines, a gradient pulse; decade rows: filled icons +12, centred when room; no note on the 50s and 70s; Later intro: words only
+
+- **Feed cards**: the three icons are filled glyphs in the ink (white on dark): the file with its heart cut out and corner folded, two people (the one behind at half), the open book (`FEEDI`). Padding 24 (16 on the phone).
+- **Feed lines** fade in from the cards (a mask on the SVG, transparent at the top to full at 55%), the pulse with them.
+- **The orange pulse** is a comet: four dashes share one head, each longer and fainter (6/14/26/42 at 1/.55/.28/.12), easing in and out over 3.3s, so the light thins out behind it (`FEEDC`, `--L` per dash; the keyframes run the head from 0 to 145 so the longest tail leaves before the next lap).
+- **Decade rows (List)**: the visual 40 (was 28), its glyph 22. The glyphs are filled (`iconF`, `ICF`): each icon's outline shapes filled and its inner lines cut out through a per-icon mask (the heart's pulse, the shield's check, the file's lines, the watch's hands, the footprints' bars), lines outside a shape drawn as they are (the syringe's plunger and needle, the stethoscope's tubes).
+- **Row alignment**: the visual is centred on the words, unless the words run past twice its height (a long sub-line on a narrow card): then it sits at the top with the title centred on it (`t3MiTop`, set by `miniAlign` after each render and on resize).
+- **Notes from Dr Steven Lu** badge only on the decades he has written on: none for the 50s and 70s (`DNOTE_ON`).
+- **Later intro card**: no "N saved" badge, no How it works / Remind me buttons; the title and line alone.
+
 ## v2650 — Timeline decades feed restyle, doctor notes badge, check sub-lines; Plan / Services swapped; modals without a border; Dr Steven Lu's notes as the Async email; Not confirmed focus list
 
 - **Feed cards** under the decades intro: rounded 28 (20 on XS), padding 20, no border, a neutral icon frame, 20 between cards, 64 side padding (`--feedX`; 0 on XS).
