@@ -19,6 +19,12 @@ this is the part you need before you change it.
 
 
 
+## v2658 — "This year" is "Next"; the Confirmed focus card on landing, hardened
+
+- **Timeline tab and group renamed** ("This year --> Next"): the tabs read Now / Next / Later (and Now | Next + Later in Split), the group title Next with its count, its empty line "Nothing else coming up."; the Tweaks labels and the Assets library's usage line follow.
+- **Focus card Confirmed, fixed after an independent check** (four browser and code checkers on every path): (1) no stale card on landing: `EvTl3.planOk()` redraws the Timeline at once (it waited for the changes' redraw 650 ms later, so the Not confirmed card showed 1 to 3 s after the report closed); (2) only a real Pay or Confirm sets it: `revPay`'s end calls `onSubmit(items, { confirmed: true })` and only that sets the flag (the report's end reached without paying, or a skipped blood panel, no longer confirms; Do it later no longer un-confirms a plan paid earlier); (3) a saved setup or the starred preset put back on the Timeline's first visit (`window.__tkPut`) no longer clears it, only Plan or Persona set by hand.
+- Checked in the browser: L, XS, all included; the first visible Timeline frame is the Confirmed card, no Not confirmed frame after landing; the report's end without paying stays Not confirmed; Plan set again by hand gives Not confirmed. Known: the Tweaks Plan control still reads Not confirmed while the card shows Confirmed (the runtime state is not a tweak); a reload goes back to the tweak.
+
 ## v2657 — Focus card Confirmed once the plan is confirmed
 
 - "When I land back on timeline and confirmed the plan. The focus card should be the confirmed one": the Timeline V3 module keeps a runtime flag, `S.planOk`, that the focus card's Plan reads before the tweak (`T().fplan`: `S.planOk ? 'conf' : stT3FocPlan`). The report's `onSubmit` (the Async report and the standalone Confirm plan opened by Review my plan, both mounted with it: Pay then the checkout's Pay, or Confirm plan when all is included) calls `window.EvTl3.planOk(!later)` before it switches to the Timeline and draws the changes: confirmed or paid, the card is Confirmed (its picture or silhouette, Dr Steven Lu's notes); Do it later leaves it Not confirmed.
