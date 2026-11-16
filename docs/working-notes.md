@@ -19,6 +19,10 @@ this is the part you need before you change it.
 
 
 
+## v2653 — Timeline items (phone, Minimal): picture top-aligned when the words run past it
+
+- "IMg top aligned IF": the Minimal item layout on the phone (`html.t3LayMin`) now uses the desk's rule. The picture spans a flexible row above the words and one under (rows `1fr auto 1fr`), `align-self:start`. When the words are shorter than the picture the spare height splits evenly and they sit centred on it; when they run past it (title, sub-line and the steps chip), the spacer rows collapse and the picture sits at the top, level with the title. The chevron stays centred on the row; the New / Adjusted badges keep 8 above them.
+
 ## v2652 — Phone dock: Home, Health, Timeline, Services, More; Plan in More
 
 - "Put plan under More and Timeline here isntead of Plan", "HOme Health Timeline Services": the dock (XS and S alike) is Home, Health (Insights), Timeline, Services, then More. The Timeline is a tab at every size (it was S only); the Plan left the dock.
