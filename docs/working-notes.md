@@ -19,6 +19,16 @@ this is the part you need before you change it.
 
 
 
+## v2647: Decade cards: "Current decade" badge (orange) on the member's own decade
+
+- `decCard` wraps the decade styles (`decCard0`). When `g.age` is the member's current decade (`floor(ageAt(NOW) / 10) * 10`, the 40s for Julien at 44), it adds `.t3DecNowB` "Current decade" to the card (`.t3DecCur`): an orange pill (16% orange fill, #f78359 text; light mode #c4532a).
+- Placement:
+  - Mini Item in Focus (desk): top right at 48 / 48, on the card's padding. When the items list leads its column, it moves 44px down to clear the badge.
+  - Phone (msl ≤ 480): the badge sits in the card's flow, above the age number and title.
+  - Card #1: top right at 24 / 24.
+  - Number styles: the header's top right.
+- Checked: L and XS, with the age number in the card and in its section.
+
 ## v2646: Primary card (Centered): 32 from the visual to the title, 32 from the title group to the button
 
 - Picture or video in the sphere's place (`.pcmOn`): visual → title 32px (was 40).
