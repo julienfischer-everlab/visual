@@ -19,6 +19,20 @@ this is the part you need before you change it.
 
 
 
+## v2662 — Primary card module sections + uploads, decade V3 chips card, feed light, scroll reveal, Confirm plan footer #6, Other products
+
+- **Modules → Primary card (overview)**: no lead paragraph or section chips ("remove"); a select after the title lists the sections (Onboarding consult, Services, Freemium · Explore, Doctor's plan) and scrolls to the one picked, following the scroll ("Put a select after the title ... on select scroll through the section"). Each section has its picture library (upload, pick, trash; `PcMedia.lib(box, obj)`, one per Object: consult, dexa, mri, free, drp, drd) and the top bar's Save keeps the picks as the saved setup `everlab:pcMaster` (+ db `pcMaster/v`), applied on every page over Tweaks ("need the save top right save the changes on this page").
+- **Overview primary card**: M / L padding 32 ("Primary card M L Padding 32px"; the Cover layout keeps its 56 foot).
+- **Decade halo**: 25 % more orange, 25 % less opacity.
+- **Decade content V3**: two columns kept; the right one is an outlined card (radius 24, 20 in, 16 on the phone) with the area tabs as chips (EvCtl chips, `aria-pressed`, arrow keys), the description, then the products in one card group (rows with dividers); narrow groups put the frequency pill under the title (V2 rows too).
+- **Feed lines** (Beyond this year → decades): less rounded (straight runs, tight 16 / 12 corners, redrawn at the svg's own size); the light is now a soft halo inside the line (a blurred glow under a head thinning out over six steps), slower (7.2 s round with a rest), the three lights leave and land together and fade out as they land on the decade ("Slowler and less movement ... fade out at the end").
+- **Scroll reveal** (`reveal()` in the Timeline V3 build): Beyond this year's ring, then its words, then each source card and their lines, then each decade (number, card) rise 24 and fade in as they come into view, one after another (140 ms queue); a rebuild shows the parts already seen at rest; reduced motion shows all.
+- **Timeline header**: "Suggested" renamed "Other products", the Buttons master (EvCtl.btn sm Secondary, Primary while its panel is up; md 44 on the phone), medium weight ("Use CTA, Medium not bold!"); its panel and the Do this later copy say Other products too.
+- **Focus card**: "Dr Steven Lu's notes" → "Doctor notes" (one line).
+- **Confirm your updated plan**: Footer and Footer layout in their own Tweaks group (Footer), Footer a select; new **#6 Discuss**: one CTA, Eva's star + Discuss, opening Talk through your plan, Save for later at the top right. Check boxes are circles ("Use circle check instead"). Row cards +4 padding at M / L (12 / 20 / 12 / 14). The doctor's note sheet has the title "Notes from Dr …" and the letter sits on the sheet, no card and no second header (Async report and the standalone Confirm plan). The doctor mark on the note's avatar 2 further out (top / right −7).
+- **Flow panel**: Confirm plan and Checkout are fixed: no grip, no switch, always in the flow (an older arrangement that left them out is ignored).
+- **Fixes from review**: the padding guide (overview at XS 16 / 16; no text or in-card boxes), the right column's focus radius, the V2 pill shrink, the Suggested panel title, tab normalisation and per-persona decade tabs.
+
 ## v2661 — Modules: "Primary card (overview)" with every primary card
 
 - **Modules → Primary card (overview)** (was Onboarding consult; "Rename this by Primary card (overview)"; "I want all card present on the primary card module, Dexa, etc"): the page shows every card the Overview's primary card can be (Tweaks → Primary card → Object), each kind its own section: Onboarding consult (Step 1 to After the call: plan), Services (DEXA, Whole Body MRI & CT Chest), Freemium · Explore, Doctor's plan (Protocol, Diagnostics). A row of chips under the lead (`.moJump`, the Design system's chip, sm) jumps to each section. Lead text updated (`_hpCard.obj()`, `.free()`, `.dr()`). The Tweaks' "See in docs" links still land on it (same key `mhp`).
