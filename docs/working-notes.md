@@ -19,6 +19,16 @@ this is the part you need before you change it.
 
 
 
+## v2660 — Badge Mono, decade content V3, H1 safe padding + Main title on the disc, Demo without First insights
+
+- **Demo (Documentation → Overview bento)** ("REMOVE THESe urgent ! on docu"): the Primary select no longer lists First insights · To do / In progress / Ready to build; a saved First insights pick falls back to Step 1.
+- **Top nav master, the body's H1** ("When title left aligned always put a $container left right padding on the right side"): a left-aligned `.evTnH1` always keeps `--ctPadX` (16 phone/tablet, 24 from M) on its right, also below both discs and in the desk's far column (was 0); a disc's own 56 clearance still wins (`:where()`). Main page (C with More, no Back; new `evTnHasMore`): the H1 sits vertically centred on the More disc ("h1 should be centered vertically with the right cta"), at every breakpoint. Doc rows updated (General layout → Header group, Top nav "H1 under C").
+- **Badge Mono** in the Design system: `EvCtl.mono({ label, icon, look, size })`, looks Outline / Filled / Ghost / Inverse / Accent, md–2xs (110×44 … 75×20), mono uppercase with tracking, icon-only squares; Badges doc "Mono" section + anatomy rows; skill reference updated.
+- **Decade content V3** (Tweaks → Decades → Content V3): the area tabs across the card's full row, two lines (the area and a short description: Heart health / Blood pressure and cholesterol …), each tab's checks in two columns, and its own "Why this concerns me" chips inside the tab ("should be part of each Tab content"); the phone: one column, the tabs scroll sideways, titles wrap. A decade with one area shows its name (and description) as a heading, not a one-option tab bar. Area tabs answer the arrow keys, Home and End.
+- **Decades**: Doctor note On/Off (Tweaks → Decades → Doctor note, `stT3DecDr`); "Your current decade" badge removed; the Dr Lu badge on V2/V3 sits on the 32 padding, 16 above the tabs; halo 20% more orange (#f5b161, light #c97f1c).
+- **Timeline**: CTCA and DEXA rows without a date; the feed source icon +4 below; Suggested lit readable on the tablet (S) in dark mode; Do later / suggestion sheets say Suggested (not Later) in the decades variation; with decades off, Next stays lit at the page foot.
+- **Insights Cards** (empty state): +48 above the cards row. **Ask Eva**: no border beam. **Async report footer**: "You’ll choose which to add to your timeline at the last step of this debrief."
+
 ## v2659 — Padding guide on the container; Now / Next / Later (decades) + Suggested; decade V2 area tabs
 
 - **Padding guide** ("The container is the Centered section around the content of the page"): the red bands run from the page panel's edges to the sides of its centred container (the widest centred box narrower than the panel with a max width or a data-container: the Timeline's 800 column), the panel's own padding when nothing narrower holds the content.

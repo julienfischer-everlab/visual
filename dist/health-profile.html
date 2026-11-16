@@ -1684,11 +1684,15 @@ html.hgOn.tnFree[data-tnbg="clear"]:not(.bpAuto) body[data-bp="s"] :is(#dAcc, #d
 .evTnFt span { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-weight: 600; font-size: 17px; line-height: 22px; font-family: var(--ar-font, "Saans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif); letter-spacing: -.2px; color: inherit; }
 .evTn.evTnTitled > .evTnFt { opacity: 1; transform: none; }
 .evTn:not(.evTnC) > .evTnFt { display: none; }
+/* the body's H1 left-aligned: always the container's side padding (--ctPadX) kept on its right as a safe space, so its words never run under the icon CTA of the top nav above ("When title left aligned always put a $container left right padding on the right side as a safe padding") */
+.evTnH1:where(:not(.evTgC):not(.evTgC .evTnH1)) { padding-right: var(--ctPadX, 16px); box-sizing: border-box; }   /* :where: the weight of .evTnH1 alone, so a disc's own clearance (56) still wins */
 /* the body's H1 under a C bar: its lines clear of the floating Close (the disc and 12), and under a floating Back it starts below the disc (its foot and 12) */
 .evTnC.evTnHasX ~ .evTnH1, .evTnC.evTnHasX ~ * .evTnH1 { padding-right: calc(var(--evTnD, 44px) + 12px); box-sizing: border-box; }
 .evTnC.evTnHasBk ~ .evTnH1, .evTnC.evTnHasBk ~ * .evTnH1, .evTnC.evTnHasBk + .evTnClr, .evTnC.evTnHasBk + * > .evTnClr:first-child { margin-top: calc(var(--evTnD, 44px) - 16px + 12px); }
+/* a Main page (C with its More, no Back): the H1 centred on the More disc ("h1 should be centered vertically with the right cta"), its box the disc's height from the disc's top (16 down in the 32 band), its line in the middle */
+.evTnC.evTnHasMore:not(.evTnHasBk) ~ .evTnH1, .evTnC.evTnHasMore:not(.evTnHasBk) ~ * .evTnH1:first-child { margin-top: -16px; min-height: var(--evTnD, 44px); display: flex; flex-direction: column; justify-content: center; }
 /* no clearance where there is nothing to clear: both discs (the H1 already starts below them), or the column far from the controls (.evTnFar, set by watch(): the desk's 2xs column) */
-.evTnC.evTnHasBk.evTnHasX ~ .evTnH1, .evTnC.evTnHasBk.evTnHasX ~ * .evTnH1, .evTnC.evTnFar ~ .evTnH1, .evTnC.evTnFar ~ * .evTnH1 { padding-right: 0; }
+.evTnC.evTnHasBk.evTnHasX ~ .evTnH1, .evTnC.evTnHasBk.evTnHasX ~ * .evTnH1, .evTnC.evTnFar ~ .evTnH1, .evTnC.evTnFar ~ * .evTnH1 { padding-right: var(--ctPadX, 16px); }   /* below both discs or far from them: no disc's clearance, the container's safe space still (was 0) */
 .evTnC.evTnFar.evTnHasBk ~ .evTnH1, .evTnC.evTnFar.evTnHasBk ~ * .evTnH1, .evTnC.evTnFar.evTnHasBk + .evTnClr, .evTnC.evTnFar.evTnHasBk + * > .evTnClr:first-child { margin-top: 0; }
 /* the ground */
 .evTnG { position: absolute; left: 0; right: 0; top: 0; bottom: 0; z-index: -1; pointer-events: none; transition: bottom .28s ease; }
@@ -2767,7 +2771,7 @@ html.insPhoto.insPhStk body #dOver :is(.ovInsEmpty, .ovInsHeroE) .ovTask.ovTask.
 html.insPhoto.insPhStk body #dOver :is(.ovInsEmpty, .ovInsHeroE) .ovTaskTx.ovTaskTx { flex: 1 1 auto; display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 12px; width: auto; min-width: 0; } html.insPhoto.insPhStk body #dOver :is(.ovInsEmpty, .ovInsHeroE) .ovTaskTx.ovTaskTx b { flex: 1 1 auto; min-width: 0; max-width: 100%; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } html.insPhoto.insPhStk body #dOver :is(.ovInsEmpty, .ovInsHeroE) .ovTaskTx.ovTaskTx small { text-align: left; } html.insPhoto.insPhStk body #dOver :is(.ovInsEmpty, .ovInsHeroE) .ovTaskTx .ovTaskBdg.ovTaskBdg.ovTaskBdg { flex: none; width: 128px; height: 34px; margin: 0; padding: 0 14px; font-size: 14px; }
 html.insPhoto.insPhStk:not(.insBadge) body #dOver :is(.ovInsEmpty, .ovInsHeroE) .ovTask.ovTask > svg { display: block; flex: none; width: 16px; height: 16px; margin-left: auto; color: rgba(255, 255, 255, .6); }
 /* Cards above XS: side by side, the icon, the name, the pill the card's width at its foot */
-html.insPhoto.insPhCrd body:not([data-bp="xs"]) #dOver :is(.ovInsEmpty, .ovInsHeroE) .ovTasksL.ovTasksL.ovTasksL.ovTasksL { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 16px 0 0; padding: 0; }
+html.insPhoto.insPhCrd body:not([data-bp="xs"]) #dOver :is(.ovInsEmpty, .ovInsHeroE) .ovTasksL.ovTasksL.ovTasksL.ovTasksL { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 16px 0 0; padding: 48px 0 0; }   /* "Add 48px padding above Cards row" */
 html.insPhoto.insPhCrd body:not([data-bp="xs"]) #dOver :is(.ovInsEmpty, .ovInsHeroE) .ovTask.ovTask.ovTask.ovTask.ovTask { flex-direction: column; align-items: flex-start; justify-content: flex-start; gap: 12px; width: auto; margin: 0; padding: 14px; text-align: left; }
 html.insPhoto.insPhCrd body:not([data-bp="xs"]) #dOver :is(.ovInsEmpty, .ovInsHeroE) .ovTaskTx.ovTaskTx { flex: 1 1 auto; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between; gap: 2px; width: 100%; } html.insPhoto.insPhCrd body:not([data-bp="xs"]) #dOver :is(.ovInsEmpty, .ovInsHeroE) .ovTaskTx.ovTaskTx b { text-align: left; white-space: normal; } html.insPhoto.insPhCrd body:not([data-bp="xs"]) #dOver :is(.ovInsEmpty, .ovInsHeroE) .ovTaskTx .ovTaskBdg.ovTaskBdg.ovTaskBdg { width: 100%; margin: 12px 0 0; }   /* the pill at the card's foot (the cards one height) */
 /* Cards on XS: Stacked's rows */
@@ -3297,10 +3301,10 @@ window.EvCard = (function () {
 })();
 window.EvCtl = (function () {
   var SIZES = [['lg', 56], ['md', 44], ['sm', 36], ['xs', 28], ['2xs', 20]];
-  var HAS = { btn: ['lg', 'md', 'sm', 'xs'], icon: ['lg', 'md', 'sm', 'xs'], split: ['lg', 'md', 'sm', 'xs'], badge: ['md', 'sm', 'xs', '2xs'], input: ['lg', 'md'], seg: ['lg', 'md', 'sm'], filter: ['md'], chip: ['md', 'sm'] };
-  var NAMES = { btn: 'Buttons · label', icon: 'Buttons · icon only', split: 'Buttons · split', badge: 'Badges', input: 'Inputs', seg: 'Segment tab', filter: 'Filter chip', chip: 'Chip' };
+  var HAS = { btn: ['lg', 'md', 'sm', 'xs'], icon: ['lg', 'md', 'sm', 'xs'], split: ['lg', 'md', 'sm', 'xs'], badge: ['md', 'sm', 'xs', '2xs'], mono: ['md', 'sm', 'xs', '2xs'], input: ['lg', 'md'], seg: ['lg', 'md', 'sm'], filter: ['md'], chip: ['md', 'sm'] };
+  var NAMES = { btn: 'Buttons · label', icon: 'Buttons · icon only', split: 'Buttons · split', badge: 'Badges', mono: 'Badges · mono', input: 'Inputs', seg: 'Segment tab', filter: 'Filter chip', chip: 'Chip' };
   var esc = function (t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
-  var IC = { dot: '<circle cx="12" cy="12" r="9"/>', down: '<path d="m6 9 6 6 6-6"/>', search: '<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>' };
+  var IC = { sq: '<rect x="2" y="2" width="20" height="20" fill="currentColor" stroke="none"/>', dot: '<circle cx="12" cy="12" r="9"/>', down: '<path d="m6 9 6 6 6-6"/>', search: '<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>' };
   var ic = function (k) { return '<svg class="evCtlIc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (IC[k] || IC.dot) + '</svg>'; };
   var SZ = function (s) { return 'evCtl-' + (s || 'md'); };
   var BK = { primary: 'evBtnPri', secondary: 'evBtnSec', tertiary: 'evBtnTer', ghost: 'evBtnGho' };
@@ -3312,6 +3316,11 @@ window.EvCtl = (function () {
     return '<span class="evSplit ' + z + '" role="group" aria-label="' + esc(o.label || 'Button') + '"><button type="button" class="evBtn ' + z + ' ' + k + '"><span>' + esc(o.label || 'Button') + '</span></button><button type="button" class="evBtn ' + z + ' ' + k + '" aria-label="More options" aria-haspopup="menu">' + ic('down') + '</button></span>'; };
   var badge = function (o) { o = o || {}; var k = { outline: 'evBdgOut', tint: 'evBdgTin', solid: 'evBdgSol' }[o.kind] || 'evBdgOut', i = o.icon === false ? '' : ic(o.ic);
     return '<span class="evBdg ' + SZ(o.size) + ' ' + k + '">' + i + '<span>' + esc(o.label || 'Label') + '</span>' + (o.icon === 'both' || o.icon == null ? i : '') + '</span>'; };
+  /* Badge Mono ("Add the Badge 'Mono' to the DS"): a mono, uppercase label after its icon, or the icon alone in a square; Outline, Filled, Ghost, Inverse, Accent; md to 2xs. o.svg an icon of the caller's own (any 24 viewBox svg), o.ic one of EvCtl's (the filled square by default, the reference's) */
+  var MK = { outline: 'evBdgMOut', filled: 'evBdgMFil', ghost: 'evBdgMGho', inverse: 'evBdgMInv', accent: 'evBdgMAcc' };
+  var mono = function (o) { o = o || {}; var k = MK[o.kind] || MK.outline, i = o.icon === false ? '' : (o.svg || ic(o.ic || 'sq')), c = 'evBdg evBdgM ' + SZ(o.size) + ' ' + k + (o.cls ? ' ' + o.cls : '');
+    if (o.iconOnly) return '<span class="' + c + ' evBdgMIc" role="img" aria-label="' + esc(o.label || 'Label') + '">' + i + '</span>';
+    return '<span class="' + c + '">' + i + '<span>' + esc(o.label || 'Label') + '</span></span>'; };
   var input = function (o) { o = o || {}; var z = SZ(o.size), ph = esc(o.placeholder || (o.kind === 'search' ? 'Search' : o.kind === 'select' ? 'Select' : 'Placeholder')), lab = ' aria-label="' + esc(o.label || ph) + '"';
     if (o.kind === 'select') return '<button type="button" class="evIn evInSel ' + z + '" aria-haspopup="listbox"' + lab + '><span>' + ph + '</span>' + ic('down') + '</button>';
     if (o.kind === 'area') return '<label class="evIn evInArea ' + z + '"><textarea rows="2" placeholder="' + ph + '"' + lab + '></textarea></label>';
@@ -3326,13 +3335,14 @@ window.EvCtl = (function () {
     if (k === 'icon') return ['primary', 'secondary', 'tertiary', 'ghost'].map(function (x) { return btn({ size: s, kind: x, iconOnly: true }); }).join('');
     if (k === 'split') return ['primary', 'secondary', 'tertiary'].map(function (x) { return split({ size: s, kind: x }); }).join('');
     if (k === 'badge') return ['outline', 'tint', 'solid'].map(function (x) { return badge({ size: s, kind: x }); }).join('');
+    if (k === 'mono') return ['outline', 'filled', 'ghost', 'inverse', 'accent'].map(function (x) { return mono({ size: s, kind: x }); }).join('');
     if (k === 'input') return ['area', 'search', 'text', 'select'].map(function (x) { return input({ size: s, kind: x }); }).join('');
     if (k === 'seg') return seg({ size: s });
     if (k === 'filter') return filter({ size: s });
     return chip({ size: s }) + chip({ size: s, on: true }); };
   var wire = function (root) { (root || document).addEventListener('click', function (e) { var c = e.target.closest && e.target.closest('.evChip:not(.evChipF)'); if (c) c.setAttribute('aria-pressed', String(c.getAttribute('aria-pressed') !== 'true'));
     var t = e.target.closest && e.target.closest('.evSeg .evSegT'); if (t && window.EvSeg) { var g = t.parentNode; window.EvSeg.pick(g, [].indexOf.call(g.querySelectorAll('.evSegT'), t)); } }); };
-  return { SIZES: SIZES, HAS: HAS, NAMES: NAMES, btn: btn, split: split, badge: badge, input: input, chip: chip, filter: filter, seg: seg, sample: sample, wire: wire, icon: ic };
+  return { SIZES: SIZES, HAS: HAS, NAMES: NAMES, btn: btn, split: split, badge: badge, mono: mono, MONO: Object.keys(MK), input: input, chip: chip, filter: filter, seg: seg, sample: sample, wire: wire, icon: ic };
 })();
 
 </script>
@@ -3810,7 +3820,7 @@ window.EvOverlap = (function () {
 /* EvTopNav: the Top nav master (Design system -> General layout -> Header group; its CSS .evTn in the report sheet's styles). One bar for every modal, sheet, standalone page and flow that has a Back and / or a Close:
    html({ back, title, close, more, reveal, cls, backCls, closeCls, tag, titleId, backLabel, closeLabel }) -> its markup:
      a title: A (Close) or B (Back, then the title) -- 76 hug, 16 all round, 44 discs, the title 20/28 500 one line;
-     no title: C -- a 32 safe space, the controls floating at their place (16 down, 16 in), the page's H1 the first thing in the body (give it .evTnH1: clear of the controls); reveal: the H1's words, faded into the bar once the H1 has gone under it.
+     no title: C -- a 32 safe space, the controls floating at their place (16 down, 16 in), the page's H1 the first thing in the body (give it .evTnH1: clear of the controls, and left-aligned it always keeps the container's side padding, --ctPadX, on its right); reveal: the H1's words, faded into the bar once the H1 has gone under it.
    mount(el, o) -> the bar, drawn into el. watch(scroller, nav, h1) -> { update }: the ground's overflow (.evTnOn, the content under it) and, on C, the bar's title (.evTnTitled) once the page has moved and the H1's middle has passed the controls' foot (the Service detail's own rule, titled(), gated on the scroll); .evTnFar when the H1's column is clear of the controls (no clearance).
    The ground (.evTnG) is in every bar: always the gradient blur. Host tokens: --evTnTop, --evTnX, --evTnGnd, --evTnInk */
 window.EvTopNav = (function () {
@@ -3826,7 +3836,7 @@ window.EvTopNav = (function () {
     var lead = o.back ? btn('Bk', o.backCls, o.backLabel || 'Back', o.backIcon || IB) : '';
     var tail = o.close ? btn('X', o.closeCls, o.closeLabel || 'Close', o.closeIcon || IX) : o.more ? btn('More', o.moreCls, o.moreLabel || 'More', IM) : '';
     var mid = o.title ? '<' + tag + ' class="evTnT"' + (o.titleId ? ' id="' + esc(o.titleId) + '"' : '') + '>' + o.title + '</' + tag + '>' : '<div class="evTnFt" aria-hidden="true"><span>' + esc(o.reveal || '') + '</span></div>';
-    return '<div class="evTn evTn' + v.toUpperCase() + (o.back ? ' evTnHasBk' : '') + (trail ? ' evTnHasX' : '') + (o.cls ? ' ' + o.cls : '') + '" data-tn="' + v + '"' + (o.attr ? ' ' + o.attr : '') + '>' + G + lead + mid + tail + '</div>';
+    return '<div class="evTn evTn' + v.toUpperCase() + (o.back ? ' evTnHasBk' : '') + (trail ? ' evTnHasX' : '') + (o.more && !o.close ? ' evTnHasMore' : '') + (o.cls ? ' ' + o.cls : '') + '" data-tn="' + v + '"' + (o.attr ? ' ' + o.attr : '') + '>' + G + lead + mid + tail + '</div>';
   }
   function mount(el, o) { if (!el) return null; el.innerHTML = html(o); return el.firstChild; }
   /* the Service detail's rule, shared: the title is in the bar once the H1's middle is above the bar's controls' foot, or the sheet under it has come over the H1 */
