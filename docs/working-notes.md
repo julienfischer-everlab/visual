@@ -19,6 +19,11 @@ this is the part you need before you change it.
 
 
 
+## v2657 — Focus card Confirmed once the plan is confirmed
+
+- "When I land back on timeline and confirmed the plan. The focus card should be the confirmed one": the Timeline V3 module keeps a runtime flag, `S.planOk`, that the focus card's Plan reads before the tweak (`T().fplan`: `S.planOk ? 'conf' : stT3FocPlan`). The report's `onSubmit` (the Async report and the standalone Confirm plan opened by Review my plan, both mounted with it: Pay then the checkout's Pay, or Confirm plan when all is included) calls `window.EvTl3.planOk(!later)` before it switches to the Timeline and draws the changes: confirmed or paid, the card is Confirmed (its picture or silhouette, Dr Steven Lu's notes); Do it later leaves it Not confirmed.
+- Not saved in Tweaks: setting Plan (stT3FocPlan) or Persona (stT3Per) again clears the flag (a capture-phase change listener, so before the redraw), the tweak deciding again.
+
 ## v2656 — Decade content V2 (area cards, Why this concerns me); Dr Lu's plan note from the Timeline
 
 - **Decade content** (Tweaks -> Decades -> Content, `stT3DecCt`, Mini Item in Focus): **V1** as before; **V2** ("Areas as card instead of individual product"): the decade's areas at the right, a card each (`ul.t3DecAr`: a 48 icon tile, the area's name 16 medium, the check it brings 14 secondary, the orange dot on the icon when family history drives it; 40 icon on the phone); Julien's 40s are Heart health / Diabetes / Early detection, his 60s Bone health / Falls prevention / Immunity (`DJ().ar`), other decades group their checks by `areaOf`. The chips under the words are gone; the card gets a footer (`.t3DecRsn`, its whole width, a hairline over it): **Why this concerns me** as an orange badge, then the member's own reasons as chips — age (Age 44 in the current decade, In your 60s later), sex, ancestry (NMP personas' `anc`; Julien European), and the risks and goals (`DJ().rk`, else the persona's family history, conditions and goal).
