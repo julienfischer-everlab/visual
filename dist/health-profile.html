@@ -6450,12 +6450,13 @@ window.EvConsent = (function () {
      the report's particle ball, small: points on its shell and through its body, its three inks (brick-orange most, a cool grey, an off-white), each nearer brighter, turning left to right a little tilted;
      filled from its foot up to the share done (a third a step), the line a gentle swell, the rest in the card's own ink, faint; a new share rising over 1.2 s. Still with reduced motion */
   /* the sphere's look, from the Tweaks (Health profile): the empty particles' strength ("make the inactive particles more visible by 20%"), the floating ones' colour ("neutral, not orange") or none; every sphere drawn again on a change */
-  var LOOK = { dim: 1.2, feed: 'neutral', card: 'glow', sat: 1 }, LIVE = [];   // sat: the filled particles' saturation (Tweaks -> Primary card -> Filled saturation), 1 as drawn
+  var LOOK = { dim: 1.2, feed: 'neutral', card: 'glow', sat: 1, vis: 'sphere' }, LIVE = [];   // sat: the filled particles' saturation (Tweaks -> Primary card -> Filled saturation), 1 as drawn
   var satOf = function (rgb, k) { if (k === 1) return rgb; var p = rgb.split(','), r = +p[0], g = +p[1], b = +p[2], L = .299 * r + .587 * g + .114 * b, f = function (v) { return Math.max(0, Math.min(255, Math.round(L + (v - L) * k))); }; return f(r) + ',' + f(g) + ',' + f(b); };   // toward its own grey (0) or away from it (over 1)   // card: the Overview card's sphere, as the dots or with the glow
   var look = function (o) { for (var k in o) if (o[k] != null && o[k] !== '') LOOK[k] = o[k]; LIVE = LIVE.filter(function (f) { return f(); }); };
   var ASK = true;   // the dismiss flow (Tweaks -> Health profile -> Dismiss flow): closing mid-way asks first ("Are you sure you want to go?"), or, off, leaves at once; the answers kept either way
   function sphere(opts) {
     opts = opts || {};
+    if (opts.edge != null && LOOK.vis === 'flat') return flat(opts);   /* the primary card's (made with an edge: the Overview's and its Modules page's): the dotted circle when Tweaks -> Primary card -> Visual says so */
     var cv = document.createElement('canvas'); cv.className = 'hpDots hpSph' + (opts.cls ? ' ' + opts.cls : ''); cv.setAttribute('aria-hidden', 'true');
     var SC = 1.6; cv.style.transform = 'scale(' + SC + ')'; cv.style.pointerEvents = 'none';   /* drawn 1.6x its box, the ball its size within: room round it for the swell and the falling particles' swing */
     var x = cv.getContext('2d'), N = 1100, P = new Float32Array(N * 3), K = new Uint8Array(N), J = new Float32Array(N), seed = 11;
@@ -6574,6 +6575,46 @@ window.EvConsent = (function () {
       t0: t0   // its start: another made with { t0 } turns in step with it
     };
     return api;
+  }
+  /* ---------- the dotted circle ("a dotted flat circle rather than a 3d sphere, more minimalist; still fill the dots through the progress"; Tweaks -> Primary card -> Visual: Dotted circle) ----------
+     a flat disc of dots on rings round a centre dot (6 more a ring, every other ring half a step round), one ring of larger dots at its middle (the reference's); white and faint where not done,
+     shaded orange where done, from the foot up a third of its area a step (as the sphere fills), deep at the foot, lighter to the line, the line a slow soft swell; the rings turning very slowly, every other one the other way.
+     The same api as sphere() (el, set, seed, burst, core): the Overview's primary card and its Modules page take it in the sphere's place. Still with reduced motion; let go once off the page */
+  function flat(opts) {
+    opts = opts || {};
+    var cv = document.createElement('canvas'); cv.className = 'hpDots hpSph hpFlat' + (opts.cls ? ' ' + opts.cls : ''); cv.setAttribute('aria-hidden', 'true'); cv.style.pointerEvents = 'none';
+    var x = cv.getContext('2d'), lv = { from: 0, to: 0, t0: 0, dur: 1 }, t0 = opts.t0 || performance.now(), raf = 0, calm = reduced();
+    var levelAt = function (now) { var k = Math.min(1, Math.max(0, (now - lv.t0) / lv.dur)), e = 1 - Math.pow(1 - k, 3); return lv.from + (lv.to - lv.from) * e; };
+    var lxOf = function (L) { if (L <= .001) return -1; if (L >= .999) return 2; var A = [[0, -.02], [1 / 3, .3735], [2 / 3, .6265], [1, 1.02]]; for (var i = 1; i < A.length; i++) if (L <= A[i][0]) { var k = (L - A[i - 1][0]) / (A[i][0] - A[i - 1][0]); return A[i - 1][1] + (A[i][1] - A[i - 1][1]) * k; } return 2; };   /* a third of the disc by area a step: its line at .37 and .63 of its height */
+    var DEEP = [208, 78, 22], LITE = [255, 168, 104];   /* the filled: deep orange at the foot, a lighter orange up to the line */
+    var draw = function (now) {
+      var w = cv.clientWidth, hh = cv.clientHeight; if (!w || !hh) return false;
+      var dpr = Math.min(2, window.devicePixelRatio || 1); if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(hh * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(hh * dpr); }
+      x.setTransform(dpr, 0, 0, dpr, 0, 0); x.clearRect(0, 0, w, hh);
+      var sh = cv.closest('.hpSheet'), lt = sh ? !sh.classList.contains('arDark') : document.body.classList.contains('light'), base = lt ? '46,31,26' : '242,236,230';
+      var R = Math.min(w, hh) / 2 * .96, cx = w / 2, cy = hh / 2, K = R >= 52 ? 8 : R >= 40 ? 7 : 6, g = R / (K + .15), rd = Math.max(.75, g * .15), AK = Math.round(K * .5), L = levelAt(now), Lx = lxOf(L), ks = +LOOK.sat; if (!(ks >= 0)) ks = 1;
+      var tt = calm ? 0 : (now - t0) / 1000;
+      for (var k = 0; k <= K; k++) {
+        var rr = k * g, n = k ? Math.round(6.2832 * k) : 1, big = k === AK, dr = big ? rd * 1.9 : rd, sp = k % 2 ? 1 : -1, rot = (k % 2 ? .5 : 0) * 6.2832 / n + sp * tt * 6.2832 / (110 + k * 14);   /* every other ring half a step round, and turning the other way, a turn every 2-3 minutes */
+        for (var i = 0; i < n; i++) {
+          var a = i / n * 6.2832 + rot, px = cx + Math.cos(a) * rr, py = cy + Math.sin(a) * rr, u = (cy + R - py) / (2 * R), xn = (px - cx) / R, wv = calm ? 0 : .018 * Math.sin(xn * 4 + now / 1700);
+          var d = Lx + wv - u, on = d > 0, edge = Math.min(1, Math.abs(d) / .05);   /* its line soft, a few dots half lit across it */
+          if (on) { var hk = Math.max(0, Math.min(1, u / Math.max(.05, Math.min(1, Lx)))), c = [0, 1, 2].map(function (j) { return Math.round(DEEP[j] + (LITE[j] - DEEP[j]) * Math.pow(hk, .8)); }).join(','); c = satOf(c, ks);
+            var al = .55 + .45 * edge;
+            if (dr > 1.4) { var gr = x.createRadialGradient(px - dr * .3, py - dr * .3, 0, px, py, dr); gr.addColorStop(0, 'rgba(255,214,176,' + al.toFixed(3) + ')'); gr.addColorStop(1, 'rgba(' + c + ',' + al.toFixed(3) + ')'); x.fillStyle = gr; } else x.fillStyle = 'rgba(' + c + ',' + al.toFixed(3) + ')';   /* the larger ones shaded, a lighter spot up and left */
+          } else x.fillStyle = 'rgba(' + base + ',' + ((big ? .5 : .3) * (+LOOK.dim || 1) / 1.2 * (.6 + .4 * edge)).toFixed(3) + ')';
+          x.beginPath(); x.arc(px, py, dr, 0, 6.2832); x.fill();
+        }
+      }
+      return true;
+    };
+    LIVE.push(function () { if (!cv.isConnected && cv.width) return false; if (!raf) raf = requestAnimationFrame(tick); return true; });
+    var tick = function (now) { raf = 0; if (!cv.isConnected) return; var shown = draw(now);
+      if (calm && now - lv.t0 > lv.dur) return;
+      if (!shown) { setTimeout(function () { if (!raf) raf = requestAnimationFrame(tick); }, 500); return; }
+      raf = requestAnimationFrame(tick); };
+    return { el: cv, set: function (f, anim) { var now = performance.now(); f = Math.max(0, Math.min(1, f)); var cur = levelAt(now); lv = anim && !calm ? { from: cur, to: f, t0: now, dur: f > cur ? 1500 : 1200 } : { from: f, to: f, t0: now, dur: 1 }; if (!raf) raf = requestAnimationFrame(tick); },
+      seed: function () {}, burst: function () {}, core: function () {}, t0: t0 };
   }
   /* ---------- the halftone sphere ("a halftone dot sphere, orange dots on a grid, fading at the edge": the first insights card's visual, where the profile's sphere stands) ----------
      a ball printed in halftone: round dots on a square grid, each as large as the ball is lit there (a light from the top right, drifting a little round it), shrinking to nothing at its rim;
@@ -7225,7 +7266,7 @@ window.EvConsent = (function () {
     return { el: root, welcome: true, v2: V2, cp2: CP2, deskT: !!opts.desk, stage: function () { return root.classList.contains('hpW2Ready') ? 3 : ph; }, card2: w2, bg2: bg2, look2: look2, sphere: V2 ? null : sp, sphT0: V2 ? null : sp.t0, place: place, flip: flip, logo: logo, hold: function () { held = true; }, theme: function (t) { root.classList.toggle('arDark', t === 'dark'); if (V2) readCol(); }, home: function () {}, area: function () {}, destroy: function () { if (plRo) plRo.disconnect(); tm.forEach(clearTimeout); tm = []; held = true; if (wv) wv.stop(); if (st) st.stop(); if (mt2) mt2.stop(); if (fp2) fp2.stop(); if (kt2) kt2.stop(); if (tx2) tx2.stop(); if (sgRo) sgRo.disconnect(); window.removeEventListener('deviceorientation', onOri); if (tlt.raf) cancelAnimationFrame(tlt.raf); if (root.parentNode) root.parentNode.removeChild(root); } };
   }
 
-  window.HealthProfile = { gift: { steps: GF.slice(), names: JSON.parse(JSON.stringify(GFN)) }, cal: cal, mount: mount, snap: snap, welcome: welcome, dots: dots, sphere: sphere, halftone: halftone, look: look, dismiss: function (v) { ASK = !(v === false || v === 'off'); document.documentElement.classList.toggle('hpNoDism', !ASK); return ASK; }, stepTitle: function (v) { var on = v === true || v === 'on'; document.documentElement.classList.toggle('hpStepTOn', on); return on; }, wear: { order: wearOrder, names: function () { return JSON.parse(JSON.stringify(W1)); }, def: W1D.slice() }, you: { order: youOrder, names: function () { return JSON.parse(JSON.stringify(Y3)); }, def: Y3D.slice() }, past: { order: pastOrder, names: function () { return JSON.parse(JSON.stringify(P2)); }, def: P2D.slice() }, store: { get: function () { return S; }, summary: summary, summaryOf: summaryOf, preset: preset, reset: function () { preset('none'); }, pending: pending, areas: AREAS } };
+  window.HealthProfile = { gift: { steps: GF.slice(), names: JSON.parse(JSON.stringify(GFN)) }, cal: cal, mount: mount, snap: snap, welcome: welcome, dots: dots, sphere: sphere, flat: flat, halftone: halftone, look: look, dismiss: function (v) { ASK = !(v === false || v === 'off'); document.documentElement.classList.toggle('hpNoDism', !ASK); return ASK; }, stepTitle: function (v) { var on = v === true || v === 'on'; document.documentElement.classList.toggle('hpStepTOn', on); return on; }, wear: { order: wearOrder, names: function () { return JSON.parse(JSON.stringify(W1)); }, def: W1D.slice() }, you: { order: youOrder, names: function () { return JSON.parse(JSON.stringify(Y3)); }, def: Y3D.slice() }, past: { order: pastOrder, names: function () { return JSON.parse(JSON.stringify(P2)); }, def: P2D.slice() }, store: { get: function () { return S; }, summary: summary, summaryOf: summaryOf, preset: preset, reset: function () { preset('none'); }, pending: pending, areas: AREAS } };
 })();
 
 </script>

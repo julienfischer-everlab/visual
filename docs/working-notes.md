@@ -19,6 +19,17 @@ this is the part you need before you change it.
 
 
 
+## v2665: Dotted circle primary card, feed lines, decade card tweaks, focus card skeleton
+
+- Primary card (Overview, Modules): Tweaks → Primary card → Visual: Sphere / Dotted circle. Dotted circle is `HealthProfile.flat()`: flat rings of white dots, alternate rings turning slowly in opposite directions, filled bottom-up with orange shaded dots as the progress grows. `sphere({ edge })` hands over to it when `LOOK.vis === 'flat'`.
+- Beyond this year feed lines: 1px (was 1.5), fade out at the foot (mask over the last 44px), the orange light runs on to the very end of the line, still moving as it falls in (keyframes keep opacity 1 to 33%, ease cubic-bezier(.4,0,.65,.85)). The `.t3Feed::after` tail bar is gone (the svg draws the tail, faded).
+- Decades: Age size slider up to 192. The V3 number's mask is .2em wider at the right so the last digit is never cut. Mini card title 23/29 (22/28 on the phone), +4.
+- Decade cards (and Beyond this year, the feed cards) start on the items' own left edge (`padding-left: var(--t3In)`), their rail dot moved back by G.
+- V3 chips: 14 closer to the words (margin-top -14), +4 padding each side.
+- New Decades tweaks: Area description On/Off (`stT3TbDs`, `html.t3NoTbD`), Why cards On/Off (`stT3WhyCd`, default On, `html.t3WhyCd`: Why this concerns me in a 4% card, 20 padding/radius, 16 on the phone), Area items List · 1 col / List · 2 cols / Cards · 2 cols (`stT3DecLs`, `html.t3Ls2` / `html.t3LsC`; cards 4% + 24 blur, 8 apart; one column on the phone).
+- Why this concerns me: no age chip.
+- Your focus → Plan visual: Real product / Minimal skeleton (`stT3FocVis`). Skeleton shows the Plan updates card's Timeline visual (`EvPlanUpd.run`, same uvRun motion) at 1.25x where the products were, when Plan is Not confirmed.
+
 ## v2664 — Primary card (overview): a section per service
 
 - Modules → Primary card (overview): the Services section broken down ("Need a section for each services so on the select should see Dexa Scan, MRI Scan"): **DEXA Scan** and **MRI Scan** are their own sections, each in the jump select and each with its own Visual picture row (the DEXA and Whole Body MRI & CT Chest picture libraries, unchanged).
