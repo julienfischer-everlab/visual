@@ -19,6 +19,11 @@ this is the part you need before you change it.
 
 
 
+## v2682 — Confirm plan ticks flipped, Tab style White
+
+- **Confirm plan ticks** ("flip the colours and show everything included with a white tick and the paid one with a greyed out one"): Included (`.arRvChk:disabled`) now the full ink disc with the paper tick (white on dark); a paid item ticked (`:not(:disabled)[aria-checked="true"]`) the grey (ink 20% disc, 70% tick); unticked still the 1.5 ring.
+- **Tab style White** (Tweaks, Timeline, Tab style: Outline / Filled / **White**; "Tweak Active state tab with white filled chip"): Filled's track and chip (html.t3TabFill) with `html.t3TabWhite`: the active chip filled white, its label #111; light mode the other way round (#111 chip, white label). Checked at XS and L, dark and light.
+
 ## v2681 — Padding guide on the Timeline, focus card above the tabs aligned
 
 - **Padding guide** ("Doesnt work!"): its red bands never drew on the Timeline (and the other pages with an `EvCtx` page context: Plan, Services, My account, Service detail, Gift). The guide hides itself over a modal or takeover by `EvCtx.top()`, and a page's own context (`pg: 1`) counted as one. Now only a context without `pg` hides it. Measured at L: bands 352 and 1152 (the 800 container); XS: the 12 sides. The row's **Save for all** itself was checked with a real click on all eight Timeline presets: each took the value and the orange dot went.
