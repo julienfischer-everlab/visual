@@ -19,6 +19,15 @@ this is the part you need before you change it.
 
 
 
+## v2654 — Phone line 8 nearer the cards; focus CTAs a size up, Review primary and full width; 3 objects then a fade; the feed's light runs to the decade card; Decade intro tweaks
+
+- **XS rail gap** ("XS -8px gap between ghost card and line timeline"): on the phone `--t3Gap` is 16 (was 24), redefined with `--t3In` inside the `tl` container query on `#tl3` / `.tlsD`. The rows, section titles and decade cards all sit 8 nearer the line; the desk keeps 32.
+- **Focus card CTAs** ("+1 size cta"): 44 tall, 15px, 20 side padding (were 36 / 14 / 16), Dr Steven Lu’s notes and Review my plan alike.
+- **Review my plan is the primary** (`t3FbGoP`): white with dark ink on dark, black with white ink on light. On the phone (and in the side column) it spans the card ("Full width").
+- **Plan Not confirmed objects** ("3 items max then fade out"): three rows, and when the plan has more a fourth peeks under a 72px fade (`t3MiniMore`, as the decade lists).
+- **The feed's orange light** ("Orange light should flow inside the line from top to bottom"): it never showed. `var()` inside `@keyframes` made the dash offset jump from one end to the other instead of animating, so the light was always off the line. Each comet dash now has its own keyframes (`t3Feed6/14/26/42`), and the pulse paths run on down the 16px tail (`V136`, the SVG drawn over the tail) so the light travels from each card, through the curve, into the first decade card. The fade-in mask now covers the taller SVG (to 48%).
+- **Tweaks → Decade intro** (new group, Timeline V3): **Card sub** On / Off (`stT3FeedSub`, `html.t3FeedNoSub`) shows or hides the line under each of the three cards' names.
+
 ## v2653 — Timeline items (phone, Minimal): picture top-aligned when the words run past it
 
 - "IMg top aligned IF": the Minimal item layout on the phone (`html.t3LayMin`) now uses the desk's rule. The picture spans a flexible row above the words and one under (rows `1fr auto 1fr`), `align-self:start`. When the words are shorter than the picture the spare height splits evenly and they sit centred on it; when they run past it (title, sub-line and the steps chip), the spacer rows collapse and the picture sits at the top, level with the title. The chevron stays centred on the row; the New / Adjusted badges keep 8 above them.
