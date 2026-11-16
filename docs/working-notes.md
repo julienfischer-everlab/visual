@@ -19,6 +19,11 @@ this is the part you need before you change it.
 
 
 
+## v2681 — Padding guide on the Timeline, focus card above the tabs aligned
+
+- **Padding guide** ("Doesnt work!"): its red bands never drew on the Timeline (and the other pages with an `EvCtx` page context: Plan, Services, My account, Service detail, Gift). The guide hides itself over a modal or takeover by `EvCtx.top()`, and a page's own context (`pg: 1`) counted as one. Now only a context without `pg` hides it. Measured at L: bands 352 and 1152 (the 800 container); XS: the 12 sides. The row's **Save for all** itself was checked with a real click on all eight Timeline presets: each took the value and the orange dot went.
+- **Your focus, Above tabs** ("Card above tab should fil the container, not bleeding, Aligned with title above. also add 16 margin top"): the card dropped its Now bleed (`margin:0 -16px` at L, -12 at XS) in the info slot: `html.tlD3 #dTl #tl3 > .t3Info > .t3FocusB{margin:16px 0 0}`. Its edges now the title's / the tabs' (352..1152 at L), 32 under the head (16 more).
+
 ## v2680 — Paused Opens tweak, ghost head icons, focus Placement
 
 - **Paused** (Tweaks, new **Paused** group, `stT3PsOpen` → `T().psIn`; "Tweak For Paused (group): Open sub page / Stay in the page just change the content below"): **Sub page** (default, v2678's push with a back and the Paused H1) or **Same page**: no Sub page, the content under the tabs changes to the Paused list in place (`S.tab = 'later'`), the title and tabs stay, Paused goes Primary; Paused again or any tab brings the timeline back. Changing the tweak puts the timeline back either way.
