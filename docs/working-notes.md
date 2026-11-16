@@ -19,6 +19,17 @@ this is the part you need before you change it.
 
 
 
+## v2655 — Confirm plan: Discuss + Pay, its own tweaks; focus card fills, its products as the review's rows; month pill gap, Later card, icon 24, decade dot
+
+- **Confirm plan standalone footer** ("Footer should be Discuss / Pay"): the standalone review (`soloRv`) now always shows Discuss (Eva star, its Talk through your plan sheet) at the left and Pay $xx.xx at the right, whatever Footer is set to; its close X is kept (no Save for later at the top). Footer layout still stacks or sits them side by side. A tweak change on the page no longer drops the standalone state: `mount(keep)` calls `inst.solo(true)` again while `html.cplSolo` is on.
+- **Confirm plan Tweaks** ("Should ONLY have the tweak relate to this screen"): `html.cplSolo` (set by `_ar.open({ at: 'rev' })`, cleared on close or a plain open) hides the report's General group (Persona, Step shortcuts, Member), General layout and the Footer row. Left: Confirm your updated plan (Layout, Pricing, Footer layout), Notes from Dr Steven Lu, Tabs, Note, Timeline.
+- **Focus card fills** ("Focus card should fill"): the Not confirmed (To-do) card bleeds by the card padding each side, as the rows' ghost cards and the other focus cards (`margin-inline: calc(-1 * var(--t3G))`).
+- **Focus products = Review My Plan rows** ("Use exactly like the review plan"): `focObjs` draws `ul.t3FcObjs.t3FcRv` (no longer the decade `t3MiniL`, so the List mode no longer turns it into a divider list). Each row measured from the review's condensed row: 46 tall, padding 8 16 8 10, 18 corners, white 7% (light: warm 5%), picture 30 / 8 corners / 2 after, 12 gap, name 16/22 regular (ellipsis), at the right the price (14/20 medium, white) or Included (36%), 6 between rows. Price: `payP`, else the `$` of a to-pay chip, else Included.
+- **Month pill** ("push item left so they're 4px from month pill"): XS with months on the line, a month's items start 4 from the pill (were 8.5): `.t3Mo > .tlItems { margin-left: calc(40.5px - var(--t3In)) }`. M / L unchanged.
+- **Later intro card**: 32 above it at every breakpoint ("+margin top 32px").
+- **Icon rows**: the glyph in an icon thumbnail is 24 (was 32) ("smaller icon to be 24").
+- **Decade rows**: the orange due dot sits on the picture's top right corner (`.t3MiniVDot` inside `.t3MiniV`) instead of inside the sub line ("Dot overlap the img").
+
 ## v2654 — Phone line 8 nearer the cards; focus CTAs a size up, Review primary and full width; 3 objects then a fade; the feed's light runs to the decade card; Decade intro tweaks
 
 - **XS rail gap** ("XS -8px gap between ghost card and line timeline"): on the phone `--t3Gap` is 16 (was 24), redefined with `--t3In` inside the `tl` container query on `#tl3` / `.tlsD`. The rows, section titles and decade cards all sit 8 nearer the line; the desk keeps 32.
