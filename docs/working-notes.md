@@ -19,6 +19,15 @@ this is the part you need before you change it.
 
 
 
+## v2649: Decade cards (Mini Item in Focus): "Notes from Dr Steven Lu" footer opening his note on that decade
+
+- **Footer** (`.t3DecDr`, `data-a="drdec"`): every decade card in the Mini style ends with the Confirm plan's doctor row. It has a round photo (36), "Notes from Dr Steven Lu" (16/22, 500) and a chevron, inside an outlined card (1px `--olD`, 20 radius, padding 16 22 16 16).
+  - Placement: full width on its own grid row (8), 32 below the content, or 24 under the 40s records note.
+  - States: hover 6% and press 10% ground, the outline gone on both.
+- **Sheet** (`decNote(age)`): opens through the timeline's own sheet: a bottom sheet on the phone, a modal on the desk. It reads "Notes from Dr Lu", then Dr Steven Lu / "About your 60s", then his note in quotes.
+- **Notes:** one per decade (`DNOTE`, 20s to 90s). Julien's 40s note names his family history (`DJ()[40].note`).
+- **Checked:** L and XS, the 40s (with the records note) and the 60s, the sheet open on each.
+
 ## v2648: Decades copy review; three source cards that feed the first decade
 
 - **Copy (from the reference).** Product sub-lines and the "Looking ahead" badge are left out, as asked.
