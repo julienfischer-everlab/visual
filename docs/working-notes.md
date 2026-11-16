@@ -19,6 +19,16 @@ this is the part you need before you change it.
 
 
 
+## v2678 — Decade header on the phone, Border beam tweak, mini icons −4
+
+- **Phone decade header** ("The title should be on top of the card so that we can see it. It's at the same level as the number"): under `@container msl (max-width:480px)` the age number (`.t3DecAgeR`) takes no room (0 tall, the card's 32 gap taken back, its `top:-16px` nudge dropped), so the title starts at the card's top, level with the number (measured 2px apart at XS), drawn over it (`.jvPhE` z-index 1), whatever the age size. Its 64 right padding still keeps it clear. M/L unchanged.
+- **Border beam** (Tweaks, the decades' intro group, `stT3FeedBm` Yes default / No → `html.t3FeedBm`): the three source cards light up one after the other on a 15s loop, 5s each. Each beam runs once round its card in 2s (clockwise, eased `cubic-bezier(.42,0,.36,1)`), a hollow 1px ring (`::before`, content-box masked) with a long soft tail and a bright head that lands on the card's bottom middle; a little of its light shows inside the card along the edge it passes (`::after`, the same conic masked to an 18px inner band, max 28%). As it lands, that card's line lights (delay `i * 5 + 2`s, 3s down to the decade card, keyframes now 1.5% / 20% / 20.1% of 15s). With the beam on, the lines' top mask starts at 45% so the light is seen leaving the card. No removes both pseudo elements; reduced motion hides them.
+- **Mini item icons** ("Reduce the icon by 4px, but keep the frame"): `.t3MiniI svg` 16 → 12, List style 18 → 14; the 40 tile kept.
+
+## v2677 · 16 more above the area chips
+
+- Decade card V3: the area chips (and their list) 16 lower under the description (`.t3DecTb` margin-top -14 → 2), every breakpoint.
+
 ## v2676 · Other products as a Sub page
 
 - The Timeline's **Other products** button (the icon disc beside Past on the phone, the outlined CTA in the tabs' bar on the desk) opens a Sub page the way Past activity does: pushed in by the master (`EvPush.page`), Past's bar with the back and the breadcrumb (Timeline › Other products), the dock hidden on the phone; the H1 reads **Other products**, no tabs, no section title, the "Ready when you are" intro card and the saved items. Back (or the breadcrumb) pops it out onto the Timeline. Adding an item back to the plan leaves the Sub page for the timeline where the item lands.
