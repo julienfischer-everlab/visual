@@ -19,6 +19,11 @@ this is the part you need before you change it.
 
 
 
+## v2667: Review My Plan "Leave for now?" sheet, Why title as a white H3
+
+- Async report → Review My Plan (Confirm plan): the top-right close now asks first. A partial bottom sheet on the phone (the fit modal on the desk) titled "Leave for now?", line "You can come back to review your plan whenever you're ready.", Leave page (secondary, left) and Keep reviewing (primary, right), EvCtl lg buttons in a 2-column foot (`.arRvLvFt`). Keep reviewing closes the sheet; Leave page closes the report the way the X did. `askLeave()` is on the report instance (`_ar.inst().askLeave`), so the page frame's own capture listener on `.arClose` asks it before `_ar.close()`.
+- Decades: "Why this concerns me" is now a white H3 (Title group H3 tokens, 20/26, ink), no orange badge.
+
 ## v2666: Discuss sheet: centred H1 title group, no "selections saved" line
 
 - Async report → Confirm plan → Discuss (#6) sheet: the header is a row of its own (the close at its right); the title group sits under it, centred, its title the Title group's H1 (`--tgH1FsS/LhS` 26/30, desk M/L `--tgH1FsL/LhL` 28/32). `sheetOpen` sets `.arQaTc` on the layer when the list is `.arRvTkS`.
