@@ -19,6 +19,10 @@ this is the part you need before you change it.
 
 
 
+## v2673 · Footer #7: the loader on Continue
+
+- Continue + Discuss: **Continue** (to the checkout) shows the button loader; **Discuss** never does, it only opens the sheet with the 3 options ("The Discuss shouldn't have a loading state. The Continue should"). `revPay(btn)` draws `EvLoad.simple` on the button that goes to the checkout (Continue under #7, also when Purchase is picked in the Discuss sheet); the other footers keep it on the primary.
+
 ## v2672 · Confirm plan: Included in white
 
 - The rows' footer **Included** is the full ink (white on dark), like the prices ("Put included the white"; was 36%). Rows saved for later or unticked still dim as a whole.

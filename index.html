@@ -21762,12 +21762,12 @@ window.EvCtl = (function () {
     }
     /* Pay: the Loading states' multi-step wait in the middle of the screen, over the page washed ("When I click the Pay button, I need to see the loading state in the middle of the screen"; EvLoad.multi, as Send a gift's checkout);
        from the review with something to pay, on to the checkout; there, or with nothing to pay, the timeline ("once submitted, redirect to timeline"), or the end */
-    function revPay() {
-      if (payBusy) return; var t = revTotal(), fin = function () { if (o.onSubmit) o.onSubmit(rcSubmitted(), { confirmed: true }); else { var nxR = nextOf(REC); if (nxR == null) close(); else go(nxR); } };
+    function revPay(btn) {
+      if (payBusy) return; var lb = btn || (rvCd() && cta.parentNode.querySelector('.arRcFtSec')) || cta;   /* the loader on the button that goes to the checkout: Footer #7's Continue, not Discuss ("The Discuss shouldn't have a loading state. The Continue should") */ var t = revTotal(), fin = function () { if (o.onSubmit) o.onSubmit(rcSubmitted(), { confirmed: true }); else { var nxR = nextOf(REC); if (nxR == null) close(); else go(nxR); } };
       var wait = function (ls, per, then) { if (!window.EvLoad) { then(); return; } payBusy = true; cta.disabled = true; cta.setAttribute('aria-busy', 'true');
         window.EvLoad.multi(root, ls, { step: per }).done.then(function () { payBusy = false; cta.disabled = false; cta.removeAttribute('aria-busy'); if (alive) then(); }); };
       if (coOn || !t || rcOffP('co')) { wait(t ? ['Processing payment', 'Confirming your order', 'Updating your plan'] : ['Confirming your plan', 'Updating your timeline'], 900, fin); return; }   /* the checkout off: paid from the review */
-      if (window.EvLoad && window.EvLoad.simple) { payBusy = true; var dn = window.EvLoad.simple(cta); setTimeout(function () { dn(false); payBusy = false; if (alive) { coOn = true; pushDir = 1; render(); } }, 900); return; }   /* the review's Pay: the button's own loader, nothing over the screen ("Just loading state in CTA when click here"), then the checkout */
+      if (window.EvLoad && window.EvLoad.simple) { payBusy = true; var dn = window.EvLoad.simple(lb); setTimeout(function () { dn(false); payBusy = false; if (alive) { coOn = true; pushDir = 1; render(); } }, 900); return; }   /* the review's Pay: the button's own loader, nothing over the screen ("Just loading state in CTA when click here"), then the checkout */
       wait(['Securing your order', 'Opening checkout'], 700, function () { coOn = true; pushDir = 1; render(); });
     }
     function coLabel() { var t = revTotal(); return t ? 'Pay $' + t.toFixed(2) : 'Confirm plan'; }
@@ -21782,7 +21782,7 @@ window.EvCtl = (function () {
       if (!fS) { fS = h('button', { type: 'button', class: 'arRcFtSec', text: 'Later' }); aft.insertBefore(fS, cta.nextSibling); on(fS, 'click', function () { if (rcStkFt) rcStkFt(false); }); }
       fS.textContent = cd ? 'Continue' : cont ? 'Do it later' : disc ? 'Discuss' : 'Skip for now'; fS.hidden = false; fS.dataset.rv = '1';   /* "Skip for now NOT Do it later"; #4 says Do it later ("two options: Continue or Do it later"); #5 Discuss ("on the footer, have Discuss + Purchase") */ var fN = aft.querySelector('.arRcFtNote'); if (fN) fN.hidden = true;
       if (disc) { fS.insertBefore(rvEvaIc(), fS.firstChild); fS.setAttribute('aria-haspopup', 'dialog'); } else { fS.removeAttribute('aria-haspopup'); fS.removeAttribute('aria-expanded'); }   /* #5's Discuss: Eva's star before its word ("Put an Eva star icon in the discuss") */
-      rcStkFt = disc ? function () { rvGo(fS, true); return true; } : cd ? function () { revPay(); return true; } : rvLater; }   /* #7: Continue straight to the checkout */
+      rcStkFt = disc ? function () { rvGo(fS, true); return true; } : cd ? function () { revPay(fS); return true; } : rvLater; }   /* #7: Continue straight to the checkout */
     function rvEvaIc() { var b = window.EvBeamStar ? window.EvBeamStar() : null, g = b && b.querySelector('svg'); if (!g) g = strokeIcon(20, 24, 1.8, ['M12 3.5l1.9 5.1 5.1 1.9-5.1 1.9L12 17.5l-1.9-5.1L5 10.5l5.1-1.9z']); g.setAttribute('class', 'arRvEvaIc'); g.setAttribute('aria-hidden', 'true'); return g; }   /* Eva's star, the beam star's own (EvBeamStar: the Talk to Eva card's mark), without its ring */
     function rvAmt() { var t = revTotal(); return '$' + (t % 1 ? t.toFixed(2) : String(t)); }   /* Purchase's price as the plan's list writes it ($129; cents only when there are some) */
     /* Footer #5 (the default; "Put an action on the top right: Save for later, and on the footer, have Discuss + Purchase"): the top nav's close gives its place to a Save for later pill (the top nav's 44 discs' height and fill), as Do it later (rvLater: the plan kept, the report closed) */
