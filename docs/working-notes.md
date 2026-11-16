@@ -19,6 +19,11 @@ this is the part you need before you change it.
 
 
 
+## v2668: Why title as H4, decade item icons 4 smaller
+
+- Decades: "Why this concerns me" uses the Title group's H4 (`--tgH4FsS/LhS/W`, 17/24, 400) in the ink, 4px margin under it (was the H3).
+- Decade mini items: the icon in its 40 tile 16px (was 20); in the List style 18 (was 22).
+
 ## v2667: Review My Plan "Leave for now?" sheet, Why title as a white H3
 
 - Async report → Review My Plan (Confirm plan): the top-right close now asks first. A partial bottom sheet on the phone (the fit modal on the desk) titled "Leave for now?", line "You can come back to review your plan whenever you're ready.", Leave page (secondary, left) and Keep reviewing (primary, right), EvCtl lg buttons in a 2-column foot (`.arRvLvFt`). Keep reviewing closes the sheet; Leave page closes the report the way the X did. `askLeave()` is on the report instance (`_ar.inst().askLeave`), so the page frame's own capture listener on `.arClose` asks it before `_ar.close()`.
