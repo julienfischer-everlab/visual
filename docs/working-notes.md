@@ -19,6 +19,10 @@ this is the part you need before you change it.
 
 
 
+## v2687 · Focus card (Silhouette): words at the top, CTA at the bottom
+
+"Gap auto. Top part on top. CTA on bottom". The Silhouette focus card (min height 192, 208 on the phone, set by the dotted body) centred its eyebrow, title and Doctor notes together; its grid now spreads them (`align-content:space-between`): the eyebrow and title on the card's top padding, the CTA on its bottom padding, the gap between them whatever is left (20 at least, the CTA's margin). Checked at L (eyebrow 12 under the top, CTA 12 above the bottom) and XS (8 / 8, the card's own padding). The Plan Not confirmed card already put Review at the bottom.
+
 ## v2686 · Review my plan: paid items always live in Now
 
 "IN NOW Paid item always live in NOW checked OR unchecked". With checkboxes on (Control object Yes) and the Now / Later tabs shown, a paid item is never under Later: `rvPaidNow()`, run at the top of every review paint, turns any paid item saved for later (the demo's two, a deck's Maybe later, its sheet's Do it later) into a Now item, unticked at 70%. Unticking a ticked paid item no longer moves it to Later with the "Moved to later" snackbar: it stays where it is, unticked. The Now tab's count includes the unticked paid items; Later keeps only what is not paid. Checked at XS and L: Gut microbiome test, Allergy test and Follow-up blood test sit in Now unticked, a tap ticks one (Purchase · $349 | Discuss), a second tap unticks it in place, Later says Nothing saved for later.
