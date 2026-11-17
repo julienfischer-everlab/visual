@@ -19,6 +19,25 @@ this is the part you need before you change it.
 
 
 
+## v2723: Big 100 ending, Group items select, Paused scroll, Suggested rows, Halo bleed, Discuss without star
+
+- Timeline, Big 100 ending:
+  - The particles flow into the main dot as you scroll ("The dot should go into the main dot based on the scroll position"): eased in, fading only as they reach it.
+  - "Still counting" removed; the sub is now the main title, with the orange blur reveal ("Put the sub as main title").
+  - The title has parallax and rises until it almost sits on the 100 ("Title Should have paralax and go above the 100 (almost)").
+  - XS: the second title no longer wraps to four lines; the decade number is 16px higher ("XS push up number by 16").
+- Confirm plan, Group items is a select: None, Included / Paid (forces $0 on the included items), Now / Next ("Select * None * Included Paid ... * New Next"). It only shows when Tabs is Off ("tweak only avail. IF Tab OFF"). An older On setup becomes Now / Next.
+- Timeline, the Paused button (Opens: Same page): a click always scrolls the page so the tabs sit in their pinned place, from the top or from far down ("Click on this need to auto scroll to the fixed position"). The short Paused list gets enough room under the pinned tabs for the page to scroll there.
+- Timeline, Suggestion format Not grouped, a Suggested row:
+  - No progress indicator ("IF suggested there is NO Progress indicator").
+  - Its sub line is the item's why, not its rhythm again above the clock line ("Sub should be the why", "2 same sub line ?"). Dr Lu's line is the fallback when an item has no why.
+- Primary card, Visual Halo:
+  - Centred: the sphere grows from its foot until the card's top cuts its ring, as the left version bleeds off its corner ("I guess the bleed comment no applyied yet here?"). The two step marks stay just inside.
+  - The sphere's body is the card's own ground, a shade darker at its top and gone at its foot ("Circle bg merge / blend with the card bg"; was a brown disc).
+  - No top-right halo: the card's corner light is off in Halo and the sphere's glow stays close round its lit edge ("remove to top right halo in this version").
+  - Same on the Modules page (same code).
+- Confirm plan footer: Discuss has no star icon, as the one CTA (#6) and beside Continue (#7) ("Remove star icon on CTA!").
+
 ## v2722: Suggestion format tweak; Halo covers the primary card
 
 - Timeline, Tweaks: Timeline items: **Suggestion format** (`stT3SgFmt`).
