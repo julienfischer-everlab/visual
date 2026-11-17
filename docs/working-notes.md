@@ -19,6 +19,13 @@ this is the part you need before you change it.
 
 
 
+## v2703 · Decades: the 80s and 90s, then a big rolling 100 and its written line
+
+- "add 80 and 90": `FAR` / `farItems()` add four checks each to a plan that stops short of them (80s: Strength and bone review, Hearing and eye check, Memory and mood review, Flu and COVID vaccines; 90s: Care preferences review, Medication review, Falls and home safety check, Flu and COVID vaccines), at reset; their decade cards follow with the words already in DHEAD / DECW (Live well, on your terms. / Comfort and what matters.) and their area tabs from `areaOf`.
+- "And after that a Big 100 that roll on scroll, no card part of the body centered with large margin top bottom": `centBloc()` after the decades, the decades' own roll (`roll(100)`: 98, 99, 100, a reel per digit, turned by the scroll), 240 on desktop / 150 on the phone, centred on the page, no card, 160 above and 200 below (112 / 144 on the phone).
+- "On the 100 if scroll more write a h1 that appear like the gift card experience with blur orange effect, ideate the copy": its line, "Here’s to a hundred years, lived well.", written letter by letter out of a warm orange blur (EvWrite, the gift intro's hpWelRes / hpWelEmb) once it is a third up the screen (`centWrite`, an IntersectionObserver), at the H1 display size (40/46, 30/36 on the phone).
+- Checked at L and XS: decades 40 to 90, the 100 at its size and margins, the line still unwritten with the 100 centred, written once scrolled on; no errors (a first build read `ageAt` before it existed and stopped the Timeline; fixed).
+
 ## v2702 · Plan update group, review footer #7 fixed, Later items back to Later, Doctor's note head + 16px + rich text toolbar, banner +16
 
 - "Hero --> Plan update": the Timeline's first tweak group is now **Plan update** (switch `stT3HeroOn`); its **Visual** a two-way segment (Real product | Skeleton, `stT3FocVis.tkSegSel`), no longer an on/off switch.
