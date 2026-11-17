@@ -19,6 +19,10 @@ this is the part you need before you change it.
 
 
 
+## v2714 — Suggestions grey card: top and bottom back to 4
+
+- `#tl3 .t3SugW > .t3SugL` padding 4px top/bottom, sides kept at half gap + 8.
+
 ## v2713 — Big 100: more particles, two-line title that replays; Suggestions card +4
 
 - Big 100 dot: twice as many specks drawn in (20/s, up to 180) and twice the specks orbiting it (28). They now come from across the top, densest over the middle and a quarter as dense at the edges (inverse-CDF of a linear falloff over min(width, 1100)), instead of three fixed sources.
