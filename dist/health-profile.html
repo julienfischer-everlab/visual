@@ -1788,6 +1788,16 @@ html:not(#_s) .evShHd > .evShT, html:not(#_s) .evShHd > * > .evShT { flex: 1 1 a
 html:not(#_s) .evShHd > div:has(> .evShT) { flex: 1 1 auto; min-width: 0; } html:not(#_s) .recSheet .evShHd.recHd { margin-bottom: 16px; }   /* the filter sheet: 16 between its title and the tabs */
 html:not(#_m):not(#_d) .evShHd .evShX.evShX { appearance: none; -webkit-appearance: none; position: static; flex: none; display: grid; place-items: center; width: 32px !important; height: 32px !important; min-width: 32px !important; min-height: 32px !important; margin: 0; padding: 0; border: 0; border-radius: 50%; background: color-mix(in srgb, currentColor 7%, transparent); color: inherit; cursor: pointer; }
 html:not(#_s) .evShHd .evShX svg { width: 16px; height: 16px; } .evShHd .evShX:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+/* ---- Sheet header = a page's header group ("IN bottom sheet the Header group need to be the same as a page header group. Title Can be in the top nav or outside below on the header"): the top nav row, the Top nav master's 44 close disc
+   at its right (16 under the sheet's top, after its notch), and the title either under it, the Title group's H2 (Below, the default: html with no data-sht), or in the bar between the discs, the Top nav A title 20/28 centred on one line
+   (Top nav: html[data-sht="nav"]). Tweaks -> General layout -> Sheet title (#stShTitle, saved with the presets). Every titled sheet wears it: the title (or its column, an eyebrow or a chip with it) in the title cell, the close in the disc's */
+html:not(#_s):not(#_t) .evShHd { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: ". x" "t t"; align-items: center; column-gap: 12px; row-gap: 8px; padding-top: max(0px, calc(16px - var(--evShPt, 0px))); }
+html:not(#_s):not(#_t) .evShHd > :is(.evShT, div:has(> .evShT)) { grid-area: t; min-width: 0; margin: 0; }
+html:not(#_s):not(#_t) .evShHd > .evShT, html:not(#_s):not(#_t) .evShHd > * > .evShT { margin: 0; font-size: var(--tgH2FsS, 24px); line-height: var(--tgH2LhS, 30px); letter-spacing: var(--tgH2LsS, -.2px); font-weight: var(--tgH2W, 500); }
+html:not(#_m):not(#_d):not(#_t) .evShHd .evShX.evShX { grid-area: x; width: var(--evTnD, 44px) !important; height: var(--evTnD, 44px) !important; min-width: var(--evTnD, 44px) !important; min-height: var(--evTnD, 44px) !important; background: color-mix(in srgb, currentColor 6%, transparent); }
+html[data-sht="nav"]:not(#_s):not(#_t) .evShHd { grid-template-columns: var(--evTnD, 44px) minmax(0, 1fr) var(--evTnD, 44px); grid-template-areas: ". t x"; }
+html[data-sht="nav"]:not(#_s):not(#_t) .evShHd > :is(.evShT, div:has(> .evShT)) { text-align: center; }
+html[data-sht="nav"]:not(#_s):not(#_t) .evShHd > .evShT, html[data-sht="nav"]:not(#_s):not(#_t) .evShHd > * > .evShT { font-size: 20px; line-height: 28px; letter-spacing: -.1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-wrap: nowrap; }
 
 </style>
 <style>
@@ -3957,6 +3967,9 @@ window.EvSheetHead = (function () {
   var IX = window.EvTopNav.IX;
   function html(o) { o = o || {}; var tag = o.tag || 'h2', t = '<' + tag + ' class="evShT' + (o.titleCls ? ' ' + o.titleCls : '') + '"' + (o.id ? ' id="' + o.id + '"' : '') + '>' + (o.title || '') + '</' + tag + '>';
     return '<div class="evShHd' + (o.cls ? ' ' + o.cls : '') + '">' + (o.pre ? '<div>' + o.pre + t + '</div>' : t) + (o.close === false ? '' : '<button type="button" class="evShX' + (o.closeCls ? ' ' + o.closeCls : '') + '" aria-label="' + (o.closeLabel || 'Close') + '">' + (o.closeIcon || IX) + '</button>') + '</div>'; }
+  (function () { var ap = function () { var e = document.getElementById('stShTitle'), H = document.documentElement; if (e && e.value === 'nav') { if (H.getAttribute('data-sht') !== 'nav') H.setAttribute('data-sht', 'nav'); } else if (H.hasAttribute('data-sht')) H.removeAttribute('data-sht'); };   /* Tweaks -> General layout -> Sheet title: html[data-sht="nav"] (the title in the top nav), none (under it) */
+    var go = function () { var e = document.getElementById('stShTitle'); if (e) { e.addEventListener('change', ap); e.addEventListener('input', ap); } ap(); setInterval(ap, 700); };
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', go); else go(); })();
   return { html: html, IX: IX };
 })();
 /* EvTitle: the Title group master (Design system -> General layout -> Title group; its CSS .evTg beside the Top nav's). One title block for every page, each part an option ("some titles don't need that. That's just an option"):

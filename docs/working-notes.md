@@ -19,6 +19,14 @@ this is the part you need before you change it.
 
 
 
+## v2698 · Bottom sheets: the header group of a page (top nav + title below, or title in the top nav)
+
+"IN bottom sheet the Header group need to be the same as a page header group. Title Can be in the top nav or outside below on the header": the sheet header master (`.evShHd` / `EvSheetHead`, every titled sheet: Notes from Dr Lu and the Timeline's sheets, the cart, the Plan's sheets, the filter sheet, the debriefs, the Modals doc's) is now a page's header group:
+- **The top nav row**: the Top nav master's 44 close disc at the right, 16 under the sheet's top (after its notch); was a compact 32 close level with the title.
+- **Sheet title · Below** (the default): the title under the top nav, the Title group's H2 (24/30 at XS·S, its tokens), 8 below the row; an eyebrow or a chip with the title stays with it.
+- **Sheet title · Top nav**: the title in the bar between the discs, centred on one line, the Top nav A title (20/28).
+- The switch: Tweaks → General layout → **Sheet title** (Below / Top nav), shown with every page and every sheet, saved with the presets; `html[data-sht="nav"]` carries it.
+
 ## v2697 · Tweaks show Doctor notes while Notes from Dr Lu is open
 
 "Still no control over the note rich content": the Timeline's sheets wear the Inbox's sheet shell (`.ibWrap`), so with Notes from Dr Lu up, EvCtx read the Inbox context (no tweaks) and Tweaks showed General layout alone. Now:
