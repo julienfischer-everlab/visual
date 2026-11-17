@@ -19,6 +19,16 @@ this is the part you need before you change it.
 
 
 
+## v2727: Big 100 ending, second pass; the orange dot stops before the 100
+
+- The two lines rise together: the second is written just under the first and climbs into its place as the first goes up and away ("Second title should come below the first title while moving up").
+- The section is a third shorter (3 screens, was 4), every beat at the same scroll as before, so the page ends where the sequence does ("should be able to scroll that far"). The stars come out of the dot and finish by the section's end.
+- The button reads Back to life ("back to life"; was Back to today).
+- The specks come only once the stage holds and the first line is written, and are drawn into the dot from there ("paerticles should come later on scroll").
+- Once the dot is full the stars float clearly: about 18–34px round their places, a period of roughly 10s, brighter and a few more (28 phone / 44 desk) ("stil particles should float once the dot is reached").
+- The big number stays at full strength while it rolls (97 to 120), and fades out only as the second line is written, gone once it is ("Big number shoudl stay longer, disppear totally once the 2nd title is diplayed").
+- Timeline accent trail: the 100 sequence is not part of the timeline. The orange dot's rail ends where the 100 begins, and that section's scroll is not counted, so the dot reaches the end of the decades as the 100 comes in ("dont consider this part part of the timeline regarding the orange dot position"). This applies both with and without scroll-driven animations.
+
 ## v2726: Desk CTA 40 clear; Suggested rows title + why; Big 100 ending reworked
 
 - Timeline items (S, M, L): the buttons sit 40px from the words (the row's 18px gap + 22px margin; "Margin left CTA 40px item desktop"). XS is unchanged.
