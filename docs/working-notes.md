@@ -19,6 +19,18 @@ this is the part you need before you change it.
 
 
 
+## v2722: Suggestion format tweak; Halo covers the primary card
+
+- Timeline, Tweaks: Timeline items: **Suggestion format** (`stT3SgFmt`).
+  - Grouped at the end (default, as before): each list's Suggestions card after its items.
+  - Not grouped: Dr Lu's suggestions sit among the list's own items, by date in Next and in the list's order in Now and Paused. Every suggested row wears a **Suggested** badge (warm, the Suggestions lightbulb), beside New / Adjusted.
+  - The item manager, Not grouped: each row gets a Suggested mark (lightbulb, lit when marked), so any item can be marked or unmarked (`sgM` in the item's edits). Add suggested adds a suggestion among the list's items. One merged order is saved per list; list orders now apply after the group orders.
+- Primary card, Visual Halo ("The visual should cover the whole card and bleed as the ref sent", "Behind the title even"):
+  - The canvas now covers the whole card, under its words (the card isolated). The slot keeps the sphere's box and place, so the words sit where they were.
+  - The sphere's glow is wide and bleeds across the card's top right, cut only by the card's corners. Its foot fades lower, with a faint warm light on down behind the title.
+  - Left alignment: the sphere bleeds off the card's top right corner, and the title and its line take the full width, over the visual.
+  - Same in Modules -> Primary card (same code).
+
 ## v2721: only the phone has bottom sheets; Show Next bucket tweak
 
 - General modal rule applied everywhere ("On mobile, it should always be a bottom sheet ... On desktop, it should always be a modal, a floating modal in the middle of the screen. This is a general rule."): S now gets the floating centred modal, XS alone keeps sheets. Switched: Inbox (`.ibCard`, the Timeline mail sheet; the old under-992 no-data-bp sheet removed, Auto sets `data-bp="xs"` under 600), Services marketplace detail and cart (`.mkDet/.mkCart`, swipe `can` XS only), locked service modal `.svBook.svLkM` and debriefs `.dbM` (V1/V2 modal at S, the 760 two-column V3 kept for M/L; V2's 600 modal capped at the width less 48), Plan `.plPMd` and `.plNSh`, BioDetail in the Plan floats from S, Timeline plan update `.t3Um`, Health profile `.hpBs` sheets (S joins the M/L 544 modal) and `.hpConf` confirms, its pickers and signature pad (menu / dialog from 560 wide), the Async report's Talk through your plan (`rvPh`), `EvSheetSwipe`'s default (XS only) and the Modals doc (S: no Dismiss control, no swipe, Stack as one tall modal; captions say XS / S, M, L).

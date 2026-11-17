@@ -2698,7 +2698,8 @@ html.hpOvCtrOn #dOver .hpOvCard.hpOvPlan > .hpPlPic { margin: auto auto 40px; } 
 /* After the call, Your first insights (HPC.ins; Documentation -> Membership onboarding): the card's words over its rows, the halftone sphere where the profile's sphere stands; three rows, a task each, in any order; then the foot.
    The rows are the actions, not the card: no hover on the card itself */
 .hpOvCard.hpOvIns { cursor: default; } #dOver .hpOvCard.hpOvIns.hpOvIns:hover { background-color: var(--ovCard) !important; }
-.hpDots.hpHt { position: static; inset: auto; } .hpOvCard .hpDots.hpHt { position: absolute; top: 20px; right: 20px; }   /* the halftone sphere, the profile sphere's box and place */
+.hpDots.hpHt { position: static; inset: auto; } .hpOvCard .hpDots.hpHt { position: absolute; top: 20px; right: 20px; }
+.hpOvCard:has(> .hpHaloW) { isolation: isolate; } .hpOvCard > .hpHaloW { z-index: -1; } .hpOvCard:has(> .hpHaloW) :is(h3, .hpOvSub) { max-width: none; } .hpHaloW > .hpHaloCv { position: absolute; display: block; max-width: none; pointer-events: none; }   /* Halo over the whole card: the slot keeps the sphere's box (the words placed as before), its canvas the card's size, under the words (the card isolated, so under them and over its ground) */   /* the halftone sphere, the profile sphere's box and place */
 .hpOvIns .hpInsHd { display: flex; flex-direction: column; min-height: var(--hpSphW); }   /* the rows always start under the sphere */ .hcDkOn .hcCardBox .hpOvCard.hpOvIns { --hpSphW: 119px; }   /* Documentation's desk card: its sphere's 119 */
 .hpInsRows { display: flex; flex-direction: column; gap: 8px; margin: 16px 0 0; padding: 0; list-style: none; }
 .hpInsLi { position: relative; margin: 0; }
@@ -6643,21 +6644,26 @@ window.EvConsent = (function () {
   function halo(opts) {
     opts = opts || {};
     var cv = document.createElement('canvas'); cv.className = 'hpDots hpSph hpHalo' + (opts.cls ? ' ' + opts.cls : ''); cv.setAttribute('aria-hidden', 'true'); cv.style.pointerEvents = 'none';
-    var SC = opts.edge != null ? 1.6 : 1; if (SC !== 1) cv.style.transform = 'scale(' + SC + ')';   /* the sphere's own footprint (its 1.6 over its box), drawn sharp at that scale */
+    var COV = opts.edge != null, el = cv, cvK = '';   /* a primary card's: the canvas covers the whole card, behind its words ("The visual should cover the whole card and bleed as the ref sent", "Behind the title even"); the slot keeps the sphere's box and place, the sphere drawn on it */
+    if (COV) { el = document.createElement('span'); el.className = 'hpDots hpSph hpHalo hpHaloW' + (opts.cls ? ' ' + opts.cls : ''); el.setAttribute('aria-hidden', 'true'); cv.className = 'hpHaloCv'; el.appendChild(cv); }
+    var SC = opts.edge != null && !COV ? 1.6 : 1; if (SC !== 1) cv.style.transform = 'scale(' + SC + ')';   /* the sphere's own footprint (its 1.6 over its box), drawn sharp at that scale */
     var x = cv.getContext('2d'), lv = { from: 0, to: 0, t0: 0, dur: 1 }, t0 = opts.t0 || performance.now(), raf = 0, last = 0, calm = reduced();
     var levelAt = function (now) { var k = Math.min(1, Math.max(0, (now - lv.t0) / lv.dur)), e = 1 - Math.pow(1 - k, 3); return lv.from + (lv.to - lv.from) * e; };
     var mix = function (a, b, k) { return [0, 1, 2].map(function (j) { return Math.round(a[j] + (b[j] - a[j]) * k); }).join(','); };
     var draw = function (now) {
+      var sx = 0, sy = 0, sw = 0, shh = 0; if (COV) { var P = el.offsetParent; if (!P || !el.offsetWidth) return false; var stc = getComputedStyle(el).position !== 'static', ox = el.offsetLeft, oy = el.offsetTop, k = [ox, oy, P.clientWidth, P.clientHeight, stc].join();
+        if (k !== cvK) { cvK = k; var ps = getComputedStyle(P), cs = cv.style; cs.left = (stc ? -ox : 0) + 'px'; cs.top = (stc ? -oy : 0) + 'px'; cs.width = P.clientWidth + 'px'; cs.height = P.clientHeight + 'px'; cs.borderRadius = ['TopLeft', 'TopRight', 'BottomRight', 'BottomLeft'].map(function (c) { return Math.max(0, (parseFloat(ps['border' + c + 'Radius']) || 0) - (parseFloat(ps.borderTopWidth) || 0)) + 'px'; }).join(' '); }   /* over the card's padding box, its corners */
+        sx = ox; sy = oy; sw = el.offsetWidth; shh = el.offsetHeight; }
       var w = cv.clientWidth, hh = cv.clientHeight; if (!w || !hh) return false;
       var dpr = Math.min(2, window.devicePixelRatio || 1) * SC; if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(hh * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(hh * dpr); }
       x.setTransform(dpr, 0, 0, dpr, 0, 0); x.clearRect(0, 0, w, hh);
       var sh = cv.closest('.hpSheet'), lt = sh ? !sh.classList.contains('arDark') : document.body.classList.contains('light'), base = lt ? '46,31,26' : '242,236,230';
       var t = calm ? 0 : (now - t0) / 1000, L = levelAt(now), ks = +LOOK.sat; if (!(ks >= 0)) ks = 1;
-      var Rr = Math.min(w, hh) / 2 * (SC !== 1 ? .9 : .94), R = Rr / 1.1, cx = w / 2, cy = hh / 2 + R * .06, gain = (.5 + .5 * L) * (calm ? 1 : 1 + .035 * Math.sin(t / 3.2));
+      var Rr = COV ? Math.min(sw, shh) * 1.6 / 2 * .9 : Math.min(w, hh) / 2 * (SC !== 1 ? .9 : .94), R = Rr / 1.1, cx = COV ? sx + sw / 2 : w / 2, cy = (COV ? sy + shh / 2 : hh / 2) + R * .06, gain = (.5 + .5 * L) * (calm ? 1 : 1 + .035 * Math.sin(t / 3.2));
       var la = -.95 + (calm ? 0 : .12 * Math.sin(t / 7)), lx = cx + Math.cos(la) * R * .62, ly = cy + Math.sin(la) * R * .62;
       var C = lt ? [[255, 196, 150], [247, 140, 94], [214, 96, 48], [150, 58, 24]] : [[255, 228, 196], [255, 184, 128], [236, 118, 62], [112, 44, 18]];
       /* the sphere, lit from behind its top right ("Halo sphere type of style like this"): a halo outside its lit edge, a dark body, its lit rim a crescent of warm light fading in toward the middle, its foot melting into the card */
-      var ex = cx + Math.cos(la) * R, ey = cy + Math.sin(la) * R, orad = Math.max(8, Math.min(R * .95, ex, w - ex, ey, hh - ey) * .96), og = x.createRadialGradient(ex, ey, 0, ex, ey, orad);   /* never past the canvas's edge (it cut the glow square) */
+      var ex = cx + Math.cos(la) * R, ey = cy + Math.sin(la) * R, orad = COV ? R * 2.1 : Math.max(8, Math.min(R * .95, ex, w - ex, ey, hh - ey) * .96), og = x.createRadialGradient(ex, ey, 0, ex, ey, orad);   /* never past the canvas's edge (it cut the glow square); over a card, wide, bleeding across its top right (the card's corners cut it) */
       og.addColorStop(0, 'rgba(' + satOf(C[1].join(','), ks) + ',' + ((lt ? .26 : .3) * gain).toFixed(3) + ')'); og.addColorStop(.45, 'rgba(' + satOf(C[2].join(','), ks) + ',' + ((lt ? .08 : .1) * gain).toFixed(3) + ')'); og.addColorStop(1, 'rgba(' + C[2].join(',') + ',0)');
       x.fillStyle = og; x.fillRect(0, 0, w, hh);   /* the halo round the lit edge */
       x.save(); x.beginPath(); x.arc(cx, cy, R, 0, 6.2832); x.clip();
@@ -6666,7 +6672,8 @@ window.EvConsent = (function () {
       g.addColorStop(0, 'rgba(' + satOf(C[0].join(','), ks) + ',' + (A * gain).toFixed(3) + ')'); g.addColorStop(.16, 'rgba(' + satOf(C[1].join(','), ks) + ',' + (A * .82 * gain).toFixed(3) + ')');
       g.addColorStop(.36, 'rgba(' + satOf(C[2].join(','), ks) + ',' + (A * .48 * gain).toFixed(3) + ')'); g.addColorStop(.6, 'rgba(' + satOf(C[3].join(','), ks) + ',' + (A * .16 * gain).toFixed(3) + ')'); g.addColorStop(.85, 'rgba(' + C[3].join(',') + ',0)');   /* the light a crescent along the rim, gone before the middle */
       x.fillStyle = g; x.fillRect(cx - R, cy - R, R * 2, R * 2); x.restore();
-      x.globalCompositeOperation = 'destination-in'; var fm = x.createLinearGradient(0, cy - R * 1.2, 0, cy + R * .95); fm.addColorStop(0, 'rgba(0,0,0,1)'); fm.addColorStop(.5, 'rgba(0,0,0,.92)'); fm.addColorStop(1, 'rgba(0,0,0,0)'); x.fillStyle = fm; x.fillRect(0, 0, w, hh); x.globalCompositeOperation = 'source-over';
+      x.globalCompositeOperation = 'destination-in'; var fm = x.createLinearGradient(0, cy - R * (COV ? 2.4 : 1.2), 0, cy + R * (COV ? 1.5 : .95)); fm.addColorStop(0, 'rgba(0,0,0,1)'); fm.addColorStop(.5, 'rgba(0,0,0,.92)'); fm.addColorStop(1, 'rgba(0,0,0,0)'); x.fillStyle = fm; x.fillRect(0, 0, w, hh); x.globalCompositeOperation = 'source-over';
+      if (COV) { var wg = x.createRadialGradient(cx, cy + R * .55, R * .2, cx, cy + R * .55, R * 2.1); wg.addColorStop(0, 'rgba(' + satOf(C[2].join(','), ks) + ',' + ((lt ? .07 : .11) * gain).toFixed(3) + ')'); wg.addColorStop(.55, 'rgba(' + satOf(C[3].join(','), ks) + ',' + ((lt ? .03 : .05) * gain).toFixed(3) + ')'); wg.addColorStop(1, 'rgba(' + C[3].join(',') + ',0)'); x.fillStyle = wg; x.fillRect(0, 0, w, hh); }   /* over a card: a faint warm light under the sphere, on down behind the title */
       /* its lit rim, thin, brightest where the light falls, gone at either end */
       x.lineWidth = 1.2; x.lineCap = 'butt'; var RN = 48, rs = la - 1.5, re = la + 1.5;
       for (var i = 0; i < RN; i++) { var u = (i + .5) / RN, f = Math.sin(u * 3.1416); x.strokeStyle = 'rgba(' + satOf(C[0].join(','), ks) + ',' + ((lt ? .55 : .75) * f * f * gain).toFixed(3) + ')'; x.beginPath(); x.arc(cx, cy, R - .6, rs + (re - rs) * i / RN, rs + (re - rs) * (i + 1) / RN); x.stroke(); }
@@ -6689,7 +6696,7 @@ window.EvConsent = (function () {
       if (calm && now - lv.t0 > lv.dur) return;
       if (!shown) { setTimeout(function () { if (!raf) raf = requestAnimationFrame(tick); }, 500); return; }
       raf = requestAnimationFrame(tick); };
-    return { el: cv, set: function (f, anim) { var now = performance.now(); f = Math.max(0, Math.min(1, f)); var cur = levelAt(now); lv = anim && !calm ? { from: cur, to: f, t0: now, dur: f > cur ? 1600 : 1200 } : { from: f, to: f, t0: now, dur: 1 }; if (!raf) raf = requestAnimationFrame(tick); },
+    return { el: el, set: function (f, anim) { var now = performance.now(); f = Math.max(0, Math.min(1, f)); var cur = levelAt(now); lv = anim && !calm ? { from: cur, to: f, t0: now, dur: f > cur ? 1600 : 1200 } : { from: f, to: f, t0: now, dur: 1 }; if (!raf) raf = requestAnimationFrame(tick); },
       seed: function () {}, burst: function () {}, core: function () {}, t0: t0 };
   }
   /* ---------- the halftone sphere ("a halftone dot sphere, orange dots on a grid, fading at the edge": the first insights card's visual, where the profile's sphere stands) ----------
