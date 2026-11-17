@@ -19,6 +19,11 @@ this is the part you need before you change it.
 
 
 
+## v2734: Confirm plan and the Async report's review are one system
+
+- **One setup for the review** ("Reflect the system from async report! This Confirm plan page is the source of truth for future iteration"): the Confirm plan page is the Async report's own review screen opened on its own, but it kept its own tweaks (Default), so it looked different from the report's Confirm plan step (tabs, no checks, title in the top nav). It now shares the Async report's presets. It uses the same preset list and the same home preset (today "V0.5 - Non grouped"), and Save on either page updates that same preset. Applying a preset from the Confirm plan page keeps you on Confirm plan instead of jumping into the report.
+- **Opened over another page** (the Timeline's Review plan): the review settings (Confirm your updated plan, Notes, Tabs, Note, Plan items, Timeline) come from the Async report's home preset while it is up. The footer stays the standalone's Discuss + Pay. On close the page underneath gets its own values back, except any you changed while the review was open.
+
 ## v2733: Big 100, about 100 while the first line is written; lines swap sooner
 
 - **The roll** ("This position need to be approx 100"; it read 108 while "Here's to a hundred years, lived well." was being written): it now starts slow and speeds up, so it reads 98 to 99 while the first line writes and 100 as the stage pins. It then rolls on faster to 120 and eases out at the end, still without stopping.
