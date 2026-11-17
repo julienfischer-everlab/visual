@@ -16287,7 +16287,9 @@ html[data-tk="arDr"] .tkGroup[data-pages~="arDr"] > :not([data-ar-ph~="dr"]) { d
     <!-- the report pop-up's illustration drafts, a page of their own in the artifact ("treat these inside a page of the main artifact") -->
     <!-- Report visuals: every card's settings saved as a preset at once ("add Save presets action") -->
     <span class="tkGrow" aria-hidden="true"></span>
-    <!-- Screenshot and Share removed ("Can kill all capture share to save space") -->
+    <!-- Screenshot: the frame as a 3x JPG ("need a CTA in the top nav controller to take a screenshot of the frame, 3x jpg"; back after its removal: "No put it back!") -->
+    <button class="tkBtn tkIcoBtn" id="tkShot" type="button" title="Screenshot of the frame" aria-label="Screenshot of the frame: the screen, or the screen in its device frame"><svg class="tkBarIc" viewBox="0 0 24 24" fill="currentColor" data-lc="camera" width="14" height="14" aria-hidden="true"><path fill-rule="evenodd" d="M10 3.5a2 2 0 0 0-1.76 1.05l-.5.93A1 1 0 0 1 6.86 6H4.5A2.5 2.5 0 0 0 2 8.5v9A2.5 2.5 0 0 0 4.5 20h15a2.5 2.5 0 0 0 2.5-2.5v-9A2.5 2.5 0 0 0 19.5 6h-2.36a1 1 0 0 1-.88-.52l-.5-.93A2 2 0 0 0 14 3.5ZM12 16.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/></svg></button>   <!-- the right cluster ("Docs, Comments (icon), divider, Save, Refresh (icon)") -->
+    <!-- Share removed ("Can kill all capture share to save space") -->
     <span class="tkDiv" aria-hidden="true"></span>   <!-- Save, Comments and Refresh pushed to the bar's far right, always ("Save Refresh on the far right always, with comment") -->
     <!-- Save as a split button: its arrow opens Save for all presets ("I want a split button on the Save") -->
     <span class="tkSplit" id="tkSaveSplit"><button class="tkBtn tkPreBtn" id="tkBpSave" type="button" title="Open the prototype at this viewport">Save</button><button class="tkBtn tkSplitArr" id="tkSaveMore" type="button" aria-label="More save options" aria-haspopup="menu" aria-expanded="false"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button></span>
@@ -35901,7 +35903,112 @@ hairline({
   [['stHpLtrFs', '--ltrFs'], ['stHpLtrLh', '--ltrLh']].forEach(([id, v]) => { const r = document.getElementById(id), o = document.getElementById(id + 'V'); if (!r) return; const set = () => { document.documentElement.style.setProperty(v, r.value + 'px'); if (o) o.textContent = r.value + 'px'; }; r.addEventListener('input', set); r.addEventListener('change', set); set(); setTimeout(set, 800); });   /* the Letter's font size and line height, live */
   { const s = document.getElementById('stHpRecShow'), b = document.getElementById('stHpRecTgl'), set = () => { const on = !s || s.value !== 'hide'; document.body.classList.toggle('hpRecHide', !on); if (b) b.setAttribute('aria-checked', String(on)); };   /* the past results card shown or not */
     if (s){ s.addEventListener('change', set); if (b) b.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); s.value = s.value === 'hide' ? 'show' : 'hide'; s.dispatchEvent(new Event('change', { bubbles: true })); }); set(); setTimeout(set, 800); } }
-  /* Screenshot removed ("Can kill all capture share to save space") */
+  /* Screenshot ("need a CTA in the top nav controller to take a screenshot of the frame, 3x jpg"): the screen of the device at the bar's breakpoint (the phone at XS, the tablet at S, an overlay's own device), or the page under the bar where nothing is framed; as the phone would save it: square corners, the status bar in, no bezel, at 3x (1179 x 2556 for the 393 x 852 phone). A page cannot take a screenshot of itself, so the page is drawn again from its own DOM by modern-screenshot (fetched on first use; frames' pages, same-origin iframes, drawn in their place; scroll positions kept); the prototype's own controls (this bar, comments) left out. Saved through the viewer's downloads (they confirm), else a plain download */
+  (function shotCta(){
+    const btn = document.getElementById('tkShot'); if (!btn) return;
+    const LIB = 'https://cdn.jsdelivr.net/npm/modern-screenshot@4.7.0/dist/index.js', SC = 3;
+    let lib = null;
+    const load = () => lib || (lib = new Promise((res, rej) => { if (window.modernScreenshot) return res(window.modernScreenshot); const s = document.createElement('script'); s.src = LIB; s.async = true; s.onload = () => window.modernScreenshot ? res(window.modernScreenshot) : rej(new Error('lib')); s.onerror = () => rej(new Error('load')); document.head.appendChild(s); }).catch(e => { lib = null; throw e; }));
+    let tT = 0; const toast = (msg) => { let t = document.querySelector('.tkShotT'); if (!t) { t = document.createElement('div'); t.className = 'tkShotT'; t.setAttribute('role', 'status'); document.body.appendChild(t); } t.textContent = msg; requestAnimationFrame(() => t.classList.add('on')); clearTimeout(tT); tT = setTimeout(() => t.classList.remove('on'), 3200); };
+    const shown = el => { if (!el) return null; const r = el.getBoundingClientRect(); if (r.width < 120 || r.height < 120) return null; const cs = getComputedStyle(el); return cs.display === 'none' || cs.visibility === 'hidden' || +cs.opacity === 0 ? null : r; };
+    /* the frame: an overlay's device first (the Async report, the Health profile), then the breakpoint's device (the master frame's place: centred at --vwC, --bpW wide, --bpTop to --bpBot), else the page under the bar */
+    const frame = () => {
+      const bd = document.body, de = document.documentElement, bar = document.querySelector('.topbar'), barB = bar ? Math.round(bar.getBoundingClientRect().bottom) : 0;
+      const aq = [...document.querySelectorAll('.aqWrap.on .aqFrame')].map(f => shown(f)).find(Boolean);
+      if (aq) return { x: aq.left, y: aq.top, w: aq.width, h: aq.height, dev: true };
+      if (!de.classList.contains('bpAuto') && /^(xs|s)$/.test(bd.dataset.bp || '') && !/\b(homeOn|docOn|alOn|hlOn|rvOn)\b/.test(bd.className)) {
+        const p = document.createElement('div'); p.style.cssText = 'position:fixed;visibility:hidden;pointer-events:none;left:calc(var(--vwC, 50vw) - var(--bpW) / 2);width:var(--bpW);top:var(--bpTop, calc(var(--barH,57px) + 48px));bottom:var(--bpBot, 48px);' + (de.classList.contains('bpFit') ? 'scale:var(--bpS, 1);' : '');   /* a scaled device (html.bpFit) measured as it is drawn */
+        bd.appendChild(p); const r = p.getBoundingClientRect(); p.remove();
+        if (r.width > 120 && r.height > 120) return { x: r.left, y: r.top, w: r.width, h: r.height, dev: true };
+      }
+      return { x: 0, y: barB, w: innerWidth, h: innerHeight - barB, dev: false };
+    };
+    const SKIP = '.topbar, .tkShotT, .tkShotM, .evcLayer, .evcPanel, .evcPop, .evcToast, .evcCatch, .evcAt, script, noscript, template';
+    const KEEP = /^(STYLE|LINK|SOURCE|TRACK|BR|WBR|OPTION|OPTGROUP|AREA|MAP|PARAM|META|TITLE|HEAD)$/;
+    const keep = n => { if (n.nodeType !== 1) return true; if (n.matches && n.matches(SKIP)) return false; const W = n.ownerDocument && n.ownerDocument.defaultView;
+      if (W && n instanceof W.HTMLElement && !KEEP.test(n.tagName) && !n.getClientRects().length && W.getComputedStyle(n).display !== 'contents') return false;   // not drawn (display none, or in something that is): left out, its whole branch with it
+      return true; };
+    const save = async (blob, name) => { let ns = null; try { ns = window.claude && typeof window.claude.use === 'function' ? await window.claude.use('downloads') : null; } catch (e) { ns = null; }
+      if (ns && ns.save) { await ns.save({ filename: name, data: blob }); return; }
+      const u = URL.createObjectURL(blob), a = document.createElement('a'); a.href = u; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000); };
+    const nameOf = (ext, sfx) => { const v = document.getElementById('versionSel'), o = v && v.selectedOptions && v.selectedOptions[0], pg = (o ? o.textContent : 'Everlab').trim().replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'Everlab', bp = (document.body.dataset.bp || 'desk').toUpperCase(), d = new Date(), z = n => String(n).padStart(2, '0');
+      return 'Everlab-' + pg + '-' + bp + '-' + d.getFullYear() + z(d.getMonth() + 1) + z(d.getDate()) + '-' + z(d.getHours()) + z(d.getMinutes()) + z(d.getSeconds()) + (sfx || '') + '@3x.' + (ext || 'jpg'); };
+    /* the device, and its frame as the master draws it (Documentation is the master): the screen's radius (--evPhR, the tablet's --evTbR) and the bezel's rings (--evPhBz / --evTbBz: spread shadows, each round the screen's radius plus its spread), read when taken, so a change to the master frame reaches the screenshot */
+    const tok = k => getComputedStyle(document.documentElement).getPropertyValue(k).trim();
+    const ringsOf = v => { const list = []; let dep = 0, cur = ''; for (const ch of v) { if (ch === '(') dep++; else if (ch === ')') dep--; if (ch === ',' && !dep) { list.push(cur); cur = ''; } else cur += ch; } if (cur.trim()) list.push(cur);
+      return list.map(sh => { const t = sh.trim().match(/[a-z-]+\([^)]*\)|\S+/gi) || []; if (t.indexOf('inset') >= 0) return null; const L = t.filter(x => /^-?[\d.]+(px)?$/.test(x)).map(parseFloat), c = t.filter(x => !/^-?[\d.]+(px)?$/.test(x)).join(' ');
+        return L.length >= 4 && !L[0] && !L[1] && !L[2] && L[3] > 0 ? { s: L[3], c: c || '#000' } : null; }).filter(Boolean); };
+    const devOf = f => { const bp = document.body.dataset.bp; if (!f.dev || document.documentElement.classList.contains('bpAuto')) return null; const k = bp === 'xs' ? 'phone' : bp === 's' ? 'tablet' : ''; if (!k) return null;
+      return { k: k, r: parseFloat(tok(k === 'phone' ? '--evPhR' : '--evTbR')) || (k === 'phone' ? 56 : 28), rings: ringsOf(tok(k === 'phone' ? '--evPhBz' : '--evTbBz')) }; };
+    const rrect = (g, x, y, w, h, r) => { r = Math.max(0, Math.min(r, w / 2, h / 2)); g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); };
+    const take = async (mode) => {
+      if (btn.classList.contains('tkShotBusy')) return;
+      const f = frame(), marked = [], fs = f.dev && document.documentElement.classList.contains('bpFit') ? (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--bpS')) || 1) : 1;   /* a scaled XS device (html.bpFit) drawn back at its own 393 x 852, 3x */
+      btn.classList.add('tkShotBusy'); btn.setAttribute('aria-busy', 'true');
+      try {
+        const ms = await load();
+        /* the device's own shell (its rounded corners, its bezel): marked, then taken off in the copy, so the screen comes out square */
+        if (f.dev) { const cx = f.x + f.w / 2, cy = f.y + f.h / 2, near = (a, b) => Math.abs(a - b) <= 2;
+          new Set([...document.elementsFromPoint(cx, cy), ...document.querySelectorAll('#bpFrame, .aqWrap.on .aqFrame, .clDev, .rfDev, .grDev, .cnDev, .ccPage, .gfPage iframe')]).forEach(el => { if (!el.getBoundingClientRect) return; const r = el.getBoundingClientRect();
+            if (near(r.left, f.x) && near(r.top, f.y) && near(r.width, f.w) && near(r.height, f.h)) { el.setAttribute('data-shot-dev', ''); marked.push(el); } }); }
+        /* what is pinned (position: sticky, the report's anchors under its bar) is drawn where it was in the flow: each one's pinned offset measured (against itself unpinned, the scroll put back) and kept in the copy */
+        const scs = []; for (let el of document.body.querySelectorAll('*')) { if (el.closest(SKIP) || !el.getClientRects().length || getComputedStyle(el).position !== 'sticky') continue; const r1 = el.getBoundingClientRect(); if (r1.right < f.x || r1.left > f.x + f.w || r1.bottom < f.y || r1.top > f.y + f.h) continue;
+          const back = []; for (let q = el.parentElement; q; q = q.parentElement) if (q.scrollTop || q.scrollLeft) back.push([q, q.scrollTop, q.scrollLeft]);
+          const pv = el.style.getPropertyValue('position'), pp = el.style.getPropertyPriority('position'); el.style.setProperty('position', 'static', 'important'); const r0 = el.getBoundingClientRect(); if (pv) el.style.setProperty('position', pv, pp); else el.style.removeProperty('position');
+          back.forEach(b => { b[0].scrollTop = b[1]; b[0].scrollLeft = b[2]; });
+          const dx = r1.left - r0.left, dy = r1.top - r0.top; if (Math.abs(dx) > .5 || Math.abs(dy) > .5) { el.setAttribute('data-shot-st', dx.toFixed(2) + ',' + dy.toFixed(2)); scs.push(el); marked.push(el); } }
+        /* the lines as they break on screen ("some font issue when I capture the screens, some line break sometimes"): the copy pins every box at its measured width, cut to 3 decimals (178.0625 drawn as 178.062), and a line that filled its box exactly
+           broke there, its last word onto the line under it (the height pinned too: drawn over it); and the copy's text is drawn a touch wider than the screen's on a Mac (its glyphs' widths rounded up). So text on one line on screen is kept on one line in the copy; text over several lines gets 2px of room, its footprint unchanged. The framed pages' too */
+        { const mark = (d, ox, oy) => { const R = d.createRange(); d.querySelectorAll('body *').forEach(el => { if (el.closest(SKIP)) return; let t = false; for (const n of el.childNodes) if (n.nodeType === 3 && /\S/.test(n.nodeValue)) { t = true; break; } if (!t || !el.getClientRects().length) return;
+              const r = el.getBoundingClientRect(); if (r.right + ox < f.x || r.left + ox > f.x + f.w || r.bottom + oy < f.y || r.top + oy > f.y + f.h) return;
+              R.selectNodeContents(el); const tops = []; for (const q of R.getClientRects()) if (q.width > .5 && q.height > .5) tops.push(q.top + q.height / 2); if (!tops.length) return; tops.sort((a, b) => a - b);
+              let lines = 1; for (let i = 1; i < tops.length; i++) if (tops[i] - tops[i - 1] > 4) lines++;
+              el.setAttribute('data-shot-ln', lines > 1 ? 'n' : '1'); marked.push(el); }); };
+          mark(document, 0, 0); document.querySelectorAll('iframe').forEach(fr => { const r = fr.getBoundingClientRect(); if (!r.width || r.right < f.x || r.left > f.x + f.w || r.bottom < f.y || r.top > f.y + f.h) return; let d = null; try { d = fr.contentDocument; } catch (e) { d = null; } if (d && d.body) mark(d, r.left, r.top); }); }
+        /* the faces: the page's own are the system's; a framed page's (an iframe's: Geist, Newsreader, inlined by the build) handed over as they are, so its text is drawn in them */
+        let faces = ''; const facesOf = d => { try { [...d.styleSheets].forEach(sh => { let rs = null; try { rs = sh.cssRules; } catch (e) { rs = null; } if (rs) [...rs].forEach(ru => { if (ru.type === 5 && ru.cssText.indexOf('data:') >= 0) faces += ru.cssText + '\n'; }); }); } catch (e) {} };
+        facesOf(document); document.querySelectorAll('iframe').forEach(fr => { const r = fr.getBoundingClientRect(); if (!r.width || r.right < f.x || r.left > f.x + f.w || r.bottom < f.y || r.top > f.y + f.h) return; let d = null; try { d = fr.contentDocument; } catch (e) { d = null; } if (d) facesOf(d); });
+        const cv = await ms.domToCanvas(document.body, { width: innerWidth, height: innerHeight, scale: SC / fs, backgroundColor: getComputedStyle(document.body).backgroundColor || '#111', font: faces ? { cssText: faces } : false, filter: keep, timeout: 30000,
+          features: { restoreScrollPosition: true },
+          onCloneEachNode: c => { if (c.nodeType === 1 && c.hasAttribute && c.hasAttribute('data-shot-dev')) { c.style.setProperty('border-radius', '0', 'important'); c.style.setProperty('box-shadow', 'none', 'important'); c.style.setProperty('clip-path', 'none', 'important'); c.removeAttribute('data-shot-dev'); }
+            if (c.nodeType === 1 && c.hasAttribute && c.hasAttribute('data-shot-st')) { const d = c.getAttribute('data-shot-st').split(','); c.style.setProperty('position', 'relative', 'important'); c.style.setProperty('left', d[0] + 'px', 'important'); c.style.setProperty('top', d[1] + 'px', 'important'); c.style.setProperty('right', 'auto', 'important'); c.style.setProperty('bottom', 'auto', 'important'); c.removeAttribute('data-shot-st'); }
+            if (c.nodeType === 1 && c.hasAttribute && c.hasAttribute('data-shot-ln')) { if (c.getAttribute('data-shot-ln') === '1') c.style.setProperty('white-space', 'nowrap', 'important');
+              else { const w = parseFloat(c.style.width); if (w > 0) { c.style.setProperty('width', (w + 2) + 'px', 'important'); c.style.setProperty('margin-right', ((parseFloat(c.style.marginRight) || 0) - 2) + 'px', 'important'); } }
+              c.removeAttribute('data-shot-ln'); } } });
+        const W = Math.round(f.w * SC / fs), H = Math.round(f.h * SC / fs), sc = document.createElement('canvas'); sc.width = W; sc.height = H;
+        const sg = sc.getContext('2d'); sg.fillStyle = getComputedStyle(document.body).backgroundColor || '#111'; sg.fillRect(0, 0, W, H);
+        const kx = cv.width / innerWidth, ky = cv.height / innerHeight; sg.drawImage(cv, f.x * kx, f.y * ky, f.w * kx, f.h * ky, 0, 0, W, H);
+        /* the phone's screen always with its corners ("corner radius like an iPhone on all the XS screenshots"): the master's radius, see-through outside it (a PNG; a JPG has no see-through); the tablet's square unless framed. Framed ("keep the frame of the iPhone around the screenshot"): the master's rings drawn round it, the widest first as CSS paints them, see-through past the outermost */
+        const dv = devOf(f), framed = mode === 'frame' && !!dv, round = framed || (dv && dv.k === 'phone');
+        let out = sc;
+        if (round) { const M = framed ? Math.ceil(Math.max(0, ...dv.rings.map(r => r.s)) * SC) : 0, g = (out = document.createElement('canvas')).getContext('2d'); out.width = W + 2 * M; out.height = H + 2 * M;
+          if (framed) dv.rings.slice().reverse().forEach(r => { const e = r.s * SC; g.fillStyle = r.c; rrect(g, M - e, M - e, W + 2 * e, H + 2 * e, (dv.r + r.s) * SC); g.fill(); });
+          const pat = g.createPattern(sc, 'no-repeat'); pat.setTransform(new DOMMatrix().translateSelf(M, M)); g.fillStyle = pat; rrect(g, M, M, W, H, dv.r * SC); g.fill(); }
+        const blob = await new Promise(r => out.toBlob(r, round ? 'image/png' : 'image/jpeg', .92)); if (!blob) throw new Error('encode');
+        await save(blob, nameOf(round ? 'png' : 'jpg', framed ? '-frame' : ''));
+        toast('Screenshot saved: ' + out.width + ' × ' + out.height + (round ? ' PNG' : ' JPG') + (framed ? ', in its frame' : ''));
+      } catch (e) { const c = e && e.code; toast(c === 'declined' ? 'Screenshot not saved' : c === 'rate_limited' ? 'A save is already waiting for you' : e && e.message === 'load' ? 'Couldn’t load the screenshot tool' : 'Couldn’t take the screenshot'); }
+      finally { marked.forEach(el => { el.removeAttribute('data-shot-dev'); el.removeAttribute('data-shot-st'); el.removeAttribute('data-shot-ln'); }); btn.classList.remove('tkShotBusy'); btn.removeAttribute('aria-busy'); }
+    };
+    /* the button opens the two ways of taking it: the screen alone, or the screen in its device's frame (none to frame on the desk, Home, Documentation...: that one off) */
+    const menu = document.createElement('div'); menu.className = 'tkShotM'; menu.setAttribute('role', 'menu'); menu.setAttribute('aria-label', 'Screenshot'); menu.hidden = true; document.body.appendChild(menu);
+    const close = () => { if (menu.hidden) return; menu.hidden = true; btn.setAttribute('aria-expanded', 'false'); };
+    const item = (mode) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'tkShotI'; b.setAttribute('role', 'menuitem'); b.dataset.mode = mode; b.append(document.createElement('b'), document.createElement('i')); b.addEventListener('click', () => { close(); take(mode); }); menu.appendChild(b); return b; };
+    const iS = item('screen'), iF = item('frame');
+    const openM = () => { const dv = devOf(frame());
+      iS.firstChild.textContent = 'Screen'; iS.lastChild.textContent = dv && dv.k === 'phone' ? 'PNG, iPhone corners, 3x' : 'JPG, 3x';
+      iF.firstChild.textContent = dv && dv.k === 'tablet' ? 'In tablet frame' : 'In iPhone frame'; iF.disabled = !dv; iF.lastChild.textContent = dv ? 'PNG, the frame around it, 3x' : 'Choose XS or S to frame it';
+      const r = btn.getBoundingClientRect(); menu.style.top = Math.round(r.bottom + 6) + 'px'; menu.style.right = Math.max(8, Math.round(innerWidth - r.right)) + 'px';
+      menu.hidden = false; btn.setAttribute('aria-expanded', 'true'); iS.focus({ preventScroll: true }); };
+    btn.setAttribute('aria-haspopup', 'menu'); btn.setAttribute('aria-expanded', 'false');
+    btn.addEventListener('click', e => { e.stopPropagation(); if (btn.classList.contains('tkShotBusy')) return; if (menu.hidden) openM(); else close(); });
+    document.addEventListener('pointerdown', e => { if (!menu.hidden && !menu.contains(e.target) && !btn.contains(e.target)) close(); }, true);
+    menu.addEventListener('keydown', e => { const its = [...menu.querySelectorAll('.tkShotI:not(:disabled)')], k = its.indexOf(document.activeElement);
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); its[(k + (e.key === 'ArrowDown' ? 1 : its.length - 1)) % its.length].focus(); } });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && !menu.hidden) { close(); btn.focus(); } });
+    addEventListener('resize', close);
+    window._shot = { frame: frame, take: take, dev: () => devOf(frame()) };
+  })();
   /* See documentation (the Tweaks panel, under Save and Reset; was the bar's Docs): shown only on a page that has its documentation, and it opens that page's doc:
      the Overview its modules, Insights the biomarker item, a service page its timeline, the onboarding the Membership onboarding doc, the Concierge and chat their components, the gift pages Gifting */
   { const PAGE_DOC = { '9': 'mhp', '18': 'bi', '20': 'bi', tl: 'ai', svcD: 'pt', welc: 'hp', hp: 'hp', ci: 'cc', cc: 'cc', gf: 'gf', sgf: 'gf' }, DS_KEYS = ['gl', 'sf', 'it', 'md', 'bb', 'cr', 'em', 'bi', 'ai', 'mhp', 'mins', 'mbk', 'mact', 'mrc', 'mpu', 'mtl', 'pt', 'cc', 'sz', 'bt', 'in', 'bd', 'ch', 'cd', 'tg', 'sg', 'nv', 'ld', 'nt'];

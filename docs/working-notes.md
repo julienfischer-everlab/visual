@@ -19,6 +19,10 @@ this is the part you need before you change it.
 
 
 
+## v2730: the camera (screenshot) button is back
+
+- **Screenshot button restored** ("No put it back!"; it was removed in v2515 with "Can kill all capture share to save space"): the camera icon is back in the top bar, between the preset link and Comments, with the code it had before v2515. Its menu offers **Screen** (the phone's screen as a PNG with iPhone corners at 3x, 1179 × 2556; a JPG at 3x on the desk) and **In iPhone frame** / **In tablet frame** (the screen inside the master frame's bezel, PNG 3x; off when nothing is framed). The file is saved through the artifact's downloads (a confirmation from the viewer). Share and the presets' Copy link stay removed.
+
 ## v2729: Halo card, the sphere bleeds off both sides
 
 - **Centred Halo card** ("This visual should actually bleed from the edge, from the left side of the card and the right side of the card, similar to the example I sent you"): the sphere is now wider than the card (radius 0.6 of the card's width), its ring's top 22px under the card's top, and the ring runs off the card's left and right edges, with the title over the sphere's body. Its outer glow stays close round the lit edge (capped at a quarter of the card's width), so no wash comes back over the top right. Left-aligned cards (XS) are unchanged.
