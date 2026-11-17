@@ -19924,8 +19924,10 @@ window.EvTokData = [{"k":"themes","n":"Themes","m":["Light","Dark"],"t":[["bg/st
         vs.map(function (v, i) { var k = JSON.stringify(v), eq = n > 1 && i > 0 && k === prev; prev = k; return '<td><span class="tokV' + (eq ? ' tokEq' : '') + '">' + cell(c, t, v, i) + '</span>' + ((as[i] || (typeof v === 'string' && v.charAt(0) === '{' ? v : '')) ? '<span class="tokA">' + esc(as[i] || v) + '</span>' : '') + '</td>'; }).join('') + '</tr>'; });
     return out; };
   var paint = function () { var c = col(); if (!c) return;
-    if (!built) { built = true; pg.innerHTML = '<div class="tokHd"><h1>Tokens</h1><nav class="tokTabs" role="tablist" aria-label="Token collections">' + DATA.map(function (x) { return '<button type="button" role="tab" data-col="' + x.k + '">' + esc(x.n) + '<em>' + x.t.length + '</em></button>'; }).join('') + '</nav><span class="tokSp"></span><input class="tokQ" type="search" placeholder="Search tokens" aria-label="Search tokens" autocomplete="off" spellcheck="false"><button type="button" class="tokCss">Copy CSS</button></div><div class="tokBody"><div class="tokIn"></div></div><div class="tokToast" role="status"></div>'; }
-    [].forEach.call(pg.querySelectorAll('.tokTabs button'), function (b) { b.setAttribute('aria-selected', String(b.dataset.col === c.k)); });
+    if (!built) { built = true; pg.innerHTML = '<div class="tokHd"><h1>Tokens</h1><nav class="tokTabs" role="tablist" aria-label="Token collections">' + DATA.map(function (x) { return '<button type="button" role="tab" data-col="' + x.k + '">' + esc(x.n) + '<em>' + x.t.length + '</em></button>'; }).join('') + (window.EvTokCmpUI ? window.EvTokCmpUI.tabs.map(function (x) { return '<button type="button" role="tab" data-col="' + x.k + '">' + esc(x.n) + '<em>' + x.count + '</em></button>'; }).join('') : '') + '</nav><span class="tokSp"></span><input class="tokQ" type="search" placeholder="Search tokens" aria-label="Search tokens" autocomplete="off" spellcheck="false"><button type="button" class="tokCss">Copy CSS</button></div><div class="tokBody"><div class="tokIn"></div></div><div class="tokToast" role="status"></div>'; }
+    var cmp = cur === 'cmp' && !!window.EvTokCmpUI, qi = pg.querySelector('.tokQ'); if (qi) qi.hidden = cmp;
+    [].forEach.call(pg.querySelectorAll('.tokTabs button'), function (b) { b.setAttribute('aria-selected', String(b.dataset.col === (cmp ? 'cmp' : c.k))); });
+    if (cmp) { window.EvTokCmpUI.render(pg.querySelector('.tokIn')); return; }   /* Components: each component's tokens from Figma and its playground (the Button first) */
     var groups = [], by = {}; c.t.forEach(function (t) { if (!match(c, t)) return; var g = t[0].split('/')[0]; if (!by[g]) { by[g] = []; groups.push(g); } by[g].push(t); });
     var n = c.m.length, head = '<thead><tr><th>Token</th>' + c.m.map(function (m) { return '<th>' + esc(n === 1 ? 'Value' : m) + '</th>'; }).join('') + '</tr></thead>';
     pg.querySelector('.tokIn').innerHTML = '<p class="tokLead">' + esc(c.n) + ' · ' + c.t.length + ' tokens' + (n > 1 ? ' · modes ' + c.m.join(', ') : '') + ' · from Figma’s variables. Click a name to copy its CSS variable; a value the same as the mode before it is greyed.</p>' +
@@ -19937,9 +19939,11 @@ window.EvTokData = [{"k":"themes","n":"Themes","m":["Light","Dark"],"t":[["bg/st
   var css = function (c) { var n = c.m.length, v2 = function (t, v) { if (typeof v === 'string' && /^\{[^}]+\}$/.test(v)) return 'var(' + vn(v.slice(1, -1).split('.').join('/')) + ')'; if (t[1] === 's' && !/^\d+$/.test(v)) return '"' + v + '"'; return String(v); };
     return c.m.map(function (m, i) { return (n > 1 ? '/* ' + c.n + ' · ' + m + ' */\n' : '/* ' + c.n + ' */\n') + ':root {\n' + c.t.map(function (t) { return '  ' + vn(t[0]) + ': ' + v2(t, per(t[2], n)[i]) + ';'; }).join('\n') + '\n}'; }).join('\n\n'); };
   pg.addEventListener('click', function (e) { var b = e.target.closest('.tokTabs [data-col]'); if (b && b.dataset.col !== cur) { cur = b.dataset.col; paint(); pg.querySelector('.tokBody').scrollTop = 0; return; }
+    if (cur === 'cmp' && window.EvTokCmpUI && window.EvTokCmpUI.click(e, pg.querySelector('.tokIn'))) return;
+    if (cur === 'cmp' && e.target.closest('.tokCss') && window.EvTokCmpUI) { copy(window.EvTokCmpUI.css(), 'Copied this button\u2019s CSS'); return; }
     var nm = e.target.closest('.tokN'); if (nm) { copy(nm.dataset.v, 'Copied ' + nm.dataset.v); return; }
     if (e.target.closest('.tokCss')) { var c = col(); copy(css(c), 'Copied ' + c.t.length + ' variables' + (c.m.length > 1 ? ' × ' + c.m.length + ' modes' : '')); } });
-  pg.addEventListener('input', function (e) { if (!e.target.classList.contains('tokQ')) return; q = e.target.value.trim().toLowerCase(); paint(); });
+  pg.addEventListener('input', function (e) { if (cur === 'cmp' && window.EvTokCmpUI && window.EvTokCmpUI.input(e, pg.querySelector('.tokIn'))) return; if (!e.target.classList.contains('tokQ')) return; q = e.target.value.trim().toLowerCase(); paint(); });
   var OTHERS = ['homeOn', 'hlOn', 'igOn', 'rvOn', 'docOn', 'gfOn', 'clOn', 'grOn', 'cnOn', 'rfOn', 'alOn', 'mtgOn', 'plOn', 'tlOn', 'svcOn', 'aptOn', 'accOn', 'mkOn'];
   var show = function () {
     ['_home', '_hl', '_ig', '_rv', '_doc', '_gf', '_cl', '_gr', '_cn', '_rf', '_cc', '_al', '_mtg'].forEach(function (n) { var p = window[n]; if (p && p.hide) try { p.hide(); } catch (e) {} });
@@ -19952,9 +19956,137 @@ window.EvTokData = [{"k":"themes","n":"Themes","m":["Light","Dark"],"t":[["bg/st
   var hide = function () { if (!document.body.classList.contains('tokOn')) return; document.body.classList.remove('tokOn'); if (window.__tkPages) try { window.__tkPages(); } catch (e) {} };
   /* another page opened by any way (a card, a link, the menu): this one gives way */
   new MutationObserver(function () { var b = document.body.classList; if (b.contains('tokOn') && OTHERS.some(function (k) { return b.contains(k); })) hide(); }).observe(document.body, { attributes: true, attributeFilter: ['class'] });
-  window._tok = { show: show, hide: hide, data: function () { return DATA; } };
+  window._tok = { show: show, hide: hide, data: function () { return DATA; }, tab: function (k) { cur = k; if (built) paint(); } };
+  { var ts = document.getElementById('themeSel'); if (ts) ts.addEventListener('change', function () { if (cur === 'cmp' && document.body.classList.contains('tokOn')) setTimeout(paint, 0); }); }   /* the playground's Page theme follows the bar's Mode */
   addEventListener('hashchange', function () { if (location.hash === '#tokens') show(); else hide(); });
   if (location.hash === '#tokens') { if (document.readyState === 'complete') show(); else addEventListener('load', function () { setTimeout(show, 60); }, { once: true }); }
+})();
+</script>
+<style>
+  /* Tokens -> Components: Button, read from Figma (Design system (Core) DS25, Button / Label, node 3317:14732) through the Figma connector: every variant's variables ("Connect Claude to Figma MCP to capture the right compomnent tokens"; "let's focus on the button DS"), and a playground on its properties ("Need a demo platyground where I can manipulate the properties") */
+  .tcWrap{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;align-items:start;margin:0 0 36px;}
+  @media (max-width:900px){ .tcWrap{grid-template-columns:minmax(0,1fr);} }
+  .tcStage{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;min-height:300px;padding:40px 24px;border:1px solid var(--tokLine);border-radius:16px;background:var(--tcSurf, #fff);}
+  .tcBox{display:flex;justify-content:center;width:100%;max-width:340px;}
+  .tcVar{max-width:100%;color:var(--tcMut, rgba(0,0,0,.5));font:11px/16px ui-monospace,"SF Mono",Menlo,Consolas,monospace;text-align:center;overflow-wrap:anywhere;}
+  .tcLive{position:absolute;top:12px;left:14px;color:var(--tcMut, rgba(0,0,0,.5));font-size:11px;}
+  .tcCtl{display:flex;flex-direction:column;gap:12px;padding:16px;border:1px solid var(--tokLine);border-radius:16px;background:var(--tokOn);}
+  .tcRow{display:flex;flex-direction:column;gap:6px;} .tcRow > b{font-size:11px;font-weight:500;color:var(--tokMut);letter-spacing:.02em;}
+  .tcSeg{display:flex;flex-wrap:wrap;gap:2px;padding:2px;border-radius:9px;background:var(--tokHov);border:1px solid var(--tokLine);}
+  .tcSeg button{flex:1 1 auto;min-width:0;height:26px;padding:0 8px;border:0;border-radius:7px;background:transparent;color:var(--tokMut);font:inherit;font-size:12px;cursor:pointer;white-space:nowrap;}
+  .tcSeg button[aria-pressed="true"]{background:var(--tokBg);color:var(--tokFg);box-shadow:0 0 0 1px var(--tokLine);}
+  .tcSeg button:disabled{opacity:.35;cursor:not-allowed;}
+  .tcIn{height:30px;padding:0 10px;border:1px solid var(--tokLine);border-radius:8px;background:var(--tokBg);color:var(--tokFg);font:inherit;font-size:12.5px;}
+  .tcHint{margin:0;color:var(--tokMut);font-size:11px;line-height:15px;}
+  /* the button itself: every value a token's, set on it as custom properties */
+  .tcB{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:var(--gap);box-sizing:border-box;height:var(--h);min-width:0;padding:0 var(--px);border:0;border-radius:var(--r);background:var(--bg);color:var(--fg);box-shadow:inset 0 0 0 var(--bw) var(--br);font-family:"Saans",var(--ar-font, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif);font-size:var(--fs);line-height:var(--lh);font-weight:var(--fw);letter-spacing:var(--ls);white-space:nowrap;cursor:pointer;transition:background-color .12s ease,color .12s ease;}
+  .tcB.tcFill{width:100%;}
+  .tcB.tcLiveOn:hover{background:var(--bgH);color:var(--fgH);} .tcB.tcLiveOn:active{background:var(--bgP);color:var(--fgP);}
+  .tcB > svg{flex:none;width:var(--ic);height:var(--ic);}
+  .tcB.tcDis{cursor:not-allowed;} .tcB.tcDis > *{opacity:.4;}
+  .tcSpin{flex:none;box-sizing:border-box;width:var(--sp);height:var(--sp);border-radius:50%;border:2px solid currentColor;border-right-color:transparent;animation:tcSpin .8s linear infinite;}
+  @keyframes tcSpin{to{transform:rotate(360deg);}} @media (prefers-reduced-motion:reduce){ .tcSpin{animation-duration:2.4s;} }
+  .tcGrid{display:grid;grid-template-columns:110px repeat(4,minmax(0,1fr));gap:1px;border:1px solid var(--tokLine);border-radius:12px;overflow:hidden;background:var(--tokLine);}
+  .tcGrid > *{display:flex;align-items:center;justify-content:center;min-height:64px;padding:10px;background:var(--tcSurf, #fff);}
+  .tcGrid > .tcGh{min-height:0;padding:8px 10px;background:var(--tokOn);color:var(--tokMut);font-size:11.5px;font-weight:500;justify-content:flex-start;}
+  .tcGrid > .tcCell{cursor:pointer;} .tcGrid > .tcCell.on{box-shadow:inset 0 0 0 2px var(--tokMut);}
+  .tcGW{overflow-x:auto;} .tcGW .tcGrid{min-width:640px;}
+  .tcNotes{margin:0;padding:0 0 0 18px;color:var(--tokFg);font-size:12.5px;line-height:19px;} .tcNotes li{margin:0 0 6px;} .tcNotes code{font:11.5px ui-monospace,"SF Mono",Menlo,Consolas,monospace;color:var(--tokMut);}
+  .tcSrc{color:var(--tokMut);font-size:12px;} .tcSrc a{color:inherit;}
+</style>
+<script>
+/* EvTokBtn: the Button's tokens, captured from Figma's variables on each variant of Button / Label (get_variable_defs on 50 variants: every size, every emphasis x appearance x state, Loading, Disabled), and the Tokens page's Components tab drawn from them. A colour pair [fill, label & icons], null: no fill. */
+(function () {
+  var P = 'bg/neutral/', PS = 'bg/sentiment/', INV = 'fg/neutral/primary/Invert/100', FP = 'fg/neutral/primary/100', FP2 = 'fg/neutral/primary/200', TB = 'br/neutral/tertiary/100';
+  var sent = function (k, f1, f2) { return { p1: PS + k + '/primary/100', p2: PS + k + '/primary/200', p3: PS + k + '/primary/300', s1: PS + k + '/secondary/100', s2: PS + k + '/secondary/200', s3: PS + k + '/secondary/300', f1: 'fg/sentiment/' + k + '/100', f2: 'fg/sentiment/' + k + '/200' }; };
+  var N = sent('negative'), W = sent('warning'), G = sent('positive');
+  var B = {
+    name: 'Button', figma: { file: 'Design system (Core) DS25', set: 'Button / Label', node: '3317:14732', url: 'https://www.figma.com/design/6a9Eejpx2wp7ICRHBISxML/?node-id=3317-14732', variants: 951 },
+    props: { Emphasis: ['Primary', 'Secondary', 'Tertiary', 'Minimal'], Appearance: ['Neutral', 'Destructive', 'Warning', 'Positive'], Size: ['lg', 'md', 'sm', 'xs'], State: ['Rest', 'Hover', 'Pressed', 'Loading'], Shape: ['Square', 'Round'], 'Hug content': ['No', 'Yes'], Disabled: ['no', 'yes'] },
+    size: { lg: { h: 'interactive/height/lg', r: 'interactive/radius/lg', px: 'space/xl', gap: 'interactive/gap/lg', ic: 'interactive/media/lg', fs: 'font/size/label/300', lh: 'font/line height/label/300', bw: 'interactive/border/lg', type: 'Label - Body/300/Medium' },
+      md: { h: 'interactive/height/md', r: 'interactive/radius/md', px: 'space/lg', gap: 'interactive/gap/md', ic: 'interactive/media/md', fs: 'font/size/label/200', lh: 'font/line height/label/200', bw: 'interactive/border/md', type: 'Label - Body/200/Medium' },
+      sm: { h: 'interactive/height/sm', r: 'interactive/radius/sm', px: 'space/sm', gap: 'interactive/gap/sm', ic: 'interactive/media/sm', fs: 'font/size/label/200', lh: 'font/line height/label/200', bw: 'interactive/border/sm', type: 'Label - Body/200/Medium' },
+      xs: { h: 'interactive/height/xs', r: 'interactive/radius/xs', px: 'space/2xs', gap: 'interactive/gap/xs', ic: 'interactive/media/xs', fs: 'font/size/label/100', lh: 'font/line height/label/100', bw: 'interactive/border/2xs', type: 'Label - Body/100/Medium' } },
+    common: { ff: 'font/family/secondary', fw: 'font/weight/medium', ls: 'font/letter spacing/normal', round: 'radius/full', spin: 'size/2xs' },
+    col: {
+      Primary: { br: null,
+        Neutral: { Rest: [P + 'primary/100', INV], Hover: [P + 'primary/200', INV], Pressed: [P + 'primary/300', INV], Loading: [P + 'primary/300', INV], Disabled: [P + 'tertiary/100', FP] },
+        Destructive: { Rest: [N.p1, INV], Hover: [N.p2, INV], Pressed: [N.p3, INV], Loading: [N.p1, INV] },
+        Warning: { Rest: [W.p1, INV], Hover: [W.p2, INV], Pressed: [W.p3, INV], Loading: [W.p1, INV] },
+        Positive: { Rest: [G.p1, INV], Hover: [G.p2, INV], Pressed: [G.p3, INV], Loading: [G.p1, INV] } },
+      Secondary: { br: null,
+        Neutral: { Rest: [P + 'tertiary/100', FP], Hover: [P + 'tertiary/200', FP], Pressed: [P + 'tertiary/300', FP], Loading: [P + 'tertiary/100', FP2], Disabled: [P + 'tertiary/100', FP] },
+        Destructive: { Rest: [N.s1, N.f1], Hover: [N.s2, N.f1], Pressed: [N.s3, N.f1], Loading: [N.s3, N.f1] },
+        Warning: { Rest: ['bg/brand/orange/secondary/100', W.f2], Hover: [W.s2, W.f2], Pressed: [W.s3, W.f2], Loading: [W.s3, W.f2] },
+        Positive: { Rest: [G.s1, G.f1], Hover: [G.s2, G.f1], Pressed: [G.s3, G.f1], Loading: [G.s1, G.f2] } },
+      Tertiary: { br: TB,
+        Neutral: { Rest: [null, FP], Hover: [P + 'tertiary/100', FP], Pressed: [P + 'tertiary/200', FP], Loading: [null, FP2], Disabled: [null, FP] },
+        Destructive: { Rest: [P + 'tertiary/invert/100', N.f1], Hover: [N.s1, N.f2], Pressed: [N.s3, N.f1], Loading: [N.s3, N.f1] },
+        Warning: { Rest: [null, W.f1], Hover: [W.s1, W.f1], Pressed: [W.s2, W.f2], Loading: [W.s3, W.f2] },
+        Positive: { Rest: [null, G.f1], Hover: [G.s1, G.f1], Pressed: [G.s2, G.f2], Loading: [G.s3, G.f2] } },
+      Minimal: { br: null,
+        Neutral: { Rest: [null, FP], Hover: [P + 'tertiary/100', FP], Pressed: [P + 'tertiary/200', FP], Loading: [null, FP2], Disabled: [null, FP] },
+        Destructive: { Rest: [null, N.f1], Hover: [N.s1, N.f2], Pressed: [N.s2, N.f2], Loading: [N.s3, N.f1] },
+        Warning: { Rest: [null, W.f1], Hover: [W.s1, W.f1], Pressed: [W.s2, W.f2], Loading: [W.s3, W.f2] },
+        Positive: { Rest: [null, G.f1], Hover: [G.s1, G.f1], Pressed: [G.s2, G.f2], Loading: [G.s3, G.f2] } } },
+    notes: [
+      'Secondary · Warning at Rest fills with <code>bg/brand/orange/secondary/100</code>; its Hover and Pressed, and every other appearance, use the sentiment scale (<code>bg/sentiment/warning/secondary/…</code>).',
+      'Tertiary · Destructive at Rest fills with <code>bg/neutral/tertiary/invert/100</code> (white at 4%); every other Tertiary has no fill at Rest.',
+      'Tertiary and Minimal change their label colour from state to state unevenly: Destructive darkens on Hover (<code>…/negative/200</code>) and goes back on Pressed (Tertiary); Warning and Positive darken only on Pressed.',
+      'Tertiary · Destructive Pressed uses the secondary 300 fill; Warning and Positive Pressed use 200.',
+      'Loading: Neutral Primary fills with its Pressed colour (<code>bg/neutral/primary/300</code>); Destructive, Warning and Positive Primary keep their Rest colour. Positive Secondary Loading keeps its Rest fill; the other sentiments take their Pressed fill.',
+      'Primary · Destructive · md · Loading with Hug content No is missing (its fill shown here from Warning and Positive).',
+      'Disabled exists for Neutral at Rest only; its dimming (about 40% on the label and icons) is a layer opacity, not a variable.',
+      'Minimal exists with Hug content Yes only.'
+    ]
+  };
+  window.EvTokBtn = B;
+  var st = { Emphasis: 'Primary', Appearance: 'Neutral', Size: 'md', State: 'Rest', Shape: 'Square', 'Hug content': 'Yes', Disabled: 'no', label: 'Button', lead: 'yes', trail: 'no', Theme: '' };
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  var vn = function (p) { return '--' + String(p).replace(/[^A-Za-z0-9]+/g, '-').replace(/^-+|-+$/g, '').toLowerCase(); };
+  var tok = function (name) { var D = window.EvTokData || []; for (var i = 0; i < D.length; i++) { var c = D[i]; for (var j = 0; j < c.t.length; j++) if (c.t[j][0] === name) return { c: c, t: c.t[j] }; } return null; };
+  var dark = function () { return (st.Theme || (document.body.classList.contains('light') ? 'Light' : 'Dark')) === 'Dark'; };
+  var val = function (name) { if (!name) return null; var r = tok(name); if (!r) return null; var v = r.t[2]; if (!Array.isArray(v)) return v; var m = r.c.m, i = r.c.k === 'themes' ? (dark() ? m.indexOf('Dark') : m.indexOf('Light')) : Math.max(0, m.indexOf('m')); return v[Math.max(0, i)]; };
+  var px = function (n) { return n == null ? '' : (+n >= 10000 ? '9999px' : n + 'px'); };
+  var spec = function (s) { s = s || st; var z = B.size[s.Size], cs = B.col[s.Emphasis], c = cs[s.Appearance], dis = s.Disabled === 'yes', stt = dis ? 'Disabled' : s.State, pr = c[stt] || c.Rest, live = !dis && s.State === 'Rest';
+    return { z: z, br: cs.br, bw: cs.br ? z.bw : null, pair: pr, hov: c.Hover || pr, prs: c.Pressed || pr, live: live, dis: dis, load: !dis && s.State === 'Loading', r: s.Shape === 'Round' ? B.common.round : z.r, fill: s['Hug content'] === 'No' }; };
+  var IC = { lead: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>', trail: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>' };
+  var btn = function (s, small) { var k = spec(s), z = k.z, cv = function (t) { var v = val(t); return v || 'transparent'; };
+    var sty = ['--h:' + px(val(z.h)), '--r:' + px(val(k.r)), '--px:' + px(val(z.px)), '--gap:' + px(val(z.gap)), '--ic:' + px(val(z.ic)), '--fs:' + px(val(z.fs)), '--lh:' + px(val(z.lh)), '--fw:' + (val(B.common.fw) || 570), '--ls:' + (val(B.common.ls) || 0) + 'px', '--sp:' + px(val(B.common.spin)),
+      '--bw:' + (k.bw ? px(val(k.bw)) : '0px'), '--br:' + (k.br ? cv(k.br) : 'transparent'), '--bg:' + cv(k.pair[0]), '--fg:' + cv(k.pair[1]), '--bgH:' + cv(k.hov[0]), '--fgH:' + cv(k.hov[1]), '--bgP:' + cv(k.prs[0]), '--fgP:' + cv(k.prs[1])].join(';');
+    var lab = k.load ? 'Loading' : (s.label || 'Button'), inner = (k.load ? '<span class="tcSpin" aria-hidden="true"></span>' : (s.lead === 'yes' ? IC.lead : '')) + '<span>' + esc(lab) + '</span>' + (!k.load && s.trail === 'yes' ? IC.trail : '');
+    return '<button type="button" class="tcB' + (k.live ? ' tcLiveOn' : '') + (k.dis ? ' tcDis' : '') + (k.fill && !small ? ' tcFill' : '') + '" style="' + sty + '"' + (k.dis ? ' aria-disabled="true"' : '') + '>' + inner + '</button>'; };
+  var rowT = function (what, name, isC) { if (!name) return '<tr><td>' + what + '</td><td colspan="2"><span class="tokA">none</span></td></tr>'; var v = val(name), sw = isC && v ? '<span class="tokSw" style="--c:' + esc(v) + '"></span>' : '', show = isC && v ? (String(v).length === 9 ? String(v).slice(0, 7).toUpperCase() + ' · ' + Math.round(parseInt(String(v).slice(7), 16) / 2.55) + '%' : String(v).toUpperCase()) : v == null ? '—' : v;
+    return '<tr><td>' + what + '</td><td><button type="button" class="tokN" data-v="' + esc(vn(name)) + '" title="Copy ' + esc(vn(name)) + '">' + esc(name) + '</button></td><td><span class="tokV">' + sw + '<span>' + esc(show) + '</span></span></td></tr>'; };
+  var used = function () { var k = spec(), z = k.z; return [['Fill', k.pair[0], 1], ['Label and icons', k.pair[1], 1], ['Border', k.br, 1], ['Border width', k.bw, 0], ['Height', z.h, 0], ['Corner radius', k.r, 0], ['Padding left and right', z.px, 0], ['Gap', z.gap, 0], [k.load ? 'Spinner' : 'Icon', k.load ? B.common.spin : z.ic, 0], ['Label size', z.fs, 0], ['Label line height', z.lh, 0], ['Label weight', B.common.fw, 0], ['Font family', B.common.ff, 0], ['Letter spacing', B.common.ls, 0]].concat(k.live ? [['Hover fill', k.hov[0], 1], ['Hover label', k.hov[1], 1], ['Pressed fill', k.prs[0], 1], ['Pressed label', k.prs[1], 1]] : []); };
+  var vname = function () { return 'Emphasis=' + st.Emphasis + ', Appearance=' + st.Appearance + ', Size=' + st.Size + ', State=' + (st.Disabled === 'yes' ? 'Rest' : st.State) + ', Hug content=' + st['Hug content'] + ', Disabled=' + st.Disabled + ', Shape=' + st.Shape; };
+  var seg = function (k, opts, lab, dis) { return '<div class="tcRow"><b>' + esc(lab || k) + '</b><div class="tcSeg" role="group" aria-label="' + esc(lab || k) + '">' + opts.map(function (o) { var v = Array.isArray(o) ? o[0] : o, t = Array.isArray(o) ? o[1] : o; return '<button type="button" data-k="' + esc(k) + '" data-v="' + esc(v) + '" aria-pressed="' + (String(st[k]) === v) + '"' + (dis && dis(v) ? ' disabled' : '') + '>' + esc(t) + '</button>'; }).join('') + '</div></div>'; };
+  var fix = function () { if (st.Emphasis === 'Minimal') st['Hug content'] = 'Yes'; if (st.Disabled === 'yes') { st.Appearance = 'Neutral'; st.State = 'Rest'; } };
+  var render = function (host) { fix(); var D = dark(), surf = val('bg/surface/100') || (D ? '#0f0f0f' : '#ffffff'), mut = D ? 'rgba(255,255,255,.5)' : 'rgba(0,0,0,.5)', k = spec();
+    var y = host.querySelector('.tokBody') ? host.querySelector('.tokBody').scrollTop : 0;
+    var grid = '<div class="tcGW"><div class="tcGrid" style="--tcSurf:' + surf + '"><div class="tcGh">Emphasis × Appearance</div>' + B.props.Appearance.map(function (a) { return '<div class="tcGh">' + a + '</div>'; }).join('') +
+      B.props.Emphasis.map(function (e) { return '<div class="tcGh">' + e + '</div>' + B.props.Appearance.map(function (a) { var s = {}; for (var q in st) s[q] = st[q]; s.Emphasis = e; s.Appearance = a; s['Hug content'] = 'Yes'; if (st.Disabled === 'yes' && a !== 'Neutral') s.Disabled = 'no'; return '<div class="tcCell' + (e === st.Emphasis && a === st.Appearance ? ' on' : '') + '" data-e="' + e + '" data-a="' + a + '">' + btn(s, true) + '</div>'; }).join(''); }).join('') + '</div></div>';
+    var sizes = '<div class="tokW"><table class="tokT"><thead><tr><th>Size</th><th>Height</th><th>Radius</th><th>Padding</th><th>Gap</th><th>Icon</th><th>Label</th><th>Border (Tertiary)</th></tr></thead><tbody>' + B.props.Size.map(function (s) { var z = B.size[s], c = function (t) { return '<td><span class="tokV">' + esc(val(t)) + '</span><span class="tokA">' + esc(t) + '</span></td>'; }; return '<tr><td><b>' + s + '</b></td>' + c(z.h) + c(z.r) + c(z.px) + c(z.gap) + c(z.ic) + '<td><span class="tokV">' + esc(val(z.fs)) + ' / ' + esc(val(z.lh)) + '</span><span class="tokA">' + esc(z.type) + '</span></td>' + c(z.bw) + '</tr>'; }).join('') + '</tbody></table></div>';
+    host.innerHTML = '<p class="tokLead">Button · from Figma, ' + esc(B.figma.file) + ' › ' + esc(B.figma.set) + ' (' + B.figma.variants + ' variants), its variables read on each variant through the Figma connector. Every value below is a token; the button is drawn from them alone. <span class="tcSrc"><a href="' + B.figma.url + '" target="_blank" rel="noopener">Open in Figma</a></span></p>' +
+      '<div class="tcWrap"><div class="tcStage" style="--tcSurf:' + surf + ';--tcMut:' + mut + '">' + (k.live ? '<span class="tcLive">Live: hover and press it</span>' : '') + '<div class="tcBox">' + btn(st) + '</div><div class="tcVar">' + esc(vname()) + '</div></div>' +
+      '<div class="tcCtl">' + seg('Emphasis', B.props.Emphasis) + seg('Appearance', B.props.Appearance, null, function () { return st.Disabled === 'yes'; }) + seg('Size', B.props.Size) + seg('State', B.props.State, null, function () { return st.Disabled === 'yes'; }) + seg('Shape', B.props.Shape) + seg('Hug content', B.props['Hug content'], null, function (v) { return st.Emphasis === 'Minimal' && v === 'No'; }) + seg('Disabled', [['no', 'No'], ['yes', 'Yes']]) +
+        seg('lead', [['yes', 'On'], ['no', 'Off']], 'Leading icon') + seg('trail', [['yes', 'On'], ['no', 'Off']], 'Trailing icon') + '<div class="tcRow"><b>Label</b><input class="tcIn" type="text" value="' + esc(st.label) + '" maxlength="40" aria-label="Label"></div>' + seg('Theme', [['', 'Page'], ['Light', 'Light'], ['Dark', 'Dark']], 'Theme') +
+        '<p class="tcHint">As in Figma: Minimal hugs its content; Disabled is Neutral at Rest.</p></div></div>' +
+      '<section class="tokSec"><h2>Tokens in use<small>' + esc(st.Emphasis + ' · ' + st.Appearance + ' · ' + st.Size + ' · ' + (st.Disabled === 'yes' ? 'Disabled' : st.State)) + '</small></h2><div class="tokW"><table class="tokT"><thead><tr><th>Property</th><th>Token</th><th>' + (dark() ? 'Dark' : 'Light') + '</th></tr></thead><tbody>' + used().map(function (u) { return rowT(u[0], u[1], u[2]); }).join('') + '</tbody></table></div></section>' +
+      '<section class="tokSec"><h2>All emphases and appearances<small>' + esc(st.Size + ' · ' + (st.Disabled === 'yes' ? 'Disabled' : st.State)) + ' · click one to pick it</small></h2>' + grid + '</section>' +
+      '<section class="tokSec"><h2>Sizes<small>4</small></h2>' + sizes + '</section>' +
+      '<section class="tokSec"><h2>Notes from Figma<small>' + B.notes.length + '</small></h2><ul class="tcNotes">' + B.notes.map(function (n) { return '<li>' + n + '</li>'; }).join('') + '</ul></section>';
+  };
+  var css = function () { var k = spec(), z = k.z, d = function (t) { var v = val(t); return t ? 'var(' + vn(t) + (v != null ? ', ' + (typeof v === 'number' ? px(v) : v) : '') + ')' : 'transparent'; };
+    var L = ['/* ' + vname() + ' (Figma: ' + B.figma.set + ') */', '.button {', '  height: ' + d(z.h) + ';', '  padding: 0 ' + d(z.px) + ';', '  gap: ' + d(z.gap) + ';', '  border-radius: ' + d(k.r) + ';', '  background: ' + (k.pair[0] ? d(k.pair[0]) : 'transparent') + ';', '  color: ' + d(k.pair[1]) + ';'];
+    if (k.br) L.push('  box-shadow: inset 0 0 0 ' + d(k.bw) + ' ' + d(k.br) + ';');
+    L.push('  font-family: ' + d(B.common.ff) + ';', '  font-size: ' + d(z.fs) + ';', '  line-height: ' + d(z.lh) + ';', '  font-weight: ' + d(B.common.fw) + ';', '}', '.button svg { width: ' + d(z.ic) + '; height: ' + d(z.ic) + '; }');
+    if (k.live) L.push('.button:hover { background: ' + (k.hov[0] ? d(k.hov[0]) : 'transparent') + '; color: ' + d(k.hov[1]) + '; }', '.button:active { background: ' + (k.prs[0] ? d(k.prs[0]) : 'transparent') + '; color: ' + d(k.prs[1]) + '; }');
+    if (k.dis) L.push('.button[aria-disabled="true"] > * { opacity: .4; }');
+    return L.join('\n'); };
+  window.EvTokCmpUI = { tabs: [{ k: 'cmp', n: 'Components', count: 1 }], render: render, css: css, set: function (k, v) { st[k] = v; },
+    click: function (e, host) { var b = e.target.closest('.tcSeg [data-k]'); if (b && !b.disabled) { st[b.dataset.k] = b.dataset.v; render(host); return true; } var c = e.target.closest('.tcCell'); if (c) { st.Emphasis = c.dataset.e; st.Appearance = c.dataset.a; if (st.Disabled === 'yes' && c.dataset.a !== 'Neutral') st.Disabled = 'no'; render(host); return true; } return false; },
+    input: function (e, host) { if (!e.target.classList.contains('tcIn')) return false; st.label = e.target.value; var b = host.querySelector('.tcBox'); if (b) b.innerHTML = btn(st); return true; } };
 })();
 </script>
 <script>
