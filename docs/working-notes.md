@@ -19,6 +19,11 @@ this is the part you need before you change it.
 
 
 
+## v2699 · Review my plan: Included first, unchecked items at 70%
+
+- **Included at the top** ("Included at the top always"): the plan's list puts what is Included first, then what is already in your plan, then what has a price, each by its month (Timeline layout); in the grouped layouts and in Later, Included first in each group. Now's divider shows only when it heads the list (the list is no longer by month first).
+- **Unchecked item at 70%** ("Unchecked item opacity 70%"): an unticked product is dimmed whole, its picture (it had stayed whole), its words, its price and its checkbox; its card's ground as it is.
+
 ## v2698 · Bottom sheets: the header group of a page (top nav + title below, or title in the top nav)
 
 "IN bottom sheet the Header group need to be the same as a page header group. Title Can be in the top nav or outside below on the header": the sheet header master (`.evShHd` / `EvSheetHead`, every titled sheet: Notes from Dr Lu and the Timeline's sheets, the cart, the Plan's sheets, the filter sheet, the debriefs, the Modals doc's) is now a page's header group:
