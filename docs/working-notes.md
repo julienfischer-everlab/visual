@@ -19,6 +19,11 @@ this is the part you need before you change it.
 
 
 
+## v2743: Big 100, the titles under the number
+
+- "Make the title appearing below the number still with paralax": the titles follow the rising number, the first title's top under the number's foot (.3em under its centre). A fifth of a screen below it at first, the gap closing to 8px as the sequence goes, so the words rise a little faster than the number (the parallax). They follow it until the second title is written, then hold. The second title, a taller block (Back to life under it), keeps its own top under the foot as it takes the first one's place (`BLh`). Were at 42% of the stage, rising over the number's foot.
+- The second title ends at 74% up the view (was 79%), Back to life at 66%, clear of the dot at the middle. Checked at L and XS.
+
 ## v2742: Big 100, the number always rising and always turning, faded at its top
 
 - "Fade out above the number so we cant see the cut": the number's box is .3em taller above its glyphs (its margin that much higher, so it stands where it did), and its mask fades in from the top, so a digit rolling out upward fades away instead of being cut by the box's edge; the foot's fade as it was.
