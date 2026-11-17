@@ -19,6 +19,13 @@ this is the part you need before you change it.
 
 
 
+## v2713 — Big 100: more particles, two-line title that replays; Suggestions card +4
+
+- Big 100 dot: twice as many specks drawn in (20/s, up to 180) and twice the specks orbiting it (28). They now come from across the top, densest over the middle and a quarter as dense at the edges (inverse-CDF of a linear falloff over min(width, 1100)), instead of three fixed sources.
+- "Here's to a hundred years, / lived well." on two lines (`CENT_L`, a `<br>` between the two EvWrite runs, one timing).
+- The title is blanked again once it has fully left the screen (a second IntersectionObserver removes `.on` and bumps `hh.__g`), so each time the scroll lands on it, it writes itself as the first time. The dot and its specks reset with it and come back after the line.
+- Suggestions grey card padding 8 / 8 + half gap (was 4 / 4 + half gap).
+
 ## v2712 — Suggestions card: solid #181818
 
 - The Suggestions group's inner card (`#tl3 .t3SugW > .t3SugL`) is solid #181818 (was white at 4%), so the outlined header's line no longer shows through where the card overlaps it. Light mode stays #fff.
