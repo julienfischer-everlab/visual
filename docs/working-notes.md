@@ -19,6 +19,17 @@ this is the part you need before you change it.
 
 
 
+## v2704 — Confirm plan unchecked opacity, Timeline 100 / decades / suggestions / item manager, Fixed unsaved
+
+- **Confirm plan (Review my plan)**: an unticked row now sits at 40% (was 70%). Tweaks → Confirm your updated plan → Timeline group → **Unchecked opacity** (0–100, default 40), saved with the setup (`--arRvOffA` on `.arRvOff`).
+- **Big 100**: the number at 24% opacity; every digit turns together over the last step and lands at the same moment (`data-even`), landing a third up the view (`data-land`); 1→0 4px closer, 0→0 4px wider. The line is written later (40% up). Under it, once the line has written, a small dot with specks round it and more drawn in from above it, middle to right (`centDot`, canvas, only while on screen; still for reduced motion).
+- **Decade cards**: using a card's area tabs makes it the active card until the scroll brings another decade up; hovering a card (mouse) makes it active while hovered.
+- **Suggestions**: one group in the Next check-in style with the outlined header (lightbulb + "Suggestions"); rows: picture, title, "Recommended every N years from age X", clock line (Overdue in red / Upcoming in grey), View + menu. Julien gains a Whole body MRI suggestion (Tweaks → Suggestion items On).
+- **Tweaks → Now and Later items** (new group): pick Now or Later, drag or move rows up/down, delete, Add item, Reset items; a row opens Title, Sub, CTA label, CTA style (Primary / Secondary). Kept per persona in `#stT3Items` (saved with the setup and presets); the Timeline redraws from it.
+- **Fixed (Top nav) unsaved**: the Fixed / Style / Footer rows now get the orange unsaved mark (the Timeline's Fixed is its tabs' own control; other pages keep it in the hidden `#stTnPg`).
+- **Rail, Fixed Off**: the pinned section title's ground stops at the rail; the white circle has its radial ground, so the trail dot fades under it instead of being cut.
+- Tweaks: the stray red text at the top of the Plan update group was a comment closed early by a quoted arrow; fixed.
+
 ## v2703 · Decades: the 80s and 90s, then a big rolling 100 and its written line
 
 - "add 80 and 90": `FAR` / `farItems()` add four checks each to a plan that stops short of them (80s: Strength and bone review, Hearing and eye check, Memory and mood review, Flu and COVID vaccines; 90s: Care preferences review, Medication review, Falls and home safety check, Flu and COVID vaccines), at reset; their decade cards follow with the words already in DHEAD / DECW (Live well, on your terms. / Comfort and what matters.) and their area tabs from `areaOf`.
