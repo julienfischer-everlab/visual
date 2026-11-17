@@ -19,6 +19,10 @@ this is the part you need before you change it.
 
 
 
+## v2725: Confirm plan groups read Included / Extra
+
+- Confirm plan, Group items: the second group title is Extra, not Paid ("Included Extra"). The Tweaks option reads Included / Extra. Included items still show $0.
+
 ## v2724: Month chip over the header group; the 100 rolls to 120 and fades out
 
 - Timeline, Months On the line: the month chip on the rail now draws over the header group's fade under the pinned tabs, not dimmed beneath it ("Month z index issue, should be above header group"). When its month ends and the chip rises into the tabs, it goes back under the header group (`t3MoUp`, set on scroll), so it never covers the tabs.
