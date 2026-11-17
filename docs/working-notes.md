@@ -19,6 +19,15 @@ this is the part you need before you change it.
 
 
 
+## v2700 · Timeline: Hero group (Not confirmed card above the tabs), Your focus in Now (On/Off), focus card Outlined
+
+- "Consider this as the Hero tweak group" / "The hero group Will always be the Not confirmed card, not the focus card" / "On Now The Focus will appear here, ON OFF" / "Make the focus card tweak style with outlined without bg".
+- Tweaks → **Hero** (first of the Timeline's groups, header switch `stT3HeroOn`): the Not confirmed card (Dr Steven Lu has updated your plan, Review my plan) above the tabs, always; its **Visual** (Real product / Minimal skeleton, `stT3FocVis`). `heroCard()` draws it (`data-t3m="hero"`, todo layout); gone once the plan is confirmed (`S.planOk`), the focus taking over in Now.
+- Tweaks → **Your focus** (after Paused, switch `stT3FocOn`): the confirmed focus card (Your focus until, the goal, Doctor notes) first in Now; Focus style, **Card** Filled / Outlined (`stT3FocSty`, new: `.t3FcOl`, no ground, inset 1px white 16% / ink 14% light), Rotate, Picture, corner radius. Placement (`stT3FocPos`) and Plan (`stT3FocPlan`) rows gone.
+- Old setups keep what they showed (`window.__tkMig`, run on the saved setup, on every preset applied or compared, and on the Timeline versions' own copy `#stTlDSet`): Plan Not confirmed → Hero on, focus in Now off; a confirmed plan → Hero off, focus in Now. "Plan NOT confirmed" opens on the Hero; "Plan confirmed", Member V4 on the focus in Now.
+- Right column slots keep Your focus (the focus card).
+- Checked at L and XS, dark and light: Hero in `.t3Info`, focus in Now, Outlined transparent with its outline; planOk hides the Hero; no errors.
+
 ## v2699 · Review my plan: Included first, unchecked items at 70%
 
 - **Included at the top** ("Included at the top always"): the plan's list puts what is Included first, then what is already in your plan, then what has a price, each by its month (Timeline layout); in the grouped layouts and in Later, Included first in each group. Now's divider shows only when it heads the list (the list is no longer by month first).
