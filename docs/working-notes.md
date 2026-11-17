@@ -19,6 +19,17 @@ this is the part you need before you change it.
 
 
 
+## v2726: Desk CTA 40 clear; Suggested rows title + why; Big 100 ending reworked
+
+- Timeline items (S, M, L): the buttons sit 40px from the words (the row's 18px gap + 22px margin; "Margin left CTA 40px item desktop"). XS is unchanged.
+- Suggestion format Not grouped, a Suggested row: only its title and its why as the sub, no date line ("Suggested as Only title and sub, the why inside the sub"). The why runs to two lines on the desk (one cut it short) and wraps fully on the phone.
+- Big 100 ending:
+  - The specks move with the scroll alone and at once: no lag, no drift of their own while the page rests ("Particle should interact directly with scroll position").
+  - The number rolls in one go from 97 to 120 with no stop at 100, slowing as it ends where the specks are all in, and fading out from 100 to 120 ("after 100 should keep rolling the number").
+  - The first line leaves sooner (Q .30–.37, was .50–.57). The second line is written sooner, with its orange blur (.36–.49, was .57–.70). Back to today follows (.60–.66, was .84–.90).
+  - The dot sits in the stage's vertical middle ("at the end the DOT centered should be in the center of the vertical"; was 68–70% down).
+  - At the end the specks that come out of the dot float slowly round their places, each on two gentle waves. There are a few more of them (22 phone / 34 desk; "particles should float around at the end").
+
 ## v2725: Confirm plan groups read Included / Extra
 
 - Confirm plan, Group items: the second group title is Extra, not Paid ("Included Extra"). The Tweaks option reads Included / Extra. Included items still show $0.
