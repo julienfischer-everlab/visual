@@ -19,6 +19,22 @@ this is the part you need before you change it.
 
 
 
+## v2718 — Timeline ending: a scroll-played Big 100 → 150 → 200; padding guide on every screen
+
+- **The Big 100, a scroll-driven ending** (Timeline V3, after the decades; `centBloc` / `centWrite` / `centDot`):
+  - **Layout.** The section is four views tall (`--t3CvH` = `#dTl`'s height less its top padding). Its stage (`.t3CentS`) is sticky for the last three views. The scroll is never taken over.
+  - **Driven by scroll, not time.** Every transition follows scroll progress, eased a tenth of a second behind the wheel, so scrolling back plays it in reverse.
+  - **Rest.** The 100, rolling in from 97 as the decades did, and its line. The line is written letter by letter with the gift intro's EvWrite: the animations are paused and scrubbed through `--tS`. Sparse warm-white and amber specks drift round and behind them, as in the reference: a loose band under the line, a few round the number and the line, the rest sparse.
+  - **Converge (6–42% of the sticky run).** The specks are drawn down a narrowing funnel into one small dot under the line, at 70% of the stage (68% on the phone). Each follows a quadratic path, in and down, then into the dot from above, with no swirl. Nearer specks go first, each at its own pace. Each one merges into the dot, whose glow grows a little wider and brighter as the field empties. The concentrated state holds from 42% to 52%.
+  - **Beyond 100.** The number rolls on as an odometer (`odo()`: a 0–9 reel per digit; the units hold at rest most of each step so they stay readable; the tens and hundreds carry). It goes 100 → 150, holds at 150, then → 200. A few specks drift out of the dot on soft bows into a faint starfield with a slow twinkle and no flashing. The line lifts and blurs away, "Still counting?" is written in its place, and its sub fades in. Then a quiet "Back to today ↑" appears; it takes the Timeline's own Now tab (or the top).
+  - **Reduced motion.** The section is two views tall with two static states: 100 + line + a static dot, then 200 + Still counting + Back to today, swapped without transition.
+  - **Phone and light mode.** The phone shows the number at 150, the line on its two lines at the container's full width, and fewer specks. Light mode uses dark specks with an amber glow.
+  - The old dot (`.t3CentDot`) and its title observers are gone. The decades' roll skips the odometer (`.t3RollW:not([data-odo])`).
+- **Padding guide on every screen** (Tweaks → General layout → Padding guide):
+  - It no longer hides over a modal. Over any screen on top (a full modal like the Async report, a sheet, a takeover), it frames that screen's sections. There is always a **Body section**: the scroller under the screen's middle, the part you see between the bars. A **Header group section** is drawn when the screen has one (a bar with something in it, above the body or over its top), and a **Footer group section** (green) when it has one at the foot.
+  - Each section has its **Container**: the centred box its content sits in, or the section less its own padding. The body's gutters are red from the screen's top section to its foot.
+  - Pages keep their own guide, with "Header group section" now named the same way.
+
 ## v2717 — Primary card Visual: Halo; Visual switch on the Primary card doc page; outlines white 8%
 
 - **Halo** (Tweaks → Primary card → Visual → Halo, `HealthProfile.halo()`; `sphere({ edge })` hands over when `LOOK.vis === 'halo'`):
