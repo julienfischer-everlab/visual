@@ -19,6 +19,10 @@ this is the part you need before you change it.
 
 
 
+## v2744: Big 100, the number turning half as fast
+
+- "Rotate number 2x slowly, doesnt need to finish at 110 whatever when it finished": a steady 5.6 a screen from 98 as it comes in at the bottom (was about 11, eased to reach 110 halfway through its fade), turning on until it has faded out wherever it is: about 100 a third of the way up the view, 101 as the first title is written, 103 as the second starts, 104 as it fades away. Its rise, the titles and the rest unchanged. Checked at L.
+
 ## v2743: Big 100, the titles under the number
 
 - "Make the title appearing below the number still with paralax": the titles follow the rising number, the first title's top under the number's foot (.3em under its centre). A fifth of a screen below it at first, the gap closing to 8px as the sequence goes, so the words rise a little faster than the number (the parallax). They follow it until the second title is written, then hold. The second title, a taller block (Back to life under it), keeps its own top under the foot as it takes the first one's place (`BLh`). Were at 42% of the stage, rising over the number's foot.
