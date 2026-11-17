@@ -19,6 +19,21 @@ this is the part you need before you change it.
 
 
 
+## v2720 — Confirm plan: default ticks, Plan items buckets Now / Next; modals: only the phone has sheets
+
+- **Default ticks** ("By default, all included need to be checked, and you cannot uncheck ... all paid should be unchecked, and then you can check them"):
+  - With tabs off, every included item is ticked and locked, Next's included ones too: Physical assessment and DEXA, saved for later, now start ticked.
+  - Every paid item starts unticked and can be ticked and unticked, also after a redraw from Tweaks → Plan items (`tlOf`).
+- **Tweaks → Plan items, the Now / Next buckets** ("a system, the same as the timeline, where I can put my product in manually and organise them, rank them, add and remove them ... bucket the Now and the Next when there's no tab"):
+  - The manager keeps add, delete, rank (drag, up and down) and edit (title, price).
+  - Each row gains a move button to the other bucket (↓ Next / ↑ Now). It lands at the bucket's end.
+  - With Show tabs Off, the second list is named **Next**.
+  - The review's Now / Next groups follow the manager's buckets (`rvNx`: its Next list once it is set, else what was saved for later) and its order within each, Included first.
+- **Modals: a general rule** ("On mobile, it should always be a bottom sheet, full or not full. On desktop, it should always be a modal, a floating modal in the middle of the screen"):
+  - Only XS (the phone) has bottom sheets. S, M and L get the floating centred modal.
+  - The case reported: Auto with the Flow and Tweaks panels docked leaves the app S wide (800), which gave the Async report's sheets (`.arQa`: an item's detail on Confirm plan, Sources, Discuss) the phone's sheet on a desktop window. They are modals from S now (CSS `.aqWrap.aqDesk:is(.aqBpS, .aqBpM, .aqBpL) .arSheet .arQa…`, the swipe `when` and `stacked()`).
+  - Design system → Modals: Bottom sheet and Full bottom sheet draw the floating modal in the S frame (`.mdMo`), and their notes say so.
+
 ## v2719 — Confirm plan: Now / Next groups with no tabs; Included price tweak
 
 - **Group items with Show tabs Off** ("When there's no tab, instead of the grouping Included Extra, put First Group Now and then Next Group Next"): the titles are **Now** (what is in the plan) and **Next** (what was saved for later, unticked).
