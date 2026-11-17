@@ -19,6 +19,11 @@ this is the part you need before you change it.
 
 
 
+## v2739: Paused, an outlined intro card and no title
+
+- "Card same style as the first. outlined." Paused's "Ready when you are" card is now the Card master (`EvCard`, Outlined, md) with the focus card's corner (`--t3CR`) and the focus card's own Outlined line (white at 16% dark, ink at 14% light: one rule for both, so they stay the same). No ground and no picture (it was the Braze card's dark warm ground with the first paused item's picture fading in); its words take the card's ink.
+- "Remove paused title as well": with the decades tabs, the Paused list has no title or count over it (the section keeps `aria-label="Paused"`); the card sits 24 under the tabs. Saved for later (other tab setups) keeps its title. Checked at XS dark and L light.
+
 ## v2738: Big 100 keyed to the number's place in the view
 
 - "The 98 to 120 should move in one vertical viewport screen, once the number reach the center (50% from bottom), the first title appear once reach 70% (from bottom) the 2nd title appear". The sequence now keys on the number's own height in the view (its centre, `nC` from the stage's top, read with the other sizes): it reads 98 as it comes in at the bottom and 120 one screen of scroll later (just after the stage pins), slow first so it reads about 102 as the first title starts.
