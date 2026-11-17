@@ -19,6 +19,17 @@ this is the part you need before you change it.
 
 
 
+## v2708 — Refresh keeps the Async report; Group items and Later items tweaks; Add suggested; Suggestions card
+
+- **Refresh on the Async report** landed on the Timeline. Cause: the page's starred preset is put on as the page opens, and putting a preset on also opened the page it was saved on. The report's star ("Plan confirmed") was saved on the Timeline. Now a star put on at load sets its tweaks only, never the page (`putSnap(snap, keepPg)`). Reproduced on the previous build with a star saved on another page; fixed after.
+- **Confirm plan → Group items** (Off / On): On puts two titles in Now's timeline, **Included** (the membership's and what is already in your plan) then **Extra** (what has a price), with no Now divider.
+- **Confirm plan → Later items** (Plus / Checkbox): Checkbox gives each Later row a check instead of the plus. Ticked, it is included and paid for (Pay follows) but **stays in Later**. Its sheet's Add ticks it too.
+- **Tweaks → Timeline items**:
+  - **Add suggested** button (was the Suggested group On/Off), shown only while the list has no group.
+  - A trash in the group's header removes the group.
+  - An open item has a **Done** button to fold it back (its title still toggles it).
+- **Suggestions card**: 4px more padding all round (the rows' hover ground sits 4px in from its sides). Its ground is now white at 4% (was #1d1d1b).
+
 ## v2707 — Unticking a Later item sends it back; Timeline items: Now / Next / Paused + Suggested group per list
 
 - **Confirm plan**: Later items stay in Later, priced, until added (they were pulled into Now unticked once priced, with Control object On). One added from Later and then unticked goes back to Later (the snackbar says so).
