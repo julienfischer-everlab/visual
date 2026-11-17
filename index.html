@@ -35941,7 +35941,7 @@ hairline({
     const devOf = f => { const bp = document.body.dataset.bp; if (!f.dev || document.documentElement.classList.contains('bpAuto')) return null; const k = bp === 'xs' ? 'phone' : bp === 's' ? 'tablet' : ''; if (!k) return null;
       return { k: k, r: parseFloat(tok(k === 'phone' ? '--evPhR' : '--evTbR')) || (k === 'phone' ? 56 : 28), rings: ringsOf(tok(k === 'phone' ? '--evPhBz' : '--evTbBz')) }; };
     const rrect = (g, x, y, w, h, r) => { r = Math.max(0, Math.min(r, w / 2, h / 2)); g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); };
-    const take = async (mode) => {
+    const take0 = async (mode) => {
       if (btn.classList.contains('tkShotBusy')) return;
       const f = frame(), marked = [], fs = f.dev && document.documentElement.classList.contains('bpFit') ? (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--bpS')) || 1) : 1;   /* a scaled XS device (html.bpFit) drawn back at its own 393 x 852, 3x */
       btn.classList.add('tkShotBusy'); btn.setAttribute('aria-busy', 'true');
@@ -35990,6 +35990,16 @@ hairline({
       } catch (e) { const c = e && e.code; toast(c === 'declined' ? 'Screenshot not saved' : c === 'rate_limited' ? 'A save is already waiting for you' : e && e.message === 'load' ? 'Couldn’t load the screenshot tool' : 'Couldn’t take the screenshot'); }
       finally { marked.forEach(el => { el.removeAttribute('data-shot-dev'); el.removeAttribute('data-shot-st'); el.removeAttribute('data-shot-ln'); }); btn.classList.remove('tkShotBusy'); btn.removeAttribute('aria-busy'); }
     };
+    /* In iPhone frame from any breakpoint (the user's capture: "In iPhone frame" greyed out on the desk): off XS / S, the page is put at XS for the capture, framed, then back at the breakpoint it was at. Not where nothing sits in the phone (Home, Documentation, the libraries) */
+    const sw = () => !!document.getElementById('stBp') && !/\b(homeOn|docOn|alOn|hlOn|rvOn)\b/.test(document.body.className);
+    const take = async (mode) => {
+      if (btn.classList.contains('tkShotBusy')) return;
+      const sel = document.getElementById('stBp'), back = mode === 'frame' && !devOf(frame()) && sw() ? sel.value : null, put = v => { sel.value = v; sel.dispatchEvent(new Event('change', { bubbles: true })); };
+      if (back == null) return take0(mode);
+      btn.classList.add('tkShotBusy'); btn.setAttribute('aria-busy', 'true'); put('xs');
+      await new Promise(r => setTimeout(r, 1500)); btn.classList.remove('tkShotBusy');
+      try { await take0(devOf(frame()) ? 'frame' : 'screen'); } finally { put(back); }
+    };
     /* the button opens the two ways of taking it: the screen alone, or the screen in its device's frame (none to frame on the desk, Home, Documentation...: that one off) */
     const menu = document.createElement('div'); menu.className = 'tkShotM'; menu.setAttribute('role', 'menu'); menu.setAttribute('aria-label', 'Screenshot'); menu.hidden = true; document.body.appendChild(menu);
     const close = () => { if (menu.hidden) return; menu.hidden = true; btn.setAttribute('aria-expanded', 'false'); };
@@ -35997,7 +36007,7 @@ hairline({
     const iS = item('screen'), iF = item('frame');
     const openM = () => { const dv = devOf(frame());
       iS.firstChild.textContent = 'Screen'; iS.lastChild.textContent = dv && dv.k === 'phone' ? 'PNG, iPhone corners, 3x' : 'JPG, 3x';
-      iF.firstChild.textContent = dv && dv.k === 'tablet' ? 'In tablet frame' : 'In iPhone frame'; iF.disabled = !dv; iF.lastChild.textContent = dv ? 'PNG, the frame around it, 3x' : 'Choose XS or S to frame it';
+      const canX = !dv && sw(); iF.firstChild.textContent = dv && dv.k === 'tablet' ? 'In tablet frame' : 'In iPhone frame'; iF.disabled = !dv && !canX; iF.lastChild.textContent = dv ? 'PNG, the frame around it, 3x' : canX ? 'PNG, this page at XS in its frame, 3x' : 'No phone frame on this page';
       const r = btn.getBoundingClientRect(); menu.style.top = Math.round(r.bottom + 6) + 'px'; menu.style.right = Math.max(8, Math.round(innerWidth - r.right)) + 'px';
       menu.hidden = false; btn.setAttribute('aria-expanded', 'true'); iS.focus({ preventScroll: true }); };
     btn.setAttribute('aria-haspopup', 'menu'); btn.setAttribute('aria-expanded', 'false');

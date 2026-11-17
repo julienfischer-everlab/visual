@@ -19,6 +19,10 @@ this is the part you need before you change it.
 
 
 
+## v2731: In iPhone frame works from any breakpoint
+
+- **Screenshot > In iPhone frame on the desk** (the user's capture of the menu with "In iPhone frame" greyed out, "Choose XS or S to frame it"): off XS and S, the option is now on ("PNG, this page at XS in its frame, 3x"). Taking it puts the page at XS, waits for it to settle, captures the phone in its bezel at 3x (1251 × 2628), then puts the breakpoint back where it was. At XS it frames the phone and at S the tablet, as before. Only pages with nothing in a phone (Home, Documentation, the libraries) keep it off ("No phone frame on this page").
+
 ## v2730: the camera (screenshot) button is back
 
 - **Screenshot button restored** ("No put it back!"; it was removed in v2515 with "Can kill all capture share to save space"): the camera icon is back in the top bar, between the preset link and Comments, with the code it had before v2515. Its menu offers **Screen** (the phone's screen as a PNG with iPhone corners at 3x, 1179 × 2556; a JPG at 3x on the desk) and **In iPhone frame** / **In tablet frame** (the screen inside the master frame's bezel, PNG 3x; off when nothing is framed). The file is saved through the artifact's downloads (a confirmation from the viewer). Share and the presets' Copy link stay removed.
