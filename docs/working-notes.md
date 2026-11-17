@@ -19,6 +19,11 @@ this is the part you need before you change it.
 
 
 
+## v2736: Big 100 copy, and no black bars under the title
+
+- The copy: "Congratulations. A century of stories lived on earth." then "Your next chapter might be in another solar system." The first title is one line balanced into two (a break after "Congratulations." left "earth." alone on a third line at L); the second breaks before "in another solar system."
+- The black bars under the title (the user's Safari screenshot): the unwritten title's letters were drawn see-through and blurred, which Safari painted as dark bars. A letter not yet written is now not drawn at all (`t3CentVis`, visibility in step with its writing), and a title that is unwritten or gone gets `t3CentOff` (visibility hidden, over the letters' animation). Not reproducible in Chromium here, so not seen fixed in Safari.
+
 ## v2735: Big 100 first line, new copy
 
 - **"Congratulations on a century well lived."** replaces "Here's to a hundred years, lived well." On desktop it is written on two lines, "Congratulations on a century" / "well lived.". On the phone both lines now wrap on their own across the container ("Congratulations on" / "a century well lived."), because the forced break made three lines there. The second line ("At this point, you're probably exploring another solar system.") is unchanged.
