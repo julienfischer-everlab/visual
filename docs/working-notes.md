@@ -19,6 +19,10 @@ this is the part you need before you change it.
 
 
 
+## v2735: Big 100 first line, new copy
+
+- **"Congratulations on a century well lived."** replaces "Here's to a hundred years, lived well." On desktop it is written on two lines, "Congratulations on a century" / "well lived.". On the phone both lines now wrap on their own across the container ("Congratulations on" / "a century well lived."), because the forced break made three lines there. The second line ("At this point, you're probably exploring another solar system.") is unchanged.
+
 ## v2734: Confirm plan and the Async report's review are one system
 
 - **One setup for the review** ("Reflect the system from async report! This Confirm plan page is the source of truth for future iteration"): the Confirm plan page is the Async report's own review screen opened on its own, but it kept its own tweaks (Default), so it looked different from the report's Confirm plan step (tabs, no checks, title in the top nav). It now shares the Async report's presets. It uses the same preset list and the same home preset (today "V0.5 - Non grouped"), and Save on either page updates that same preset. Applying a preset from the Confirm plan page keeps you on Confirm plan instead of jumping into the report.
