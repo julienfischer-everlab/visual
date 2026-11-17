@@ -19,6 +19,16 @@ this is the part you need before you change it.
 
 
 
+## v2728: Big 100 ending, third pass
+
+- The roll never rests on a number: the odometer's reels turn with the scroll, continuously ("We shouldn't have a pause between the rolling effect"; each number was held still 30% of its turn).
+- From 110 the number blurs, 0 to 24px by 120 ("After 110, the number should blur from 0px blur to 24px blur"). It stays at full opacity while rolling, then fades out as the second line comes.
+- The first line is gone before the second starts writing ("the second title should appear once the first title disappears"). The first fades at .20–.27, the second writes .27–.40, and the two still rise together.
+- The page ends where the sequence does ("I still have an unnecessary scroll after this", "This should be the end of the scroll here"):
+  - The section is 2.44 screens (was 3). Every beat is tightened so the last one (Back to life, the stars out and floating) lands at its end.
+  - The section's bottom margin takes back the panel's bottom padding (144 desk / 110 phone), so nothing scrolls after it.
+- The orange trail dot still ends where the 100 begins.
+
 ## v2727: Big 100 ending, second pass; the orange dot stops before the 100
 
 - The two lines rise together: the second is written just under the first and climbs into its place as the first goes up and away ("Second title should come below the first title while moving up").
