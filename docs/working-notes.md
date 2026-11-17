@@ -19,6 +19,12 @@ this is the part you need before you change it.
 
 
 
+## v2737: Big 100, the number no longer lags the scroll
+
+- "Big number is laggy on scroll": each frame of the Big 100 forced the page's styles to be worked out twice mid-frame (about 9.8 ms a frame in the test browser, now 1.6 ms). The title's height and the canvas size were read after the frame's writes; they are now read with the scroll, before anything is written. The titles' rise was a `--cTp` custom property every letter of both titles inherited, so each frame restyled about 90 animated letters; it is now the block's own transform. The odometer's digits are written only when they change.
+- The number now follows the scroll itself rather than the eased scroll a tenth of a second behind (as the specks already do), so it no longer trails the finger. Positions at rest are unchanged (checked against the previous build at seven scroll points).
+- Seen while measuring, left alone: the organ WebGL loop keeps drawing into its hidden canvas on every page (under 1 ms a frame here).
+
 ## v2736: Big 100 copy, and no black bars under the title
 
 - The copy: "Congratulations. A century of stories lived on earth." then "Your next chapter might be in another solar system." The first title is one line balanced into two (a break after "Congratulations." left "earth." alone on a third line at L); the second breaks before "in another solar system."
