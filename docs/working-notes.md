@@ -19,6 +19,12 @@ this is the part you need before you change it.
 
 
 
+## v2747: a Tokens page, Figma's variables by collection
+
+- "Create a new page 'Tokens' And import all of theses Tokens intro group based on the Zip": Page -> Asset -> Tokens (after Design system), `#tokens`, `window._tok` (show / hide / data). The four zips (Figma's variables, W3C design tokens with Figma's extensions) are its four tabs: Themes (Light, Dark: 334 colours in bg, fg, components, br, utilities), Foundation (87: space, size, radius, border, font), Component core (65: interactive, components), Breakpoints (xs, s, m, l: 108 in font, layout, components, screen).
+- Each collection's groups (the token path's first part) are tables: the token (its path's next parts, a row heading at each sub-group), a column a mode; a colour its swatch (a checkerboard under its alpha) and hex (with its alpha as a %), a number or string as is, the variable it aliases under it (unit/4, color/gray/solid/900), a `{bg.surface.200}` reference shown with that token's own value; a value the same as the mode before it greyed; Figma descriptions under the name (their links as Figma). Search filters every collection; a name click copies its CSS variable (`--bg-surface-100`); Copy CSS copies the collection as `:root` variables, a block a mode.
+- The data (`window.EvTokData`, 57 KB) is compacted from the exports at build time of this change (values, aliases, descriptions; Figma's ids and scopes left out); dist/index.html 15.94 MB. Tokens isn't applied to the app's own styles: the page shows them.
+
 ## v2746: the Halo softer, its edge a gradient
 
 - "Make the halo with a gradient fade out. remove halo border. need to be overall softer than this": in the master `halo()` (every Halo: the Overview's primary card, the onboarding doc's step cards), the sphere is drawn on a canvas of its own and laid on, no hard circle round it: its edge fades out from 72% of its radius to just past it. The thin lit rim along its edge is gone. Its light at about 70% (was 1, light .6 from .9), the glow round its lit edge at about two thirds, and its fade toward the foot longer and softer.
