@@ -19,6 +19,14 @@ this is the part you need before you change it.
 
 
 
+## v2706 — Later always priced (Allergy, DEXA, Physical by default), sheet-only tweaks, 100 fade, decade number gap
+
+- **Confirm plan, Later**: every row carries a price, never Included (its own, one it carries, or $199; DEXA $299, Physical assessment $199). An item priced in Later stays priced when added back. By default Later holds the **Allergy test, DEXA scan and Physical assessment** (a report without them: its last two paid ones, as before).
+- **Notes from Dr Steven Lu** (Confirm plan's sheet): while it is up, Tweaks shows only its own rows (Doctor note, Version, Doctor header, Examples, the note), as a context of its own (`arDr`).
+- **Timeline → Doctor notes** group: shown only while the Notes from Dr Lu sheet is up, not on the Timeline itself.
+- **Big 100**: 6% opacity; the fade starts near the top and is gone at the glyphs' foot (they fill 10–78% of the box), softer and stronger at the bottom.
+- **Decade card, number above (phone)**: the title and words 16px closer to the number (margin −56, was −40).
+
 ## v2705 — Timeline items controller (Next, Suggested, photos), unchecked background, 100 and its line
 
 - **Confirm plan**: unticked rows have two controls: **Unchecked content** (picture, words, check; 40%) and **Unchecked background** (the card's ground on its own, 100% by default; `--arRvOffBg`).
