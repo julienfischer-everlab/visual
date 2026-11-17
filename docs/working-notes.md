@@ -19,6 +19,10 @@ this is the part you need before you change it.
 
 
 
+## v2729: Halo card, the sphere bleeds off both sides
+
+- **Centred Halo card** ("This visual should actually bleed from the edge, from the left side of the card and the right side of the card, similar to the example I sent you"): the sphere is now wider than the card (radius 0.6 of the card's width), its ring's top 22px under the card's top, and the ring runs off the card's left and right edges, with the title over the sphere's body. Its outer glow stays close round the lit edge (capped at a quarter of the card's width), so no wash comes back over the top right. Left-aligned cards (XS) are unchanged.
+
 ## v2728: Big 100 ending, third pass
 
 - The roll never rests on a number: the odometer's reels turn with the scroll, continuously ("We shouldn't have a pause between the rolling effect"; each number was held still 30% of its turn).
