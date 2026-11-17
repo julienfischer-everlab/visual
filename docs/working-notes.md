@@ -19,6 +19,11 @@ this is the part you need before you change it.
 
 
 
+## v2746: the Halo softer, its edge a gradient
+
+- "Make the halo with a gradient fade out. remove halo border. need to be overall softer than this": in the master `halo()` (every Halo: the Overview's primary card, the onboarding doc's step cards), the sphere is drawn on a canvas of its own and laid on, no hard circle round it: its edge fades out from 72% of its radius to just past it. The thin lit rim along its edge is gone. Its light at about 70% (was 1, light .6 from .9), the glow round its lit edge at about two thirds, and its fade toward the foot longer and softer.
+- The progress ring (its track, the filled warm part, its head and the two step marks) unchanged. Checked on the Overview's card at Step 1 and Step 2 (L).
+
 ## v2745: Big 100, lighter to draw
 
 - "still super lagg this seauence": measured part by part over the same three seconds of scroll (title 1 written to title 2 written, L at 2x): 62 frames as it was; without the particle canvas 101; without the first title's blur 86; without the letters' blur and glow 85; without the number's blur no change. Now 87.
