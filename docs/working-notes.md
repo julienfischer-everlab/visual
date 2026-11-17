@@ -19,6 +19,13 @@ this is the part you need before you change it.
 
 
 
+## v2715 — Suggestions / check-in card system, Suggested image, refresh on a standalone
+
+- Suggestions grey card: padding 0 top/bottom (sides half gap + 8), so a row's ghost card sits 8 in from every edge. The ghost's radius is concentric: the card's radius (`--t3R`) less 8 (28 → 20).
+- Next check-in under the Outline header follows the same system: card solid #181818 (white in light), padding half gap + 8 (16 at L, 14 at XS, as a suggestion row), a `::before` ghost 8 in, concentric radius, white 6% on hover / 9% + scale .99 on press. The card-wide hover wash is gone.
+- Tweaks → Timeline item → **Suggested image**: Same (the items' Image size) / 48 / 56 / 80 / 96. It sets `--t3SgTh` on `<html>` with `html.t3SgThOn`, and `.t3SugL` takes it as its own `--t3Th`.
+- Bug: the top bar's refresh button on the Async report (opened from the Timeline) came back with the Timeline under the report and the page menu on Timeline. The refresh mark re-opened the Timeline (`everlab:tl`) or the service page (`everlab:svc`). Now neither comes back when the link is a standalone (`#async-report`, `#confirm-plan`, `#concierge`, `#suggestion`, `#doctors-suggestion`, `#personal-recommendation`, `#past-records`). The standalone opens alone over the Overview, as its link does. Refresh on the Timeline itself still comes back to it.
+
 ## v2714 — Suggestions grey card: top and bottom back to 4
 
 - `#tl3 .t3SugW > .t3SugL` padding 4px top/bottom, sides kept at half gap + 8.
