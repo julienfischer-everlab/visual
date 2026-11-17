@@ -19,6 +19,14 @@ this is the part you need before you change it.
 
 
 
+## v2741: scrolling freed from the app's background work
+
+- "laggy nubmer on scroll doen": the Big 100's own frame was already light (v2737); profiled with the Timeline's starred setup, most of each scroll frame went to work elsewhere in the app that reads the layout (each read mid-frame makes the browser lay the page out again). Main-thread idle time over the same three-second scroll through the Big 100: 335 to 725 ms (L), 135 to 384 ms (XS).
+- `window.EvQuiet()` (a small script at the top of the page): true once nothing has scrolled, wheeled or been dragged for 250 ms. The housekeeping timers wait while anything scrolls: Tweaks' screen check (120 ms) and its containers' sync (500 ms), EvCtx's re-read (500 ms), the top nav's page check (300 ms), the Overview's Tweaks + (300 ms), the service's floating step nav (250 ms), the Async report's step nav (250 ms) and its Tweaks filter, the Flow panel's refresh (400 ms), the sheet stacking check (150 ms). Each still reacts at once through its own observers and events (a page, a modal, a step); only the polling pauses.
+- The Overview's Tweaks + no longer re-place themselves on every scroll anywhere (the Timeline's scroll ran them each frame): only scrolls that hold the Overview or the welcome.
+- The decade cards' star canvases (`jvPhStr`) are watched themselves, not their cards: where the canvas is hidden (the Timeline's decade cards) its loop no longer runs, reading the layout every frame for a canvas of no size.
+- Page switching and Tweaks' groups checked the same as before (Overview, Timeline, Plan); the Big 100 sequence unchanged.
+
 ## v2740: Big 100 counts to 110, the dot sooner
 
 - "go until 110. doesnt need to turn that fast, 2x slower": the number counts 98 to 110 over the same screen of scroll (was to 120), so it turns about half as fast: 100 as the first title starts (the number at the middle of the view), 106 as the second starts (70% up), 110 as it ends. It blurs to 24px as it fades (was from 110 on, which it no longer passes).

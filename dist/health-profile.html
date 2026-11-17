@@ -3930,7 +3930,7 @@ window.EvTopNav = (function () {
     if (ts) ts.addEventListener('change', function () { tPg('fx', ts.value); }); if (tb) tb.addEventListener('change', function () { tPg('bg', tb.value); });
     if (th) th.addEventListener('change', function () { tRead(th.value); tApply(); });   /* a Save put back, a preset, Reset */
     var tick = function () { if (tCur() !== tPk) tApply(); };   /* a page come or gone: its own */
-    var go = function () { tick(); if (document.body) new MutationObserver(tick).observe(document.body, { attributes: true, attributeFilter: ['class', 'data-pl-page'] }); document.addEventListener('everlab:ctx', function () { setTimeout(tick, 0); }); setInterval(function () { tick(); tMeas(); }, 300);
+    var go = function () { tick(); if (document.body) new MutationObserver(tick).observe(document.body, { attributes: true, attributeFilter: ['class', 'data-pl-page'] }); document.addEventListener('everlab:ctx', function () { setTimeout(tick, 0); }); setInterval(function () { if (window.EvQuiet && !window.EvQuiet()) return; tick(); tMeas(); }, 300);
       var tf = document.getElementById('stT3TabFix'); if (tf) tf.addEventListener('change', function () { setTimeout(tApply, 0); }); };
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', go); else setTimeout(go, 0); })();
   document.addEventListener('click', function (e) { var t = e.target; if (!t || !t.closest) return; if (t.closest('.stTkSave')) tSave(); else if (t.closest('.stTkReset')) tReset(); });   /* the Tweaks' Save and Reset keep it too */

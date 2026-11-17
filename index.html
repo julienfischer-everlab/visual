@@ -4,6 +4,7 @@
      puts the device mock-up off the side of the screen -->
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Everlab App - Latest</title>
+<script>/* EvQuiet(): true once nothing has scrolled for a quarter second. The app's housekeeping timers (Tweaks' screen and containers, EvCtx, the top nav's page, the Overview's Tweaks +, the service's floating nav, the report's Tweaks) wait while anything scrolls: each reads the layout, and a layout read mid-scroll costs the frame ("laggy number on scroll") */ (function () { var t = -1e9, f = function () { t = performance.now(); }, o = { capture: true, passive: true }; addEventListener('scroll', f, o); addEventListener('wheel', f, o); addEventListener('touchmove', f, o); window.EvQuiet = function () { return performance.now() - t > 250; }; })();</script>
 <script>if (location.hash === '#nav-demo' || location.hash === '#ob-demo') document.documentElement.classList.add('evEmbed'); if (location.hash === '#ob-demo'){ document.documentElement.classList.add('evObDemo'); try { const real = window.localStorage, M = {}; for (let i = 0; i < real.length; i++){ const k = real.key(i); if (/Master$/.test(k)) M[k] = real.getItem(k); } const has = k => Object.prototype.hasOwnProperty.call(M, k), mem = { getItem: k => has(k) ? M[k] : null, setItem: (k, v) => { M[k] = String(v); }, removeItem: k => { delete M[k]; }, clear: () => { Object.keys(M).forEach(k => { delete M[k]; }); }, key: i => Object.keys(M)[i] || null, get length(){ return Object.keys(M).length; } }; Object.defineProperty(window, 'localStorage', { value: mem, configurable: true }); } catch (e){} }   /* the Overview bento doc's frames (#ob-demo): the app embedded, its storage in memory so a preset put on in a frame never touches this browser's saved setup */
 /* a shared setup's link (#tk-<id>): the page covered from its first paint until that setup is on it, so the Default one never shows first ("I need to see the preset directly and not the default one"); 9 s at most */
 if (/^#tk-[A-Za-z0-9]{6,40}(-(auto|xs|s|m|l))?$/.test(location.hash)) { document.documentElement.classList.add('tkBoot'); setTimeout(function () { document.documentElement.classList.remove('tkBoot'); }, 9000); }</script>
@@ -24873,7 +24874,7 @@ window.EvTopNav = (function () {
     if (ts) ts.addEventListener('change', function () { tPg('fx', ts.value); }); if (tb) tb.addEventListener('change', function () { tPg('bg', tb.value); });
     if (th) th.addEventListener('change', function () { tRead(th.value); tApply(); });   /* a Save put back, a preset, Reset */
     var tick = function () { if (tCur() !== tPk) tApply(); };   /* a page come or gone: its own */
-    var go = function () { tick(); if (document.body) new MutationObserver(tick).observe(document.body, { attributes: true, attributeFilter: ['class', 'data-pl-page'] }); document.addEventListener('everlab:ctx', function () { setTimeout(tick, 0); }); setInterval(function () { tick(); tMeas(); }, 300);
+    var go = function () { tick(); if (document.body) new MutationObserver(tick).observe(document.body, { attributes: true, attributeFilter: ['class', 'data-pl-page'] }); document.addEventListener('everlab:ctx', function () { setTimeout(tick, 0); }); setInterval(function () { if (window.EvQuiet && !window.EvQuiet()) return; tick(); tMeas(); }, 300);
       var tf = document.getElementById('stT3TabFix'); if (tf) tf.addEventListener('change', function () { setTimeout(tApply, 0); }); };
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', go); else setTimeout(go, 0); })();
   document.addEventListener('click', function (e) { var t = e.target; if (!t || !t.closest) return; if (t.closest('.stTkSave')) tSave(); else if (t.closest('.stTkReset')) tReset(); });   /* the Tweaks' Save and Reset keep it too */
@@ -35684,7 +35685,7 @@ hairline({
     new MutationObserver(rs => { for (const r of rs){ if (r.type === 'attributes'){ if (r.target === document.body || r.target === document.documentElement || hit(r.target)) return kick(); continue; }
       for (const x of r.addedNodes) if (hit(x)) return kick(); for (const x of r.removedNodes) if (hit(x)) return kick(); } })
       .observe(document.documentElement, { subtree: true, childList: true, attributes: true, attributeFilter: ['class', 'data-bp'] });
-    document.addEventListener('everlab:mode', kick); document.addEventListener('everlab:hpstep', kick); setInterval(run, 500);   // a step of the profile's sheet (a context's tweaks by its step)
+    document.addEventListener('everlab:mode', kick); document.addEventListener('everlab:hpstep', kick); setInterval(() => { if (window.EvQuiet && !window.EvQuiet()) return; run(); }, 500);   // a step of the profile's sheet (a context's tweaks by its step)
     return api; })();
   { const B = c => document.body.classList.contains(c), Q = s => !!document.querySelector(s);
     const up = s => { for (const e of document.querySelectorAll(s)) if (!e.closest('#docPage') && e.getClientRects().length) return true; return false; };   // drawn, in the app (not a Documentation demo phone's)
@@ -35791,8 +35792,8 @@ hairline({
       [['stCtHd', 'hd'], ['stCtFt', 'ft']].forEach(([id, pt]) => { const ps = document.getElementById(id); if (!ps) return; if (!ps.options.length) ps.innerHTML = PO.map(k => '<option value="' + k + '">' + lbl(k) + '</option>').join(''); ps.addEventListener('change', () => { const k = cur(); if (k) set(tgt(k) + '/' + pt, ps.value); }); });
       if (h) h.addEventListener('change', () => { read(h.value); sync(); }); }   /* a Save put back, the shared one taken, Reset */
     new MutationObserver(sync).observe(document.body, { attributes: true, attributeFilter: ['class', 'data-bp', 'data-pl-page'] });   /* a page, a Sub page, a breakpoint */
-    addEventListener('resize', sync); document.addEventListener('everlab:ctx', sync); document.addEventListener('click', () => setTimeout(sync, 0)); setInterval(sync, 500); requestAnimationFrame(sync);
-    { let lastS = ''; setInterval(() => { const k = cur(), p = k ? by(k) : null, sk = p && isFm(p) ? skOf(p) : ''; if (sk !== lastS){ lastS = sk; sync(); } }, 120); }   /* a step changed: its containers at once */   /* My account's tab, the session's wrap as it is built */
+    addEventListener('resize', sync); document.addEventListener('everlab:ctx', sync); document.addEventListener('click', () => setTimeout(sync, 0)); setInterval(() => { if (window.EvQuiet && !window.EvQuiet()) return; sync(); }, 500); requestAnimationFrame(sync);
+    { let lastS = ''; setInterval(() => { if (window.EvQuiet && !window.EvQuiet()) return; const k = cur(), p = k ? by(k) : null, sk = p && isFm(p) ? skOf(p) : ''; if (sk !== lastS){ lastS = sk; sync(); } }, 120); }   /* a step changed: its containers at once */   /* My account's tab, the session's wrap as it is built */
     return { names, opts: OPTS.slice(), css, cur, on, ctx: k => { const p = by(k); return p ? p[4] : null; }, get: k => { const p = by(k); return p ? pick(p) : ''; }, set, sync,
       pages: () => P.map(p => ({ key: p[0], name: nOf(p), def: dOf(p) })) };
   })();
@@ -35898,7 +35899,7 @@ hairline({
         const a = window.__flowArr(key) || {}, off = new Set(a.off || []); if (on) off.add(id); else off.delete(id); a.off = [...off]; faPut(key, a); if (cfg.arranged) cfg.arranged(); sig = ''; upd(); }
       new MutationObserver(upd).observe(H, { attributes: true, attributeFilter: ['class'] });   // Flow folded or unfolded
       new MutationObserver(upd).observe(document.body, { attributes: true, attributeFilter: ['class', 'data-bp'] });   // its screen up or gone
-      addEventListener('resize', upd); setInterval(upd, 400); fUp.push(upd);   // and its steps moving, from wherever they move; a modal over it up or gone
+      addEventListener('resize', upd); setInterval(() => { if (window.EvQuiet && !window.EvQuiet()) return; upd(); }, 400); fUp.push(upd);   // and its steps moving, from wherever they move; a modal over it up or gone
       return upd; }; }
   [['stHpLtrFs', '--ltrFs'], ['stHpLtrLh', '--ltrLh']].forEach(([id, v]) => { const r = document.getElementById(id), o = document.getElementById(id + 'V'); if (!r) return; const set = () => { document.documentElement.style.setProperty(v, r.value + 'px'); if (o) o.textContent = r.value + 'px'; }; r.addEventListener('input', set); r.addEventListener('change', set); set(); setTimeout(set, 800); });   /* the Letter's font size and line height, live */
   { const s = document.getElementById('stHpRecShow'), b = document.getElementById('stHpRecTgl'), set = () => { const on = !s || s.value !== 'hide'; document.body.classList.toggle('hpRecHide', !on); if (b) b.setAttribute('aria-checked', String(on)); };   /* the past results card shown or not */
@@ -43754,7 +43755,7 @@ hairline({
           b.addEventListener('click', () => { if (inst && inst.steps && inst.steps().at !== n) inst.go(n); navTick(); }); nav.appendChild(b); }); }
       [...nav.children].forEach(b => { const on = +b.dataset.n === s.at; b.classList.toggle('on', on); if (on) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current'); });
     };
-    setInterval(navTick, 250); addEventListener('resize', navTick);
+    setInterval(() => { if (window.EvQuiet && !window.EvQuiet()) return; navTick(); }, 250); addEventListener('resize', navTick);
     vary(); mount(); raise(); navTick();
     return { reset: () => { if (inst) inst.reset(); raise(); }, remount: () => { mount(true); navTick(); }, vary: () => { vary(); raise(); }, shut: () => { wrap.classList.remove('on'); wrap.classList.add('shut'); }, inst: () => inst, wrap };   // its close: the screen fades over its own ground, then the ground goes (it kept .on, so the ground faded at once and the page showed through the fading report: "clipping")   // a tweak: remounted where it was, the sheet not risen again
   }
@@ -43768,7 +43769,7 @@ hairline({
       return { open, close, isOpen: () => document.body.classList.contains('arOpen'), inst: () => arD && arD.inst() }; })();
     [['stArDbcGap', v => v], ['stArDbcOp', v => v + '%']].forEach(([id, f]) => { const el = document.getElementById(id), o2 = document.getElementById(id + 'V'); if (el && o2){ const put = () => { o2.textContent = f(el.value); }; el.addEventListener('input', put); put(); } });   /* the Chart's dot sliders' readouts */
     /* Tweaks shows only what the screen up uses ("only show the tweaks related to the active page"): General always; Intro on the welcome; What to expect on its screen; Insight on an insight; Everything else on its screen; nothing more on the recommendations and the end. With the report shut, all of them */
-    if (arD) setInterval(() => { const i = arD.inst && arD.inst(), up = i && i.where && arD.wrap && getComputedStyle(arD.wrap).display !== 'none', w = up ? i.where().t : null, k = !w ? null : w[0] === 'i' ? 'i' : w;
+    if (arD) setInterval(() => { if (window.EvQuiet && !window.EvQuiet()) return; const i = arD.inst && arD.inst(), up = i && i.where && arD.wrap && getComputedStyle(arD.wrap).display !== 'none', w = up ? i.where().t : null, k = !w ? null : w[0] === 'i' ? 'i' : w;
       document.querySelectorAll('[data-ar-at]').forEach(e => e.classList.toggle('tkArOff', !!k && !e.dataset.arAt.split(' ').includes(k)));
       document.querySelectorAll('.tkGroup[data-pages="ar"]:not([data-ar-at])').forEach(g => { const rs = [...g.querySelectorAll(':scope > .tkRow')]; g.classList.toggle('tkArOff', !!k && rs.length > 0 && rs.every(r => r.classList.contains('tkArOff') || r.hidden)); });
       /* and on the recommendations, only the rows of the screen up ("if the tweak are not related to the page don't show them"): the doctor's note, the two cards, Clinical, Lifestyle, the review; Layout on all but the review */
@@ -44829,7 +44830,7 @@ hairline({
         if (backB.classList.contains('vis')){ const bb = backB.getBoundingClientRect(); if (l < bb.right + 8 && l + w > bb.left - 8 && pt < bb.bottom + 8) pt = bb.bottom + 8; }   /* never over the Back (a narrow window puts the card over the screen, its + and the Back: a press on Back fell on the card) */
         panel.style.width = Math.round(w) + 'px'; panel.style.left = Math.round(l) + 'px'; panel.style.top = Math.round(pt) + 'px'; } };
     let raf = 0; const soon = () => { if (!raf) raf = requestAnimationFrame(() => { raf = 0; tick(); }); };
-    document.addEventListener('scroll', soon, true); addEventListener('resize', soon); setInterval(tick, 300); tick();
+    document.addEventListener('scroll', e => { const t = e.target, ov = document.getElementById('dOver'); if (t && t.nodeType === 1 && !(ov && t.contains(ov)) && !t.closest('#dOver, .hpWrap')) return; soon(); }, true); addEventListener('resize', soon); setInterval(() => { if (window.EvQuiet && !window.EvQuiet()) return; tick(); }, 300); tick();   /* only the scrolls that move what it places (the Overview's, the welcome's): the Timeline's scroll read the whole layout every frame for nothing ("laggy number on scroll") */
   })();
 
   // ---- V4's third tab: the findings ------------------------------------
@@ -47071,7 +47072,7 @@ hairline({
         if (!src){ SF.classList.remove('on'); return; } if (SF.innerHTML !== src.innerHTML) SF.innerHTML = src.innerHTML; SF.classList.add('on'); SF.classList.toggle('mob', mob);
         if (mob){ SF.dataset.mb = '1'; const r = document.getElementById('phone2').getBoundingClientRect(); SF.style.right = SF.style.bottom = 'auto'; SF.style.left = Math.round(r.right + 24) + 'px'; SF.style.top = Math.round(r.top + r.height / 2 - SF.offsetHeight / 2) + 'px'; }
         else { delete SF.dataset.mb; SF.style.left = SF.style.top = 'auto'; SF.style.right = '24px'; SF.style.bottom = '24px'; } };
-      setInterval(syncF, 250); window.addEventListener('resize', syncF); }
+      setInterval(() => { if (window.EvQuiet && !window.EvQuiet()) return; syncF(); }, 250); window.addEventListener('resize', syncF); }
     document.addEventListener('click', e => { const b = e.target.closest('.svSimNav button'); if (!b || b.disabled) return; e.stopPropagation();
       if (cur.key === 'consultopt'){ const i = coIdx(cur.state, cur.o), j = Math.max(0, Math.min(coN().length - 1, i + +b.dataset.sim)); if (j !== i) fadeSwap(() => coGo(j)); return; }   // the onboarding: its states one by one
       if (cur.key === 'gut' && cur.state === 'active' && cur.at <= 0 && +b.dataset.sim < 0){ const mb = !!b.closest('#svcMob, #phone2, [data-mb]'); const sh = b.closest('.svSheet'); if (sh && sh.shut) sh.shut(); SIM.gutq = { state: 'request', o: {} }; delete SIM.gut; fadeSwap(() => (mb ? openMob : openDesk)('gutq', 'request', {})); return; }   // back from the kit's first step: the questionnaire still to do, step 1
@@ -48674,7 +48675,7 @@ hairline({
             ctx.fillStyle = 'rgba(' + INK[q.k] + ',' + al.toFixed(3) + ')'; ctx.beginPath(); ctx.arc(x, y, q.r * dp * (.7 + .5 * t), 0, 6.2832); ctx.fill(); } };
         let on = false, raf = 0, dead = false;
         const frame = () => { raf = 0; if (dead || !on) return; if (!document.hidden){ for (const q of P){ q.t += q.v; if (q.t >= 1) born(q, false); } draw(); } raf = requestAnimationFrame(frame); };
-        const io = new IntersectionObserver(es => { on = es[es.length - 1].isIntersecting; if (still){ if (on) draw(); return; } if (on && !raf) raf = requestAnimationFrame(frame); }); io.observe(card);
+        const io = new IntersectionObserver(es => { on = es[es.length - 1].isIntersecting; if (still){ if (on) draw(); return; } if (on && !raf) raf = requestAnimationFrame(frame); }); io.observe(cvs);   /* the canvas, not its card: where the canvas is not drawn (the decade cards hide it) the loop never runs; it read the layout every frame for a canvas of no size ("laggy number on scroll") */
         B.push(() => { dead = true; io.disconnect(); if (raf) cancelAnimationFrame(raf); cvs.remove(); }); }); }
     function gvMount(root, bag){ if (!root){ GVF.forEach(h => { try { if (h && h.destroy) h.destroy(); } catch (e) {} }); GVF = []; } const R = root || list, B = bag || GVF, HL = window.HLK, F = (window.HLFIGS || {}).plate; if (!HL || !F) return; HL.inject(document);
       R.querySelectorAll('.jvGvS').forEach(stage => { stage.setAttribute('data-hairline', 'plate'); stage.setAttribute('data-hairline-theme', document.body.classList.contains('light') ? 'light' : 'dark');
@@ -57084,7 +57085,7 @@ hairline({
   }
   // at the moment one opens or shuts, before its first frame: its look from the start, not from part way up when a poll caught it near the top (the handle went, the scrim turned black, mid slide)
   new MutationObserver(function (rs) { for (var i = 0; i < rs.length; i++) { var c = rs[i].target.classList; if (c && (c.contains('tlSheet') || c.contains('shWrap'))) { tick(); return; } } }).observe(document.body, { subtree: true, attributes: true, attributeFilter: ['class'] });
-  setInterval(tick, 150);
+  setInterval(function () { if (window.EvQuiet && !window.EvQuiet()) return; tick(); }, 150);   /* not while anything scrolls (EvQuiet): its opening and shutting come through the observer above */
 })();
 </script>
 
