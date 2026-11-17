@@ -19,6 +19,11 @@ this is the part you need before you change it.
 
 
 
+## v2711 — Timeline Doctor notes: tag-insert buttons
+
+- Timeline > Doctor notes (stT3DrQ) now has the same "+ Keywords / + Biomarkers / + List" buttons and syntax hint as the Async report's doctor note.
+- The `.tkDrChipsB[data-ins]` handler writes into the textarea of the button's own `.tkRow` (falls back to stArDrQ), so each editor's buttons fill its own note.
+
 ## v2710 — Confirm plan group titles 4px higher
 
 - Group items' titles (Included / Extra): 4px above (was 8).
