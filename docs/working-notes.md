@@ -19,6 +19,11 @@ this is the part you need before you change it.
 
 
 
+## v2733: Big 100, about 100 while the first line is written; lines swap sooner
+
+- **The roll** ("This position need to be approx 100"; it read 108 while "Here's to a hundred years, lived well." was being written): it now starts slow and speeds up, so it reads 98 to 99 while the first line writes and 100 as the stage pins. It then rolls on faster to 120 and eases out at the end, still without stopping.
+- **First line goes sooner, second comes sooner** ("should disappear earlier", "2nd title should appear earlier"): the first line fades out at 12 to 18% of the sequence (was 20 to 27%). The second line is written from 18 to 30% (was 27 to 40%), and the two lines rise together over 10 to 30%. The number is gone once the second line is written (fades 16 to 30%), and Back to life follows at 32 to 38%.
+
 ## v2732: Screenshot about 4x faster, with progress messages
 
 - **Screenshot stuck blinking** ("I click screen shot and the icon is blinking"): each capture took about 45 s. The screenshot library waits for every picture and video in the whole page to load, hidden pages' too, and one video that is never loaded held it for its full 30 s timeout. That wait is now 1.5 s (what is on screen is already loaded), so a capture took 11 to 15 s in the test browser here (slow, no GPU), down from 45 s; a real machine is faster.
