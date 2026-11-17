@@ -19,6 +19,17 @@ this is the part you need before you change it.
 
 
 
+## v2709 — Confirm plan: Plan items manager, $0 with Group items, Later unchecked style, group title spacing
+
+- **Tweaks → Confirm plan → Plan items** (new group, the Timeline items manager's structure): List **Now / Later**; each row its title and price, move up / down, drag, delete; open a row to edit its **Title** and **Price** (empty in Now = Included), **Done** folds it; **Add item** and **Reset items**.
+  - Kept per report persona in the setup (`#stArRvItems`: `now` / `later` orders by item key, `del`, `ed` {t, s, p}, `add`). The report redraws on the same screen.
+  - Later's order also sets what Later holds by default (else Allergy test, DEXA scan, Physical assessment).
+  - Deleted items stay in place (no index shifts) but leave the review. Added ones join its clinical items at the end.
+  - The order applies inside each kind (Included first, then priced), as before.
+- **Group items On**: an included row reads **$0** (the title above says Included).
+- **Later items Checkbox**: an unticked Later row wears Now's unchecked look (Unchecked content / background); ticked, full.
+- Group titles (Included / Extra): 8px above (was 16).
+
 ## v2708 — Refresh keeps the Async report; Group items and Later items tweaks; Add suggested; Suggestions card
 
 - **Refresh on the Async report** landed on the Timeline. Cause: the page's starred preset is put on as the page opens, and putting a preset on also opened the page it was saved on. The report's star ("Plan confirmed") was saved on the Timeline. Now a star put on at load sets its tweaks only, never the page (`putSnap(snap, keepPg)`). Reproduced on the previous build with a star saved on another page; fixed after.
