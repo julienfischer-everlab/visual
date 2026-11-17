@@ -19,6 +19,11 @@ this is the part you need before you change it.
 
 
 
+## v2740: Big 100 counts to 110, the dot sooner
+
+- "go until 110. doesnt need to turn that fast, 2x slower": the number counts 98 to 110 over the same screen of scroll (was to 120), so it turns about half as fast: 100 as the first title starts (the number at the middle of the view), 106 as the second starts (70% up), 110 as it ends. It blurs to 24px as it fades (was from 110 on, which it no longer passes).
+- "dot should come earlier": the specks are drawn into the dot, and the dot lit, from the moment the second title starts (was a third of a screen past the pin, after the second title was written); the specks appear once the first title is written. The stars, Back to life and its line follow the full dot as before, now in screens from it rather than fractions of the section, and the section is 2.08 screens (was 2.44) so the page still ends with the stars. Checked at L and XS.
+
 ## v2739: Paused, an outlined intro card and no title
 
 - "Card same style as the first. outlined." Paused's "Ready when you are" card is now the Card master (`EvCard`, Outlined, md) with the focus card's corner (`--t3CR`) and the focus card's own Outlined line (white at 16% dark, ink at 14% light: one rule for both, so they stay the same). No ground and no picture (it was the Braze card's dark warm ground with the first paused item's picture fading in); its words take the card's ink.
