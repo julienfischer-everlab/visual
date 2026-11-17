@@ -19,6 +19,11 @@ this is the part you need before you change it.
 
 
 
+## v2738: Big 100 keyed to the number's place in the view
+
+- "The 98 to 120 should move in one vertical viewport screen, once the number reach the center (50% from bottom), the first title appear once reach 70% (from bottom) the 2nd title appear". The sequence now keys on the number's own height in the view (its centre, `nC` from the stage's top, read with the other sizes): it reads 98 as it comes in at the bottom and 120 one screen of scroll later (just after the stage pins), slow first so it reads about 102 as the first title starts.
+- The first title is written from the moment the number is at the middle of the view (written in 12% of a screen), gone just before the number is 70% up; the second is written from 70% up until the number reaches 120, rising into place, while the number blurs from 110 and fades out. The particles, the dot, the stars and Back to life are unchanged. Checked at L and XS (number measured at 50% and 70% from the bottom of the panel's visible area).
+
 ## v2737: Big 100, the number no longer lags the scroll
 
 - "Big number is laggy on scroll": each frame of the Big 100 forced the page's styles to be worked out twice mid-frame (about 9.8 ms a frame in the test browser, now 1.6 ms). The title's height and the canvas size were read after the frame's writes; they are now read with the scroll, before anything is written. The titles' rise was a `--cTp` custom property every letter of both titles inherited, so each frame restyled about 90 animated letters; it is now the block's own transform. The odometer's digits are written only when they change.
