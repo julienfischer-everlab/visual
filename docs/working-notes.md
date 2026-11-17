@@ -19,6 +19,13 @@ this is the part you need before you change it.
 
 
 
+## v2701 · Fix: presets broken by v2700's migration; +16 under the focus card
+
+- "PReset broken": the live presets come from the shared store, whose data is frozen; v2700's `__tkMig` wrote `stT3HeroOn` into the preset's own `all` ("Cannot add property stT3HeroOn, object is not extensible"), so `want()` threw: the preset button stuck on Default, no preset applied, the changed state never computed.
+- `window.__tkMig` now returns a migrated copy (cached in a WeakMap) and never writes to what it is given; `tkMigS(s)` gives the preset as the page reads it (a copy with the migrated `all`) to `putSnap` and `want`; the Timeline versions' `#stTlDSet` apply and the saved setup take the copy too. Nothing is written to the shared presets.
+- Reproduced with the presets deep-frozen (as the store gives them): v2700 stuck on Default with the error; now Member - V4 opens as before, Plan NOT confirmed / Plan confirmed / Member - V4 apply with the Hero and focus as in v2700, no errors.
+- "+16 margin bottom on the focus card": `html.tlD3 #tl3 .tlSec > :is(.t3FocusB, .t3Focus)[data-t3m="focus"]{margin-bottom:16px}` (was 0), every Focus style, L and XS: 16 to Now's first item.
+
 ## v2700 · Timeline: Hero group (Not confirmed card above the tabs), Your focus in Now (On/Off), focus card Outlined
 
 - "Consider this as the Hero tweak group" / "The hero group Will always be the Not confirmed card, not the focus card" / "On Now The Focus will appear here, ON OFF" / "Make the focus card tweak style with outlined without bg".
