@@ -19,6 +19,16 @@ this is the part you need before you change it.
 
 
 
+## v2717 — Primary card Visual: Halo; Visual switch on the Primary card doc page; outlines white 8%
+
+- **Halo** (Tweaks → Primary card → Visual → Halo, `HealthProfile.halo()`; `sphere({ edge })` hands over when `LOOK.vis === 'halo'`):
+  - A sphere of light, lit from behind its top right: a halo outside the lit edge (kept inside the canvas), a dark body, the lit rim a warm crescent fading toward the middle, and its foot melting into the card.
+  - Round it, a thin ring from just under its left, over the top, to just under its right. It fills left to right a third per onboarding step (deep orange to cream at a glowing, breathing head), with a mark at 1/3 and 2/3 that lights once passed.
+  - The sphere grows a little brighter as the ring fills. About 30 fps, still with reduced motion.
+  - Same footprint as the sphere and the Dotted circle (the 1.6 scale over its box).
+- **Modules → Primary card (overview)**: a Visual switch (Sphere / Dotted circle / Halo) at the header's right, beside the title group. It sets `stHpVis` itself, so the Overview and every card on the page follow.
+- **Outlines**: the outline master `--olD` is white 8% (was 16%) on dark grounds. That covers every card, CTA, field and chip outline in the app, plus the fallbacks in Concierge, Send a gift and Referral. Light mode stays black 10%.
+
 ## v2716 — Big 100 particles: 2x slower, also from above the line
 
 - Every speck moves at half the speed (`ds = dt / 6`, was / 3), so the specks round the dot turn at half speed too. The cap is 260 (was 180), since each speck now lives twice as long.
