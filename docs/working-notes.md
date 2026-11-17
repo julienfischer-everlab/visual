@@ -19,6 +19,12 @@ this is the part you need before you change it.
 
 
 
+## v2716 — Big 100 particles: 2x slower, also from above the line
+
+- Every speck moves at half the speed (`ds = dt / 6`, was / 3), so the specks round the dot turn at half speed too. The cap is 260 (was 180), since each speck now lives twice as long.
+- The canvas reaches up behind "Here's to a hundred years, lived well." (`--cdUp` 240, 200 on the phone; the line is `position:relative; z-index:1` over it). The dot stays where it was: `dy = up + boxHeight × .8`.
+- Half the specks start at the new top (above the line, over the 100's foot); the other half start at the old top (just under the line).
+
 ## v2715 — Suggestions / check-in card system, Suggested image, refresh on a standalone
 
 - Suggestions grey card: padding 0 top/bottom (sides half gap + 8), so a row's ghost card sits 8 in from every edge. The ghost's radius is concentric: the card's radius (`--t3R`) less 8 (28 → 20).
