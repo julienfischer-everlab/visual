@@ -19,6 +19,12 @@ this is the part you need before you change it.
 
 
 
+## v2696 · Focus card Silhouette moved (desk 24 left; phone 16 left, 20 up, 1.1x); Tweaks → Doctor notes with the rich content system
+
+- **Silhouette, desk** ("Visual push left by 24px"): the body 24 further left (right 11, was -13).
+- **Silhouette, phone** ("visual push left by 16px and up by 20px +scale up 1.1x"): 176 x 211 (was 160 x 192), its centre 16 left and 20 up (right -44, bottom -13; was -52 / -23). Sized through its box, so the markers and their label keep their size and stay pinned to the body.
+- **Tweaks → Doctor notes** (Timeline; "Need tweak control on doctor note here with Rich content system"): the Notes from Dr Lu sheet (the focus card's Doctor notes) is written in a Doctor's note box in the same rich text as the Async report's (`EvDrMail`): `#` title, `**bold**`, `*italic*`, `==orange==`, `__underline__`, `[[keyword chips]]`, `[[ApoB: out, HDL: optimal]]` biomarker chips, `-` / `1.` lists, `[inclusions]` / `[consult doctor]` / `[date and time]` filled in; empty, the confirmed plan's note. Examples: Confirmed (the default), Plan (the not-confirmed note), Consult summary (the Async report's second example). Doctor header Yes / No (No, as before). The open sheet follows the box as it is typed in (0.3 s). Saved with the presets like every tweak.
+
 ## v2695 · Plan Not confirmed card: two columns on the phone, visual on the card's padding only
 
 - **Phone** ("1 col left / Content stacked with CTA / 2 col right Visual"): with the skeleton visual, the card is two columns as on the desk: the title, the sub and Review my plan stacked at the left (24 above the button), the visual at the right, centred on them, 16 from the words. Was the words across the card, then the button and the visual in one row under them.
