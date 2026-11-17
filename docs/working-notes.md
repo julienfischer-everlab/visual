@@ -19,6 +19,10 @@ this is the part you need before you change it.
 
 
 
+## v2749: Plan items -> Truncate
+
+- "Add a tweak truncate ON OFF In plan item tweak group": Tweaks -> Plan items (the Confirm plan's) -> Truncate, On (as it was: the Timeline layout's names, and the In your plan rows' lines, on one line with an ellipsis) or Off (in full, over as many lines as they need: `html.arRvTrOff`). `#stArRvTr`, saved with the setup like the group's other tweaks. Checked on the Confirm plan at XS (6 cut On, none Off).
+
 ## v2748: the Button's tokens from Figma, and its playground
 
 - "Connect Claude to Figma MCP to capture the right compomnent tokens" / "let's focus on the button DS" / "Need a demo platyground where I can manipulate the properties": through the Figma connector (Design system (Core) DS25 > Button / Label, node 3317:14732, 951 variants), each variant's variables read with get_variable_defs on 50 variants (every size, every emphasis x appearance x state, Loading, Disabled). `window.EvTokBtn` keeps them: the size scale (height, radius, padding, gap, icon, label type, border width per size), the fill and label colour of every emphasis x appearance x state, the border of Tertiary, Loading's spinner (size/2xs), Disabled (Neutral at Rest, its content at about 40%: a layer opacity in Figma, no variable).
