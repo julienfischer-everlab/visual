@@ -19,6 +19,14 @@ this is the part you need before you change it.
 
 
 
+## v2697 · Tweaks show Doctor notes while Notes from Dr Lu is open
+
+"Still no control over the note rich content": the Timeline's sheets wear the Inbox's sheet shell (`.ibWrap`), so with Notes from Dr Lu up, EvCtx read the Inbox context (no tweaks) and Tweaks showed General layout alone. Now:
+- **Notes from Dr Lu** is a context of its own (`tlNote`, `.ibWrap.t3Sh.t3ShMail.on`): Tweaks show its **Doctor notes** group (Doctor header, Examples, the Doctor's note box) beside General layout, and the open letter follows the box as it is typed in.
+- The Timeline's other sheets (Your focus, a check-in, Do this later) are `tlSheet`, no tweaks, as before; the Inbox context no longer takes `.t3Sh`.
+- The Doctor notes group is `data-pages="tl t3dr"`: on the Timeline page and in the sheet's context.
+- Examples' third button reads Consult (was Consult summary, it ran past the panel's edge).
+
 ## v2696 · Focus card Silhouette moved (desk 24 left; phone 16 left, 20 up, 1.1x); Tweaks → Doctor notes with the rich content system
 
 - **Silhouette, desk** ("Visual push left by 24px"): the body 24 further left (right 11, was -13).
