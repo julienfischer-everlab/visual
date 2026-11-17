@@ -19,6 +19,10 @@ this is the part you need before you change it.
 
 
 
+## v2712 — Suggestions card: solid #181818
+
+- The Suggestions group's inner card (`#tl3 .t3SugW > .t3SugL`) is solid #181818 (was white at 4%), so the outlined header's line no longer shows through where the card overlaps it. Light mode stays #fff.
+
 ## v2711 — Timeline Doctor notes: tag-insert buttons
 
 - Timeline > Doctor notes (stT3DrQ) now has the same "+ Keywords / + Biomarkers / + List" buttons and syntax hint as the Async report's doctor note.
