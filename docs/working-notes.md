@@ -19,6 +19,13 @@ this is the part you need before you change it.
 
 
 
+## v2742: Big 100, the number always rising and always turning, faded at its top
+
+- "Fade out above the number so we cant see the cut": the number's box is .3em taller above its glyphs (its margin that much higher, so it stands where it did), and its mask fades in from the top, so a digit rolling out upward fades away instead of being cut by the box's edge; the foot's fade as it was.
+- "number should always move up" / "Start the number position down": the number never stands still. It comes in with the page, then keeps rising at 60% of the scroll once the stage holds (the change of pace eased over 30% of a screen), from 55% down the stage (was held at 22%). `yAt(v)` is its centre for a scroll and `vAt(y)` the scroll that puts it at a height; the seed's particle band and the title's rise read its layout place, not its moving box.
+- "number should alway be in rotation, so when we start to see the big number it should rotate already" / "when reach 100 should be down": the count turns from the moment the number shows, at a steady pace easing a little at the end (it was very slow at first): 98 as it comes in at the bottom, 100 at 15% up the view, 104 as the stage holds, 110 halfway through its fade.
+- The titles still key on the number: the first written as it reaches the middle of the view (it reads about 105, and passes behind the words), the second as it reaches 70% up (about 108), the dot lit with it; the section 2.4 screens (was 2.08) for the slower rise, the page still ending on the stars. Checked at L and XS.
+
 ## v2741: scrolling freed from the app's background work
 
 - "laggy nubmer on scroll doen": the Big 100's own frame was already light (v2737); profiled with the Timeline's starred setup, most of each scroll frame went to work elsewhere in the app that reads the layout (each read mid-frame makes the browser lay the page out again). Main-thread idle time over the same three-second scroll through the Big 100: 335 to 725 ms (L), 135 to 384 ms (XS).
