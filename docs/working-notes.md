@@ -19,6 +19,16 @@ this is the part you need before you change it.
 
 
 
+## v2702 · Plan update group, review footer #7 fixed, Later items back to Later, Doctor's note head + 16px + rich text toolbar, banner +16
+
+- "Hero --> Plan update": the Timeline's first tweak group is now **Plan update** (switch `stT3HeroOn`); its **Visual** a two-way segment (Real product | Skeleton, `stT3FocVis.tkSegSel`), no longer an on/off switch.
+- "Desktop version banner margin right +16pz": the Plan update card's visual (skeleton or products) 48 from the card's right on desktop (was 32), the phone unchanged.
+- "Dont change CTA footer even is we have paid item selected": Footer #7 (Continue + Discuss, `rvCd`) stays the same whatever is ticked, paid or not, and in the Timeline's Review my plan (solo) too (it was Discuss alone with nothing paid, Discuss + Pay $ in the solo). Continue with nothing to pay confirms the plan.
+- "If a later item land on the NOW tab, then unchecking this item will push back the item into later": `rvFromLt` remembers what the member took from Later (its plus, or its sheet); in Now its tick is never locked (Included too) and unticking sends it back to Later with the Moved to later snackbar.
+- Doctor's note (EvDrMail master, Doctor header No): "Avatar right side of the title group: Date + title" — the date and subject one group at the left, the photo with the mark at its right, centred on them (`.arDrMailNHd`; was pinned top right, level with the subject). "BOdy copy 16px": the note's words 16/24 in the Timeline's Notes from Dr Lu and the review's note sheet (were 15/22.5).
+- "Need a way for rich content": `window.EvRtBar`, a toolbar over the Doctor's note boxes (Timeline Doctor notes `stT3DrQ`, Async report `stArDrQ`): Title, Bold, Italic, Underline, Orange, Chips, Bulleted, Numbered; writes the note's own syntax round the selection (a second press takes it off), Ctrl / Cmd + B / I / U, the open sheet following live.
+- Checked: footer #7 Discuss | Continue with paid ticked, none, one; DEXA added from Later then unticked → back in Later + snackbar; note head row and 16px at XS and L; toolbar on both boxes, bold on/off, orange, bullets, sheet live; banner gap 48 at L/M, 32 at XS. No errors.
+
 ## v2701 · Fix: presets broken by v2700's migration; +16 under the focus card
 
 - "PReset broken": the live presets come from the shared store, whose data is frozen; v2700's `__tkMig` wrote `stT3HeroOn` into the preset's own `all` ("Cannot add property stT3HeroOn, object is not extensible"), so `want()` threw: the preset button stuck on Default, no preset applied, the changed state never computed.
