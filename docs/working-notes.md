@@ -19,6 +19,12 @@ this is the part you need before you change it.
 
 
 
+## v2724: Month chip over the header group; the 100 rolls to 120 and fades out
+
+- Timeline, Months On the line: the month chip on the rail now draws over the header group's fade under the pinned tabs, not dimmed beneath it ("Month z index issue, should be above header group"). When its month ends and the chip rises into the tabs, it goes back under the header group (`t3MoUp`, set on scroll), so it never covers the tabs.
+- Timeline, Big 100 ending: the number rolls only from 100 to 120, fading out entirely as it goes ("Just roll until 120 while fade out entirely the number", "100 --> 120 gradually fade out"; was 100, 150, 200). Reduced motion: 100, then 120 hidden.
+- Group items (Confirm plan) is the None / Included–Paid / Now–Next select from v2723. It is hidden while Show tabs is On, by design ("tweak only avail. IF Tab OFF").
+
 ## v2723: Big 100 ending, Group items select, Paused scroll, Suggested rows, Halo bleed, Discuss without star
 
 - Timeline, Big 100 ending:
