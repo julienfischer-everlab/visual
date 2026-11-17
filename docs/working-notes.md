@@ -19,6 +19,10 @@ this is the part you need before you change it.
 
 
 
+## v2710 — Confirm plan group titles 4px higher
+
+- Group items' titles (Included / Extra): 4px above (was 8).
+
 ## v2709 — Confirm plan: Plan items manager, $0 with Group items, Later unchecked style, group title spacing
 
 - **Tweaks → Confirm plan → Plan items** (new group, the Timeline items manager's structure): List **Now / Later**; each row its title and price, move up / down, drag, delete; open a row to edit its **Title** and **Price** (empty in Now = Included), **Done** folds it; **Add item** and **Reset items**.
