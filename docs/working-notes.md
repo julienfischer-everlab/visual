@@ -19,6 +19,13 @@ this is the part you need before you change it.
 
 
 
+## v2721: only the phone has bottom sheets; Show Next bucket tweak
+
+- General modal rule applied everywhere ("On mobile, it should always be a bottom sheet ... On desktop, it should always be a modal, a floating modal in the middle of the screen. This is a general rule."): S now gets the floating centred modal, XS alone keeps sheets. Switched: Inbox (`.ibCard`, the Timeline mail sheet; the old under-992 no-data-bp sheet removed, Auto sets `data-bp="xs"` under 600), Services marketplace detail and cart (`.mkDet/.mkCart`, swipe `can` XS only), locked service modal `.svBook.svLkM` and debriefs `.dbM` (V1/V2 modal at S, the 760 two-column V3 kept for M/L; V2's 600 modal capped at the width less 48), Plan `.plPMd` and `.plNSh`, BioDetail in the Plan floats from S, Timeline plan update `.t3Um`, Health profile `.hpBs` sheets (S joins the M/L 544 modal) and `.hpConf` confirms, its pickers and signature pad (menu / dialog from 560 wide), the Async report's Talk through your plan (`rvPh`), `EvSheetSwipe`'s default (XS only) and the Modals doc (S: no Dismiss control, no swipe, Stack as one tall modal; captions say XS / S, M, L).
+- Left as it was: the legacy V1 Timeline steps sheet (`.tlSheet` from the archived timeline), which has no desk modal design (an accordion at M/L).
+- Confirm plan, Tweaks: Show Next bucket On / Off (`stArRvNx`, opts `rvnx`): with Show tabs Off, Off hides the Next group, the plan is Now alone ("Show NEXT bucket ON OFF tweak").
+- Fix: a tweak change remounts the review; it now keeps which items sit in Next and which paid items are ticked (`where().rc.nx / .off`), so included Next items no longer slip into Now after any tweak.
+
 ## v2720 — Confirm plan: default ticks, Plan items buckets Now / Next; modals: only the phone has sheets
 
 - **Default ticks** ("By default, all included need to be checked, and you cannot uncheck ... all paid should be unchecked, and then you can check them"):
