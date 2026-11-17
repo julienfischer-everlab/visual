@@ -35909,7 +35909,7 @@ hairline({
     const LIB = 'https://cdn.jsdelivr.net/npm/modern-screenshot@4.7.0/dist/index.js', SC = 3;
     let lib = null;
     const load = () => lib || (lib = new Promise((res, rej) => { if (window.modernScreenshot) return res(window.modernScreenshot); const s = document.createElement('script'); s.src = LIB; s.async = true; s.onload = () => window.modernScreenshot ? res(window.modernScreenshot) : rej(new Error('lib')); s.onerror = () => rej(new Error('load')); document.head.appendChild(s); }).catch(e => { lib = null; throw e; }));
-    let tT = 0; const toast = (msg) => { let t = document.querySelector('.tkShotT'); if (!t) { t = document.createElement('div'); t.className = 'tkShotT'; t.setAttribute('role', 'status'); document.body.appendChild(t); } t.textContent = msg; requestAnimationFrame(() => t.classList.add('on')); clearTimeout(tT); tT = setTimeout(() => t.classList.remove('on'), 3200); };
+    let tT = 0; const toast = (msg, keep) => { let t = document.querySelector('.tkShotT'); if (!t) { t = document.createElement('div'); t.className = 'tkShotT'; t.setAttribute('role', 'status'); document.body.appendChild(t); } t.textContent = msg; requestAnimationFrame(() => t.classList.add('on')); clearTimeout(tT); if (!keep) tT = setTimeout(() => t.classList.remove('on'), 3200); };   /* keep: up until the next message (while it works, while the save waits on the viewer) */
     const shown = el => { if (!el) return null; const r = el.getBoundingClientRect(); if (r.width < 120 || r.height < 120) return null; const cs = getComputedStyle(el); return cs.display === 'none' || cs.visibility === 'hidden' || +cs.opacity === 0 ? null : r; };
     /* the frame: an overlay's device first (the Async report, the Health profile), then the breakpoint's device (the master frame's place: centred at --vwC, --bpW wide, --bpTop to --bpBot), else the page under the bar */
     const frame = () => {
@@ -35928,9 +35928,20 @@ hairline({
     const keep = n => { if (n.nodeType !== 1) return true; if (n.matches && n.matches(SKIP)) return false; const W = n.ownerDocument && n.ownerDocument.defaultView;
       if (W && n instanceof W.HTMLElement && !KEEP.test(n.tagName) && !n.getClientRects().length && W.getComputedStyle(n).display !== 'contents') return false;   // not drawn (display none, or in something that is): left out, its whole branch with it
       return true; };
-    const save = async (blob, name) => { let ns = null; try { ns = window.claude && typeof window.claude.use === 'function' ? await window.claude.use('downloads') : null; } catch (e) { ns = null; }
-      if (ns && ns.save) { await ns.save({ filename: name, data: blob }); return; }
-      const u = URL.createObjectURL(blob), a = document.createElement('a'); a.href = u; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000); };
+    /* the save ("I click screen shot and the icon is blinking"): claude.ai's downloads asked for when the page loads (it can take a while to answer), the viewer told to confirm the download while it waits on them; framed with no downloads (a page cannot download by itself there), the picture shown to save by hand rather than nothing */
+    let dlP = null; try { dlP = window.claude && typeof window.claude.use === 'function' ? window.claude.use('downloads') : null; } catch (e) { dlP = null; }
+    const framedPg = (() => { try { return window.top !== window; } catch (e) { return true; } })();
+    const preview = (blob, name) => { const u = URL.createObjectURL(blob), o = document.createElement('div'); o.className = 'tkShotPv'; o.setAttribute('role', 'dialog'); o.setAttribute('aria-label', 'Screenshot');
+      o.style.cssText = 'position:fixed;inset:0;z-index:2147483004;background:rgba(0,0,0,.82);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;';
+      const im = document.createElement('img'); im.src = u; im.alt = name; im.style.cssText = 'max-width:100%;max-height:calc(100% - 90px);object-fit:contain;border-radius:8px;';
+      const p = document.createElement('div'); p.textContent = 'Right-click the picture and choose Save image (or drag it to your desktop).'; p.style.cssText = 'color:#e7e5e4;font:500 14px/20px system-ui,sans-serif;text-align:center;';
+      const x = document.createElement('button'); x.type = 'button'; x.textContent = 'Close'; x.style.cssText = 'height:36px;padding:0 18px;border-radius:18px;border:0;background:#fff;color:#111;font:600 14px system-ui,sans-serif;cursor:pointer;';
+      const end = () => { o.remove(); URL.revokeObjectURL(u); document.removeEventListener('keydown', esc, true); }, esc = e => { if (e.key === 'Escape') { e.stopPropagation(); end(); } };
+      x.addEventListener('click', end); o.addEventListener('click', e => { if (e.target === o) end(); }); document.addEventListener('keydown', esc, true); o.append(im, p, x); document.body.appendChild(o); x.focus(); };
+    const save = async (blob, name) => { let ns = null; try { ns = dlP ? await dlP : null; } catch (e) { ns = null; }
+      if (ns && ns.save) { toast('Confirm the download to save it', true); await ns.save({ filename: name, data: blob }); return 'saved'; }
+      if (framedPg) { preview(blob, name); return 'shown'; }
+      const u = URL.createObjectURL(blob), a = document.createElement('a'); a.href = u; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000); return 'saved'; };
     const nameOf = (ext, sfx) => { const v = document.getElementById('versionSel'), o = v && v.selectedOptions && v.selectedOptions[0], pg = (o ? o.textContent : 'Everlab').trim().replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'Everlab', bp = (document.body.dataset.bp || 'desk').toUpperCase(), d = new Date(), z = n => String(n).padStart(2, '0');
       return 'Everlab-' + pg + '-' + bp + '-' + d.getFullYear() + z(d.getMonth() + 1) + z(d.getDate()) + '-' + z(d.getHours()) + z(d.getMinutes()) + z(d.getSeconds()) + (sfx || '') + '@3x.' + (ext || 'jpg'); };
     /* the device, and its frame as the master draws it (Documentation is the master): the screen's radius (--evPhR, the tablet's --evTbR) and the bezel's rings (--evPhBz / --evTbBz: spread shadows, each round the screen's radius plus its spread), read when taken, so a change to the master frame reaches the screenshot */
@@ -35944,7 +35955,7 @@ hairline({
     const take0 = async (mode) => {
       if (btn.classList.contains('tkShotBusy')) return;
       const f = frame(), marked = [], fs = f.dev && document.documentElement.classList.contains('bpFit') ? (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--bpS')) || 1) : 1;   /* a scaled XS device (html.bpFit) drawn back at its own 393 x 852, 3x */
-      btn.classList.add('tkShotBusy'); btn.setAttribute('aria-busy', 'true');
+      btn.classList.add('tkShotBusy'); btn.setAttribute('aria-busy', 'true'); toast('Taking the screenshot…', true);
       try {
         const ms = await load();
         /* the device's own shell (its rounded corners, its bezel): marked, then taken off in the copy, so the screen comes out square */
@@ -35968,13 +35979,13 @@ hairline({
         /* the faces: the page's own are the system's; a framed page's (an iframe's: Geist, Newsreader, inlined by the build) handed over as they are, so its text is drawn in them */
         let faces = ''; const facesOf = d => { try { [...d.styleSheets].forEach(sh => { let rs = null; try { rs = sh.cssRules; } catch (e) { rs = null; } if (rs) [...rs].forEach(ru => { if (ru.type === 5 && ru.cssText.indexOf('data:') >= 0) faces += ru.cssText + '\n'; }); }); } catch (e) {} };
         facesOf(document); document.querySelectorAll('iframe').forEach(fr => { const r = fr.getBoundingClientRect(); if (!r.width || r.right < f.x || r.left > f.x + f.w || r.bottom < f.y || r.top > f.y + f.h) return; let d = null; try { d = fr.contentDocument; } catch (e) { d = null; } if (d) facesOf(d); });
-        const cv = await ms.domToCanvas(document.body, { width: innerWidth, height: innerHeight, scale: SC / fs, backgroundColor: getComputedStyle(document.body).backgroundColor || '#111', font: faces ? { cssText: faces } : false, filter: keep, timeout: 30000,
+        const cv = await Promise.race([new Promise((r, j) => setTimeout(() => j(new Error('slow')), 90000)), ms.domToCanvas(document.body, { width: innerWidth, height: innerHeight, scale: SC / fs, backgroundColor: getComputedStyle(document.body).backgroundColor || '#111', font: faces ? { cssText: faces } : false, filter: keep, timeout: 1500,   /* 1.5 s, not 30: the library waits on every picture and video in the page, hidden pages' too (a video never loaded held each shot 30 s: "the icon is blinking"); what shows on screen is loaded already */
           features: { restoreScrollPosition: true },
           onCloneEachNode: c => { if (c.nodeType === 1 && c.hasAttribute && c.hasAttribute('data-shot-dev')) { c.style.setProperty('border-radius', '0', 'important'); c.style.setProperty('box-shadow', 'none', 'important'); c.style.setProperty('clip-path', 'none', 'important'); c.removeAttribute('data-shot-dev'); }
             if (c.nodeType === 1 && c.hasAttribute && c.hasAttribute('data-shot-st')) { const d = c.getAttribute('data-shot-st').split(','); c.style.setProperty('position', 'relative', 'important'); c.style.setProperty('left', d[0] + 'px', 'important'); c.style.setProperty('top', d[1] + 'px', 'important'); c.style.setProperty('right', 'auto', 'important'); c.style.setProperty('bottom', 'auto', 'important'); c.removeAttribute('data-shot-st'); }
             if (c.nodeType === 1 && c.hasAttribute && c.hasAttribute('data-shot-ln')) { if (c.getAttribute('data-shot-ln') === '1') c.style.setProperty('white-space', 'nowrap', 'important');
               else { const w = parseFloat(c.style.width); if (w > 0) { c.style.setProperty('width', (w + 2) + 'px', 'important'); c.style.setProperty('margin-right', ((parseFloat(c.style.marginRight) || 0) - 2) + 'px', 'important'); } }
-              c.removeAttribute('data-shot-ln'); } } });
+              c.removeAttribute('data-shot-ln'); } } })]);   /* never longer than 90 s: the button freed, said so */
         const W = Math.round(f.w * SC / fs), H = Math.round(f.h * SC / fs), sc = document.createElement('canvas'); sc.width = W; sc.height = H;
         const sg = sc.getContext('2d'); sg.fillStyle = getComputedStyle(document.body).backgroundColor || '#111'; sg.fillRect(0, 0, W, H);
         const kx = cv.width / innerWidth, ky = cv.height / innerHeight; sg.drawImage(cv, f.x * kx, f.y * ky, f.w * kx, f.h * ky, 0, 0, W, H);
@@ -35985,9 +35996,9 @@ hairline({
           if (framed) dv.rings.slice().reverse().forEach(r => { const e = r.s * SC; g.fillStyle = r.c; rrect(g, M - e, M - e, W + 2 * e, H + 2 * e, (dv.r + r.s) * SC); g.fill(); });
           const pat = g.createPattern(sc, 'no-repeat'); pat.setTransform(new DOMMatrix().translateSelf(M, M)); g.fillStyle = pat; rrect(g, M, M, W, H, dv.r * SC); g.fill(); }
         const blob = await new Promise(r => out.toBlob(r, round ? 'image/png' : 'image/jpeg', .92)); if (!blob) throw new Error('encode');
-        await save(blob, nameOf(round ? 'png' : 'jpg', framed ? '-frame' : ''));
-        toast('Screenshot saved: ' + out.width + ' × ' + out.height + (round ? ' PNG' : ' JPG') + (framed ? ', in its frame' : ''));
-      } catch (e) { const c = e && e.code; toast(c === 'declined' ? 'Screenshot not saved' : c === 'rate_limited' ? 'A save is already waiting for you' : e && e.message === 'load' ? 'Couldn’t load the screenshot tool' : 'Couldn’t take the screenshot'); }
+        const how = await save(blob, nameOf(round ? 'png' : 'jpg', framed ? '-frame' : ''));
+        toast(how === 'shown' ? 'Screenshot ready: right-click it to save' : 'Screenshot saved to Downloads: ' + out.width + ' × ' + out.height + (round ? ' PNG' : ' JPG') + (framed ? ', in its frame' : ''));
+      } catch (e) { const c = e && e.code; toast(c === 'declined' ? 'Screenshot not saved' : c === 'rate_limited' ? 'A save is already waiting for you' : e && e.message === 'load' ? 'Couldn’t load the screenshot tool' : e && e.message === 'slow' ? 'The screenshot took too long: try again' : 'Couldn’t take the screenshot'); }
       finally { marked.forEach(el => { el.removeAttribute('data-shot-dev'); el.removeAttribute('data-shot-st'); el.removeAttribute('data-shot-ln'); }); btn.classList.remove('tkShotBusy'); btn.removeAttribute('aria-busy'); }
     };
     /* In iPhone frame from any breakpoint (the user's capture: "In iPhone frame" greyed out on the desk): off XS / S, the page is put at XS for the capture, framed, then back at the breakpoint it was at. Not where nothing sits in the phone (Home, Documentation, the libraries) */

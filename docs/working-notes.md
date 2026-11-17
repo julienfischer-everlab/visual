@@ -19,6 +19,12 @@ this is the part you need before you change it.
 
 
 
+## v2732: Screenshot about 4x faster, with progress messages
+
+- **Screenshot stuck blinking** ("I click screen shot and the icon is blinking"): each capture took about 45 s. The screenshot library waits for every picture and video in the whole page to load, hidden pages' too, and one video that is never loaded held it for its full 30 s timeout. That wait is now 1.5 s (what is on screen is already loaded), so a capture took 11 to 15 s in the test browser here (slow, no GPU), down from 45 s; a real machine is faster.
+- While it works a message stays up: **Taking the screenshot…**, then **Confirm the download to save it** while claude.ai's save prompt waits on you, then **Screenshot saved to Downloads: …**. claude.ai's downloads are asked for when the page loads, so the prompt comes straight away. A capture is stopped after 90 s ("The screenshot took too long: try again") so the button never stays stuck.
+- If the page is framed with no download available (a page cannot download by itself in an artifact), the picture is shown full screen with "Right-click the picture and choose Save image (or drag it to your desktop)" and a Close button, instead of nothing.
+
 ## v2731: In iPhone frame works from any breakpoint
 
 - **Screenshot > In iPhone frame on the desk** (the user's capture of the menu with "In iPhone frame" greyed out, "Choose XS or S to frame it"): off XS and S, the option is now on ("PNG, this page at XS in its frame, 3x"). Taking it puts the page at XS, waits for it to settle, captures the phone in its bezel at 3x (1251 × 2628), then puts the breakpoint back where it was. At XS it frames the phone and at S the tablet, as before. Only pages with nothing in a phone (Home, Documentation, the libraries) keep it off ("No phone frame on this page").
