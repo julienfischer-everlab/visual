@@ -19,6 +19,17 @@ this is the part you need before you change it.
 
 
 
+## v2705 — Timeline items controller (Next, Suggested, photos), unchecked background, 100 and its line
+
+- **Confirm plan**: unticked rows have two controls: **Unchecked content** (picture, words, check; 40%) and **Unchecked background** (the card's ground on its own, 100% by default; `--arRvOffBg`).
+- **Tweaks → Timeline items** (was Now and Later items): the **Suggestion items** switch now lives here; List is **Now / Next / Suggested / Later**.
+  - Next: the year's items; moving one past an item of another month moves it into that month (its date follows), so the order shows on the Timeline.
+  - Suggested: Dr Lu's suggestions; Add item makes a new suggestion (and switches Suggestions on); Sub edits the "Recommended …" line; CTA label / style apply to View.
+  - **Photo** per item (in its open row): Auto (its own), None (its icon), the app's pictures (blood, consult, device, diet, bowel, skin, DEXA, MRI, CTCA, microbiome, VO2, GP, telehealth, pathology, treatment) or an upload (+, shrunk to a 240px JPEG). The setup keeps the picture's name, an upload its small JPEG.
+- **Suggestions card**: the rows inside the grey card at half padding (their hover ground still to the card's sides).
+- **Big 100**: 4% opacity, fading out at its foot; 1→0 8px tighter, 0→0 12px tighter. The line under it in the Send a gift title's type (28/36, weight 570, −0.01em), same letter blur and ember.
+- **The dot under it**: halo 12%, the dot and halo breathing very slowly (8 s), the specks 3x slower, coming from the top left, middle and right.
+
 ## v2704 — Confirm plan unchecked opacity, Timeline 100 / decades / suggestions / item manager, Fixed unsaved
 
 - **Confirm plan (Review my plan)**: an unticked row now sits at 40% (was 70%). Tweaks → Confirm your updated plan → Timeline group → **Unchecked opacity** (0–100, default 40), saved with the setup (`--arRvOffA` on `.arRvOff`).
