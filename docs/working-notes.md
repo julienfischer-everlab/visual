@@ -19,6 +19,13 @@ this is the part you need before you change it.
 
 
 
+## v2745: Big 100, lighter to draw
+
+- "still super lagg this seauence": measured part by part over the same three seconds of scroll (title 1 written to title 2 written, L at 2x): 62 frames as it was; without the particle canvas 101; without the first title's blur 86; without the letters' blur and glow 85; without the number's blur no change. Now 87.
+- The canvas is drawn again only when something on it moved (the scroll, its size, its theme), the stars, once out, at 30 a second; at 1.5x at most (was 2x).
+- The first title goes by its fade and lift alone, no blur over the whole line (its `will-change` no longer names filter).
+- The letters' writing, the gift intro's (out of a warm blur, orange till sharp), drawn by each letter's own glow: a text-shadow of the letter while its own colour comes up from nothing (`t3CentWr`, one animation in place of hpWelRes's per-letter blur filter and hpWelEmb), so no letter carries a filter. Looks as before, a touch warmer.
+
 ## v2744: Big 100, the number turning half as fast
 
 - "Rotate number 2x slowly, doesnt need to finish at 110 whatever when it finished": a steady 5.6 a screen from 98 as it comes in at the bottom (was about 11, eased to reach 110 halfway through its fade), turning on until it has faded out wherever it is: about 100 a third of the way up the view, 101 as the first title is written, 103 as the second starts, 104 as it fades away. Its rise, the titles and the rest unchanged. Checked at L.
