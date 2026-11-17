@@ -19,6 +19,15 @@ this is the part you need before you change it.
 
 
 
+## v2707 — Unticking a Later item sends it back; Timeline items: Now / Next / Paused + Suggested group per list
+
+- **Confirm plan**: Later items stay in Later, priced, until added (they were pulled into Now unticked once priced, with Control object On). One added from Later and then unticked goes back to Later (the snackbar says so).
+- **Tweaks → Timeline items**:
+  - List is **Now / Next / Paused** (Later renamed Paused; Suggested is no longer a tab).
+  - Under Add item / Reset items, a **Suggested group** On/Off for the list shown. On: the group sits at the end of that list, in Tweaks (outlined, with its count) and on the Timeline (the Suggestions card at the end of Now, Next or Paused). Empty, it says "No suggestions yet".
+  - Inside the group: open a row to edit (title, sub, photo, CTA label and style), move up / down, drag, delete, and **Add item** (a new suggestion in that group).
+  - Kept per persona in the setup (`sg` per list, `g_<list>` order, the new item's `sgT`). The old Suggestion items switch is hidden; it only sets Now's group for setups that never set one.
+
 ## v2706 — Later always priced (Allergy, DEXA, Physical by default), sheet-only tweaks, 100 fade, decade number gap
 
 - **Confirm plan, Later**: every row carries a price, never Included (its own, one it carries, or $199; DEXA $299, Physical assessment $199). An item priced in Later stays priced when added back. By default Later holds the **Allergy test, DEXA scan and Physical assessment** (a report without them: its last two paid ones, as before).
