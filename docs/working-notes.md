@@ -19,6 +19,15 @@ this is the part you need before you change it.
 
 
 
+## v2719 — Confirm plan: Now / Next groups with no tabs; Included price tweak
+
+- **Group items with Show tabs Off** ("When there's no tab, instead of the grouping Included Extra, put First Group Now and then Next Group Next"): the titles are **Now** (what is in the plan) and **Next** (what was saved for later, unticked).
+  - Each group can mix included and paid items. The Included ones always come first in their group, then the ones already in your plan, then the priced ones.
+  - A Next item stays under Next once ticked (`rvNxSeen`), so nothing jumps.
+  - The Membership object never takes a Next item.
+  - With tabs on, the grouping is still Included / Extra.
+- **Included price** (Tweaks → Async report, review step, beside Group items): **$0** (as before) or **Included**. It is the word an included item shows where a price would be when Group items is On ("instead of $0, put included"). Key `stArRvZero`, option `rvzero`, saved with the report's tweaks.
+
 ## v2718 — Timeline ending: a scroll-played Big 100 → 150 → 200; padding guide on every screen
 
 - **The Big 100, a scroll-driven ending** (Timeline V3, after the decades; `centBloc` / `centWrite` / `centDot`):
