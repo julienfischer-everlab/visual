@@ -7,6 +7,11 @@ this is the part you need before you change it.
 
 ---
 
+## v2831 — Emotion faces on the mood answers; every step flow starts from one base
+
+- **Mood answers wear the emotion faces** (Figma Assets DS25, Special: face 1 to 5): `window.EvEmo` (`svg(n)`, `of(value)`, `BY`) maps poor · notgreat · okay · good · great to faces 1 to 5. EvQ options take `ic` (an icon slot left of the label, 24px, `currentColor`, `--t-space-xs` gap); the check-in's mood options pass it. The DS Questionnaire page shows a mood demo.
+- **Step flows share one base** ("make sure ALL steps system follow this structure as a base, can still edit"): a step flow's defaults are Header navigation 2xs, Header title sm, Body 2xs, Footer 2xs; header Fixed Off, footer Fixed On with the Gradient style. Saved setups and Tweaks still win (`EvCt.isFm(k)`, EvTopNav's fixed default `tFm`).
+
 ## v2830 — Breakpoints tokens as variables; the questionnaire Header title on its tokens
 
 - **Every Breakpoints token is a CSS variable now** (EvType's per-breakpoint block, `#evTypeTok`: :root at XS, the 600 / 992 / 1440 media, `body[data-bp]`, `[data-ct-bp]`, `.aqWrap.aqBp*`); was the font ones alone. Numeric tokens only. Edits on the Tokens page reach them (`EvType.refresh`).
