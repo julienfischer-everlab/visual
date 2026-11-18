@@ -19,6 +19,14 @@ this is the part you need before you change it.
 
 
 
+## v2815: List item interactive `auto` bleeds half the container's padding; the Timeline and the Insights biomarkers on it
+
+**"When there is a ghost inside a container, the ghost should bleed. The ghost should be the auto one, so it actually bleeds half of the padding of the container. If the padding container is, for example, 24, the padding on the ghost item should be 12 ... every time you have a container, it's better to use auto."** / **"the timeline one, and also the insights. When you list the biomarker ... use the auto list, list interactive auto."**
+- EvListI `auto` (Figma's Size parent: auto): out by half the container's side padding and in by the same, from the container token where the row sits (`calc(var(--ctPadX) / -2)` and `/ 2`: 8 at XS · S, 12 at M · L), so the words keep the column's edge and the hover ghost never reaches past the container's padding. Its top-bottom padding and corner the md's (space/sm, radius/2xl); it was -8 / -12 out with 16 / 24 in (the words pushed in) and no corner.
+- The Timeline's rows: `evLi-auto` (were md: 16 out at every size, the ghost reaching the container's edge at XS · S).
+- The Insights' biomarker rows (EvBio.row): `evLi-auto evLi-muted`; the hover and press plate out by the master's `--liO`, its corner `--liR`, its colours the master's muted hover and press (`--liBH`, `--liBP`); the Gradient look's ghost card bleeds the same, its words on the column's edge (was 20 in).
+- Checked: XS Timeline and Insights rows: the plate 8 past each side, corner 16; L: 12 past (container 24); no page errors.
+
 ## v2814: The Header group's two sections, each with its container in Tweaks; the body's container back in the guides
 
 **"In the header group, we have two sections: top navigation and header title, stacked, full width. For each, there's a container inside that I need to be able to control."**

@@ -3351,7 +3351,7 @@ window.EvCard = (function () {
   return { LOOKS: LOOKS, ILOOKS: ILOOKS, SIZES: SIZES, ISIZES: ISIZES, SECS: SECS, SEL: SEL, EFF: EFF, html: html, item: item, el: el, css: css, look: lookOf, ilook: ilookOf, name: function (k) { return (lookOf(k) || ilookOf(k) || [k, k])[1]; } };
 })();
 /* List item interactive (Design system -> Core components -> List item; window.EvListI): Figma Core DS25 › List item interactive (29728:607) and List item static (32818:146) ("use list interactive component").
-   A row container, its content a slot: its ground and corners bleed past the column (a negative side padding) so the words keep the column's edge; six sizes, xs to 2xl and auto (by breakpoint); Interactive's Rest, Hover and Press,
+   A row container, its content a slot: its ground and corners bleed past the column (a negative side padding) so the words keep the column's edge; six sizes, xs to 2xl and auto (half the container's side padding out and in: inside a container, use auto, its ghost never reaching past the container's padding); Interactive's Rest, Hover and Press,
    Selected (Emphasis Secondary: a 2 ring; Primary: filled a step deeper), Disabled (70%); Static the Rest look alone. A row of a list (Figma's Biomarkers item) is wrapped 8 over and under (space/2xs), its divider outside the ground */
 window.EvListI = (function () {
   var SIZES = [   /* name, outward offset (the component's side padding, negative), the slot's top-bottom padding, its side padding, corner; numbers where Figma binds a breakpoint token (layout/item/negative-gap -8, positive-gap 8 at every breakpoint) */
@@ -3360,7 +3360,7 @@ window.EvListI = (function () {
     ['md', 'components/list interactive/padding-left-right/l', 'space/sm', 'space/sm', 'radius/2xl'],
     ['xl', 'components/list interactive/padding-left-right/xl', 'space/md', 'space/md', 'radius/3xl'],
     ['2xl', 'components/list interactive/padding-left-right/xl', 'space/lg', 'space/lg', 'radius/4xl'],   /* Figma's offset /xl (-20) against 24 (/2xl, -24, unused) */
-    ['auto', [-8, -8, -12, -12], 0, [16, 16, 24, 24], 0]];   /* layout/list interactive/padding-left-right and layout/container/padding/left-right at xs s m l; no top-bottom padding, no corner */
+    ['auto', [-8, -8, -12, -12], 'space/sm', [8, 8, 12, 12], 'radius/2xl']];   /* auto ("when there is a ghost inside a container, the ghost should bleed ... half of the padding of the container"): out by half the container's side padding (layout/container/padding/left-right / 2: 8 · 8 · 12 · 12), in by the same, so the words keep the column's edge and the ghost never reaches past the container's padding; md's top-bottom padding and corner */   /* layout/list interactive/padding-left-right and layout/container/padding/left-right at xs s m l; no top-bottom padding, no corner */
   var EMPH = [   /* key, Figma Emphasis, rest, hover, press, ring */
     ['muted', 'Muted', null, 'bg/neutral/tertiary/100', 'bg/neutral/tertiary/200', null],
     ['secondary', 'Secondary (selected)', null, 'bg/neutral/tertiary/100', 'bg/neutral/tertiary/200', 'br/neutral/primary/100'],
@@ -3371,8 +3371,8 @@ window.EvListI = (function () {
   var cap = function (k) { return k.charAt(0).toUpperCase() + k.slice(1); };
   /* the CSS from the rows (#evLiTok, EvTokVar's v: a token to var(--t-…)): each size's four on :root (--liXsO, --liMdPy …) for a row that changes size by width, the size classes, the emphases' fills and ring, the wrapped row's padding, Disabled */
   var css = function (v) { var n = function (x) { return typeof x === 'number' ? x + 'px' : v(x); }, f = function (x) { return x ? v(x) : 'transparent'; }, R = [], L = [];
-    SIZES.forEach(function (s) { var k = '--li' + cap(s[0]); if (s[0] === 'auto') { R.push(k + 'O:' + s[1][0] + 'px;' + k + 'Py:0px;' + k + 'Px:' + s[3][0] + 'px;' + k + 'R:0px;'); return; } R.push(k + 'O:' + n(s[1]) + ';' + k + 'Py:' + n(s[2]) + ';' + k + 'Px:' + n(s[3]) + ';' + k + 'R:' + n(s[4]) + ';'); L.push('.evLi-' + s[0] + '{--liO:var(' + k + 'O);--liPy:var(' + k + 'Py);--liPx:var(' + k + 'Px);--liR:var(' + k + 'R);}'); });
-    var A = SK.auto; L.push('.evLi-auto{--liO:var(--liAutoO);--liPy:0px;--liPx:var(--liAutoPx);--liR:0px;}', 'body:is([data-bp="m"], [data-bp="l"]){--liAutoO:' + A[1][2] + 'px;--liAutoPx:' + A[3][2] + 'px;}', '@media (min-width: 992px){ body:not([data-bp]){--liAutoO:' + A[1][2] + 'px;--liAutoPx:' + A[3][2] + 'px;} }');
+    SIZES.forEach(function (s) { var k = '--li' + cap(s[0]); if (s[0] === 'auto') { R.push(k + 'O:calc(var(--ctPadX, 16px) / -2);' + k + 'Py:' + n(s[2]) + ';' + k + 'Px:calc(var(--ctPadX, 16px) / 2);' + k + 'R:' + n(s[4]) + ';'); return; } R.push(k + 'O:' + n(s[1]) + ';' + k + 'Py:' + n(s[2]) + ';' + k + 'Px:' + n(s[3]) + ';' + k + 'R:' + n(s[4]) + ';'); L.push('.evLi-' + s[0] + '{--liO:var(' + k + 'O);--liPy:var(' + k + 'Py);--liPx:var(' + k + 'Px);--liR:var(' + k + 'R);}'); });
+    L.push('.evLi-auto{--liO:calc(var(--ctPadX, 16px) / -2);--liPy:var(--liAutoPy);--liPx:calc(var(--ctPadX, 16px) / 2);--liR:var(--liAutoR);}');   /* from the container's own padding token where the row sits (16 · 16 · 24 · 24): 8 or 12 out, 8 or 12 in */
     R.push('--liWy:' + v(WRAP) + ';--liRing:' + v(RING) + ';--liFocus:' + v(FOCUS) + ';--liFocusC:' + v('br/neutral/primary/100') + ';--liDF:' + v(DIS[0]) + ';--liDL:' + v(DIS[1]) + ';');
     EMPH.forEach(function (e) { L.push('.evLi-' + e[0] + '{--liB0:' + f(e[2]) + ';--liBH:' + f(e[3]) + ';--liBP:' + f(e[4]) + ';--liW:' + (e[5] ? 'var(--liRing)' : '0px') + ';--liL:' + f(e[5]) + ';}'); });
     return ':root{' + R.join('') + '}\n' + L.join('\n'); };
