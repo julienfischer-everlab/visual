@@ -7,6 +7,12 @@ this is the part you need before you change it.
 
 ---
 
+## v2839 — The Ruler turns every guide on; Header navigation, not Header title, on the main pages; the new member's rail
+
+- **The Ruler turns them all on** ("By default when I click the ruler I activate automatically all toggle"): opened with every guide off, it turns Sections (each section) and Container padding on; with some on, it only opens.
+- **Main pages: Header navigation only** ("There is actually NO Header title here"; "Health: header group, header navigation should be only this"; "Body start here"): the Timeline's head row (its title and the history CTA) is the Header navigation (`data-hg-part="nav"`, was "title"); the guide draws a Header title only for a real one (`[data-hg-part="title"]`). On Health, whose H1 sits straight in the panel, the H1 is the header (the panel was taken for it, so the Header navigation covered the whole page): the Header navigation ends under it and the Body starts at the Biomarkers / Results tabs.
+- **The new member's timeline on the left** ("On the not a member keep the timeline on the left side, starting on Get your timeline started"): the rail, 16 in from the list as an established member's, with the current section's orange dot at the heading, runs down the four steps and fades at their end (the Amira card above stays off the rail); with the phase card, from its top. Desk only (at XS the new member's list is flush, no rail).
+
 ## v2838 — The Ruler works with Inspect on
 
 - **Guides with Inspect on** ("Guide doesn't work when Inspect ON"): the Ruler's dropdown, moved out of the bar (v2835), was taken by Inspect's pick as a page element; it is the inspector's own now (excluded from the pick, like the bar), and the guides' boxes, the hover outlines and the dropdown are left out of the page Inspect measures.
