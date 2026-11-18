@@ -7,6 +7,11 @@ this is the part you need before you change it.
 
 ---
 
+## v2830 — Breakpoints tokens as variables; the questionnaire Header title on its tokens
+
+- **Every Breakpoints token is a CSS variable now** (EvType's per-breakpoint block, `#evTypeTok`: :root at XS, the 600 / 992 / 1440 media, `body[data-bp]`, `[data-ct-bp]`, `.aqWrap.aqBp*`); was the font ones alone. Numeric tokens only. Edits on the Tokens page reach them (`EvType.refresh`).
+- **Questionnaire Header title** ("top token fix when it's a questionnaire, so not 12"): its top padding `components/questionnaire/top padding` (12 · 16 · 24 · 32), its right padding and, centred at M · L, its left `components/questionnaire/left right padding` (32 · 64 · 44 · 48). The page type's bottom (`layout/container/padding/top-bottom`) now resolves too (24 · 28 · 32 · 36).
+
 ## v2829 — Every modal and bottom sheet on the Modal token
 
 - `components/modal/bg` (Light `bg/surface/100` #FFF, Dark `bg/surface/200` #181818) is now every modal's and sheet's ground: the report framework's sheets (`.arSheet` `--ar-paper` from `var(--t-components-modal-bg)`, its dark `.arSheet.arDark`; the full-picture intro keeps its own), its bottom sheets (`.arQaPanel`), the sheet wrapper (`.shWrap.arWrap > .sheet.arSheet`), the Doctor's suggestion (was #F7F6F2), and the older sheets and modals (`.sheet`, `.sheet.shModal`, `.prModal`, `.prSheet`, `.siSheet`, `.rsSheet`, `.isSheet`, `.sgSheet`, `.chModal`: were #F6ECE6 / #F3E2D8 in light). The Ask sheet's panels were already #181818 / #FFF. The Plan's sheets keep their Tweak (Dark / Light); the photo pre-states (gift) keep theirs. An edit of the token on the Tokens page reaches them all.
