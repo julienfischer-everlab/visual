@@ -19,6 +19,15 @@ this is the part you need before you change it.
 
 
 
+## v2810: Badge Range and Badge Progress on the Design system's Badges page
+
+**"Where at the badge range? They should live in this badge component."**
+- Design system → Core components → Badges: the playground's **Type** is now Status, Mono, **Range**, **Progress**. Range has Emphasis (Primary, Secondary, Tertiary, Muted: Figma's "Mutted"), Appearance (Optimal, Suboptimal, Out of range), Size md to 2xs (no xs for Muted), Icon (None, Leading, Icon only); Progress has Emphasis (Primary, Secondary), Appearance (Neutral, Warning, Success, Negative), Size md / sm, Mark (Dot, Count: Figma's Type Badge) and its count. Each shows its Figma variant and its code.
+- New sections under Mono: **Range** (four emphases × four sizes, the three appearances and the ring alone) and **Progress** (Dot and Count × Primary and Secondary, md and sm, the four appearances); anatomy rows for both (shape, looks or marks, API).
+- New master `EvTokBadge.Range.html({ label, size, app, em, icon, iconOnly, cls, tag })`, its CSS (`#evTokRg`, `.evRg`) made from badgesRange's tokens in Light and Dark, on the same three grounds as Progress (the page's mode, a light sheet, a dark sheet). Progress keeps `EvTokBadge.Progress.html`. Both are drawn here by the same code the app calls.
+- Clicking a Range or Progress badge does not open the token panel yet (the inspector reads Status and Mono); the Tokens page → Components → Badge shows their tokens.
+- Checked: Range sm Secondary Optimal 36 tall, padding 16, radius 10, 14px, fill and ink from the range tokens; Light and Dark both resolved; Progress Count sm Warning; no page errors.
+
 ## v2809: Questionnaire step master (EvQ) from Figma; the check-in and the Health profile on it; biomarker Gradient as a ghost card; the check-in's body and footer containers
 
 **"I have more documentation for the questionnaire, like a step-by-step flow component inside of the body ... Consider the card interactive for the option to select."** (Figma Freemium entry points, six frames)
