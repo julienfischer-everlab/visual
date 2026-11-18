@@ -19,6 +19,15 @@ this is the part you need before you change it.
 
 
 
+## v2818: Full modals' Header navigation as Figma's at every size; the Async report's bar too
+
+**"so do it"** (Figma Modal full / Header navigation XS S and M L)
+- XS and S: Back and Close 44 (`interactive/height/md`, icons 20: `--evTnDo` 44 on `.aqWrap.aqFull`); the check-in's bar as Figma's breadcrumb: the title beside Back, left (Body/500/Medium 20/22, 16 from Back), no date line.
+- M and L: 28 (`interactive/height/xs`, icons 16), no title in the bar (the Header title has it); the Async report's head buttons too (its 44 rule overridden for full modals at M and L), in the Header group's sm container.
+- Top nav doc (Discs row): full modals follow Figma's Modal full / Header navigation (44 at XS · S, 28 at M · L); 36 stays for modals and step heads over a screen.
+- Not yet: the Async report's step titles are still in its body (not Header titles).
+- Checked: XS check-in 44 buttons, "Quarterly check-in" beside Back; L check-in, Suggestion and Async report 28; no page errors.
+
 ## v2817: The full modal's Header group as Figma's: both containers sm, Back and Close 28 at M · L
 
 **"It's not the same look ... Have a look at the tokenization."** (Figma Modal full / Header group / Questionnaire / M L 7853:63018, Page / M L 8651:51490; `components/questionnaire/top padding` 12, `left right padding` 32)
