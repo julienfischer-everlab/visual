@@ -19,6 +19,34 @@ this is the part you need before you change it.
 
 
 
+## v2789: Inspect shows the page's token share as a mini pie; Bon voyage a plain third title; the reel fade 25% longer; Inbox titles white; the Timeline header band within the body
+
+**"Instead if the inspect icon, put a mini pie chart that indicate how mouch this page is tokenised"**
+- In place of the Inspect button's icon (`#tkInsp`) there is a 14px pie (`.tkInsPie`): green is the share of the page's styles on a token, orange the rest. It is grey until first worked out.
+- The share is the inspector's own count (`area()`, now with a cap argument) over the page: `#tokPage` when it is open, otherwise the largest visible top-level element that isn't the top bar (`.dash`). Its first 1,200 shown elements are counted, which takes about 150 ms.
+- It is worked out in idle time, 1.2 s after a page change, a Tweak, a click or a resize. The pie eases to its new share (`@property --tkPie`).
+- The button's title and label say the figure: "Inspect · 63% of this page's styles on a token".
+- Read on arrival: the Overview 57%, the Timeline 63%, Service detail 67%.
+
+**"spread moe the fade out by 25%"** (the 100's reel)
+- Each fade is 12.5% of the window, was 10%: `transparent 19.5%, #000 32%, #000 77%, transparent 89.5%`.
+
+**"Bon voayge in a 3rd title that appear after the 2nd. and remove orange effect and blur, and cursor white square. Add english"**
+- It reads as a third title: 20 under the second, starting .9 s after the second is written.
+- The letters are typed plain: no warm blur.
+- The cursor is a white square (the ink, `.56em` each side) on the line, blinking while it waits.
+- The languages are Bon voyage, Safe travels (English), 良い旅を, Gute Reise, Buon viaggio.
+
+**"Why title red? should be white"** (the Ask sheet's Inbox on the phone)
+- `.evLi` sets `color: inherit`, and the sheet's own colour is warm. The rows now take the ink token, `--t-fg-neutral-primary-100`.
+
+**"Blur generate bug on left right side of body on top"** (the Timeline's header group)
+- The band behind the tabs (`#tl3 > .tlBar.t3Bar > .ovGround.tfBand`, its ten progressive blur layers) ran 100vmax out each side. Its blur took in the lighter sidebar and frame beyond the body's edges, making light strips at the top corners.
+- It now runs out to the scroller's own edges only: `--hgL` / `--hgR`, the bar's distance to them, measured by `hgBand()`.
+  - This runs after each render and as `#dTl` resizes. The observer is attached first: the page is drawn hidden, so the bar measures 0 until it shows.
+  - At L the band is 864 wide, the scroller's width; it was 3,304.
+- The side column's clip uses `--hgR` too.
+
 ## v2788: The 100's reel fade steep and close, so the rolling digits' bleed is hidden
 
 **"still no top botom fade out to hide the bleed rolling number"**
