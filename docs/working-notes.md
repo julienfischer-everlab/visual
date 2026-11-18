@@ -19,6 +19,14 @@ this is the part you need before you change it.
 
 
 
+## v2794: The page's face on font/family/secondary (Saans), not Suisse Intl
+
+**"why you come up with Suisse intl ?"** (the inspector on the Timeline's Now tab: Font family, no token, Suisse Intl)
+- `body`'s font stack was the first concept page's, `'Suisse Intl', …, 'Helvetica Neue', Helvetica, Arial`. Every text that names no face of its own inherited it: 559 of the Timeline's text elements, the tabs among them. Only the masters that set `--ar-font` were on Saans.
+- It is now `var(--t-font-family-secondary, "Saans"), 'Helvetica Neue', Helvetica, Arial, sans-serif`: the token Figma's text styles use (Medium 14/18: font/family/secondary, font/weight/medium).
+- The inspector now reads the tab's Font family as font/family/secondary · Saans, all 8 of its styles on a token. The Timeline's text is all Saans (569), apart from the inspector's monospace.
+- The brand faces are still only named, never loaded: where Saans isn't installed, it falls back to Helvetica Neue / Arial as before.
+
 ## v2793: Line dots on the light's glow; the rail dot on into the 100, fading; the titles at half pace; the reel fade softer; the Slot item in the inspector
 
 **"The dot should appear when the line start to hit the dot, dot appear too late atm"** (Dot in line)
