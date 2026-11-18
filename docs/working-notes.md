@@ -19,6 +19,25 @@ this is the part you need before you change it.
 
 
 
+## v2783: The Tokens page laid out as Figma's Variables
+
+**"present the token the same way figma do"**
+- Sidebar (`.tokSide`, 248 wide):
+  - Collections (`.tokCols`), each with its count: Primitives, Themes, Semantic, Component core, Breakpoints, Components. The tabs are gone.
+  - The collection's Groups (`.tokGrps`): All, then every group as a tree, indented 16 a level, each with the count of every token under it. A group picked filters the table (`grp`, reset when the collection changes). Its selection is Figma's blue (`--tokSel`).
+- The table (`.tokFig`):
+  - Columns: Name (36%), then a column per mode ("Value" when there is one mode).
+  - A row per group, its path written "font / family / fallback". Rows are 44 tall, with lines between every cell, as Figma has them.
+  - Each token row has its type's icon (# a number, T a string, its swatch a colour), then its last name. Pressing the name copies its CSS variable, as before. A description goes under the name.
+- Values:
+  - An alias is a chip: a hairline, the type's icon, and the primitive's or the token's name.
+  - Otherwise, the value itself (a colour as its swatch and hex · alpha).
+  - Pressing either copies the value, with the snackbar.
+  - A value the same as the mode before it (with the same alias) is at 50%.
+- The old helpers (`bdg`, `cell`, `rows`, `cpv`, the copy icon `CPI`) are gone.
+- The Components collection keeps its own page; the Groups are hidden there.
+- On a phone (≤760), the sidebar sits above the table, 200 tall.
+
 ## v2782: Video check-in is a service; the Action plan cards on Card interactive with Tweaks; Primitives in the tokens; token badges copy their value
 
 **"THis need to Be a service detail screen. Create this one in the list of service"** (the Timeline's Your check-in sheet)

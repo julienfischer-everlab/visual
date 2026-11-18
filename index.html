@@ -20219,6 +20219,33 @@ window.EvCtl = (function () {
   .tokNo{color:var(--tokMut);font-size:13px;}
   .tokToast{position:fixed;left:50%;bottom:24px;z-index:10;transform:translate(-50%,8px);padding:8px 14px;border-radius:10px;background:var(--tokFg);color:var(--tokBg);font-size:12.5px;opacity:0;pointer-events:none;transition:opacity .2s ease,transform .2s ease;}
   .tokToast.on{opacity:1;transform:translate(-50%,0);}
+  /* the Variables layout (Figma's): the sidebar's Collections and Groups, the table's rows 44 tall, its lines between every cell */
+  .tokPage{--tokSel:rgba(76,110,190,.42);--tokChipL:rgba(255,255,255,.14);} body.light .tokPage{--tokSel:rgba(13,153,255,.14);--tokChipL:rgba(0,0,0,.14);}
+  .tokMain{flex:1;min-height:0;display:flex;} .tokPage.tokCmp .tokSide{width:220px;}
+  .tokSide{flex:none;width:248px;box-sizing:border-box;overflow:auto;padding:4px 8px 24px;border-right:1px solid var(--tokLine);}
+  .tokSideH{margin:0;padding:16px 8px 8px;font-size:13px;line-height:18px;font-weight:600;color:var(--tokFg);}
+  .tokGrpW{margin-top:8px;padding-top:4px;border-top:1px solid var(--tokLine);}
+  .tokCols, .tokGrps{display:flex;flex-direction:column;gap:2px;}
+  .tokCols button, .tokGrps button{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:32px;padding:0 8px 0 calc(8px + var(--d, 0) * 16px);border:0;border-radius:6px;background:none;color:var(--tokFg);font:inherit;font-size:13px;line-height:18px;text-align:left;cursor:pointer;}
+  .tokCols button span, .tokGrps button span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .tokCols button em, .tokGrps button em{flex:none;font-style:normal;color:var(--tokMut);font-variant-numeric:tabular-nums;}
+  .tokCols button:hover, .tokGrps button:hover{background:var(--tokHov);}
+  .tokCols button[aria-selected="true"]{background:var(--tokOn);font-weight:600;} .tokGrps button[aria-current="true"]{background:var(--tokSel);font-weight:600;}
+  .tokMain .tokBody{padding:0;} .tokMain .tokIn{max-width:none;}
+  .tokFig{width:100%;min-width:560px;border-collapse:collapse;table-layout:fixed;font-size:13px;line-height:18px;} .tokFig col.tokCN{width:36%;}
+  .tokFig th{position:sticky;top:0;z-index:1;height:44px;padding:0 16px;box-sizing:border-box;border-bottom:1px solid var(--tokLine);border-right:1px solid var(--tokLine);background:var(--tokBg);color:var(--tokFg);font-weight:600;text-align:left;}
+  .tokFig td{height:44px;padding:6px 16px;box-sizing:border-box;border-bottom:1px solid var(--tokLine);border-right:1px solid var(--tokLine);vertical-align:middle;}
+  .tokFig th:last-child, .tokFig td:last-child{border-right:0;}
+  .tokFig tr.tokGrpR td{height:44px;padding-top:12px;font-weight:600;color:var(--tokFg);}
+  .tokFig tbody tr:not(.tokGrpR):hover td{background:var(--tokHov);}
+  .tokNm{display:flex;align-items:center;gap:12px;min-width:0;} .tokNm .tokN{font:inherit;font-weight:400;cursor:copy;}
+  .tokTy{flex:none;width:16px;height:16px;color:var(--tokMut);} .tokTySw{width:16px;height:16px;border-radius:4px;}
+  .tokFig .tokCp{display:inline-flex;align-items:center;gap:8px;max-width:100%;height:30px;padding:0 8px;box-sizing:border-box;border-radius:6px;font:inherit;font-variant-numeric:tabular-nums;}
+  .tokFig .tokCp > span:last-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .tokFig .tokChip{box-shadow:inset 0 0 0 1px var(--tokChipL);} .tokFig .tokChip .tokTy{color:var(--tokFg);opacity:.7;}
+  .tokFig .tokRaw{margin-left:-8px;}
+  .tokFig .tokCp:hover{background:var(--tokHov);} .tokFig .tokCp.tokEq{opacity:.5;}
+  @media (max-width:760px){ .tokMain{flex-direction:column;} .tokSide{width:auto;max-height:200px;border-right:0;border-bottom:1px solid var(--tokLine);} }
 </style>
 <script>
 /* Tokens: Figma's variables, exported (W3C design tokens, Figma's extensions), one tab a collection: Themes (Light, Dark), Foundation, Component core, Breakpoints (xs, s, m, l).
@@ -20240,30 +20267,32 @@ window.EvTokData = [{"k":"prim","n":"Primitives","m":["Value"],"t":[["white","c"
   var idx = {}; DATA.forEach(function (c) { var o = idx[c.k] = {}; c.t.forEach(function (t) { o[t[0]] = t; }); });
   var resolve = function (c, v, mi, d) { if (typeof v === 'string' && /^\{[^}]+\}$/.test(v) && (d || 0) < 8) { var t = idx[c.k][v.slice(1, -1).split('.').join('/')]; if (t) return resolve(c, per(t[2], c.m.length)[mi], mi, (d || 0) + 1); } return v; };
   var hexOf = function (v) { var h = String(v).replace('#', ''); if (h.length === 8) { var a = Math.round(parseInt(h.slice(6), 16) / 2.55); return '#' + h.slice(0, 6).toUpperCase() + ' · ' + a + '%'; } return '#' + h.toUpperCase(); };
-  /* a value or a token's name as a badge to copy ("Use badge outlined for token name and icon to Copy. Same for value, badge filled"): the Design system's Badge Mono (EvCtl.mono, xs), Outline for a name, Filled for a value, the copy icon its glyph; pressed, what it shows is copied (a colour as CSS writes it) */
-  var CPI = '<svg class="evCtlIc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>';
-  var bdg = function (label, kind, cp) { var C = window.EvCtl, b = C && C.mono ? C.mono({ label: String(label), size: 'xs', kind: kind, icon: false, cls: 'tokBdg' }) : '<span>' + esc(label) + '</span>'; return '<button type="button" class="tokCp" data-cp="' + esc(cp) + '" title="Copy ' + esc(cp) + '" aria-label="' + esc(label) + ', copy ' + esc(cp) + '">' + b + '</button>'; };   /* the badge, no copy icon: pressed, it copies the token's value ("Remove the copy option. Click on Token badhe will copy the Value, Snackbar for feedback"); the alias's badge too */
-  var cpv = function (c, t, v, mi) { var r = resolve(c, v, mi); return t[1] === 'c' && typeof r === 'string' && r.charAt(0) === '#' ? String(r).toUpperCase() : String(r); };
-  var cell = function (c, t, v, mi) { var r = resolve(c, v, mi), ref = r !== v, isC = t[1] === 'c' && typeof r === 'string' && r.charAt(0) === '#';
-    return (isC ? '<span class="tokSw" style="--c:' + esc(r) + '"></span>' : '') + bdg(isC ? hexOf(r) : r, 'filled', isC ? String(r).toUpperCase() : String(r)); };
   var link = function (s) { return esc(s).replace(/https?:\/\/[^\s<]+/g, function (u) { return '<a href="' + u + '" target="_blank" rel="noopener">Figma</a>'; }); };
   var match = function (c, t) { if (!q) return true; var s = (t[0] + ' ' + JSON.stringify(t[2]) + ' ' + JSON.stringify(t[3] || '') + ' ' + (t[4] != null ? c.d[t[4]] : '')).toLowerCase(); return q.split(/\s+/).every(function (w) { return s.indexOf(w) >= 0; }); };
-  var rows = function (c, list) { var n = c.m.length, out = '', sub = null;
-    list.forEach(function (t) { var p = t[0].split('/'), sg = p.length > 2 ? p[1] : '';
-      if (sg !== sub) { sub = sg; if (sg) out += '<tr class="tokSub"><td colspan="' + (n + 1) + '">' + esc(sg) + '</td></tr>'; }
-      var vs = per(t[2], n), as = per(t[3] || '', n), prev = null;
-      out += '<tr><td><button type="button" class="tokN" data-v="' + esc(vn(t[0])) + '" title="Copy ' + esc(vn(t[0])) + '">' + esc(p.slice(1).join('/') || t[0]) + '</button>' + (t[4] != null ? '<p class="tokD">' + link(c.d[t[4]]) + '</p>' : '') + '</td>' +
-        vs.map(function (v, i) { var k = JSON.stringify(v), eq = n > 1 && i > 0 && k === prev; prev = k; return '<td><span class="tokV' + (eq ? ' tokEq' : '') + '">' + cell(c, t, v, i) + '</span>' + ((as[i] || (typeof v === 'string' && v.charAt(0) === '{' ? v : '')) ? '<span class="tokA">' + bdg(String(as[i] || v).replace(/^\{|\}$/g, '').split('.').join('/'), 'outline', cpv(c, t, v, i)) + '</span>' : '') + '</td>'; }).join('') + '</tr>'; });   /* the token it is: an Outline badge to copy */
-    return out; };
+  /* Figma's Variables, as Figma draws them ("present the token the same way figma do"): Collections and their counts at the left, then the collection's Groups as a tree (All, each group with every token under it), a group picked filtering the table; the table Name | a column per mode, a row per group ("space", "font / family"), each token its type's icon (# a number, its swatch a colour, T a string) and its last name; a value an alias's chip (the type's icon, the primitive's or the token's name) or the value itself; pressed, either copies the value (a snackbar says so) */
+  var grp = '';
+  var TY = { n: '<svg class="tokTy" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><rect x="1.5" y="1.5" width="13" height="13" rx="2.5"/><path d="M6.4 4.2 5.6 11.8M10.4 4.2 9.6 11.8M4.2 6.6h7.8M4 9.4h7.8" stroke-linecap="round"/></svg>', s: '<svg class="tokTy" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><rect x="1.5" y="1.5" width="13" height="13" rx="2.5"/><path d="M5 5h6M8 5v6.5" stroke-linecap="round"/></svg>' };
+  var tyIc = function (t, r) { return t[1] === 'c' ? '<span class="tokSw tokTySw" style="--c:' + esc(r) + '"></span>' : TY[t[1]] || TY.s; };
+  var tree = function (c) { var cnt = {}, kids = { '': [] }; c.t.forEach(function (t) { var p = t[0].split('/'); for (var i = 1; i < p.length; i++) { var g = p.slice(0, i).join('/'), up = p.slice(0, i - 1).join('/'); if (cnt[g] == null) { cnt[g] = 0; kids[g] = []; kids[up].push(g); } cnt[g]++; } });
+    var out = []; (function walk(g, d) { kids[g].forEach(function (k) { out.push([k, d]); walk(k, d + 1); }); })('', 0); return { cnt: cnt, list: out }; };
+  var vcell = function (c, t, v, mi, al, eq) { var r = resolve(c, v, mi), isC = t[1] === 'c' && typeof r === 'string' && r.charAt(0) === '#', cp = isC ? String(r).toUpperCase() : String(r), a = al || (typeof v === 'string' && /^\{[^}]+\}$/.test(v) ? v.slice(1, -1).split('.').join('/') : '');
+    return '<td><button type="button" class="tokCp ' + (a ? 'tokChip' : 'tokRaw') + (eq ? ' tokEq' : '') + '" data-cp="' + esc(cp) + '" title="Copy ' + esc(cp) + '" aria-label="' + esc(a || cp) + ', copy ' + esc(cp) + '">' + (a ? tyIc(t, r) + '<span>' + esc(a) + '</span>' : (isC ? '<span class="tokSw" style="--c:' + esc(r) + '"></span><span>' + esc(hexOf(r)) + '</span>' : '<span>' + esc(r) + '</span>')) + '</button></td>'; };
   var paint = function () { var c = col(); if (!c) return;
-    if (!built) { built = true; pg.innerHTML = '<div class="tokHd"><h1>Tokens</h1><nav class="tokTabs" role="tablist" aria-label="Token collections">' + DATA.map(function (x) { return '<button type="button" role="tab" data-col="' + x.k + '">' + esc(x.n) + '<em>' + x.t.length + '</em></button>'; }).join('') + (window.EvTokCmpUI ? window.EvTokCmpUI.tabs.map(function (x) { return '<button type="button" role="tab" data-col="' + x.k + '">' + esc(x.n) + '<em>' + x.count + '</em></button>'; }).join('') : '') + '</nav><span class="tokSp"></span><input class="tokQ" type="search" placeholder="Search tokens" aria-label="Search tokens" autocomplete="off" spellcheck="false"><button type="button" class="tokCss">Copy CSS</button></div><div class="tokBody"><div class="tokIn"></div></div><div class="tokToast" role="status"></div>'; }
-    var cmp = cur === 'cmp' && !!window.EvTokCmpUI, qi = pg.querySelector('.tokQ'); if (qi) qi.hidden = cmp;
-    [].forEach.call(pg.querySelectorAll('.tokTabs button'), function (b) { b.setAttribute('aria-selected', String(b.dataset.col === (cmp ? 'cmp' : c.k))); });
+    if (!built) { built = true; pg.innerHTML = '<div class="tokHd"><h1>Tokens</h1><span class="tokSp"></span><input class="tokQ" type="search" placeholder="Search tokens" aria-label="Search tokens" autocomplete="off" spellcheck="false"><button type="button" class="tokCss">Copy CSS</button></div>' +
+      '<div class="tokMain"><aside class="tokSide" aria-label="Collections and groups"><p class="tokSideH">Collections</p><nav class="tokCols" role="tablist" aria-label="Token collections">' + DATA.map(function (x) { return '<button type="button" role="tab" data-col="' + x.k + '"><span>' + esc(x.n) + '</span><em>' + x.t.length + '</em></button>'; }).join('') + (window.EvTokCmpUI ? window.EvTokCmpUI.tabs.map(function (x) { return '<button type="button" role="tab" data-col="' + x.k + '"><span>' + esc(x.n) + '</span><em>' + x.count + '</em></button>'; }).join('') : '') + '</nav>' +
+      '<div class="tokGrpW"><p class="tokSideH">Groups</p><nav class="tokGrps" aria-label="Groups"></nav></div></aside><div class="tokBody"><div class="tokIn"></div></div></div>'; }
+    var cmp = cur === 'cmp' && !!window.EvTokCmpUI, qi = pg.querySelector('.tokQ'); if (qi) qi.hidden = cmp; pg.classList.toggle('tokCmp', cmp);
+    [].forEach.call(pg.querySelectorAll('.tokCols button'), function (b) { b.setAttribute('aria-selected', String(b.dataset.col === (cmp ? 'cmp' : c.k))); });
+    var gw = pg.querySelector('.tokGrpW'); if (gw) gw.hidden = cmp;
     if (cmp) { window.EvTokCmpUI.render(pg.querySelector('.tokIn')); return; }   /* Components: each component's tokens from Figma and its playground (the Button first) */
-    var groups = [], by = {}; c.t.forEach(function (t) { if (!match(c, t)) return; var g = t[0].split('/')[0]; if (!by[g]) { by[g] = []; groups.push(g); } by[g].push(t); });
-    var n = c.m.length, head = '<thead><tr><th>Token</th>' + c.m.map(function (m) { return '<th>' + esc(n === 1 ? 'Value' : m) + '</th>'; }).join('') + '</tr></thead>';
-    pg.querySelector('.tokIn').innerHTML = '<p class="tokLead">' + esc(c.n) + ' · ' + c.t.length + ' tokens' + (n > 1 ? ' · modes ' + c.m.join(', ') : '') + ' · from Figma’s variables. Click a name to copy its CSS variable; a value the same as the mode before it is greyed.</p>' +
-      (groups.length ? groups.map(function (g) { return '<section class="tokSec" aria-label="' + esc(g) + '"><h2>' + esc(g) + '<small>' + by[g].length + '</small></h2><div class="tokW"><table class="tokT">' + head + '<tbody>' + rows(c, by[g]) + '</tbody></table></div></section>'; }).join('') : '<p class="tokNo">No tokens match “' + esc(q) + '”.</p>');
+    var T = tree(c); if (grp && T.cnt[grp] == null) grp = '';
+    pg.querySelector('.tokGrps').innerHTML = '<button type="button" data-g=""' + (grp ? '' : ' aria-current="true"') + '><span>All</span><em>' + c.t.length + '</em></button>' + T.list.map(function (x) { return '<button type="button" data-g="' + esc(x[0]) + '" style="--d:' + (x[1] + 1) + '"' + (grp === x[0] ? ' aria-current="true"' : '') + '><span>' + esc(x[0].split('/').pop()) + '</span><em>' + T.cnt[x[0]] + '</em></button>'; }).join('');
+    var n = c.m.length, order = [], by = {}; c.t.forEach(function (t) { if (grp && t[0].indexOf(grp + '/') !== 0) return; if (!match(c, t)) return; var p = t[0].split('/'), g = p.slice(0, -1).join('/'); if (!by[g]) { by[g] = []; order.push(g); } by[g].push(t); });
+    var head = '<colgroup><col class="tokCN">' + c.m.map(function () { return '<col>'; }).join('') + '</colgroup><thead><tr><th>Name</th>' + c.m.map(function (m) { return '<th>' + esc(n === 1 ? 'Value' : m) + '</th>'; }).join('') + '</tr></thead>';
+    var body = order.map(function (g) { return '<tr class="tokGrpR"><td colspan="' + (n + 1) + '">' + esc(g ? g.split('/').join(' / ') : c.n) + '</td></tr>' + by[g].map(function (t) { var vs = per(t[2], n), as = per(t[3] || '', n), r0 = resolve(c, vs[0], 0), prev = null;
+        return '<tr><td><span class="tokNm">' + tyIc(t, r0) + '<button type="button" class="tokN" data-v="' + esc(vn(t[0])) + '" title="Copy ' + esc(vn(t[0])) + '">' + esc(t[0].split('/').pop()) + '</button></span>' + (t[4] != null ? '<p class="tokD">' + link(c.d[t[4]]) + '</p>' : '') + '</td>' +
+          vs.map(function (v, i) { var k = JSON.stringify([v, as[i]]), eq = n > 1 && i > 0 && k === prev; prev = k; return vcell(c, t, v, i, as[i], eq); }).join('') + '</tr>'; }).join(''); }).join('');
+    pg.querySelector('.tokIn').innerHTML = order.length ? '<table class="tokFig">' + head + '<tbody>' + body + '</tbody></table>' : '<p class="tokNo">No tokens match “' + esc(q) + '”.</p>';
   };
   var toast = function (m) { var sb = document.querySelector('.tkSnack'); if (!sb) { sb = document.createElement('div'); sb.className = 'tkSnack'; sb.setAttribute('role', 'status'); sb.setAttribute('aria-live', 'polite'); document.body.appendChild(sb); }   /* the snackbar (.tkSnack, as a copied link's) */
     sb.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span></span>'; sb.lastChild.textContent = m; clearTimeout(sb._t); requestAnimationFrame(function () { sb.classList.add('on'); }); sb._t = setTimeout(function () { sb.classList.remove('on'); }, 2200); };
@@ -20271,7 +20300,8 @@ window.EvTokData = [{"k":"prim","n":"Primitives","m":["Value"],"t":[["white","c"
   var fb = function (s) { var a = document.createElement('textarea'); a.value = s; a.style.position = 'fixed'; a.style.opacity = '0'; document.body.appendChild(a); a.select(); try { document.execCommand('copy'); } catch (e) {} a.remove(); };
   var css = function (c) { var n = c.m.length, v2 = function (t, v) { if (typeof v === 'string' && /^\{[^}]+\}$/.test(v)) return 'var(' + vn(v.slice(1, -1).split('.').join('/')) + ')'; if (t[1] === 's' && !/^\d+$/.test(v)) return '"' + v + '"'; return String(v); };
     return c.m.map(function (m, i) { return (n > 1 ? '/* ' + c.n + ' · ' + m + ' */\n' : '/* ' + c.n + ' */\n') + ':root {\n' + c.t.map(function (t) { return '  ' + vn(t[0]) + ': ' + v2(t, per(t[2], n)[i]) + ';'; }).join('\n') + '\n}'; }).join('\n\n'); };
-  pg.addEventListener('click', function (e) { var b = e.target.closest('.tokTabs [data-col]'); if (b && b.dataset.col !== cur) { cur = b.dataset.col; paint(); pg.querySelector('.tokBody').scrollTop = 0; return; }
+  pg.addEventListener('click', function (e) { var b = e.target.closest('.tokCols [data-col]'); if (b && b.dataset.col !== cur) { cur = b.dataset.col; grp = ''; paint(); pg.querySelector('.tokBody').scrollTop = 0; return; }
+    var gb = e.target.closest('.tokGrps [data-g]'); if (gb) { grp = gb.dataset.g; paint(); pg.querySelector('.tokBody').scrollTop = 0; return; }   /* a group: the table filtered to it */
     if (cur === 'cmp' && window.EvTokCmpUI && window.EvTokCmpUI.click(e, pg.querySelector('.tokIn'))) return;
     if (cur === 'cmp' && e.target.closest('.tokCss') && window.EvTokCmpUI) { copy(window.EvTokCmpUI.css(), 'Copied this ' + (window.EvTokCmpUI.comp() === 'Badge' ? 'badge' : 'button') + '\u2019s CSS'); return; }
     var cpb = e.target.closest('.tokCp'); if (cpb) { copy(cpb.dataset.cp, 'Copied ' + cpb.dataset.cp); return; }   /* a value's or a name's badge */
