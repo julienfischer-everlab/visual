@@ -6637,7 +6637,8 @@ window.EvConsent = (function () {
   function sphere(opts) {
     opts = opts || {};
     if (opts.edge != null && LOOK.vis === 'flat') return flat(opts);
-    if (opts.edge != null && LOOK.vis === 'halo') return halo(opts);   /* Visual -> Halo: the sphere of light with its progress ring */   /* the primary card's (made with an edge: the Overview's and its Modules page's): the dotted circle when Tweaks -> Primary card -> Visual says so */
+    if (opts.edge != null && LOOK.vis === 'halo') return halo(opts);
+    if (opts.edge != null && LOOK.vis === 'ring') return ring(opts);   /* Visual -> Ring: the minimal one, a thin circle filling through its three dots */   /* Visual -> Halo: the sphere of light with its progress ring */   /* the primary card's (made with an edge: the Overview's and its Modules page's): the dotted circle when Tweaks -> Primary card -> Visual says so */
     var cv = document.createElement('canvas'); cv.className = 'hpDots hpSph' + (opts.cls ? ' ' + opts.cls : ''); cv.setAttribute('aria-hidden', 'true');
     var SC = 1.6; cv.style.transform = 'scale(' + SC + ')'; cv.style.pointerEvents = 'none';   /* drawn 1.6x its box, the ball its size within: room round it for the swell and the falling particles' swing */
     var x = cv.getContext('2d'), N = 1100, P = new Float32Array(N * 3), K = new Uint8Array(N), J = new Float32Array(N), seed = 11;
@@ -6859,6 +6860,36 @@ window.EvConsent = (function () {
       if (!shown) { setTimeout(function () { if (!raf) raf = requestAnimationFrame(tick); }, 500); return; }
       raf = requestAnimationFrame(tick); };
     return { el: el, set: function (f, anim) { var now = performance.now(); f = Math.max(0, Math.min(1, f)); var cur = levelAt(now); lv = anim && !calm ? { from: cur, to: f, t0: now, dur: f > cur ? 1600 : 1200 } : { from: f, to: f, t0: now, dur: 1 }; if (!raf) raf = requestAnimationFrame(tick); },
+      seed: function () {}, burst: function () {}, core: function () {}, t0: t0 };
+  }
+  /* ---------- Visual -> Ring ("Create a new variation for the onboardin consult card, something more minimal focusing on a circle with 3 dot when the line of the circle get filled"; the sauna benefits reference) ----------
+     a thin circle in the card's ink, faint; three dots on it, a third of the way round each (the steps' marks: lower right, lower left, the top), hollow until reached; the line filled clockwise from the top to the share done, in the ink, a small bright head while it moves; each dot filled, with a soft glow, as the line reaches it. A new share drawn over 1.6 s (1.2 s back). Still with reduced motion. ring({ cls }) -> { el, set(fraction, animate) } */
+  function ring(opts) {
+    opts = opts || {};
+    var cv = document.createElement('canvas'); cv.className = 'hpDots hpSph hpRing' + (opts.cls ? ' ' + opts.cls : ''); cv.setAttribute('aria-hidden', 'true'); cv.style.pointerEvents = 'none';
+    var x = cv.getContext('2d'), lv = { from: 0, to: 0, t0: 0, dur: 1 }, t0 = performance.now(), raf = 0, last = 0, calm = reduced();
+    var levelAt = function (now) { var k = Math.min(1, Math.max(0, (now - lv.t0) / lv.dur)), e = 1 - Math.pow(1 - k, 3); return lv.from + (lv.to - lv.from) * e; };
+    var draw = function (now) {
+      var w = cv.clientWidth, hh = cv.clientHeight; if (!w || !hh) return false;
+      var dpr = Math.min(2, window.devicePixelRatio || 1); if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(hh * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(hh * dpr); }
+      x.setTransform(dpr, 0, 0, dpr, 0, 0); x.clearRect(0, 0, w, hh);
+      var sh = cv.closest('.hpSheet'), lt = sh ? !sh.classList.contains('arDark') : document.body.classList.contains('light'), ink = lt ? '28,22,18' : '255,250,244', t = calm ? 0 : (now - t0) / 1000, L = levelAt(now);
+      var R = Math.min(w, hh) / 2 * .8, cx = w / 2, cy = hh / 2, a0 = -Math.PI / 2, TAU = Math.PI * 2;
+      x.save(); x.lineWidth = 1.3; x.lineCap = 'round'; x.setLineDash([.01, 4.2]); x.strokeStyle = 'rgba(' + ink + ',' + (lt ? .32 : .38) + ')'; x.beginPath(); x.arc(cx, cy, R, a0 + TAU * Math.min(1, L), a0 + TAU); x.stroke(); x.restore();   /* the track still to go: a fine dotted line (the "1 in 3" reference), the filled part solid */
+      if (L > .002) { x.save(); x.lineWidth = 1.8; x.lineCap = 'round'; x.strokeStyle = 'rgba(' + ink + ',.92)'; x.shadowColor = 'rgba(' + ink + ',' + (lt ? .15 : .35) + ')'; x.shadowBlur = 6; x.beginPath(); x.arc(cx, cy, R, a0, a0 + TAU * Math.min(1, L)); x.stroke(); x.restore(); }   /* the line filled, from the top, clockwise */
+      [1 / 3, 2 / 3, 1].forEach(function (q) { var a = a0 + TAU * q, px = cx + Math.cos(a) * R, py = cy + Math.sin(a) * R, on = L >= q - .001, r0 = Math.max(3, R * .065);
+        if (on) { x.save(); x.shadowColor = 'rgba(' + ink + ',' + (lt ? .25 : .55) + ')'; x.shadowBlur = 10; x.fillStyle = 'rgba(' + ink + ',1)'; x.beginPath(); x.arc(px, py, r0, 0, TAU); x.fill(); x.restore(); }
+        else { x.fillStyle = lt ? 'rgba(255,255,255,1)' : 'rgba(20,20,20,1)'; x.beginPath(); x.arc(px, py, r0, 0, TAU); x.fill(); x.lineWidth = 1.2; x.strokeStyle = 'rgba(' + ink + ',' + (lt ? .35 : .4) + ')'; x.stroke(); } });   /* the three dots: hollow (the card's ground in them, so the track doesn't run through), filled once reached */
+      if (L > .01 && L < .995) { var ah = a0 + TAU * L, hx = cx + Math.cos(ah) * R, hy = cy + Math.sin(ah) * R, br = calm ? 1 : 1 + .3 * Math.sin(t * 2.4), hg = x.createRadialGradient(hx, hy, 0, hx, hy, 9 * br); hg.addColorStop(0, 'rgba(' + ink + ',' + (lt ? .3 : .45) + ')'); hg.addColorStop(1, 'rgba(' + ink + ',0)'); x.fillStyle = hg; x.beginPath(); x.arc(hx, hy, 9 * br, 0, TAU); x.fill(); x.fillStyle = 'rgba(' + ink + ',1)'; x.beginPath(); x.arc(hx, hy, 2.2, 0, TAU); x.fill(); }   /* its head while part way, breathing */
+      return true;
+    };
+    LIVE.push(function () { if (!cv.isConnected && cv.width) return false; if (!raf) raf = requestAnimationFrame(tick); return true; });
+    var tick = function (now) { raf = 0; if (!cv.isConnected) return; if (!calm && now - last < 32 && now - lv.t0 > lv.dur){ raf = requestAnimationFrame(tick); return; } last = now; var shown = draw(now);
+      if (calm && now - lv.t0 > lv.dur) return;
+      if (!shown) { setTimeout(function () { if (!raf) raf = requestAnimationFrame(tick); }, 500); return; }
+      if (now - lv.t0 > lv.dur && !(L0() > .01 && L0() < .995)) return; raf = requestAnimationFrame(tick); };
+    var L0 = function () { return levelAt(performance.now()); };
+    return { el: cv, set: function (f, anim) { var now = performance.now(); f = Math.max(0, Math.min(1, f)); var cur = levelAt(now); lv = anim && !calm ? { from: cur, to: f, t0: now, dur: f > cur ? 1600 : 1200 } : { from: f, to: f, t0: now, dur: 1 }; if (!raf) raf = requestAnimationFrame(tick); },
       seed: function () {}, burst: function () {}, core: function () {}, t0: t0 };
   }
   /* ---------- the halftone sphere ("a halftone dot sphere, orange dots on a grid, fading at the edge": the first insights card's visual, where the profile's sphere stands) ----------

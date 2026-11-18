@@ -19,6 +19,17 @@ this is the part you need before you change it.
 
 
 
+## v2790: The Onboarding consult card's Ring visual
+
+**"Create a new variation for the onboardin consult card, something more minimal focusing on a circle with 3 dot when the line of the circle get filled"** (references: Sauna benefits, "1 in 3", the dotted ring)
+- A fourth option, Ring, beside Sphere, Dotted circle and Halo (`ring()`). It is in both places the card's Visual is chosen: Tweaks → Primary card → Visual, and the Modules page's switch.
+- `sphere()` hands over to it when `LOOK.vis === 'ring'`, and the look's reader accepts `ring`.
+- What it draws, in the card's ink:
+  - A thin circle. The part still to go is a fine dotted line; the part done is a solid line, from the top, clockwise.
+  - Three dots on it, at a third, two thirds and the top, the steps' marks. Each is hollow (the card's ground inside, so the track doesn't run through) until the line reaches it, then filled with a soft glow.
+  - While it moves, a small bright head, breathing.
+- A new share is drawn over 1.6 s (1.2 s going back), and is still with reduced motion. It draws only while something moves.
+
 ## v2789: Inspect shows the page's token share as a mini pie; Bon voyage a plain third title; the reel fade 25% longer; Inbox titles white; the Timeline header band within the body
 
 **"Instead if the inspect icon, put a mini pie chart that indicate how mouch this page is tokenised"**
