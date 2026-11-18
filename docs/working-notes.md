@@ -7,6 +7,12 @@ this is the part you need before you change it.
 
 ---
 
+## v2837 — Inspect: hover lights the page; the Header group nests its parts; the focus card stops at the padding
+
+- **Hover lights the area on the page** ("When I hover, should highlight live in the UI the area concerned as well"): a row of On a token / Off a token (the page's or an element's) outlines every element it counts on the page, green or orange, live as the page scrolls; a crumb or a component's name in Properties outlines that element. Cut to what each element's scrollers show (a carousel's hidden cards are not lit outside the phone). `area()` keeps the elements of the tokens used too.
+- **The Header group nests its parts** ("the purple Header title should also fill the top part; when there is a section inclusion, sub section can add a small padding"): the section guides draw the Header group as a frame of its own round the Status bar, Header navigation and Header title (its name at its bottom left), each part inset 4 · 3 inside it, their labels without the parent's name. The Header group switch hides it with them.
+- **The focus card stops at the padding** ("Stop the card on the padding"): its right edge on the container's content edge (was out by --t3G, 16, into the padding); its left as it was, by the rail.
+
 ## v2836 — The Ruler's switches (any time, mixed group, small); the padding guide inside a padded container; the Toggle's Mixed state
 
 - **Section switches any time** ("Should be able to toggle on off the sub toggle; if not all toggle on on the group, use the intermediate toggle on the group level; use small toggle for sub toggle"): a section's switch works with Sections off (Sections turns on with that section alone); the group shows On, Off or Mixed (some of its sections), Mixed or Off turning every section on, On turning them off; the last section off turns Sections off. A section missing from the screen stays disabled. The section switches in the Toggle's small size (30 × 18).
