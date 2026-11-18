@@ -19,6 +19,10 @@ this is the part you need before you change it.
 
 
 
+## v2752: the inspector's token values in a mono badge
+
+- "put the tokens value in a badge mono 2px padding corner rad 2px outlined fff 4%": in the token inspector, each token's value under its name is a mono badge: padding 2, corner 2, a 1px outline in white at 4% (black at 4% on light); a colour's swatch inside it, 12 with a 2 corner. `.tciV`.
+
 ## v2751: the token inspector, findable
 
 - "token inspector ?" / "where" / "no panel opens": the Buttons page's lead now says it (an orange chip: Click any button to see its Figma tokens in a panel at the right); `#token-inspector` opens Design system -> Buttons with the md Primary inspected; Tokens -> Components has an Inspect the app's buttons button doing the same (`EvTokCmpUI.go()`). Checked with real mouse clicks from the Page menu (Design system -> Buttons -> a button), the link and the Components button: the panel opens each time (Chromium).
