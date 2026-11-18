@@ -19,6 +19,14 @@ this is the part you need before you change it.
 
 
 
+## v2770: the Consent sheet's header fades the text under it
+
+**"TOp header issue! Gradient not respected!"** (the Terms and Conditions sheet, Top nav Style Gradient)
+- The Consent sheet (`EvConsent`) had a fade over its foot but none under its header. Its scrolled text was cut off hard at the title's foot.
+- `.ecHead::after` now fades the text under it once scrolled: 32 px from the panel's ground (`--ecBg`) to clear, the foot's fade mirrored.
+  - The panel gets `.ecUp` from the body's scroll. At rest the marketing title is not covered.
+- Filled and Transparent (`html[data-tnbg="fill"|"clear"]`) keep the plain edge.
+
 ## v2769: Braze controls docked like Tweaks; the 100 later, slower, faded in; the trail's end; Inspect named
 
 **"Use same Tweak col style (push)"**
