@@ -7,6 +7,10 @@ this is the part you need before you change it.
 
 ---
 
+## v2840 — Step flows: the Header title's container 2xs
+
+- **2xs on step pages** ("2xs for step system type of page (questionnaire); apply in the master"): every step flow's Header title container defaults to 2xs, as its Header navigation, Body and Footer (`EvCt` `defP`, was sm; at M 544 + the sides, 592). The Page example's Step type the same. A pick made in Tweaks still wins.
+
 ## v2839 — The Ruler turns every guide on; Header navigation, not Header title, on the main pages; the new member's rail
 
 - **The Ruler turns them all on** ("By default when I click the ruler I activate automatically all toggle"): opened with every guide off, it turns Sections (each section) and Container padding on; with some on, it only opens.
