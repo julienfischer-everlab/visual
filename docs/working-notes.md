@@ -19,6 +19,25 @@ this is the part you need before you change it.
 
 
 
+## v2774: General layout grouped as Header group, Body, Footer; a header container on every page; Footer Fixed
+
+**"we need in the tweak to clearly organise the Group ... recurring for all pages! Header group (not always) / Container / Max width / Style / Fixed on off; Body (all pages has a body!) / Container / Max width; Footer (not always) / Container / Max width / Style / Fixed on off"**
+- Tweaks → General layout is three parts, each titled with the page's name:
+  - Header group (`#tkTnGrp`): Container (`#stCtHd`), Style, Fixed, WIP, Sheet title.
+  - Body (`#tkCtGrp`): Container (`#stCt`), Padding guide.
+  - Footer (`#tkFtGrp`, only where the screen has a footer): Container (`#stCtFt`), Style, Fixed (new, `#stFtFix`).
+- Every Container row is the max width (3xs to lg, Full).
+- `EvCt`: the Header group's container is no longer the full modals' alone.
+  - Any Main or Sub page with a header row has it. The header is found as the padding guide finds it: `.tlHead`, `.ovTop`, `.acHead`, `.mkTop`, `.mkHead`, `.plTop`, `.plHead`, `.evTn`, child or grandchild of the page.
+  - Its default is the body's pick; saved as `key/hd` in `#stCtPg`.
+  - A pick other than the default makes the header a section of the page's full width, with the container inside it (`hdFit`): its side margins out to the page's edges, its side padding `max(--ctPadX, (width − container) / 2)`, `data-ct-hd` on it. From S up, measured each sync.
+  - Overview checked: section 0–1024, xs container 112–912.
+  - The Timeline's header sits in its grid's first column (the Information column beside it), so its section reaches that column's edges only.
+- Footer Fixed (`ff` in the Top nav and Footer per-page picks `#stTnPg`, and in `everlab:tnMaster`): Off sets `html.tfFree`.
+  - `ffMove` puts each open sheet's footer (`.arSheet > .arStage > .arFoot`) at the end of its scroller, `.arFootIn`: the report's `.arBody`, or the profile sheets' step showing (`.hpScr`, re-homed as steps change, checked every 400 ms).
+  - The footer has no fade there and no room is kept for it. On puts it back where it was.
+  - Checked in the Async report and Send a gift.
+
 ## v2773: inspector names the components and charts the tokens; Timeline chips, CTAs and tabs on the masters; Tab segmented on Figma
 
 **"When n element is A component from the DS PUT a Green badge at the top of the inespect panel" / "Put a pie chart indicating the Tokens used VS not used."**

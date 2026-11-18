@@ -14501,35 +14501,23 @@ html[data-tk="arDr"] .tkGroup[data-pages~="arDr"] > :not([data-ar-ph~="dr"]) { d
         <!-- one group, General layout ("For all pages, you can mix and merge these two and call this general layout. Then put these two properties, with the title, inside the same tweak"): the page's Container, its Top nav and its Footer, each under its own title -->
         <div class="tkGroup tkGlGrp" data-pages="ct tn" id="tkGlGrp">
         <div class="tkSub">General layout</div>
-        <div class="tkGlPart" data-pages="ct" id="tkCtGrp">
-          <div class="tkSub">Container</div>
-          <div class="tkCtStep" id="stCtStep" hidden></div>   <!-- the step of the flow these picks are for ("The container setup is per step of the flow") -->
-          <div class="tkRow tkCtRow" title="This page’s content container: a max width at every size from S (XS keeps the full width with the breakpoint’s padding)">
-            <span class="lbl" id="stCtLbl">Page</span>
-            <select id="stCt" class="tkSegSel tkProxy" aria-label="Container of this page’s content"></select>
-            <input type="hidden" id="stCtPg" value="">
-          </div>
-          <!-- a full modal's own three ("on the container tweak, different containers, like the header container and the footer container ... rename the current container to body container"): its top nav's row and its footer, each its own max width; Own: as today (the top nav at the viewport's edges from M, the footer the body's) -->
-          <div class="tkRow tkCtRow tkCtPart" data-part="hd" hidden><span class="lbl">Header</span><select id="stCtHd" class="tkSegSel tkProxy" aria-label="Container of this screen’s top nav"></select></div>
-          <div class="tkRow tkCtRow tkCtPart" data-part="ft" hidden><span class="lbl">Footer</span><select id="stCtFt" class="tkSegSel tkProxy" aria-label="Container of this screen’s footer"></select></div>
-          <div class="tkRow"><span class="lbl">Padding guide</span><select id="stCtGuide" class="tkSegSel" aria-label="Show the page container&#39;s side padding as red bands over the screen (On), or not (Off)"><option value="on">On</option><option value="off" selected>Off</option></select></div>   <!-- "Add a tweak Show container padding guide. Show the guide if ON on Red opacity 32% on the ui" -->
-        </div>
-        <!-- every top nav's Sticky ("All top nav should have a tweak: Sticky ON / OFF. Put this as a design system level"): the Top nav master's setting (EvTopNav.M.sticky, everlab:tnMaster), on every page; a proxy here, the master keeps it -->
+        <!-- grouped by section, the same on every page ("we need in the tweak to clearly organise the Group ... recurring for all pages!"): Header group (when the screen has one: its container, Style, Fixed), Body (every page: its container), Footer (when the screen has one: its container, Style, Fixed) -->
         <div class="tkGlPart" data-pages="tn" id="tkTnGrp">
-          <div class="tkSub">Top nav <span class="tkTnPg" id="stTnPgLbl"></span></div>   <!-- this page's own ("a control on the top navigation for each page"), its name beside the heading -->
-          <div class="tkRow" id="stTnFxRow" title="This page’s top nav: pinned at the top as the page scrolls (On) or scrolling away with it (Off). Unpicked, the Design system’s Top nav master (General layout → Header group)">
-            <span class="lbl">Fixed</span>
-            <select id="stTnSticky" class="tkSegSel tkProxy" aria-label="This page’s top nav fixed">
-              <option value="on" selected>On</option>
-              <option value="off">Off</option>
-            </select>
-          </div>
+          <div class="tkSub">Header group <span class="tkTnPg" id="stTnPgLbl"></span></div>
+          <div class="tkRow tkCtRow tkCtPart" data-part="hd" hidden title="The header group’s container: its max width (the top nav and the title group in it); unpicked, the body’s"><span class="lbl">Container</span><select id="stCtHd" class="tkSegSel tkProxy" aria-label="The header group’s container: its max width"></select></div>
           <div class="tkRow" id="stTnBgRow" title="This page’s header group (the status bar and the top nav): the gradient blur from 20%, the screen’s colour solid, or nothing under it. With Fixed Off it stays on the status bar">
             <span class="lbl">Style</span>
             <select id="stTnBg" class="tkSegSel tkProxy" aria-label="This page’s fixed top nav ground">
               <option value="grad" selected>Gradient</option>
               <option value="fill">Filled</option>
               <option value="clear">Transparent</option>
+            </select>
+          </div>
+          <div class="tkRow" id="stTnFxRow" title="This page’s top nav: pinned at the top as the page scrolls (On) or scrolling away with it (Off). Unpicked, the Design system’s Top nav master (General layout → Header group)">
+            <span class="lbl">Fixed</span>
+            <select id="stTnSticky" class="tkSegSel tkProxy" aria-label="This page’s top nav fixed">
+              <option value="on" selected>On</option>
+              <option value="off">Off</option>
             </select>
           </div>
           <div class="tkRow" id="stTnWipRow" title="This page is a work in progress: a red WIP label beside the time in the phone's status bar. Unpicked, the Design system's (General layout → Header group)">
@@ -14542,15 +14530,32 @@ html[data-tk="arDr"] .tkGroup[data-pages~="arDr"] > :not([data-ar-ph~="dr"]) { d
           </div>   <!-- "IN bottom sheet the Header group need to be the same as a page header group. Title Can be in the top nav or outside below on the header" -->
           <input type="hidden" id="stTnPg" value="">   <!-- every page's picks (JSON), for Save and the presets -->
         </div>
-        <!-- every footer's Style ("Need the same for ALL footer. Gradient - Filled - transaprent"; "footer Always fixed"): this page's, else the master's (EvTopNav.M.fb); shown where the screen has a footer -->
+        <div class="tkGlPart" data-pages="ct" id="tkCtGrp">
+          <div class="tkSub">Body</div>
+          <div class="tkCtStep" id="stCtStep" hidden></div>   <!-- the step of the flow these picks are for ("The container setup is per step of the flow") -->
+          <div class="tkRow tkCtRow" title="The body’s container: its max width at every size from S (XS keeps the full width with the breakpoint’s padding)">
+            <span class="lbl" id="stCtLbl">Container</span>
+            <select id="stCt" class="tkSegSel tkProxy" aria-label="Container of this page’s content"></select>
+            <input type="hidden" id="stCtPg" value="">
+          </div>
+          <div class="tkRow"><span class="lbl">Padding guide</span><select id="stCtGuide" class="tkSegSel" aria-label="Show the page container&#39;s side padding as red bands over the screen (On), or not (Off)"><option value="on">On</option><option value="off" selected>Off</option></select></div>   <!-- "Add a tweak Show container padding guide. Show the guide if ON on Red opacity 32% on the ui" -->
+        </div>
         <div class="tkGlPart tkFtNo" data-pages="tn" id="tkFtGrp">
           <div class="tkSub">Footer <span class="tkTnPg" id="stFtPgLbl"></span></div>
+          <div class="tkRow tkCtRow tkCtPart" data-part="ft" hidden title="The footer’s container: its max width; unpicked, the body’s"><span class="lbl">Container</span><select id="stCtFt" class="tkSegSel tkProxy" aria-label="The footer’s container: its max width"></select></div>
           <div class="tkRow" id="stFtBgRow" title="This page’s footer, always fixed: its gradient fade, the screen’s colour solid, or nothing under the buttons">
             <span class="lbl">Style</span>
             <select id="stFtBg" class="tkSegSel tkProxy" aria-label="This page’s footer ground">
               <option value="grad" selected>Gradient</option>
               <option value="fill">Filled</option>
               <option value="clear">Transparent</option>
+            </select>
+          </div>
+          <div class="tkRow" id="stFtFxRow" title="This page’s footer: pinned at the screen’s foot (On) or at the end of the content, scrolling with it (Off). Unpicked, the Design system’s">
+            <span class="lbl">Fixed</span>
+            <select id="stFtFix" class="tkSegSel tkProxy" aria-label="This page’s footer fixed">
+              <option value="on" selected>On</option>
+              <option value="off">Off</option>
             </select>
           </div>
         </div>
@@ -17842,6 +17847,8 @@ html[data-tnbg="fill"] .arSheet.arBarGrad:not(.arIsWelcome) .arGround { backgrou
 html[data-tnbg="clear"] .arSheet.arEdge:not(.arIsWelcome) .arBody { --ar-tfx: 0px; }
 html[data-tnbg="clear"] .arSheet.arEdge:not(.arIsWelcome):not(.arBarGrad) .arBody { margin-top: calc(-1 * var(--ar-hh, 72px)); padding-top: calc(var(--ar-hh, 72px) + 24px); scroll-padding-top: var(--ar-hh, 72px); }
 html[data-tnbg="clear"] .arSheet .arGround { display: none !important; }
+/* Footer Fixed Off (Tweaks -> Footer -> Fixed, html.tfFree): the footer moved to the end of the body (.arFootIn), scrolling with the content; no fade over it, no room kept for it under the content */
+html.tfFree .arSheet .arFoot.arFootIn { position: relative; inset: auto; margin-top: 24px; } html.tfFree .arSheet .arFoot.arFootIn::before, html.tfFree .arSheet .arFootIn .arFootGround { display: none !important; } html.tfFree .arSheet:has(.arFootIn) .arBody { --ar-bfx: 0px; }
 /* Footer Style (Tweaks -> Footer, html[data-tfbg]; EvTopNav.M.fb): every footer always fixed. Filled, the screen's colour solid from the footer's top, no fade, the content ending there; Transparent, no ground, the content running on under the buttons (--ar-fh, EvTopNav's tMeas); Gradient: as before */
 html[data-tfbg] .arSheet:is(.hpSheet, .sgmSheet) .arFoot::before { display: none !important; }
 html[data-tfbg] .arSheet.hpSheet .hpLtr { --ltrB1: 0px; --ltrB2: 0px; }
@@ -25728,15 +25735,15 @@ window.EvTopNav = (function () {
      The Timeline V3's Fixed is its tabs' own (Tweaks -> Tab top -> Fixed, #stT3TabFix): the row stands in for it there. html.tnFree and html[data-tnbg] carry the page's (CSS beside the master's .evTnG) */
   /* Footer Style ("Need the same for ALL footer. Gradient - Filled - transaprent"; "footer Always fixed"): every footer always fixed, its ground Gradient (its own fade, as before), Filled (the screen's colour solid from its top, the content ending there) or Transparent (none: the content running on under the buttons).
      M.fb the master's default (General layout -> Header group), each page its own in Tweaks -> Footer, kept in #stTnPg with the bar's (fb); html[data-tfbg]. tMeas puts each open sheet's footer and bar heights on it (--ar-fh, --ar-hh) for the CSS */
-  var TD = { sticky: 'on', bg: 'grad', fb: 'grad', wip: 'off' }, TM = { sticky: 'on', bg: 'grad', fb: 'grad', wip: 'off' }, BGS = ['grad', 'fill', 'clear'], PG = {}, tPk = '';
+  var TD = { sticky: 'on', bg: 'grad', fb: 'grad', wip: 'off', ff: 'on' }, TM = { sticky: 'on', bg: 'grad', fb: 'grad', wip: 'off', ff: 'on' }, BGS = ['grad', 'fill', 'clear'], PG = {}, tPk = '';
   var tCur = function () { try { return window.EvCt && window.EvCt.cur ? window.EvCt.cur() || '' : ''; } catch (e) { return ''; } };
   var tTl = function (k) { return k === 'tl' && document.documentElement.classList.contains('tlD3') ? document.getElementById('stT3TabFix') : null; };
-  var tEff = function (k) { var o = (k && PG[k]) || {}, t = tTl(k); return { fx: t ? (t.value === 'off' ? 'off' : 'on') : (o.fx === 'on' || o.fx === 'off' ? o.fx : TM.sticky), bg: BGS.indexOf(o.bg) >= 0 ? o.bg : TM.bg, fb: BGS.indexOf(o.fb) >= 0 ? o.fb : TM.fb, wip: o.wip === 'on' || o.wip === 'off' ? o.wip : TM.wip }; };   /* WIP: this page's ("a tweak on the top nav for work in progress ... WIP: yes/no"), else the master's (General layout -> Header group; off unless set there) */
+  var tEff = function (k) { var o = (k && PG[k]) || {}, t = tTl(k); return { fx: t ? (t.value === 'off' ? 'off' : 'on') : (o.fx === 'on' || o.fx === 'off' ? o.fx : TM.sticky), bg: BGS.indexOf(o.bg) >= 0 ? o.bg : TM.bg, fb: BGS.indexOf(o.fb) >= 0 ? o.fb : TM.fb, wip: o.wip === 'on' || o.wip === 'off' ? o.wip : TM.wip, ff: o.ff === 'on' || o.ff === 'off' ? o.ff : TM.ff }; };   /* WIP: this page's ("a tweak on the top nav for work in progress ... WIP: yes/no"), else the master's (General layout -> Header group; off unless set there) */
   var tRow = function (id, v) { [].forEach.call(document.querySelectorAll('#' + id), function (s) { var g = s.nextElementSibling; if (g && g.classList && g.classList.contains('tgl') && g.getAttribute('aria-checked') !== String(v === 'on')) g.setAttribute('aria-checked', String(v === 'on')); if (s.value === v) return; s.value = v; s.setAttribute('data-v', v); }); };   /* a switch follows its select even when the select already holds the value (its own click set it) */
   var tApply = function () { var k = tCur(), e = tEff(k), H = document.documentElement; tPk = k;
     H.classList.toggle('tnFree', e.fx === 'off' && !tTl(k));   /* the step flows too: their bar scrolls away with the step (EvTopNav's arHead script) */ if (e.bg === 'grad') { if (H.hasAttribute('data-tnbg')) H.removeAttribute('data-tnbg'); } else if (H.getAttribute('data-tnbg') !== e.bg) H.setAttribute('data-tnbg', e.bg);
     if (e.fb === 'grad') { if (H.hasAttribute('data-tfbg')) H.removeAttribute('data-tfbg'); } else if (H.getAttribute('data-tfbg') !== e.fb) H.setAttribute('data-tfbg', e.fb);
-    H.classList.toggle('tnWip', e.wip === 'on');   /* a red WIP label beside the status bar's time ("Add a red label badge next to the hour at the top when it's a work-in-progress") */
+    H.classList.toggle('tnWip', e.wip === 'on'); H.classList.toggle('tfFree', e.ff === 'off'); tRow('stFtFix', e.ff); ffMove();   /* Footer -> Fixed: Off, the footer at the content's end, scrolling with it (html.tfFree) */   /* a red WIP label beside the status bar's time ("Add a red label badge next to the hour at the top when it's a work-in-progress") */
     tRow('stTnSticky', e.fx); tRow('stTnBg', e.bg); tRow('stFtBg', e.fb); tRow('stTnWip', e.wip); tMeas();
     var fr = document.getElementById('stTnFxRow'), br = document.getElementById('stTnBgRow'); if (fr && fr.hidden) fr.hidden = false;   /* Fixed on every page, the step flows and the Timeline too ("the same tweak everywhere") */
     if (br){ if (br.hidden) br.hidden = false; br.classList.remove('tkDepRow'); }   /* Style always ("Why No Style tweak??"): it is the header group's ground (status bar + top nav), and with Fixed Off the status bar keeps its own */
@@ -25748,17 +25755,22 @@ window.EvTopNav = (function () {
       if (f) { var v = f.offsetHeight + 'px'; if (sh.style.getPropertyValue('--ar-fh') !== v) sh.style.setProperty('--ar-fh', v); }
       if (hd && sh.classList.contains('hpSheet')) { var w = hd.offsetHeight + 'px'; if (sh.style.getPropertyValue('--ar-hh') !== w) sh.style.setProperty('--ar-hh', w); } });
     var g = document.getElementById('tkFtGrp'); if (g && g.classList.contains('tkFtNo') === any) g.classList.toggle('tkFtNo', !any); };
+  var ffMove = function () { var free = document.documentElement.classList.contains('tfFree');   /* Footer Fixed Off: each open sheet's footer at the end of its body (the scroller), back in its place when On */
+    var scr = function (st) { var b = st.querySelector(':scope > .arBody'); if (b) return b; return [].filter.call(st.querySelectorAll('.hpScr'), function (x) { return x.getClientRects().length && /auto|scroll/.test(getComputedStyle(x).overflowY); })[0] || null; };   /* the report's body, or the profile sheets' step showing (.hpScr) */
+    if (free) [].forEach.call(document.querySelectorAll('.arSheet > .arStage'), function (st) { var f = st.querySelector(':scope > .arFoot') || st.querySelector('.arFoot.arFootIn'), b = scr(st); if (!f || !b || f.parentNode === b) return; if (!f._ffH) f._ffH = { p: st, n: f.nextSibling }; b.appendChild(f); f.classList.add('arFootIn'); });   /* a step changed: into the one now showing */
+    else [].forEach.call(document.querySelectorAll('.arFoot.arFootIn'), function (f) { var h = f._ffH; f.classList.remove('arFootIn'); f._ffH = null; if (h && h.p.isConnected) h.p.insertBefore(f, h.n && h.n.parentNode === h.p ? h.n : null); }); };
+  setInterval(function () { if (document.documentElement.classList.contains('tfFree')) ffMove(); }, 400);   /* a sheet opened since */
   var tKeep = function () { var h = document.getElementById('stTnPg'); if (h) h.value = Object.keys(PG).length ? JSON.stringify(PG) : ''; };
-  var tRead = function (v) { var o = null; try { o = v ? JSON.parse(v) : {}; } catch (e) { o = {}; } PG = {}; if (o && typeof o === 'object') Object.keys(o).forEach(function (k) { var x = o[k] || {}, y = {}; if (x.fx === 'on' || x.fx === 'off') y.fx = x.fx; if (BGS.indexOf(x.bg) >= 0) y.bg = x.bg; if (BGS.indexOf(x.fb) >= 0) y.fb = x.fb; if (x.wip === 'on' || x.wip === 'off') y.wip = x.wip; if (y.fx || y.bg || y.fb || y.wip) PG[k] = y; }); };
+  var tRead = function (v) { var o = null; try { o = v ? JSON.parse(v) : {}; } catch (e) { o = {}; } PG = {}; if (o && typeof o === 'object') Object.keys(o).forEach(function (k) { var x = o[k] || {}, y = {}; if (x.fx === 'on' || x.fx === 'off') y.fx = x.fx; if (BGS.indexOf(x.bg) >= 0) y.bg = x.bg; if (BGS.indexOf(x.fb) >= 0) y.fb = x.fb; if (x.wip === 'on' || x.wip === 'off') y.wip = x.wip; if (x.ff === 'on' || x.ff === 'off') y.ff = x.ff; if (y.fx || y.bg || y.fb || y.wip || y.ff) PG[k] = y; }); };
   var tPg = function (f, v) { var k = tCur(); if (!k) return; if (f === 'fx' && tTl(k)) { var t = tTl(k); if (t.value !== v) { t.value = v; t.dispatchEvent(new Event('change', { bubbles: true })); } tApply(); return; }   /* the Timeline's tabs: their own Fixed */
-    var o = PG[k] || {}; if (v === (f === 'fx' ? TM.sticky : f === 'fb' ? TM.fb : f === 'wip' ? TM.wip : TM.bg)) delete o[f]; else o[f] = v; if (o.fx || o.bg || o.fb || o.wip) PG[k] = o; else delete PG[k]; tKeep(); tApply(); };   /* the master's again: no pick of its own */
-  var tLoad = function () { TM.sticky = TD.sticky; TM.bg = TD.bg; TM.fb = TD.fb; TM.wip = TD.wip; try { var v = JSON.parse(localStorage.getItem('everlab:tnMaster') || 'null'); if (v && (v.sticky === 'on' || v.sticky === 'off')) TM.sticky = v.sticky; if (v && BGS.indexOf(v.bg) >= 0) TM.bg = v.bg; if (v && BGS.indexOf(v.fb) >= 0) TM.fb = v.fb; if (v && (v.wip === 'on' || v.wip === 'off')) TM.wip = v.wip; } catch (e) {} tApply(); };
-  var tSet = function (k, v) { if (k === 'sticky' && (v === 'on' || v === 'off') && TM.sticky !== v) { TM.sticky = v; tApply(); } else if (k === 'bg' && BGS.indexOf(v) >= 0 && TM.bg !== v) { TM.bg = v; tApply(); } else if (k === 'fb' && BGS.indexOf(v) >= 0 && TM.fb !== v) { TM.fb = v; tApply(); } else if (k === 'wip' && (v === 'on' || v === 'off') && TM.wip !== v) { TM.wip = v; tApply(); } };
+    var o = PG[k] || {}; if (v === (f === 'fx' ? TM.sticky : f === 'fb' ? TM.fb : f === 'wip' ? TM.wip : f === 'ff' ? TM.ff : TM.bg)) delete o[f]; else o[f] = v; if (o.fx || o.bg || o.fb || o.wip || o.ff) PG[k] = o; else delete PG[k]; tKeep(); tApply(); };   /* the master's again: no pick of its own */
+  var tLoad = function () { TM.sticky = TD.sticky; TM.bg = TD.bg; TM.fb = TD.fb; TM.wip = TD.wip; TM.ff = TD.ff; try { var v = JSON.parse(localStorage.getItem('everlab:tnMaster') || 'null'); if (v && (v.ff === 'on' || v.ff === 'off')) TM.ff = v.ff; if (v && (v.sticky === 'on' || v.sticky === 'off')) TM.sticky = v.sticky; if (v && BGS.indexOf(v.bg) >= 0) TM.bg = v.bg; if (v && BGS.indexOf(v.fb) >= 0) TM.fb = v.fb; if (v && (v.wip === 'on' || v.wip === 'off')) TM.wip = v.wip; } catch (e) {} tApply(); };
+  var tSet = function (k, v) { if (k === 'sticky' && (v === 'on' || v === 'off') && TM.sticky !== v) { TM.sticky = v; tApply(); } else if (k === 'bg' && BGS.indexOf(v) >= 0 && TM.bg !== v) { TM.bg = v; tApply(); } else if (k === 'fb' && BGS.indexOf(v) >= 0 && TM.fb !== v) { TM.fb = v; tApply(); } else if (k === 'wip' && (v === 'on' || v === 'off') && TM.wip !== v) { TM.wip = v; tApply(); } else if (k === 'ff' && (v === 'on' || v === 'off') && TM.ff !== v) { TM.ff = v; tApply(); } };
   var tShare = function (v) { try { if (window.EvShared && window.EvShared.on()) window.EvShared.put('everlab:tnMaster', v); } catch (e) {} };
-  var tSave = function () { var ok = true; try { localStorage.setItem('everlab:tnMaster', JSON.stringify({ sticky: TM.sticky, bg: TM.bg, fb: TM.fb, wip: TM.wip })); } catch (e) { ok = false; } tShare({ sticky: TM.sticky, bg: TM.bg, fb: TM.fb, wip: TM.wip }); return ok; };
-  var tReset = function () { try { localStorage.removeItem('everlab:tnMaster'); } catch (e) {} TM.sticky = TD.sticky; TM.bg = TD.bg; TM.fb = TD.fb; TM.wip = TD.wip; tApply(); tShare({ sticky: TD.sticky, bg: TD.bg, fb: TD.fb, wip: TD.wip }); };
+  var tSave = function () { var ok = true; try { localStorage.setItem('everlab:tnMaster', JSON.stringify({ sticky: TM.sticky, bg: TM.bg, fb: TM.fb, wip: TM.wip, ff: TM.ff })); } catch (e) { ok = false; } tShare({ sticky: TM.sticky, bg: TM.bg, fb: TM.fb, wip: TM.wip, ff: TM.ff }); return ok; };
+  var tReset = function () { try { localStorage.removeItem('everlab:tnMaster'); } catch (e) {} TM.sticky = TD.sticky; TM.bg = TD.bg; TM.fb = TD.fb; TM.wip = TD.wip; TM.ff = TD.ff; tApply(); tShare({ sticky: TD.sticky, bg: TD.bg, fb: TD.fb, wip: TD.wip, ff: TD.ff }); };
   tLoad();
-  (function () { var ts = document.getElementById('stTnSticky'), tb = document.getElementById('stTnBg'), th = document.getElementById('stTnPg'), tf = document.getElementById('stFtBg'); if (tf) tf.addEventListener('change', function () { tPg('fb', tf.value); });
+  (function () { var ts = document.getElementById('stTnSticky'), tb = document.getElementById('stTnBg'), th = document.getElementById('stTnPg'), tf = document.getElementById('stFtBg'); if (tf) tf.addEventListener('change', function () { tPg('fb', tf.value); }); var tff = document.getElementById('stFtFix'); if (tff) tff.addEventListener('change', function () { tPg('ff', tff.value); });
     var tw = document.getElementById('stTnWip'), twb = document.getElementById('stTnWipSw'); if (tw) tw.addEventListener('change', function () { tPg('wip', tw.value === 'on' ? 'on' : 'off'); }); if (twb && tw) twb.addEventListener('click', function () { tw.value = tw.value === 'on' ? 'off' : 'on'; tw.dispatchEvent(new Event('change', { bubbles: true })); });   /* WIP: its switch, this page's */
     if (ts) ts.addEventListener('change', function () { tPg('fx', ts.value); }); if (tb) tb.addEventListener('change', function () { tPg('bg', tb.value); });
     if (th) th.addEventListener('change', function () { tRead(th.value); tApply(); });   /* a Save put back, a preset, Reset */
@@ -36654,28 +36666,33 @@ hairline({
     const stepOf = k => { const f = window.__flowM && window.__flowM[k], st = f ? f() : null; return st && st.id ? st : null; }, skOf = p => { const st = p && p[3] === fm ? stepOf(p[0]) : null; return st ? p[0] + ':' + st.id : ''; };   /* a full modal with steps (the Async report, Send a gift): its picks per step ("The container setup is per step of the flow. not common to the entire flow"), key:step, the flow's own under them */
     const pick = p => { const sk = skOf(p), v = sk ? M[sk] : ''; return v && OPTS.indexOf(v) >= 0 ? v : pickB(p); };
     const PARTS = { hd: ['--ctHd', 'data-ct-hd'], ft: ['--ctFt', 'data-ct-ft'] }, PO = OPTS.filter(k => k !== 'own'), isFm = p => !!p && p[3] === fm;
-    const defP = (p, pt) => { if (pt === 'hd') return 'full'; const b = pick(p); return PO.indexOf(b) >= 0 ? b : '2xs'; }, pickPB = (p, pt) => { const v = M[p[0] + '/' + pt]; return v && PO.indexOf(v) >= 0 ? v : defP(p, pt); }, pickP = (p, pt) => { const sk = skOf(p), v = sk ? M[sk + '/' + pt] : ''; return v && PO.indexOf(v) >= 0 ? v : pickPB(p, pt); };   /* a full modal's header and footer containers, no Own ("Remove own"): the header Full (the top nav at the screen's edges, as it was), the footer the body's pick unless picked; kept beside the page's own as key/hd, key/ft */
+    const HDS = ':is(.tlHead, .ovTop, .acHead, .mkTop, .mkHead, .plTop, .plHead, .evTn)', hdOf = el => el ? el.querySelector(':scope > ' + HDS + ', :scope > * > ' + HDS) : null, hasP = (p, pt) => !!p && (isFm(p) || (pt === 'hd' && !p[5] && !!hdOf(p[3]())));   /* a Main or Sub page's header group too ("Header group (not always) / Container / Max width"): its top nav and title row, found as the padding guide finds it */
+    const defP = (p, pt) => { if (pt === 'hd' && isFm(p)) return 'full'; const b = pick(p); return PO.indexOf(b) >= 0 ? b : '2xs'; }, pickPB = (p, pt) => { const v = M[p[0] + '/' + pt]; return v && PO.indexOf(v) >= 0 ? v : defP(p, pt); }, pickP = (p, pt) => { const sk = skOf(p), v = sk ? M[sk + '/' + pt] : ''; return v && PO.indexOf(v) >= 0 ? v : pickPB(p, pt); };   /* a full modal's header and footer containers, no Own ("Remove own"): the header Full (the top nav at the screen's edges, as it was), the footer the body's pick unless picked; kept beside the page's own as key/hd, key/ft */
     const apply = () => { const dk = desk(), seen = new Set(); P.forEach(p => { const el = p[3](); if (!el || (p[3] === fm && p[0] !== cur()) || seen.has(el)) return; seen.add(el); const v = pick(p), c = dk && (v !== dOf(p) || p[6]) ? css(v) : '';
       if (c){ if (el.getAttribute('data-pg-ct') !== v) el.setAttribute('data-pg-ct', v); if (el.style.getPropertyValue('--ctPg') !== c) el.style.setProperty('--ctPg', c); }
       else if (el.hasAttribute('data-pg-ct')){ el.removeAttribute('data-pg-ct'); el.style.removeProperty('--ctPg'); }
       if (isFm(p)) Object.keys(PARTS).forEach(pt => { const w = pickP(p, pt), cv = dk && w !== defP(p, pt) ? (w === 'full' ? '100cqw' : css(w)) : '', A = PARTS[pt];
         if (cv){ if (el.getAttribute(A[1]) !== w) el.setAttribute(A[1], w); if (el.style.getPropertyValue(A[0]) !== cv) el.style.setProperty(A[0], cv); }
-        else if (el.hasAttribute(A[1])){ el.removeAttribute(A[1]); el.style.removeProperty(A[0]); } }); }); };
+        else if (el.hasAttribute(A[1])){ el.removeAttribute(A[1]); el.style.removeProperty(A[0]); } });
+      else { const h = hdOf(el), w = h ? pickP(p, 'hd') : '', d = h ? defP(p, 'hd') : ''; if (h && dk && w !== d) hdFit(el, h, w); else if (h && h.hasAttribute('data-ct-hd')) hdClr(h); } }); };
+    const hdClr = h => { h.removeAttribute('data-ct-hd'); ['marginLeft', 'marginRight', 'paddingLeft', 'paddingRight', 'maxWidth', 'width', 'boxSizing'].forEach(k => { h.style[k] = ''; }); };
+    const hdFit = (el, h, w) => { if (!el.clientWidth || !el.getClientRects().length) return; const cs = getComputedStyle(el), pad = parseFloat(cs.getPropertyValue('--ctPadX')) || 16, er = el.getBoundingClientRect(), k = er.width / (el.offsetWidth || er.width) || 1, cw = el.clientWidth, av = cw - 2 * pad, tw = w === 'full' ? av : Math.min(av, parseFloat(cs.getPropertyValue(names[w])) || av), pe = h.parentElement, pr = pe.getBoundingClientRect(), ps = getComputedStyle(pe), cl = (pr.left - er.left) / k + (parseFloat(ps.paddingLeft) || 0) + (parseFloat(ps.borderLeftWidth) || 0), cr = (er.left + cw * k - pr.right) / k + (parseFloat(ps.paddingRight) || 0) + (parseFloat(ps.borderRightWidth) || 0), pp = Math.max(pad, (cw - tw) / 2).toFixed(1) + 'px', ml = (-cl).toFixed(1) + 'px', mr = (-cr).toFixed(1) + 'px', S = { marginLeft: ml, marginRight: mr, paddingLeft: pp, paddingRight: pp, maxWidth: 'none', width: 'auto', boxSizing: 'border-box' };
+      if (h.getAttribute('data-ct-hd') !== w) h.setAttribute('data-ct-hd', w); Object.keys(S).forEach(k => { if (h.style[k] !== S[k]) h.style[k] = S[k]; }); };   /* the Header group a section the page's full width ("Header group (full width) / Container"), its container the max width picked inside it: the section out to the page's edges, its side padding the rest (the page's --ctPadX at least) */
     const sel = () => document.getElementById('stCt'), hid = () => document.getElementById('stCtPg');
     const row = () => { const s = sel(); if (!s) return; const p = by(cur()), d = p ? dOf(p) : '', v = p ? pick(p) : '', lb = document.getElementById('stCtLbl');
-      if (lb){ const t = p && p[5] ? nOf(p) + ' · its own width' : isFm(p) ? 'Body' : ''; if (lb.textContent !== t) lb.textContent = t; if (lb.hidden !== !t) lb.hidden = !t; }   /* no page-name line ("Remove overview from M"): only a screen whose width is its own still says so */
+      if (lb){ const t = p && p[5] ? nOf(p) + ' · its own width' : 'Container'; if (lb.textContent !== t) lb.textContent = t; if (lb.hidden) lb.hidden = false; }   /* under Body: the body's container */   /* no page-name line ("Remove overview from M"): only a screen whose width is its own still says so */
       { const fx = !!(p && p[5]); if (s.disabled !== fx) s.disabled = fx; }
       if (s.value !== v){ s.value = v; s.setAttribute('data-v', v); }   /* data-v: the segments follow at once (they watch the select's attributes) */
       const seg = s.nextElementSibling; if (seg && seg.classList.contains('tkSegT')) seg.querySelectorAll('button').forEach(b => { const own = b.dataset.v === 'own' && d !== 'own'; if (b.hidden !== own) b.hidden = own; const fx = !!(p && p[5]); if (b.disabled !== fx) b.disabled = fx; const t = b.dataset.v === d ? 'This page’s container today (the default)' : ''; if (b.title !== t) b.title = t; });
       { const sn = document.getElementById('stCtStep'), st = isFm(p) ? stepOf(p[0]) : null, t = st && st.name ? 'This step: ' + st.name : ''; if (sn){ if (sn.textContent !== t) sn.textContent = t; if (sn.hidden !== !t) sn.hidden = !t; } }   /* the step these picks are for */
       const fmP = isFm(p);   /* a full modal: the page's own row is its Body ("rename the current container to body container"), Header and Footer beside it */
-      document.querySelectorAll('.tkCtPart').forEach(r => { if (r.hidden !== !fmP) r.hidden = !fmP; if (!fmP) return; const ps = r.querySelector('select'), w = pickP(p, r.dataset.part); if (ps.value !== w){ ps.value = w; ps.setAttribute('data-v', w); }
-        const sg = ps.nextElementSibling, dv = defP(p, r.dataset.part); if (sg && sg.classList.contains('tkSegT')) sg.querySelectorAll('button').forEach(b => { if (b.hidden) b.hidden = false; const t = b.dataset.v === dv ? (r.dataset.part === 'hd' ? 'The default: the top nav at the screen’s edges' : 'The default: the body’s container') : ''; if (b.title !== t) b.title = t; }); }); };
+      document.querySelectorAll('.tkCtPart').forEach(r => { const has = hasP(p, r.dataset.part); if (r.hidden !== !has) r.hidden = !has; if (!has) return; const ps = r.querySelector('select'), w = pickP(p, r.dataset.part); if (ps.value !== w){ ps.value = w; ps.setAttribute('data-v', w); }
+        const sg = ps.nextElementSibling, dv = defP(p, r.dataset.part); if (sg && sg.classList.contains('tkSegT')) sg.querySelectorAll('button').forEach(b => { if (b.hidden) b.hidden = false; const t = b.dataset.v === dv ? (r.dataset.part === 'hd' && fmP ? 'The default: the top nav at the screen’s edges' : 'The default: the body’s container') : ''; if (b.title !== t) b.title = t; }); }); };
     const keep = () => { const h = hid(); if (h) h.value = Object.keys(M).length ? JSON.stringify(M) : ''; };
-    const read = v => { let o = null; try { o = v ? JSON.parse(v) : {}; } catch (e){ o = {}; } M = {}; if (o && typeof o === 'object') Object.keys(o).forEach(k => { const kk = k.split('/'), st = kk[0].indexOf(':') > 0; if (kk.length === 2 ? PARTS[kk[1]] && isFm(by(kk[0])) && PO.indexOf(o[k]) >= 0 : by(k) && !by(k)[5] && OPTS.indexOf(o[k]) >= 0 && !(k === 'tl' && o[k] === 'own') && (!st || isFm(by(k)))) M[k] = o[k]; });   /* key:step a full modal's step */ };   /* key/hd, key/ft: a full modal's header and footer */   /* the Timeline's Own gone ("REMOVE OWN!"): a saved Own back to its default */
+    const read = v => { let o = null; try { o = v ? JSON.parse(v) : {}; } catch (e){ o = {}; } M = {}; if (o && typeof o === 'object') Object.keys(o).forEach(k => { const kk = k.split('/'), st = kk[0].indexOf(':') > 0; if (kk.length === 2 ? PARTS[kk[1]] && (isFm(by(kk[0])) || (kk[1] === 'hd' && by(kk[0]) && !by(kk[0])[5])) && PO.indexOf(o[k]) >= 0 : by(k) && !by(k)[5] && OPTS.indexOf(o[k]) >= 0 && !(k === 'tl' && o[k] === 'own') && (!st || isFm(by(k)))) M[k] = o[k]; });   /* key:step a full modal's step */ };   /* key/hd, key/ft: a full modal's header and footer */   /* the Timeline's Own gone ("REMOVE OWN!"): a saved Own back to its default */
     const on = () => { const k = cur(); if (!k) return false; const p0 = by(k); if (!p0 || p0[5]) return false; const c = window.EvCtx ? window.EvCtx.top() : null, x = p0[4]; return c ? x === c.key : !x; };   /* a screen with no container of its own (a sheet, the chat): no Container row at all, Own gone */   /* the row's: the page itself, or the context it lives in (never a modal or a sheet over it) */
     const sync = () => { apply(); row(); const g = document.getElementById('tkCtGrp'); if (g && window.__tkPages && g.hidden === on()) try { window.__tkPages(); } catch (e){} };   /* a page come or gone without Tweaks redrawn: drawn again */
-    const set = (k, v) => { const kk = String(k).split('/'), p = by(kk[0]), st = kk[0].indexOf(':') > 0; if (!p || OPTS.indexOf(v) < 0) return; if (kk.length === 2){ if (!PARTS[kk[1]] || !isFm(p) || PO.indexOf(v) < 0) return; if (v === (st ? pickPB(p, kk[1]) : defP(p, kk[1]))) delete M[k]; else M[k] = v; keep(); sync(); return; } if (v === (st ? pickB(p) : dOf(p))) delete M[k]; else M[k] = v; keep(); sync(); };   /* a step's: gone when it is the flow's own (or the default) again */
+    const set = (k, v) => { const kk = String(k).split('/'), p = by(kk[0]), st = kk[0].indexOf(':') > 0; if (!p || OPTS.indexOf(v) < 0) return; if (kk.length === 2){ if (!PARTS[kk[1]] || !(isFm(p) || (kk[1] === 'hd' && !p[5])) || PO.indexOf(v) < 0) return; if (v === (st ? pickPB(p, kk[1]) : defP(p, kk[1]))) delete M[k]; else M[k] = v; keep(); sync(); return; } if (v === (st ? pickB(p) : dOf(p))) delete M[k]; else M[k] = v; keep(); sync(); };   /* a step's: gone when it is the flow's own (or the default) again */
     const tgt = k => { const p = by(k), sk = skOf(p); return sk || k; };   /* Tweaks writes to the step up, when the flow has steps */
     { const s = sel(), h = hid();
       if (s && !s.options.length) s.innerHTML = OPTS.map(k => '<option value="' + k + '">' + lbl(k) + '</option>').join('');   /* before the segments are drawn from it */
