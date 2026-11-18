@@ -19,6 +19,19 @@ this is the part you need before you change it.
 
 
 
+## v2766: Braze is the Overview's banner; the 99 back as it was
+
+**"BRAze based on that"** (the Meet Concierge banner) and **"THe brazy banner is this, why you setup a card carousel style!"**
+- `EvBraze.card` now draws the Overview's own banner (`.ovCcCard`): the picture or video at its right fading in from the left, the badge (the eyebrow), the title, the sub, and its CTAs (CTA white, CTA 2 a ghost). The CTAs sit at its right from S and stack under the words at XS (padding 20, 96 at its right there).
+- **One CSS for both:** the Overview's rules now read `:is(#dOver, .bzFrame)`, and the phone ones `:is(body[data-bp="xs"] #dOver, .bzXs)`, so the module's frames draw exactly what the Overview draws.
+- **The Overview's card comes from the master:** `EvBraze.card(EvBraze.CONCIERGE)` with the concierge video. Its Tweaks (Badge, Subline, CTAs, Video) still apply.
+- **The module's previews:** each frame shows the banner picked, alone, the page's whole width inside the body's side padding (16, 24, 32, 48). No carousel.
+- **Presets:** still the campaign's banners, one shown at a time (its tab).
+- **Each banner's controls:** CTA and CTA 2 are new beside Eyebrow, Title and Sub; media is a picture or video. Ground: Concierge brown (#2A1A11), a mode token, White, or a custom colour. Text: Auto, Light or Dark (dark ink restyles the badge, the words and the CTAs).
+- Checked: XS a column, padding 20 96 20 20, CTA under the words; S, M, L a row, padding 24, CTA at the right; corner 22, #2A1A11, the video in each. The Overview's card is the master's, Meet Concierge with its video.
+
+**"Not center 99 forget about ot, revert that comment"** — the hundreds' column keeps its width again (v2764's `--hc` collapse removed): 97, 98, 99 sit where they did, with the 1 rolling into its own place.
+
 ## v2765: Modules → Braze
 
 **"Create the braze module here, and preview on All breakpoint. Need to be able to create preset for create a collection of cards. Title / Sub / Eyebrow / Image/video / Bg colour"**
