@@ -19,6 +19,18 @@ this is the part you need before you change it.
 
 
 
+## v2775: the Overview's bento on Card static; the Insights tasks on Card interactive
+
+**"ALL should be Card Static component" / "Card interactive"**
+- The primary card (`.hpOvCard`), Schedule (`.ovBk`) and the Insights card (`.ovInsCard`) carry `evCard evCard-secondary-transparent evCard-xl`.
+  - A 400 ms sync beside `EvCt` puts the classes back whenever a module is drawn anew.
+- The bento's own rules are `!important` (`--ovCard` 4%, 24 / 32 padding). Adopter rules beat them on specificity: ground `var(--kBg)`, corner `var(--kR)`, padding `var(--kP)` from S up (not on the Insights card, whose slides pad themselves).
+- `EvCard.css` now writes each look's fill as `--kBg` too, for adopters whose ground is set elsewhere.
+- Checked at L: primary card 24 padding, 24 corner, bg/neutral/tertiary/100 (6%; was 4%); the inspector reads "Card static · Secondary - Transparent · xl".
+- The Insights tasks (`button.ovTask`) are `evCardI evCardI-minimal evCardIs-md`: nothing at rest, the master's hover and press (`--iBH`, `--iBP`), its corner. Their own layout and padding are kept.
+- Not checked live: Schedule and the Insights card; they only draw in later journey states (the user's "Plan confirmed" preset).
+- Not yet on a master: the service tiles (Script renewal …).
+
 ## v2774: General layout grouped as Header group, Body, Footer; a header container on every page; Footer Fixed
 
 **"we need in the tweak to clearly organise the Group ... recurring for all pages! Header group (not always) / Container / Max width / Style / Fixed on off; Body (all pages has a body!) / Container / Max width; Footer (not always) / Container / Max width / Style / Fixed on off"**
