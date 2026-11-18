@@ -19,6 +19,23 @@ this is the part you need before you change it.
 
 
 
+## v2813: Header title in the Header group (EvHdTitle: Questionnaire and Page); Home only in the frames
+
+**"In general, the title should be part of the header group."** / **"We call that header title, and header title can have two different variations: for a full modal (questionnaire) or for a page ... every page now should include this header title ... You just replace the title in the body and put it in the header group."** (Figma Patterns DS25 › Header title 8648:46120, 8648:48880; Full modal 7638:71582)
+- New master `window.EvHdTitle.html({ type, title, sub, align, tag, titleId, cls })`: the Header group's last part, after Home and the Navigation, a section of its own (`data-hg-part="title"`) with its container (the token's sides, as wide as the body's container: `--evHtW`).
+  - Questionnaire: Title group Display (Headlines/800, 32/32), 12 above, 40 under, 32 on the right (and left when centred); left at XS · S, centred at M · L (`align: 'auto'`, a container query on its own width: 900).
+  - Page: Title group H1 (Headlines/700), 24 under (layout/container/padding/top-bottom), 32 on the right, left.
+  - It scrolls away with the page while Home and the Navigation stay pinned (Fixed On).
+- The Quarterly check-in's questions: the question left the body and is the Header group's Header title (Questionnaire); it slides in with each step; the body starts straight under it (its 40).
+- The full modals' shell (`evSolo`: Suggestion, Doctor's suggestion, Personal recommendation, Activity session): the title left the body column for a Header title (Page) after the bar; the bar's title-on-scroll still follows it (`#keyT`).
+- Section guides: a header group's later parts (`data-hg-part`) count in the Header group section and its container.
+- Design system → General layout → Header group: the master's screens put the title in the header group (Main page and No title variants), the table's Navigation, Header and Home rows say so, and a new **Header title** section draws both types at XS and M (M at 62%) with their tokens.
+
+**"Keep only this home top home for XS and S when there is a frame. Otherwise, don't put it."** Home (the status bar) is drawn only in the XS and S frames (`aqDev` needs the frame: never in Auto, never on the desk); the Header group table's Home row says so.
+
+- Not moved yet (their titles still in their bodies): the Health profile's flows, Send a gift's pages, the Async report's screens; the main pages already carry their titles in their headers (`.tlHead`, `.ovTop`, `.acHead`, `.mkTop`).
+- Checked: XS exercise and family questions: Header group section 63 to 349 / 430 with the title in it (left, 32px), body under it, first answer at the title's foot; L centred; Suggestion's title aligned with its body (x 352), id `sugT`; doc section draws left, centre, left, left; no page errors.
+
 ## v2812: The questionnaire scale: two rows of circles (EvQ.scale)
 
 **"Put this in two rows. Each number should be a circle ... like 64 circles, so you can put 5 on top and 6 on the bottom, next to each other, centred."**
