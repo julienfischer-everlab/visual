@@ -19,6 +19,20 @@ this is the part you need before you change it.
 
 
 
+## v2801: Inspect shows a percentage; Tokens applied rows; the token picker on the Tokens page's table
+
+**"Instead of the pie chart, just put a number, a percentage."**
+- The top bar's Inspect reads `Inspect 80%`: `.tkInsPc` after the label, hidden until `pieRun` has worked it out (the mini pie and `--tkPie` are gone).
+
+**"There's some bug on the right side of the token."**
+- In Tokens applied, every row put one character per line: `.piL button{width:100%}` also hit the row's undo button, which took the whole row and squeezed the text to 0. `.piL .piFixU` is now 22 wide.
+
+**"When I search something, it doesn't need to be green like this ... group them by categorization, in kind of primitive semantic or whatever, and use exactly the same presentation as the token design system."**
+- The picker's list is the Tokens page's table (`.tokFig`, its colours on `.piPkW`): Name | Value (· Dark/Light for colours, · the breakpoint for numbers), rows 44 tall, the type icon from the Tokens page (`window._tok.ic` = `tyIc`), the last name segment, the value after a line.
+- Without a search: **Closest to <value>** (5 rows, full names, `exact` or `nearest` on the first), then every token of its kind by collection (Primitives, Themes, Semantic, Component core, Breakpoints, Text styles, with counts) and group (filled rows, as the Tokens page). With a search: the matches, grouped the same way. Up to 240 rows, then "N more; search to narrow the list".
+- The inspector's index keeps each token's collection (`COL[md]` x[2], `NUM` x[3]). A family's `components/` and `layout/` tokens are kept by what they are (`KW`: a Corner radius is no longer offered heights).
+- Keys: arrows move through the rows, Enter picks the row in focus (or the first).
+
 ## v2800: Badge range in the Design system; the biomarkers' status badges on its tokens
 
 **"Add the BqadgesRange in the DS alongside the other badge. These are used across biomarkers (optimal. sub optimal etc )"** (Figma Core DS25 › badgesRange 24790:2759)
