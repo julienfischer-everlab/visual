@@ -19,6 +19,18 @@ this is the part you need before you change it.
 
 
 
+## v2767: Braze uploads, Tweaks' system
+
+**"need to be able to upload custom video image, same system as the standard upload system used in tweaks"**
+- **`window.BzMedia`**: Braze's own pictures and videos, on Tweaks' upload system (CcVid's, the Async report Picture's).
+  - Kept in the artifact's asset store and its shared table (`bzMedia`) where the page has them, else in this browser (IndexedDB `everlab-bzmedia`).
+  - Each has its id, url, kind and a still for its tile (a video's first second); up to 20 MB to the store.
+- **Each banner's Image / Video:** the tile row of Tweaks (`.tkArPic`).
+  - Video: Default (the Concierge video). Image: the app's pictures.
+  - Then every one added, + to add, a bin on hover.
+  - A file added is picked at once (the banner's `mid`), and kept with the preset.
+- Checked: a picture uploaded shows as a tile, picked, in every frame; still there after a reload (this browser's store, locally); the bin takes it away.
+
 ## v2766: Braze is the Overview's banner; the 99 back as it was
 
 **"BRAze based on that"** (the Meet Concierge banner) and **"THe brazy banner is this, why you setup a card carousel style!"**
