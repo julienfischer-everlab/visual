@@ -7,6 +7,12 @@ this is the part you need before you change it.
 
 ---
 
+## v2844 — Guides: 4px sections, 2 apart, 4 round; their parts dashed 2px
+
+- **Sections 4px, 4 round** ("Section border 4px"; "section guide rounded 4px"): the Header group, Body and Footer group framed 4px, corners 4; the Page example's sections the same.
+- **2 apart** ("Add 2px gap between section in ruler, even if this gap doesn't exist, it's easier to localise the section at a glance"): the top sections drawn 1px in at top and bottom (Header group, Body, Footer group), a 2px gap between them that the page itself has not.
+- **Parts dashed 2px, 4 round** ("dashed 2px rounded 4px"): the Header group's Status bar, Header navigation and Header title.
+
 ## v2843 — The check-in Flow's personas key
 
 - **A key on top** ("Show each person on top in a blue group so we understand what #1 2 3 mean"): above the check-in's steps, a blue group, Personas: #1 New bloods only, #2 New bloods and device data, #3 No new data, the one shown filled; pressing one switches the check-in to that persona. The Flow panel takes `legend` (and `legendTitle`) in a model, and `cfg.legend(id)` for its press.
