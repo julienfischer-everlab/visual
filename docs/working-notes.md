@@ -19,6 +19,25 @@ this is the part you need before you change it.
 
 
 
+## v2758: Page base, the base screen's tokens, synced into the app's shell
+
+**"Regarding layout Can you sync the style and exact token used here in the foundation base screen ?? Add a Page base in General layour design system"** (Figma: Plan - Prescription › Activity / L, 28874:14219, read with get_design_context and get_variable_defs).
+- **`window.EvPageBase`** (the master): every part's token, read per breakpoint (M, L) from the Breakpoints collection where it is one, the rest from Foundation, Core and Themes. Values bound in Figma but missing from the zips (`unit/20`, `unit/24`, `components/button/sm/media`) keep their Figma values. It writes `#evPageBase`: the `--pb*` variables on `:root` (M by default, L from 1440 and on `data-bp` l), with colours per theme.
+  - Menu: `layout/menu/max-width`, 256 at M and 320 at L.
+  - Body: top band `layout/body/padding-top` 12/16; top-left corner `layout/body/corner-top-left` 12.
+  - Menu header: `size/6xl` 80; logo `size/xs` 24; retract button = Icon only sm (36, corner 10, icon 16).
+  - Menu list: padding 20 / 24; items `layout/itemlist/gap` 6/8 apart and bleeding `layout/list interactive/padding-left-right` −12.
+  - Items: padding `space/xs` 12, corner `radius/lg` 12, icon gap `space/2xs` 8, label 16/18 at 380. Selected on `bg/neutral/tertiary/100`, ink `fg/neutral/primary/100`.
+  - Ground `bg/surface/200`, section `bg/surface/100`; page header group 80; the container's tokens.
+- **The app's shell reads them:**
+  - The rail opens at the breakpoint's menu width (`EvPageBase.menuW`; was 224–320 from the window).
+  - Its header is 80 with a 24 logo and a 36 retract; items as above, every page's lit entry on the selected token.
+  - The page panels are flush to the menu and the window's right (`--pnCap` without the 16), under the top band, with only their top-left corner rounded (was 8 off each side, 12 12 0 0).
+  - Retracted rail 60, so its plates stay 8 off the now-flush panel.
+- **Light at M and L:** the section is white on the #fafafa ground, as the base screen has it. This reverses the earlier "FAFAFA … the body of the page on desktop should be this colour"; one line to put back (`body.light … .dash{--pageBg:…}`).
+- **Design system → General layout → Page base** (the first part): the base screen drawn from the same variables at L 1440 or M 992 (menu, header, items, the bottom groups and divider, top band, section, page header group, container with its padding and gap, tagged). Then the two token tables: parts with M and L, colours with Light and Dark.
+- Measured at forced L and M: every value as the tokens, Dark and Light.
+
 ## v2757: the 100 lands earlier; its blur from 100
 
 - **"Too much gap, number should land earlier in the scroll"**: on its way in, the number rides 70% of the way with its section, higher in it (`eA(u) = .7·(u + .35H·(1 − e^(u/.35H)))` for u < 0). It settles smoothly to its place as the stage holds: `eA` and its slope are both 0 there, so there is no kink. Its 98 (`vIn`) is found on that path (`vAtS`), and the titles follow it (`nIn`).
