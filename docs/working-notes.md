@@ -19,6 +19,15 @@ this is the part you need before you change it.
 
 
 
+## v2821: Timeline on the one structure (step 1 continued)
+
+- The panel (`#dTl`) is a full-width section with no padding of its own (was 40 at M · L, 16 at XS); `--navPX` 0.
+- Every Timeline column (`.tlCol`: the title row, the tabs' row, the list, V3's `#tl3`) is a container on the token's padding (`--ctPadX`: 16 · 16 · 24 · 24), xs 800 (My journey sm 1080, or the Tweaks' pick) + the padding wide.
+- The title row (`.tlHead`) is the Header group's **Header title section** (`data-hg-part="title"`), the guides drawing it under the Top navigation section.
+- At L the content now sits 24 in (the token), not 40; at XS 16 as before; the sticky tabs bar unchanged.
+- Checked: L panel 440–1560, title at 464 (24 in), V3 column padding 24; XS title and list 16 in; no page errors.
+- Next: Overview, Insights, Services marketplace, Plan.
+
 ## v2820: Service detail on the one structure (step 1 of the audit's fixes)
 
 **"Yea"** (the audit's step 1: the desk pages; **"also the title section should be there"**)
