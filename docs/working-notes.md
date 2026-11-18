@@ -19,6 +19,25 @@ this is the part you need before you change it.
 
 
 
+## v2809: Questionnaire step master (EvQ) from Figma; the check-in and the Health profile on it; biomarker Gradient as a ghost card; the check-in's body and footer containers
+
+**"I have more documentation for the questionnaire, like a step-by-step flow component inside of the body ... Consider the card interactive for the option to select."** (Figma Freemium entry points, six frames)
+- New master `window.EvQ` (just before the check-in module): `EvQ.title({title, sub, align})` is the Title group at Display (Headlines/800, 32/32), centred for single choice and left for multi, form and text; `EvQ.option({label, sub, selected, value})` is a Selection item: Card item interactive, Secondary, lg (padding 20, radius 20, 58 tall with one line, Label - Body/300/Medium; its support Body/200 in the secondary colour), picked = the card's 2px `br/neutral/primary/100` border (`is-sel`); `EvQ.list({items, multi, value})` stacks them 12 apart (the card list's gap) with `role="radiogroup"` / `group`; `EvQ.mark(el, on)` paints a pick.
+- Rules from the frames: one column of answers, Continue disabled until there is an answer, no auto-advance on a pick, no progress label in the body (the step flow's segmented progress is in the header).
+- Design system → Step flow → new **Questionnaire step** section: three live demos (single with nothing picked, single picked, multi with support lines) drawn by `EvQ`, and an anatomy table (Header group, Question, Answer, Picked, List, Continue, Other steps, Code).
+- The Quarterly check-in's questions and the Health profile's choice steps (`choice()`) are built on it (options on `EvQ.option` through `EvCard.el`, picks through `EvQ.mark`). The 0 to 10 scale stays one row of 11 chips; free text a textarea.
+
+**"It's wrong with the alignment here in the middle."** The Async report intro inside the check-in sits in the centre at desk (`max-width: 560px; margin: 0 auto`), its rows no longer pinned to the left.
+
+**"What's wrong with the footer here? ... It looks like it's full."** / **"The container on the body should be filled to the top of the body, on the viewport, basically. Something is wrong with the footer: there is no container on the footer for some reason."**
+- The check-in's footer section holds a container again (`.qciFt`, as wide as the body's container or the Footer group container Tweak: `--qciFtW`), so Continue is the container's width, not the screen's (the Footer container Tweak's `max-width: none` no longer reaches it).
+- The body section is a column and its container fills it down to the footer (`.sgmCol` flex 1; the full modal's 32 bottom padding on the scroller removed for the check-in, the container keeps its own 24).
+- Section guides: the body container's width is the real one (divided by the frame's scale), like the header's and the footer's: 393 · 393 · 393 at XS (it read 379).
+
+**"The gradient here is way too diffuse, and it shouldn't have a grey background ... like a ghost card with the gradient on the left side ... maybe take 20% of the width."** Biomarker item, Gradient look: no grey ground, no left bar; the status colour from the left edge (22%) to nothing at 20% of the row (8% at 10%).
+
+- Checked: XS / L, exercise question: header, body and footer containers 393 / 624 wide; body container 175–798 = the body section (622), 114–811 at L (697); Continue in the footer container; option 58 tall, padding 20, radius 20, Label - Body/300/Medium 16/18; Step flow doc: 3 demos, 10 options; no page errors.
+
 ## v2808: Sections without padding, containers on one padding token; Container padding guide; the check-in's Header group follows its container
 
 **"The header group doesn't follow. Also, there's never padding top and bottom on a section like a header group, a body section, or a footer section. The padding top and bottom is always managed in a container."**
