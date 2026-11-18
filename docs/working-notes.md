@@ -19,6 +19,25 @@ this is the part you need before you change it.
 
 
 
+## v2797: Tokens: collapsible groups, the text styles at each breakpoint, filled group rows; Inspect's tag names the component
+
+**"WHat ab collapsable"** (the Tokens page's Groups)
+- Each group with groups under it has a chevron that folds them away, as Figma's panel (`OPEN`, per collection).
+- At first the top groups are open one level down; picking a group opens it and its parents.
+- Folding a group with the picked one inside picks the folded group.
+
+**"any chance to demo each breakpoint here"** (Text styles)
+- An XS / S / M / L switch on the bar. At first it is the page's breakpoint (`body[data-bp]`, else the window's).
+- The table is scoped to the breakpoint picked (`data-ct-bp`, which the text styles' variables follow).
+- A Preview column draws each style ("Rag 123", as Figma's Edit text style) at that breakpoint's size, and the four values in Size and Line height light the one shown. Display/secondary/400 is 40/40 at XS, 56/56 at L.
+
+**"Fill secondary bg the title group (gen rule)"**
+- Every collection's group title rows (`tr.tokGrpR`) are filled with the secondary ground, `bg/surface/200`.
+
+**"title group here"** (Inspect's tag on the service title)
+- The hover and selection tags name the component (`tagOf`): the element's own (with its variant), or the one it is part of up to two levels up, e.g. "Title group H1 · Hero › h1.evTgT · 372 × 64".
+- A slot's content says "in Slot item" instead.
+
 ## v2796: A text style's tokens, one a column
 
 **"Each font style carry multiple tokens"** (Figma's Edit text style: Headlines/secondary/800 on font/family/primary, font/weight/medium, 36, 36, -1) and **"They're ready. in sementic and breakpoint e.g. line height"**
