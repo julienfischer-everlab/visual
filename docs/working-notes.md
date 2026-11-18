@@ -19,6 +19,37 @@ this is the part you need before you change it.
 
 
 
+## v2772: List item interactive master; Timeline rows, feed and decade cards on the masters
+
+**"use list interactive component"**
+- New master `window.EvListI`, from Figma Core DS25 › List item interactive (29728:607) and List item static (32818:146). Its rows:
+  - Sizes, each `[name, outward offset, slot padding top-bottom, side padding, corner]`:
+    - xs −8 / space/2xs / 8 / radius/lg;
+    - sm `components/list interactive/padding-left-right/m` / space/xs / space/xs / radius/lg;
+    - md `/l` / space/sm / space/sm / radius/2xl;
+    - xl `/xl` / space/md / space/md / radius/3xl;
+    - 2xl `/xl` (sic) / space/lg / space/lg / radius/4xl;
+    - auto: −8 / −12 and 16 / 24 by breakpoint, no padding, no corner.
+  - Emphases: Muted (hover bg/neutral/tertiary/100, press /200); Secondary (selected: a 2 ring of br/neutral/primary/100); Primary (selected: /100 → /200 → /300).
+  - Disabled: 70% with the tertiary fill, Secondary's ring br/neutral/secondary/100.
+  - A focus ring (border/focus ring).
+- `css(v)` writes `#evLiTok` through EvTokVar:
+  - each size's four values on `:root` (`--liMdO`, `--liSmPy` …) so an adopter can change size by width;
+  - the size and emphasis classes.
+- The static CSS:
+  - `.evLi` is the row itself; its ground bleeds `--liO` past the column.
+  - `.evLiW` is a list's row: 8 (space/2xs) over and under, the ground its `::before`, the divider free outside.
+  - States: `.evLi-i`, `:hover`, `:active` (not when the press is on a nested action), `.is-hover` / `.is-press` / `.is-dis` for docs.
+- `html({size, slot, interactive, emphasis, selected, disabled, wrap, tag, href, label, state, cls, attrs})`.
+- The Timeline's rows (`nrow`) are `evLiW evLi-md evLi-muted evLi-i`; sm on the phone (container query maps `--liSm*`). They were already md/sm by eye (G round, 8 clear of the dividers), so content does not move.
+  - The ghost's own values are gone: `--t3R` corner, 9% press scaled .99.
+  - The menu-open row (`t3CmMe`) shows the Press ground.
+
+**"Use card component" / "Card component"**
+- The feed cards (Medical records, Family history, RACGP Red Book) are `EvCard.html({look:'secondary-transparent', size:'xl'})`. Their words are the Body: 24 padding, 24 corner, bg/neutral/tertiary/100. They were 28 round with their own 4% white. On the phone the card takes md's tokens (space/sm, radius/2xl).
+- The decade cards and the locked phase cards (`lockCard`; the minis add `t3MiniC`) are `evCard evCard-glow evCard-xl`. Their padding and the badge's top/right are `var(--kP)`, their corner `var(--kR)`, their ground the Glow look.
+  - `.jvCard`'s own corner and ground, the outlined variant and the jvTv gradients now skip `.evCard`.
+
 ## v2771: warp past the end; the 100's top faded; speeds back; Braze in device frames, no gap
 
 **"Inifinte scroll that have an effect into space travel with particle travelling like we are moving fast acrsoss. stars and the stars pass by us" / "on scroll up no need to retrieve the full distance scrolled, just scroll up direclty"**
