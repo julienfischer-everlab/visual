@@ -19,6 +19,22 @@ this is the part you need before you change it.
 
 
 
+## v2755: playgrounds on Buttons and Badges; the inspector measures at rest; the 100 sequence retimed
+
+- **"On top of EACH components I need a demo / playground ... (similar than the figma one)"**, then **"do that for button and label"**: Design system → Buttons and → Badges open on a playground (`.dpg`, `pgHtml`, `PGF` specs, state in `window.__czPG` for the visit). The result sits at the left, drawn by EvCtl itself, with its Figma variant and the call that draws it. Figma-like properties sit at the right (menus, a switch, a text, and Theme Page / Light / Dark through the new `.evScL` / `.evScD` scopes, which EvCtl's static and token rules both honour).
+  - Buttons: Content (Label / Icon only / Split), Emphasis, Size, Icon, Disabled, Label.
+  - Badges: Type (Status / Mono), Emphasis, Size, Icon, Label.
+  - Clicking the result opens the token inspector.
+- **"still some bug"** (54.6 for 56, 23.4 for 24, a fill at 50%): the inspector measured the button just clicked, mid-press (scaled 97%), hovered and mid-transition. It now measures a resting copy beside it (`_h.still`), on the same grounds. Buttons take their theme from their own ink, not the page's mode. A disabled button is inspected on the pointer's release, since it gets no click. Real-click test over every doc button and badge, Dark and Light: no difference.
+- The 100 sequence:
+  - "Title down by 32px", "Should move up less by 30%": `tyB` +32, its head start under the number .2 → .14 of the screen.
+  - "2nd title should come more from down by 96px": the second block from `DU + 96`.
+  - "Parciel start once 80% 2nd title done": `v80 = v70 + .155H`. The letters run ahead of t2 (80% on screen at t2 .51, measured), so this is keyed to what is seen.
+  - "always be in movement floating like opavity 0 to X and from more from the egdes": each speck fades in from 0 on its own delay, from out towards the edges (up to 1.9× its distance from the dot), floating on its own drift (4–13px, its own pace) even with the scroll at rest. The canvas is redrawn at 30/s while they are out.
+  - "Bug number should be push up by 25%": the number rises a further quarter of the screen as the second title comes in.
+  - "the blur effect should start already when the big number start on the screen": its blur runs 0 → 24px from its way in to the second title's end, in whole pixels.
+- **"Keep the number neutral not orange on light mdoe"**: with the Halo, the decade's age number stays the ink in Light (orange in Dark as before).
+
 ## v2754: the app's buttons and badges on the Figma tokens; the 100's opacity; particles after the second title; a breathing dot; Back to life a Secondary button; the inspector closes with its page
 
 - **"On button and badge , fix the inconsistency based on the tokens!"** One style (`#evTokCtl`), made at load from `EvTokBtn` and `EvTokBadge` with each colour resolved in Light and Dark from `EvTokData`, on the three grounds EvCtl already reads (the page's mode, a light sheet, a dark sheet). It is html-prefixed over EvCtl's own rules.
