@@ -19,6 +19,14 @@ this is the part you need before you change it.
 
 
 
+## v2788: The 100's reel fade steep and close, so the rolling digits' bleed is hidden
+
+**"still no top botom fade out to hide the bleed rolling number"**
+- The window's fade ran out to 4% and 98% of its height. A digit rolling in from under, or out over, sat mostly in its opaque part and read almost whole.
+- The fade is now steep and close round a digit at rest, whose ink runs 34% to 76% of the window: whole from 32% to 77%, nothing past 22% and 87%. What rolls past a resting digit is hidden, and the digit at rest stays whole.
+- The gradient is written out in the CSS and in the entrance's composed inline mask, not through `--t3OdoM`: a custom property inside `mask-image` may not be honoured everywhere.
+- Checked in a browser with the number at 40% (it is 6% by default), from 97 → 98 to 98 → 99: the entering digit fades at its foot, the leaving one at its top, and the 9 at rest is whole.
+
 ## v2787: The Ask sheet's Inbox rows on List item interactive; the 100's 3rd row, Bon voyage in four languages
 
 **"list interactive. Add tweak to be able to control aith properties"** (the Ask sheet's Inbox)
