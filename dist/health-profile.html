@@ -4184,11 +4184,25 @@ window.EvTitle = (function () {
     return '<div class="evTg evTg' + al + (sT ? ' evTgSlT' : '') + (sR ? ' evTgSlR' : '') + (o.cls ? ' ' + o.cls : '') + '" data-lv="' + lv + '"' + (o.id ? ' id="' + esc(o.id) + '"' : '') + (o.attr ? ' ' + o.attr : '') + '>' +
       (sR ? '<div class="evTgCol">' + col + '</div><div class="evTgSlot evTgSlotR">' + sR.html + '</div>' : col) + '</div>';
   }
+  /* Figma's tokens (Patterns DS25 › Title group Webapp 2328:29539: "Title gorup Properties and Tokens"): each size its title's text style, its support lines' style, the gap between them, its icons' size and gap, its ink (2: the secondary, H4 to H6);
+     the type no longer the numbers above (M: kept for older calls), the text styles' tokens at each breakpoint (EvType), the CSS made from these rows (#evTgTok) */
+  var TOK = { 'display-hero': { ts: 'Display/secondary/400', sup: 'Chat - Body/300/Regular', gap: ['space/xs', 12] }, display: { ts: 'Headlines/800', sup: 'Chat - Body/300/Regular', gap: ['space/xs', 12] },
+    h1: { ts: 'Headlines/700', sup: 'Chat - Body/300/Regular', gap: ['space/xs', 12] }, 'h1-short': { ts: 'Headlines/700', sup: 'Chat - Body/300/Regular', gap: ['space/xs', 12] },
+    h2: { ts: 'Headlines/600', sup: 'Chat - Body/300/Regular', gap: ['space/4xs', 4], ic: ['components/media/sm', 20], icg: ['space/2xs', 8] }, h3: { ts: 'Headlines/500', sup: 'Body/200/Regular', gap: ['space/5xs', 2], ic: ['components/media/sm', 20], icg: ['space/2xs', 8] },
+    h4: { ts: 'Headlines/400', sup: 'Body/200/Regular', gap: ['space/5xs', 2], ic: ['components/media/xs', 16], icg: ['space/2xs', 8], ink: 2 }, h5: { ts: 'Headlines/300', sup: 'Body/200/Regular', gap: ['space/5xs', 2], ic: ['components/media/xs', 16], icg: ['space/2xs', 8], ink: 2 },
+    h6: { ts: 'Headlines/200', sup: 'Body/200/Regular', gap: ['space/5xs', 2], ic: ['components/media/2xs', 12], icg: ['space/4xs', 4], ink: 2 } };
+  var SLOTG = { top: ['space/xs', 12], topC: ['layout/module/gap', 16], topC1: ['space/md', 20], right: ['space/lg', 24] };   /* the slots' gaps: above the group (left), above it centred (Display; H1 space/md), at its right */
+  var tokCss = function () { var ET = window.EvType, V = window.EvTokVar; if (!ET || !V || !V.nm) return ''; var tv = function (t) { return 'var(' + V.nm(t[0]) + ', ' + t[1] + 'px)'; }, fv = function (t) { return typeof t === 'number' ? t + 'px' : 'var(' + V.nm(t) + ')'; };
+    return Object.keys(TOK).map(function (k) { var o = TOK[k], x = ET.BY[o.ts], u = ET.BY[o.sup]; if (!x || !u) return ''; return '.evTg.evTg[data-lv="' + k + '"]{--tgFs:' + fv(x.s) + ';--tgLh:' + fv(x.l) + ';--tgLs:' + fv(x.ls) + ';--tgW:var(' + V.nm(x.wt) + ', ' + x.w + ');--tgSf:' + fv(u.s) + ';--tgSl:' + fv(u.l) + ';--tgSw:var(' + V.nm(u.wt) + ', ' + u.w + ');--tgGT:' + tv(o.gap) + ';--tgGB:' + tv(o.gap) + ';' + (o.ic ? '--tgIc:' + tv(o.ic) + ';--tgIcG:' + tv(o.icg) + ';' : '') + '}' + (o.ink ? '\n.evTg.evTg[data-lv="' + k + '"] .evTgT{color:var(--tgMute);}' : ''); }).join('\n') +
+      '\n.evTg.evTg[data-lv] :is(.evTgTop, .evTgBot){font-weight:var(--tgSw, 400);}\n.evTg.evTg[data-lv] .evTgM{color:color-mix(in srgb, currentColor 48%, transparent);}' +   /* the span in the tertiary ink (48%), the support lines regular */
+      '\n.evTg.evTg[data-lv] .evTgIc svg{width:var(--tgIc, .875em);height:var(--tgIc, .875em);}\n.evTg.evTg[data-lv] .evTgIcL{margin-right:var(--tgIcG, .5em);}\n.evTg.evTg[data-lv] .evTgIcR{margin-left:var(--tgIcG, .5em);}' +
+      '\n.evTg.evTg[data-lv]{--tgGapS:' + tv(SLOTG.top) + ';--tgGapR:' + tv(SLOTG.right) + ';}\n.evTg.evTg.evTgC[data-lv]{--tgGapS:' + tv(SLOTG.topC) + ';}\n.evTg.evTg.evTgC:is([data-lv="h1"], [data-lv="h1-short"]){--tgGapS:' + tv(SLOTG.topC1) + ';}'; };
+  (function () { var c = tokCss(); if (!c) return; var h = document.head || document.documentElement, st = document.getElementById('evTgTok'); if (!st) { st = document.createElement('style'); st.id = 'evTgTok'; h.appendChild(st); } st.textContent = c; })();
   function node(o) { var t = document.createElement('template'); t.innerHTML = html(o); return t.content.firstElementChild; }
   function mount(el, o) { if (!el) return null; el.innerHTML = html(o); return el.firstElementChild; }
   var load = function () { try { var v = JSON.parse(localStorage.getItem(K) || 'null'); if (v && typeof v === 'object') Object.keys(M).forEach(function (k) { if (typeof v[k] === 'number' && isFinite(v[k])) M[k] = v[k]; }); } catch (e) {} tok(); };
   load();
-  return { LV: LV, M: M, D: D, K: K, key: function (lv) { return KEY[lv] || 'H2'; }, html: html, node: node, mount: mount,
+  return { LV: LV, TOK: TOK, SLOTG: SLOTG, M: M, D: D, K: K, key: function (lv) { return KEY[lv] || 'H2'; }, html: html, node: node, mount: mount,
     set: function (k, v) { if (!(k in D) || typeof v !== 'number' || !isFinite(v)) return; M[k] = v; put(k); },
     save: function () { try { localStorage.setItem(K, JSON.stringify(M)); return true; } catch (e) { return false; } },
     reset: function () { Object.keys(D).forEach(function (k) { M[k] = D[k]; }); try { localStorage.removeItem(K); } catch (e) {} tok(); } };

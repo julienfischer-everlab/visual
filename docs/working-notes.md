@@ -19,6 +19,50 @@ this is the part you need before you change it.
 
 
 
+## v2798: The Title group on Figma's tokens and properties; a picker that fixes a value off a token; item subs on fg secondary; Inspect's on state blue
+
+**"Title gorup Properties and Tokens. Need a demo and properties controllers on the DS title group page"** (Figma Patterns DS25 › Title group Webapp 2328:29539)
+- `EvTitle.TOK` holds each size's tokens, from Figma:
+
+  | Size | Title text style | Support style | Gap | Icons |
+  |---|---|---|---|---|
+  | Display hero | Display/secondary/400 | Chat - Body/300/Regular | space/xs | — |
+  | Display | Headlines/800 | Chat - Body/300/Regular | space/xs | — |
+  | H1 - No wrap (`h1`) | Headlines/700 | Chat - Body/300/Regular | space/xs | — |
+  | H1 - Wrap (`h1-short`) | Headlines/700 | Chat - Body/300/Regular | space/xs | — |
+  | H2 | Headlines/600 | Chat - Body/300/Regular | space/4xs | components/media/sm (20), space/2xs |
+  | H3 | Headlines/500 | Body/200/Regular | space/5xs | components/media/sm (20), space/2xs |
+  | H4 | Headlines/400 | Body/200/Regular | space/5xs | components/media/xs (16), space/2xs |
+  | H5 | Headlines/300 | Body/200/Regular | space/5xs | components/media/xs (16), space/2xs |
+  | H6 | Headlines/200 | Body/200/Regular | space/5xs | components/media/2xs (12), space/4xs |
+
+  - Inks: H4 to H6 titles in the secondary ink; the span (Span content) in the tertiary (48%); the supports in the secondary (56%), regular.
+  - Slots (`SLOTG`): space/xs above the group, space/lg at its right; centred, layout/module/gap above it (the H1s space/md).
+- The CSS is made from those rows (`#evTgTok`, `.evTg.evTg[data-lv]`), so every Title group in the app is on them. The level's numbers (`M`, `everlab:tgMaster`) no longer set its type; they are kept for older calls.
+- **Design system → General layout → Title group:**
+  - The configurator is Figma's properties: Size (Figma's names), Centered (No / Yes), Top slot, Top support, Bottom support, Span content, Slot title leading, Slot title trailing, Right slot (not centred only), and the four texts.
+  - The breakpoint draws it at that width with its tokens.
+  - The read line names the tokens at that breakpoint.
+  - A Tokens table lists each size's text style with its four sizes (XS · S · M · L), support style, gap, icons and ink.
+  - The board draws every size, centred and not, every part on. The Parts table is rewritten for the tokens.
+  - The number sliders, Save setup and Reset are gone.
+
+**"When a token is off, When I click on it open a modal that allow me to search a token in the library then I can select one and it will apply to the page"**
+- In Inspect, every value off a token is a button: the Off a token list's rows (Fix on hover) and This element's orange "no token" cells.
+- Pressed, a picker opens with the library's tokens of its kind, the nearest first, each with its swatch or value:
+  - Fill: bg/; Text and icons: fg/; Border: br/; radius, padding and gaps on their families; font size, line height, weight, tracking and family;
+  - a Text style: the 96 styles, by size.
+- Its search looks through every token of that type.
+- The one picked is set on every element of the area that had that value, live. It is also kept as a rule in this browser (`everlab:tokFix`, `#evTokFix`, read on every page). Each rule's selector is the element's own classes under its parent's; where neither has one, the fix stays live only.
+- The panel lists the tokens applied, with an undo each, Undo all, and Copy CSS (the rules, each with its old value and token as a comment).
+- The picker and the snackbar are left out of Inspect's picking.
+
+**"fg secondary 100"** (the Action and Timeline items' sub, "Complete your weekly questionnaire")
+- `--tlSub` is `fg/neutral/secondary/100` in every scope (was `#8b8b86` dark, `rgba(0,0,0,.56)` light).
+
+**"Active CTa is light blue as the other controller active"**
+- The top bar's Inspect, when on, wears the top bar's light blue (`--tbOn`, `--tbOnFg`), as Tweaks and Flow open (was orange).
+
 ## v2797: Tokens: collapsible groups, the text styles at each breakpoint, filled group rows; Inspect's tag names the component
 
 **"WHat ab collapsable"** (the Tokens page's Groups)
