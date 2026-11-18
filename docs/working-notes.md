@@ -19,6 +19,24 @@ this is the part you need before you change it.
 
 
 
+## v2800: Badge range in the Design system; the biomarkers' status badges on its tokens
+
+**"Add the BqadgesRange in the DS alongside the other badge. These are used across biomarkers (optimal. sub optimal etc )"** (Figma Core DS25 › badgesRange 24790:2759)
+- A fourth set on the Badge page (Tokens → Components → Badge: Status | Notification | Mono | Range), `EvTokBadge.Range`, in the same form as the others.
+  - Emphasis: Primary, Secondary, Tertiary, Mutted.
+  - Appearance: Optimal, Suboptimal, Out of range.
+  - Size: md, sm, xs, 2xs.
+  - Label (Yes, or icon only), and a leading icon.
+- The playground, the grid of every emphasis × appearance, the tokens in use, the sizes table and Figma's notes are all drawn from those rows.
+- Colours, the Themes collection's range tokens:
+  - Primary: `bg/range/…/primary/100` under `fg/static/white`; Suboptimal's label is `fg/range/suboptimal/primary/100` on its yellow, as Figma has it.
+  - Secondary: `bg/range/…/secondary/100` under `fg/range/…/primary/100`.
+  - Tertiary: no fill, a hairline in `br/neutral/tertiary/100`.
+  - Mutted: the ink alone, no padding, no icon only, no xs.
+- Sizes on the interactive scale: md 44 (space/lg, gap 8, Label - Body/300), sm 36 (space/sm, gap 4, Label - Body/200), xs 28 and 2xs 20 (space/2xs, gap 4, Label - Body/200 and /100); corners 12 · 10 · 8 · 6.
+- The Biomarker item's status badges (`.mbrow .st.ok | .sub | .out`) are on Badge range · Secondary's tokens in both modes, over the page's own rules. The Plan's own palettes keep theirs, as does Unclassified.
+- Inspect names them "Badge range · Secondary · Optimal" etc.
+
 ## v2799: Biomarker item · Gradient
 
 **"Tweak a version of the biomarker item with a light gradient on the left side like this"** (a results list: each row a card, a coloured bar on its left edge, a wash of the colour fading out)
