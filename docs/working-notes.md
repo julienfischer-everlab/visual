@@ -19,6 +19,15 @@ this is the part you need before you change it.
 
 
 
+## v2822: The tool's interface in Inter and Inter Mono; the viewport on the token's face
+
+**"Can you use Inter and Inter Mono for all of the UI of the interface here, but excluding the viewport? The design of the viewport needs to keep the token with the normal font."**
+- Inter loaded from Google Fonts (400, 500, 600, 700; a link in the head, left external by the build as the artifact allows). Inter has no mono cut on Google Fonts: the mono stack names `Inter Mono` first (used where it is installed), then the system's mono (`ui-monospace`, SF Mono, Menlo, Consolas).
+- In Inter (`--uiF`): the top bar and Tweaks, the inspector and its token picker, the Flow panel, the snackbar, the comments, and the Design system's own words: its nav, page titles, section headings, tables, captions and the playground's properties panel.
+- In the mono (`--uiM`): code in those, the playground's Figma line and call, the section guides' labels.
+- Kept on the token's face (`font/family/secondary`, Saans): every screen in the viewport, and the components and demos drawn on the Design system pages.
+- Checked: top bar buttons, labels, the page menu, Tweaks headings, the DS nav, titles, section headings, tables and properties in Inter; the playground's code in the mono; the Overview's words and the DS badges in Saans.
+
 ## v2821: Timeline on the one structure (step 1 continued)
 
 - The panel (`#dTl`) is a full-width section with no padding of its own (was 40 at M · L, 16 at XS); `--navPX` 0.
