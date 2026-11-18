@@ -19,6 +19,11 @@ this is the part you need before you change it.
 
 
 
+## v2750: a component's tokens in a right panel (Design system -> Buttons)
+
+- "When I click on a component I need to be able to see the tokens assocauted with it , on a right panel": on the Design system's Core components pages (Buttons, Sizes), a button clicked is outlined and its tokens open in a panel at the right (`EvTokCmpUI.inspect`, beside Tweaks when that is docked, Escape or the cross to close, gone with the page). The app's `EvCtl.btn` read as the Figma variant it stands for (Primary, Secondary, Tertiary; Ghost the Figma Minimal; its size; Shape Round, the app's pill; icon only the size's tokens, as wide as tall): each property's token and its value in the page's theme, beside what the app draws now (its computed height, corner, padding, gap, icon, type, fill, label colour, border), each marked as matching (✓) or not (≠); the Hover and Pressed tokens under them. "Open in the playground" puts the playground (Tokens -> Components) on that variant.
+- What it shows today: the app's buttons keep Figma's heights and the pill, but their padding, gap, icon and type are the app's own (md: padding 18 against space/lg 24, gap 8 against 10, icon 18 against 24, type 15/20 against 14/16; Primary's label #111 against #000; Tertiary's hairline 1px at 8% against 2px at 16% at lg).
+
 ## v2749: Plan items -> Truncate
 
 - "Add a tweak truncate ON OFF In plan item tweak group": Tweaks -> Plan items (the Confirm plan's) -> Truncate, On (as it was: the Timeline layout's names, and the In your plan rows' lines, on one line with an ellipsis) or Off (in full, over as many lines as they need: `html.arRvTrOff`). `#stArRvTr`, saved with the setup like the group's other tweaks. Checked on the Confirm plan at XS (6 cut On, none Off).
