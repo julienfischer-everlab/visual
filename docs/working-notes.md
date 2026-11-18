@@ -19,6 +19,16 @@ this is the part you need before you change it.
 
 
 
+## v2753: Badge tokens from Figma; Service detail no longer opens as "Default · changed"
+
+**Badge token?** (three Figma links: badgesStatus 3317:23394, BadgeNotificationLabel 22920:67299, badgesMono 26184:49183). Read with the Figma connector (get_variable_defs on every size, every emphasis × appearance, icon only, both shapes; get_design_context where a padding or glyph needed it).
+- `window.EvTokBadge`: the three sets' tokens. Status: 5 emphases × 6 appearances × md–2xs. Notification: 3 × 6 × xs/2xs × Square/Round. Mono: 5 emphases × md–2xs. Component tokens the four zips do not carry (`components/badge/status/…/🔴…`, `black`, `Blur/…`) keep the value read in Figma, marked "not in the token zips".
+- Tokens → Components: a Button | Badge switch (`EvTokCmpUI.comp`), then Status · Notification · Mono. Each has a playground drawn from the tokens alone (`.tbB`), Tokens in use, the emphasis grid, sizes and notes from Figma (the inconsistencies: Accent filled with fg tokens, Special's `black` primitive, Minimal 28 tall at md, Mono md bound to medium in a 380 style, hero/Accent md padding unbound, …). Copy CSS copies the badge's.
+- Token inspector: Design system → Badges, click any badge. `EvCtl.mono` reads as badgesMono (Outline = Primary, Filled = Secondary, Ghost, Inverse = hero, Accent); `EvCtl.badge` as Status · Neutral (Solid = Primary, Tint = Secondary, Outline = Tertiary). The panel is shared with the Button (`_h.panel`, `_h.sel`); "Open in the playground" lands on the inspected badge. "Inspect the app's badges" goes there from the Badge tab. Numbers now match within .3 (a 1 border no longer passes for 1.5).
+- The inspector's value badge maps to: padding `space/5xs` (2), border `border/md` (1); no token is 2 corners (`radius/2xs` is 4) and none is white at 4% (closest `bg/neutral/tertiary/100`, #ffffff0f in Dark).
+
+**"Why when I land n service detail it's appear as unsaved?"** The Overview opens on its starred preset (Persona - Freemium). That preset holds an older `#stTnPg`, the one hidden value with every page's Top nav picks, without the Timeline note's (Style Filled) and the Async report's (Fixed On). Putting it on wiped them, and Service detail (no preset of its own, so Default) compared the whole value: "Default · changed" with no row to show. Now a page's preset sets that page's own picks only (`tnOne`, the other pages keep theirs), and only this page's picks count toward a change (`tnEq` in `offP`). Checked against the shared store emulated read-only: Overview Persona - Freemium, Service detail Default, Timeline Plan confirmed, Async report V0.5 - Non grouped, all clean. Toggling Fixed still flags its row.
+
 ## v2752: the inspector's token values in a mono badge
 
 - "put the tokens value in a badge mono 2px padding corner rad 2px outlined fff 4%": in the token inspector, each token's value under its name is a mono badge: padding 2, corner 2, a 1px outline in white at 4% (black at 4% on light); a colour's swatch inside it, 12 with a 2 corner. `.tciV`.
