@@ -7,6 +7,13 @@ this is the part you need before you change it.
 
 ---
 
+## v2841 — The check-in's Flow tagged by persona; its insight badges; the Ruler a master switch; no guides over the tools
+
+- **Each check-in step tagged by persona** ("Indicate what each step [is for], to visually see at first glance"): in the Flow panel, every step of the Quarterly check-in carries #1 #2 #3 (New bloods only; New bloods and device data; No new data), lit where that persona's check-in has it, the persona shown filled. The steps only the others have are listed in their place, dimmed and unnumbered; pressing one switches the persona and opens it. The Flow panel takes `tags` and `dim` on any row now.
+- **The check-in's insight badges** ("What happen with these badges?"): the biomarker rows on the insight screens sat outside the biomarker list's scope (`.evBio`), so their status badges had no padding nor corners; `.qciMks` is in it now, the badges the master's.
+- **The Ruler a master switch** ("unselect the ruler should turn off all option"): pressed while a guide is on, every guide off and the dropdown shut; pressed while none is, every guide on and the dropdown open; a click outside only shuts the dropdown.
+- **No guides over the tools' pages**: the Tokens page (and Documentation, the Hairline page, the others) had the padding bands drawn over its table.
+
 ## v2840 — Step flows: the Header title's container 2xs
 
 - **2xs on step pages** ("2xs for step system type of page (questionnaire); apply in the master"): every step flow's Header title container defaults to 2xs, as its Header navigation, Body and Footer (`EvCt` `defP`, was sm; at M 544 + the sides, 592). The Page example's Step type the same. A pick made in Tweaks still wins.
