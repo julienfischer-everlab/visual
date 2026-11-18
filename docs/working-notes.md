@@ -19,6 +19,19 @@ this is the part you need before you change it.
 
 
 
+## v2754: the app's buttons and badges on the Figma tokens; the 100's opacity; particles after the second title; a breathing dot; Back to life a Secondary button; the inspector closes with its page
+
+- **"On button and badge , fix the inconsistency based on the tokens!"** One style (`#evTokCtl`), made at load from `EvTokBtn` and `EvTokBadge` with each colour resolved in Light and Dark from `EvTokData`, on the three grounds EvCtl already reads (the page's mode, a light sheet, a dark sheet). It is html-prefixed over EvCtl's own rules.
+  - Buttons (Button / Label, Neutral, Shape Round, so still pills): padding 32/24/16/8, gap 16/10/8/4, icon 24/24/20/16, label 16/18 · 14/16 · 14/16 · 12/14 at 570, Saans. Fills `bg/neutral/primary/100` (hover /200, pressed /300) and `bg/neutral/tertiary/…`. Tertiary outline `br/neutral/tertiary/100` at 2/1.5/1/1. Disabled on `tertiary/100` with the content at 40%.
+  - Badges (badgesStatus · Neutral: Outline Tertiary, Tint Secondary, Solid Primary): the size's corner 12/10/8/6 (no longer a pill), padding 24/16/8/8, gap 10/8/8/4, icon 24/20/16/14, label 16/18 · 14/16 · 14/16 · 12/14.
+  - Mono (badgesMono): Saans Mono 14/18 (12/14 at 2xs), tracked 1, 570 at md and 380 below. Glyph box 24/20/16/14 with a 60% square (`msq`), gap 8/4/4/4, padding 16/12/8/8, Filled/Inverse/Accent 16/12/8/4, Ghost 0. Outline `border/lg|md`. Accent `bg/brand/orange/primary/200` (#CC4700 in Dark) under `fg/static/black`.
+  - Checked with the inspector on every one: Buttons 666/666 and Badges 668/668 match, Dark and Light. A split's menu half is shown as not in Figma, not as a difference. The Buttons and Badges doc tables now give the token values.
+- **"Add tweak decade '100' decade / Opacity tweak on the number"**: Timeline → Decades → 100 opacity (`stT3CentOp`, 0–100, default 6) drives `--t3CentOp` on the big 100, beside Age opacity (the decade's number).
+- **"cloud particles should come later when 50% of the 2nd title is displayed"**: `ent` fades the specks (and the dot) in around `vC` (the second title half written), and their drawing-in starts there (`g0 = vC`). Measured: none at 49% of the title, there at 60%.
+- **"Halo smoother, and dot grow and dicrease automatically, 8px to 12px slowly"**: the dot 8→12→8 across over 4.5 s (10 still with reduced motion). The halo is an 11-stop bell down to nothing, a little wider, breathing with it. The canvas redraws at 30 a second while the dot shows.
+- **"Use a secondary button Filled"**: Back to life is `evBtn evCtl-sm evBtnSec` (the master), its arrow an `evCtlIc`. Only its scroll-driven opacity is its own (no opacity transition).
+- **"When I change the page the inspectior panel should disapear"**: `docShow` closes the token inspector, and leaving the Design system closed it already.
+
 ## v2753: Badge tokens from Figma; Service detail no longer opens as "Default · changed"
 
 **Badge token?** (three Figma links: badgesStatus 3317:23394, BadgeNotificationLabel 22920:67299, badgesMono 26184:49183). Read with the Figma connector (get_variable_defs on every size, every emphasis × appearance, icon only, both shapes; get_design_context where a padding or glyph needed it).
