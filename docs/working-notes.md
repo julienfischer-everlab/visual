@@ -19,6 +19,16 @@ this is the part you need before you change it.
 
 
 
+## v2764: 99 centred, the first title's break, 24 padding; the top bar's group to the right
+
+**"Center the 99"** — the hundreds' reel kept a blank digit's width while it read 97 to 99, so those sat right of centre. Its column now opens with its roll: out by its own width (less the reels' overlap) while blank (`--hc` 0), opening as the 1 rolls in, in place from 100. Measured at XS and L: 98 and 99 within 4px of the centre (were 8 to 11, before that half a digit), 100 exact.
+
+**"Breakline after Congratulations."** — the first title is two lines, "Congratulations." then "A century of stories lived on earth." (three at XS, the second wrapping). The phone keeps this break; it still drops the second title's.
+
+**"padding support left right of 24px"** — both titles 24 in from each side at every size (were 32 wide, none on the phone).
+
+**"Align right the button group"** — the Flow +'s host (`.tkFl`, empty in the bar's row) took a 24 gap after Refresh; it is out of the row now (its panel is fixed anyway), so the group ends at the bar's 16 padding (was 40 from the edge).
+
 ## v2763: the 100's speed, two sliders
 
 **"Less fixed on scroll. Need to be able to control more this"**
