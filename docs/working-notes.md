@@ -19,6 +19,26 @@ this is the part you need before you change it.
 
 
 
+## v2768: Braze on real screens, its controls a Tweaks column; token copy badges
+
+**"Remove shittty description" / "Put controler as tqweak colum right sid." / "Simulate real screen vieport for a better outcome"**
+- Braze has no lead now. Its controls are a column at the right laid out as Tweaks (the Doc panel's rail: `dpRail`, `dpGroup`, `dpRow`), sticky under the page's header:
+  - its head: Save preset, New, Delete;
+  - groups: Preset (pick, name), Banners (tabs, + Add), Banner n of N (Eyebrow, Title, Sub), Calls to action (CTA, CTA 2, CTA 2 style), Media (None / Image / Video and the tiles), Ground (Background, Colour, Text), This banner (Move up, Move down, Duplicate, Remove).
+- Each breakpoint is a real screen, the banner where the Overview puts it, between skeletons of the bento and the Action plan, each scaled to fit:
+  - a phone 393 × 852 (status bar, dock);
+  - a tablet 600 × 960;
+  - a laptop 992 × 744 and a desktop 1440 × 900, with the desk's menu (256 / 320), its top band and corner from `EvPageBase`, and the page's side padding (32 / 48).
+- The banner is as wide as it is in the app: 361 at XS, 552 at S, 672 at M, 1024 at L.
+
+**"Need option for 2nd CTA ghost"** — CTA 2 style: Ghost (the Overview's), Secondary (white 16%, black 8% on a light ground) or Outline (a white 32% line, black 24% on light); `EvBraze.card({ cta2k })`.
+
+**"Need to be able to delete image"** — the app's pictures in Braze's tiles have a bin too: it takes the picture out of Braze's tiles (the picture stays in the app). Kept in this browser and on the shared table (`bzPresets/_hidden`); "Restore n removed" puts them back.
+
+**Tokens: "Use badge outlined for token name and icon to Copy. Same for value, badge filled"** — on the Tokens page each value is a Badge Mono Filled and each token it points to a Badge Mono Outline (xs), the copy icon their glyph, the name as written (no caps); pressed, it is copied (a colour as CSS writes it, #0000000A for 4%), with the page's toast.
+
+- Checked: the four screens (scale 1, .78, .97, .67 at 1600); the rail at 1280–1600 under the header; CTA 2 Outline drawn with its line; a picture removed (16 → 15 tiles, "Restore 1 removed"); a token's name copied ("white").
+
 ## v2767: Braze uploads, Tweaks' system
 
 **"need to be able to upload custom video image, same system as the standard upload system used in tweaks"**
