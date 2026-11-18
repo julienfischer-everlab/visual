@@ -19,6 +19,26 @@ this is the part you need before you change it.
 
 
 
+## v2791: Bon voyage a real third title; Inspect's area lists as tabs; the service title on the Title group; token aliases show their value
+
+**"3row as a 3rd title !"**
+- Bon voyage is no longer a row under the second title. It is its own child of `.t3CentTx` (the titles' grid cell), so it takes the titles' place.
+- The handover mirrors the first title's: over the scroll left once the second title is written (`R3 = s + mRem - vE`, from 12% to 50% of it), the second title (`.t3CentB`) lifts by its height + 12 and fades over the first 60%, while the third rises from `BLh + 108` below into the place (`k3`).
+- Typing starts 450 ms after it is in (`k3 >= .98`), the square cursor waiting there while it rises; scrolling back clears it and the second title returns. With the Tweak off, `k3` stays 0 and the second title stays.
+- With reduced motion it switches at 30% of that scroll, the first word written.
+
+**"remove"** (the Inspect panel's summary line) and **"Tab Green and orange dot label"**
+- The `.piSum` paragraph is gone.
+- Tokens in this area / Off a token are two tabs on the Segmented master (`EvSeg.el`, sm, Full): On a token (green dot, its count) and Off a token (orange dot, its count). The tab picked is kept as the selection changes (`piTab`).
+- EvSeg items take `dot` (a colour: a status dot before the label) and `n` (a count after it): `.evSegDot`, `.evSegN`.
+
+**"title group h1"**
+- The service detail title (`.svHead`, e.g. Advanced Blood Testing) is built with `EvTitle.html({ level: 'h1' })` inside `.svHeadTx`: 28/32, weight 570, -0.2 on the desk (26/30 on the phone), from the master's `--tg*`. It was its own `.svHead h1` (500, -0.4).
+- The inspector names a Title group's level ("Title group · H1 · Hero").
+
+**"need to know the value behind these token"**
+- On the Tokens page, an alias's chip is followed by its resolved value, muted (`.tokVc` > chip + `.tokRv`): font/family/primary → Tobias, font/weight/new/regular → 380, colours as hex. Pressing the chip still copies that value.
+
 ## v2790: The Onboarding consult card's Ring visual
 
 **"Create a new variation for the onboardin consult card, something more minimal focusing on a circle with 3 dot when the line of the circle get filled"** (references: Sauna benefits, "1 in 3", the dotted ring)
