@@ -7,6 +7,11 @@ this is the part you need before you change it.
 
 ---
 
+## v2826 — Token edits saved with the setup; cell Pen (search) + Copy
+
+- **Token edits are a tweak value now** (`#stTokEd`, a hidden input in the Tweaks panel, canonical JSON `{ e, a }`, '' for none): an edit or an added token marks the preset changed and the Save button unsaved, like any tweak; Save keeps them in the setup (and a shared preset), a preset or saved setup puts them back (its change listener loads them into `EvTokEdit` and re-runs), a preset without them resets to Figma's. Edits made before this (kept in this browser) come in as an unsaved change after load. The Tokens header reads "N changes from Figma · Reset all".
+- **Tokens cell buttons** on hover: Pen (opens the search modal: a token, or a value typed) and Copy (the cell's value, as its badge copies it). The direct-value Edit button is gone.
+
 ## v2825 — Link master, Inspect guides as toggles, token Edit / Search buttons
 
 - **Link** (new master `window.EvLink`, Design system → Link, `#link`; Figma Core DS25 › Link 3317:15): `EvLink.html({ label, size: xs·sm·md·lg, theme: primary·accent·destructive·warning·success, bold, underline, disabled, iconL, iconR (true: chevron right), href, cls, attrs, state })`. Sizes: Label - Body/100…/400 (12/14, 14/16, 16/18, 20/24), icons 16·16·20·24, gap `space/5xs` / `space/4xs`; Medium or Regular; ink the theme's /100, hover /200, pressed /100, disabled `fg/neutral/tertiary/100`. CSS from the tokens (`#evLkTok`, put by EvTokVar). The doc page shows sizes × themes, states, bold/underline, in use, anatomy.
