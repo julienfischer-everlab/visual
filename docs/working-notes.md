@@ -19,6 +19,13 @@ this is the part you need before you change it.
 
 
 
+## v2760: the 100's odometer from 97, no stray digit
+
+**"there is a bug here. The 9 shoudl roll to 0, not the case atm. And should have 7 before 8"**
+- **The stray digit:** the 100's frame also ran while the Timeline's panel was hidden (on load): the stage read 0 high and the view negative, and the reels were set to nonsense (68.6: a 6 in the tens) that stayed until the number next changed. The frame now waits until the stage is laid out (`st.clientHeight >= 100`); the next scroll or resize starts it.
+- **From 97:** 97 as the number comes into view, then 98, 99, each a third of the way, to 100 as the first title starts (was from 98, two steps, so the 99 sat a long time with the 100 waiting under it). From 100 its pace eases to 5.6 a screen as before.
+- Checked at 1440 × 900, level 5: before entry 100 (the markup, off screen); in view 97; 98 at −0.6; 99 at −0.3; the 9s rolling to 0 from −0.2, 100 at the title's first letters (+0.1); no 6 at any point.
+
 ## v2759: the page inspector, the 100's parallax, 100 as the first title starts, the check-in card on surface 200
 
 **"For each page I need an inspector that capture the tokens used on the inspected area. Add a inspect CTA on the top controller, that we take over the tweak panel is present. Should behave like the tweak panel (push)."**
