@@ -19,6 +19,18 @@ this is the part you need before you change it.
 
 
 
+## v2803: Quarterly Check-in V1, a standalone page on the Async report's frame; text styles' other breakpoints dimmed
+
+**"build a standalone page experience where I can see the V1 based on the different personas that we have ... a tweak for the persona ... very similar to the async report framework"** (the concept artifact "Quarterly Check-in V1 and V2")
+- Page menu → Standalone flow → **Quarterly Check-in V1** (`qci`, `#quarterly-check-in`), `window._qci`: an EvSolo full modal (`.aqWrap.aqDesk.aqFull.qciWrap`, `.arSheet.sgmSheet.qciSheet`), the report's paper, ink and breakpoints, Dark and Light. Registered like the Suggestion: menu, handler, `__soloClose`, EvCtx (`qci`, Tweaks `data-pages="qci"`), `tkExtra`, `__pageVal`, the hash on load and on change, the Container Tweak (2xs).
+- The concept's V1 journey, screen by screen: the check-in push (lock screen) → the Overview's check-in card (ready, started, sent, done) → intro (Your care team) → one-tap questions with their follow-ups (scale 0–10, single, multi with an exclusive Nothing's changed and Something else's box, text, the on-file card) → the hand-off → Overview preparing → the insights push → Overview ready → the cover → one to three engine cards ("Connected for you") → the next step (the focus marker's readings in their optimal band, an empty marker for now, or a ring on the latest when a review is next) with its Discuss sheet (Eva, a doctor, the step we recommend; a toast stands in for each deep link).
+- Its own header (Back, the part's two-line title, Close, the Step flow's progress: `EvSteps.progress`, one per part), screens pushed by `EvSteps.push`; titles on `EvTitle`, buttons on `EvCtl.btn`, the Overview card on `EvCard`, each engine card's markers on the Biomarker item (`EvBio.row`). Close on a question keeps the place (the card's started state, Continue).
+- V1's rules kept: the answers change only which questions follow, never a report screen; the report from the last results alone (its cover says "From your October blood test", not the concept's "From your answers and…"); no doctor named or shown ("Your care team", "Insights from our clinical engine"). The copy is the concept's draft, not clinically reviewed.
+- Tweaks → Quarterly check-in: **Persona** (#1 New bloods only, #2 New bloods and device data, #3 No new data: the Async report's three, their October results and engine cards; each keeps its own answers), **Build stage** (V1; V2 drops the wait), **Start over**. No member data from the concept.
+
+**"Put a 50-30% opacity on the value that is not related to the current breakpoint."**
+- Tokens → Text styles: the other breakpoints' values (and their dots) in the ink at 40%, the breakpoint picked full and bold.
+
 ## v2802: Badge Progress in the Design system, on the Timeline's focus line; the 100 written in like its titles
 
 **"this is a Badge Progress 0--> add to badge in DS"** (Figma Core DS25 › badgesProgress 31272:22345)
