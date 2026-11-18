@@ -7,6 +7,15 @@ this is the part you need before you change it.
 
 ---
 
+## v2835 — Inspect: change a token from its badge (component override alert); the Ruler's section switches; striped guides; 8px bar gaps
+
+- **Change a token from Inspect** ("Need to be able to click on the token (use badge style) and change the token (search token system)"): each row's token is a badge (green on a token, orange off one, the start of a long name cut); pressed, the token picker (the library search) opens with the current token marked "current". "full" corners now find radius/full.
+- **Override alert** ("IF this token is part of a component existing, ALERT the user this will override the design system component!"): when the element is part of a Design system component (itself or the one round it; not a slot's own content), the picker carries an orange warning naming the component, and a pick asks first: "Override <component>?" with the old and new token, Cancel or Override component (in-page: the viewer has no confirm()). Escape closes the confirm, then the picker (the panel's own Escape had taken it).
+- **The Ruler's section switches** ("Section guide should have sub toggle: Header group, Body, Footer group, and disable IF the section doesn't exist on the current screen"): under Section guides, one toggle each (`html.ctGdNoHg / NoBd / NoFt`), disabled while Section guides is off or the screen has no such section (read from the guides' last draw, `window.__secGd()`), kept for the session.
+- **The dropdown over the guides** ("Zindex issue"): the Ruler's menu moved to the body, above everything; it sat in the bar's layer, under the guides' boxes.
+- **Striped sections** ("Use incline strip pattern large to clearly section the areas, use colour light"): each section guide in 12px slanted stripes of its light colour (Header group blue, Header title violet, Body white, Footer group green); the Page example's guides the same.
+- **8 between the bar's CTAs** ("Reduce gap between CTA, need to be 8px"; was 16; the divider 8 each side).
+
 ## v2834 — Inspect opens on the page; the 100: specks later, 80% less orange
 
 - **Inspect's default is the page** ("By default infos should show at page level"): with nothing picked, the panel shows This page (its name, the breakpoint), its share on a token (in the signal's colour), the Design system components on it (each × how many) and its values on a token and off one (the same tabs; an off one opens the token picker). Pick an element for its properties, box and tokens.
