@@ -19,6 +19,30 @@ this is the part you need before you change it.
 
 
 
+## v2784: Dot in line on the decades' feed; the 100's reel fades top and foot again; its title 48 lower
+
+**"in the timeline Add a tweak dot in line. when the light come through the line it reveal few dot, randomly positionned, max 3 ... Tweak Dot in line ON OFF"**
+- What it does:
+  - Tweaks → Decade intro → Dot in line, On (the default) or Off (`html.t3FeedDot`).
+  - As each of the three feed lines' light runs down it, one to three dots light where the head passes: one 30% of the time, two 40%, three 30%, at least 30px apart, a fresh set each pass.
+  - The side lines' dots sit on their level run. The middle line gets at most two, low on it.
+  - Each dot holds 1.9 s, then fades.
+- How it works (`feedDots()`, after each render):
+  - The dots are HTML (`.t3FdDots` > `.t3FdD`, 8 round, 6 on the phone) laid over the drawing's box: the SVG stretches, so a circle drawn in it would not stay round.
+  - A ring of the page's ground cuts the line round each dot, as in the mock.
+  - Positions come from the live path (`getPointAtLength`) in its current viewBox. `feedOne` redraws the lines in px (down, a corner, level, a corner, down), not the 600 × 136 drawing.
+  - The light's clock is its core dash's own animation (`getAnimations()`: 15 s, delay `i * 5 + 2` s, a 3 s run eased `cubic-bezier(.4, 0, .65, .85)`), so each dot lights as the head reaches it.
+  - The dots box follows the drawing's reveal (`.t3Rv`: `translate` and `opacity`, copied each frame). Without it they sat 24 too high.
+- It runs only while the feed is on screen, and not with reduced motion (no light).
+
+**"yeah but now the fade out top bottom is not present anymore :("** (the 100's reel)
+- The digits' ink at rest runs 34% to 76% of the 1.8em window (measured).
+- `--t3OdoM` now fades from the window's edges to just short of that: `transparent 4%, #000 32%, #000 78%, transparent 98%`. The digits at rest stay whole, and the rolling ones fade away at the top and the foot again.
+- The per-digit fade is gentler: `1 - smoothstep(.25, 1, |d|)`.
+
+**"title should be down by 48pz"**
+- The first title is 48 lower: `tyB`'s `+ 32` is now `+ 80`. The second title follows it.
+
 ## v2783: The Tokens page laid out as Figma's Variables
 
 **"present the token the same way figma do"**
