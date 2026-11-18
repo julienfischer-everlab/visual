@@ -19,6 +19,18 @@ this is the part you need before you change it.
 
 
 
+## v2802: Badge Progress in the Design system, on the Timeline's focus line; the 100 written in like its titles
+
+**"this is a Badge Progress 0--> add to badge in DS"** (Figma Core DS25 › badgesProgress 31272:22345)
+- A fifth set on the Badge page (Tokens → Components → Badge: Status | Notification | Mono | Range | Progress), `EvTokBadge.Progress`: Size md / sm, Appearance Neutral / Warning / Success / Negative, Type Dot / Badge (a count), Emphasis Primary / Secondary (32 variants). No box: the mark and the label 6 apart (`space/3xs`); labels Label - Body/300 (md) and /200 (sm), Medium for Primary, Regular for Secondary; the dot 8 (`size/6xs`) in `fg/sentiment/…/100` (Neutral `fg/neutral/tertiary/100`); the count 20 tall, full corners, padded 6 + 2, Label - Body/100/Medium, on `bg/sentiment/…/primary/100` under the inverse ink (Neutral `bg/neutral/secondary/100` under `fg/neutral/secondary/100`). Success reads the positive tokens.
+- The playground draws it (`pspec`, a `.tbPg` mark and label), its Tokens in use, the 4 × 2 grid, its Sizes table, the notes and Copy CSS (`.badge-progress`).
+- In the app: `EvTokBadge.Progress.html({ label, size, app, type, em, count, cls, tag })` and its CSS (`#evTokPg`, `.evPg`, `.evPg-md|sm`, `.evPgNeu|War|Suc|Neg`, `.evPgSec`, `.evPgD`, `.evPgC`) from the set's tokens in Light and Dark.
+- The Timeline's focus line (Your focus until …, `p.t3FbE`) is md · Warning · Dot · Primary from it: 16 / 18 Medium in `fg/sentiment/warning/100` (#FFB784 Dark, #EB6200 Light), its dot 8 with no halo. Was 15 / 20 in #F78359. The check-in's twin still drops it (its regex now takes the class list).
+
+**"When the big number appears ... with the blur, orange, and blur effect, the same as when you write the title ... more scroll to see the full number appear ... the fade-out to be a bit more. Through the scroll"**
+- `nP` (0 to 1 over 512 of scroll from where the number is wholly uncovered, was 256): in by 45% of it, a warm orange blur (`--t3NW` on the reel: orange by `color-mix`, an orange glow, brighter than the number's own faint ink, up to 50%), its own ink from 40% to 80%, sharp by the end (an 18px blur, whole pixels, under the later one `nb`).
+- The fade out runs from just before the second title to a fifth of a screen past it on the titles' clock (was v70 to vE).
+
 ## v2801: Inspect shows a percentage; Tokens applied rows; the token picker on the Tokens page's table
 
 **"Instead of the pie chart, just put a number, a percentage."**
