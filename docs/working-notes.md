@@ -7,6 +7,10 @@ this is the part you need before you change it.
 
 ---
 
+## v2838 — The Ruler works with Inspect on
+
+- **Guides with Inspect on** ("Guide doesn't work when Inspect ON"): the Ruler's dropdown, moved out of the bar (v2835), was taken by Inspect's pick as a page element; it is the inspector's own now (excluded from the pick, like the bar), and the guides' boxes, the hover outlines and the dropdown are left out of the page Inspect measures.
+
 ## v2837 — Inspect: hover lights the page; the Header group nests its parts; the focus card stops at the padding
 
 - **Hover lights the area on the page** ("When I hover, should highlight live in the UI the area concerned as well"): a row of On a token / Off a token (the page's or an element's) outlines every element it counts on the page, green or orange, live as the page scrolls; a crumb or a component's name in Properties outlines that element. Cut to what each element's scrollers show (a carousel's hidden cards are not lit outside the phone). `area()` keeps the elements of the tokens used too.
