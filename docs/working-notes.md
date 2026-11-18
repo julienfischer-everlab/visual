@@ -7,6 +7,11 @@ this is the part you need before you change it.
 
 ---
 
+## v2832 — Doc panels use selects and toggles; Page example has a Page type
+
+- **Selects and toggles in every doc panel** ("Use more select and toggle on off", "toggle for properties", "and select for size"): `EvDocPanel` shows a two-button On / Off (Yes / No, Show / Hide) group as the Toggle master (`EvToggle`, its small size), a group of five choices or more as a select, and `data-dpk="toggles"` as one toggle row per button (`data-dpk="seg"` keeps the chips). The page's own buttons stay, hidden (`.dpPx`): the proxy clicks them and follows their `aria-pressed`, `disabled`, `hidden` and `title`, so no page's wiring changed. Title group: Size a select, Centered a toggle, each property a toggle (Right slot off and disabled when centred). Page example: the sections, Fixed and Guides toggles, the containers selects.
+- **Page example → Page type** ("Add Page type: Step, Page (with menu): Main, Sub"): a select (Step; Page (with menu): Main, Sub). Step: Back and Close, the questionnaire Header title, answer skeletons, Continue. Main: no Back (More), page title, no footer. Sub: Back and More, its footer. Main and Sub have the menu: the app's dock cloned in at XS · S (Timeline lit, the body clear of it), the Page base's menu at M · L (`EvPageBase` tokens at that breakpoint: width, band, corner, grounds). Picking a type sets its base, still editable: Step the step base (Header navigation 2xs, Header title sm, Body 2xs, Footer 2xs, header not fixed, footer fixed), Main and Sub Header navigation Full, the rest sm, header fixed. Guides name the menu.
+
 ## v2831 — Emotion faces on the mood answers; every step flow starts from one base
 
 - **Mood answers wear the emotion faces** (Figma Assets DS25, Special: face 1 to 5): `window.EvEmo` (`svg(n)`, `of(value)`, `BY`) maps poor · notgreat · okay · good · great to faces 1 to 5. EvQ options take `ic` (an icon slot left of the label, 24px, `currentColor`, `--t-space-xs` gap); the check-in's mood options pass it. The DS Questionnaire page shows a mood demo.

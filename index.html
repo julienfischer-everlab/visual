@@ -8268,6 +8268,13 @@ html.evObDemo #dOver > :is(.ovCcCard, .hpRecOut, .ovrow2, .dvSecProf, .dvProf, .
   .peFGnd{position:absolute;left:0;right:0;top:0;bottom:0;z-index:-1;pointer-events:none;} .peSim[data-fbg="grad"] .peFGnd{top:-32px;background:linear-gradient(0deg, var(--pageBg) 0%, var(--pageBg) calc(100% - 40px), color-mix(in srgb, var(--pageBg) 0%, transparent) 100%);} .peSim[data-fbg="fill"] .peFGnd{background:var(--pageBg);} .peSim[data-fbg="clear"] .peFGnd{display:none;}
   .peFtS > .peCt{max-width:var(--peFtW, 100%);padding-top:16px;padding-bottom:24px;} .peSim:is([data-hgbp="xs"], [data-hgbp="s"]) .peFtS > .peCt{padding-bottom:34px;}
   .peSim .mdHome{z-index:6;}
+  /* Page type: a Page (Main, Sub) has the menu. M · L: the Page base's (EvPageBase: --pbMenuW, its band --pbTop, the body's corner --pbR, the section's ground --pbSec); XS · S: the app's dock, its float */
+  .peMenu{position:absolute;left:0;top:0;bottom:0;z-index:4;display:flex;background:var(--pbGround);color:var(--pbInk);font-family:var(--ar-font, "Saans", ui-sans-serif, system-ui, sans-serif);} .peMenu > .pbMenu{box-sizing:border-box;height:100%;}
+  .peSim.peMenuD{background:var(--pbGround);} .peSim.peMenuD > .peSc{left:var(--pbMenuW, 256px);top:var(--pbTop, 0px);border-top-left-radius:var(--pbR, 0px);background:var(--pbSec);--pageBg:var(--pbSec);}
+  .peSim .mTabs.peDock{display:block;position:absolute;left:0;right:0;bottom:0;top:auto;z-index:5;padding:0 var(--navInset) var(--navLift);pointer-events:none;} .peSim .mTabs.peDock::before{display:none;} .peSim .mTabs.peDock .mHome{display:none;}
+  .peSim[data-hgbp="s"] .mTabs.peDock{left:50%;right:auto;width:420px;transform:translateX(-50%);}
+  .peSim.peMenuP > .peSc{padding-bottom:calc(var(--navH, 60px) + var(--navLift, 16px) + 8px);}   /* the body clear of the dock; a fixed footer held above it */
+  .peSim.peGd .peMenu{box-shadow:inset 0 0 0 1px #f0a35a;} .peSim.peGd :is(.peMenu, .mTabs.peDock)::after{content:attr(data-l);position:absolute;top:4px;right:4px;z-index:30;padding:1px 6px;border-radius:4px;background:rgba(14,15,16,.62);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);color:color-mix(in srgb, #f0a35a 70%, #fff);font:500 10px/14px var(--uiF, ui-sans-serif, system-ui, sans-serif);letter-spacing:.01em;white-space:nowrap;pointer-events:none;} .peSim.peGd .mTabs.peDock::after{top:-18px;right:auto;left:50%;transform:translateX(-50%);}
   /* guides on it: each section filled lightly and named under its parent, each container dashed with its left-right padding in red */
   .peSim.peGd .peSec{box-shadow:inset 0 0 0 1px var(--peC);background-color:color-mix(in srgb, var(--peC) 7%, transparent);} .peSim.peGd > .peSb{box-shadow:inset 0 0 0 1px #5aa9ff;}
   .peSim .peSec{--peC:rgba(255,255,255,.7);} .peSim .peNavS{--peC:#5aa9ff;} .peSim .peHtS{--peC:#b18cff;} .peSim .peFtS{--peC:#4cc38a;}
@@ -8873,6 +8880,7 @@ html.evObDemo #dOver > :is(.ovCcCard, .hpRecOut, .ovrow2, .dvSecProf, .dvProf, .
   .dpRail .dpSeg > button:is([aria-pressed="true"], [aria-selected="true"]){background:color-mix(in srgb, var(--dpFg) 14%, transparent);color:var(--dpFg);box-shadow:none;}
   .dpRail .dpSeg > button:disabled{opacity:.35;cursor:default;}
   /* a field (Tweaks' select) and a switch (Tweaks' .tgl) */
+  .dpRail .dpPx{display:none !important;} .dpRail .dpTgl{flex:none;margin-left:auto;--tgW:40px;--tgH:24px;--tgD:18px;--tgX:3px;--tgCk:10px;} .dpRail .dpTgl[hidden]{display:none !important;}   /* EvDocPanel's proxies: a select, the Toggle master's small size (Inspect's) */
   .dpRail .dpField{width:168px;height:28px;box-sizing:border-box;margin:0;padding:0 9px;border:1px solid var(--dpLine);border-radius:8px;background:transparent;color:var(--dpFg);font:inherit;font-size:12px;outline:none;}
   .dpRail .dpField:focus{border-color:color-mix(in srgb, var(--dpFg) 40%, transparent);} .dpRail .dpField::placeholder{color:var(--dpMut);}
   .dpRail input[type="number"].dpField{width:84px;font-variant-numeric:tabular-nums;}
@@ -55690,7 +55698,24 @@ hairline({
       window.EvDocPanel = (() => {
         const WIDE = 1140, roots = new Map();
         const isField = c => /^(INPUT|SELECT|TEXTAREA)$/.test(c.tagName);
-        const dress = c => { if (c.tagName === 'BUTTON') c.classList.add('dpBtn'); else if (c.tagName === 'INPUT' && c.type === 'checkbox') c.classList.add('dpSw'); else if (isField(c)) c.classList.add('dpField');
+        /* "Use more select and toggle on off": a row of two buttons On / Off (Yes / No, Show / Hide) is shown as the Toggle master (EvToggle), five choices or more as a select ("select for size"),
+           data-dpk="toggles" a row per button, each its toggle ("toggle for properties"); data-dpk="seg" keeps the chips. The page's buttons stay, hidden (.dpPx): the proxy clicks them and follows their aria-pressed,
+           disabled and hidden, so every page's wiring is untouched (the main page only: a frame's page keeps its chips) */
+        const OO = [['on', 'off'], ['yes', 'no'], ['show', 'hide']], low = b => (b.textContent || '').trim().toLowerCase(), lit = b => b.getAttribute('aria-pressed') === 'true' || b.getAttribute('aria-selected') === 'true';
+        const btns = c => { const k = [...c.children]; return k.length && k.every(x => x.tagName === 'BUTTON') && k.some(x => x.hasAttribute('aria-pressed') || x.hasAttribute('aria-selected')) ? k : null; };
+        const kind = c => { const dk = c.dataset.dpk; if (dk === 'raw' || dk === 'seg' || c.ownerDocument !== document) return ''; const bs = btns(c); if (!bs) return ''; if (dk === 'toggles') return 'multi'; if (dk === 'select' || bs.length >= 5) return 'sel';
+          if (bs.length === 2){ const t = bs.map(low); if (OO.some(o => t.indexOf(o[0]) >= 0 && t.indexOf(o[1]) >= 0)) return 'tgl'; } return ''; };
+        const follow = (c, f) => { new MutationObserver(f).observe(c, { subtree: true, attributes: true, attributeFilter: ['aria-pressed', 'aria-selected', 'disabled', 'hidden', 'title'] }); f(); };
+        const sw = lab => { const w = document.createElement('div'); w.innerHTML = window.EvToggle ? window.EvToggle.html({ label: lab, cls: 'dpTgl' }) : '<button type="button" role="switch" class="dpTgl" aria-checked="false"></button>'; return w.firstChild; };
+        const proxy = (c, r, lab) => { const k = kind(c); if (k !== 'tgl' && k !== 'sel') return; const bs = btns(c); c.classList.add('dpPx');
+          if (k === 'tgl'){ const on = bs.find(b => OO.some(o => low(b) === o[0])), off = bs.find(b => b !== on), s = sw(lab); r.appendChild(s);
+            s.addEventListener('click', () => { const b = lit(on) ? off : on; if (!b.disabled) b.click(); });
+            follow(c, () => { s.setAttribute('aria-checked', String(lit(on))); s.disabled = lit(on) ? off.disabled : on.disabled; s.hidden = c.hidden; s.title = on.title || off.title || ''; }); return; }
+          const s = document.createElement('select'); s.className = 'dpField dpPxSel'; s.setAttribute('aria-label', lab);
+          bs.forEach((b, i) => { const o = document.createElement('option'); o.value = String(i); o.textContent = (b.textContent || '').trim() || b.getAttribute('aria-label') || String(i + 1); s.appendChild(o); }); r.appendChild(s);
+          s.addEventListener('change', () => { const b = bs[+s.value]; if (b && !b.disabled) b.click(); });
+          follow(c, () => { const i = bs.findIndex(lit); if (s.selectedIndex !== i) s.selectedIndex = i; bs.forEach((b, j) => { s.options[j].disabled = b.disabled; }); s.hidden = c.hidden; }); };
+        const dress = c => { if (c.classList.contains('dpTgl')) return; if (c.tagName === 'BUTTON') c.classList.add('dpBtn'); else if (c.tagName === 'INPUT' && c.type === 'checkbox') c.classList.add('dpSw'); else if (isField(c)) c.classList.add('dpField');
           else if (c.dataset.dpk !== 'raw' && (/^(group|tablist|radiogroup)$/.test(c.getAttribute('role') || '') || (c.children.length && [...c.children].every(k => k.tagName === 'BUTTON')))) c.classList.add('dpSeg'); };
         /* a page in a frame of its own (the Service timeline's): the block copied in from this page's sheet, found by its first rule */
         const css = d => { if (d === document || d.querySelector('style[data-dp]')) return;
@@ -55713,7 +55738,12 @@ hairline({
           let cur = null;
           const group = t => { t = t || ''; let g = [...body.children].find(x => x.dataset.dpt === t); if (!g){ g = d.createElement('div'); g.className = 'dpGroup'; g.dataset.dpt = t; if (t){ const s = d.createElement('div'); s.className = 'dpSub'; s.textContent = t; g.appendChild(s); } body.appendChild(g); } return g; };
           const here = () => cur || (cur = group(''));
-          const row = (lab, c, t) => { const r = d.createElement(isField(c) ? 'label' : 'div'), l = d.createElement('span'); r.className = 'dpRow'; l.className = 'dpL'; l.textContent = lab; c.classList.add('dpCtl'); dress(c); r.append(l, c); (t == null ? here() : group(t)).appendChild(r); later(root); return r; };
+          const row = (lab, c, t) => { const r = d.createElement(isField(c) ? 'label' : 'div'), l = d.createElement('span'); r.className = 'dpRow'; l.className = 'dpL'; l.textContent = lab; c.classList.add('dpCtl'); dress(c); r.append(l, c); proxy(c, r, lab); (t == null ? here() : group(t)).appendChild(r); later(root); return r; };
+          /* data-dpk="toggles": each button its own row, its label the button's, its control a toggle; the buttons kept, hidden, in the first row */
+          const rows = n => { const bs = btns(n); let first = null; n.classList.add('dpPx');
+            bs.forEach(b => { const s = sw((b.textContent || '').trim()), r = row((b.textContent || '').trim(), s); if (!first){ first = r; r.appendChild(n); }
+              s.addEventListener('click', () => { if (!b.disabled) b.click(); });
+              follow(n, () => { s.setAttribute('aria-checked', String(lit(b))); s.disabled = b.disabled; s.hidden = n.hidden || b.hidden; s.title = b.title || ''; }); }); };
           const act = (lab, b) => { const g = here(); let r = [...g.children].find(x => x.dataset.dpr === lab); if (!r){ r = d.createElement('div'); r.className = 'dpRow dpAct'; r.dataset.dpr = lab; r.innerHTML = '<span class="dpL"></span><span class="dpBtns"></span>'; r.firstChild.textContent = lab; g.appendChild(r); } b.classList.add('dpCtl', 'dpBtn'); r.lastChild.appendChild(b); };
           const tags = [...host.querySelectorAll('[data-dp], [data-dpa]')].filter(n => !n.parentElement.closest('[data-dp], [data-dpa]'));
           let slot = o.after ? { after: o.after } : o.before ? { before: o.before } : null;
@@ -55721,6 +55751,7 @@ hairline({
           if (!slot){ const h = host.querySelector('.glSec > :is(h4, .dhS)'), p = h && h.nextElementSibling && h.nextElementSibling.tagName === 'P' ? h.nextElementSibling : h; slot = p ? { after: p } : { before: host.firstChild }; }
           tags.forEach(n => { if (n.hasAttribute('data-dpg')) cur = group(n.dataset.dpg);
             if (n.hasAttribute('data-dpa')){ if (n.dataset.dpa) act(n.dataset.dpa, n); else { n.classList.add('dpCtl', 'dpBtn'); head.appendChild(n); } return; }
+            if (n.dataset.dp && kind(n) === 'multi'){ rows(n); return; }
             if (n.dataset.dp){ row(n.dataset.dp, n); return; }
             n.classList.add('dpCtl', 'dpBlock'); here().appendChild(n); });
           if (slot.before) slot.before.before(rail); else slot.after.after(rail);
@@ -55887,15 +55918,20 @@ hairline({
         const seg = (k, lab, o, g) => '<div data-dpx><div role="group" class="hgSeg peSeg" data-pek="' + k + '" data-dp="' + lab + '"' + (g ? ' data-dpg="' + g + '"' : '') + ' aria-label="' + lab + '">' + o.map(x => '<button type="button" data-v="' + x[0] + '" aria-pressed="false">' + x[1] + '</button>').join('') + '</div></div>';
         const OO = [['on', 'On'], ['off', 'Off']], YN = [['on', 'Yes'], ['off', 'No']], ST = [['grad', 'Gradient'], ['fill', 'Filled'], ['clear', 'Transparent']], CTS = Object.keys(CT_MAX).map(k => [k, k]).concat([['full', 'Full']]);
         const row = (a, b) => '<tr><th>' + a + '</th><td>' + b + '</td></tr>';
+        /* the menu of a Page (Main, Sub) at M · L: the Page base's (EvPageBase, --pb*: its width, its band, its items), Timeline lit; at XS · S the app's dock, cloned in by glPeWire */
+        const lg = document.querySelector('.dash .side .sideLogo'), logo = lg ? lg.outerHTML.replace('class="sideLogo"', 'class="pbLogo"').replace(/ aria-label="[^"]*"/, ' aria-hidden="true"').replace(/ id="[^"]*"/g, '') : '<b class="pbLogo">everlab</b>';
+        const mic = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/></svg>', mit = (t, on) => '<div class="pbIt' + (on ? ' on' : '') + '">' + mic + '<span>' + t + '</span></div>';
+        const menu = '<div class="peMenu" data-l="Menu" aria-hidden="true" hidden><div class="pbMenu"><div class="pbHead">' + logo + '</div><div class="pbList"><div class="pbGrp">' + mit('Overview') + mit('Insights') + mit('Timeline', 1) + mit('Services') + mit('Plan') + mit('Account') + '</div></div><div class="pbList pbBot"><div class="pbGrp">' + mit('Help') + mit('Settings') + '</div></div></div></div>';
         return '<div data-glv="pe" hidden><section class="glSec peSec0">' + DH.sec('Page example · XS · live', 'One screen, every section of a page stacked full width: the Header group (Status bar on the phone and the tablet, Header navigation, Header title), the Body, the Footer group. Switch each on or off; each comes with its container, as wide as the max width picked, the breakpoint’s padding inside it. Fixed and Style for the header group and the footer group; Guides draws the sections and their containers. Scroll the screen, or Play.', { cls: 'peSecT' }) +
           '<div class="mdBar" data-dpx><button type="button" class="mdBtn pePlay" data-dpa>Play</button><button type="button" class="mdBtn peReset" data-dpa>Reset</button></div>' +
-          seg('bp', 'Breakpoint', [['xs', 'XS'], ['s', 'S'], ['m', 'M'], ['l', 'L']], 'Page') + seg('gd', 'Guides', OO) +
+          '<div data-dpx><select class="peType" data-dp="Page type" data-dpg="Page" aria-label="Page type"><option value="step">Step</option><optgroup label="Page (with menu)"><option value="main">Main</option><option value="sub">Sub</option></optgroup></select></div>' +
+          seg('bp', 'Breakpoint', [['xs', 'XS'], ['s', 'S'], ['m', 'M'], ['l', 'L']]) + seg('gd', 'Guides', OO) +
           seg('sb', 'Status bar (XS · S)', OO, 'Sections') + seg('nav', 'Header navigation', OO) + seg('ht', 'Header title', OO) + seg('bd', 'Body', OO) + seg('ft', 'Footer group', OO) +
           seg('hfx', 'Fixed', YN, 'Header group') + seg('hbg', 'Style', ST) + seg('cNav', 'Header navigation · Container', CTS) + seg('cHt', 'Header title · Container', CTS) +
           seg('cBd', 'Container', CTS, 'Body') +
           seg('ffx', 'Fixed', YN, 'Footer group') + seg('fbg', 'Style', ST) + seg('cFt', 'Container', CTS) +
           '<div class="peStage"><div class="peScale"><div class="hgSim peSim peGd" data-hgbp="xs" data-ct-bp="xs" data-hfx="on" data-hbg="grad" data-ffx="on" data-fbg="grad">' +
-            '<div class="bpStatus peSb" data-l="Header group · Status bar" aria-hidden="true">' + sb + '</div>' +
+            '<div class="bpStatus peSb" data-l="Header group · Status bar" aria-hidden="true">' + sb + '</div>' + menu +
             '<div class="peSc">' +
               '<div class="peHg"><div class="peGnd" aria-hidden="true"></div><div class="peSbSp" aria-hidden="true"></div>' +
                 '<div class="peSec peNavS" data-l="Header group · Header navigation"><div class="peCt">' + TN.html({ back: true, close: true }) + '</div></div></div>' +
@@ -55904,6 +55940,7 @@ hairline({
               '<div class="peFt"><div class="peFGnd" aria-hidden="true"></div><div class="peSec peFtS" data-l="Footer group"><div class="peCt"><span class="glDemoCta">Continue</span></div></div></div>' +
             '</div><i class="mdHome" aria-hidden="true"></i></div></div></div>' +
           '<div class="glTabW peTab"><table class="glTab"><tbody>' +
+            row('Page type', 'Step: a flow’s screen (the Step flow, a full modal): Back and Close, the questionnaire Header title, Continue at the foot, no menu. Page (with menu): Main, a destination of the dock (XS, S) or the sidebar (M, L), no Back; Sub, opened from a page to go deeper (Page types: it pushes in), Back. Picking one sets its base, still editable: Step, Header navigation 2xs, Header title sm, Body 2xs, Footer 2xs, the header not fixed, the footer fixed (every step flow’s); Main, Header navigation Full, the rest sm, no footer, the header fixed; Sub, the same with its footer') +
             row('Sections', 'Full width, stacked, no padding of their own: the Header group (Status bar, Header navigation, Header title), the Body, the Footer group. A section switched off takes its room with it') +
             row('Containers', 'One in every section and sub-section, centred: its max width the token picked at this breakpoint (<code>layout/container/max-width/*</code>, Full: the section’s width), its left and right padding the breakpoint’s (<code>layout/container/padding/left-right</code>: 16 · 16 · 24 · 24). The Body’s also its top and bottom padding (<code>padding/top-bottom</code>) and its gap between sections (<code>gap/xl</code>: 24 · 28 · 32 · 36). The Header title’s is its master’s own (<code>EvHdTitle</code>, <code>--evHtW</code>)') +
             row('Header group', 'Status bar (the frame’s, XS and S only), Header navigation (the Top nav master: Back, Close; the title comes into it once the Header title has gone under), Header title (the Header title master, Page). Fixed Yes: Status bar and Header navigation stay at the top, the Header title and the Body scroll under them; No: they scroll away, the status bar keeps a ground of its own. Style, once the page has moved: Gradient, Filled, Transparent') +
@@ -55911,22 +55948,44 @@ hairline({
             row('In the app', 'The same structure on every page (the section guides draw it: Inspect → Guides). Tweaks → General layout set a page’s containers, Fixed and Style') + '</tbody></table></div></section></div>'; };
       const glPeWire = el => { const box = el.querySelector('[data-glv="pe"]'), TN = window.EvTopNav; if (!box || !TN) return; const sim = box.querySelector('.peSim'); if (!sim) return;
         const KS = Object.keys(CT_MAX).concat(['full']), dk = (...a) => a.find(x => KS.indexOf(x) >= 0) || KS[KS.length - 1];
-        const D = { bp: 'xs', gd: 'on', sb: 'on', nav: 'on', ht: 'on', bd: 'on', ft: 'on', hfx: 'on', hbg: 'grad', ffx: 'on', fbg: 'grad', cNav: dk('full', 'lg'), cHt: dk('md', 'sm'), cBd: dk('md', 'sm'), cFt: dk('md', 'sm') };
+        /* Page type ("Add Page type: Step, Page (with menu): Main, Sub"): each its base (picked, then still editable) and its content */
+        const PT = { step: { nav: 'on', ht: 'on', bd: 'on', ft: 'on', hfx: 'off', hbg: 'grad', ffx: 'on', fbg: 'grad', cNav: dk('2xs'), cHt: dk('sm'), cBd: dk('2xs'), cFt: dk('2xs') },
+          main: { nav: 'on', ht: 'on', bd: 'on', ft: 'off', hfx: 'on', hbg: 'grad', ffx: 'on', fbg: 'grad', cNav: dk('full'), cHt: dk('sm'), cBd: dk('sm'), cFt: dk('sm') },
+          sub: { nav: 'on', ht: 'on', bd: 'on', ft: 'on', hfx: 'on', hbg: 'grad', ffx: 'on', fbg: 'grad', cNav: dk('full'), cHt: dk('sm'), cBd: dk('sm'), cFt: dk('sm') } };
+        const CON = { step: { nav: { back: true, close: true }, ht: { type: 'questionnaire', title: 'How have you been sleeping?', sub: 'Think about the last two weeks.' }, bd: ['opt', 'opt', 'opt', 'opt', 'opt'], ft: 'Continue' },
+          main: { nav: { more: true }, ht: { type: 'page', title: 'My journey', sub: '0–3 months · Get your baseline' }, bd: ['hero', 'bento', 'list3', 'wide', 'bento', 'list4', 'wide'], ft: 'Book a session' },
+          sub: { nav: { back: true, more: true }, ht: { type: 'page', title: 'Foundational blood testing', sub: 'Complete your test · Requested 11 days ago' }, bd: ['hero', 'list3', 'wide', 'list4', 'wide'], ft: 'Find a centre' } };
+        const D = Object.assign({ bp: 'xs', gd: 'on', sb: 'on', pt: 'step' }, PT.step);
         let S = Object.assign({}, D); try { const v = JSON.parse(localStorage.getItem('everlab:pePage') || 'null'); if (v) Object.keys(D).forEach(k => { if (v[k] != null && typeof v[k] === 'string') S[k] = v[k]; }); } catch (e){}
-        if (!PE_DIM[S.bp]) S.bp = 'xs'; ['cNav', 'cHt', 'cBd', 'cFt'].forEach(k => { if (KS.indexOf(S[k]) < 0) S[k] = D[k]; });
+        if (!PE_DIM[S.bp]) S.bp = 'xs'; if (!PT[S.pt]) S.pt = 'step'; ['cNav', 'cHt', 'cBd', 'cFt'].forEach(k => { if (KS.indexOf(S[k]) < 0) S[k] = D[k]; });
         const keep = () => { try { localStorage.setItem('everlab:pePage', JSON.stringify(S)); } catch (e){} };
-        const sc = sim.querySelector('.peSc'), nav = sim.querySelector('.peNavS .evTn'), h1 = sim.querySelector('.peHtS .evTgT'), tw = TN.watch(sc, nav, h1), st = box.querySelector('.peStage'), scl = box.querySelector('.peScale');
+        const sc = sim.querySelector('.peSc'), st = box.querySelector('.peStage'), scl = box.querySelector('.peScale'), HT = window.EvHdTitle, PB = window.EvPageBase, ty = box.querySelector('.peType');
+        let tw = { update(){} }, built = '';
+        const build = () => { if (built === S.pt) return; built = S.pt; const c = CON[S.pt];   /* the type's Header navigation (the Top nav master), Header title (its master), body and footer */
+          sim.querySelector('.peNavS > .peCt').innerHTML = TN.html(c.nav);
+          const w = document.createElement('div'); w.innerHTML = HT.html(Object.assign({ cls: 'peSec peHtS', attrs: ' data-l="Header group · Header title"' }, c.ht)); sim.querySelector('.peHtS').replaceWith(w.firstElementChild);
+          sim.querySelector('.peBdS > .peCt').innerHTML = hgSk(c.bd); sim.querySelector('.peFtS .glDemoCta').textContent = c.ft;
+          tw = TN.watch(sc, sim.querySelector('.peNavS .evTn'), sim.querySelector('.peHtS .evTgT')); };
+        /* the dock at XS · S: the app's own (#bpFrame .mTabs), cloned in as the Navigation page does, Timeline lit */
+        const src = document.querySelector('#bpFrame .mTabs') || document.querySelector('.mTabs'); let dock = null, pl = null;
+        if (src){ dock = src.cloneNode(true); dock.removeAttribute('id'); dock.querySelectorAll('[id]').forEach(x => x.removeAttribute('id')); dock.classList.add('peDock'); dock.setAttribute('aria-hidden', 'true'); dock.inert = true; dock.dataset.l = 'Menu · Dock'; dock.hidden = true; sim.appendChild(dock);
+          const isl = dock.querySelector('.mIsland'); pl = isl && isl.querySelector('.mPill'); if (isl && !pl){ pl = document.createElement('i'); pl.className = 'mPill'; pl.setAttribute('aria-hidden', 'true'); isl.prepend(pl); } if (isl) isl.classList.add('mPillOn');
+          const tabs = [...dock.querySelectorAll('.mTab')], t = tabs.find(x => /timeline/i.test(x.textContent)) || tabs[0]; tabs.forEach(x => { x.classList.toggle('on', x === t); x.setAttribute('aria-selected', String(x === t)); }); }
+        const slide = () => { const t = dock && dock.querySelector('.mTab.on'); if (!pl || !t || !t.offsetWidth) return; pl.style.transition = 'none'; pl.style.width = t.offsetWidth + 'px'; pl.style.transform = 'translateX(' + t.offsetLeft + 'px)'; pl.style.opacity = '1'; };
         sc.addEventListener('scroll', () => { const on = sc.scrollTop > 0; if (sim.classList.contains('peScr') !== on) sim.classList.toggle('peScr', on); }, { passive: true });
         const cw = c => { const m = c === 'full' ? 0 : ctMax(c, S.bp), t = CT_BP[S.bp]; return m ? (m + 2 * t.px) + 'px' : '100%'; };   /* Full: the section's width */
         const fit = () => { if (!st.offsetWidth) return; const d = PE_DIM[S.bp], W = (st.parentElement || st).clientWidth, room = Math.max(560, innerHeight - 150), k = Math.max(.3, Math.min(1, (W - 2) / d[0], room / d[1]));   /* as big as the column and the window allow (scroll to see it whole) */ scl.style.width = d[0] + 'px'; scl.style.transform = k < 1 ? 'scale(' + k + ')' : ''; st.style.height = Math.ceil(d[1] * k) + 'px'; st.style.width = Math.ceil(d[0] * k) + 'px'; };
-        const paint = () => { const ph = S.bp === 'xs' || S.bp === 's', sbOn = ph && S.sb === 'on', q = x => sim.querySelector(x);
+        const paint = () => { const ph = S.bp === 'xs' || S.bp === 's', sbOn = ph && S.sb === 'on', q = x => sim.querySelector(x), mn = S.pt !== 'step'; build();
+          sim.classList.toggle('peMenuP', mn && ph); sim.classList.toggle('peMenuD', mn && !ph); q('.peMenu').hidden = !(mn && !ph); if (dock) dock.hidden = !(mn && ph); if (ty && ty.value !== S.pt) ty.value = S.pt;
+          if (!ph && PB) PB.P.forEach(p => sim.style.setProperty('--pb' + p[0].charAt(0).toUpperCase() + p[0].slice(1), PB.val(p[2], S.bp) + p[3]));   /* the menu at this breakpoint's tokens */
           sim.dataset.hgbp = S.bp; sim.setAttribute('data-ct-bp', S.bp); ['hfx', 'hbg', 'ffx', 'fbg'].forEach(k => { sim.dataset[k] = S[k]; }); sim.classList.toggle('peGd', S.gd === 'on');
           q('.peSb').hidden = !sbOn; sim.style.setProperty('--peSbH', sbOn ? PE_SBH[S.bp] + 'px' : '0px');
           q('.peNavS').hidden = S.nav !== 'on'; q('.peHtS').hidden = S.ht !== 'on'; q('.peBdS').hidden = S.bd !== 'on'; q('.peFt').hidden = S.ft !== 'on'; q('.peHg').hidden = !sbOn && S.nav !== 'on'; q('.mdHome').hidden = !ph;
           sim.style.setProperty('--peNavW', cw(S.cNav)); sim.style.setProperty('--peBdW', cw(S.cBd)); sim.style.setProperty('--peFtW', cw(S.cFt)); q('.peHtS').style.setProperty('--evHtW', cw(S.cHt));
           box.querySelectorAll('[data-pek]').forEach(g => { const v = S[g.dataset.pek]; g.querySelectorAll('[data-v]').forEach(b => { b.setAttribute('aria-pressed', String(b.dataset.v === v)); if (g.dataset.pek === 'sb') b.disabled = !ph; }); });
           const t = box.querySelector('.peSecT'); if (t) t.textContent = 'Page example · ' + S.bp.toUpperCase() + ' · live';
-          fit(); requestAnimationFrame(() => tw.update()); };
+          fit(); requestAnimationFrame(() => { tw.update(); if (mn && ph) slide(); }); };
+        if (ty) ty.addEventListener('change', () => { if (!PT[ty.value]) return; S.pt = ty.value; Object.assign(S, PT[S.pt]); keep(); sc.scrollTop = 0; paint(); });
         box.querySelectorAll('[data-pek]').forEach(g => g.addEventListener('click', e => { const b = e.target.closest('[data-v]'); if (!b || b.disabled) return; S[g.dataset.pek] = b.dataset.v; keep(); if (g.dataset.pek === 'bp') sc.scrollTop = 0; paint(); }));
         box.querySelector('.peReset').addEventListener('click', () => { S = Object.assign({}, D); keep(); sc.scrollTop = 0; paint(); });
         let pa = 0; box.querySelector('.pePlay').addEventListener('click', () => { cancelAnimationFrame(pa); const mx = Math.min(560, sc.scrollHeight - sc.clientHeight), t0 = performance.now(), DU = 3600;
@@ -56103,7 +56162,7 @@ hairline({
         return '<div data-glv="tg" hidden><section class="glSec">' + DH.sec('Title group · properties', 'Figma’s component (Patterns DS25 › Title group Webapp), its properties as controls: Size, Centered, and each part on or off, its words typed. Each size on its text style and the space tokens (the table under it); the breakpoint draws it at that width with that breakpoint’s tokens.') +
           '<div class="mdBar" data-dpx>' + grp('Breakpoint', seg('bp', [['xs', 'XS'], ['s', 'S'], ['m', 'M'], ['l', 'L']], 'Breakpoint', 'Title group')) + '</div>' +
           '<div class="tgCfg" data-dpx>' + grp('Size', seg('lv', TG_SZ, 'Size')) + '<div class="tgCfgR" data-dpx>' + grp('Centered', seg('al', [['left', 'No'], ['center', 'Yes']], 'Centered')) +
-          grp('Properties', '<div class="tgParts" data-dp="Properties">' + TG_P.map(p => '<button type="button" class="mdBtn" data-tgp="' + p[0] + '" aria-pressed="false">' + p[1] + '</button>').join('') + '</div>') + '</div>' +
+          grp('Properties', '<div class="tgParts" data-dp="Properties" data-dpk="toggles">' + TG_P.map(p => '<button type="button" class="mdBtn" data-tgp="' + p[0] + '" aria-pressed="false">' + p[1] + '</button>').join('') + '</div>') + '</div>' +
           '<div class="tgCfgR" data-dpx>' + [['title', 'Title'], ['mutedT', 'Span content'], ['topT', 'Top support'], ['bottomT', 'Bottom support']].map(x => '<label class="tgIn" data-dpx><span class="glCtLbl">' + x[1] + '</span><input type="text" data-tgt="' + x[0] + '" spellcheck="false" autocomplete="off" data-dp="' + x[1] + ' text"></label>').join('') + '</div></div>' +
           '<div class="tgStage"><div class="tgSc"><div class="tgFr tgLive"></div></div></div><p class="glCtNote tgRead"></p></section>' +
           '<section class="glSec">' + DH.sec('Tokens', 'Each size’s tokens, from Figma: its title’s text style (its size and line height at XS · S · M · L), its support lines’ style, the gap between them, its icons’ size and gap, its ink. The slots: ' + T.SLOTG.top[0] + ' above the group, ' + T.SLOTG.right[0] + ' at its right; centred, ' + T.SLOTG.topC[0] + ' above it (the H1s ' + T.SLOTG.topC1[0] + ').') + '<div class="glTabW"><table class="glTab tgTab"><thead><tr><th>Size</th><th>Title</th><th>XS · S · M · L</th><th>Support</th><th>Gap</th><th>Icons</th><th>Ink</th></tr></thead><tbody class="tgLvRows"></tbody></table></div></section>' +
