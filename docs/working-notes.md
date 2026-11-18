@@ -19,6 +19,41 @@ this is the part you need before you change it.
 
 
 
+## v2769: Braze controls docked like Tweaks; the 100 later, slower, faded in; the trail's end; Inspect named
+
+**"Use same Tweak col style (push)"**
+- While Braze shows, `html.bzRailOn` docks `.bzRail` the way Tweaks dock: fixed at the window's right, from under the bar to the foot, `--tkDockW` (320) wide, the Doc panel's ground and left line. The page (`.docPage`) is pushed by its width.
+- With Tweaks or the Inspector docked too (`html.tkDocked`), the rail sits just left of them and the page is pushed by both.
+- The class comes from a 300 ms check in `bzDoc` (shown, connected); it comes off once the page is left.
+- The Banners tabs sit flush left (the Doc panel's `.dpRow > :not(.dpL){margin-left:auto}` pushed each one right).
+
+**"still speed to close to the scroll speed" / "Number should start later (control tweak) and with less paralax, more aligned with the normal page flow" / "And scroll the number should fade in"**
+- Speeds are lower:
+  - 100 speed in: 20% (was 35%);
+  - 100 speed held: 12% (was 20%).
+- New Tweaks slider, 100 start (`stT3CentSt`, `--t3CentSt`, default 30%): the 100's section sits that share of a screen further down the page (its margin-top: 96, or 64 on the phone, plus `--t3CvH × --t3CentSt`). The number comes in later in the normal page flow.
+- The odometer's 97 starts rolling once the number is wholly uncovered (`vIn` is now the later of the old point and the drawn reveal).
+- The number fades in with the scroll:
+  - it starts from its first uncovered edge (`fA`: `u + yD(u) = −0.36 × font size`);
+  - it is whole 45% of a screen later, or by the first title (`fB`);
+  - the fade multiplies the fade-out (`nf`).
+- Measured at 1440 × 900: about 19 px of number motion per 100 px of scroll on its way in (was 34). It is wholly shown when the card above is almost gone (was right under it).
+
+**"At the end make the dot reduce and disappear once reach to the big number and trail fade out totally"**
+- The trail's code sets `--t3TrF` on `#tl3` (smoothstep), over the stretch where the 100's section top goes from 90% to 50% of the view; the dot sits at its rail's foot by then.
+  - The line (`.t3TrK`) fades to 0.
+  - The dot (`.t3TrD`) scales to 0 round its centre.
+- The dot now travels by the `translate` property (its keyframes and the `--t3Y` fallback), not `transform`. Its `scale` composes after the translate, so it shrinks in place. Scaling a transformed box scaled its travel too: it jumped thousands of px up.
+
+**"Make the Chat floating disapear when we land on the seauence big number."**
+- The 100's frame sets `html.t3CentOn` from the number half faded in (or the stage held under reduced motion).
+  - `html.t3CentOn .evFld` hides the desk's floating Eva field (0.2 s fade).
+- The class comes off when scrolling back above, when the section leaves the view (its IntersectionObserver), or when it is not laid out (another page).
+
+**"WHere is my inspect feature ?"**
+- It was an unnamed dashed-square icon on the left of the top bar, by the viewport readout.
+- `#tkInsp` now sits in the right cluster, just before the camera (`order:3`), and is labelled "Inspect", 30 high like its neighbours.
+
 ## v2768: Braze on real screens, its controls a Tweaks column; token copy badges
 
 **"Remove shittty description" / "Put controler as tqweak colum right sid." / "Simulate real screen vieport for a better outcome"**
