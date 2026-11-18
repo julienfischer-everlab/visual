@@ -19,6 +19,18 @@ this is the part you need before you change it.
 
 
 
+## v2799: Biomarker item · Gradient
+
+**"Tweak a version of the biomarker item with a light gradient on the left side like this"** (a results list: each row a card, a coloured bar on its left edge, a wash of the colour fading out)
+- The master (`EvBio.row`) writes each row's status on it, `data-bst` (ok, sub, out, other), and `--bgC` takes the range colour (`--rgOpt`, `--rgSub`, `--rgOut`, `--rgUn`).
+- Gradient (`html.bioGrad`) turns each row into a card:
+  - the background is the status colour at 15% from the left edge, 5% at 30%, gone by 58%, over `bg/neutral/tertiary/100`;
+  - `radius/lg`, 20 in at the left, 12 at the right, 8 between rows instead of the hairline;
+  - the colour as a 4 px bar on its left edge (`::after`), 12 in from top and bottom;
+  - the hover and press plate (`::before`) on the card itself.
+- Tweaks → Insights → Biomarker item → Look: Plain / Gradient (`stBioGrad`, on the generic toggler).
+- The Biomarker item doc page has the same switch over its States (it sets the Tweak), and every list follows it: Insights, the Plan's rows, the Async report's.
+
 ## v2798: The Title group on Figma's tokens and properties; a picker that fixes a value off a token; item subs on fg secondary; Inspect's on state blue
 
 **"Title gorup Properties and Tokens. Need a demo and properties controllers on the DS title group page"** (Figma Patterns DS25 › Title group Webapp 2328:29539)
