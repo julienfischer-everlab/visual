@@ -3258,14 +3258,14 @@ window.EvToggle = (function () { var CK = '<svg viewBox="0 0 24 24" fill="none" 
 window.EvSeg = (function () {
   var esc = function (t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
   var html = function (o) { o = o || {}; var it = o.items || [], at = o.at || 0, two = o.size ? o.size === 'two' : it.some(function (x) { return x.sup != null; });
-    return '<div class="evSeg ' + (two ? 'evSeg2' : o.size === 'sm' ? 'evSegS' : 'evSegM') + (o.cls ? ' ' + o.cls : '') + '" role="tablist"' + (o.label ? ' aria-label="' + esc(o.label) + '"' : '') + ' style="--n:' + it.length + ';--k:' + at + '"><i class="evSegInd" aria-hidden="true"></i>' +
+    return '<div class="evSeg ' + (two ? 'evSeg2' : o.size === 'sm' ? 'evSegS' : 'evSegM') + (o.active === 'white' ? ' evSegW' : '') + (o.shape === 'full' ? ' evSegF' : '') + (o.cls ? ' ' + o.cls : '') + '" role="tablist"' + (o.label ? ' aria-label="' + esc(o.label) + '"' : '') + ' style="--n:' + it.length + ';--k:' + at + '"><i class="evSegInd" aria-hidden="true"></i>' +
       it.map(function (x, i) { return '<button type="button" role="tab" class="evSegT" aria-selected="' + (i === at) + '" tabindex="' + (i === at ? 0 : -1) + '"><b>' + esc(x.label) + '</b>' + (two ? '<span>' + esc(x.sup || '') + '</span>' : '') + '</button>'; }).join('') + '</div>'; };
   var pick = function (t, i) { t.style.setProperty('--k', String(i)); [].forEach.call(t.querySelectorAll('.evSegT'), function (b, k) { b.setAttribute('aria-selected', String(k === i)); b.tabIndex = k === i ? 0 : -1; }); };
   var el = function (o) { var d = document.createElement('div'); d.innerHTML = html(o); var t = d.firstChild, bs = [].slice.call(t.querySelectorAll('.evSegT'));
     bs.forEach(function (b, i) { b.addEventListener('click', function () { pick(t, i); if (o.onPick) o.onPick(i, t); }); });
     t.addEventListener('keydown', function (e) { if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return; e.preventDefault(); var k = bs.findIndex(function (b) { return b.getAttribute('aria-selected') === 'true'; }), n = (k + (e.key === 'ArrowRight' ? 1 : -1) + bs.length) % bs.length; pick(t, n); bs[n].focus(); if (o.onPick) o.onPick(n, t); });
     return t; };
-  return { html: html, el: el, pick: pick };
+  return { html: html, el: el, pick: pick, ACTIVE: [['default', 'Default'], ['white', 'White']], SHAPES: [['rounded', 'Rounded'], ['full', 'Full']] };   /* active: 'white' (evSegW) the tab on a white pill with black words in Dark too ("a variant with Active White bg (dark mode)"); shape: 'full' (evSegF) the track and the pill fully round ("Fully rounde.d") */
 })();
 /* EvCtl: the interactive components on one height scale (Design system -> Core components: Sizes, Buttons, Inputs, Badges, Chips; the Segment tab is EvSeg, on the same scale).
    A size's name is its height: lg 56, md 44, sm 36, xs 28, 2xs 20 (tokens --ctlLg ... --ctl2xs; .evCtl-<size> sets the padding, type, icon, gap and corner that go with it).

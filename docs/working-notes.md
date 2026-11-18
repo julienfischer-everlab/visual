@@ -19,6 +19,21 @@ this is the part you need before you change it.
 
 
 
+## v2779: Segmented gets Active white, Fully rounded and a playground at the top of its page
+
+**"Need a variant with Active White bg (dark mode) / And Fully rounde.d / Add a demo at the top with props to control and test"**
+- `EvSeg.html` / `EvSeg.el` take two new options:
+  - `active: 'white'` (class `evSegW`): the pill is `bg/static/white` and its words `fg/static/black` in both modes. Hover is #FAFAFA and press #F0F0F0 (Light's surface 200 / 300). The other tabs keep the track's inks.
+  - `shape: 'full'` (class `evSegF`): the track and the pill are on `radius/full`, and the tab's side padding is 12 (8 when rounded).
+- The white values sit in their own vars (`--sgOnW`, `--sgOnWH`, `--sgOnWP`, `--sgFgW`). The pill and the words read them first (`var(--sgOnW, var(--sgOn))`), so the dark-sheet and dark-preview overrides of `--sgOn` / `--sgFg` never undo the variant, with no specificity race.
+- `EvSeg.ACTIVE` and `EvSeg.SHAPES` list the options.
+- The Segmented doc page (`sgDoc`):
+  - It opens with a playground in the same `.dpg` as the Core components pages. Its props are Content (two lines / label only), Size, Tabs (2 to 4), Selected, Active, Shape, Label, Support and Theme (page / Light / Dark).
+  - The result is `EvSeg.el` itself, so picking a tab there moves the pill and updates Selected and the call shown under it. Its state is kept for the visit (`window.__sgPG`).
+  - New sections: Active white (on a dark panel whatever the page's mode, `evScD`) and Fully rounded (with two white ones).
+  - The Anatomy table has Active white, Shape and the API with `active` and `shape`.
+- The inspector's Component used badge names the variants: "Tab segmented · md · Active white · Full".
+
 ## v2778: Back to life at the foot of the page; the 100 no longer cut flat; the warp streaks 70% quieter
 
 **"BAck to life at the bottom of the page"**
