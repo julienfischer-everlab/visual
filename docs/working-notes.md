@@ -19,6 +19,30 @@ this is the part you need before you change it.
 
 
 
+## v2780: The 100: rail and dot 128 into it, one pace for the number, the title's slow 32, the warp cruising at the end; the Timeline tabs Active white and Full
+
+**"Trail and dot should bleed 128px in the left side of the big number sequence"**
+- The last list's rail (the `.tlList` followed by `.t3Cent`) runs 128 past its foot: `html.tlD3 #tl3 > .tlList.tlList.tlList:has(+ .t3Cent)::before{bottom:-128px}`.
+- `rail()` reads that foot, so the trail (`.t3TrK`) and the dot (`.t3TrD`) follow. The dot's run ends at `min(rail end, cT + 128)`, where `cT` is the 100 section's top.
+- The shrink and fade at the end (`--t3TrF`) are unchanged.
+
+**"At this point the 100 should continue to move up, same as the seauence just before"**
+- With the defaults (15% and 15%) the number already kept one pace. A different saved "Speed held" (a preset from before it was 15%) would still slow or stop it once the stage holds, at about 100.
+- So the held pace is now the coming-in pace (`KH = KI`). The "Speed held" slider is gone, and "Speed coming in" is now "Speed".
+
+**"Title should move up slowly 32px mre on scroll but super slow"**
+- Once the second title is written (`vE`), `.t3CentTx` rises 32 more, linearly over the rest of the page's scroll (`mRem`, read with the frame's other sizes). That is about 4% of the scroll at L.
+
+**"At this poitn we still to auto travel , particle speed 25% of the full speed (fast scroll)"**
+- The warp now has a floor, `WB`: 1.5 (a quarter of its top speed of 6). It comes in over the last quarter screen of the page's scroll, `1 - sm(0, H * .25, mRem)`.
+- The speed glides to `WB` instead of to 0. A scroll on past the end adds to it as before, and a scroll up leaves it at once (`WB` falls to 0 within a quarter screen).
+- The scene's floating stars dim only for the speed above the cruise.
+
+**"Use this setyup"** (the Segmented playground: Label only, md 44, Active white, Full)
+- The Timeline's tabs are `tlTabs evSeg evSegM evSegW evSegF`.
+- The adopter reads the white vars first (thumb `var(--sgOnW, var(--sgOn))`, hover and press, the active label `var(--sgFgW, var(--sgFg))`), and the corners come from `evSegF`'s `--sgR` / `--sgRi`.
+- A count badge on the active tab turns dark on the white pill.
+
 ## v2779: Segmented gets Active white, Fully rounded and a playground at the top of its page
 
 **"Need a variant with Active White bg (dark mode) / And Fully rounde.d / Add a demo at the top with props to control and test"**
