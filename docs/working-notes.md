@@ -7,6 +7,12 @@ this is the part you need before you change it.
 
 ---
 
+## v2824 — Guides in Inspect, General layout Page example, token search modal
+
+- **Guides live in Inspect**: the Inspect panel's top group (`.piGd`) holds Section guides and Container padding guide. Its buttons drive the hidden `#stSecGd` / `#stCtGuide` selects (still `.tkNoSave`, never saved); the Tweaks group `#tkGdGrp` is hidden for good.
+- **General layout → Page example** (`data-gl="pe"`, `#page-example`, `glPe` / `glPeWire`, view state `everlab:pePage`): one screen in the app's frame (`.hgSim`) at XS·S·M·L, sections stacked full width and each switched On/Off: Header group (Status bar at XS·S, Header navigation = the Top nav master C with Back and Close, Header title = `EvHdTitle` Page), Body (`hgSk` skeleton), Footer group (CTA). Each section has its container (`.peCt`; the Header title's is the master's own `.evHtC` via `--evHtW`) with the breakpoint's tokens and a max width picked per section (3xs…lg, Full). Header group: Fixed Yes/No, Style Gradient/Filled/Transparent (ground once scrolled; Fixed No keeps a status bar ground). Footer group: the same. Guides On draws sections (soft labels under their parent), containers dashed, padding bands red. Play scrolls it; Reset. The Header navigation section is 76 here so the discs never cover the title.
+- **Token search modal** (Tokens page): Edit opens a search (`pickMd`): a field for a token's name or a value typed by hand ("Use “…”" row: a manual value, for the look and reference), chips All · Primitives · All semantic · each collection, the tokens of the same type with their values (swatches for colours), ↑↓ / Enter / Esc, the current token pre-selected, "Back to Figma's". New rows' value cells get a search button too. `EvTokEdit.parse` now takes a token of the same collection as a `{reference}` and one of another semantic collection as its value (this mode's).
+
 ## v2823 — Guides group, token editor, soft guide labels, report step titles on the Title group
 
 - **Tweaks → Guides** (new group, `#tkGdGrp`, above General layout): Section guides and Container padding guide moved here. Both selects carry `.tkNoSave`: left out of the saved setup's control list (`ctl()`), never put back by a setup (`put` skips them), so switching them never marks a preset unsaved ("We never save that").
