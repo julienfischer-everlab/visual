@@ -19,6 +19,17 @@ this is the part you need before you change it.
 
 
 
+## v2820: Service detail on the one structure (step 1 of the audit's fixes)
+
+**"Yea"** (the audit's step 1: the desk pages; **"also the title section should be there"**)
+- The panel (`#dSvc`) is a full-width section with no padding of its own (was 40 at M · L, 13 at XS); `--navPX` 0 so the sticky bar spans it with its own inset.
+- **Header title section**: the picture, the title and More (`.svHead`) moved out of the body's column after each render into `.svHt` (`data-hg-part="title"`) before the grid, its container `.svHtC` on the token (`--ctPadX`, sm 1080 or the Tweaks' pick), 24 under it.
+- **Body**: the grid (`.svGrid`) is the container: the token's padding inside it, sm + 2 × padding wide (or the pick).
+- XS keeps its photo hero (the title on the picture) as the header; its body container on 16.
+- Section guides (page path): a page's `[data-hg-part]` title section is drawn as **Header group · Header title section** with its container and padding, under the **Top navigation section**.
+- Checked: L panel 576–1680, bar Back at 600, title section 143–271 (title at 724 after the 104 picture), grid padding 24; S grid padding 16; XS panel padding 0, grid 16; no page errors.
+- Next (step 1 continued): Overview, Insights, Timeline, Services marketplace, Plan.
+
 ## v2819: Section guides: one structure everywhere (full-width sections, containers with their padding inside)
 
 **"This is wrong. The container is not far away like this. It should be the content."** (Service detail, General Questionnaire) / **"All of the guides are wrong. Where is the padding in? The section should be full width ... It's always the same structure."** (Async report at S)
