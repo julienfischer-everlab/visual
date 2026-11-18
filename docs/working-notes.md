@@ -19,6 +19,25 @@ this is the part you need before you change it.
 
 
 
+## v2787: The Ask sheet's Inbox rows on List item interactive; the 100's 3rd row, Bon voyage in four languages
+
+**"list interactive. Add tweak to be able to control aith properties"** (the Ask sheet's Inbox)
+- `window.__ibDeco(root)` puts EvListI's classes on each `.aiIbxL > .evIbx` while the Inbox is Stacked: `evLi evLi-<size> evLi-<emphasis> evLi-i`, plus `is-sel`, `is-hover` / `is-press` and `is-dis`. It runs as the list is filled (both places) and when a Tweak changes.
+- Tweaks → Ask → Inbox module, Row ·:
+  - Size: xs, sm, md (the default), xl, 2xl, auto.
+  - Emphasis: what a selected row wears, Secondary (a ring) or Primary (filled).
+  - Selected: the first row.
+  - State: Live, Hover, Press, drawn on the first row.
+  - Disabled.
+- Adopter CSS over the sheet's own Filled / Ghost row styles: the master's padding, corner and side offset (the ground out past the column), its rest, hover, press and disabled.
+
+**"Add tweak 3rd row ON OFF that write with square cursor and delete to write in antoher language. Use orange effect and blur. Bon voyage (In japanese) (In German) (In talian)"**
+- A third line in the second title's block (`.t3Bv`, the titles' own type `t3CentH`).
+- Once the second title is written (`t2 >= .98`), it types Bon voyage a letter at a time (85 ms, 190 for Japanese), holds it 2.2 s, deletes it (45 ms a letter), then types 良い旅を, Gute Reise and Buon viaggio, and round again.
+- Each letter comes out of the warm blur, as the titles' do (`t3BvIn`: orange, blur 6 → none, its glow out). The cursor is an orange square (`.t3BvC`) that blinks while it waits, not while it types.
+- The typing stops and the line clears as the page scrolls back up. With reduced motion it shows Bon voyage still.
+- Tweaks → The 100 · parallax → 3rd row, On (the default) or Off (`html.t3Bv`).
+
 ## v2786: The Overview's Action plan items as the Timeline's; Dot in line's rules
 
 **"Align design with timeline item, keep this version in the DS item service. DS"**
