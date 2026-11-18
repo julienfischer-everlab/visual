@@ -19,6 +19,14 @@ this is the part you need before you change it.
 
 
 
+## v2819: Section guides: one structure everywhere (full-width sections, containers with their padding inside)
+
+**"This is wrong. The container is not far away like this. It should be the content."** (Service detail, General Questionnaire) / **"All of the guides are wrong. Where is the padding in? The section should be full width ... It's always the same structure."** (Async report at S)
+- A container is drawn as its content column plus the breakpoint's padding token (`--ctPadX`) on each side, the red bands inside it, kept inside its section; where a screen pads its section instead of its container (the Async report, the full modals), the guide still shows the one structure: section full width, container with its padding.
+- Pages (the Service detail and the other desk panels): the centred column is searched deeper (five levels), so the container is found round the content (the Service detail's `.svGrid`), not the panel's padding.
+- Checked: Async report at S: Header, Body and Footer sections 552 wide (the screen), each container 552 with 16 bands inside; Service detail at L: sections the panel's width, containers round the content (592 to 1664) with 24 bands; no page errors.
+- Not yet: the Service detail's header as Top navigation + Header title sections (its title and picture are still one block under the bar).
+
 ## v2818: Full modals' Header navigation as Figma's at every size; the Async report's bar too
 
 **"so do it"** (Figma Modal full / Header navigation XS S and M L)
