@@ -19,6 +19,21 @@ this is the part you need before you change it.
 
 
 
+## v2756: the split button and Icon only on Figma's tokens
+
+**"Line between split doestn seems right"**, with three Figma links: Button / Icon 25203:109689 (544 variants), the split's portions .Label position 25463:8251 (812), and Button / Split 25450:9104. Read with the Figma connector (metadata, get_design_context on md Primary, Secondary and Tertiary and on xs Right, get_variable_defs on every size).
+- `EvTokBtn.split`, applied by the generated `#evTokCtl` style: the action and the menu touch (no gap), square inside (`radius/none`) and full outside. The menu is as wide as tall. Between them is a divider the size's border wide (`interactive/border/lg|md|sm|2xs`: 2 · 1.5 · 1 · 1), drawn as an inset band on the action's right edge.
+  - Its colour is `br/neutral/secondary/invert/100` on Primary (white 24% in Light, black 24% in Dark) and `br/neutral/tertiary/100` on Secondary.
+  - Tertiary: the action's outline is the divider, and the menu's outline runs on its other three sides.
+  - The app's 2px gap showed the ground through as a dark line; it is gone.
+- `EvTokBtn.icon`: Icon only, and the split's menu, take Button / Icon's icon, a size down from the label's: `interactive/media/lg|sm|xs|xs` (24 · 20 · 16 · 16; it was 24 · 24 · 20 · 16).
+- The inspector reads a split's two portions as Button / Split:
+  - The action: corner from its outer side, padding, and the divider's colour and width.
+  - The menu: its width as its height, the chevron, and the Tertiary outline on three sides.
+  - Icon only is checked against Button / Icon's icon.
+  - Every doc button and badge, Dark and Light: no difference.
+- The doc's Split and Height rows and the playground's Figma line name Button / Split and Button / Icon.
+
 ## v2755: playgrounds on Buttons and Badges; the inspector measures at rest; the 100 sequence retimed
 
 - **"On top of EACH components I need a demo / playground ... (similar than the figma one)"**, then **"do that for button and label"**: Design system → Buttons and → Badges open on a playground (`.dpg`, `pgHtml`, `PGF` specs, state in `window.__czPG` for the visit). The result sits at the left, drawn by EvCtl itself, with its Figma variant and the call that draws it. Figma-like properties sit at the right (menus, a switch, a text, and Theme Page / Light / Dark through the new `.evScL` / `.evScD` scopes, which EvCtl's static and token rules both honour).
