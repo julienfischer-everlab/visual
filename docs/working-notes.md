@@ -19,6 +19,17 @@ this is the part you need before you change it.
 
 
 
+## v2808: Sections without padding, containers on one padding token; Container padding guide; the check-in's Header group follows its container
+
+**"The header group doesn't follow. Also, there's never padding top and bottom on a section like a header group, a body section, or a footer section. The padding top and bottom is always managed in a container."**
+- The check-in's Header group is a section with no padding (`.qciHd`) and a container in it (`.qciHdC`) with the top, bottom and side padding, as wide as the Header group's container (Tweaks → General layout → Header group → Container: `--ctHd` on the wrap, followed by `hdFit` and an observer), else as the body's.
+- Its body section has no bottom padding (the container's 24 instead); its footer section none (`.qciFt`, the container: 12 top, 20 + the home bar at the foot, the token's sides; 512 + sides wide).
+- Full modals' body containers pad their sides with the Design system's container token (`--sgmSide: var(--ctPadX)`: 16 · 16 · 24 · 24; was 20, and 16 at XS and S).
+
+**"I want to see the padding on the container ... only the padding on each container, which is different by breakpoint, but it's the same token for each container: the padding left and right."** / **"Put the padding guide on top, next below the section guide. Instead of padding guide, use container padding guide. Yes/no?"**
+- Tweaks → General layout, at the top: **Section guides** (On / Off) and under it **Container padding guide** (Yes / No; was Padding guide under Body). Two switches: the sections and their containers; each container's left and right padding, drawn inside it and named (16, 24). No more wide red bands to the screen's edges, no top-bottom bands.
+- The guide finds a container as wide as its section (the header's on `sm`), and reads each container's own padding (`boxIn` → `pl`, `pr`).
+
 ## v2807: Top nav controls sized down over a screen (Design system rule)
 
 **"make sure on the design system, when it's a step or modal, the CTA is sized down from the normal header ... the CTA on the top navigation should be the same as the one on the right here (the cross)"; "That's a design system requirement. When it's about overlapping a screen by a bottom sheet or a full modal, the icon (the CTA) should be sized down."**
