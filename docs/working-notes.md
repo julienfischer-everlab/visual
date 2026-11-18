@@ -19,6 +19,20 @@ this is the part you need before you change it.
 
 
 
+## v2778: Back to life at the foot of the page; the 100 no longer cut flat; the warp streaks 70% quieter
+
+**"BAck to life at the bottom of the page"**
+- In `centBloc` the button left `.t3CentTx` and is now a direct child of the stage `.t3CentS`.
+- It sits absolute at `bottom: var(--t3UpB, 40px)`, centred; at XS (`@container tl (max-width:540px) or style(--tlXs: 1)`) `--t3UpB` is 120, clear of the dock.
+
+**"Shouldnt be cutted"**
+- Cause: the top fade was a mask on the number (`.t3RollW`), whose box is shorter than its digits (`.t3RollN` runs ~108px above and below it: `margin:-.15em`). A mask clips to its element's border box (`mask-clip: border-box`), so the digits were cut flat at the number's top edge.
+- Fix: the fade now goes on the digits' own box, `rN`, in its coordinates (`rnY`, read once a frame from the two rects divided by the frame scale `k`; `rnH` its height; fade length 30% of it).
+- `rN` already wears the reel's edge fade as a CSS mask (`--t3E` / `--t3M`). An inline mask would replace it and cut the rolling digit flat at the reel's foot, so the inline value repeats that gradient and adds the top fade as a second layer with `mask-composite: intersect` (`-webkit-mask-composite: source-in`). When the fade is done the inline mask is cleared and the CSS one is back.
+
+**"Reduce prominenet of particles by 70%"**
+- The warp streaks' alpha is multiplied by `.3` in the draw (`al = q.a * sA * cl((6 - q.z) / 1.5) * .3`).
+
 ## v2777: Inputs and Alert masters from Figma; decade cards without a light of their own; the 100 rises at one pace
 
 **"Where are the input ? And alert s ?"**
