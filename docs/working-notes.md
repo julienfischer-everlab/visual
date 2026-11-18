@@ -19,6 +19,10 @@ this is the part you need before you change it.
 
 
 
+## v2751: the token inspector, findable
+
+- "token inspector ?" / "where" / "no panel opens": the Buttons page's lead now says it (an orange chip: Click any button to see its Figma tokens in a panel at the right); `#token-inspector` opens Design system -> Buttons with the md Primary inspected; Tokens -> Components has an Inspect the app's buttons button doing the same (`EvTokCmpUI.go()`). Checked with real mouse clicks from the Page menu (Design system -> Buttons -> a button), the link and the Components button: the panel opens each time (Chromium).
+
 ## v2750: a component's tokens in a right panel (Design system -> Buttons)
 
 - "When I click on a component I need to be able to see the tokens assocauted with it , on a right panel": on the Design system's Core components pages (Buttons, Sizes), a button clicked is outlined and its tokens open in a panel at the right (`EvTokCmpUI.inspect`, beside Tweaks when that is docked, Escape or the cross to close, gone with the page). The app's `EvCtl.btn` read as the Figma variant it stands for (Primary, Secondary, Tertiary; Ghost the Figma Minimal; its size; Shape Round, the app's pill; icon only the size's tokens, as wide as tall): each property's token and its value in the page's theme, beside what the app draws now (its computed height, corner, padding, gap, icon, type, fill, label colour, border), each marked as matching (✓) or not (≠); the Hover and Pressed tokens under them. "Open in the playground" puts the playground (Tokens -> Components) on that variant.
