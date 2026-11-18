@@ -107,6 +107,9 @@ The page menu `#versionSel` has Documentation flow (`'doc'`, renamed from Docume
 | Cards (every card: Card static, Card interactive) | `window.EvCard` (`EvCard.html`, `EvCard.item`), `.evCard`, `.evCardI`, page `cdDoc` (`#cards`) | references/tokens-components.md |
 | Biomarker item (a reading in a list: name 16, value + date 14, range bar, status pill; Design system > Biomarker item) | `window.EvBio.row`, `.mbrow`, `--bioT/--bioTLh/--bioS/--bioSLh`, `biDoc` | references/tokens-components.md |
 | Buttons | `.arBtn.arBtnPrimary.arBtnLg`, `.svBtn`, `.sgmAsk` | references/tokens-components.md |
+| Checkbox and Radio (Core components > Checkbox, Radio; Figma Checkbox/default, Checkbox group, Radio, Radio group) | `window.EvCheck` (`box`, `radio`, `row`, `group`, `mark`, `wire`), CSS `#evTokCk` from the Themes tokens | Design system pages `cb`, `rd` (czDoc) |
+| Badge Range and Badge Progress (Core components > Badges, Type Range / Progress) | `EvTokBadge.Range.html`, `EvTokBadge.Progress.html`, CSS `#evTokRg`, `#evTokPg` | Design system page `bd` (czDoc) |
+| Questionnaire step (Step flow > Questionnaire step: Selection items on Card interactive) | `window.EvQ` (`title`, `option`, `list`, `mark`, `align`) | Design system page `sf` |
 | Vertical timeline | `window.EvTl` | references/tokens-components.md |
 | Action card (the Service timeline's item: the Overview's Action plan cards, the Timeline's rows) | the Timeline module's `row()`, exposed as `window._tlItem.fill(el, rows, grid)`; Design system → Feature components → Action card (`aiDoc`, `#action-card`) | references/tokens-components.md |
 | The Plan module (tiles, Sub pages, sheets, Activity session) | `#dPlan`, `window._plan`, `--plATileBg`, `--plPTileBg`, `detSoloShow` | references/tokens-components.md |

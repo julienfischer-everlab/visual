@@ -19,6 +19,17 @@ this is the part you need before you change it.
 
 
 
+## v2811: Checkbox and Radio in the Design system (Figma Core DS25)
+
+**"Also, where the checkbox and the radio"**
+- New master `window.EvCheck`, from Figma's Checkbox/default, Checkbox group, Radio and Radio group (Core DS25): `box({ size, on, ind, state, disabled, touch })` and `radio({ … })` (the control alone), `row({ type, size, on, ind, disabled, label, sub, bold, value })` (the control and its words), `group({ type, size, items, bold, label, live })` (role group or radiogroup), `mark(el, on | 'mixed')`, `wire(root)` (tap to tick; one radio on per group). Its CSS (`#evTokCk`) resolves every colour from the Themes tokens in Light and Dark on the grounds Badge Progress uses.
+- Sizes: Small 16 and Medium 24 (corners 4 / 6 on the box; tick 10 / 16, minus 10 / 14; radio dot 8 / 14.4), a 1.5 line inside. States from Figma's tables: unchecked `br/neutral/secondary/100` (in a row `/200`, as the groups have it), checked `bg/neutral/primary/100` with the inverse tick, indeterminate the primary line and minus (Medium on `bg/neutral/tertiary/100`); hover, pressed, focus (2 of the ground then 2 of the ring for the box; 1.25 + 1.25 for the radio) and disabled (`bg/neutral/tertiary/300`, marks and words `fg/neutral/tertiary/100`). Pressing a row shows the hover look (Figma's groups).
+- Labels: Small Label - Body/200 (14/16) 8 away, Medium Label - Body/300 (16/18) 12 away, centred on the control (3 down; Figma has 4 on the checkbox, 1 on the radio); Bold 570; the support line Label - Body/200/Regular in `fg/neutral/secondary/100`, 2 under.
+- Design system → Core components: new **Checkbox** and **Radio** pages after Toggle (`#checkbox`, `#radio`): a playground (Size, Checked, State, Label, Bold label, Support, Touch target, Theme; Figma's variant and the call), States (every state × off, on, indeterminate × Small, Medium), With a label, Try it (live groups), Anatomy, Usage. The round checkbox (`EvCtl.check`, Figma's Checkbox/round) moved from the Inputs page to the Checkbox page.
+- Figma gaps kept as they are: no error state; no checked hover, pressed or focus on the radio; one disabled colour for both controls' words (Figma's radio keeps a regular label black and a bold one on a legacy token).
+- Not yet moved onto `EvCheck`: the app's existing checkboxes (the Health profile's consent rows `hpChk`, the Account's family rows `acCb`, the Async report review's round checks `evChk`). The questionnaire answers stay Selection items (`EvQ`).
+- Checked: Medium box 24, line 1.5 white 24% on dark, checked white with the black tick; radio dot 14.4; live checkbox and radio clicks; Light and Dark; Inputs has no round checkbox left; no page errors.
+
 ## v2810: Badge Range and Badge Progress on the Design system's Badges page
 
 **"Where at the badge range? They should live in this badge component."**
