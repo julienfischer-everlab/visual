@@ -19,6 +19,13 @@ this is the part you need before you change it.
 
 
 
+## v2804: Doctor note V2 follows the Async report's persona
+
+**Doctor note V2 always showed Persona #1's priority and risk areas, whatever the Persona tweak said**
+- `AsyncReport.mount`'s options object `o` never had a `persona` field, so `drLetter()`'s `o.persona` was always undefined: the PRI line ("A programme focused on …") and the AREAS badges fell back to #1's "your heart health", Heart health and Cholesterol on every persona.
+- `o.persona` is now set from `opts.persona` the way `D` and the Plan items (`RVM`) already resolve it (`PERSONA[opts.persona] ? opts.persona : 'p1'`). Persona #2 + Doctor note V2: "A programme focused on the raised pelvic protein", badges Pelvic health and Women's health; #1 unchanged.
+- #3 has no doctor-note screen (its recommendations are a plan, `plan: PLAN3`, so `rcPhased()` is false); its PRI/AREAS entries ("your bowel health", Bowel health, Iron) only show if it gets one.
+
 ## v2803: Quarterly Check-in V1, a standalone page on the Async report's frame; text styles' other breakpoints dimmed
 
 **"build a standalone page experience where I can see the V1 based on the different personas that we have ... a tweak for the persona ... very similar to the async report framework"** (the concept artifact "Quarterly Check-in V1 and V2")
