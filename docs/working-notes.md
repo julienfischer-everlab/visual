@@ -19,6 +19,21 @@ this is the part you need before you change it.
 
 
 
+## v2785: The Overview modules' Card static properties in their Tweaks; Inspect rows on one line
+
+**"Same here, Card static properties in tweak group. Basicaly have th properties in tweak group when the module is a component"** (the Schedule card)
+- The rule from now on: a module that is a component shows that component's properties in its Tweaks group.
+- The Overview's three modules on Card static each get two rows in their own group: Primary card (`stOvCdLookP` / `stOvCdSizeP`), Scheduled (`…S`) and Insights (`…I`).
+  - Card · Appearance: every EvCard look but Media, grouped as Figma groups them.
+  - Card · Size: xl, lg, md or sm.
+  - The defaults are Secondary - Transparent and xl, the look they had.
+- The Overview's sync (`#dOver .hpOvCard / .ovBk / .ovInsCard`) puts on the module's chosen `evCard-<look>` and `evCard-<size>` classes (it put on fixed ones), again whenever a module is drawn anew or a Tweak changes.
+- EvCard.css now also writes each look's line and shadow as `--kShd`. The bento adopter forces `box-shadow:var(--kShd, none)` beside its `--kBg` ground (the bento's own rules are `!important`), so an Outlined or Elevated look shows on the Overview too.
+
+**"Put each row in one line. Use green orange dot. Value e.g. 16px on thr right align"** (Inspect → This element)
+- Each row is one line: the property's name; a dot and the token (green on a token, orange "no token", grey "Fill container" / "not a token"); the value at the right.
+- The table is `table-layout:fixed`: the names' `nowrap` had pushed it wider than the panel. Long names and tokens are cut with an ellipsis and shown whole in their title.
+
 ## v2784: Dot in line on the decades' feed; the 100's reel fades top and foot again; its title 48 lower
 
 **"in the timeline Add a tweak dot in line. when the light come through the line it reveal few dot, randomly positionned, max 3 ... Tweak Dot in line ON OFF"**
