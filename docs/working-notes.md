@@ -19,6 +19,29 @@ this is the part you need before you change it.
 
 
 
+## v2786: The Overview's Action plan items as the Timeline's; Dot in line's rules
+
+**"Align design with timeline item, keep this version in the DS item service. DS"**
+- `fillPlan` (the Overview's Action plan) now marks its list `apV3`, and its CTAs are the Buttons master's split, as the Timeline's are:
+  - `.tlAct.split` gets `evSplit`;
+  - `.tlBtn` gets `evBtn evBtnPri` (or `evBtnSec`);
+  - `.tlMore` gets `evBtn evBtnIc`, and its dots `evCtlIc`.
+  - Size: md (44) on the phone's list, sm (36) on the desk's cards.
+  - The old row's own button rules are `:not(.evBtn)`, so they step aside.
+- CSS for `#dOver .tlEmb.apV3`, from the Timeline item's measured values:
+  - the picture 64 (12 round on the phone, 8 on the desk);
+  - the title 14/20 on the phone, 17/22 on the desk;
+  - the sub 14 / 13;
+  - the date line 13.5 on the phone;
+  - the row 20 over and under on the phone;
+  - the ⋯ 36 wide.
+- The Design system's Action card (`window._tlItem.fill`) is untouched: it keeps the old item, which is the service item version.
+
+**"Rule: Orange dot only on the horizontal line / reduce size by 2px / Dot appear only while the light orange overlap and pass by, then if not dispear"**
+- Dots now go only on a side line's level run, clear of its corners: the line within .5 of the same height 3 either side. None go on the middle line.
+- 6 round on the desk, 4 on the phone (were 8 / 6).
+- A dot is lit only while the light is over it, from the head reaching it to 20 (of the line's 100) past it. It was held 1.9 s.
+
 ## v2785: The Overview modules' Card static properties in their Tweaks; Inspect rows on one line
 
 **"Same here, Card static properties in tweak group. Basicaly have th properties in tweak group when the module is a component"** (the Schedule card)
