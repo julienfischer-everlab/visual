@@ -19,6 +19,18 @@ this is the part you need before you change it.
 
 
 
+## v2806: The check-in's intro and cover are the Async report's intro; options stacked; the notification's blanket
+
+**"This should be exactly the same structure: the async intro with the image in the background, the same structure. Don't invent anything here."**
+- The check-in's Intro and its report Cover mount the Async report itself, as the Design system's Intro flow draws framework A (`AsyncReport.mount(frame, { ...__arO, dbf: 'fade', welcome: 'title', hero: EvArHero, intro })`): the entrance (the title written on black under its tag), then the report's picture fading in at the top, the title, its line, the three rows, the button. Over the check-in (`.arSheet.qciArIn`, pinned in its frame); its Back and its button hand back to the check-in (`prev()`, `next()`).
+- The report takes another flow's intro by `opts.intro = { name, date, tag, title, sub, rows: [[icon, title, line] x3], cta, onDone }`: its welcome's title and tag, the bar's name and date, What to expect V3's line, rows and button (in the column and the footer), the button handing back at that step. The report's own intro unchanged without it. Intro: Quarterly check-in · How have the last 3 months been? · 11 quick questions / For your care team / Insights after · Start your check-in. Cover: Your check-in insights · Here's what your check-in shows. · What stood out / From your last results / Your next step · See your insights.
+
+**"1 keep it stuck" / "The same for our" / "Same for our sleep, stress, and eating" / "Get her."** (read as: one column, stacked; the same for hours of sleep, stress, eating, gut)
+- Every option list is one stacked column (no two-column grid past three options). The 0–10 scales (How you've been, Eating) on one row of 11 (was 6 and 5).
+
+**"Add a blanket 50% opacity black behind the notification."**
+- The home screen under a 50% black blanket that fades in (0.5 s) as the notification drops (`.qciIos::after`), the notification over it.
+
 ## v2805: Section guides on every page; the check-in's pushes on the phone's home screen
 
 **"Every page, I need a tweak, a general tweak: show section guides ... the header, the body, and the footer, with the container in the middle."**
