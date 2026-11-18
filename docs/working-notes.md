@@ -19,6 +19,15 @@ this is the part you need before you change it.
 
 
 
+## v2805: Section guides on every page; the check-in's pushes on the phone's home screen
+
+**"Every page, I need a tweak, a general tweak: show section guides ... the header, the body, and the footer, with the container in the middle."**
+- Tweaks → General layout → **Section guides** (`#stSecGd`, On / Off), at the group's top so it is there on every page. It draws the Padding guide's sections and containers alone (`html.ctGdSecOnly` hides the red padding bands): the Header group section (blue), the Body section (white) and the Footer group section (green), each lightly filled and named, the container in each dashed in the middle. The Padding guide on adds its red bands back.
+- The guide's container finder skips a header pinned in the scroller (sticky, and what is in it): the body's own container is found under it (the check-in's questions: 379 wide at XS).
+
+**"For this, use a normal iPhone with the icons: normal home iPhone, not the app, but the home icons behind, and then a notification that just pops."**
+- The Check-in push and the Insights push are the phone's home screen (`.qciIos`): a wallpaper, a page of apps (plain glyphs, no real app's art, Everlab among them), the page dots and the dock; the Everlab notification pops down from the top 0.65 s after (a spring, 0.76 s). Tapping it goes on (the intro, the cover); tapping the Everlab icon opens the app instead (the Overview's check-in card, ready or done). At XS and S in the device; at M and L a phone's screen in the middle. The lock screen (9:30, Today, Open the app instead) is gone.
+
 ## v2804: The check-in on the real Overview as its primary card; its Flow panel; the pending action on Card static (Warning)
 
 **"This needs to be the actual overview, not the fake overview like this. This card here should replace the main card, the primary card on the top. That should keep the same structure as a primary card."**
