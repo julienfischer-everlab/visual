@@ -19,6 +19,14 @@ this is the part you need before you change it.
 
 
 
+## v2763: the 100's speed, two sliders
+
+**"Less fixed on scroll. Need to be able to control more this"**
+- Tweaks → the 100: **100 speed in** (its way in, before the stage holds) and **100 speed held** (once it holds), each 0–100% of the scroll on the screen: 100 rides with the page, 0 stands still.
+- Defaults 35% in and 20% held (was 8% throughout). The change from one to the other is eased over 30% of a screen, so there is no kink as the stage pins.
+- They replace the 1–10 parallax (`stT3CentPx`); the sequence's timing, the titles following the number and the section's length are unchanged.
+- Measured at 1440 × 900: 56px per fifth of a screen on the way in and 16px per tenth once held (35 / 20); 161 and 48 at 100 / 60; none at 0 / 0. Back to life reached.
+
 ## v2762: Cards on Figma's tokens; the 100 almost still
 
 **"Adjust card component (Patterns DS25, Card components 6645:85123) Align the tokens"**
