@@ -19,6 +19,18 @@ this is the part you need before you change it.
 
 
 
+## v2804: The check-in on the real Overview as its primary card; its Flow panel; the pending action on Card static (Warning)
+
+**"This needs to be the actual overview, not the fake overview like this. This card here should replace the main card, the primary card on the top. That should keep the same structure as a primary card."**
+- The primary card has a new Object, **Quarterly check-in** (`stPcObj` `qci`), drawn by the primary card's renderer (`HPC.qci({ st, n, k })`, `HPC.QCI`): the Doctor's plan's head (tag and two-tone title, the care team at its right, over the words when the card is under 360 wide), its line, the card's own button (`.hpOvBtn`) at its foot; the Free card's ground and words (`.hpOvCard:is(.hpOvFree, .hpOvQci)`). Four moments: ready (Start), started (n of m answered, Continue), sent (a spinner, Skip to when it's ready), done (View). The Documentation's primary card list draws it too (`hpDocCard`, `x.obj === 'qci'`).
+- The check-in's Overview moments are the real Overview: the page opens over the Overview (`setMode(9)` first), and on Overview · Check-in card, Preparing and Insights ready it steps aside (`.qciWrap.qciPeek`, inert; not counted by the full-view cover, `html.evCover`), `window.__qciCard` its moment, `window._hpCardPaint()` the card drawn again. The card's button moves the journey on (`_qci.card()`: Start → intro, Continue → the first unanswered question, Skip → the insights push, View → the cover); from the Overview's own card (Object picked) it opens the check-in at its intro. The page gone, the Overview's own card back.
+
+**"And where is the flow? We need the flow."**
+- The Flow panel (`__flowPanel('qci')`, EvCtx `flow: 'qci'`): Check-in (push, Overview card, intro, each question by name and number, thanks), Waiting (Overview preparing, insights push, Overview ready), Insights report (cover, each insight, your next step); the screen it stands on lit, any row jumps there. The questions follow the persona's answers (follow-ups in and out).
+
+**"This should be a static card. The right warning property"** (`div.svPend`, the service page's Pending action)
+- Card static, Appearance **Sentiment - Warning**, size lg (`evCard evCard-sentiment-warning evCard-lg`): `bg/sentiment/warning/secondary/100` (#3E1A00 Dark, #FFF2E8 Light; was #3A1F0B and #FBE9DE by hand), padding and corner from the size. Every pending action but the neutral ones (ok, wait, info); its own row and stacked layouts kept.
+
 ## v2803: Quarterly Check-in V1, a standalone page on the Async report's frame; text styles' other breakpoints dimmed
 
 **"build a standalone page experience where I can see the V1 based on the different personas that we have ... a tweak for the persona ... very similar to the async report framework"** (the concept artifact "Quarterly Check-in V1 and V2")
