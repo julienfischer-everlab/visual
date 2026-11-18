@@ -19,6 +19,17 @@ this is the part you need before you change it.
 
 
 
+## v2814: The Header group's two sections, each with its container in Tweaks; the body's container back in the guides
+
+**"In the header group, we have two sections: top navigation and header title, stacked, full width. For each, there's a container inside that I need to be able to control."**
+- Tweaks → General layout → Header group: **Top navigation · Container** (was Container: `--ctHd`, `data-ct-hd`) and a new **Header title · Container** (`--ctHt`, `data-ct-ht` on the full modal's wrap; unpicked, the body's), shown when the screen has a Header title. Kept per page and per step like the others (key/ht), saved with the setup.
+- The Header title's container (`.evHtC`, `--evHtW`) follows it at S and up (XS: the page's width); the check-in's no longer copies the top nav's width.
+- Section guides: the Header group drawn as its two sections, stacked, full width: **Top navigation section** (blue) and **Header title section** (violet), each with its container and its left-right padding.
+
+**"When I turn on the container padding guide, the body section also has a container, and I don't see the padding here."** The body's container was taken for the Header title section (the widest box in the scroller); the search now skips the header group's parts, so the body's container and its padding are drawn again.
+
+- Checked at L: Top navigation container 624, Header title container 624 by default, 960 with md (as wide as the screen), back to 624 with 2xs; body container 230 to 811; no page errors.
+
 ## v2813: Header title in the Header group (EvHdTitle: Questionnaire and Page); Home only in the frames
 
 **"In general, the title should be part of the header group."** / **"We call that header title, and header title can have two different variations: for a full modal (questionnaire) or for a page ... every page now should include this header title ... You just replace the title in the body and put it in the header group."** (Figma Patterns DS25 › Header title 8648:46120, 8648:48880; Full modal 7638:71582)
