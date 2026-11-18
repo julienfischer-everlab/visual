@@ -19,6 +19,41 @@ this is the part you need before you change it.
 
 
 
+## v2793: Line dots on the light's glow; the rail dot on into the 100, fading; the titles at half pace; the reel fade softer; the Slot item in the inspector
+
+**"The dot should appear when the line start to hit the dot, dot appear too late atm"** (Dot in line)
+- Two errors made it late:
+  - A dot's place `u` was a share of the line (`.t3FeedB`), but the light runs on its own longer path (the line plus its tail, `pathLength` 100). It is now `u × (line length / light path length)`.
+  - It lit when the light's core (3 long) reached it. Each layer of the light runs from `L - offset`, so its glow is ahead of the core. It now lights as the 31-long layer's front (`131 × eased`) reaches it, and goes out once the core is 8 past it.
+- Its fade in is .12 s (was .3 s).
+- Measured: each dot lights as the 19–31 layers reach it, the core 5–8 behind.
+
+**"the dot should continue more and fade out while going down with the trail" / "the Timeline dot position should take in consideration the Last sequence (100 year) of the viewport vertical"**
+- The last list's rail runs 256 past its foot (was 128), its last 256 fading out (a mask on its `::before`).
+- The dot's run is `e1 = cT + 256` (held to the rail's end). Its scroll is counted until the 100's section is half way up the view (`mxE = cT - ch × .5`), where the number fades in. It used to end as the section showed at the view's foot, the dot then waiting there.
+- Once past the list's foot (`eL`), the dot and its trail fade together (`--t3TrF`, smoothstep), gone at the run's end. The dot fades by opacity; it used to shrink by scale where it stopped.
+- At L the dot holds about 300 down the view all the way, fading over about 240 of scroll, out as the number starts to show.
+
+**"need 2x more scroll to reveal a title"**
+- A clock for the sequence, `cS(u)`: the scroll itself up to `v50` (the first title's start), half its pace after (`cR`, `cV`). On it:
+  - the titles' writing and handovers (`t1`, `o1`, `t2`, `kU`);
+  - Back to life (`op`, `ou`);
+  - the specks and the dot (`cgR`, `ent`, `eIn`, `so`);
+  - the number's fade out, its blur and its push up;
+  - the titles' ride with the number (`vT`, `pr`) and their 32 px slow rise;
+  - Bon voyage's handover (`R3`, `k3`).
+- The number's own rise and roll stay on the scroll.
+- The section is longer by the run from `v50` to its end (`--t3Slo`, worked out each frame from the page's end without it), so the clock still reaches the end.
+- Measured at L: title 1 written over about 300 (was 100), title 2 over about 600 (was 300); Bon voyage still hands over at the end.
+
+**"fade out top bottom more diffuse by 25%"**
+- The reel's fades are 15.6% each (were 12.5%): `transparent 16.375%, #000 32%, #000 77%, transparent 92.625%`, in the CSS and in the frame's inline mask.
+
+**"Inside a list item there is always a Slot item. Need to see that when inspect"** (and its "e.g.", Figma's slot area)
+- `slotHost(e)` finds the nearest List item (static or interactive) or Card interactive, the components whose content is a slot.
+- Whenever the selection is that component or anything in it, the inspector shows the slot as Figma draws a slot area: its content box inside the component's padding, red dashed and rounded on a light red ground, with "Slot item · 519 Fill × 75 Hug" in a violet pill under it (`.pgInsSlot`).
+- In the panel: a "Slot item" crumb after the component and a violet "in Slot item of List item interactive" badge ("Slot item × 1 inside" on the component itself). On hover, the tag adds "· in Slot item".
+
 ## v2792: The 100 fades in once it is uncovered
 
 **"need to fade in the big number while we scroll (scroll start on this section opacity 0, scroll 256 more --> number opacity set on the tweak"**
