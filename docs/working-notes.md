@@ -19,6 +19,15 @@ this is the part you need before you change it.
 
 
 
+## v2765: Modules → Braze
+
+**"Create the braze module here, and preview on All breakpoint. Need to be able to create preset for create a collection of cards. Title / Sub / Eyebrow / Image/video / Bg colour"**
+- **`window.EvBraze`** (the master): `card({ eye, title, sub, media, src, bg, hex, ink })` draws a Braze content card from the Card master (`EvCard`, Secondary - Surface, lg: padding 20, corner 20), its picture or video full width on top (16:9), then the eyebrow (12/16, 570, 64%), title (18/24, 570) and sub (14/20, 72%). `collection(cards)` lays them out by the width they have: a row that scrolls and snaps at XS (a card 82%) and S (46%), a grid of three at M, four at L (container queries).
+- Ground: a token so it follows the mode (Surface 200 and 300, Earth, Blue, Yellow, Green, Orange, Red), White in both modes, or a custom colour; text the mode's ink, Light or Dark (Auto picks dark on a light custom colour and on White).
+- **Documentation → Modules → Braze** (`mbz`, after Timeline list): the collection's cards as tabs (add, duplicate, move, remove), each card's Eyebrow, Title, Sub, Media (None, Image from the app's pictures, Video: the concierge video) with Upload (to the artifact's store where it has one, kept with the preset; else this tab only), Background, Colour, Text. Previewed live at XS 393, S 600, M 992 and L 1440 side by side, each frame at the breakpoint's width, scaled to fit.
+- **Presets:** a collection named and saved ("Save preset"), picked from the menu, started afresh ("New collection") or deleted; kept in this browser (`everlab:bzPresets`) and on the shared table (`bzPresets`, live for everyone), the working collection kept between visits (`everlab:bzWork`).
+- Checked: four frames (scale 1, .75, .92, .64 at 1600), XS and S rows, M and L grids; editing a title updates every frame; a card added with a custom yellow ground (#F4D03F) draws its words dark, with the video; "Spring campaign" saved and back after a reload.
+
 ## v2764: 99 centred, the first title's break, 24 padding; the top bar's group to the right
 
 **"Center the 99"** — the hundreds' reel kept a blank digit's width while it read 97 to 99, so those sat right of centre. Its column now opens with its roll: out by its own width (less the reels' overlap) while blank (`--hc` 0), opening as the 1 rolls in, in place from 100. Measured at XS and L: 98 and 99 within 4px of the centre (were 8 to 11, before that half a digit), 100 exact.
