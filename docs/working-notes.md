@@ -19,6 +19,17 @@ this is the part you need before you change it.
 
 
 
+## v2816: Design system → Core components → List item: the auto bleed shown in real screens
+
+**"to demonstrate this by a real screen and a list of items in a container"**
+- New page **List item** (`#list-item`, after Cards): **In a real screen**, the Timeline's list (Follow-up blood test, Heart rhythm check, Glucose monitor, Video check-in with Dr Lu) drawn by `EvListI.html` in three screens, the container's side padding as red bands (`layout/container/padding/left-right`), the second row held on hover (hover the others):
+  - auto · XS (padding 16): the ghost 8 out, 8 clear of the screen's edge;
+  - auto · M at 62% (padding 24): 12 out, 12 clear;
+  - md · XS for contrast: a fixed 16 out, the ghost reaching the screen's edge.
+- Anatomy: auto (half the container's padding out and in, read where the row sits; space/sm, radius/2xl), the fixed sizes, the ground, where it is used, the call.
+- Light and Dark: the screens on the page's ground (black / white), the bands' red per mode.
+- Checked: XS auto ghost -8, M auto -12, md -16, the words at the container's edge (16 in) in all three; no page errors.
+
 ## v2815: List item interactive `auto` bleeds half the container's padding; the Timeline and the Insights biomarkers on it
 
 **"When there is a ghost inside a container, the ghost should bleed. The ghost should be the auto one, so it actually bleeds half of the padding of the container. If the padding container is, for example, 24, the padding on the ghost item should be 12 ... every time you have a container, it's better to use auto."** / **"the timeline one, and also the insights. When you list the biomarker ... use the auto list, list interactive auto."**
