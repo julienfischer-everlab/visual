@@ -7,6 +7,13 @@ this is the part you need before you change it.
 
 ---
 
+## v2836 — The Ruler's switches (any time, mixed group, small); the padding guide inside a padded container; the Toggle's Mixed state
+
+- **Section switches any time** ("Should be able to toggle on off the sub toggle; if not all toggle on on the group, use the intermediate toggle on the group level; use small toggle for sub toggle"): a section's switch works with Sections off (Sections turns on with that section alone); the group shows On, Off or Mixed (some of its sections), Mixed or Off turning every section on, On turning them off; the last section off turns Sections off. A section missing from the screen stays disabled. The section switches in the Toggle's small size (30 × 18).
+- **Rows without "guide"** ("Remove 'guide' as we have it on the title of the dropdown"): Sections, Container padding.
+- **Toggle master: Mixed** (`aria-checked="mixed"`): the knob in the middle, a dash on it, the track at the on colour's lighter step.
+- **Padding guide inside a padded container** ("The List interactive should land with the end of the CTA at the start of the padding and bleed half the container padding"; "content should start after the padding"): the guide drew the Timeline column's padding outside the column (it takes the widest centred box as the content), so the content and the rows' CTAs sat a padding inside the red bands. A container with its own padding now has its bands inside it: the title and tabs start right after the left band, the CTAs end at the right band, the List item interactive plates (AUTO) bleed half the padding (12 at M) into it, as the master has them.
+
 ## v2835 — Inspect: change a token from its badge (component override alert); the Ruler's section switches; striped guides; 8px bar gaps
 
 - **Change a token from Inspect** ("Need to be able to click on the token (use badge style) and change the token (search token system)"): each row's token is a badge (green on a token, orange off one, the start of a long name cut); pressed, the token picker (the library search) opens with the current token marked "current". "full" corners now find radius/full.
