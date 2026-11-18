@@ -19,6 +19,54 @@ this is the part you need before you change it.
 
 
 
+## v2795: Text styles: a Tokens collection, the UI on them, the Primary card titles on Display/secondary/100
+
+**"Add the Font style in Token as a new group"** (Figma Core DS25: Text styles / Body 33219:35106, Headlines 33838:34039, Display 33838:34047) and **"replace all font in the UI by this system"**
+- `window.EvType` (after EvTokVar) holds Figma's 96 text styles. Each style has:
+  - a family token (primary Tobias, secondary Saans, tertiary Saans Mono);
+  - a weight (Figma's own: 570 Medium, 380 Regular, 400 for Tobias, 380 for all Mono);
+  - size and line height tokens from the Breakpoints collection;
+  - letter spacing (normal, tight, extend or a number);
+  - capitals for the "cap" styles.
+- The styles by family:
+  - Display 400–100 and Display/secondary;
+  - Headlines 800–100 and Headlines/secondary;
+  - Body 600–100 × Medium, Regular, Medium cap, Regular cap;
+  - Chat - Body/300;
+  - Label - Body 400–100;
+  - Label - Mono 600–50.
+- Figma's oddities are kept as Figma has them:
+  - Display/400 uses Headlines 800's line height;
+  - Body/600/Regular cap uses headlines/700's;
+  - Body/100/Medium cap uses label/100's;
+  - Label - Mono/400 Medium cap is 18/18, Regular cap 14/22;
+  - Label - Mono/200 Medium cap is tracked 1.
+- The Breakpoints collection's font sizes and line heights are now CSS variables. They follow the window (600 / 992 / 1440), a forced `body[data-bp]`, a frame's `[data-ct-bp]` and a modal's `.aqBp*`. EvTokVar skipped that collection.
+- Each style is a class, `.ts-<name>` (`.ts-body-200-medium`).
+- **Tokens page:** a Text styles collection, its groups the tree of Figma's panel.
+  - Each row has an Ag in its own face and weight (AG for the caps), its last name, and its family, weight and tracking under it.
+  - The columns are XS, S, M and L, each size/line height.
+  - Pressing a name copies its class. Copy CSS copies the variables and classes.
+- **On the UI:** `EvType.adopt()` goes through the page's style rules.
+  - It picks up every rule with a px font size, up to 64; the big drawn numbers keep theirs.
+  - It skips the prototype's own tools (top bar, Tweaks, Inspect, the docs' control panel, the Tokens page) and SVG text.
+  - The text style nearest each size is the one used:
+    - mono → Label - Mono;
+    - up to 25 → Body (12 · 14 · 16 · 18 · 20 · 24, so 13→14, 15→16);
+    - 26–31 → Headlines/700;
+    - 32–34 → Headlines/800;
+    - 35–38 → Display/secondary/300;
+    - above → Display/secondary/400.
+  - The rule's size and line height become the style's token variables.
+  - Its weight (where it sets one) becomes Medium or Regular as it was, its tracking (where it sets one) the style's, and its face (where it sets a sans one) the style's family.
+  - The old values are kept, so the Tokens page's switch (On the UI, On / Off, `everlab:tsMaster`, read on every page, default On) puts them back.
+  - At load, 2,274 rules were set: most on Body/200 Regular (727), Body/300 and Body/200 Medium.
+- **Inspect:** a Text style row. It names the style an element is on, by its face, size, line height, weight and case at its breakpoint, the UI's families first (Body before Headlines where both are 18/22), or "no text style".
+- Not covered: inline font sizes written by scripts, canvas text, and the Concierge iframe (its own page).
+
+**"All primary card titles"** (Display/secondary 100 · 20/22)
+- Every Primary card title (`.hpOvCard h3`, all its states) is on Display/secondary/100: Saans, Medium 570, 20/22 at XS·S, 22/24 at M, 24/28 at L. It was 18/23, and 22/28 for the doctor and centred states.
+
 ## v2794: The page's face on font/family/secondary (Saans), not Suisse Intl
 
 **"why you come up with Suisse intl ?"** (the inspector on the Timeline's Now tab: Font family, no token, Suisse Intl)
