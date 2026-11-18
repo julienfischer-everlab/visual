@@ -19,6 +19,15 @@ this is the part you need before you change it.
 
 
 
+## v2817: The full modal's Header group as Figma's: both containers sm, Back and Close 28 at M · L
+
+**"It's not the same look ... Have a look at the tokenization."** (Figma Modal full / Header group / Questionnaire / M L 7853:63018, Page / M L 8651:51490; `components/questionnaire/top padding` 12, `left right padding` 32)
+- The Header title's tokens were already Figma's (Questionnaire 12 above, 40 under, 32 each side, Headlines/800; Page 24 under, 32 right, Headlines/700). What differed was the container: Figma puts the Header navigation and the Header title in one container, `layout/container/max-width/sm` (1080), the bar's Back and Close on its edges and the title inside it; ours had the title in the body's (2xs) and the bar at the screen's edges.
+- Full modals: Tweaks → Header group → **Top navigation · Container** and **Header title · Container** now default to **sm** (were Full and the body's), set on the wrap at S and up (`data-ct-hd`, `data-ct-ht`). The check-in's bar and the standalone full modals' bar (`--evTnX` from `--ctHd`) sit in it: at L the Suggestion's Close at the title container's right edge (1180), its title at its left (100); the check-in's Back over the question's container.
+- The bar's buttons at M and L: 28 (`interactive/height/xs`, icons 16: `--evTnDo` on `.aqWrap.aqFull`), XS and S unchanged (36).
+- The Async report keeps its own head (its 44 buttons, no Header title yet).
+- Checked at L: check-in Back 28 at x 344 in the container, the question in it (376 to 1224, centred, 12 under the bar); Suggestion Close 1152 to 1180; XS unchanged; no page errors.
+
 ## v2816: Design system → Core components → List item: the auto bleed shown in real screens
 
 **"to demonstrate this by a real screen and a list of items in a container"**
