@@ -7,6 +7,10 @@ this is the part you need before you change it.
 
 ---
 
+## v2843 — The check-in Flow's personas key
+
+- **A key on top** ("Show each person on top in a blue group so we understand what #1 2 3 mean"): above the check-in's steps, a blue group, Personas: #1 New bloods only, #2 New bloods and device data, #3 No new data, the one shown filled; pressing one switches the check-in to that persona. The Flow panel takes `legend` (and `legendTitle`) in a model, and `cfg.legend(id)` for its press.
+
 ## v2842 — Guides: filled labels, 2px sections, the Header group's parts dashed 8 inside it; steps with a text field
 
 - **Labels filled, sections 2px** ("The badge indicator, use filled colour and white text, and use 2px border to define areas"): each section's label in its colour (Header navigation and Status bar blue, Header title violet, Body grey, Footer group green, Header group deep blue), white words; the sections' edges 2px. The Page example's guides the same.
