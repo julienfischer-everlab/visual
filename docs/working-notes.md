@@ -7,6 +7,10 @@ this is the part you need before you change it.
 
 ---
 
+## v2829 — Every modal and bottom sheet on the Modal token
+
+- `components/modal/bg` (Light `bg/surface/100` #FFF, Dark `bg/surface/200` #181818) is now every modal's and sheet's ground: the report framework's sheets (`.arSheet` `--ar-paper` from `var(--t-components-modal-bg)`, its dark `.arSheet.arDark`; the full-picture intro keeps its own), its bottom sheets (`.arQaPanel`), the sheet wrapper (`.shWrap.arWrap > .sheet.arSheet`), the Doctor's suggestion (was #F7F6F2), and the older sheets and modals (`.sheet`, `.sheet.shModal`, `.prModal`, `.prSheet`, `.siSheet`, `.rsSheet`, `.isSheet`, `.sgSheet`, `.chModal`: were #F6ECE6 / #F3E2D8 in light). The Ask sheet's panels were already #181818 / #FFF. The Plan's sheets keep their Tweak (Dark / Light); the photo pre-states (gift) keep theirs. An edit of the token on the Tokens page reaches them all.
+
 ## v2828 — Inspect: box model (padding, margin) like Figma
 
 - **On the page**: the selected element's padding drawn as blue bands and its margin as pink bands outside it, each with its value (`.pgInsBm`, drawn with the selection box every frame it follows; bands too thin hide their number; negative margins not drawn).
