@@ -19,6 +19,14 @@ this is the part you need before you change it.
 
 
 
+## v2812: The questionnaire scale: two rows of circles (EvQ.scale)
+
+**"Put this in two rows. Each number should be a circle ... like 64 circles, so you can put 5 on top and 6 on the bottom, next to each other, centred."**
+- New in the questionnaire master: `EvQ.scale({ min, max, value, ends, label, cls, attrs })`. Each number is a circle on the Selection item's card (Card item interactive, Secondary: its fill, hover and press), picked with the same 2px `br/neutral/primary/100` line as the answers; 0 to 4 on top, 5 to 10 under them, both rows centred, 8 apart; 64 at most, smaller where six do not fit (XS: 54, the container less the five gaps, by six; a container query on `.evQScW`); the two ends under the bottom row, as wide as it, Label - Body/200/Regular in the secondary ink.
+- The Quarterly check-in's 0 to 10 question uses it (its one-row chips and their CSS removed).
+- Design system → Step flow → Questionnaire step: a fourth demo (Scale · 0 to 10) and a Scale row in the anatomy; the demos' picking covers the circles.
+- Checked: XS circles 54, rows 5 and 6 centred, ends 626–974 = the bottom row; L circles 64; picking 7 marks it and turns Continue on; no page errors.
+
 ## v2811: Checkbox and Radio in the Design system (Figma Core DS25)
 
 **"Also, where the checkbox and the radio"**
