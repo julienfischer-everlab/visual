@@ -7,6 +7,12 @@ this is the part you need before you change it.
 
 ---
 
+## v2827 — Token badge edits, the changes list, add-row values from the search
+
+- **A value's badge edits** (opens the token search, as its Pen); Copy is the button beside the Pen. Text styles (not editable) still copy.
+- **See changes** (Tokens header, beside "N changes from Figma"): a modal listing every change: an edit (path, collection, mode, Figma's → now, Back to Figma's) or an added token (Delete); a name takes you to it (its collection, the search set to it); Reset all. `EvTokEdit.list()`.
+- **Add a row**: each value field opens the token search (no dropdown); typed values go through the search's manual row; Space / ↓ open it from the keyboard.
+
 ## v2826 — Token edits saved with the setup; cell Pen (search) + Copy
 
 - **Token edits are a tweak value now** (`#stTokEd`, a hidden input in the Tweaks panel, canonical JSON `{ e, a }`, '' for none): an edit or an added token marks the preset changed and the Save button unsaved, like any tweak; Save keeps them in the setup (and a shared preset), a preset or saved setup puts them back (its change listener loads them into `EvTokEdit` and re-runs), a preset without them resets to Figma's. Edits made before this (kept in this browser) come in as an unsaved change after load. The Tokens header reads "N changes from Figma · Reset all".
