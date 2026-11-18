@@ -19,6 +19,32 @@ this is the part you need before you change it.
 
 
 
+## v2771: warp past the end; the 100's top faded; speeds back; Braze in device frames, no gap
+
+**"Inifinte scroll that have an effect into space travel with particle travelling like we are moving fast acrsoss. stars and the stars pass by us" / "on scroll up no need to retrieve the full distance scrolled, just scroll up direclty"**
+- The 100 sequence's frame (`centDot`) turns the scroll past the Timeline's end into speed instead of page distance:
+  - Inputs: wheel, touch and ArrowDown / PageDown / Space / End, only at the scroller's foot.
+  - `WI` collects the input; `WV`, capped at 6 depth units a second, glides to a stop over about 0.6 s.
+- A scroll up leaves at once, since nothing was added to the page; it also halves the speed.
+- The warp stars (`WS`, 220, or 120 under 600 wide):
+  - they come from far out by the dot, project as X/z and Y/z, and streak as long as the speed;
+  - they fade in from far, go off the edges and are brought round again;
+  - none show at rest, and the scene's own stars dim by up to 55% while they run.
+- The canvas redraws at 60 fps while moving (its key carries a 16 ms tick). Reduced motion: none.
+
+**"Fade out top"**: the number's top was cut flat where the section's edge clips it as it comes in. Now the edge's place in its own box (`e`) feeds a mask `linear-gradient(transparent e, #000 e + 45% of its height)`, removed once clear.
+
+**"bg number shouldnt have 50% less aparalax"**: 100 speed in back to 35%, 100 speed held back to 20% (v2769 had cut them to 20% and 12%). 100 start and the fade-in stay.
+
+**"PAnel tweak Righrt side! why this gap!"**: `html.tkDocked` stays while Tweaks is shut on a doc page, so the Braze rail kept an empty 320 beside it. Now `bzDoc`'s check sets `html.bzRailTk` only while the Tweaks panel or the inspector is really on screen at the right, and only then are the rail and the page offset.
+
+**"need frame Ipad iphone"**: the Braze phone and tablet screens wear THE device frames:
+- `--evPhR` / `--evPhBz`, and `--evTbR` / `--evTbBz`;
+- the app's own status bar (`#bpFrame .bpStatus` copied in), its master rules extended to `.bzScr > .bpStatus` (time, island, signal; the tablet's small time, no island);
+- a home indicator.
+
+Each preview box keeps 17 px round for the bezel; `fit()` scales into what is left.
+
 ## v2770: the Consent sheet's header fades the text under it
 
 **"TOp header issue! Gradient not respected!"** (the Terms and Conditions sheet, Top nav Style Gradient)
