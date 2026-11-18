@@ -7,6 +7,11 @@ this is the part you need before you change it.
 
 ---
 
+## v2828 — Inspect: box model (padding, margin) like Figma
+
+- **On the page**: the selected element's padding drawn as blue bands and its margin as pink bands outside it, each with its value (`.pgInsBm`, drawn with the selection box every frame it follows; bands too thin hide their number; negative margins not drawn).
+- **In the panel** (This element, above the rows): Margin › Border › Padding › content (W × H, content box), each side's value (a pill when set, – when 0) and the box-sizing (`bmHtml`). Values in CSS px (a framed screen's scale taken out).
+
 ## v2827 — Token badge edits, the changes list, add-row values from the search
 
 - **A value's badge edits** (opens the token search, as its Pen); Copy is the button beside the Pen. Text styles (not editable) still copy.
