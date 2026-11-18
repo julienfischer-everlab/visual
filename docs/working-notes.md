@@ -19,6 +19,13 @@ this is the part you need before you change it.
 
 
 
+## v2792: The 100 fades in once it is uncovered
+
+**"need to fade in the big number while we scroll (scroll start on this section opacity 0, scroll 256 more --> number opacity set on the tweak"**
+- The number's fade in is now `sm(vIn, vIn + 256, vR)`: 0 until the section's edge has wholly uncovered it (`vIn`, where its 97 starts rolling), then up to 1 over the next 256 px of scroll. 1 is the Tweak's opacity (`--t3CentOp` on the reel), so it ends where the Tweak says.
+- It used to fade in from `fA` (its first edge uncovered) to `fB`, while the edge was still uncovering it, so it read as a wipe and was about 75% there once fully in view. `fA`/`fB` still time the chat field's hiding (`cOn`).
+- Measured at L 1440 × 900: 0 until the section's top passes the number's top, 0.07 → 0.99 over the next ~240 px. At XS, the same.
+
 ## v2791: Bon voyage a real third title; Inspect's area lists as tabs; the service title on the Title group; token aliases show their value
 
 **"3row as a 3rd title !"**
