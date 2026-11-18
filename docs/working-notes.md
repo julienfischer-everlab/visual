@@ -19,6 +19,15 @@ this is the part you need before you change it.
 
 
 
+## v2796: A text style's tokens, one a column
+
+**"Each font style carry multiple tokens"** (Figma's Edit text style: Headlines/secondary/800 on font/family/primary, font/weight/medium, 36, 36, -1) and **"They're ready. in sementic and breakpoint e.g. line height"**
+- Each style now carries the weight token its Figma style is bound to (`wt`: font/weight/medium or regular, from the style's name and Figma's binding), not the weight Figma reported. So Display (Tobias) Medium is 570 on font/weight/medium, Display/400 Regular, Label - Mono's Medium on medium. The CSS reads that token (`var(--t-font-weight-medium, 570)`).
+- On the Tokens page, the Text styles table is Name | Font family | Weight | Size | Line height | Letter spacing.
+  - Each cell is the token's chip with its value under it: the Semantic collection's family, weight and tracking; the Breakpoints collection's size and line height, its four values (XS · S · M · L) where they differ.
+  - A number Figma set without a token (Headlines 800–600's 0, Headlines/secondary/700's -0.5) shows as itself.
+- A long token name is cut at its start, its end kept (`font/siz… secondary/400`); its full name is the chip's title. Pressing a chip copies its value.
+
 ## v2795: Text styles: a Tokens collection, the UI on them, the Primary card titles on Display/secondary/100
 
 **"Add the Font style in Token as a new group"** (Figma Core DS25: Text styles / Body 33219:35106, Headlines 33838:34039, Display 33838:34047) and **"replace all font in the UI by this system"**

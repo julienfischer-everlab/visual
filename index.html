@@ -20277,6 +20277,9 @@ window.EvCtl = (function () {
   .tokFig .tokCp > span:last-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .tokFig .tokChip{box-shadow:inset 0 0 0 1px var(--tokChipL);} .tokFig .tokChip .tokTy{color:var(--tokFg);opacity:.7;}
   .tokFig .tokRaw{margin-left:-8px;}
+  .tokFig col.tokCNts{width:16%;} .tokPage:has(.tokCNts) .tokFig{min-width:1080px;}   /* the text styles' table: five token columns */
+  .tokVc.tokVcTs{flex-direction:column;align-items:flex-start;gap:3px;padding:2px 0;} .tokVcTs > .tokChip{max-width:100%;} .tokVcTs .tokRv{padding-left:8px;font-size:12px;line-height:16px;}
+  .tokChN{display:flex;min-width:0;} .tokFig .tokCp > .tokChN{overflow:visible;} .tokChP{flex:0 1 auto;min-width:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;} .tokChT{flex:none;white-space:nowrap;}   /* a long token name cut at its start, its end kept (…secondary/400), its value under its chip */
   .tokAg{flex:none;width:22px;font-size:15px;line-height:16px;letter-spacing:0;text-transform:none;color:var(--tokFg);text-align:center;}   /* a text style's Ag */
   .tokTsBar{display:flex;align-items:center;gap:16px;margin:16px;padding:12px 14px;border-radius:10px;background:var(--tokHov);} .tokTsBar > div:first-child{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;} .tokTsBar span{color:var(--tokMut);font-size:12px;}
   .tokTsSeg{display:flex;padding:2px;border-radius:8px;background:var(--tokLine);} .tokTsSeg button{height:26px;padding:0 12px;border:0;border-radius:6px;background:none;color:var(--tokMut);font:inherit;font-size:12px;cursor:pointer;} .tokTsSeg button[aria-pressed="true"]{background:var(--tokBg);color:var(--tokFg);font-weight:600;}
@@ -20332,6 +20335,12 @@ window.EvTokData = [{"k":"prim","n":"Primitives","m":["Value"],"t":[["white","c"
     var body = order.map(function (g) { return '<tr class="tokGrpR"><td colspan="' + (n + 1) + '">' + esc(g ? g.split('/').join(' / ') : c.n) + '</td></tr>' + by[g].map(function (t) { var vs = per(t[2], n), as = per(t[3] || '', n), r0 = resolve(c, vs[0], 0), prev = null;
         return '<tr><td><span class="tokNm">' + tyIc(t, r0) + '<button type="button" class="tokN" data-v="' + esc(t[1] === 'ts' && window.EvType ? '.' + window.EvType.cls(t[0]) : vn(t[0])) + '" title="Copy ' + esc(t[1] === 'ts' && window.EvType ? '.' + window.EvType.cls(t[0]) : vn(t[0])) + '">' + esc(t[0].split('/').pop()) + '</button></span>' + (t[4] != null ? '<p class="tokD">' + link(c.d[t[4]]) + '</p>' : '') + '</td>' +
           vs.map(function (v, i) { var k = JSON.stringify([v, as[i]]), eq = n > 1 && i > 0 && k === prev; prev = k; return vcell(c, t, v, i, as[i], eq); }).join('') + '</tr>'; }).join(''); }).join('');
+    if (c.k === 'ts' && window.EvType) { var TS = window.EvType, TH = ['Font family', 'Weight', 'Size', 'Line height', 'Letter spacing'];
+      head = '<colgroup><col class="tokCN tokCNts">' + TH.map(function () { return '<col>'; }).join('') + '</colgroup><thead><tr><th>Name</th>' + TH.map(function (h) { return '<th>' + h + '</th>'; }).join('') + '</tr></thead>';
+      body = order.map(function (g) { return '<tr class="tokGrpR"><td colspan="' + (TH.length + 1) + '">' + esc(g ? g.split('/').join(' / ') : c.n) + '</td></tr>' + by[g].map(function (t) { var x = TS.BY[t[0]], cl = '.' + TS.cls(t[0]);
+        return '<tr><td><span class="tokNm">' + tyIc(t) + '<button type="button" class="tokN" data-v="' + esc(cl) + '" title="Copy ' + esc(cl) + '">' + esc(t[0].split('/').pop()) + '</button></span></td>' + TS.parts(x).map(function (p) { var cp = String(p.v[0]), ic = p.ty === 'n' ? TY.n : TY.s;
+          return '<td>' + (p.tok ? '<div class="tokVc tokVcTs"><button type="button" class="tokCp tokChip" data-cp="' + esc(p.show) + '" title="' + esc(p.tok) + ' \u2014 copy ' + esc(p.show) + '" aria-label="' + esc(p.tok) + ', copy ' + esc(p.show) + '">' + ic + (function (n) { var a = n.split('/'), k = a.length > 3 ? 2 : 1; return '<span class="tokChN"><span class="tokChP">' + esc(a.slice(0, -k).join('/') + '/') + '</span><span class="tokChT">' + esc(a.slice(-k).join('/')) + '</span></span>'; })(p.tok) + '</button><span class="tokRv" title="' + esc(p.v.length > 1 && p.show.indexOf('\u00b7') > 0 ? 'XS \u00b7 S \u00b7 M \u00b7 L' : p.show) + '">' + esc(p.show) + '</span></div>' : '<button type="button" class="tokCp tokRaw" data-cp="' + esc(cp) + '" title="Copy ' + esc(cp) + '"><span>' + esc(cp) + '</span></button>') + '</td>'; }).join('') + '</tr>'; }).join(''); }).join('');   /* a text style's tokens, one a column, as Figma's Edit text style ("Each font style carry multiple tokens"): each its chip and its value, a number Figma set without a token as itself */
+    }
     var tsBar = c.k === 'ts' && window.EvType ? '<div class="tokTsBar"><div><b>On the UI</b><span>' + (window.EvType.on() ? window.EvType.stats().rules + ' of the app\u2019s type rules set on these styles, each to the one nearest it' : 'Off: the app\u2019s own type, as it was') + '</span></div><div class="tokTsSeg" role="group" aria-label="Text styles on the UI"><button type="button" data-tson="1" aria-pressed="' + window.EvType.on() + '">On</button><button type="button" data-tson="0" aria-pressed="' + !window.EvType.on() + '">Off</button></div></div>' : '';   /* the switch that puts the UI on the system ("replace all font in the UI by this system"), saved (everlab:tsMaster) and read on every page */
     pg.querySelector('.tokIn').innerHTML = tsBar + (order.length ? '<table class="tokFig">' + head + '<tbody>' + body + '</tbody></table>' : '<p class="tokNo">No tokens match “' + esc(q) + '”.</p>');
   };
@@ -20825,25 +20834,26 @@ window.EvTokVar = (function () {
 window.EvType = (function () {
   var NO = 'font/letter spacing/normal', TI = 'font/letter spacing/tight', EX = 'font/letter spacing/extend', S = [];
   var fs = function (k) { return 'font/size/' + k; }, lh = function (k) { return 'font/line height/' + k; };
-  var add = function (n, f, w, s, l, ls) { S.push({ n: n, f: f, w: w, s: s, l: l, ls: ls, cap: / cap$/.test(n) }); };
+  var WT = { M: 'font/weight/medium', R: 'font/weight/regular' }, WV = { M: 570, R: 380 };
+  var add = function (n, f, w, s, l, ls) { S.push({ n: n, f: f, wt: WT[w], w: WV[w], s: s, l: l, ls: ls, cap: / cap$/.test(n) }); };   /* each style a set of tokens, as Figma's Edit text style ("Each font style carry multiple tokens"): its family, the weight its style is bound to, its size, line height and letter spacing (a token, or a number where Figma has one) */
+  var mr = function (v) { return /Medium/.test(v) ? 'M' : 'R'; };
   /* Display: Tobias, its 400 on Headlines 800's line height (as Figma has it) */
-  add('Display/400', 'primary', 400, fs('display/400'), lh('headlines/800'), 0); ['300', '200', '100'].forEach(function (k) { add('Display/' + k, 'primary', 400, fs('display/' + k), lh('display/' + k), NO); });
-  add('Display/secondary/400', 'secondary', 380, fs('display/secondary/400'), lh('display/secondary/400'), TI); add('Display/secondary/300', 'secondary', 570, fs('display/secondary/300'), lh('display/secondary/300'), TI);
-  ['200', '100'].forEach(function (k) { add('Display/secondary/' + k, 'secondary', 570, fs('display/secondary/' + k), lh('display/secondary/' + k), NO); });
+  add('Display/400', 'primary', 'R', fs('display/400'), lh('headlines/800'), 0); ['300', '200', '100'].forEach(function (k) { add('Display/' + k, 'primary', 'M', fs('display/' + k), lh('display/' + k), NO); });
+  [['400', TI], ['300', TI], ['200', NO], ['100', NO]].forEach(function (x) { add('Display/secondary/' + x[0], 'secondary', 'M', fs('display/secondary/' + x[0]), lh('display/secondary/' + x[0]), x[1]); });
   /* Headlines: Saans Medium (100 Regular); 800 to 600 tracked 0 */
-  ['800', '700', '600', '500', '400', '300', '200', '100'].forEach(function (k) { add('Headlines/' + k, 'secondary', k === '100' ? 380 : 570, fs('headlines/' + k), lh('headlines/' + k), +k >= 600 ? 0 : NO); });
+  ['800', '700', '600', '500', '400', '300', '200', '100'].forEach(function (k) { add('Headlines/' + k, 'secondary', k === '100' ? 'R' : 'M', fs('headlines/' + k), lh('headlines/' + k), +k >= 600 ? 0 : NO); });
   /* Headlines secondary: Tobias */
-  [['800', TI], ['700', -.5], ['600', NO], ['500', TI], ['400', NO], ['300', NO], ['200', NO], ['100', NO]].forEach(function (x) { add('Headlines/secondary/' + x[0], 'primary', 400, fs('headlines/secondary/' + x[0]), lh('headlines/secondary/' + x[0]), x[1]); });
+  [['800', TI], ['700', -.5], ['600', NO], ['500', TI], ['400', NO], ['300', NO], ['200', NO], ['100', NO]].forEach(function (x) { add('Headlines/secondary/' + x[0], 'primary', x[0] === '100' ? 'R' : 'M', fs('headlines/secondary/' + x[0]), lh('headlines/secondary/' + x[0]), x[1]); });
   /* Body: Medium, Regular, each also in capitals */
   ['600', '500', '400', '300', '200', '100'].forEach(function (k) { var s = fs('body/' + k), l = lh('body/' + k);
-    add('Body/' + k + '/Medium', 'secondary', 570, s, l, NO); add('Body/' + k + '/Regular', 'secondary', 380, s, l, NO);
-    add('Body/' + k + '/Medium cap', 'secondary', 570, s, k === '100' ? lh('label/100') : l, NO); add('Body/' + k + '/Regular cap', 'secondary', 380, s, k === '600' ? lh('headlines/700') : l, NO); });
-  ['Medium', 'Regular', 'Medium cap', 'Regular cap'].forEach(function (v) { add('Chat - Body/300/' + v, 'secondary', /Medium/.test(v) ? 570 : 380, fs('body/300'), lh('body/500'), NO); });   /* the chat's: 16 on 24 */
-  ['400', '300', '200', '100'].forEach(function (k) { ['Medium', 'Regular', 'Medium cap', 'Regular cap'].forEach(function (v) { add('Label - Body/' + k + '/' + v, 'secondary', /Medium/.test(v) ? 570 : 380, fs('label/' + k), lh('label/' + k), NO); }); });
-  /* Label - Mono: Saans Mono, one weight (380), tracked 1; its 400 caps as Figma has them (18/18, 14/22) */
+    add('Body/' + k + '/Medium', 'secondary', 'M', s, l, NO); add('Body/' + k + '/Regular', 'secondary', 'R', s, l, NO);
+    add('Body/' + k + '/Medium cap', 'secondary', 'M', s, k === '100' ? lh('label/100') : l, NO); add('Body/' + k + '/Regular cap', 'secondary', 'R', s, k === '600' ? lh('headlines/700') : l, NO); });
+  ['Medium', 'Regular', 'Medium cap', 'Regular cap'].forEach(function (v) { add('Chat - Body/300/' + v, 'secondary', mr(v), fs('body/300'), lh('body/500'), NO); });   /* the chat's: 16 on 24 */
+  ['400', '300', '200', '100'].forEach(function (k) { ['Medium', 'Regular', 'Medium cap', 'Regular cap'].forEach(function (v) { add('Label - Body/' + k + '/' + v, 'secondary', mr(v), fs('label/' + k), lh('label/' + k), NO); }); });
+  /* Label - Mono: Saans Mono, tracked 1; its 400 caps as Figma has them (18/18, 14/22) */
   ['600', '500', '400', '300', '200', '100', '50'].forEach(function (k) { ['Medium', 'Regular', 'Medium cap', 'Regular cap'].forEach(function (v) { var s = fs('body/' + k), l = lh('body/' + k), ls = EX;
     if (k === '400' && v === 'Medium cap') l = lh('headlines/400'); if (k === '400' && v === 'Regular cap') s = fs('headlines/400'); if (k === '200' && v === 'Medium cap') ls = 1;
-    add('Label - Mono/' + k + '/' + v, 'tertiary', 380, s, l, ls); }); });
+    add('Label - Mono/' + k + '/' + v, 'tertiary', mr(v), s, l, ls); }); });
   var BY = {}; S.forEach(function (x) { BY[x.n] = x; });
   var RK = function (n) { return /^Body\//.test(n) ? 0 : /^Label - Body/.test(n) ? 1 : /^Chat/.test(n) ? 2 : /^Label - Mono/.test(n) ? 3 : /^Display\/secondary/.test(n) ? 4 : /^Headlines\/\d/.test(n) ? 5 : 6; }, ORD = S.slice().sort(function (a, b) { return RK(a.n) - RK(b.n); });   /* where two styles share a size (Body/400/Medium and Headlines/400 are both 18/22 at L), the one the UI is set on named first */
   var nm = function (n) { return '--t-' + String(n).replace(/[^A-Za-z0-9]+/g, '-').replace(/^-+|-+$/g, '').toLowerCase(); }, slug = function (n) { return 'ts-' + String(n).replace(/[^A-Za-z0-9]+/g, '-').replace(/^-+|-+$/g, '').toLowerCase(); };
@@ -20851,8 +20861,11 @@ window.EvType = (function () {
   var at = function (tok, i) { return typeof tok === 'number' ? tok : BP[tok] ? +BP[tok][i] : null; };
   var FAM = { primary: 'var(--t-font-family-primary, "Tobias"), Georgia, "Times New Roman", serif', secondary: 'var(--t-font-family-secondary, "Saans"), "Helvetica Neue", Helvetica, Arial, sans-serif', tertiary: 'var(--t-font-family-tertiary, "Saans Mono"), ui-monospace, "SF Mono", Menlo, monospace' };
   var wTok = function (w) { return w === 570 ? 'font/weight/medium' : w === 380 ? 'font/weight/regular' : null; }, wCss = function (w) { var t = wTok(w); return t ? 'var(' + nm(t) + ', ' + w + ')' : String(w); };
+  var TV = function (t) { var V = window.EvTokVar; return V && V.val ? V.val(t, true) : null; };
+  var vals = function (tok) { return typeof tok === 'number' ? [tok] : BP[tok] ? BP[tok] : [TV(tok)]; };
+  var parts = function (x) { return [['Font family', 'font/family/' + x.f, 's'], ['Weight', x.wt, 's'], ['Size', x.s, 'n'], ['Line height', x.l, 'n'], ['Letter spacing', x.ls, 'n']].map(function (p) { var t = p[1], v = vals(t), same = v.every(function (z) { return String(z) === String(v[0]); }); return { k: p[0], tok: typeof t === 'number' ? null : t, ty: p[2], v: v, show: same ? String(v[0]) : v.join(' \u00b7 ') }; }); };   /* the tokens a style carries, each with its value (the four breakpoints' where they differ: XS · S · M · L) */
   var lsCss = function (ls) { return typeof ls === 'number' ? ls + 'px' : 'var(' + nm(ls) + ')'; };
-  var decl = function (x) { return 'font-family:' + FAM[x.f] + ';font-weight:' + wCss(x.w) + ';font-size:var(' + nm(x.s) + ');line-height:var(' + nm(x.l) + ');letter-spacing:' + lsCss(x.ls) + ';' + (x.cap ? 'text-transform:uppercase;' : ''); };
+  var decl = function (x) { return 'font-family:' + FAM[x.f] + ';font-weight:var(' + nm(x.wt) + ', ' + x.w + ');font-size:var(' + nm(x.s) + ');line-height:var(' + nm(x.l) + ');letter-spacing:' + lsCss(x.ls) + ';' + (x.cap ? 'text-transform:uppercase;' : ''); };
   /* the Breakpoints collection's font sizes and line heights as variables, per breakpoint: the window's (600, 992, 1440), a forced one (body[data-bp]), a framed one ([data-ct-bp], a modal's .aqBp*) */
   var bpCss = function () { var K = Object.keys(BP), blk = function (i, all) { return K.filter(function (k) { return all || BP[k][i] !== BP[k][0]; }).map(function (k) { return nm(k) + ':' + BP[k][i] + 'px;'; }).join(''); };
     var F = [['body[data-bp="xs"], [data-ct-bp="xs"], .aqWrap.aqBpXS'], ['body[data-bp="s"], [data-ct-bp="s"], .aqWrap.aqBpS'], ['body[data-bp="m"], [data-ct-bp="m"], .aqWrap.aqBpM'], ['body[data-bp="l"], body[data-bp="xl"], [data-ct-bp="l"], .aqWrap.aqBpL']];
@@ -20860,7 +20873,7 @@ window.EvType = (function () {
   var css = function () { return bpCss() + '\n' + S.map(function (x) { return '.' + slug(x.n) + '{' + decl(x) + '}'; }).join('\n'); };
   (function () { var h = document.head || document.documentElement, s = document.getElementById('evTypeTok'); if (!s) { s = document.createElement('style'); s.id = 'evTypeTok'; h.appendChild(s); } s.textContent = css(); })();
   /* the Tokens page's collection: a row a style, its size / line height at XS, S, M, L; its face, weight and tracking under its name */
-  var desc = function (x) { return ['font/family/' + x.f, wTok(x.w) || 'weight ' + x.w, typeof x.ls === 'number' ? 'letter spacing ' + x.ls : x.ls, x.cap ? 'uppercase' : ''].filter(Boolean).join(' · '); };
+  var desc = function (x) { return ['font/family/' + x.f, x.wt, typeof x.ls === 'number' ? 'letter spacing ' + x.ls : x.ls, x.cap ? 'uppercase' : ''].filter(Boolean).join(' · '); };
   var coll = function () { var D = [], di = {}; return { k: 'ts', n: 'Text styles', m: ['XS', 'S', 'M', 'L'], d: D, t: S.map(function (x) { var d = desc(x); if (di[d] == null) { di[d] = D.length; D.push(d); } return [x.n, 'ts', [0, 1, 2, 3].map(function (i) { return at(x.s, i) + '/' + at(x.l, i); }), null, di[d]]; }) }; };
   /* the UI on them */
   var SKIP = /(^|[\s,>+~(])(\.topbar|\.tweaks|#tk[A-Za-z]|\.tk[A-Z]|\.pgIns|#pgInsp|\.pi[A-Z]|\.dp[A-Z]|\.dpg|\.tok[A-Z]|\.tokPage|\.ts-|svg|text\b|tspan)/;
@@ -20877,7 +20890,7 @@ window.EvType = (function () {
         var keep = {}; ['font-size', 'line-height', 'font-weight', 'letter-spacing', 'font-family'].forEach(function (p) { keep[p] = [st.getPropertyValue(p), st.getPropertyPriority(p)]; });
         var put = function (p, v) { st.setProperty(p, v, keep[p][1]); };
         put('font-size', 'var(' + nm(x.s) + ')'); put('line-height', 'var(' + nm(x.l) + ')');
-        if (fw != null) put('font-weight', wCss(x.f === 'tertiary' ? 380 : fw >= 500 ? 570 : 380));   /* Medium or Regular as the rule had it (Mono's one weight) */
+        if (fw != null) put('font-weight', wCss(fw >= 500 ? 570 : 380));   /* Medium or Regular as the rule had it, on its token */
         if (keep['letter-spacing'][0]) put('letter-spacing', lsCss(x.ls));
         if (keep['font-family'][0] && !/tobias|georgia|serif/i.test(ffv.replace(/sans-serif/ig, ''))) put('font-family', FAM[x.f]);
         DONE.push([st, keep, x.n]); stats.rules++; stats.by[x.n] = (stats.by[x.n] || 0) + 1; }); }); };
@@ -20889,7 +20902,7 @@ window.EvType = (function () {
   var match = function (el) { var cs = getComputedStyle(el), px = parseFloat(cs.fontSize), lp = parseFloat(cs.lineHeight), w = +cs.fontWeight, f0 = cs.fontFamily.split(',')[0].replace(/["']/g, '').trim().toLowerCase(), up = cs.textTransform === 'uppercase', fam = { primary: 'tobias', secondary: 'saans', tertiary: 'saans mono' }, best = null;
     ORD.forEach(function (x) { if (best || fam[x.f] !== f0 || x.cap !== up) return; var s = parseFloat(cs.getPropertyValue(nm(x.s))), l = parseFloat(cs.getPropertyValue(nm(x.l))); if (Math.abs(s - px) < .5 && Math.abs(l - lp) < .5 && Math.abs(w - x.w) < 1) best = x.n; });
     return best; };
-  return { S: S, BY: BY, coll: coll, css: css, cls: slug, adopt: adopt, undo: undo, set: set, on: function () { return on; }, stats: function () { return stats; }, match: match, desc: desc, FAM: FAM };
+  return { S: S, BY: BY, parts: parts, coll: coll, css: css, cls: slug, adopt: adopt, undo: undo, set: set, on: function () { return on; }, stats: function () { return stats; }, match: match, desc: desc, FAM: FAM };
 })();
 /* EvBraze (Modules -> Braze; "Create the braze module here, and preview on All breakpoint. Need to be able to create preset for create a collection of cards. Title / Sub / Eyebrow / Image/video / Bg colour"): a Braze content card drawn from the Card master (EvCard, lg),
    its picture or video full width at its top, then an eyebrow, a title and a sub; its ground a token (the mode's) or a colour of its own, the words in the mode's ink, or light or dark; a collection of them a row that scrolls (XS, S) or a grid (M, L), by the width it has */
