@@ -19,6 +19,24 @@ this is the part you need before you change it.
 
 
 
+## v2759: the page inspector, the 100's parallax, 100 as the first title starts, the check-in card on surface 200
+
+**"For each page I need an inspector that capture the tokens used on the inspected area. Add a inspect CTA on the top controller, that we take over the tweak panel is present. Should behave like the tweak panel (push)."**
+- **Inspect** (top bar, the dashed-pointer button before the camera): opens `window.EvInspect`'s panel in Tweaks' own column (`html.tkDocked`, so the page is pushed exactly as with Tweaks and every `tkDocked ? 320 : 0` room keeps working). Tweaks closes under it and comes back on close if it was open; opening Tweaks takes the column back. Tweaks' `dock()` keeps the column while `html.pgInspOn` is set.
+- **Pick** (on by default, `P` toggles): the pointer outlines the element under it (blue, with its tag and size); a press selects it (orange) and the page's own press is held back. Not over the top bar, Tweaks, or the panel.
+- **The panel:** a breadcrumb of the element's parents (each selects it); "N of M of its styles on a token"; this element's styles (fill, text and icons, border, ring, radius, padding, gap, size, type, opacity, blur), each beside the token it matches in `EvTokData` (colours in the page's mode, then the other mode marked; numbers by the property's families at the current breakpoint), or **no token**; then **Tokens in this area** (the element and everything inside, with counts) and **Off a token** (each a link to the first element that has it).
+- Esc clears the selection, a second Esc closes (caught before the page's own Esc, which used to shut the returning Tweaks).
+- Checked at L, Light: the check-in card reads `bg/surface/200`, `radius/4xl`, `space/sm`; the area lists 14 tokens and 8 values off one (Suisse Intl, weight 400/500, 13 and 15px type, a brown 8% fill); Tweaks closed under it and back after; the button toggles.
+
+**"Tweak parallax intensity. By 10 level. for the number"**
+- Tweaks → the 100 → **100 parallax** 1–10 (5 = as before). Once the stage holds, the number moves at `KU` of the scroll: .84 at 1 to .3 at 10, .06 a level (.6 at 5). The sequence keys on where the number is, so the section grows or shrinks by the scroll that moves (`--t3PxX`, from the 70% point at that level less the one at 5), and still ends with the stars and Back to life at every level (checked 1, 5, 10: section 2.28 / 2.4 / 2.82 screens, Back to life at full opacity at the end).
+
+**"100 should be reached when the title 1 starts"** (read 103 there)
+- The number goes 98 → 100 at a steady pace from its entry to `v50` (where the first title's writing starts), then its pace eases over 30% of a screen to 5.6 a screen and on (never a stop). The blur starts from there too. Checked at levels 1, 5, 10: the units' 0 reaches rest just as the title's first letters come.
+
+**"USe bg surface 200 for card around checkin"**
+- The check-in card under the Outline header is `bg/surface/200` (EvPageBase's `--pbGround`): #fafafa in Light (was white), #181818 in Dark.
+
 ## v2758: Page base, the base screen's tokens, synced into the app's shell
 
 **"Regarding layout Can you sync the style and exact token used here in the foundation base screen ?? Add a Page base in General layour design system"** (Figma: Plan - Prescription › Activity / L, 28874:14219, read with get_design_context and get_variable_defs).
