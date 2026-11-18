@@ -19,6 +19,35 @@ this is the part you need before you change it.
 
 
 
+## v2773: inspector names the components and charts the tokens; Timeline chips, CTAs and tabs on the masters; Tab segmented on Figma
+
+**"When n element is A component from the DS PUT a Green badge at the top of the inespect panel" / "Put a pie chart indicating the Tokens used VS not used."**
+- `EvInspect`'s `CN(el)` names an element's master from the master's own classes and rows, with its variant:
+  - Card static (look name from `EvCard.name`, size), Card interactive;
+  - List item interactive / static (size, emphasis);
+  - Button, Button split, Button icon only (kind, size);
+  - Badge, Badge mono (kind, size);
+  - Tab segmented (size), Chip, Filter chip, Input, Top nav, Title group, Sheet header, Braze banner.
+- The panel opens on "Component used": green badges for the element's own master (or "Not a component"), then "in …" for up to three masters it sits in, then "× n inside" for those within it.
+- Under them, a pie (`conic-gradient`, the inspector's green and orange) of the area's styles on a token against those off one, with both counts.
+
+**"use Badge component"**: the row's chips (Suggested, New, Adjusted) are `EvCtl.badge` (Tint, xs).
+- Their ink is the sentiment's token as `--cInk`: positive/100, brand yellow/100, warning/100, dark and light.
+- `EvCtl.badge` takes `svg` (the caller's icon, given `.evCtlIc`), `cls`, and `icon: 'l' | 'r' | 'both' | false`.
+- The chips' old looks (`.tlChg`, `.adj`, `.sug`, light) now skip `.evBdg`.
+
+**"CTA component"**: the rows' actions are the Buttons master: Primary (the row's CTA) or Secondary, sm; with ⋯ the master's split (`.evSplit`). They keep `tlBtn` / `tlMore` and `data-a` for their handlers; the old button looks skip `.evBtn`. Paused was already the master (Secondary); the inspector now says so.
+
+**"tab Control (segmented) component"**
+- The master `.evSeg` is on Figma's Tab controls group (3332:63561) through EvTokVar:
+  - track height `interactive/height/{lg,md,sm}`, padding 3 / 2 / 2, corner `interactive/radius/{lg,md,sm}`, item corner `{md,sm,xs}`;
+  - ground bg/neutral/tertiary/100;
+  - active item components/card/invert/bg, surface/200 on hover, /300 pressed (the indicator, by `:has`);
+  - inks fg/neutral/primary/100 and secondary/100;
+  - inactive hover no change (was the ink).
+- Light now comes from the tokens; `.evTglLight` keeps literal Light values.
+- The Timeline's tabs (`t3Bar`) are `evSeg evSegM`: grid thirds, the item's side padding `components/tab/segmented controls/padding-left-right` (20; 8 on the phone), the master's variables on the track, the sliding `tlThumb` and the labels (14/18 570). Tab style Filled / White no longer decides them.
+
 ## v2772: List item interactive master; Timeline rows, feed and decade cards on the masters
 
 **"use list interactive component"**
