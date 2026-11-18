@@ -19,6 +19,23 @@ this is the part you need before you change it.
 
 
 
+## v2776: the 100's parallax in its own Tweaks group, slower; inspector sizes and slots; primary card 32 at its sides
+
+**"How can I control this parallax/ Doesnt seem on point, It move too close to the speed of the scroll!"**
+- The 100's sliders were inside Tweaks → Decades. They now have their own group on the Timeline, The 100 · parallax (`#tkT3CentGrp`): Opacity, Speed coming in, Speed held, Start later.
+- Defaults: coming in 15% (was 35%), held 10% (was 20%).
+- Measured at 1440 × 900: about 14 px of the number per 100 px of scroll on its way in (was 34), 10 once held. A saved preset with its own values keeps them.
+
+**"Most of the time the width and height is just fill container so no token is to consider here"**: the inspector's Width and Height show their token when they match one, else "Fill container" (the parent's content box, within 1.5 px) or "Hug contents", in grey. Never orange "no token"; they are still not counted.
+
+**"the content inside is a slot. So need to mention when inspect"**
+- `CN` gives the slotted masters a third part:
+  - List item interactive / static, Card interactive: "its content is a slot";
+  - Card static: "its Header, Body and Footer are slots".
+- The panel says so under the badges. An element inside one reads "in List item interactive · md · in its slot" with "Slot content of List item interactive: the page's own, laid in the component's slot".
+
+**"Primary Card add left right paddign support of 32px"**: the primary card is 32 (space/xl) at its sides from S up, the Card's xl 24 above and below.
+
 ## v2775: the Overview's bento on Card static; the Insights tasks on Card interactive
 
 **"ALL should be Card Static component" / "Card interactive"**
