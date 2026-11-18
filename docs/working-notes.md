@@ -19,6 +19,13 @@ this is the part you need before you change it.
 
 
 
+## v2807: Top nav controls sized down over a screen (Design system rule)
+
+**"make sure on the design system, when it's a step or modal, the CTA is sized down from the normal header ... the CTA on the top navigation should be the same as the one on the right here (the cross)"; "That's a design system requirement. When it's about overlapping a screen by a bottom sheet or a full modal, the icon (the CTA) should be sized down."**
+- The Top nav master: its discs 44 on a page (`--evTnD`), **36 over a screen** (`--evTnDo`): every top nav inside a full modal or a modal (`.aqWrap .evTn`, `[role="dialog"] .evTn`), the full modal's cross's size. Back and close always the same size. A bottom sheet's header keeps the sheet header's 32 Close (already sized down).
+- The Quarterly check-in's head on the token: Back and Close 36 (Back was 44), the master's 16 icons. The Suggestion's (EvSolo) close 36.
+- Design system → General layout → Top nav: the Discs row says it (44 on a page, 36 over a screen, 32 in a sheet's header).
+
 ## v2806: The check-in's intro and cover are the Async report's intro; options stacked; the notification's blanket
 
 **"This should be exactly the same structure: the async intro with the image in the background, the same structure. Don't invent anything here."**
