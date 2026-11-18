@@ -103,7 +103,9 @@ The page menu `#versionSel` has Documentation flow (`'doc'`, renamed from Docume
 | Colour modes | `#themeSel`, `body.light` | references/tokens-components.md |
 | Component tokens | `.arSheet --ar-*` | references/tokens-components.md |
 | Tokens page edits and added tokens (laid on the data at parse; live refresh of the CSS the tokens write) | `window.EvTokEdit`, `everlab:tokEdit`, `everlab:tokAdd`, `EvTokVar.refresh`, `EvType.refresh`, `EvPageBase.refresh` | references/tokens-components.md |
-| Section / padding guides (Tweaks → Guides, never saved: `.tkNoSave`) | `#stSecGd`, `#stCtGuide`, `.ctGdBox`, `.ctGuide` | references/layout.md |
+| Section / padding guides (the top bar's Ruler next to Inspect, its dropdown's toggles; never saved: `.tkNoSave`) | `#tkGd`, `.tkGdMenu`, `#stSecGd`, `#stCtGuide`, `.ctGdBox`, `.ctGuide` | references/layout.md |
+| Inspect (the bar's signal: share of the page on a token, red <50 · orange · yellow ≥75 · green ≥90; the panel: element kind, component Properties, box model with each side's token) | `window.EvInspect`, `.tkInsSig`, `kindOf`, `PRP`, `bmHtml` | references/tokens-components.md |
+| Doc panel proxies (On/Off groups as toggles, 5+ choices as a select, `data-dpk="toggles"` a toggle per button) | `EvDocPanel` (`proxy`, `.dpPx`, `.dpTgl`) | references/layout.md |
 | Range colours, status pills | `--rg*`, `--mb*`, `.st`, `.arLfPill`, `.tdTag` | references/tokens-components.md |
 | Type, spacing, radius tokens | `--hdr*`, `--ct*`, `--evPh*`, `--tg*` | references/tokens-components.md |
 | Cards (every card: Card static, Card interactive) | `window.EvCard` (`EvCard.html`, `EvCard.item`), `.evCard`, `.evCardI`, page `cdDoc` (`#cards`) | references/tokens-components.md |
