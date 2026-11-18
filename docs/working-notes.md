@@ -19,6 +19,42 @@ this is the part you need before you change it.
 
 
 
+## v2762: Cards on Figma's tokens; the 100 almost still
+
+**"Adjust card component (Patterns DS25, Card components 6645:85123) Align the tokens"**
+- **`window.EvTokVar`** (new, shared by every master on the Figma tokens): every EvTokData token as `--t-<name>` (bg/surface/200 is `--t-bg-surface-200`).
+  - Dark values on `:root`, dark sheets and `.evScD` previews; Light on `body.light`, light sheets and `.evScL`.
+  - Aliases followed (`components/card/invert/bg` → `{bg.surface.100}` / `{bg.neutral.tertiary.100}`); numbers in px.
+  - Written ahead of the page's own styles (`#evTokVar`), so a page's override still wins a tie.
+  - Two Card tokens are in Figma but not the token file: `components/card/default/border-color` (as `br/neutral/tertiary/100`) and `components/card/invert/border-size` (0).
+- **`window.EvCard`** rebuilt from Figma's rows, its CSS made from them (`EvCard.css`, `#evCardTok`).
+  - **Card sizes** xl / lg / md / sm: padding `space/lg` 24 · `space/md` 20 · `space/sm` 16 · `space/xs` 12; corner `radius/4xl` 24 · `radius/3xl` 20 · `radius/2xl` 16 · `radius/2xl` 16.
+  - **Card slots:** Header and Footer the size's padding all round; the Body its sides; **Body padding** (`bodyPad`, Figma's default on) its top and foot too.
+  - **Card appearances** (21, Figma's names): Primary - Outlined / Surface / Elevated / Outlined - Elevated; Secondary - Transparent / Surface / Blur; Tertiary - Transparent / Surface / Blur; Inverted, - Outlined, - Elevated, Outlined Inverted elevated; Sentiment - Positive / Warning / Negative / Accent / Special; Earth, Static, Media.
+  - Each is its fill, line and effect tokens. Card/100 and Card/200 are the shadows as drawn; Blur/sm and Blur/md become CSS blur 16 and 32 (32 and 64 in Figma).
+  - Old names answer: filled → Secondary - Transparent, outlined → Primary - Outlined, elevated → Primary - Elevated, positive / warning / negative → their Sentiment, info → Accent, caution → Special.
+  - Plain, Inverse and Glow stay, marked app only.
+  - The sentiments lose their tone ring (Figma's border size 0).
+  - **Card item interactive** sizes 2xs–xl (`space/3xs`…`space/lg`, `radius/md`…`radius/4xl`), and None (Outlined: no padding, `radius/md`).
+  - **Item appearances:** Outlined (.5 line), Primary, Secondary (filled, aliased), Elevated, Minimal (plain, aliased). Each has rest, hover and press from `bg/neutral/tertiary/100–300` and `br/neutral/tertiary/100–300`.
+  - **Selected:** a 2 line of `br/neutral/primary/100` (was 1.5 ink). Primary's xs rests on `bg/surface/100` with a .5 line. Minimal's Selected is lifted.
+  - Inverted (app only): Secondary on dark, Primary on light.
+- **Sizes renamed to Figma's** at every call site, so each card keeps its padding: old lg → xl, md → lg, sm → md, xs → sm.
+  - Old xs → sm also takes a corner of 16.
+  - The Timeline's cards pass `bodyPad: false`.
+- **Design system → Cards:**
+  - a Figma-like playground (Component, Appearance, Size, Header, Body, Footer, Body padding; or Appearance, Size, State, Selected), with the Figma variant and the call;
+  - Body padding on/off hatched;
+  - the appearances × sizes grid (Secondary - Surface has no xl);
+  - the item's states at each size;
+  - token tables with Light / Dark values.
+- Checked at 1440, dark: Primary - Outlined md #0F0F0F, 1px #FFFFFF14, corner 16; Secondary - Surface lg #181818, corner 20; Sentiment - Positive xl #022D0D, corner 24; Inverted - Outlined sm 6%, no line, blur 32; item Primary md 1px #FFFFFF29; Secondary press 12%; Elevated hover line 24% with Card/200; Minimal selected 2px white with Card/200; Outlined None padding 0, corner 10, .5 line. No errors on the Timeline.
+
+**"Number should be almost static on the scroll flow"**
+- The number was slowed only once the stage held; on its way in it still rode with the page. It is now drawn almost still the whole way: `yD = Y0 − KD·u`, `KD` .016 a level, .08 at 5. The section's top edge uncovers it (the stage clips it).
+- The titles keep following it; the push-up as the second title comes (25% of a screen) stays.
+- Measured: 7–13px a tenth of a screen (was the page's own pace on the way in). Section length and the ending unchanged.
+
 ## v2761: the 100 moves 80% less; Confirm plan's footer one CTA
 
 **"The number move way too much, shoudl have a lower paralax by 80%"**

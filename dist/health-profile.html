@@ -3273,43 +3273,77 @@ window.EvSeg = (function () {
    Card static: three slots, Header, Body and Footer ("Each static is grouped by header, body, and footer"), a look and a size.
    Card interactive: one slot, anything in it ("for the interactive, it is just a slot. It can be anything"), and its three states, rest, hover and press */
 window.EvCard = (function () {
-  var LOOKS = [
-    ['filled', 'Primary · Filled', 'The default card on a page: the ink at 6% (dark) / 4% (light)'],
-    ['outlined', 'Primary · Outlined', 'A 1px hairline and no fill: groups and lists that stay light'],
-    ['inverted', 'Primary · Inverted', 'Filled on the dark page, outlined on the light one (Action plan, Insights, Booked in)'],
-    ['plain', 'Secondary · Plain', 'No ground, no line: only the card’s padding and corners, on a ground that is already a card'],
-    ['elevated', 'Secondary · Elevated', 'An opaque surface lifted by a soft shadow: over a photo, or floating'],
-    ['inverse', 'Emphasis · Inverse', 'The ink as its ground, the words in the page’s colour: the one card a page must not miss'],
-    ['glow', 'Emphasis · Glow', 'Filled, with Everlab’s warm light at its top: a moment (a decade, a milestone)'],
-    ['media', 'Emphasis · Media', 'A photo, darkened towards its foot, the words white over it'],
-    ['positive', 'Sentiment · Positive', 'In range, done, confirmed'],
-    ['caution', 'Sentiment · Caution', 'Due soon, borderline'],
-    ['warning', 'Sentiment · Warning', 'Due now, needs an action'],
-    ['negative', 'Sentiment · Negative', 'Out of range, failed, cancelled'],
-    ['info', 'Sentiment · Info', 'A note, a tip, something to know']];
-  var ILOOKS = [
-    ['filled', 'Filled', 'Hover: the ink up to 9% (7% light) · Press: 12% (10%)'],
-    ['outlined', 'Outlined', 'Hover: a 4% fill, the hairline to 18% · Press: an 8% fill'],
-    ['inverted', 'Inverted', 'Filled’s states on the dark page, Outlined’s on the light one'],
-    ['plain', 'Ghost', 'No ground at rest. Hover: bg/neutral/tertiary, the ink at 6% · Press: bg/neutral/secondary, 24% (the tokens --gcHov, --gcPrs: every ghost card in the app)'],
-    ['elevated', 'Elevated', 'Hover: the surface a step lighter, the shadow deeper · Press: the shadow back down']];
-  var SIZES = [['lg', 24, 24, 12], ['md', 20, 20, 12], ['sm', 16, 16, 8], ['xs', 12, 12, 6]];   /* name, padding, corner, the corner of anything inside it */
-  var SECS = [['lg', 24, 16], ['md', 20, 12], ['sm', 16, 8], ['xs', 12, 4]];   /* a Header's or a Footer's size: its inset at the card's edge, its gap to the Body */
+  /* Figma: Patterns DS25 › Card components (6645:85123; "Adjust card component ... Align the tokens"): Card, four sizes (xl lg md sm) × its Appearances, with Header, Body, Footer and Body padding; Card item interactive, sizes 2xs to xl (and None), five Appearances, rest, hover and press, selected.
+     Each look is a row of tokens; css() turns the rows into the cards' CSS (#evCardTok, the values from EvTokVar in the page's mode), and the Cards page and the inspector read the same rows. The old names (filled, outlined, elevated, the sentiments, plain) answer as aliases */
+  var LOOKS = [   /* key, Figma Appearance, group, what it is for, fill, stroke, stroke width, effect, old names */
+    ['primary-outlined', 'Primary - Outlined', 'Primary', 'The page’s ground with a hairline: groups and lists', 'bg/surface/100', 'components/divider/100', 'border/md', null, ['outlined']],
+    ['primary-surface', 'Primary - Surface', 'Primary', 'The page’s ground, no line: only the padding and the corners', 'bg/surface/100', null, null, null, []],
+    ['primary-elevated', 'Primary - Elevated', 'Primary', 'The page’s ground, lifted (Card/200)', 'bg/surface/100', null, null, 'Card/200', ['elevated']],
+    ['primary-outlined-elevated', 'Primary - Outlined - Elevated', 'Primary', 'A hairline and the lift: over other content', 'bg/surface/100', 'br/neutral/tertiary/100', 1, 'Card/200', []],
+    ['secondary-transparent', 'Secondary - Transparent', 'Secondary', 'The ink at 6% (dark) / 4% (light): the default card on a page', 'bg/neutral/tertiary/100', null, null, null, ['filled']],
+    ['secondary-surface', 'Secondary - Surface', 'Secondary', 'A step up from the page, #181818 / #FAFAFA (no xl in Figma)', 'bg/surface/200', null, null, null, []],
+    ['secondary-blur', 'Secondary - Blur', 'Secondary', 'Secondary over a picture, the picture blurred behind it (Blur/sm)', 'bg/neutral/tertiary/100', null, null, 'Blur/sm', []],
+    ['tertiary-transparent', 'Tertiary - Transparent', 'Tertiary', 'The ink at 24% (dark) / 8% (light)', 'bg/neutral/secondary/100', null, null, null, []],
+    ['tertiary-surface', 'Tertiary - Surface', 'Tertiary', 'Two steps up from the page, #212121 / #F0F0F0', 'bg/surface/300', null, null, null, []],
+    ['tertiary-blur', 'Tertiary - Blur', 'Tertiary', 'Tertiary over a picture, blurred behind it (Blur/sm)', 'bg/neutral/secondary/100', null, null, 'Blur/sm', []],
+    ['inverted', 'Inverted', 'Inverted', 'White on the light page, the ink at 6% on the dark one, blurred behind it (Blur/md)', 'components/card/invert/bg', null, null, 'Blur/md', []],
+    ['inverted-outlined', 'Inverted - Outlined', 'Inverted', 'Inverted with a .5 hairline in Light, none in Dark', 'components/card/invert/bg', 'components/card/default/border-color', 'components/card/invert/border-size/sm', 'Blur/md', []],
+    ['inverted-elevated', 'Inverted - Elevated', 'Inverted', 'Inverted, lifted (Card/200)', 'components/card/invert/bg', null, null, 'Card/200', []],
+    ['inverted-outlined-elevated', 'Outlined Inverted elevated', 'Inverted', 'Inverted, lifted, with a .5 ring (Card/100)', 'components/card/invert/bg', null, null, 'Card/100', []],
+    ['sentiment-positive', 'Sentiment - Positive', 'Sentiment', 'In range, done, confirmed', 'bg/sentiment/positive/secondary/100', null, null, null, ['positive']],
+    ['sentiment-warning', 'Sentiment - Warning', 'Sentiment', 'Due now, needs an action', 'bg/sentiment/warning/secondary/100', null, null, null, ['warning']],
+    ['sentiment-negative', 'Sentiment - Negative', 'Sentiment', 'Out of range, failed, cancelled', 'bg/sentiment/negative/secondary/100', null, null, null, ['negative']],
+    ['sentiment-accent', 'Sentiment - Accent', 'Sentiment', 'A note, a tip, something to know', 'bg/brand/blue/secondary/100', null, null, null, ['info']],
+    ['sentiment-special', 'Sentiment - Special', 'Sentiment', 'Due soon, borderline, a moment', 'bg/brand/yellow/secondary/100', null, null, null, ['caution']],
+    ['earth', 'Earth', 'Brand', 'Everlab’s earth', 'bg/brand/earth/secondary/100', null, null, null, []],
+    ['static', 'Static', 'Brand', 'White in both modes, its words black, blurred behind it (Blur/md)', 'bg/static/white', null, null, 'Blur/md', []],
+    ['media', 'Media', 'Media', 'A photo, darkened towards its foot, the words white over it', null, null, null, null, []],
+    ['plain', 'Plain', 'App only', 'Not in Figma: no ground and no line, on a ground that is already a card', null, null, null, null, []],
+    ['inverse', 'Inverse', 'App only', 'Not in Figma: the ink as its ground, the words in the page’s colour', null, null, null, null, []],
+    ['glow', 'Glow', 'App only', 'Not in Figma: Secondary - Transparent with Everlab’s warm light at its top (a decade, a milestone)', null, null, null, null, []]];
+  var SIZES = [['xl', 'space/lg', 'radius/4xl', 12], ['lg', 'space/md', 'radius/3xl', 12], ['md', 'space/sm', 'radius/2xl', 8], ['sm', 'space/xs', 'radius/2xl', 6]];   /* name, padding (the Header's and the Footer's all round, the Body's sides, and with Body padding its top and foot), corner, the corner of anything inside it (--kRin, app only) */
+  var ILOOKS = [   /* Card item interactive: key, Figma Appearance, what it does, rest, hover, press (each [fill, stroke, stroke width, effect]), old names */
+    ['outlined', 'Outlined', 'A .5 hairline at rest, filled on hover and press; with no padding (Size None, corner radius/md) or at any size', [null, 'br/neutral/tertiary/100', .5, null], ['bg/neutral/tertiary/100'], ['bg/neutral/tertiary/200'], []],
+    ['primary', 'Primary', 'A hairline at rest (xs: on the page’s ground, a .5 hairline); filled on hover and press', [null, 'br/neutral/tertiary/100', 1, null], ['bg/neutral/tertiary/100'], ['bg/neutral/tertiary/200'], []],
+    ['secondary', 'Secondary', 'Filled; a step deeper on hover, two on press', ['bg/neutral/tertiary/100'], ['bg/neutral/tertiary/200'], ['bg/neutral/tertiary/300'], ['filled']],
+    ['elevated', 'Elevated', 'The page’s ground, a hairline and Card/200; the hairline deeper on hover, deeper again on press', ['bg/surface/100', 'br/neutral/tertiary/100', 1, 'Card/200'], ['bg/surface/100', 'br/neutral/tertiary/200', 1, 'Card/200'], ['bg/surface/100', 'br/neutral/tertiary/300', 1, 'Card/200'], []],
+    ['minimal', 'Minimal', 'Nothing at rest; filled on hover and press', [], ['bg/neutral/tertiary/100'], ['bg/neutral/tertiary/200'], ['plain']],
+    ['inverted', 'Inverted', 'Not in Figma: Secondary on the dark page, Primary on the light one', [], [], [], []]];
+  var ISIZES = [['2xs', 'space/3xs', 'radius/md', 4], ['xs', 'space/2xs', 'radius/lg', 6], ['sm', 'space/xs', 'radius/lg', 6], ['md', 'space/sm', 'radius/2xl', 8], ['lg', 'space/md', 'radius/3xl', 12], ['xl', 'space/lg', 'radius/4xl', 12], ['none', null, 'radius/md', 6]];   /* padding, corner, --kRin; None: Outlined's, no padding */
+  var SEL = ['br/neutral/primary/100', 2];   /* Selected: a 2 ring of the primary line over any look and state; Primary at rest on the page's ground, Minimal lifted (Card/200) */
+  var EFF = { 'Card/100': '0 2px 4px 0 #0000000a, 0 1px 2px 0 #0000000a, 0 0 0 .5px {components/card/default/border-color}', 'Card/200': '0 4px 8px -4px #00000005, 0 8px 12px -3px #00000005', 'Blur/sm': 16, 'Blur/md': 32 };   /* Figma's effect styles: the shadows as drawn; a background blur's radius halved for CSS blur() (32, 64 in Figma) */
+  var SECS = SIZES;   /* a Header's or a Footer's own size (hd, ft): Figma's Header / Footer, the size's padding all round */
   var keys = function (L) { var o = {}; L.forEach(function (x) { o[x[0]] = x; }); return o; };
-  var LK = keys(LOOKS), IK = keys(ILOOKS), SK = keys(SIZES), HK = keys(SECS);
+  var LK = keys(LOOKS), IK = keys(ILOOKS), SK = keys(SIZES), HK = keys(SECS), IZ = keys(ISIZES), LA = {}, IA = {};
+  LOOKS.forEach(function (x) { LA[x[0]] = x[0]; x[8].forEach(function (a) { LA[a] = x[0]; }); }); ILOOKS.forEach(function (x) { IA[x[0]] = x[0]; x[6].forEach(function (a) { IA[a] = x[0]; }); });
   var esc = function (t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
   var on = function (x) { return x != null && x !== '' && x !== false; };
-  /* Card static: EvCard.html({ look, size, header, body, footer, hd, ft, divided, img, tag, cls, attrs }); hd / ft: the Header's / Footer's own size (the card's by default) */
-  var html = function (o) { o = o || {}; var look = LK[o.look] ? o.look : 'filled', size = SK[o.size] ? o.size : 'md', hd = HK[o.hd] ? o.hd : size, ft = HK[o.ft] ? o.ft : size, tag = o.tag || 'div';
+  /* Card: EvCard.html({ look, size, header, body, footer, bodyPad, hd, ft, divided, img, tag, cls, attrs }); look a key above or an old name; bodyPad (Figma's Body padding, on by default) the size's padding over and under the Body; hd / ft the Header's / Footer's own size (the card's by default) */
+  var html = function (o) { o = o || {}; var look = LA[o.look] || 'secondary-transparent', size = SK[o.size] ? o.size : 'md', hd = HK[o.hd] ? o.hd : size, ft = HK[o.ft] ? o.ft : size, tag = o.tag || 'div', bp = o.bodyPad !== false;
     var c = 'evCard evCard-' + look + ' evCard-' + size + (o.divided ? ' evCardDiv' : '') + (o.cls ? ' ' + o.cls : ''), st = look === 'media' && o.img ? ' style="--kImg:url(\'' + o.img + '\')"' : '';
-    return '<' + tag + ' class="' + c + '"' + st + (o.attrs || '') + '>' + (on(o.header) ? '<div class="evCardHd evCardS-' + hd + '">' + o.header + '</div>' : '') + (on(o.body) ? '<div class="evCardBd">' + o.body + '</div>' : '') + (on(o.footer) ? '<div class="evCardFt evCardS-' + ft + '">' + o.footer + '</div>' : '') + '</' + tag + '>'; };
-  /* Card interactive: EvCard.item({ look, size, slot, selected, href, label, state, cls, attrs }); a button (a link with href); state 'hover' | 'press' only to draw that state (the docs) */
-  var item = function (o) { o = o || {}; var look = IK[o.look] ? o.look : 'filled', size = SK[o.size] ? o.size : 'md', tag = o.href ? 'a' : 'button';
-    var c = 'evCardI evCardI-' + look + ' evCard-' + size + (o.selected ? ' is-sel' : '') + (o.state === 'hover' ? ' is-hover' : o.state === 'press' ? ' is-press' : '') + (o.cls ? ' ' + o.cls : '');
+    return '<' + tag + ' class="' + c + '"' + st + (o.attrs || '') + '>' + (on(o.header) ? '<div class="evCardHd evCardS-' + hd + '">' + o.header + '</div>' : '') + (on(o.body) ? '<div class="evCardBd' + (bp ? ' evCardBdP' : '') + '">' + o.body + '</div>' : '') + (on(o.footer) ? '<div class="evCardFt evCardS-' + ft + '">' + o.footer + '</div>' : '') + '</' + tag + '>'; };
+  /* Card item interactive: EvCard.item({ look, size, slot, selected, href, label, state, cls, attrs }); a button (a link with href); size 2xs to xl, or none (Outlined only); state 'hover' | 'press' only to draw that state (the docs) */
+  var item = function (o) { o = o || {}; var look = IA[o.look] || 'secondary', size = IZ[o.size] ? o.size : 'md', tag = o.href ? 'a' : 'button'; if (size === 'none' && look !== 'outlined') size = 'md';
+    var c = 'evCardI evCardI-' + look + ' evCardIs-' + size + (o.selected ? ' is-sel' : '') + (o.state === 'hover' ? ' is-hover' : o.state === 'press' ? ' is-press' : '') + (o.cls ? ' ' + o.cls : '');
     var a = tag === 'a' ? ' href="' + esc(o.href) + '"' : ' type="button"' + (o.selected != null ? ' aria-pressed="' + !!o.selected + '"' : '');
     return '<' + tag + ' class="' + c + '"' + a + (o.label ? ' aria-label="' + esc(o.label) + '"' : '') + (o.attrs || '') + '><span class="evCardSlot">' + (o.slot || '') + '</span></' + tag + '>'; };
   var el = function (h) { var t = document.createElement('div'); t.innerHTML = h; return t.firstElementChild; };
-  return { LOOKS: LOOKS, ILOOKS: ILOOKS, SIZES: SIZES, SECS: SECS, html: html, item: item, el: el, name: function (k) { return (LK[k] || IK[k] || [k, k])[1]; } };
+  /* the cards' CSS from the rows: css(v), v a token's name to its CSS value (EvTokVar.v: var(--t-…)); the sizes' padding and corners, each look's fill, hairline, shadow and blur, each item look's rest, hover and press (--iB, --iL, --iS: fill, line, shadow; --iW the line's width), Selected */
+  var css = function (v) { var n = function (x) { return x == null ? '0px' : typeof x === 'number' ? x + 'px' : v(x); }, f = function (x) { return x ? v(x) : 'transparent'; },
+      ef = function (e) { var x = EFF[e]; return typeof x === 'string' ? x.replace(/\{([^}]+)\}/g, function (m, t) { return v(t); }) : ''; }, bl = function (e) { return typeof EFF[e] === 'number' ? 'blur(' + EFF[e] + 'px)' : ''; },
+      sh = function (s, w, e) { var o = []; if (s) o.push('inset 0 0 0 ' + n(w) + ' ' + f(s)); var x = e && ef(e); if (x) o.push(x); return o.length ? o.join(', ') : 'none'; }, L = [];
+    SIZES.forEach(function (s) { L.push('.evCard-' + s[0] + '{--kP:' + v(s[1]) + ';--kR:' + v(s[2]) + ';--kRin:' + s[3] + 'px;}', '.evCardS-' + s[0] + '{--sP:' + v(s[1]) + ';}'); });
+    LOOKS.forEach(function (x) { if (!x[4]) return; var b = bl(x[7]); L.push([x[0]].concat(x[8]).map(function (k) { return '.evCard-' + k; }).join(', ') + '{background:' + f(x[4]) + ';box-shadow:' + sh(x[5], x[6], x[7]) + ';' + (b ? '-webkit-backdrop-filter:' + b + ';backdrop-filter:' + b + ';' : '') + '}'); });
+    L.push('.evCard.evCard.evCard-static{--kInk:0,0,0;}');   /* white in both modes: its words black over the mode's ink */
+    ISIZES.forEach(function (s) { L.push('.evCardIs-' + s[0] + '{--kP:' + (s[1] ? v(s[1]) : '0px') + ';--kR:' + v(s[2]) + ';--kRin:' + s[3] + 'px;}'); });
+    var st = function (x, k) { x = x || []; return '--iB' + k + ':' + f(x[0]) + ';--iL' + k + ':' + f(x[1]) + ';--iS' + k + ':' + (x[3] ? ef(x[3]) : '0 0 #0000') + ';'; }, look = function (x) { return st(x[3], '0') + st(x[4], 'H') + st(x[5], 'P') + '--iW:' + n((x[3] && x[3][2]) || 1) + ';'; };
+    ILOOKS.forEach(function (x) { if (x[0] === 'inverted') return; L.push([x[0]].concat(x[6]).map(function (k) { return '.evCardI-' + k; }).join(', ') + '{' + look(x) + '}'); });
+    L.push('.evCardI-inverted{' + look(IK.secondary) + '}', 'body.light .evCardI-inverted, .arSheet:not(.arDark) .evCardI-inverted, .evScL .evCardI-inverted{' + look(IK.primary) + '}', 'body.light .arSheet.arDark .evCardI-inverted, .arSheet.arDark .evCardI-inverted, .evScD .evCardI-inverted{' + look(IK.secondary) + '}',
+      '.evCardI-primary.evCardIs-xs{--iB0:' + f('bg/surface/100') + ';--iW:.5px;}',
+      '.evCardI.evCardI.is-sel{--iW:' + n(SEL[1]) + ';--iL0:' + f(SEL[0]) + ';--iLH:' + f(SEL[0]) + ';--iLP:' + f(SEL[0]) + ';}', '.evCardI-primary.is-sel{--iB0:' + f('bg/surface/100') + ';}', '.evCardI-minimal.is-sel{--iS0:' + ef('Card/200') + ';--iSH:' + ef('Card/200') + ';--iSP:' + ef('Card/200') + ';}');
+    return L.join('\n'); };
+  var lookOf = function (k) { return LK[LA[k]] || null; }, ilookOf = function (k) { return IK[IA[k]] || null; };
+  return { LOOKS: LOOKS, ILOOKS: ILOOKS, SIZES: SIZES, ISIZES: ISIZES, SECS: SECS, SEL: SEL, EFF: EFF, html: html, item: item, el: el, css: css, look: lookOf, ilook: ilookOf, name: function (k) { return (lookOf(k) || ilookOf(k) || [k, k])[1]; } };
 })();
 window.EvCtl = (function () {
   var SIZES = [['lg', 56], ['md', 44], ['sm', 36], ['xs', 28], ['2xs', 20]];
@@ -5774,7 +5808,7 @@ window.EvConsent = (function () {
       var hd = n ? q('', 'We found ' + n + ' result' + (n === 1 ? '' : 's') + ' in the past 10 years', run ? { html: sp + 'We are still looking for some more.' } : '')
         : run ? q('', 'We’re still looking for your past results', { html: sp + 'Checking labs across ' + C[0] + ' under your name and ' + C[1] + ' number.' })
         : q('', 'We didn’t find any results in the past 10 years', 'Your new tests will be the start of your history.');
-      var ls = n ? window.EvCard.el(window.EvCard.html({ look: 'filled', size: 'md', cls: 'hpPr2C', body: '<ul class="hpPr2L" aria-label="Past results found">' + R.map(function (r) { var d = r.d.split('-'); return '<li><b>' + r.t + '</b><span>' + (+d[2]) + ' ' + MON[d[1] - 1] + ' ' + d[0] + ' · ' + r.lab + '</span></li>'; }).join('') + '</ul>' })) : null;
+      var ls = n ? window.EvCard.el(window.EvCard.html({ look: 'filled', size: 'lg', cls: 'hpPr2C', body: '<ul class="hpPr2L" aria-label="Past results found">' + R.map(function (r) { var d = r.d.split('-'); return '<li><b>' + r.t + '</b><span>' + (+d[2]) + ' ' + MON[d[1] - 1] + ' ' + d[0] + ' · ' + r.lab + '</span></li>'; }).join('') + '</ul>' })) : null;
       scr.classList.add('hpPr2'); scr.appendChild(hd); if (ls) scr.appendChild(ls);
       foot2('Continue', true, fwd);
       if (rv === 'auto' && run && !S.pend.search.hold) { var al = live(tick); setTimeout(function () { if (al()) step(0); }, Math.max(0, S.pend.search.at + SEARCH_MS - Date.now()) + 60); }   // found while it shows: drawn again, all of them
