@@ -7,6 +7,12 @@ this is the part you need before you change it.
 
 ---
 
+## v2842 — Guides: filled labels, 2px sections, the Header group's parts dashed 8 inside it; steps with a text field
+
+- **Labels filled, sections 2px** ("The badge indicator, use filled colour and white text, and use 2px border to define areas"): each section's label in its colour (Header navigation and Status bar blue, Header title violet, Body grey, Footer group green, Header group deep blue), white words; the sections' edges 2px. The Page example's guides the same.
+- **The parts of a section dashed, 8 inside it** ("Inclusion section in dashed line 1px"; "padding 8 from the parent"): the Header group's Status bar, Header navigation and Header title drawn 1px dashed, 8 in from the group's 2px frame and 8 apart.
+- **Steps with a text field** ("What happen here? Where is the header group? and body"): on the check-in's supplement step the text field (it scrolls) was taken for the screen's body, so the title read as the Header navigation and the Body was the field; a field is never the body now (`scrOf` skips inputs, a body at least 160 tall): Status bar, Header navigation and Header title in the Header group, the Body from the card down.
+
 ## v2841 — The check-in's Flow tagged by persona; its insight badges; the Ruler a master switch; no guides over the tools
 
 - **Each check-in step tagged by persona** ("Indicate what each step [is for], to visually see at first glance"): in the Flow panel, every step of the Quarterly check-in carries #1 #2 #3 (New bloods only; New bloods and device data; No new data), lit where that persona's check-in has it, the persona shown filled. The steps only the others have are listed in their place, dimmed and unnumbered; pressing one switches the persona and opens it. The Flow panel takes `tags` and `dim` on any row now.
