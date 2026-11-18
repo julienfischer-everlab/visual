@@ -7,6 +7,12 @@ this is the part you need before you change it.
 
 ---
 
+## v2834 — Inspect opens on the page; the 100: specks later, 80% less orange
+
+- **Inspect's default is the page** ("By default infos should show at page level"): with nothing picked, the panel shows This page (its name, the breakpoint), its share on a token (in the signal's colour), the Design system components on it (each × how many) and its values on a token and off one (the same tabs; an off one opens the token picker). Pick an element for its properties, box and tokens.
+- **The 100's specks a little later** ("Particle should appear a little later when the title is up"): the specks, the dot and the drawing-in start a tenth of a screen after the second title is 80% written (were at 80%).
+- **The number's orange 80% less** ("Reduce the orange effect by 80%"): its tint, glow and opacity lift as it is written in, a fifth of what they were; the blur as it was.
+
 ## v2833 — Inspect: properties, element kinds, side tokens; the Ruler; the signal; Header title padding on its container
 
 - **Component properties in Inspect** ("When I inspect a component, need to see the properties of this component somewhere"): a Properties block under Component used, for the selected component (or the one it sits in) and the first one inside it, read back from the master's markup as Figma lists them: Title group (Size, Centered, Top slot, Top / Bottom support, Span content, the title's icons, Right slot, the texts, its tag), Header title (Type, Align, its Title group, Subtitle), Top nav (Variant, Back, Close, More, Title, Ground), Link, Toggle, Button; any other component its variant. Its name selects it. Header title, Link and Toggle are now named components (`CN`).
