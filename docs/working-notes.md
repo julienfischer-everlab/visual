@@ -19,6 +19,18 @@ this is the part you need before you change it.
 
 
 
+## v2761: the 100 moves 80% less; Confirm plan's footer one CTA
+
+**"The number move way too much, shoudl have a lower paralax by 80%"**
+- Once the stage holds (pinned, the ground still), only the number moves, and it moved at 60% of the scroll. It is now drawn at 12% (`KD`, `yD`), 80% less. Its way in is unchanged.
+- The sequence keeps keying on where the number would be at 60% (`yAt`, `KU` .6): the titles, the specks, the dot and the section's length (2.4 screens) are as they were. The titles under it follow where it is drawn.
+- Tweaks → 100 parallax now sets that speed: .024 of the scroll a level, 12% at 5, 24% at 10, 2.4% at 1. `--t3PxX` stays 0.
+- Measured at 1440 × 900: the number moves about 40px a fifth of a screen once held (was 105–123). The ending (Back to life at full opacity) is reached at levels 1, 5 and 10.
+
+**"Thats footer should always stay with ONE CTA DIsucss"** ("on confirm plan")
+- The standalone Confirm plan (the Timeline's Review my plan) had Discuss + Pay $xx.xx once a paid item was ticked. It now keeps one CTA, Discuss, whatever is ticked (`rvTalk` true for the standalone; its sheet's Confirm plan pays). Footer #7 (Continue + Discuss) is unchanged.
+- Checked: opened from the Timeline, Discuss alone before and after ticking a paid item.
+
 ## v2760: the 100's odometer from 97, no stray digit
 
 **"there is a bug here. The 9 shoudl roll to 0, not the case atm. And should have 7 before 8"**
