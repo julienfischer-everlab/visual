@@ -19,6 +19,38 @@ this is the part you need before you change it.
 
 
 
+## v2777: Inputs and Alert masters from Figma; decade cards without a light of their own; the 100 rises at one pace
+
+**"Where are the input ? And alert s ?"**
+- New master `window.EvField` (before `EvCtl`), from Figma Core DS25:
+  - Covers: input field (22933:28266), OTP (5512:95698), Search input (23495:3762) and its ghost (23740:190869), input select (8445:1329), the footer (23192:139251), field requirements (3318:22100).
+  - `html({ type: text | number | date | area | phone | search | select | otp, size lg md sm, emphasis secondary primary ghost, shape square round, state rest hover active filled error erroractive, disabled, label, placeholder, value, help, footer default success error, counter, icon, iconRight, buttonRight, prefix, suffix, ring, options, dismiss, cells })`, plus `reqs()`.
+- Everything is a token through EvTokVar's `--t-*`:
+  - height, corner and line by size (`interactive/height|radius|border`);
+  - ground `components/input/bg`, hover `bg/neutral/tertiary/100`, focus `br/neutral/primary/100`, error `br/sentiment/negative/100`;
+  - disabled `bg/neutral/tertiary/100` with the primary/200 ink;
+  - Primary a pill with no line (negative ground on error); Ghost with no line and no corner;
+  - Search with no ground while typing, its round clear once there is something to clear;
+  - Select with no ground at rest, `bg/surface/100` filled, the primary line open, the chevron turned, a listbox;
+  - OTP 44 cells; the focus ring 4 out, 14 round, 2.
+- Type sizes come from the Breakpoints collection, which EvTokVar skips, so they fall back to the Figma values (16/18, 14/16, 24/26).
+- Behaviour wired once for the page: Select opens and picks, clear empties, OTP cells advance and step back, a counter counts.
+- `EvCtl.input` now draws `EvField` (only the docs used it).
+- New master `window.EvAlert`, from Figma Alert (3332:77026):
+  - Emphasis Primary (tinted ground) or Secondary (a 1 line, no ground); Danger, Warning, Success, Neutral, Info.
+  - Grounds and icon colours come from its rows (`#evAlTok`).
+  - Title (16/24 570) and support (14/16), or support alone beside the icon.
+  - Links: two Buttons md (Secondary, Ghost). Dismiss: a Ghost icon button sm, 8 in. 12 round, 16 / 20 in.
+  - Danger and Warning are `role="alert"`, the others `role="status"`.
+- `EvCtl` icons gained `x`.
+- Design system → Inputs is rebuilt: a playground (type, size, emphasis, shape, state, disabled, label, footer, icons, prefix/suffix, counter, focus ring, texts, theme); Input field states (lg / md Secondary, Primary, Ghost); types; slots; Search; Select; OTP; Anatomy with every token. Checkbox is kept.
+- New Design system → Alert (`al`, `#alert`, after Inputs): a playground; the five appearances Primary, Secondary, Title No, and without links or dismiss; Anatomy; roles.
+- The inspector names both: "Input field · Text · md", "Search · round", "Select", "OTP", "Alert · Primary · Danger".
+
+**"No halo when inactive"**: the decade and locked phase cards are Card Secondary - Transparent (were Glow). Only the active decade has its light (`html.t3Halo`).
+
+**"why stop movement up when reach 100? keep move up"**: The 100 · parallax → Speed held defaults to 15%, the same as Speed coming in, so the number rises at one pace past 100 (was 10%).
+
 ## v2776: the 100's parallax in its own Tweaks group, slower; inspector sizes and slots; primary card 32 at its sides
 
 **"How can I control this parallax/ Doesnt seem on point, It move too close to the speed of the scroll!"**
