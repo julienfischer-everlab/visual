@@ -19,6 +19,34 @@ this is the part you need before you change it.
 
 
 
+## v2782: Video check-in is a service; the Action plan cards on Card interactive with Tweaks; Primitives in the tokens; token badges copy their value
+
+**"THis need to Be a service detail screen. Create this one in the list of service"** (the Timeline's Your check-in sheet)
+- New service `SVC.vci`, "Video check-in with Dr Lu". It is an appointment task (`task: 'apt'`), 20 min, Dr Steven Lu, opened booked.
+- It is in the Service detail picker under Standalone tasks, opens booked (`O.vci = ['booked', {}]`), has no documents step (`DPOOL.vci = []`) and uses the video icon in the journey lists.
+- The task page now takes, from any appointment task:
+  - its own headings (`whyH`, `instrH`);
+  - its items before (`pre`, each a static Card master `secondary-transparent sm`);
+  - a questions field (`ask` / `askH` / `askP`, the Inputs master's text area).
+  - The check-in's tabs are What Dr Lu will cover, Before then and Your questions.
+- From the Timeline, Prepare (`data-a="prep"`) opens it with `window._svc.openDesk('vci', 'booked', { from: 'tl', when, goal, pre })`. The goal leads What Dr Lu will cover, and the open items, with their step and action, fill Before then. The async debrief keeps its sheet.
+- Its cover is Dr Lu's picture, `window.EvSvcImg.drlu` (the MRI Briefing's `brief-doctor.webp`, still one copy), framed by a task's new `coverPos`.
+
+**"In the tweak I need the properties of the Card interactive component for this item"** (the Overview's Action plan cards)
+- Tweaks → Action plan has four new rows: Card · Appearance, Size, State (Live / Hover / Press) and Selected. The defaults are Primary and lg, which is the old look: a hairline, 20 padding, 20 corner.
+- Each cell (`.tlEmbC`) takes `window.__apC()`, which gives EvCard.item's classes. This applies to the Overview's grid and to the Action card doc, and a change restyles the cells in place.
+- Adopter CSS: the master's ground, line, shadow, corner and padding, and the row's own padding over and under from the size, with the row's own hover ground gone. On the Overview it overrides `#dOver .tlEmbC`'s forced card ground and no-line rule, both `!important`. A press on the card doesn't fire when its own button is pressed.
+
+**Tokens** ("all of these tokens are the semantic token", "ill give you the primitives now", "So you will be able to grab the value from the primitives", "Remove the copy option. Click on Token badhe will copy the Value, Snackbar for feedback")
+- The Foundation collection is shown as Semantic.
+- Primitives, from Figma's Font (Current) export: 406 tokens (white, black, color/*, unit/*, font/*). They are the first collection in `window.EvTokData`, so EvTokVar writes them as `--t-*` too.
+- A pass after the data sets every semantic value from its primitive, per mode. On arrival all 1,079 aliases resolved and every value already matched.
+- The page still lands on Themes.
+- No copy icons: a badge is the button.
+  - A value's badge copies the value.
+  - An alias's badge (its primitive's name) copies the value too.
+  - A snackbar (`.tkSnack`, as for a copied link) says "Copied …".
+
 ## v2781: The 100's digits whole at rest: its own reel window
 
 **"Big number fade / mask clipping. pls check"** (a screen recording of the 97 / 98 coming in)
