@@ -7,6 +7,16 @@ this is the part you need before you change it.
 
 ---
 
+## v2823 — Guides group, token editor, soft guide labels, report step titles on the Title group
+
+- **Tweaks → Guides** (new group, `#tkGdGrp`, above General layout): Section guides and Container padding guide moved here. Both selects carry `.tkNoSave`: left out of the saved setup's control list (`ctl()`), never put back by a setup (`put` skips them), so switching them never marks a preset unsaved ("We never save that").
+- **Guides on screens that do not scroll** (an intro, a carousel): `scr()` falls back to the sheet itself (`.arSheet, [role=dialog], .sgmSheet`) when no scroller sits under the screen's middle ("where is the guides?").
+- **Guide labels**: never a container badge; each section named softly under its parent: Header group · Status bar (XS·S frames only, from `#bpFrame .bpStatus`), Header group · Header navigation (was Top navigation), Header group · Header title, Body, Footer group. Tweaks row renamed "Header navigation · Container".
+- **Intro subtitle** (`.arWtHead > .arWtSub`, every intro of the picture/tag/title/line type): 48 side padding.
+- **Tokens page: edit and add** (`window.EvTokEdit`, `everlab:tokEdit`, `everlab:tokAdd`, this browser): a value cell's Edit on hover opens an editor (a value, a hex with a picker, or a primitive's name to alias it; Enter saves, Esc cancels, "Back to Figma's" per cell, "Reset all" in the header). A group's + (and Add token in the header) adds a row: path, type, a value per mode. Edits are laid on the data before the primitives' pass at parse, so every page is built on them; live, the data is put back, re-edited, re-resolved, and EvTokVar / EvType / EvPageBase rewrite their CSS (`refresh()`). Edited cells and added rows carry an orange dot.
+- **Report step titles** (insight, Everything else, recommendations, lifestyle, clinical, plan review, doctor's notes, blood panel) are the Title group's H1: the `h1` itself is `.evTg.evTgT[data-lv=h1]` so the word reveal still splits its text; H1 tokens (Headlines/700: 24/24 XS … 30/30 L) over the report's own sizes. Intros keep their own titles.
+- **Step container gap**: `.arLfStack` and `.arRvwStack` gap `var(--ctGap)` (layout/container/gap/xl: 24 28 32 36).
+
 
 
 
