@@ -7,6 +7,13 @@ this is the part you need before you change it.
 
 ---
 
+## v2825 — Link master, Inspect guides as toggles, token Edit / Search buttons
+
+- **Link** (new master `window.EvLink`, Design system → Link, `#link`; Figma Core DS25 › Link 3317:15): `EvLink.html({ label, size: xs·sm·md·lg, theme: primary·accent·destructive·warning·success, bold, underline, disabled, iconL, iconR (true: chevron right), href, cls, attrs, state })`. Sizes: Label - Body/100…/400 (12/14, 14/16, 16/18, 20/24), icons 16·16·20·24, gap `space/5xs` / `space/4xs`; Medium or Regular; ink the theme's /100, hover /200, pressed /100, disabled `fg/neutral/tertiary/100`. CSS from the tokens (`#evLkTok`, put by EvTokVar). The doc page shows sizes × themes, states, bold/underline, in use, anatomy.
+- **Generate my insights** (Overview first insights card, CTA position Top right) is the Link master: sm, Regular, chevron right; locked = disabled with the lock icon. Its old typography/hover CSS removed (`.hpInsGo.hpInsGoL` keeps only its place).
+- **Inspect → Guides** rows are the Toggle master (`EvToggle`, small size in the panel).
+- **Tokens page**: a value cell shows two icon buttons on hover: Edit (pencil: a modal with the value only, typed or picked colour, Enter saves) and Search (the search modal). In the search, a chip on one collection no longer repeats its name on every row.
+
 ## v2824 — Guides in Inspect, General layout Page example, token search modal
 
 - **Guides live in Inspect**: the Inspect panel's top group (`.piGd`) holds Section guides and Container padding guide. Its buttons drive the hidden `#stSecGd` / `#stCtGuide` selects (still `.tkNoSave`, never saved); the Tweaks group `#tkGdGrp` is hidden for good.

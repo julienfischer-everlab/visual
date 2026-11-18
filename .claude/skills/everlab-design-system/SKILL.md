@@ -109,6 +109,7 @@ The page menu `#versionSel` has Documentation flow (`'doc'`, renamed from Docume
 | Cards (every card: Card static, Card interactive) | `window.EvCard` (`EvCard.html`, `EvCard.item`), `.evCard`, `.evCardI`, page `cdDoc` (`#cards`) | references/tokens-components.md |
 | Biomarker item (a reading in a list: name 16, value + date 14, range bar, status pill; Design system > Biomarker item) | `window.EvBio.row`, `.mbrow`, `--bioT/--bioTLh/--bioS/--bioSLh`, `biDoc` | references/tokens-components.md |
 | Buttons | `.arBtn.arBtnPrimary.arBtnLg`, `.svBtn`, `.sgmAsk` | references/tokens-components.md |
+| Link (Figma Core DS25 › Link: sizes xs–lg, themes, bold, underline, icons; Design system → Link) | `window.EvLink`, `.evLk`, `#evLkTok` | references/tokens-components.md |
 | Checkbox and Radio (Core components > Checkbox, Radio; Figma Checkbox/default, Checkbox group, Radio, Radio group) | `window.EvCheck` (`box`, `radio`, `row`, `group`, `mark`, `wire`), CSS `#evTokCk` from the Themes tokens | Design system pages `cb`, `rd` (czDoc) |
 | Badge Range and Badge Progress (Core components > Badges, Type Range / Progress) | `EvTokBadge.Range.html`, `EvTokBadge.Progress.html`, CSS `#evTokRg`, `#evTokPg` | Design system page `bd` (czDoc) |
 | Questionnaire step (Step flow > Questionnaire step: Selection items on Card interactive) | `window.EvQ` (`title`, `option`, `list`, `mark`, `align`) | Design system page `sf` |
