@@ -30,6 +30,13 @@ this is the part you need before you change it.
 
 **"This should be a static card. The right warning property"** (`div.svPend`, the service page's Pending action)
 - Card static, Appearance **Sentiment - Warning**, size lg (`evCard evCard-sentiment-warning evCard-lg`): `bg/sentiment/warning/secondary/100` (#3E1A00 Dark, #FFF2E8 Light; was #3A1F0B and #FBE9DE by hand), padding and corner from the size. Every pending action but the neutral ones (ok, wait, info); its own row and stacked layouts kept.
+## v2803b: Doctor note V2 follows the Async report's persona (made in another session, merged here)
+
+**Doctor note V2 always showed Persona #1's priority and risk areas, whatever the Persona tweak said**
+- `AsyncReport.mount`'s options object `o` never had a `persona` field, so `drLetter()`'s `o.persona` was always undefined: the PRI line ("A programme focused on …") and the AREAS badges fell back to #1's "your heart health", Heart health and Cholesterol on every persona.
+- `o.persona` is now set from `opts.persona` the way `D` and the Plan items (`RVM`) already resolve it (`PERSONA[opts.persona] ? opts.persona : 'p1'`). Persona #2 + Doctor note V2: "A programme focused on the raised pelvic protein", badges Pelvic health and Women's health; #1 unchanged.
+- #3 has no doctor-note screen (its recommendations are a plan, `plan: PLAN3`, so `rcPhased()` is false); its PRI/AREAS entries ("your bowel health", Bowel health, Iron) only show if it gets one.
+
 
 ## v2803: Quarterly Check-in V1, a standalone page on the Async report's frame; text styles' other breakpoints dimmed
 
