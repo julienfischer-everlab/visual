@@ -19,6 +19,18 @@ this is the part you need before you change it.
 
 
 
+## v2781: The 100's digits whole at rest: its own reel window
+
+**"Big number fade / mask clipping. pls check"** (a screen recording of the 97 / 98 coming in)
+- Cause: the 100's odometer used the decades' reel window: `.t3RollN` 1.1em tall, with an edge fade fully opaque only from 40% to 60%, at its strongest while `--t3K` is 0.
+  - The decades clear that fade (`--t3K` to 1) as they land. The 100 (`data-odo`) never did, so its digits at rest were always faded flat at their top and their foot.
+- Fix:
+  - The 100's window is now its own: `#tl3 .t3RollW[data-odo] .t3RollN`, 1.8em tall with `margin:-.5em 0`, which keeps the same .8em in the layout.
+  - Its mask, `--t3OdoM`, fades only the outer 18% at each end.
+  - The rolling effect moves to the digits: `odoP` sets each digit's opacity by its distance from rest, `1 - smoothstep(.1, .95, |d|)`. Before, it was 1 for any digit in the window. A digit at rest is whole, and one rolling in or out fades as it goes.
+- The entrance's top fade composes over `var(--t3OdoM)`, and its length is `rnH * .18`, the same ~.33em as before.
+- The decades' reels are unchanged.
+
 ## v2780: The 100: rail and dot 128 into it, one pace for the number, the title's slow 32, the warp cruising at the end; the Timeline tabs Active white and Full
 
 **"Trail and dot should bleed 128px in the left side of the big number sequence"**
