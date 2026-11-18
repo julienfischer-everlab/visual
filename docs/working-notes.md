@@ -19,6 +19,13 @@ this is the part you need before you change it.
 
 
 
+## v2757: the 100 lands earlier; its blur from 100
+
+- **"Too much gap, number should land earlier in the scroll"**: on its way in, the number rides 70% of the way with its section, higher in it (`eA(u) = .7·(u + .35H·(1 − e^(u/.35H)))` for u < 0). It settles smoothly to its place as the stage holds: `eA` and its slope are both 0 there, so there is no kink. Its 98 (`vIn`) is found on that path (`vAtS`), and the titles follow it (`nIn`).
+  - Measured at 1440×900: it shows 100–170px under the last card (was about 500px).
+  - Always rising on screen, never at the stage's top edge.
+- **"blur should start after 100"**: sharp until it reads 100 (two 5.6ths of a screen in), then blurring to 24px by the second title's end. Measured: 098, 100, 100, then 2px, 5px, ….
+
 ## v2756: the split button and Icon only on Figma's tokens
 
 **"Line between split doestn seems right"**, with three Figma links: Button / Icon 25203:109689 (544 variants), the split's portions .Label position 25463:8251 (812), and Button / Split 25450:9104. Read with the Figma connector (metadata, get_design_context on md Primary, Secondary and Tertiary and on xs Right, get_variable_defs on every size).
