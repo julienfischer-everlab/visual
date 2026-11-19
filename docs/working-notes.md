@@ -7,6 +7,12 @@ this is the part you need before you change it.
 
 ---
 
+## v2889 · Nothing after the CTA; the plan's photo as every visual; Collection a card of its own
+
+- "Remove Content after CTA, never any content in this location": nothing under a primary card's CTA any more (`.ovBookFoot > .ovBookWhen` hidden on every card: the plan's Dr Steven Lu, a booking's time).
+- "Make sure the Avatar size is the same than the prev step. and gap. Structure need to be the same all the time": the After the call card's doctor photo is the visual's size (`--pcVis`, 118 at L, a Thumbnail's) with the visual's own gap under it (`calc(48px + var(--pcVis) * .3 - 64px)`, was 40), so its title group starts where every step's does (185 at L).
+- "separate this into a decidated card": in the Collection builder, Card and State (with their + buttons) are a card of their own, **Collection**, above the **Controls** card (Visual, Background, Style, picture, glow, Content, Remove). The column is 400 wide.
+
 ## v2888 · Card name and Step name in Content, saved with it
 
 - "Should be in COntent section so I can save": Card name and Step name moved from under the selects into the Content group, first. Like the eyebrow and the words they are a draft on the builder's card until **Save content** (or the top bar's Save), then kept (`everlab:pcContent`: `cn` on the card, `sn` on the step). The Card and State selects show the draft names as you type; a reload without saving goes back to the saved ones.
