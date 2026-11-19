@@ -7,6 +7,11 @@ this is the part you need before you change it.
 
 ---
 
+## v2865 — Bio ages list: no dividers
+
+- "remove divider": the Biological & organ ages list has no line between its rows any more (still List item interactive, 40 tall, the hover plate). The biomarker rows keep their Divider.
+
+
 ## v2864 — Divider component, applied everywhere; biomarker and bio-ages rows on List item interactive; outlined Tweaks sub groups
 
 - "Add Divider component and apply every where" (Figma Core DS25 › divider 33539:44349 and its doc 33613:40950): `window.EvDivider` and `.evDv` — one line, its colour `components/divider/100` (Light #000 8%, Dark #fff 8%), its thickness sm 0.5 · md 1 · lg 1.5 · xl 2 · 2xl 3 (`border/*`, default 2xl), Horizontal (full width) or Vertical (full height). `EvDivider.html({ thickness, orientation, cls })` draws an hr (a span when vertical, role separator). A new Design system page, Core components → Divider: Thickness, Orientation, In use, Properties, Tokens, Applied everywhere.
