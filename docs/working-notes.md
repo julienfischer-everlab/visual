@@ -7,12 +7,20 @@ this is the part you need before you change it.
 
 ---
 
-## v2876 (in progress, not published) · Sections rule, Timeline first
+## v2877 · Collection builder Content; Tab page (Underlined, Pill); Title group gaps; slot pickers; Step 1 ring
+
+- **Collection builder → Content** ("Add tweak we can Edit. Eyebrow (ON OFF) … Common for all steps. By steps: Title, sub title (ON OFF), CTA (ON OFF)"; "this Bloc is the MASTER component primary card"): under each card's style controls, a Content block. Eyebrow On / Off and its text for the card (every state); Title, Subtitle On / Off and text, CTA On / Off and text for the state shown; Reset content. `window.EvPcContent`, `everlab:pcContent` (this browser): `{ o: { ey, eyT }, 'o:st': { t, sub, subT, cta, ctaT } }`, put on every `.hpOvCard` of that Object and state a page draws (the Overview's included: its Object from `data-pc-obj` / `data-obj`, its state from `data-pc-st`), unset = the card's own words. The style controls stay per card and state. A card with no eyebrow (DEXA, MRI) gets one when it is turned On with words. Runs after EvPcText (the Inspector's label edits on the master), so these win.
+- **Tab** ("Merge that Into Segmented Tab that you rename Tab. And inside Add section segmented tab"): the Segmented tab page is now **Tab**, with three groups: Segmented tab (as it was), **Underlined tab** (Core DS25 3317:35718 / 3317:36041: md 44, sm 36, xs 28; counts) and **Pill tab** (3332:217109: Primary outlined, Secondary filled when on; lg 56 to xs 28). One master, `window.EvTab.html({ type: 'underlined' | 'pill', emphasis, size, items: [{ label, count }], at })`, clicks move `.on` and send `evtab`. The groups first landed on the Toggle page by mistake; moved.
+- **Title group gaps from Figma** (Patterns DS25 2328:29539, "mostly using gaps"): the slots and the column (`.evTgCol`) laid by gap, no paddings on Top / Bottom support: slot → content `layout/module/gap` (Display centred), `space/md` (H1 centred), `space/lg` row gap beside a right slot; inside the content `space/xs` (Display, H1), `space/4xs` (H2), `space/5xs` (H3 to H6).
+- **Slot pickers** ("This slot can be anything, Add a way to select a component from there as property"): the Inspector's Title group properties have Top slot component and Right slot component (Placeholder, Text, Badge, Button, Icon, Link), each from its master; Top slot text when it holds the eyebrow.
+- **Step 1 ring** ("Step 1 shoudl have start 50% of the first portion"): `window.EvRingF(n)`, Step 1 half of the first third, everywhere the Onboarding consult's ring shows (Overview, Health profile home, the Modules cards and demo).
+
+## v2876 · Sections rule, Timeline first
 
 - "General rule! Header group with fill the full width. and inside we should have Header Navigation, Header title (if any)"; "This 'Frame' Should be the Section body full width"; "Gen rule as well!".
 - Timeline: `#dTl > .tlHead` is now the **Header group** (`.evSec.evSecHg`, data-l, the page's width, still the sticky, grounded host), in it the **Header navigation** (`.evSecPt[data-hg-part="nav"]`, full width), in it its container (`.tlCol.tlHeadIn`: the title, search, Paused, Past). The rest in the **Body** (`.evSec.evSecBd`, full width): `#tl3`, the side column and the walkthrough are put there by the page; the L grid moved from `#dTl` to the Body.
 - Rules rewritten without changing their weight (`#dTl > :where(.evSecBd) > …`, `.tlHead :where(.tlHeadIn) > …`); the scripts that put the title, search and buttons in the head now use `.tlHeadIn`. The Inspector lists the page's Body section.
-- Checked so far: loads with no errors, the Overview card draws, the Timeline's sections hold their containers (XS). Still to check before publishing: M/L geometry and sticky header, side column at L, Past, new member, phone search; then the other pages.
+- Checked: no errors; at M and L `#tl3` sits right under the head (the legacy list's six state rules, `#dTl:<state> > .tlCol…`, were missed by the first rewrite and pushed it ~5,400 down: now `#dTl:<state> > :where(.evSecBd) > …`); the side column at L. The other pages still to do, one at a time.
 
 ## v2875 · Timeline focus card and new-member card aligned; no duplicate Label row
 

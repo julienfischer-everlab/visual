@@ -1759,7 +1759,9 @@ body #dPlan.plDesk[data-pg-ct] { --plMain: 1fr; }   /* the Plan: its sheet's col
 body[data-bp="xs"], body[data-bp="s"], [data-ct-bp="xs"], [data-ct-bp="s"], .aqWrap.aqBpXS, .aqWrap.aqBpS { --tgL: 0; }
 body[data-bp="m"], body[data-bp="l"], body[data-bp="xl"], [data-ct-bp="m"], [data-ct-bp="l"], .aqWrap.aqBpM, .aqWrap.aqBpL { --tgL: 1; }
 .evTg { --tgFs: calc(var(--tgFsS) * (1 - var(--tgL, 0)) + var(--tgFsL) * var(--tgL, 0)); --tgLh: calc(var(--tgLhS) * (1 - var(--tgL, 0)) + var(--tgLhL) * var(--tgL, 0)); --tgLs: calc(var(--tgLsS) * (1 - var(--tgL, 0)) + var(--tgLsL) * var(--tgL, 0));
-  --tgGT: var(--tgGapT, 8px); --tgGB: var(--tgGapB, 8px); --tgMute: color-mix(in srgb, currentColor 56%, transparent); display: flex; flex-direction: column; align-items: stretch; min-width: 0; text-align: left; }
+  --tgGT: var(--tgGapT, 8px); --tgGB: var(--tgGapB, 8px); --tgMute: color-mix(in srgb, currentColor 56%, transparent); display: flex; flex-direction: column; align-items: stretch; gap: var(--tgGapS, 16px); min-width: 0; text-align: left; }   /* the root: the Slot, then the Content, the slot's gap between them (Figma: space/xs left, layout/module/gap centred, space/md the centred H1s) */
+.evTg > .evTgCol { display: flex; flex-direction: column; align-items: stretch; gap: var(--tgGT, 8px); min-width: 0; }   /* the Content: the support lines and the Main, the size's gap between them (Display, H1 space/xs; H2 space/4xs; H3 to H6 space/5xs) */
+.evTg.evTgC > .evTgCol { align-items: center; }
 .evTg.evTgC { align-items: center; text-align: center; }
 .evTg[data-lv="display-hero"] { --tgFsS: var(--tgDhFsS); --tgFsL: var(--tgDhFsL); --tgLhS: var(--tgDhLhS); --tgLhL: var(--tgDhLhL); --tgLsS: var(--tgDhLsS); --tgLsL: var(--tgDhLsL); --tgW: var(--tgDhW); --tgSf: var(--tgDhSf); --tgSl: var(--tgDhSl); }
 .evTg[data-lv="display"] { --tgFsS: var(--tgDsFsS); --tgFsL: var(--tgDsFsL); --tgLhS: var(--tgDsLhS); --tgLhL: var(--tgDsLhL); --tgLsS: var(--tgDsLsS); --tgLsL: var(--tgDsLsL); --tgW: var(--tgDsW); --tgSf: var(--tgDsSf); --tgSl: var(--tgDsSl); }
@@ -1777,12 +1779,13 @@ body[data-bp="m"], body[data-bp="l"], body[data-bp="xl"], [data-ct-bp="m"], [dat
 .evTg .evTgM { color: var(--tgMute); }
 .evTg[data-lv="h1"] .evTgM::before { content: "\A"; white-space: pre; }   /* H1: the second tone on a line of its own (a break, so an icon after it follows its last word), up to two lines; the Short hero's inline after the comma */
 .evTg .evTgTop, .evTg .evTgBot { margin: 0; font-size: var(--tgSf); line-height: var(--tgSl); font-weight: 400; letter-spacing: 0; text-transform: none; color: var(--tgMute); text-wrap: pretty; }
-.evTg .evTgTop { padding-bottom: var(--tgGT); } .evTg .evTgBot { padding-top: var(--tgGB); }   /* the parts' rules one class above a host's element rules (.dash h1) */
+.evTg .evTgTop, .evTg .evTgBot { padding: 0; }   /* no padding: the Content's gap spaces them (it was the support lines' own padding: "Support bottom has 12px top padding") */
 .evTgIc { display: inline-flex; align-items: center; height: 1lh; vertical-align: top; }   /* in the words' flow, hugging the first word and the last (a wrapped title too), each centred on its line */ .evTgIcL { margin-right: .5em; } .evTgIcR { margin-left: .5em; }
 .evTgIc svg { display: block; width: .875em; height: .875em; }   /* the level's size: 7/8 of its type */
 .evTgSlot { flex: none; display: flex; max-width: 100%; }
-.evTgSlotT { align-self: flex-start; padding-bottom: 0; margin-bottom: var(--tgGapS, 16px); }   /* the gap under the top slot outside it, the slot hugging its content ("No padding bottom inside this slot" / "keep the existing gap between slot and title") */ .evTgC .evTgSlotT { align-self: center; }
-.evTg.evTgSlR { flex-direction: row; align-items: center; gap: var(--tgGapR, 16px); }
+.evTgSlotT { align-self: flex-start; padding: 0; margin: 0; }
+.tgEy { font-family: var(--t-font-family-tertiary, "Saans Mono"), ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; line-height: 16px; letter-spacing: .08em; text-transform: uppercase; color: var(--tgMute, currentColor); }   /* a slot's Text: an eyebrow in Label - Mono */   /* the gap under the top slot outside it, the slot hugging its content ("No padding bottom inside this slot" / "keep the existing gap between slot and title") */ .evTgC .evTgSlotT { align-self: center; }
+.evTg.evTgSlR { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: var(--tgGapR, 16px); row-gap: var(--tgGapS, 16px); align-items: center; } .evTg.evTgSlR > :is(.evTgSlotT, .evTgCol) { grid-column: 1; } .evTg.evTgSlR > .evTgSlotR { grid-column: 2; grid-row: 1; } .evTg.evTgSlR.evTgSlT > .evTgSlotR { grid-row: 1 / span 2; }   /* a Right slot: the Content (and its Slot over it) at the left, the Right slot beside them, space/lg apart, centred on them */
 .evTgSlR > .evTgCol { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; align-items: stretch; }
 html:not(#_m):not(#_d) .arSheet .arHead .arHeadRow > .arIconBtn.arIconBtn { width: 44px !important; height: 44px !important; min-width: 44px !important; min-height: 44px !important; align-self: flex-start; }   /* at the row's top: 58 down on XS, 44 on S, 16 on the desk, the Top nav master's 16 */   /* the flows' heads (the Async report, the Health profile, Send a gift, the Step flow master): the Top nav master's 44 discs ("CTA top nav always 44px"); their bars keep their own markup for the progress riding in them */
 html:not(#_m):not(#_d) .evTn .evTnBtn.evTnBtn { width: var(--evTnD) !important; height: var(--evTnD) !important; min-width: var(--evTnD) !important; min-height: var(--evTnD) !important; }   /* the master's disc (--evTnD, 44) for a control that keeps an old class (.arClose, .prX ...) for its handler, whatever that class sizes it */
@@ -3283,6 +3286,17 @@ window.EvLink = (function () {
   return { html: html, css: css, SZ: SZ, TH: TH, CHEV: CHEV };
 })();
 /* Segmented tabs (Design system -> Segmented; "Use 56 high tab with the tab item 50 high ... 2 lines"): EvSeg.html(o) / .el(o): o.items [{ label, sup, dot, n }] (dot: a colour, a status dot before the label; n: a count after it), o.at (the one on), o.size ('two' 56 with a support line, default when any item has one; 'md' 48; 'sm' 40), o.label (the tablist's name), o.onPick(i, el); .pick(el, i). The pill slides under the tabs */
+/* Tab (Design system -> Core components -> Tab): Underlined (Figma Core DS25 › Tab underlined 3317:35718) and Pill (Tab pill 3332:217109), beside the Segmented tab (EvSeg); "Merge that Into Segmented Tab that you rename Tab".
+   EvTab.html({ type: 'underlined' | 'pill', size: 'lg' (pill) | 'md' | 'sm' | 'xs', emphasis: 'primary' | 'secondary' (pill), items: [{ label, count, ic, disabled }], at, label, cls }); a press selects its tab and sends 'evtab' ({ index }) */
+window.EvTab = (function () {
+  var esc = function (t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  var html = function (o) { o = o || {}; var pill = o.type === 'pill', sz = /^(lg|md|sm|xs)$/.test(o.size) ? o.size : 'md'; if (!pill && sz === 'lg') sz = 'md'; var at = o.at || 0;
+    var it = (o.items || []).map(function (x, i) { x = typeof x === 'string' ? { label: x } : x; var on = i === at, inner = (x.ic ? '<span class="evTabIc" aria-hidden="true">' + x.ic + '</span>' : '') + '<span class="evTabL">' + esc(x.label) + '</span>' + (x.count != null && x.count !== '' ? '<span class="evTabN">' + esc(x.count) + '</span>' : '');
+      return '<button type="button" role="tab" aria-selected="' + on + '" class="evTab' + (on ? ' on' : '') + '"' + (x.disabled ? ' disabled' : '') + '>' + (pill ? inner : '<span class="evTabB">' + inner + '</span>') + '</button>'; }).join('');
+    return '<div class="evTabs evTabs-' + (pill ? 'pill evTabs-' + (o.emphasis === 'secondary' ? 'secondary' : 'primary') : 'ul') + ' evTabs-' + sz + (o.cls ? ' ' + o.cls : '') + '" role="tablist"' + (o.label ? ' aria-label="' + esc(o.label) + '"' : '') + '>' + it + '</div>'; };
+  document.addEventListener('click', function (ev) { var b = ev.target.closest && ev.target.closest('.evTabs > .evTab'); if (!b || b.disabled) return; var g = b.parentElement, i = [].indexOf.call(g.children, b); [].forEach.call(g.children, function (x) { var on = x === b; x.classList.toggle('on', on); x.setAttribute('aria-selected', String(on)); }); g.dispatchEvent(new CustomEvent('evtab', { bubbles: true, detail: { index: i } })); });
+  return { html: html };
+})();
 window.EvSeg = (function () {
   var esc = function (t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
   var html = function (o) { o = o || {}; var it = o.items || [], at = o.at || 0, two = o.size ? o.size === 'two' : it.some(function (x) { return x.sup != null; });
@@ -4305,10 +4319,10 @@ window.EvTitle = (function () {
     var w = txt(o.title) + (has(o.muted) ? ' <span class="evTgM">' + txt(o.muted) + '</span>' : '');
     var t = '<' + tag + ' class="evTgT' + (ic ? ' evTgHasIc' : '') + (o.titleCls ? ' ' + o.titleCls : '') + '"' + (o.titleId ? ' id="' + esc(o.titleId) + '"' : '') + '>' +
       (o.iconL ? '<span class="evTgIc evTgIcL" aria-hidden="true">' + o.iconL + '</span>' : '') + (ic ? '<span class="evTgW">' + w + '</span>' : w) + (o.iconR ? '<span class="evTgIc evTgIcR" aria-hidden="true">' + o.iconR + '</span>' : '') + '</' + tag + '>';
-    var col = (sT ? '<div class="evTgSlot evTgSlotT">' + sT.html + '</div>' : '') + (has(o.top) ? '<p class="evTgTop' + (o.topCls ? ' ' + o.topCls : '') + '">' + txt(o.top) + '</p>' : '') + t +
+    var col = (has(o.top) ? '<p class="evTgTop' + (o.topCls ? ' ' + o.topCls : '') + '">' + txt(o.top) + '</p>' : '') + t +
       (has(o.bottom) ? '<p class="evTgBot' + (o.bottomCls ? ' ' + o.bottomCls : '') + '">' + txt(o.bottom) + '</p>' : '');
     return '<div class="evTg evTg' + al + (sT ? ' evTgSlT' : '') + (sR ? ' evTgSlR' : '') + (o.cls ? ' ' + o.cls : '') + '" data-lv="' + lv + '"' + (o.id ? ' id="' + esc(o.id) + '"' : '') + (o.attr ? ' ' + o.attr : '') + '>' +
-      (sR ? '<div class="evTgCol">' + col + '</div><div class="evTgSlot evTgSlotR">' + sR.html + '</div>' : col) + '</div>';
+      (sT ? '<div class="evTgSlot evTgSlotT">' + sT.html + '</div>' : '') + '<div class="evTgCol">' + col + '</div>' + (sR ? '<div class="evTgSlot evTgSlotR">' + sR.html + '</div>' : '') + '</div>';   /* Figma's layers (Patterns DS25 › Title group Webapp 2328:29539): the Slot, the Content (the support lines and the Main), the Right slot; spaced by gaps, nothing padded ("Should follow the token applied on figma, mostly using gaps") */
   }
   /* Figma's tokens (Patterns DS25 › Title group Webapp 2328:29539: "Title gorup Properties and Tokens"): each size its title's text style, its support lines' style, the gap between them, its icons' size and gap, its ink (2: the secondary, H4 to H6);
      the type no longer the numbers above (M: kept for older calls), the text styles' tokens at each breakpoint (EvType), the CSS made from these rows (#evTgTok) */
@@ -4379,7 +4393,64 @@ window.EvDivider = (function () {
   return { TH: TH, html: html, adopt: adopt, count: function () { return n; } };
 })();
 /* the primary cards' words on the Title group ("Module --> Use title group Centered With the right tokens!"): EvTitle H3, centred, the eyebrow its top slot, the support line its bottom one; their ink the card's, on a picture filling it the on-media ink (CSS .hpOvTg) */
+window.EvRingF = function (n) { return (n === 0 ? .5 : n) / 3; };   /* the Onboarding consult's ring, every place it shows: the steps done as thirds, Step 1 half the first third ("Step 1 shoudl have start 50% of the first portion") */
 window.EvPcTg = function (ey, ttl, sub) { var T = window.EvTitle; if (!T) return (ey ? '<span class="hpOvEy">' + ey + '</span>' : '') + '<h3>' + ttl + '</h3>' + (sub ? '<p class="hpOvSub">' + sub + '</p>' : '');
+/* the master primary card ("this Bloc is the MASTER component primary card. If I change the content here it changed everywhere. Excluding the custom touch on the right tweaks"): the words edited on the Collection builder's card (Modules -> Primary card) are that card's everywhere,
+   kept by the words they replace (everlab:pcText, this browser: the original -> the new) and put on every primary card a page draws (.hpOvCard: its eyebrow, title, support lines, CTA); its style (the controls at the right) stays the card's and the state's own */
+window.EvPcText = (function () { var K = 'everlab:pcText', M = {}; try { M = JSON.parse(localStorage.getItem(K) || '{}') || {}; } catch (e) { M = {}; }
+  var save = function () { try { localStorage.setItem(K, JSON.stringify(M)); } catch (e) {} };
+  var own = function (x) { return [].filter.call(x.childNodes, function (k) { return k.nodeType === 3; }); }, tx = function (x) { return own(x).map(function (k) { return k.textContent; }).join('').replace(/\s+/g, ' ').trim(); };
+  var put = function (x, v) { var T = own(x).filter(function (k) { return k.textContent.trim(); }); if (!T.length) return; T[0].textContent = v; T.slice(1).forEach(function (k) { k.textContent = ''; }); };
+  var orig = function (t) { for (var k in M) if (M[k] === t) return k; return t; };
+  var SEL = '.hpOvEy, .tgEy, .evTgT, .evTgW, .evTgTop, .evTgBot, .hpOvBtn, .hpOvBtn > span';
+  var apply = function (root) { if (!Object.keys(M).length) return; [].forEach.call((root || document).querySelectorAll('.hpOvCard'), function (c) { [].forEach.call(c.querySelectorAll(SEL), function (x) { var t = tx(x); if (t && M[t] != null && M[t] !== t) put(x, M[t]); }); }); };
+  var set = function (cur, v) { var o = orig(String(cur || '').replace(/\s+/g, ' ').trim()); v = String(v || '').replace(/\s+/g, ' ').trim(); if (!o) return; if (!v || v === o) delete M[o]; else M[o] = v; save(); apply(); };
+  var q = 0; new MutationObserver(function () { if (q || !Object.keys(M).length) return; q = requestAnimationFrame(function () { q = 0; apply(); }); }).observe(document.documentElement, { childList: true, subtree: true });   /* a page drawing its cards again: their words put back at once */
+  return { set: set, apply: apply, orig: orig, all: function () { return M; }, master: function (x) { return !!(x && x.closest && x.closest('.moOv .hpOvCard')); } };
+})();
+/* the primary cards' content, set on the Collection builder (Modules -> Primary card -> Content: "Add tweak we can Edit. Eyebrow (ON OFF) ... Common for all steps. By steps: Title, sub title (ON OFF), CTA (ON OFF)"): everlab:pcContent, this browser.
+   The card's eyebrow (its Object: every state), each state's title, support line and CTA (Object:state), put on every primary card of that Object and state a page draws (.hpOvCard); unset, the card's own words. Over the words kept by EvPcText */
+window.EvPcContent = (function () { var K = 'everlab:pcContent', M = {}; try { M = JSON.parse(localStorage.getItem(K) || '{}') || {}; } catch (e) { M = {}; }
+  var save = function () { try { localStorage.setItem(K, JSON.stringify(M)); } catch (e) {} };
+  var R = { ey: '.hpOvEy:not(.pcCtEy), .tgEy, .hpFrTag', t: '.evTgT, h3', sub: '.evTgBot, .hpOvSub, .hpFrP', cta: '.hpOvBtn' };
+  var objOf = function (c) { return c.dataset.pcObj || (c.matches('.hpOvQci, .hpOvDr, .hpOvFree, .hpOvObj') && c.dataset.obj) || 'consult'; };
+  var stOf = function (c, o) { return o === 'consult' || o === 'qci' ? c.dataset.pcSt || '' : ''; };
+  var nrm = function (t) { return String(t == null ? '' : t).replace(/\s+/g, ' ').trim(); };
+  var txtOf = function (x) { if (!x) return ''; if (x._pcO == null) return nrm(x.textContent); var d = document.createElement('div'); d.innerHTML = x._pcO; return nrm(d.textContent); };
+  var orig = function (c) { var O = {}; if (!c) return O; Object.keys(R).forEach(function (r) { var x = c.querySelector(R[r]); O[r] = x ? txtOf(x) : null; }); return O; };
+  var hide = function (x, on) { if (!x) return; var t = x.parentNode && x.parentNode.classList && x.parentNode.classList.contains('evTgSlotT') ? x.parentNode : x; if (t.classList.contains('pcCtOff') !== !!on) t.classList.toggle('pcCtOff', !!on); };
+  var put = function (x, v, btn) { if (!x) return; if (v == null || v === '') { if (x._pcO != null && x.innerHTML !== x._pcO) x.innerHTML = x._pcO; return; } if (x._pcO == null) x._pcO = x.innerHTML;
+    if (btn) { var T = [].filter.call(x.childNodes, function (k) { return k.nodeType === 3 && k.textContent.trim(); }); if (T.length) { if (T[0].textContent !== v) T[0].textContent = v; T.slice(1).forEach(function (k) { if (k.textContent) k.textContent = ''; }); return; } var sp = x.querySelector(':scope > span'); if (sp) { if (sp.textContent !== v) sp.textContent = v; return; } }
+    if (x.textContent !== v) x.textContent = v; };
+  var card = function (c) { var o = objOf(c), st = stOf(c, o), S = M[o] || {}, P = M[o + ':' + st] || {}, ey = c.querySelector(R.ey), add = c.querySelector('.pcCtEy');
+    if (S.ey === 'off') { hide(ey, true); if (add) add.remove(); }
+    else { hide(ey, false); if (ey) put(ey, S.eyT); else if (S.ey === 'on' && S.eyT) { var t0 = c.querySelector(R.t); if (!add && t0) { add = document.createElement('span'); add.className = 'hpOvEy pcCtEy'; t0.parentNode.insertBefore(add, t0); } if (add && add.textContent !== S.eyT) add.textContent = S.eyT; } else if (add) add.remove(); }
+    put(c.querySelector(R.t), P.t);
+    var sb = c.querySelector(R.sub); hide(sb, P.sub === 'off'); if (P.sub !== 'off') put(sb, P.subT);
+    var b = c.querySelector(R.cta); hide(b, P.cta === 'off'); if (P.cta !== 'off') put(b, P.ctaT, true); };
+  var touched = false, apply = function (root) { if (!touched && !Object.keys(M).length) return; touched = true; [].forEach.call((root || document).querySelectorAll('.hpOvCard'), card); };
+  var set = function (o, st, k, v) { var key = k === 'ey' || k === 'eyT' ? o : o + ':' + (st || ''), E = M[key] || (M[key] = {}); if (v == null || v === '') delete E[k]; else E[k] = v; if (!Object.keys(E).length) delete M[key]; save(); apply(); };
+  var reset = function (o, st) { if (M[o]) delete M[o]; delete M[o + ':' + (st || '')]; save(); apply(); };
+  var q = 0; new MutationObserver(function () { if (q || (!touched && !Object.keys(M).length)) return; q = requestAnimationFrame(function () { q = 0; apply(); }); }).observe(document.documentElement, { childList: true, subtree: true });   /* a page drawing its cards again: their words put back at once */
+  var esc = function (t) { return String(t == null ? '' : t).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;'); };
+  /* the builder's Content rows (cn, its box; o, st the card and state shown; getC, the card drawn there) */
+  var ui = function (cn, o, st, getC) { var draw = function () { var O = orig(getC()), S = M[o] || {}, P = M[o + ':' + (st || '')] || {}, on = function (E, k, has) { return E[k] ? E[k] === 'on' : has; };
+      var eyOn = on(S, 'ey', !!O.ey), subOn = on(P, 'sub', !!O.sub), ctaOn = on(P, 'cta', !!O.cta), any = !!(M[o] || M[o + ':' + (st || '')]);
+      var row = function (l, h) { return '<div class="moPicRow"><span class="moPicL">' + l + '</span>' + h + '</div>'; };
+      var seg = function (k, v) { return '<span class="moSeg" role="group" aria-label="' + k + '" data-ck="' + k + '">' + [['on', 'On'], ['off', 'Off']].map(function (x) { return '<button type="button" data-v="' + x[0] + '" aria-pressed="' + ((x[0] === 'on') === v) + '">' + x[1] + '</button>'; }).join('') + '</span>'; };
+      var inp = function (k, v, ph, l) { return '<input type="text" class="moCntIn" data-ck="' + k + '" value="' + esc(v) + '" placeholder="' + esc(ph || '') + '" aria-label="' + l + '">'; };
+      cn.innerHTML = '<div class="moCntHd">Content</div>'
+        + row('Eyebrow', seg('ey', eyOn) + '<span class="moVsSt">Every state</span>') + (eyOn ? row('', inp('eyT', S.eyT != null ? S.eyT : O.ey || '', O.ey || 'Eyebrow', 'Eyebrow text')) : '')
+        + row('Title', inp('t', P.t != null ? P.t : O.t || '', O.t, 'Title'))
+        + row('Subtitle', seg('sub', subOn)) + (subOn ? row('', inp('subT', P.subT != null ? P.subT : O.sub || '', O.sub || 'Subtitle', 'Subtitle text')) : '')
+        + row('CTA', seg('cta', ctaOn)) + (ctaOn ? row('', inp('ctaT', P.ctaT != null ? P.ctaT : O.cta || '', O.cta || 'CTA', 'CTA label')) : '')
+        + '<div class="moPicRow moVsRow"><span class="moPicL"></span><button type="button" class="moVsAll moCntRs"' + (any ? '' : ' disabled') + '>Reset content</button><span class="moVsSt">' + (st ? 'This state' : 'This card') + ' on every page</span></div>'; };
+    if (!cn._pcc) { cn._pcc = 1;
+      cn.addEventListener('click', function (e) { if (e.target.closest('.moCntRs')) { reset(o, st); draw(); return; } var b = e.target.closest('.moSeg[data-ck] > button[data-v]'); if (!b) return; var k = b.parentNode.dataset.ck, O = orig(getC()), has = !!O[k], v = b.dataset.v; set(o, st, k, (v === 'on') === has ? null : v); draw(); });
+      cn.addEventListener('input', function (e) { var x = e.target.closest('input.moCntIn'); if (!x) return; var k = x.dataset.ck, O = orig(getC()), base = { eyT: O.ey, t: O.t, subT: O.sub, ctaT: O.cta }[k], v = x.value; set(o, st, k, nrm(v) === nrm(base) ? null : v); var rs = cn.querySelector('.moCntRs'); if (rs) rs.disabled = !(M[o] || M[o + ':' + (st || '')]); }); }
+    draw(); };
+  return { set: set, reset: reset, apply: apply, ui: ui, all: function () { return M; }, orig: orig };
+})();
   return '<div class="hpOvTgW">' + T.html({ level: 'h3', align: 'center', tag: 'h3', slot: ey ? [{ html: '<span class="hpOvEy">' + ey + '</span>' }] : [], title: { html: ttl }, bottom: sub ? { html: sub } : '', bottomCls: 'hpOvSub', cls: 'hpOvTg' }) + '</div>'; };   /* the eyebrow the Title group's Top slot ("Use the eyebrow as the top slot. No padding bottom inside this slot") */   /* in a box 320 wide at most, centred ("Add div around title group max width 320px") */
 /* EvMagnet: a row of cards swiped by hand, the magnet one ("if you swipe more than 50%, you go to the second card. If not, you come back to the normal card"), once for every carousel: the Plan's goals, the Services' recommended row.
    Dragged by hand, a mouse as a finger (a mouse cannot pan a scroller, and a press-and-pull only selected the text); a drag more down than across is left to the page's scroll; the row's snapping off while it moves.
@@ -5129,7 +5200,7 @@ window.EvConsent = (function () {
       A = null; ret = null; root.classList.add('hpAtHome'); navT.textContent = ''; navS.textContent = '';
       var sm = summary(), first = !shown, toPast = sm.n === 3 && (sm.rec || searching());   /* the records being collected too ("Next, see your past results": opens the Past results page) */   // all set, a search run: the past results next
       show(function (scr) {
-        var dd = sphere({ cls: 'hpHomeSph', t0: opts.sphT0, vis: 1 }); if (dd.av) dd.av(sm.state === 'done' && !sm.rec ? window.EvDrAvSrc : null); dd.set(sm.n / 3, false);   /* the Overview card's sphere, filling a third a step ("replicate the sphere system in the hero of this page") */
+        var dd = sphere({ cls: 'hpHomeSph', t0: opts.sphT0, vis: 1 }); if (dd.av) dd.av(sm.state === 'done' && !sm.rec ? window.EvDrAvSrc : null); dd.set(window.EvRingF(sm.n), false);   /* the Overview card's sphere, filling a third a step ("replicate the sphere system in the hero of this page") */
         var nm = opts.name || 'Sam', nx = AREAS.filter(function (a) { return S.a[a.k].st !== 'done'; })[0], bk = S.a.past.st === 'done';   // the step it is on: the first not done, in order
         var b = booked(), wd = b ? b.wd : 'your consult';   // the booked day, for the words below
         /* the words of each moment: before any, the three steps; after one, the next; booked, the consult's; all three, done. [title, line, button]; no eyebrow and no news chip over the orb ("remove").
@@ -5143,7 +5214,7 @@ window.EvConsent = (function () {
           : ['Next, our promise and your details', 'A quick agreement, then the details we need to care for you in Australia. About 6 minutes.', 'Continue'];
         opts._cta = CP[2];
         var prev = opts._lastN; opts._lastN = sm.n;
-        if (prev != null && prev !== sm.n) { dd.set(prev / 3, false); setTimeout(function () { dd.set(sm.n / 3, true); }, dir ? (vt ? 760 : 420) : 60); }   // an area just done: its third lights, swept, as the page settles
+        if (prev != null && prev !== sm.n) { dd.set(window.EvRingF(prev), false); setTimeout(function () { dd.set(window.EvRingF(sm.n), true); }, dir ? (vt ? 760 : 420) : 60); }   // an area just done: its third lights, swept, as the page settles
         scr.appendChild(h('div', { class: 'hpHome' },
           dd.el,
           h('div', { class: 'hpQ' }, h('h2', { class: 'hpH', text: CP[0] }),
