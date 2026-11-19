@@ -7,6 +7,12 @@ this is the part you need before you change it.
 
 ---
 
+## v2857 — Header group: Blur bg (64); container rows always fit
+
+- "Add Blur bg (64) ON OFF": a new Header group row in Tweaks (General layout), Blur bg (64), Off by default. On puts `html.tnBlur`, and the header group's ground blurs what scrolls under it by 64 (the step flows' `.arGround`, the check-in's `.qciHd::before`, the Page example's `.peGnd`), its blur fading out over its last 40px with a mask.
+- The Navigation / Title container rows overflowed the panel ("Fu" cut): the rules were scoped to `.topbar`, but the docked panel lives in `#tkMenu`. Now `:is(.topbar, #tkMenu)`: the label wraps at 72, the seven sizes share the rest (11px, 3px padding), Full inside.
+
+
 ## v2856 — Primary card: Save for all states, a Bg behind a Graphic, the demo at L unscaled
 
 - **Save for all states** ("Add Save for all states"): beside Save style, the style shown becomes the card's own for every state (the states' own styles dropped) and is saved; the line says how many states still have a style of their own.
