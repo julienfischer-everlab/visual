@@ -7,6 +7,22 @@ this is the part you need before you change it.
 
 ---
 
+## v2892 · Inspector: Health status, group cards, area dots on the guides
+
+- **No page heading** ("remove this page and description"): the page level no longer shows This page / name / breakpoint line.
+- **Health status** (below the token pie): a score out of 100 for the current screen, the mean of two halves. It reads Healthy (90+), Fair (75+), Needs work (50+) or Poor.
+  - **Tokenisation:** the pie's share of the page's styles that are on a token.
+  - **Layout alignment:** checks against the layout pattern, weighted 40% for structure and 60% for blocks.
+    - Structure: a Header group section and a Body section, a Container in each, and the Header group's container on the Body's edges.
+    - Blocks: every block in a section's container (a component, a surface, a picture or a scroller) sits on the container's edges. A block fails if it goes past an edge, or sits 2–8 px off one. A block that spans the full width of its section counts as Full and passes.
+  - Each failing check is listed: hovering lights it on the page, and pressing selects it.
+  - First readings:
+    - Timeline at M: 89. The next check-in card goes 16 px past the Body's container.
+    - Timeline at L: 86. The header row is centred at 800 over a 1024 body.
+    - Overview: 56–58. No Body section is found, and the Header group has no Container.
+- **Group cards** ("Use card (similar style as tweak group) to separate Grouping here"): Components, Sections and Tokens on this page each sit in a card styled like a Tweaks group: the panel's ink at 4.5%, 10px round corners, a small uppercase name. The pie and the Health status use the same card style. The token tabs are tightened to fit.
+- **Guides menu** ("Add dot coloured based on the colour of the Area"): the Header group, Body and Footer group rows each start with a dot in their guide's colour (#8ec2ff, white, #4cc38a).
+
 ## v2891 · Every Full modal on the body's token
 
 - **Full modal ground** ("Full modal, just use body bg token, not modal bg token"; "General rule for all modal full"): one rule on the Full modal shell. A dark sheet in `.aqWrap.aqFull` (not the `.hpBs` bottom-sheet variant) now takes `--ar-paper: var(--t-bg-surface-100)`, the page's own ground: #0f0f0f in dark, the same #fff in light. It used to take the Modal token (`components/modal/bg`, #181818). The frame and its margins read that paper, and the close-dip ground behind it uses the same token. This covers the Quarterly check-in, the Suggestion, the Async report, the Health profile, the gift flow and every other full modal. A sheet opened over a full modal (`.arQaPanel`) keeps the Modal token.
