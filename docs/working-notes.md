@@ -7,6 +7,14 @@ this is the part you need before you change it.
 
 ---
 
+## v2845 — Token aliases on breakpoint tokens; answers fade in; the check-in card centred; Back as Close; the footer's safe space
+
+- **A breakpoint token given as another token applies at once** ("I just changed the container top questionnaire token and saved, why it's not instantly applied"; "why still 12"; "I can see 32 in the token"): a Breakpoints value picked through the Tokens page's search is stored as an alias (`{unit.32}`), and `EvType` only emitted plain numbers, so the variable fell away and the CSS fallback (12) showed. `bpFill` follows aliases (`{a.b}`, `a/b`) to their number now (`bpNum`).
+- **Answers fade in one after another** ("General rule on questionnaire type of page: when there is a list of options, display the elements after each other when the page lands, with fade in"): `EvQ.list`'s answers fade and lift 8 in, 70ms apart, from 140ms, as a step lands; not again when the same step redraws on a pick (`evQNoIn`); none with reduced motion.
+- **The check-in card centred** ("Why align left?"): in Centred mode its head (the team, the tag, the title) centred as the line and the button; it kept the not-centred layout.
+- **A modal's Back the size of its Close** ("Modal CTA always like the right CTA size"; "Same on desktop"): 36 at every breakpoint (the check-in's was 44 on the phone, 28 on the desk).
+- **The body's safe space above a fixed footer** ("Footer always need a safe padding on the body so we can see totally the content behind the gradient; consider the bleed gradient"): the check-in's scroller ends with the footer gradient's bleed (40), the last answer scrolls clear of it; the Page example's body keeps its bottom padding plus the bleed (32) under a fixed footer with a ground.
+
 ## v2844 — Guides: 4px sections, 2 apart, 4 round; their parts dashed 2px
 
 - **Sections 4px, 4 round** ("Section border 4px"; "section guide rounded 4px"): the Header group, Body and Footer group framed 4px, corners 4; the Page example's sections the same.
