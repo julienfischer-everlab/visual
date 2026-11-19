@@ -7,6 +7,23 @@ this is the part you need before you change it.
 
 ---
 
+## v2896 · Page header group's nine variations (Figma 6652:6146); the group split into Header navigation and Header title; Page type drawn in Tweaks
+
+- **Every variation** ("this is all of the variation that they need to be set up in the system"): `EvPageHg.variant(v)` draws the nine Figma variants at XS · S: Page level (Main, Sub level) × Banner (None, Image, Decorative) × Title.
+  - **No banner:** Main with the Page header title. Sub with the identifier in the Page navigation. Sub with both a Page navigation and a Page header title.
+  - **Image banner:** on the inverted ground, the image at 78% fading over its last 192 into `bg/surface/200`. It holds its own title (Main; Sub with a title) or the identifier in the navigation, then a slot. The page's sheet rises over its foot (32 tall, 16 round, overlapping by 16), with the Page header title on the page's ground.
+  - **Decorative banner:** the art (gradient), a centred title group (Headlines/700 over a Body/300 support line), the slot, then the sheet. Main with a title uses the identifier row and a 24 sheet with 24 rounding.
+  - Heights match Figma for all nine. Each Figma height minus its 54 status bar: 80, 72, 136, 274, 290, 330, 326, 358, 234. The image banner reuses the VO2 Max photo already in the app, so no new image is added to the build.
+- **Design system → General layout**, split ("Can you split the page header group ... just header title and header navigation"):
+  - **Page header group:** the nine variations, then the group's rules, Main and Sub demos, tokens and the live group.
+  - **Header navigation**, under it: the Page navigation at M · L (with and without the identifier) and XS · S, its rules and tokens, then the Top nav master, the modal headers, the demo frames and the sizes.
+  - **Header title**, under it: the Page header title's base component at XS · S and M · L, then a container switch (2XS to Full) on an L frame, showing the header and the body sharing the page's container. The widths come from the container tokens at L (2XS 576, XS 800, …). Then its rules, and the questionnaire / page Header title.
+- **Page type in Tweaks** ("mock up a quick frame to differentiate these three ... just highlight the one that is selected"): three small frames replace the row of names.
+  - Page: a title, lines and the dock.
+  - Full modal: Back and Close, lines and a CTA.
+  - Bottom sheet modal: a dimmed page under a sheet with its notch.
+  - The screen's own type is lit and ringed in its colour (blue, violet, green). The ring is a border and an outline, because the panel strips box-shadows.
+
 ## v2895 · Page header title (Figma 6644:20609); Page type in every page's Tweaks; Tweaks sub-groups padded
 
 - **Page header title** ("Okay, so now that's the page header title. Reminder that in the header group, we have page navigation and page header title"):
