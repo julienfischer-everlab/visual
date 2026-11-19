@@ -7,6 +7,13 @@ this is the part you need before you change it.
 
 ---
 
+## v2919 · Builder: the real phone, State previous/next; card hugs at XS · S; outlines up
+
+- "Use same Frame as a normal page frame": the builder's phone is the app's own device, not a drawn outline. It uses `--evPhR` / `--evPhBz` (the black bezel in the steel rim; S `--evTbR` / `--evTbBz`), the app's status bar copied from `#bpFrame > .bpStatus` (9:41, the island, signal, battery), and the home indicator. The skeleton's own status bar bar is gone.
+- "Add Next Prev option to jump into steps faster (if >1 step)": two Secondary discs (‹ ›) sit by the State's name in the panel's Collection. They step through the card's states in order, dim at either end, and are gone for a card with a single state (DEXA, MRI…).
+- "Height hug on XS S": the primary card's height follows its content at XS · S (`min-height:0`, `height:auto`). The base 250 and the doc's `--hcH` had held it open in the docs; the Overview had already let it hug.
+- "Increase sub group outline by 30% opacity": Tweaks' sub-group cards' line is 7.8% white (was 6%), the doc panel's cards the same.
+
 ## v2918 · Header group: no Blur bg when Filled
 
 - "If filled, no blur Option": in Tweaks → General layout → Header group, the *Blur bg (64)* row is hidden while Style is Filled (a solid ground has nothing to blur), and back for Gradient and Transparent. It follows the select however it is set (a click, a page's own pick, a preset).
