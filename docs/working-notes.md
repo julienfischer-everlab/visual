@@ -7,6 +7,11 @@ this is the part you need before you change it.
 
 ---
 
+## v2921 · Check-in: the option picker as a Rating range
+
+- "Tweak for option picker: need the Range on the DS as another option here": Tweaks → Quarterly check-in → *Option picker* (Numbers / Range). Range draws a 0 to 10 question with the Design system's Rating range (`EvRate`, Design system → Rating range), its two ends under it. It is the Questionnaire master's own option: `EvQ.scale({ style: 'range' })`. Unanswered, no stop is lit (`.evQRtNone`).
+- The check-in keeps the range's answer from its `evrate` events as it moves, without redrawing under the pointer. The first answer redraws the step once on release, so Continue turns on. Switching the Tweak redraws the open question; an answer carries across both styles.
+
 ## v2920 · Container rulers independent; sub-group rows indented
 
 - "Each range should be independent. Atm when I edit one it edits another one as well": a page's Header group, Title and Footer containers, when never set on that page, follow the Body's ("unpicked, the body's"), so moving Body moved them. Now, when Body changes, each unset one is first pinned to the size it shows (stored as that page's own pick), so only the ruler you move changes. Pages already saved keep what they had.
