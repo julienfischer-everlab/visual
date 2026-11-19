@@ -7,6 +7,15 @@ this is the part you need before you change it.
 
 ---
 
+## v2862 — Debriefs carousel fixed on Auto; primary cards: Visual center and Background, Collection builder, Card static
+
+- "carousel bug!" (On auto): the carousel fade (EvFade) and the Input field master both used `.evFd` (and `.evFdL`, `--fdR`). The field's `display:flex; flex-direction:column` landed on every carousel the moment it overflowed, so Your debriefs stacked on Auto (M and S). The fade's names are now its own: `.evFade`, `.evFadeL`, `.evFadeR`, `--fadeL`, `--fadeR`. Checked at Auto 1440 (M), Auto 1000 (S) and M: one row again.
+- "Need Option to Have Visual center ON OFF (Thumbnail, Avatars 1 2 3) And Background ON OFF (if On and Thumbnail: top right gradient img; if not: custom bg). For all module": every card's controls on Modules → Primary card are now Visual center On / Off → Type (Thumbnail where the card has a visual slot, Avatars, Graphic where it has one) → Avatars 1 2 3 / Graphic kinds; then Background On / Off. With a Thumbnail, On is its own picture as the gradient at the top right. Otherwise On is a custom picture (Upload img), Position Top right or Full (Full dims it and switches to the white ink). Stored as before (mode per card or state, `#bg` none / tr / full); a Thumbnail's gradient stays on unless set Off. Old setups (Imagery Bg top right / full) read as Visual center Off with that background.
+- Avatars and Visual center Off with a background no longer redraw in a loop (the card watches its children: the picture was dropped and put back on every draw).
+- "Title: Collection builder" + its description: the Primary card module's Demo section is now Collection builder, with a line saying every primary card is viewable and styled from here.
+- "Need to be a Card static component!": the module's cards (the builder's and the check-in section's) wear Card static (`evCard`, the Overview's primary card look and size).
+
+
 ## v2861 — Every primary card CTA like the Onboarding consult's
 
 - "All CTA same as this one": the Freemium card's Explore services and the check-in card's Start / Continue / Skip to when it's ready / View were the card's full width; now they hug their words, centred, the 44 pill, as the Onboarding consult's Get started and every other primary card's (Book a time, Complete, View, Join call, Review my plan, Get directions, See my plan). Measured on Modules → Primary card: Start 86, Continue 118, Skip 222, Explore services 176 of 361.
