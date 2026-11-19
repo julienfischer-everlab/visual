@@ -7,6 +7,11 @@ this is the part you need before you change it.
 
 ---
 
+## v2891 · Every Full modal on the body's token
+
+- **Full modal ground** ("Full modal, just use body bg token, not modal bg token"; "General rule for all modal full"): one rule on the Full modal shell. A dark sheet in `.aqWrap.aqFull` (not the `.hpBs` bottom-sheet variant) now takes `--ar-paper: var(--t-bg-surface-100)`, the page's own ground: #0f0f0f in dark, the same #fff in light. It used to take the Modal token (`components/modal/bg`, #181818). The frame and its margins read that paper, and the close-dip ground behind it uses the same token. This covers the Quarterly check-in, the Suggestion, the Async report, the Health profile, the gift flow and every other full modal. A sheet opened over a full modal (`.arQaPanel`) keeps the Modal token.
+- **Master:** in the Design system's Modals doc, the Full demo's panel uses the same token, and its Ground row says so.
+
 ## v2890 · Timeline header group from the page top, Containers, focus card aligned
 
 - **Header group from the top** ("THe timeline header group is not height enough. Why it doesnt start on the top ? Ref is the overview"): `#dTl > .tlHead` is pulled up by the page's own top padding (`--tlUp`: 32, 52 at S, 24 on a narrow Auto) and sticks there, the same as the Overview's `.ovTop`. It pads 24 above its row and 12 below, so it is 66 tall from the page top at S, M and L. The tabs still push it away as you scroll. It does not use `--hgUp`, because the overlap master measures that value from this same box, and the two kept feeding each other.
