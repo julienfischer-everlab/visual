@@ -7,6 +7,11 @@ this is the part you need before you change it.
 
 ---
 
+## v2881 · Save style keeps the card's whole setup
+
+- "Doesnt save properly. I set up a combinaison amd click Save for all states and refresh and didnt save": the Visual itself was kept, but not the rest of the setup. The picture pick lives per card (`everlab:pcMedia:<card>`), and at load the page's saved setup (`everlab:pcMaster`, written only by the top bar's Save) is put back over it, so an older top-bar save brought the old picture back. Service glow, blur and glow position were Tweaks values nothing kept.
+- Now **Save style** and **Save for all states** keep the card's whole setup: the Visual (as before), its picture (written into `everlab:pcMaster` for that card) and the service glow's three (`#svc` in `everlab:pcVisSave`), put back at load. The status says "Changed since saved" when the picture or the glow differ from the save. Checked: Thumbnail + Background On + an uploaded picture + Glow 40, Save for all states, reload: all four back.
+
 ## v2880 · Primary card on H2 centred; Save content; CTA checked
 
 - "Change th h2 on primary card": `EvPcTg` draws the master's **H2 centred**. The Figma H2 centred (Patterns DS25 2328:29564) has no Slot: Content holds Support (24), Main and Support, `space/4xs` (4) apart. So the eyebrow is now the Top support line (`p.evTgTop` holding the `.tgEy` eyebrow, inline and centred), 4 over the title, 4 from the title to the support line. Content's Eyebrow Off hides the whole line; the centred Insights header still hides it.
