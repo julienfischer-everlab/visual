@@ -7,6 +7,12 @@ this is the part you need before you change it.
 
 ---
 
+## v2856 — Primary card: Save for all states, a Bg behind a Graphic, the demo at L unscaled
+
+- **Save for all states** ("Add Save for all states"): beside Save style, the style shown becomes the card's own for every state (the states' own styles dropped) and is saved; the line says how many states still have a style of their own.
+- **Bg after Graphic** ("Still need BG option after Graphic"): with a Graphic, Bg None / Top right / Full puts the card's picture (picked, or its own) behind it, at the top right or across the card (`key#bg` in `#stPcVisBy`, per card and per state, saved with its style), and Upload img shows; Tweaks -> Primary card has the same Bg row.
+- **The demo at L** ("Dont scale, keep the L Format"): the Primary card's demo at the L card's width (528) and its desk rules, no 1.25 zoom, whatever the page's width.
+
 ## v2855 — Inspect: no size on the badge, a chain on components, Value / Token; Primary card: a style a step, Bg Top right / Full and Upload img, the header switch gone; the Ring's orange dots and the doctor alone once set
 
 - **Inspect badge** ("No need the dimension here on inspect badge. IF it's a component add a Chain emoji at the beginning"): what the element is, no width x height; a component led by a chain.
