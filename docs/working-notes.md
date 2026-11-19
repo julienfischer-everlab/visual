@@ -7,6 +7,12 @@ this is the part you need before you change it.
 
 ---
 
+## v2875 · Timeline focus card and new-member card aligned; no duplicate Label row
+
+- **Focus card** ("Focus card should be aligne verticall with title group and Img on item below!"; "should stop right at container padding start"): no bleed to the left any more (`html.tlD3 #tl3 .t3FocusB.t3FcTh` margin-inline was `-var(--t3G) 0`, now 0). Its left edge is the rows' pictures' and the section title's; its right edge the rows' (checked at XS, S, M, L).
+- **New member's card** ("Card should start on the left"): `.jvBento.t3NwB` pulled out of the rail's gutter (`margin-left: calc(-1 * var(--t3In))`), from the container's left like the page title; on the phone, where the rail has no gutter, no pull.
+- **Inspector** ("No need label if the field is above already"): a read-only property row is hidden when an editable field above it already edits it (the Button's Label).
+
 ## v2874 · Icons in the Assets library; Rating range warning to success, white stop; Blood + Device
 
 - **Icons in the Assets library** ("ALl icon should be in assets"): a new **Icons** group (and an Icons type filter), 215 icons read from the page's own code, nothing listed by hand: the dock's, sidebar's and More's icons (EvNavIc, outline and filled), the five faces (EvEmo), every Lucide mark by its `data-lc` name, every icon map's named entry (`mail: '<rect …/>'`, drawn on the 24 grid with a 2 stroke), and every other whole 24-grid icon (named after what holds it in the code; minified letters and `innerHTML` become Icon 1…47). The same drawing found twice is one asset. Each card draws it in the library's ink, says where it comes from and how often the code writes it; **Copy SVG** on the card and in its sheet. Icons cannot be replaced from the library yet (they are inline SVG, not files).
