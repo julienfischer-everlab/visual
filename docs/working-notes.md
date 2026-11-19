@@ -7,6 +7,10 @@ this is the part you need before you change it.
 
 ---
 
+## v2915 · Primary card at XS · S: no slot spacers
+
+- "Remove extra slot padding on XS S Card": at XS · S the card's two slot spacers (`.pcSlotPad`, the container's side padding, 16, above and below the content) are hidden, so the card's own padding is all there is (its Card size's `--kP` above and below, the Primary card's 32 at the sides). The visual now starts on the first row, level with the eyebrow. M · L keep their spacers. Also for the doc's phone cards (`.hcXs`) and the builder's skeleton.
+
 ## v2914 · Primary card: its pages in one select; the panel's controls as Tweaks sub-groups
 
 - "Put this in Select on the top bar on one Select. Next to Primary card overview": the side column is gone. One select after the page's title (`.dhSel.moPgSel`, where the section select was) holds Collection builder, Collection, then each card indented under it. The builder's skeleton now centres on the page's full width.
