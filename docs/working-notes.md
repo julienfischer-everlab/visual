@@ -7,6 +7,13 @@ this is the part you need before you change it.
 
 ---
 
+## v2880 · Primary card on H2 centred; Save content; CTA checked
+
+- "Change th h2 on primary card": `EvPcTg` draws the master's **H2 centred**. The Figma H2 centred (Patterns DS25 2328:29564) has no Slot: Content holds Support (24), Main and Support, `space/4xs` (4) apart. So the eyebrow is now the Top support line (`p.evTgTop` holding the `.tgEy` eyebrow, inline and centred), 4 over the title, 4 from the title to the support line. Content's Eyebrow Off hides the whole line; the centred Insights header still hides it.
+- **Save content** ("Need a Save on this group as well"): the Content group has its own Save like Style. Edits are a draft shown only on the builder's card ("Changed since saved: only this card shows it"); **Save content** puts the card's eyebrow and the state's words on every page; Reset content goes back to the card's own words (then Save). The top bar's Save saves the drafts too. `EvPcContent`: `S` saved (`everlab:pcContent`), `M` the draft; `commit(o, st)`, `save()`.
+- **Bug found on the way**: `EvPcText` and `EvPcContent` had been inserted inside `window.EvPcTg`'s body, so every primary card drawn created both again (12 copies after a few pages, each with its own store and a page-wide MutationObserver). The builder's controls wrote to an old copy, so the words never reached the store. Both are now top-level, made once.
+- **CTA** ("Still not the Right CTA......"): at rest the card's CTA now equals the Button master's Primary md on every property (Saans 14/16 at 570, 44 tall, 24 sides, full radius, white on black ink in Dark). The grey in the screenshot is the master's own hover, `bg/neutral/primary/200` (#ffffffa3, 64% white), which over a photo reads grey; pressed is `/300` (48%).
+
 ## v2879 · Primary card on H1 centred; Save fixed
 
 - **H1** ("Still wrong gap..."; "Support to be a h1"): the Figma Title group (Patterns DS25 2328:29539) has a Slot only on Display and H1 centred (H1: the slot, `space/md` 20, then Content with `space/xs` 12 to the support line); H2 to H6 centred have no slot, their eyebrow a top Support line 4 / 2 over the title. The primary card's eyebrow sat in a slot on H3, so it got the slot gap (16 to 28) of a case Figma doesn't have. Now `EvPcTg` draws the master's **H1 centred** (Headlines/700), the eyebrow its slot: 20 under the eyebrow, 12 to the support line.
