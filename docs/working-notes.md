@@ -7,6 +7,13 @@ this is the part you need before you change it.
 
 ---
 
+## v2900 · The 100's titles stay in view at any parallax
+
+"Why is the Bon Voyage title at the end disappearing?" The titles follow the big number's parallax (Tweaks → The 100 parallax, `stT3CentIn`, default 15%). Turned up (60% and more), the number rises much faster, and the titles under its foot rose with it, out of the top of the stage by the page's end, Bon voyage with them. At 15% it stays (why it never reproduced on a fresh page).
+
+- The titles' block (`.t3CentTx`) now has a soft floor: its centre never above 32% of the stage, eased to a stop over a tenth of a screen past it. At 15% it never reaches the floor (unchanged, just over the dot); at 60% and 100% Bon voyage settles in the upper third and keeps typing.
+- Checked at M 1500 × 760 (parallax 15, 60) and Auto 1100 × 660 (100), at the end and during the warp.
+
 ## v2899 · A fourth page type, External; the Check-in typed per screen; Your next step archived; the Dock menu off the top bar
 
 - "No, this is not a full modal. This is just the overview screen. It's a page." The Check-in's context types itself per screen (EvCtx `type` a function): its Overview moments (Check-in card, Preparing, Insights ready: `.qciWrap.qciPeek`) are a Page, its questions and report a Full modal. The Tweaks Page type card names the screen (`now()`: Overview, Check-in, Push notification).
