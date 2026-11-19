@@ -7,6 +7,10 @@ this is the part you need before you change it.
 
 ---
 
+## v2916 · Layers: a container is called Container
+
+- "Call the Frame container IF the frame is a container": the Inspector's Layers tree now asks the Inspector's own namer (`kindOf`, the same that writes the outline's tag) for a layer that is neither a section nor a component. An element the page names a container (`data-container`, `data-ct`, `data-pg-ct`, `.peCt`, `.evHtC`, `.glCtWrap`), or one with a max width centred by its margins, reads *Container · xs* (its size token, or Full), with a container icon (a box with two inner lines). A labelled section (`data-l`: Header group, Body, Footer group) reads *Section · …*. Everything else stays Frame, Heading, Text….
+
 ## v2915 · Primary card at XS · S: no slot spacers
 
 - "Remove extra slot padding on XS S Card": at XS · S the card's two slot spacers (`.pcSlotPad`, the container's side padding, 16, above and below the content) are hidden, so the card's own padding is all there is (its Card size's `--kP` above and below, the Primary card's 32 at the sides). The visual now starts on the first row, level with the eyebrow. M · L keep their spacers. Also for the doc's phone cards (`.hcXs`) and the builder's skeleton.
