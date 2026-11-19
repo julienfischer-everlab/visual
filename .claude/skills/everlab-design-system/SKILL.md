@@ -26,6 +26,9 @@ The page menu `#versionSel` has Documentation flow (`'doc'`, renamed from Docume
 
 ## House rules
 
+- **A master change reaches every page by itself** ("the layout pattern, whatever it changes, everywhere else automatically. I don't need to verify every page got it"). An instance never sets its own padding, corner, title size or weight over a master's: cards read `--kP` / `--kR` (their Card static size), page titles and header rows `--phg*` (EvPageHg). A page or a look that needs more room picks another size or a master property; it does not override inside. A master's own spec (the Primary card's 32 sides) is written once, for every instance.
+- **Run the master audit after any layout change**: `node tools/audit-masters.js http://127.0.0.1:9092/index.html m,xs,s,l` (a server on the repo root; no NODE_PATH). It walks every page at each size and lists any card off its size or main page title off the Page header group; it must print `clean`.
+
 - **Parse-check every script before building** (run from `/home/user/visual`):
   ```
   node -e 'const fs=require("fs");for(const f of ["index.html","visuals/concierge.html"]){const s=fs.readFileSync(f,"utf8");const re=/<script\b([^>]*)>([\s\S]*?)<\/script>/g;let m,n=0;while((m=re.exec(s))){if(/type\s*=\s*["\x27]?(importmap|application\/json|text\/template|module)/.test(m[1]))continue;n++;try{new Function(m[2])}catch(e){if(!/import|export/.test(e.message))console.log(f,n,e.message)}}}'

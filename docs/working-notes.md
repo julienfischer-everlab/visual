@@ -7,6 +7,17 @@ this is the part you need before you change it.
 
 ---
 
+## v2903 · Masters reach every page by themselves; a master audit
+
+"Basically, the layout pattern, whatever it changes, everywhere else automatically. I don't need to verify every page got it."
+
+- Audited every page (52) at XS, S, M and L for Card static / Card interactive instances whose padding or corner was not their size's (`--kP`, `--kR`), and main page titles off the Page header group master. Overrides removed:
+  - Corners: the Service detail's pending card (24 → its size), the Timeline's check-in card and its header layouts (`--t3R` 24, 22 → `--kR`), the phone's focus Thumbnail and Hero (28 → `--kR`).
+  - Insets: the Insights carousels' slides (20 / 22 → `--kP`), the organ card's list (24 from the edge → `--kP`).
+  - The Primary card: one rule at every breakpoint and look, its size above and below and its own documented 32 at the sides; the centred look's 40, the cover's 56 foot and the phone's 20 gone.
+  - (v2902: the focus and check-in cards' own paddings.)
+- `tools/audit-masters.js`: walks every page at the sizes given and lists any card off its size or page title off the master; prints `clean` now at all four. The skill's house rules carry the principle and the command.
+
 ## v2902 · The focus card padded by its size; Sheet; the Page drawn as a bento
 
 - "Why doesn't the size of the card static change? Do you override some padding here? Don't override any padding inside." The Timeline's focus and check-in cards forced their own padding (32 on the focus card, 20, 12, the Timeline's gap ± 8 on its looks). Every one now reads the Card static size's `--kP` (sm 12, md 16, lg 20, xl 24): Thumbnail, Silhouette (its right still keeps the figure's 260), To do, Hero, and the check-in card's header layouts. Measured: Silhouette md 16, xl 24; Thumbnail sm 12 to xl 24.
