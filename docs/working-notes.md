@@ -7,6 +7,11 @@ this is the part you need before you change it.
 
 ---
 
+## v2897 · Tweaks: sub-cards aligned with their group's title; outlines halved
+
+- **Alignment** ("Make sure the card/subcard aligns vertically with the title ... increase the padding on the main card"): a Tweaks group that holds sub-cards (General layout: Page type, Header group, Body, Footer) is now 14 in on each side, with its title flush to that edge. Each card's left border now sits under the title's first letter (both at the same x), and the right borders line up with the title's chevron.
+- **Outlines** ("reduce the outline opacity by 50%"): the sub-cards' outline goes from white at 12% to 6%. The selected Page type frame's glow goes from 24% to 12% of its type's colour.
+
 ## v2896 · Page header group's nine variations (Figma 6652:6146); the group split into Header navigation and Header title; Page type drawn in Tweaks
 
 - **Every variation** ("this is all of the variation that they need to be set up in the system"): `EvPageHg.variant(v)` draws the nine Figma variants at XS · S: Page level (Main, Sub level) × Banner (None, Image, Decorative) × Title.
