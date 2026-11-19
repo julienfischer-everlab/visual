@@ -7,6 +7,10 @@ this is the part you need before you change it.
 
 ---
 
+## v2883 · A Suggested row says why
+
+- "Suggested should mention on the sub the why. Based on family health - Recommended at 45 yo": a Suggested row (Timeline, Suggestion format Not grouped, and the Suggestions card's rows) now shows why it is suggested in its sub, `sgWhy(it)`. For a guideline item (Red Book) the sub gives the member's family health where it counts (`SG_FAM`: the heart health check, bowel screening) and the age it starts at, from its rhythm ("Every 2 years from 45" → "Recommended at 45"): Heart health check → "Based on your family health · Recommended at 45". Dr Lu's and the results' suggestions keep their own why; `it.sgWhy` wins over both. Was the item's note ("Already covered by your Everlab check-ins."), which is not a reason.
+
 ## v2882 · Saved styles win over every other restore; Card and State selects; no per-section style controls
 
 - "Still doesnt work look" (a screen recording): after Save for all states and a reload the card came back right, then a second later flipped to Sphere with Background Off, then to a Thumbnail. Two other saved setups put an older Visual back after the card's own restore. One is the Tweaks Primary card group's Save (`everlab:ocMaster`, put back at 450 ms with the whole `stPcVisBy`); the other is any preset or shared setup re-applied later through `window.__tkMig`. Their per-state entries (`consult:none` = Thumbnail) survived the card's Save for all states, which only set the card-level entry.
