@@ -7,6 +7,12 @@ this is the part you need before you change it.
 
 ---
 
+## v2902 · The focus card padded by its size; Sheet; the Page drawn as a bento
+
+- "Why doesn't the size of the card static change? Do you override some padding here? Don't override any padding inside." The Timeline's focus and check-in cards forced their own padding (32 on the focus card, 20, 12, the Timeline's gap ± 8 on its looks). Every one now reads the Card static size's `--kP` (sm 12, md 16, lg 20, xl 24): Thumbnail, Silhouette (its right still keeps the figure's 260), To do, Hero, and the check-in card's header layouts. Measured: Silhouette md 16, xl 24; Thumbnail sm 12 to xl 24.
+- "Just say sheet": the third page type is named Sheet (EvPageType, Tweaks, the Design system's switch, the Inspector's health line); its description keeps "a bottom sheet on the phone, a modal on the desk".
+- "For the skeleton of the page, use more like a widget than lines. Use lines for the full modal." "Like bento": the Page tile in Tweaks and the Page sketches in Design system → Page types draw a bento (a tall tile, two small ones, a wide one); the Full modal keeps its lines.
+
 ## v2901 · The 100's titles bold, on the token
 
 "The H1 should be bold, check the token." The 100's titles (Congratulations…, Your next chapter…, Bon voyage) take `font/weight/bold` (`--t-font-weight-bold`, 700); they had the Title group's H1 weight (570). Size unchanged (Headlines/700, its line height +8).
