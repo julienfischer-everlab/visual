@@ -7,6 +7,12 @@ this is the part you need before you change it.
 
 ---
 
+## v2913 · Primary card: Collection as sub pages, the builder in an Overview skeleton
+
+- "All the collection put them in a sub page called Collection with Sub page for each Card": Modules → Primary card now has General layout's second column (`.moSplit`, `.moSide .ldPats`). It lists *Collection builder* (the demo, Anatomy, Used in), *Collection* (every card, every state), and an indented Sub page per card (Onboarding consult, DEXA Scan, MRI Scan, Microbiome & Gut Health, Freemium · Explore, Doctor's plan, Quarterly check-in) with its state count. The page picked is kept (`everlab:moSub:mhp`). The right panel goes with the builder (it is mounted in `.moB`), so it is hidden on the Collection pages. The section-jump select after the title is gone (`jump: false`). A module opts in with `sub: true`.
+- "Put this card into a skeleton frame / screen so we can see how the card will sit in the overview. Center the XS S on the viewport": the builder's card sits in an Overview skeleton (`.moSk`). At XS · S it is a phone (393 / 600 wide) centred in the page: status bar, title, the card at the screen's own size (no 1.25 zoom there), Insights, Action plan rows, the dock and the AI button, fading at the bottom. At M · L it is the desk (menu, title, the card beside the Insights column, rows) in the L format, scaled down to fit the room (`skFit`, a ResizeObserver), never up.
+- Fix: an anchor I matched in the middle of a selector had moved `.ldPats button` off `.ldSub` (General layout's indented sub tabs lost their indent for a moment); put back.
+
 ## v2912 · Tweaks: regular labels in sub-groups, no page name
 
 - "Use regular font for sub label part of a group, here Header group": the rows' labels inside a sub-group (General layout's Page type, Header group, Body, Footer, and any rows after a sub-heading) are regular (400), the sub-group's title stays semibold.
