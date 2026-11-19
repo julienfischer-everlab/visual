@@ -7,6 +7,14 @@ this is the part you need before you change it.
 
 ---
 
+## v2848 — The 100's second title keeps rising; the Ring: light dots with a gap, Dr Steven inside, particles drawn in; the Onboarding consult's setup saved for every page
+
+- **The second title never stops** ("Feels like the 2nd title stops moving up, it should move up and not slow down"): it was held once written (vE) and crept up 32 over the rest of the page. It now follows the scroll at the number's own pace to the page's end (`vT = vR`, the half-pace clock no longer): about 12 every tenth of a screen after its climb, never easing to a stop.
+- **The Ring's dots** ("No outline dot. just filled but light IF not completed"; "dot need a gap around with the line like 2px"): unreached dots filled in the card's ink at 30% (22% light), no ring; the line cleared 2 round each dot (`destination-out`).
+- **Dr Steven inside the Ring** ("For this version put Avatar inside circle gap 12px"): once all is set (the call booked, today, starting soon), his photo fills the circle 12 clear of its line (`ring.av(src)`); the Overview card, Documentation -> Modules, the Health profile home.
+- **Particles drawn into the Ring** ("particles from top triangle are attracted inside this circle. ON OFF tweak"): Tweaks -> Primary card -> Particles (On by default, shown with Visual Ring). Specks born in the card's lit top-right corner, each on a curve into the circle, quickening, gone inside it; a canvas under the card's words (`ringPull`, `.hpRingPull`, the card isolated).
+- **Save for every page** ("Need a Save ... to save the setup that will be reflected every where"; "the RING tweak IS for the Onboarding consult!"): Save in the Primary card group's header keeps the Onboarding consult's look (Visual, Particles, Filled saturation, Card alignment) as `everlab:ocMaster`, put back on load and over every saved setup and preset (`window.__tkMig`). The Health profile home's hero draws the same Visual now (`sphere({ vis: 1 })`).
+
 ## v2847 — The check-in's header fades what scrolls under it; the 100's titles +8 line height, the specks later; the Plan update card on Plan updates
 
 - **Header group Gradient on the check-in** ("Header group gradient? no respected"): `.qciHd` was solid to the progress bar, so a scrolled title was cut there. Its ground is now the master's Gradient (Page example): solid, then 32 past the bar fading over its last 40 (`.qciHd::before`); Header group Style Filled keeps it solid to the bar, Transparent none (`html[data-tnbg]`).
