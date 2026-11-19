@@ -4455,9 +4455,9 @@ window.EvPcText = (function () { var K = 'everlab:pcText', M = {}; try { M = JSO
 window.EvPcContent = (function () { var K = 'everlab:pcContent', S = {}; try { S = JSON.parse(localStorage.getItem(K) || '{}') || {}; } catch (e) { S = {}; }
   var cl = function (x) { return JSON.parse(JSON.stringify(x || {})); }, M = cl(S);   /* S the saved words (every page), M the builder's draft (its own card), Save content putting the draft on every page ("Need a Save on this group as well") */
   var save = function () { try { localStorage.setItem(K, JSON.stringify(S)); } catch (e) {} };
-  var R = { ey: '.hpOvEy:not(.pcCtEy), .tgEy, .hpFrTag', t: '.evTgT, h3', sub: '.evTgBot, .hpOvSub, .hpFrP', cta: '.hpOvBtn' };
+  var R = { ey: '.hpOvEy:not(.pcCtEy), .tgEy:not(.pcCtEy), .hpFrTag', t: '.evTgT, h3', sub: '.evTgBot, .hpOvSub, .hpFrP', cta: '.hpOvBtn' };
   var objOf = function (c) { return c.dataset.pcObj || (c.matches('.hpOvQci, .hpOvDr, .hpOvFree, .hpOvObj') && c.dataset.obj) || 'consult'; };
-  var stOf = function (c, o) { var b = window.EvPcCards ? window.EvPcCards.base(o) : o; return b === 'consult' || b === 'qci' ? c.dataset.pcSt || '' : ''; };
+  var stOf = function (c, o) { var b = window.EvPcCards ? window.EvPcCards.base(o) : o, k = c.dataset.pcSt || ''; if (b === 'consult' || b === 'qci') return k; var P = window.EvPcSteps && window.EvPcSteps.all()[b]; return k && P && (P.add || []).some(function (a) { return a.k === k; }) ? k : ''; };   /* every card its steps: a one-state card's added steps ("All Primary card has a step if if one"); else its one */
   var nrm = function (t) { return String(t == null ? '' : t).replace(/\s+/g, ' ').trim(); };
   var txtOf = function (x) { if (!x) return ''; if (x._pcO == null) return nrm(x.textContent); var d = document.createElement('div'); d.innerHTML = x._pcO; return nrm(d.textContent); };
   var orig = function (c) { var O = {}; if (!c) return O; Object.keys(R).forEach(function (r) { var x = c.querySelector(R[r]); O[r] = x ? txtOf(x) : null; }); return O; };
@@ -4467,7 +4467,7 @@ window.EvPcContent = (function () { var K = 'everlab:pcContent', S = {}; try { S
     if (x.textContent !== v) x.textContent = v; };
   var card = function (c) { var o = objOf(c), st = stOf(c, o), D = c.closest('.moDemoCard') ? M : S, C0 = D[o] || {}, P = D[o + ':' + st] || {}, ey = c.querySelector(R.ey), add = c.querySelector('.pcCtEy');
     if (C0.ey === 'off') { hide(ey, true); if (add) add.remove(); }
-    else { hide(ey, false); if (ey) put(ey, C0.eyT); else if (C0.ey === 'on' && C0.eyT) { var t0 = c.querySelector(R.t); if (!add && t0) { add = document.createElement('span'); add.className = 'hpOvEy pcCtEy'; t0.parentNode.insertBefore(add, t0); } if (add && add.textContent !== C0.eyT) add.textContent = C0.eyT; } else if (add) add.remove(); }
+    else { hide(ey, false); if (ey) put(ey, C0.eyT); else if (C0.ey === 'on' && C0.eyT) { var t0 = c.querySelector(R.t); if (!add && t0) { add = document.createElement('span'); add.className = 'tgEy pcCtEy'; t0.parentNode.insertBefore(add, t0); } if (add && add.textContent !== C0.eyT) add.textContent = C0.eyT; } else if (add) add.remove(); }
     put(c.querySelector(R.t), P.t);
     var sb = c.querySelector(R.sub); hide(sb, P.sub === 'off'); if (P.sub !== 'off') put(sb, P.subT);
     var b = c.querySelector(R.cta); hide(b, P.cta === 'off'); if (P.cta !== 'off') put(b, P.ctaT, true); };

@@ -7,6 +7,11 @@ this is the part you need before you change it.
 
 ---
 
+## v2887 · Every card has steps; an added eyebrow shows
+
+- "All Primary card has a step if if one": the Collection builder's State row shows for every card. A card with one state (DEXA, MRI, Freemium, the doctor's plans) starts with **Step 1** and gets +, Step name and Remove step like the Onboarding consult and the Check-in (`gst` row, `EvPcSteps` keyed by the card). An added step has its own key (`data-pc-st`) for its look and words. On the Overview a one-state card only reads a step key that is one of its added steps, so a key left by the card drawn before it is ignored.
+- "I've added an eyebrow but doesnt reflect on the left side card": the eyebrow Content adds to a card that has none (DEXA, MRI) was put in as `.hpOvEy`, which the Centered layout's old rule hides ("no eyebrow"). It is now the master's eyebrow (`.tgEy.pcCtEy`), centred above the title with `space/3xs` under it (left-aligned outside Centered).
+
 ## v2886 · Steps and cards edited in the Collection builder; the CTA is only the master
 
 - **Steps** ("Need to be able to rename a step (add field below select 'Step name'), add a step (right side of the select), and remove a step (add the end of the edit)"): next to the State select a **+** adds a step, a copy of the one shown (its look and words copied, then its own); **Step name** under the select renames it; **Remove step** at the end of the controls removes it (a built-in step is hidden and comes back with Restore removed steps). `window.EvPcSteps`, `everlab:pcSteps`: `{ o: { names, add: [{ k, base, name }], hide } }`. An added step draws the state it was made from, with its own key (`data-pc-st`) for its style and words.
