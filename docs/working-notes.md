@@ -7,6 +7,12 @@ this is the part you need before you change it.
 
 ---
 
+## v2920 · Container rulers independent; sub-group rows indented
+
+- "Each range should be independent. Atm when I edit one it edits another one as well": a page's Header group, Title and Footer containers, when never set on that page, follow the Body's ("unpicked, the body's"), so moving Body moved them. Now, when Body changes, each unset one is first pinned to the size it shows (stored as that page's own pick), so only the ruler you move changes. Pages already saved keep what they had.
+- "Consider indentation below title group": a Tweaks sub-group's rows sit 12 in under its title.
+- "Just Container": the Header group's Title container row reads *Container* (its tooltip still says it is the Header title's).
+
 ## v2919 · Builder: the real phone, State previous/next; card hugs at XS · S; outlines up
 
 - "Use same Frame as a normal page frame": the builder's phone is the app's own device, not a drawn outline. It uses `--evPhR` / `--evPhBz` (the black bezel in the steel rim; S `--evTbR` / `--evTbBz`), the app's status bar copied from `#bpFrame > .bpStatus` (9:41, the island, signal, battery), and the home indicator. The skeleton's own status bar bar is gone.

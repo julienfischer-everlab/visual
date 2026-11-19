@@ -15009,7 +15009,7 @@ html[data-tk="arDr"] .tkGroup[data-pages~="arDr"] > :not([data-ar-ph~="dr"]) { d
         <div class="tkGlPart" data-pages="tn" id="tkTnGrp">
           <div class="tkSub">Header group <span class="tkTnPg" id="stTnPgLbl"></span></div>
           <div class="tkRow tkCtRow tkCtPart" data-part="hd" hidden title="The header group’s Header navigation section: its container’s max width (the top nav in it)"><span class="lbl">Container</span><select id="stCtHd" class="tkSegSel tkProxy" aria-label="The header group’s top navigation container: its max width"></select></div>
-          <div class="tkRow tkCtRow tkCtPart" data-part="ht" hidden title="The header group’s Header title section: its container’s max width (the page’s title in it); unpicked, the body’s"><span class="lbl">Title container</span><select id="stCtHt" class="tkSegSel tkProxy" aria-label="The header group’s header title container: its max width"></select></div>
+          <div class="tkRow tkCtRow tkCtPart" data-part="ht" hidden title="The header group’s Header title section: its container’s max width (the page’s title in it); unpicked, the body’s"><span class="lbl">Container</span><select id="stCtHt" class="tkSegSel tkProxy" aria-label="The header group’s header title container: its max width"></select></div>
           <div class="tkRow" id="stTnBgRow" title="This page’s header group (the status bar and the top nav): the gradient blur from 20%, the screen’s colour solid, or nothing under it. With Fixed Off it stays on the status bar">
             <span class="lbl">Style</span>
             <select id="stTnBg" class="tkSegSel tkProxy" aria-label="This page’s fixed top nav ground">
@@ -38928,7 +38928,8 @@ hairline({
     const tgt = k => { const p = by(k), sk = skOf(p); return sk || k; };   /* Tweaks writes to the step up, when the flow has steps */
     { const s = sel(), h = hid();
       if (s && !s.options.length) s.innerHTML = OPTS.map(k => '<option value="' + k + '">' + lbl(k) + '</option>').join('');   /* before the segments are drawn from it */
-      if (s) s.addEventListener('change', () => { const k = cur(); if (k) set(tgt(k), s.value); });
+      if (s) s.addEventListener('change', () => { const k = cur(); if (!k) return; const t = tgt(k), keep = [['stCtHd', 'hd'], ['stCtHt', 'ht'], ['stCtFt', 'ft']].map(([id, pt]) => { const ps = document.getElementById(id); return ps && !((t + '/' + pt) in M) && ps.value ? [pt, ps.value] : null; }).filter(Boolean);
+        set(t, s.value); keep.forEach(([pt, v]) => set(t + '/' + pt, v)); });   /* each container on its own ("Each range should be independent. Atm when I edit one it edit another one as well"): the Header, Title and Footer containers left unpicked kept at what they showed, not following the body's new size */
       [['stCtHd', 'hd'], ['stCtHt', 'ht'], ['stCtFt', 'ft']].forEach(([id, pt]) => { const ps = document.getElementById(id); if (!ps) return; if (!ps.options.length) ps.innerHTML = PO.map(k => '<option value="' + k + '">' + lbl(k) + '</option>').join(''); ps.addEventListener('change', () => { const k = cur(); if (k) set(tgt(k) + '/' + pt, ps.value); }); });
       if (h) h.addEventListener('change', () => { read(h.value); sync(); }); }   /* a Save put back, the shared one taken, Reset */
     new MutationObserver(sync).observe(document.body, { attributes: true, attributeFilter: ['class', 'data-bp', 'data-pl-page'] });   /* a page, a Sub page, a breakpoint */
@@ -62183,7 +62184,7 @@ hairline({
   .ctRlTk{position:absolute;inset:0;z-index:2;pointer-events:none;} .ctRlTk > i{position:absolute;top:50%;width:1px;height:8px;margin:-4px 0 0 -.5px;border-radius:1px;background:rgba(255,255,255,.28);} .ctRlTk > i.in{background:rgba(147,197,253,.32);} .ctRlTk > i.at{opacity:0;} .ctRlTk > i.hv{height:14px;margin-top:-7px;background:rgba(255,255,255,.75);}
   html .topbar .tkPanel .tkCtRow[data-unsv] .ctRl{--segOn:rgba(255,138,42,.2);--segOnFg:#ffb06a;}
   /* Tweaks: a sub-group's rows in regular ("Use regular font for sub label part of a group, here Header group"); no page name after a sub-group's title ("Remove the name of the page 'Overview' for all group like this") */
-  html .topbar .tkPanel :is(.tkGlPart .tkRow > .lbl, .tkSub:not(:first-child) ~ .tkRow > .lbl){font-weight:400;} html .topbar .tkPanel .tkRow.tkNoBlur{display:none !important;} html .topbar .tkPanel .tkTnPg{display:none !important;}   /* the ruler: the track the whole width (Full), a tick each side per size, the box the size picked, its label, its handles */   /* the right panel's proxied chips (its toggle or select stands for them) and a hidden group stay hidden: the one style above had shown them again */
+  html .topbar .tkPanel :is(.tkGlPart .tkRow > .lbl, .tkSub:not(:first-child) ~ .tkRow > .lbl){font-weight:400;} html .topbar .tkPanel .tkRow.tkNoBlur{display:none !important;} html .topbar .tkPanel .tkGlPart > .tkRow{margin-left:12px;}   /* a sub-group's rows indented under its title ("Consider indentation below title group") */ html .topbar .tkPanel .tkTnPg{display:none !important;}   /* the ruler: the track the whole width (Full), a tick each side per size, the box the size picked, its label, its handles */   /* the right panel's proxied chips (its toggle or select stands for them) and a hidden group stay hidden: the one style above had shown them again */
 </style>
 <script>
 /* ---- Timeline V3: the "Timeline Ahead" concept (its V4, the check-in loop) in this app's own pieces.
