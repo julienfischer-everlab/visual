@@ -7,6 +7,13 @@ this is the part you need before you change it.
 
 ---
 
+## v2847 — The check-in's header fades what scrolls under it; the 100's titles +8 line height, the specks later; the Plan update card on Plan updates
+
+- **Header group Gradient on the check-in** ("Header group gradient? no respected"): `.qciHd` was solid to the progress bar, so a scrolled title was cut there. Its ground is now the master's Gradient (Page example): solid, then 32 past the bar fading over its last 40 (`.qciHd::before`); Header group Style Filled keeps it solid to the bar, Transparent none (`html[data-tnbg]`).
+- **The 100's titles** ("Increase line height by 8px"): the text styles had put them back on Headlines/700 (30/30 at L, 24/24 at XS, the +20% lost). Written on the tokens now, the line height the style's + 8: 38 at L, 32 at XS.
+- **The specks later** ("Particle should arrive later when the title up more"): in from a fifth of a screen after the second title is 80% written (was a tenth), the title further up.
+- **The Plan update card is the Plan updates card** ("This should be this card. WHY I see it and its turned off"): Dr Steven Lu has updated your plan follows Tweaks → Plan updates: off, no card; Modal, this card (its Visual row there, Real product / Skeleton); Coachmark, the banner in its place (one card above the tabs, never two). The separate Plan update group and its switch are gone (`stT3HeroOn` kept hidden for older saves, no longer read).
+
 ## v2846 — Push changes on the Tokens page; the questionnaire title's top on the container gap; Inspect names the breakpoint
 
 - **Push changes** ("Add a CTA on top of the token page: Push changes"; "they're not saved?"): token edits lived in the setup they were saved with (the hidden `#stTokEd`), so another page's preset showed Figma's value. The Tokens page's Push changes (lit with the count while there are edits not pushed; Pushed after) makes them the base every page and every preset is built on (`EvTokEdit.push`, `everlab:tokBase`, this browser), a setup's own edits laid over it; Reset all clears it too. The base is laid on at load on every page.
