@@ -7,6 +7,11 @@ this is the part you need before you change it.
 
 ---
 
+## v2910 · The Page audit stops when asked
+
+- "I cant stop it", "Force stop audit": the run's Stop button could not be reached or pressed. The full modals the run opens sat above its bar (z-index 2000), and the bar rebuilt its button every 1.5 s, so a click could land on a button that had just been replaced. The bar is now built once and only its text and progress change. It sits over everything (z-index 2147483000) and moves to the end of the page at each step. Stop acts on press (it shows *Stopping…*), Escape stops too, and a page already loading is not scored once stopped. A reload of the tab also ends a run; nothing starts one but Run audit.
+- I no longer run `tools/audit-masters.js` after each build (the user asked to stop the audit).
+
 ## v2909 · Inspector layers and component switch; primary card in two columns at XS · S; Modules controls in the panel
 
 - **Inspector, Layers.** "I would love to see this element on the right side of the inspect, so I can actually spot what div I want to change": a Layers pane between the Inspect header and its panel, with its own scroll (up to 38vh) and folding (kept in `everlab:piLy`). It is the page's tree: Section · its name, a component in green (its Design system name), Heading (H1–H6), Paragraph, Text with its first words, Image, Button, Link, Icon, Frame. It opens down to the selection and follows every redraw; hovering a row lights the element on the page, clicking selects it. Each row is 26 high and 14 in per level.
