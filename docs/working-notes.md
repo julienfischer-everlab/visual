@@ -7,6 +7,14 @@ this is the part you need before you change it.
 
 ---
 
+## v2854 — Insights: the Biomarkers card as Figma's, the page's cards on the Card component; each primary card's Save style; the 100's specks earlier; the Ring's particles smaller, coloured, slower
+
+- **Biomarkers card** ("Need to be a card, align with" Figma Insights 24022:1598382, Biomarker card - Coverage): Card static (Secondary - Surface, lg: #181818, 20 round, 20 padding); BIOMARKERS in mono 12 / 14 with its info, the total at 36 / 38, Share (28) at the top right; the counts 20 / 24 over an 8 dot and its name, four with Unclassified on; the bar 8 tall in parts 1 apart, Unclassified's grey too; Untested and Get test off the card (Figma has none).
+- **The page's other cards** ("and check other component on this page"): Steps, Coverage, the Latest report and Biological & organ ages on the Card component too (its ground and corners); the two columns as Figma's L, 448 · 608.
+- **Save style for each card** ("Need a Save style For each title group!"): every card's section on Documentation -> Modules -> Primary card (and the demo's controls) ends on Style: Save style (lit while changed), Saved after; kept in `everlab:pcVisSave` (its Visual; the Onboarding consult's Graphic and Particles too), put back at load and over every setup or preset (`__tkMig`).
+- **The 100's specks and dot earlier** ("Dot and particle should come earlier when the title is approx 20% from the top"): the specks from just after the second title is written (`g0` v80 + .04 screen, was .22), the dot from .45 (was .6).
+- **The Ring's particles** ("Particle smaller and a bit more colourful and slower 1.5x"): .4 to 1.1 (were .6 to 1.7), nearly half in colour (warm orange, soft blue, sand, rose), 1.5x slower again.
+
 ## v2853 — Primary cards always centred; real care-team photos; the Ring's particles from the whole top, slower, softer; the check-in's questions reorderable; Ruler padding on full-width containers
 
 - **Always centred** ("ALways centered text come on!"; "Content always centered"): every primary card centred at every width (`html.hpOvCtrOn` always on, Tweaks' Card alignment hidden); the check-in card's own centring (team, tag, title, line, button) needs no class. On Documentation -> Modules the cards' rules now weigh as an id, as on the Overview (`.moOv:not(#_mo)` for `hpOvCard` rules), so the Overview's `:is(#dOver, body)` rules no longer pulled them left.
