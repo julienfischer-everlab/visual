@@ -7,6 +7,15 @@ this is the part you need before you change it.
 
 ---
 
+## v2859 — Primary cards on the Title group; Visual On / Off; Overview links to the module; Action plan header on the Title group
+
+- "Module --> Use title group Centered With the right tokens!": the primary cards' words (Onboarding consult and its objects, Your plan, Your first insights) are built by `window.EvPcTg(eyebrow, title, sub)` = `EvTitle.html({ level: 'h3', align: 'center', slot: eyebrow, title, bottom: sub })` (`.hpOvTg`): the eyebrow its top slot, the gaps the master's tokens. Ink: the card's; on a picture filling the card (Imagery Full, a Graphic over a Full picture: the picture dimmed to 42%) the on-media ink, light theme too (white, 64% for the support lines, the button white). It was black on the dimmed picture in Light. A Cover keeps the card's ink (its words sit where the picture fades into the card).
+- "Add ON OFF. IF OFF Title move up (centered in the card)": the module's per-card controls start with Visual On / Off, then Type (Imagery / Graphic) and the rest. Off stores mode `off` (per card, per state, saved with Save style / Save for all states): no picture, graphic or faces (`.pcmNone`), the words in the card's middle. On again comes back on the card's default visual.
+- "In the overview instead of these tweak directly in the page --> Create a Redirection to the module in the DS": the Overview Tweaks no longer show Visual, Imagery, Bg, Thumbnail, Avatars, Graphic, Particles, Upload img, Service glow, Service blur, Service glow position. One row in their place, Visual → "Edit in Modules → Primary card ↗", opens Documentation → Modules → Primary card on the Overview's card and state. Service glow, blur and position now live on the module (under Upload img), set the Tweaks' own inputs, shown with a picture.
+- "Use title group component": the Overview's Action plan section title (phone `.ovsecPlan`, desk `.dvSecPlan`) is the Title group's markup (EvTitle H3, See more its right slot), the H3 tokens (Headlines/500) over the section titles' own type.
+- Not yet on the Title group: the Freemium, doctor's plans and check-in cards' `h3.hpFrT` heads (they got the on-media ink on a Full picture).
+
+
 ## v2858 — Check-in insights on the Async report's insight screen
 
 - "Use the Async insight framework! dont reinvent the wheel": the check-in's insight screens (eng0, eng1…) are no longer its own Connected for you card. Each is the Async report's own insight screen (`buildLife`): the headline as H1, Evidence / Findings / Meaning pills, the biomarkers card (the report's rows: range bar, reading | month, status pill; tap opens the biomarker detail sheet), its source (October 2026 blood test), Ask Eva, What we noticed, What this means for you, Any question?, Was this useful?
