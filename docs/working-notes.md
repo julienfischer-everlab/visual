@@ -7,6 +7,13 @@ this is the part you need before you change it.
 
 ---
 
+## v2876 (in progress, not published) · Sections rule, Timeline first
+
+- "General rule! Header group with fill the full width. and inside we should have Header Navigation, Header title (if any)"; "This 'Frame' Should be the Section body full width"; "Gen rule as well!".
+- Timeline: `#dTl > .tlHead` is now the **Header group** (`.evSec.evSecHg`, data-l, the page's width, still the sticky, grounded host), in it the **Header navigation** (`.evSecPt[data-hg-part="nav"]`, full width), in it its container (`.tlCol.tlHeadIn`: the title, search, Paused, Past). The rest in the **Body** (`.evSec.evSecBd`, full width): `#tl3`, the side column and the walkthrough are put there by the page; the L grid moved from `#dTl` to the Body.
+- Rules rewritten without changing their weight (`#dTl > :where(.evSecBd) > …`, `.tlHead :where(.tlHeadIn) > …`); the scripts that put the title, search and buttons in the head now use `.tlHeadIn`. The Inspector lists the page's Body section.
+- Checked so far: loads with no errors, the Overview card draws, the Timeline's sections hold their containers (XS). Still to check before publishing: M/L geometry and sticky header, side column at L, Past, new member, phone search; then the other pages.
+
 ## v2875 · Timeline focus card and new-member card aligned; no duplicate Label row
 
 - **Focus card** ("Focus card should be aligne verticall with title group and Img on item below!"; "should stop right at container padding start"): no bleed to the left any more (`html.tlD3 #tl3 .t3FocusB.t3FcTh` margin-inline was `-var(--t3G) 0`, now 0). Its left edge is the rows' pictures' and the section title's; its right edge the rows' (checked at XS, S, M, L).
