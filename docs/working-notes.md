@@ -7,6 +7,12 @@ this is the part you need before you change it.
 
 ---
 
+## v2851 — Ruler: the padding of the sections picked; the areas 8 round; the body's container its whole height
+
+- **Padding of the picked sections only** ("ONLY show the padding of Selected Toggle section. IF no section selected above, Show all container padding"): with Sections on and some of Header group / Body / Footer group picked, Container padding draws their containers' padding alone (`html.ctGdSel`, `ctGdSel{Hg,Bd,Ft}`, the bands classed `ctGdP{Hg,Bd,Ft}`); none picked (Sections off), every container's.
+- **Areas 8 round** ("Increase radius on area 4px"): the sections, the Header group's frame and its dashed parts, 8 (were 4).
+- **The body's container to the section's foot** ("why container doesn't fill height"): its box and its padding bands down to the body section's foot, not its content's.
+
 ## v2850 — The check-in: Thanks on the Async report's intro, the push on the XS phone at Auto, the Flow panel's groups, personas named Blood, Device, None
 
 - **Thanks for checking in** ("Thank you should follow the same closure as the async intro"): drawn by the Async report's intro, as the check-in's Intro and the report's cover are (`ar: 'build'` in `arMount`): the picture, the tag Check-in complete, the title, three rows (saved for your care team, insights on their way or ready, we'll let you know or your next step), Back to home (See your insights with V2).
