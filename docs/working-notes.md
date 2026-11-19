@@ -7,6 +7,10 @@ this is the part you need before you change it.
 
 ---
 
+## v2923 · Primary card builder: no section title
+
+- "No need this title": the builder's *Collection builder* section title is gone (a module with Sub pages draws its demo with no section header); the header's page select names the page.
+
 ## v2922 · Tweaks: the saved value before an unsaved change
 
 - "Top right need to know which value before on the saved: Previous 'sm'": when a row in a Tweaks sub-group is unsaved (its orange dot), the sub-group's title shows *Previous* and the value saved in the preset in use, at the top right in the unsaved orange (*Previous xs*). With several unsaved rows in one sub-group each is named (*Previous Container xs · Style Gradient*). A row outside a sub-group shows it under its name. The value is shown as the control writes it (an option's own label). A page's own pick that was never saved shows the control's default (*Previous Gradient*).
