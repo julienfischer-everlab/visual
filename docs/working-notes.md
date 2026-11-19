@@ -7,6 +7,11 @@ this is the part you need before you change it.
 
 ---
 
+## v2922 · Tweaks: the saved value before an unsaved change
+
+- "Top right need to know which value before on the saved: Previous 'sm'": when a row in a Tweaks sub-group is unsaved (its orange dot), the sub-group's title shows *Previous* and the value saved in the preset in use, at the top right in the unsaved orange (*Previous xs*). With several unsaved rows in one sub-group each is named (*Previous Container xs · Style Gradient*). A row outside a sub-group shows it under its name. The value is shown as the control writes it (an option's own label). A page's own pick that was never saved shows the control's default (*Previous Gradient*).
+- The container rows are marked from what each shows: unsaved only when its size differs from the size saved for that page (its own pick, else the page's default; a part with no pick, the body's or 2xs on a step flow). So a Header, Title or Footer container pinned when the Body moved (v2920) is not reported as a change.
+
 ## v2921 · Check-in: the option picker as a Rating range
 
 - "Tweak for option picker: need the Range on the DS as another option here": Tweaks → Quarterly check-in → *Option picker* (Numbers / Range). Range draws a 0 to 10 question with the Design system's Rating range (`EvRate`, Design system → Rating range), its two ends under it. It is the Questionnaire master's own option: `EvQ.scale({ style: 'range' })`. Unanswered, no stop is lit (`.evQRtNone`).
