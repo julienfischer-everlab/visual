@@ -7,6 +7,13 @@ this is the part you need before you change it.
 
 ---
 
+## v2863 — Component properties editable (Inspector and Tweaks), saved for the page; the focus card's style and radius on its properties
+
+- "Need a way to change the component property from here": the Inspector's Properties now edit the component. Card static: Appearance (every look) and Size; Button: Type and Size; Title group: Size and Centered; Link: Size, Theme, Bold, Underline; List item interactive: Size and Emphasis; Toggle: On. A change goes on the element at once and, where the page draws the component from a Tweaks row, on that row too (the Overview's primary card, Schedule and Insights; the Timeline's focus card), so it sticks; the panel redraws.
+- "IF a tweak group is a component e.g. card static, need a way to change the properties directly from here, and always save for the entire page": the Your focus group shows the focus card's Card static properties, Card · Appearance and Card · Size (the Overview's groups already had theirs). Every Card · Appearance / Card · Size row saves itself the moment it changes, from the group or the Inspector (`everlab:cmpProps`), is put back at load, and wins over saved setups and presets. Checked: Appearance Secondary - Surface and Size md from the Inspector, the group's rows followed, kept after a reload.
+- "Remove card style here and radius, should be managed through properties": Your focus → Card (Filled / Outlined) and Card corner radius are gone. The focus card's look and size are its Card static properties (Glow · lg by default), and its corner is the size's radius token (`--kR`; the Thumbnail variant had 30 fixed). An outline is now the Appearance's outlined looks.
+
+
 ## v2862 — Debriefs carousel fixed on Auto; primary cards: Visual center and Background, Collection builder, Card static
 
 - "carousel bug!" (On auto): the carousel fade (EvFade) and the Input field master both used `.evFd` (and `.evFdL`, `--fdR`). The field's `display:flex; flex-direction:column` landed on every carousel the moment it overflowed, so Your debriefs stacked on Auto (M and S). The fade's names are now its own: `.evFade`, `.evFadeL`, `.evFadeR`, `--fadeL`, `--fadeR`. Checked at Auto 1440 (M), Auto 1000 (S) and M: one row again.
