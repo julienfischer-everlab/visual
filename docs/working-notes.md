@@ -7,6 +7,12 @@ this is the part you need before you change it.
 
 ---
 
+## v2890 · Timeline header group from the page top, Containers, focus card aligned
+
+- **Header group from the top** ("THe timeline header group is not height enough. Why it doesnt start on the top ? Ref is the overview"): `#dTl > .tlHead` is pulled up by the page's own top padding (`--tlUp`: 32, 52 at S, 24 on a narrow Auto) and sticks there, the same as the Overview's `.ovTop`. It pads 24 above its row and 12 below, so it is 66 tall from the page top at S, M and L. The tabs still push it away as you scroll. It does not use `--hgUp`, because the overlap master measures that value from this same box, and the two kept feeding each other.
+- **Container, not Frame** ("Why Frame? Should be container"): `.tlHeadIn` and `#tl3` carry `data-container="xs"`, so the Inspector names them Container · xs.
+- **Focus card aligned** ("Focus card should align with item below"): the Silhouette focus card no longer bleeds out by the rows' ghost inset. It now lines up with the items below at XS, S and M, with or without the timeline line.
+
 ## v2889 · Nothing after the CTA; the plan's photo as every visual; Collection a card of its own
 
 - "Remove Content after CTA, never any content in this location": nothing under a primary card's CTA any more (`.ovBookFoot > .ovBookWhen` hidden on every card: the plan's Dr Steven Lu, a booking's time).
