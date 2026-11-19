@@ -7,6 +7,12 @@ this is the part you need before you change it.
 
 ---
 
+## v2873 · Inspector: edit a component's label; Card interactive and Badge properties
+
+- "Need to be able to edit the labe las well , in general": every component's Properties end with its words: **Label** (and Label 2, Label 3 when it holds more lines). Each is a line of text the component holds itself, not one of a component inside it; the Title group keeps its own Title / support fields.
+- Kept per page, by the element's place and the words it had (`everlab:lblEdit`), and put back whenever the page draws it again (checked: the Review's doctor card renamed, the review shut and opened, the new words back). Setting the original words back removes the record.
+- **Card interactive** gets editable properties: Appearance (EvCard.ILOOKS), Size (2xs to xl, None), Selected. **Badge** (Status): Emphasis (Outline, Tint, Solid), Appearance (Neutral to Special), Size.
+
 ## v2872 · Review my plan on Card interactive; the Inspector knows the sections; Badge Appearance (yellow Suggested)
 
 - **Notes from Dr Steven Lu** ("Card component interactive"): `EvCard.item`'s classes, Primary · md (a hairline at rest, filled on hover and press, 16 round, radius/2xl 16), the photo, the name and the chevron in its `.evCardSlot`. Was its own 16/22 padding, 20 corners and hover. Inside V2's / V3's card it stays a row (the classes come off).
