@@ -7,6 +7,11 @@ this is the part you need before you change it.
 
 ---
 
+## v2907 · One style for every tweak; the footer's content a slot in Tweaks
+
+- "Pls use one unique style for ALL tweaks. Keep the style from the tweak." Every segmented control in a page now wears the Tweaks panel's: a 6% track, 3 in, 10 round; 28 buttons, 8 round, 12.5 Medium grey; the one picked light blue (rgba(96,165,250,.2), #93c5fd), hovered a touch stronger. One set of values (`--segTrk`, `--segFg`, `--segOn`, `--segOnFg`, light-mode twins on body.light) for the Design system's demos and Container switch (.pbBp, .glCtBps), the Page example (.hgSeg), the Modules builder (.moSeg, .moCtlSeg), the doc pages' side panel (.dpSeg, .tkSegT), Tokens (.tcSeg, .tokTsSeg) and the Assets library (.alSeg).
+- "This is a slot that can be changed on the tweak via a select." Tweaks → General layout → Footer → Content (a select, per page, kept with Style and Fixed): Page's own, Inline edge, Inline fill, Stacked fill, 1 CTA only (EvPageFt's alignments). The open screen's footer buttons are laid out that way, their own labels and handlers kept: the primary (Primary in its class, else the last) at the right inline, on top stacked, alone with 1 CTA only; a long label wraps in a half. Checked on the Check-in (one CTA) and the Suggestion (View your recommendations + Not now) at XS.
+
 ## v2906 · Footer group: the Footer content master (Figma 2328:26468), merged into the Page example
 
 "Page footer: to add and merge to what exists." `window.EvPageFt.html({ align, primary, secondary, tertiary })`, Figma Patterns DS25 2328:26468 (Footer / Content): the Button master at lg (56, Label - Body/300/Medium), space/xs (12) between, four alignments: Inline edge (Secondary left, Primary right), Inline fill (a half each), Stacked fill (Primary, Secondary, Tertiary, full width), 1 CTA only.
