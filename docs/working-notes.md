@@ -7,6 +7,13 @@ this is the part you need before you change it.
 
 ---
 
+## v2850 — The check-in: Thanks on the Async report's intro, the push on the XS phone at Auto, the Flow panel's groups, personas named Blood, Device, None
+
+- **Thanks for checking in** ("Thank you should follow the same closure as the async intro"): drawn by the Async report's intro, as the check-in's Intro and the report's cover are (`ar: 'build'` in `arMount`): the picture, the tag Check-in complete, the title, three rows (saved for your care team, insights on their way or ready, we'll let you know or your next step), Back to home (See your insights with V2).
+- **The push at Auto is the XS phone** ("Keep the XS view on auto!"): 393 x 852, the frame's 56 corners and bezel (`--evPhR`, `--evPhBz`), the frame's own status bar (`#bpFrame > .bpStatus`: the time, the island, signal, wifi, battery), the apps 72 down as on the XS frame.
+- **Flow panel groups** ("Out this in a group Notification"; "This in a group entry point overview"; "This in Check-in"): Notification (Check-in push), Entry point (Overview · Check-in card), Check-in (Intro to Thanks for checking in), Waiting, Insights report.
+- **Personas** ("#1 Blood, #2 Device, #3 none"; "Stronger yellow and black text"): the chips read Blood, Device, None (`PT`), light red, a stronger yellow (#FACC15), grey; the persona shown filled with black words.
+
 ## v2849 — Each primary card its own Visual: Imagery (Bg top right, Bg full, Thumbnail) or Graphic (Sphere, Halo, Ring progress); the check-in's personas in colour
 
 - **Visual per primary card** ("Few options for Each primary CARD ... Imagery: Bg (top right / full), Thumbnail (with the imagery at the top right, blurred); Graphic: Sphere, Dotted circle (TO KILL), Halo, Ring progress"): Tweaks -> Primary card, for the Object shown: Visual Imagery / Graphic, then Imagery Bg top right / Bg full / Thumbnail (and its Picture strip) or Graphic Sphere / Halo / Ring progress (Particles with the Ring, Filled saturation with the Sphere). Kept per Object in `#stPcVisBy` (saved with setups, in the header's Save too), drawn by `PcMedia` (`mode`, `place`, `gfxOn`, `ui`) on the Overview and Documentation -> Modules.
