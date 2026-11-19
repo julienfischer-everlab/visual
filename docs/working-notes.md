@@ -7,6 +7,18 @@ this is the part you need before you change it.
 
 ---
 
+## v2895 · Page header title (Figma 6644:20609); Page type in every page's Tweaks; Tweaks sub-groups padded
+
+- **Page header title** ("Okay, so now that's the page header title. Reminder that in the header group, we have page navigation and page header title"):
+  - The Header group is two parts: Page navigation, then Page header title. They are named that way in the Inspector and the section guides (they were Header navigation and Header title).
+  - The Timeline's header group is now in those two parts: an empty Page navigation (24 / 16 on a Main page), and a Page header title (min 64, 8 above and below) holding the title row. Heights are unchanged: 0–88 at M · L, 24–104 at S, 47–127 at XS.
+  - `EvPageHg` marks its parts the same way (`data-hg-part` nav / title). It takes `ct`, the page's container, which sets the Page header title's width (Figma: "Page header follow container max-width").
+  - The doc carries the Figma rules: always displayed on main and sub-level pages, except under a banner (then the title is inside the banner); its width follows the page's container (2XS, XS, SM, MD, LG, Full), so header and content align; a Sub page has no Main bottom menu on XS, a Main page has it; an optional divider.
+- **Page type in Tweaks** ("for each page ... we need a group page type and then the name of the type. It's a page, full modal, or bottom sheet modal"):
+  - Tweaks → General layout opens on a Page type card, with the screen's name beside the title and the three types on one row: Page, Full modal, Bottom sheet modal. The screen's own type is lit, with its dot. It is read from `html[data-pt]`.
+  - The third type is now called Bottom sheet modal everywhere, including the Page types switch.
+- **Tweaks** ("Remove this red thing here"; "Add 4px padding in the sub tweak group"): the "This step: …" line under Body is gone. The General layout sub-groups (Page type, Header group, Body, Footer) have 4 px more on each side, so their titles and rows line up.
+
 ## v2894 · Page header group from Figma (Patterns DS25 5831:95872); the three page types
 
 - **Page header group** ("Let's focus back on the page header group"; "Respect all of the token there"): a new master, `window.EvPageHg`, built from the Figma Page navigation pattern.
