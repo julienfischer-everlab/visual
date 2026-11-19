@@ -7,6 +7,12 @@ this is the part you need before you change it.
 
 ---
 
+## v2846 — Push changes on the Tokens page; the questionnaire title's top on the container gap; Inspect names the breakpoint
+
+- **Push changes** ("Add a CTA on top of the token page: Push changes"; "they're not saved?"): token edits lived in the setup they were saved with (the hidden `#stTokEd`), so another page's preset showed Figma's value. The Tokens page's Push changes (lit with the count while there are edits not pushed; Pushed after) makes them the base every page and every preset is built on (`EvTokEdit.push`, `everlab:tokBase`, this browser), a setup's own edits laid over it; Reset all clears it too. The base is laid on at load on every page.
+- **The questionnaire Header title's top** ("Should be this!": the container gap, not the questionnaire token): `.evHt-q .evHtC` padding-top is `layout/container/gap/xl` (24 · 28 · 32 · 36), was `components/questionnaire/top padding` (12 at XS, the "why 12").
+- **Inspect names the breakpoint** ("So explain why 12"): a Breakpoints token's row shows the breakpoint whose value it is (XS on the phone frame), its tooltip the four values.
+
 ## v2845 — Token aliases on breakpoint tokens; answers fade in; the check-in card centred; Back as Close; the footer's safe space
 
 - **A breakpoint token given as another token applies at once** ("I just changed the container top questionnaire token and saved, why it's not instantly applied"; "why still 12"; "I can see 32 in the token"): a Breakpoints value picked through the Tokens page's search is stored as an alias (`{unit.32}`), and `EvType` only emitted plain numbers, so the variable fell away and the CSS fallback (12) showed. `bpFill` follows aliases (`{a.b}`, `a/b`) to their number now (`bpNum`).
