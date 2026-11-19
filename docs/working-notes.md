@@ -7,6 +7,10 @@ this is the part you need before you change it.
 
 ---
 
+## v2888 · Card name and Step name in Content, saved with it
+
+- "Should be in COntent section so I can save": Card name and Step name moved from under the selects into the Content group, first. Like the eyebrow and the words they are a draft on the builder's card until **Save content** (or the top bar's Save), then kept (`everlab:pcContent`: `cn` on the card, `sn` on the step). The Card and State selects show the draft names as you type; a reload without saving goes back to the saved ones.
+
 ## v2887 · Every card has steps; an added eyebrow shows
 
 - "All Primary card has a step if if one": the Collection builder's State row shows for every card. A card with one state (DEXA, MRI, Freemium, the doctor's plans) starts with **Step 1** and gets +, Step name and Remove step like the Onboarding consult and the Check-in (`gst` row, `EvPcSteps` keyed by the card). An added step has its own key (`data-pc-st`) for its look and words. On the Overview a one-state card only reads a step key that is one of its added steps, so a key left by the card drawn before it is ignored.
