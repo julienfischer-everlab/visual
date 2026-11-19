@@ -7,6 +7,11 @@ this is the part you need before you change it.
 
 ---
 
+## v2905 · The Microbiome primary card, every step
+
+"Create the microbiome one, based on all steps." Modules → Primary card (Collection builder): Card → Microbiome, its State every step of the service's journey (`window.EvPcMic`, built-in steps through `EvPcBuiltSteps`, so the State list, Add a step, Remove step and each step's own style and words work as for the other cards):
+Questionnaire (Start), Questionnaire started (Continue), Confirm address, Kit being prepared (View), Kit on its way (Track your kit), Collect and post (How to collect), At the lab (View), Results in (View), Report ready (View report). Each its title, its line and its button; the card drawn as DEXA's (the service picture a thumbnail at the centre, the blurred ground: a picture slot like DEXA and MRI). A Microbiome & Gut Health section lists the nine. On the Overview: Tweaks → Primary card → Object → Microbiome & Gut Health, and its Microbiome step.
+
 ## v2904 · Analytics → Page audit; the Page header group Demo; the title's min height on space/5xl
 
 - "Create a new group of Page 'Analytics' with a page called 'page audit', where you list all page and health score in a table." The page menu has an Analytics group with Page audit (`#page-audit`, `window._aud`). Run audit opens every page of the menu in turn (about 1.5 s each, a progress bar with Stop), reads its health as the Inspector scores it (`EvInspect.score()`: tokenisation and layout against its page type), and keeps the run in this browser (`everlab:pageAudit`). The table: page, group, page type, health (score and word), tokens %, layout %, checks passed, top issues, Open; each column sorts; a summary of the average and how many are Healthy, Fair, Needs work, Poor. The framed pages (Gift received, Gift referral, Testing locations) are listed as not measured.

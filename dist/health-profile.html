@@ -3660,7 +3660,7 @@ window.EvTeamAv = ['data:image/webp;base64,UklGRmYcAABXRUJQVlA4WAoAAAAwAAAA1wAA1
 window.EvTeamFace = function (i, c) { var u = (window.EvTeamAv || [])[i]; return '<i style="--qc:' + c + ';--qi:' + i + '">' + (u ? '<img src="' + u + '" alt="" decoding="async">' : '<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"9.2\" r=\"4.2\"/><path d=\"M3.6 22c1.2-4.6 4.4-7 8.4-7s7.2 2.4 8.4 7\"/></svg>') + '</i>'; };   /* a face: the real photo ("If avatar use Real avatar from library"), else the glyph */   /* Dr Steven's photo, written once: the Ring's inside, the Onboarding consult's Imagery */
 window.PcMedia = (function () {
   var BO = function (o) { return window.EvPcCards ? window.EvPcCards.base(o) : o; };   /* a card added on the Collection builder: the card it was made from for what it can show, its own key for its look and picture */
-  var OBJS = { consult: 1, dexa: 1, mri: 1, free: 1, drp: 1, drd: 1, qci: 1 }, COL = 'pcMedia', MAX = 20 * 1024 * 1024, DB = null, AS = null, REMOTE = [], LOCAL = [], busy = false, idb = null;
+  var OBJS = { consult: 1, dexa: 1, mri: 1, micro: 1, free: 1, drp: 1, drd: 1, qci: 1 }, COL = 'pcMedia', MAX = 20 * 1024 * 1024, DB = null, AS = null, REMOTE = [], LOCAL = [], busy = false, idb = null;
   var box = function () { return document.getElementById('tkPcMedia'); }, fin = function () { return document.getElementById('tkPcMediaF'); };
   var obj = function () { var s = document.getElementById('stPcObj'); return s ? s.value : 'consult'; };
   var isV = function (r) { return /^video\//.test(r.type || ''); }, src = function (r) { return r.u || r.o || ''; };
@@ -3683,7 +3683,7 @@ window.PcMedia = (function () {
   /* each card's visual ("Few options for Each primary CARD"; Tweaks -> Primary card -> Visual, per Object, #stPcVisBy): img:tr (the picture at the top right), img:full (the whole ground, the old Cover; the ground dimmed on a card with no visual of its own),
      img:thumb (in the visual's place, and blurred at the top right: the old Avatar); gfx:sphere / gfx:halo / gfx:ring (the Onboarding consult's own, kept in #stHpVis; drawn in the picture's place on DEXA and the MRI).
      A picture is the one picked for the Object, else its own (the service's for DEXA and the MRI, Dr Steven for the Onboarding consult). The cards with no visual of their own (Freemium, the doctor's plans, the check-in): Imagery only, Bg top right or full */
-  var SLOT = { consult: 1, dexa: 1, mri: 1 }, VB = function () { try { return JSON.parse((document.getElementById('stPcVisBy') || {}).value || '{}') || {}; } catch (e) { return {}; } };
+  var SLOT = { consult: 1, dexa: 1, mri: 1, micro: 1 },   /* the cards with a picture slot (a thumbnail at the centre, the blurred ground): the Microbiome's as DEXA's */ VB = function () { try { return JSON.parse((document.getElementById('stPcVisBy') || {}).value || '{}') || {}; } catch (e) { return {}; } };
   var hpV = function () { var v = (document.getElementById('stHpVis') || {}).value; return v === 'halo' || v === 'ring' ? v : 'sphere'; };
   /* a card's state its own style ("Each step can have a different style below!"): o:state over o (the Onboarding consult's steps, the check-in's moments) */
   var mode = function (o, st) { var A0 = VB(); if (st && /^(img:(tr|full|thumb|av[123])|gfx:(sphere|halo|ring)|off)$/.test(A0[o + ':' + st] || '')) { var ms = A0[o + ':' + st]; if (ms === 'off') return ms; if (!SLOT[BO(o)] && ms === 'img:thumb') ms = 'img:av3'; if (!SLOT[BO(o)] && /^gfx:/.test(ms)) ms = 'img:full'; return ms; }
@@ -4458,7 +4458,7 @@ window.EvPcContent = (function () { var K = 'everlab:pcContent', S = {}; try { S
   var save = function () { try { localStorage.setItem(K, JSON.stringify(S)); } catch (e) {} };
   var R = { ey: '.hpOvEy:not(.pcCtEy), .tgEy:not(.pcCtEy), .hpFrTag', t: '.evTgT, h3', sub: '.evTgBot, .hpOvSub, .hpFrP', cta: '.hpOvBtn' };
   var objOf = function (c) { return c.dataset.pcObj || (c.matches('.hpOvQci, .hpOvDr, .hpOvFree, .hpOvObj') && c.dataset.obj) || 'consult'; };
-  var stOf = function (c, o) { var b = window.EvPcCards ? window.EvPcCards.base(o) : o, k = c.dataset.pcSt || ''; if (b === 'consult' || b === 'qci') return k; var P = window.EvPcSteps && window.EvPcSteps.all()[b]; return k && P && (P.add || []).some(function (a) { return a.k === k; }) ? k : ''; };   /* every card its steps: a one-state card's added steps ("All Primary card has a step if if one"); else its one */
+  var stOf = function (c, o) { var b = window.EvPcCards ? window.EvPcCards.base(o) : o, k = c.dataset.pcSt || ''; if (b === 'consult' || b === 'qci') return k; var P = window.EvPcSteps && window.EvPcSteps.all()[b], BS = window.EvPcBuiltSteps && window.EvPcBuiltSteps[b]; return k && ((P && (P.add || []).some(function (a) { return a.k === k; })) || (BS && BS.some(function (x) { return x[0] === k; }))) ? k : ''; };   /* every card its steps: a one-state card's added steps ("All Primary card has a step if if one"); else its one */
   var nrm = function (t) { return String(t == null ? '' : t).replace(/\s+/g, ' ').trim(); };
   var txtOf = function (x) { if (!x) return ''; if (x._pcO == null) return nrm(x.textContent); var d = document.createElement('div'); d.innerHTML = x._pcO; return nrm(d.textContent); };
   var orig = function (c) { var O = {}; if (!c) return O; Object.keys(R).forEach(function (r) { var x = c.querySelector(R[r]); O[r] = x ? txtOf(x) : null; }); return O; };
@@ -4506,6 +4506,17 @@ window.EvPcContent = (function () { var K = 'everlab:pcContent', S = {}; try { S
 })();
 /* the primary cards' steps, edited on the Collection builder ("Need to be able to rename a step (add field below select 'Step name'), add a step (right side of the select), and remove a step (add the end of the edit)"): everlab:pcSteps, this browser.
    { o: { names: { key: name }, add: [{ k, base, name }], hide: [key] } }: a step's name, the steps added (each drawing the state it was made from, with its own style and words, copied from it), the built-in steps removed */
+/* the Microbiome card's steps ("Create the microbiome one, based on all steps"): the service's whole journey, the questionnaire, the kit (Confirm address to At the lab), the report; each [key, step name, title, its line, its button]. The cards whose steps are their own (EvPcBuiltSteps) list them in the Collection builder's State as the Onboarding consult's are */
+window.EvPcMic = [['q1', 'Questionnaire', 'Start your gut health questionnaire.', 'Your diet, digestion and symptoms \u00b7 About 10 minutes', 'Start'],
+  ['q2', 'Questionnaire started', 'Finish your gut health questionnaire.', 'Started on 2 Oct \u00b7 About 5 minutes left', 'Continue'],
+  ['addr', 'Confirm address', 'Confirm where we send your kit.', 'Your Microbiome kit ships within 2 business days', 'Confirm address'],
+  ['prep', 'Kit being prepared', 'Your kit is being prepared.', 'Usually ships within 2 business days', 'View'],
+  ['ship', 'Kit on its way', 'Your kit is on its way.', 'Arrives in 3 to 5 business days', 'Track your kit'],
+  ['post', 'Collect and post', 'Collect your sample and post it back.', 'Sunday, Monday or Tuesday only \u00b7 About 10 minutes', 'How to collect'],
+  ['lab', 'At the lab', 'Your sample is at the lab.', 'Results in about 4 to 6 weeks', 'View'],
+  ['res', 'Results in', 'Your results are in.', 'Dr Sarah Chen is writing your report', 'View'],
+  ['rep', 'Report ready', 'Your gut report is ready.', 'Dr Sarah Chen\u2019s walkthrough \u00b7 4 min video', 'View report']];
+window.EvPcBuiltSteps = { micro: window.EvPcMic.map(function (x) { return [x[0], x[1]]; }) };
 window.EvPcSteps = (function () { var K = 'everlab:pcSteps', D = {}; try { D = JSON.parse(localStorage.getItem(K) || '{}') || {}; } catch (e) { D = {}; }
   var save = function () { try { localStorage.setItem(K, JSON.stringify(D)); } catch (e) {} }, of = function (o) { var d = D[o] || (D[o] = {}); d.names = d.names || {}; d.add = d.add || []; d.hide = d.hide || []; return d; };
   var list = function (o, B) { var d = of(o); var L = B.filter(function (x) { return d.hide.indexOf(x[0]) < 0; }).map(function (x) { return [x[0], d.names[x[0]] || x[1]]; }); d.add.forEach(function (a) { L.push([a.k, d.names[a.k] || a.name || 'New step']); }); return L; };
