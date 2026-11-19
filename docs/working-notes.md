@@ -7,6 +7,12 @@ this is the part you need before you change it.
 
 ---
 
+## v2879 · Primary card on H1 centred; Save fixed
+
+- **H1** ("Still wrong gap..."; "Support to be a h1"): the Figma Title group (Patterns DS25 2328:29539) has a Slot only on Display and H1 centred (H1: the slot, `space/md` 20, then Content with `space/xs` 12 to the support line); H2 to H6 centred have no slot, their eyebrow a top Support line 4 / 2 over the title. The primary card's eyebrow sat in a slot on H3, so it got the slot gap (16 to 28) of a case Figma doesn't have. Now `EvPcTg` draws the master's **H1 centred** (Headlines/700), the eyebrow its slot: 20 under the eyebrow, 12 to the support line.
+- **Check-in** ("rename checkin"; "Check-in"): the page menu's Quarterly Check-in V1 is now Check-in (its Flow panel title too).
+- **Save** ("Save doesnt Work properly"): the top bar's Save on Modules → Primary card only kept the pictures (PcMedia.save), never the style, so the row stayed "Not saved yet". It now saves every style the page shows too (each card and state, as Save style). And after Save for all states, a state with no style of its own read "Not saved yet" (it looked for its own key, which that save removes): it now reads the card's saved style.
+
 ## v2878 · Every Title group follows the master; the primary card's CTA is the Button master
 
 - **Title group, master wins** ("Primary card need to follow the title group!"; "Should be automatic for all title group! why its not ?"): it wasn't, because a page's own rules beat the master's low-weight ones. The primary card set its title on a card-only text style (`.hpOvCard h3`: Display/secondary/100, 20/22; 22/28 when centred), its eyebrow (`.hpOvEy`: Saans 12/18, #8b8b86, a 2 margin, 20 tall) and its support line (`.hpOvSub`: #8b8b86, a 6 margin). Now the master's parts are locked: `.evTg .evTgT`, `.evTgTop / .evTgBot` and the eyebrow `.tgEy` take type, ink, margins and padding from the master's variables with `!important`, on every page. A context changes an instance only through the master's variables (`--tgFs`, `--tgMute`, …) or the colour on `.evTg` (the picture ground's white still works that way). The primary card's eyebrow is now the master's slot Text (`.tgEy`, Label - Mono). Its title is the master's H3, so it is smaller than the old card-only 20/22.
