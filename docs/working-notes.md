@@ -7,6 +7,10 @@ this is the part you need before you change it.
 
 ---
 
+## v2901 · The 100's titles bold, on the token
+
+"The H1 should be bold, check the token." The 100's titles (Congratulations…, Your next chapter…, Bon voyage) take `font/weight/bold` (`--t-font-weight-bold`, 700); they had the Title group's H1 weight (570). Size unchanged (Headlines/700, its line height +8).
+
 ## v2900 · The 100's titles stay in view at any parallax
 
 "Why is the Bon Voyage title at the end disappearing?" The titles follow the big number's parallax (Tweaks → The 100 parallax, `stT3CentIn`, default 15%). Turned up (60% and more), the number rises much faster, and the titles under its foot rose with it, out of the top of the stage by the page's end, Bon voyage with them. At 15% it stays (why it never reproduced on a fresh page).
