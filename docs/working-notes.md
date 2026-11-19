@@ -7,6 +7,11 @@ this is the part you need before you change it.
 
 ---
 
+## v2914 · Primary card: its pages in one select; the panel's controls as Tweaks sub-groups
+
+- "Put this in Select on the top bar on one Select. Next to Primary card overview": the side column is gone. One select after the page's title (`.dhSel.moPgSel`, where the section select was) holds Collection builder, Collection, then each card indented under it. The builder's skeleton now centres on the page's full width.
+- "Use sub tweak group style, same as page UI": in the right panel, the Controls are three Tweaks-style sub-group cards: **Visual** (Visual center, its type, Background, Style), **Picture** (Upload img, the service glow, blur and position), **Content** (names, eyebrow, title, subtitle, CTA, reset). Each has a 1px line, is 12 round with 4 inside, has a 12/16 semibold title, and its row labels are regular. Colours come from the panel's `--dpFg`, so it holds in both themes. The cards are drawn from `.moDmVis`'s own children (`.moVis`, the loose picture rows, `.moCnt`); no markup changed.
+
 ## v2913 · Primary card: Collection as sub pages, the builder in an Overview skeleton
 
 - "All the collection put them in a sub page called Collection with Sub page for each Card": Modules → Primary card now has General layout's second column (`.moSplit`, `.moSide .ldPats`). It lists *Collection builder* (the demo, Anatomy, Used in), *Collection* (every card, every state), and an indented Sub page per card (Onboarding consult, DEXA Scan, MRI Scan, Microbiome & Gut Health, Freemium · Explore, Doctor's plan, Quarterly check-in) with its state count. The page picked is kept (`everlab:moSub:mhp`). The right panel goes with the builder (it is mounted in `.moB`), so it is hidden on the Collection pages. The section-jump select after the title is gone (`jump: false`). A module opts in with `sub: true`.
