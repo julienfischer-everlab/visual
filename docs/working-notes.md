@@ -7,6 +7,14 @@ this is the part you need before you change it.
 
 ---
 
+## v2868 — Check-in next step: an insight page's title, centred; top support; no ground on top; the chart on Card static
+
+- "No bg on top": the check-in's next step screen (Where's your LDL cholesterol now?) has no warm/deep ground behind its top any more.
+- "Keep same Title than a normal insight page but centered": its title is the Title group H1 with the Async report's insight headline style (`.arH700`, 24/24 Medium here, as the insight screens), centred at every width.
+- "Title top support your next step VS a badge": "Your next step" is the Title group's Top support line, the orange mono badge gone.
+- "Use card component secondary" / "lg": the chart's card is Card static, Secondary - Surface, lg (`EvCard.html`), its ground, corner and padding the master's; the chart drawn at the card body's width.
+
+
 ## v2867 — Check-in card, Sent: no loading icon
 
 - "Not loading icon": the check-in primary card's Sent state ("Your insights are being prepared.") no longer has the spinner before "We'll send you a notification when they're ready". Checked on Modules → Primary card: no card state has it.
