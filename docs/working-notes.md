@@ -7,6 +7,17 @@ this is the part you need before you change it.
 
 ---
 
+## v2871 · Rating range component (0 to 10)
+
+"Create this type of range in component to rate something from 0 to 10." New master `window.EvRate` and a Design system page, Core components → Rating range (`_doc.show('rt')`, `#rating-range`).
+
+- The look: a pill track 44 tall (`interactive/height/md`), sides `space/md`, ground `bg/surface/100`, a 1 line inside; a 6 stop a value, a 4-tall line between two; off in `bg/neutral/tertiary/300`.
+- Filled up to the value with one gradient across the whole track (`fg/brand/blue/primary/200` to `bg/brand/orange/primary/200`, through oklch): each filled stop and line shows its own slice (`--rtW`, `--x` set by `paint`).
+- The value's stop is 12 with a dotted ring round it, in the gradient's colour at the value (`--rtNow`, a `color-mix` at `--rtT`); its label that colour. Labels in Label - Mono under each stop: `labels: 'all' | 'even' | 'ends'`.
+- Behaviour: role slider with aria values; press or drag goes to the nearest stop; arrows step by one, Home 0, End 10; an `evrate` event `{ value }` on every change. API `EvRate.html({ min, max, value, labels, label, cls })`, `EvRate.set(el, v)`.
+- Doc page: Try it (live readout), Values (0, 3, 6, 10), Labels, Anatomy. Divider was missing from the DS left nav: added with Rating range.
+- Checked: click 3, drag 3 → 9, arrows, Home/End, labels centred under their stops at 1119 and 340 wide, dark and light, no errors.
+
 ## v2870 — Make any element a component from the Inspector; the check-in's "What we have for you" on Card static
 
 - "Need to be able to change an element by a COMPONENT": when the inspected element isn't a component, the Inspector's Component used shows "Make it a component": Card static or List item interactive around it (its content their slot), or a Title group, a Button or a Link in its place (its words theirs). The element becomes it at once; it is kept for that element on that page (`everlab:cmpSwap`: its place and a signature, page by page) and made again whenever the page draws it anew; "Back to the element" undoes it. Its new properties are then the component's own (Appearance, Size... in Properties).
