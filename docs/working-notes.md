@@ -7,6 +7,17 @@ this is the part you need before you change it.
 
 ---
 
+## v2855 — Inspect: no size on the badge, a chain on components, Value / Token; Primary card: a style a step, Bg Top right / Full and Upload img, the header switch gone; the Ring's orange dots and the doctor alone once set
+
+- **Inspect badge** ("No need the dimension here on inspect badge. IF it's a component add a Chain emoji at the beginning"): what the element is, no width x height; a component led by a chain.
+- **Value / Token** ("We need a Tab, top right of the title: Value, the value e.g. 24; Token, the token name"): This element's box model shows its numbers or its tokens (cut at the start, the full name on hover); the choice kept in this browser (`html.piBmTok`).
+- **Container rows in one line** ("Put tab in the same row to save height"): Tweaks -> General layout's container sizes beside their label (Navigation container, Title container, Container).
+- **A style a step** ("Each step can have a different style below!"): the demo's controls set the style of the step shown (the Onboarding consult's steps, the check-in's moments: `consult:all`, `qci:sent`... in `#stPcVisBy`), over the card's own; each with its Save style. The Overview, the Modules page's states and the demo draw it.
+- **Imagery: Bg or Thumbnail** ("Add bg: Full, Upload img"): Bg's own row, Top right or Full; the picture row named Upload img.
+- **The labels beside their choices** ("Centered Visual"): in the demo's controls each label on its choices' line, centred on them.
+- **The header's quick Visual gone** ("Remove right tweak here!!!").
+- **The Ring** ("Dot active --> orange --> halo 75% less"; "No progress anymore, just thumbnail avatar"): a dot reached, and the line's head, orange, their glow a quarter; once all is set the circle is the doctor's thumbnail alone, no progress.
+
 ## v2854 — Insights: the Biomarkers card as Figma's, the page's cards on the Card component; each primary card's Save style; the 100's specks earlier; the Ring's particles smaller, coloured, slower
 
 - **Biomarkers card** ("Need to be a card, align with" Figma Insights 24022:1598382, Biomarker card - Coverage): Card static (Secondary - Surface, lg: #181818, 20 round, 20 padding); BIOMARKERS in mono 12 / 14 with its info, the total at 36 / 38, Share (28) at the top right; the counts 20 / 24 over an 8 dot and its name, four with Unclassified on; the bar 8 tall in parts 1 apart, Unclassified's grey too; Untested and Get test off the card (Figma has none).
