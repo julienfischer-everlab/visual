@@ -7,6 +7,13 @@ this is the part you need before you change it.
 
 ---
 
+## v2860 — Ring progress: past dots white, active dot orange with its trail; title group in a 320 box
+
+- "Completed past dot white": the Ring's dots reached before the last one are the line's white (light: its dark ink), no glow. Only the last dot reached, the active one, stays orange.
+- "Current active dot orange, 30% behind the active dot: trail orange gradient to white": the last 30% of a step's arc before the active dot (the line's end) is a conic gradient, the line's white at its start, full orange from 60% of it to the dot, a faint orange glow; butt caps so it starts clean.
+- "Add div around title group max width 320px": `window.EvPcTg` wraps the primary card's Title group in `.hpOvTgW`, 320 wide at most, centred (281 on the XS card, 320 on the module's L card).
+
+
 ## v2859 — Primary cards on the Title group; Visual On / Off; Overview links to the module; Action plan header on the Title group
 
 - "Module --> Use title group Centered With the right tokens!": the primary cards' words (Onboarding consult and its objects, Your plan, Your first insights) are built by `window.EvPcTg(eyebrow, title, sub)` = `EvTitle.html({ level: 'h3', align: 'center', slot: eyebrow, title, bottom: sub })` (`.hpOvTg`): the eyebrow its top slot, the gaps the master's tokens. Ink: the card's; on a picture filling the card (Imagery Full, a Graphic over a Full picture: the picture dimmed to 42%) the on-media ink, light theme too (white, 64% for the support lines, the button white). It was black on the dimmed picture in Light. A Cover keeps the card's ink (its words sit where the picture fades into the card).
