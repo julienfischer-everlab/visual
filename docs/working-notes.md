@@ -7,6 +7,15 @@ this is the part you need before you change it.
 
 ---
 
+## v2866 — Title group: slot gap outside the slot, every property in the Inspector, the demo centred; card CTAs on the Button master; icon-only Square
+
+- "should be centered" (General layout → Title group · properties): the demo's group is now its frame's full width, so Centered centres it in the frame (it hugged its words at the left).
+- "Onboarding consult is the Top slot in title group?" / "Use the eyebrow as the top slot. No padding bottom inside this slot" / "Just keep the existing gap between slot and title": the primary card's eyebrow stays the Title group's Top slot, nothing under it inside the slot. In the master the gap under the top slot is now the slot's margin (`--tgGapS`), not its padding: the slot hugs its content, the gap to the title unchanged (16 on the card).
+- "need to be able to adjust all from here": the Inspector's Title group properties are all editable: Size, Centered, Top slot, Top support, Bottom support, Span content, Slot title leading / trailing, Right slot, the Title and support texts, Tag. Each change draws the group again with the master (`EvTitle.html`), its own classes and attributes kept, a part switched off kept to come back.
+- "CTA medium font, align based on figma" (Core DS25 › Button 3317:14732): every primary card CTA is the Button master, md: 44 tall, 24 padding (`space/lg`), Label - Body/200/Medium (14/16, 570), Primary's ink (Check-in's quiet one Secondary); white on a picture kept.
+- "And check the icon only as well" (Button / Icon 25203:109689): its Shape property, Square (Figma's default; corner `interactive/radius` by size, lg 14 · md 12 · sm 10 · xs 8) or Round, is in the master (`EvCtl.btn({ iconOnly, shape: 'square' })`, `.evBtnSq`), the Buttons doc (Icon only · Square / · Round) and the Inspector (Shape). Sizes and icon sizes already Figma's. Not yet: its Muted emphasis.
+
+
 ## v2865 — Bio ages list: no dividers
 
 - "remove divider": the Biological & organ ages list has no line between its rows any more (still List item interactive, 40 tall, the hover plate). The biomarker rows keep their Divider.

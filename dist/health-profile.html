@@ -1781,7 +1781,7 @@ body[data-bp="m"], body[data-bp="l"], body[data-bp="xl"], [data-ct-bp="m"], [dat
 .evTgIc { display: inline-flex; align-items: center; height: 1lh; vertical-align: top; }   /* in the words' flow, hugging the first word and the last (a wrapped title too), each centred on its line */ .evTgIcL { margin-right: .5em; } .evTgIcR { margin-left: .5em; }
 .evTgIc svg { display: block; width: .875em; height: .875em; }   /* the level's size: 7/8 of its type */
 .evTgSlot { flex: none; display: flex; max-width: 100%; }
-.evTgSlotT { align-self: flex-start; padding-bottom: var(--tgGapS, 16px); } .evTgC .evTgSlotT { align-self: center; }
+.evTgSlotT { align-self: flex-start; padding-bottom: 0; margin-bottom: var(--tgGapS, 16px); }   /* the gap under the top slot outside it, the slot hugging its content ("No padding bottom inside this slot" / "keep the existing gap between slot and title") */ .evTgC .evTgSlotT { align-self: center; }
 .evTg.evTgSlR { flex-direction: row; align-items: center; gap: var(--tgGapR, 16px); }
 .evTgSlR > .evTgCol { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; align-items: stretch; }
 html:not(#_m):not(#_d) .arSheet .arHead .arHeadRow > .arIconBtn.arIconBtn { width: 44px !important; height: 44px !important; min-width: 44px !important; min-height: 44px !important; align-self: flex-start; }   /* at the row's top: 58 down on XS, 44 on S, 16 on the desk, the Top nav master's 16 */   /* the flows' heads (the Async report, the Health profile, Send a gift, the Step flow master): the Top nav master's 44 discs ("CTA top nav always 44px"); their bars keep their own markup for the progress riding in them */
@@ -3504,7 +3504,7 @@ window.EvCtl = (function () {
   var SZ = function (s) { return 'evCtl-' + (s || 'md'); };
   var BK = { primary: 'evBtnPri', secondary: 'evBtnSec', tertiary: 'evBtnTer', ghost: 'evBtnGho' };
   var btn = function (o) { o = o || {}; var c = 'evBtn ' + SZ(o.size) + ' ' + (BK[o.kind] || BK.primary) + (o.cls ? ' ' + o.cls : ''), d = o.disabled ? ' disabled' : '';
-    if (o.iconOnly) return '<button type="button" class="' + c + ' evBtnIc" aria-label="' + esc(o.label || 'Button') + '"' + d + '>' + ic(o.ic) + '</button>';
+    if (o.iconOnly) return '<button type="button" class="' + c + ' evBtnIc' + (o.shape === 'square' ? ' evBtnSq' : '') + '" aria-label="' + esc(o.label || 'Button') + '"' + d + '>' + ic(o.ic) + '</button>';
     var l = o.icon === 'l' || o.icon === 'both', rr = o.icon === 'r' || o.icon === 'both';
     return '<button type="button" class="' + c + '"' + d + '>' + (l ? ic(o.ic) : '') + '<span>' + esc(o.label || 'Button') + '</span>' + (rr ? ic(o.ic) : '') + '</button>'; };
   var split = function (o) { o = o || {}; var k = (BK[o.kind] || BK.primary), z = SZ(o.size);
@@ -3733,6 +3733,7 @@ window.PcMedia = (function () {
   var bgPut = function (card, o) { var g0 = gbOf(o, card.dataset.pcSt || ''), r0 = g0 !== 'none' ? (OBJS[o] ? rec(o) : null) || own(o, card) : null, keep = r0 ? (g0 === 'tr' ? 'pcMediaBg' : 'pcMediaFull') : '';
     PCM.forEach(function (c) { if (c !== keep) drop(card, c); }); card.classList.toggle('pcmGb', !!r0); card.classList.toggle('pcmTr', !!r0 && g0 === 'tr'); if (r0) ensure(card, keep, r0); };   /* only what changes touched: the card redraws itself on its children changing (its MutationObserver), a drop and a put each time looped */
   var place = function (card) {
+    [].forEach.call(card.querySelectorAll('.hpOvBtn:not(.evBtn)'), function (b) { b.classList.add('evBtn', 'evCtl-md', b.classList.contains('hpQciQuiet') ? 'evBtnSec' : 'evBtnPri'); });   /* the CTA the Button master (md, Primary; the quiet one Secondary) */
     var o = card.dataset.pcObj || obj(), m = mode(o, card.dataset.pcSt || ''), im = /^img:/.test(m) ? m.slice(4) : null;   /* the card's own Object when it says so (the doc's cards), else the Tweaks' */
     if (!card.isConnected) return; card.classList.toggle('pcmNone', m === 'off'); if (m === 'off'){ gfxOn(card, o, null); avOn(card, o, 0); card.classList.remove('pcmOn', 'pcmCover', 'pcmFull'); card.style.removeProperty('--pcCovH'); [].forEach.call(card.querySelectorAll(':scope > [data-pcm-hid]'), function (t0) { t0.style.visibility = ''; t0.removeAttribute('data-pcm-hid'); }); bgPut(card, o); return; }   /* Visual Off: no picture, no graphic, no faces; the words centred in the card (CSS .pcmNone) */
     gfxOn(card, o, im ? null : m.slice(4)); var avn = /^av([123])$/.exec(im || ''); avOn(card, o, avn ? +avn[1] : 0); if (avn){ card.classList.remove('pcmOn', 'pcmCover', 'pcmFull'); bgPut(card, o); return; }   /* Avatars: the team alone, no picture */
@@ -4351,7 +4352,7 @@ window.EvDivider = (function () {
 })();
 /* the primary cards' words on the Title group ("Module --> Use title group Centered With the right tokens!"): EvTitle H3, centred, the eyebrow its top slot, the support line its bottom one; their ink the card's, on a picture filling it the on-media ink (CSS .hpOvTg) */
 window.EvPcTg = function (ey, ttl, sub) { var T = window.EvTitle; if (!T) return (ey ? '<span class="hpOvEy">' + ey + '</span>' : '') + '<h3>' + ttl + '</h3>' + (sub ? '<p class="hpOvSub">' + sub + '</p>' : '');
-  return '<div class="hpOvTgW">' + T.html({ level: 'h3', align: 'center', tag: 'h3', slot: ey ? [{ html: '<span class="hpOvEy">' + ey + '</span>' }] : [], title: { html: ttl }, bottom: sub ? { html: sub } : '', bottomCls: 'hpOvSub', cls: 'hpOvTg' }) + '</div>'; };   /* in a box 320 wide at most, centred ("Add div around title group max width 320px") */
+  return '<div class="hpOvTgW">' + T.html({ level: 'h3', align: 'center', tag: 'h3', slot: ey ? [{ html: '<span class="hpOvEy">' + ey + '</span>' }] : [], title: { html: ttl }, bottom: sub ? { html: sub } : '', bottomCls: 'hpOvSub', cls: 'hpOvTg' }) + '</div>'; };   /* the eyebrow the Title group's Top slot ("Use the eyebrow as the top slot. No padding bottom inside this slot") */   /* in a box 320 wide at most, centred ("Add div around title group max width 320px") */
 /* EvMagnet: a row of cards swiped by hand, the magnet one ("if you swipe more than 50%, you go to the second card. If not, you come back to the normal card"), once for every carousel: the Plan's goals, the Services' recommended row.
    Dragged by hand, a mouse as a finger (a mouse cannot pan a scroller, and a press-and-pull only selected the text); a drag more down than across is left to the page's scroll; the row's snapping off while it moves.
    Let go: half a card's travel (and its gap) or more goes on to the next, or back to the one before; less springs back to its own. The glide 240 ms off a quintic, as the Records carousel's; the last card stops at the row's end. A drag never opens a card. In a scaled frame (the XS frame, a doc's phone) the drag is divided by its scale (evK), so the row keeps under the finger and the half-card magnet counts in the row's own pixels.
