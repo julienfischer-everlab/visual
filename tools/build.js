@@ -43,8 +43,19 @@ let assetIn = 0, assetOut = 0, assetN = 0;
 // its place at run time, everywhere it shows. "~" stands for "/" (a MIME
 // parameter value is a token). Sound is left untagged: it cannot be replaced.
 const tagOf = ref => /\.(mp3|m4a|wav)$/i.test(ref) ? '' : ';as=' + ref.replace(/^(\.\.\/)?assets\//, '').replace(/\//g, '~');
+// The biggest pictures (and the ones written many times) stay files beside the
+// page, not data URIs: dist/index.html has to stay under the artifact's 16 MB.
+// Copied to dist/assets/... and published as the artifact's own files at the
+// same paths (dist/external.json lists them for the publish's files map).
+const OUT = ['async/hero.webp', 'overview/svc-microbiome-cover.webp', 'overview/plan-nutrition.webp', 'welcome/everlab-mark-spin.webp',
+  'overview/svc-microbiome.webp', 'overview/avatar.png', 'plan/activity-hero.webp', 'overview/plan-physical.webp', 'overview/plan-dexa.webp',
+  'overview/plan-mri.webp', 'overview/screening-bg.jpg', 'overview/plan-consult.webp', 'gift/living-room.webp', 'overview/task-cover-c.webp',
+  'reports/globe.webp', 'overview/status-consult.webp'].map(x => 'assets/' + x);
+{ const ext = {}; OUT.forEach(r => { const f = path.join(root, r), d = path.join(root, 'dist', r); if (!fs.existsSync(f)) return; fs.mkdirSync(path.dirname(d), { recursive: true }); fs.copyFileSync(f, d); ext[r] = d; });
+  fs.writeFileSync(path.join(root, 'dist', 'external.json'), JSON.stringify(ext, null, 1)); console.log('external ' + Object.keys(ext).length + ' pictures beside the page (dist/assets/, dist/external.json)'); }
 src = src.replace(/assets\/[A-Za-z0-9_\-./]+?\.(webp|png|jpe?g|gif|svg|mp4|webm|mp3|m4a|wav)\b/g, ref => {
   const f = path.join(root, ref);
+  if (OUT.indexOf(ref) >= 0) return ref;
   if (!fs.existsSync(f)){ console.warn('missing asset, left as a path: ' + ref); return ref; }
   const buf = fs.readFileSync(f);
   const uri = 'data:' + MIME[ref.split('.').pop().toLowerCase()] + tagOf(ref) + ';base64,' + buf.toString('base64');

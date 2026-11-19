@@ -3668,6 +3668,12 @@ others instead of leaving the gap showing as a sliver of page.
 > Internal name only; nothing user-facing says B2.
 
 ---
+## v2926 · Non-member Timeline skeleton; 16 pictures moved out of dist/index.html
+
+- "Where is the skeleton on non member": it was only on the empty variant (New member V1). Now `skSec()` follows "Get your timeline started" in `newHTML()` (both decade styles): a section on the same rail, a grey dot (bg/neutral/tertiary/200), a title bar, three item cards in the steps' outlined format (64 thumb, two bars), the cards and the rail fading out. The start section's rail no longer fades at its end when the skeleton follows; the skeleton's rail starts at its top so the two meet. Overrides use three classes to beat the rail's `:is()` rules; the fade sits on `.tlItems` and the rail, not the section (a section mask clipped the rail and dot outside its box).
+- dist size: tools/build.js keeps 16 pictures out of dist/index.html (`OUT`: async/hero, svc-microbiome-cover, plan-nutrition ×10, everlab-mark-spin, svc-microbiome, avatar.png ×5, activity-hero, plan-physical ×9, plan-dexa ×14, plan-mri ×8, screening-bg, plan-consult ×11, living-room, task-cover-c, globe, status-consult ×2). They are copied to dist/assets/ (ignored by git, rebuilt each build; dist/external.json lists them) and published as the artifact's own files at the same paths, so `assets/...` references load relatively. dist/index.html 16.78 MB → 14.25 MB. The Assets library already matches `assets/` paths; the Screenshot fetches them.
+- Publish: the files map now also carries every entry of dist/external.json (`"assets/x": "/home/user/visual/dist/assets/x"`).
+
 
 ## 3. Design decisions, and the reasoning
 
