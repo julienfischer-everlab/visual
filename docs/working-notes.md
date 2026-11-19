@@ -7,6 +7,14 @@ this is the part you need before you change it.
 
 ---
 
+## v2882 · Saved styles win over every other restore; Card and State selects; no per-section style controls
+
+- "Still doesnt work look" (a screen recording): after Save for all states and a reload the card came back right, then a second later flipped to Sphere with Background Off, then to a Thumbnail. Two other saved setups put an older Visual back after the card's own restore. One is the Tweaks Primary card group's Save (`everlab:ocMaster`, put back at 450 ms with the whole `stPcVisBy`); the other is any preset or shared setup re-applied later through `window.__tkMig`. Their per-state entries (`consult:none` = Thumbnail) survived the card's Save for all states, which only set the card-level entry.
+- Now `PcMedia.vsMerge` puts the saved styles over any Visual value: each saved card's state entries that aren't saved themselves are dropped, then every saved entry is put, a saved "no background" clearing one. It is used at load (520 ms), in the preset migration, and by a guard: any later change to the Visual, the Graphic (`stHpVis`), Particles or the service glow not made by the builder itself is answered with the saved styles. The builder's own clicks and sliders count as its own (`vsOwn`), so unsaved changes there still show as a draft.
+- Checked: an older Tweaks-group save with Step 1 = Thumbnail; Ring + Background Full, Save for all states, reload, 5 s: still Ring + Full; a late preset writing Thumbnail: put back at once; a draft Halo on Step 2: kept as a draft.
+- **Selects** ("use select here"; "select"): the Collection builder's Card and State (and the Check-in's State) are selects.
+- **No style controls on each card's section** ("Remove the tweak on each card section, the style is managed on the collection section level"): the Visual and Upload img rows under each section are gone; the Collection builder is the one place.
+
 ## v2881 · Save style keeps the card's whole setup
 
 - "Doesnt save properly. I set up a combinaison amd click Save for all states and refresh and didnt save": the Visual itself was kept, but not the rest of the setup. The picture pick lives per card (`everlab:pcMedia:<card>`), and at load the page's saved setup (`everlab:pcMaster`, written only by the top bar's Save) is put back over it, so an older top-bar save brought the old picture back. Service glow, blur and glow position were Tweaks values nothing kept.
