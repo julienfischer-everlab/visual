@@ -7,6 +7,10 @@ this is the part you need before you change it.
 
 ---
 
+## v2885 · Visual center's sub-properties
+
+- "type graphic and partivles sub properties of Visual center": in the Collection builder's controls, Type, Avatars, Graphic and Particles sit under Visual center as its sub-properties, in from a guide line (`.moSubG`), shown only while it is On. Background's own (Position, or the Thumbnail's gradient note) the same way under Background.
+
 ## v2884 · Every CTA is the Button master (audit); Save this state only / Save all states
 
 - "Why its not the CTA fromn the DS"; "No wrong the Primary card CTA is not the same font wight"; "do an audit and replace ALL cta not from the DS page Button".
