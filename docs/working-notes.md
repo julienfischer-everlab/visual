@@ -7,6 +7,11 @@ this is the part you need before you change it.
 
 ---
 
+## v2861 — Every primary card CTA like the Onboarding consult's
+
+- "All CTA same as this one": the Freemium card's Explore services and the check-in card's Start / Continue / Skip to when it's ready / View were the card's full width; now they hug their words, centred, the 44 pill, as the Onboarding consult's Get started and every other primary card's (Book a time, Complete, View, Join call, Review my plan, Get directions, See my plan). Measured on Modules → Primary card: Start 86, Continue 118, Skip 222, Explore services 176 of 361.
+
+
 ## v2860 — Ring progress: past dots white, active dot orange with its trail; title group in a 320 box
 
 - "Completed past dot white": the Ring's dots reached before the last one are the line's white (light: its dark ink), no glow. Only the last dot reached, the active one, stays orange.
