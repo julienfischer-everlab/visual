@@ -7,6 +7,15 @@ this is the part you need before you change it.
 
 ---
 
+## v2849 — Each primary card its own Visual: Imagery (Bg top right, Bg full, Thumbnail) or Graphic (Sphere, Halo, Ring progress); the check-in's personas in colour
+
+- **Visual per primary card** ("Few options for Each primary CARD ... Imagery: Bg (top right / full), Thumbnail (with the imagery at the top right, blurred); Graphic: Sphere, Dotted circle (TO KILL), Halo, Ring progress"): Tweaks -> Primary card, for the Object shown: Visual Imagery / Graphic, then Imagery Bg top right / Bg full / Thumbnail (and its Picture strip) or Graphic Sphere / Halo / Ring progress (Particles with the Ring, Filled saturation with the Sphere). Kept per Object in `#stPcVisBy` (saved with setups, in the header's Save too), drawn by `PcMedia` (`mode`, `place`, `gfxOn`, `ui`) on the Overview and Documentation -> Modules.
+  - The picture: the one picked for the Object, else its own (the service's for DEXA and the MRI, Dr Steven for the Onboarding consult: `window.EvDrAvSrc`, his photo written once now).
+  - Bg top right: the picture itself in the top right corner, unblurred, fading into the card (`.pcmTr`). Bg full: the old Cover (the ground dimmed on cards with no visual of their own). Thumbnail: the old Avatar, the picture blurred at the top right too.
+  - Graphic on DEXA or the MRI draws the Health profile's graphic in the picture's place, full (`sphere({ kind })`). The Onboarding consult's Graphic stays `#stHpVis` (its home and Modules follow). Freemium, the doctor's plans and the check-in: Imagery only (no visual slot), Bg top right or full.
+  - Dotted circle gone (a save holding it draws the Sphere).
+- **Personas in colour** ("#1 Blood (light red), #2 Blood + Device (Yellow), #3 No Data Grey"): the Flow panel's key and the steps' chips take each persona's colour (`--lc`), the shown one filled.
+
 ## v2848 — The 100's second title keeps rising; the Ring: light dots with a gap, Dr Steven inside, particles drawn in; the Onboarding consult's setup saved for every page
 
 - **The second title never stops** ("Feels like the 2nd title stops moving up, it should move up and not slow down"): it was held once written (vE) and crept up 32 over the rest of the page. It now follows the scroll at the number's own pace to the page's end (`vT = vR`, the half-pace clock no longer): about 12 every tenth of a screen after its climb, never easing to a stop.
