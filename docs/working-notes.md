@@ -7,6 +7,10 @@ this is the part you need before you change it.
 
 ---
 
+## v2918 · Header group: no Blur bg when Filled
+
+- "If filled, no blur Option": in Tweaks → General layout → Header group, the *Blur bg (64)* row is hidden while Style is Filled (a solid ground has nothing to blur), and back for Gradient and Transparent. It follows the select however it is set (a click, a page's own pick, a preset).
+
 ## v2917 · Container ruler snaps, no transition
 
 - "Increase should magnet to the increment, no between increment. Remove any transition effect": dragging a handle no longer follows the pointer between sizes. The box jumps from one size's width to the next as the handle passes each tick, the label with it, and the size is picked on release. The box's width and the ticks have no transition.
