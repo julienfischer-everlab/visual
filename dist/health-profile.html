@@ -4332,6 +4332,23 @@ window.EvTitle = (function () {
     save: function () { try { localStorage.setItem(K, JSON.stringify(M)); return true; } catch (e) { return false; } },
     reset: function () { Object.keys(D).forEach(function (k) { M[k] = D[k]; }); try { localStorage.removeItem(K); } catch (e) {} tok(); } };
 })();
+/* Divider (Design system -> Divider; Figma Core DS25 › divider 33539:44349, its doc 33613:40950: "Add Divider component and apply every where"): one line, its colour components/divider/100 (the ink at 8%, Light and Dark), its thickness border/sm 0.5 · md 1 · lg 1.5 · xl 2 · 2xl 3 (Figma's default 2xl), Horizontal (the full width of its container) or Vertical (its full height).
+   EvDivider.html({ thickness: 'sm' | 'md' | 'lg' | 'xl' | '2xl', orientation: 'horizontal' | 'vertical', cls }) -> an hr (or a span, vertical), role separator; the lists' row lines are it too (.mbrow, .or: a ::after the same tokens), and the app's hairline separators take its tokens (EvDivider.adopt) */
+window.EvDivider = (function () {
+  var TH = [['sm', 'border/sm', .5], ['md', 'border/md', 1], ['lg', 'border/lg', 1.5], ['xl', 'border/xl', 2], ['2xl', 'border/2xl', 3]], TK = {}; TH.forEach(function (t) { TK[t[0]] = t; });
+  var html = function (o) { o = o || {}; var t = TK[o.thickness] ? o.thickness : '2xl', v = o.orientation === 'vertical', c = 'evDv evDv-' + t + (v ? ' evDv-v' : '') + (o.cls ? ' ' + o.cls : ''); return v ? '<span class="' + c + '" role="separator" aria-orientation="vertical"></span>' : '<hr class="' + c + '">'; };
+  /* the app's hairlines on its tokens: a style rule drawing one line on one side (top or bottom; left or right), 0.5 to 1.5 thick, in a light grey of the ink (rgba, 25% or less) takes the Divider's colour and border/md; the prototype's own tools keep theirs */
+  var SKIP = /(^|[\s,>+~(])(\.topbar|\.tweaks|#tk[A-Za-z]|\.tk[A-Z]|\.pgIns|#pgInsp|\.pi[A-Z]|\.dp[A-Z]|\.dpg|\.tok[A-Z]|\.tokPage|\.cz[A-Z]|\.evFd|\.evDv)/, n = 0;
+  var neutral = function (c) { var m = /^rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)(?:[,\s/]+([\d.]+%?))?\s*\)$/.exec(c || ''); if (!m) return false; var a = m[4] == null ? 1 : /%$/.test(m[4]) ? parseFloat(m[4]) / 100 : +m[4], r = +m[1], g = +m[2], b = +m[3]; return a > 0 && a <= .25 && Math.max(r, g, b) - Math.min(r, g, b) <= 40; };
+  var adopt = function () { if (n) return n; [].forEach.call(document.styleSheets, function (sh) { var rs; try { rs = sh.cssRules; } catch (e) { return; }
+    var walk = function (L) { [].forEach.call(L || [], function (r) { if (r.cssRules && !r.selectorText) { walk(r.cssRules); return; } if (!r.selectorText || !r.style || SKIP.test(r.selectorText)) return; var st = r.style, sides = ['top', 'bottom', 'left', 'right'].filter(function (sd) { var w0 = st.getPropertyValue('border-' + sd + '-width'); return w0 && parseFloat(w0) > 0; });
+      if (sides.length !== 1 || st.getPropertyValue('border-width') && sides.length !== 1) return; var sd = sides[0], w = parseFloat(st.getPropertyValue('border-' + sd + '-width')), sty = st.getPropertyValue('border-' + sd + '-style').trim(), col = st.getPropertyValue('border-' + sd + '-color').trim();
+      if (!(w >= .5 && w <= 1.5) || (sty && sty !== 'solid') || !neutral(col)) return; var pr = st.getPropertyPriority('border-' + sd + '-color');
+      st.setProperty('border-' + sd + '-color', 'var(--t-components-divider-100, ' + col + ')', pr); st.setProperty('border-' + sd + '-width', 'var(--t-border-md, 1px)', pr); n++; }); };
+    walk(rs); }); return n; };
+  var go = function () { adopt(); }; if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { setTimeout(go, 300); }); else setTimeout(go, 300);
+  return { TH: TH, html: html, adopt: adopt, count: function () { return n; } };
+})();
 /* the primary cards' words on the Title group ("Module --> Use title group Centered With the right tokens!"): EvTitle H3, centred, the eyebrow its top slot, the support line its bottom one; their ink the card's, on a picture filling it the on-media ink (CSS .hpOvTg) */
 window.EvPcTg = function (ey, ttl, sub) { var T = window.EvTitle; if (!T) return (ey ? '<span class="hpOvEy">' + ey + '</span>' : '') + '<h3>' + ttl + '</h3>' + (sub ? '<p class="hpOvSub">' + sub + '</p>' : '');
   return '<div class="hpOvTgW">' + T.html({ level: 'h3', align: 'center', tag: 'h3', slot: ey ? [{ html: '<span class="hpOvEy">' + ey + '</span>' }] : [], title: { html: ttl }, bottom: sub ? { html: sub } : '', bottomCls: 'hpOvSub', cls: 'hpOvTg' }) + '</div>'; };   /* in a box 320 wide at most, centred ("Add div around title group max width 320px") */

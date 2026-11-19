@@ -7,6 +7,15 @@ this is the part you need before you change it.
 
 ---
 
+## v2864 — Divider component, applied everywhere; biomarker and bio-ages rows on List item interactive; outlined Tweaks sub groups
+
+- "Add Divider component and apply every where" (Figma Core DS25 › divider 33539:44349 and its doc 33613:40950): `window.EvDivider` and `.evDv` — one line, its colour `components/divider/100` (Light #000 8%, Dark #fff 8%), its thickness sm 0.5 · md 1 · lg 1.5 · xl 2 · 2xl 3 (`border/*`, default 2xl), Horizontal (full width) or Vertical (full height). `EvDivider.html({ thickness, orientation, cls })` draws an hr (a span when vertical, role separator). A new Design system page, Core components → Divider: Thickness, Orientation, In use, Properties, Tokens, Applied everywhere.
+- Applied everywhere: the app's hairline separators (a style rule drawing one line on one side, 0.5 to 1.5 thick, in a light grey of the ink at 25% or less) now take the Divider's colour and `border/md` at load (`EvDivider.adopt`, 50 rules; the prototype's own tools keep theirs). Lists draw the Divider between two rows (md, the words' width, none under the last).
+- "Biomarker need to be a list interactive" (Figma Insights 24022:1598355, Biomarkers item interactive / L = List item interactive + Slot content + divider): the biomarker item (`EvBio.row`, `.mbrow`) is now the List item interactive itself (`evLi evLi-auto evLi-muted evLi-i`): the master draws its hover and pressed plate (the old pseudo-element plate gone) and its Divider replaces the old border. "So padding fit 1/2 of container padding": auto, out by half the container's side padding and in by the same; inside a card the card's padding (`--kP`) counts as the container's.
+- "Check that as well!" (the bio ages: List item interactive 272 Fill × 40 Hug): each age row is a List item interactive too, 40 tall, the Divider between rows, none under the one shown last.
+- "Create outlined sub group inside here" / "same here": a Tweaks group's sub groups are outlined boxes, General layout's Header group, Body and Footer, and the Bento's Primary and Secondary (`.tkSubG`).
+
+
 ## v2863 — Component properties editable (Inspector and Tweaks), saved for the page; the focus card's style and radius on its properties
 
 - "Need a way to change the component property from here": the Inspector's Properties now edit the component. Card static: Appearance (every look) and Size; Button: Type and Size; Title group: Size and Centered; Link: Size, Theme, Bold, Underline; List item interactive: Size and Emphasis; Toggle: On. A change goes on the element at once and, where the page draws the component from a Tweaks row, on that row too (the Overview's primary card, Schedule and Insights; the Timeline's focus card), so it sticks; the panel redraws.
