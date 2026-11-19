@@ -7,6 +7,11 @@ this is the part you need before you change it.
 
 ---
 
+## v2867 — Check-in card, Sent: no loading icon
+
+- "Not loading icon": the check-in primary card's Sent state ("Your insights are being prepared.") no longer has the spinner before "We'll send you a notification when they're ready". Checked on Modules → Primary card: no card state has it.
+
+
 ## v2866 — Title group: slot gap outside the slot, every property in the Inspector, the demo centred; card CTAs on the Button master; icon-only Square
 
 - "should be centered" (General layout → Title group · properties): the demo's group is now its frame's full width, so Centered centres it in the frame (it hugged its words at the left).
