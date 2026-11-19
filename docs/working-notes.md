@@ -7,6 +7,13 @@ this is the part you need before you change it.
 
 ---
 
+## v2904 · Analytics → Page audit; the Page header group Demo; the title's min height on space/5xl
+
+- "Create a new group of Page 'Analytics' with a page called 'page audit', where you list all page and health score in a table." The page menu has an Analytics group with Page audit (`#page-audit`, `window._aud`). Run audit opens every page of the menu in turn (about 1.5 s each, a progress bar with Stop), reads its health as the Inspector scores it (`EvInspect.score()`: tokenisation and layout against its page type), and keeps the run in this browser (`everlab:pageAudit`). The table: page, group, page type, health (score and word), tokens %, layout %, checks passed, top issues, Open; each column sorts; a summary of the average and how many are Healthy, Fair, Needs work, Poor. The framed pages (Gift received, Gift referral, Testing locations) are listed as not measured.
+- The Inspector's health, fixed on the way: it measured the largest layer, so every full modal was scored by the Overview under it (all 56); it now measures the screen on top in the page area. And it read a page's sections only while the Inspector or the section guides were on; it now reads them itself (`__secEls(true)`), so the layout score is real without the panel open (Overview 65, Timeline 89 at M).
+- "On page header group I need a Demo screen at the top with all variant to test." Design system → General layout → Page header group opens on a Demo: one screen drawn by `EvPageHg.variant`, a switch for each of the nine variations and for XS, S, M, L, a page body (a bento, rows) to scroll under it. On M · L the variants put the right slot in the Page header title's row, as the master's `html()` (it was doubled in the navigation).
+- "Page header title with a min height, you have that as well?" Yes: 64, 8 above and below, the title centred. Its 64 now reads `space/5xl` (Figma's variable on 6644:20609) instead of a number.
+
 ## v2903 · Masters reach every page by themselves; a master audit
 
 "Basically, the layout pattern, whatever it changes, everywhere else automatically. I don't need to verify every page got it."
