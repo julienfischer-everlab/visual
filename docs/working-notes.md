@@ -7,6 +7,12 @@ this is the part you need before you change it.
 
 ---
 
+## v2870 — Make any element a component from the Inspector; the check-in's "What we have for you" on Card static
+
+- "Need to be able to change an element by a COMPONENT": when the inspected element isn't a component, the Inspector's Component used shows "Make it a component": Card static or List item interactive around it (its content their slot), or a Title group, a Button or a Link in its place (its words theirs). The element becomes it at once; it is kept for that element on that page (`everlab:cmpSwap`: its place and a signature, page by page) and made again whenever the page draws it anew; "Back to the element" undoes it. Its new properties are then the component's own (Appearance, Size... in Properties).
+- "e.g. here I want to use a card component": the check-in's What we have for you block (What's changed and its follow-ups) is now a Card static in the source, Secondary - Surface, md (`EvCard.html`), its ground, corner (16) and padding (16) the master's.
+
+
 ## v2869 — Next step: no wrapper, the container's gap; Inspector: gap, padding and margin shown on the page when hovered
 
 - "Remove div here. In this container there is 2 sections, Title group and card. And between container gap": the check-in's next step screen has no wrapper any more; its container (`.qciScr`) holds the Title group and the Card static, the container's gap between them (`--ctGap`, 24 at XS, `space/lg`).
