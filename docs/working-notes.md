@@ -7,6 +7,11 @@ this is the part you need before you change it.
 
 ---
 
+## v2912 · Tweaks: regular labels in sub-groups, no page name
+
+- "Use regular font for sub label part of a group, here Header group": the rows' labels inside a sub-group (General layout's Page type, Header group, Body, Footer, and any rows after a sub-heading) are regular (400), the sub-group's title stays semibold.
+- "Remove the name of the page 'Overview' for all group like this": the page's name after each sub-group's title (Page type, Header group, Footer: `.tkTnPg`) is hidden.
+
 ## v2911 · Container size as a ruler
 
 - "I mean like this. On label displayed! Add visually the increment so we can see the different available size" and "By moving the handle will increase or decrease the blue area on both side and change the size label": every Tweaks container row (the Header group's, Title, Body, Footer) is now a ruler, `window.EvCtRuler(group)`. The track is Full. The blue box is the size picked, centred, with only its label in it and a white handle on each side. There is a tick on each side for every size available (3xs, 2xs, xs, sm, md, lg, Full, evenly spaced, the narrowest a quarter of the track). The ticks of the smaller sizes show faintly inside the box. Dragging a handle grows or shrinks the box on both sides under the pointer, with the label switching to the nearest size; letting go snaps to it. Pressing the track picks the nearest size, and the arrow keys step through them. Hovering lifts the nearest pair of ticks and names it.
