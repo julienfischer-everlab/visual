@@ -7,6 +7,14 @@ this is the part you need before you change it.
 
 ---
 
+## v2852 — Primary card (overview): a demo to play with, each card's Visual options, the check-in's card; Thumbnail -> Avatars 1 · 2 · 3
+
+- **Demo at the top** ("Add Card demo at the top. Where I can play with tweaks"): Documentation -> Modules -> Primary card (overview) opens on a demo card (1.25x) with its controls beside it: Card (Onboarding consult, DEXA, MRI, Freemium, the two doctor's plans, Check-in), State (the consult's steps, or the check-in's Ready / Started / Sent / Done), then the card's own Visual and Picture (`MODS.mhp.demo`, `demoX`, `mhpCtl`).
+- **Each card its Visual options** ("Each card should have the tweak options described above"): every section of the page has the Tweaks' Visual, Imagery (Bg top right / Bg full / Thumbnail), Thumbnail (Picture / Avatars), Avatars (1 · 2 · 3) or Graphic (Sphere / Halo / Ring progress) for its card, and its Picture row when a picture shows (`PcMedia.vis`, one `#stPcVisBy` for both). The header's quick Visual has lost the Dotted circle.
+- **The check-in's card** ("Add this primary card in the module"): a Quarterly check-in section, its four moments; a picture library of its own (`qci` an Object in PcMedia).
+- **Thumbnail -> Avatars** ("Add primary card Option thumbnail: Avatars 1 2 3"): the care team's faces (the check-in's `.qciTeam`): on the check-in its own team shown to that many (its default, three; none with a background picture), on the doctor's plans in their head, on Freemium over its tag, on the Onboarding consult, DEXA and the MRI in the visual's place, centred.
+- The check-in card centred: its spinner in the line before its words (it sat apart at the left).
+
 ## v2851 — Ruler: the padding of the sections picked; the areas 8 round; the body's container its whole height
 
 - **Padding of the picked sections only** ("ONLY show the padding of Selected Toggle section. IF no section selected above, Show all container padding"): with Sections on and some of Header group / Body / Footer group picked, Container padding draws their containers' padding alone (`html.ctGdSel`, `ctGdSel{Hg,Bd,Ft}`, the bands classed `ctGdP{Hg,Bd,Ft}`); none picked (Sections off), every container's.
