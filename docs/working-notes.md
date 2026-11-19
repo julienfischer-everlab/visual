@@ -7,6 +7,13 @@ this is the part you need before you change it.
 
 ---
 
+## v2906 · Footer group: the Footer content master (Figma 2328:26468), merged into the Page example
+
+"Page footer: to add and merge to what exists." `window.EvPageFt.html({ align, primary, secondary, tertiary })`, Figma Patterns DS25 2328:26468 (Footer / Content): the Button master at lg (56, Label - Body/300/Medium), space/xs (12) between, four alignments: Inline edge (Secondary left, Primary right), Inline fill (a half each), Stacked fill (Primary, Secondary, Tertiary, full width), 1 CTA only.
+- Design system → General layout → Footer group (a new entry after Header title): a Demo (alignment, style Gradient · Filled · Transparent, XS · M, a page scrolling under the footer, the Page header group's master above), the four drawn, the anatomy and tokens.
+- Merged with what was there: the Page example's Footer group now draws its content with the master, and its controls gain Alignment beside Fixed, Style and Container.
+- The buttons keep the Button master's shape (full round across the app); Figma's footer shows interactive/radius/lg (14).
+
 ## v2905 · The Microbiome primary card, every step
 
 "Create the microbiome one, based on all steps." Modules → Primary card (Collection builder): Card → Microbiome, its State every step of the service's journey (`window.EvPcMic`, built-in steps through `EvPcBuiltSteps`, so the State list, Add a step, Remove step and each step's own style and words work as for the other cards):

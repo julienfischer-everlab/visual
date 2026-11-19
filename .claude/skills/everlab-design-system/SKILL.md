@@ -56,6 +56,8 @@ The page menu `#versionSel` has Documentation flow (`'doc'`, renamed from Docume
 | Header overlap | `window.EvOverlap` | references/layout.md |
 | Page types (Main / Sub: every Sub page pushes in and pops out) | `window.EvPush`, `glPt`, `everlab:pushMaster` | references/layout.md |
 | Desk page panels | `#dMain #dOver #dSvc #dTl #dApt #dAcc #dPlan #dMkt`, `--pnCap` | references/layout.md |
+| Footer group content (Inline edge, Inline fill, Stacked fill, 1 CTA only; General layout → Footer group) | `window.EvPageFt.html({ align, primary, secondary, tertiary })`, `.evPft` | references/layout.md |
+| Page audit (Analytics: every page's health) | `window._aud`, `EvInspect.score()` | references/layout.md |
 | Main page titles and header discs (on the Page header group master) | `--pgH1Fs`, `#dMkt .mkT`, `#dTl .tlH1`, `#dAcc .acHead h1`, `--mainBtn` | references/layout.md |
 | Home indicator and safe areas | `--evHome`, `.mHome` | references/layout.md |
 | Design system page shell, General layout tab | `window._doc`, `DSET`, `glDoc` | references/layout.md |
