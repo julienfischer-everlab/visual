@@ -7,6 +7,12 @@ this is the part you need before you change it.
 
 ---
 
+## v2869 — Next step: no wrapper, the container's gap; Inspector: gap, padding and margin shown on the page when hovered
+
+- "Remove div here. In this container there is 2 sections, Title group and card. And between container gap": the check-in's next step screen has no wrapper any more; its container (`.qciScr`) holds the Title group and the Card static, the container's gap between them (`--ctGap`, 24 at XS, `space/lg`).
+- "When hover this [Gap], highlight the gap area in red opacity 25% in the UI" / "Same for the padding": in the Inspector, hovering the Gap row draws the selected element's gaps on the page (between rows, the content's width; between side-by-side children, the row's height), red at 25%. Hovering the box model's Padding layer, or a Padding row, draws its padding bands; the Margin layer or a Margin row, its margin bands. Gone when the pointer leaves or the panel redraws.
+
+
 ## v2868 — Check-in next step: an insight page's title, centred; top support; no ground on top; the chart on Card static
 
 - "No bg on top": the check-in's next step screen (Where's your LDL cholesterol now?) has no warm/deep ground behind its top any more.
