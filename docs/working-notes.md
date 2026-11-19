@@ -7,6 +7,14 @@ this is the part you need before you change it.
 
 ---
 
+## v2853 — Primary cards always centred; real care-team photos; the Ring's particles from the whole top, slower, softer; the check-in's questions reorderable; Ruler padding on full-width containers
+
+- **Always centred** ("ALways centered text come on!"; "Content always centered"): every primary card centred at every width (`html.hpOvCtrOn` always on, Tweaks' Card alignment hidden); the check-in card's own centring (team, tag, title, line, button) needs no class. On Documentation -> Modules the cards' rules now weigh as an id, as on the Overview (`.moOv:not(#_mo)` for `hpOvCard` rules), so the Overview's `:is(#dOver, body)` rules no longer pulled them left.
+- **Real avatars** ("If avatar use Real avatar from library"): the care team's photos (the library's doctor, dietician, nurse: `window.EvTeamAv`, written once; `EvTeamFace`) in every team row: the check-in card, the check-in's screens, Thumbnail -> Avatars, the Concierge intro.
+- **The Ring's particles** ("Particle Module, this area (tweak ON OFF needed)"; "Particle slower 2.5x and less prominent by 2x"): born anywhere above the V from the card's top corners down to the circle's foot (never inside it), 2.5x slower, half as strong; Particles On / Off on the Modules page's per-card controls too (with Ring progress), as in Tweaks.
+- **Reorder the check-in** ("Can reorder (add option left side)"): the Flow panel's questions carry a grip on their left; a question moves with its follow-ups (feelWhy with feel, chgMeds with chg...), a follow-up among its own; the check-in asks in that order, numbered in it (`questions()` over `__flowArr('qci')`, this browser).
+- **Ruler padding on the Timeline** ("Container padding no here ??"): a container as wide as its section (its content padded further in) now shows the token's padding inside it.
+
 ## v2852 — Primary card (overview): a demo to play with, each card's Visual options, the check-in's card; Thumbnail -> Avatars 1 · 2 · 3
 
 - **Demo at the top** ("Add Card demo at the top. Where I can play with tweaks"): Documentation -> Modules -> Primary card (overview) opens on a demo card (1.25x) with its controls beside it: Card (Onboarding consult, DEXA, MRI, Freemium, the two doctor's plans, Check-in), State (the consult's steps, or the check-in's Ready / Started / Sent / Done), then the card's own Visual and Picture (`MODS.mhp.demo`, `demoX`, `mhpCtl`).
