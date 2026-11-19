@@ -7,6 +7,13 @@ this is the part you need before you change it.
 
 ---
 
+## v2858 — Check-in insights on the Async report's insight screen
+
+- "Use the Async insight framework! dont reinvent the wheel": the check-in's insight screens (eng0, eng1…) are no longer its own Connected for you card. Each is the Async report's own insight screen (`buildLife`): the headline as H1, Evidence / Findings / Meaning pills, the biomarkers card (the report's rows: range bar, reading | month, status pill; tap opens the biomarker detail sheet), its source (October 2026 blood test), Ask Eva, What we noticed, What this means for you, Any question?, Was this useful?
+- `AsyncReport.mount` takes `opts.ins = { list, name, date, bars: { n, at }, ask, onNext }`: another flow's insights in place of the persona's, its name in the bar, its progress bars the flow's (the check-in's part B: cover, insights, next step), its Next handed back to the flow. One mount for all the insights, moved along by the report's own push; Back from the next step lands on the last insight.
+- The check-in cards become report insights through `arIns(c)`: What we noticed = the card's words but the last sentence, What this means for you = the last; markers `{ status, bar: 'osx', pos }` from ok / sub / out.
+
+
 ## v2857 — Header group: Blur bg (64); container rows always fit
 
 - "Add Blur bg (64) ON OFF": a new Header group row in Tweaks (General layout), Blur bg (64), Off by default. On puts `html.tnBlur`, and the header group's ground blurs what scrolls under it by 64 (the step flows' `.arGround`, the check-in's `.qciHd::before`, the Page example's `.peGnd`), its blur fading out over its last 40px with a mask.
