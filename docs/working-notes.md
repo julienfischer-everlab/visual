@@ -6,6 +6,17 @@ the design landed where it did, and which parts have already bitten. The
 this is the part you need before you change it.
 
 ---
+## v2924 · MRI and blood test primary cards: every step
+
+"Create all steps for the Whole MRI Service detail", "and the advanced blood test".
+
+- `window.EvPcMri` (16 steps, from the service page's stages, SVC.wbmri): Questionnaire, Book your briefing, Briefing booked, Doctor review, More information, Sign your consent, Pay your balance, Book your scan, Booking your scan, Choose a new time, Scan booked, Scan today, With the radiologist, Doctor reviewing, Debrief ready, Not going ahead.
+- `window.EvPcPath` (6 steps, SVC.path): Visit a collection centre, At the lab, First results, Full results, All results in, Report ready.
+- Each is [key, step name, title, line, button], like EvPcMic. `window.EvPcObjSteps` maps a card key to its steps; `HPC.obj(k, st)` reads it for every service card (was Microbiome only). `EvPcBuiltSteps` lists all three, so the Collection builder's State select and its ‹ › nav step through them.
+- Modules → Primary card: new card "Blood test" (`path`); the MRI Scan and Advanced Blood Testing sections list every step.
+- Tweaks → Primary card: Object gains Advanced Blood Testing; "MRI step" and "Blood test step" rows show for their Object (as Microbiome step).
+- PcMedia: `path` joins OBJS and the picture SLOT (its thumbnail, svc-path).
+
 
 ## v2923 · Primary card builder: no section title
 

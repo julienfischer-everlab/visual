@@ -3660,7 +3660,7 @@ window.EvTeamAv = ['data:image/webp;base64,UklGRmYcAABXRUJQVlA4WAoAAAAwAAAA1wAA1
 window.EvTeamFace = function (i, c) { var u = (window.EvTeamAv || [])[i]; return '<i style="--qc:' + c + ';--qi:' + i + '">' + (u ? '<img src="' + u + '" alt="" decoding="async">' : '<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"9.2\" r=\"4.2\"/><path d=\"M3.6 22c1.2-4.6 4.4-7 8.4-7s7.2 2.4 8.4 7\"/></svg>') + '</i>'; };   /* a face: the real photo ("If avatar use Real avatar from library"), else the glyph */   /* Dr Steven's photo, written once: the Ring's inside, the Onboarding consult's Imagery */
 window.PcMedia = (function () {
   var BO = function (o) { return window.EvPcCards ? window.EvPcCards.base(o) : o; };   /* a card added on the Collection builder: the card it was made from for what it can show, its own key for its look and picture */
-  var OBJS = { consult: 1, dexa: 1, mri: 1, micro: 1, free: 1, drp: 1, drd: 1, qci: 1 }, COL = 'pcMedia', MAX = 20 * 1024 * 1024, DB = null, AS = null, REMOTE = [], LOCAL = [], busy = false, idb = null;
+  var OBJS = { consult: 1, dexa: 1, mri: 1, micro: 1, path: 1, free: 1, drp: 1, drd: 1, qci: 1 }, COL = 'pcMedia', MAX = 20 * 1024 * 1024, DB = null, AS = null, REMOTE = [], LOCAL = [], busy = false, idb = null;
   var box = function () { return document.getElementById('tkPcMedia'); }, fin = function () { return document.getElementById('tkPcMediaF'); };
   var obj = function () { var s = document.getElementById('stPcObj'); return s ? s.value : 'consult'; };
   var isV = function (r) { return /^video\//.test(r.type || ''); }, src = function (r) { return r.u || r.o || ''; };
@@ -3683,7 +3683,7 @@ window.PcMedia = (function () {
   /* each card's visual ("Few options for Each primary CARD"; Tweaks -> Primary card -> Visual, per Object, #stPcVisBy): img:tr (the picture at the top right), img:full (the whole ground, the old Cover; the ground dimmed on a card with no visual of its own),
      img:thumb (in the visual's place, and blurred at the top right: the old Avatar); gfx:sphere / gfx:halo / gfx:ring (the Onboarding consult's own, kept in #stHpVis; drawn in the picture's place on DEXA and the MRI).
      A picture is the one picked for the Object, else its own (the service's for DEXA and the MRI, Dr Steven for the Onboarding consult). The cards with no visual of their own (Freemium, the doctor's plans, the check-in): Imagery only, Bg top right or full */
-  var SLOT = { consult: 1, dexa: 1, mri: 1, micro: 1 },   /* the cards with a picture slot (a thumbnail at the centre, the blurred ground): the Microbiome's as DEXA's */ VB = function () { try { return JSON.parse((document.getElementById('stPcVisBy') || {}).value || '{}') || {}; } catch (e) { return {}; } };
+  var SLOT = { consult: 1, dexa: 1, mri: 1, micro: 1, path: 1 },   /* the cards with a picture slot (a thumbnail at the centre, the blurred ground): the Microbiome's as DEXA's */ VB = function () { try { return JSON.parse((document.getElementById('stPcVisBy') || {}).value || '{}') || {}; } catch (e) { return {}; } };
   var hpV = function () { var v = (document.getElementById('stHpVis') || {}).value; return v === 'halo' || v === 'ring' ? v : 'sphere'; };
   /* a card's state its own style ("Each step can have a different style below!"): o:state over o (the Onboarding consult's steps, the check-in's moments) */
   var mode = function (o, st) { var A0 = VB(); if (st && /^(img:(tr|full|thumb|av[123])|gfx:(sphere|halo|ring)|off)$/.test(A0[o + ':' + st] || '')) { var ms = A0[o + ':' + st]; if (ms === 'off') return ms; if (!SLOT[BO(o)] && ms === 'img:thumb') ms = 'img:av3'; if (!SLOT[BO(o)] && /^gfx:/.test(ms)) ms = 'img:full'; return ms; }
@@ -4525,7 +4525,32 @@ window.EvPcMic = [['q1', 'Questionnaire', 'Start your gut health questionnaire.'
   ['lab', 'At the lab', 'Your sample is at the lab.', 'Results in about 4 to 6 weeks', 'View'],
   ['res', 'Results in', 'Your results are in.', 'Dr Sarah Chen is writing your report', 'View'],
   ['rep', 'Report ready', 'Your gut report is ready.', 'Dr Sarah Chen\u2019s walkthrough \u00b7 4 min video', 'View report']];
-window.EvPcBuiltSteps = { micro: window.EvPcMic.map(function (x) { return [x[0], x[1]]; }) };
+/* the Whole Body MRI card's steps ("Create all steps for the Whole MRI Service detail"): the service page's stages (SVC.wbmri), the questionnaire, the briefing, eligibility and consent, the payment, the booking, the scan, the radiologist, the debrief, and Not going ahead; the same [key, step name, title, its line, its button] */
+window.EvPcMri = [['q', 'Questionnaire', 'Complete your MRI safety questionnaire.', 'Your doctor reads it before your briefing call \u00b7 About 10 minutes', 'Start questionnaire'],
+  ['brb', 'Book your briefing', 'Book your MRI screening briefing.', 'A 15 minute video call with your doctor', 'Book'],
+  ['brf', 'Briefing booked', 'Your briefing call is on Thu 8 Oct.', '11:00 am \u00b7 Online video call with Dr Sarah Chen', 'Join call'],
+  ['rev', 'Doctor review', 'Your doctor is confirming the scan is safe for you.', 'Ready to sign by Tue 13 Oct', 'View'],
+  ['info', 'More information', 'We need a little more information.', 'Upload your implant card or surgical report', 'Upload document'],
+  ['sign', 'Sign your consent', 'Sign your consent.', 'Read what the scan can and can\u2019t find, then sign', 'Review and sign'],
+  ['pay', 'Pay your balance', 'Pay your balance to book your scan.', '$2,800, after your $199 deposit', 'Pay $2,800'],
+  ['book', 'Book your scan', 'Book your scan.', 'At a partner imaging clinic \u00b7 Usually within a week', 'Book scan'],
+  ['bkg', 'Booking your scan', 'We\u2019re booking your scan.', 'Quantum Therapy Sydney \u00b7 Confirmed by Wed 14 Oct', 'Update availability'],
+  ['new', 'Choose a new time', 'Choose a new time for your scan.', 'The clinic cancelled your Tue 20 Oct appointment', 'Choose a new time'],
+  ['bkd', 'Scan booked', 'You\u2019re booked in for Tue 20 Oct.', '9:30 am \u00b7 Quantum Therapy Sydney, Surry Hills', 'Add to calendar'],
+  ['day', 'Scan today', 'You\u2019re all set for your scan today.', 'Today, 9:30am \u00b7 Arrive 15 minutes early', 'Get directions'],
+  ['rad', 'With the radiologist', 'Your images are with a specialist radiologist.', 'Report expected by 3 Nov', 'View'],
+  ['drv', 'Doctor reviewing', 'Your doctor is reviewing your results.', 'Report expected by 3 Nov', 'View'],
+  ['rep', 'Debrief ready', 'Your debrief is ready.', 'Dr Sarah Chen\u2019s video walkthrough of your scan', 'Watch video'],
+  ['no', 'Not going ahead', 'An MRI isn\u2019t the right fit for you right now.', 'Your care team will talk you through other options', 'Message care team']];
+/* the Advanced Blood Testing card's ("and the advanced blood test"): the service page's (SVC.path), the collection centre, the lab, first then full results, every result in, the report */
+window.EvPcPath = [['visit', 'Visit a collection centre', 'Get your blood test at a collection centre.', 'Walk in, no booking needed \u00b7 Fast for 8 to 12 hours', 'Find a centre'],
+  ['lab', 'At the lab', 'Your sample is with the lab.', 'Results expected by 10\u201317 Oct', 'View'],
+  ['first', 'First results', 'Your first results are in.', 'The rest are expected on 12 Oct', 'See first results'],
+  ['full', 'Full results', 'The rest of your results are on their way.', 'Usually within 3 business days of your first results', 'See first results'],
+  ['all', 'All results in', 'All your results are in.', 'Dr Sarah Chen is writing your report', 'See your results'],
+  ['rep', 'Report ready', 'Your blood test report is ready.', 'Dr Sarah Chen\u2019s notes on all 44 results', 'View report']];
+window.EvPcObjSteps = { micro: window.EvPcMic, mri: window.EvPcMri, path: window.EvPcPath };   /* a service card's steps, by its key */
+window.EvPcBuiltSteps = { micro: window.EvPcMic.map(function (x) { return [x[0], x[1]]; }), mri: window.EvPcMri.map(function (x) { return [x[0], x[1]]; }), path: window.EvPcPath.map(function (x) { return [x[0], x[1]]; }) };
 window.EvPcSteps = (function () { var K = 'everlab:pcSteps', D = {}; try { D = JSON.parse(localStorage.getItem(K) || '{}') || {}; } catch (e) { D = {}; }
   var save = function () { try { localStorage.setItem(K, JSON.stringify(D)); } catch (e) {} }, of = function (o) { var d = D[o] || (D[o] = {}); d.names = d.names || {}; d.add = d.add || []; d.hide = d.hide || []; return d; };
   var list = function (o, B) { var d = of(o); var L = B.filter(function (x) { return d.hide.indexOf(x[0]) < 0; }).map(function (x) { return [x[0], d.names[x[0]] || x[1]]; }); d.add.forEach(function (a) { L.push([a.k, d.names[a.k] || a.name || 'New step']); }); return L; };
