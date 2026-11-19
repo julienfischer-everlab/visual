@@ -7,6 +7,13 @@ this is the part you need before you change it.
 
 ---
 
+## v2874 · Icons in the Assets library; Rating range warning to success, white stop; Blood + Device
+
+- **Icons in the Assets library** ("ALl icon should be in assets"): a new **Icons** group (and an Icons type filter), 215 icons read from the page's own code, nothing listed by hand: the dock's, sidebar's and More's icons (EvNavIc, outline and filled), the five faces (EvEmo), every Lucide mark by its `data-lc` name, every icon map's named entry (`mail: '<rect …/>'`, drawn on the 24 grid with a 2 stroke), and every other whole 24-grid icon (named after what holds it in the code; minified letters and `innerHTML` become Icon 1…47). The same drawing found twice is one asset. Each card draws it in the library's ink, says where it comes from and how often the code writes it; **Copy SVG** on the card and in its sheet. Icons cannot be replaced from the library yet (they are inline SVG, not files).
+- **Rating range** ("Circle Full white. no dashed"; "From warning to success fg colour"): the fill from `fg/sentiment/warning/100` to `fg/sentiment/positive/100` through oklch; the value's stop a full white circle 14 (`bg/static/white`), a hairline and a soft shadow, no dotted ring. The doc's Anatomy follows.
+- **Quarterly Check-in personas** ("Blood + Device"): persona #2 (new bloods and device data) tagged Blood + Device in the Flow panel, was Device.
+- Asked: the gap above the primary card's title is the Title group's slot gap `--tgGapS`: centred groups `layout/module gap` (16), left-aligned `space/xs` (12).
+
 ## v2873 · Inspector: edit a component's label; Card interactive and Badge properties
 
 - "Need to be able to edit the labe las well , in general": every component's Properties end with its words: **Label** (and Label 2, Label 3 when it holds more lines). Each is a line of text the component holds itself, not one of a component inside it; the Title group keeps its own Title / support fields.
