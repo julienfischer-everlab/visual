@@ -7,6 +7,35 @@ this is the part you need before you change it.
 
 ---
 
+## v2894 · Page header group from Figma (Patterns DS25 5831:95872); the three page types
+
+- **Page header group** ("Let's focus back on the page header group"; "Respect all of the token there"): a new master, `window.EvPageHg`, built from the Figma Page navigation pattern.
+  - **Parts:** a Page navigation over a Page Header.
+  - **Main page (Level 1):** no Page navigation. That leaves 24 on M · L (`space/lg`), or 16 under the status bar on XS · S (`space/sm`).
+  - **Sub page:** always shows the Page navigation, 72 tall.
+    - M · L: Back 28 (`interactive/height/xs`), then the breadcrumb in Body/300 Medium, 28 high, 8 each side, 6 round. The current page is Regular in `fg/neutral/secondary/100`, with 1 × 16 dividers in `bg/neutral/secondary/100`.
+    - XS · S: Back 44, then the identifier in Body/500, then the right slot.
+  - **Page Header:** min 64, 8 above and below (`space/2xs`), and the container's side padding.
+    - Title: Headlines/700 Medium (570). That is 24 / 26 / 28 / 30 at XS / S / M / L.
+    - 24 from the title to the right slot (`space/lg`).
+    - Right slot: icon-only discs 44 (`interactive/height/md`, icon 20), 8 apart, full round, on `bg/neutral/tertiary/100`.
+  - **Tokens:** every number comes from a token, read at the breakpoint through body variables (`--phg*`). `EvPageHg.vars(bp)` sets the same variables from the same tokens on a frame drawn at another breakpoint.
+- **Design system → General layout → Header group** has a new Page header group section:
+  - Main, Sub with a marketing title, and Sub without one, each at XS and M, drawn by the master. A "Show the parts" toggle outlines the parts.
+  - The Figma rules: relationship, naming, overflow, and the status bar being for presentation only.
+  - A token table.
+- **Timeline header group on the master's variables:**
+  - M · L: 0–88, title 28/28 at M and 30/30 at L, centred in its 48 row.
+  - S: 24–104, under the tablet's 24 status strip. This fixes my v2890 rule, which had pulled the title into the strip.
+  - XS: 47–127, from the status bar's foot.
+  - History and search are 44 discs, 8 apart, on the token ground. The search disc had a −8 margin and history had no ground.
+- **Page types (built earlier this session, shipped now):**
+  - `window.EvPageType` defines three types: Page (Main · Sub), Full modal, and Modal (a bottom sheet on XS · S, centred on M · L).
+  - Every `EvCtx` screen names its type. The profile's screens are a Modal when they come up as a bottom sheet, and a Full modal otherwise. `html[data-pt]` holds the type of the screen that is up.
+  - **Design system → General layout → Page types:** a Page · Full modal · Modal switch, each type with its own panel: a drawing of its sections on the phone and the desk, where it sits, how it comes and goes, its ground, its structure and its screens. The Page panel keeps the push and pop demo. Below them, the three at a glance and every screen with its type.
+  - The Page example's Page type is grouped by type.
+  - The Inspector's Health status names the page type, and its Layout alignment checks the sections that type asks for. A Modal's sections use the sheet's own padding as their container.
+
 ## v2893 · Inspector: no token pie; the 100's Bon voyage checked
 
 - **Pie removed** ("remove this one"): the page level opens on the Health status. Its Tokenisation bar carries the same share, so the pie card is gone.
