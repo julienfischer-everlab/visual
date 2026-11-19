@@ -7,6 +7,13 @@ this is the part you need before you change it.
 
 ---
 
+## v2899 · A fourth page type, External; the Check-in typed per screen; Your next step archived; the Dock menu off the top bar
+
+- "No, this is not a full modal. This is just the overview screen. It's a page." The Check-in's context types itself per screen (EvCtx `type` a function): its Overview moments (Check-in card, Preparing, Insights ready: `.qciWrap.qciPeek`) are a Page, its questions and report a Full modal. The Tweaks Page type card names the screen (`now()`: Overview, Check-in, Push notification).
+- "Can another type of pages like this, so external?" EvPageType gets `ext`, External (orange): Push notification · Email · Web page; outside the app, the system's ground; its structure a Body only (the message), the Header and Footer groups none of ours. The Check-in's two pushes on the home screen (invite, notify), the gift reveal (the recipient's link) and Testing locations (the website) are External. Tweaks → General layout → Page type: a fourth mini frame (a home screen, its apps, the push). Design system → General layout → Page types: a fourth switch, its panel and sketches (the push on the home screen; an email in its reader), the four at a glance. A context with screens of several types lists each (`parts`).
+- "Archive this page": the check-in's Your next step leaves the journey; the last insight closes the check-in; the Flow panel keeps it, dimmed, in a new Archive group (opens it still).
+- "Remove the style here. Why do we have style on the top?" The Dock's Style menu is off the top bar (hidden, its controls kept for the scripts that read them); the dock's labels, icon motion, Light, Eva and desk are Design system → Navigation's.
+
 ## v2898 · Every main page's header on the Page header group master
 
 "Why is this title on the overview smaller than the one in the timeline?" The main pages' titles still read the old Title group H2 (24/30, 500) through `--pgH1Fs`, and that desk rule outranked the Overview's own; only the Timeline was on the master. "I want every page to standardise the page header in the new system."
