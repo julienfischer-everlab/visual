@@ -7,6 +7,15 @@ this is the part you need before you change it.
 
 ---
 
+## v2893 · Inspector: no token pie; the 100's Bon voyage checked
+
+- **Pie removed** ("remove this one"): the page level opens on the Health status. Its Tokenisation bar carries the same share, so the pie card is gone.
+- **Bon voyage** ("Bon voayage sequence gone ??"): could not reproduce.
+  - At XS, S, M and in Auto at 584 × 813, scrolling to the end of Later lifts title 2 away. The square cursor then types Bon voyage, Safe travels, 良い旅を, Gute Reise and Buon viaggio in turn. This held with slow scrolls, wheel scrolls and repeated jumps.
+  - No change to the 100's code in the last 40 commits.
+  - A single jump to the bottom lands short of the end, because the section grows once it first draws. There, title 2 has gone and the third line has not come in, so the screen shows only the stars and the dot.
+  - Only Chromium is available here, so Safari is untested.
+
 ## v2892 · Inspector: Health status, group cards, area dots on the guides
 
 - **No page heading** ("remove this page and description"): the page level no longer shows This page / name / breakpoint line.
