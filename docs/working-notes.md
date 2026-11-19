@@ -7,6 +7,10 @@ this is the part you need before you change it.
 
 ---
 
+## v2917 · Container ruler snaps, no transition
+
+- "Increase should magnet to the increment, no between increment. Remove any transition effect": dragging a handle no longer follows the pointer between sizes. The box jumps from one size's width to the next as the handle passes each tick, the label with it, and the size is picked on release. The box's width and the ticks have no transition.
+
 ## v2916 · Layers: a container is called Container
 
 - "Call the Frame container IF the frame is a container": the Inspector's Layers tree now asks the Inspector's own namer (`kindOf`, the same that writes the outline's tag) for a layer that is neither a section nor a component. An element the page names a container (`data-container`, `data-ct`, `data-pg-ct`, `.peCt`, `.evHtC`, `.glCtWrap`), or one with a max width centred by its margins, reads *Container · xs* (its size token, or Full), with a container icon (a box with two inner lines). A labelled section (`data-l`: Header group, Body, Footer group) reads *Section · …*. Everything else stays Frame, Heading, Text….
