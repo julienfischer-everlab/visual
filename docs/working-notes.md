@@ -7,6 +7,14 @@ this is the part you need before you change it.
 
 ---
 
+## v2872 · Review my plan on Card interactive; the Inspector knows the sections; Badge Appearance (yellow Suggested)
+
+- **Notes from Dr Steven Lu** ("Card component interactive"): `EvCard.item`'s classes, Primary · md (a hairline at rest, filled on hover and press, 16 round, radius/2xl 16), the photo, the name and the chevron in its `.evCardSlot`. Was its own 16/22 padding, 20 corners and hover. Inside V2's / V3's card it stays a row (the classes come off).
+- **The plan's cards** ("Card interactive as well"): `.arRvwTlC` (the review and the Timeline's plan module) on Card interactive, Inverted · md (the ink at 6% on the dark sheet; the page's ground and a hairline on the light one), the master's hover, and 98% when pressed (not when its own check is). The master's padding wins over the Condensed card's own 12 16 12 14: 62 tall, was 54. Unticked keeps its own fill.
+- **Your results debrief** (done, not a button): Card static, Sentiment - Positive, md, so it matches the cards under it.
+- **Inspector sections** ("When I inspect why I can't see those section"): the section guides now record each section's element (`window.__secEls()`: Header group, Header title, Body, Footer group), and run unseen while the Inspector is open, guides on or off. The page view lists **Sections on this page** (blue chips; hover lights it, press selects it); a selection shows the section it is in; crumbs name them (Section · Body).
+- **Badge Status Appearance**: `EvCtl.badge({ app })` takes Figma's Appearance (positive, warning, negative, accent, special), its colours made from `EvTokBadge.Status` rows (#evBdgTok): Solid = Primary, Tint = Secondary, Outline = Tertiary. Badges page: Status has an Appearance control. The Timeline's **Suggested** badge is Special (yellow, "Use yellow badhe").
+
 ## v2871 · Rating range component (0 to 10)
 
 "Create this type of range in component to rate something from 0 to 10." New master `window.EvRate` and a Design system page, Core components → Rating range (`_doc.show('rt')`, `#rating-range`).
