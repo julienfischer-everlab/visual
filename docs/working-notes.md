@@ -7,6 +7,16 @@ this is the part you need before you change it.
 
 ---
 
+## v2898 · Every main page's header on the Page header group master
+
+"Why is this title on the overview smaller than the one in the timeline?" The main pages' titles still read the old Title group H2 (24/30, 500) through `--pgH1Fs`, and that desk rule outranked the Overview's own; only the Timeline was on the master. "I want every page to standardise the page header in the new system."
+
+- Titles: `--pgH1Fs/Lh/Ls` now read EvPageHg's `--phgTFs/--phgTLh` (Headlines/700: 24 XS, 26 S, 28 M, 30 L), weight `--phgTW` 570, letter-spacing 0, the secondary font token. The XS·S rule takes the Overview too. The Plan's EvTitle gets the same through `--tgFs/--tgLh/--tgW/--tgLs` (it was 20/24 and centred across its column).
+- Rows: every title on the master's 48 row, centred, 8 under it. Desk: header 0..88, row 32..80 on Overview, Insights, Timeline, Services, My plan. Tablet: under the 24 strip, 16, row at 48 (Overview 12 lower, Services 14 higher; the Overview's title on one line, the Ask field giving way). Phone: row at 71 (Timeline, Services); the Overview's Ask field and bell are its Page navigation (8, 48, 8), the title's 48 row right under.
+- Discs: 44 on `bg/neutral/tertiary/100` (the Overview's bell was 48, the Service detail's More 36).
+- Audit (L, M, S, XS × Overview, Insights, Timeline, Services, My plan, Service detail): every title on the master's size and line; the phone's Insights and My plan keep no visible title (tabs header, the photo's words).
+- Skill reference updated (layout.md, Main page titles).
+
 ## v2897 · Tweaks: sub-cards aligned with their group's title; outlines halved
 
 - **Alignment** ("Make sure the card/subcard aligns vertically with the title ... increase the padding on the main card"): a Tweaks group that holds sub-cards (General layout: Page type, Header group, Body, Footer) is now 14 in on each side, with its title flush to that edge. Each card's left border now sits under the title's first letter (both at the same x), and the right borders line up with the title's chevron.

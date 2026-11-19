@@ -222,21 +222,22 @@ A new Sub page: its show / hide do the change at once (no CSS transition of thei
 
 ---
 
-## Main page titles and header discs (`--pgH1Fs`, the XS·S H2 rule, `--mainBtn`)
+## Main page titles and header discs (`--pgH1Fs`, on the Page header group master, `--phg*`)
 
-**What.** One title size for the main pages at each breakpoint pair, the Title group master's H2: on the desk (M·L) Overview, Insights, Services, My journey, My plan, My account; on the phone and tablet (XS·S) Services, My journey and My account ("services is good, take that as ref"; "match this to the other header, e.g. timeline"). Their header discs share one fill.
+**What.** Every main page's title and its row follow the Page header group master (`window.EvPageHg`, General layout > Page header group / Header title): Headlines/700 at the breakpoint (24 XS, 26 S, 28 M, 30 L), weight 570, line height = size, letter-spacing 0, on a 48 row (`--phgHdMin` 64 less 8 above and under) with 44 discs on `bg/neutral/tertiary/100` ("I want every page to standardise the page header in the new system"). Overview, Insights, Services, My journey, My plan, My account.
 
-**Where.** `grep -n -- "--pgH1Fs"` (~637-639: the `.dash` tokens, the desk `:is()` list, the XS·S rule); `grep -n -- "--mainBtn"` (~640, and its readers: `#dMkt .mkCartB`, `.acHdA button`, `.tlSearch`, `.tlPastBtn`).
+**Where.** `grep -n -- "--pgH1Fs"` (the `.dash` tokens, the desk `:is()` list, the XS·S rule); the rows: `grep -n "every main page's title row on the Page header title's geometry"`; the phone and tablet Overview: `grep -n "the phone's Overview: the Ask field"` and `grep -n "the tablet: under its 24 strip"`.
 
 **API / rules.**
-- Desk: `.dash{--pgH1Fs:var(--tgH2FsL, 24px); --pgH1Lh:var(--tgH2LhL, 30px); --pgH1Ls:var(--tgH2LsL, -.3px)}`, applied by `body:not([data-bp="xs"]):not([data-bp="s"]):not(.tabM) :is(#dOver .dvH1, #dMain > h1, #dMkt .mkT, #dTl .tlH1, #dPlan.plDesk .plPgT, #dAcc .acHead h1)` (weight 500). The Plan's title is drawn by `EvTitle` itself.
-- XS·S: `body:is([data-bp="xs"], [data-bp="s"]) :is(#dMkt .mkT, #dTl .tlH1, #dAcc .acHead h1){font-size:var(--tgH2FsS); line-height:var(--tgH2LhS); letter-spacing:var(--tgH2LsS); font-weight:var(--tgH2W)}` (24/30 −.2 500).
-- Discs: `:root{--mainBtn:rgba(255,255,255,.07); --mainBtnH:rgba(255,255,255,.11)}`, `body.light{--mainBtn:#f2f2f2; --mainBtnH:#ebebeb}`; 44 round, 20 icons, `margin-block:-7px` so they hang 7 over and under the 30 title row. My journey and My account sit on Services' line (title and discs measured equal at XS and S; on S each head starts 10 lower under the drawn strip). My account's Settings gear is lit while its tab is up (`.on`: #ececec ground, #111 icon; light inverted; `aria-pressed`), as My journey's Past.
-- Sub pages (Service detail, Appointment, the Plan's subpages) keep their hero titles.
+- Tokens: `.dash{--pgH1Fs:var(--phgTFs); --pgH1Lh:var(--phgTLh); --pgH1Ls:0px}` (EvPageHg writes `--phg*` on body per breakpoint from the Figma tokens). Desk `:is(#dOver .dvH1, #dMain > h1, #dMkt .mkT, #dTl .tlH1, #dPlan.plDesk .plPgT, #dAcc .acHead h1)` and XS·S `:is(#dOver .dvH1, #dMkt .mkT, #dTl .tlH1, #dAcc .acHead h1)` both read them, weight `var(--phgTW)`, the secondary font family token.
+- Geometry: desk header 0..88 (24 `--phgNav0`, then the 48 row 8 down: the title row starts 32 from the panel top, the title's centre at 56). XS: the 47 status, 16, then the row 8 down (71). S: 24 strip, 16, row at 48. The phone Overview: its Ask field and bell are the Page navigation row (8, 48, 8), then the title's 48 row.
+- The Plan's title is an `EvTitle` (`--tgFs/--tgLh/--tgW/--tgLs` set to the master's on `.plPgT`; it is a column, so `justify-content:center`).
+- Discs: 44 (`--phgBtn`), full round, `var(--t-bg-neutral-tertiary-100)`, icons `--phgIc` 20: the Overview's bell, the Service detail's More (was 48 / 36), Services' cart, Timeline's Past and Search.
+- Sub pages (Service detail, Appointment, the Plan's subpages) keep their hero titles at the master's size.
 
-**How to use.** A new main page's title: add its selector to the desk `:is()` list (and the XS·S rule if it has a phone title), or draw it with `EvTitle.html({ level: 'h2', tag: 'h1', ... })`. A header disc: `background:var(--mainBtn)`, hover `var(--mainBtnH)`, 44 with `margin-block:-7px`.
+**How to use.** A new main page's title: add its selector to both `:is()` lists and give its row `min-height:calc(var(--phgHdMin) - 2 * var(--phgHdPy))`, centred. Never copy a number: read `--phg*`.
 
-**Pitfalls.** The Overview's phone title (`.dvH1`, 20) and Insights are not on the XS·S rule (Title group candidates). Never copy 24 / 30: read the `--tgH2*` tokens so a saved Title group setup reaches them.
+**Pitfalls.** The phone's Insights and My plan have no visible title (the tabs header, the photo's words); the tablet's Overview title is `nowrap` with the Ask field shrinking. Line 750's desk rule is (1,4,1): a page rule must beat it or set the variables.
 
 ---
 

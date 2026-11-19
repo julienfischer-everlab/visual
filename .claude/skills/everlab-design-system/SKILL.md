@@ -53,7 +53,7 @@ The page menu `#versionSel` has Documentation flow (`'doc'`, renamed from Docume
 | Header overlap | `window.EvOverlap` | references/layout.md |
 | Page types (Main / Sub: every Sub page pushes in and pops out) | `window.EvPush`, `glPt`, `everlab:pushMaster` | references/layout.md |
 | Desk page panels | `#dMain #dOver #dSvc #dTl #dApt #dAcc #dPlan #dMkt`, `--pnCap` | references/layout.md |
-| Main page titles and header discs (the XS·S H2 rule) | `--pgH1Fs`, `#dMkt .mkT`, `#dTl .tlH1`, `#dAcc .acHead h1`, `--mainBtn` | references/layout.md |
+| Main page titles and header discs (on the Page header group master) | `--pgH1Fs`, `#dMkt .mkT`, `#dTl .tlH1`, `#dAcc .acHead h1`, `--mainBtn` | references/layout.md |
 | Home indicator and safe areas | `--evHome`, `.mHome` | references/layout.md |
 | Design system page shell, General layout tab | `window._doc`, `DSET`, `glDoc` | references/layout.md |
 | Doc pages' controls panel (every control in a Tweaks-style right panel) | `window.EvDocPanel`, `data-dp*`, `.dpRail` | references/layout.md |
