@@ -14992,7 +14992,7 @@ html[data-tk="arDr"] .tkGroup[data-pages~="arDr"] > :not([data-ar-ph~="dr"]) { d
         </div>
         <div class="tkGlPart" data-pages="tn" id="tkTnGrp">
           <div class="tkSub">Header group <span class="tkTnPg" id="stTnPgLbl"></span></div>
-          <div class="tkRow tkCtRow tkCtPart" data-part="hd" hidden title="The header group’s Header navigation section: its container’s max width (the top nav in it)"><span class="lbl">Navigation container</span><select id="stCtHd" class="tkSegSel tkProxy" aria-label="The header group’s top navigation container: its max width"></select></div>
+          <div class="tkRow tkCtRow tkCtPart" data-part="hd" hidden title="The header group’s Header navigation section: its container’s max width (the top nav in it)"><span class="lbl">Container</span><select id="stCtHd" class="tkSegSel tkProxy" aria-label="The header group’s top navigation container: its max width"></select></div>
           <div class="tkRow tkCtRow tkCtPart" data-part="ht" hidden title="The header group’s Header title section: its container’s max width (the page’s title in it); unpicked, the body’s"><span class="lbl">Title container</span><select id="stCtHt" class="tkSegSel tkProxy" aria-label="The header group’s header title container: its max width"></select></div>
           <div class="tkRow" id="stTnBgRow" title="This page’s header group (the status bar and the top nav): the gradient blur from 20%, the screen’s colour solid, or nothing under it. With Fixed Off it stays on the status bar">
             <span class="lbl">Style</span>
@@ -55850,6 +55850,32 @@ hairline({
     g.addEventListener('click', e => { const b = e.target.closest('.tkPerB'); if (!b || b.dataset.v === sel.value) return; sel.value = b.dataset.v; sel.dispatchEvent(new Event('change', { bubbles: true })); sync(); });
     sel.addEventListener('change', sync); if (mem) mem.addEventListener('change', () => setTimeout(sync, 0)); sync();
     setInterval(() => { const v = sel.value + (mem ? mem.value : ''); if (g.dataset.v !== v){ g.dataset.v = v; sync(); } }, 400); });   /* a value set by Save, a preset or Reset follows */
+  /* a container's size as a ruler ("I mean like this. On label displayed! Add visually the increment so we can see the different available size"): one box whose width is the size (3xs the narrowest, Full the whole track), its label alone in it, a handle on each side,
+     a tick on each side for every size there is (the ones under the box lit); drag a handle (it snaps to the ticks), press the track, or the arrow keys. It presses the row's own buttons, kept hidden, so Save, the presets and each page's rules are the same */
+  window.EvCtRuler = window.EvCtRuler || (function () { var ORD = ['3xs', '2xs', 'xs', 'sm', 'md', 'lg', 'full'];
+    var vOf = function (b) { return b.dataset.v || b.dataset.ctc || ''; }, isOn = function (b) { return b.classList.contains('on') || b.getAttribute('aria-pressed') === 'true' || b.getAttribute('aria-selected') === 'true'; };
+    return function (grp) { if (!grp || grp._ctRl) return null; grp._ctRl = 1;
+      var R = document.createElement('div'); R.className = 'ctRl'; R.setAttribute('role', 'slider'); R.tabIndex = 0; R.setAttribute('aria-label', (grp.previousElementSibling && grp.previousElementSibling.getAttribute('aria-label')) || grp.getAttribute('aria-label') || 'Container size');
+      R.innerHTML = '<div class="ctRlBox"><b></b><i class="ctRlH ctRlHl"></i><i class="ctRlH ctRlHr"></i></div><div class="ctRlTk" aria-hidden="true"></div>'; grp.after(R); grp.classList.add('ctRlSrc');
+      var box = R.firstChild, lab = box.firstChild, tk = R.lastChild, drag = null;
+      var steps = function () { return [].filter.call(grp.querySelectorAll(':scope > button'), function (b) { return !b.hidden && ORD.indexOf(vOf(b)) >= 0; }).sort(function (a, b) { return ORD.indexOf(vOf(a)) - ORD.indexOf(vOf(b)); }); };
+      var fr = function (i, n) { return n < 2 ? 1 : .26 + .74 * i / (n - 1); };
+      var draw = function (iShow, hv, fw) { var S = steps(), n = S.length, cur = -1; S.forEach(function (b, j) { if (isOn(b)) cur = j; }); var i = iShow != null ? iShow : cur; R.hidden = !n; if (!n) return;
+        var key = S.map(vOf).join(','); if (tk.dataset.k !== key) { tk.dataset.k = key; tk.innerHTML = S.map(function (b, j) { var f = (fr(j, n) * 50).toFixed(3); return '<i style="left:calc(50% - ' + f + '%)"></i><i style="left:calc(50% + ' + f + '%)"></i>'; }).join(''); }
+        [].forEach.call(tk.children, function (t, j) { var k = j >> 1; t.classList.toggle('in', k < i); t.classList.toggle('at', k === i); t.classList.toggle('hv', hv != null && k === hv && k !== i); });
+        box.hidden = i < 0; R.classList.toggle('drag', iShow != null); if (i < 0) { R.setAttribute('aria-valuetext', 'none'); return; }
+        box.style.width = ((fw != null ? fw : fr(i, n)) * 100).toFixed(3) + '%'; lab.textContent = S[i].textContent.trim(); R.setAttribute('aria-valuemin', '0'); R.setAttribute('aria-valuemax', String(n - 1)); R.setAttribute('aria-valuenow', String(i)); R.setAttribute('aria-valuetext', lab.textContent);
+        R.title = hv != null && S[hv] ? S[hv].textContent.trim() + (S[hv].title ? ' · ' + S[hv].title : '') : (S[i].title || ''); };
+      var dOf = function (x) { var r = R.getBoundingClientRect(), n = steps().length; return Math.max(fr(0, n), Math.min(1, Math.abs(x - (r.left + r.width / 2)) / (r.width / 2))); };   /* the pointer's distance from the middle: the box's half width */
+      var at = function (x) { var r = R.getBoundingClientRect(), d = Math.abs(x - (r.left + r.width / 2)) / (r.width / 2), n = steps().length, best = 0, bd = 9; for (var j = 0; j < n; j++) { var dd = Math.abs(fr(j, n) - d); if (dd < bd) { bd = dd; best = j; } } return best; };
+      var pick = function (i) { var S = steps(); if (S[i] && !isOn(S[i])) S[i].click(); draw(); };
+      R.addEventListener('pointerdown', function (e) { if (e.button) return; e.preventDefault(); try { R.focus({ preventScroll: true }); R.setPointerCapture(e.pointerId); } catch (er) {} drag = at(e.clientX); draw(drag, null, dOf(e.clientX)); });
+      R.addEventListener('pointermove', function (e) { var i = at(e.clientX); if (drag == null) { draw(null, i); return; } drag = i; draw(drag, null, dOf(e.clientX)); });   /* the box under the pointer on both sides, the label the nearest size; let go, it snaps to it */
+      R.addEventListener('pointerleave', function () { if (drag == null) draw(); });
+      R.addEventListener('pointerup', function () { if (drag == null) return; var i = drag; drag = null; pick(i); }); R.addEventListener('pointercancel', function () { drag = null; draw(); });
+      R.addEventListener('keydown', function (e) { var d = /^(ArrowRight|ArrowUp)$/.test(e.key) ? 1 : /^(ArrowLeft|ArrowDown)$/.test(e.key) ? -1 : 0; if (!d) return; e.preventDefault(); var S = steps(), c = -1; S.forEach(function (b, j) { if (isOn(b)) c = j; }); pick(Math.max(0, Math.min(S.length - 1, (c < 0 ? 0 : c) + d))); });
+      new MutationObserver(function () { if (drag == null) draw(); }).observe(grp, { subtree: true, attributes: true, attributeFilter: ['class', 'aria-pressed', 'aria-selected', 'hidden', 'title'] });
+      draw(); return R; }; })();
   document.querySelectorAll('select.tkSegSel').forEach(sel => {
     const seg = document.createElement('span'); seg.className = 'tkSegT'; seg.setAttribute('role', 'tablist');
     seg.innerHTML = [...sel.options].map(o => '<button type="button" role="tab" data-v="' + o.value + '">' + o.textContent + '</button>').join('');
@@ -55859,6 +55885,7 @@ hairline({
     sel.addEventListener('change', sync); sync();
     new MutationObserver(sync).observe(sel, { attributes: true }); setInterval(() => { if (seg.dataset.v !== sel.value){ seg.dataset.v = sel.value; sync(); } }, 400);   // a value set by Save / Reset follows
   });
+  document.querySelectorAll('.tkCtRow > select.tkSegSel').forEach(sel => { const g = sel.nextElementSibling; if (g && g.classList.contains('tkSegT')) window.EvCtRuler(g); });   /* the containers' sizes as rulers */
   /* Menu AI entry point: set on the Design system's Navigation page alone, in its controls panel ("only tweakable on the design system bottom nav ... too complicated for all pages"); out of Tweaks until that page takes it. Still a Tweaks group, so Save, the presets and Share keep it */
   { const g = document.getElementById('tkAskGrp'); if (g && g.closest('#tkMenu')){ let hold = document.getElementById('tkAskHold'); if (!hold){ hold = document.createElement('div'); hold.id = 'tkAskHold'; hold.hidden = true; document.body.appendChild(hold); } hold.appendChild(g); const g2 = document.getElementById('tkAskGrp2'); if (g2) hold.appendChild(g2); } }   /* with it, Overlapping modal desktop */
   // Documents: a switch and, when on, the layout; both drive the hidden mode select the pages read (and follow it back when Save or Reset sets it)
@@ -62110,7 +62137,14 @@ hairline({
   html .topbar .tkPanel .tkCtRow .tkSegT button.on, html body .glCtCs.glCtCs > button[aria-pressed="true"]{position:relative;overflow:visible;flex:0 0 auto !important;min-width:44px;padding-inline:12px !important;margin-inline:3px;border-radius:6px !important;box-shadow:inset 1.5px 0 0 var(--ctHdl, #60a5fa), inset -1.5px 0 0 var(--ctHdl, #60a5fa) !important;}
   html .topbar .tkPanel .tkCtRow .tkSegT button.on::before, html .topbar .tkPanel .tkCtRow .tkSegT button.on::after, html body .glCtCs.glCtCs > button[aria-pressed="true"]::before, html body .glCtCs.glCtCs > button[aria-pressed="true"]::after{content:"";position:absolute;top:50%;width:4px;height:12px;margin-top:-6px;border-radius:1.5px;background:#e4e4e7;box-shadow:0 0 0 1px rgba(0,0,0,.35);pointer-events:none;}
   html .topbar .tkPanel .tkCtRow .tkSegT button.on::before, html body .glCtCs.glCtCs > button[aria-pressed="true"]::before{left:-2px;} html .topbar .tkPanel .tkCtRow .tkSegT button.on::after, html body .glCtCs.glCtCs > button[aria-pressed="true"]::after{right:-2px;}
-  html .topbar .tkPanel .tkCtRow[data-unsv]{--ctHdl:#ffb06a;} body.light .glCtCs{--ctHdl:#2563eb;}   /* the right panel's proxied chips (its toggle or select stands for them) and a hidden group stay hidden: the one style above had shown them again */
+  html .topbar .tkPanel .tkCtRow[data-unsv]{--ctHdl:#ffb06a;} body.light .glCtCs{--ctHdl:#2563eb;}
+  html body .ctRlSrc.ctRlSrc.ctRlSrc{display:none !important;}
+  .ctRl{position:relative;flex:1 1 100%;height:34px;box-sizing:border-box;border-radius:10px;background:var(--segTrk, rgba(255,255,255,.06));cursor:pointer;touch-action:none;user-select:none;-webkit-user-select:none;outline:none;} .ctRl[hidden]{display:none;} .ctRl:focus-visible{box-shadow:0 0 0 2px rgba(96,165,250,.55);}
+  .ctRlBox{position:absolute;z-index:1;top:3px;bottom:3px;left:50%;transform:translateX(-50%);display:grid;place-items:center;min-width:44px;border-radius:7px;background:var(--segOn, rgba(96,165,250,.2));box-shadow:inset 1.5px 0 0 var(--ctHdl, #60a5fa), inset -1.5px 0 0 var(--ctHdl, #60a5fa);transition:width .2s cubic-bezier(.2,.8,.2,1);} .ctRl.drag .ctRlBox{transition:width .09s ease-out;} .ctRlBox[hidden]{display:none;}
+  .ctRlBox > b{font-size:12.5px;line-height:16px;font-weight:500;color:var(--segOnFg, #93c5fd);white-space:nowrap;}
+  .ctRlH{position:absolute;top:50%;width:4px;height:12px;margin-top:-6px;border-radius:1.5px;background:#e4e4e7;box-shadow:0 0 0 1px rgba(0,0,0,.35);cursor:ew-resize;} .ctRlHl{left:-2px;} .ctRlHr{right:-2px;}
+  .ctRlTk{position:absolute;inset:0;z-index:2;pointer-events:none;} .ctRlTk > i{position:absolute;top:50%;width:1px;height:8px;margin:-4px 0 0 -.5px;border-radius:1px;background:rgba(255,255,255,.28);transition:height .12s ease, margin .12s ease, background .12s ease;} .ctRlTk > i.in{background:rgba(147,197,253,.32);} .ctRlTk > i.at{opacity:0;} .ctRlTk > i.hv{height:14px;margin-top:-7px;background:rgba(255,255,255,.75);}
+  html .topbar .tkPanel .tkCtRow[data-unsv] .ctRl{--segOn:rgba(255,138,42,.2);--segOnFg:#ffb06a;}   /* the ruler: the track the whole width (Full), a tick each side per size, the box the size picked, its label, its handles */   /* the right panel's proxied chips (its toggle or select stands for them) and a hidden group stay hidden: the one style above had shown them again */
 </style>
 <script>
 /* ---- Timeline V3: the "Timeline Ahead" concept (its V4, the check-in loop) in this app's own pieces.

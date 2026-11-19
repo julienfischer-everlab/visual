@@ -7,6 +7,12 @@ this is the part you need before you change it.
 
 ---
 
+## v2911 · Container size as a ruler
+
+- "I mean like this. On label displayed! Add visually the increment so we can see the different available size" and "By moving the handle will increase or decrease the blue area on both side and change the size label": every Tweaks container row (the Header group's, Title, Body, Footer) is now a ruler, `window.EvCtRuler(group)`. The track is Full. The blue box is the size picked, centred, with only its label in it and a white handle on each side. There is a tick on each side for every size available (3xs, 2xs, xs, sm, md, lg, Full, evenly spaced, the narrowest a quarter of the track). The ticks of the smaller sizes show faintly inside the box. Dragging a handle grows or shrinks the box on both sides under the pointer, with the label switching to the nearest size; letting go snaps to it. Pressing the track picks the nearest size, and the arrow keys step through them. Hovering lifts the nearest pair of ticks and names it.
+- The ruler presses the row's own segmented buttons, kept hidden, so Save, the presets, each page's defaults (their tooltip) and hidden sizes all follow as before. Unsaved is orange.
+- "Use just 'Container', not navigation container": the Header group's row is now *Container*.
+
 ## v2910 · The Page audit stops when asked
 
 - "I cant stop it", "Force stop audit": the run's Stop button could not be reached or pressed. The full modals the run opens sat above its bar (z-index 2000), and the bar rebuilt its button every 1.5 s, so a click could land on a button that had just been replaced. The bar is now built once and only its text and progress change. It sits over everything (z-index 2147483000) and moves to the end of the page at each step. Stop acts on press (it shows *Stopping…*), Escape stops too, and a page already loading is not scored once stopped. A reload of the tab also ends a run; nothing starts one but Run audit.
