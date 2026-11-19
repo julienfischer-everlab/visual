@@ -3574,6 +3574,15 @@ Consequences worth knowing before editing:
   find.
 
 ---
+## v2925 · Tweaks: reset icon, tree lines, outline +40%, Overview's Visual link out; Inspector: switch follows the same structure
+
+- "add icon action to reset": every "Previous …" marker has a reset icon (`.tkPrevRs`, rotate-ccw). On a sub-group's marker it resets every changed row in it; on a row's marker, that row. The saved raw value per row is kept beside PREV (`RS`, from `want(o0.snap, id)`, the container rows' `was`, the Top nav picks' `dv`), applied with input/change events so the unsaved marks clear.
+- "Remove this tweak in overview": the Primary card's Visual row with "Edit in Modules → Primary card" removed, with its style and click handler. The stray toggle under it was the On/Off converter's switch for the hidden value holder `#stPcMediaPos`: the converter now skips hidden selects.
+- "Outlined +40% fff opacity": sub-group outline .078 → .11.
+- "add indentation indicator": a line down each sub-group's rows under the title's first letter, an elbow (rounded, 6px) into each label at its first line. Label `::before` draws the elbow (clipped at its row's top by `clip-path`), the row's `::before` the line through every row but the last visible one; one opaque colour (`--tkTree` #5d5d62) so the pieces meet without doubling. Not on `.tkDepRow` (its label icon).
+- Inspector, "If I change a component, the other on the list following the same structure should also change": `twins(e)` finds the same place in each sibling of the nearest repeated level (3 up at most; tag + first own class, through made wrappers), and Turn into / Wrap / Replace and Undo apply to all of them, each stored. Tested on the Overview's Action plan: 4 rows made List item interactive, Undo reverted the 4.
+- dist is 16,776,224 bytes: under 1 KB below the 16 MB publish limit.
+
 
 ## 2. Pages, and the composite-mode convention
 
