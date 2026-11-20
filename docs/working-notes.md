@@ -11110,6 +11110,14 @@ nothing on the pages that never turn it on.
 Everlab reports and the insight headings all already read from.
 
 ---
+## v2931 · Page types demo: the top bar's breakpoint, the Page type skeletons in the panel, guides by part, footer always fixed, Main / Sub rules
+
+- "This inside the standard breakpoint at the top": the page's own XS S M L and the top nav select are gone; the demo follows the top bar's breakpoint (`#stBp`; Auto reads as L).
+- "This as a 4 columns skeleton select inside the tweak, and should be selectable": the type is Tweaks' Page type picker (the `.tkPtFr` / `.tkPtT` / `.tkPtM` skeletons: Page, Full modal, Sheet, External), as buttons, first in the panel (`EvScrDemo.html({ picker: true })`, group Page type, 4 across). Its colours set inline (`--ptC`): `data-ptk` is the Push and pop sliders' key and broke glPtWire.
+- "Footer always fixed": the Footer group's Fixed row removed; the footer is always sticky.
+- "Breakdown Header group: Header nav, Header title; Body; Footer": Guides is five toggles: Header group (solid blue), Header nav and Header title (EvPageHg's `[data-hg-part]` parts, dashed light blue, labelled), Body (dashed), Footer (green).
+- "Sub never have Main bottom nav"; "main never have Footer with action, only main nav": a Page at Level Main keeps its dock and AI button and never draws a footer (whatever Footer says); at Level Sub no dock, its footer if on.
+
 
 ### 5.284 The bar and the card stay put; only what is inside moves
 
