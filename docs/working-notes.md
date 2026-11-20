@@ -4180,6 +4180,16 @@ than something the numbers happen to average out to.
 it is invisible in the code and obvious in the picture, at one angle only.
 
 ---
+## v2929 · Live screen demo (EvScrDemo) on Page types and Modals: breakpoint frames, Header group / Body / Footer group with every prop
+
+"Create a demo with breakpoint, similar to the demo for primary card"; "I need all props for header group / body / footer group etc. Need skeleton to simulate a page with content (overflow need to be here)"; "On modal DS. Make sure the Header group are present and Footer group and body section for all type"; "The header group and footer group must have the Variant regarding the content inside and also the overflow and style tweaks".
+
+- New master `window.EvScrDemo` (beside EvPageFt): `html({ type, head })` writes a section with its controls (data-dp rows, grouped Header group / Body / Footer group / Guides) and a stage; `wire(root, { follow, bp })` draws it and redraws when the type or the breakpoint changes (the desk frame zoomed to the column).
+- The frame is the viewport's, as the Primary card's demo: XS the phone (393 × 852, the app's status bar), S the tablet (600 × 860), M · L the desk (1120 × 720, scaled). A Page keeps its menu (the dock and AI button on the phone, the sidebar on the desk); a Full modal is the whole screen; a Sheet is a bottom sheet over the page on the phone and a centred modal on the desk; the Modals doc adds the Floating bottom sheet (8 in, 48 corners) and the Full bottom sheet (nearly full height; tall modal on the desk).
+- Header group: the Page header group master (`EvPageHg.variant([level, banner, title])`: Level Main / Sub, Banner None / Image / Decorative, Title), Style Gradient / Filled / Transparent, Blur bg, Fixed (sticky). Body: skeleton content (bento, a heading, rows) in its Container (2xs to lg), Long (overflows) or Short. Footer group: Show, the Footer group master's actions (`EvPageFt`: Inline edge, Inline fill, Stacked fill, 1 CTA only), Style, Fixed. Section guides: Header group blue, Body dashed, Footer group green (outlines, over the grounds).
+- General layout → Page types: the live demo under the type switch, following it (the static phone and desk wireframes removed from each type's panel). Modals: "Structure · live" after the demo, following the picked type and the page's own Breakpoint.
+- The panel's buttons are redressed after mount, so clicks are one delegated listener and the pressed states are re-synced on each tick.
+
 
 ### 5.23 The control that only existed while there was something to control
 
