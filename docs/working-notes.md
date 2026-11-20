@@ -5,6 +5,15 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2967 · Show containers guide; sheet containers on the padding token; a saved set per Page type
+
+Page types / Modals live screen (EvScrDemo):
+
+- **Guides -> Show containers** ("add 'Show containers'"): each section's container dashed and lightly filled in its section's colour, as the app's section guides (Header nav and Additional slot blue, Header title violet, Body ink, Footer green). Off by default.
+- **Sheet sections** ("eatch sheet section SHOULD have a contianer in it, not controllable, locked to FULL with left right $container padding"): on a Sheet (Bottom, Floating, Drawer, Full bottom sheet, its desk modal) every section runs edge to edge with its container locked to Full, and `layout/container/padding/left-right` at the breakpoint (16 16 24 24) is the container's only side padding (it was the page's 40 on the desk modal, 24 on the tablet).
+- **A set per Page type** ("The page Should save EACH set per type"): switching type keeps the set left (with its edits) and brings back the picked type's set as left or as saved; the bar's Save writes every type's set. A type with unsaved edits wears an orange dot on its card; picking a type is no longer an edit in itself.
+
+---
 ## v2966 · Header nav Middle slot
 
 "Header nav need to have a Middle slot (Title, Sub, Center)"; "Need to see this middle slot in the props":
