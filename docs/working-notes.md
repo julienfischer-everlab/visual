@@ -5,6 +5,13 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2983 Banner: the picture to the top, the gradient just over it
+
+- "The image should cover the entire screen on the top ... the gradient should just overlap this" and "there's no start on 30% or whatever. It just starts on the top". The picture already ran to the top and to both edges at every size and type, but the top was so dark (the ground at 86% over the Header overlap's own 34% black) that it read as a band, the picture starting lower.
+- The Header group's ground over a Banner Image now starts at the very top at 62% of the screen colour and eases out to nothing at the sheet's edge: no solid part, no 30%. With Blur bg it starts at 39%, over the progressive blur.
+- Filled over a picture is that same gradient (no solid band over a photo); Transparent, no ground. At rest the nav's own ground is off for every style; once the sheet comes under the bar, the nav's ground comes back (Filled solid again).
+
+---
 ## v2982 Banner: one ground for the whole Header group
 
 - "If I remove the blur, it's still a bad gradient ... apply the gradient on the full header group and the blur as well". Over a Banner Image the Header nav kept the flat-screen gradient rule (solid to 70% of the nav, gone 32 under it), so over the photo it was a dark bar with a short edge, and only over the nav.
