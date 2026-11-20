@@ -3761,6 +3761,15 @@ are all `getBoundingClientRect` questions. Screenshots confirm; numbers decide.
 1150 / 1192 / 1300 / 1500 is a reasonable sweep for the desktop pages.
 
 ---
+## v2928 · Timeline: unpaid item type with a Buy modal
+
+"Create a type of item that is not paid yet, on click open Modal with description of the Service and action to buy".
+
+- An item with `buy: '<price>'` is not paid yet: its line reads "Not paid yet · $150" (the card meta, shown whatever Tweaks → Prices says), its button is Buy (primary; `ctaOf` / `row`), and the whole row or Buy opens `buySheet(id)` instead of the service page.
+- The modal (the Timeline's sheet, `sheet()`): the item's picture, the price ("One-off, not part of your membership"), the service's own words from its service page (`_svc.info(key)`, new: SVC[key]: `about`, `dur`, the clinic's name, `instr` as "Before you go"), then the Footer group master (`EvPageFt`, Stacked: "Buy for $150", Not now) pinned at the sheet's foot (`.t3BuyF`, sticky, its ground fading in over 20).
+- Buy for: the item joins the plan to book (`move(id, 'open', { buy: null, act: 'Book', st: 0, sub: 'Paid on 5 Nov…' })`, the toast with Undo). Not now closes.
+- Examples: Skin check (Paused / Later, $150, the review price) and the DEXA scan (Next, $299).
+
 
 ## 5. Traps already hit
 
