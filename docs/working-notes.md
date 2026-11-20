@@ -3716,6 +3716,13 @@ space, not a bigger organ.
 "Brain". Labels are categories, headlines carry the sentence.
 
 ---
+## v2927 · Primary card XS·S visual bottom right; Insights on the sub-page system; Get started card on the non-member Timeline; Tab top "Fixed on scroll"
+
+- "Position visual on bottom right and let the content on top use the full width, with 48px padding right": at XS·S the visual (sphere, ring, thumbnail, avatars) takes the CTA's row at the bottom right (`order:99`, column 2, `align-self:end`); with a visual, the words (`.hpOvTgW`, h3, p, eyebrow, sub, bar) span both columns with 48px clear at the right. Without a CTA the visual sits alone on the last row.
+- Insights, "Same system as primary card. First page is about the demo and tweak, the rest about the collection": `MODS.mins` gets `sub: true`, `jump: false`, `demoT: 'Demo'`: the header select (Demo, Collection, each group), controls in the right panel, no lead description (any module with Sub pages), the demo in the phone frame under a skeleton primary card (`.moSkPc`), on the desk beside one (`.moSkPcDk`, the module in the right column). The old Placement section is off on the sub system (the frame shows it).
+- "Use this for non member timeline": the new member's top card is the Overview's Get started card (`EvAct.html()` in `section.ovAct`), in place of "your timeline is being built". Its 14 style rules widened from `#dOver .ovAct…` to `:is(#dOver, #tl3) .ovAct…` (one master, the doc's moCss copy still maps it).
+- Tab top → "Fixed on scroll" (`#stT3TabPin`, On by default; "Add tweak fixed on Scroll when reached"): with the header group not fixed (`html.t3TabFree`), the tabs scroll with the page until they reach its top, then pin there (`html.t3TabPin`, sticky at `--t3PinT`, set by `hTop()`; the groups pin under them). Off: they scroll away as before. With the header fixed the tabs are pinned with it already.
+
 
 ## 4. Verifying a change
 
