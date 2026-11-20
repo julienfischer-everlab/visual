@@ -5,6 +5,14 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2965 · Header nav Off keeps its safe space (Figma Top navigation = None)
+
+"IF Header nav is OFF keep the safe space such as figma doc" (Patterns DS25 8306:41391, Top navigation / Modal overlay / XS, variant None 8306:41412):
+
+- A modal's Header nav Off (Full modal, Sheet, Floating, Full bottom sheet) keeps a **24 safe space** (Figma's Container, 400 Fill x 24 Hug) and, while Dismiss is On, the **Close still floats** at its right, 16 down and 16 in (44 at XS · S on a Full modal, 28 on the desk, 36 on a sheet), over the Header title's top; the title's row keeps 12 clear of it (`.sdNvNone`, `.sdNvX`). Dismiss stays in the panel when the nav is Off.
+- A page's Header nav Off keeps the master's empty space (16 under the status bar at XS · S, 24 at M · L), as before.
+
+---
 ## v2964 · Additional slot for the step bars; Header nav and Header title On / Off; Banner Image nav gradient; no Decorative
 
 Page types / Modals live screen (EvScrDemo):
