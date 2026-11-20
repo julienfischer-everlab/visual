@@ -5,6 +5,12 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2957 · The Collection pages show the builder's steps
+
+- "That's the last step on the onboarding. Why I still see the 8 step here. The builder is the source of truth, always show the step from the builder". Modules → Primary card (overview): the Collection builder's State list (EvPcSteps: steps removed, added, renamed) was right, but the Collection and each card's page (Onboarding consult, DEXA, MRI, Microbiome, Advanced Blood Testing, Freemium, Doctor's plan, Quarterly check-in) drew from the code's own lists (`HC_ST`, `EvPcMri`, `EvPcMic`, `EvPcPath`, the check-in's four), so a removed step (After the call) still showed.
+- `MODS.mhp.groups()` now maps every card through `EvPcSteps.list(card, its base)`: removed steps gone, added ones in (drawn from the state they were made from, their own key for style and words), renamed ones by their name, in the builder's order; the code's lists only give each step its title and line. Checked: After the call removed, All set renamed Booked, a step added from Step 3: the Onboarding page shows the eight the builder lists, the added one last; an MRI step removed: 15 of 16.
+
+---
 ## v2956 · Page types: Banner Image is the Header overlap
 
 - "The header with banner should follow the Header overlap. Use this as the example (img and transition page etc. Bring everything in the page type tweak)". Banner Image in the live screen (Design system → General layout → Page types, EvScrDemo) was EvPageHg's Image variant (a picture under a black status bar, Page title, a Slot area, then a white band under the sheet). It is now the Header overlap master's structure and motion, as its doc's live phone:
