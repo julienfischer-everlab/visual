@@ -5,6 +5,14 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2975 · Every primary card XL; Header nav follows the Level; Depth 1 / 2+ on Full only; the slot's ground whole
+
+- **Every primary card is XL, at every breakpoint** ("Change all of the primary card to XL size of the card. All breakpoints"): the Card · Size tweak of the primary card is gone (hidden, a saved size ignored), every `.hpOvCard` (the Overview, Modules' demo, the docs' frames) wears `evCard-xl` (padding 24), the Inspector offers xl only. This was the XS padding: a saved Card · Size md gave 16 a side ("The left especially is so bad").
+- **Page types: the Header nav follows the Level** ("If it's on main, you need to turn off the head nav"): Main, Off (a modal's safe space with its Close floating), Sub, On with its Back; its toggle locked, the note "Follows the Level: Main Off, Sub On". On a **Page** with no Header nav the whole Header nav card goes ("You should remove the entire header nav"); a modal's keeps Fixed, Style and Blur bg for its safe space.
+- **Depth: 1 or 2+, on a Full sheet only** ("you can do one or two plus"; "the depth is only on the full"): a Bottom sheet at Full (XS, S), a Drawer drawn full at XS; older saves' 3 and 4 read 2+.
+- **The Additional slot keeps the Header nav's ground** ("The gradient doesn't apply on the additional slot after the header nav"): with Blur bg, each part's fade mask also masked a part running on into the next, and the 17 tall step bars lost their ground altogether; a chained part's ground now whole (no fade, no bleed), only the last part fading.
+
+---
 ## v2974 · Page types: Back follows the Level; Hug's footer automatic, XS · S only
 
 - **No Back prop** ("It's main. There's never back, so you don't need this back tweak ... It's a back, that's it"): Header nav → Back removed from the panel. The Back follows the Level on every type (`subFix`): Sub, the Back on the left and the Header nav On and locked; Main, no Back.
