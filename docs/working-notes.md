@@ -5,6 +5,13 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2977 · Page types: the Header nav the member's choice on Main; a banner's top wears the nav's Style
+
+- **Header nav On / Off is free on Main** ("I can turn on the nav if I want to have a nav. It's not always like this ... I don't force the header nav to be off"): Main starts Off (the Level turning Main sets it Off), the switch free; Sub and a Full modal keep it On and locked ("Always on a Sub level", "Always on a Full modal"). A Page with it Off keeps the switch alone in its card (Fixed, Style, Blur bg back once it is On). A Main page's bar turned on over a banner starts with no actions (the title keeps its own).
+- **Over a Banner Image the Header nav's Style applies, its safe space too** ("verify that the gradient is applied if I have gradient on it"; "same for hug"; "full"): the nav part (or the safe space when Off) wears its Style and Blur bg over the picture on a Page, a Full modal and a sheet at High, Hug or Full; Transparent leaves the picture bare.
+- The demo's status bar sits over every part's ground (z 9).
+
+---
 ## v2976 · Page types with a Banner Image: the picture to the sheet's top, the title at its foot, the slot ungrounded; Full modal nav always on
 
 - **A sheet's Banner Image runs into its top corners, the notch over it** ("The image on high should blend with the corner radius on the top ... the notch should be above it"; "The same for hug"; "full"): the sheet's solid top strip only without a banner (`.sdScr:not(.sdHo)`), the notch over the picture in white 72%. High, Hug and Full alike.
