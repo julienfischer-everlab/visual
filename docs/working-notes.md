@@ -5,6 +5,14 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2970 · Merged: the Timeline's decade headlines (published from another session)
+
+Another session published to Everlab App - Latest (07:22 UTC) without pushing its source; its change is merged here so nothing is lost:
+
+- **Tweaks -> Timeline -> Headlines** (`stT3DecHl`, New / Old, after Decades): each decade's headline from Decades narrative v1, by sex, two focuses a decade (30s to 70s; e.g. M 40s "Get ahead of heart risk. Stay metabolically fit."; F 40s "Navigate the hormonal shift. Get ahead of heart and metabolic health."). Old keeps the copy before it (`DHEAD`).
+- `DHN` (the copy by sex) and `dHead(age, short)` beside `DHEAD`; the decade's section title (`decNum`) and its card's title (`lockCard`'s `t`: "Your 40s: ..." when not bare) both read it; `stT3DecHl` joins the Timeline's redraw list.
+
+---
 ## v2969 · Page audit: layout health on the structure alone, Fix and Fix all, grouped rows, presets; sheet footer Fixed; sheet title padding
 
 **Page audit** (Analytics):
