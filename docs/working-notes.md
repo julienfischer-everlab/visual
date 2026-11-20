@@ -6,6 +6,11 @@ the design landed where it did, and which parts have already bitten. The
 this is the part you need before you change it.
 
 ---
+## v2938 · Quarterly check-in card on the primary card's structure
+
+- "Follow the structure!!!! NO badge but eyebrow, Respect the alignment as well!", "and title group with proper sub", "Dont use Span content": `HPC.qci` now builds as every primary card: its care team (the visual), the Title group master `EvPcTg(eyebrow, title, sub)` (eyebrow "Quarterly check-in" in every state, one plain title, the count or note as the sub), the CTA inside `.ovBookFoot` (the card foot, which carries the 32 above the button). The old head (`.hpDrHd`, the `.hpFrTag` badge, the two-tone `<span>` title, `.hpFrP`) is gone.
+- Alignment as the others: the forced centring on the Overview removed (Centred mode centres it, as every card); at XS · S the team joins the visual rule (`.hpQciTeam` in the `:is(.hpDots, img.hpObjPic, img.hpPlPic, .pcAvs, …)` lists): bottom right in the CTA's row, text full width with 48 right, its column 112 (`--pcVis`) for three faces.
+
 ## v2937 · Links open what is on screen; Share this card
 
 - "Link sharable should be the page I'm currently seen on the screen": the bar's Copy link (`.tkPsLk`, at a breakpoint) now stores the setup as it stands (`snapNow()`, not the preset's saved one) and a view (`viewNow()`): the doc tab (`window._doc.cur()`, new), the doc views kept in this browser (`VLS`: `everlab:glPart`, `everlab:moSub:<module>`, the frames' `…Bp`, zooms…), and the choices on the page (the header's `select.dhSel`, a module's `select.moDmSel` Card and State). Opened (`#tk-vw…`), the setup goes on, the keys are written, the tab shown, General layout's part picked, then each select set in order with its change (`viewGo`). Its menu reads "Copy link to “<page>” at". The presets menu's own links stay preset links.
