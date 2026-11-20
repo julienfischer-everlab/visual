@@ -5,6 +5,15 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2962 · Primary card background: Position "Top radial"
+
+Modules > Primary card (overview) > Collection builder > Background > Position now has a third option, **Top radial**, next to Top right and Full.
+
+- The picture covers the top 70% of the card and fades out towards the bottom with a radial gradient centred at the top (an ellipse mask: solid to 35%, half by 62%, gone at the bottom edge).
+- No graphic: the words (eyebrow, title, support line, CTA) stay centred in the card, as with Visual center Off.
+- The card gets `pcmRad` (alongside `pcmGb`); the picture is the same `pcMediaFull` element Full uses, so switching between Full and Top radial keeps the image.
+
+---
 ## v2961 · Full modal sections edge to edge; the panels keep their colours in light mode
 
 - "The section here doesn't really follow the framework of the full modal. The section should be edge to edge. Have a look at the design system": on the desk the step flows' sheet was a centred column (`max-width: calc(var(--ct2xs) + 40px)`), so the Header group, Body and Footer group stopped at its edges and the page showed round it. Now, as General layout → Page types, the sheet fills the frame and each section is full width, its content in its container: the Body's (`--ct2xs`, Tweaks → Body), the Header nav's (`--ctHd`), the Footer's (`--ctFt`), the sections' 20 either side kept; the column's old bleeds for a wider part are neutralised. The step flows (Async report, Confirm plan, the check-in's insights: `.qciArIn` too); the EvSolo full modals were already full width; the Health profile's sheets keep their layout for now. Checked at S (600, content 512), M (544), L (576).
