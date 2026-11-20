@@ -5,6 +5,16 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3000 Header nav Off per Figma; Check-in: persona checkboxes, rename, sections
+
+- **Header nav Off** (Figma Patterns DS25 8306:41412, Top navigation = None, "this trick putting the right slot bleeding outside the frame"): the bar is a 32 frame (`--t-space-xl`), its ground still on, and the Close (while Dismiss is on) stays exactly where it sits with the nav on (`top: (--phgNavH - --phgBtn) / 2`, right `--sdPx`), so it hangs out under the frame. Was a 24 bar with the Close centred on its foot.
+- **Check-in persona in Tweaks**: Tweaks -> Check-in -> Persona is a checkbox for each persona (the Checkbox master, `EvCheck.group`, small): New bloods only, New bloods and device data, No new data; one at a time. The old select stays hidden as the value the check-in reads, so the Flow panel's jumps still switch persona (and the boxes follow).
+- **Flow panel**: no persona badges on the steps and no Personas key above them. A step only another persona has stays dimmed; its hint names that persona.
+- **Rename**: "Quarterly check-in" is "Check-in" everywhere it shows (page menu, Tweaks, header, intro, the Overview's primary card, Modules, Object option). The `#quarterly-check-in` link still works.
+- **What's changed and its follow-ups** (the questions showing what is on file): two sections, each with an H2 on the Title group master: "What we have for you" over the on-file card (now Primary - Outlined, its eyebrow removed), then "Recent changes" over the options or the text field. 32 between the sections, 12 under each H2.
+
+---
+
 ## v2999 General layout: no top title bar
 
 "remove this top title": the Design system's General layout page no longer shows its "General layout" head bar (`.ldDoc.glGen .ldMainH{display:none}`). The bar only held the title, so nothing else moves; the page starts at its first section, with the controls in the right panel as before. Other doc pages keep their head bar.
