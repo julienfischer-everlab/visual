@@ -5,6 +5,18 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2995 Every screen on the Page types master: first batch (audit)
+
+- "I want every page UI based on this page type. Can you align everything? Can you do a check everywhere?" An audit of ~35 app screens against the Page types master found the gaps mostly in shared pieces. First batch:
+- Notch (`.evNotch` and every sheet's grabber): the master's, 36 x 5, white 24% (ink 24% on light), blurred 64; over a picture the same.
+- Swipe to dismiss at XS and S: `window.evSwBp(panel)` gates every sheet's swipe (EvSheetSwipe's default, the `.auto` families, the Plan's medication sheet, the cart, the T3 sheet). XS always; S only where the sheet is a bottom sheet (its foot on the screen's), never a centred modal.
+- Progressive blur on every app header and footer ground under Blur bg: `.arSheet .arGround` and `.arFootGround` (the shell now always gives them their ten bands), `.ovGround` (the Overview, service, timeline and banner bars), `.evTnG` (EvTopNav C: the solo full modals, past results, the info sheet). Eight layers 0.25 to 32, boxed to their bands; the single blur and the parent's mask gone (a mask on the parent hides the page from its layers); the tint keeps its own fade (.evTnG::before now masked). Footers ramp the other way.
+- Header nav Off (EvTopNav C): a 24 safe space, the Close centred on its foot, half in, half out (was 32, the Close at +16); the title clearances follow (half the disc under the bar).
+- Banner ramp (`.hoBand::before` over the photo): from the top over the bar to 32 under it, no solid band; the 30% rule once the sheet comes under.
+- The Async report's bar and footer the master's Style (Gradient unless the page's master is Filled or Transparent); its own Solid / Gradient Tweaks rows retired (hidden).
+- Still to align (next): status bar clear over banners at rest; desk sheet widths to the Max width tokens; EvPageType Main / Sub, Floating and Full bottom sheet; the sheet header master (.evShHd) onto the Header group; the check-in's .qciHd and the Health profile's head; the solid-edge footers' single blur; the home indicator (earlier asked removed everywhere).
+
+---
 ## v2994 Guides: All guides; the panel's switches a size down
 
 - "On the guide, I want a general toggle on and off": Page types -> Guides opens with All guides (`ga`). On while any guide is, mixed while some are; a tap turns every guide (Header group, Header nav, Header title, Body, Footer, Show containers) on or off, mixed to all on.
