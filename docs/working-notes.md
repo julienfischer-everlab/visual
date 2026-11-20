@@ -5,6 +5,13 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2981 Banner: a progressive blur under the Header nav
+
+- "Still bad": over a Banner Image the Header nav's Blur bg was one heavy blur faded out by a mask. The faded part shows the sharp photo through a blurred copy of itself, so it read as a muddy band with a line where it ended.
+- Now it's a progressive blur (`window.EvPBlur`, CSS `.evPBlur`): eight stacked layers from 0.25 to 32px, each on its own band, sharp at the foot and strongest at the top, with a light tint (the screen colour at 45%, fading out) over them. It runs from the top of the screen to 32 below the nav (and under its Additional slot).
+- Shown at rest over the picture when the Header nav is Gradient with Blur bg. Once the sheet comes under (`hoUnder`), the nav's usual ground comes back. Filled keeps its frosted ground.
+
+---
 ## v2980 Footer Blur bg, and the banner's frosted ground
 
 - "So fix it": the footer now has **Blur bg** like the Header nav. Tweaks -> Footer has a Blur bg switch per page; unpicked, the page takes the Page types master (Footer group, Blur bg) of its type. `html.tfBlur`, set by EvTopNav's tApply (`fbl` in tDef / tEff / tPg).
