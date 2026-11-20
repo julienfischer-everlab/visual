@@ -5,6 +5,13 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2974 · Page types: Back follows the Level; Hug's footer automatic, XS · S only
+
+- **No Back prop** ("It's main. There's never back, so you don't need this back tweak ... It's a back, that's it"): Header nav → Back removed from the panel. The Back follows the Level on every type (`subFix`): Sub, the Back on the left and the Header nav On and locked; Main, no Back.
+- **Hug's footer rule is the bottom sheet's, XS and S only** ("not like a floating modal on M L"): on M · L the Footer's Fixed stays free (`hugOn(ty, S, bp)`).
+- **Hug's footer is automatic** ("if the content is way too long ... The footer is fixed. If there's no overflow, the footer is not fixed"): the sheet grows with its content up to the Full's top; once the content runs past it and scrolls, the footer pins at the foot with its Style; when it fits, the footer sits at the content's end, no ground. The Fixed toggle shows what applies, locked, with the note "Auto with Hug: fixed when the content overflows".
+
+---
 ## v2973 · Check-in: no Preparing primary card, a section card instead, the Overview after the insights; Page types sheet rules (Depth, Hug, Floating gone, solid top, Sub level)
 
 - **Check-in Preparing is no primary card any more** ("We need to kill this step ... a section between the bento and the action plan ... the same content, but in a small, full-width card"). On the `home:sent` moment the primary card is the member's next service (the Whole Body MRI, its step from Tweaks), and a small full-width card sits under the bento (and the phone's service chips), above the next section: the team, the Title group (Quarterly check-in / Your insights are being prepared. / We'll send you a notification when they're ready), Skip to when it's ready (EvCtl.btn secondary sm, goes to the insights push). Built on EvCard (Secondary - Transparent, md) and EvTitle. Modules → Primary card: the check-in's Sent state removed (Ready, Started, Done).
