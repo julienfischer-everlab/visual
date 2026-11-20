@@ -6,6 +6,10 @@ the design landed where it did, and which parts have already bitten. The
 this is the part you need before you change it.
 
 ---
+## v2945 · Live screen demo: Auto follows the window's breakpoint
+
+- "shouldnt be a bottom sheet but centred sheet on auto, LIKE L": Auto took the layout from the stage's own width (about 860 on a 1700 window: S, a bottom sheet). It now takes the window's breakpoint as the app's Auto does (the window less a docked Tweaks or Flow panel, 320 each: < 600 XS, < 992 S, < 1440 M, else L), still drawn unframed in the stage: on a desk window a Sheet is the centred modal over the desk layout.
+
 ## v2944 · Live screen demo: Guides on top; modal top-nav buttons at the modal sizes
 
 - "Push the guide on top": the Guides group is the panel's first (over the Page type on Page types; on Modals right under the page's own Modal group).
