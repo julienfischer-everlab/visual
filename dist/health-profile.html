@@ -3537,6 +3537,13 @@ window.EvAlert = (function () {
   document.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('.evAl .evAlXb'); if (!b) return; var al = b.closest('.evAl'); al.hidden = true; });   /* dismissed: gone */
   return { AP: AP, css: css, html: html, name: function (k) { return (K[k] || [k, k])[1]; } };
 })();
+/* EvConfirm (a destructive confirmation: "Remove step remove card need Yes No destructive confirmation"): EvConfirm(host, question, onYes) puts the question and No (Secondary) · Yes, remove (Primary, Destructive: bg/sentiment/negative/primary) in place of the host's buttons; No, Escape or a click elsewhere puts them back; the viewer refuses confirm(), so it is drawn */
+window.EvConfirm = window.EvConfirm || function (host, msg, yes, o) { o = o || {}; if (!host) return; var old = host.querySelector(':scope > .evCf'); if (old) old.remove();
+  var esc = function (t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  host.insertAdjacentHTML('beforeend', '<div class="evCf" role="alertdialog" aria-label="' + esc(msg) + '"><p class="evCfT">' + esc(msg) + '</p><div class="evCfB"><button type="button" class="evBtn evCtl-md evBtnSec evCfNo">' + esc(o.no || 'No') + '</button><button type="button" class="evBtn evCtl-md evBtnPri evBtnDst evCfYes">' + esc(o.yes || 'Yes, remove') + '</button></div></div>');
+  var q = host.lastElementChild, done = function () { host.classList.remove('evCfOn'); q.remove(); document.removeEventListener('keydown', key, true); document.removeEventListener('pointerdown', away, true); }, key = function (e) { if (e.key === 'Escape') { e.stopPropagation(); done(); } }, away = function (e) { if (!q.contains(e.target)) done(); };
+  host.classList.add('evCfOn'); q.addEventListener('click', function (e) { e.stopPropagation(); if (e.target.closest('.evCfYes')) { done(); yes(); } else if (e.target.closest('.evCfNo')) done(); });
+  document.addEventListener('keydown', key, true); setTimeout(function () { document.addEventListener('pointerdown', away, true); }, 0); var n = q.querySelector('.evCfNo'); if (n) n.focus(); };
 window.EvCtl = (function () {
   var SIZES = [['lg', 56], ['md', 44], ['sm', 36], ['xs', 28], ['2xs', 20]];
   var HAS = { btn: ['lg', 'md', 'sm', 'xs'], icon: ['lg', 'md', 'sm', 'xs'], split: ['lg', 'md', 'sm', 'xs'], badge: ['md', 'sm', 'xs', '2xs'], mono: ['md', 'sm', 'xs', '2xs'], input: ['lg', 'md'], seg: ['lg', 'md', 'sm'], filter: ['md'], chip: ['md', 'sm'] };

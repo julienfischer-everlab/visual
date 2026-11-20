@@ -5,6 +5,12 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2954 · Remove step / Remove card ask first (EvConfirm)
+
+- "Remove step remove card need Yes No destructive confirmation": a new master, `window.EvConfirm(host, question, onYes, { yes, no })`, puts the question and two buttons in place of the host's buttons: No (Secondary, focused) and Yes, remove (Primary, Destructive: the Button master's `bg/sentiment/negative/primary/100 · 200 · 300`, `.evBtnDst`). No, Escape or a click elsewhere puts the buttons back. Drawn in the page because the viewer refuses `confirm()`.
+- Modules → Primary card: Remove step ("Remove the step “Step 1”?") and Remove card ("Remove the card “Onboarding consult”?") go through it. Checked: No and Escape cancel, Yes removes (8 steps to 7), Restore removed steps still undoes.
+
+---
 ## v2953 · Check-in Thank you: the preparing line as its sub
 
 - "Put the both as a sub ... prepared by our care team. We'll send...": the Thank you's line under the title is now "Your insights are being prepared by our care team. We’ll send you a notification when they’re ready." (was "Your answers are saved for your care team."), the Overview's Preparing card's two lines in one. V2 (insights ready) keeps its own. Three lines at XS, two at L.
