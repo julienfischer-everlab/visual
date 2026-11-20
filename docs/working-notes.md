@@ -5,6 +5,19 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2971 · Every flow step audited; the step-flow footer's real container; the step's title as the Header title; Timeline Tweaks in page order
+
+**Page audit covers every step** ("Make sure all of the substeps on the step flow are covered as well"): after a page's first screen, each step its Flow panel lists (the journey's rows, or a `__flowPanel`'s; steps switched off left out) is opened and scored; a journey several pages share (the Onboarding consult's) is scored once, under the first of them. A page's row shows "N steps · X to fix" and opens its steps' rows (same columns, **Fix** for that step alone, **Go to step**); the page's Fix and Fix all fix its steps too. First run at M: 107 steps.
+
+**The Footer group's container** ("I just see one footer with the container full ... Tell me why it's full"): the step flows' footer (the Async report's, the Health profile's, the Step flow doc's) had no container: Tweaks' Footer container narrowed the button itself, so the guides (which skip buttons) drew the whole padded footer as the container. Its buttons and notes now sit in `.arFootC` (data-container), laid out as the footer was (display, gap, alignment inherited) and on the Footer container's width; the footer is the section edge to edge (its ground, toasts and the Sphere's foot stay on it). The footer's child rules reach the container's children too (`:is(.arFoot, .arFootC)`). Nothing moves on screen (checked: the button 448-992 at M on every step tried).
+
+**The step's title is the Header title** ("this Async report shouldn't be there ... The title should be ... the header title, which also needs a container. This should be outside the body"): each Async report step's leading title block (the Title group / Header title: `.arIntroBlock`, `.arLfHead`, `.arRsHead`) now leaves the Body for a Header title section (`.arHt`, data-hg-part title, edge to edge) with its container (`.arHtC`, the Header title's width, --ctHt), before the Body's content and scrolling with it; the page is wrapped (`.arPgW`) so the title leaves and arrives with its step; the spacing is read before the move, so nothing shifts (checked at M). The guides and the checks read it as the Header group's title. **Fix never makes a title up** any more (the "Async report" title it put in is gone): it moves the screen's own leading title out of the Body, else leaves the issue listed.
+
+**Timeline Tweaks in the page's order** ("Put the decade intro tweak group first, just above decade, and then the 100% parallax at the very end"): ... Right column (L), Decade intro, Decades, The 100 · parallax.
+
+Audit at M after this (no fixes applied): the Async report's steps at 100 but Welcome, Confirm plan, Checkout and the debrief's end (their titles are built differently); the Onboarding consult journey's steps (26) and Send a gift's steps (11) miss most of the structure (no Header group / title / containers); the Check-in's three Overview screens are pages (measured as such); main pages miss the Header nav's safe space and containers.
+
+---
 ## v2970 · Merged: the Timeline's decade headlines (published from another session)
 
 Another session published to Everlab App - Latest (07:22 UTC) without pushing its source; its change is merged here so nothing is lost:
