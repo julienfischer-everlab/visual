@@ -5,6 +5,13 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2993 General layout: its parts a dropdown in the controls panel
+
+- "Put all of that as a dropdown on the right side, tweak on a new tweak on the top."
+- Design system -> General layout no longer has its left list (Page base, Page header group, Header navigation, Header title, Footer group, Page example, Title group, Container, Header overlap, Page types, Divider, Main menu). Each view's controls panel opens with a General layout group, its Part dropdown listing them (Header navigation and Header title indented under the header group), the one shown selected.
+- The list's buttons stay, hidden: the dropdown clicks them, so every view's wiring is as before, Main menu still opening Navigation. Every view's dropdown follows the part shown. The left column's notes went with the list.
+
+---
 ## v2992 Page types: no-nav bar fixed, swipe to dismiss, Max width tokens, the desk page's structure; Inspector green for components
 
 - Header nav Off, its Fixed now holds (the Header group was sticky only when the nav was on): the safe space stays at the top with its Style (the gradient), and a sheet's flat 32 top cap gives way to it when that ground is there ("If I scroll, you can see it's not fixed ... this should be a gradient here"). Its Close sits on the bar's foot, half in, half out ("50% in the navbar and 50% outside"), the title kept clear of it.
