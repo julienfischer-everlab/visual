@@ -6,6 +6,10 @@ the design landed where it did, and which parts have already bitten. The
 this is the part you need before you change it.
 
 ---
+## v2946 · Live screen demo: sheet Depth 1–4 (stacked sheets)
+
+- "Need Depth tweak, Level 1 2 3 4, follow bottom sheet documentation when the sheet overlaps another sheet, take that system": the Sheet group has Depth (1 to 4; a Sheet or a Full bottom sheet). Depth N draws N − 1 sheets under the top one in the Modals doc's stacking (`.iosStk`): each a card in the modal's ground with its edge lifted (10% white, at 80% on the black, a deeper one 14 points darker), 4% narrower at each side per level, its top edge 12 above the one in front (desk: centred, 8% narrower and 14 higher per level); the scrim near black (72%) once two are up. Saved per type with the rest.
+
 ## v2945 · Live screen demo: Auto follows the window's breakpoint
 
 - "shouldnt be a bottom sheet but centred sheet on auto, LIKE L": Auto took the layout from the stage's own width (about 860 on a 1700 window: S, a bottom sheet). It now takes the window's breakpoint as the app's Auto does (the window less a docked Tweaks or Flow panel, 320 each: < 600 XS, < 992 S, < 1440 M, else L), still drawn unframed in the stage: on a desk window a Sheet is the centred modal over the desk layout.
