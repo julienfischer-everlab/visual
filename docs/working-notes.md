@@ -5,6 +5,12 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2959 · The gradient never covers what does not stay put
+
+- "MAKE Sure the gradient Zindex is always behind a non fixed div": in Page types (Full modal, Header title not Fixed, the desk) the nav's 32 bleed lay over the title's first line at rest. Raising the title over the header would draw it over the nav's buttons once it scrolls under them, so the bleed follows the scroll instead: the header's grows from none at rest to the master's 32 once the page has moved 32 (`--sdK`), the footer's shrinks to none as the end comes (`--sdF`), both set on each demo scroller from `--hgBleed`; the stops recomputed on the bleed in use. At rest the title under the nav, at the end the last row over the footer, stand clear; what scrolls under them still fades by the master's rule.
+- The app already did so on the Top nav master (`evTnOn`) and the flows (`--ar-tf`, `--ar-bf`); the Overview's bar now too (no bleed until `.ovScrolled`).
+
+---
 ## v2958 · Page types: the Full modal's body all options
 
 - "Add more content to fill the page. Stay with options list - not these 2 card at the bottom": the live screen's Full modal (a questionnaire step) with Body Long draws twelve options (EvQ.list, the skeleton bars in them) and nothing else; the heading bar and the two empty field cards under the list are gone. Short keeps three. The page scrolls (1105 in 852 at XS), the body running under the header and the footer.
