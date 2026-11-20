@@ -5,6 +5,17 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2968 · The Async report's sheets follow the Page types modal system
+
+"Follow the moda system on page type" (the "3 biomarkers" modal): the Async report's sheets (`sheetOpen`: biomarkers, Sources, a marker area's list, and the others built on it; the Discuss sheet and the Eva-led ones keep their own head) now match the Page types Sheet, measured against it at XS, S and M:
+
+- **Header nav**: a 72 row, the Close the modal's 36 at its right (18 down; was 44 at 24).
+- **Header title**: the Header group master's title (headlines/700: 24 XS, 26 S, 28 M · L, Medium), in a 64 row with 8 above and under (was 24/30 under the close).
+- **Body**: its container on `layout/container/padding/left-right` (16 XS · S, 24 M · L), 16 under the header.
+- On the desk modal the nav row starts at the modal's top; on the phone under the sheet's 20. The numbers come from the master (`EvPageHg.vars` at the breakpoint, set on the sheet when it opens; `.arQaPt`).
+- Other titled sheets in the app keep the sheet header master (EvSheetHead) for now.
+
+---
 ## v2967 · Show containers guide; sheet containers on the padding token; a saved set per Page type
 
 Page types / Modals live screen (EvScrDemo):
