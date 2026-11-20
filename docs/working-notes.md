@@ -5,6 +5,15 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2990 Page types: the real menu on the desk; the picker in one blue
+
+- "I want the layout here to be the final layout. The only thing that has to be placed there is the body. You can keep the skeleton, but the menu needs to be the real one."
+  - M and L: the five grey bars are gone. The frame carries the app's own sidebar (`.dash .side` cloned and drawn by the app's own rules through the Navigation doc's `nvSideCss`, exposed as `window.__nvSideCss`): the logo, the retract, the real entries and badges, Overview lit, the app's width at that breakpoint (`EvPageBase.menuW`), folded when the app's is (`nvMin`).
+  - The page sits beside it as the app's page panel: 16 from the top, 8 in, top corners 12, on the shell's colour (`--sdShell`, from the copy's `--shellBg`). Sheets and modals still dim the whole frame.
+  - XS and S already carry the app's own dock (cloned) and status bar. Only the body is a skeleton.
+- "Keep the border blue, not green and orange": the Page type picker's pick is in the one blue (`--tbOnFg`) for every type, not the type's own colour.
+
+---
 ## v2989 Page types demo: tap the scrim to dismiss, tap the screen to bring it back
 
 - "For the sake of the demo, when I click outside on the blanket ... the modal to disappear. And reappear when I click in the screen."
