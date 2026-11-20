@@ -5,6 +5,15 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2982 Banner: one ground for the whole Header group
+
+- "If I remove the blur, it's still a bad gradient ... apply the gradient on the full header group and the blur as well". Over a Banner Image the Header nav kept the flat-screen gradient rule (solid to 70% of the nav, gone 32 under it), so over the photo it was a dark bar with a short edge, and only over the nav.
+- Now the ground lives in the picture (`.sdHoGnd`, in `.sdHoHero`, sticky with it) and spans the whole Header group: from the top of the screen, past the nav, to the title at the sheet's edge (`--hoOverlap`). It takes the Header nav's Style and Blur bg.
+  - Gradient: the screen colour at 86% at the top, eased out to nothing at the sheet's edge. No solid band, no line.
+  - Blur bg: the progressive blur (`EvPBlur`) from the top, strongest over the status bar and the nav, gone by 60% of the group so the picture under the title stays sharp. The gradient is lighter (55%).
+- At rest over the picture the nav's own Gradient ground is off. Once the sheet comes under the bar (`hoUnder`), the nav's usual ground comes back.
+
+---
 ## v2981 Banner: a progressive blur under the Header nav
 
 - "Still bad": over a Banner Image the Header nav's Blur bg was one heavy blur faded out by a mask. The faded part shows the sharp photo through a blurred copy of itself, so it read as a muddy band with a line where it ended.
