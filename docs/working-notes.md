@@ -5,6 +5,15 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2985 The blur progressive everywhere on the Page types screen
+
+- "Why is the blur not progressive? The blur should be progressive all the time." On a sheet over a Banner Image (Main, close only) the nav's blur showed as one strong blur with a hard edge 32 under it: the layers' fade masks weren't applied in that browser.
+- `EvPBlur`'s eight layers are now each boxed to their own band (3/8 of the span) as well as faded by a mask. Where a mask is ignored the blur still steps up from the foot to the top instead of running full strength to a hard edge. `EvPBlur.html('up')` is the footer's (strongest at the bottom).
+- Every Blur bg on the Page types screen is progressive now, not one blur faded by a mask: each Header group part (its span: up over the status bar's room for the first, its bleed with the scroll, its Additional slot) and the Footer group (its bleed up). The ground's colour stays as before on top.
+- "The same for the page: the header group takes the gradient": sheets and pages share the rule. Over a banner, the Header nav's gradient runs from the top to 32 under it, with the progressive blur under it.
+- Fix on the way: the banner's 78% tint for the nav also landed on a banner sheet's footer layers (a dark band with a hard top). It's scoped to the Header group now.
+
+---
 ## v2984 Banner: the Header nav's gradient over its full height
 
 - "Do I have a nav, but then don't use the 30%. Just use the full high. Start at 0% and end at 32px bleeding."
