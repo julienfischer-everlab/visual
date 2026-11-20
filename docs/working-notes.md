@@ -5,6 +5,15 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2992 Page types: no-nav bar fixed, swipe to dismiss, Max width tokens, the desk page's structure; Inspector green for components
+
+- Header nav Off, its Fixed now holds (the Header group was sticky only when the nav was on): the safe space stays at the top with its Style (the gradient), and a sheet's flat 32 top cap gives way to it when that ground is there ("If I scroll, you can see it's not fixed ... this should be a gradient here"). Its Close sits on the bar's foot, half in, half out ("50% in the navbar and 50% outside"), the title kept clear of it.
+- XS and S: the bottom sheet swipes down to dismiss, the master's swipe (`EvSheetSwipe`, from the notch or the header, from the body when scrolled to the top; `out: 'slide'`), as the scrim and the Close do. A tap on the screen brings it back.
+- Sheet -> Max width (was Size md / lg / xl): the modal's and the drawer's width, a container token ("instead of max width size"; Figma Patterns DS25, Modal overlay / Floating 7674:7268): 2xs (512 · 544 · 576 at S · M · L), xs (800), sm (1080), never wider than the screen less 24 a side (12 for a drawer). Shown wherever the sheet is a modal (M, L; S for a drawer). Older saves map md, lg, xl to 2xs, xs, sm.
+- The desk page the app's structure ("the body should be on a black background. Keep the same token with the rounded corner on the top left"): the Base screen master's variables, the body under its top band (`--pbTop`) on the section's black (`--pbSec`), its top-left corner (`--pbR`), flush right, the rail on the ground (`--pbGround`). It stays under a modal, dismissed or not.
+- Inspector: a component, or a part of one (a Title group's title), is selected in green, its label led by the chain; orange for what no component builds ("If it's a component, the area should be green, not orange").
+
+---
 ## v2991 Header nav: Title on scroll; Close dismisses in the demo
 
 - "If header navigation is fixed and if there is a header title below, on scroll, when the header navigation passes the header title, the title of the header title should appear in the header navigation (in the centre ...) in the middle slot."
