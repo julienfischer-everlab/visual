@@ -5,6 +5,14 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2987 Header group one ground; status bar filled; home bar frosted
+
+- "It looks like it's filled the header nav. Should be a gradient." With the nav and the title both grounded and fixed, each drew its own ground: the nav's ran solid to its foot (chained, `data-cont`) and the title's started again under it, with a hard line between. Now a part chained into the next hands its ground over (`[data-cont]` hides its own ground and blur), and the last part's ground climbs to the group's top (`data-hgup`). The Header group is one ground: one gradient (the 30% / 32 rule over the whole group) and one progressive blur.
+- `--hgUp` no longer counts the status bar's room twice on the phone (the group's own top padding is taken off), so the ground starts at the screen's top, not 47 above it, and its solid part ends where the rule says.
+- "The status bar should always have the field background. The only exception is when there's an image banner": on the Page types phone, the status bar is on the screen's colour (`--sdStBg`, read from the screen) on pages and full modals. Over a Banner Image at rest it's clear (the picture under it); once the sheet comes under the bar (`hoUnder`), filled again. A sheet's status bar stays the page's under the scrim.
+- "Make the home bottom notch ... 24% opacity white, with blur 64px": the Page types phone's home bar is white at 24% with a 64 backdrop blur.
+
+---
 ## v2986 Banner: the gradient through the whole Header group, out 32 under it
 
 - "Make sure the gradient bleeds 32px on the header group." The span was right (the Full modal at XS: Header group 0 to 136, the ground to 168), but the eased curve was down to a few percent by the nav, so it never read as reaching the step bars, let alone 32 past them.
