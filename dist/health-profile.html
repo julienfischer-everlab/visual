@@ -4197,7 +4197,10 @@ window.EvOverlap = (function () {
     return { update: run }; };   /* a resize, a tab, a new number: the range again */
   var load = function () { try { var v = JSON.parse(localStorage.getItem('everlab:hoMaster') || 'null'); if (v) Object.keys(M).forEach(function (k) { if (typeof v[k] === 'number' && isFinite(v[k])) M[k] = v[k]; }); } catch (e) {} tok(); };
   load();
-  return { M: M, D: D, sda: SDA, apply: apply, bind: bind, mark: mark, set: function (k, v) { M[k] = v; tok(); },
+  /* its controls (the doc's and Page types' alike): key, label, min, max, step, the value's words */
+  var C = [['ty', 'Title drift', 0, .5, .05, function (v) { return Math.round(v * 100) + '% of the scroll'; }], ['rise', 'Picture rise', 0, 64, 2, function (v) { return v + ' px'; }], ['dim', 'Picture dims to', 0, 1, .05, function (v) { return Math.round(v * 100) + '%'; }], ['overlap', 'Sheet overlap', 0, 48, 2, function (v) { return v + ' px'; }], ['radius', 'Sheet corners', 0, 40, 2, function (v) { return v + ' px'; }], ['end', 'Fade ends', 0, 160, 8, function (v) { return 'hero height \u2212 ' + v; }], ['tint', 'Bar tint', 0, 1, .05, function (v) { return Math.round(v * 100) + '% at the top'; }], ['delay', 'Ground delay', 0, 160, 4, function (v) { return v + ' px of scroll'; }], ['ramp', 'Ground fade', 0, 200, 4, function (v) { return 'over ' + v + ' px of scroll'; }]];
+  var saved = function () { try { var v = JSON.parse(localStorage.getItem('everlab:hoMaster') || 'null'); var o = {}; Object.keys(D).forEach(function (k) { o[k] = v && typeof v[k] === 'number' ? v[k] : D[k]; }); return o; } catch (e) { return D; } };
+  return { M: M, D: D, C: C, saved: saved, sda: SDA, apply: apply, bind: bind, mark: mark, set: function (k, v) { M[k] = v; tok(); },
     save: function () { try { localStorage.setItem('everlab:hoMaster', JSON.stringify(M)); return true; } catch (e) { return false; } },
     reset: function () { Object.keys(D).forEach(function (k) { M[k] = D[k]; }); try { localStorage.removeItem('everlab:hoMaster'); } catch (e) {} tok(); } };
 })();

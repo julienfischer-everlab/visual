@@ -5,6 +5,16 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2956 · Page types: Banner Image is the Header overlap
+
+- "The header with banner should follow the Header overlap. Use this as the example (img and transition page etc. Bring everything in the page type tweak)". Banner Image in the live screen (Design system → General layout → Page types, EvScrDemo) was EvPageHg's Image variant (a picture under a black status bar, Page title, a Slot area, then a white band under the sheet). It is now the Header overlap master's structure and motion, as its doc's live phone:
+  - the picture (the Plan's hero, `#dPlan .plAHero img`) from the screen's top, under the status bar (`.hoHero.hoDHero`, 300 on the phone, 360 on the desk), its title group over its foot (EvTitle H1 and its sub, in the body's container);
+  - the body its sheet (`.hoSheet`: `--hoOverlap` over the picture, `--hoRadius` corners), the nav on top with no ground of its own, the bar's ground (`.hoBand`) in with the scroll and the page's once the sheet reaches it;
+  - `EvOverlap.bind` drives it: the picture's rise and dim, the title's drift and fade, the bar.
+- Its controls are the master's: `EvOverlap.C` (moved from the doc into the master, the doc now reads it) drawn as a "Header overlap" group in the Page types panel, shown only with Banner Image. They set the master live (`EvOverlap.set`), show orange while they differ from the saved Header overlap (`EvOverlap.saved()`), and the page's Save also saves the Header overlap (everlab:hoMaster), so every page takes them.
+- A flex item shrinking to 0 kept its −119 margin and pulled the picture up under the sheet: the band is `flex: none`.
+
+---
 ## v2955 · A breakpoint change no longer jumps from a doc page to Insights
 
 - "If I change the breakpoint here I land on the insight page???": `responsiveSync` (Insights picks its phone or desk design from the breakpoint) ran on every `#stBp` change and every resize, reading `version`, the app's page under the doc pages. Opened from Insights, the Design system (or Documentation, Tokens, Modules) stayed `version` 18 underneath, so XS, S, M, L there called `setMode` and showed Insights. It now runs only while Insights is the page shown (`versionSel` one of its family). Checked: Insights, then the Design system, S, M, XS: the Design system stays; on Insights itself M and L still give the desk, XS and S the phone.
