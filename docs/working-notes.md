@@ -6,6 +6,11 @@ the design landed where it did, and which parts have already bitten. The
 this is the part you need before you change it.
 
 ---
+## v2947 · Live screen demo: Fixed per header part; sheets' containers full and locked
+
+- "Header title Fixed ON OFF", "Header nav Fixed ON OFF": `nf` and `tf` in Header nav and Header title, the Header group's Fixed (`hf`) their parent as the guides' (off turns both off; one on shows it mixed, a click on it turns both on; the last off turns it off). A part not fixed is taken out of the sticky group into the scroll (`.sdTiOut` after it, `.sdNvOut` before it, the `.evPhg` wrapper and the master's vars cloned with it): title off, the title scrolls under the fixed nav; nav off, the nav scrolls away and the title holds under the status bar (top 47 on the phone; the status or notch room moves to the nav). Checked by scrolling 300 in the Full modal for all four cases.
+- "On Sheet type, container is always full" then "Disable container ranges": on a Sheet, floating or full sheet every part's container is full (`ctw(SH.test(t) ? 'full' : …)`) and its Container rulers show Full, disabled. EvCtRuler gains a disabled state (its source's buttons all disabled, or `data-dis`: `.ctRlDis`, dimmed, no drag, no keys); a locked row is never "unsaved".
+
 ## v2946 · Live screen demo: sheet Depth 1–4 (stacked sheets)
 
 - "Need Depth tweak, Level 1 2 3 4, follow bottom sheet documentation when the sheet overlaps another sheet, take that system": the Sheet group has Depth (1 to 4; a Sheet or a Full bottom sheet). Depth N draws N − 1 sheets under the top one in the Modals doc's stacking (`.iosStk`): each a card in the modal's ground with its edge lifted (10% white, at 80% on the black, a deeper one 14 points darker), 4% narrower at each side per level, its top edge 12 above the one in front (desk: centred, 8% narrower and 14 higher per level); the scrim near black (72%) once two are up. Saved per type with the rest.
