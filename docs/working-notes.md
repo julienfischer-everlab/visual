@@ -5,6 +5,12 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2949 · Check-in: Thank you without its rows; the insight's headline a Header title
+
+- "Thanks dont need the 3 bullets. Just the footer and top title group": the check-in's Thank you passes `rows: false` to the Async report's intro; `dbcBullets()` then draws nothing and the V3 welcome's stack gets `arWtNoRows` (its tag, title and line where they were, Back to home in the footer; at M and L the button under the title group).
+- "What happen with the titlegroup here" / "Should be a header title": the insight screen's headline (the check-in's insights and the report's own) is now the Header title master, `EvHdTitle.html({ type: 'page' })`, `data-hg-part="title"`, its V2 lede inside it. It sits 24 under the nav (was 40), the master's 24 under it before the anchors or the first section (`.arLfHdT`: the stack's gap taken back), in the body's container and sides. The entrance still writes the title (`hT`, the h1). Tweaks now lists its Header title · Container on those screens.
+
+---
 ## v2948 · Live screen demo: Sheet sub types Bottom / Floating / Drawer; modal nav title
 
 - "Modal docu" (Figma 7655:38622, 7638:84887, 7674:7268) and "Also add a Sub type Drawer" (7689:53864). The Sheet group gains Type (`st`: Bottom, Floating, Drawer) and Size (`sz`: md, lg, xl). Bottom keeps Height and Depth; Floating and Drawer show Size instead.
