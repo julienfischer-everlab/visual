@@ -5,6 +5,15 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2991 Header nav: Title on scroll; Close dismisses in the demo
+
+- "If header navigation is fixed and if there is a header title below, on scroll, when the header navigation passes the header title, the title of the header title should appear in the header navigation (in the centre ...) in the middle slot."
+  - On the Page types screen, when the Header nav is fixed and the Header title scrolls under it, the title's words fade up into the nav's middle slot (`.evPhgMid.sdMidAuto`, the slot's own type: centred, smaller). They show once the title's text has gone under the nav's foot (over a Banner Image: once the sheet comes under the bar). Scrolling back down, they fade out.
+  - Not when the nav has its own title or its Middle slot is on, or the Header title is fixed (it never goes under).
+- "This should be a toggle on and off on the header navigation": Header nav -> Title on scroll (`ns`, On by default).
+- "Allowing the user to click Dismiss as well": in the demo, a sheet or modal's Close dismisses it like the scrim; a tap on the screen brings it back.
+
+---
 ## v2990 Page types: the real menu on the desk; the picker in one blue
 
 - "I want the layout here to be the final layout. The only thing that has to be placed there is the body. You can keep the skeleton, but the menu needs to be the real one."
