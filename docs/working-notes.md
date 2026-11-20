@@ -5,6 +5,15 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2963 · Full modal Header nav at XS · S; Fixed and Style on the Header nav and Header title, not the group; Body under the rounded cap
+
+Page types / Modals live screen (EvScrDemo):
+
+- **Full modal Header nav at XS · S** follows the master (Figma Modal full / Header navigation XS S, as the Quarterly check-in's head): Back with the title beside it ("Quarterly check-in"), Close, and the step bars as a full row under them. M · L unchanged: Back, the bars, Close ("good one on M L"). The nav's Title row is hidden for the Full modal (the breakpoint decides it).
+- **The Header group is never fixed or styled itself** ("The header group cant be fixed. The header nav and header title inside can be"; "Same for the style"). The group keeps Level and Banner; **Header nav** and **Header title** each have Fixed, Style and Blur bg. Each part paints its own ground while it is fixed (none while it scrolls); a fixed nav over a fixed, grounded title runs into it (no fade, no line between). The first part's ground covers the status bar / notch room. Saved setups with the old group Style / Blur bg carry over to both parts; the Full modal default (`tFmD`) reads the Header nav's Style.
+- **Banner Image: the Body starts after the rounded top** ("Body section should start after the rounded"): the Header overlap's sheet is now its own cap (`.sdHoCap`, its overlap and corners, `--hoRadius` tall) and the Body section follows it.
+
+---
 ## v2962 · Primary card background: Position "Top radial"
 
 Modules > Primary card (overview) > Collection builder > Background > Position now has a third option, **Top radial**, next to Top right and Full.
