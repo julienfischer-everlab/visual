@@ -5,6 +5,13 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2996 Page types: the guides from the top bar's Ruler
+
+- "Kill that and make the Ruler on the top working instead": the Guides group (All guides, Header group, Header nav, Header title, Body, Footer, Show containers) is gone from the Page types controls panel.
+- The top bar's Ruler drives the screen's guides: Sections (Header group, Body, Footer group) and Container padding map onto the demo's (`rulerG()`: `#stSecGd`, `html.ctGdNo{Hg,Bd,Ft}`, `#stCtGuide`), read at every draw and redrawn when the Ruler changes.
+- The Ruler's section switches know the demo's sections (`__secGd()` on the Page types doc: Header group and Body always, Footer group when the screen has one), so a missing footer greys its switch as on an app page.
+
+---
 ## v2995 Every screen on the Page types master: first batch (audit)
 
 - "I want every page UI based on this page type. Can you align everything? Can you do a check everywhere?" An audit of ~35 app screens against the Page types master found the gaps mostly in shared pieces. First batch:
