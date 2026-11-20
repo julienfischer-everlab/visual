@@ -6,6 +6,13 @@ the design landed where it did, and which parts have already bitten. The
 this is the part you need before you change it.
 
 ---
+## v2935 · Guides parent/child with a mixed state; the real dock and status bar in the demo phone; Container ruler on its label's row
+
+- "If turn off parent, turn off child": the Header group guide sets Header nav and Header title with it; "If one child, use indeterminate on parent": one part on shows the parent as the Toggle's mixed state (`aria-checked="mixed"`, the master's dash), a click on it turns both on, the last part off turns it off. The demo marks its source with `data-mix`; EvDocPanel's switch reads it (`follow` now watches `data-mix`).
+- "need the home status bar": the demo phone's status bar (copied from `#bpFrame`) had no styles; `.sdPh > .bpStatus` joined the status bar rules (time, island, signal; light mode inverted; the tablet's padding and no island, as the app's).
+- "Use the real nav": a Main page's dock is the app's own `nav.mTabs` (island, tabs and pill, Ask Everlab, its home indicator), copied in, inert, placed as in `#bpFrame` (the tablet centred at 420; Auto without the home indicator). The skeleton pill and disc only if the dock is missing.
+- "use same row!": `.ctRl` is `flex:1 1 140px` (was `1 1 100%`), so the Container ruler sits on its label's row in the doc panels (185–207 wide) and Tweaks (150), wrapping only when less than 140 is left.
+
 ## v2934 · No flash of the card's own picture; container ruler live; Page types: top bar breakpoint, Auto unframed, questionnaire Full modal, one container edge, gradient rule, Modal token
 
 - "when I load another step to see it always load for .5sec the original image" (and on the Overview): PcMedia remembers the shared picture list in this browser (`everlab:pcMediaR`) so a pick resolves at load, keeps every picked picture decoded (`PRE`, `decoding='sync'`), places the picture on a card as soon as it is added (a document MutationObserver; was the 0.9 s round) or redrawn (the card's observer now runs in the same task, its own records dropped with `takeRecords()`; was the next frame), and while a pick has not loaded yet the card's own visual is hidden (`pcmWait`, 3 s at most). Checked: 0 frames of the old MRI picture over 16 step switches, dev and dist.
