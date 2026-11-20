@@ -5,6 +5,12 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2999 General layout: no top title bar
+
+"remove this top title": the Design system's General layout page no longer shows its "General layout" head bar (`.ldDoc.glGen .ldMainH{display:none}`). The bar only held the title, so nothing else moves; the page starts at its first section, with the controls in the right panel as before. Other doc pages keep their head bar.
+
+---
+
 ## v2998 Design system menu: collapsible groups, a Layout group, smaller items
 
 - "Each DS group should be collapsable. Core components, Layout (add this one, put General layout inside), Patterns, Feature components."
