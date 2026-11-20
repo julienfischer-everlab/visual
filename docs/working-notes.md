@@ -6,6 +6,11 @@ the design landed where it did, and which parts have already bitten. The
 this is the part you need before you change it.
 
 ---
+## v2942 · 3xs container: a Breakpoints token, on the demo's rulers
+
+- "Need 3xs, add token on the Tokens breakpoint pls": `layout/container/max-width/3xs` joins the Breakpoints collection (EvTokData `bp`): XS `unit/Full` (the whole width), S · M · L 384, the size `--ct3xs` already used. The Tokens page lists it above 2xs.
+- The live screen demo's Container rulers start at 3xs (Header nav, Header title, Body, Footer group), and every part's width now comes from these tokens at the screen's breakpoint (`ctw(size, bp)`: 3xs and 2xs the whole width at XS, 2xs 512 / 544 / 576 at S / M / L); the fixed `CTW` numbers only if a token is missing.
+
 ## v2941 · Live screen demo: Footer group on top, its variants only while on, Main pages locked on; Blur bg on the footer
 
 - "Footer ON OFF on top / IF OFF no variant below need to appear / IF MAIN page (force footer ON, without variant) Disabled ON": the Footer toggle is the Footer group's first row; Container, Actions, Style and Blur bg are hidden while it is off; on a Main page (Page, Level Main: its footer is the menu) the toggle shows On, disabled (its buttons `disabled`, the panel's switch follows), and no variants. The user's own choice is kept for when the page goes back to Sub.
