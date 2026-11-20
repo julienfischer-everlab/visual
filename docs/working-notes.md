@@ -6,6 +6,82 @@ the design landed where it did, and which parts have already bitten. The
 this is the part you need before you change it.
 
 ---
+## v2934 · No flash of the card's own picture; container ruler live; Page types: top bar breakpoint, Auto unframed, questionnaire Full modal, one container edge, gradient rule, Modal token
+
+- "when I load another step to see it always load for .5sec the original image" (and on the Overview): PcMedia remembers the shared picture list in this browser (`everlab:pcMediaR`) so a pick resolves at load, keeps every picked picture decoded (`PRE`, `decoding='sync'`), places the picture on a card as soon as it is added (a document MutationObserver; was the 0.9 s round) or redrawn (the card's observer now runs in the same task, its own records dropped with `takeRecords()`; was the next frame), and while a pick has not loaded yet the card's own visual is hidden (`pcmWait`, 3 s at most). Checked: 0 frames of the old MRI picture over 16 step switches, dev and dist.
+- "Even when I don't release the handle the Container should adjust": `EvCtRuler` picks each size as the handle reaches its tick (`live()` on pointerdown and on every tick crossed), so the container follows the drag; release keeps the last.
+- "Gradient should start at 30% from the bottom of the Header Group and bleed 32px outside ... footer is the inverse": the live screen demo's `.sdHg` ground is solid to 70% of the group and gone 32 under it (`--hgFade` .3, `--hgBleed` 32px; the blurred mask the same stops); `.sdFt` the mirror. The master's own flat ground (`.evPhgV`, bg/surface/100) is cleared inside the demo so the group's gradient is what shows. The app's own page headers still draw their own fades (not migrated yet).
+- "Why content is not the same container width": EvPageHg puts `--phgPx` inside its container; the Body and Footer keep their padding outside. In the demo the Header nav and Header title now pad outside their container too (`--sdPx` on the part, 0 on `.evPhgNavC/.evPhgHdC`): Back, title, body, options and CTA share one edge at every container.
+- "Need breakpoint next to Mode switch as a normal page": `#bpGrp` shown on General layout → Page types (`html.docGl`, set by the doc switch, plus `:has([data-glv="pt"]:not([hidden]))`); hidden on the other doc tabs. "auto should have [no] frame": with Auto the screen is drawn at the stage's own width, its layout that width's (xs < 600, s < 992, m < 1440), no device frame, no status bar or home indicator, the stage's height.
+- "Full modal use a simple questionnaire layout with skeleton": the Full modal's body is a question step (a progress bar, a support line, options as selection rows with one picked; Long adds a text section), its title "How often do you exercise?".
+- "In modal use Bg modal token": `.sdMod` and `.sdSheet` grounds on `--t-components-modal-bg`, so their header and footer fade into the modal's own colour.
+- Notes v2925–v2933 had landed deep in this file (the insert matched a later `---`); moved back to the top, newest first.
+
+
+## v2933 · Timeline Fixed Off keeps the header in place; wrapped tabs become selects
+
+- "When I put fixed OFF why the header go on top?": the Timeline's head is lifted by `--tlUp` (top and margin-top −32 on M · L) to sit right as a sticky element; with Fixed Off (`html.t3TabFree`) it is relative, so the lift moved it 32 up. `html.t3TabFree … > .tlHead.evSecHg{top:0}`: Off draws it exactly where On does (L: head 63, title 104, tabs 167 in both; XS unchanged in both).
+- "Avoid multi line tab in general, when it's like this use a select": `window.EvSegWrap` (beside Tweaks' segments) checks every segmented control (`.tkSegT`, `.dpSeg`, `.moCtlSeg`, `.moSeg`; not a ruler's source, not a proxied one) every 0.9 s; one whose buttons run onto a second line is shown as a select: Tweaks' own select back (the tabs' source; its wide row made inline again), elsewhere a new select that clicks the chip and follows it. The chips stay, hidden (inline important display none), as the source. Seen on Modules → Primary card → Visual (Type, Graphic) when the panel is narrow.
+
+
+## v2932 · Live screen demo: Header nav and Header title sub-groups, a container in each part, guides nested
+
+- "Header group need Sub tweak: Header nav, Header title": the Header group keeps Level, Banner, Style, Blur bg, Fixed; its two parts are sub-groups nested in its card (`.sdSubG`, moved into it after the panel mounts; Tweaks' sub-group look): Header nav (Container, Back, Actions None / 1 / 2) and Header title (Container, Title, Actions). Applied on EvPageHg's markup after drawing: Back removed when off, the right slot's actions cut to the count in each part (`[data-hg-part]` `.evPhgR`), each part's container a max width on `.evPhgNavC` / `.evPhgHdC`. EvPageHg's own rule kept: the right slot in the nav on XS · S, in the title row on M · L.
+- "With container management inside each": Header nav, Header title, Body and Footer group each their Container as the ruler with handles (`EvCtRuler`; 2xs to full; each type's default its body's).
+- "Header nav and header title has parent: Header group": in Guides, their rows indented under Header group with the tree's elbows.
+
+
+## v2931 · Page types demo: the top bar's breakpoint, the Page type skeletons in the panel, guides by part, footer always fixed, Main / Sub rules
+
+- "This inside the standard breakpoint at the top": the page's own XS S M L and the top nav select are gone; the demo follows the top bar's breakpoint (`#stBp`; Auto reads as L).
+- "This as a 4 columns skeleton select inside the tweak, and should be selectable": the type is Tweaks' Page type picker (the `.tkPtFr` / `.tkPtT` / `.tkPtM` skeletons: Page, Full modal, Sheet, External), as buttons, first in the panel (`EvScrDemo.html({ picker: true })`, group Page type, 4 across). Its colours set inline (`--ptC`): `data-ptk` is the Push and pop sliders' key and broke glPtWire.
+- "Footer always fixed": the Footer group's Fixed row removed; the footer is always sticky.
+- "Breakdown Header group: Header nav, Header title; Body; Footer": Guides is five toggles: Header group (solid blue), Header nav and Header title (EvPageHg's `[data-hg-part]` parts, dashed light blue, labelled), Body (dashed), Footer (green).
+- "Sub never have Main bottom nav"; "main never have Footer with action, only main nav": a Page at Level Main keeps its dock and AI button and never draws a footer (whatever Footer says); at Level Sub no dock, its footer if on.
+
+
+## v2930 · Page types: the one screen; type and breakpoint in the top nav; Container as the ruler
+
+- "ON page type I just need one screen in the middle as demo! No fluff. Controller in the top nav inc the breakpoint there": General layout → Page types shows the live screen alone, centred. The description, the type switch, the section heads, the caption, each type's panel (its facts and screens), and the Push and pop demo are hidden on this view (CSS: `[data-glv="pt"] > :not(.sdSec)`; their markup kept, glPtWire reads it), as are the rail's Push and pop and Title group groups and the Play / Save head.
+  - The page's top nav (`.dhP`) gets `.ptNav`, on Page types only: a select (Page, Full modal, Sheet, External) and the breakpoint (XS S M L, the page's own, not the top bar's); `EvScrDemo.wire(el, { follow, bp })` reads both.
+- "Use the new range with handles for container!": the demo's Body → Container is the ruler with handles (`EvCtRuler`, as Tweaks'), its chips kept hidden as its source (an inline important display none: the panel's segmented rule wins otherwise); a full step added (2xs to full).
+
+
+## v2929 · Live screen demo (EvScrDemo) on Page types and Modals: breakpoint frames, Header group / Body / Footer group with every prop
+
+"Create a demo with breakpoint, similar to the demo for primary card"; "I need all props for header group / body / footer group etc. Need skeleton to simulate a page with content (overflow need to be here)"; "On modal DS. Make sure the Header group are present and Footer group and body section for all type"; "The header group and footer group must have the Variant regarding the content inside and also the overflow and style tweaks".
+
+
+## v2928 · Timeline: unpaid item type with a Buy modal
+
+"Create a type of item that is not paid yet, on click open Modal with description of the Service and action to buy".
+
+
+## v2927 · Primary card XS·S visual bottom right; Insights on the sub-page system; Get started card on the non-member Timeline; Tab top "Fixed on scroll"
+
+- "Position visual on bottom right and let the content on top use the full width, with 48px padding right": at XS·S the visual (sphere, ring, thumbnail, avatars) takes the CTA's row at the bottom right (`order:99`, column 2, `align-self:end`); with a visual, the words (`.hpOvTgW`, h3, p, eyebrow, sub, bar) span both columns with 48px clear at the right. Without a CTA the visual sits alone on the last row.
+- Insights, "Same system as primary card. First page is about the demo and tweak, the rest about the collection": `MODS.mins` gets `sub: true`, `jump: false`, `demoT: 'Demo'`: the header select (Demo, Collection, each group), controls in the right panel, no lead description (any module with Sub pages), the demo in the phone frame under a skeleton primary card (`.moSkPc`), on the desk beside one (`.moSkPcDk`, the module in the right column). The old Placement section is off on the sub system (the frame shows it).
+- "Use this for non member timeline": the new member's top card is the Overview's Get started card (`EvAct.html()` in `section.ovAct`), in place of "your timeline is being built". Its 14 style rules widened from `#dOver .ovAct…` to `:is(#dOver, #tl3) .ovAct…` (one master, the doc's moCss copy still maps it).
+- Tab top → "Fixed on scroll" (`#stT3TabPin`, On by default; "Add tweak fixed on Scroll when reached"): with the header group not fixed (`html.t3TabFree`), the tabs scroll with the page until they reach its top, then pin there (`html.t3TabPin`, sticky at `--t3PinT`, set by `hTop()`; the groups pin under them). Off: they scroll away as before. With the header fixed the tabs are pinned with it already.
+
+
+## v2926 · Non-member Timeline skeleton; 16 pictures moved out of dist/index.html
+
+- "Where is the skeleton on non member": it was only on the empty variant (New member V1). Now `skSec()` follows "Get your timeline started" in `newHTML()` (both decade styles): a section on the same rail, a grey dot (bg/neutral/tertiary/200), a title bar, three item cards in the steps' outlined format (64 thumb, two bars), the cards and the rail fading out. The start section's rail no longer fades at its end when the skeleton follows; the skeleton's rail starts at its top so the two meet. Overrides use three classes to beat the rail's `:is()` rules; the fade sits on `.tlItems` and the rail, not the section (a section mask clipped the rail and dot outside its box).
+- dist size: tools/build.js keeps 16 pictures out of dist/index.html (`OUT`: async/hero, svc-microbiome-cover, plan-nutrition ×10, everlab-mark-spin, svc-microbiome, avatar.png ×5, activity-hero, plan-physical ×9, plan-dexa ×14, plan-mri ×8, screening-bg, plan-consult ×11, living-room, task-cover-c, globe, status-consult ×2). They are copied to dist/assets/ (ignored by git, rebuilt each build; dist/external.json lists them) and published as the artifact's own files at the same paths, so `assets/...` references load relatively. dist/index.html 16.78 MB → 14.25 MB. The Assets library already matches `assets/` paths; the Screenshot fetches them.
+- Publish: the files map now also carries every entry of dist/external.json (`"assets/x": "/home/user/visual/dist/assets/x"`).
+
+
+## v2925 · Tweaks: reset icon, tree lines, outline +40%, Overview's Visual link out; Inspector: switch follows the same structure
+
+- "add icon action to reset": every "Previous …" marker has a reset icon (`.tkPrevRs`, rotate-ccw). On a sub-group's marker it resets every changed row in it; on a row's marker, that row. The saved raw value per row is kept beside PREV (`RS`, from `want(o0.snap, id)`, the container rows' `was`, the Top nav picks' `dv`), applied with input/change events so the unsaved marks clear.
+- "Remove this tweak in overview": the Primary card's Visual row with "Edit in Modules → Primary card" removed, with its style and click handler. The stray toggle under it was the On/Off converter's switch for the hidden value holder `#stPcMediaPos`: the converter now skips hidden selects.
+- "Outlined +40% fff opacity": sub-group outline .078 → .11.
+- "add indentation indicator": a line down each sub-group's rows under the title's first letter, an elbow (rounded, 6px) into each label at its first line. Label `::before` draws the elbow (clipped at its row's top by `clip-path`), the row's `::before` the line through every row but the last visible one; one opaque colour (`--tkTree` #5d5d62) so the pieces meet without doubling. Not on `.tkDepRow` (its label icon).
+- Inspector, "If I change a component, the other on the list following the same structure should also change": `twins(e)` finds the same place in each sibling of the nearest repeated level (3 up at most; tag + first own class, through made wrappers), and Turn into / Wrap / Replace and Undo apply to all of them, each stored. Tested on the Overview's Action plan: 4 rows made List item interactive, Undo reverted the 4.
+- dist is 16,776,224 bytes: under 1 KB below the 16 MB publish limit.
+
+
 ## v2924 · MRI and blood test primary cards: every step
 
 "Create all steps for the Whole MRI Service detail", "and the advanced blood test".
@@ -3574,15 +3650,6 @@ Consequences worth knowing before editing:
   find.
 
 ---
-## v2925 · Tweaks: reset icon, tree lines, outline +40%, Overview's Visual link out; Inspector: switch follows the same structure
-
-- "add icon action to reset": every "Previous …" marker has a reset icon (`.tkPrevRs`, rotate-ccw). On a sub-group's marker it resets every changed row in it; on a row's marker, that row. The saved raw value per row is kept beside PREV (`RS`, from `want(o0.snap, id)`, the container rows' `was`, the Top nav picks' `dv`), applied with input/change events so the unsaved marks clear.
-- "Remove this tweak in overview": the Primary card's Visual row with "Edit in Modules → Primary card" removed, with its style and click handler. The stray toggle under it was the On/Off converter's switch for the hidden value holder `#stPcMediaPos`: the converter now skips hidden selects.
-- "Outlined +40% fff opacity": sub-group outline .078 → .11.
-- "add indentation indicator": a line down each sub-group's rows under the title's first letter, an elbow (rounded, 6px) into each label at its first line. Label `::before` draws the elbow (clipped at its row's top by `clip-path`), the row's `::before` the line through every row but the last visible one; one opaque colour (`--tkTree` #5d5d62) so the pieces meet without doubling. Not on `.tkDepRow` (its label icon).
-- Inspector, "If I change a component, the other on the list following the same structure should also change": `twins(e)` finds the same place in each sibling of the nearest repeated level (3 up at most; tag + first own class, through made wrappers), and Turn into / Wrap / Replace and Undo apply to all of them, each stored. Tested on the Overview's Action plan: 4 rows made List item interactive, Undo reverted the 4.
-- dist is 16,776,224 bytes: under 1 KB below the 16 MB publish limit.
-
 
 ## 2. Pages, and the composite-mode convention
 
@@ -3668,12 +3735,6 @@ others instead of leaving the gap showing as a sliver of page.
 > Internal name only; nothing user-facing says B2.
 
 ---
-## v2926 · Non-member Timeline skeleton; 16 pictures moved out of dist/index.html
-
-- "Where is the skeleton on non member": it was only on the empty variant (New member V1). Now `skSec()` follows "Get your timeline started" in `newHTML()` (both decade styles): a section on the same rail, a grey dot (bg/neutral/tertiary/200), a title bar, three item cards in the steps' outlined format (64 thumb, two bars), the cards and the rail fading out. The start section's rail no longer fades at its end when the skeleton follows; the skeleton's rail starts at its top so the two meet. Overrides use three classes to beat the rail's `:is()` rules; the fade sits on `.tlItems` and the rail, not the section (a section mask clipped the rail and dot outside its box).
-- dist size: tools/build.js keeps 16 pictures out of dist/index.html (`OUT`: async/hero, svc-microbiome-cover, plan-nutrition ×10, everlab-mark-spin, svc-microbiome, avatar.png ×5, activity-hero, plan-physical ×9, plan-dexa ×14, plan-mri ×8, screening-bg, plan-consult ×11, living-room, task-cover-c, globe, status-consult ×2). They are copied to dist/assets/ (ignored by git, rebuilt each build; dist/external.json lists them) and published as the artifact's own files at the same paths, so `assets/...` references load relatively. dist/index.html 16.78 MB → 14.25 MB. The Assets library already matches `assets/` paths; the Screenshot fetches them.
-- Publish: the files map now also carries every entry of dist/external.json (`"assets/x": "/home/user/visual/dist/assets/x"`).
-
 
 ## 3. Design decisions, and the reasoning
 
@@ -3716,13 +3777,6 @@ space, not a bigger organ.
 "Brain". Labels are categories, headlines carry the sentence.
 
 ---
-## v2927 · Primary card XS·S visual bottom right; Insights on the sub-page system; Get started card on the non-member Timeline; Tab top "Fixed on scroll"
-
-- "Position visual on bottom right and let the content on top use the full width, with 48px padding right": at XS·S the visual (sphere, ring, thumbnail, avatars) takes the CTA's row at the bottom right (`order:99`, column 2, `align-self:end`); with a visual, the words (`.hpOvTgW`, h3, p, eyebrow, sub, bar) span both columns with 48px clear at the right. Without a CTA the visual sits alone on the last row.
-- Insights, "Same system as primary card. First page is about the demo and tweak, the rest about the collection": `MODS.mins` gets `sub: true`, `jump: false`, `demoT: 'Demo'`: the header select (Demo, Collection, each group), controls in the right panel, no lead description (any module with Sub pages), the demo in the phone frame under a skeleton primary card (`.moSkPc`), on the desk beside one (`.moSkPcDk`, the module in the right column). The old Placement section is off on the sub system (the frame shows it).
-- "Use this for non member timeline": the new member's top card is the Overview's Get started card (`EvAct.html()` in `section.ovAct`), in place of "your timeline is being built". Its 14 style rules widened from `#dOver .ovAct…` to `:is(#dOver, #tl3) .ovAct…` (one master, the doc's moCss copy still maps it).
-- Tab top → "Fixed on scroll" (`#stT3TabPin`, On by default; "Add tweak fixed on Scroll when reached"): with the header group not fixed (`html.t3TabFree`), the tabs scroll with the page until they reach its top, then pin there (`html.t3TabPin`, sticky at `--t3PinT`, set by `hTop()`; the groups pin under them). Off: they scroll away as before. With the header fixed the tabs are pinned with it already.
-
 
 ## 4. Verifying a change
 
@@ -3761,10 +3815,6 @@ are all `getBoundingClientRect` questions. Screenshots confirm; numbers decide.
 1150 / 1192 / 1300 / 1500 is a reasonable sweep for the desktop pages.
 
 ---
-## v2928 · Timeline: unpaid item type with a Buy modal
-
-"Create a type of item that is not paid yet, on click open Modal with description of the Service and action to buy".
-
 - An item with `buy: '<price>'` is not paid yet: its line reads "Not paid yet · $150" (the card meta, shown whatever Tweaks → Prices says), its button is Buy (primary; `ctaOf` / `row`), and the whole row or Buy opens `buySheet(id)` instead of the service page.
 - The modal (the Timeline's sheet, `sheet()`): the item's picture, the price ("One-off, not part of your membership"), the service's own words from its service page (`_svc.info(key)`, new: SVC[key]: `about`, `dur`, the clinic's name, `instr` as "Before you go"), then the Footer group master (`EvPageFt`, Stacked: "Buy for $150", Not now) pinned at the sheet's foot (`.t3BuyF`, sticky, its ground fading in over 20).
 - Buy for: the item joins the plan to book (`move(id, 'open', { buy: null, act: 'Book', st: 0, sub: 'Paid on 5 Nov…' })`, the toast with Undo). Not now closes.
@@ -4180,10 +4230,6 @@ than something the numbers happen to average out to.
 it is invisible in the code and obvious in the picture, at one angle only.
 
 ---
-## v2929 · Live screen demo (EvScrDemo) on Page types and Modals: breakpoint frames, Header group / Body / Footer group with every prop
-
-"Create a demo with breakpoint, similar to the demo for primary card"; "I need all props for header group / body / footer group etc. Need skeleton to simulate a page with content (overflow need to be here)"; "On modal DS. Make sure the Header group are present and Footer group and body section for all type"; "The header group and footer group must have the Variant regarding the content inside and also the overflow and style tweaks".
-
 - New master `window.EvScrDemo` (beside EvPageFt): `html({ type, head })` writes a section with its controls (data-dp rows, grouped Header group / Body / Footer group / Guides) and a stage; `wire(root, { follow, bp })` draws it and redraws when the type or the breakpoint changes (the desk frame zoomed to the column).
 - The frame is the viewport's, as the Primary card's demo: XS the phone (393 × 852, the app's status bar), S the tablet (600 × 860), M · L the desk (1120 × 720, scaled). A Page keeps its menu (the dock and AI button on the phone, the sidebar on the desk); a Full modal is the whole screen; a Sheet is a bottom sheet over the page on the phone and a centred modal on the desk; the Modals doc adds the Floating bottom sheet (8 in, 48 corners) and the Full bottom sheet (nearly full height; tall modal on the desk).
 - Header group: the Page header group master (`EvPageHg.variant([level, banner, title])`: Level Main / Sub, Banner None / Image / Decorative, Title), Style Gradient / Filled / Transparent, Blur bg, Fixed (sticky). Body: skeleton content (bento, a heading, rows) in its Container (2xs to lg), Long (overflows) or Short. Footer group: Show, the Footer group master's actions (`EvPageFt`: Inline edge, Inline fill, Stacked fill, 1 CTA only), Style, Fixed. Section guides: Header group blue, Body dashed, Footer group green (outlines, over the grounds).
@@ -4637,12 +4683,6 @@ anything is allowed to interrupt it** — which is the thing three previous
 attempts got wrong in both directions.
 
 ---
-## v2930 · Page types: the one screen; type and breakpoint in the top nav; Container as the ruler
-
-- "ON page type I just need one screen in the middle as demo! No fluff. Controller in the top nav inc the breakpoint there": General layout → Page types shows the live screen alone, centred. The description, the type switch, the section heads, the caption, each type's panel (its facts and screens), and the Push and pop demo are hidden on this view (CSS: `[data-glv="pt"] > :not(.sdSec)`; their markup kept, glPtWire reads it), as are the rail's Push and pop and Title group groups and the Play / Save head.
-  - The page's top nav (`.dhP`) gets `.ptNav`, on Page types only: a select (Page, Full modal, Sheet, External) and the breakpoint (XS S M L, the page's own, not the top bar's); `EvScrDemo.wire(el, { follow, bp })` reads both.
-- "Use the new range with handles for container!": the demo's Body → Container is the ruler with handles (`EvCtRuler`, as Tweaks'), its chips kept hidden as its source (an inline important display none: the panel's segmented rule wins otherwise); a full step added (2xs to full).
-
 
 ### 5.39 Same count, same colours, same opacities — and a different picture
 
@@ -11110,14 +11150,6 @@ nothing on the pages that never turn it on.
 Everlab reports and the insight headings all already read from.
 
 ---
-## v2931 · Page types demo: the top bar's breakpoint, the Page type skeletons in the panel, guides by part, footer always fixed, Main / Sub rules
-
-- "This inside the standard breakpoint at the top": the page's own XS S M L and the top nav select are gone; the demo follows the top bar's breakpoint (`#stBp`; Auto reads as L).
-- "This as a 4 columns skeleton select inside the tweak, and should be selectable": the type is Tweaks' Page type picker (the `.tkPtFr` / `.tkPtT` / `.tkPtM` skeletons: Page, Full modal, Sheet, External), as buttons, first in the panel (`EvScrDemo.html({ picker: true })`, group Page type, 4 across). Its colours set inline (`--ptC`): `data-ptk` is the Push and pop sliders' key and broke glPtWire.
-- "Footer always fixed": the Footer group's Fixed row removed; the footer is always sticky.
-- "Breakdown Header group: Header nav, Header title; Body; Footer": Guides is five toggles: Header group (solid blue), Header nav and Header title (EvPageHg's `[data-hg-part]` parts, dashed light blue, labelled), Body (dashed), Footer (green).
-- "Sub never have Main bottom nav"; "main never have Footer with action, only main nav": a Page at Level Main keeps its dock and AI button and never draws a footer (whatever Footer says); at Level Sub no dock, its footer if on.
-
 
 ### 5.284 The bar and the card stay put; only what is inside moves
 
@@ -11168,12 +11200,6 @@ toolbar and giving the "new results" notice somewhere to append itself, did
 not move, since neither depends on which element scrolls.
 
 ---
-## v2932 · Live screen demo: Header nav and Header title sub-groups, a container in each part, guides nested
-
-- "Header group need Sub tweak: Header nav, Header title": the Header group keeps Level, Banner, Style, Blur bg, Fixed; its two parts are sub-groups nested in its card (`.sdSubG`, moved into it after the panel mounts; Tweaks' sub-group look): Header nav (Container, Back, Actions None / 1 / 2) and Header title (Container, Title, Actions). Applied on EvPageHg's markup after drawing: Back removed when off, the right slot's actions cut to the count in each part (`[data-hg-part]` `.evPhgR`), each part's container a max width on `.evPhgNavC` / `.evPhgHdC`. EvPageHg's own rule kept: the right slot in the nav on XS · S, in the title row on M · L.
-- "With container management inside each": Header nav, Header title, Body and Footer group each their Container as the ruler with handles (`EvCtRuler`; 2xs to full; each type's default its body's).
-- "Header nav and header title has parent: Header group": in Guides, their rows indented under Header group with the tree's elbows.
-
 
 ### 5.285 A trio you can resize between, not a page rebuilt to reflow
 
@@ -11213,11 +11239,6 @@ keeps it on when picked by hand: it is the only way back to a wider design
 without the menu to reopen it from.
 
 ---
-## v2933 · Timeline Fixed Off keeps the header in place; wrapped tabs become selects
-
-- "When I put fixed OFF why the header go on top?": the Timeline's head is lifted by `--tlUp` (top and margin-top −32 on M · L) to sit right as a sticky element; with Fixed Off (`html.t3TabFree`) it is relative, so the lift moved it 32 up. `html.t3TabFree … > .tlHead.evSecHg{top:0}`: Off draws it exactly where On does (L: head 63, title 104, tabs 167 in both; XS unchanged in both).
-- "Avoid multi line tab in general, when it's like this use a select": `window.EvSegWrap` (beside Tweaks' segments) checks every segmented control (`.tkSegT`, `.dpSeg`, `.moCtlSeg`, `.moSeg`; not a ruler's source, not a proxied one) every 0.9 s; one whose buttons run onto a second line is shown as a select: Tweaks' own select back (the tabs' source; its wide row made inline again), elsewhere a new select that clicks the chip and follows it. The chips stay, hidden (inline important display none), as the source. Seen on Modules → Primary card → Visual (Type, Graphic) when the panel is narrow.
-
 
 ### 5.286 One surface, not three -- the shell, the arrow, the drawer, the list
 
