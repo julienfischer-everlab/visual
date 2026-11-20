@@ -5,6 +5,13 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2989 Page types demo: tap the scrim to dismiss, tap the screen to bring it back
+
+- "For the sake of the demo, when I click outside on the blanket ... the modal to disappear. And reappear when I click in the screen."
+- On the Page types screen, for the sheet types (Sheet, Floating, Full bottom sheet), a tap on the scrim puts `sdOff` on the frame. A bottom sheet slides down off the screen, a centred modal fades and eases to 96%, a drawer slides out to the right, and the scrim and the depth stack fade. A tap anywhere on the screen brings it back.
+- Changing a control redraws the screen with the sheet up.
+
+---
 ## v2988 Sheet notch frosted like the home bar
 
 - "Same treatment from the notch on the top ... in general": the Page types sheet's notch (`.sdNotch`) is white at 24% with a 64 backdrop blur, on every sheet (over a Banner Image it was 72% white).
