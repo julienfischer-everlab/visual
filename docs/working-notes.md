@@ -5,6 +5,11 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2958 · Page types: the Full modal's body all options
+
+- "Add more content to fill the page. Stay with options list - not these 2 card at the bottom": the live screen's Full modal (a questionnaire step) with Body Long draws twelve options (EvQ.list, the skeleton bars in them) and nothing else; the heading bar and the two empty field cards under the list are gone. Short keeps three. The page scrolls (1105 in 852 at XS), the body running under the header and the footer.
+
+---
 ## v2957 · The Collection pages show the builder's steps
 
 - "That's the last step on the onboarding. Why I still see the 8 step here. The builder is the source of truth, always show the step from the builder". Modules → Primary card (overview): the Collection builder's State list (EvPcSteps: steps removed, added, renamed) was right, but the Collection and each card's page (Onboarding consult, DEXA, MRI, Microbiome, Advanced Blood Testing, Freemium, Doctor's plan, Quarterly check-in) drew from the code's own lists (`HC_ST`, `EvPcMri`, `EvPcMic`, `EvPcPath`, the check-in's four), so a removed step (After the call) still showed.
