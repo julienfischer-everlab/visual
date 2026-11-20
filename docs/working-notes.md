@@ -5,6 +5,17 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2952 · Header gradient audit: every header on the Design system's rule (tokens --hgFade, --hgBleed)
+
+- "The gradient start at 30% from the bottom of the header group? and bleed 32px?", "Sync that!!! need to use the same pattern", "Do an audit now for all pages, all need to fit with the header in the DS ... following the same unique structure and patterns". The rule lived only in the DS demo (`.sdHg`); the app had six grounds of its own, each with its own numbers. It is now one set of tokens on `:root`: `--hgFade: .3`, `--hgBleed: 32px`, `--hgMask` (a ground that bleeds: solid to 70% of the group, gone 32 under it) and `--ftMask` (the footer's inverse). Every ground points at them:
+  - the Top nav master (`.evTnG`: Service detail, Suggestion, Doctor's suggestion, Personal recommendation, Past records, every page on EvTopNav): bleed 32 (was 24), the master's mask (was an eased curve over the whole bar at .85), its ten blur bands gone, one 64 blur only with Blur bg (64);
+  - the main pages' bars (Overview, Service detail, Services, Timeline phone, My account: `::before` + `.ovGround`): solid to 70% (was the middle less 16, eased), the same blur rule; the Timeline's desk tabs keep their solid bar (each month its own ground under it);
+  - the flows (`EvSteps.shell`: Async report, the check-in's insights, Onboarding consult, Send a gift, Confirm plan): Solid bar's scroll mask hides the flow to 70% of the whole head and shows it whole 32 past it (was 20% of the top row), the footer the inverse (30% of its top, 32 above; was 80%); the Gradient bar's and the footer's grounds solid then linear on the same numbers (were 70% of the progress, eased, 40 past); the pinned anchors' fade 32 (was 24);
+  - the check-in's question header, the Page example's ground, the Header overlap band (`--hoBleed` now `--hgBleed`, its curve `--hgMask`; its tint stays the Header overlap master's);
+  - the DS demo itself reads the same tokens, its Blur bg 64 as Tweaks' "Blur bg (64)" (was 32).
+- Audit: a probe hides each page's scrolled content but a white strip, then reads the ground's opacity down the header. After: Async report and Confirm plan solid to 65 to 72% and gone 29 past (the probe's 3% threshold), Overview 72% / 29, Service detail 73% / 29, the EvTopNav full modals to 70% of the bar and its floating discs, gone 32 past them. The Overview, Timeline and Plan at XS could not be read (the probe reads the desk copy); they share the rules above.
+
+---
 ## v2951 · Full modals fixed by default; Page type picker in blue; See more Secondary; the Title group's layers named
 
 - "By default the Header nav should be fixed / gradient for all Full modal Type": a full modal's (`EvCt.isFm`) base was Fixed Off (`tFm(k) ? 'off'`); it is now `tFmD()`: Fixed On and Gradient, or the Design system's saved Full modal (`everlab:scrMaster`, Modals then Page types: its Header nav Fixed `nf` / `hf` and Style `hs`). A page's own pick in Tweaks still wins; picking the base value clears it. Checked on the check-in and the report (nav held at 98 after a 400 scroll).
