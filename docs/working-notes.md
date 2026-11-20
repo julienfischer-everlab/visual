@@ -5,6 +5,16 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2964 · Additional slot for the step bars; Header nav and Header title On / Off; Banner Image nav gradient; no Decorative
+
+Page types / Modals live screen (EvScrDemo):
+
+- **Additional slot** ("The increment should be a section Additional slot after the Header nav. stacked inside the header group"): the Full modal's step bars at XS · S are their own part of the Header group (`.evPhgAdd`, `data-hg-part="slot"`), after the Header nav, in the nav's container; it goes with the nav when the nav scrolls, takes the nav's Style, and has its own guide ("Additional slot"). The bars' styles now apply anywhere in the screen (they were scoped to the fixed group, so a scrolling nav lost them: the squeezed dots).
+- **On / Off for each part** ("Header nav and header title need to have a ON OFF"): Header nav and Header title each open with an On / Off; Off hides the part and its props (as the Footer's). A Main page starts with the Header nav Off (no Page navigation there), a Sub page and the modals On; switching Level on a page sets it. Header nav On on a Main page draws the master's Page navigation (Back, its actions, as the props say).
+- **Banner Image**: the Header nav (and its Additional slot) always wears the Gradient over the picture, fixed or not, without blur so the picture shows through its fade.
+- **Banner: None / Image** only ("remove decorative"); a setup saved on Decorative opens on None. The Header group doc's nine Figma variants still list Decorative.
+
+---
 ## v2963 · Full modal Header nav at XS · S; Fixed and Style on the Header nav and Header title, not the group; Body under the rounded cap
 
 Page types / Modals live screen (EvScrDemo):
