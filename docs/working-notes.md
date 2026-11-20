@@ -6,6 +6,15 @@ the design landed where it did, and which parts have already bitten. The
 this is the part you need before you change it.
 
 ---
+## v2943 · Live screen demo: saved per type with Tweaks' orange; questionnaire on the check-in's options; progress in the nav; sheet corners and heights
+
+- "I want to be able to save the tweaks here as well, so use the same orange system"; "save the setup for each type. Every time there's a change, I want to be able to save the page": EvScrDemo keeps `everlab:scrMaster` = { gl | md: { t: the type shown (General layout), by: { <type>: its props } } }; a type opens on its saved props (else its defaults); the top bar's Save (`#tkDocSave`) writes the screen on show with its masters (Page types: EvPush too; Modals: EvDismiss too) (`EvScrDemo.save(key)`). A prop off its saved value: an orange dot by its name (`.sdUd`), its control orange (chips, switch, ruler, select), its group washed, and "Previous <value>" with the reset icon (`.sdPrev`, a click puts it back); the Page type picker orange when the type is not the saved one; the bar's Save orange while anything is unsaved.
+- "use the same question option, a check-in question, but use a skeleton inside": the Full modal's options are the questionnaire master's (`EvQ.list`, the check-in's), one picked, a skeleton bar for each label.
+- "Make sure the bars on the top are well positioned": the progress is the step flow's (`EvSteps.progress(6)`, step 2) in the Header nav between Back and Close (the `.arSteps` rules opened to `.sdHg`, bars in the screen's ink); the body's own bar removed.
+- "an additional background, we don't see the rounded radius on the bottom sheet": the header's blurred ground (backdrop-filter) escaped the sheet's `overflow` + radius; the sheet, the floating sheet and the desk modal now clip with `clip-path: inset(0 round …)`.
+- "a different type of bottom sheet: the full, the half-high, the half": a Sheet group (Sheet type only) with Height Full · High · Half (phone: calc(100% − 56) · 75% · 50%; desk modal 92 · 75 · 50%), High by default.
+- The stray "sm" select under the Container rulers (EvSegWrap converting the 7 chips before the ruler took them): EvCtRuler now removes a wrap's select, and EvSegWrap skips `.sdC[data-dpk="seg"]`.
+
 ## v2942 · 3xs container: a Breakpoints token, on the demo's rulers
 
 - "Need 3xs, add token on the Tokens breakpoint pls": `layout/container/max-width/3xs` joins the Breakpoints collection (EvTokData `bp`): XS `unit/Full` (the whole width), S · M · L 384, the size `--ct3xs` already used. The Tokens page lists it above 2xs.
