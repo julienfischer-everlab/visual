@@ -5,6 +5,15 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2976 · Page types with a Banner Image: the picture to the sheet's top, the title at its foot, the slot ungrounded; Full modal nav always on
+
+- **A sheet's Banner Image runs into its top corners, the notch over it** ("The image on high should blend with the corner radius on the top ... the notch should be above it"; "The same for hug"; "full"): the sheet's solid top strip only without a banner (`.sdScr:not(.sdHo)`), the notch over the picture in white 72%. High, Hug and Full alike.
+- **The Additional slot has no ground of its own** ("You shouldn't have any gradient on the slot. The gradient should always be on the header title or header navigation"): the part before it (the Header nav) grounds it, its ground running on under the slot (`--hgSlotH`, `data-slot`) and fading only after it; chained parts are counted past the slot.
+- **A Full modal always has its Header nav** ("Head nav at all times for full modal"), whatever the Level (its Back still the Level's); the toggle's note "Always on a Full modal".
+- **Banner Image: the Header title at the picture's foot, just above the body, the Header nav on top** ("the header title should be just above the card below ... When it's a banner, you cannot have a style and a fixed on and off. The header title can only have this on the header nav"): the title never fixed nor styled there, its Fixed, Style and Blur bg rows hidden; the Header nav keeps them and its own Style and Blur bg now apply over the picture (it was always Gradient). The title's actions on the picture a light disc (white 20%).
+- A first grounded part after a clear one lifts its ground to the group's top (`data-hgup`, `--hgUp`), as the nav's covers the status bar.
+
+---
 ## v2975 · Every primary card XL; Header nav follows the Level; Depth 1 / 2+ on Full only; the slot's ground whole
 
 - **Every primary card is XL, at every breakpoint** ("Change all of the primary card to XL size of the card. All breakpoints"): the Card · Size tweak of the primary card is gone (hidden, a saved size ignored), every `.hpOvCard` (the Overview, Modules' demo, the docs' frames) wears `evCard-xl` (padding 24), the Inspector offers xl only. This was the XS padding: a saved Card · Size md gave 16 a side ("The left especially is so bad").
