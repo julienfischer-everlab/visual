@@ -5,6 +5,14 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2984 Banner: the Header nav's gradient over its full height
+
+- "Do I have a nav, but then don't use the 30%. Just use the full high. Start at 0% and end at 32px bleeding."
+- Over a Banner Image at rest, the ground is the Header nav's again, not one over the whole picture (`.sdHoGnd` gone). It runs from the very top of the screen (over the status bar's room) to 32 under the nav (and its Additional slot): the screen colour at the top, eased out to nothing at the bleed's end. No solid part, no 30%. Filled is the same over a picture.
+- Blur bg: the progressive blur (`EvPBlur`) over the same span, under the same gradient at 78%.
+- Once the sheet comes under the bar (`hoUnder`), the nav's usual ground (the 30% / 32 rule).
+
+---
 ## v2983 Banner: the picture to the top, the gradient just over it
 
 - "The image should cover the entire screen on the top ... the gradient should just overlap this" and "there's no start on 30% or whatever. It just starts on the top". The picture already ran to the top and to both edges at every size and type, but the top was so dark (the ground at 86% over the Header overlap's own 34% black) that it read as a band, the picture starting lower.
