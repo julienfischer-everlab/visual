@@ -5,6 +5,11 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2988 Sheet notch frosted like the home bar
+
+- "Same treatment from the notch on the top ... in general": the Page types sheet's notch (`.sdNotch`) is white at 24% with a 64 backdrop blur, on every sheet (over a Banner Image it was 72% white).
+
+---
 ## v2987 Header group one ground; status bar filled; home bar frosted
 
 - "It looks like it's filled the header nav. Should be a gradient." With the nav and the title both grounded and fixed, each drew its own ground: the nav's ran solid to its foot (chained, `data-cont`) and the title's started again under it, with a hard line between. Now a part chained into the next hands its ground over (`[data-cont]` hides its own ground and blur), and the last part's ground climbs to the group's top (`data-hgup`). The Header group is one ground: one gradient (the 30% / 32 rule over the whole group) and one progressive blur.
