@@ -5,6 +5,14 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2951 · Full modals fixed by default; Page type picker in blue; See more Secondary; the Title group's layers named
+
+- "By default the Header nav should be fixed / gradient for all Full modal Type": a full modal's (`EvCt.isFm`) base was Fixed Off (`tFm(k) ? 'off'`); it is now `tFmD()`: Fixed On and Gradient, or the Design system's saved Full modal (`everlab:scrMaster`, Modals then Page types: its Header nav Fixed `nf` / `hf` and Style `hs`). A page's own pick in Tweaks still wins; picking the base value clears it. Checked on the check-in and the report (nav held at 98 after a 400 scroll).
+- "Keep blue for active tweak" / "would be nice skeleton to be blue shades": the Page type tiles (Tweaks and the doc's `.sdPt`) mark the picked one in the Tweaks' blue (`--tbOnFg`), its label too, whatever its type (was purple, green, orange by type), and its skeleton in blue shades; the others stay grey.
+- "Why there is a frame on the title group": the Inspector's Layers named the Title group's Content column (`.evTgCol`) "Frame". Master parts now get their Figma names (`LYP`, `lyPart`): Content, Slot, Right slot, Support line · top / bottom, Title; the Header title's inner `.evHtIn` is its Content. The hover labels use the same names.
+- "Change CTA to Secondary for all insight of this type!": the insights' See N more (`.arMbMore`) was adopted as Tertiary (outlined) from its fill; EvBtnAdopt now names it Secondary (tinted).
+
+---
 ## v2950 · Insight: the lede is the Header title's Title group sub
 
 - "Is that the title group here with the header title?": the insight's V2 lede (its plain words under the headline) was still the report's own paragraph (`.arLfLede`, 10 under, 16/22) set after the Title group inside the Header title. It is now the Title group's support line: `EvHdTitle.html({ type: 'page', title, sub: { html } })`, so the master draws it (`.evTgBot`, its 12 gap, 16/24, ink 56%) and the Header title's 24 comes after it. Its bold words stay plain as before (`.arLfHdT .evTgBot .arParaB`). Checked on persona #2's first insight (Evidence: One card) at XS and L.
