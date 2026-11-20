@@ -5,6 +5,12 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2960 · Banner Image keeps the real Header group and title; the header's titles are Title groups
+
+- "The header title and the header group should always be there": with Banner Image, Page types drew its own words over the picture (EvTitle and a sub) and dropped the Header title, or, with Header title Fixed Off, left it behind the picture: no title, no actions. Now the real parts stay: the Header nav on top of the picture (Back, Close, the progress on a Full modal), and the Header title (its title, its actions, its settings) over the picture's foot when it is not fixed (drifting and fading with the picture, `.sdTiHo` in `.hoWords`), under the nav when it is. Checked Main (Fixed Off and On), Sub, Full modal: one title each time, the nav there.
+- "Why is this not a title group?": EvPageHg drew its titles as its own `.evPhgTg` row (a bare `h1.evPhgT`, the Inspector's "Text · H1"). Every title it draws is now the Title group master (`tg()` → `EvTitle.html`, level H1, Headlines/700): the Header title with its actions in the Title group's right slot, the banners' titles, the decorative banner's title with its support line. Its classes (`evPhgTg`, `evPhgT`, `evPhgR`, `evPhgBnSup`) ride on the master's, so the Header group's styles and the demo's settings (Actions 0 · 1 · 2) still hold. All nine variants checked.
+
+---
 ## v2959 · The gradient never covers what does not stay put
 
 - "MAKE Sure the gradient Zindex is always behind a non fixed div": in Page types (Full modal, Header title not Fixed, the desk) the nav's 32 bleed lay over the title's first line at rest. Raising the title over the header would draw it over the nav's buttons once it scrolls under them, so the bleed follows the scroll instead: the header's grows from none at rest to the master's 32 once the page has moved 32 (`--sdK`), the footer's shrinks to none as the end comes (`--sdF`), both set on each demo scroller from `--hgBleed`; the stops recomputed on the bleed in use. At rest the title under the nav, at the end the last row over the footer, stand clear; what scrolls under them still fades by the master's rule.
