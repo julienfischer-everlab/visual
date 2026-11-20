@@ -6,6 +6,11 @@ the design landed where it did, and which parts have already bitten. The
 this is the part you need before you change it.
 
 ---
+## v2937 · Links open what is on screen; Share this card
+
+- "Link sharable should be the page I'm currently seen on the screen": the bar's Copy link (`.tkPsLk`, at a breakpoint) now stores the setup as it stands (`snapNow()`, not the preset's saved one) and a view (`viewNow()`): the doc tab (`window._doc.cur()`, new), the doc views kept in this browser (`VLS`: `everlab:glPart`, `everlab:moSub:<module>`, the frames' `…Bp`, zooms…), and the choices on the page (the header's `select.dhSel`, a module's `select.moDmSel` Card and State). Opened (`#tk-vw…`), the setup goes on, the keys are written, the tab shown, General layout's part picked, then each select set in order with its change (`viewGo`). Its menu reads "Copy link to “<page>” at". The presets menu's own links stay preset links.
+- "Need top link right (Share this card)": a link icon at the top right of the Collection group (Modules → Primary card), `.moShare`, copying the same kind of link named "<card> · <state>" (`window.__tkViewLink`). Checked: shared Check-in · Sent from the Builder, moved away, opened the link: Builder, Check-in, Sent.
+
 ## v2936 · Modal Header nav: Back and Dismiss; M and L without a frame
 
 - "Header nav modal: Back ON OFF, Dismiss (right) ON OFF (on default)": on a Full modal, Sheet, Floating or Full sheet the Header nav's row is Back and Dismiss (`nd`, an X in the nav's right slot, `.evPhgX`), Actions hidden; on a Page or External, Actions and no Dismiss (the `.sdC` source `hidden`, its panel row `dpOff`). Defaults: Full modal Back on, the sheets Back off, Dismiss on everywhere; a Main sheet with no navigation bar gets one when Back or Dismiss is on.
