@@ -5,6 +5,11 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2953 · Check-in Thank you: the preparing line as its sub
+
+- "Put the both as a sub ... prepared by our care team. We'll send...": the Thank you's line under the title is now "Your insights are being prepared by our care team. We’ll send you a notification when they’re ready." (was "Your answers are saved for your care team."), the Overview's Preparing card's two lines in one. V2 (insights ready) keeps its own. Three lines at XS, two at L.
+
+---
 ## v2952 · Header gradient audit: every header on the Design system's rule (tokens --hgFade, --hgBleed)
 
 - "The gradient start at 30% from the bottom of the header group? and bleed 32px?", "Sync that!!! need to use the same pattern", "Do an audit now for all pages, all need to fit with the header in the DS ... following the same unique structure and patterns". The rule lived only in the DS demo (`.sdHg`); the app had six grounds of its own, each with its own numbers. It is now one set of tokens on `:root`: `--hgFade: .3`, `--hgBleed: 32px`, `--hgMask` (a ground that bleeds: solid to 70% of the group, gone 32 under it) and `--ftMask` (the footer's inverse). Every ground points at them:
