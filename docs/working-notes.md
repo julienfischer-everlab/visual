@@ -5,6 +5,11 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2955 · A breakpoint change no longer jumps from a doc page to Insights
+
+- "If I change the breakpoint here I land on the insight page???": `responsiveSync` (Insights picks its phone or desk design from the breakpoint) ran on every `#stBp` change and every resize, reading `version`, the app's page under the doc pages. Opened from Insights, the Design system (or Documentation, Tokens, Modules) stayed `version` 18 underneath, so XS, S, M, L there called `setMode` and showed Insights. It now runs only while Insights is the page shown (`versionSel` one of its family). Checked: Insights, then the Design system, S, M, XS: the Design system stays; on Insights itself M and L still give the desk, XS and S the phone.
+
+---
 ## v2954 · Remove step / Remove card ask first (EvConfirm)
 
 - "Remove step remove card need Yes No destructive confirmation": a new master, `window.EvConfirm(host, question, onYes, { yes, no })`, puts the question and two buttons in place of the host's buttons: No (Secondary, focused) and Yes, remove (Primary, Destructive: the Button master's `bg/sentiment/negative/primary/100 · 200 · 300`, `.evBtnDst`). No, Escape or a click elsewhere puts the buttons back. Drawn in the page because the viewer refuses `confirm()`.
