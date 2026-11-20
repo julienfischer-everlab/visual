@@ -5,6 +5,14 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2980 Footer Blur bg, and the banner's frosted ground
+
+- "So fix it": the footer now has **Blur bg** like the Header nav. Tweaks -> Footer has a Blur bg switch per page; unpicked, the page takes the Page types master (Footer group, Blur bg) of its type. `html.tfBlur`, set by EvTopNav's tApply (`fbl` in tDef / tEff / tPg).
+- On, the footer wears a ground blurred 64 with the screen's colour at 78%, fading up 32 past its top (Filled: solid from its top). Gradient footers (`.arFootGround`) take it; Solid footers (`.arEdge`), the Health profile's and the solo modals' get an `.arFoot::before` ground and the content now runs on under the footer so there is something to blur. tMeas measures `--ar-fh` when tfBlur is on.
+- The old stepped blur bands in `.arFootGround` are gone.
+- "The blur on the image looks so bad ... make the image bleed outside the frame": the banner's header grounds over the picture are frosted (32% tint, blur 40, saturate 1.5) instead of the 78% dark bar, and the picture bleeds 48 past each side of the frame so the blur has picture to read at the edges.
+
+---
 ## v2979 · Every screen reads the Design system's masters
 
 "So every screen needs to read the master. That's it. Make it happen."
