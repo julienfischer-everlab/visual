@@ -5,6 +5,14 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2948 · Live screen demo: Sheet sub types Bottom / Floating / Drawer; modal nav title
+
+- "Modal docu" (Figma 7655:38622, 7638:84887, 7674:7268) and "Also add a Sub type Drawer" (7689:53864). The Sheet group gains Type (`st`: Bottom, Floating, Drawer) and Size (`sz`: md, lg, xl). Bottom keeps Height and Depth; Floating and Drawer show Size instead.
+- Floating ("Modal overlay - Floating"): centred, hugging its content up to 86% of the screen (`height:auto`, the scroll a flex child), widths md 551, lg 760, xl 960, capped at the screen minus 48.
+- Drawer ("Modal overlay - Drawer"): a right-side panel inset 12 from the edges, rounded 20, md 576, lg 720, xl 900, capped at the screen minus 24. At S it is the tablet's near full screen panel (left 12, under the status bar); at XS both are the full bottom sheet, as in the Figma XS frames.
+- Header nav "Title" (`nt`): the master's identifier crumb `.evPhgCr` at the nav's left ("Notes", "Ask Everlab", "Consent"; "Check-in" on the Full modal, off there by default), the Dismiss at its right, the big title below, as the Figma modal headers.
+- The `[data-sz]` on the sub types' selectors outranks the Bottom sheet's Height rules.
+
 ---
 ## v2947 · Live screen demo: Fixed per header part; sheets' containers full and locked
 
