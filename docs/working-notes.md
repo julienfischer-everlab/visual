@@ -6,6 +6,12 @@ the design landed where it did, and which parts have already bitten. The
 this is the part you need before you change it.
 
 ---
+## v2944 · Live screen demo: Guides on top; modal top-nav buttons at the modal sizes
+
+- "Push the guide on top": the Guides group is the panel's first (over the Page type on Page types; on Modals right under the page's own Modal group).
+- "Full modal and sheet use a small CTAs size no?": the demo's Header nav takes the over-a-screen sizes of the `.evTn` rule (`--evTnDo`, Figma Modal full / Header navigation): a Sheet, a floating or full sheet and a desk modal 36; a Full modal 44 at XS · S (interactive/height/md, icon 20), 28 at M · L (interactive/height/xs, icon 16). Set on the nav part (`--phgBtn`, `--phgBk`, `--phgIc`, `--phgBkIc`), the page's own 44 elsewhere.
+- A Python edit interrupted mid-write had emptied index.html; restored from the v2943 commit before this change, and edits now write to a temp file then rename.
+
 ## v2943 · Live screen demo: saved per type with Tweaks' orange; questionnaire on the check-in's options; progress in the nav; sheet corners and heights
 
 - "I want to be able to save the tweaks here as well, so use the same orange system"; "save the setup for each type. Every time there's a change, I want to be able to save the page": EvScrDemo keeps `everlab:scrMaster` = { gl | md: { t: the type shown (General layout), by: { <type>: its props } } }; a type opens on its saved props (else its defaults); the top bar's Save (`#tkDocSave`) writes the screen on show with its masters (Page types: EvPush too; Modals: EvDismiss too) (`EvScrDemo.save(key)`). A prop off its saved value: an orange dot by its name (`.sdUd`), its control orange (chips, switch, ruler, select), its group washed, and "Previous <value>" with the reset icon (`.sdPrev`, a click puts it back); the Page type picker orange when the type is not the saved one; the bar's Save orange while anything is unsaved.
