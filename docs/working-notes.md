@@ -5,6 +5,15 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2998 Design system menu: collapsible groups, a Layout group, smaller items
+
+- "Each DS group should be collapsable. Core components, Layout (add this one, put General layout inside), Patterns, Feature components."
+  - A new Layout group holds General layout (out of Patterns).
+  - Every group's heading folds its items: a chevron, Enter or Space from the keyboard, remembered in this browser (`everlab:docNavShut`). The search still finds items in a folded group.
+- "Menu regular AND smaller font size, also less gap between them": items in body/100 (12 px, the text style system's next size down from 14), regular weight (380), 28 tall at 30 apart (were 14 px, weight 570, 34 tall at 36).
+- The text style system snaps every font size to its nearest token at load, so 13 px reads as body/200 (14): sizes here name the token.
+
+---
 ## v2997 Page types: a container banner on M and L
 
 - "For Page / Image and Full modal / Image, on M L instead of Full width banner, display a container based banner". The structure:
