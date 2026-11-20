@@ -5,6 +5,20 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2969 · Page audit: layout health on the structure alone, Fix and Fix all, grouped rows, presets; sheet footer Fixed; sheet title padding
+
+**Page audit** (Analytics):
+- **Layout** now scores the structure alone ("just the health of the layout"; what sits inside is not scored): the page type, the Header group, its Header nav (or its safe space), its Header title and that it has words, the Header group's container, the Body and its container, the Footer's container when there is a footer. A main page's Body is its panel's content under the header when no section names it (as the guides draw it).
+- **Fix** on each app page's row whose layout has a problem ("If I click on Fix, it's going to go to the page and fix the structure"): opens the page and puts in what the structure misses, its content left as it is: the Header nav's safe space, a Header title with the screen's name (Title group master, H1), a Header group of both when there is none, a container round a section's content (the page type's: Page sm, Full modal 2xs, Sheet full). The page is measured again in place. Each fixed page is kept (`everlab:layFix`) and fixed again whenever it is drawn again. **Fix all** at the top does every such page in turn; **Reset fixes** takes them all off (the app reloads). Only the app's own groups (Main pages, Standalone flow, General patterns, Pages (archives), Clinic) are fixed; the tools' and concepts' pages never. `EvInspect.fixLayout()`, `.fixed()`, `.unfix()`.
+- Rows **grouped** by the page menu's groups (each with its count and average), so no Group column; the page's **name a link** to it; a **preset select** (the page's home preset picked, "· Home") next to **Go to page**, which opens the page on the preset picked.
+- The page **full width**, the table on the page's own ground (no card), the issues wrapping so the row's actions stay on the page.
+- First run after Fix all at M: 13 of the 24 app pages at 100% layout; left: a few containers the fix could not place (Onboarding consult's, Past results' and Insight activation's footer, Timeline onboarding's and Confirm plan's body, the standalone modals' header group), the Chat's Body, the old Appointment's nav.
+
+**Page types / Modals live screen**:
+- A **Sheet's Footer** has **Fixed** On / Off ("the footer on the sheet can be not fixed, but on the modal, it's always fixed on the bottom"): Off, it scrolls with the body at its end, no ground over it (its Style and Blur bg hidden). The Full modal's footer is always fixed (no toggle).
+- The Sheet's **Header title** kept its container padding when the title is not fixed (it lost it to the part-out rule: "the header title doesn't have any container with padding inside").
+
+---
 ## v2968 · The Async report's sheets follow the Page types modal system
 
 "Follow the moda system on page type" (the "3 biomarkers" modal): the Async report's sheets (`sheetOpen`: biomarkers, Sources, a marker area's list, and the others built on it; the Discuss sheet and the Eva-led ones keep their own head) now match the Page types Sheet, measured against it at XS, S and M:
