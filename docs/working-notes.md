@@ -5,6 +5,17 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2979 · Every screen reads the Design system's masters
+
+"So every screen needs to read the master. That's it. Make it happen."
+
+- **One registry, every master shared.** EvShared's MASTERS now holds every doc's saved setup: Page types (`scrMaster`), Header overlap (`hoMaster`), the modals' dismiss (`mdMaster`), Page push (`pushMaster`), Step flow (`sfMaster`), Title group (`tgMaster`), text styles (`tsMaster`), the Onboarding consult card (`ocMaster`), the Tokens page's pushed changes (`tokBase`), with Insights, the dock and the Top nav as before. Any save of one of them in the page (its doc's Save, a reset, Page types' auto-save) is written through to the shared store (`Storage.prototype.setItem` / `removeItem` wrapped, 400 ms, owner only). Every page takes them on load; one that changed elsewhere and has no live hook opens the page again, once (`sessionStorage everlab:mReload`, never twice for the same).
+- **Every screen's layout reads Page types.** EvTopNav's layout layer (`tDef`, `tEff`) takes, for the screen's type (`html[data-pt]`: page, full, modal → sheet), the Page types setup as the doc shows it (`EvScrDemo.master(type)`: its defaults with the saved over them), for every prop a page has not picked in its own Tweaks: Header nav Fixed, Style, **Blur bg** (now per page, `nb`, its own switch; was one global select), Header title Fixed, Style, Blur bg, Footer Fixed and Style. It applies again when the screen's type changes (a full modal opening).
+- **Full modals' containers are the master's** (EvCt `mCt`): Header nav, Header title, Body and Footer from Page types' Full modal, unpicked. Main and Sub pages keep the containers set page by page.
+- Page types' Full modal default Body container 2xs (was xs), the step flows' base; an older save with the untouched xs everywhere reads 2xs.
+- Tested: Page types → Page: Filled + Blur → the Overview shows them; Full modal: Body xs → the Async report's column 800; a fresh browser follows the doc's defaults (blur and a fixed Header title on, as Page types shows).
+
+---
 ## v2978 · Page types saves itself and reaches the app's pages; the banner nav's blur fades
 
 - **No Save in Page types** ("we don't need to save every piece here. Just avoid the save"): no orange dots, no Previous, the top bar's Save left alone; every change kept 300 ms later (`autoSave`: this browser's `everlab:scrMaster`, the shared store through EvShared when the page has one, then `EvTopNav.load()` so the app's pages take it).
