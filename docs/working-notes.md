@@ -6,6 +6,10 @@ the design landed where it did, and which parts have already bitten. The
 this is the part you need before you change it.
 
 ---
+## v2939 · Primary card Title group: 32 at the right on XS · S
+
+- "Why weird padding on left?" then "Reduce title group padding right to 32px": at XS · S the Title group (and the card's other words) beside the bottom-right visual keep 32 at their right (was 48, v2927's rule). The card's own padding is unchanged (24 top and bottom, 32 at the sides by default).
+
 ## v2938 · Quarterly check-in card on the primary card's structure
 
 - "Follow the structure!!!! NO badge but eyebrow, Respect the alignment as well!", "and title group with proper sub", "Dont use Span content": `HPC.qci` now builds as every primary card: its care team (the visual), the Title group master `EvPcTg(eyebrow, title, sub)` (eyebrow "Quarterly check-in" in every state, one plain title, the count or note as the sub), the CTA inside `.ovBookFoot` (the card foot, which carries the 32 above the button). The old head (`.hpDrHd`, the `.hpFrTag` badge, the two-tone `<span>` title, `.hpFrP`) is gone.
