@@ -6,6 +6,12 @@ the design landed where it did, and which parts have already bitten. The
 this is the part you need before you change it.
 
 ---
+## v2941 · Live screen demo: Footer group on top, its variants only while on, Main pages locked on; Blur bg on the footer
+
+- "Footer ON OFF on top / IF OFF no variant below need to appear / IF MAIN page (force footer ON, without variant) Disabled ON": the Footer toggle is the Footer group's first row; Container, Actions, Style and Blur bg are hidden while it is off; on a Main page (Page, Level Main: its footer is the menu) the toggle shows On, disabled (its buttons `disabled`, the panel's switch follows), and no variants. The user's own choice is kept for when the page goes back to Sub.
+- EvSegWrap's select now hides with its chips (`s.hidden = g.hidden` in its fill): a wrapped row a page hides (the Footer's Actions) no longer stayed behind.
+- "Add blur bg same on footer": `fb` (Blur bg, on by default) on the Footer group; `.sdFt[data-fb="1"]` blurs its ground as the header's does (Gradient: the 78% ground blurred 32 under the same fade mask; Filled: 82% blurred).
+
 ## v2940 · Primary card: the Card's own padding; Centred mode's room on the content
 
 - "Follow the Card padding! Why weird padding left right": the primary card is padded by its Card size alone, `var(--kP)` all round (xl 24), at every breakpoint and look. Removed: the primary card's 32 at its sides (`var(--t-space-xl)`, v2700s' "add left right padding support of 32px"), the desk top bento's same, and Centred mode's 40 on the card.
