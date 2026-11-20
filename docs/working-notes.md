@@ -5,6 +5,11 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2950 · Insight: the lede is the Header title's Title group sub
+
+- "Is that the title group here with the header title?": the insight's V2 lede (its plain words under the headline) was still the report's own paragraph (`.arLfLede`, 10 under, 16/22) set after the Title group inside the Header title. It is now the Title group's support line: `EvHdTitle.html({ type: 'page', title, sub: { html } })`, so the master draws it (`.evTgBot`, its 12 gap, 16/24, ink 56%) and the Header title's 24 comes after it. Its bold words stay plain as before (`.arLfHdT .evTgBot .arParaB`). Checked on persona #2's first insight (Evidence: One card) at XS and L.
+
+---
 ## v2949 · Check-in: Thank you without its rows; the insight's headline a Header title
 
 - "Thanks dont need the 3 bullets. Just the footer and top title group": the check-in's Thank you passes `rows: false` to the Async report's intro; `dbcBullets()` then draws nothing and the V3 welcome's stack gets `arWtNoRows` (its tag, title and line where they were, Back to home in the footer; at M and L the button under the title group).
