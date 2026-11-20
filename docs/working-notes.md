@@ -5,6 +5,15 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2966 · Header nav Middle slot
+
+"Header nav need to have a Middle slot (Title, Sub, Center)"; "Need to see this middle slot in the props":
+
+- Header nav has a **Middle slot** On / Off in its props (Page types and Modals live screen). On: a title over its sub, centred between the sides (`.evPhgMid`: Body/400 Medium over Body/300 Regular, secondary), the example "Advanced blood test / 15 Oct 2026".
+- Both sides reserve the wider side's width (`--midSide`, measured from Back and the actions), so the middle stays truly centred and cuts short with an ellipsis rather than shift.
+- The nav's identifier title gives way to it; on the desk the Full modal's step bars move to the Additional slot under the nav.
+
+---
 ## v2965 · Header nav Off keeps its safe space (Figma Top navigation = None)
 
 "IF Header nav is OFF keep the safe space such as figma doc" (Patterns DS25 8306:41391, Top navigation / Modal overlay / XS, variant None 8306:41412):
