@@ -11168,6 +11168,12 @@ toolbar and giving the "new results" notice somewhere to append itself, did
 not move, since neither depends on which element scrolls.
 
 ---
+## v2932 · Live screen demo: Header nav and Header title sub-groups, a container in each part, guides nested
+
+- "Header group need Sub tweak: Header nav, Header title": the Header group keeps Level, Banner, Style, Blur bg, Fixed; its two parts are sub-groups nested in its card (`.sdSubG`, moved into it after the panel mounts; Tweaks' sub-group look): Header nav (Container, Back, Actions None / 1 / 2) and Header title (Container, Title, Actions). Applied on EvPageHg's markup after drawing: Back removed when off, the right slot's actions cut to the count in each part (`[data-hg-part]` `.evPhgR`), each part's container a max width on `.evPhgNavC` / `.evPhgHdC`. EvPageHg's own rule kept: the right slot in the nav on XS · S, in the title row on M · L.
+- "With container management inside each": Header nav, Header title, Body and Footer group each their Container as the ruler with handles (`EvCtRuler`; 2xs to full; each type's default its body's).
+- "Header nav and header title has parent: Header group": in Guides, their rows indented under Header group with the tree's elbows.
+
 
 ### 5.285 A trio you can resize between, not a page rebuilt to reflow
 
