@@ -5,6 +5,13 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2978 · Page types saves itself and reaches the app's pages; the banner nav's blur fades
+
+- **No Save in Page types** ("we don't need to save every piece here. Just avoid the save"): no orange dots, no Previous, the top bar's Save left alone; every change kept 300 ms later (`autoSave`: this browser's `everlab:scrMaster`, the shared store through EvShared when the page has one, then `EvTopNav.load()` so the app's pages take it).
+- **The setup is a shared master** (`everlab:scrMaster` in EvShared's MASTERS): every viewer takes it on load. What the app's pages read from it today: a Full modal's Header nav Fixed and Style (`tFmD`) and each type's Header title Fixed, Style and Blur bg (`tTyD`); a page's own pick in Tweaks still wins. Tested: Full modal → Header nav Filled, Header title Fixed + Gradient in Page types → the Async report shows them, no Save.
+- **The Header nav's blur over a Banner Image fades** ("What's wrong with this blur gradient"): it stopped in a hard line, its 32 bleed only growing as the body scrolls; over a picture the bleed and the long fade apply from the start (`.sdHo > .sdHg{--sdK:1}`).
+
+---
 ## v2977 · Page types: the Header nav the member's choice on Main; a banner's top wears the nav's Style
 
 - **Header nav On / Off is free on Main** ("I can turn on the nav if I want to have a nav. It's not always like this ... I don't force the header nav to be off"): Main starts Off (the Level turning Main sets it Off), the switch free; Sub and a Full modal keep it On and locked ("Always on a Sub level", "Always on a Full modal"). A Page with it Off keeps the switch alone in its card (Fixed, Style, Blur bg back once it is On). A Main page's bar turned on over a banner starts with no actions (the title keeps its own).
