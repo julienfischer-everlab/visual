@@ -5,6 +5,12 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2994 Guides: All guides; the panel's switches a size down
+
+- "On the guide, I want a general toggle on and off": Page types -> Guides opens with All guides (`ga`). On while any guide is, mixed while some are; a tap turns every guide (Header group, Header nav, Header title, Body, Footer, Show containers) on or off, mixed to all on.
+- "For all of the toggles on this tweak panel ... a smaller toggle": every switch in the doc controls panel (`.dpRail .dpTgl`) is the Toggle master a size down, 30 x 18 (knob 12, check 8), was 40 x 24.
+
+---
 ## v2993 General layout: its parts a dropdown in the controls panel
 
 - "Put all of that as a dropdown on the right side, tweak on a new tweak on the top."
