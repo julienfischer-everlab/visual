@@ -11213,6 +11213,11 @@ keeps it on when picked by hand: it is the only way back to a wider design
 without the menu to reopen it from.
 
 ---
+## v2933 · Timeline Fixed Off keeps the header in place; wrapped tabs become selects
+
+- "When I put fixed OFF why the header go on top?": the Timeline's head is lifted by `--tlUp` (top and margin-top −32 on M · L) to sit right as a sticky element; with Fixed Off (`html.t3TabFree`) it is relative, so the lift moved it 32 up. `html.t3TabFree … > .tlHead.evSecHg{top:0}`: Off draws it exactly where On does (L: head 63, title 104, tabs 167 in both; XS unchanged in both).
+- "Avoid multi line tab in general, when it's like this use a select": `window.EvSegWrap` (beside Tweaks' segments) checks every segmented control (`.tkSegT`, `.dpSeg`, `.moCtlSeg`, `.moSeg`; not a ruler's source, not a proxied one) every 0.9 s; one whose buttons run onto a second line is shown as a select: Tweaks' own select back (the tabs' source; its wide row made inline again), elsewhere a new select that clicks the chip and follows it. The chips stay, hidden (inline important display none), as the source. Seen on Modules → Primary card → Visual (Type, Graphic) when the panel is narrow.
+
 
 ### 5.286 One surface, not three -- the shell, the arrow, the drawer, the list
 
