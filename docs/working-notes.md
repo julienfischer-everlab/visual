@@ -4637,6 +4637,12 @@ anything is allowed to interrupt it** — which is the thing three previous
 attempts got wrong in both directions.
 
 ---
+## v2930 · Page types: the one screen; type and breakpoint in the top nav; Container as the ruler
+
+- "ON page type I just need one screen in the middle as demo! No fluff. Controller in the top nav inc the breakpoint there": General layout → Page types shows the live screen alone, centred. The description, the type switch, the section heads, the caption, each type's panel (its facts and screens), and the Push and pop demo are hidden on this view (CSS: `[data-glv="pt"] > :not(.sdSec)`; their markup kept, glPtWire reads it), as are the rail's Push and pop and Title group groups and the Play / Save head.
+  - The page's top nav (`.dhP`) gets `.ptNav`, on Page types only: a select (Page, Full modal, Sheet, External) and the breakpoint (XS S M L, the page's own, not the top bar's); `EvScrDemo.wire(el, { follow, bp })` reads both.
+- "Use the new range with handles for container!": the demo's Body → Container is the ruler with handles (`EvCtRuler`, as Tweaks'), its chips kept hidden as its source (an inline important display none: the panel's segmented rule wins otherwise); a full step added (2xs to full).
+
 
 ### 5.39 Same count, same colours, same opacities — and a different picture
 
