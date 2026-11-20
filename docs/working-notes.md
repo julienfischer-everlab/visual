@@ -6,6 +6,11 @@ the design landed where it did, and which parts have already bitten. The
 this is the part you need before you change it.
 
 ---
+## v2936 · Modal Header nav: Back and Dismiss; M and L without a frame
+
+- "Header nav modal: Back ON OFF, Dismiss (right) ON OFF (on default)": on a Full modal, Sheet, Floating or Full sheet the Header nav's row is Back and Dismiss (`nd`, an X in the nav's right slot, `.evPhgX`), Actions hidden; on a Page or External, Actions and no Dismiss (the `.sdC` source `hidden`, its panel row `dpOff`). Defaults: Full modal Back on, the sheets Back off, Dismiss on everywhere; a Main sheet with no navigation bar gets one when Back or Dismiss is on.
+- "Dont use frame on M L, just on XS S, as the UI pages": the desk is never framed or scaled (`.sdDkW.sdAuto` always, `fit()` no zoom); XS and S keep the phone and tablet. On Page types the unframed screen runs over the column's 40 side padding and down to the window's foot ("Why padding (grey area) on auto?": that was `.ldMain`'s padding).
+
 ## v2935 · Guides parent/child with a mixed state; the real dock and status bar in the demo phone; Container ruler on its label's row
 
 - "If turn off parent, turn off child": the Header group guide sets Header nav and Header title with it; "If one child, use indeterminate on parent": one part on shows the parent as the Toggle's mixed state (`aria-checked="mixed"`, the master's dash), a click on it turns both on, the last part off turns it off. The demo marks its source with `data-mix`; EvDocPanel's switch reads it (`follow` now watches `data-mix`).
