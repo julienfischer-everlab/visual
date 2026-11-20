@@ -5,6 +5,12 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2986 Banner: the gradient through the whole Header group, out 32 under it
+
+- "Make sure the gradient bleeds 32px on the header group." The span was right (the Full modal at XS: Header group 0 to 136, the ground to 168), but the eased curve was down to a few percent by the nav, so it never read as reaching the step bars, let alone 32 past them.
+- The Header nav's ground over a Banner Image now fades near-linearly from the screen's top (the screen colour, 78% under Blur bg) through the whole Header group (the nav and its Additional slot) to nothing 32 under it.
+
+---
 ## v2985 The blur progressive everywhere on the Page types screen
 
 - "Why is the blur not progressive? The blur should be progressive all the time." On a sheet over a Banner Image (Main, close only) the nav's blur showed as one strong blur with a hard edge 32 under it: the layers' fade masks weren't applied in that browser.
