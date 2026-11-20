@@ -5,6 +5,13 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2961 · Full modal sections edge to edge; the panels keep their colours in light mode
+
+- "The section here doesn't really follow the framework of the full modal. The section should be edge to edge. Have a look at the design system": on the desk the step flows' sheet was a centred column (`max-width: calc(var(--ct2xs) + 40px)`), so the Header group, Body and Footer group stopped at its edges and the page showed round it. Now, as General layout → Page types, the sheet fills the frame and each section is full width, its content in its container: the Body's (`--ct2xs`, Tweaks → Body), the Header nav's (`--ctHd`), the Footer's (`--ctFt`), the sections' 20 either side kept; the column's old bleeds for a wider part are neutralised. The step flows (Async report, Confirm plan, the check-in's insights: `.qciArIn` too); the EvSolo full modals were already full width; the Health profile's sheets keep their layout for now. Checked at S (600, content 512), M (544), L (576).
+- "Why is the background not following the mode": with the sheet the whole frame its paper (the mode's) is edge to edge, whatever lies under it.
+- "why is the container indicator this kind of blue? This panel ... shouldn't be impacted by the mode": `body.light` redefined the segment colours (`--segOn`, `--segOnFg`, the ruler's `--ctHdl`) for everything; the panels (`.topbar`, `.tkPanel`, `.dpRail`) now pin the dark ones, the ruler #93c5fd in either mode.
+
+---
 ## v2960 · Banner Image keeps the real Header group and title; the header's titles are Title groups
 
 - "The header title and the header group should always be there": with Banner Image, Page types drew its own words over the picture (EvTitle and a sub) and dropped the Header title, or, with Header title Fixed Off, left it behind the picture: no title, no actions. Now the real parts stay: the Header nav on top of the picture (Back, Close, the progress on a Full modal), and the Header title (its title, its actions, its settings) over the picture's foot when it is not fixed (drifting and fading with the picture, `.sdTiHo` in `.hoWords`), under the nav when it is. Checked Main (Fixed Off and On), Sub, Full modal: one title each time, the nav there.
