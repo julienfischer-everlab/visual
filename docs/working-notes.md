@@ -5,6 +5,15 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v2997 Page types: a container banner on M and L
+
+- "For Page / Image and Full modal / Image, on M L instead of Full width banner, display a container based banner". The structure:
+  - Header group: Header nav in its Container; Header title in its Container, holding the banner (the picture its ground) with the Header title inside, over it.
+  - Body: its Container. Footer: its Container.
+- On M and L, a Page or a Full modal with Banner Image (`BC`) no longer draws the full-width picture under the bar (the Header overlap). The Header nav is an ordinary nav in its container. The Header title's container holds `.sdBnCard`: 320 tall, 24 corners (radius/4xl), the picture covering it with a shade to its foot, the Title group in it (white, its actions frosted). The title scrolls with the page (never fixed), so Title on scroll can show it in the nav. The body follows in its container, no sheet over the picture.
+- XS and S keep the full-bleed banner (the Header overlap). A sheet keeps its own picture.
+
+---
 ## v2996 Page types: the guides from the top bar's Ruler
 
 - "Kill that and make the Ruler on the top working instead": the Guides group (All guides, Header group, Header nav, Header title, Body, Footer, Show containers) is gone from the Page types controls panel.
