@@ -6,6 +6,11 @@ the design landed where it did, and which parts have already bitten. The
 this is the part you need before you change it.
 
 ---
+## v2940 · Primary card: the Card's own padding; Centred mode's room on the content
+
+- "Follow the Card padding! Why weird padding left right": the primary card is padded by its Card size alone, `var(--kP)` all round (xl 24), at every breakpoint and look. Removed: the primary card's 32 at its sides (`var(--t-space-xl)`, v2700s' "add left right padding support of 32px"), the desk top bento's same, and Centred mode's 40 on the card.
+- "Centered mode has more padding on the CONTENT not directly on the card padding ... otherwise we will override things on the card component": in Centred mode (M · L) the Title group (`.hpOvTgW`) takes 16 at each side (`space/sm`) inside the card's 24 (the 40 it had). Not at XS · S (not centred; the Modules page's XS demo `.hcXs` excluded), where the Title group keeps its 32 at the right.
+
 ## v2939 · Primary card Title group: 32 at the right on XS · S
 
 - "Why weird padding on left?" then "Reduce title group padding right to 32px": at XS · S the Title group (and the card's other words) beside the bottom-right visual keep 32 at their right (was 48, v2927's rule). The card's own padding is unchanged (24 top and bottom, 32 at the sides by default).
