@@ -5,6 +5,11 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3035 · Canvas: each card in a screen with the Overview skeleton
+
+- **Canvas (the page's and the drawer's)**: on a module that sits on the Overview (Primary card, Insights, Schedule, Get started), each state is drawn inside a screen with the Overview skeleton ("use also a screen, a frame with the overview skeleton"): the Demo's own skeleton cloned (the phone 393 × 852 at XS, the tablet 600 × 860 at S, the desk 1120 × 760 at M · L), the card in its slot, as the Health profile screens beside it. Its column as wide as the frame (`max-content`). Modules not on the Overview (Recommendation card, Plan update, Timeline list) and the collections (Focus, Decade) keep the card alone.
+
+---
 ## v3034 · Every module on one framework; Schedule in the Overview skeleton; the canvas's step screens the intro alone; the bento's primary card height
 
 - **One framework for every module page** ("Every module should have the same kind of style of presentation"): Schedule, Get started, Recommendation card, Plan update and Timeline list now have what the Primary card, Insights, Focus card and Decade card have. That means the page select (Demo · Collection · Canvas · each group), the demo with its controls in the full-height right panel, the title in the body, the Collection table (open a row: its states in the drawer, List · Canvas) and the Canvas. A module with Sub pages and no demo of its own gets one (`M.demoIt`): its State picked from its groups' states, drawn by its own `draw()`.
