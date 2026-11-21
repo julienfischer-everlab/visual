@@ -5,6 +5,13 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3007 Collection: View / Edit in the drawer, a Type column
+
+- **View / Edit** ("Add a segmented tab here: View - Edit. In the edit put the same Edit control"): the drawer's head has the Segmented tab master (`EvSeg.el`, sm). **View** is the stacked states and their comments. **Edit** moves the Collection builder's own controls into the drawer: its Collection group (Card, State, prev / next, +, Share) and its Controls group (Visual, Content, Save style). They are the same nodes, put back where they were on View, on closing, or on leaving Collection. The builder's card is set to this card's first state and drawn live above them (`el._colEd`: `demo()` places the card there, zoomed to fit). Picking another card in Edit moves the drawer and the table's highlight to it. The mode is remembered (`everlab:moColMode:mhp`). While in Edit the stack isn't redrawn on every change; it is redrawn once on the way back to View.
+- **Type** ("Add a column Type: Services, General, Recommendations"): a column after Card, a tint Badge (2xs, no icon). Services: DEXA Scan, MRI Scan, Microbiome & Gut Health, Advanced Blood Testing. Recommendations: Doctor’s plan. General: Onboarding consult, Freemium · Explore, Check-in.
+
+---
+
 ## v3006 Collection drawer: groups without a border
 
 "No border": the drawer's state groups (and the General one) lose their 1px line. A slightly stronger fill (ink 4%) marks each box instead. The rule between the card and its comments stays. The zoom's room drops from 26 to 24 (the group's 12 each side).
