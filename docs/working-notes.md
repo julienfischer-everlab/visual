@@ -5,6 +5,17 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3020 Collection: New card
+
+"With the active card, I need a way to add a new card": the active cards end on a **New card** row: a Secondary button (sm, +) and its hint ("A copy of MRI Scan, the card open").
+
+- **What it does:** `EvPcCards.add` makes a copy of the card open in the drawer (or the first card), named "<card> copy". It adds the row, selects it and opens its drawer in Edit (the builder set on the new card, its preview drawn), and the snackbar says so.
+- **Rows for added cards:** the Primary card module's `groups()` now ends with every card added in the builder or here. Each lists its base card's steps under its own key (`pcObj`: its own picture, style and words), keeps its Type from the base card (`colTypeG`) and takes its name from Content's Card name or the one given.
+- ↑ / ↓ skip the New card row.
+- Added cards are kept in this browser (`everlab:pcCards`), like the rest of the builder's cards. A direct link to one opens only where it exists.
+
+---
+
 ## v3019 Removed: Delete forever in a More menu
 
 "... More CTA, Dropdown Delete forever": the Removed rows keep Restore and swap the red Delete forever button for **More** (`.moColMoreB`, 28, three dots). Its dropdown (`.moColMenu`: 12 corner, 6 inside, under the button, right-aligned) holds **Delete forever** with a bin icon, in the negative ink.
