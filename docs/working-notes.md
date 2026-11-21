@@ -5,6 +5,17 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3032 · Action plan Next focus, Canvas cases, drawer View tabs, blank New card, module/DS page select, Page types viewport, Style swatches
+
+- **Action plan → Next focus** (Tweaks, Action plan, On by default): the Focus card master (Design system → Modules → Focus card, the one Tweaks → Your focus → Card picks) is the grid's first card, five actions after it (six cells still); above the list at XS · S. Drawn by the Timeline's own builder (`window._t3Focus.cell()`, in the Timeline's styles through `window._t3DocCss`), its CTA doing what it does on the Timeline (`_t3Focus.act`: Doctor notes, Ask Eva, Review my plan). Off under Split's Appointments.
+- **Canvas · cases**: a group whose cards are different objects (Doctor's plan: Protocol, Diagnostics) reads "2 cases" and has no line between its dots ("No link here as its 2 different cases").
+- **Collection drawer**: top tabs View · Edit (EvSeg); under View the Tab master's Underlined List · Canvas (EvTab), hidden in Edit; the View tab remembered (`everlab:moColVs:<k>`), Canvas still the wide drawer.
+- **New card is blank** ("not the latest in the list"): Primary card, one step on DEXA's plain frame, Visual Off, placeholder words (Eyebrow, Card title, a line, Button; `EvPcContent.seed`); Focus card and Decade card a blank of their own (`M.colBlank`). Named New card, New card 2, …; opened in Edit.
+- **Modules and Design system pages**: the left nav gone; its list is a select in each page's header in the title's place (grouped as the nav was), the breakpoint chip and the page's own select after it; the title moved to the top of the body over its content (`.dhBT`). Pages in a frame (Service timeline, Concierge components) and General layout get a header bar with the select (`.dnBar`). Kept on redraws by an observer.
+- **Page types at M · L**: the screen stops at the breakpoint's width (992, 1440), centred on a grey shade; Auto edge to edge as before; still the window's full height.
+- **Style (Gradient · Filled · Transp.)**: one row, a small swatch before each (gradient fading down, solid, outline). Note: nested `:has()` is invalid CSS (the whole rule is dropped); the doc panel's segments carry `!important` paddings.
+
+---
 ## v3031 Collection drawer: a Canvas tab (View · Edit · Canvas), the drawer wider
 
 - The Collection drawer's segmented tab is now **View · Edit · Canvas** (the EvSeg master). Canvas shows the card open as the Canvas page does:
