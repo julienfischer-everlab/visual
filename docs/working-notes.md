@@ -5,6 +5,19 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3030 Module pages: Canvas view, every card's states side by side, linked by a timeline
+
+- **Canvas** (`cvUi`) is a third view in a module's page select: Collection builder, Collection, **Canvas**, then each card. It works on every module with Sub pages (Primary card, Insights, Focus card, Decade card).
+- Each card is a row: its name (it opens the card's page), its number of states, then its states side by side at the breakpoint's width (`W[bp]`), each drawn by the module's own `draw`, not clickable.
+- Under them, the timeline: a stem from each card down to its dot, the dots linked by a line, and the step's number (orange) and name under each dot. On the Primary card, a step kept off the Overview has a hollow dot, its card dimmed, "Not on the Overview" under it.
+- Removed and deleted cards are left out (`colRem`).
+- **Moving round:**
+  - Zoom: −, +, Fit (everything in view), 100%; Ctrl or ⌘ and the wheel zoom round the pointer; + and − keys.
+  - Drag to move (the viewport scrolls).
+  - The zoom is kept in this browser (`everlab:moCvK`, 50% to start).
+- The page takes its full width while the Canvas shows, on a dotted ground.
+
+---
 ## v3029 Focus card and Decade card: master modules with a collection system
 
 - **`window.EvColStore(key, seed)`**: a module's collection, the Primary card's system for any module. It is kept in localStorage under `everlab:col:<key>`.
