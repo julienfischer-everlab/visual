@@ -5,6 +5,11 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3045 Introduction template: the welcome and What to expect
+
+- The Async report's What to expect step (V3: the picture, the badge, the title, the three rows, See results) joins the welcome in one template, renamed Introduction ("This should be a page-type template introduction"). Page type shows "Template · Introduction" on both. Their General layout picks are one set (`ar:tpl-intro`, the same key as before, so earlier picks are kept).
+
+---
 ## v3044 Page types · Full modal: steps and their transition
 
 - Design system → General layout → Page types, Full modal: six steps ("some place for steps ... a different title ... the transition between steps, like back, next, back"). Each step has its own Header title and skeleton: three option lists of different lengths, a form's fields, a grid, and a done step with its mark (`FM` in EvScrDemo).
