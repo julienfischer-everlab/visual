@@ -5,6 +5,15 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3041 Goals: a month-by-month timeline; more layout templates
+
+- "What we'll do" is a vertical timeline at the left ("a timeline on the left side ... the months as a title group"). Each month is a node and an H3 Title group (`EvTitle`), with that month's Card static xl outlined items under it, sorted from December on. The cards no longer repeat the month.
+- `EvTl.groups(groups, label)` is a new grouped variant of the vertical timeline master: a title beside each node and its content under it (`.evTlG`, `.evTlGh`, `.evTlGb`). It is documented in the design-system skill reference.
+- Data: the CTCA heart scan moves to January, and Keep an eye on your skin gains a follow-up skin check in August, so every goal has more than one month.
+- XS: a narrow card's picture is 64 (container query on `.arGlCard`).
+- More templates for the General layout picks (`window.__flowTpl.ar`): Results introduction (the welcome), Doctor note (`rec:dr`), and Confirm review plan (`rec:rev`, the standalone Confirm plan's too), next to Goals and Insights. Page type shows the label on each.
+
+---
 ## v3040 Goal plan cards XL outlined; one space under the goal's Header title
 
 - The goal plan items ("What we'll do") are Card static, xl, Primary - Outlined (`EvCard.html`): 24 padding and corners, the hairline, no fill ("Put a card XL outline").

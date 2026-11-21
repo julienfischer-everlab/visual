@@ -171,6 +171,8 @@ Every full outline (a card's, a CTA's, a field's, a chip's 1px border or `inset 
 
 **API.** `EvTl.html(steps, label)` → `ol.evTl[aria-label] > li.evTlSt.evTl_<s> > i.evTlNode + i.evTlLn (not on the last) + div.evTlTx > b.evTlT (hidden span.evTlVh 'Done: '|'Flagged: '|'Planned: ') + span.evTlD`. Step `{ s: 'done'|'flag'|'next', t, d }` (plain text, escaped). `EvTl.enter(list, a, d0)` uses an EvSolo api (`a.rise`, `a.push`) and returns the delay at which the last (dashed) node starts.
 
+**Grouped.** `EvTl.groups(groups, label)` → `ol.evTl.evTlG > li.evTlSt.evTl_<s> > i.evTlNode + i.evTlLn + div.evTlTx.evTlGx > div.evTlGh (head) + div.evTlGb (body)`. A group `{ s, head, body }`: `head` a title's markup beside the node (the Title group, `EvTitle.html`), `body` its content under it (markup, or leave it empty and append nodes to `.evTlGb`); `s` defaults to `next`. 32 under each group, 12 between head and body and between body items. First use: the Async report's goals, "What we'll do" month by month (`.arGlTl`, H3 months, Card static xl outlined items).
+
 **Rules.** Node 24 circle, margin-top −1, grid 24px + 1fr, gap 12, 16 below each step. done: `--evTlNode` ink .08 disc, check 15 at ink .9. flag: ember disc (`--evTlEmber` #d9653b light, #f78359 in `.arDark`) with a 16 sparkle in `--evTlEmberInk` (#fff / #1a120e). next: dashed ember ring (pathLength 70, dasharray 4 3). Connector left 11.25, top 23, width 1.5, `--evTlLine` ink .09; none under the last. Title 500 16/22; line 400 15/22 ink .56. Entrance: words rise 12 (640 ms); node pops .4 → 1 in 460 ms `cubic-bezier(.34,1.56,.64,1)`; next ring scales and rotates from −120deg over 640 ms `cubic-bezier(.16,1,.3,1)`; connector scaleY over 200 ms after 80 (`cubic-bezier(.45,0,.25,1)`).
 
 **How to use.**
