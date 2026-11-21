@@ -5,6 +5,12 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3006 Collection drawer: groups without a border
+
+"No border": the drawer's state groups (and the General one) lose their 1px line. A slightly stronger fill (ink 4%) marks each box instead. The rule between the card and its comments stays. The zoom's room drops from 26 to 24 (the group's 12 each side).
+
+---
+
 ## v3005 Collection drawer: each state a group
 
 "Make this as a Group": in the drawer each state is one box (`.moColSt`: 1px line, 16 corner, 12 inside, a faint fill). It holds its number and name on top (the caption moved out from under the card), the card, then its comments under a rule. The General thread is the same box. The cards' zoom leaves room for the box (drawer − 48 − 26). The boxes sit 24 apart.
