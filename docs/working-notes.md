@@ -5,6 +5,12 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3012 Drawer footer: no Restore, one line
+
+"No restore cta. Remove step - Remove card is one line": the drawer's footer hides Restore removed steps / cards (they stay in the builder). Remove step and Remove card always share one line, 50 / 50, even with a step removed.
+
+---
+
 ## v3011 Drawer footer: Remove step Secondary
 
 "Secondary Remove step": in the Collection drawer's fixed footer, Remove step wears the Button master's Secondary (`evBtnSec`). Remove card keeps Destructive (`evBtnPri evBtnDst`). Both are still 50 / 50, and both go back to Tertiary in the builder.
