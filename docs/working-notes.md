@@ -5,6 +5,16 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3037 · Async report: the Goals screens after the Doctor note; its recommendation screens as steps of their own in the Flow panel
+
+- **Goals** ("Add a few screens just after the doctor note. That screen will be the goals"): one screen a goal, after the Doctor note and before the Recommendation summary, each its own phase (`g0`, `g1`, `g2`; `buildRecGoal`). It shows Focus now · n of N (the Badge master, Solid), the goal as an H1, why it matters for this member, then Your plan / Go further on the Segmented tab master.
+  - **Your plan:** What we'll do, the plan's items (picture, name, line, Included / ↑ Moved up / New on the Badge master, and when), then Your part in a card (habits: Habit / For now and when).
+  - **Go further · n:** a line, then Know more and Get support cards, each with Add now · $price (it toggles to ✓ Added) and On your list (blue tint, toggles to + Save to your list).
+  - **Button:** "Next goal: energy" / "Next goal: skin", the last Continue on to the summary; Back steps through them.
+  - **Content:** three goals, heart (the reference's words), energy (the reference's) and skin, in `GOALS`. The doctor's name follows the persona; off with `o.goals = 'off'`.
+- **Flow panel**: the goals listed after the Doctor note (Goal 1 · Understand my heart risk, …), on / off and in order with the rest. The recommendation screens (Doctor note, the goals, the summary, Clinical, Blood panel, Lifestyle, Confirm plan, Checkout) are now steps of their own in the list, in place of their header row, not indented sub-steps ("These steps shouldn't be an increment. Shouldn't be a substep"); still ordered among themselves, Confirm plan and Checkout still fixed.
+
+---
 ## v3036 · Collection Type badges in colour; the Badge master's Purple and Brown
 
 - **Type column** (every module's Collection table, `colTypeH`): each type its colour ("Use a colour system here: yellow, purple, and brown"). General is yellow (the Badge's Special), Services purple, Recommendations brown; any other type always one of the three, picked from its name.
