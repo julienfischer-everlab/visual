@@ -5,6 +5,13 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3043 Page type: Container same size
+
+- Design system → General layout → Page types has a Container same size switch in its Page type group ("Container same size, yes/no ... every container part of this page will have the same width"). It works for every type (`cs` in EvScrDemo, Off by default). On, the Header nav, Header title and Footer containers take the Body's. Picking any of them sets all four.
+- Tweaks → General layout → Page type has the same switch for the page on screen (`#stCtSame`, kept per page in `#stTnPg` like WIP). Unpicked, it follows the master's switch for the page's type.
+- On, EvCt draws every part at the Body's pick for the screen (step or template), through `html[data-ctsame]`. A Header nav, Header title or Footer container picked in Tweaks sets the Body, and so all of them.
+
+---
 ## v3042 Goals: goal steps (Tweak), clickable plan cards with the product's sheet
 
 - Goal steps sit in the Title group's top slot over each goal's title ("a circle on the top ... Goal 1, 2, 3 ... active state ... progress"). A goal done is a tick on the ink's 12%, the goal on screen is the ink (a pill that says Goal n), and the next goals are rings. The line between them fills up to the goal on screen.
