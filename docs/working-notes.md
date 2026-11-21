@@ -5,6 +5,12 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3036 · Collection Type badges in colour; the Badge master's Purple and Brown
+
+- **Type column** (every module's Collection table, `colTypeH`): each type its colour ("Use a colour system here: yellow, purple, and brown"). General is yellow (the Badge's Special), Services purple, Recommendations brown; any other type always one of the three, picked from its name.
+- **Badge master (EvTokBadge Status)**: two new Appearances, Purple and Brown, beside Neutral, Positive, Warning, Negative, Accent and Special. They are in its Appearance property and drawn by `EvCtl.badge({ app: 'purple' | 'brown' })` in Solid, Tint and Outline. Brown is on the brand's tokens (`bg/brand/orange/secondary/100`, `/200`, `fg/brand/orange/primary/300`). Purple has no token yet: its own values for dark and light (`--evPurBg`, `--evPurFg`, `--evPurSol`), written as they are (the Status CSS now passes a `#`, `var(` or `rgb(` value through), to move onto a token once there is one.
+
+---
 ## v3035 · Canvas: each card in a screen with the Overview skeleton
 
 - **Canvas (the page's and the drawer's)**: on a module that sits on the Overview (Primary card, Insights, Schedule, Get started), each state is drawn inside a screen with the Overview skeleton ("use also a screen, a frame with the overview skeleton"): the Demo's own skeleton cloned (the phone 393 × 852 at XS, the tablet 600 × 860 at S, the desk 1120 × 760 at M · L), the card in its slot, as the Health profile screens beside it. Its column as wide as the frame (`max-content`). Modules not on the Overview (Recommendation card, Plan update, Timeline list) and the collections (Focus, Decade) keep the card alone.
