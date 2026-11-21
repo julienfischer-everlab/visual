@@ -5,6 +5,12 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3009 Collection drawer: View / Edit under the top bar, full width
+
+"Below top bav full segmented tab": the View / Edit Segmented tab moves out of the drawer's head into its own row under it (`.moColDM`: 12 above and below, the head's 24 / 16 sides, a rule under it). The tab stretches the full width, its two halves equal. The head keeps the card's name and steps, previous / next and Close.
+
+---
+
 ## v3008 Primary card steps: Show on Overview
 
 "Add a Toggle To turn a step OFF, so the step won't be applied on overview but still on the services detail page. Show on Overview ON OFF".
