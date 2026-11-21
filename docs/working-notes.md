@@ -5,6 +5,14 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3014 Collection table: Link column
+
+"Add link col: CTA link that copy direct link": a **Link** column before the chevron. Each card's row has the Share's link icon (`.moColLk`, 32 round). It copies a direct link through the app's view links (`window.__tkViewLink`: `#tk-vw…`, shared like the bar's links) and doesn't open the row; the icon ticks green and the snack names the card.
+
+The link opens the prototype on Modules → Primary card → Collection with that card's drawer open, in the drawer's View or Edit as it was. View links now carry `everlab:moCol:<module>` and `everlab:moColMode:<module>` (VLS). The table reads them again whenever it's drawn. Checked: MRI Scan's link opened the Collection with MRI Scan's drawer.
+
+---
+
 ## v3013 Collection table: Removed, with Restore
 
 "Keep the deleted somewhere in the table": the Collection table ends with **Removed · N** (`tbody.moColRm`). It lists:
