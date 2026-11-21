@@ -5,6 +5,26 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3027 Timeline Buy modal: the purchase template, on the Page types master's Sheet
+
+- **Content, in the light capture's format** (`buySheet`):
+  - the service's picture (16:10, 20 corners);
+  - what it does in one line (`it.why`, 20/26 medium);
+  - the price, large, with "(inc. GST)";
+  - **Tell me about the {service}** (`.t3BuyAsk`: a star in an outlined square, the words, a chevron). It opens the chat on Eva with the question asked (`data-a="buyask"`, `_cc.ask`), as the Services marketplace's Ask Eva;
+  - the service page's description (`_svc.info().about`);
+  - **What it is** (duration, place, "One-off, not part of your membership");
+  - **Before you go** (the service's instructions);
+  - one CTA, **Purchase**, in the Footer group master (`EvPageFt`, 1 CTA only). It was Buy for $X and Not now.
+- **Structure, the Design system's Sheet** ("why is the top nav not fixed?"). Every Timeline sheet (`.t3Sh`) now has:
+  - the Header nav (`.t3ShNav`, the Close; the title in it when Title is In nav), pinned at the sheet's top while Header nav → Fixed is On (`html.tnFree` unpins it), keeping the sheet's top padding, with its Style (Gradient, Filled, Transparent) and Blur bg;
+  - the Header title (`.t3ShTt`, H2) under it when Title is Below, pinned under the nav with Header title → Fixed (`data-htfx`), with its Style;
+  - the body;
+  - the Footer group (`.t3ShFt`), pinned at the foot while Footer → Fixed is On (`html.tfFree`), with its Style (Filled adds the hairline) and Blur bg.
+- The **Footer** card now shows in Tweaks for these sheets (`tMeas` counts a Timeline sheet's footer).
+- The sheet's ground follows the Design system's bottom sheet: #181818 in dark, **white in light** (was #f6ece6).
+
+---
 ## v3026 Overview Notification module; Collection: removed rows open, image thumbnails, unread orange, full width
 
 - **Notification module** (`window.EvOvNtf`): one stack under the Overview's bento, just above the next section. Modules plug in by key: `EvOvNtf.add(key, el, { order, name })`, `remove(key)`, `has`, `keys`, `paint`. It shows only with Tweaks → Overview → Notification module → Module On (`html.ovNtfOn`; **Off by default**), and never when empty. The Tweaks row "Stacked" lists what is in it now. The switch also shows on the check-in's Overview steps.
