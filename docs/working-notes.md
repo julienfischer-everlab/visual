@@ -5,6 +5,12 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3004 Collection drawer: a general comment on the card
+
+"Add general comment": the drawer opens on a **General** thread for the whole card, above its stacked states (key `module|card|*`, the same `EvCardCmt.thread` with a label, a light fill to set it apart). Its comments count toward the row's Comments icon and its unread dot, like the states'.
+
+---
+
 ## v3003 Collection: comments on every card state
 
 "a comment feature for each card so everyone can jump in and just leave a comment directly here ... take the name of the person when they submit a comment ... on the list of rows, we should see the comment icon if there's one comment. And unread comment as well".
