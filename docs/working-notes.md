@@ -5,6 +5,12 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3040 Goal plan cards XL outlined; one space under the goal's Header title
+
+- The goal plan items ("What we'll do") are Card static, xl, Primary - Outlined (`EvCard.html`): 24 padding and corners, the hairline, no fill ("Put a card XL outline").
+- Under the goal's Header title, only the master's own space (layout/container/padding/top-bottom, 36 at L) before the Your plan / Go further tabs. The stack's 24 gap on top of it is cancelled (`.arGlStack.arGap24 > .arGlHd`), as on the insights.
+
+---
 ## v3039 Goals: Your part switch, plan cards, Header title master; layout templates (Goals, Insights)
 
 - Tweaks: a "Your part" group with an On/Off switch in its header (`#stArGlPart`, `glpart` in the report's options). It shows on every goal screen (phase `goal`) and turns the Your part card off on all of them.
