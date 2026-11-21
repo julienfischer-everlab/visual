@@ -5,6 +5,15 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3016 Link: always a snackbar
+
+"Need a snackbar when click LINK": every copied link (the Collection's Link, Share this card, the bar's links) ends on the snackbar (`.tkSnack`).
+- **Copied:** "Link to “MRI Scan · Collection” copied", as before.
+- **Clipboard refused** (some claude.ai views refuse it): it tries the old copy (`execCommand`). If that fails too, the snackbar shows "Copy this link" with the link itself in a field, selected, for 9 s. Before, that fallback only rewrote the Save button's text, so nothing showed.
+- The snackbar sits over every layer (z 2147483002, was 100).
+
+---
+
 ## v3015 Collection table: Copied feedback, the chevron a button
 
 - "If click --> feedback copied": once the clipboard has the link, a small **Copied** label rises over the Link button for 1.6 s (`.moColLkTip`, role status), with the green tick. If the copy fails, the app's own fallback shows the link to copy by hand.
