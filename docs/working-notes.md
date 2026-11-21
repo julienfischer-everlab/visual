@@ -5,6 +5,14 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3023 Check-in: Tell us more as a section
+
+"The Tell us more needs to be an H2 and needs to have the same margin above as the recent change … It should be a section": a picked Something else no longer opens a small label and field under the options. It opens its own section (`.qciSec.qciOthS`) under an H2 on the Title group master: "Tell us more", or the question's own label ("What got in the way?" on Your plan's Which ones), then its field.
+
+The question's sections sit 32 apart (`.qciQ:has(> .qciSec)`), like What we have for you and Recent changes. This applies on every question with Something else (What's changed, What's been going on, What gets in the way, What to change, Which ones, Diagnosed with). Where there was no section before, the options become one.
+
+---
+
 ## v3022 Check-in Flow: every follow-up listed
 
 "The supplement step under What changes is missing … If I select the first option … it needs to be there but hidden if it's not selected": the Flow now lists every follow-up any answer can open, not only the ones some persona's saved answers open.
