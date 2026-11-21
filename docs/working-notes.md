@@ -5,6 +5,13 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3044 Page types · Full modal: steps and their transition
+
+- Design system → General layout → Page types, Full modal: six steps ("some place for steps ... a different title ... the transition between steps, like back, next, back"). Each step has its own Header title and skeleton: three option lists of different lengths, a form's fields, a grid, and a done step with its mark (`FM` in EvScrDemo).
+- Continue goes to the next step, Back to the one before; Back is hidden on the first step (the Step flow's rule), and Done on the last returns to the first. The body and the Header title move with the Step flow master's transition (`EvSteps.push`: Linear or Fade, its timings, as saved on the Step flow page). The old page is a ghost over the new one while it goes. The progress bars fill from the step before. The caption says the step and the transition.
+- The Modals doc's Full modal demo, built by the same EvScrDemo, gets the same steps.
+
+---
 ## v3043 Page type: Container same size
 
 - Design system → General layout → Page types has a Container same size switch in its Page type group ("Container same size, yes/no ... every container part of this page will have the same width"). It works for every type (`cs` in EvScrDemo, Off by default). On, the Header nav, Header title and Footer containers take the Body's. Picking any of them sets all four.
