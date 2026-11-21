@@ -5,6 +5,16 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3022 Check-in Flow: every follow-up listed
+
+"The supplement step under What changes is missing … If I select the first option … it needs to be there but hidden if it's not selected": the Flow now lists every follow-up any answer can open, not only the ones some persona's saved answers open.
+
+- **Listing:** each persona's steps are worked out twice, with its answers and with the answers that open every follow-up (`allA`, `ALLA()`: a low How you've been, every What's changed option, Poor sleep, a low Eating, Your plan Yes, Family health Yes; Pregnancy only where its option is offered). They are merged in order under their questions. Newly listed: A new diagnosis, Pregnancy, Diagnosed with, Who, Their age.
+- **Dimmed:** a follow-up the current answers skip is dimmed. Its hint names the answer that opens it ("Shown after “A new diagnosis or health condition” in What’s changed").
+- **Opening one** puts that answer in (`FUA`, this persona's answers: e.g. adds A new diagnosis to What's changed and drops "Nothing's changed") and opens the step. A step only another persona can reach (Pregnancy) switches to that persona and opens it with its answer.
+
+---
+
 ## v3021 Check-in Flow: follow-ups as sub-steps
 
 "There are slides that only appear when I select a specific option … Can you have a sub-step indentation style for the step that depends on the answer to the question?"
