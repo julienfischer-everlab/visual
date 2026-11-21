@@ -5,6 +5,17 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3008 Primary card steps: Show on Overview
+
+"Add a Toggle To turn a step OFF, so the step won't be applied on overview but still on the services detail page. Show on Overview ON OFF".
+
+- **Toggle** (the Toggle master, `EvToggle.el`): in the Collection drawer, on the right of each step's head ("Show on Overview"), for the steps of MRI Scan, Microbiome & Gut Health, Advanced Blood Testing and Check-in. A step that's off is dimmed in the drawer.
+- **Store**: `EvPcSteps.ovOn(card, step)`, `setOv(card, step, on)` and `ovPick(card, step)`, kept with the builder's steps (`everlab:pcSteps`, `ovOff` per card, this browser). Turning a step on or off repaints the Overview card.
+- **Overview**: the primary card's step goes through `ovPick`. A step that's off is replaced by the last earlier step that's on, or the next one when there's none before it. This applies to the service cards (Tweaks → Primary card → MRI / Microbiome / Blood test step) and the Check-in card. The service's own page is untouched. Checked: MRI at Questionnaire, turned off, shows Book your MRI screening briefing.
+- Not yet on the Onboarding consult's states, the DEXA card (one step), Freemium or the Doctor's plan: those don't show the toggle.
+
+---
+
 ## v3007 Collection: View / Edit in the drawer, a Type column
 
 - **View / Edit** ("Add a segmented tab here: View - Edit. In the edit put the same Edit control"): the drawer's head has the Segmented tab master (`EvSeg.el`, sm). **View** is the stacked states and their comments. **Edit** moves the Collection builder's own controls into the drawer: its Collection group (Card, State, prev / next, +, Share) and its Controls group (Visual, Content, Save style). They are the same nodes, put back where they were on View, on closing, or on leaving Collection. The builder's card is set to this card's first state and drawn live above them (`el._colEd`: `demo()` places the card there, zoomed to fit). Picking another card in Edit moves the drawer and the table's highlight to it. The mode is remembered (`everlab:moColMode:mhp`). While in Edit the stack isn't redrawn on every change; it is redrawn once on the way back to View.

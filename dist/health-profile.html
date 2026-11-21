@@ -4621,7 +4621,12 @@ window.EvPcSteps = (function () { var K = 'everlab:pcSteps', D = {}; try { D = J
     if (window.EvPcContent && window.EvPcContent.clone) window.EvPcContent.clone(o, from, k); return k; };   /* and its words */
   var remove = function (o, k) { var d = of(o), i = -1; d.add.forEach(function (a, j) { if (a.k === k) i = j; }); if (i >= 0) { d.add.splice(i, 1); delete d.names[k]; vis(function (a) { delete a[o + ':' + k]; delete a[o + ':' + k + '#bg']; }); if (window.EvPcContent && window.EvPcContent.drop) window.EvPcContent.drop(o, k); } else if (d.hide.indexOf(k) < 0) d.hide.push(k); save(); };
   var restore = function (o) { of(o).hide = []; save(); };
-  return { list: list, base: base, rename: rename, add: add, remove: remove, restore: restore, hidden: function (o) { return of(o).hide.slice(); }, all: function () { return D; } };
+  /* Show on Overview ("Add a Toggle To turn a step OFF, so the step won't be applied on overview but still on the services detail page"): the steps kept off the Overview (d.ovOff); the Overview then stays on the last earlier step that is on (or, none before it, the next one), the service's own page unchanged */
+  var ovOn = function (o, k) { var d = D[o]; return !(d && d.ovOff && d.ovOff.indexOf(k) >= 0); };
+  var setOv = function (o, k, on) { var d = of(o); d.ovOff = (d.ovOff || []).filter(function (x) { return x !== k; }); if (!on) d.ovOff.push(k); save(); if (window._hpCardPaint) setTimeout(window._hpCardPaint, 0); };
+  var ovPick = function (o, k, B) { if (ovOn(o, k)) return k; B = B || (window.EvPcBuiltSteps || {})[o] || (o === 'qci' ? [['ready', 'Ready'], ['started', 'Started'], ['done', 'Done']] : []); var ks = list(o, B).map(function (x) { return x[0]; }), i = ks.indexOf(k), j;
+    for (j = i - 1; j >= 0; j--) if (ovOn(o, ks[j])) return ks[j]; for (j = i + 1; j < ks.length; j++) if (ovOn(o, ks[j])) return ks[j]; return k; };
+  return { list: list, base: base, rename: rename, add: add, remove: remove, restore: restore, hidden: function (o) { return of(o).hide.slice(); }, all: function () { return D; }, ovOn: ovOn, setOv: setOv, ovPick: ovPick };
 })();
 /* the primary cards themselves, edited on the Collection builder ("Need to be able to Rename Add Edit a primary card"): everlab:pcCards, this browser. { names: { card: name }, add: [{ k, base, name }], hide: [card] }:
    a card's name, the cards added (each a copy of the card it was made from: drawn as it, its own look, picture and words, copied from it, its steps the base card's), the built-in cards removed */
