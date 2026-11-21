@@ -5,6 +5,12 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3005 Collection drawer: each state a group
+
+"Make this as a Group": in the drawer each state is one box (`.moColSt`: 1px line, 16 corner, 12 inside, a faint fill). It holds its number and name on top (the caption moved out from under the card), the card, then its comments under a rule. The General thread is the same box. The cards' zoom leaves room for the box (drawer − 48 − 26). The boxes sit 24 apart.
+
+---
+
 ## v3004 Collection drawer: a general comment on the card
 
 "Add general comment": the drawer opens on a **General** thread for the whole card, above its stacked states (key `module|card|*`, the same `EvCardCmt.thread` with a label, a light fill to set it apart). Its comments count toward the row's Comments icon and its unread dot, like the states'.
