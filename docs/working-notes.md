@@ -5,6 +5,13 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3025 Check-in: Nothing's changed by default, first in the list
+
+- "What's changed": "Nothing's changed" is now the first option and is selected by default for every persona (p1 had a supplement, p2 a medication). Picking any other option still clears it, and picking it clears the others.
+- "Family health": "Nothing new" (already first) is the default for every persona (p3 was Not sure).
+- With nothing changed, the change follow-ups (diagnosis, medication, supplement, pregnancy) are hidden in the journey and shown dimmed in the Flow.
+
+---
 ## v3024 Rating range: active label above or below
 
 - `EvRate` (the Rating range master) takes `words` (one per step), `wordPos` (`above`, `below` or `off`; `above` by default when words are given) and `def` (the default value). The active word sits centred above the track or below the labels, follows the thumb, and is read out through `aria-valuetext`; the `evrate` event carries `word`.
