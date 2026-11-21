@@ -5,6 +5,13 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3015 Collection table: Copied feedback, the chevron a button
+
+- "If click --> feedback copied": once the clipboard has the link, a small **Copied** label rises over the Link button for 1.6 s (`.moColLkTip`, role status), with the green tick. If the copy fails, the app's own fallback shows the link to copy by hand.
+- "chevron should be CTA": the row's chevron is a button (`.moColGoB`, 32, 8 corner, the Link's size). It gets its ground on hover of the row and a blue tint on the open card's row, and opens the card's drawer like the row.
+
+---
+
 ## v3014 Collection table: Link column
 
 "Add link col: CTA link that copy direct link": a **Link** column before the chevron. Each card's row has the Share's link icon (`.moColLk`, 32 round). It copies a direct link through the app's view links (`window.__tkViewLink`: `#tk-vw…`, shared like the bar's links) and doesn't open the row; the icon ticks green and the snack names the card.
