@@ -5,6 +5,15 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3024 Rating range: active label above or below
+
+- `EvRate` (the Rating range master) takes `words` (one per step), `wordPos` (`above`, `below` or `off`; `above` by default when words are given) and `def` (the default value). The active word sits centred above the track or below the labels, follows the thumb, and is read out through `aria-valuetext`; the `evrate` event carries `word`.
+- `EvRate.FEEL`: 11 words for 0 to 10, from Very unwell to Really well, with 5 = Feeling good.
+- Check-in's feel question uses `EvRate.FEEL` and starts on 5 (Feeling good). `EvQ.scale` passes `words`, `wordPos` and `def` through.
+- Tweaks > Check-in: new "Active label" (Above, Below, Off), shown when the Option picker is Range.
+- Design system > Rating range: Try it starts on 5 with the word in the readout; new "Active label" section (Above, Below, Off and the word list); Anatomy and API updated.
+
+---
 ## v3023 Check-in: Tell us more as a section
 
 "The Tell us more needs to be an H2 and needs to have the same margin above as the recent change … It should be a section": a picked Something else no longer opens a small label and field under the options. It opens its own section (`.qciSec.qciOthS`) under an H2 on the Title group master: "Tell us more", or the question's own label ("What got in the way?" on Your plan's Which ones), then its field.
