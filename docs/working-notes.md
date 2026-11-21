@@ -5,6 +5,14 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3039 Goals: Your part switch, plan cards, Header title master; layout templates (Goals, Insights)
+
+- Tweaks: a "Your part" group with an On/Off switch in its header (`#stArGlPart`, `glpart` in the report's options). It shows on every goal screen (phase `goal`) and turns the Your part card off on all of them.
+- Goal plan items ("What we'll do") are Card static, lg (`EvCard.html`, Secondary - Transparent): the words at the left, the picture at the right, 88, with no tile behind it. "What we'll do" is an H2 on the Title group master.
+- The goal's title and its why are the Header title master (`EvHdTitle`, Page, H1 and the support line), as the insights' are. The Tweaks Header title Container row now shows on the goals and sets its own width; the body starts at the Your plan / Go further tabs.
+- Templates for the General layout picks: every goal screen shares one set (`ar:tpl-goal`), every insight screen another (`ar:tpl-ins`), through `window.__flowTpl.ar` read by EvCt's step key. A pick on one goal applies to all of them. Page type shows a read-only "Template · Goals / Insights" label; the Body line says "Template Goals: every goal screen". A goal's picks saved before this are moved to the Goals template.
+
+---
 ## v3038 · Header nav 2xs is 2xs whatever the Body; the goals without their badge
 
 - **Containers in full modals** ("Why is the container 2xs not the same?"): a step's Body container works by redefining `--ct2xs` on the modal (`.aqWrap.aqFull[data-pg-ct] { --ct2xs: var(--ctPg) }`). The Header nav, Header title and Footer at 2xs were written as `var(--ct2xs)`, so they took the Body's width: on a step whose Body is 3xs (the new goals had no pick of their own, so the flow's 3xs) the header nav was 384, on the Doctor note (its own 2xs) 544. Now the token has a twin the Body never touches (`--ctT2xs`, beside every `--ct2xs` definition), and the parts' 2xs reads it: Header nav 2xs is 2xs on every step. The Body still follows its own pick per step (Tweaks → Body, "This step: …").
