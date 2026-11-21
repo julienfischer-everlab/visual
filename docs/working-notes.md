@@ -5,6 +5,17 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3003 Collection: comments on every card state
+
+"a comment feature for each card so everyone can jump in and just leave a comment directly here ... take the name of the person when they submit a comment ... on the list of rows, we should see the comment icon if there's one comment. And unread comment as well".
+
+- **`window.EvCardCmt`**: comments kept in the artifact's shared store (db collection `cardCmts`), live for everyone who opens the prototype in claude.ai. Each comment is `{ k: module|card|state, g: module|card, text, uid, at }`. The author is kept by their id and named as each viewer sees them (`user.profiles`). Outside claude.ai it falls back to this browser, with a name typed once (`everlab:cmName`, the same as the app's comments).
+- **Drawer**: under each state, its thread. The head shows "N comments" and "N new" in red, then each comment (initial, name, time, text; Delete on your own), then "Add a comment…" (Enter posts, Shift+Enter for a new line).
+- **Table**: a Comments column with the icon and count. It turns red with a dot while some are unread.
+- **Unread**: someone else's comment newer than what you have read. A thread counts as read once it has been half in view for 1.2 s (`everlab:cardCmtSeen`, per browser). Your own comments never count.
+
+---
+
 ## v3002 Modules Collection: a table and a push drawer
 
 Modules → Primary card (overview) → Collection (and every module with sub pages, the Insights one too) is no longer a wall of cards. "Simple table with a row that lists every item in the collection ... on click on one row, it just opens a drawer ... all of the states stacked ... a push, like a tweak panel ... never show a card in the main table ... a thumbnail on the left side of the row ... the number of steps ... and the title".
