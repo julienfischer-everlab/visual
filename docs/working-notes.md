@@ -5,6 +5,19 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3026 Overview Notification module; Collection: removed rows open, image thumbnails, unread orange, full width
+
+- **Notification module** (`window.EvOvNtf`): one stack under the Overview's bento, just above the next section. Modules plug in by key: `EvOvNtf.add(key, el, { order, name })`, `remove(key)`, `has`, `keys`, `paint`. It shows only with Tweaks → Overview → Notification module → Module On (`html.ovNtfOn`; **Off by default**), and never when empty. The Tweaks row "Stacked" lists what is in it now. The switch also shows on the check-in's Overview steps.
+- First module: the check-in's "Your insights are being prepared" (`qciSide`, state `sent`). It is a Card master **Secondary - Outlined**, size xl. The care team is at 40, with no eyebrow and no CTA. The title is a Title group H3 in white; on the phone the team sits above the words.
+- **Card master**: new look `secondary-outlined` (Secondary - Transparent with Primary - Outlined's hairline; not in Figma).
+- **Avatar group** (`.qciTeam`, everywhere): each face cut out of the one behind it with a 3px gap (CSS mask), so the gap shows whatever is under it. This replaces the 3px ring in a set colour.
+- **Collection** (Modules → Primary card → Collection):
+  - Unread comments show the comment icon filled orange (#ff6b1b, the DS accent). The drawer's unread bar is orange too, and the red dot and red count are gone.
+  - The table takes the page's full width (the doc's 1240 cap is lifted while the Collection shows).
+  - A row under Removed opens in the drawer like any card. View shows what was removed: a card's states, or the removed step alone (`colRmX`). Edit puts that state in the builder. The fixed footer holds Restore (Secondary) and Delete forever (Destructive, after EvConfirm), 50 / 50. Previous and next are off while a removed row is open.
+  - Thumbnails use the card's own picture (`colTn`), in this order: the service render or an uploaded image, the Doctor's plan's `--drBg`, the care team (Check-in), the first picture, the drawn visual; the card drawn small is the last resort (the Onboarding consult's sphere is only drawn live).
+
+---
 ## v3025 Check-in: Nothing's changed by default, first in the list
 
 - "What's changed": "Nothing's changed" is now the first option and is selected by default for every persona (p1 had a supplement, p2 a medication). Picking any other option still clears it, and picking it clears the others.
