@@ -5,6 +5,16 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3021 Check-in Flow: follow-ups as sub-steps
+
+"There are slides that only appear when I select a specific option … Can you have a sub-step indentation style for the step that depends on the answer to the question?"
+
+- **Sub-steps:** in the Flow panel, each follow-up (a step an answer opens: What’s been going on, The medication, The supplement, Hours of sleep, What gets in the way, What to change, Which ones) sits 22 in under its question. An elbow line joins them and the text is a touch smaller (`.hpFl .tkOrd li.hpFlSub`; the old rule that undid the indent in the bar's flow is beaten).
+- **Numbers:** only the questions are numbered now (1 How you’ve been … 9 Family health). The follow-ups carry no number (`isFu` in `nmOf`), so a follow-up no longer pushes the next question's number (the supplement was "3.", Exercise "4.").
+- **Every slide in reach:** the Flow already lists every step of every persona and every answer. A follow-up the current answers skip is dimmed; pressing it opens it (as the persona that has it).
+
+---
+
 ## v3020 Collection: New card
 
 "With the active card, I need a way to add a new card": the active cards end on a **New card** row: a Secondary button (sm, +) and its hint ("A copy of MRI Scan, the card open").
