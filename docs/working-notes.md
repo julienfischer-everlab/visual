@@ -5,6 +5,16 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3002 Modules Collection: a table and a push drawer
+
+Modules → Primary card (overview) → Collection (and every module with sub pages, the Insights one too) is no longer a wall of cards. "Simple table with a row that lists every item in the collection ... on click on one row, it just opens a drawer ... all of the states stacked ... a push, like a tweak panel ... never show a card in the main table ... a thumbnail on the left side of the row ... the number of steps ... and the title".
+
+- **Table** (`.moColTb`): a row per card (Onboarding consult 8, DEXA Scan 1, MRI Scan 16, Microbiome & Gut Health 9, Advanced Blood Testing 6, Freemium · Explore 1, Doctor’s plan 2, Check-in 3). Each row has a 64 × 44 thumbnail (its first state, drawn small), the title, the number of steps and a chevron. The open row is blue.
+- **Drawer** (`.moColD`): fixed at the page's right under its header, 42% of the page (360–600). It pushes the table (the page's right padding grows by its width). Its head has the card's name, its step count, previous / next and Close. Below that, every state of the card is stacked, each with its caption, drawn by the same `M.draw` and zoomed to fit.
+- **Moving through it**: click a row to open it (click it again to close). ↑ / ↓ on a row moves to the next card with the drawer following. The drawer's arrows do the same, and Esc closes it. The open card is remembered per module (`everlab:moCol:<module>`). The single-card sub pages in the select are unchanged.
+
+---
+
 ## v3001 Header title: less side padding when centred
 
 "Can you reduce this padding left and right on the title group?": a centred Header title (`.evHtA-center`, and a questionnaire's `auto` once its container is 900 wide) now keeps `space/sm` (16) on each side. Before, it took the questionnaire token `components/questionnaire/left right padding` (32 · 64 · 44 · 48) on both sides, so at S the title box was 384 in a 512 column and balanced into four short lines. Now it's 480 at S and 512 at M. A title set left keeps the token on its right as before. The Header title doc line says so.
