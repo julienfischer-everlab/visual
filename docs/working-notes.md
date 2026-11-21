@@ -5,6 +5,18 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3018 Removed: Delete forever
+
+"Add cta delete forever": each row under Removed has **Delete forever** (Button master, Primary · Destructive, xs) beside Restore. It goes through the Destructive confirmation (`EvConfirm`): "Delete “DEXA Scan” forever? It can’t be restored." No · Yes, delete.
+
+- **Store:** `EvPcSteps.purge(card, step)` and `EvPcCards.purge(card)` keep it hidden (`hide`) and mark it gone (`gone`).
+- `hidden()` no longer lists what's gone, so the Removed rows and the builder's "Restore N removed" counts drop it.
+- `restore()` (restore all) keeps what's gone hidden.
+- A card deleted for good stays out of the table's main list (`EvPcCards.hiddenAll()`).
+- Kept in this browser, like the rest of the builder's steps and cards.
+
+---
+
 ## v3017 Collection links that work: #col-<module>-<row>
 
 "The link doesnt work. Need to redirect to the Table selected on the right row": the Link (and the builder's Share this card) copied a view link (`#tk-vw…`) whose setup was never stored. The view links' store went with "Can kill all capture share", so they opened nothing for anyone else.
