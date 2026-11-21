@@ -5,6 +5,14 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3019 Removed: Delete forever in a More menu
+
+"... More CTA, Dropdown Delete forever": the Removed rows keep Restore and swap the red Delete forever button for **More** (`.moColMoreB`, 28, three dots). Its dropdown (`.moColMenu`: 12 corner, 6 inside, under the button, right-aligned) holds **Delete forever** with a bin icon, in the negative ink.
+
+The item goes through the same Destructive confirmation (No · Yes, delete). The menu closes on a click elsewhere or Escape. One menu is open at a time.
+
+---
+
 ## v3018 Removed: Delete forever
 
 "Add cta delete forever": each row under Removed has **Delete forever** (Button master, Primary · Destructive, xs) beside Restore. It goes through the Destructive confirmation (`EvConfirm`): "Delete “DEXA Scan” forever? It can’t be restored." No · Yes, delete.
