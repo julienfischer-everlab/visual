@@ -5,6 +5,12 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3010 Collection drawer Edit: Remove step / Remove card in a fixed footer
+
+"50 50 CTA, Fixed footer, Destructive": in the drawer's Edit, the builder's Remove step and Remove card (`.moDmRm`) move into a footer fixed at the drawer's foot (`.moColDF`: 12 / 16 inside, a rule over it, the drawer's ground). The two sit side by side at half the width each. Restore buttons, when shown, take a full row. They wear the Button master's Destructive (`evBtnPri evBtnDst`). Back in the builder they're Tertiary again, in their place under the controls. The builder's `cardUi` / `stepUi` find them in the footer while Edit is open (`el._colEd`), so nothing is drawn twice.
+
+---
+
 ## v3009 Collection drawer: View / Edit under the top bar, full width
 
 "Below top bav full segmented tab": the View / Edit Segmented tab moves out of the drawer's head into its own row under it (`.moColDM`: 12 above and below, the head's 24 / 16 sides, a rule under it). The tab stretches the full width, its two halves equal. The head keeps the card's name and steps, previous / next and Close.
