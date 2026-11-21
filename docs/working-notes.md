@@ -5,6 +5,14 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3042 Goals: goal steps (Tweak), clickable plan cards with the product's sheet
+
+- Goal steps sit in the Title group's top slot over each goal's title ("a circle on the top ... Goal 1, 2, 3 ... active state ... progress"). A goal done is a tick on the ink's 12%, the goal on screen is the ink (a pill that says Goal n), and the next goals are rings. The line between them fills up to the goal on screen.
+- Tweaks has a Goal steps group with a header switch (`#stArGlSt`) and a Style row (`#stArGlStS`: Pill or Numbers). It applies to every goal screen.
+- `EvHdTitle.html` takes `top`, which it passes to the Title group's top slot (text or `{ html }`).
+- The plan cards are Card item interactive, Primary, xl (`EvCard.item`): a hairline at rest, filled on hover and press. A tap opens the product's sheet, the recommendations' detail (`rcDetail`): its picture, title, badge and month, and what the product is (`GLMORE`, one line per product).
+
+---
 ## v3041 Goals: a month-by-month timeline; more layout templates
 
 - "What we'll do" is a vertical timeline at the left ("a timeline on the left side ... the months as a title group"). Each month is a node and an H3 Title group (`EvTitle`), with that month's Card static xl outlined items under it, sorted from December on. The cards no longer repeat the month.
