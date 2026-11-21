@@ -5,6 +5,18 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3017 Collection links that work: #col-<module>-<row>
+
+"The link doesnt work. Need to redirect to the Table selected on the right row": the Link (and the builder's Share this card) copied a view link (`#tk-vw…`) whose setup was never stored. The view links' store went with "Can kill all capture share", so they opened nothing for anyone else.
+
+- **Now:** a plain anchor, `https://claude.ai/artifact/W5Y1FUmnVCHfGYtAvzGw88#col-mhp-2` (module, row). It needs nothing stored, and claude.ai passes plain anchors through.
+- **Opening it** (on load or on a hash change): the doc shell's `docHash` knows `#col-`. `colHash` puts the module on Collection with the row's card (`everlab:moSub:<module>`, `everlab:moCol:<module>`), shows Modules, selects the row, opens its drawer and scrolls the row into view.
+- **Copy:** `colCopy` (clipboard, the old copy, else the link in the snackbar). It shows the Copied label and the snackbar "Link to “MRI Scan” copied". The bar's `LINK`, `snack` and `snackLink` are shared as `window.__tkLink`, `__tkSnack`, `__tkSnackLink`.
+- **Share this card** in the builder copies the same link for the card picked.
+- **Checked:** a fresh viewer opening `#col-mhp-2` lands on Collection, MRI Scan selected, its drawer open. An open page set to `#col-mhp-4` goes to Advanced Blood Testing.
+
+---
+
 ## v3016 Link: always a snackbar
 
 "Need a snackbar when click LINK": every copied link (the Collection's Link, Share this card, the bar's links) ends on the snackbar (`.tkSnack`).
