@@ -121,6 +121,7 @@ The page menu `#versionSel` has Documentation flow (`'doc'`, renamed from Docume
 | Badge Range and Badge Progress (Core components > Badges, Type Range / Progress) | `EvTokBadge.Range.html`, `EvTokBadge.Progress.html`, CSS `#evTokRg`, `#evTokPg` | Design system page `bd` (czDoc) |
 | Questionnaire step (Step flow > Questionnaire step: Selection items on Card interactive) | `window.EvQ` (`title`, `option`, `list`, `mark`, `align`) | Design system page `sf` |
 | Vertical timeline | `window.EvTl` | references/tokens-components.md |
+| Collections of a card (create, copy, edit words and CTA, remove, restore, delete forever) for any module: Focus card, Decade card | `window.EvColStore(key, seed)`, `EvFocusCol`, `EvDecCol`; a module with `col`, `colF`, `colDef`, `colFull` in `MODS` (Modules page: builder, Collection table, drawer) | docs/working-notes.md (v3029) |
 | Action card (the Service timeline's item: the Overview's Action plan cards, the Timeline's rows) | the Timeline module's `row()`, exposed as `window._tlItem.fill(el, rows, grid)`; Design system → Feature components → Action card (`aiDoc`, `#action-card`) | references/tokens-components.md |
 | The Plan module (tiles, Sub pages, sheets, Activity session) | `#dPlan`, `window._plan`, `--plATileBg`, `--plPTileBg`, `detSoloShow` | references/tokens-components.md |
 | Assets library | `window.EvAssets`, `META`, `window.EvSvcImg` | references/tokens-components.md |

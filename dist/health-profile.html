@@ -4615,6 +4615,37 @@ window.EvPcPath = [['visit', 'Visit a collection centre', 'Get your blood test a
   ['rep', 'Report ready', 'Your blood test report is ready.', 'Dr Sarah Chen\u2019s notes on all 44 results', 'View report']];
 window.EvPcObjSteps = { micro: window.EvPcMic, mri: window.EvPcMri, path: window.EvPcPath };   /* a service card's steps, by its key */
 window.EvPcBuiltSteps = { micro: window.EvPcMic.map(function (x) { return [x[0], x[1]]; }), mri: window.EvPcMri.map(function (x) { return [x[0], x[1]]; }), path: window.EvPcPath.map(function (x) { return [x[0], x[1]]; }) };
+/* EvColStore: a module's collection, the Primary card's system for any module ("create a system that I can build different types of this card with different copy and different CTA ... When I can create and delete, we keep the same system of structure as a collection system"):
+   window.EvColStore(key, seed) -> the collection kept under everlab:col:<key> (this browser). seed(): its built-in cards [{ k, name, ...fields }] (a field left out: the page's own, filled where the card is drawn).
+   list() the cards shown; all() every card not deleted for good; get(k) a card with its edits (added: made here); add(from, name, full) a copy (full: its words as they stand), its key; set(k, f, v) / unset(k, f) a field;
+   remove(k) into Removed; unhide(k) back; purge(k) deleted for good; hidden() the removed ones; hiddenAll() removed and deleted; on(f) after each change ('everlab:col' on the document, detail.key) */
+window.EvColStore = window.EvColStore || (function () { var S = {};
+  return function (key, seed) { if (S[key]) return S[key]; var K = 'everlab:col:' + key, D = {};
+    try { D = JSON.parse(localStorage.getItem(K) || '{}') || {}; } catch (e) { D = {}; } D.add = D.add || []; D.hide = D.hide || []; D.gone = D.gone || []; D.ed = D.ed || {};
+    var cl = function (o) { try { return JSON.parse(JSON.stringify(o == null ? {} : o)); } catch (e) { return {}; } };
+    var base = function () { try { return seed() || []; } catch (e) { return []; } };
+    var keys = function () { return base().map(function (c) { return c.k; }).concat(D.add.map(function (a) { return a.k; })); };
+    var get = function (k) { var b = base().filter(function (c) { return c.k === k; })[0], a = b ? null : D.add.filter(function (x) { return x.k === k; })[0]; if (!b && !a) return null; return Object.assign(b ? cl(b) : {}, cl(D.ed[k]), { k: k, added: !!a }); };
+    var save = function () { try { localStorage.setItem(K, JSON.stringify(D)); } catch (e) {} try { document.dispatchEvent(new CustomEvent('everlab:col', { detail: { key: key } })); } catch (e) {} };
+    var api = { key: key, get: get,
+      list: function () { return keys().filter(function (k) { return D.hide.indexOf(k) < 0 && D.gone.indexOf(k) < 0; }).map(get); },
+      all: function () { return keys().filter(function (k) { return D.gone.indexOf(k) < 0; }).map(get); },
+      add: function (from, name, full) { var k = 'c' + Date.now().toString(36); D.add.push({ k: k }); var e = cl(full || get(from) || {}); delete e.k; delete e.added; e.name = name || 'New card'; D.ed[k] = e; save(); return k; },
+      set: function (k, f, v) { var e = D.ed[k] || (D.ed[k] = {}); e[f] = cl({ v: v }).v; save(); },
+      unset: function (k, f) { if (D.ed[k] && f in D.ed[k]) { delete D.ed[k][f]; if (!Object.keys(D.ed[k]).length) delete D.ed[k]; save(); } },
+      remove: function (k) { if (D.hide.indexOf(k) < 0) D.hide.push(k); save(); },
+      unhide: function (k) { D.hide = D.hide.filter(function (x) { return x !== k; }); save(); },
+      purge: function (k) { if (D.add.some(function (x) { return x.k === k; })) { D.add = D.add.filter(function (x) { return x.k !== k; }); delete D.ed[k]; D.hide = D.hide.filter(function (x) { return x !== k; }); } else if (D.gone.indexOf(k) < 0) D.gone.push(k); save(); },
+      hidden: function () { var ks = keys(); return D.hide.filter(function (k) { return D.gone.indexOf(k) < 0 && ks.indexOf(k) >= 0; }); },
+      hiddenAll: function () { return D.hide.concat(D.gone); },
+      on: function (f) { document.addEventListener('everlab:col', function (e) { if (!e.detail || e.detail.key === key) f(); }); } };
+    S[key] = api; return api; }; })();
+/* the Timeline's Focus card and Decade card collections (Design system -> Modules -> Focus card, Decade card): the Timeline draws its focus and its decades from them; a field left out the plan's own (the focus's date and goal; the decade's title, words, tabs and note, as the persona has them) */
+window.EvFocusCol = window.EvColStore('focus', function () { return [
+  { k: 'plan', name: 'Your focus · from the plan', cta: 'Doctor notes', act: 'drnote' },
+  { k: 'sleep', name: 'Sleep and recovery', eye: 'Your focus until {date}', title: 'Get seven hours of sleep a night and bring your resting heart rate under 60.', cta: 'Doctor notes', act: 'drnote' },
+  { k: 'move', name: 'Strength and movement', eye: 'Your focus until {date}', title: 'Two strength sessions a week, and 8,000 steps on most days.', cta: 'Ask Eva', act: 'askfoc' }]; });
+window.EvDecCol = window.EvColStore('dec', function () { return [20, 30, 40, 50, 60, 70, 80, 90].map(function (a) { return { k: 'd' + a, name: 'Your ' + a + 's', age: a }; }); });
 window.EvPcSteps = (function () { var K = 'everlab:pcSteps', D = {}; try { D = JSON.parse(localStorage.getItem(K) || '{}') || {}; } catch (e) { D = {}; }
   var save = function () { try { localStorage.setItem(K, JSON.stringify(D)); } catch (e) {} }, of = function (o) { var d = D[o] || (D[o] = {}); d.names = d.names || {}; d.add = d.add || []; d.hide = d.hide || []; return d; };
   var list = function (o, B) { var d = of(o); var L = B.filter(function (x) { return d.hide.indexOf(x[0]) < 0; }).map(function (x) { return [x[0], d.names[x[0]] || x[1]]; }); d.add.forEach(function (a) { L.push([a.k, d.names[a.k] || a.name || 'New step']); }); return L; };

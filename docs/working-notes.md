@@ -5,6 +5,35 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3029 Focus card and Decade card: master modules with a collection system
+
+- **`window.EvColStore(key, seed)`**: a module's collection, the Primary card's system for any module. It is kept in localStorage under `everlab:col:<key>`.
+  - Built-in cards come from `seed()`. A field left out is the page's own.
+  - API: `list()` (shown), `all()` (not deleted for good), `get(k)`, `add(from, name, full)` (a copy), `set` / `unset(k, f)`, `remove(k)` (into Removed), `unhide(k)`, `purge(k)` (deleted for good; a made card goes entirely), `hidden()`, `hiddenAll()`, `on(f)`.
+  - Each change fires `everlab:col` on the document.
+- **`EvFocusCol`** (key `focus`): "Your focus · from the plan" (its eyebrow and focus the plan's own: the date, the goal), "Sleep and recovery", "Strength and movement".
+  - Fields: name, eyebrow (`{date}` is the plan's date), focus, CTA label, CTA action (Doctor notes, Review my plan, Ask Eva (`askfoc`, new: the chat about the focus), Open results).
+- **`EvDecCol`** (key `dec`): one card per decade, 20s to 90s, every field left to the persona's plan.
+  - Fields: name, decade, title, words, tabs and checks (a text block: `# Tab`, then `Name | sub line | how often | icon | dot` a line), Dr Lu's note.
+- **Timeline** (the app's instances read the masters):
+  - Your focus is the card picked in Tweaks → Your focus → Card (new select), else the first (`focCur`, `focTxt`, `focusBlocOf`). No card left: no focus card.
+  - Each decade card is that decade's first card in the collection. `DJ()` lays the card's words over the persona's (`DJ0`): title (`ttl`, read by `dHead`), words (`w`), note, tabs (`ar` and `at`).
+  - A decade whose card is removed, with no other card of its age, shows no card (`decGone`).
+  - The Timeline redraws on `everlab:col`.
+  - `window._t3Focus` (`def`, `txt`, `html`, `mount`) and `window._t3Dec` (`def(age)`: the plan's own words, tabs and rows; `html(card)`) draw them for the Design system.
+- **Design system → Modules → Focus card, Decade card** (`MODS.mfc`, `MODS.mdc`, after Timeline list), built as the Primary card's:
+  - **Collection builder**: the card on its own (no Overview skeleton), Card select with + (a copy), its fields (`colCtl`: a field equal to the plan's own is not stored), Remove card (Yes / No), Restore the removed ones.
+  - **Collection**: the table with Type (Focus, or the decade) and decade numbers as thumbnails; New card; comments; links; the drawer, View and Edit (the builder's fields, Remove card across the footer); Removed with Restore and Delete forever.
+  - **A page per card.**
+- The doc draws the Timeline's own cards in the Timeline's own styles: `t3DocCss` copies every `#tl3` / `#dTl` rule for what is inside them onto `.t3DocT` / `.t3DocD` at the same weight (`:is(#t3DocNo, .t3DocT)`). For the Timeline's own box it copies only the variables, with no rail and no place. The silhouette mounts there too (`silMount`), and the decade tabs switch.
+- The Modules page generalised for any `M.col` module:
+  - `CAf()` (the cards' store);
+  - `colRem`, New card, Restore and Delete forever (table and drawer);
+  - `colEdOk`, `colType`, `colTn` (`M.colThumb`);
+  - the builder's markup and `demo()`.
+  - The Primary card's paths are unchanged (checked: its Collection, Removed, Restore and Delete forever).
+
+---
 ## v3028 Section guides and Inspector: narrow containers found in wide windows
 
 - "Why the container reach the edge": the guides' container search (`boxIn`, used by the Section guides, the Container padding guide and the Inspector's sections) only took a centred child at least 40% of its section's width.
