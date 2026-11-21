@@ -5,6 +5,12 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3011 Drawer footer: Remove step Secondary
+
+"Secondary Remove step": in the Collection drawer's fixed footer, Remove step wears the Button master's Secondary (`evBtnSec`). Remove card keeps Destructive (`evBtnPri evBtnDst`). Both are still 50 / 50, and both go back to Tertiary in the builder.
+
+---
+
 ## v3010 Collection drawer Edit: Remove step / Remove card in a fixed footer
 
 "50 50 CTA, Fixed footer, Destructive": in the drawer's Edit, the builder's Remove step and Remove card (`.moDmRm`) move into a footer fixed at the drawer's foot (`.moColDF`: 12 / 16 inside, a rule over it, the drawer's ground). The two sit side by side at half the width each. Restore buttons, when shown, take a full row. They wear the Button master's Destructive (`evBtnPri evBtnDst`). Back in the builder they're Tertiary again, in their place under the controls. The builder's `cardUi` / `stepUi` find them in the footer while Edit is open (`el._colEd`), so nothing is drawn twice.
