@@ -2249,7 +2249,7 @@ html.ccNoBdg :is(#dOver, .bzFrame) .ovCcBdg { display: none; } html.ccNoSub :is(
 @media (prefers-reduced-motion: reduce) { .arSheet.hpSheet .hpKp { transition: none; } }
 @media (prefers-reduced-motion: reduce) { .arSheet.hpSheet .hpConf.hpPk .hpConfP { transition: none; } } .arSheet.hpSheet .hpTwo.hpTwoN { grid-template-columns: minmax(0, 1fr) 96px; }
 .arSheet.hpSheet .hpLbl { font-size: 16px; line-height: 20px; font-weight: 400; color: oklch(var(--ar-ink)); }
-.arSheet.hpSheet .hpOpts.hpOptsRow { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); } .arSheet.hpSheet .hpOptsRow .hpOpt { min-height: 56px; padding: 0 16px; }
+.arSheet.hpSheet .hpOpts.hpOptsRow { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); } .evQList.hpOptsRow { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }   /* the Questionnaire list (EvQ) too: its lookups took .hpOpts only and threw, the page left blank (Your personal details, Medicare, Health declaration) */ .arSheet.hpSheet .hpOptsRow .hpOpt { min-height: 56px; padding: 0 16px; }
 .arSheet.hpSheet .hpOptsRow .hpOpt { flex-direction: row; align-items: center; justify-content: flex-start; gap: 12px; background: transparent; box-shadow: inset 0 0 0 1.5px var(--ar-stroke, oklch(var(--ar-ink) / .1)); } .arSheet.hpSheet.arDark .hpOptsRow .hpOpt { background: transparent; box-shadow: inset 0 0 0 1.5px var(--ar-stroke, oklch(var(--ar-ink) / .1)); }
 .arSheet.hpSheet .hpOptsRow .hpOpt::before { content: ''; flex: none; width: 20px; height: 20px; box-sizing: border-box; border-radius: 50%; border: 1.5px solid oklch(var(--ar-ink) / .32); } .arSheet.hpSheet .hpOptsRow .hpOpt > b { font-size: 16px; font-weight: 400; }
 .arSheet.hpSheet .hpOptsRow .hpOpt[aria-checked="true"] { box-shadow: inset 0 0 0 2px oklch(var(--ar-ink)); } .arSheet.hpSheet .hpOptsRow .hpOpt[aria-checked="true"]::before { border-color: oklch(var(--ar-ink)); background: radial-gradient(circle, oklch(var(--ar-ink)) 0 4.5px, transparent 5px); }   /* the radio cards ("Yes / No", "Male / Female"): a ring at the left, the one picked its dot and a 2 px edge */
@@ -5894,7 +5894,7 @@ window.EvConsent = (function () {
         scr.appendChild(q('', 'Your personal details', 'This will allow us to order tests and provide medical services for you in Australia.'));
         var fn = field({ label: 'First name', ph: 'Legal first name', value: ans.first, set: function (v) { ans.first = v; } }), ln = field({ label: 'Last name', ph: 'Legal last name', value: ans.last, set: function (v) { ans.last = v; } });
         var mn = field({ label: 'Middle name', opt: true, ph: 'Middle name', value: ans.mid, set: function (v) { ans.mid = v; } });
-        var sx = lbl('Sex at birth', choice(SEX, function () { return ans.sex; }, function (v) { ans.sex = v; }, false)); sx.querySelector('.hpOpts').classList.add('hpOptsRow');
+        var sx = lbl('Sex at birth', choice(SEX, function () { return ans.sex; }, function (v) { ans.sex = v; }, false)); sx.querySelector('.hpOpts, .evQList').classList.add('hpOptsRow');
         var db = field({ label: 'Date of birth', ph: 'dd / mm / yyyy', mode: 'numeric', max: 10, value: ans.dob, set: function (v) { ans.dob = v; } });
         db._in.addEventListener('input', function () { var d = digits(db._in.value, 8), t = d.slice(0, 2) + (d.length > 2 ? '/' + d.slice(2, 4) : '') + (d.length > 4 ? '/' + d.slice(4) : ''); if (t !== db._in.value) db._in.value = t; ans.dob = t; });
         var oc = field({ label: 'Occupation', ph: 'Your current occupation', value: ans.occ, set: function (v) { ans.occ = v; } });
@@ -5981,7 +5981,7 @@ window.EvConsent = (function () {
         var mcBox = h('div', { class: 'hpFields' });
         var note = h('div', { class: 'hpInfo', role: 'note' }, ic(16, P.err, 1.5), h('p', { text: 'If you don’t have a registered Medicare card, any government-funded testing will be billed to you as an additional cost to your Everlab program.' }));
         var sync = function () { mcBox.hidden = ans.mc !== 'yes'; note.hidden = ans.mc !== 'no'; };
-        var has = lbl('Do you have a Medicare card?', choice(YN, function () { return ans.mc; }, function (v) { ans.mc = v; }, false, function () { sync(); setErr(has, ''); })); has.querySelector('.hpOpts').classList.add('hpOptsRow');
+        var has = lbl('Do you have a Medicare card?', choice(YN, function () { return ans.mc; }, function (v) { ans.mc = v; }, false, function () { sync(); setErr(has, ''); })); has.querySelector('.hpOpts, .evQList').classList.add('hpOptsRow');
         var cn = field({ label: 'Medicare card number', ph: '1234 56789 1', mode: 'numeric', max: 12, value: ans.mcn, set: function (v) { ans.mcn = v; } });
         cn._in.addEventListener('input', function () { var d = digits(cn._in.value, 10), t = d.slice(0, 4) + (d.length > 4 ? ' ' + d.slice(4, 9) : '') + (d.length > 9 ? ' ' + d.slice(9) : ''); if (t !== cn._in.value) cn._in.value = t; ans.mcn = t; });
         var irn = field({ label: 'Reference number', ph: '1', mode: 'numeric', max: 1, value: ans.irn, set: function (v) { ans.irn = v; } });
@@ -6006,7 +6006,7 @@ window.EvConsent = (function () {
         var DQ = [['hdC', 'Do you have any current or past medical conditions?'], ['hdM', 'Are you currently taking any medications?'], ['hdA', 'Do you have any allergies?'], ['hdS', 'Are you under the regular care of a specialist?'], ['hdF', 'Do you have any family medical history?']];
         var qs = DQ.map(function (d) {
           var more = field({ label: 'Tell us more', opt: true, kind: 'area', ph: 'Type your message here', value: ans[d[0] + 'T'], set: function (v) { ans[d[0] + 'T'] = v; } }); more.hidden = ans[d[0]] !== 'yes';
-          var c = lbl(d[1], choice(YN, function () { return ans[d[0]]; }, function (v) { ans[d[0]] = v; }, false, function () { more.hidden = ans[d[0]] !== 'yes'; setErr(c, ''); })); c.querySelector('.hpOpts').classList.add('hpOptsRow');
+          var c = lbl(d[1], choice(YN, function () { return ans[d[0]]; }, function (v) { ans[d[0]] = v; }, false, function () { more.hidden = ans[d[0]] !== 'yes'; setErr(c, ''); })); c.querySelector('.hpOpts, .evQList').classList.add('hpOptsRow');
           return { k: d[0], c: c, el: h('div', { class: 'hpDq' }, c, more) }; });
         scr.appendChild(h('div', { class: 'hpFields' }, qs.map(function (x) { return x.el; })));
         foot2('Continue', true, function () { var bad = false; qs.forEach(function (x) { if (!ans[x.k]) { setErr(x.c, 'Choose yes or no'); bad = true; } }); if (!bad) fwd(); });

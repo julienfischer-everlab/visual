@@ -5,6 +5,13 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3033 · Canvas: Health profile screens between the Onboarding consult cards; a blank-page fix in Step 1
+
+- **Canvas (Primary card → Canvas, and the Collection drawer's View → Canvas)**: after each Onboarding consult card whose button opens a Health profile step, the screens it opens, on the same timeline ("integrate the health profile screen with step 3. We have this in the flow"): Step 1 → the profile's home, then its 9 pages; Step 2 → home and its 2; Step 3 → home and its 5 (the flow's order, Tweaks). Each drawn still by the profile's own code (`HealthProfile.snap`, as Membership onboarding draws them), filled with the demo's answers; the phone at XS · S, the desk's full modal (1440 × 900, 12 round) at M · L. A smaller grey dot and "Step n · page i of N" over the page's name; the cards keep their orange numbers. Step 3.5 (dropped off) has none (the same pages as Step 3).
+- **Screens** toggle in the canvas bar (on by default, `everlab:moCvScr`). Each column its own width now (`grid-template-columns` from the cards' and screens' widths); the line runs from the first dot to the last.
+- **Fix**: three Step 1 pages (Your personal details, Your Medicare details, Health declaration) threw while being built since the options moved onto the Questionnaire list (EvQ): their row class looked for `.hpOpts` only. Now `.hpOpts, .evQList`, the two-column row kept for both. They were blank in the app, the Membership onboarding doc and the canvas.
+
+---
 ## v3032 · Action plan Next focus, Canvas cases, drawer View tabs, blank New card, module/DS page select, Page types viewport, Style swatches
 
 - **Action plan → Next focus** (Tweaks, Action plan, On by default): the Focus card master (Design system → Modules → Focus card, the one Tweaks → Your focus → Card picks) is the grid's first card, five actions after it (six cells still); above the list at XS · S. Drawn by the Timeline's own builder (`window._t3Focus.cell()`, in the Timeline's styles through `window._t3DocCss`), its CTA doing what it does on the Timeline (`_t3Focus.act`: Doctor notes, Ask Eva, Review my plan). Off under Split's Appointments.
