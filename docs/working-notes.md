@@ -5,6 +5,18 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3013 Collection table: Removed, with Restore
+
+"Keep the deleted somewhere in the table": the Collection table ends with **Removed · N** (`tbody.moColRm`). It lists:
+- every card removed in the builder or the drawer (a row whose cards are all removed: "Card removed"), which leaves the main list;
+- every removed step ("MRI Scan · Questionnaire", "Step removed").
+
+Each row has its type badge, a greyed thumbnail and a Restore button (Secondary, xs). Restore puts back that one card or step (`EvPcCards.unhide(k)`, `EvPcSteps.unhide(card, step)`; before, only "restore all" existed) and redraws.
+
+Removing from the drawer's footer redraws the table once its confirmation's "Yes, remove" is pressed. That click is caught in capture, since EvConfirm stops it. If the open card was removed, the drawer moves to the card the builder went to. Previous / next skip removed cards. The confirmation spans the footer's full width.
+
+---
+
 ## v3012 Drawer footer: no Restore, one line
 
 "No restore cta. Remove step - Remove card is one line": the drawer's footer hides Restore removed steps / cards (they stay in the builder). Remove step and Remove card always share one line, 50 / 50, even with a step removed.
