@@ -5,6 +5,19 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3031 Collection drawer: a Canvas tab (View · Edit · Canvas), the drawer wider
+
+- The Collection drawer's segmented tab is now **View · Edit · Canvas** (the EvSeg master). Canvas shows the card open as the Canvas page does:
+  - its states side by side at the breakpoint's width;
+  - the stem, the dots and the line under them, each with its number and name;
+  - hollow for a step kept off the Overview;
+  - a removed row's own state.
+- The drawer grows to 80% of the page while Canvas is on, 640 at least, leaving the table 280 (`colFit`; the push follows, the width eases in). Previous and next go through the cards on the canvas.
+- Back on View, its stack is drawn again (`colSv`). The mode is kept with the others (`everlab:moColMode:<module>`), and the drawer's zoom on its own (`everlab:moCvKd`, 60% to start).
+- **`cvMake(host, rows, o)`** draws a canvas (rows, bar, zoom, drag), so the Canvas page (`cvUi`) and the drawer's tab (`colCv`) share it. `o.head: false` drops the row's name; `o.key` keeps the zoom.
+- Fit now fits the width and the height.
+
+---
 ## v3030 Module pages: Canvas view, every card's states side by side, linked by a timeline
 
 - **Canvas** (`cvUi`) is a third view in a module's page select: Collection builder, Collection, **Canvas**, then each card. It works on every module with Sub pages (Primary card, Insights, Focus card, Decade card).
