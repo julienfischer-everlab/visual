@@ -5,6 +5,12 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3001 Header title: less side padding when centred
+
+"Can you reduce this padding left and right on the title group?": a centred Header title (`.evHtA-center`, and a questionnaire's `auto` once its container is 900 wide) now keeps `space/sm` (16) on each side. Before, it took the questionnaire token `components/questionnaire/left right padding` (32 · 64 · 44 · 48) on both sides, so at S the title box was 384 in a 512 column and balanced into four short lines. Now it's 480 at S and 512 at M. A title set left keeps the token on its right as before. The Header title doc line says so.
+
+---
+
 ## v3000 Header nav Off per Figma; Check-in: persona checkboxes, rename, sections
 
 - **Header nav Off** (Figma Patterns DS25 8306:41412, Top navigation = None, "this trick putting the right slot bleeding outside the frame"): the bar is a 32 frame (`--t-space-xl`), its ground still on, and the Close (while Dismiss is on) stays exactly where it sits with the nav on (`top: (--phgNavH - --phgBtn) / 2`, right `--sdPx`), so it hangs out under the frame. Was a 24 bar with the Close centred on its foot.
