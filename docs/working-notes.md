@@ -5,6 +5,16 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3028 Section guides and Inspector: narrow containers found in wide windows
+
+- "Why the container reach the edge": the guides' container search (`boxIn`, used by the Section guides, the Container padding guide and the Inspector's sections) only took a centred child at least 40% of its section's width.
+  - A 3xs body (432 with its padding) in a wide window (Auto, or a desk wider than about 1100) is about 30% of the section, and a 2xs header title or footer is right at 40%, so they were missed. The guide then drew the section, less the padding token, as the container, reaching the edges.
+  - Now an element marked `data-container` counts at any width and wins, and any other centred box with a max width counts from 20%.
+- Checked in the check-in's "What's been going on?" with Body at 3xs:
+  - Auto at 2200: all four boxes (Header nav, Header title, Body, Footer) sit on the 432 container;
+  - M and XS: unchanged.
+
+---
 ## v3027 Timeline Buy modal: the purchase template, on the Page types master's Sheet
 
 - **Content, in the light capture's format** (`buySheet`):
