@@ -20121,11 +20121,11 @@ html.tnBlur:not([data-tnbg="clear"]) .evTnG::after { content: ""; position: abso
 @media (prefers-reduced-motion: reduce) { .evTnG, .evTnFt, .evTnBtn { transition: none; } }
 /* the page container (General layout -> Container; "the max width container is on the body content, not the viewport"): the page keeps its padding at the viewport, the top nav and the footer span it, only the body's content sits in the container, centred, the footer's CTA held to the same column.
    A page names its container (data-container="2xs" | "xs" | "sm" | "md" | "lg") instead of a max-width of its own: layout/container/max-width, 2xs per breakpoint (the screen's on XS, 512 S, 544 M, 576 L), the others the same at every one (800, 1080, 1280, 1440) */
-:root { --ct3xs: 100%; --ct2xs: 100%; --ctXs: 800px; --ctSm: 1080px; --ctMd: 1280px; --ctLg: 1440px; }
-@media (min-width: 600px) { :root { --ct3xs: 384px; --ct2xs: 512px; } }   /* 3xs: 384 from S ("add 3xs, max width 384") */
-@media (min-width: 992px) { :root { --ct2xs: 544px; } }
-@media (min-width: 1440px) { :root { --ct2xs: 576px; } }
-body[data-bp="xs"], [data-ct-bp="xs"], .aqWrap.aqBpXS { --ct3xs: 100%; --ct2xs: 100%; } body[data-bp="s"], [data-ct-bp="s"], .aqWrap.aqBpS { --ct3xs: 384px; --ct2xs: 512px; } body[data-bp="m"], [data-ct-bp="m"], .aqWrap.aqBpM { --ct3xs: 384px; --ct2xs: 544px; } body[data-bp="l"], body[data-bp="xl"], [data-ct-bp="l"], .aqWrap.aqBpL { --ct3xs: 384px; --ct2xs: 576px; }   /* [data-ct-bp]: the Container doc reads a breakpoint's tokens off these very rules */
+:root { --ct3xs: 100%; --ct2xs: 100%; --ctT2xs: 100%; --ctXs: 800px; --ctSm: 1080px; --ctMd: 1280px; --ctLg: 1440px; }
+@media (min-width: 600px) { :root { --ct3xs: 384px; --ct2xs: 512px; --ctT2xs: 512px; } }   /* 3xs: 384 from S ("add 3xs, max width 384") */
+@media (min-width: 992px) { :root { --ct2xs: 544px; --ctT2xs: 544px; } }
+@media (min-width: 1440px) { :root { --ct2xs: 576px; --ctT2xs: 576px; } }
+body[data-bp="xs"], [data-ct-bp="xs"], .aqWrap.aqBpXS { --ct3xs: 100%; --ct2xs: 100%; --ctT2xs: 100%; } body[data-bp="s"], [data-ct-bp="s"], .aqWrap.aqBpS { --ct3xs: 384px; --ct2xs: 512px; --ctT2xs: 512px; } body[data-bp="m"], [data-ct-bp="m"], .aqWrap.aqBpM { --ct3xs: 384px; --ct2xs: 544px; --ctT2xs: 544px; } body[data-bp="l"], body[data-bp="xl"], [data-ct-bp="l"], .aqWrap.aqBpL { --ct3xs: 384px; --ct2xs: 576px; --ctT2xs: 576px; }   /* [data-ct-bp]: the Container doc reads a breakpoint's tokens off these very rules */
 [data-container] { box-sizing: border-box; width: 100%; margin-left: auto; margin-right: auto; }
 [data-container="3xs"] { max-width: var(--ct3xs); } [data-container="2xs"] { max-width: var(--ct2xs); } [data-container="xs"] { max-width: var(--ctXs); } [data-container="sm"] { max-width: var(--ctSm); } [data-container="md"] { max-width: var(--ctMd); } [data-container="lg"] { max-width: var(--ctLg); }
 /* a page's own container (Tweaks -> Container, window.EvCt; "FOR EACH PAGE Main page or sub page I want a Container tweak to select the container of the content"): set from M on the page's element while a pick other than its default is up
@@ -20136,7 +20136,7 @@ body[data-bp="xs"], [data-ct-bp="xs"], .aqWrap.aqBpXS { --ct3xs: 100%; --ct2xs: 
 body #dPlan.plDesk[data-pg-ct] { --plMain: 1fr; }   /* the Plan: its sheet's column takes what the container leaves beside the goals (Own: 520, 580 at L) */
 #dSvc[data-pg-ct] .svGrid, body #dTl[data-pg-ct] .tlCol { max-width: var(--ctPg); }   /* the Service detail's grid, My journey's column (their bars span the panel) */
 #dPlan .plAStage[data-pg-ct] :is(.plABarIn, .plATopIn, .plAIn) { max-width: calc(var(--ctPg) + 2 * var(--plAPad)); } #dPlan .plNStage[data-pg-ct] :is(.plNBarIn, .plNTopIn, .plNIn) { max-width: calc(var(--ctPg) + 2 * var(--plNPad)); } #dPlan .plPPg[data-pg-ct] .plPIn { max-width: calc(var(--ctPg) + 2 * var(--plPPad)); }   /* the Plan's Sub pages: their column (its padding inside it) */
-.aqWrap.plSesWrap[data-pg-ct], .aqWrap.aqFull[data-pg-ct] { --ct2xs: var(--ctPg); }   /* every full modal (the Async report, the profile, the standalones) the same way */   /* the Activity session (EvSolo): its body, its bar's title and its footer all on --ct2xs, the pick in its place */
+.aqWrap.plSesWrap[data-pg-ct], .aqWrap.aqFull[data-pg-ct] { --ct2xs: var(--ctPg); }   /* the Body's container: --ct2xs alone; --ctT2xs stays the token (the Header group's and Footer's 2xs) */   /* every full modal (the Async report, the profile, the standalones) the same way */   /* the Activity session (EvSolo): its body, its bar's title and its footer all on --ct2xs, the pick in its place */
 .topbar #stCtLbl[hidden] { display: none !important; } .topbar .tkCtRow { flex-wrap: wrap; row-gap: 6px; } .topbar .tkCtRow .tkSegT { flex: 1 1 100%; } .topbar .tkCtRow .tkSegT button { flex: 1 1 auto; padding: 0 6px; } .topbar .tkCtRow .tkSegT button[hidden] { display: none; }   /* the page's name, then its choices under it, the row's width */
 /* ---- Title group, the master (Design system -> General layout -> Title group; window.EvTitle builds it, its numbers saved as everlab:tgMaster). One title block for every page, each part an option ("some titles don't need that. That's just an option"):
    a level and its type (Display hero, Display, H1 and its Short hero, H2 to H6); the title, on H1 in two tones (the muted part on its own line; the Short hero's inline after the comma, wrapping on); a slot (an icon, a visual, a badge)
@@ -25340,7 +25340,7 @@ window.BzMedia = (function () {
       var G = goalL(), g = G[i]; if (!g) { rcPh = 'intro'; return buildRecStack(); }
       var IMG = window.EvSvcImg || {}, nMore = g.more.reduce(function (n, x) { return n + x[1].length; }, 0), tab = glTab[g.k] || 'plan';
       var title = h('h1', { class: 'arH700 arGlT', 'aria-label': g.t }, g.t);
-      var hd = h('div', { class: 'arIntroBlock arRsHead arRcHead arGlHd' }, h('div', { class: 'arGlBdg' }, bdgH('Focus now · ' + (i + 1) + ' of ' + G.length, null, 'solid', 'sm')), title, h('p', { class: 'arPara arGlWhy', text: g.why }));
+      var hd = h('div', { class: 'arIntroBlock arRsHead arRcHead arGlHd' }, title, h('p', { class: 'arPara arGlWhy', text: g.why }));   /* no Focus now · n of N badge ("Remove that") */
       var pic = function (k) { var src = IMG[k]; return h('span', { class: 'arGlPic', 'aria-hidden': 'true' }, src ? h('img', { src: src, alt: '', decoding: 'async', draggable: 'false' }) : null); };
       var ey = function (t) { return h('p', { class: 'arGlEy', text: t }); };
       var row = function (x) { return h('div', { class: 'arGlRow' }, pic(x.img), h('div', { class: 'arGlRowT' }, h('b', { text: x.t }), h('p', { text: x.d }), h('div', { class: 'arGlMeta' }, bdgH(x.b[0], x.b[1]), h('span', { text: x.w })))); };
@@ -39542,7 +39542,7 @@ hairline({
     const apply = () => { const dk = desk(), seen = new Set(); P.forEach(p => { const el = p[3](); if (!el || (p[3] === fm && p[0] !== cur()) || seen.has(el)) return; seen.add(el); const v = pick(p), c = dk && (v !== dOf(p) || p[6]) ? css(v) : '';
       if (c){ if (el.getAttribute('data-pg-ct') !== v) el.setAttribute('data-pg-ct', v); if (el.style.getPropertyValue('--ctPg') !== c) el.style.setProperty('--ctPg', c); }
       else if (el.hasAttribute('data-pg-ct')){ el.removeAttribute('data-pg-ct'); el.style.removeProperty('--ctPg'); }
-      if (isFm(p)) Object.keys(PARTS).forEach(pt => { const w = pickP(p, pt), cv = dk && (w !== defP(p, pt) || pt !== 'ft') ? (w === 'full' ? '100cqw' : css(w)) : '', A = PARTS[pt];
+      if (isFm(p)) Object.keys(PARTS).forEach(pt => { const w = pickP(p, pt), cv = dk && (w !== defP(p, pt) || pt !== 'ft') ? (w === 'full' ? '100cqw' : w === '2xs' ? 'var(--ctT2xs, var(--ct2xs))' : css(w)) : '', A = PARTS[pt];   /* 2xs the token's own (--ctT2xs), not the Body's: a Body picked narrower redefines --ct2xs on the modal and took the Header nav, Header title and Footer with it ("Why is the container 2xs not the same?") */
         if (cv){ if (el.getAttribute(A[1]) !== w) el.setAttribute(A[1], w); if (el.style.getPropertyValue(A[0]) !== cv) el.style.setProperty(A[0], cv); }
         else if (el.hasAttribute(A[1])){ el.removeAttribute(A[1]); el.style.removeProperty(A[0]); } });
       else { const h = hdOf(el), w = h ? pickP(p, 'hd') : '', d = h ? defP(p, 'hd') : ''; if (h && dk && w !== d) hdFit(el, h, w); else if (h && h.hasAttribute('data-ct-hd')) hdClr(h); } }); };

@@ -5,6 +5,12 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3038 · Header nav 2xs is 2xs whatever the Body; the goals without their badge
+
+- **Containers in full modals** ("Why is the container 2xs not the same?"): a step's Body container works by redefining `--ct2xs` on the modal (`.aqWrap.aqFull[data-pg-ct] { --ct2xs: var(--ctPg) }`). The Header nav, Header title and Footer at 2xs were written as `var(--ct2xs)`, so they took the Body's width: on a step whose Body is 3xs (the new goals had no pick of their own, so the flow's 3xs) the header nav was 384, on the Doctor note (its own 2xs) 544. Now the token has a twin the Body never touches (`--ctT2xs`, beside every `--ct2xs` definition), and the parts' 2xs reads it: Header nav 2xs is 2xs on every step. The Body still follows its own pick per step (Tweaks → Body, "This step: …").
+- **Goals**: the Focus now · n of N badge removed ("Remove that"); the title first.
+
+---
 ## v3037 · Async report: the Goals screens after the Doctor note; its recommendation screens as steps of their own in the Flow panel
 
 - **Goals** ("Add a few screens just after the doctor note. That screen will be the goals"): one screen a goal, after the Doctor note and before the Recommendation summary, each its own phase (`g0`, `g1`, `g2`; `buildRecGoal`). It shows Focus now · n of N (the Badge master, Solid), the goal as an H1, why it matters for this member, then Your plan / Go further on the Segmented tab master.
