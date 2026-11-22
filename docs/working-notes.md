@@ -5,6 +5,13 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3094 Insights: the Status card's two states; the tasks' pictures by object; the blood panel first
+
+- **Status card** ("a select with the same card but 2 states possible: Insights processing, New insights just landed"; was Generating On / Off): `#stInsGen` a plain select, `on` Insights processing (the spinner, We'll notify you; the old On, so saves keep it), `new` New insights just landed (the spinner's place a green tick, `.hpInsNewI`, the tasks' done-tick colours; "Take a look at what they mean for you."), `off` none. `html.insGen` the card, `html.insGenNew` its second state; one renderer (`HPC.insList`).
+- **The three tasks' pictures** ("More paper based", "watch", "Blood tube here"): the new 3D set has no paper, watch or tube, so each task takes the photoreal render of its own object, one copy each: Health profile the cream paper stack (`EvSvcImg.cert`), Health data the Garmin watch (`EvDevImg.garmin`; the 1.22 scale back), Past results the blood tubes (`EvSvcImg.path`). The wearables' pictures are one global now (`window.EvDevImg`, read by the connect sheet's `DEVIMG`). Assets library notes moved with them.
+- **Recent insights** ("Use the blood test for the first one"): the Advanced blood panel insight first in `CARDS` (the carousel, the hero, the one-insight card all read it), wearing the blood tubes (`EvSvcImg.path`) instead of the navy charts render (`card4-tube`, no longer used).
+- Checked: the hero card at L with Position Insights and one insight is 222 wide, before this change as after (not this change's).
+
 ## v3093 Flow · Check-in shows however the check-in opens; Insights tiles on the 3D icon set; the check-in's MRI card from the library
 
 - **"Where is the mention?"**: the Flow · Check-in row (General layout → Page type) and the per-context Overview Tweaks only followed a `change` on the Page menu. The check-in opened from the app (its Overview card, `#quarterly-check-in`, a reload) or closed sets `versionSel.value` with no event (`evSolo`), so the mention never showed and, on close, the check-in's set stayed on the Overview page.
