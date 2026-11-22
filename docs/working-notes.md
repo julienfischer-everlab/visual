@@ -5,6 +5,12 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3081 Current badge (grey) on untouched values; filled rows 2 apart
+
+- **Current** ("An item is in the group by default. Use a badge current"; "Grey colour"): a value that was on file and is untouched now wears the Badge master's neutral tint "Current", its words grey (`fg/neutral/tertiary/100`), beside Added (green) and Updated (orange).
+- **2 apart** ("Add a 2px gap between the list ... interactive"): with Items Filled, the List item interactive rows are 2 apart (was 4); the Add sits 6 under the last row.
+- Checked at XS: Osteopenia Current (white at 48%), a new Asthma Added, rows 2 apart. No page errors.
+
 ## v3080 Form pattern (Design system → Patterns → Form) and the fields gap app-wide; Previously on file; stress options reworded
 
 - **Form** ("in the design system, we need a form example ... a form pattern ... a form gap that needs to be applied every time we have form fields. This concerns the entire app"): a new Design system page under Patterns, drawn by a new master `window.EvForm`:
