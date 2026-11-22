@@ -5,6 +5,12 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3054 3D icons cut, in the library, on the goal cards
+
+"Separate them. I want this icon to be on the goal page." The 3D icon sheet (already transparent, with soft shadows) is cut into eight 384x384 WebPs with alpha in `assets/icons3d/`: run (shoe and tracker), strength (kettlebell, stopwatch, towel), meal (salmon bento), glucose (meter and drop), heart (heart and stethoscope), sleep (pillow, blanket, moon), hydration (bottle, glass, lemon), recovery (mat, stones, leaf). Each path is written once in `window.EvIc3d`; the Assets library lists them in a new 3D icons group with META notes. The Async report's goal cards now wear the goal's 3D icon top right, 88 with a soft drop shadow and no tile (heart: heart; energy: sleep; skin: hydration); the line icon stays as the fallback. The title's right padding grows to 84 when the 3D icon is on. The second sheet (clipboard, reports, folder, watch and ring, blood tubes, oximeter and strap, CGM, tablet) arrived mid-turn and never reached disk: it needs re-sending.
+
+---
+
 ## v3053 The range's word below is a coloured Badge (0 to 10)
 
 "Use a badge for this and use a certain colour system from 0 to 10, so the background should be coloured." EvRate's active label below the range is now the Badge master (`EvCtl.badge`, Solid, md) centred 24 under the labels, its fill the value's colour and its label `fg/static/black`. The colour comes from `EvRate.tone(v, min, max)`: `fg/sentiment/negative/100` at 0, `warning/100` at 5, `positive/100` at 10, mixed in oklch, eased .3s as the value moves. `EvRate.set` updates the badge's words and colour. The Rating range doc page shows a Colour scale row (all 11 badges) and its Anatomy and API rows name the badge and `tone`. The label above the range stays text.
