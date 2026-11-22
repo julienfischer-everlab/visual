@@ -5,6 +5,15 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3047 Container same size alert; range word label; Thank you hugs; card Tweaks state only; Insights generating card
+
+- Container same size, not followed: when the page type's template (Design system → Page types, saved) has Container same size On and this page's containers aren't all one size (its own switch turned Off), Tweaks → Page type shows an amber alert. It names the template's size and each container's size, and marks the containers off the template's size in amber. Reset containers puts every container at the template's size and turns Container same size back on (`csChk` in EvCt's row, `#stCsAlert`, `#stCsReset`).
+- Range: the active label is Below by default and big (28/32), following the value as it moves. The eating question has its own eleven words, 0 to 10 (`EvRate.EAT`: Not well at all, Very poorly, Poorly, Not great, Could be better, Okay, Fairly well, Pretty well, Well, Very well, Really well), and starts at 5 like the feeling one.
+- Check-in Thank you: the content hugs. The title group has its button 32 under it, in the column at every size, with no footer group (`.arWtHugCta` in the head; `.arSheet:has(.arWtNoRows) .arFoot` hidden).
+- Page Tweaks for cards built on the component system show only their state (Card · State, Card · Selected). Card · Appearance and Card · Size are hidden on the Focus card, Schedule, primary card, Action plan and Insights groups, with their selects kept for saved setups.
+- Overview → Insights empty state: a small two-line footer card inside the card, with a spinner, "Some insights are being generated / We'll notify you as soon as they're ready" (Card static, Secondary - Transparent, md). Tweaks → Insights → Generating, On by default (`html.insGen`).
+
+---
 ## v3046 External page type (EvExt); Nothing's changed by default
 
 - New master `window.EvExt` (Design system → General layout → Page types → External): a screen outside the app ("just to show that it's nothing about the app. It's just outside ... a fake desktop on M and L ... icons and a folder").
