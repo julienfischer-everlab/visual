@@ -5,6 +5,15 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3089 Sheet nav Off as the Design system's; goal card Circle visual and a radial fade; Next goal; Go further CTA Tweak
+
+- **Header nav Off** ("See the difference on the top part? Why dont we use the design system sheet component"): with Header nav Off, EvSheet now draws the Design system sheet's own frame (`.sdNvNone`): 32 high, the Close absolutely placed where the nav's would sit ((nav − button) / 2), and the title kept clear of it (button + 12). Its nav rule had zeroed that frame's padding, so the Close sat at 0. Measured against the Design system's Page types → Sheet demo with the nav off: Close 36 @38 / 16 at XS and 36 @18 / 24 at M · L, the same; title top 72 / 50 against the DS's 62 / 42 boxes (their 44-high slot row).
+- **Goal card Circle** ("Another tweak replacing the visual on right by a circle img 128 128 Margin top 32px"): Tweaks → Goal card → Visual gets **Circle**. The goal's photo sits in a 128 circle at the card's right padding, 32 from its top, with no icon and the title group 144 clear of it.
+- **Radial fade** ("Use a radial gradient"): Visual Image's photo fades with one radial mask from the top-right corner (ellipse 52% × 115%: full, 85% at 38%, 35% at 70%, gone), replacing the two crossed linear masks. The left 60% stays clear.
+- **Next goal** ("Just Next goal"): the goal's CTA reads "Next goal" (was "Next goal: skin").
+- **Go further → CTA in item** ("Go further tweak. Sub tweak of Goal steps. Cta in item ON OFF"): a Go further sub-heading in the Goal steps group with CTA in item On / Off. Off removes each option's buttons (Add now, On your list) from its card. It is in the Async report's saved Tweak lists.
+- Checked at XS and L: circle 128 × 128, 32 from the top, 20 from the right, title padding 144, icon hidden; the CTA reads Next goal; Go further shows 2 options with 2 buttons each (On) or 0 (Off). No page errors.
+
 ## v3088 The group's Add: a hugging Secondary pill
 
 - **Add** ("Hug full rounded secondary button"): the foot Add of each group (grey card and the Simple empty group) is now the Button master's Secondary, lg, no icon. It hugs its words, wears the master's own full round and is centred (was Ghost full width with corners concentric to the card). Measured at XS: Add a condition is 185 wide, radius 9999, 8 above the grey card's foot.
