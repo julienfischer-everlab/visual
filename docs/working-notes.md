@@ -5,6 +5,11 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3078 The edit sheet's Primary says what it does; group names regular
+
+- **Edit medication / Add medication** ("If you edit something, the CTA should be 'edit medication' ... a new medication ... 'add medication,' 'add supplement'"): the form's Primary is Edit condition / medication / supplement when editing, Add condition / medication / supplement when adding (was Save / Add).
+- **Regular group names** ("Just put the title regular"): the Edit · cards header (Conditions, Medications, Supplements) at font-weight regular (was medium).
+
 ## v3077 The edit sheet: Remove always stacked, the Close on the content's edge, "Previously: …" under a changed field
 
 - **Remove stays** ("I still need to delete this condition as a secondary option stacked"): the Design system's Sheet footer was set to 1 CTA only, which dropped the Secondary. EvSheet now never drops a Secondary that does something (`onSecondary`): under 1 CTA only it stacks under the Primary. `EvSheet.open` also takes `align` ('edge' | 'fill' | 'stack') over the master's; the edit form passes 'stack'. Documented in the skill's flows-modals reference.
