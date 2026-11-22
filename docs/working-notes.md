@@ -5,6 +5,12 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3048 Check-in: its Overview moments carry every Overview module's Tweaks
+
+- The check-in's Overview moments (Check-in card, Preparing, Insights ready, After) are the Overview itself, a variation of the master page. While one is up, Tweaks shows every Overview group (General layout, Overview, Bento, Notification module, Primary card, Services, Insights, Scheduled, Braze marketing card, Action plan, Later card, Past result card) with the Check-in group: EvCtx `qci` tweaks `['qci', 'qciOv', 'ov']`. Its questions and report keep the Check-in's alone.
+- A preset saved on the Check-in page snapshots those modules too, so the flow can have its own Overview variation; its home (house) preset puts it on when the Check-in opens ("create a specific preset for this specific flow").
+
+---
 ## v3047 Container same size alert; range word label; Thank you hugs; card Tweaks state only; Insights generating card
 
 - Container same size, not followed: when the page type's template (Design system → Page types, saved) has Container same size On and this page's containers aren't all one size (its own switch turned Off), Tweaks → Page type shows an amber alert. It names the template's size and each container's size, and marks the containers off the template's size in amber. Reset containers puts every container at the template's size and turns Container same size back on (`csChk` in EvCt's row, `#stCsAlert`, `#stCsReset`).
