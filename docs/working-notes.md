@@ -5,6 +5,12 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3065 24 under the range's label above
+
+"We need 24px padding bottom below the good label." EvRate's word label above the range now sits 24 over the track (the column's 12 gap and 12 more; was 8). Measured: 24. Doc row updated.
+
+---
+
 ## v3064 Edit list: no title, Secondary group cards with a bold border, each value a Secondary card
 
 "In this version, remove the title 'What we have for you' and put the card for each group in a secondary colour with a bold border. And I want each item inside to be a secondary card as well." The What's changed Edit list drops its H2; each group (Conditions, Medications, Supplements) is an EvCard Secondary - Outlined, LG, its hairline widened to 2 (`components/divider/100`); each value (and the field while it is written) is an EvCard Secondary - Transparent, sm, 8 apart, no dividers; Nothing on file and Add a … stay plain under them. Add, edit, remove and Escape re-tested.
