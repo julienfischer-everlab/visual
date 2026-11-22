@@ -5,6 +5,12 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3062 Insights "being generated" card: LG, even edges
+
+"The padding on the bottom should fit with the left and right ... we need more internal padding, so this card should probably be an LG card." The footer card in the Overview's Insights card (`hpInsPend`) is now an EvCard LG (`space/md`, 20 inside: its own body padding, no more 12/16 override or zeroed body). When it is the card's last child (no Generate button under it), it keeps 12 under it on top of the card's 8 foot, so it sits 20 from the left, right and bottom alike. Measured at L and XS: 20 / 20 / 20.
+
+---
+
 ## v3061 Goal card Image: title in the left 60%; Segmented tab blurs 32
 
 "Need more padding on the title group ... maybe 60% of the width for the content, and the rest is padding so the image has some space." With the Image visual, the goal card's Title group keeps 40% clear on its right (it was 24%; the 3D icon's 84 rule no longer wins), so the words stay in the left 60%; the photo now fills that space: 48% wide, fading out by 40% from the right.
