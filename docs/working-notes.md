@@ -5,6 +5,12 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3055 Range: no dashes, no border; an inset fill and a dark value circle
+
+"I don't need to see the increment. Maybe the circle should be just a dark-opacity circle inside of the rectangle with the rounded corner, with a padding of 2px. Each increment is a circle opacity 50%, and inside a full rectangle of the background colour from orange to green ... we don't need any border, outline." EvRate's track is now a plain pill on `bg/neutral/tertiary/300` with no line. A new fill (`.evRtF`) is a full rounded rectangle 2 inside the track, orange to green across the whole track, its width `calc(40px + (100% - 44px) * --rtK)` (a new unitless value var set by `html` and `set`), sliding .22s. The lines between stops are gone (spacers only); each stop is a 6 circle, black at 50%. The value is a dark see-through 40 circle (black 22%) at the fill's end, drawn as the current stop's `::after`, no white disc. The check-in's none state hides the fill and the circle. The Rating range doc page's intro and Anatomy (Track, Fill, Stops, The value) are rewritten.
+
+---
+
 ## v3054 3D icons cut, in the library, on the goal cards
 
 "Separate them. I want this icon to be on the goal page." The 3D icon sheet (already transparent, with soft shadows) is cut into eight 384x384 WebPs with alpha in `assets/icons3d/`: run (shoe and tracker), strength (kettlebell, stopwatch, towel), meal (salmon bento), glucose (meter and drop), heart (heart and stethoscope), sleep (pillow, blanket, moon), hydration (bottle, glass, lemon), recovery (mat, stones, leaf). Each path is written once in `window.EvIc3d`; the Assets library lists them in a new 3D icons group with META notes. The Async report's goal cards now wear the goal's 3D icon top right, 88 with a soft drop shadow and no tile (heart: heart; energy: sleep; skin: hydration); the line icon stays as the fallback. The title's right padding grows to 84 when the 3D icon is on. The second sheet (clipboard, reports, folder, watch and ring, blood tubes, oximeter and strap, CGM, tablet) arrived mid-turn and never reached disk: it needs re-sending.
