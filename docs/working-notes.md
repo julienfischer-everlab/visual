@@ -5,6 +5,11 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3090 Goal card Tweak: Timeline On / Off
+
+- **Timeline** ("Goal tweak, Timeline ON OFF"): Tweaks → Goal card → Timeline. **On** (the default) keeps What we'll do on the Timeline's rail, with month sections, dots and counts. **Off** drops the rail and shows the plan's cards as a plain list, followed by Your part. It applies to every goal and is in the Async report's saved Tweak lists.
+- Checked at XS: On shows the rail with 2 rows; Off shows the list with 2 rows and no rail. No page errors.
+
 ## v3089 Sheet nav Off as the Design system's; goal card Circle visual and a radial fade; Next goal; Go further CTA Tweak
 
 - **Header nav Off** ("See the difference on the top part? Why dont we use the design system sheet component"): with Header nav Off, EvSheet now draws the Design system sheet's own frame (`.sdNvNone`): 32 high, the Close absolutely placed where the nav's would sit ((nav − button) / 2), and the title kept clear of it (button + 12). Its nav rule had zeroed that frame's padding, so the Close sat at 0. Measured against the Design system's Page types → Sheet demo with the nav off: Close 36 @38 / 16 at XS and 36 @18 / 24 at M · L, the same; title top 72 / 50 against the DS's 62 / 42 boxes (their 44-high slot row).
