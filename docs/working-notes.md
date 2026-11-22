@@ -5,6 +5,10 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3073 The edit sheet's secondary reads Delete condition
+
+- **Delete condition** ("we need a delete condition"): the Edit sheet's secondary is now named after what it deletes, Delete condition / Delete medication / Delete supplement (was Remove). It stays a Secondary button; it still closes the sheet and collapses the row.
+
 ## v3072 What's changed: an Items accent Tweak, Remove in the edit sheet, changed groups as warning cards
 
 - **Items** ("a tweak with a more interactive accent for the list of items"): Tweaks → Check-in → Items, Ghost / Filled / Chevron, on both Edit variations. Ghost is as before. Filled puts the List item's Primary emphasis on the rows (`evLi-primary`: bg/neutral/tertiary 100 at rest, 200 hovered, 300 pressed), 4 apart, no dividers. Chevron trades the pencil for a chevron at the right; tapping the row still opens its sheet.
