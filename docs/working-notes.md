@@ -5,6 +5,12 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3069 Empty groups say what is missing
+
+"No conditions on file." An empty group in What's changed (both edit variations) now reads No conditions on file / No medications on file / No supplements on file, not Nothing on file.
+
+---
+
 ## v3068 What's changed: the block system for cards; Add and Edit in a form sheet / modal
 
 "Just use this system here for the block ... the list inside the secondary card and the header on the top in a card as well." Edit · cards now follows the Timeline's next check-in block: each group an outlined card (Primary - Outlined) with its name as a header line at its top (16 Medium, ink 56%), and a Secondary card (Secondary - Surface) under it to its edges, the same corners; in it the values as ghost List item interactive rows with the Divider master between, the + Add centred at the foot.
