@@ -5,6 +5,14 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3098 Previously on file as the main view's row; the Edit icon in place of the chevron; the Add 12 from above
+
+- **Previously on file** ("the same list as the main view with a card secondary static ... no right action of badge"): its body the group's Card (secondary surface, md) round one List item (`edLi`, not interactive, `evLi-primary` the main view's Filled ground), the name over its description, no badge, no action. On the sheet the card's ground is the sheet's own (both rgb 24): its inset and the row's bleed off, so the filled row reads as the card, level with the label on the left and the fields on the right. The row's text styles copied out of `.qciSheet` so the Design system's Form example (now the same row in the same card) matches.
+- **No previous data** ("IF No previous data, Hide this"): no disclosure unless the value was on file and has a name (`og && og.t`), hidden while the fields equal it (summary and note with it, `.evDiscW[hidden]`); never for a value added in the check-in. Checked: unchanged hidden, changed shown.
+- **Edit icon** ("Use Edit action icon"): the Items accent's third option draws the Edit icon (EIC.edit) where the chevron was, the whole row still opening its sheet; the option reads Edit icon (value `chev` kept, saves unchanged).
+- **The group's Add** ("CTA + 8 margin top"): 12 above it (was 4), 8 under.
+- Asked "why this extra padding" on the check-in question's title: the 24 a side is the container's own (`--ctPadX`, 24 desk, 16 phone), the same as the body's, so the title and the list share their edges; left as it is.
+
 ## v3097 What's changed: the group's Add two sizes down, 8 under it
 
 - "CTA 2 size down; add margin bottom 8px": the group's foot Add (Edit list, Add position Bottom, both empty modes) on the Button master's sm (36) instead of lg (52); in the grey card (`.qciEdAddW.qciEdAddC`) 8 under it (the Simple card's already had 8). Checked: 36 tall, 8 below.
