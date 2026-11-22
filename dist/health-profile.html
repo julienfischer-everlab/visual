@@ -5650,14 +5650,15 @@ window.EvConsent = (function () {
     function choice(L, get, set, multi, onChange) {   // option cards: one, or as many as wanted ('none' alone); the Questionnaire step's Selection items (EvQ: Card interactive, its 2px border when picked)
       var Q = window.EvQ, K = window.EvCard, box = h('div', { class: Q ? 'evQList' : 'hpOpts', role: multi ? 'group' : 'radiogroup' });
       var paint = function () { [].forEach.call(box.children, function (b) { var v = b.dataset.v, cur = get(), on = multi ? (cur || []).indexOf(v) >= 0 : cur === v; if (Q) Q.mark(b, on); else b.setAttribute('aria-checked', String(on)); }); };
+      if (multi && Q && Q.none) { var g0 = get(), d0 = Q.none(L.map(function (x) { return x[0]; }), g0); if (d0 !== g0) set(d0); }   /* a nothing option (None of these): picked by default, and again when everything is unticked ("Always put Nothing changed by default") */
       L.forEach(function (o) {
         var pick = function () {
-          if (multi) { var cur = (get() || []).slice(), at = cur.indexOf(o[0]); if (at >= 0) cur.splice(at, 1); else if (o[0] === 'none') cur = ['none']; else { cur = cur.filter(function (x) { return x !== 'none'; }); cur.push(o[0]); } set(cur); }
+          if (multi) { var cur = (get() || []).slice(), at = cur.indexOf(o[0]); if (at >= 0) cur.splice(at, 1); else if (o[0] === 'none') cur = ['none']; else { cur = cur.filter(function (x) { return x !== 'none'; }); cur.push(o[0]); } if (Q && Q.none) cur = Q.none(L.map(function (x) { return x[0]; }), cur); set(cur); }
           else set(o[0]);
           save(true); paint(); if (onChange) onChange(); };
         if (Q && K && K.el){ var qb = K.el(Q.option({ v: o[0], t: o[1], sub: o[2] || '', multi: multi })); qb.addEventListener('click', pick); box.appendChild(qb); return; }
         box.appendChild(h('button', { type: 'button', class: 'hpOpt', role: multi ? 'checkbox' : 'radio', 'data-v': o[0], on: { click: function () {
-          if (multi) { var cur = (get() || []).slice(), at = cur.indexOf(o[0]); if (at >= 0) cur.splice(at, 1); else if (o[0] === 'none') cur = ['none']; else { cur = cur.filter(function (x) { return x !== 'none'; }); cur.push(o[0]); } set(cur); }
+          if (multi) { var cur = (get() || []).slice(), at = cur.indexOf(o[0]); if (at >= 0) cur.splice(at, 1); else if (o[0] === 'none') cur = ['none']; else { cur = cur.filter(function (x) { return x !== 'none'; }); cur.push(o[0]); } if (Q && Q.none) cur = Q.none(L.map(function (x) { return x[0]; }), cur); set(cur); }
           else set(o[0]);
           save(true); paint(); if (onChange) onChange(); } } }, h('b', { text: o[1] }), o[2] ? h('span', { text: o[2] }) : null));
       });

@@ -5,6 +5,18 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3046 External page type (EvExt); Nothing's changed by default
+
+- New master `window.EvExt` (Design system → General layout → Page types → External): a screen outside the app ("just to show that it's nothing about the app. It's just outside ... a fake desktop on M and L ... icons and a folder").
+  - XS: the phone's home screen, with apps as plain glyphs, Everlab among them, the dock, and Everlab's notification over a 50% black blanket.
+  - S: the same on the tablet, its notification 440 at the centre.
+  - M · L: a made-up desk, with a menu bar, folders and files on the desktop, a Health records folder open in a window, a dock with Everlab in it, and the notification at the top right.
+  - API: `EvExt.phone()`, `EvExt.desk()`, `EvExt.html({ bp, push })`.
+- The Page types demo draws External with EvExt. Its only control is Notification On/Off (`xn`); the app's header, body and footer controls hide on External.
+- The check-in's home screen reads its glyphs, apps and dock from EvExt (`EvExt.IG`, `APPS`, `DOCK`).
+- Questionnaire rule (`EvQ.none`): a multi-select with a nothing option (value `none`: Nothing's changed, None of these) starts on it, and comes back to it when every other answer is unticked ("Always put Nothing changed by default in a screen when there are a few options to select"). It is applied in the check-in (`question()`, `set()`) and in the Health profile's and Send a gift's option cards (`choice()`).
+
+---
 ## v3045 Introduction template: the welcome and What to expect
 
 - The Async report's What to expect step (V3: the picture, the badge, the title, the three rows, See results) joins the welcome in one template, renamed Introduction ("This should be a page-type template introduction"). Page type shows "Template · Introduction" on both. Their General layout picks are one set (`ar:tpl-intro`, the same key as before, so earlier picks are kept).
