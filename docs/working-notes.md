@@ -5,6 +5,14 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3067 Edit list: cards one size down, the Add centred and bare; a new Edit · rows variation
+
+Cards ("no bg", "Smaller plus icon ... put it in the middle, centred", "the item inside the card, make the one size down"): each value's card is Secondary - Transparent M (16 inside, was L); the Add a … button is centred in its group card, its + bare (no disc) and 16.
+
+Rows ("For this style only, do a variation with no card, just a line row item with a divider. It's still a ghost item, but no background, just the list interactive item. Below each row group, CTA secondary"): Tweaks -> Check-in -> What's changed now has Options · Edit · cards · Edit · rows. Edit · rows: no group card and no value cards; under each H3, the values as ghost List item interactive rows (EvListI, auto: bleeding by half the container padding, no fill till hovered), the Divider master between them and under the last; Nothing on file when empty; under each group a Secondary sm Button (EvCtl.btn) with a + at its left, Add a condition / medication / supplement. Rows open their field on a tap or Enter (role button), Edit and Remove still there. EvCtl's icon set gains `plus`. Add, edit, remove and Escape tested on both.
+
+---
+
 ## v3066 Edit list: group cards S, value cards L, tap a value to write it, 4 apart, smaller actions
 
 "Keep it outline and card S. The card inside should be L, so there's more padding. Clicking the card inside the item will also trigger the typing state." / "Make sure there's a 4px gap between items. Also, make the action on the right side a smaller size." / "Add 4px padding to the image button below the H2." The What's changed Edit list's group cards stay Secondary - Outlined (2 border) at S (12 inside); each value's card is Secondary - Transparent L (20 inside), a tap anywhere on it (not on its buttons) opens its field, like Edit; the values 4 apart (the group body made a flex column: it was a block, so no gap showed); Edit and Remove at the smallest CTA size, 28 (16 icons); Nothing on file and Add a … line up with the values' words (20 in); the Add's + disc 36 (4 more round its icon). Measured: gap 4, actions 28, + 36, words and Add both 32 from the group's edge.
