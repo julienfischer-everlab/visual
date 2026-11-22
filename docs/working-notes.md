@@ -5,6 +5,10 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3082 The group's Add: no plus, lg
+
+- **Add** ("Remove the plus. Upsize the CTA"): the Ghost full-width Add at a group's foot (grey card and the Simple empty group) is now the Button master at lg, without the + icon (was md with +). It stays 8 in from the grey card, its corners concentric (12). The top-right Secondary Add is unchanged.
+
 ## v3081 Current badge (grey) on untouched values; filled rows 2 apart
 
 - **Current** ("An item is in the group by default. Use a badge current"; "Grey colour"): a value that was on file and is untouched now wears the Badge master's neutral tint "Current", its words grey (`fg/neutral/tertiary/100`), beside Added (green) and Updated (orange).
