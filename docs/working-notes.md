@@ -5,6 +5,12 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3091 Goal: Tabs Merged, card XL, the photo past its fade
+
+- **Tabs** ("Tab tweak. Merge Title and Tab: To prioritise now, Explore further"): Tweaks → Goal card → Tabs, Separate / Merged. Merged makes the tabs the titles, **To prioritise now / Explore further**, with no What we'll do H2 under them. Separate keeps Your plan / Go further · n and the H2. It is in the saved Tweak lists.
+- **Card XL** ("card static lg ... xl"): the goal card is Card static XL (Secondary - Transparent): padding 24, corners 24.
+- **Photo edge**: the Image visual's photo layer is 62% wide (was 48%), wider than the radial fade (gone 52% from the right), so its left edge no longer shows as a line.
+
 ## v3090 Goal card Tweak: Timeline On / Off
 
 - **Timeline** ("Goal tweak, Timeline ON OFF"): Tweaks → Goal card → Timeline. **On** (the default) keeps What we'll do on the Timeline's rail, with month sections, dots and counts. **Off** drops the rail and shows the plan's cards as a plain list, followed by Your part. It applies to every goal and is in the Async report's saved Tweak lists.
