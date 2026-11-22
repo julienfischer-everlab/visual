@@ -5,6 +5,11 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3076 What's changed: an Empty group Tweak (Simple, no grey card)
+
+- **Empty group** ("when the group is empty ... without the ... secondary card ... the header is basically the card ... 'No condition on file,' centred ... no grey area"): Tweaks → Check-in → Empty group, Grey card / Simple, on Edit · cards. Simple leaves out the Secondary card when a group has nothing: the outlined card keeps its header, then "No medications on file" centred (8 over, 28 under). With Add at the foot, the Ghost full-width Add sits 12 in from the card's sides and foot (its corners 12 inside the card's), 12 under the words. With Add at the top right, it's just the header and the words (card 114 high at XS).
+- Checked at XS with both Add positions: no grey card, text centred; Add at the foot 12 / 12 in, 337 wide, and it opens Add a medication. No page errors.
+
 ## v3075 What's changed: Added / Updated badges on each row (no warning card); an Add position Tweak
 
 - **No warning card** ("abandon this header change of state colour"): v3072's group-level change state is gone (no Updated badge in the header, the card stays Primary - Outlined, no orange icon).
