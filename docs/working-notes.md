@@ -5,6 +5,10 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3074 The edit sheet's delete reads Remove this medication
+
+- **Remove this medication** ("the option to delete we need in the bottom sheet: Remove this medication"): the Edit sheet's secondary now says Remove this condition / medication / supplement (v3073's Delete condition replaced). Still the Secondary button; it closes the sheet and collapses the row.
+
 ## v3073 The edit sheet's secondary reads Delete condition
 
 - **Delete condition** ("we need a delete condition"): the Edit sheet's secondary is now named after what it deletes, Delete condition / Delete medication / Delete supplement (was Remove). It stays a Secondary button; it still closes the sheet and collapses the row.
