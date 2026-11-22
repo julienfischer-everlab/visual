@@ -5,6 +5,14 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3061 Goal card Image: title in the left 60%; Segmented tab blurs 32
+
+"Need more padding on the title group ... maybe 60% of the width for the content, and the rest is padding so the image has some space." With the Image visual, the goal card's Title group keeps 40% clear on its right (it was 24%; the 3D icon's 84 rule no longer wins), so the words stay in the left 60%; the photo now fills that space: 48% wide, fading out by 40% from the right.
+
+"Check the segmented tab. The background should be blur 32px, so that's a design system problem." The Segmented tab master (`.evSeg`, EvSeg) now blurs what is behind its track: `backdrop-filter: blur(var(--sgBlur, 32px))`, on every Segmented tab in the app.
+
+---
+
 ## v3060 Goal card: an Image visual (Tweak); no pictures on the plan cards
 
 "Instead of the icon on the top right, just do a variation and a tweak: a background image that fades out from top right to bottom left. Make sure the left 70% is clear ... If I activate this here, it's going to activate also on the other goals." A new Tweaks group on the goal screens, Goal card · Visual: Icon (the 3D icon, default) or Image (`stArGlVis`, `o.glvis`, in KEYS and the remount list), the Goals template's, so every goal follows. Image puts the goal's photo behind the card top right (`.arGlBg`, its picture 40% wide, cover, centred 18% down) under two crossed masks: gone by 30% from the right and towards the foot, so the left 70% stays clear; the icon hides and the title keeps 24% clear on its right. Photos cut from the goals set into `assets/async/` (each path once in `GLIMG`): heart, two women walking in the sun; energy, a man stretching on waking; skin, a woman checking her skin in the mirror; listed in the Assets library (Async report).
