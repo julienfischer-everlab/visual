@@ -294,3 +294,15 @@ A new Plan surface: its colours from the `--pl*` tokens (and a `#dPlan.plLight` 
 - **Availability**: Buttons (label, icon only, split) lg–xs; Badges and Badge Mono md–2xs; Inputs lg, md; Segment tab lg (two lines), md, sm; Filter chip md; Chip md, sm. Anything else is "Not available".
 - **Docs**: Design system → Core components: Sizes (`#sizes`, the full matrix), Buttons (`#buttons`), Inputs (`#inputs`), Badges (`#badges`), Chips (`#chips`), Segment tab, Toggle; drawn by `czDoc(k)`.
 - **Already on the scale**: `EvSeg` (`.evSeg2` lg, `.evSegM` md, `.evSegS` sm), `.arBtnLg` (lg). New controls should come from EvCtl, not a fresh button or field.
+
+## Form (`window.EvForm`) and Disclosure (`window.EvDisc`)
+
+- **What:** a form is fields stacked under an optional Title group. Fields sit `components/form/fields-gap` apart: XS 16 · S 20 · M 24 · L 24, from the Breakpoints collection, as `var(--t-components-form-fields-gap)`. The gap inside a field is the Input field's own. Design system → Patterns → Form (`czDoc('fm')`, hash `#form`).
+- **API:** `EvForm.html({ title, sub, level: 'h3', fields: [EvField.html(...), ...], cls })`. A form built by hand puts its fields in `.evFormF`, or gives their column `gap: var(--t-components-form-fields-gap, 16px)`. Never give it a number of its own.
+- **Disclosure:** `EvDisc.html({ label, body, open, note, cls })` uses native details / summary: a chevron row, its body in line with the words, a note under it. Used for the check-in edit sheet's "Previously on file".
+- **Applied:**
+  - the check-in Add / Edit sheet;
+  - Health profile `.hpFields` and `.hpDq`;
+  - Send a gift's forms (`.hpFields`);
+  - `visuals/referral.html` `.fl`;
+  - the Page types Full modal form step.

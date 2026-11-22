@@ -5,6 +5,23 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3080 Form pattern (Design system → Patterns → Form) and the fields gap app-wide; Previously on file; stress options reworded
+
+- **Form** ("in the design system, we need a form example ... a form pattern ... a form gap that needs to be applied every time we have form fields. This concerns the entire app"): a new Design system page under Patterns, drawn by a new master `window.EvForm`:
+  - `EvForm.html({ title, sub, level, fields, cls })` puts an optional Title group over `.evFormF`. The fields sit `components/form/fields-gap` apart, read from the Breakpoints collection (XS 16 · S 20 · M 24 · L 24, as `--t-components-form-fields-gap`).
+  - The page shows two examples, "Your address" (Country select, Address search, Message) and the check-in's Edit medication. Its tables cover spacing (between fields, inside a field, title to fields, side by side, OTP gap), every form it applies to, and how to use it.
+  - Registered in DOCS, DSET, DORD, DS_KEYS and the Patterns nav.
+- **Applied everywhere**: every form now uses the token.
+  - The check-in Add / Edit sheet is on EvForm.
+  - Health profile `.hpFields` (was 20), the stacked name pair's row-gap (was 20), and the Health declaration card's Yes/No to Tell us more (was 16).
+  - Send a gift: these use `.hpFields` too.
+  - `visuals/referral.html` `.fl` (was 14).
+  - The Page types Full modal form step's skeleton fields.
+  - Left alone: the Health declaration card list (12, cards not fields) and the Loading states mock.
+- **Previously on file** ("use this toggle accordion to show the recorded information and just mention at the end"): replaces v3077's "Previously:" help lines. A new master `window.EvDisc` (native details / summary: a chevron row that opens, its body in line with the words, a note under it) sits after the fields while the value differs from what was on file. It opens to show the recorded name and description, followed by "Your previous information will remain visible to your doctor." It is one of the form's items, so the fields gap applies above it. Documented on the Form page.
+- **What's been going on?** ("work issues, familial relationship issues, money and financial issues, health worries, something else"): Work issues · Family and relationship issues · Money and financial issues · Health worries · Something else.
+- Checked: the Form page opens (fields 16 apart in its column); in the edit sheet at XS the disclosure is hidden on open, shown once the name changes (fields gaps 16, 16), opens, hides again when edited back; Add has none. No page errors.
+
 ## v3079 The grey card 8 round its rows
 
 - **Grey card 8** ("Reduce the gap on the grey card by 4 pixels"): the Edit · cards Secondary card is 8 round its rows and its Add (was 12). The rows' and the Ghost Add's corners stay concentric at its radius less 8 (20 → 12). The Simple empty group's foot Add is 8 in too. Measured at XS: row L8 T8 R8, radius 12; Add L8 R8 B8, radius 12, 345 wide.
