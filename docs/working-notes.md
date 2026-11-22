@@ -5,6 +5,14 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3049 Goals: a card for the goal, the Timeline's own rail; What to expect hugs
+
+- The goal is presented in a card (Card static, Secondary - Transparent, lg) in the Header title's section ("the top part needs to be a header with a card ... an icon on the top right ... this tab inside, and then below all of the body"). It holds the goal steps, the title group (H1 and its why), the goal's icon at the top right (48, ink 8%: the app's stroke icons, heart-pulse, zap, sun), and the Your plan / Go further tabs. The body under it holds the panes.
+- What we'll do is on the Timeline page's own rail and month sections (`.tlEmb .tlList .tlSec .tlH .tlDot .tlHn`, its CSS and variables: "the timeline on the left side the same exact style as the timeline"). This month is the hollow ring, the next ones the filled dots, each month with its count. The plan cards are its items. In the report the months aren't sticky, and the dots sit on the sheet's ground (`--pageBg: var(--ar-paper)`).
+- What to expect (Introduction): See results 32 under the rows (was 64), the content hugging as on the Thank you.
+- Goal steps: by default an eyebrow, "Goal 1", in the Title group's top slot (`.tgEy`, "Instead of this, just put an eyebrow on the top slot on the title group"). Tweaks → Goal steps → Style: Eyebrow (default), Pill, Numbers.
+
+---
 ## v3048 Check-in: its Overview moments carry every Overview module's Tweaks
 
 - The check-in's Overview moments (Check-in card, Preparing, Insights ready, After) are the Overview itself, a variation of the master page. While one is up, Tweaks shows every Overview group (General layout, Overview, Bento, Notification module, Primary card, Services, Insights, Scheduled, Braze marketing card, Action plan, Later card, Past result card) with the Check-in group: EvCtx `qci` tweaks `['qci', 'qciOv', 'ov']`. Its questions and report keep the Check-in's alone.
