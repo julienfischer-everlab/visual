@@ -5,6 +5,13 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3096 Feedback with or without insights; Canvas screens the cards' size, its ground; the builder's title
+
+- **Feedback** ("not related on the Insights above ... can be displayed whatever if insights exist or not"): its Tweak row always shown (no longer an empty-state row). With insights, one `.ovInsFbW` (EvInsFb) placed by `__insFbPlace()`: at the foot of the Insights card when it shows (Position Hero, `.ovInsSl` in it), else under the section's cards (after `#dOver > .ovcdots`: the carousel, the mini cards, the one insight). Placed again on everlab:insAmt / insFmt / insPaint and the Insights and breakpoint selects; none in the empty state (insList draws it there). The Latest version's `#dOver > :not(...)` filter lets it through.
+- **Canvas screens** ("Keep same size"): the Health profile screens between the Onboarding consult cards drawn at the desk's width and scaled to the cards' frame (the skeleton `.moSkDk` 1120 x 760; the phone's 393 x 852): `--hcS` fw / sw, `--hcSH` fh / scale, the column fw; `.moCvScrC > .moCvScr` gets back the scale's margins and the skeleton's 20 round, 1 px line. Measured equal (560 x 380 at 50%).
+- **Canvas ground** ("Can bg use tertiary bg 100"): `.moCvVp` `--t-bg-neutral-tertiary-100` under its dots.
+- **Title** ("Overview primary card builder"): Modules → Primary card's page title (`h1` on the module, `DH.page(M.h1 || M.t)`); its name in the module select unchanged.
+
 ## v3095 The Insights Feedback in Design system → Modules → Insights
 
 - "Add these Feedback into the DS module insights": the card under the tasks is a master now, `window.EvInsFb` (`S` its two states, `html(state)` 'proc' / 'new' / 'off', `now()` the Tweaks' state). `_hpCard.insList(st)` draws `EvInsFb.html(st.fb || EvInsFb.now())`: an item's own state when it says so, else Tweaks → Insights → Feedback (the Tweak renamed from Status card; `#stInsGen` unchanged).
