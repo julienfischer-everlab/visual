@@ -5,6 +5,13 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3077 The edit sheet: Remove always stacked, the Close on the content's edge, "Previously: …" under a changed field
+
+- **Remove stays** ("I still need to delete this condition as a secondary option stacked"): the Design system's Sheet footer was set to 1 CTA only, which dropped the Secondary. EvSheet now never drops a Secondary that does something (`onSecondary`): under 1 CTA only it stacks under the Primary. `EvSheet.open` also takes `align` ('edge' | 'fill' | 'stack') over the master's; the edit form passes 'stack'. Documented in the skill's flows-modals reference.
+- **Close on the right edge** ("Why is this ... icon not on the right side?"): the sheet's nav had two insets, the sheet's padding and the Page header group's nav container padding (`--phgPx`). It now has only the sheet's, so the Close sits 16 (phone) / 24 (desktop) from the edge, like the fields and buttons.
+- **Previously** ("If I updated something below the field ... say 'previously' and then the entry of the field that was previously"): an on-file value keeps what was on file (`o: { t, d }`) once Updated. Its form shows the Field master's help line "Previously: Osteopenia" under the name (and under the description, if it had one) whenever the field differs, live as you type. Editing it back to what was on file clears Updated. Added values have nothing previous.
+- Checked at XS and L: with the master's footer forced to 1 CTA only, Edit gives Save over Remove this condition (stacked) and Add gives Add alone. Close and footer both 16 / 24 from the right. Previously is hidden on open, shown after typing; the value saves as Updated, still shows Previously on reopening, and saving it back to Osteopenia clears the badge. No page errors.
+
 ## v3076 What's changed: an Empty group Tweak (Simple, no grey card)
 
 - **Empty group** ("when the group is empty ... without the ... secondary card ... the header is basically the card ... 'No condition on file,' centred ... no grey area"): Tweaks → Check-in → Empty group, Grey card / Simple, on Edit · cards. Simple leaves out the Secondary card when a group has nothing: the outlined card keeps its header, then "No medications on file" centred (8 over, 28 under). With Add at the foot, the Ghost full-width Add sits 12 in from the card's sides and foot (its corners 12 inside the card's), 12 under the words. With Add at the top right, it's just the header and the words (card 114 high at XS).
