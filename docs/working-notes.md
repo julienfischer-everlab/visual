@@ -5,6 +5,12 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3057 Range fill flush with the track
+
+"Don't do any padding on the colour, the base, and the background. Just remove the padding entirely." EvRate's fill now sits flush with the track (no 2px inset): `left/top/bottom: 0`, width `calc(44px + (100% - 44px) * --rtK)`, the gradient spread over the whole track. The value's dark circle is the track's height (44, was 40) at the fill's end. Doc rows (intro, Fill, The value) updated.
+
+---
+
 ## v3056 Range labels, quieter stops in the fill, no transition
 
 "Put the label below the 0, 1, 2, 3, font 12, opacity 32, and then the active state should be white, bold, and the increment inside should be less opacity by 50%. I want the label ... bigger, probably 16px, medium." and "I don't want any transition when I swipe the range ... super brutal." EvRate's values under the track are 12/16 Mono in `fg/neutral/primary/100` at 32%; the value's at 100% and Bold. The stops inside the fill drop to black 25% (half the track's 50%). The questionnaire's end words under the range (Not well at all / Really well) move from Label - Body/200/Regular to Label - Body/300/Medium (16). The word label above the range was already Body/300 Medium (16). The fill and the badge no longer transition: they jump to the value. Doc rows (Fill, Stops, Labels) updated.
