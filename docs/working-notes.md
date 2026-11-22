@@ -5,6 +5,13 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3093 Flow · Check-in shows however the check-in opens; Insights tiles on the 3D icon set; the check-in's MRI card from the library
+
+- **"Where is the mention?"**: the Flow · Check-in row (General layout → Page type) and the per-context Overview Tweaks only followed a `change` on the Page menu. The check-in opened from the app (its Overview card, `#quarterly-check-in`, a reload) or closed sets `versionSel.value` with no event (`evSolo`), so the mention never showed and, on close, the check-in's set stayed on the Overview page.
+  - The override block now wraps the menu's own `value` setter (instance property, the native one underneath) and syncs the context on every set. Checked: link → Overview steps show the row; close → the page's set back, row gone.
+- **Insights tiles** ("replace by the new 3d from yesterday"): `window.EvInsImg` reads the 3D icon set (`window.EvIc3d`, one copy of each file): Health profile the heart and stethoscope, Health data the shoe and tracker, Past results the glucose meter. The old renders (`ins-hp`, `ins-past`; the Garmin tile for data) are no longer used; the Assets library's notes say so, and the 3D icons list the tiles under Used in. The data tile's 1.22 scale (for the watch) is gone.
+- **The check-in's MRI card** ("should come from the library"): on the check-in's Overview steps the primary is put on the MRI by the page (`data-obj="mri"`), but `PcMedia.place` read the card's Object from `data-pc-obj` or else the Tweaks' Object, so the library's MRI style (Visual, picture, background) never reached it and it kept its own brain thumbnail and blur. `place` now reads it as `objOf` does: `data-pc-obj`, else the Object of a card the page put on (`.hpOvQci/.hpOvDr/.hpOvFree/.hpOvObj` with `data-obj`), else the Tweaks'.
+
 ## v3092 The Check-in flow's Overview has its own Overview Tweaks; General layout says it belongs to the flow
 
 - **Override** ("On the checkin flow I want to be able to override the Overview screen without impacting the Overview page ... select the tweak necessary for this specific checkin context"): every control of the Overview's Tweak groups (`data-pages` ov: Overview, Bento, Notification module, Primary card, Services, Insights, Scheduled, Braze marketing card, Action plan, Later card, Past result card) is kept per context, the Overview page's and the Check-in flow's.
