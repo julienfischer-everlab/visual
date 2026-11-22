@@ -5,6 +5,29 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3053 The range's word below is a coloured Badge (0 to 10)
+
+"Use a badge for this and use a certain colour system from 0 to 10, so the background should be coloured." EvRate's active label below the range is now the Badge master (`EvCtl.badge`, Solid, md) centred 24 under the labels, its fill the value's colour and its label `fg/static/black`. The colour comes from `EvRate.tone(v, min, max)`: `fg/sentiment/negative/100` at 0, `warning/100` at 5, `positive/100` at 10, mixed in oklch, eased .3s as the value moves. `EvRate.set` updates the badge's words and colour. The Rating range doc page shows a Colour scale row (all 11 badges) and its Anatomy and API rows name the badge and `tone`. The label above the range stays text.
+
+---
+
+## v3052 Icons on "What's been going on?"
+
+"Can you put some icons on the left side for each?" The check-in's feelWhy options get a line icon each in EvQ's own icon slot (`evQOptI`, 24): Work a briefcase, Family or relationships two people, Money a wallet, Health worries a heart with a pulse, Something else a circle with three dots (stroke 1.75, currentColor). Built by `OI(v, t)` from a `QIC` map next to `O`, so other questions can take icons the same way.
+
+---
+
+## v3051 Goals template: no page Header title, the card in the body
+
+"For this template, just remove the page header title. Just put the card in the body." `buildRecGoal` no longer draws EvHdTitle. The goal's Title group (EvTitle H1, "Goal n" eyebrow in its top slot, the why as its support line) sits in the filled secondary card with the icon top right and the Your plan / Go further tabs, and that card is the Body's first child, above the panes. The stack has only the Body; the enter animation fades the tabs then the panes. The old header CSS (`-24px` margin, `.arGlHt`) is gone.
+
+---
+
+## v3050 Goal n always an eyebrow
+
+- The goal's top slot is always the eyebrow "Goal n" ("This should be an eyebrow on top of the title"). A saved Pill or Numbers style no longer draws the steps, and the Style row is gone from Tweaks (its select kept hidden for saved setups). Goal steps' switch still turns the eyebrow on or off.
+
+---
 ## v3049 Goals: a card for the goal, the Timeline's own rail; What to expect hugs
 
 - The goal is presented in a card (Card static, Secondary - Transparent, lg) in the Header title's section ("the top part needs to be a header with a card ... an icon on the top right ... this tab inside, and then below all of the body"). It holds the goal steps, the title group (H1 and its why), the goal's icon at the top right (48, ink 8%: the app's stroke icons, heart-pulse, zap, sun), and the Your plan / Go further tabs. The body under it holds the panes.
