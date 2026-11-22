@@ -5,6 +5,10 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3097 What's changed: the group's Add two sizes down, 8 under it
+
+- "CTA 2 size down; add margin bottom 8px": the group's foot Add (Edit list, Add position Bottom, both empty modes) on the Button master's sm (36) instead of lg (52); in the grey card (`.qciEdAddW.qciEdAddC`) 8 under it (the Simple card's already had 8). Checked: 36 tall, 8 below.
+
 ## v3096 Feedback with or without insights; Canvas screens the cards' size, its ground; the builder's title
 
 - **Feedback** ("not related on the Insights above ... can be displayed whatever if insights exist or not"): its Tweak row always shown (no longer an empty-state row). With insights, one `.ovInsFbW` (EvInsFb) placed by `__insFbPlace()`: at the foot of the Insights card when it shows (Position Hero, `.ovInsSl` in it), else under the section's cards (after `#dOver > .ovcdots`: the carousel, the mini cards, the one insight). Placed again on everlab:insAmt / insFmt / insPaint and the Insights and breakpoint selects; none in the empty state (insList draws it there). The Latest version's `#dOver > :not(...)` filter lets it through.
