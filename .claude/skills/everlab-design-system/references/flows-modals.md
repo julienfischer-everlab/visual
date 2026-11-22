@@ -80,7 +80,21 @@ const arLk = window.EvSteps.look();
 
 **Send a gift's tweaks follow its step** ("Tweak should be related to the active step"): the `sgf` context's `tweaks()` reads `HealthProfile.gift.steps[_hp.giftAt()]`: intro → `sgfIn` (Intro, Intro full video / blank, Header, Video overlay), plan → `sgfPl` (Plans), note and pay → `sgfEv` (Envelope, Note control), the receipt → `gr`, other steps none (the Tweaks button hides).
 
-**How to use.** A new modal or page over the app: one `EvCtx.add` entry (its `on()` from its open class), its Tweaks group's `data-pages` carrying its key, its flow panel's key in `flow`. A sheet that is a step of a flow (the profile's pickers and consent, a service's steps and Booked in, the Timeline's row sheet, the Plan's Sub pages and its Activity session) is not registered: it keeps its flow's or page's (the Activity session keeps the Plan's tweaks). Re-reads on class changes of the html, the body and the overlays (one frame later) and every 500 ms; no call needed on open or close.
+**How to use.** A new modal or page over the app: one `EvCtx.add` entry (its `on()` from its open class), its Tweaks group's `data-pages` carrying its key, its flow panel's key in `flow`. A sheet that is a step of a flow (the profile's pickers and consent, a service's steps and Booked in, the Timeline's row sheet, the Plan's Sub pages and its Activity session) was not registered: it keeps its flow's or page's (the Activity session keeps the Plan's tweaks). New sheets and modals register their own context and Tweaks group (the user's rule: the tweaks are always those of what is on the screen); EvSheet, below. Re-reads on class changes of the html, the body and the overlays (one frame later) and every 500 ms; no call needed on open or close.
+
+---
+
+## Sheet page type in the app (`window.EvSheet`)
+
+**What.** The Design system's Page types -> Sheet as a real app sheet, not a hand-made one ("We should follow the sheet page type. That's it, exactly ... We shouldn't reinvent the wheel"). Built from the type's saved setup (`EvScrDemo.master('sheet')`: Type Bottom / Drawer, Max width, Height Full / High / Hug, Header nav (Back, Dismiss, the title in the middle slot or as the identifier), Title on scroll, Footer and its alignment) and the masters' parts: EvPageHg's nav and Page header title, EvPageFt's footer (the Button master lg), the Modal token (`components/modal/bg`), EvDismiss's notch and EvSheetSwipe on the phone.
+
+**Where.** `grep -n "window.EvSheet = "` (right after EvScrDemo); CSS `grep -n "\.evSh{position:absolute"`.
+
+**API.** `EvSheet.open({ host, title, body, primary, secondary (false: none), onPrimary, onBack, onClose(why), st ('bottom' | 'drawer': this sheet's Type, over the master's), cls, label })` -> `{ el, panel, body, foot, primaryBtn, close(why), phone }`; `EvSheet.master()`. Host: a positioned element it covers (a modal's `.arStage`). XS · S (host < 720 wide): a bottom sheet from the foot, 32 top corners, 75% high (Full: 100% − 56, Hug: its content); M · L: a modal centred (28 corners, its Max width the container token) or, Type Drawer, a drawer 12 in at the right (20 corners). Scrim black 50%, in .42s `cubic-bezier(.32, .72, 0, 1)`. Close: its Dismiss, the scrim, Escape, Cancel, a swipe (phone).
+
+**Rules.** Every sheet or modal opened over a screen registers its own `EvCtx` context (type `'modal'`: Page type Sheet) with its own Tweaks group, so Tweaks speaks to what is on the screen ("When I open a bottom sheet or a modal, I should be able to see the tweak of the bottom sheet, not the screen behind. That is what I want to do all the time"). Its Tweaks may override the Type for itself; it starts on the master's.
+
+**Sites.** The check-in's What's changed form (Add / Edit a condition, medication or supplement: `fmOpen`, context `qciFm`, Tweaks group Add / Edit form: Type, Description).
 
 ---
 

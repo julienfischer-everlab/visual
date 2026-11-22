@@ -5,6 +5,16 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3070 The What's changed form on the Sheet page type (EvSheet); its own tweaks; header icons, Ghost Add, no last divider
+
+"What is this? This doesn't exist. We should follow the sheet page type. That's it, exactly. This is a design system component behaviour pattern." / "Type should be sheet or drawer" / "Even the background ... Make sure this is a sheet." New app master `window.EvSheet`: the Design system's Page types -> Sheet as a real sheet, from its saved setup (`EvScrDemo.master('sheet')`) and the masters' parts (EvPageHg nav with Dismiss and the title in the middle slot on scroll, the Page header title, EvPageFt footer, the Modal token ground, EvDismiss notch, EvSheetSwipe); XS · S a bottom sheet (32 top corners, Height High 75%), M · L a modal centred (28, Max width a container token) or a drawer at the right (12 in, 20). The form (Add / Edit) is now an EvSheet: Add a medication / Edit supplement as its Page header title, the fields in its body, Add or Save and Cancel in its footer; the old hand-made shell and its CSS are gone.
+
+"When I open a bottom sheet or a modal, I should be able to see the tweak of the bottom sheet, not the screen behind. That is what I want to do all the time." The form registers its own EvCtx context (`qciFm`, Page type Sheet): while it is up, Tweaks shows General layout (as a Sheet) and its own group, Add / Edit form: Type (Bottom / Drawer, starting on the master's) and Description (On / Off), each redrawing the open form with what was typed kept. Documented as a rule with EvSheet in references/flows-modals.md.
+
+"Size up the button." Edit and Remove 36 (sm). "Put an icon on the header on the left side." The block headers wear a line icon: a stethoscope, a pill, a leaf. "This should be a ghost button. Also, there is no divider on the last item of a list." Add a … is the Button master Ghost md with a + (centred in the card); no divider after the last value (both edit variations). Tested at XS (sheet) and L (modal, drawer): add with a description, edit, remove, Escape, Type Drawer redraw keeping the typed value.
+
+---
+
 ## v3069 Empty groups say what is missing
 
 "No conditions on file." An empty group in What's changed (both edit variations) now reads No conditions on file / No medications on file / No supplements on file, not Nothing on file.
