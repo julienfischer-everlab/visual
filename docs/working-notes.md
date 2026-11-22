@@ -5,6 +5,12 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3066 Edit list: group cards S, value cards L, tap a value to write it, 4 apart, smaller actions
+
+"Keep it outline and card S. The card inside should be L, so there's more padding. Clicking the card inside the item will also trigger the typing state." / "Make sure there's a 4px gap between items. Also, make the action on the right side a smaller size." / "Add 4px padding to the image button below the H2." The What's changed Edit list's group cards stay Secondary - Outlined (2 border) at S (12 inside); each value's card is Secondary - Transparent L (20 inside), a tap anywhere on it (not on its buttons) opens its field, like Edit; the values 4 apart (the group body made a flex column: it was a block, so no gap showed); Edit and Remove at the smallest CTA size, 28 (16 icons); Nothing on file and Add a … line up with the values' words (20 in); the Add's + disc 36 (4 more round its icon). Measured: gap 4, actions 28, + 36, words and Add both 32 from the group's edge.
+
+---
+
 ## v3065 24 under the range's label above
 
 "We need 24px padding bottom below the good label." EvRate's word label above the range now sits 24 over the track (the column's 12 gap and 12 more; was 8). Measured: 24. Doc row updated.
