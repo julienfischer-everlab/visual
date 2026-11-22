@@ -5,6 +5,14 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3068 What's changed: the block system for cards; Add and Edit in a form sheet / modal
+
+"Just use this system here for the block ... the list inside the secondary card and the header on the top in a card as well." Edit · cards now follows the Timeline's next check-in block: each group an outlined card (Primary - Outlined) with its name as a header line at its top (16 Medium, ink 56%), and a Secondary card (Secondary - Surface) under it to its edges, the same corners; in it the values as ghost List item interactive rows with the Divider master between, the + Add centred at the foot.
+
+"On click, it should be a bottom sheet and then a modal on desktop, with the subject plus an additional description if needed. The description is optional. Then, when you click Add, it just adds to the list with a fade-in" / "the edit should be in a modal and form sheet." On both edit variations, Add a …, Edit, a tap on a value or Enter on it open a form: in the phone and the tablet a bottom sheet (notch, swipe down: EvSheetSwipe), at M and L a modal centred (480). Its parts: the Sheet header master (Add a medication / Edit supplement, Close), the Inputs master's text field (Condition / Medication / Supplement, a hint) and text area (Description (optional)), the Button master Primary lg (Add / Save, off until a name). Enter in the name saves, Escape or the scrim closes. Saved, the sheet closes and the row fades in (.45s, 6 up); Remove collapses the row (.26s) before the list closes over it. A value with a description keeps it ({ t, d }) and shows it under its name. Tested at XS (sheet) and L (modal): add with a description, edit, remove, Escape.
+
+---
+
 ## v3067 Edit list: cards one size down, the Add centred and bare; a new Edit · rows variation
 
 Cards ("no bg", "Smaller plus icon ... put it in the middle, centred", "the item inside the card, make the one size down"): each value's card is Secondary - Transparent M (16 inside, was L); the Add a … button is centred in its group card, its + bare (no disc) and 16.
