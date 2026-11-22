@@ -5,6 +5,10 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3079 The grey card 8 round its rows
+
+- **Grey card 8** ("Reduce the gap on the grey card by 4 pixels"): the Edit · cards Secondary card is 8 round its rows and its Add (was 12). The rows' and the Ghost Add's corners stay concentric at its radius less 8 (20 → 12). The Simple empty group's foot Add is 8 in too. Measured at XS: row L8 T8 R8, radius 12; Add L8 R8 B8, radius 12, 345 wide.
+
 ## v3078 The edit sheet's Primary says what it does; group names regular
 
 - **Edit medication / Add medication** ("If you edit something, the CTA should be 'edit medication' ... a new medication ... 'add medication,' 'add supplement'"): the form's Primary is Edit condition / medication / supplement when editing, Add condition / medication / supplement when adding (was Save / Add).
