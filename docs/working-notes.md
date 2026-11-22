@@ -5,6 +5,26 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3083 A sheet's own General layout in Tweaks, saved per experience
+
+- **The sheet's properties in Tweaks** ("Why can I not control the size of the modal? ... All of the properties should be replicated in this view ... If I save here, it's going to save for this experience"; "For the sheet, I should be able to also turn off the header title and header navigation"): with the check-in's Add / Edit sheet up, Tweaks → General layout shows the Page type (Sheet), then the Design system's Sheet properties for this sheet:
+  - Sheet: Type, Max width, Height
+  - Header nav: On/Off, Title, Middle slot, Title on scroll, Dismiss
+  - Header title: On/Off
+  - Footer: Show, Actions
+- **How it works:**
+  - The page's Header group, Body and Footer parts and its page-only rows (Container same size, WIP) are hidden while the sheet is up.
+  - Every change redraws the sheet live and keeps what was typed.
+  - A pick off the Design system's value shows "DS …" beside it; "Reset to the Design system" puts them back.
+  - The values save with the panel's Save, for this experience only.
+- **Master:**
+  - `EvSheet.tweaks()` fills every `.tkShSet[data-sh-ctx]` placeholder from `EvScrDemo.C` at parse.
+  - `EvSheet.open({ ctx })` reads those picks over the master; `EvSheet.picks(ctx)` returns them.
+  - `evsheet:tweak` fires on change.
+  - The form's own Type row (`stQciFmLay`) is gone: it is the set's Type now. The form no longer forces stacked actions; the master's rule still stacks a Remove under 1 CTA only.
+  - Documented in the skill's flows-modals reference.
+- Checked at L, all live with the typed text kept: Max width xs widens the panel 576 → 752; Header nav Off and Header title Off remove the nav and the title; Type Drawer docks it at the right. Off rows show DS values, and Reset brings back 576 with the nav and title. The controls are in the panel's Save list; the page's parts are hidden while the sheet is up. No page errors.
+
 ## v3082 The group's Add: no plus, lg
 
 - **Add** ("Remove the plus. Upsize the CTA"): the Ghost full-width Add at a group's foot (grey card and the Simple empty group) is now the Button master at lg, without the + icon (was md with +). It stays 8 in from the grey card, its corners concentric (12). The top-right Secondary Add is unchanged.
