@@ -5,6 +5,18 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3059 Range: label above 18, 8 over the track; ends tertiary, 8 under
+
+"I want the label 18px on the top and put a margin bottom 8px between the label and the range. Below, the two indicators ... should be a foreground tertiary colour, with 8px." The word label above the range is 18/24 Medium, 8 over the track (the column's 12 gap less 4). The questionnaire's end words (Not well at all / Really well) are `fg/neutral/tertiary/100`, 8 under the values. Measured: 8 and 8. Doc rows updated.
+
+---
+
+## v3058 The range's values fade
+
+"I want a fade-in/fade-out on the opacity of the number below the range." EvRate's values under the track ease their opacity (32% to 100% and back) over .24s as the value moves; the fill, the circle and the badge still jump. Off under reduced motion.
+
+---
+
 ## v3057 Range fill flush with the track
 
 "Don't do any padding on the colour, the base, and the background. Just remove the padding entirely." EvRate's fill now sits flush with the track (no 2px inset): `left/top/bottom: 0`, width `calc(44px + (100% - 44px) * --rtK)`, the gradient spread over the whole track. The value's dark circle is the track's height (44, was 40) at the fill's end. Doc rows (intro, Fill, The value) updated.
