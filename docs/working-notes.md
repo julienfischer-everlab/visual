@@ -5,6 +5,14 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3071 List item interactive: no padding over and under (the slot sets it); the What's changed grey card 12 round, S rows, full-width concentric rows and Ghost Add
+
+"The list interactive shouldn't have any padding top and bottom. The padding top and bottom should be controlled manually based on the slot that we have inside. That's a general use case that is important to the design system as well." EvListI's size classes now set `--liPy: 0` (the fallback too); each size's Figma value stays on :root (`--liXsPy` … `--liAutoPy`) for a row that wants it. The rows that leaned on it set their own, their look kept: the Insights' biomarker rows (`.mbrow`, 16), the Timeline's (`.tlRow.evLiW`, auto 16 / md), the Ask sheet's Inbox (per its size Tweak), the doc's demo slot; the doc's Anatomy gains a Padding over and under row.
+
+"Smaller size of list interactive and also increase the padding on the grey card ... by 4px. And the CTA should be full width, and the rounded edge should match with the grey card's rounded edge. The same for the list item." Edit · cards: the grey card 12 round its content; the values List item interactive S, full width, their corners the card's less 12 (concentric); their slot 12 over and under the words (8 round a field); dividers inset 12; the Ghost Add full width, its corners concentric too (over the Button master's full round, here only). Measured: 12 / 12 / 12 insets, 20 card, 8 rows and button, 44 rows.
+
+---
+
 ## v3070 The What's changed form on the Sheet page type (EvSheet); its own tweaks; header icons, Ghost Add, no last divider
 
 "What is this? This doesn't exist. We should follow the sheet page type. That's it, exactly. This is a design system component behaviour pattern." / "Type should be sheet or drawer" / "Even the background ... Make sure this is a sheet." New app master `window.EvSheet`: the Design system's Page types -> Sheet as a real sheet, from its saved setup (`EvScrDemo.master('sheet')`) and the masters' parts (EvPageHg nav with Dismiss and the title in the middle slot on scroll, the Page header title, EvPageFt footer, the Modal token ground, EvDismiss notch, EvSheetSwipe); XS · S a bottom sheet (32 top corners, Height High 75%), M · L a modal centred (28, Max width a container token) or a drawer at the right (12 in, 20). The form (Add / Edit) is now an EvSheet: Add a medication / Edit supplement as its Page header title, the fields in its body, Add or Save and Cancel in its footer; the old hand-made shell and its CSS are gone.
