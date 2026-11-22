@@ -5,6 +5,13 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3075 What's changed: Added / Updated badges on each row (no warning card); an Add position Tweak
+
+- **No warning card** ("abandon this header change of state colour"): v3072's group-level change state is gone (no Updated badge in the header, the card stays Primary - Outlined, no orange icon).
+- **A badge on the item** ("just add a badge on the right side of the item if it's added or updated ... updated orange and added green"): the Badge master, Status, tint, xs, at the row's right before the pencil or chevron. Positive **Added** for a value added in the check-in, Warning **Updated** for an on-file value whose name or description changed. The state lives on the value (`{ t, d, s: 'add' | 'upd' }`). An added value stays Added when edited again, and saving without changes keeps whatever state it had. Removed values just go.
+- **Add** ("a tweak when the Add Medication is on the top right as a small CTA ..., secondary"): Tweaks → Check-in → Add, Bottom / Top right. Top right puts the Button master (Secondary, sm, + left, "Add a medication") at the right of each group's header and drops the foot Add. On Edit · cards it sits in the outlined card's header (12 / 10 over and under, 20 from the right); on Edit · rows it sits beside the H3.
+- Checked at XS: saving unchanged shows no badge; editing a supplement's description shows Updated (orange 255,183,132); adding a medication shows Added (green 167,240,186), still Added after renaming it. Top right gives one Add per group in both variations (166–183 × 36), and it opens Add a medication. No page errors.
+
 ## v3074 The edit sheet's delete reads Remove this medication
 
 - **Remove this medication** ("the option to delete we need in the bottom sheet: Remove this medication"): the Edit sheet's secondary now says Remove this condition / medication / supplement (v3073's Delete condition replaced). Still the Secondary button; it closes the sheet and collapses the row.
