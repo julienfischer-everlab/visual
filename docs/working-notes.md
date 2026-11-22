@@ -5,6 +5,12 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3056 Range labels, quieter stops in the fill, no transition
+
+"Put the label below the 0, 1, 2, 3, font 12, opacity 32, and then the active state should be white, bold, and the increment inside should be less opacity by 50%. I want the label ... bigger, probably 16px, medium." and "I don't want any transition when I swipe the range ... super brutal." EvRate's values under the track are 12/16 Mono in `fg/neutral/primary/100` at 32%; the value's at 100% and Bold. The stops inside the fill drop to black 25% (half the track's 50%). The questionnaire's end words under the range (Not well at all / Really well) move from Label - Body/200/Regular to Label - Body/300/Medium (16). The word label above the range was already Body/300 Medium (16). The fill and the badge no longer transition: they jump to the value. Doc rows (Fill, Stops, Labels) updated.
+
+---
+
 ## v3055 Range: no dashes, no border; an inset fill and a dark value circle
 
 "I don't need to see the increment. Maybe the circle should be just a dark-opacity circle inside of the rectangle with the rounded corner, with a padding of 2px. Each increment is a circle opacity 50%, and inside a full rectangle of the background colour from orange to green ... we don't need any border, outline." EvRate's track is now a plain pill on `bg/neutral/tertiary/300` with no line. A new fill (`.evRtF`) is a full rounded rectangle 2 inside the track, orange to green across the whole track, its width `calc(40px + (100% - 44px) * --rtK)` (a new unitless value var set by `html` and `set`), sliding .22s. The lines between stops are gone (spacers only); each stop is a 6 circle, black at 50%. The value is a dark see-through 40 circle (black 22%) at the fill's end, drawn as the current stop's `::after`, no white disc. The check-in's none state hides the fill and the circle. The Rating range doc page's intro and Anatomy (Track, Fill, Stops, The value) are rewritten.
