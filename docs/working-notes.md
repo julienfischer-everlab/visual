@@ -5,6 +5,14 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3063 What's changed: a template and an Edit list variation; range spacing
+
+"For this kind of template, we can call this template ... changed? I want a different variation of this content, more focused on listing everything we know from the user, and the user will be able to add more things for each sector, like condition, medication, supplement. I want the value for each to be deletable or editable, or you can even add more value." The check-in's What's changed and its follow-ups (the questions showing what is on file) are one template, **What's changed** (`__flowTpl.qci`, the Page type's Template label). Tweaks -> Check-in -> What's changed: Options (Recent changes to pick, as before) or **Edit list**. Edit list: the question's line becomes "Here's what we have on file. Edit, remove or add anything that's changed."; under What we have for you, each sector (Conditions, Medications, Supplements) a Title group H3 over an outlined LG card: each value a row with Edit and Remove (36 ghost discs), an Add a … row at the foot, Nothing on file when empty. Edit or Add opens a field and a Save disc; Enter or Save keeps it, Escape drops it, leaving the field keeps it, an emptied value goes. The edits live with the answers (`a.fileEd`, from the persona's `onFile`); Continue stays on. Tested: add, edit, remove, Escape.
+
+"Add 24px above the range ... on the row (the ends) just add an 8px margin top." The questionnaire's range block (`.evQScRg`) has 24 above it; its end words sit 16 under the values (was 8).
+
+---
+
 ## v3062 Insights "being generated" card: LG, even edges
 
 "The padding on the bottom should fit with the left and right ... we need more internal padding, so this card should probably be an LG card." The footer card in the Overview's Insights card (`hpInsPend`) is now an EvCard LG (`space/md`, 20 inside: its own body padding, no more 12/16 override or zeroed body). When it is the card's last child (no Generate button under it), it keeps 12 under it on top of the card's 8 foot, so it sits 20 from the left, right and bottom alike. Measured at L and XS: 20 / 20 / 20.
