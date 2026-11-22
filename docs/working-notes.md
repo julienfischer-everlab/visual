@@ -5,6 +5,12 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3064 Edit list: no title, Secondary group cards with a bold border, each value a Secondary card
+
+"In this version, remove the title 'What we have for you' and put the card for each group in a secondary colour with a bold border. And I want each item inside to be a secondary card as well." The What's changed Edit list drops its H2; each group (Conditions, Medications, Supplements) is an EvCard Secondary - Outlined, LG, its hairline widened to 2 (`components/divider/100`); each value (and the field while it is written) is an EvCard Secondary - Transparent, sm, 8 apart, no dividers; Nothing on file and Add a … stay plain under them. Add, edit, remove and Escape re-tested.
+
+---
+
 ## v3063 What's changed: a template and an Edit list variation; range spacing
 
 "For this kind of template, we can call this template ... changed? I want a different variation of this content, more focused on listing everything we know from the user, and the user will be able to add more things for each sector, like condition, medication, supplement. I want the value for each to be deletable or editable, or you can even add more value." The check-in's What's changed and its follow-ups (the questions showing what is on file) are one template, **What's changed** (`__flowTpl.qci`, the Page type's Template label). Tweaks -> Check-in -> What's changed: Options (Recent changes to pick, as before) or **Edit list**. Edit list: the question's line becomes "Here's what we have on file. Edit, remove or add anything that's changed."; under What we have for you, each sector (Conditions, Medications, Supplements) a Title group H3 over an outlined LG card: each value a row with Edit and Remove (36 ghost discs), an Add a … row at the foot, Nothing on file when empty. Edit or Add opens a field and a Save disc; Enter or Save keeps it, Escape drops it, leaving the field keeps it, an emptied value goes. The edits live with the answers (`a.fileEd`, from the persona's `onFile`); Continue stays on. Tested: add, edit, remove, Escape.
