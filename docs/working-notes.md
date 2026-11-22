@@ -5,6 +5,14 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3060 Goal card: an Image visual (Tweak); no pictures on the plan cards
+
+"Instead of the icon on the top right, just do a variation and a tweak: a background image that fades out from top right to bottom left. Make sure the left 70% is clear ... If I activate this here, it's going to activate also on the other goals." A new Tweaks group on the goal screens, Goal card · Visual: Icon (the 3D icon, default) or Image (`stArGlVis`, `o.glvis`, in KEYS and the remount list), the Goals template's, so every goal follows. Image puts the goal's photo behind the card top right (`.arGlBg`, its picture 40% wide, cover, centred 18% down) under two crossed masks: gone by 30% from the right and towards the foot, so the left 70% stays clear; the icon hides and the title keeps 24% clear on its right. Photos cut from the goals set into `assets/async/` (each path once in `GLIMG`): heart, two women walking in the sun; energy, a man stretching on waking; skin, a woman checking her skin in the mirror; listed in the Assets library (Async report).
+
+"Just remove the image here." The plan cards on the goal's timeline (Introductory pathology, Iron studies, Home sleep study, …) lose their picture on every goal: the words and the badge alone, one column; the detail sheet a tap opens still shows it.
+
+---
+
 ## v3059 Range: label above 18, 8 over the track; ends tertiary, 8 under
 
 "I want the label 18px on the top and put a margin bottom 8px between the label and the range. Below, the two indicators ... should be a foreground tertiary colour, with 8px." The word label above the range is 18/24 Medium, 8 over the track (the column's 12 gap less 4). The questionnaire's end words (Not well at all / Really well) are `fg/neutral/tertiary/100`, 8 under the values. Measured: 8 and 8. Doc rows updated.
