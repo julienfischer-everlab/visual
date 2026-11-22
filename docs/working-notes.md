@@ -5,6 +5,12 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3085 Range fill one colour by position; edit sheet Save / Remove; sheet title H1
+
+- **Range colour** ("the colour adapts based on the position of the range. I don't want to see orange and green at the same time"): EvRate's fill is now one colour, the value's own `--rtNow` (warning at 0 mixed in oklch to success at 10). Its light gradient runs from that colour at 62% (see-through) at the start to full at the value. It was orange-to-green across the track. The Rating range doc's lead says so. Measured: 2 amber, 7 yellow-green, 10 green, no second hue.
+- **Save / Remove** ("The CTAs should be 'Save' and 'Remove.' That's it"): the edit sheet's buttons are Save (Primary) and Remove (Secondary, stacked). The add sheet keeps Add medication / Cancel.
+- **H1** ("The title 'Edit Medication' should be an H1, title group H1"): EvSheet's Header title is the Title group's H1 (was H2), for every sheet, like the Design system's "Notes from Dr Lu". `o.level` can change it. The size is the master's H1: 24 at XS, 30 at L.
+
 ## v3084 The sheet's Tweaks are the Design system's Page types → Sheet panel, every property drawn
 
 - **Same structure and controls** ("I want this structure on the 'What's changed' ... for the modal and bottom sheet ... I want to make sure I can control the property on the right side as well here"): the sheet's set in Tweaks → General layout now has the Design system panel's cards and controls:
