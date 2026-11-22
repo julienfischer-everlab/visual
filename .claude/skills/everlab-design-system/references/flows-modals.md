@@ -314,7 +314,23 @@ A new gift tweak: a row in the step's `.tkGroup[data-pages="sgf sgfXx"]`, a list
 
 ### A sheet's own General layout in Tweaks (`EvSheet.tweaks`)
 
-Every sheet experience gets the Design system's Sheet properties in Tweaks → General layout while it holds Tweaks (its EvCtx key in `html[data-tk]`): Sheet (Type, Max width, Height), Header nav (On/Off, Title, Middle slot, Title on scroll, Dismiss), Header title (On/Off) and Footer (Show, Actions). The page's own Header group, Body and Footer parts are hidden meanwhile.
+Every sheet experience gets the Design system's Page types → Sheet panel in Tweaks → General layout while it holds Tweaks (its EvCtx key in `html[data-tk]`). It has the same cards and controls (switches, container rulers, Style segments):
+
+- **Sheet:** Container same size, Type, Max width, Height.
+- **Header group:** Level, plus two cards:
+  - Header nav: On/Off, Container, Fixed, Style, Blur bg, Middle slot, Title on scroll, Title, Dismiss.
+  - Header title: On/Off, Container, Fixed, Style, Blur bg.
+- **Body:** Container.
+- **Footer group:** Footer, Fixed, Container, Actions, Style, Blur bg.
+
+Its rules for what shows match the Design system's: a part Off hides its props; Height shows only on Bottom; the footer's Style and Blur show only while it is fixed; Container same size hides the parts' containers; a Sub level keeps the nav on.
+
+EvSheet draws them all:
+- The Header nav and Footer are fixed over the scroll (the content runs under their ground) or scroll with it.
+- Gradient follows the Header group rule (30% in, 32 bleed); Blur bg is 64 for the header and 32 for the footer.
+- The Header title is sticky when Fixed.
+- Each part's container is its max width.
+- Sub adds a Back that closes the sheet when the caller has no `onBack`. The page's own Header group, Body and Footer parts are hidden meanwhile.
 
 - **Declare it** in the Tweaks markup: `<div class="tkShSet" data-sh-ctx="<ctxKey>" data-sh-label="<name>"></div>` inside `#tkShGl`. EvSheet fills it at parse from `EvScrDemo.C`.
 - **Open the sheet** with `EvSheet.open({ ctx: '<ctxKey>', ... })`.

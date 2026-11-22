@@ -5,6 +5,32 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3084 The sheet's Tweaks are the Design system's Page types → Sheet panel, every property drawn
+
+- **Same structure and controls** ("I want this structure on the 'What's changed' ... for the modal and bottom sheet ... I want to make sure I can control the property on the right side as well here"): the sheet's set in Tweaks → General layout now has the Design system panel's cards and controls:
+  - **Sheet:** Container same size, Type, Max width, Height.
+  - **Header group:** Level, with a **Header nav** card (Header nav, Container ruler, Fixed, Style, Blur bg, Middle slot, Title on scroll, Title, Dismiss) and a **Header title** card (Header title, Container ruler, Fixed, Style, Blur bg).
+  - **Body:** Container ruler.
+  - **Footer group:** Footer, Fixed, Container ruler, Actions, Style, Blur bg.
+  - On/Off properties are switches, containers are rulers, and Style uses the icon segments.
+  - The panel's show / hide rules apply: a part Off hides its props, Height shows on Bottom only, footer Style/Blur only while it is fixed, Container same size hides the part containers, and Sub keeps the nav on (its switch locked).
+- **EvSheet draws every one** (it only had Type, size, height, nav and title on/off, dismiss and actions):
+  - The Header nav is fixed over the scroll (the scroll gets its height as room) or scrolls with it. Its ground is Gradient (30% in, 32 bleed), Filled or Transparent, with Blur bg 64.
+  - The Header title is sticky with its own ground when Fixed.
+  - The Footer is fixed over the scroll (Gradient bleeding 32 above, Blur 32) or sits at the end of the content.
+  - Containers cap each part, and Container same size gives every part the Body's.
+  - Level Sub adds a Back (it closes the sheet when there is no back step).
+  - The defaults are the Design system's sheet: nav and title fixed, Gradient, Blur on; footer fixed, Gradient.
+  - Title on scroll only acts while the title is not Fixed, so the title is never shown twice.
+- Checked at XS:
+  - The set shows its four cards with switches and rulers, and the page's own parts stay hidden.
+  - Defaults: nav fixed with gradient and blur, title sticky, footer fixed with gradient; the scroll's room is 84 / 152.
+  - Changes: nav Filled and footer Transparent apply live. With nav and footer not fixed, both scroll and the room goes to 0, and the footer's Style and Blur rows hide.
+  - Level Sub adds a Back. With Header title Off, the title and its rows go.
+  - Reset brings back the defaults.
+  - Scrolled with long content, the content fades under the nav and footer gradients.
+  - No page errors.
+
 ## v3083 A sheet's own General layout in Tweaks, saved per experience
 
 - **The sheet's properties in Tweaks** ("Why can I not control the size of the modal? ... All of the properties should be replicated in this view ... If I save here, it's going to save for this experience"; "For the sheet, I should be able to also turn off the header title and header navigation"): with the check-in's Add / Edit sheet up, Tweaks → General layout shows the Page type (Sheet), then the Design system's Sheet properties for this sheet:
