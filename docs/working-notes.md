@@ -5,6 +5,17 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3092 The Check-in flow's Overview has its own Overview Tweaks; General layout says it belongs to the flow
+
+- **Override** ("On the checkin flow I want to be able to override the Overview screen without impacting the Overview page ... select the tweak necessary for this specific checkin context"): every control of the Overview's Tweak groups (`data-pages` ov: Overview, Bento, Notification module, Primary card, Services, Insights, Scheduled, Braze marketing card, Action plan, Later card, Past result card) is kept per context, the Overview page's and the Check-in flow's.
+  - Entering the Check-in flow puts the check-in's set on; the first time it starts as a copy of the page's.
+  - Leaving the flow puts the page's set back.
+  - Changes made in the flow stay in the flow.
+  - Both sets live in `#stOvCtxSet` (JSON), so the panel's Save keeps both. Same mechanism as Timeline V1 / V2.
+- **General layout** ("show in the General layout the fact that this overview is override by a specific tweaks ... Belong to Flow 'Check-in'"): on the flow's Overview screens (Page type Page inside Check-in), the Page type card shows **Flow · Check-in** (a blue pill) with a line: "This Overview's Tweaks belong to the Check-in flow: change them here, the Overview page keeps its own." `html.ovCtxQci` marks the context.
+- Checked: on the Overview page Top Chat AI = cc. In the flow it starts at cc, is changed to kb, the page is back to cc, and the flow is kb again. The Flow row shows only in the flow. No page errors.
+- Known: right after switching context, the panel's unsaved marks compare with the last Save (taken in one context), so Overview rows may show as changed until saved.
+
 ## v3091 Goal: Tabs Merged, card XL, the photo past its fade
 
 - **Tabs** ("Tab tweak. Merge Title and Tab: To prioritise now, Explore further"): Tweaks → Goal card → Tabs, Separate / Merged. Merged makes the tabs the titles, **To prioritise now / Explore further**, with no What we'll do H2 under them. Separate keeps Your plan / Go further · n and the H2. It is in the saved Tweak lists.
