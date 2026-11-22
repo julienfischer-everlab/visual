@@ -5,6 +5,10 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3087 The range at the body's top
+
+- **No space above** ("Body no padding top. Remove margin top on label 'okay'"): the range question's wrapper (`.evQScRg`) loses its 24 margin-top, so the word over the range (Okay) starts where the Body starts (375 = the body's top at XS; it was 399). The body had no padding of its own; the 24 was this margin.
+
 ## v3086 Input field: no line at rest in Dark; the sheet's top on the Design system's numbers
 
 - **No border in Dark** ("remove the border on the text input field ... design system level ... only dark mode"): the Input field master (`EvField`) draws no line round the field at rest in Dark (`--fdLnR: transparent` under `body:not(.light)` and `.evDark`), only its ground. Light keeps `br/neutral/tertiary/100`, and focus (white) and error keep theirs everywhere. The Inputs page's Anatomy says so.
