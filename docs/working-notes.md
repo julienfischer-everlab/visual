@@ -5,6 +5,14 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3086 Input field: no line at rest in Dark; the sheet's top on the Design system's numbers
+
+- **No border in Dark** ("remove the border on the text input field ... design system level ... only dark mode"): the Input field master (`EvField`) draws no line round the field at rest in Dark (`--fdLnR: transparent` under `body:not(.light)` and `.evDark`), only its ground. Light keeps `br/neutral/tertiary/100`, and focus (white) and error keep theirs everywhere. The Inputs page's Anatomy says so.
+- **The sheet's top** ("the CTA is too big ... align more with the page type sheet"): measured against the Design system's Page types → Sheet demo.
+  - The Close is 36 at every breakpoint. It was 44 at XS and 28 at L, both inherited from the check-in full modal's `--evTnDo`; `.evSh` now sets its own 36.
+  - The nav sits 20 under the sheet's top at XS · S (was 12) and 0 at M · L (was 8).
+  - Close now: 36 @38 / 16 at XS and 36 @18 / 24 at L, the same as the Design system's.
+
 ## v3085 Range fill one colour by position; edit sheet Save / Remove; sheet title H1
 
 - **Range colour** ("the colour adapts based on the position of the range. I don't want to see orange and green at the same time"): EvRate's fill is now one colour, the value's own `--rtNow` (warning at 0 mixed in oklch to success at 10). Its light gradient runs from that colour at 62% (see-through) at the start to full at the value. It was orange-to-green across the track. The Rating range doc's lead says so. Measured: 2 amber, 7 yellow-green, 10 green, no second hue.
