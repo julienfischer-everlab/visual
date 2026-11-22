@@ -5,6 +5,10 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3088 The group's Add: a hugging Secondary pill
+
+- **Add** ("Hug full rounded secondary button"): the foot Add of each group (grey card and the Simple empty group) is now the Button master's Secondary, lg, no icon. It hugs its words, wears the master's own full round and is centred (was Ghost full width with corners concentric to the card). Measured at XS: Add a condition is 185 wide, radius 9999, 8 above the grey card's foot.
+
 ## v3087 The range at the body's top
 
 - **No space above** ("Body no padding top. Remove margin top on label 'okay'"): the range question's wrapper (`.evQScRg`) loses its 24 margin-top, so the word over the range (Okay) starts where the Body starts (375 = the body's top at XS; it was 399). The body had no padding of its own; the 24 was this margin.
