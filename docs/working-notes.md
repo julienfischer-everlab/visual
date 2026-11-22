@@ -5,6 +5,11 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3095 The Insights Feedback in Design system → Modules → Insights
+
+- "Add these Feedback into the DS module insights": the card under the tasks is a master now, `window.EvInsFb` (`S` its two states, `html(state)` 'proc' / 'new' / 'off', `now()` the Tweaks' state). `_hpCard.insList(st)` draws `EvInsFb.html(st.fb || EvInsFb.now())`: an item's own state when it says so, else Tweaks → Insights → Feedback (the Tweak renamed from Status card; `#stInsGen` unchanged).
+- Modules → Insights: the demo's right panel has a Feedback control (Insights processing, New insights just landed, Off); the Collection a third row, Feedback, its two states each its own object on the Insights card's ground (`.moInsFb`, the card's top margin off); the description and the anatomy table say what it is.
+
 ## v3094 Insights: the Status card's two states; the tasks' pictures by object; the blood panel first
 
 - **Status card** ("a select with the same card but 2 states possible: Insights processing, New insights just landed"; was Generating On / Off): `#stInsGen` a plain select, `on` Insights processing (the spinner, We'll notify you; the old On, so saves keep it), `new` New insights just landed (the spinner's place a green tick, `.hpInsNewI`, the tasks' done-tick colours; "Take a look at what they mean for you."), `off` none. `html.insGen` the card, `html.insGenNew` its second state; one renderer (`HPC.insList`).
