@@ -5,6 +5,21 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3153 Rulers on Page templates, the Header title straight under the nav, Used for as cards
+
+- "Rulers doesnt work for templates? why":
+  - The guides (Sections, Container padding) skipped every doc page (`docOn`).
+  - On a Page templates page they now draw on the hosted screen: `draw()` runs `scr()` with `AR`, the stage's `.aqWrap`, as its area. Its frame bounds them, and `sbOf` reads the frame's own status bar (`.aqStat`).
+  - Status bar, Page navigation, Page header title, Body, Footer group, each container's 16 px padding; the Ruler's section switches follow.
+- "Why this gap between header nav and header title ? Follow template page":
+  - A flow step's body kept 24 px under the bar (`.arBarGrad .arBody` padding-top: head + 24), so its hoisted Header title section (`htHoist`, `.arHt`) began 24 px under Page navigation.
+  - That 24 px now goes inside the title's section (its padding-top), with the wrapper pulled up by it, so the section starts at the nav's foot, as the Page types master stacks them. Nothing on the screen moves.
+  - Every Insights flow step with a Header title (the intro, Doctor note, …).
+- Used for ("Use outlined card to group each experience. also condense the row", "no need CTA"):
+  - Each experience is an outlined card: its name and number of screens on a header line, then 40 px rows (the screen, its context chip if any, a small Open).
+  - The sheet has no footer: new `foot: false` on `EvSheet.open`.
+  - The line and the cards share one block in the sheet's body (`.itUseWrap`).
+
 ## v3152 Page templates: Previous / Next, a skeleton next screen, Used for, Rename, the frame centred in the viewport
 
 - "add a next prev next to the select. Same for Other page of this kind of docu":
