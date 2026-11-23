@@ -9,6 +9,10 @@ this is the part you need before you change it.
 
 - "48 48 media": `.hpInsFbIc` 48 × 48, `--t-radius-xl` (14; was 56, 16). "Avoid animation icon": Insights processing shows a still hourglass (`.hpInsPendI`, Lucide `hourglass`, 20, at 85%) in place of the spinning `.hpInsPendS`; New insights keeps its green tick.
 
+## v3126 The Flow: alternatives, not a sequence (the check-in's insights entry points)
+
+- "This should be 2 entry point, not after each other": the check-in's Flow had Insights push then Overview · Insights ready in Waiting, as if one led to the other. They are two ways into the insights report (the push's tap opens the cover; so does the Overview's card): now their own group, **Insights entry points**, after Waiting (Overview · Preparing). The Flow panel takes a group flag `alt: true`: its list `ol.hpFlAlt`, an "or" between its rows (`li + li::before`), its label "…: either".
+
 ## v3125 The Insights feedback media a circle
 
 - "icon circle": `.hpInsFbIc` (48, the hourglass or the green check) round (`border-radius: 50%`, was `--t-radius-xl`).
