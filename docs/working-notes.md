@@ -5,6 +5,11 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3102 What's changed: its own Tweaks group, Framework; the Options follow-ups archived on an Edit framework
+
+- "What's changed need an isolated tweak group ... Framework: Options / Edit cards ...; IF Edit cards put the sub steps ... inside archives": a group of its own (`.tkQciEdG`, after the Check-in group): Framework (`#stQciChgV`, was the Check-in group's What's changed row; values unchanged), then the Edit frameworks' own rows under it (Items, Add, Empty group), hidden on Options.
+- The Flow panel: on an Edit framework (`edV()`) the Options framework's follow-ups (`q:chg` + a capital: A new diagnosis, The medication, The supplement, Pregnancy) leave the Check-in group for the Archive, dimmed, their hint why; on Options they are back under 2. What's changed. Checked both.
+
 ## v3101 Range: its end labels at its two edges
 
 - Merged a published change from another writer (the artifact had moved on): the Timeline 100's button reads Back to today (was Back to life).
