@@ -5,6 +5,11 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3112 The 70s decade from the reference table, the why on some rows; the blood panel insight on the report render
+
+- "On the decade Add the why In some item, no need for all items. Be based on this": Julien's decades (`DJ0`) gain the 70s, from the reference table (Check, Type, How often, Why): five areas (Bones: Muscle and bone (DEXA), Falls and strength review; Heart: Heart and kidney check, every year · heart risk score to 79; Senses: Hearing and vision review, Memory check, if you or family notice changes; Screening: Finishing cancer screening, breast and bowel to 74; Reviews: Medicines review, Pneumococcal vaccine, once at 70, 75+ health assessment, every year from 75), the table's why as the row's card on about half of them (DEXA, falls, memory, finishing screening, pneumococcal), the rest the title and how often only. Its words the 70s note's. A few of the timeline's own items carry a why too (`ds`: hearing and falls, pneumococcal, bowel screening finishing), for the decades drawn from them (the other people's).
+- "Change this visual Use the Dexa insight": the Advanced blood panel insight (the Insights card and its Recent insights card) wears the report render (`EvSvcImg.doc4`, overview/card4-doc.webp) in place of the blood tubes; the tubes stay the blood test's own (services, the Insights tasks). The Dexa report's card wears the same render.
+
 ## v3111 Check-in Overview screens each their own Tweaks (Template Overview · Context); Templates → Insight detail
 
 - "I WANT TO SAVE 2 different composition tweak for these 2 overview! by just saving each screen": the check-in's Overview Tweaks are now kept per Overview screen (`#stOvCtxSet` keys `qci:ready` (Check-in card, Started too), `qci:sent` (Preparing), `qci:done` (Insights ready), `qci:after`), beside `page`. The check-in tells which screen is up (`qci:home`, dispatched where it sets `window.__qciCard`); the context follows, saving the one left and putting the next one on (its first time a copy of the old single `qci` set, else of the screen it came from). The top bar's Save keeps them all, as before.
