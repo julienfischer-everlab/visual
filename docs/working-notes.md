@@ -5,6 +5,12 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3133 The recommendations card: Card static LG, See more
+
+- "This need to be a card static comp lg": What we recommend's card is the Card master (`EvCard.html`, look filled → Secondary - Transparent, size lg, `.arRxCd`), built by `rxCard`. Its padding and corners are the master's; the rows' 12px hover ghost bleeds into the padding, so the words sit 20 in. The Plain variant keeps the bare list.
+- "Add See more IF > 6 chips. Need an outlined chip See more": a row with more than six chips shows the first six and an outlined chip (`.arRxMore`, no fill, a 1px ink-24% ring). Tapping it shows the rest and turns it to See less. It stops the row's own tap.
+- Pathology follow-up (Lp(a)) has eight markers now (HDL, Triglycerides, HbA1c added), so See more shows.
+
 ## v3132 Recommendations carry their biomarkers
 
 - "Need to integrate the marker chips inside here ... Use pathology follow up as item ... same chip as doctor note, with dotted colour for biomarkers already tested and grey for new marker non tested yet": a recommendation (`L.rx` row) takes a fifth field of chips, `Name: state | Name: state`, parsed by `rxChips`. The states are optimal, suboptimal, out and new.
