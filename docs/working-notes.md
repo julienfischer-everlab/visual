@@ -9,6 +9,10 @@ this is the part you need before you change it.
 
 - "48 48 media": `.hpInsFbIc` 48 × 48, `--t-radius-xl` (14; was 56, 16). "Avoid animation icon": Insights processing shows a still hourglass (`.hpInsPendI`, Lucide `hourglass`, 20, at 85%) in place of the spinning `.hpInsPendS`; New insights keeps its green tick.
 
+## v3128 The Insights card's footer: one inset, with insights or not
+
+- "I prefer the padding of the Preparing one, make the footer consistent!": with an insight (the hero) the feedback footer sat 32 in from the card's edges (`.ovInsFbW` margin 12 + its padding 20), with none yet (the tasks, Preparing) 20. Now 20 in both: the stacked rule's margin `0 0 12px`, the other `16px 20px 20px` (was 24).
+
 ## v3127 The Flow's alternatives: a dashed card, OR in a circle
 
 - "add dashed cards around these 2. Put OR in a circle overlapping both entry point in between": `ol.hpFlAlt` a dashed card (1px dashed, 16 radius, 8 inside), its rows 8 apart; the OR a 30 circle (the panel's ground, a hairline) centred on the seam between them, over both (`li + li::before`, `translate(-50%, -50%)`).
