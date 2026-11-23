@@ -5,6 +5,27 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3152 Page templates: Previous / Next, a skeleton next screen, Used for, Rename, the frame centred in the viewport
+
+- "add a next prev next to the select. Same for Other page of this kind of docu":
+  - Previous and Next buttons sit beside the header's page select (`.dhNavPN`, built in `dnApply`) on Design system, Page templates and Modules, framed pages too.
+  - They follow the select's order across its groups, stop at the first and last page, and name the page they go to.
+  - General layout's part select (and Main menu's pages) come after them.
+- "Create a fake next page skeleton for the sake of see the transition. and an cta to go back. I dont want to redirect the the insight flow here in the docu":
+  - On the Intro / outro page, the screen's Primary action is caught before its own handler (`itNext`, capture phase) and never reaches the Insights flow.
+  - Instead a skeleton next screen (`.itNx`: Back at the top left, title and line bars, three cards, a Back button where the footer is) is pushed in with the Step flow master's transition (`EvSteps.push`). Back pushes it out again.
+  - Works in A, B and Outro.
+- "I want to see for ALL page template how many time this templates is used. Used for '3 experiences' --> click open modal that list in a table all experience. With redirection":
+  - Every template page's Template card has a Used for row, a button with the count of experiences (`tplUseWire`).
+  - It opens a sheet (the Sheet master, as Anatomy) with a table: Experience (and its number of screens), Screen, Context, Open.
+  - Open goes to that screen in the prototype: its flow opened, then the step (`tplGoTo`).
+  - The list is each template's flow screens (`TPLX`), minus the ones taken off it in Tweaks, plus the ones put on it there (`EvCt.tpl.screens`). Counts: Intro / outro 3 experiences, 6 screens. Insight detail 2 and 8. Goals 1 and 3. Doctor note 1 and 1. Confirm review plan 2 and 2 (the standalone Confirm plan too). What's changed 1 and 5.
+- "In page template, need to be able to rename. Click badge. open Sheet to edit":
+  - The Template badge opens a sheet with a Name field (`EvField`) and Save / Cancel.
+  - The flows' own templates can now be renamed too: `TS.names` in `everlab:tplSys`, applied to `TREG` (`tNames`), `EvCt.tpl.rename` / `nameOf` / `name0` / `renamed`. Leaving the field empty gives the template its own name back.
+  - The name shows on the page, in the header select and menu (rebuilt when a name changes), and in Tweaks' Template on every screen on it.
+- "Fill the height viewport and centered the frame, that for all template": `tplStg` gives the stage the viewport's height under the bar (`min-height`, from its room) and centres the frame in it, on every template page. Nothing scrolls.
+
 ## v3151 Insight activation: Orbs, the reference's glass orbs for its three steps
 
 - "Ideate that style for the insights activation" (the reference: Energy, Circulation and Inflammation as round glass orbs, the active one a lit green sphere, its line under them with its key words in full ink).
