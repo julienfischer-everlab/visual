@@ -5,6 +5,13 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3156 Play reaches the Navigation doc's live phone
+
+- "Play trigger doesnt work": on Design system → Navigation the phone (and the desk at M · L) is the app itself in a frame (`#nav-demo`, `.nvLiveF` / `.nvLiveD`), with its own `<html>` and AI button. Two gaps:
+  - Menu AI entry point → Icon was never pushed into the frame (it is not in `EvAskM`'s ids), so the frame stayed on Beam star whatever was picked: a plain star with Chat chosen. `push()` / `pushD()` now set the frame's `stAskIcon` too (`aiIc`), and a change of the Icon pushes at once.
+  - `EvMcPlay` only animated the outer page. It now also calls `EvMcPlay(false)` in every same-origin frame that has it (`false`: no further frames).
+- Checked: Beam star, Everlab and Chat each in the frame (rest, then Play: `mcGo`, three animations running), Star hides Play; Play on the Overview itself (Chat, Beam star).
+
 ## v3155 Save asks first, Modules Demo fills the viewport, Insights Orbs, AI icon Play, bar arrows
 
 - "IF a Save a change in a PAge template. Add a sheet hesitation, are you sure, this change will impact XYZ experience":
