@@ -3560,10 +3560,12 @@ window.EvForm = (function () {
     return '<div class="evForm' + (o.cls ? ' ' + o.cls : '') + '">' + tg + '<div class="evFormF">' + (o.fields || []).filter(Boolean).join('') + '</div></div>'; };
   return { html: html, TOKEN: 'components/form/fields-gap', VAR: 'var(--t-components-form-fields-gap, 16px)' };
 })();
-/* Disclosure (Design system -> Patterns -> Form, "Previously on file"; "use this toggle accordion to show the recorded information"): a row with a chevron that opens what it holds; the native details / summary (keyboard and screen readers as is). EvDisc.html({ label, body, open, note, cls }): note a line under it, always shown */
+/* Disclosure (Design system -> Patterns -> Form, "Previously on file"; "use this toggle accordion to show the recorded information"): a row with a chevron that opens what it holds; the native details / summary (keyboard and screen readers as is). EvDisc.html({ label, body, open, note, cls, wrap }): note a line under it, always shown; wrap(html) puts the body and the note in the caller's container (a Card) under the summary */
 window.EvDisc = (function () {
   var esc = function (t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
-  var html = function (o) { o = o || {}; return '<div class="evDiscW' + (o.cls ? ' ' + o.cls : '') + '"><details class="evDisc"' + (o.open ? ' open' : '') + '><summary class="evDiscS"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg><span>' + esc(o.label || 'Show more') + '</span></summary><div class="evDiscB">' + (o.body || '') + '</div></details>' + (o.note ? '<p class="evDiscN">' + esc(o.note) + '</p>' : '') + '</div>'; };
+  var html = function (o) { o = o || {}; var S = '<summary class="evDiscS"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg><span>' + esc(o.label || 'Show more') + '</span></summary>', B = '<div class="evDiscB">' + (o.body || '') + '</div>', N = o.note ? '<p class="evDiscN">' + esc(o.note) + '</p>' : '';
+    if (typeof o.wrap === 'function') return '<div class="evDiscW evDiscWr' + (o.cls ? ' ' + o.cls : '') + '"><details class="evDisc"' + (o.open ? ' open' : '') + '>' + S + '</details>' + o.wrap(B + N) + '</div>';   /* wrap: what it holds and its note in a container of the caller's (a Card), the summary above it, outside ("Previously on file outside the card"); the body shown while the summary is open */
+    return '<div class="evDiscW' + (o.cls ? ' ' + o.cls : '') + '"><details class="evDisc"' + (o.open ? ' open' : '') + '>' + S + B + '</details>' + N + '</div>'; };
   return { html: html };
 })();
 window.EvAlert = (function () {
