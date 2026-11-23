@@ -9,6 +9,10 @@ this is the part you need before you change it.
 
 - "48 48 media": `.hpInsFbIc` 48 × 48, `--t-radius-xl` (14; was 56, 16). "Avoid animation icon": Insights processing shows a still hourglass (`.hpInsPendI`, Lucide `hourglass`, 20, at 85%) in place of the spinning `.hpInsPendS`; New insights keeps its green tick.
 
+## v3122 The main menu's AI button: Beam star
+
+- "Add this style in the main nav. Rotate every 4-5 sec border beam" (Iconography's Eva's beam star): Tweaks → Menu AI entry point → Icon has a third value, **Beam star** (`html.askIcBeam`), beside Star and Everlab. The dock's button keeps its star and wears the beam star's ring (1px conic, orange to warm white) and inner glow (`.mChatBs` ::before / ::after, the same stops as `.evBeamStar`), turning once every 4.5 s (`--mcBs`, `mChatBsTurn`, linear). Light mode: the darker orange. Reduced motion: still, the beam at 40°.
+
 ## v3121 Templates on every screen: link, create, remove; a Context under it
 
 - "Need to be able to remove the template or add if not existing or select from an existing"; "On other page I need to be [able to] link an existing template and create context if wanted (sub layer of template)": General layout → Page type's **Template** row is a picker on every screen with a layout (a flow's step or a page): None, the templates (the flows' own: Introduction, Insight detail · Insights flow / · Check-in, Goals, Doctor note, Confirm review plan, What's changed; then the ones made here), and New template… (an inline name; Enter makes it, the screen's layout as it stands its start). With a template, **Context**: None and Add context, or its name as a badge (a tap renames it) and Remove (a second tap confirms).
