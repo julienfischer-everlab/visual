@@ -1,4 +1,4 @@
-# Layout: breakpoints, frames, container, header, Top nav, Header overlap, Page types, desk panels, main page titles, Flow panel
+# Layout: breakpoints, frames, container, header, Top nav, Header overlap (master), Page types, Templates pages, desk panels, main page titles, Flow panel
 
 All anchors are in `index.html` unless named. Line numbers are approximate (`~`) and drift; grep the pattern.
 
@@ -269,7 +269,7 @@ A new Sub page: its show / hide do the change at once (no CSS transition of thei
 
 **How to use.** New General layout part: a `[data-gl]` button in `.ldPats`, a `[data-gln]` note, a `[data-glv]` view built by its own function (like `glTg`, `glPt`, `glDv`) and its wiring (`glPtWire`); extend `pick()` if it needs a refresh on show (`el._tgUp`) and the remembered part's list (`p0`); a master gets `save()` and joins the `#tkDocSave` mapping; tag its controls for `EvDocPanel`. New tab: an entry in `DOCS` (`el`, `t`, `hash`) and in `DSET`.
 
-**Pitfalls.** (1) Views built while hidden measure zero: refresh on pick and with ResizeObserver. (2) Specimen tables (CT, Sizes, HO rows, Navigation's `T`) are hand-written copies: update with the code. (3) New doc phones use `--evPhR/--evPhBz` and 393 x 852.
+**Pitfalls.** (1) Views built while hidden measure zero: refresh on pick and with ResizeObserver. (2) Specimen tables (Sizes, Navigation's `T`) are hand-written copies: update with the code. (3) New doc phones use `--evPhR/--evPhBz` and 393 x 852.
 
 **Doc headers master (`window.EvDocHd`, `DH` in the doc shell's scope; "use this for ALL documentation, same patterns").** Every Documentation and Design system page draws its title hierarchy through it, the Concierge entry points' three levels. `grep -n "const DH = window.EvDocHd"` (just before `window.EvDocPanel`); CSS: the rule `.dhS{position:sticky` (with `.dhST`) and the block after `.ldMainH{` ("Doc headers, the master").
 - Level 1 `DH.page(t, bp, right)`: the page's head bar (`.ldMainH.dhP`, 62 tall): the page's title (constant: `DOCS[k].t`), a mono badge `.ldBp` for the breakpoint shown (empty hides it; a page writes it later with `el.querySelector('.dhP .ldBp')`), view controls at the right (only where the page has no right panel, e.g. Concierge entry points). In a column that scrolls (`.glMain`, `.ldDoc.ntDoc`) it is sticky at the top; on the canvases it stands over the scroller.

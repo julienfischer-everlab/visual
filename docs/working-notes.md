@@ -29,6 +29,7 @@ this is the part you need before you change it.
     - Intro / outro: as before; B now on the app's `aqDesk` host.
     - A template made in Tweaks: its first screen (`qci:<k>`, `ar:rec:<ph>`, `ar:<n>`).
   - Each page is drawn again when its own Tweaks change (the check-in's What's changed style and persona, the report's persona and preset).
+  - Leftovers from the removal's review, tidied: the dead `.glCtCs` light rule, `pePage` / `glCt` out of the shared-view keys, the Assets library's Activity plan photo now 'used in' Page types' Banner Image, stale comments, the skill references.
   - Checked at Auto, XS and L: every page fills the room with no page scroll and shows its screen. Intro / outro had lost its content helpers in the rewrite (`visOf`, `ctxIntro`); they are restored, and a mount error now shows in the console.
 
 ## v3145 Modules → Insights is the Overview's own module; Main menu full viewport, Icons in a tab; the AI button plays once on the Overview
