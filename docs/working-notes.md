@@ -5,6 +5,18 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3137 Full modal full custom; recommendation chips limited, divided, matched in the detail; its sections H2
+
+- "Full modal Should be full custom Header group title body footer": a Full modal screen's Tweaks → General layout now starts each part with its own On / Off, as the Page types master does: Header nav (`#stTnShow`), Header title (`#stHtShow`), Footer (`#stFtShow`), each a switch on its select. They show on Full modal screens only (`html[data-pt="full"]`).
+  - Each is the screen's pick, kept with its other picks in `#stTnPg` (`nv`, `tt`, `ft`), saved with Save. Unpicked, it follows the master (Page types → Full modal: `nv`, `tt`).
+  - Off puts `html[data-glnv]`, `[data-gltt]`, `[data-glft]`. Header nav Off keeps its safe space with the Close alone (the master's Header nav Off on a modal), the step bars gone. Header title Off hides `[data-hg-part="title"]`, and its sticky offset (`--htStk`) is cleared so the anchors sit under the nav. Footer Off hides `.arFoot`.
+  - While a part is Off its card shows only its switch (`.tkGlOff`). The Header title card and the Footer group stay listed while Off (`htPin`, `tMeas`), so they can be turned back on.
+  - The master is unlocked too. Page types → Full modal no longer forces the Header nav on ("Always on a Full modal" gone: `subFix` and the lock only hold for a Sub level outside a Full modal). The Footer group's Fixed is offered on a Full modal as on a sheet (`ftFx`).
+- Recommendations: at most 3 chips on an item, then an outlined "See more" (See less to fold). A divider (`EvDivider`, md) follows the chips, 12 from them.
+- The recommendation's detail sheet: "Based on" wears the same chips as its item (`arDrChip arDrBio`, the dot coloured if tested, grey if new). Its two sections, "Why Dr Lu suggests it" and "Based on", are H2s on the Title group master (`rcH2`). The description is 16, on the text style system's body-300.
+- The AI button's star: "Need beam effect that pass through the star icon once the border beam end and the star is displayed". A thin warm band, in the border beam's colours, crosses the star left to right at the start of each 8 s loop (0 to 10%). That is right after the star has grown back (99.5%) and the beam has faded (100%). It is `.mChatSh` in `.mChatMk`, masked by the star's own two paths (a data URI built from the button's SVG, so it covers the star only). It has a light-mode band, and is off for reduced motion.
+- v3136 (the Check-in canvas, the mark's scale) ships with this publish.
+
 ## v3136 Documentation → Check-in: the whole flow on a canvas; the mark grows and shrinks
 
 - "Create a checkin documentation in the Documentation flow in a canvas environment": a new Documentation page, Check-in (`qcd`, `#check-in-flow`, after Gifting). It is the Gifting page's canvas: drag to move, zoom in the panel (25 to 100%, `everlab:qcdZoom`).
