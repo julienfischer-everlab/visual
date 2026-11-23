@@ -5,6 +5,28 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3142 The Check-in canvas: the Overview as the app has it, the Insights in the middle, the intro whole
+
+- "No shortcut module Script etc"; "Insight use empty state module": the canvas's live Overview copies (`#ov-live`) never got the app's Tweaks. A copy has no shared store of its own, so a moment with no flow context (Check-in card, Check-in not finished) showed the code's defaults: the shortcuts and the Insights with data.
+  - Each copy now takes this page's Tweaks as they are (the shared setup it took) before the check-in starts (`lcopy`). Every screen's flow context still goes over them. So the Entry point shows the Overview page as the app has it, here without the shortcuts and with the Insights empty state module.
+  - The Doc's own selects (page, mode, breakpoint) are not copied.
+- "Scroll the position of screen to be able to see the Insight module in the center of the screen": on Preparing, Insights ready and After the check-in, the copy scrolls its Overview so the Insights module (its title, the empty state or the rail, the feedback line) sits in the middle of the phone (`lmid`).
+- "Design is broken !" (the canvas's Intro):
+  - The snapshots were mounted before their frame was on the canvas, so the intro's title, which places itself by measuring over its picture, measured nothing and sat high with no padding. The canvas now mounts each snapshot once its row is in (`snaps(row)`); the Intro matches the app (its block at 256, its title at 320 on the phone).
+  - The button master's adoption (`EvBtnAdopt`) sized a button by its height as drawn, so on the canvas at 50% the intro's 56 button read 28 and took the xs size (12 px words). It now reads the button's own height (`offsetHeight`, which zoom and scale leave alone). This holds everywhere the app is shown scaled.
+- "add 16 margin top on the You'll choose …": the recommendations' footer line is 16 further from the last row (margin 8 → 24).
+
+## v3141 A recommendation's detail is on the sheet master, its whole Sheet type in Tweaks
+
+- "Dont follow the sheet system! check! CTA smaller I think": a recommendation's detail now opens through `EvSheet.open` (the Sheet page type's master), over the report (host: the `.arSheet`). It has the master's Header nav with its compact Close (36, `--evTnDo`), the Title group head, its body, its footer (Done), the phone's notch and swipe, Escape. It no longer has its own head and 40 Close.
+  - `EvSheet.open` takes two new options: `o.sub`, the Title group's support line, and `o.lead`, an element (the picture) put in the Title group's top slot. So the head stays the picture, the H1 and the sub ("Img should be a Slot On title group").
+  - The modules keep H2, 16, content; they sit 32 apart in the sheet's body.
+- "Active screen is the sheet here! Tweak need to reflect the sheet layout": the detail has its own Tweaks context, `arRc` (Insights flow · Recommendation), with every prop of the Sheet type. That covers Sheet (Container same size, Type, Max width, Height), Header group (Level, Header nav with its Container, Fixed, Style, Blur, Middle slot, Title on scroll, Dismiss; Header title) and Body and Footer.
+  - A change redraws the sheet the master's way (closed and opened again, as the check-in's Add / Edit), so the panel always matches what is on screen.
+  - The page type reads Sheet and the label shows the recommendation's name. The report's other sheets (biomarkers, Sources) keep `arSh` with the four props they obey.
+  - Under it the Full modal keeps its own picks (`tApply` treats `arRc` as `arSh`).
+- Closing the report's sheets closes the detail too.
+
 ## v3140 Recommendation dividers stacked between the rows
 
 - A recommendation's detail sheet: "Img should be a Slot On title group / Pathology... should be a h1 from title group / Visit a partner a sub from title group".
