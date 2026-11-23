@@ -5,6 +5,12 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3119 The Insights feedback: the Divider version only, its icon in a 56 frame
+
+- "Keep this version, kill the card style tweak": Feedback style (Card / Divider, `#stInsFbSty`) is retired; `window.EvInsFb.html` always draws the Divider version (the Divider master on top, no card). The `.hpInsPend.evCard` rules are left for nothing to use.
+- "Use a 56 56 frame rounded secondary bg on the left side with the icon inside, margin right 16px": the icon (the spinner `.hpInsPendS`, the green tick `.hpInsNewI`, now 20) sits in `.hpInsFbIc`: 56 × 56, `--t-radius-2xl` (16), the Secondary card's fill `--t-bg-neutral-tertiary-100`; 16 to the words (`.hpInsPendDv > .hpInsPendB` gap 16, was 12).
+- "Add gap 4px between divider and content": `.hpInsPend.hpInsPendDv` gap 20 (was 16).
+
 ## v3118 A saved context is a badge
 
 - "When I save a context it should become a chip" / "badge": once saved, the Context row shows the context's name as a badge (`.tkCxChip`, the blue `.tkTplV.tkFlowV` pill, as Page · Overview's), not the input. The input (`.tkCxName`) shows only while the context is new (not saved yet), while renaming (a tap on the badge: `nmEd`, the input focused and selected), or while its new name is unsaved (`row.tkCxEd`). Enter or Save turns it back into the badge; a values-only change keeps the badge with "Unsaved changes". The hide rule is `#tkMenu .tkFlowCtx .tkCxChip` so the panel's `#tkMenu .tkTplV { display:inline-flex }` cannot show it beside the input.
