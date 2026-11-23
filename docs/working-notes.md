@@ -5,6 +5,32 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3146 General layout loses Page base, Page example, Container and Header overlap; every Templates page is its real screen, as Page types shows a screen
+
+- "Remove this. Entire template for header overlap because this already exists under page type" (and the same for Container, Page example, Page base):
+  - Their buttons, notes, views and builders are gone: `glPb`, `glPe` / `glPeWire`, `glCt`, `CT_W` … `ctMax`, `glHo` / `glHoWire`, `HO_C`, `HO_PERF`, and the Container's wiring and `fit()` in `pick`.
+  - So is CSS only they used: `.pb*` except `.pbBp`, the `.pe*` block, `.glCtFr` / `Wrap` / `Body` / `Box` / `Foot` / `Cs` / `Cta` / `H` / `Nav`, `.hoStage` / `.hoPh` / `.hoSb` / `.hoSc` / `.hoDBand` / `.hoDT` / `.hoDSheet` / `.hoDRow`.
+  - Shared rules stay: `.pbBp`, `.glCtBps` / `Stage` / `Sc` / `Grp` / `Lbl` / `Note`, `.glOpt`, `.hoCtl`, `.hoDHero` (Page types' Banner Image).
+  - The masters stay: `EvOverlap` (saved from Page types' Banner Image), `EvPageBase`, the `--ct*` tokens, `EvCt`.
+  - Old routes all land on Page types: `pick` maps `pb` `pe` `ct` `ho` to `pt`, and so do the initial pick, shared view links and `#page-example`.
+  - The top bar's Save maps Header navigation and Header title to `EvTopNav`. An unmapped part no longer silently saves the Header overlap.
+  - `everlab:pePage` and `everlab:glCt` are out of the shared-view keys.
+- Templates ("Everything under the design system templates needs to be the same as the page layout … cover the entire viewport … When it is XS, use the iPhone frame"): one stage for every Templates page, `tplStg(el, o)`, framed as Page types frames a screen.
+  - Framing:
+    - Auto: the real screen edge to edge, to the viewport's foot.
+    - XS and S: the phone (tablet) frame, its status bar and home bar.
+    - M and L: the desk at its width, shaded around, scaled when the room is smaller.
+    - No caption, no skeleton. The right panel stays.
+  - The host is the app's (`aqWrap aqFull aqDesk`, `evSolo qciWrap` for the check-in). The template's layout goes on it by `EvCt.tpl.host(wrap, key, desk)`: Body, Header navigation, Header title and Footer, with the Page types Full modal master under what is unpicked. It is re-applied on `tpl:change`.
+  - Each page's screen:
+    - What's changed: the check-in's own screen (`__qciSnap(fr, 'q:chg', { live: true })`). Its header and footer follow the template's containers (the check-in's `hdFit`, now `hdFitOn(sheet)`), and the bar watches its scroll.
+    - Goals, Doctor note, Confirm review plan: the Insights flow (`AsyncReport.mount`, `recGo('g0' | 'dr' | 'rev')`, settled with `at(where())`). A persona without goals (#3) shows #2's.
+    - Insight detail: the check-in's insight on the check-in's host (`__qciSnap(fr, 'eng' + i)`), or the report's insight step.
+    - Intro / outro: as before; B now on the app's `aqDesk` host.
+    - A template made in Tweaks: its first screen (`qci:<k>`, `ar:rec:<ph>`, `ar:<n>`).
+  - Each page is drawn again when its own Tweaks change (the check-in's What's changed style and persona, the report's persona and preset).
+  - Checked at Auto, XS and L: every page fills the room with no page scroll and shows its screen. Intro / outro had lost its content helpers in the rewrite (`visOf`, `ctxIntro`); they are restored, and a mount error now shows in the console.
+
 ## v3145 Modules → Insights is the Overview's own module; Main menu full viewport, Icons in a tab; the AI button plays once on the Overview
 
 - "This should be a carousel" / "replicate the exact module and the overview page … pull every style, everything from the overview": the Insights module now draws what the Overview draws at the page's breakpoint, with the Overview's code and CSS. It is the source of truth for the next iterations.

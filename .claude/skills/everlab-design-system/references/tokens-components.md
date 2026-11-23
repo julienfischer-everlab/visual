@@ -56,7 +56,7 @@ All anchors are in `index.html` unless named. Line numbers drift; grep the patte
 
 **What.** The size tokens that exist as custom properties. No global radius tokens. Titles have a type scale: the Title group master's levels (`--tg*`, next section); other text sizes are per component; header and container tokens are the rest of the scale.
 
-**Where.** `grep -n -- "--hdrSb:54px"`, `grep -n -- "--ctPadY:24px"`, `grep -n -- "--ct2xs: 100%"`, `grep -n -- "--evPhR:"`, `grep -n -- "---- Title group, the master"`; General layout > Header (Sizes) and > Container (tokens table, `glCt`). Full detail in references/layout.md.
+**Where.** `grep -n -- "--hdrSb:54px"`, `grep -n -- "--ctPadY:24px"`, `grep -n -- "--ct2xs: 100%"`, `grep -n -- "--evPhR:"`, `grep -n -- "---- Title group, the master"`; General layout > Header (Sizes); the containers in Page types and the Tokens page. Full detail in references/layout.md.
 
 **API / rules.** Header 54 status bar; nav 76 phone / 64 desk; Back/Close 44 / 44 ("CTA top nav always 44px"), ink 7%, 16 icon; nav title 18/24 500; questionnaire 32/40 500 −0.4 (84 Hug); page title 24/30 (54 Hug) phone, 20/26 desk (48 Hug). Container XS/S/M/L padding top-bottom 24/28/32/36, sides 16/16/24/24, gap 24/28/32/36; max-width 2xs Full/512/544/576, xs 800, sm 1080, md 1280, lg 1440, used through `data-container` (merged #260) or `var(--ct…)`. Prototype breakpoints XS 393, S 600, M 992, L 1440. Main page titles: the Title group's H2 (`--pgH1Fs` on the desk, `--tgH2*S` at XS·S). Radii in use: `--ar-radius-card` 12; `.sgmCard` 20; rows/areas 16; bottom-sheet and floating modals 28; full bottom sheet 32; CTAs 9999; phone frame 56 (`--evPhR`, also the XS clip), tablet 28; desk panels 12 12 0 0; the Plan's tiles 20 (80) / 14 (56). Secondary text ink .56.
 
@@ -256,7 +256,7 @@ A new Plan surface: its colours from the `--pl*` tokens (and a `#dPlan.plLight` 
 
 **What.** Each DS tab with live controls has Save setup writing the master's numbers; every page reads them on load, over Tweaks and older saves.
 
-**Where.** EvOverlap `everlab:hoMaster` (doc Header overlap, `HO_C`); EvTitle `everlab:tgMaster` (doc Title group, `TG_C`/`TG_G`); EvPush `everlab:pushMaster` (doc Page types, `PT_C`); EvSteps `everlab:sfMaster` (`SF_C`); EvDismiss `everlab:mdMaster` (Modals `.mdSave`); `window._navMaster` `everlab:navMaster` (Navigation `.nvSave`). Shell: `const DOCS`, `DSET`; top bar `#tkDocSave` mapping (`grep -n "docCur === 'sf'"`).
+**Where.** EvOverlap `everlab:hoMaster` (doc Page types › Banner Image, `EvOverlap.C`); EvTitle `everlab:tgMaster` (doc Title group, `TG_C`/`TG_G`); EvPush `everlab:pushMaster` (doc Page types, `PT_C`); EvSteps `everlab:sfMaster` (`SF_C`); EvDismiss `everlab:mdMaster` (Modals `.mdSave`); `window._navMaster` `everlab:navMaster` (Navigation `.nvSave`). Shell: `const DOCS`, `DSET`; top bar `#tkDocSave` mapping (`grep -n "docCur === 'sf'"`).
 
 **API.** EvOverlap, EvTitle, EvPush and EvSteps expose `M`, `D`, `set(k, v)`, `save()` (true on success), `reset()`, plus their own bind/update/html/go. EvDismiss has `K`, `on()`, `set(v)`, `save()`, `notch(el)` (no `M`/`reset`). The dock's is the `window._navMaster()` loader over `{ lab, icm, ins }` (labels, icon motion, the Insights icon); its Save is the doc's `.nvSave`. Doc buttons `.mdBtn` Save setup / Reset / Play (read "Saved" for 1400 ms), in each doc's right panel (EvDocPanel). View state keys `everlab:glPart glBp glCt tgDoc mdPart mdBp mdLay sfBp bbPart` (not masters).
 
