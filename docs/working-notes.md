@@ -5,6 +5,30 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3138 Check-in on the canvas, rows top to bottom; a report sheet holds Tweaks; the AI button's mark a turn longer
+
+- Documentation → Check-in: "In a canvas style", "Flow vertically, row by row". It now draws on Modules' Canvas, made a shared master: `window.EvCanvas`, defined beside `EvDocHd`.
+  - `EvCanvas.mount(host, o)` gives the dotted viewport (tertiary ground) and the bar (−, %, +, Fit, 100%, `o.extra`, the hint; `o.bar: false` lets the page drive `zoomBy`). Drag moves; Ctrl or ⌘ with the wheel zooms round the pointer, + and − too. `o.key` keeps the zoom, `o.fitW` fits the width only, `o.onBar(e)` false stops the bar's own click, `to(node)` brings a row up.
+  - `EvCanvas.row(r)` builds a row: its title (a button with `r.go`'s attributes) and count, then its items side by side at `x.w`. Each item has a stem to its dot on the line, then its number, eyebrow, name and note. `x.off` makes the dot hollow, `r.cases` drops the line. `x.below` hangs things under an item on a dashed line: a fourth grid row, `.moCvHasBr`, `.moCvBr`, `.moCvBrI`.
+  - Modules' `cvMake` now mounts through it (same bar, zoom key, Screens toggle, drag, Fit). Its rows are unchanged. The Overview skeleton phone is `window.EvOvSk.ph(r)`, used by Modules' Demo and the Check-in canvas.
+  - Check-in: every stage of the Flow panel's model is a row, top to bottom, numbered in the flow's order. Each screen is `__qciSnap` at 393 × 852.
+  - A follow-up hangs under its question as 4a, 4b, with the "Follow-up" eyebrow and its answer note.
+  - The Overview's moments are the skeleton phone with the real primary card (`hpDocCard`): the check-in's Ready and Done, then Whole Body MRI after. "Preparing" is a section-card placeholder.
+  - The insights entry points (either / or) have no line between them.
+  - Panel: Canvas → Zoom (−, %, +, Fit by width). The stage list in the side scrolls to a row; the arrow on a screen opens it in the prototype. The zoom is kept (`everlab:qcdZoom`).
+- "The controller should be about the sheet because the sheet is the current view here": a sheet over the report (a recommendation's detail, the biomarkers, Sources) now holds Tweaks.
+  - An EvCtx row `arSh` (type modal, its label the sheet's title; not the Doctor's notes sheet, which keeps `arDr`). `.arQa` is in EvCtx's watched list, so the switch is immediate.
+  - EvSheet's set `.tkShSet[data-sh-ctx="arSh"]` gives Page type → Sheet with the sheet's General layout: Sheet, Header nav, Header title, Body, Footer.
+  - The report's sheet obeys Header nav (Off: the Close floats at the top right), Dismiss, Header title and Footer (`qaTk`: `data-shnv`, `data-shnd`, `data-shtt`, `data-shft` on `.arQa`, again on `evsheet:tweak`).
+  - The page under it keeps its own picks (`tApply`: `fmK`).
+  - The Full modal's Header nav / Header title / Footer Off rules are scoped to the page's own stage (`.arSheet > .arStage`), so they never reach a sheet over it.
+- "Kill that What to expect here": the Insights flow's What to expect step (`d`) is off by default and sits in Not used; Welcome goes straight to the first insight. The Flow panel has a per-flow default-off list: `window.__flowOffD` (`{ ar: ['d'] }`) and `window.__flowOffOf(key, a)` give the steps off, meaning the arrangement's `off` plus the defaults it has not turned on. Turning a step on (its switch, or a drag out of Not used) records it in the arrangement's `on`, so it stays on through Save and presets. The report's Next and Back (`seqTop`) and the panel's model read it.
+- "Context need to be editable": the Context pill on an Intro / Outro screen (Check-in Intro, Outro, Insights cover, Insights' What to expect) is edited in place: click, type, Enter (Escape cancels). The name is kept with the screen's words (`EvScrOv` field `nm`, Save screen); empty or Reset gives the template's name back.
+- Recommendations: "Add divider between Item, gap above below 8px": an `EvDivider` between every item, none after the last. It sits 8 from each row's content (its 12 padding less 4).
+- AI button:
+  - "Logo should rotate one more round": the loop is 9.1 s (was 8 s). The mark holds at full size 1.1 s longer, one turn of its loop (52 frames, two turns in 2.15 s); the star keeps its 6 s.
+  - "When beam pass over the star the star opacity should be low like 25%": the star grows back at 25%, the beam crosses it, then it comes up to full (by 11%).
+
 ## v3137 Full modal full custom; recommendation chips limited, divided, matched in the detail; its sections H2
 
 - "Full modal Should be full custom Header group title body footer": a Full modal screen's Tweaks → General layout now starts each part with its own On / Off, as the Page types master does: Header nav (`#stTnShow`), Header title (`#stHtShow`), Footer (`#stFtShow`), each a switch on its select. They show on Full modal screens only (`html[data-pt="full"]`).
