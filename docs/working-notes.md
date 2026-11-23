@@ -5,6 +5,11 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3099 The outro (and intro) entrance written at the middle; Current the Design system's Badge as it is
+
+- **Outro** ("Problem alignment on outro. Text should appear in the middle"): the welcome-title entrance (the check-in's Thanks for checking in, its intro too) wrote the title at the top: `htHoist` moves it into the Header title section with a top padding measured where it stood. While the page is the welcome stack (`.arPgW:has(> .arStack.arWtStack)`), the page fills the body as a centred column and the section's measured padding is dropped: the title is written at the middle (L 520 / 524, XS 548 / 524), then settles as before.
+- **Badge** ("Where this badge come from? DS? I've another style in the DS"): the What's changed badges are the Badge master (`EvCtl.badge`, Tint, xs 28, Neutral / Positive / Warning); Current had a local grey text override, now gone, so it is the master's Neutral Tint as drawn on the Badges page.
+
 ## v3098 Previously on file as the main view's row; the Edit icon in place of the chevron; the Add 12 from above
 
 - **Previously on file** ("the same list as the main view with a card secondary static ... no right action of badge"): its body the group's Card (secondary surface, md) round one List item (`edLi`, not interactive, `evLi-primary` the main view's Filled ground), the name over its description, no badge, no action. On the sheet the card's ground is the sheet's own (both rgb 24): its inset and the row's bleed off, so the filled row reads as the card, level with the label on the left and the fields on the right. The row's text styles copied out of `.qciSheet` so the Design system's Form example (now the same row in the same card) matches.
