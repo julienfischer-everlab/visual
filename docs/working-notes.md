@@ -5,6 +5,22 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3147 Save follows the template rule for every General layout property, not just containers
+
+- "If there's a save without a template, it will save all of the page in the flow ... If the page has a template, it's going to only save this page with the template, not the other pages of the flow ... If there's a context, it's going to only save the context."
+- Where a screen's layout is read and written is one chain, `EvCt.chainOf(key)`: its context (`cx:<flow>:<step>`, its own layer), then its template (`ar:tpl-goal`, `ar:tpl-ins`, …). With neither, the chain is empty and the flow's own picks apply to every page of it. A step is no longer its own layer: older per-step container picks are dropped on read; a step context's older picks move into `cx:…`.
+  - Containers (`EvCt`): `pick` walks the chain, then the flow (`M[flow]`), then the default. Tweaks writes to `chain[0]`, else to the flow.
+  - Header group and Footer (`tApply`): `tEff(k)` layers the flow's `PG[k]`, then the template's, then the context's `'g.'+field` (kept in the template store `everlab:tplSys`, drafts until Save, like the containers). `tPg` writes to `chain[0]` through `EvCt.tpl.set(w, 'g.'+f, …)` (cleared when it equals what shows under it), else to `PG[flow]`.
+  - `tick` re-applies when the chain changes (a step onto or off a template or context), and on `tpl:change`.
+  - The preset's unsaved check on `#stTnPg` (`tnEq`) now compares every field, not just Fixed, Style, Footer style and WIP.
+- The Tweaks note under Template says which applies: "No template: layout changes here go to every page of <flow>", the template's "every screen on it, not the rest of <flow>", or "this context's only, over <template>".
+- Removing a context or unlinking its template deletes its layout (`TS.lay['cx:…']`) and drafts.
+- Checked in the Insights flow:
+  - Step 7 (no template), Style Filled and Body sm: every step shows it.
+  - Goal 2 (Goals template), Transparent: the three goals only.
+  - A context on Goal 2, Filled: Goal 2 only.
+  - After Save and a reload, all of it is the same.
+
 ## v3146 General layout loses Page base, Page example, Container and Header overlap; every Templates page is its real screen, as Page types shows a screen
 
 - "Remove this. Entire template for header overlap because this already exists under page type" (and the same for Container, Page example, Page base):
