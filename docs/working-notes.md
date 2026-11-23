@@ -5,6 +5,22 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3155 Save asks first, Modules Demo fills the viewport, Insights Orbs, AI icon Play, bar arrows
+
+- "IF a Save a change in a PAge template. Add a sheet hesitation, are you sure, this change will impact XYZ experience":
+  - The bar's Save (`#tkDocSave`) on Design system → General layout → Page types, Page templates → Intro / outro and every template page opens an `EvSheet` first: "Are you sure?", the badge (Page types or the template's name) as the title's top slot, "This change will impact N experiences", a card per type or experience with its screens, Save / Cancel. Cancel keeps the change as a draft; Save writes it.
+  - Page types no longer saves itself on every click (`EvScrDemo` `autoSave` skips key `gl`): a change is a draft, its rows orange with Previous, the type's card dotted, Save orange, until the bar's Save. The Modals demo (key `md`) still saves at once. `EvScrDemo.changed(key)` lists the types off their saved setup (the guides, Level, Banner and Blur aside, as the marks).
+- "Arrows on the right side of the 2nd select": Previous / Next sit after the last select of the bar (General layout's part, Main menu's pages, a module's pages) and step through that select first, then the page select at its ends (`pnTo`). Their labels follow each step (`pnLb`).
+- "Add arrow between a select in this bar": Main menu's bar is General layout → Main menu → Menu (`.dhCrumbA2` before its pages select).
+- "Fill the viewport. Using skeleton still" (Modules → a module's Demo, `skFit`): no page title, the Demo the whole room under the bar.
+  - Auto: the desk skeleton at the room's own width and height, unscaled, edge to edge.
+  - M · L picked: the 1120 desk scaled to fit, 24 in. XS · S: the phone or tablet scaled to the room's height.
+- "Use that in the insight module style variation. Less glossy, Filled icon, Orange vs green":
+  - Insights → Empty style: Orbs (`html.insOrbs`), in Tweaks and on Modules → Insights (Style, and Glow: Green / Orange, `html.insOrbO`, saved in `everlab:insMaster` as `glow`).
+  - The three tasks as orbs on the card's own ground, drawn by `_hpCard.insList` (`.ovOrbs`): the next task to do lit (a flat sphere, no highlight, a soft glow that breathes), the others dark; filled icons (person, watch, flask); a tick when done, a dash when skipped or none found, the orange dot in progress; the name and its state under each.
+  - Pitfall: the row was first named `.insOrbs`, the same as the html class, so `.insOrbs { display: none }` hid the whole page. Never give an element a class that `<html>` also carries.
+- "Need CTA to force trigger": Tweaks → Menu AI entry point → Animation: Play (`window.EvMcPlay`) plays the AI button's morph again at once, on every AI button drawn (the docs' too); the Everlab loop from its start. Hidden for Star.
+
 ## v3154 Used for: secondary cards, the template's badge as the title's top slot
 
 - "Secondary bg no border": each experience card is the Card master's Secondary - Transparent (`bg/neutral/tertiary/100`, ink 6% dark / 4% light), no line, no dividers.
