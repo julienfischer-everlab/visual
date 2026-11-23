@@ -5,6 +5,10 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3114 The check-in's Overview reads Page · Overview
+
+- "Consider this as Page not really template": in the check-in, the Page type part reads Page · Overview (was Template · Overview), then Context · Check-in · Preparing (or the screen up) under it; the Overview is a page, its screens in the check-in its contexts. Templates keep Template (Intro / Outro, Insight detail, Goals …).
+
 ## v3113 Primary card title group further in; Insights card: items and Feedback bleed, Feedback style; no dot on decade rows
 
 - "In primary card M L Add 24px padding left right extra around the title group": in the centred primary card at M and L (`html.hpOvCtrOn`, not XS or S), its heading at most the card's width less 48, centred (24 further in each side); the consult's title group keeps its own 320 and never comes closer than 24 a side.
