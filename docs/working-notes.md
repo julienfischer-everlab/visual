@@ -5,6 +5,14 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3154 Used for: secondary cards, the template's badge as the title's top slot
+
+- "Secondary bg no border": each experience card is the Card master's Secondary - Transparent (`bg/neutral/tertiary/100`, ink 6% dark / 4% light), no line, no dividers.
+- "Add the template badge above title as a top slot" and "remove" (the line under the title):
+  - New `slot` option on `EvSheet.open`: HTML for the Title group's top slot (`EvTitle` `slot`).
+  - Used for passes the template's badge (`.itTplV`). The "name · N experiences, N screens" line is gone.
+- Publishing: one publish of this round went out from the source `index.html` by mistake (its pictures are paths, not inlined); the next publish, from `dist/index.html`, replaced it. Always publish the built file.
+
 ## v3153 Rulers on Page templates, the Header title straight under the nav, Used for as cards
 
 - "Rulers doesnt work for templates? why":
