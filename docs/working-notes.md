@@ -5,6 +5,15 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3135 The AI button's mark rotates (the brand's loop); a softer beam
+
+- "SO integrate it": the Beam star's morph and the Everlab icon now show the brand's own rotating mark (the helix loop you sent) in place of the drawn mark.
+  - Two files: `assets/brand/mark-loop-w.webp` (white, the dark button) and `mark-loop-b.webp` (black, light mode). Each is 72 px and about 60 KB, the same 52 frames at 24 fps (2.2 s) as your 480 px WebP and the Lottie, whose frames are embedded images (8 MB).
+  - Each path is written once (`window.EvMarkLoop`), and both are listed in the Assets library (Brand, Animation).
+  - In Beam star (`mChatMkM`) the mark's 26 slot fades in by 81%, holds to 92% (about one turn of the helix) and fades out by 97%. In Everlab it shows all the time, its two stars and its beam kept.
+  - Reduced motion: the still mark for Everlab, the star alone for Beam star.
+- "Border beam softer by 30%": the Beam star's beam peaks at .7 opacity (ring and glow, `mChatBsLoop`), and Everlab's beam (`.mChatBm`) sits at .7 too.
+
 ## v3134 Screen component masters: a live screen, every tweak, Anatomy in a sheet
 
 - "Can't interact with anything on the screen" / "cant scroll into the screen": Intro / outro's and Insight detail's frames are no longer `inert`. The screen scrolls and every tap is real.
