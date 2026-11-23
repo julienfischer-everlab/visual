@@ -5,6 +5,16 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3139 The Check-in canvas's Overview moments are the Overview itself; the unfinished case; no Archive
+
+- "Use the Overview UI not skeleton"; "That need to be the overview / Context Preparing"; "This overview context Insight received"; "Also need to show the insights Widget here": every Overview moment on Documentation → Check-in is now the app itself, live, at the phone's width. That is Check-in card, the unfinished case, Preparing, Insights ready and After the check-in.
+  - Each is a copy of the app in an iframe (`#ov-live`, the Concierge entry points doc's live-screen way). It is put on the check-in (`versionSel` qci), then on its moment (`__flowCfg.qci.go('home:…')`), so the Overview shows with that screen's flow context and its real modules: the primary card, the Preparing module, the Insights card with its one insight after.
+  - It loads as it comes near on the canvas, two at a time, under the app's status bar, with a veil until ready. It is not interactive on the canvas (drag pans over it); its arrow opens the screen in the prototype.
+  - `#ov-live` (new, beside `#ob-demo` and `#nav-demo`): an embed with storage in memory. It copies the masters and the shared setups the flow reads (`everlab:flowCtx`, `scrOv`, `tplSys`, `tokBase`, `flowArr`), so the contexts saved in this browser show and nothing is written back. It has no `evObDemo` crop: the whole page.
+  - Every embed now loads with the Flow panel shut (`flowOff`). Docked, it pushed the page aside on a page with a flow.
+- "Need the Case when Check in is not finished --> CTA Finish": the Entry point row has a second screen, Overview · Check-in not finished (`home:started`). The primary card's started state now says Finish (was Continue), in the card master (`_hpCard` QCI) and the check-in's own home card, so Modules → Primary card · Check-in Started says it too.
+- "remove archives": no Archive row on the canvas (the Flow panel keeps it).
+
 ## v3138 Check-in on the canvas, rows top to bottom; a report sheet holds Tweaks; the AI button's mark a turn longer
 
 - Documentation → Check-in: "In a canvas style", "Flow vertically, row by row". It now draws on Modules' Canvas, made a shared master: `window.EvCanvas`, defined beside `EvDocHd`.
@@ -25,9 +35,15 @@ this is the part you need before you change it.
 - "Kill that What to expect here": the Insights flow's What to expect step (`d`) is off by default and sits in Not used; Welcome goes straight to the first insight. The Flow panel has a per-flow default-off list: `window.__flowOffD` (`{ ar: ['d'] }`) and `window.__flowOffOf(key, a)` give the steps off, meaning the arrangement's `off` plus the defaults it has not turned on. Turning a step on (its switch, or a drag out of Not used) records it in the arrangement's `on`, so it stays on through Save and presets. The report's Next and Back (`seqTop`) and the panel's model read it.
 - "Context need to be editable": the Context pill on an Intro / Outro screen (Check-in Intro, Outro, Insights cover, Insights' What to expect) is edited in place: click, type, Enter (Escape cancels). The name is kept with the screen's words (`EvScrOv` field `nm`, Save screen); empty or Reset gives the template's name back.
 - Recommendations: "Add divider between Item, gap above below 8px": an `EvDivider` between every item, none after the last. It sits 8 from each row's content (its 12 padding less 4).
-- AI button:
-  - "Logo should rotate one more round": the loop is 9.1 s (was 8 s). The mark holds at full size 1.1 s longer, one turn of its loop (52 frames, two turns in 2.15 s); the star keeps its 6 s.
-  - "When beam pass over the star the star opacity should be low like 25%": the star grows back at 25%, the beam crosses it, then it comes up to full (by 11%).
+- AI button: "Logo should rotate one more round": the loop is 9.1 s (was 8 s). The mark holds at full size 1.1 s longer, one turn of its loop (52 frames, two turns in 2.15 s); the star keeps its 6 s. The beam through the star (and the star at 25% under it) is gone again ("Remove the beam pass trough. Keep it simple"): the star grows back at full.
+- Fixed after an adversarial review of this change:
+  - Fit fits again. `EvCanvas.fit` measures the stage's drawn box over the zoom; `offsetWidth` already ignores the stage's own zoom, so Fit divided by it twice. This also fixes Modules' Canvas.
+  - A report sheet keeps the Flow panel: the `arSh` context has `flow: ['ar', 'qci']`.
+  - The sheet's Header nav Off wins over the sheet header master, so the Close floats at the top right.
+  - The sheet's set lists only the props it obeys (`data-sh-keys="nv nd tt ft"`; `EvSheet.tweaks` honours the list and drops empty cards).
+  - The Doctor's notes sheet takes no `arSh` picks (`qaTk` runs once the list says which sheet it is).
+  - The page under a sheet takes its defaults from its own type, Full modal (`tPtO`), not the Sheet's. `fmK` is never the sheet itself.
+  - The Full modal's Footer Off also hides a footer moved into the body (Fixed Off, `.arFootIn`).
 
 ## v3137 Full modal full custom; recommendation chips limited, divided, matched in the detail; its sections H2
 
