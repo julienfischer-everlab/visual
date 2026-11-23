@@ -5,6 +5,18 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3150 Page templates: the Templates group is now its own page, beside Design system
+
+- "Replace these in a Dedicated Page ins Assets (same level as Design system) and call that Page templates":
+  - The Page menu's Asset group has Page templates (`'tpl'`) right after Design system.
+  - It holds what was Design system → Templates: Intro / outro, Insight detail, Goals, Doctor note, Confirm review plan, What's changed, and any template made in Tweaks.
+  - Its header select lists only those, under Templates. Design system's select no longer has the group.
+- A fourth doc set, wired like Modules:
+  - `setOf` gives `tpl` for `it`, `idt` and every `tpx_` page; `docLast.tpl = 'it'`.
+  - The nav heading is `data-gs="tpl"`. `dnApply` and `dnSel` take it, as do the Page menu's route, `docOf`, `docHide` and `__pageVal`.
+  - The CSS lists `body:is([data-doc-set="ds"], [data-doc-set="mod"])` now include `"tpl"`.
+- `EvTplGo` and `__dsOpen` (the Tweaks template pencils) open the page there. Notes that said "Design system → Templates" now say "Page templates".
+
 ## v3149 Main menu AI button: a Chat version (a speech bubble with a star, morphing into the mark)
 
 - "Try another version in the Main menu tweak. Chat icon with star. Bubble speech outlined icon that let a star appearing on the top right. Then morph to the logo mark":
