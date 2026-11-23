@@ -5,6 +5,17 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3158 Orbs flat and orange, the beam purple to orange, the Modules phone scrolls
+
+- Insights → Empty style Orbs:
+  - "no border", "No glossy light on active": no line round the orbs; the lit one flat, its colour alone, with no gradient, rim, halo or breathing.
+  - "positive token used here": the tick and "Completed" / "12 found" use `--t-fg-sentiment-positive-100`.
+  - "Orange": Orange is the default glow. The saved Insights setup (`everlab:insMaster`, kept in the artifact's shared store, which overrides each browser's own on load) was set to orange too.
+- Border beam "less blue and more purple tend to orange vibes": the tokens (`--bmRing`, `--bmGlow`, `--bmMk`, `--bmFld`) now run a purple tail (rgb 160 112 255), a soft pink (#F4B0C8), then the orange head. Light, on the AI button: a deeper purple (#8C5CF0), pink (#E58AA6), Everlab's orange.
+- Modules → a module's Demo at XS · S ("Need to be able to scroll overflow. Also screen centered vertically. Viewport fill the space height and width"):
+  - The stage is the whole room under the bar (no 24 padding at XS · S); the phone or tablet is scaled to it (24 round at least, never up) and centred in its height.
+  - Its screen scrolls inside it (`.moSkPhSc`, the skeleton and the card), under the status bar (now pinned at the top, the time left and the signal right, a fade under it) and the dock (over a fade at the foot).
+
 ## v3157 Main menu fills the viewport height; the border beam's blue shade
 
 - "fill the viewport height!" (Design system → General layout → Main menu): at a breakpoint picked (XS, S, M, L) the stage is the room from the bar to the page's foot (`roomH()`, now measured from the stage's top), the frame and its ring scaled to it (24 above and under at least, never over 100%) and centred in it; no more 24 margins round a stage the frame's height (it left ~200 px empty under it on a tall window, and the page scrolled on a short one). Auto as before.
