@@ -5,6 +5,11 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3108 Tab tap: only when the part can reach the tabs; decade rows: the why in a card, written as a why
+
+- "Clicking a tab dont necessary change to fixed position as described before!": `jump(k)` scrolls only when the part's head can come right under the pinned tabs (its target within `scrollHeight - clientHeight`); a part whose body below is too short for that leaves the page where it is, its tab lit. Now always scrolls to the top. (v3103 only asked whether the page could pin the tabs at all, so a long page always scrolled.)
+- "Put the why in a card secondary static card below the Every where. Not below the image": the decade row's description is a Card static (Secondary · Surface, sm, `.t3MiniS.t3MiniSC`) in the words' column, row 3, 8 under how often (both builders, `li` and `decMini1`'s rows). "make sure this a why, not a what": every line now gives the reason (Coronary calcium score, Bowel cancer screening, Osteoporosis risk assessment, Shingles and Pneumococcal vaccines, and the two family-history lines reworded).
+
 ## v3107 Insights flow (renamed); its What to expect on the Intro / Outro Tweaks; goal card spacing, Merged tabs outside the card
 
 - "rename Insights flow": the page menu's Async report (Standalone flow, and its old page's name) reads Insights flow, as do its page-type label, the Flow panel's title, the container list and the page lists; its key (`ar`), its link (`#async-report`), its Tweaks group and the assets' groups unchanged.
