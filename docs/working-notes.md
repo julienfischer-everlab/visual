@@ -5,6 +5,14 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3131 A template's pencil: its master page, always
+
+- "Need a way to redirect to master screen template ... always": every template in Tweaks has a pencil on its left (`.tkPgEd.tkTplEd`, the Page · Overview pencil's look), in two places:
+  - the Template row (`#stTplRow`), shown while the screen has a template (`tplUi` keeps `data-tpl` on it);
+  - the Intro / Outro badge (`.tkScrTpl`, `data-tpl="ar:tpl-intro"`).
+- `window.EvTplGo(key)` opens the master page under Design system → Templates. Introduction goes to Intro / outro (`it`), and Insight detail (`ar:tpl-ins` and `qci:tpl-ins`) goes to Insight detail (`idt`). Every other template goes to its own `tpx_` page; `tpxReg` runs first, so a just-made template has its page.
+- "Use the overview default screen": the check-in card screen (`qci:ready`) carried a saved flow context, "Check-in invite". It had its own Overview values: Services and None in the bento, a dedicated Insights section, Amount 4, Insights processing. I removed it from the shared store (`masters/everlab_flowCtx`), so the screen shows the Overview page as it is. The Preparing and Insights ready contexts stay.
+
 ## v3130 The AI button's Beam star: star, then the mark, a beam while it morphs
 
 - "Beam star should auto play always on rest state. Star 75% of time, 25% logo mark morph to star then loop. Consider border beam effect while morphing": `html.askIcBeam` runs an 8 s loop with no tap. Eva's star holds for 0–75% (`mChatStM`). It then blurs, shrinks and turns a quarter while the Everlab mark (`.mChatMk`'s `svg.mChatMkL`, `EvMarkSvg`) blurs in (`mChatMkM`, full 83–89%), and the two swap back by 99%. The beam (`.mChatBs`, ring 1.5 now and glow) fades in at 73–77% and runs once round the edge (`--mcBs` -40° → 320°) while the icon morphs, gone at 100% (`mChatBsLoop`). The mark's twinkle stars stay Everlab-only. Reduced motion: the star alone with the ring still.
