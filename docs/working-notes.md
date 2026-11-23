@@ -5,6 +5,18 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3149 Main menu AI button: a Chat version (a speech bubble with a star, morphing into the mark)
+
+- "Try another version in the Main menu tweak. Chat icon with star. Bubble speech outlined icon that let a star appearing on the top right. Then morph to the logo mark":
+  - Tweaks → Menu AI entry point → Icon has a new option, Chat (`html.askIcChat`).
+  - At rest: Lucide's message-circle, outlined and scaled to 80% toward its tail, with Eva's star at its top right, clear of the outline (`.mChatCb` in `mChatMk()`).
+- It plays like Beam star, once, 1 s after the Overview comes up (`.mcGo`):
+  - while the Overview waits that second, `.mcPre` hides the star;
+  - then the star appears with a little overshoot;
+  - the bubble and star shrink, turn and blur into the Everlab mark (the loop picture), which turns about 1.2 s;
+  - it grows back into the bubble with its star.
+- 3.4 s in all; still under reduced motion.
+
 ## v3148 Context: an outline Add context the size of a badge, no line under it until there is one
 
 - "There's no context. Remove the badge now and put an outline CTA add, a very small CTA, the same size as a badge. Remove the line below":
