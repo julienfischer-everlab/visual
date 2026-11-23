@@ -5,6 +5,15 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3143 An Intro / Outro screen's context: add it, rename it, remove it
+
+- "Need to be able to edit context and remove if unnecessary" (Insights flow → What to expect; the check-in's Intro, Outro and Insights cover): the screen's Context in Tweaks now works as the Overview's flow contexts do.
+  - **No context:** Context reads None and the screen shows the template as it is. Add context starts one under the screen's name, its name field open to type in. Its words and visual stay the template's until changed; the Content and Visual fields (and the check-in's Style) show only while a context is on.
+  - **With a context:** its name is a chip; a tap opens it to rename (Enter saves it, Escape puts the name back). A status line says New · not saved yet, Unsaved changes or Saved in the flow. Save keeps it, and so does the panel's own Save.
+  - **Remove:** the context goes (a saved one asks "Remove context?" on the first tap), and the screen is the template's again.
+  - It replaces the bare editable label and the old Reset to template / Save screen row.
+- `EvScrOv` gained `has(k)` and `add(k, name)`. A context always stores its name (`nm`), so one with only a name is kept. Readers (the check-in, the Insights flow, Templates → Intro / Outro) take a missing field as the template's, as before.
+
 ## v3142 The Check-in canvas: the Overview as the app has it, the Insights in the middle, the intro whole
 
 - "No shortcut module Script etc"; "Insight use empty state module": the canvas's live Overview copies (`#ov-live`) never got the app's Tweaks. A copy has no shared store of its own, so a moment with no flow context (Check-in card, Check-in not finished) showed the code's defaults: the shortcuts and the Insights with data.
