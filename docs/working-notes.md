@@ -5,6 +5,10 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3115 The check-in's Overview screens: the Overview's Tweaks only
+
+- "Should [not] be here as it doesnt belong to overview page" and "neither check in": on the check-in's Overview screens (`html.qciHome`, set as the check-in draws a `home:*` step) the Check-in group (`.tkQciGrp`: Persona, Build stage, Active label, Option picker, Journey) is hidden; What's changed's own group (`.tkQciEdG`) shows only on its screens (`html.qciChgOn`: the What's changed step and its follow-ups' question, `q.file`). Both classes go when the check-in closes.
+
 ## v3114 The check-in's Overview reads Page · Overview
 
 - "Consider this as Page not really template": in the check-in, the Page type part reads Page · Overview (was Template · Overview), then Context · Check-in · Preparing (or the screen up) under it; the Overview is a page, its screens in the check-in its contexts. Templates keep Template (Intro / Outro, Insight detail, Goals …).
