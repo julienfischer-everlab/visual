@@ -5,6 +5,10 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3101 Range: its end labels at its two edges
+
+- "Label on edges left and right. Also add 8 margin": in Range mode the ends row (`.evQScRg .evQScE`) took the circles' width (`--evQScN` x `--evQScD`), so the two words sat inside the range; it is the range's full width now, the first word under 0, the last under 10, and 12 above it (8 more). Checked at L (432-1008 on a 432-1008 range) and XS.
+
 ## v3100 Intro / Outro template, each flow's screen a context with its own words and visual; the Everlab mark in the notifications
 
 - **Template and context** ("Every time I use an intro I need to be able to control the medium, img bg and video ... content as well ... Exclude the Layout as it's a Master Screen ... Save the Screen in the Flow that doesn't impact the Master screen"; "Template Intro/outro. And any context on top of that is a Context"): `window.EvScrOv` keeps per flow screen (`qci:intro`, `qci:cover`, `qci:build`) its words (tag, title, line, button) and its visual (a picture or a video of the report's library, `ArPic`), a draft while edited, Save (`everlab:scrOv`), Reset to template. The check-in's `arMount` lays it over the template's (its words kept in `__qciScrM` as the panel's placeholders) and marks `html[data-scr-ov]`.
