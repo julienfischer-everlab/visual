@@ -5,6 +5,10 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3120 The Insights feedback: a 48 media, a still icon
+
+- "48 48 media": `.hpInsFbIc` 48 × 48, `--t-radius-xl` (14; was 56, 16). "Avoid animation icon": Insights processing shows a still hourglass (`.hpInsPendI`, Lucide `hourglass`, 20, at 85%) in place of the spinning `.hpInsPendS`; New insights keeps its green tick.
+
 ## v3119 The Insights feedback: the Divider version only, its icon in a 56 frame
 
 - "Keep this version, kill the card style tweak": Feedback style (Card / Divider, `#stInsFbSty`) is retired; `window.EvInsFb.html` always draws the Divider version (the Divider master on top, no card). The `.hpInsPend.evCard` rules are left for nothing to use.
