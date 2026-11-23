@@ -19776,10 +19776,10 @@ body .qcdDoc .hcScr .aqWrap.qciWrap.hcAq { display: block !important; position: 
 .arSheet .arRcTips { margin: 0; padding: 0; list-style: none; }
 .arSheet .arRcTips li + li { border-top: 1px solid oklch(var(--ar-ink) / .08); }
 .arSheet .arRcTip { position: relative; appearance: none; -webkit-appearance: none; display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; min-height: 52px; margin: 0; padding: 14px 0; border: 0; background: none; color: oklch(var(--ar-ink) / .72); font: inherit; font-size: 15px; line-height: 20px; text-align: left; cursor: pointer; }
-.arSheet .arQaHd > .arQaLead { margin-bottom: 16px; }   /* the picture over the title */
+.arSheet .arQaHd > .arQaLead { margin-bottom: 16px; } .arSheet .arQaHd > :is(.arQaT, span)[hidden] { display: none !important; } .arSheet .arQaHd > .arQaTg.evTg { margin: 0; color: oklch(var(--ar-ink)); } .arSheet .arQaHd > .arQaTg .arQaLead { margin: 0; }   /* the head as the Title group (a recommendation's): its slot the picture, the master's gaps, no margins of its own */   /* the picture over the title */
 .arSheet .arQaList.arRcDet { display: flex; flex-direction: column; align-items: flex-start; gap: 24px; padding-top: 12px; padding-bottom: 24px; }
 .arSheet .arRcMealPic img { display: block; width: 168px; height: 130px; object-fit: contain; }   /* the plates' 168 x 130, and the Hydration glass contained in the same box */
-.arSheet .arRcDetSec { display: flex; flex-direction: column; gap: 8px; align-self: stretch; }
+.arSheet .arRcDetSec { display: flex; flex-direction: column; gap: 16px; align-self: stretch; } html body .arSheet .arRcDetSec > * { margin-top: 0 !important; margin-bottom: 0 !important; } html body .arSheet .arRcDetSec > .arRcDetH.evTg :is(.evTgT, .evTgCol) { margin: 0 !important; padding: 0 !important; }   /* each module: its H2, 16, its content ("Module h2 / 16px / Content / For both module here"), nothing else between */
 .arSheet .arRcDetH.evTg { margin: 0; color: oklch(var(--ar-ink)); }   /* the section titles: the Title group's H2 (its size, weight, tracking), in the ink */
 html body .arSheet .arRcDetSec > .arRcDetP { margin: 0; font-size: 16px !important; line-height: 24px !important; color: oklch(var(--ar-ink)); text-wrap: pretty; }   /* "description 16" */
 .arSheet .arRcTags { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -24169,12 +24169,16 @@ window.BzMedia = (function () {
     var qaTkOn = function (e) { if (!root.isConnected) { document.removeEventListener('evsheet:tweak', qaTkOn); return; } if (e.detail && e.detail.ctx === 'arSh') layers.forEach(function (L) { if (L && !L.el.hidden) qaTk(L); }); }; document.addEventListener('evsheet:tweak', qaTkOn);
     function sheetOpen(t, st, label, cls, rows, from, stack, fit, lead) {
       var qa = sheetLayer(stack && sheetUp(0) ? 1 : 0);   // stacked on the open sheet when asked
-      { var hd0 = qa.title.parentNode, old0 = hd0.querySelector(':scope > .arQaLead'); if (old0) hd0.removeChild(old0); if (lead) { lead.classList.add('arQaLead'); hd0.insertBefore(lead, qa.title); } }   /* lead: a picture over the title (a recommendation's: "visual above title") */
+      var useTg = !!(lead && window.EvTitle && !lead.classList.contains('arEvaLead'));   /* a picture over the title (a recommendation's): the head the Title group master's ("Img should be a Slot On title group / Pathology... should be a h1 from title group / Visit a partner a sub from title group"): the picture its top slot, the title its H1, the sub its support line */
+      { var hd0 = qa.title.parentNode, old0 = hd0.querySelector(':scope > .arQaLead'), tg0 = hd0.querySelector(':scope > .arQaTg'), tid = 'arQaT' + uid + '-' + (qa.el.classList.contains('arQb') ? 1 : 0); if (old0) hd0.removeChild(old0); if (tg0) hd0.removeChild(tg0);
+        qa.title.hidden = useTg; if (useTg) qa.title.removeAttribute('id'); else qa.title.id = tid;   /* one id: the dialog's name, on the H1 shown */
+        if (useTg){ var tw = document.createElement('div'); tw.innerHTML = window.EvTitle.html({ level: 'h1', tag: 'h2', title: t, bottom: st || '', align: 'left', titleId: tid, cls: 'arQaTg', slot: { html: '<i class="arQaTgS"></i>' } }); var tg = tw.firstElementChild, ph = tg.querySelector('.arQaTgS'); lead.classList.add('arQaLead'); if (ph) ph.replaceWith(lead); hd0.insertBefore(tg, qa.title); }
+        else if (lead) { lead.classList.add('arQaLead'); hd0.insertBefore(lead, qa.title); } }   /* lead: a picture over the title (Ask Eva's star: its own centred head) */
       { var ft0 = qa.list.parentNode.querySelector(':scope > .arQaFoot'); if (ft0) ft0.parentNode.removeChild(ft0); }   /* a foot under the list (Ask Eva's composer) only on its own sheet */
       qa.el.classList.toggle('arQaTc', /\barRvTkS\b/.test(cls || ''));   /* Discuss: its title group an H1, centred, under the header's close ("Title group centered h1. Below the header group") */
       qa.el.classList.toggle('arQaFit', !!fit);   // fit: as tall as its content, the page behind left in place (iOS's partial sheet), only dimmed
       { var pt0 = !/\barRvTkS\b/.test(cls || '') && !lead; qa.el.classList.toggle('arQaPt', pt0); if (pt0 && window.EvPageHg && window.EvPageHg.vars){ var w0 = root.closest('.aqWrap'), b0 = w0 ? (w0.classList.contains('aqBpL') ? 'l' : w0.classList.contains('aqBpM') ? 'm' : w0.classList.contains('aqBpS') ? 's' : 'xs') : (document.body.dataset.bp || 'm'); window.EvPageHg.vars(b0).split(';').forEach(function (d) { var i = d.indexOf(':'); if (i > 0) qa.el.style.setProperty(d.slice(0, i), d.slice(i + 1)); }); } }   /* the modal system on Page types ("Follow the moda system on page type"): its Header nav (the Close in a 72 row), its Header title (the Header group master's title), its Body on the container padding, the master's numbers at the breakpoint (EvPageHg.vars) */
-      qa.title.textContent = t; qa.sub.textContent = st; qa.sub.hidden = !st;
+      qa.title.textContent = t; qa.sub.textContent = st; qa.sub.hidden = !st || useTg;
       qa.list.className = 'arQaList' + cls; qa.list.setAttribute('aria-label', label); qaTk(qa);   /* its picks, once its list says which sheet it is (the Doctor's notes keep their own) */
       qa.list.textContent = '';
       add(qa.list, rows);

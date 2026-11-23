@@ -7,6 +7,11 @@ this is the part you need before you change it.
 
 ## v3140 Recommendation dividers stacked between the rows
 
+- A recommendation's detail sheet: "Img should be a Slot On title group / Pathology... should be a h1 from title group / Visit a partner a sub from title group".
+  - When `sheetOpen` gets a picture (`lead`), its head is the Title group master (`EvTitle`, level H1, `.arQaTg`): the picture in its top slot, the title its H1, the sub its support line. The H1 carries the dialog's name (`aria-labelledby`); the sheet's own title and sub stay hidden.
+  - Ask Eva's star keeps its own centred head.
+- "Module h2 / 16px / Content / For both module here": each of the detail's two modules (Why Dr Lu suggests it, Based on) is its H2, then 16, then its content. The section gap is 16, with no margins of its own.
+
 - "Divider should be stacked betwen item!! 8px margin top bottom": the divider between recommendation items now has a real 8 px margin above and below, between the rows' boxes. It was −4, which put it 8 from the words but inside a row's hover / press ground. It sits 20 from the words now (each row's own 12 padding plus 8), the words' edges either side, none after the last.
 
 ## v3139 The Check-in canvas's Overview moments are the Overview itself; the unfinished case; no Archive
