@@ -5,6 +5,10 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3105 Previously on file: the summary outside the card, no border
+
+- "Previously on file outside the card. No border on card": the Disclosure master takes `wrap(html)` (EvDisc), which puts what it holds and its note in the caller's container under the summary; its body follows the summary's open state (`.evDiscWr > .evDisc:not([open]) ~ * .evDiscB{display:none}`). The check-in's form sheet and the Design system's Form example pass a Card (Secondary · Surface, lg, `.qciFmPrevG`, the warning ground, no line), the value a Secondary · Surface md card inside. Closed: the summary, then the card with the note; open: the value card over the note.
+
 ## v3104 Unsaved step themed orange; 24 before the What's changed badge
 
 - "if unsaved need to theme the Step item with orange": the Flow row of a screen with an unsaved draft (`li.hpFlWarn`) wears the current step's treatment in the warning ink: ground at 18%, line at 45%, its name and dot in `--t-fg-sentiment-warning-100`; on the current step too (orange wins over blue). It stays while you move to other steps (checked: Intro edited, then 2. What's changed, Intro still orange), until Save screen or Reset.
