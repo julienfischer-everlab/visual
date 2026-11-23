@@ -5,6 +5,14 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3113 Primary card title group further in; Insights card: items and Feedback bleed, Feedback style; no dot on decade rows
+
+- "In primary card M L Add 24px padding left right extra around the title group": in the centred primary card at M and L (`html.hpOvCtrOn`, not XS or S), its heading at most the card's width less 48, centred (24 further in each side); the consult's title group keeps its own 320 and never comes closer than 24 a side.
+- "check padding consistency": the Feedback in the Insights card as far from the card's foot as from its sides (24, 20 on the phone), when the insights are the slides.
+- "Should bleed more ... Internal padding equal padding parent card. So increase list interactive size": in the stacked Insights card (`html.insStk`, S up), the insights (List item interactive) 12 from the card's edges and 20 inside (was 20 and 12; one insight 20 all round, a row 12 / 20), their words still 32 in, in line with the eyebrow; the Feedback the same, 12 from the edges and the foot, its icon at 32 (the card's own body padding).
+- "Tweak style: Instead of a card Use no card and a top divider": Tweaks → Insights → Feedback style, Card (as before) or Divider: the same words with no card, the Divider master (`EvDivider.html`, md) over them, 16 between; in the Insights card and under the tasks (no insights) alike (`EvInsFb.html` reads `#stInsFbSty`).
+- "remove dot no need": no family-history dot on the decade rows' visuals (`.t3MiniVDot`, both row builders).
+
 ## v3112 The 70s decade from the reference table, the why on some rows; the blood panel insight on the report render
 
 - "On the decade Add the why In some item, no need for all items. Be based on this": Julien's decades (`DJ0`) gain the 70s, from the reference table (Check, Type, How often, Why): five areas (Bones: Muscle and bone (DEXA), Falls and strength review; Heart: Heart and kidney check, every year · heart risk score to 79; Senses: Hearing and vision review, Memory check, if you or family notice changes; Screening: Finishing cancer screening, breast and bowel to 74; Reviews: Medicines review, Pneumococcal vaccine, once at 70, 75+ health assessment, every year from 75), the table's why as the row's card on about half of them (DEXA, falls, memory, finishing screening, pneumococcal), the rest the title and how often only. Its words the 70s note's. A few of the timeline's own items carry a why too (`ds`: hearing and falls, pneumococcal, bowel screening finishing), for the decades drawn from them (the other people's).
