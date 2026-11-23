@@ -5,6 +5,18 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3134 Screen component masters: a live screen, every tweak, Anatomy in a sheet
+
+- "Can't interact with anything on the screen" / "cant scroll into the screen": Intro / outro's and Insight detail's frames are no longer `inert`. The screen scrolls and every tap is real.
+- "Need to be able to see All tweak group here": Insight detail lends the insight step's own Tweaks groups (General: persona, step shortcuts; Insight: evidence, sources, biomarkers, recommended, meaning, see more, tab style, max biomarkers, data visual, cards, Ask Eva) to its panel, after Context.
+  - These are the very groups (`tkLend` / `tkReturn`, class `.tkLent`), not copies. They go back to Tweaks when the page is hidden or the docs close, and `__tkPages` runs.
+  - A change redraws the phone. The phone reads the report's options from `window.__arOpts()`, the same function the report's own mount now uses (lifted out of `mount`).
+  - Saved setups collect `.tkGroup.tkLent` controls too, so a Save on that page keeps them.
+- "PUT all Anatomy Under a Sheet. Action Anatomy cta into Template tweak card. General rule for ALL screen components master": `tplDocWire(el, { name, html })` runs on every Templates page (Intro / outro, Insight detail, each template's own page).
+  - The Anatomy group leaves the panel (its list is kept hidden, since Intro / outro redraws it). The Template card gets a row, Anatomy · See anatomy.
+  - See anatomy opens an `EvSheet` (the Sheet page type) titled Anatomy, the master's name under it, the list in two columns, one Done.
+  - A template page with no list of its own shows its parts and their containers.
+
 ## v3133 The recommendations card: Card static LG, See more
 
 - "This need to be a card static comp lg": What we recommend's card is the Card master (`EvCard.html`, look filled → Secondary - Transparent, size lg, `.arRxCd`), built by `rxCard`. Its padding and corners are the master's; the rows' 12px hover ghost bleeds into the padding, so the words sit 20 in. The Plain variant keeps the bare list.
