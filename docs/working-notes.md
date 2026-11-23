@@ -5,6 +5,13 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3148 Context: an outline Add context the size of a badge, no line under it until there is one
+
+- "There's no context. Remove the badge now and put an outline CTA add, a very small CTA, the same size as a badge. Remove the line below":
+  - In all three Context rows (a screen on a template, the Overview inside a flow, the check-in's intro and outro screens), the None badge is now `.tkCxAddS`: an outline button labelled Add context, 24 high like the badge, in the badge's place.
+  - A click on it clicks its row's own `.tkCxAdd`, so the existing add logic runs.
+  - The action row below ("The template as it is" or "The Overview page as it is", plus its Add context) is hidden while its `.tkCxAdd` shows, which means no context (CSS `:has`). Once a context exists, its name, status, Remove and Save show as before.
+
 ## v3147 Save follows the template rule for every General layout property, not just containers
 
 - "If there's a save without a template, it will save all of the page in the flow ... If the page has a template, it's going to only save this page with the template, not the other pages of the flow ... If there's a context, it's going to only save the context."
