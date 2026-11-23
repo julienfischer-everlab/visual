@@ -9,6 +9,10 @@ this is the part you need before you change it.
 
 - "48 48 media": `.hpInsFbIc` 48 × 48, `--t-radius-xl` (14; was 56, 16). "Avoid animation icon": Insights processing shows a still hourglass (`.hpInsPendI`, Lucide `hourglass`, 20, at 85%) in place of the spinning `.hpInsPendS`; New insights keeps its green tick.
 
+## v3125 The Insights feedback media a circle
+
+- "icon circle": `.hpInsFbIc` (48, the hourglass or the green check) round (`border-radius: 50%`, was `--t-radius-xl`).
+
 ## v3124 Design system → Templates: every template's master, the one source of truth
 
 - "ALL template master should live here as source of truth. E.g. What has changed"; "everytime a new template is added on the ui side, manage it to create the master screen in the DS / Templates and make the template as source of truth - super important to keep one source of truth": a template's layout (the containers of Header navigation, Header title, Body, Footer) now lives in the template itself, `everlab:tplSys` → `lay[key]` (shared like a master), not in the page presets. EvCt reads a template's layer from there (`isTk`, `tv`); Tweaks on a screen on the template writes there (`set` → `tset`, a draft in `TD` till Save; the one `tk:save` and the doc page's Save commit it, `tsave`); the preset Save dot counts an unsaved template. Picks kept in presets before (`flow:tpl-…` in `#stCtPg`) move into the template once, on read.
