@@ -5,6 +5,25 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3144 Modules → Insights with insights in, stacked; the Demo the whole viewport; a sheet's head spacing
+
+- "where is the variation of the insights with the insights inside stacked?": the Insights module's Collection has a new last section, **Insights card · Stacked**: 1 insight, 2, 3, 4+ (three rows and See more), and 3 with the Feedback (Processing, New). It sits last so the sections before keep their links (`#col-mins-<n>`) and comments.
+  - They are the Overview's own card: `buildOvInsights` is exposed as `window.EvOvIns` (`build`, `reads`, `items(format, n)`), and the hero card's own list now comes from `items` too.
+  - Each is drawn inside its own `.moOv.moDk` wrapper carrying the variant the Overview's html classes would set (`.moI-insHero`, `insStat`, `insStk`, `insStk1`, `insStk4` …).
+  - Its CSS is the Overview's. `moCss` now copies the card family (`ovInsCard`, `ovInsTrack`, `ovInsSl`, `ovInsTx`, `ovInsCta`, `ovInsMore`, `ovInsEb`, `ovInsFbW` …).
+    - The html classes that are the card's variant are rewritten to `.moI-<class>` on the wrapper. `html.insEmpty` is among them, so the empty state's "hide the slides" rule no longer reaches a stacked card.
+    - The Tweaks' own classes (`insArrE`, `insRow` …) stay on html. Page placement (`.dvTop`, the services' row, `#dOver:has`) is not copied.
+    - The other modules' rules are copied as before.
+  - The Feedback placement now clears only the Overview's own `.ovInsFbW`.
+  - See more and the rows do not leave the page here.
+- "control the tweak insights here when you have something other than zero insights": the Demo has an **Insights** control (None yet, 1, 2, 3, 4, 5+). With one or more it shows the stacked card (with the Feedback control at its foot). The tasks' controls and the empty state's Style step aside.
+- "Please use the full viewport. We don't really need the anatomy here. You can put the anatomy in the panel": on every module with a Demo page (Insights, Primary card …):
+  - The desk skeleton now runs to the viewport's foot (`skFit` sizes it to the room left, scaled to the width, never up).
+  - **Anatomy** and **Used in** are groups in the right panel, not sections under the demo.
+- The recommendation's detail sheet:
+  - "We don't need a 'done' here": a sheet's own Tweaks set can now start from its own values (`data-sh-def`, also what its Reset goes back to). The recommendation's (`arRc`) starts with Footer Off.
+  - "the slot on the image should have a gap between the title and the slot (the token)"; "the subtitle has too much gap": on a sheet's Title group (EvSheet's head, every sheet), the top slot sits 20 above the title (space/md, the Title group's H1 slot token) and the support line 4 under it (space/4xs, was 12). The title is the Title group's H1 (Headlines/700).
+
 ## v3143 An Intro / Outro screen's context: add it, rename it, remove it
 
 - "Need to be able to edit context and remove if unnecessary" (Insights flow → What to expect; the check-in's Intro, Outro and Insights cover): the screen's Context in Tweaks now works as the Overview's flow contexts do.
