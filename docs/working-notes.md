@@ -9,6 +9,12 @@ this is the part you need before you change it.
 
 - "48 48 media": `.hpInsFbIc` 48 × 48, `--t-radius-xl` (14; was 56, 16). "Avoid animation icon": Insights processing shows a still hourglass (`.hpInsPendI`, Lucide `hourglass`, 20, at 85%) in place of the spinning `.hpInsPendS`; New insights keeps its green tick.
 
+## v3120 One Save for everything; the Insights feedback media; Page · Overview's edit
+
+- "Save on top should save the entire properties"; "MRI card and Onboarding consult in the select.!!! check that!": the bar's Save (`#tkBpSave`) with a preset in use only updated that preset (`EvPresets.save`), never clicking the panel's Save, so what keeps its own store was left behind; worst, the primary card's look (`everlab:ocMaster`: Visual, Particles, Filled saturation, Card alignment, each card's Visual, `stPcVisBy`) is put back over every preset on load, so a card's Visual saved with the top Save came back as before. Now every Save sends one `tk:save` first (the bar's Save, and a capture on `.stTkSave`; one per 400 ms): the primary card's look, the flow's context on show, the Overview version's setup (`EvOvVer.snap`) and the membership card all save on it. The Primary card group's own header Save (`#tkOcSave`) is hidden: one Save, the bar's.
+- Insights feedback: "48 48 media" (`.hpInsFbIc` 48, `--t-radius-xl` 14); "Avoid animation icon" (processing: a still Lucide hourglass, no spinner); "No filled icon, just a check. Media bg Green light and icon green" (New insights: the check alone, `--t-fg-sentiment-positive-100`, on `--t-bg-sentiment-positive-secondary-200`); "16 title, 14 sub, +2 gap" (`.hpInsPendT` 16/20 and 14/18, gap 4).
+- "Add edit icon on the left of the overview Badge. Redirect to overview Page so can edit the page layout there": a pencil (`#stFlowPgEd`, 26, Lucide `pencil`) before Page · Overview on a flow screen; it puts the menu on the Overview (`versionSel` 9), the check-in closed, the page's own layout and Tweaks there. "Opacity 50% on template as I cant edit from here": the page or template a screen is built on (Page · Overview, Template · Goals / Insights, Intro / Outro's Template) at 50%; Context stays full.
+
 ## v3119 The Insights feedback: the Divider version only, its icon in a 56 frame
 
 - "Keep this version, kill the card style tweak": Feedback style (Card / Divider, `#stInsFbSty`) is retired; `window.EvInsFb.html` always draws the Divider version (the Divider master on top, no card). The `.hpInsPend.evCard` rules are left for nothing to use.
