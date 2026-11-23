@@ -5,6 +5,20 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3151 Insight activation: Orbs, the reference's glass orbs for its three steps
+
+- "Ideate that style for the insights activation" (the reference: Energy, Circulation and Inflammation as round glass orbs, the active one a lit green sphere, its line under them with its key words in full ink).
+- The Insight activation home (`inaHome`) shows its three steps, Health profile, Health data and Past results, as orbs in a row, each with its name under it (`inaOrbsEl`, `.hpOrbs`).
+  - The picked orb is a lit glass sphere: `::before` the gradient and glow, faded and scaled in as the pick moves, breathing slowly; `::after` its highlight. The others are dark glass.
+  - Under the row is the picked step's line, with its key words lit ("Tells us **how you live**, so your results read like yours."). Under that, how long it takes or where it stands (Completed in green, Skipped, In progress). The three lines are stacked in one grid cell, so the height never jumps; they crossfade with a little blur.
+- A tap on an orb picks it, and the footer CTA becomes that step's own (Tell us about you, Connect a wearable, Find my past results). A tap on the lit orb opens its step.
+  - A step that is done shows a green tick; a skipped one shows a dash; one in progress shows the orange dot. When the picked step is done, or all three are, the CTA is the home's own (Continue, Build my insights).
+  - The pick is kept while the home is redrawn. Coming back from a step done, its tick pops and the next step not done lights.
+- New Tweaks group, Insight activation (`#tkInaGrp`, on the home only, `data-pages="hp"`):
+  - Steps: List (the rows as before), Orbs (the default), or Orbs + card (the line in a card whose caret slides under the lit orb). Sets `html.inaList` or `html.inaCard`.
+  - Glow: Green (the reference) or Orange (Everlab's), `html.inaGlowO`.
+- Icons are Lucide's user-round, watch and flask-conical (`P.inaHp`, `inaData`, `inaRes`). Checked at XS and M, dark and light; animations are off under reduced motion.
+
 ## v3150 Page templates: the Templates group is now its own page, beside Design system
 
 - "Replace these in a Dedicated Page ins Assets (same level as Design system) and call that Page templates":
