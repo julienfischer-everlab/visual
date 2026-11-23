@@ -5,6 +5,11 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3104 Unsaved step themed orange; 24 before the What's changed badge
+
+- "if unsaved need to theme the Step item with orange": the Flow row of a screen with an unsaved draft (`li.hpFlWarn`) wears the current step's treatment in the warning ink: ground at 18%, line at 45%, its name and dot in `--t-fg-sentiment-warning-100`; on the current step too (orange wins over blue). It stays while you move to other steps (checked: Intro edited, then 2. What's changed, Intro still orange), until Save screen or Reset.
+- "+24px safe margin on the left of the badge": the What's changed rows' state badge (Updated, Added, Current) 24 clear of the words (`.qciEdV + .qciEdA:has(.qciEdSt)`: the row's 8 gap and 16 more). Checked 24 on Updated and Current.
+
 ## v3103 Timeline header native push, tab tap rule, badge spacing, Templates group, Flow warning, Previously on file, check-in status bar
 
 - "header nav super laggy": the phone's pinned title (Fixed On) was pushed out by the tabs from a scroll listener (`hdPin()` writing `--tlHdP` / `--tlHdK` on `#dTl` every scroll event), so it trailed the compositor's scroll, and every write restyled the whole Timeline. Now, where the browser has scroll-driven animations (`CSS.supports('animation-timeline: scroll()')`), the lift (`tlHdPush`, `translate`) and the fade (`tlHdFade`, the title row's children, gone at 62.5%) run on `scroll(nearest block)` with `animation-range: var(--tlHdA) var(--tlHdB)`; `#dTl.tlHdNat` switches it on. `hdPin()` only measures the range (while the tabs still move; the last measure kept once they pin) and `hdScroll()` sets the tabs' ground (`--tlHdK`) on `.t3Bar` itself from `scrollTop` alone (no layout read). Without support: the old script path, its variables now on `.tlHead` / `.t3Bar`, not `#dTl`. Same curve as before: h1 83 → 7, child opacity 1 → .58 (48) → 0 (80).
