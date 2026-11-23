@@ -5,6 +5,14 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3132 Recommendations carry their biomarkers
+
+- "Need to integrate the marker chips inside here ... Use pathology follow up as item ... same chip as doctor note, with dotted colour for biomarkers already tested and grey for new marker non tested yet": a recommendation (`L.rx` row) takes a fifth field of chips, `Name: state | Name: state`, parsed by `rxChips`. The states are optimal, suboptimal, out and new.
+- The chips are the doctor note's (`.arDrChip.arDrBio`). A tested marker's dot takes its range colour (`arDrBioo`, `s`, `x`); a marker not tested yet gets a grey dot (`arDrBion`, ink 28%).
+- The chips sit under the row's picture and words, 16 below them (`.arRxRowC`, `.arRxC`). The row's detail sheet lists the chips' markers.
+- Lp(a) (persona #2) now opens its list with Pathology follow-up: "Visit a partner clinic to complete your pathology tests". Its chips are Lipoprotein (a) (out), Apolipoprotein B and LDL cholesterol (optimal), and hs-CRP and EUC (new).
+- "Add margin top 8px on that": the card's footer line (`.arRxF`) is 8 lower.
+
 ## v3131 A template's pencil: its master page, always
 
 - "Need a way to redirect to master screen template ... always": every template in Tweaks has a pencil on its left (`.tkPgEd.tkTplEd`, the Page · Overview pencil's look), in two places:
