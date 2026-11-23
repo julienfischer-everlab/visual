@@ -5,6 +5,15 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3130 The AI button's Beam star: star, then the mark, a beam while it morphs
+
+- "Beam star should auto play always on rest state. Star 75% of time, 25% logo mark morph to star then loop. Consider border beam effect while morphing": `html.askIcBeam` runs an 8 s loop with no tap. Eva's star holds for 0–75% (`mChatStM`). It then blurs, shrinks and turns a quarter while the Everlab mark (`.mChatMk`'s `svg.mChatMkL`, `EvMarkSvg`) blurs in (`mChatMkM`, full 83–89%), and the two swap back by 99%. The beam (`.mChatBs`, ring 1.5 now and glow) fades in at 73–77% and runs once round the edge (`--mcBs` -40° → 320°) while the icon morphs, gone at 100% (`mChatBsLoop`). The mark's twinkle stars stay Everlab-only. Reduced motion: the star alone with the ring still.
+- Beam star is now the Icon's default (Tweaks → Menu AI entry point → Icon). A saved setup that holds Star keeps Star.
+
+## v3129 General layout: its part in the top bar
+
+- "Put this next to General layout select, with arrow right between": the part select (`select.dhSel.dhPartSel`, `window.__glPartSel`) moved out of every view's right panel (its General layout group, gone) into the doc bar after the page select, with a Lucide `arrow-right` (`.dhCrumbA`) between. `dnApply` places them on General layout and on its Main menu page (`nv`, which shows `go:nv`) and removes them elsewhere. It is idempotent, because the doc's MutationObserver calls it again. Picking a part from the Main menu page goes back to General layout first. Views with no other controls (Page base, Title group) now have no panel.
+
 ## v3120 The Insights feedback: a 48 media, a still icon
 
 - "48 48 media": `.hpInsFbIc` 48 × 48, `--t-radius-xl` (14; was 56, 16). "Avoid animation icon": Insights processing shows a still hourglass (`.hpInsPendI`, Lucide `hourglass`, 20, at 85%) in place of the spinning `.hpInsPendS`; New insights keeps its green tick.
