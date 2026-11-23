@@ -9,6 +9,10 @@ this is the part you need before you change it.
 
 - "48 48 media": `.hpInsFbIc` 48 × 48, `--t-radius-xl` (14; was 56, 16). "Avoid animation icon": Insights processing shows a still hourglass (`.hpInsPendI`, Lucide `hourglass`, 20, at 85%) in place of the spinning `.hpInsPendS`; New insights keeps its green tick.
 
+## v3127 The Flow's alternatives: a dashed card, OR in a circle
+
+- "add dashed cards around these 2. Put OR in a circle overlapping both entry point in between": `ol.hpFlAlt` a dashed card (1px dashed, 16 radius, 8 inside), its rows 8 apart; the OR a 30 circle (the panel's ground, a hairline) centred on the seam between them, over both (`li + li::before`, `translate(-50%, -50%)`).
+
 ## v3126 The Flow: alternatives, not a sequence (the check-in's insights entry points)
 
 - "This should be 2 entry point, not after each other": the check-in's Flow had Insights push then Overview · Insights ready in Waiting, as if one led to the other. They are two ways into the insights report (the push's tap opens the cover; so does the Overview's card): now their own group, **Insights entry points**, after Waiting (Overview · Preparing). The Flow panel takes a group flag `alt: true`: its list `ol.hpFlAlt`, an "or" between its rows (`li + li::before`), its label "…: either".
