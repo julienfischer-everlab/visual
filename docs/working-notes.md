@@ -5,6 +5,10 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3118 A saved context is a badge
+
+- "When I save a context it should become a chip" / "badge": once saved, the Context row shows the context's name as a badge (`.tkCxChip`, the blue `.tkTplV.tkFlowV` pill, as Page · Overview's), not the input. The input (`.tkCxName`) shows only while the context is new (not saved yet), while renaming (a tap on the badge: `nmEd`, the input focused and selected), or while its new name is unsaved (`row.tkCxEd`). Enter or Save turns it back into the badge; a values-only change keeps the badge with "Unsaved changes". The hide rule is `#tkMenu .tkFlowCtx .tkCxChip` so the panel's `#tkMenu .tkTplV { display:inline-flex }` cannot show it beside the input.
+
 ## v3117 The main menu's AI button: the Everlab mark, its stars, a border beam (Tweak)
 
 - "We can't go away from stars but can combine with everlab logo rotating with a loop animation + border beam effect. Add this tweak!": Tweaks → Menu AI entry point → **Icon**: Star (Eva's star, as before) or **Everlab** (`#stAskIcon`, `html.askIcMark`). The dock's AI button (`.mChat`, built once in `MOBILE_NAV`, so every phone and the Navigation doc's) carries both: `mChatMk()` adds the mark (`window.EvMarkSvg`, 20px) with two of Eva's 4-point stars (10px top right, 6px bottom left) and `.mChatBm`, the beam. The mark rests, then turns once on its upright axis (`mChatTurn`, 5.6 s loop, 58% at rest); the stars dim and turn a quarter as it turns, the small one half a beat after (`mChatTw`); the beam is a 1.5px conic ring (orange to warm white) running round the button's edge every 3.6 s (`--mcBm`, `@property`). Light mode: the beam in the darker orange. Reduced motion: still. The unread dot keeps its place.
