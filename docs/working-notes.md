@@ -5,6 +5,14 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3157 Main menu fills the viewport height; the border beam's blue shade
+
+- "fill the viewport height!" (Design system → General layout → Main menu): at a breakpoint picked (XS, S, M, L) the stage is the room from the bar to the page's foot (`roomH()`, now measured from the stage's top), the frame and its ring scaled to it (24 above and under at least, never over 100%) and centred in it; no more 24 margins round a stage the frame's height (it left ~200 px empty under it on a tall window, and the page scrolled on a short one). Auto as before.
+- "Bordee beam should have this blue shade as well" (with the reference tile: blue at its top left, cream, orange at its right):
+  - The beam's colours are tokens now, on `:root`: `--bmRing` (the ring), `--bmGlow` (the light inside it), `--bmMk` (the Everlab mark's beam), `--bmFld` (EvBeam, the fields' beam). Each is a blue tail, then cream, then the orange head.
+  - Every beam drawn from Iconography's uses them (`conic-gradient(from var(--…), var(--bmRing))`): Eva's beam star, the AI button's Beam star and its press, the Concierge island, arc and AI tag; and the Everlab icon's beam, the field beams.
+  - Light: the AI button keeps a light set (`body.light .mChat`): a deeper blue and Everlab's orange. The others keep the dark set, as before.
+
 ## v3156 Play reaches the Navigation doc's live phone
 
 - "Play trigger doesnt work": on Design system → Navigation the phone (and the desk at M · L) is the app itself in a frame (`#nav-demo`, `.nvLiveF` / `.nvLiveD`), with its own `<html>` and AI button. Two gaps:
