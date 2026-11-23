@@ -5,6 +5,17 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3136 Documentation → Check-in: the whole flow on a canvas; the mark grows and shrinks
+
+- "Create a checkin documentation in the Documentation flow in a canvas environment": a new Documentation page, Check-in (`qcd`, `#check-in-flow`, after Gifting). It is the Gifting page's canvas: drag to move, zoom in the panel (25 to 100%, `everlab:qcdZoom`).
+  - Every stage sits left to right, an arrow between them. The stages and their steps are the Flow panel's own model (`__flowCfg.qci.model()`): Notification, Entry point, Check-in, Waiting, Insights entry points (the two side by side with "or"), Insights report, Archive. The canvas follows the flow as it changes.
+  - Each screen is the check-in's own still, `window.__qciSnap(frame, key)`, added to the check-in module. It builds the module's shell (EvSolo's sheet, its head with progress, the header title, the body and foot from `screen(k)`) and mounts the report itself for the intro, thanks, cover and insights, at rest.
+  - A follow-up its answer has not opened is drawn as every answer would have it (`allA`), or as the persona who has it (`pkO`), like the Flow panel. It sits under its question on a dashed branch, its caption the answer that opens it.
+  - The Overview's moments (Check-in card, Preparing, Insights ready, After) are notes, as Gifting draws the email: they are the Overview page.
+  - Each screen's arrow opens it in the prototype (XS, `__flowCfg.qci.go`). The side list jumps to a stage. A check-in or report tweak, or the theme, redraws the canvas.
+  - The check-in's wrapper (`body:not(.qciOn) .aqWrap.qciWrap{display:none}`) is shown inside the canvas tiles.
+- "Logo mark should start small and scale up then scale down when animation end": in the Beam star morph the mark comes in at 30%, grows to full size by 84%, turns there to 90%, and shrinks back to 30% by 95.5%. The star shrinks into it and grows back out of it (`mChatMkM`, `mChatStM`).
+
 ## v3135 The AI button's mark rotates (the brand's loop); a softer beam
 
 - "SO integrate it": the Beam star's morph and the Everlab icon now show the brand's own rotating mark (the helix loop you sent) in place of the drawn mark.
