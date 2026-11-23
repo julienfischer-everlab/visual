@@ -9,6 +9,10 @@ this is the part you need before you change it.
 
 - "48 48 media": `.hpInsFbIc` 48 × 48, `--t-radius-xl` (14; was 56, 16). "Avoid animation icon": Insights processing shows a still hourglass (`.hpInsPendI`, Lucide `hourglass`, 20, at 85%) in place of the spinning `.hpInsPendS`; New insights keeps its green tick.
 
+## v3123 Documentation → Navigation: the sheet's tweaks only while it is open
+
+- "Show the relevant tweak ONLY when the sheet is active"; "I can see the sheet tweak without the sheet opened": the Menu AI entry point group (`#tkAskGrp`) and Overlapping modal desktop (`#tkAskGrp2`) live in the Navigation doc's right panel (their home since Tweaks stopped carrying them; Tweaks borrows them while the app's sheet is up). The doc now watches its demo (`.aiWrap.on, .evSrch.on` inside it, every 300 ms) and puts `.nvAskOn` on itself: without it, only the button's **Icon** row (`.tkAskIcRow`) and a hint ("Tap the AI button on the phone…") show; with the sheet open, every row and Overlapping modal desktop.
+
 ## v3122 The main menu's AI button: Beam star
 
 - "Add this style in the main nav. Rotate every 4-5 sec border beam" (Iconography's Eva's beam star): Tweaks → Menu AI entry point → Icon has a third value, **Beam star** (`html.askIcBeam`), beside Star and Everlab. The dock's button keeps its star and wears the beam star's ring (1px conic, orange to warm white) and inner glow (`.mChatBs` ::before / ::after, the same stops as `.evBeamStar`), turning once every 4.5 s (`--mcBs`, `mChatBsTurn`, linear). Light mode: the darker orange. Reduced motion: still, the beam at 40°.
