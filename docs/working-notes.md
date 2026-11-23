@@ -5,6 +5,10 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3140 Recommendation dividers stacked between the rows
+
+- "Divider should be stacked betwen item!! 8px margin top bottom": the divider between recommendation items now has a real 8 px margin above and below, between the rows' boxes. It was −4, which put it 8 from the words but inside a row's hover / press ground. It sits 20 from the words now (each row's own 12 padding plus 8), the words' edges either side, none after the last.
+
 ## v3139 The Check-in canvas's Overview moments are the Overview itself; the unfinished case; no Archive
 
 - "Use the Overview UI not skeleton"; "That need to be the overview / Context Preparing"; "This overview context Insight received"; "Also need to show the insights Widget here": every Overview moment on Documentation → Check-in is now the app itself, live, at the phone's width. That is Check-in card, the unfinished case, Preparing, Insights ready and After the check-in.
