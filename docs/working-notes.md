@@ -5,6 +5,14 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3100 Intro / Outro template, each flow's screen a context with its own words and visual; the Everlab mark in the notifications
+
+- **Template and context** ("Every time I use an intro I need to be able to control the medium, img bg and video ... content as well ... Exclude the Layout as it's a Master Screen ... Save the Screen in the Flow that doesn't impact the Master screen"; "Template Intro/outro. And any context on top of that is a Context"): `window.EvScrOv` keeps per flow screen (`qci:intro`, `qci:cover`, `qci:build`) its words (tag, title, line, button) and its visual (a picture or a video of the report's library, `ArPic`), a draft while edited, Save (`everlab:scrOv`), Reset to template. The check-in's `arMount` lays it over the template's (its words kept in `__qciScrM` as the panel's placeholders) and marks `html[data-scr-ov]`.
+  - Tweaks: while such a screen is up, one group alone (`#tkScrOvGrp`): General layout · Template Intro / Outro, its Context below it (Check-in · Intro / Insights cover / Outro), then Content and Visual (Medium Template / Picture / Video, the library's tiles, + to add one for this screen without moving the template's pick: `ArPic.add(file, own)`), Save screen, Reset to template. No layout: the template's.
+  - Checked: edit, Save, reload (kept), another screen untouched, Reset back to the template.
+- **Notifications** ("In notification. Put logo everlab mark"): the app's tile the Everlab mark (`window.EvMarkSvg`, from `EvMarkPaths`) instead of an "e": the check-in's push, the External master's notification and its home-screen icon.
+- Asked again about the What's changed badge: it is the Badge master (`EvCtl.badge` xs Tint), measured identical to the master drawn alone (68 x 28, 8 round, Saans 14 / 570, white on 24% white).
+
 ## v3099 The outro (and intro) entrance written at the middle; Current the Design system's Badge as it is
 
 - **Outro** ("Problem alignment on outro. Text should appear in the middle"): the welcome-title entrance (the check-in's Thanks for checking in, its intro too) wrote the title at the top: `htHoist` moves it into the Header title section with a top padding measured where it stood. While the page is the welcome stack (`.arPgW:has(> .arStack.arWtStack)`), the page fills the body as a centred column and the section's measured padding is dropped: the title is written at the middle (L 520 / 524, XS 548 / 524), then settles as before.
