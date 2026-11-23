@@ -5,6 +5,32 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3145 Modules → Insights is the Overview's own module; Main menu full viewport, Icons in a tab; the AI button plays once on the Overview
+
+- "This should be a carousel" / "replicate the exact module and the overview page … pull every style, everything from the overview": the Insights module now draws what the Overview draws at the page's breakpoint, with the Overview's code and CSS. It is the source of truth for the next iterations.
+  - Phone (XS): the Recent insights section. Its title row is cloned from `#dOver .dvSecIns`. Its rail is built by the Overview's own `buildOvExplore`, now `window.EvOvExp`, with the Amount through `car._ovExp.setCount(n)`.
+    - 1 insight: the desk's row in a full-width card (`.ovIns1`).
+    - 2: side by side, no dots.
+    - 3+: the carousel with drag and dots.
+    - 5+: See all 12.
+    - The Feedback sits under the section.
+  - Desktop: the Format in Tweaks (`stInsPos`). Hero gives the Insights card stacked, as before; Section gives the same section with the desktop's cards.
+  - `moCss` takes the section's rules whole (`.ovcar`, `.ovcard`, `.ovcdots`, `.dvSec`, `.ovbtn`, `.ocBy`, `.ovIll*`, `.ovIns1`, `.ovInsFbW`, `.lbl` …), scoped to the Insights previews only (`.moInsV`).
+    - The html tokens that are the variant (`insMini`, `insAmt*`, `insStk*`, `insHero`, `[data-ins-amt]`) move onto the preview as `.moI-*` and `data-ins-amt`.
+    - Shared `:is(#phone .lbl, #dOver .lbl …)` lists are taken apart so their `#dOver` line comes through.
+    - The preview takes the app's face (`--t-font-family-secondary`, Saans), not the doc's.
+  - Checked against the real Overview, computed style by computed style: XS at 1, 2, 3 and 5 match; L Hero matches.
+    - The only XS difference is the 24 above the title row, which the module drops: its top is its title.
+    - At L, the only other difference is the card's width (the skeleton's slot).
+  - The phone skeleton drops its title pill over a module that has its own, and its bottom fade is lower.
+  - The Collection's last section is renamed **With insights** (1, 2, 3, 4, 5+, with Feedback), each line saying the phone and the desktop.
+- Main menu ("I need to use the full viewport. And you need to put the Lucide icon and all of the icons in another tab"):
+  - A select in the header bar after General layout's part: Menu / Icons / Sizes and behaviour (`everlab:nvSub`).
+  - Menu has no padding and no frame; in Auto the desk is the whole stage, to the viewport's foot, resized by a ResizeObserver once the stage has its width.
+  - Icons holds Iconography and the Lucide icons. The panel stays there, since the icon motion is chosen in it.
+  - The section heads stick at the very top (`--dhPH: 16px`).
+- AI button ("only when you launch the overview, after 1 second … one time, no loop"): Eva's star at rest everywhere. On the Overview, 1 s after it comes up, the morph plays once (`html.mcGo`, 3.6 s) and the button goes back to the star. Leaving before it ends stops it.
+
 ## v3144 Modules → Insights with insights in, stacked; the Demo the whole viewport; a sheet's head spacing
 
 - "where is the variation of the insights with the insights inside stacked?": the Insights module's Collection has a new last section, **Insights card · Stacked**: 1 insight, 2, 3, 4+ (three rows and See more), and 3 with the Feedback (Processing, New). It sits last so the sections before keep their links (`#col-mins-<n>`) and comments.
