@@ -127,6 +127,7 @@ The page menu `#versionSel` has Documentation flow (`'doc'`, renamed from Docume
 | The Plan module (tiles, Sub pages, sheets, Activity session) | `#dPlan`, `window._plan`, `--plATileBg`, `--plPTileBg`, `detSoloShow` | references/tokens-components.md |
 | Assets library | `window.EvAssets`, `META`, `window.EvSvcImg` | references/tokens-components.md |
 | Tweaks panel | `.tkGroup[data-pages]`, `st*` ids | references/tokens-components.md |
+| A sheet's Tweaks bound to a page template (Goal detail: every goal's sheet reads it; its Tweaks rows and its template page edit it) | `.tkShSet[data-sh-tpl]`, `EvSheet.picks(ctx)` / `.tpl(key)` / `.rows(keys)`, `EvCt.tpl` fields `s.<prop>`, `ar:tpl-gld` | references/flows-modals.md |
 | Design-system saved setups | `everlab:*Master` | references/tokens-components.md |
 | House rules | CLAUDE.md, tools/build.js | references/tokens-components.md |
 
