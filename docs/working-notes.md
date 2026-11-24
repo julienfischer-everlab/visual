@@ -5,6 +5,12 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3187 The Activation card's Visual in the Visual controls
+
+- **"Why can I not have access to the visual tweaker?"**: the Activation card was not one of PcMedia's cards (`OBJS`, `SLOT`), so Modules -> Primary card and Tweaks showed an empty Visual group, and `bjFill` always drew the Ring. Now it is: Visual center On / Off, Type Imagery (Thumbnail, Avatars; the doctor's photo by default, or an uploaded one) or Graphic (Sphere, Halo, Ring progress), Background, per state or every state, saved like the other cards. Its default the Ring progress.
+- The card draws its own Graphic, filled to the journey (`gfxOn` skips it, as the consult's): `bjFill` reads `PcMedia.mode('bj', state)`; a picture goes over a still Ring. A change of Graphic redraws it (`place()` compares the card's `_bjK` and calls `_hpCard.bjFill` again with its last arguments). Particles as the consult's Ring.
+- The doctor in Phase 3 (and Everything shared) is Dr Steven Lu, the one in the picture and the report's notes (was Dr Sarah Chen).
+
 ## v3186 The Activation card: three phases, a step at a time, the Ring the whole journey
 
 - **One step at a time** ("Refine the primary activation card on the Overview into a smooth, three-phase experience ... You just need to go step by step, phase by phase, but keeping in mind that the progress should follow the whole journey"): the Onboarding consult's card (eyebrow, title, line, one button, the Ring in the visual's place); v3184's health picture block and its list of every step (the future ones included) are gone.
