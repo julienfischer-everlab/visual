@@ -5,6 +5,14 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3165 Body padding tweak, a sheet's second level, the product sheet's goal card
+
+- Body -> Padding top / Padding bottom: the Page types master's `bt`, `bb` (On / Off, every type, default On), the token layout/container/padding/top-bottom (`--ctPadY` 24 · 28 · 32 · 36) on the body's container; the demo pads `.sdBdC` (`.sdScr[data-bt]`, `[data-bb]`, `--sdPy`). In the app: Tweaks -> General layout -> Body, two switches (`stBdPt`, `stBdPb`, General layout fields `bt`, `bb` with the page / template / context picks); `html[data-bdpt]`, `[data-bdpb]` on `.evBdCt`, the body's container as the section guides find it (`boxIn` now returns its element, `__secEls().bdc`), marked each second while a pick is up. Unpicked and not saved in Page types: auto, the screen as it is (the master's On default only applies once Page types is saved).
+- Goal cards: the plan's steps are the H2's sub (the footer gone; with the description on, under the why); the number circle filled with the card's ground (`--kBg`).
+- Goal plan items: their ground's padding top and bottom the same as its sides (`--liPy: var(--liPx)`: 8 · 8 · 12 · 12).
+- Product sheet (the review): the goal card is the goals list's own card (`glMcard`, shared with the merged list), an H2 "Supporting your goal" over it (no eyebrow); an H2 "Plan" over its Why / When / Price rows.
+- A sheet's second level (Page types rule, written in its notes and the skill): the goal card in a product sheet opens the goal's plan deeper in the same sheet (`sheetPush`: the push master `EvPush.go` on the head and list, the Close kept), its Header nav forced on (Level Sub), Back at the left (`.arQaBk`, the Close's twin, `sheetBkSet`), Back pops it (`sheetPop` restores the level as it was, scroll included). Opaque while moving (`html.evPushing`).
+
 ## v3164 Goal cards fade in, chips in the title group, the goal sheet's banner and Timeline items, Page types its own page
 
 - Title group master (`EvTitle`): a Bottom slot (`slot: { at: 'bottom', html }`, `.evTgSlotB`, `.evTgSlB`), under the Content, the slot gap (`--tgGapS`) above it, full width with a Right slot. The goal cards' biomarker chips are that slot (`glBio(g)`), on the merged cards, the 1-per-page card and the product sheet's goal card; number-on-image mode keeps its +4.
