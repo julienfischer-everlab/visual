@@ -5,6 +5,18 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3192 Goals: option CTAs, review stacking, Interactive item, no intro, doctor note Goals list
+
+- **Explore further CTAs** ("two CTAs below each item"): `glOptBtns(g, x)` puts Add now · $price and Discuss with Dr Lu (the report's own `drShort`) under each option, the row's full width. Both Tertiary at rest; pressed, Primary with a tick (`aria-pressed`, "an active state for the Discuss with doctor"), Add now saying Added; a second press undoes. State per visit: `glAdd`, `glDsc` (new). Under 400 the tick hides (`@container`); an item narrower than 340 (XS in an Interactive item card) stacks the two. CTA in item Off: the price badge back, no CTA.
+- **Added → the final review** ("stacked with the item on the final review"): `glSync()` (first thing in the review's `paint`) pushes each added option into `stkAll` (`mk: 'gl:<goal>:<key>'`, `mGl` its goal, in Now, ticked, `RC_PRICE` its price) and marks one taken off `mDel` (indices never move). Per goal layout files it under its own goal.
+- **Discuss with Dr X card** ("Below the Your Result Debrief (the green card)"): `rvDscLi()`, the Membership object's card (`.arRvwMb`), its rows each option's picture, name, price; on the Timeline right after the debrief, on Per goal / List first.
+- **End note** Tweak (Goals → Go further, On/Off, `o.glnote`, in the Goals template's fields): Off drops "Everything in your plan…" from the goal page and the goal sheet.
+- **Interactive item** Tweak (Goals → Goal card, No/Yes, `o.glint`, in the template's fields): Yes wraps each plan / option row in a Card interactive (`EvCard.item`, Primary, lg; a `div role=button` so the option CTAs can sit inside), 8 apart, no divider; its press `rcDetail` (the sheet master: why the doctor suggests it, the goal's biomarkers). No: the list as it was.
+- **No goals intro** ("Kill the intro screen"): `rcLin` goes doctor note → Goal 1; `gi` gone from the Flow panel, the alt versions, the Goals List (in multiple page) template and Activation's route (`rec:g0`); an old link to `gi` lands on Goal 1.
+- **Goal page card**: picture 76 (+24), the goal's biomarker chips inside it (`glMcard(..., pg)` keeps `glBio`).
+- **Transparent header + scroll** ("Screen broken!"): with Header nav Style Transparent the report hid its ground for good, so a scrolled title ran under the status bar. Now `html[data-tnbg="clear"] .arSheet:not(.arScrolled) .arGround` hides it at rest only; scrolled, the Gradient ground fades in.
+- **Doctor note Goals list** ("a rich content called Goals List"): EvRtBar's new button writes a `[Goals list]` line; `drRich` renders `.arDrGoals`; the report fills it (`glDrFill`, both note styles) with each goal's card, title Body/300 medium, round photo 48. The default note ends with it; a saved note without the line gets it at its end (the shared saved note predates it).
+
 ## v3191 Goal page (1 goal per page): LG card, Explore further's count
 
 - "Add a counter next to Explore further, showing the number of items inside this bucket": the merged tabs' second item carries the Segmented master's own count (`EvSeg` item `n`, drawn as `.evSegN`), `nMore` (every option in `g.more`, the flat list the pane shows). No count when the bucket is empty. To prioritise now has none (not asked).
