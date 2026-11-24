@@ -230,6 +230,22 @@ A new Sub page: its show / hide do the change at once (no CSS transition of thei
 
 **Pitfalls.** A control outside a `data-pages~="ar"` group is not bound. A preset applied over a template's own value is undone (the template wins on its screen). `hist` is shared with the templates: a teammate's versions arrive with the store.
 
+## Sandbox (the page menu's Asset group, set `sbx`, `#sandbox`): demo screens on the design system, isolated
+
+**What.** "A working sandbox where I can create and edit demo pages using the existing design system": screens and templates of its own, the Screen architecture handoff's model. Page type (Main page / Sheet / Full modal), then an optional Template (immutable revisions, locks, presets), an optional Preset, the screen's own overrides, its unsaved edits. Every screen: Header group (Header navigation: `EvTopNav`; Header title: `EvTitle`), Body (its modules), Footer group (Footer navigation: `EvPageFt` actions, or the app's dock on a Main page at XS and S; Footer home: `EvPageFt.home()`, XS and S only), five containers of their own (container tokens from `EvTokData`, as the Page types demo reads them).
+
+**Where.** `grep -n "const sbxDoc = "` (all of it: schemas `SEC` and `M`, the store, resolution `sv` / `tv` / `iv`, the stage, the rail, the panel, the saves), `.sbxDoc` CSS, `DOCS.sbx`, `setOf` / `docLast` / `docHide` / the page menu's `sbx` option. Debug handle: `window.__sbx` (`db()`, `drafts()`, `view()`, `val(p)`, `conflicts()`).
+
+**Rules.**
+- Its own store only: `everlab:sandbox` (localStorage, this browser) and `everlab:sandbox:draft` (sessionStorage, unsaved edits). Never `everlab:tplSys`, `tweaks/shared`, `everlab:tkAll` or a design system master. The top bar's Save is hidden on it.
+- A property is a path: `<section>.<key>` (`hn.ct`, `bd.gap`) or `m.<module id>.<key>` (a module id is `<type>_<uid>`). Resolution: the definition's default, the template revision's value, the preset's, the screen's saved override, its unsaved edit. A template lock wins over a preset and an override.
+- Saves say their scope: Save screen (this screen only), Save to template (a new revision from the screen's overrides and module changes: into the preset when the screen's preset sets that value, else the defaults; the screen moves to it, the others stay on their revision), Save as new template (a separate template from the screen as it looks). Template editing (its own route: a template row or Edit the template) saves revisions with a note; Restore makes a new revision from an old one (nothing lost); Inspect shows what restoring would change.
+- Screens keep their recorded revision until updated (Update, Update all); overrides survive; conflicts (a removed module, a new lock, a value no longer allowed, a removed preset) are listed with Remove override, never dropped silently.
+
+**How to use.** A new module type: an entry in `M` (`n`, `src` its master, `p` its property definitions: `k`, `l`, `t` tgl / seg / sel / txt / ct, `o`, `d`, `g`, `tok`, `lk`), `r(p)` drawing it with its master, and its key in `MORD`. A new section property: an entry in `SEC[node].p` and its use in `screenHtml`.
+
+**Pitfalls.** A module drawn by hand instead of its master is not the design system. Two-step template edits: the template editor's draft lives in memory until Save revision (leaving asks first).
+
 ## Desk page panels (`#dMain #dOver #dSvc #dTl #dApt #dAcc #dPlan #dMkt`; "follow the setup on overview", merged #270)
 
 **What.** On the desk each page is a card that owns its scroll, floating over the shell ground (`--shellBg` #181818) right of the sidebar, 8 off the rail and the window, 16 below the shell's top, 12 px top corners. At forced S/XS the panel becomes the device's screen.
