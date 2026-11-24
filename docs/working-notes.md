@@ -5,6 +5,13 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3188 Activation: nothing pending on the primary card, the Insights card says it
+
+- **The rule** ("when there's something pending, we never show it on the primary card. We always show it on the insights widget on the top right"; while pending, the card goes to the next action): the states are actions only (`EvPcBj`: 1 · Upload records; 2 · Add other results, Book a blood test, Blood test booked, Lifestyle questionnaire, Everything shared, Deeper insights ready; 3 · Your plan). Gone from the card: Uploading, Reading records, First insights ready, Blood at the lab, Building deeper insights, and its processing rows and foot status.
+- **The Insights card's Feedback** (`EvInsFb`, Tweaks -> Insights -> Feedback `stInsGen`) names what is processed: Reading records ("We're reading your records"), Blood at the lab, Building deeper insights (the hourglass); Blood results in and New insights just landed (the check). `EvInsFb.now()` reads `html[data-ins-fb]`.
+- **The journey** (`bjAct`): Upload records (the button's loader) -> the card on to Phase 2 at once, the Feedback Reading records, then New insights just landed; Get directions (the test done) -> the questionnaire next, the Feedback Blood at the lab, then Blood results in; the questionnaire -> Everything shared (View first insights), the Feedback Building deeper insights once the results are in, then New insights just landed and the card Deeper insights ready; Explore -> Phase 3.
+- **The Ring** counts only what is in: what the Feedback still processes (records being read, blood at the lab) not counted yet (`bjFrac(st, pd)`, the Overview's card only); it fills when the Feedback lands. The processing dash no longer used.
+
 ## v3187 The Activation card's Visual in the Visual controls
 
 - **"Why can I not have access to the visual tweaker?"**: the Activation card was not one of PcMedia's cards (`OBJS`, `SLOT`), so Modules -> Primary card and Tweaks showed an empty Visual group, and `bjFill` always drew the Ring. Now it is: Visual center On / Off, Type Imagery (Thumbnail, Avatars; the doctor's photo by default, or an uploaded one) or Graphic (Sphere, Halo, Ring progress), Background, per state or every state, saved like the other cards. Its default the Ring progress.
