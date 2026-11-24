@@ -5,6 +5,11 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3177 One goal a page: an intro screen before goal 1; the product sheet's goal card on top, the why under it
+
+- **Intro screen** ("If 1 per page we need a screen intro. '3 goals to focus on next with your action plan to get there' Before the first goal page"): with Layout 1 goal per page the report's steps run Doctor note → Your goals (`gi`) → Goal 1…; `gi` draws the merged page's H1 (Title group, `arGlMTg`) alone, Continue on to goal 1. It is a step of its own in the Flow panel ("Your goals") and on the Goals template (`/^rec:g(\d+|i)$/`); merged, there is none (the page is its own intro).
+- **Goal page head** ("for the 1 per page version, use the PRdouct detail goal card (from the review plan sheet) inside here on top / Then the description below it"): the goal's page opens on the product sheet's goal card (`glMcard` mini: H3, the plan's steps, the picture 52, no why inside: `noWhy`), the goal's why 16 under it (fg primary 100, Body/300), then the tabs and the plan; was the XL card with the H1, the why and the photo with its number.
+
 ## v3176 Goal detail: Tab group On / Off
 
 - **Tab group** ("Tweak Tab group. ON OFF / IF OFF * Put all product in one stack below."): a Goal detail template field (`o.glseg`, default On), on its template page (Content, beside Your part) and in the goal sheet's Tweaks: a Content part under the Sheet set (`.tkGlCtP`: Tab group, Your part, switches writing the template, a draft till Save; the open sheet follows through `evsheet:tweak`). Off (`data-shtg="off"`): no Segmented tab; both panes as one stack (`display: contents`), the plan's products then the ones to explore, one hairline between as between rows, Your part after them.
