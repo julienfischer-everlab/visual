@@ -5,6 +5,16 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3164 Goal cards fade in, chips in the title group, the goal sheet's banner and Timeline items, Page types its own page
+
+- Title group master (`EvTitle`): a Bottom slot (`slot: { at: 'bottom', html }`, `.evTgSlotB`, `.evTgSlB`), under the Content, the slot gap (`--tgGapS`) above it, full width with a Right slot. The goal cards' biomarker chips are that slot (`glBio(g)`), on the merged cards, the 1-per-page card and the product sheet's goal card; number-on-image mode keeps its +4.
+- Merged goals page: H1 "3 goals to focus on next with your action plan to get there" (the count from the goals, "goal" when 1); the goal cards fade in one after another, top to bottom, on the page entrance's stagger (`enter(..., lis)`, EN_GAP).
+- Goal plan sheet: Banner (Tweaks -> General layout -> Header group -> Banner, the Page types master's `bn`; EvSheet's set shows it only where `data-sh-keys` names it: the report's `arSh`). Image: the Header overlap master (`.hoHero .hoDHero`, EvOverlap.bind) at the sheet's top, the goal's picture (`sheetOpen(..., ban)`), its title group over the picture's foot in white, the body a `.hoSheet` over it on the sheet's paper, the Close and notch floating (`qaBan`, `[data-shbn]`).
+- Goal plan items ("just use similar item as the timeline one"): the Timeline's row on List item interactive (`EvListI` auto, Muted): picture 48 round 12, name 16/20, line 14/18 at 56%, the badge under, the chevron 36 Secondary, a hairline between (`.arGlTi`); were Card interactive XL cards.
+- Page types is a page of its own in the Page menu under Design system (`'pty'`, `window._ptyShow`, `#page-types`, also the old `#page-example`): General layout's Page types part alone, the bar titled Page types; General layout's part select no longer lists it, and coming back to General layout opens on its Header group.
+- Inspector: the Page types demo's sections and containers named (`data-l` Header group / Body / Footer group, `data-ct` on `.sdBdC`, `.sdFtC`): "Section · Body", "Section · Footer group", "Container · Full" instead of Frame.
+- Header nav On on the goal sheet: renders right on this build (X at the right, title under it); the screenshot's X under the title was an older publish.
+
 ## v3163 Each section's padding in its own colour
 
 - "Show the padding for each section using the colour code of the section ... bg filled opacity 50% with value white inside" / "FOR ALL RULE not only this screen": the padding guide's bands (Tweaks -> General layout -> Padding guide, on every screen: the app's pages, modals, sheets, flows) take their section's colour instead of red: Page navigation blue (`.ctGdPTn`), Page header title purple (`.ctGdPHt`), Body slate (`.ctGdPBd`, lighter than its label so it reads on the dark screen), Footer green (`.ctGdPFt`), filled at 50% (`--gdPc`), the value white, the edge line the same colour.
