@@ -294,6 +294,7 @@ A new Plan surface: its colours from the `--pl*` tokens (and a `#dPlan.plLight` 
 - **Availability**: Buttons (label, icon only, split) lg–xs; Badges and Badge Mono md–2xs; Inputs lg, md; Segment tab lg (two lines), md, sm; Filter chip md; Chip md, sm. Anything else is "Not available".
 - **Docs**: Design system → Core components: Sizes (`#sizes`, the full matrix), Buttons (`#buttons`), Inputs (`#inputs`), Badges (`#badges`), Chips (`#chips`), Segment tab, Toggle; drawn by `czDoc(k)`.
 - **Already on the scale**: `EvSeg` (`.evSeg2` lg, `.evSegM` md, `.evSegS` sm), `.arBtnLg` (lg). New controls should come from EvCtl, not a fresh button or field.
+- **Segment tab item states** (Figma Core DS25 `3332:63536`, Tab controls; grep `Tab item states`): Active, the pill (`.evSegInd`, or `.tlThumb` on the Timeline) at rest `components/card/invert/bg` (`--sgOn`), hovered `--sgOnH`, pressed `--sgOnP`: a white pill `bg/surface/200` and `/300` (#fafafa, #f0f0f0: its ink mixed in at 2% and 6%); a dark pill (the ink at 6% or 10% on a dark ground) the same two steps in white (`color-mix(in srgb, var(--sgOn), #fff 2% / 6%)`), never the opaque dark surfaces, which sat darker than the track; the Timeline's black pill (Tab style White, Light mode) `#181818` and `#212121`. Active white (`.evSegW`) keeps #fafafa / #f0f0f0 in both modes. Not Active: the label `fg/neutral/secondary`, nothing on hover or press. A new tab control is an `EvSeg` (or wears its variables), never its own hover.
 
 ## Form (`window.EvForm`) and Disclosure (`window.EvDisc`)
 

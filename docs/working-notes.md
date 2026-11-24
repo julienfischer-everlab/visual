@@ -5,6 +5,14 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3205 Tab items: hover and press as Figma's Tab controls
+
+- **States** (Figma Core DS25 `3332:63536`, Tab controls, Rest / Hover / Pressed × Active Yes / No: "align states on tab item e.g. hover and press"): Active, its pill at rest `components/card/invert/bg`, hovered `bg/surface/200`, pressed `bg/surface/300` (a white pill: #fff → #fafafa → #f0f0f0, its ink mixed in at 2% and 6%); not Active, the label `fg/neutral/secondary`, nothing on hover or press (already so).
+- **Dark pills**: the master took the dark surfaces 200 / 300 (#181818, #212121) for any dark pill: opaque greys under its track, so the goal page's active tab went dark on hover, darker than the track, lighter again when pressed. Now a dark pill takes the same two steps in its own ink, white (`color-mix(in srgb, var(--sgOn), #fff 2% / 6%)`): white 10% → 12% → 16% on the report's dark sheets. Light sheets and light previews in the dark app keep the Light surfaces.
+- **Timeline, Light mode** (Tab style White: its pill black, its label white): hover and press took the white surfaces (#fafafa / #f0f0f0) and the white label vanished. Now the Dark surfaces 200 / 300 (#181818, #212121).
+- The skill's tokens-components reference has the states (grep `Segment tab item states`).
+- Checked on dist, dark and light: goal page tabs and Timeline tabs, the active one at rest, hovered, pressed; an inactive one unchanged on hover and press. 19 flow screens and the Overview, no errors.
+
 ## v3204 Product sheet: the footer's pair on the big CTA (LG)
 
 - **Add now · $120 / Discuss with Dr Lu in the item sheet's footer** ("WHAT are theses CTA?? Use the bigger cta here."): the Button master's LG (56, `evCtl-lg`), as the report's own footer CTA; they were MD (44), the size of the pair under a row. Kinds kept (Add now Secondary, Discuss Tertiary, as asked before). `btnH` and `glOptBtns` take a size; `glPrSheet` asks for `'lg'`. The pair under each Explore further row stays MD. XS·S stacked full width, M·L side by side.
