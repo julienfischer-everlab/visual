@@ -5,6 +5,16 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3195 Option CTAs in Info blue with their price, stacked in the sheet; the review ranked, no unticked paid item with goals, Moved up; even card padding
+
+- **Added keeps its price** ("Keep the price when I do edit"): Add now · $120 becomes Added · $120 (and its label for screen readers).
+- **Active state in Info blue** ("dark blue with a check and the colour blue"): pressed, Add now and Discuss keep their kind and wear the Alert · Info pair, `bg/brand/blue/secondary/100` under `fg/brand/blue/primary/100` (`.arGlOn`, theme-aware `--t-*` tokens), always with the tick (no more hidden under 400). The pair under a row has 10 inner padding and a 6 gap so the tick and Discuss with Dr Lu both fit at XS.
+- **Stacked in the item's sheet** ("Stack the CTA button here"): `:is(.arRcDetFt, .arRcDetSec) > .arGlOptB` one column, 8 apart, each the full width.
+- **Review order** ("included first, then the checked paid, and then the unchecked paid"): Timeline / Per goal `rk` and the list layouts' sort: Included, In your plan, paid ticked, paid unticked. The tick is the one the review first drew (`rvPaidOff`, `rvSeen` per build), so ticking or unticking here moves nothing.
+- **With goals, no unticked paid item** ("the paid item unchecked shouldn't be there"): when `goalL()` has goals, a paid item unticked as the review came up (saved-for-later ones too) is left out; one unticked here stays till the next visit so it can be ticked again.
+- **Moved up** ("Instead of included, we can say moved up"): an included item brought forward (`it.adj && it.wasM`, e.g. Diagnostic review from June to March) says Moved up where it said Included (`rvIncL`).
+- **Even card padding** ("Why do some cards have bigger top padding than others?"): the divider list's +8 before and after the divider no longer applies to Interactive item rows (each its own card): 16 top and bottom on every one.
+
 ## v3194 Goals in Activation, List item interactive rows, CTAs in the sheet, the Consult card's rows, the Confirm plan's Tweaks on its template
 
 - **Goals in Insight activation · new flow** ("Can you plug goals here?"): `window._act` steps get `r1:g0…` (one per goal, `glNames()` from the persona's goals) after the last first insight and before `r1:next`. `draw()` mounts the AsyncReport there (`qciArIn actArIn actGlIn`, the class `qciArIn` is what makes it visible) and `recGo('g'+n)`; Back on the page's bar is the flow's `prev()`, the footer's primary its `next()`. The last insight's ask reads "Next, the goals we’ll work on together."
