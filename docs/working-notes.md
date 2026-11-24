@@ -5,6 +5,14 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3200 Section properties on every template page; Delete template a Destructive LG CTA; Sandbox: Sub page, Service detail template, Sheet containers Full; the Sandbox no longer stays over other pages
+
+- **Every template shows its sections** ("For each template I want to be able to see the section properties!"): Insight detail and Intro / outro get Page type, Header group (Header nav, Header title), Body and Footer group, the rows a template's own page shows, bound to their template (`tplSec(key, type, skip)`: own value, else the Page types master's, a Default hint); Intro / outro keeps its Intro master's two containers (Header navigation, Body) and gets the rest. Product detail shows its sheet's sections (Header group Banner, Header nav, Dismiss, Header title, Footer): a product sheet is now its own sheet context `arPr` ("Product detail", a `tkShSet` bound to `ar:tpl-prd` with `data-sh-tpl`), so they apply to it. The others already had theirs.
+- **Delete template** ("Destructive ... CTA lg style"): the Button master, Primary · Destructive at LG (56), hugging its label under its line, last in the panel.
+- **Sandbox**: a **Sub page** type (Back in its Header navigation, actions in its Footer navigation, no main menu; Main page and Sub page stay what they are, Sheet ⇄ Full modal switch). A **Service detail** template on it (Advanced Blood Testing: badges, a card, How it works, Fasting needed, What's included; Back locked) and a screen on it, added once to sandboxes made before. In a **Sheet every container is Full** ("Remove all options of container"): the rows say Full, their own value kept for a Full modal. List rows take a second line ("Title | line").
+- **Fix**: after visiting the Sandbox, its page stayed over the other doc pages (its `display: grid !important` beat `[hidden]`).
+- Checked on dist: v3200 (Sub page, migration, Sheet Full, Product detail groups and its sheet on `arPr`, Delete 56 high and red), sbxflow, tplprd, tplver, tplbind, tpxit (Footer group on Intro and Insight detail), sbxhide.
+
 ## v3199 Sandbox: demo screens on the design system, its own templates (revisions, locks, presets), overrides and saves, isolated from the app
 
 - **Where**: the page menu's Asset group, Sandbox (`#sandbox`), after Page templates. "A working sandbox in this artifact where I can create and edit demo pages using the existing design system ... Keep sandbox changes isolated from the original templates and shared design system." Built on the Screen architecture handoff (screen-architecture-updated.zip).
