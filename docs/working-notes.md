@@ -17,6 +17,7 @@ this is the part you need before you change it.
 - The merged goals page title: "Here’s what we’ll focus on next." with no sub ("Remove sub").
 - "card goal below title group": a product's goal card now sits right under its title group (picture, name, line), above Why / When / Price, 24 above and below it.
 - "eyebrow --> use badge instead, grey one": every Goal n (the stacked goals, the goal page, a product's goal, Confirm plan per goal) is the Badge master's grey (`glEy`: `EvCtl.badge`, Tint, Neutral, xs) in the Title group's top slot.
+- A product's goal card ("use title group h2 / Use eyebrow 'Supporting your goal'"): the Title group's H2, its eyebrow Supporting your goal (not the Goal n badge, which stays on the goals' own cards and Confirm plan per goal).
 
 ## v3160 Clinical cards hug, the biomarker sheet's header, Goals merged in one page, the goal card under a product, Add to plan when unchecked, Confirm plan per goal
 
