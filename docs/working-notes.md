@@ -5,6 +5,16 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3162 The goal card in rows, the Goal number on the picture, the description tweak, the goals page title
+
+- "Row 1 Title - Img right / Row 2 Desc", "Margin top -8px img": the goal card in columns (the stacked goals, a product's goal) is now a grid of the Title group's own parts (`.evTg`, `.evTgCol`, `.arGlHd` set to `display: contents`): the Slot or eyebrow and the title on row 1 with the photo at the right (80, 8 up, 48 between), the why and the biomarker chips the card's full width under them, the foot last.
+- "make sure the gap between the h2 title group and slot top is respected": the Goal n badge is now in the Title group's Slot (`slot:`), not its top support line. The group zeroes its parts' margins with `!important` and spaces them with flex gaps, which a grid of its parts loses, so the card puts the same tokens back as margins (`!important`, higher specificity): Slot to title `--tgGapS` (space/xs, 12), support or title to why `--tgGT` (the level's).
+- "Tweak where we hide the description here": Tweaks -> Goal -> Description (`stArGlDesc`, `o.gldesc`), the stacked goal cards' why on or off.
+- "Add tweak where the Badge Goal X is removed and the Number overlap the img top right with outlined and no bg" / "just number": Tweaks -> Goal -> Goal number (`stArGlNum`, `o.glnum`: Badge / On image). On image (with Visual Circle or Icon, `glNumOn()`): no badge; `glWrap(..., num)` puts just the number in a 28 outlined circle, no fill, over the picture's top right. With no badge the title spans the card's first two rows, so it starts at the card's top.
+- "Margin top 8px +": a product's goal card has 32 above it (24 under it).
+- The merged goals page H1: "Here’s what we’ll focus on next with your action plan to get there."
+- The sheet sweep (every report sheet with Header nav Off, XS and M): the biomarker sheets, the stacked ones, the goal sheets and the product sheets match the master. Left as they were (not from this change): the doctor's note keeps its own nav (its sheet is exempt from the sheet picks, `qaTk`), a stacked Why sheet is full height on the phone (`.arQb`), and the Discuss sheet has its own head (44 close, its title off-centre, 24 more top on desk).
+
 ## v3161 The report's sheets on the master's nav-off frame, plan card badge column, goal cards in columns, the goals page title
 
 - "Header issue. There is more top space on the sheet type" (a goal's sheet, Header nav Off):
