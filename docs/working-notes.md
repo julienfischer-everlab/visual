@@ -5,6 +5,13 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3166 Goal card in two rows, the plan's item group in a card, H3 sections
+
+- Goal card (goals list and product sheet, `glMcard`): row 1 the Title group whole (Goal n badge when on, the H2, its sub) at the left, the picture at the right centred on it (48 between); row 2 the biomarker chips the card's width, 16 under (`.arGlChipsR`, out of the Title group now: "Row 2 Chips group (if any)"). The picture 16 larger (96; 80 with the number on it). The number circle opaque, the card's tint over the sheet's paper. The leftover 160 right padding (the old absolute picture) and the group's 12 margin gone in columns.
+- 16 more above the merged goals list ("+16 top card group").
+- The goal's plan: its item group in one Card static, LG, Primary - Outlined (`grp`, EvCard), the Timeline-style rows inside with their hairlines; on the rail, each month's items in their own card.
+- Product sheet: "Supporting your goal" and "Plan" as H3 (`rcH2(t, 'h3')`).
+
 ## v3165 Body padding tweak, a sheet's second level, the product sheet's goal card
 
 - Body -> Padding top / Padding bottom: the Page types master's `bt`, `bb` (On / Off, every type, default On), the token layout/container/padding/top-bottom (`--ctPadY` 24 · 28 · 32 · 36) on the body's container; the demo pads `.sdBdC` (`.sdScr[data-bt]`, `[data-bb]`, `--sdPy`). In the app: Tweaks -> General layout -> Body, two switches (`stBdPt`, `stBdPb`, General layout fields `bt`, `bb` with the page / template / context picks); `html[data-bdpt]`, `[data-bdpb]` on `.evBdCt`, the body's container as the section guides find it (`boxIn` now returns its element, `__secEls().bdc`), marked each second while a pick is up. Unpicked and not saved in Page types: auto, the screen as it is (the master's On default only applies once Page types is saved).
