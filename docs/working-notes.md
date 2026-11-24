@@ -5,6 +5,13 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3197 Email goal cards without their description; Email · short: What we’ll work on together after the email; review sheet goal card H3 only; sheet footer corners
+
+- **Email goal cards** ("Remove the description here"): `glMcard(..., 'mail')`, the Supporting your goal card with its H3 and picture only (no why), title body/300 medium, picture 36.
+- **Email · short** ("an H2 after the card Doctor Note: What We Will Work Together ... then the list of full-width goals, the same goals itemised in the email version. Forget about the chip inside the short email"): no goals inside the short email any more (`glDrFill` drops its Goals list and adds none); after the email's card `glDrSec()`: an H2 (the Title group master's, `rcH2`) "What we’ll work on together", then the goals, each the email's card, the body's full width (`.arDrGlSec`: 32 under the email, the cards 16 under the H2, 8 apart). On the Doctor note step and in the review's Notes from Dr sheet. The default short note (`DRQ_SHORT`) loses its "Here’s what we’ll work on together:" and `[Goals list]` lines; its biomarker chips stay.
+- **Review sheet goal card** ("remove the description in the goals and put the goals with the H3 inside"): Supporting your goal's card is the H3 and the picture (`'mail'`), no why.
+- **Sheet footer corners** ("a corner radius bottom-left and right problem when there's a footer"): the Footer group's ground (`.arQaFoot::before`, a square block) covered the panel's rounded bottom; the footer and its ground now take the panel's bottom radii (`border-bottom-*-radius: inherit`): 24 on M·L, the bottom sheet's own (0) on XS·S.
+
 ## v3196 Goal header Title group, Interactive item List / Card, the review's product sheet on goal items, Product detail template, Plan and goal cards in Secondary LG, email goal cards
 
 - **Goal header** (Goals, new Tweak, in the Goals template's fields: `stArGlHd`, `o.glhd`): Card (as it was) or **Title group** ("The text inside the card goes into the subtitle of the title group ... image on the right side ... gap of 32px ... chips group below the title group, with a gap of 24px. The rest follow tabs"): the goal's H1 with its why as the Title group's sub and the picture (photo, else the 3D icon; 76) at its right, 32 apart (`.arGlTgRow`), the Header title's block so it rises into the Header group; the biomarker chips (`.arGlTgChips`) 24 under it, then the tabs 24 under them. No goal card.
