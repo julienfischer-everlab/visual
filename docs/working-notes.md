@@ -5,6 +5,19 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3171 Goal detail template = V0.5, its title in the Header group, chips under the why, photos for the rows
+
+- **Goal detail template replaced** ("Replace the Goal detail template by this one"): its defaults are the V0.5 setup (`data-sh-def="bn:none nv:0 nd:1 tt:1 ft:1 ff:1 fs:grad fb:0"`: Banner None, Header nav Off, Dismiss On, Header title On, Footer On, Fixed, Gradient, Blur bg Off); the shared store's saved Banner Image for it cleared, so every viewer gets the same.
+- **Its name in Tweaks** ("Need to see the template name when I land on the page"): the goal sheet's General layout opens on a Template row, "Goal detail" and its pencil (opens the template's page), the name live (`EvCt.tpl.nameOf`, a rename follows). The set's own label was hidden by the panel's `.tkTnPg` rule.
+- **Title in the Header group** ("Title need to be a Header title in header group not is body like this!"): the sheet's title block is the Sheet master's Header title, `<header class="arQaGlT" data-hg-part="title">` with an H1, at the top of the scroll; the guides and the Inspector take it as Header group · Page header title.
+- **Chips under the why** ("Put the Chip group below the desc if any"): the goal's biomarker chips (`glBio`) 16 under its why in the sheet, before the tabs (`glShB`, both openers).
+- **Explore further one list** ("No need group / Know more / Get support"): the options in one `.arGlList`, no eyebrows.
+- **Divider spacing** ("Gap before / after divider +8px"): a row followed by another 8 more at its foot, a row after another 8 more at its top (24 each side).
+- **Photos, not 3D** ("Change be imagery", "change img"): Home sleep study and A second night of testing the energy goal's bedroom photo (`GLIMG.energy`, one copy), the sleep specialist a doctor's portrait (`RXP.dr2`), the skin rows the user's photos, cropped 256 (`GLROW`: a dermatoscope on an arm for Skin check and Full-body mole mapping, a freckled eye for Follow-up skin check).
+- **Goal number Filled**: ring 2 ("border 2px"; was 1.5); the 32 blur is on (a 28 circle under a 32 blur reads as a soft average).
+- **Goal cards 8 apart** ("gap card 8px"; was 16); with Body padding top Off the merged list's own 16 goes too ("Body padding top OFF and I can see a padding top applied!!!": `html[data-bdpt="off"] .arGlMList:first-child`).
+- **No home bar on the template figures** ("since when the footer has this notch"): the Page templates' drawn phone lost its `.tsHome` (the app's has none since "Remove home indicator everywhere"); the goal sheet's footer pads like the Sheet master's (16 + `--evHome`).
+
 ## v3170 Goal sheet: static plan rows, the template's preview drives the stage, Goals Layout on the template, item sheet H1, rounded sub-levels
 
 - **Plan rows are plain list items** ("just a list item , not interactive"): the goal sheet's rows (To prioritise now, What we'll do on the rail, Explore further) are List item static (`EvListI.html({ interactive: false })`, `.arGlTi.arGlTiS`): no button role, no tab stop, no chevron, no tap; the grid two columns (picture, words). Explore further is the same list ("Just a simple list as the prioritise list item / NO CTA to ADdd"): picture, name, line, the price a grey badge.
