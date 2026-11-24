@@ -5,6 +5,14 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3193 Consult card, short email note, pinned title ground, goal note in the footer, Insight activation · new flow
+
+- **Consult with Dr X** ("Put every object that I need to discuss in a group card like this ... Similar style to the membership object"): `rvDscLi()` is now one group card on the Membership object's grid (`.arRvwMb.arRvwDsc`, three columns): the doctor's photo (`rcPic`; `tlPic` lives inside `buildReview`), Consult with Dr Lu, Next · book a time straight after this, an Included pill; under its hairline a To discuss eyebrow and each product's name with its goal (Heart / Energy / Skin) at the right. Under Your results debrief on the Timeline.
+- **Doctor note: Email · short** ("a doctor note, super short ... email, short ... keep the chips and the goals chips"; "stack them as chips"): Doctor note Version gets `short`; it renders the email (`drMail`) from its own field, Tweaks → Short note (`#stArDrQS`, `o.drqs`, the rich text toolbar too; empty: `DRQ_SHORT`). `glDrFill` draws the Goals list as chips there (`.arDrGoalsC`, `.arDrGlChip`: photo 24 and title), cards elsewhere. The default long note now has `[Goals list]` before its signature (the email drops a signed last line).
+- **Pinned Header title ground** ("it is stuck on this position"): with Header title Fixed and its ground up behind the status bar (`[data-htsb]`), the fade was 30% of the title and the status bar together, so it started mid-title and the page showed through. Grad and Blur now fade from 30% into the title itself (`--htUp` taken out).
+- **Goal note in the fixed Footer group** ("this as a footer fixed"): the goal page's End note goes into `.arFootC` over Next goal (`.arGlFtNote`), as the goal sheet has it; cleared on every other step. A footer holding it gets a solid ground, fading only in the 32 above (the master's 30% fade would sit on the note).
+- **Insight activation · new flow**: the Activation flow (`act`) listed right under Insight activation in Standalone flow, its Flow panel titled the same (it was "Activation" further down, easy to miss).
+
 ## v3192 Goals: option CTAs, review stacking, Interactive item, no intro, doctor note Goals list
 
 - **Explore further CTAs** ("two CTAs below each item"): `glOptBtns(g, x)` puts Add now · $price and Discuss with Dr Lu (the report's own `drShort`) under each option, the row's full width. Both Tertiary at rest; pressed, Primary with a tick (`aria-pressed`, "an active state for the Discuss with doctor"), Add now saying Added; a second press undoes. State per visit: `glAdd`, `glDsc` (new). Under 400 the tick hides (`@container`); an item narrower than 340 (XS in an Interactive item card) stacks the two. CTA in item Off: the price badge back, no CTA.

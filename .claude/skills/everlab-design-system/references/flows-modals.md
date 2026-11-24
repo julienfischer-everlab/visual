@@ -343,3 +343,5 @@ Existing: `qciFm` (Check-in · Add / Edit).
 ## Doctor note: rich text and the Goals list
 
 The note fields (`#stArDrQ`, `#stT3DrQ`) carry the EvRtBar toolbar, writing `drRich` syntax: `#` title, `**bold**`, `*italic*`, `__underline__`, `==orange==`, `[[chips]]`, `-` / `1.` lists, `[placeholders]`. Its last button, **Goals list**, inserts a `[Goals list]` line of its own (a blank line each side, after the caret's line). `drRich` turns that line into `.arDrGoals`; the Insights flow fills it (`glDrFill`) with every goal as a Card (Secondary - Transparent, md): its title (Body/300, medium) and its round photo 48. A note without the line (a saved one) gets the list at its end; no goals, no list.
+
+Doctor note Version **Email · short** (`o.drv === 'short'`): the email layout with its own words, Tweaks → Short note (`#stArDrQS`, empty: `DRQ_SHORT`); there the Goals list is a chip group (`.arDrGoalsC`, each chip the goal's photo 24 and title), the keyword / biomarker chips as everywhere.
