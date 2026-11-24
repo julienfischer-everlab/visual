@@ -5,6 +5,12 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3185 Delete a template, behind a hesitation sheet
+
+- **Delete template** ("I need to be able to delete a template, but I need a hesitation modal ... The other page associated with this template will be unlinked and take the parent layout of this template"): at the end of every template page's panel (built in or made in Tweaks; replaces the made-in-Tweaks two-click Delete), a destructive outline button under a Delete group line.
+- **The hesitation sheet** (`tplDel`, on the EvSheet master, `.tpxDelSheet`): "Delete this template?", the template's name as the tag; a red warning (it destroys the template and its layout, it can't be undone); which screens are unlinked, per experience (Used for's cards: its screens, its contexts dropped too), and the parent layout they take (Page types · its type, plus their flow's own settings); "I understand: these screens will be unlinked and take the parent layout" (EvCheck) before Delete template (red, `evBtnDst`) can be pressed.
+- **Deleted** (`T.remove`): `TS.gone[key]` (a built-in too), its layout, name, screens and contexts dropped (`tDrop`), shared through `masters/everlab_tplSys`; every list, the template nav and `isTk` skip it, `tBuilt` builds nothing for it, so its screens read the Page types master and their flow (the goal screens: "Every page of Insights flow"). There is no restore.
+
 ## v3184 The Activation card: two phases, its steps inside it, the health picture ring
 
 - **Object: Activation** (was Blood test journey; Tweaks -> Primary card): the Onboarding consult's card pattern (eyebrow, title, line, the one thing to do) through two phases ("Update the primary activation checklist card ... Phase 1: Get your first insights ... Phase 2: Go deeper ... Optional next step: Book a consultation"). States (`EvPcBj`, Tweaks State): 1 · Add past records, Uploading, Processing, First insights ready; 2 · Book your blood test, Booked, At the lab, Deeper insights ready; Optional · Book a consult (apart from activation: Not now goes back). Tweaks also: Lifestyle questionnaire (To do / Done: any time in Phase 2, the thing to do while waiting for the test, `EvPcActW`), Steps in card (On / Off).
