@@ -5,6 +5,15 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3190 Activation: a flow of its own
+
+- **The ask** ("I want an entire flow ... 1. you need to provide your health profile, so we have a set of questions. 2. After that, you go back to the overview and get your result. 3. You click on Get your result, and then you see the result. 4. At the end of this, we are going to suggest to them that they do the blood test, and then we continue like this ... a new flow called activation"): Page → Standalone flow → **Activation** (`window._act`, `#activation`): the Overview with the Activation card, its own Flow panel, every screen the real one.
+- **Phase 1 · First insights**: Overview · Unlock your first insights (the card's first step now the Health profile: Start) → the Health profile's Build your health profile (`_hp.open({ ov, area: 'you' })`; its questions Sleep, About you, Smoking, Alcohol, Review as sub-steps) → back on the Overview, Your first insights are ready (Get your results; the Insights card: New insights just landed) → its own screens on the Async report's frameworks (EvSolo `actOn`, `AsyncReport.mount` as the Check-in's): the cover (Here's what we see so far), three insights from the health profile and past results (cholesterol, sleep, iron), Your next step: Go deeper with a new blood test (Book my blood test → booked).
+- **Phase 2 · Go deeper**: the card's steps (other results, book, booked, the lab on the Insights card), the Check-in's questions as the lifestyle and check-in questionnaire (`_qci`, its intro to its Thanks; its Thanks hands back to the Overview, Everything shared, not to the Check-in's own Overview moments), Deeper insights ready, the deeper insights in the Insights flow's report (`_ar`, Welcome to Your goals).
+- **Phase 3 · Your plan**: Your next steps, personalised → the report's Confirm plan and Checkout (buy the plan), Book a consult.
+- **The card's actions** go through the journey (`_act.act`): Start, Get your results, View your first insights, Start questionnaire, Explore insights, See your plan, Book a consult; a screen it opened put away moves it on (the profile closed: first insights ready; the report closed: the plan). The card's states: Phase 1 Health profile and First insights ready (Upload records out).
+- **One Flow at a time**: while it runs, the other flows' panels (the report's, the Check-in's, the profile's journey) make way (`__flowOk`); another page picked stops it.
+
 ## v3189 Page type switch in the UI: Full modal ⇄ Sheet, per screen
 
 - **The ask** ("I want to be able to change the page type on a template, but inside the UI, not in the page template ... bottom sheet and full modal only. Switch between both. If it's a page, a main page, that should be locked"): Tweaks → General layout → Page type, its cards pressable on a screen that is a Full modal or a Sheet and can be drawn either way; Page and External locked; on a page, all locked ("A page stays a page.").
