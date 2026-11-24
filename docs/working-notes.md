@@ -5,6 +5,12 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3167 Goal card: chips closer, "actions"
+
+- The chips 8 under row 1 ("reduce gap by 8px": 16 -> 8).
+- The card's sub: "2 actions in your plan" ("2 actions in your plan"; was steps; "1 action").
+- Publishing: always `dist/index.html` (built), never the source `index.html` (its pictures are not inlined); version 3121 went out from the source by mistake and 3122 replaced it within minutes.
+
 ## v3166 Goal card in two rows, the plan's item group in a card, H3 sections
 
 - Goal card (goals list and product sheet, `glMcard`): row 1 the Title group whole (Goal n badge when on, the H2, its sub) at the left, the picture at the right centred on it (48 between); row 2 the biomarker chips the card's width, 16 under (`.arGlChipsR`, out of the Title group now: "Row 2 Chips group (if any)"). The picture 16 larger (96; 80 with the number on it). The number circle opaque, the card's tint over the sheet's paper. The leftover 160 right padding (the old absolute picture) and the group's 12 margin gone in columns.
