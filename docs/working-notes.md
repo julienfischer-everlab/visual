@@ -5,6 +5,13 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3189 Page type switch in the UI: Full modal ⇄ Sheet, per screen
+
+- **The ask** ("I want to be able to change the page type on a template, but inside the UI, not in the page template ... bottom sheet and full modal only. Switch between both. If it's a page, a main page, that should be locked"): Tweaks → General layout → Page type, its cards pressable on a screen that is a Full modal or a Sheet and can be drawn either way; Page and External locked; on a page, all locked ("A page stays a page.").
+- **Per screen, over the template** (`EvPageType.sw / set / can / canSw / nat`; `#stPtSw`, saved with the panel): the template keeps its type and layout; the screen shows the other way, with the other type's master under its picks. Switched: the lit card orange, "Shown as a Sheet on this screen. Its template is a Full modal.", Back to Full modal.
+- **What switches**: the report's sheet layer (Goal detail, Goal detail (full modal), Insights flow · Sheet, Notes from Dr Steven Lu: `data-shk` the context it opened with, `data-shfm` how it shows, `qaTk`) and every EvSheet sheet with a ctx (recommendation detail, Check-in Add / Edit, Timeline's Notes from Dr Lu and Your focus: `.evSh[data-pt="full"]`, the whole screen on the body token, under the status bar on a phone, no scrim, notch or swipe). Live: an open one switches at once (`everlab:ptsw`). A sheet shown full drops its sheet-only rows (Type, Max width, Height).
+- **Not yet**: the big full modals (Insights flow, Onboarding consult, Send a gift, the standalones) and the other sheets (Marketplace, Cart, Inbox, More, Ask): locked, "This one stays a Full modal for now". Reference: the skill's layout.md, Page type switch.
+
 ## v3188 Activation: nothing pending on the primary card, the Insights card says it
 
 - **The rule** ("when there's something pending, we never show it on the primary card. We always show it on the insights widget on the top right"; while pending, the card goes to the next action): the states are actions only (`EvPcBj`: 1 · Upload records; 2 · Add other results, Book a blood test, Blood test booked, Lifestyle questionnaire, Everything shared, Deeper insights ready; 3 · Your plan). Gone from the card: Uploading, Reading records, First insights ready, Blood at the lab, Building deeper insights, and its processing rows and foot status.
