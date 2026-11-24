@@ -5,6 +5,13 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3183 Goal detail (full modal) as an Insights flow page; both Goals versions in the Flow panel
+
+- **The full modal on the Insights flow's layout** ("keep the layout dimension and header group + footer group as the insight flow"): its Tweaks set takes its base from the Page types Full modal master, as the flow does (`data-sh-ty="full"` on the `arGlF` set; `EvSheet`'s `S0(ty)`, `TY(ctx)`, `master(ty)`, `tpl(key, ty)`): containers 2xs and the same size, Header nav on (Fixed, Gradient, Blur, Title on scroll). Its Header nav sits in its container (the Close at the container's right edge, as the flow's), the note at the body's end (as the flow's goal page), the Footer group the flow's one action across its container (Done, closing it: `.arGlFmFt`, `.arGlFmDone`).
+- **Fix**: the goal layer measured where it was scrolled while still hidden (every rect 0 read as the title under the nav), so the nav's middle title showed at the top; `qaSc` skips a hidden list and runs again once the layer shows.
+- **Both Goals versions in the Flow panel** ("Add the version with Intro goal and goal per page. So I can create preset and put here in this flow the 2 versions"): the version not in use lists its steps under Not used (Merged: Your goals · intro, Goal 1–3; 1 per page: Your goals · merged), ids `alt-…`. Switched on, dragged in or opened, its version goes in the flow on that step (`glAlt`: Goals · Layout), the other one out.
+- **Layout a Tweaks value now**, kept by presets: no longer pulled from (or written to) the Goals List template (it picks the template, it is not the template's); the template pages' Layout control sets it. With nothing saved it is 1 per page.
+
 ## v3182 Goal detail (full modal): the goal's detail as a full modal, a second template
 
 - **The duplicate** ("Duplicate template and use full modal instead, keep tweak / Call that 'Goal detail (full modal)'"): `ar:tpl-gldf`, built in beside `ar:tpl-gld` (renamed in the store "Goal detail (sheet)"). Same content (the goal's title and why, its chips, Your action plan, the tabs or one stack, Your part, the footer note), same Tweaks (its own EvSheet set `arGlF`, the sheet's props less Size and Height, plus the Content part's Tab group and Your part), its own values; seeded with the sheet's (Tab group Off, Your part Off).
