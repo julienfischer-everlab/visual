@@ -5,6 +5,10 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3181 The Layout tweak on the goal template pages
+
+- **Layout back as a tweak** ("Need the goal tweak here too!"): both goal template pages show Goals · Layout as Tweaks does (1 per page / Merged), the page's own layout picked, "In use" beside the label while the app's Layout is it. The other one picked sets the app's Goals · Layout (on `ar:tpl-goal`, a draft till Save, as Tweaks) and opens that layout's template page (`glSw`). Reset to Default leaves it alone.
+
 ## v3180 Goals List (in multiple page): the 1-per-page goals' own template
 
 - **A second goals template** ("Create another template / Goals List (in multiple page) / using the tweak 1 per page"): `ar:tpl-goalp`, built in (TREG, `__flowTpl.ar.all`, TUSE, TPLX), beside `ar:tpl-goal` (renamed in the store "Goals List (in 1 page)", the merged one). Goals · Layout in Tweaks picks the template: `__flowTpl.ar(id)` gives `tpl-goal` for `rec:g0` while Layout is Merged, `tpl-goalp` for the intro (`rec:gi`) and every goal page otherwise. Layout itself stays on `ar:tpl-goal` (`o.gllay`, the switch).
