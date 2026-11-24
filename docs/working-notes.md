@@ -5,6 +5,11 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3204 Product sheet: the footer's pair on the big CTA (LG)
+
+- **Add now · $120 / Discuss with Dr Lu in the item sheet's footer** ("WHAT are theses CTA?? Use the bigger cta here."): the Button master's LG (56, `evCtl-lg`), as the report's own footer CTA; they were MD (44), the size of the pair under a row. Kinds kept (Add now Secondary, Discuss Tertiary, as asked before). `btnH` and `glOptBtns` take a size; `glPrSheet` asks for `'lg'`. The pair under each Explore further row stays MD. XS·S stacked full width, M·L side by side.
+- Checked on dist (Interactive item List item and Card): XS 56 × 361 each, L 56 × 250 side by side; under the rows 44; 19 flow screens and the Overview, no errors.
+
 ## v3203 Comments: a flow's screens are sub pages (icon on the Flow rows, a click lands on the screen); What to expect's new line; goal page card tighter; biomarker chips open their sheet; plan rows' divider +4
 
 - **Comment icon on a flow's screens** ("Indicate with Icon if a page of flow has comment on it"): a comment keeps the flow's screen it was made on (`ctx.fl = { k, s, n }`: the Flow panel's key, step id and name, from `window.__flowM`). The Flow panel draws a message-square badge with the count of open comments on that row (muted when all resolved; `window.EvCmtFlow.of(key)`, redrawn on `evc:change`). The screen counts in what makes a view: on another screen the pin hides and the comment reads "Other view", its chip row names the screen.
