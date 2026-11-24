@@ -9,6 +9,7 @@ this is the part you need before you change it.
 
 - "Show the padding for each section using the colour code of the section ... bg filled opacity 50% with value white inside" / "FOR ALL RULE not only this screen": the padding guide's bands (Tweaks -> General layout -> Padding guide, on every screen: the app's pages, modals, sheets, flows) take their section's colour instead of red: Page navigation blue (`.ctGdPTn`), Page header title purple (`.ctGdPHt`), Body slate (`.ctGdPBd`, lighter than its label so it reads on the dark screen), Footer green (`.ctGdPFt`), filled at 50% (`--gdPc`), the value white, the edge line the same colour.
 - The Design system's Page types stage draws its own bands (Show containers, `.sdGc`): the same colours by container (`.evPhgNavC` / `.evPhgAddC` blue, `.evPhgHdC` purple, `.sdBdC` slate, `.sdFtC` green).
+- "When Number on Image: margin top img +8px, img smaller by 16px, Title vertical centered with img, Chip group +4px margin top, X action to your plans +4px padding top": a stacked goal card with its number on the picture (`.arGlNumOn`, set by `glWrap`) has a 64 photo at the top of its content (was 80, 8 up), the title centred on it, the chips 16 under the why (was 12) and its foot's line 16 under the rule (was 12).
 
 ## v3162 The goal card in rows, the Goal number on the picture, the description tweak, the goals page title
 
