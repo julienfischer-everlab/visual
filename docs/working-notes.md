@@ -5,6 +5,10 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3176 Goal detail: Tab group On / Off
+
+- **Tab group** ("Tweak Tab group. ON OFF / IF OFF * Put all product in one stack below."): a Goal detail template field (`o.glseg`, default On), on its template page (Content, beside Your part) and in the goal sheet's Tweaks: a Content part under the Sheet set (`.tkGlCtP`: Tab group, Your part, switches writing the template, a draft till Save; the open sheet follows through `evsheet:tweak`). Off (`data-shtg="off"`): no Segmented tab; both panes as one stack (`display: contents`), the plan's products then the ones to explore, one hairline between as between rows, Your part after them.
+
 ## v3175 Notes from Dr Lu on the Sheet master; the Focus card's See details variation (Doctor notes · Your goals)
 
 - **Notes from Dr Lu on the Sheet master** ("BTW this modal is Borken, check the top part.!"): the Timeline's letter was its own shell (`.ibWrap.t3Sh`: a 72 nav row holding a 44 Close, a 24 regular title under it). It now opens on `EvSheet` (ctx `tlNote`): the Design system's Sheet as Page types draws it (Header nav Off: the compact Close by the Title group's H1; the letter the body; Discuss my plan the Footer group's Primary, fixed, with the Footer home on XS, S), its General layout in Tweaks (`.tkShSet[data-sh-ctx="tlNote"]`) beside the Doctor notes group (EvCtx `tlNote`). The letter's styles follow it (`:is(.t3Sh, .t3EvSh) .evDrMailH.t3Mail`); the old shell stays only as a fallback.
