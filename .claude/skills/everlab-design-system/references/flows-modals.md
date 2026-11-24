@@ -340,6 +340,16 @@ EvSheet draws them all:
 
 Existing: `qciFm` (Check-in · Add / Edit).
 
+## Doctor note module (Design system → Modules → Doctor note, `mdn`, `#module-doctor-note`)
+
+**What.** "Consider this as a Module in the DS libr" / "Bring all props with it": the doctor's note card (`window.EvDrMail`, the email: date, subject, the note, chips, Goals list, Warm regards, signature, the Everlab wordmark) as a module page. Its stage is the report's own screen at the top bar's breakpoint (`AsyncReport.mount` then `recGo('dr')`); Context Confirm plan · Notes from the doctor opens the review (`recGo('rev')`) and presses its doctor card (`.arRvwDr`), the note in its sheet. Its right panel lends the Tweaks rows of the Doctor note (Doctor note, Version, Doctor header, Card ground, Later items, Additional product, Examples, Doctor's note, Short note: the `data-ar-ph="dr"` rows of the Recommendations group, the other screens' hidden), a change drawing it again.
+
+**Where.** `grep -n "const dnDoc = "`; registered in `DOCS.mdn`, `DMOD` / `DSET` / `DORD`, `DS_KEYS`, the hash map (`#module-doctor-note`). Tweaks: the Doctor note sub-heading carries a Module link (`SUBLK`, next to `MODLK`).
+
+**Save.** The bar's Save on it is `window.EvDnM.save()`: the picks are the Doctor note template's own values (written by the template binding, `__tplCtls('ar:tpl-dr')`), saved as a version; the note's words (textareas) are merged into the saved Tweaks (`everlab:tkAll`) when one exists.
+
+**Pitfalls.** The rows are the app's own controls, lent (`tkLend` / `tkReturn`): never copies. The page reads the app's setup: Doctor header No on a setup saved with it.
+
 ## Doctor note: rich text and the Goals list
 
 The note fields (`#stArDrQ`, `#stT3DrQ`) carry the EvRtBar toolbar, writing `drRich` syntax: `#` title, `**bold**`, `*italic*`, `__underline__`, `==orange==`, `[[chips]]`, `-` / `1.` lists, `[placeholders]`. Its last button, **Goals list**, inserts a `[Goals list]` line of its own (a blank line each side, after the caret's line). `drRich` turns that line into `.arDrGoals`; the Insights flow fills it (`glDrFill`) with every goal as a Card (Secondary - Transparent, md): its title (Body/300, medium) and its round photo 48. A note without the line (a saved one) gets the list at its end; no goals, no list.

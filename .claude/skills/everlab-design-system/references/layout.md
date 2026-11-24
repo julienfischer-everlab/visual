@@ -246,6 +246,22 @@ A new Sub page: its show / hide do the change at once (no CSS transition of thei
 
 **Pitfalls.** A module drawn by hand instead of its master is not the design system. Two-step template edits: the template editor's draft lives in memory until Save revision (leaving asks first).
 
+**Selecting on the stage** ("ONLY object with properties can be selectable"): a press selects the nearest object round it that has rows for this page type (`propsOf(vw, n)`, `pickAt(vw, el)`): every module; a section with rows (the Page of a Main or Sub page has none, nor the main menu on a Main page: the Footer group round it is selected instead). The status bar, the page under a sheet, its scrim and the desk's side menu are not objects. On a Sheet the Page node is the sheet's own frame (`.sbxSheet`: its Presentation, height and max width), so its notch or edge selects it. The pointer is a hand over a selectable object only (`.sbxPickOn`); a layer with no properties is listed, greyed, not selectable (`.sbxLyNo`).
+
+## Selecting an object on a Design system stage (`window.EvPick`)
+
+**What.** "When I click on element I should see the panel right show the properties related to the selected object. ONLY object with properties can be selectable. Need that everywhere." Every stage with a right panel: a press selects the object under it (its outline), the panel shows that object's groups alone under a bar naming it (Selected · Body · Show all). Only an object with a group in the panel can be selected; Show all, Esc or a press on nothing selectable shows every group again. The screen's own presses go on (a goal still opens Goal detail, Continue still moves the step).
+
+**Where.** `grep -n "window.EvPick = "` (before `window.EvScrDemo`); CSS `.tsPickHov`, `.tsPickSel`, `.dpBody.dpPicking`, `.dpPickBar`. Bound by `tplStg` (every template page, Intro / outro, Insight detail, the Doctor note module: `TSO` the sections, `o.pick` a page's modules, `DRPK` the doctor's note card) and by `EvScrDemo`'s `draw` (Page types, Modals: `SDO`). The Sandbox keeps its own (`pickAt`), the same rule.
+
+**API.** `EvPick.bind({ stage, body: () => the panel's .dpBody, objs })` returns `{ refresh, clear, get }`; call `refresh()` after the stage redraws. An object: `{ q: selector, n: name, g: [group titles], fb: [titles if none of g], lent: 1 (the Tweaks groups lent to the page), lentToo: 1 (those too) }`. `EvPick.groupsOf(body, ob)`.
+
+**Rules.** A person's press only (`isTrusted`: a page's scripted clicks, opening a demo sheet, never select). The press is read in the capture phase, before the screen's own handlers (a button that stops its press still selects); the object under the press is kept for a press that redraws the screen. A selection survives a redraw (found again by its selector).
+
+**How to use.** A new stage with a panel: bind it with its objects, each the panel groups that hold its properties (`data-dpt` titles; `lent` for a module whose rows are lent Tweaks), and call `refresh()` after each draw. A module of its own on a template page: add it to the page's `o.pick` (as `DRPK`).
+
+**Pitfalls.** An object whose groups are not in the panel is not selectable (by design): check the titles. A sheet over a screen: the scrim is not an object, the screen under it can't be selected (`.arQaPanel` the sheet, `.arQaHead` / `.arQaGlT` / `.arQaList` / `.arQaFoot` its parts).
+
 ## Desk page panels (`#dMain #dOver #dSvc #dTl #dApt #dAcc #dPlan #dMkt`; "follow the setup on overview", merged #270)
 
 **What.** On the desk each page is a card that owns its scroll, floating over the shell ground (`--shellBg` #181818) right of the sidebar, 8 off the rail and the window, 16 below the shell's top, 12 px top corners. At forced S/XS the panel becomes the device's screen.

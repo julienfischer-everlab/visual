@@ -58,6 +58,8 @@ The page menu `#versionSel` has Documentation flow (`'doc'`, renamed from Docume
 | Page types (Main / Sub: every Sub page pushes in and pops out) | `window.EvPush`, `glPt`, `everlab:pushMaster` | references/layout.md |
 | Footer group parts: Footer navigation (the actions, every breakpoint) and Footer home (34 high, full width, the home bar centred; XS and S only) | `EvPageFt.html`, `EvPageFt.home()`, `.evFtHome` (General layout → Footer group, the Page types demo, `EvSheet`, the report's goal sheet `qaFt`) | references/layout.md |
 | Sandbox (Asset group, `#sandbox`: demo screens, templates with revisions, locks, presets, overrides; isolated store `everlab:sandbox`) | `sbxDoc`, `window.__sbx` | references/layout.md |
+| Selecting an object on a Design system stage (only objects with properties; its groups alone in the panel) | `window.EvPick`, `tplStg` `TSO` / `o.pick`, `EvScrDemo` `SDO` | references/layout.md |
+| Doctor note module (Design system → Modules, `#module-doctor-note`: the email card, every Doctor note prop lent from Tweaks) | `dnDoc`, `window.EvDrMail`, `window.EvDnM` | references/flows-modals.md |
 | Desk page panels | `#dMain #dOver #dSvc #dTl #dApt #dAcc #dPlan #dMkt`, `--pnCap` | references/layout.md |
 | Footer group content (Inline edge, Inline fill, Stacked fill, 1 CTA only; General layout → Footer group) | `window.EvPageFt.html({ align, primary, secondary, tertiary })`, `.evPft` | references/layout.md |
 | Page audit (Analytics: every page's health) | `window._aud`, `EvInspect.score()` | references/layout.md |
