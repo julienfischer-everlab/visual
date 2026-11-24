@@ -5,6 +5,30 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3159 The Overview header's stacking, Save for all pages of the flow, the blood panel by goals, Intro / Outro without a context, templates in the shared store
+
+- "field and bell right side!" (the Overview's title, field and bell stacked in a column):
+  - Found with the user's shared setup: the Page audit's Fix (`EvInspect.fixLayout`) put a nav filler and a block container (`.evFixCt`) into `#dOver .ovTop`, a flex row, so its children stacked.
+  - The Fix is remembered in the browser (`everlab:layFix`) and put back every 1.2 s, which is why fresh loads never showed it.
+  - `fixLayout` now returns early when the header, title or body it would touch is in `#dOver`: the Overview's desk lays out its own bar. Its Page audit score stays under 100%, but Fix does nothing there.
+- "If page is a flow, Split button on Save should have option to save All page of the flow": Save's arrow has "Save for all pages of <flow>" on any step of a flow (Check-in, the Insights flow, Send a gift), disabled with "This page isn't a step of a flow" elsewhere (`const itF = `).
+  - It puts the screen's effective General layout (`tEff`, every `tFl` field) and its containers on the flow's own layer (`PG[flow]`, `EvCt` `M[flow]`).
+  - It removes those values from every template and context of the flow's screens (`EvCt.allFlow`, `fLay`), then saves as Save does. `EvTopNav.flowAll` (`tAll`).
+  - A template shared with screens outside the flow loses those values there too; they fall back to their own flow's layout.
+- Blood panel: Tweaks → Blood panel → Group by Status / Goals (`#stArBpGrp`, `o.bpg`; "a version where the Biomarker are grouped by goals. To fit better the narrative regarding this recommendation").
+  - Goals: a section per goal of the report, Steven's line on why, then "Also checked" (`bpSecs(P)`, the `BP_GOAL` marker-name table above `buildRecBlood`).
+  - The same cards, rows, headings, tabs and chart; Status unchanged.
+- "this should be in body": `htHoist` moved the body's 24 px top gap into the Header title section. With that screen's Header title Off (`html[data-gltt]`), the content sat flush under the nav, looking like part of the header. `htHoist` now keeps `--arPgMt0` / `--arPgPt0`, put back by CSS when the title section is off.
+- "Need to see the tweak available for this page ... without having to create a context" (Intro / Outro screens: Check-in intro, cover and Thanks; the Insights flow's What to expect):
+  - Content (Tag, Title, Line, Button), Visual and Style show with no context, saved as the screen's own with Save (`EvScrOv`: own changes apart from a named context, `cx()`, `saveAll()`; Reset). Add context turns them into a named variant.
+  - The template's layout (Header nav and Body containers, Rows) shows in General layout from its master `EvItM`. With a context it is greyed out and disabled.
+- "Every time I add a template it should be reflected on the template pages. and become the source of truth master page":
+  - A template made in Tweaks already got its page. The gap was the shared store: EvCt now writes templates to it itself (`EvShared.put('everlab:tplSys')`, `tsPush`), merging the store's copy first (`EvShared.get`, `tsMerge`, deleted ones in `gone`).
+  - The store's templates load live (the MASTERS loader). Templates not yet stored (`everlab:tplPend`) are written again, and a one-time migration covers ones made before; the user's "Question (basic)" was not in the store, so it only comes back if a browser still holds it.
+  - Each flow declares its templates (`__flowTpl.*.all`, `tEager()`), so their pages exist before a step is visited.
+  - A template's page has a Screen select (every screen on it), step names in Used in / Used for, and redraws when a screen is linked.
+- Built in parallel by four agents, each in its own worktree, tested there with Playwright, then merged and smoke-tested together.
+
 ## v3158 Orbs flat and orange, the beam purple to orange, the Modules phone scrolls
 
 - Insights → Empty style Orbs:
