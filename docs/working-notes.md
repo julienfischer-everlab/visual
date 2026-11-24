@@ -5,6 +5,13 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3178 One goal a page: the goal's title the Header title, its why in the card; the intro's goal cards come in as a deck; Tabs Off; a Fixed Header title sees a nav in place
+
+- **Goal page** ("For 1 per page version / Push out the title as header tite / Put the desc inside the card instead of the tite"): the goal's title is an H1 Title group at the top of the page, risen into the Header group (`htHoist`, the Header title's container); the product sheet's goal card under it holds the goal's why where its title was (a `p`, Body/300 Regular, fg primary 100), the plan's steps under it, the picture at the right.
+- **Intro's cards** ("Card have the 3 card stacking with aniamtion on this intro screen / The card style from the Review plan / sheet"): under the H1, the 3 goals as the product sheet's goal cards (`glMcard` mini), 8 apart; they come in as a deck: the first rises in, the others start tucked under it (10 apart, each 5% smaller) and slide down to their places one after the other (WAAPI, once the page is in place; not on a remount back or with reduced motion).
+- **Tabs Off** ("Have a tweak to remove these tabs ?"): Goals Tweaks → Tabs has Off (beside Separate, Merged; on the Goals template too, its options read from Tweaks): no Segmented tab on the goal's page, every product in one stack as the Goal detail's Tab group Off (the same rules, `.arGlPanesAll`), Your part then the note after them.
+- **A Fixed Header title sees the nav** ("BROKEN": the goals' intro, its H1 over the Page navigation): with Header nav Fixed Off (`tnFree`), `htPin` skipped the nav altogether, so a Fixed Header title pinned at the scroller's very top, under (or over) a nav still in place. The nav now counts whenever its box lies over the scroller's top (as it scrolls away, its bottom rises and the pin follows it up). Not reproduced here with the shared Goals template; this was the one path that draws it.
+
 ## v3177 One goal a page: an intro screen before goal 1; the product sheet's goal card on top, the why under it
 
 - **Intro screen** ("If 1 per page we need a screen intro. '3 goals to focus on next with your action plan to get there' Before the first goal page"): with Layout 1 goal per page the report's steps run Doctor note → Your goals (`gi`) → Goal 1…; `gi` draws the merged page's H1 (Title group, `arGlMTg`) alone, Continue on to goal 1. It is a step of its own in the Flow panel ("Your goals") and on the Goals template (`/^rec:g(\d+|i)$/`); merged, there is none (the page is its own intro).
