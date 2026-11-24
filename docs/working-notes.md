@@ -5,6 +5,21 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3160 Clinical cards hug, the biomarker sheet's header, Goals merged in one page, the goal card under a product, Add to plan when unchecked, Confirm plan per goal
+
+- "Card should be part of the section body" / "height hug" (the Follow-up blood test card in the Clinical deck): each deck card is its own content's height now, desk and phone. This replaces two earlier asks: the desk's `min-height: 400px` and the phone's "fill the available space".
+- "HEader issue!" (the Haemoglobin sheet from the blood panel, Header nav Off): the floating Close sat at `top: 12px; right: 12px`, half outside the panel and over long titles. It now sits where the Sheet master puts it with its nav Off (`.evShNo > .evShX`): centred on the nav row it stands in for, at the panel's padding. The title keeps clear of it (`padding-right: Close + 12`), as the master's `.evShHtW .evPhgHdC` does.
+- Goals (Tweaks -> Goal, one group):
+  - Layout: `1 per page` (as before) or `Merged` (`stArGlLay`, `o.gllay`).
+  - Merged: one step, `Your goals` (`rcLin` keeps `g0` only; the Flow panel names it `Your goals`). The page stacks the goal cards ("in the page we will just stack card"). A card opens its plan in the report's sheet ("push the product under a sheet"): its tabs, What we'll do, Your part, Go further. The CTA is Continue.
+  - "Your part" is a sub-group of Goal with its own switch (`.tkSwScope`: the group switch handler dims only the closest scope's rows).
+  - One goal card builder for every place: `glWrap(g, hd, size)` (icon, Card static, the Visual pick) and `glParts(g)` (tabs and panes). `buildRecGoal` and `buildRecGoals` both use them.
+  - Stacked cards with the Circle visual: a 64 circle beside the eyebrow and title only, the why the card's full width.
+- The product sheet from Confirm plan (`rcStkCard(..., rev)`):
+  - "Add the goal card below the properties (IF any goals assigned)": `glFor(it, sn)` lists the goals a product serves (`glIdx`: `IT_GOAL` regexes on its name, line and Why source; the follow-up blood test serves heart and energy), each the goal card at H3. Nothing when no goal fits or Goals are off.
+  - "IF item is unchecked, CTA primary Add to plan" / "If paid item is selected ... CTA secondary Do it later": `inR` reads the item's tick as the list shows it (`rvOff`, and `rvLtSel` for Later checkboxes). Unchecked: Add to plan (primary), no Added to plan badge. Ticked: Do it later (secondary). Add to plan also clears `rvOff`.
+- Confirm plan -> Layout: `Per goal` ("remove the timeline and break the items per goal with a title group"): the Timeline's cards with no rail, no months and no debrief, under each goal's Title group (Goal n, its title). A product goes under the first goal it serves; the rest under Also in your plan; Next (no tabs) last. The Timeline's card rows stay in Tweaks; In your plan stays the Timeline's alone.
+
 ## v3159 The Overview header's stacking, Save for all pages of the flow, the blood panel by goals, Intro / Outro without a context, templates in the shared store
 
 - "field and bell right side!" (the Overview's title, field and bell stacked in a column):
