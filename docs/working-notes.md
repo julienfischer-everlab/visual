@@ -18,6 +18,7 @@ this is the part you need before you change it.
 - "card goal below title group": a product's goal card now sits right under its title group (picture, name, line), above Why / When / Price, 24 above and below it.
 - "eyebrow --> use badge instead, grey one": every Goal n (the stacked goals, the goal page, a product's goal, Confirm plan per goal) is the Badge master's grey (`glEy`: `EvCtl.badge`, Tint, Neutral, xs) in the Title group's top slot.
 - A product's goal card ("use title group h2 / Use eyebrow 'Supporting your goal'"): the Title group's H2, its eyebrow Supporting your goal (not the Goal n badge, which stays on the goals' own cards and Confirm plan per goal).
+- "Add chip biomarker When it's about biomarker in the goal": a goal can list its biomarkers (`GOALS[].bio`, `[name, o|s|x]`); `glWrap` puts them under the why as the doctor's note chips (`.arDrChips .arDrBio`, the range dot). The heart goal has LDL and ApoB, out of range (its why says they are high); energy and skin name none.
 
 ## v3160 Clinical cards hug, the biomarker sheet's header, Goals merged in one page, the goal card under a product, Add to plan when unchecked, Confirm plan per goal
 
