@@ -212,6 +212,24 @@ A new Sub page: its show / hide do the change at once (no CSS transition of thei
 
 ---
 
+## Page templates (`EvCt.tpl`): a template is the master of its screens, with versions
+
+**What.** Page templates (the page menu's Asset group, set `tpl`) lists every template; each is a master page (`tpx_<key>`, `_doc.show('tpx_ar_tpl-dr')`) drawing its real screen. A template owns its screens' layout (Header group, Body, Footer group containers, Page type) and, for the templates in `window.__tplPh`, the props of the modules on that screen. "Override a template, save, and go back to a previous version."
+
+**Where.** `grep -n "const TK = 'everlab:tplSys'"` (the store), `const tplApi = ` (the API), `window.__tplPh = ` (module binding), `const LP = (window.__tplPh` (the template page's lent groups), `tpxVer` (Versions), `__glTplF` (the Goals templates' own fields).
+
+**API.** `EvCt.tpl`: `get(k, f)`, `set(k, f, v)` (a draft), `save()` (the top bar's Save, `tk:save`), `dirty(k)`, `lay(k)`, `fields(k)`, `hist(k)` (versions newest first, `cur` on the one it holds), `restore(k, at)` (that version back as a draft), `discard(k)`, `info`, `list`, `rename`, `remove`, `nameOf`, `screens`. Store: `everlab:tplSys` `{ defs, map, ctx, lay, names, scn, gone, hist }`, shared through `EvShared` (merged by `tsMerge`, `hist` unioned by `at`).
+
+**Rules.**
+- A template's values are fields of `TS.lay[key]`: layout `ct hd ht ft`, `g.*` (General layout), `o.*` (Goals), `s.*` (its sheet), `k.<control id>` (a module prop it owns).
+- Every change is a draft (`TD`) until Save. Save writes the template and, when something changed, a version `{ at, by, lay, from? }` (30 kept; the first save also keeps the state before it as the base entry, "Default" for a built-in template). Restore puts an earlier version back as a draft; Save keeps it as a new version "Restored from Version N"; Discard changes drops the draft. Nothing in history is lost.
+- Module props on a template's screen: `window.__tplPh` maps a template to the screen's phase (`'ar:tpl-dr': 'dr'`, `'ar:tpl-rev': 'rev'`, `'ar:tpl-prd': 'clin'`); `__tplCtls(key)` is every `select[id]` / range of the `ar` groups tagged for that phase (`data-ar-ph`). On that screen the template's own value (`k.<id>`) is put on the control; a user's change in Tweaks writes it to the template (a draft); a preset over an own value is put back. Rows holding an own value wear a blue dot (`.tkTplOwn`), their label names the template, and the group's header has a Template link (`.tkTplLk`) next to its Module link (`.tkModLk`, `MODLK`).
+- On the template page the same Tweaks groups are lent into its right panel (`tkLend`, `lpMark` hides other phases' rows), so a template shows "all of the tweaks that concern this page". Reset to Default clears the layout and the `k.*` fields.
+
+**How to use.** A new screen whose modules a template should own: tag its Tweaks rows or groups `data-ar-ph="<phase>"`, add `'<template key>': '<phase>'` to `__tplPh`. A new module group: add `[page, 'Group title', '<ds key>']` to `MODLK` so its header links to its Design system page.
+
+**Pitfalls.** A control outside a `data-pages~="ar"` group is not bound. A preset applied over a template's own value is undone (the template wins on its screen). `hist` is shared with the templates: a teammate's versions arrive with the store.
+
 ## Desk page panels (`#dMain #dOver #dSvc #dTl #dApt #dAcc #dPlan #dMkt`; "follow the setup on overview", merged #270)
 
 **What.** On the desk each page is a card that owns its scroll, floating over the shell ground (`--shellBg` #181818) right of the sidebar, 8 off the rail and the window, 16 below the shell's top, 12 px top corners. At forced S/XS the panel becomes the device's screen.
