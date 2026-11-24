@@ -5,6 +5,17 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3161 The report's sheets on the master's nav-off frame, plan card badge column, goal cards in columns, the goals page title
+
+- "Header issue. There is more top space on the sheet type" (a goal's sheet, Header nav Off):
+  - The Sheet master with its nav Off keeps a 32 frame where the nav stood (`.evShNo`, `--t-space-xl`), then the Header title; its Close sits on that nav row, 18 down (`(72 - 36) / 2`).
+  - The report's sheets (`.arQa[data-shnv]`) had no frame, so the title sat 32 too high. The head now has `padding-top: 32` and is the Close's positioned box, so the Close is 18 under the head's top (the sheet's own 20 above it on the phone).
+  - Measured against the master: title group 32 down at M (master 32), 50 at XS (master 50); Close 18 / 37 (master 18 / 37).
+  - An untitled sheet (a product's) collapses its empty 64 Header title box (`.arQaNoT`, set by `sheetOpen` when there is no title), so only the 32 frame sits over its picture.
+- "Put badge on the right side, Gap 2 col 48px token" (the goal's plan cards, `.arGlCard`): words in the first column, the badge in the second, top-aligned, `column-gap: var(--t-space-3xl, 48px)` (space/3xl).
+- "1 col content, 2 col imagery (margin top 16px), increase size by 16px, Gap col 48px token" (the goal card, Visual Circle): `glWrap(g, hd, size, cols)` puts the circle in the card body as a second grid column (`.arGlCols`), 80 (was 64), 16 down, 48 gap; the foot spans both. Used by the stacked goals and a product's goal card; the 1-per-page card keeps its 128 circle.
+- The merged goals page title: "Here’s what we’ll focus on next." with no sub ("Remove sub").
+
 ## v3160 Clinical cards hug, the biomarker sheet's header, Goals merged in one page, the goal card under a product, Add to plan when unchecked, Confirm plan per goal
 
 - "Card should be part of the section body" / "height hug" (the Follow-up blood test card in the Clinical deck): each deck card is its own content's height now, desk and phone. This replaces two earlier asks: the desk's `min-height: 400px` and the phone's "fill the available space".
