@@ -15,6 +15,8 @@ this is the part you need before you change it.
 - "Put badge on the right side, Gap 2 col 48px token" (the goal's plan cards, `.arGlCard`): words in the first column, the badge in the second, top-aligned, `column-gap: var(--t-space-3xl, 48px)` (space/3xl).
 - "1 col content, 2 col imagery (margin top 16px), increase size by 16px, Gap col 48px token" (the goal card, Visual Circle): `glWrap(g, hd, size, cols)` puts the circle in the card body as a second grid column (`.arGlCols`), 80 (was 64), 16 down, 48 gap; the foot spans both. Used by the stacked goals and a product's goal card; the 1-per-page card keeps its 128 circle.
 - The merged goals page title: "Here’s what we’ll focus on next." with no sub ("Remove sub").
+- "card goal below title group": a product's goal card now sits right under its title group (picture, name, line), above Why / When / Price, 24 above and below it.
+- "eyebrow --> use badge instead, grey one": every Goal n (the stacked goals, the goal page, a product's goal, Confirm plan per goal) is the Badge master's grey (`glEy`: `EvCtl.badge`, Tint, Neutral, xs) in the Title group's top slot.
 
 ## v3160 Clinical cards hug, the biomarker sheet's header, Goals merged in one page, the goal card under a product, Add to plan when unchecked, Confirm plan per goal
 
