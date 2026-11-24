@@ -5,6 +5,11 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3163 Each section's padding in its own colour
+
+- "Show the padding for each section using the colour code of the section ... bg filled opacity 50% with value white inside" / "FOR ALL RULE not only this screen": the padding guide's bands (Tweaks -> General layout -> Padding guide, on every screen: the app's pages, modals, sheets, flows) take their section's colour instead of red: Page navigation blue (`.ctGdPTn`), Page header title purple (`.ctGdPHt`), Body slate (`.ctGdPBd`, lighter than its label so it reads on the dark screen), Footer green (`.ctGdPFt`), filled at 50% (`--gdPc`), the value white, the edge line the same colour.
+- The Design system's Page types stage draws its own bands (Show containers, `.sdGc`): the same colours by container (`.evPhgNavC` / `.evPhgAddC` blue, `.evPhgHdC` purple, `.sdBdC` slate, `.sdFtC` green).
+
 ## v3162 The goal card in rows, the Goal number on the picture, the description tweak, the goals page title
 
 - "Row 1 Title - Img right / Row 2 Desc", "Margin top -8px img": the goal card in columns (the stacked goals, a product's goal) is now a grid of the Title group's own parts (`.evTg`, `.evTgCol`, `.arGlHd` set to `display: contents`): the Slot or eyebrow and the title on row 1 with the photo at the right (80, 8 up, 48 between), the why and the biomarker chips the card's full width under them, the foot last.
