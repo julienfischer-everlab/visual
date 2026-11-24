@@ -5,6 +5,15 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3182 Goal detail (full modal): the goal's detail as a full modal, a second template
+
+- **The duplicate** ("Duplicate template and use full modal instead, keep tweak / Call that 'Goal detail (full modal)'"): `ar:tpl-gldf`, built in beside `ar:tpl-gld` (renamed in the store "Goal detail (sheet)"). Same content (the goal's title and why, its chips, Your action plan, the tabs or one stack, Your part, the footer note), same Tweaks (its own EvSheet set `arGlF`, the sheet's props less Size and Height, plus the Content part's Tab group and Your part), its own values; seeded with the sheet's (Tab group Off, Your part Off).
+- **Which one opens**: Goals · Goal detail (Sheet / Full modal, `o.gldet`, select `stArGlDet`), a Goals prop on the goals template (only with Layout Merged: hidden under 1 per page, and on the 1-per-page template's page). `buildRecGoals`' card sets `qaFm` before `sheetOpen`; the layer gets `data-shfm`, `qaTk` reads `arGlF` / `ar:tpl-gldf` for it (no Size, no Height, never fit). A product's "Supporting your goal" card keeps the sheet stack.
+- **The full modal layer** (CSS beside `.arQaDim`): the whole report, square, no shadow, no notch or grab (`.arQaGrab` showed as a bar), no swipe; the status bar's room a top border in the paper (`--ar-qa-top`), not a padding, since the Full modal type's Body padding top Off zeroes the panel's padding (it is the body container). ID-level selectors: the goal layer's own `max-width: var(--qaSzW)` rule had them.
+- **Page type**: its EvCtx entry is `type: 'full'`, so Tweaks shows Full modal (and `tApply` treats `arGlF` as the sheets do).
+- **Header title centred** in its container in both goal layers: a later `margin: 0 0 16px` on `.arQaGlT` pinned it left (seen once the layer is wider than the container, the full modal at M).
+- **Its Page templates page**: the goals with the first one's full modal up (`GLD` covers both keys, `GLDF` the full one); a goal click on the Goals List (in 1 page) page opens the Goal detail template the goals use.
+
 ## v3181 The Layout tweak on the goal template pages
 
 - **Layout back as a tweak** ("Need the goal tweak here too!"): both goal template pages show Goals · Layout as Tweaks does (1 per page / Merged), the page's own layout picked, "In use" beside the label while the app's Layout is it. The other one picked sets the app's Goals · Layout (on `ar:tpl-goal`, a draft till Save, as Tweaks) and opens that layout's template page (`glSw`). Reset to Default leaves it alone.
