@@ -5,6 +5,11 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3191 Goal page (1 goal per page): LG card, Explore further's count
+
+- "Add a counter next to Explore further, showing the number of items inside this bucket": the merged tabs' second item carries the Segmented master's own count (`EvSeg` item `n`, drawn as `.evSegN`), `nMore` (every option in `g.more`, the flat list the pane shows). No count when the bucket is empty. To prioritise now has none (not asked).
+- "For this version, remove two actions in your plan, and this card should be LG": `glMcard(g, j, ey, mini, noWhy, pg)`, a new `pg` flag only `buildRecGoal` passes. It drops the Title group's bottom line (`n actions in your plan`) and sizes the card `lg` (EvCard: 20 padding, 20 corners) instead of the mini's `md`. The product sheet's goal card (mini) and the goals list's cards keep their line and size.
+
 ## v3190 Activation: a flow of its own
 
 - **The ask** ("I want an entire flow ... 1. you need to provide your health profile, so we have a set of questions. 2. After that, you go back to the overview and get your result. 3. You click on Get your result, and then you see the result. 4. At the end of this, we are going to suggest to them that they do the blood test, and then we continue like this ... a new flow called activation"): Page → Standalone flow → **Activation** (`window._act`, `#activation`): the Overview with the Activation card, its own Flow panel, every screen the real one.
