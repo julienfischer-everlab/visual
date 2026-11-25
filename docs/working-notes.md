@@ -5,6 +5,21 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+### v3225 · Timeline rows on the Title group H4, phone chevron Secondary, Visual XS right side, mini centred on XS, no background jump
+
+- **"Bg move up and down everyt ime the icon spin"**: `radFit` returns early for `.pcmMini` cards. It drops `--pcRadM`, `--pcTopY` and `--pcRadHn`, sets `--pcRadH` to 75% of the card, and never shares `_pcHi` with mates. The processing spinner no longer re-fits the card's picture: the measured height stays at one value.
+- **"title group h4"**: `#tl3 .t3MiniL` row names use the Title group master's H4 tokens: `--t-font-size-headlines-400`, `--t-font-line-height-headlines-400`, `--t-font-letter-spacing-normal`, `--t-font-weight-medium`. These are the same variables `EvTitle`'s tokCss writes for `[data-lv="h4"]`, so the rows are 18/22 at M/L and 14/18 at XS (the token's own phone value). The why (`.t3MiniS`) and the frequency sub line use its support line, Body/200/Regular (`--t-font-size-body-200`, `--t-font-line-height-body-200`, `--t-font-weight-regular`). The 2px gap stays: it is the H4 gap.
+- **"CTA same size but rounded not full rounded"**: The Button master forces every `.evBtn` without `.evBtnSq` to a pill (`border-radius:9999px !important`). So See why now carries the master's Square shape (`evBtnSq`) at `--t-interactive-radius-xs` (8).
+- **"badge size up"**: the frequency badge is the Badge master at `xs` (was `2xs`).
+- **"Chevro ncta move up 4px", "Secondary rounded"**: `ACC()` now draws two Button-master instances:
+  - See why: Tertiary, xs, Square (`.t3MiniAcW`), shown on M/L.
+  - The chevron: an icon-only twin (`iconOnly`, `ic:'down'`), Secondary, xs, Square (`.t3MiniAcX`), shown on XS (`@container msl (max-width:480px)`). It sits 4px higher (`margin-top:-4px`) and rotates when open.
+
+  The click handler sets `aria-expanded` on both.
+- **"Tweak Visual XS Right side. If ON Put chevron cta next to badge"**: new Tweak `#stT3VisR` (Visual XS right side, Off/On) sets `html.t3VisR`. On XS the row's columns become `auto auto minmax(0,1fr) auto`: the visual goes to column 4 (top right, rows 1–3), the words span columns 1–3, the badge sits in column 1 row 3, and the chevron sits in column 2 next to it, 8px after it. Without a badge, the chevron follows the frequency sub line instead.
+- **"on XS keep centered as other breakpoint"**: with the Top radial picture, `.hpOvCard.pcmRad > .hpActB.hpActB:has(…)` set `grid-column:auto` and beat the mini's `1 / -1`. On XS (grid `minmax(0,1fr) var(--pcVis)`) that dropped the mini into the 209px first column, pinned left. The mini rule now carries one more `.hpOvCard` and wins. `contain:inline-size` keeps the mini's 320px max from widening the card's tracks past its padding, so it is centred inside the 24px padding, as on M/L.
+
+
 ## v3224 · See why outlined, same words open; why under the name on M / L; chevron on the phone
 
 - See why is the Button master **Tertiary** (outlined) xs ("CTA outlined"), its words the same open or closed ("See why active stay same Copy"; Hide why gone).
