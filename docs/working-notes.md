@@ -5,6 +5,25 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+### v3243 · Intro / Outro screens override their template; super short keeps the email's header and footer; sheet 640 at M · L; habit notes as H3 rows
+
+- **Template override (Intro / Outro screens)**. "If I go to a UI and I change, I want to override a template. If I save, it shouldn't save on the main template, or I can have an action: Save as updated template. Or, if I just save, it just needs to see the override mention below the template."
+  - Layout changes made on a screen (check-in intro, outro, cover; the Insights flow's What to expect) go to that screen's own override, not to the Intro / Outro template. These are the Header nav container, the Body container and the Rows.
+  - `EvItM` keeps them: `OV` (saved, `everlab:itOv`, per screen key) and `OD` (unsaved). The API is `setOv(k, f, v)`, `ovOf(k)`, `eff(k, f)`, `ovDirty`, `saveOv`, `revert(k)`, `promote(k)`.
+  - The screen that is up reads its own values over the template's (`ap()` follows `html[data-scr-ov]` through a MutationObserver).
+  - The bar's Save keeps the override on the screen. The template is untouched.
+  - An orange block under the Template and Context rows (`.tkTplOv`) reads "Template overridden" once saved, or "Override not saved yet" before. It lists what differs, with the template's value beside each.
+  - **Revert to template** asks first through `EvConfirm` ("Are you sure you want to revert to the initial template…?"). Yes drops the override.
+  - **Save as updated template** also asks first. Yes writes the screen's values into the template (every screen on it) and drops the override.
+  - The template's own page (Page templates → Intro / outro) still edits and saves the template itself.
+- **Email · super short**. "Keep that on the short email. And also the footer." It now keeps the email's header (date, subject, photo) and footer (Warm regards, signature, wordmark). Only the words are soft: one size and weight, no bold, no chips.
+- **Goals | Habits tabs**. 24 between the tabs and the first item under both tabs (`.arDrGl24`: the section's 16 and 8).
+- **Sheet at M · L**. "when the sheet overlaps the screen in the centre … max height of the sheet by 640px." The centred sheet's panel is capped at `min(var(--evShMaxH, 640px), 92%)` (86% for Hug). The drawer and the Full modal page type keep theirs.
+- **Habit notes**.
+  - Each row (Advice from your doctor, Adjusted for you, To consider) is an `EvTitle` H3 with its subline.
+  - The list's rule is back on: the text is at least the circle's height and centred on it when shorter. `.arDrV2L` had turned it off.
+  - To consider's circle has an orange dot at its top right (#eb6200, ringed in the sheet's ground).
+
 ### v3242 · Flow panel: a blue home icon on the flow's first page
 
 - "for the first page of the flow: should I have a home icon next to the toggle, a blue home icon? ... When you load this page, it's going to trigger this home icon page."
