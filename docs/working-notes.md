@@ -5,6 +5,11 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3221 · Accordion chevron small, right after the frequency
+
+- "Arrow cta smaller next to frequency badge": the Accordion's chevron 20 (its arrow 14), 6 after how often: beside the badge on XS (the badge's row) and on M / L (a 20 column after the badge, kept on every row so the badges stay in line), beside the sub title when Frequency is Sub title; a row without a frequency keeps it at its end. The name spans the columns over them.
+- Fixed: an invalid `:is(> b, …)` selector (relative selectors are not allowed in `:is`) dropped the name's span on XS.
+
 ## v3220 · Timeline: Why note Accordion, title–why gap +2, Badge style
 
 - **Why note → Accordion** ("Add tweak accordion revealing the subtitle (why) using the full width in a new row"): `stT3WhyNt` value `acc`, `html.t3WhyAcc`. A row with a why ends on a chevron (`.t3MiniAc`, a 28 column kept on every row so the badges stay in line); the whole row (or the chevron) opens it (`li.t3Open`, `aria-expanded`): the why under the whole row, full width from the visual's edge, a plain 14/20 line, 12 below, fading in. Rows centred while closed.
