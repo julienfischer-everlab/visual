@@ -5,6 +5,20 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+### v3241 · Strength habit sheet as the Plan's activity session; Doctor note version "Email · super short"
+
+- **Strength sheet**. "Refer to this screen for the detail page of the activity, but keep the bullet point on the top above the substep" (Figma Plan · Prescription 28517:68868) and "On the activity at the end, you can have a section: Objectives, and then you list some stuff here."
+  - The three rows (Advice from your doctor, Adjusted for you, To consider) stay at the top, under the badges.
+  - Each session (Session A, Session B folded in the Disclosure) has its exercise cards, then its blocks: Warm-up, each move (its sets line and bullets), Cool-down.
+  - The chips follow the mock: sets, reps, rest. The video's duration chip is gone; the play disc says it's a video.
+  - After the sessions comes Important (the blue note with its bar), then Objectives at the end (Weeks 1–2, 3–4, 5–6), replacing Getting stronger.
+  - The blocks and the note are the Plan's own code: `sesProg(b)` and `sesNote(t)` were pulled out of the Plan's `sesBody` and shared as `window._plan.sesProg` / `sesNote`. The habit's data has `secs[].b` (`[tag, line, [bullets]]`), `imp`, and `prog.t = 'Objectives'`.
+- **Email · super short** (Tweaks → Doctor note → Version). "Create a Tweak version, super short, with no text font change, font weight change, and all of this more like a soft, and keep the content that I sent you here."
+  - The words are fixed (`DRQ_XSHORT`): "Sam, you’re in good shape. Two things need attention: …the four habits that will get you there."
+  - `drMailMake({ soft: true })` draws the note card alone: the doctor's line ("Dr … · Longevity GP", quieter) with the photo at its right, then the words.
+  - Everything is 16/24 at one weight in the soft ink (`.arDrMailSoft`). There is no subject, date, bold, chips, sign-off or signature.
+  - What follows is as Email · short: What we’ll work on together, the goals (and the Habits tab when Lifestyle habits is On). `/^x?short$/.test(o.drv)` stands where `o.drv === 'short'` stood.
+
 ### v3240 · Primary card builder: an eye on each Phases step (hide it from the Overview)
 
 - "Here, you can have a way to hide some step. Just add an eye icon, and then if I click on the eye, it just makes the step disappear. It's not part of the overview, but just keep it there as information because it's part of the step of the service."
