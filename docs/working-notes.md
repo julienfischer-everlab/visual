@@ -5,6 +5,14 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+### v3245 · Habit sheet: the Avoid row titled in orange; a divider under the notes list
+
+- "Remove to consider. Put Avoid until your scan is clear as a title, and put this title in orange."
+  - The third note row's H3 title is the avoid line itself (`x.avoid[0]`), in orange (#eb6200, the dot's colour). Its subline is the reason (`x.avoid[1]`).
+  - "To consider" is gone. The row has the class `.arHabNlAv`, and `nb()` takes a 4th argument for the row's class.
+- "Then add the divider between the list group and the section Session A content. Just a divider with 16 margin up and 16 margin down."
+  - The `EvDivider` master (`habRule()`, `.arHabRuleNl`) sits under the notes list in every habit sheet, with 16 above and 16 below: margin −16 against the body's 32 gap.
+
 ### v3244 · Override block: Cancel overriding / Override template, then Template overridden + Revert; habit rows on the H3 Title group; goal circles 56
 
 - **Override block (Intro / Outro screens)**. "When I click Yes … I don't have any indication after that that this screen has been overridden. Also, I need to have an option to revert. Replace Save as updated template with Override template. And the first CT should be Cancel overriding."
