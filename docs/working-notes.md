@@ -5,6 +5,10 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3216 · Phases block on the Flow panel's Structure rows
+
+- "This is super ugly, refer to Flow Structure with pages for pages management": the primary card builder's Phases block (Modules → Primary card → Builder, under State) had no styles of its own. It now wears the Flow panel's Structure rows (`.hpFl .tkOrd.hpFlArr`), same sizes and colours: each phase a group with a small PHASE n label and its name written in place (`.moPhIn`), a delete icon on hover; its steps 34px rows (grip, name, the step shown lit blue with its dot, Remove on hover); Add step a quiet row under them; Add phase a dashed row at the end. Enter or Space on a row shows that step. Drag, confirm and phase picture unchanged (`phWire`).
+
 ## v3215 · Mini modules; the Activation card's visual is its Timeline to-do; Phase 1 rows
 
 - **Mini module collection** (Documentation → Modules → Mini module, `window.EvMiniCol`, `window.EvMini`): Timeline to-do, Biomarker (ApoB 146 mg/dL, Above optimal, range), Note from the doctor (quote, Dr Steven Lu). Each one is always a Card Secondary filled lg ("Mini visual alway Card Secondary filled lg"). The Timeline to-do on the Activation card is its phase's rows (`_hpCard.bjList`); on any other card it is its phase's steps as Done / Now / Next / Later.
