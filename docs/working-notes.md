@@ -5,6 +5,12 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3218 · Timeline frequency badge 2xs, short frequency words, Why sub aligned
+
+- Frequency as Badge right uses the Badge master's smallest size, 2xs ("the smaller badge in DS").
+- Frequency words shortened in both the sub title and the badge ("yearly / Once / 5 yearly"): Every year → Yearly, Every N years → N yearly (months, weeks, days the same way), Once unchanged (`freqH`).
+- Why note → Sub below: the line now starts under the title ("the why when Sub below should be aligned vertically with title above"): the Card master's inner body padding (`.evCardBd`, 12) zeroed in that mode, 4 under the words.
+
 ## v3217 · Mini module stacks, Secondary blur; Insights Summary empty style; Timeline Why note and Frequency tweaks
 
 - **Mini module on a primary card** ("When mini module just stack all content, no need to worry about 50% height"): with Visual → Mini module (`.pcmMini`) the card's content stacks: the module, 24, the title group, 24, the CTA. No top area kept for it, no shared tallest height, no Ring's dots (`canvas.hpDots`) behind it.
