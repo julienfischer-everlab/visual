@@ -5,6 +5,22 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+### v3239 · Habit sheet: the Plan's Supplement block (rows open a stacked supplement sheet), What this moves, the banner's gradient
+
+- **Supplements**. "This needs to be a clickable element, so it should be at least interactive. Also, reduce the image by 56 px." and "that's exactly the same block to use in the nutrition detail page with the supplement section, and you can also add the biomarker section."
+  - The habit's supplements are the Plan's Nutrition Supplement stack: `section.plSec.plNSupp`, its `h2`, then `.plNCard ul.plList` with one `button.plRow.plNSup[data-hab-sup=i]` per supplement (picture, name + dose, the line under it, the chevron).
+  - The rows are buttons, with the Plan's hover and press. The pictures are 56 (`:is(.evSh.arHabSh, #arHabX) .plNSupI`), plate radius 22.
+  - The Plan's rules this block needs were widened from `#dPlan ...` to `:is(#dPlan, .plSesSheet) ...` (about 32 heads: lists, rows, the Nutrition card, the supplement tile and plate, the biomarker rows, the chevron, the hover and press). The habit sheet sets the Plan's tokens on `.evSh.arHabSh` (`--plMut`, `--plCard`, `--plLine`, `--plChev`...).
+  - Overrides that must beat the widened id rules use `:is(.evSh.arHabSh, #arHabX)` (an id in the `:is` gives them the id's weight).
+- **What this moves**. The Plan's biomarker section (`window._plan.moves(rows)`, the same `plMovesHTML` the Plan uses) under the supplements, from the habit's `moves`. Each row opens `BioDetail.sheet` (click or Enter, `habBio`).
+- **Supplement sheet**. "For the supplement, you can just simulate a screen. In this way, it's going to be a card stack sheet." (Figma 27226:660742).
+  - `supOpen(x, i)` opens `EvSheet.open({ stack: true, title, lead, body, primary: 'Done' })`. The lead is a simple picture on the top left (`.arSupLead`, 56). The body has the strength and frequency badges, How to take it, Helps with (the goal cards, `EvCard.html` outlined sm) and What this moves.
+  - **New on the Sheet master: `stack: true`**. The sheet already open on the same host steps back (`evShStkd evShBack`: up 10, scaled .94, darker, its scrim off) and the new one opens 14 shorter, so the one under shows its top. Closing the top brings the one under forward. Escape closes only the top sheet.
+  - The data: Psyllium husk and Vitamin B12 have `freq`, `how` (3 lines), `helps` (goal ids) and `moves` (3 biomarkers). The Fibre habit has `moves` (LDL, ApoB, Vitamin B12, Fasting glucose).
+- **Banner gradient**. "there's an image like this just by default. Just use the gradient on the top of the header navigation."
+  - Over a sheet's banner (`.evSh[data-shbn]`), the header nav's ground is a gradient: the sheet's ground at 78% fading to clear, 32 past the nav. There is no blur, so the picture shows through.
+- **Pitfall**. A sheet's title group is sticky when the master's Title is Fixed. Its ground is the master's gradient: solid for the top 70%, then fading over 32. Text scrolled under the fade shows dimmed, which is by design.
+
 ### v3238 · Habit sheet: smaller badges (first filled), the doctor's notes as the intro's rows
 
 - **Badges**. "Use the smaller badge, and just keep the first badge filled. The rest should be outlined without a background."
