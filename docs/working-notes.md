@@ -5,6 +5,17 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+### v3229 · Primary card truly centred on the phone; Phases on every card (no State select anywhere)
+
+- **"Is that H2 title? Also, centre the title. It's not centred in the card ... Also, the [CTA] should be centred"**: yes, H2 (the Title group master's phone size, 18/22), and the title group already wears its centre property (`evTgC`). The block was off-centre for two reasons:
+  - The phone grid keeps a visual column at the right (`minmax(0,1fr) var(--pcVis)`), so the words and Start sat centred in the left column.
+  - `.hpOvTgW` kept `padding-right:32px` for a right visual the stacked card doesn't have.
+
+  For stacked cards (`.pcmMini`, `.pcmRad`) in Centred mode on XS/S, the grid is now one column, the words, foot and CTA span it, and the title block's side padding is 0. Measured from the card's middle: title block 0, title 0, Start 0 (Mini module and Top radial).
+- **"The phase system is for every card. The state here, this shouldn't be a state. It should be just phase 1 ... every card should have one phase at least"**: the Phases block (`phUi` / `phWire`) is no longer limited to the step row `gst`. It reads the card's own row: the Onboarding consult's `st`, the check-in's `qst`, else `gst` (`bx.dataset.rk`, `phRowK`), and selecting a step sets that row. Every card now shows Phases (one phase, Phase 1, at least, from `EvPcSteps.phases`), and the State row is hidden for all three rows. The Onboarding consult's and the check-in's states are a fixed set their cards draw from, so they have no Add step or Remove; rename, drag and phases (add, name, delete) work.
+- **Checked**: Onboarding consult (Phase 1: Step 1 … Today), Check-in (Ready, Started, Done), DEXA (one step), Activation (three phases). No State rows; clicking a step shows it.
+
+
 ### v3228 · Onboarding consult screens switch between Full modal and Sheet (Past results first)
 
 - **"I'd like to be able to Change from Sheet to Full modal and vice versa on a U from a Template Full modal OR Sheet. The content is the same it's just the wrapping around that differ"**: Past results (`#versionSel` `pr`) and every screen of the Onboarding consult flow now take the Page type switch (Tweaks, General layout, Page type: Full modal / Sheet). Before, they said "This one stays a Full modal for now".
