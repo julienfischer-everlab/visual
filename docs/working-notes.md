@@ -5,6 +5,10 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3223 · Builder: the Insights widget, set and saved per step
+
+- "I'd like to have control of the insight module here. and Save each step that take the setup tweak on the insight widget": Modules → Primary card → Collection builder, Activation card: an **Insights widget** block under the Visual (`.moInsWB`, `insUi`): Insights (None yet, 1, 2, 3, 5+), with none the three tasks (Health profile, Health data, Past results, each its states), Feedback (Off or any `EvInsFb` state). Changes show at once in the widget beside the card (`insSide`, drawn by `MODS.mins.draw`); **Save for this step** keeps them (`everlab:pcInsBy`, key `card:step`), **Reset** returns the step to its default (its `BJINS` line). Status: This step's default / Not saved yet / Saved for this step.
+
 ## v3222 · See why, list dividers +4, primary cards static, processing icon, phone mini module
 
 - **Timeline Accordion**: the chevron is now See why, the Button master ghost xs ("Chevron -->replace --> See why"), Hide why once open; before the badge ("order / Cta see why - Badge"): its own column before the badge on M / L (8 to the badge, the words 32 away), beside the badge under the words on the phone. The opened why 16 below ("Add 4px margin on sub when accordion tweak").
