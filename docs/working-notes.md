@@ -5,6 +5,26 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+### v3237 · Comments strip per screen; the builder's desk frame wears the Overview's header; habit rows on Card Secondary; Session H2
+
+- **Comments strip** (Tweaks preset card). "it should appear here and concern the page that you actually view here, not the full flow of the preset, but the actual page. If I'm on the doctor note page, and there is a comment on this page, I need to show this mention ... Otherwise, you don't show anything."
+  - `_cm.page()` now keeps a comment only when its version, its page and, in a flow, its screen (`ctx.fl` flow + step) are the ones on show (`samePg`).
+  - Viewport, mode and tweaks are not compared.
+  - A comment left with no flow screen counts only when no flow screen is on show.
+  - `open('page')` uses the same scope.
+  - Checked: on Doctor note, 2 (one left at another viewport); on Welcome, 1; on Goal 1, none, so the strip is hidden.
+- **Collection builder's desk frame**. "just add the title. Just take the overview framework and add the title on the top with the header group, header title, everything that is from overview."
+  - `skHead` clones the live `#dOver .ovTop` (Welcome back, Julien; the Ask field; the bell) in place of the title bar (`.moPlT`).
+  - Its CSS is all `#dOver`'s, so each part gets its computed style written on (`.moSkOvTop`).
+  - It is inert, and is cloned again when the theme changes.
+  - Its box is set on the bento's edges (title at the grid's left, bell at its right).
+- **Habit rows**. "It should be a card secondary, with no active, no border like this. Increase the image to 56."
+  - Each habit is `EvCard.item({ look: 'secondary' })` (`.arHabR` in `li.arHabLi`), 8 apart, with no selected ring.
+  - The picture is now 56 (was 48).
+- **Session title** (habit sheet). "This should be an H2 with a subtitle. Make sure there's a 24px margin bottom."
+  - Session A is `EvTitle.html({ level: 'h2', bottom })` (`.arHabSecT`), with 24 under it before the moves.
+  - How it progresses keeps its H3.
+
 ### v3236 · Primary card builder: a fixed footer, Save and More (Remove step, Remove card)
 
 - "For the primary card builder, the footer should be fixed. We should have one main CTA, which is Save, and then a three-dot for More. More will be a dropdown, and Remove Step or Remove Card. I want to keep the hesitation as well if you do remove something."
