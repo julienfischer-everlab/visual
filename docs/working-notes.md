@@ -5,6 +5,19 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+### v3244 · Override block: Cancel overriding / Override template, then Template overridden + Revert; habit rows on the H3 Title group; goal circles 56
+
+- **Override block (Intro / Outro screens)**. "When I click Yes … I don't have any indication after that that this screen has been overridden. Also, I need to have an option to revert. Replace Save as updated template with Override template. And the first CT should be Cancel overriding."
+  - While the change is unsaved, the block reads "Override not saved yet" with two actions:
+    - **Cancel overriding** (`EvItM.discard(k)`) drops the unsaved change and goes back to the template, or to the screen's saved override.
+    - **Override template** asks first ("Override Intro / Outro on this screen?…", Yes, override). Yes runs `EvItM.saveOne(k)`, which saves this screen's override.
+  - Once saved, the block stays as "Template overridden" with what differs, and **Revert to template** (asks first, then `EvItM.revert(k)`).
+  - The bar's Save does the same as Override template, for every screen with unsaved changes.
+  - Save as updated template is no longer offered. `EvItM.promote(k)` is kept in the API.
+- **Habit rows**. "Make use of an H3 for this so we keep the same gap between the title and subtitle, and also the colour of the subtitle H3 is actually secondary."
+  - Each habit row's words are an `EvTitle` H3 (`.arHabTg`) with the goal cards' overrides: body/300 16/20 medium, the master's 2 between title and subline, the subline secondary (.56) at 14.
+- **Goal circles**. "align the circle on the goals image to the same size as the habits image." The goal card's picture in the Goals list (and the email's goal cards) is 56, like the habits' (`.arDrGoals > .arDrGlS .arGlIc`, `.arGlCi`).
+
 ### v3243 · Intro / Outro screens override their template; super short keeps the email's header and footer; sheet 640 at M · L; habit notes as H3 rows
 
 - **Template override (Intro / Outro screens)**. "If I go to a UI and I change, I want to override a template. If I save, it shouldn't save on the main template, or I can have an action: Save as updated template. Or, if I just save, it just needs to see the override mention below the template."
