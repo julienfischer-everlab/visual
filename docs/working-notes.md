@@ -5,6 +5,20 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+### v3227 · Primary card centred on the phone, the mini 16 further in on XS, Phases: rename steps, no State select, a tree under Card
+
+- **"And I told you to Center the primary card content on xs"**: the phone's card layout (`:is(html body:is([data-bp="xs"], [data-bp="s"]) .hpOvCard…, html body .hcXs .hpOvCard)`) forces everything left with `!important`. A card stacked top to bottom (`.pcmMini`, `.pcmRad`) with Centred mode on (`html.hpOvCtrOn`) now gets its own rule with one more class, which wins. The card, title group (eyebrow, title, sub) and CTA are centred as on M/L. A card with its visual at the right stays left-aligned.
+- **"On xs Add 16px around the top left right of the visual content so the visual will be smaller"**: on XS/S and in the builder's phone frame, the mini is `calc(100% - 32px)` wide (320 at most), 16px from the top, centred. That puts it 40px from the card's edges (24 padding + 16).
+- **"Keep same Title group level on XS. It's h2?"**: yes, H2 on both. The Title group master's H2 is 20/24 on M/L and 18/22 on the phone (its own sizes per screen); nothing on the card overrides it. Not changed: if H2 should keep 20 on the phone, that belongs in the master.
+- **"WHy the Bg different on breakpoint ? Should be the same!"**: checked the Top radial picture (`img.pcMediaFull`) and the blurred glow (`.pcMediaBg`). Same filter, mask, fit and position rules on M and XS; the glow position (`--pgT/--pgR/--pgL/--pgM`, Tweaks Glow position) is one setting for every breakpoint. Not reproduced with the default setups. It needs the card's Visual and picture as set in the builder.
+- **"Need to be able to rename steps title"**: a pencil on each step row in Phases (on hover, beside Remove), or a double click on the name, writes the name in place. Enter or leaving the field keeps it; Escape drops it. It is saved as the step's Step name in Content (`EvPcContent.set(card, step, 'sn', v)` + `commit`), so the State names, the Content block and every page's card follow. Typing the built-in name back clears the override.
+- **"Can kill the state module select on top As we have the phases now. Create an indentation with the above 'Card'"**: wherever the Phases block shows, its parent gets `.moPhOn`.
+  - The State row (`select[data-mdk="gst"]`, its arrows and +) is hidden.
+  - Under the Card heading, its select and Phases sit on one guide line, 7px in.
+  - Each phase's steps and its Add step sit 14px further in, on the phase's own line.
+  - The Onboarding consult and the Check-in, which have no phases, keep their State rows.
+
+
 ### v3226 · Timeline Tweaks never show the Overview's groups, Right column removed, See why on M·L option, Next check-in reads as a timeline item
 
 - **"Why I see the bento in the timeline ????"** (and Overview, Notification module, Primary card): `EvCtx.run()` skipped redrawing the Tweaks whenever its context signature was unchanged. But `setMode`'s own `tkPages` call could redraw the Tweaks in between, while the page's class (`tlOn`) was off for a moment, and draw them as the Overview (`data-pages="ov"`). Once `tlOn` came back in the same frame, the signature matched and the Overview's groups stayed. `run()` now also redraws when `html[data-tk]` (the context the Tweaks were last drawn for) differs from the top context. To reproduce: remove `tlOn`, call `__tkPages()`, add `tlOn` back. Before the fix the Tweaks showed Bento and Overview; now they show the Timeline's groups.
