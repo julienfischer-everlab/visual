@@ -5,6 +5,11 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3219 · Timeline badge rows: three columns on M / L, the badge under the words on XS
+
+- Frequency → Badge right, M and L (container `msl` ≥ 481): three columns, the visual, the title group (name, its why), the badge ("treat that as 3 col on M L"), 32 between the words and the badge (12 column gap + 20: "Badge / title group col --> 32px padding"). With a why, the row aligns on the top ("If sub present align on top the title group") and Why → Sub below sits right under the name, 4 closer ("reduce gap by 4px").
+- XS (≤ 480): the badge under the title group, in the words' column, 8 below ("Badge below title group on XS").
+
 ## v3218 · Timeline frequency badge 2xs, short frequency words, Why sub aligned
 
 - Frequency as Badge right uses the Badge master's smallest size, 2xs ("the smaller badge in DS").
