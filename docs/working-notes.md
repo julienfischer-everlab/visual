@@ -5,6 +5,20 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+### v3228 · Onboarding consult screens switch between Full modal and Sheet (Past results first)
+
+- **"I'd like to be able to Change from Sheet to Full modal and vice versa on a U from a Template Full modal OR Sheet. The content is the same it's just the wrapping around that differ"**: Past results (`#versionSel` `pr`) and every screen of the Onboarding consult flow now take the Page type switch (Tweaks, General layout, Page type: Full modal / Sheet). Before, they said "This one stays a Full modal for now".
+- **How**: `hpWrap`'s `open()` records:
+  - its own type, `data-hp-nat`: `modal` when Past results opens from the Overview's card (the existing `hpPrSh` sheet), else `full`;
+  - a switch key, `data-hp-sk`: `hp:res` for Past results, `hp:<solo>` for another solo screen, `hp` for the profile; none for the welcome or Steven's note.
+
+  It then declares the key with `EvPageType.can` and wears the switch through `hpSw()`. A Sheet gets `hpBs` (plus `hpPrSh` on Past results: the bottom sheet on the phone, the floating modal on the desk, as tall as it needs); a Full modal gets `aqFull`.
+
+  An `everlab:ptsw` for that key re-wraps it live (and re-fits). Closing clears both attributes.
+- **The context**: `HPT` (the `hp` / `wel` / `sgf` contexts' type) reads `data-hp-nat` first, so the Tweaks card reads "Shown as a Sheet on this screen. Its template is a Full modal." with Back to Full modal. The `hp` context's `sk` returns `data-hp-sk`, so each screen keeps its own switch (`#stPtSw`, saved with Save).
+- **Checked**: Past results at M: Full modal 800×953 → Sheet 544×760 floating over the Overview → Back to Full modal 800×953, in the source and in dist.
+
+
 ### v3227 · Primary card centred on the phone, the mini 16 further in on XS, Phases: rename steps, no State select, a tree under Card
 
 - **"And I told you to Center the primary card content on xs"**: the phone's card layout (`:is(html body:is([data-bp="xs"], [data-bp="s"]) .hpOvCard…, html body .hcXs .hpOvCard)`) forces everything left with `!important`. A card stacked top to bottom (`.pcmMini`, `.pcmRad`) with Centred mode on (`html.hpOvCtrOn`) now gets its own rule with one more class, which wins. The card, title group (eyebrow, title, sub) and CTA are centred as on M/L. A card with its visual at the right stays left-aligned.
