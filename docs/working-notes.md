@@ -5,6 +5,15 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3222 · See why, list dividers +4, primary cards static, processing icon, phone mini module
+
+- **Timeline Accordion**: the chevron is now See why, the Button master ghost xs ("Chevron -->replace --> See why"), Hide why once open; before the badge ("order / Cta see why - Badge"): its own column before the badge on M / L (8 to the badge, the words 32 away), beside the badge under the words on the phone. The opened why 16 below ("Add 4px margin on sub when accordion tweak").
+- **Mini items → List**: 16 above and below each divider ("Add 4px gap above and below divider"; was 12).
+- **Overview primary cards**: no hover, no pointer: a Card static ("All card primary overview should be a Secondary XL card static. Not hover"); the `.hpOvCard:hover` rules and the Overview's card hover removed.
+- **Processing icon** (the Activation rows' Past records): the turning arc drawn on the status circle itself (`::after`, absolutely placed), the check's 18 exactly, never moving the row ("Icon should be the same size as the icon above and rotate").
+- **Mini module on the phone**: the module, the words and the CTA span the card's whole grid ("what?": it was squeezed into one column); the CTA's 24 on its button group (the foot is a contents box there).
+- Content copy not reflecting: not reproduced (the Activation card's Title / Subtitle update at once in the builder's frame, built-in and added steps).
+
 ## v3221 · Accordion chevron small, right after the frequency
 
 - "Arrow cta smaller next to frequency badge": the Accordion's chevron 20 (its arrow 14), 6 after how often: beside the badge on XS (the badge's row) and on M / L (a 20 column after the badge, kept on every row so the badges stay in line), beside the sub title when Frequency is Sub title; a row without a frequency keeps it at its end. The name spans the columns over them.
