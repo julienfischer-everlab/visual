@@ -5,6 +5,41 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+### v3234 · Lifestyle habits sheet on the masters; Goals | Habits tabs; Tweaks groups; red comments strip
+
+- **Habit rows.** "Image should be for the habit, should be 48 px. And use the list interactive secondary."
+  - The rows are `EvListI` with `selected:true, emphasis:'secondary'`, interactive.
+  - Pictures are 48 with radius 12.
+- **Habit sheet header.** "Remove the "Your Plan" strains from the top header." The `slot` breadcrumb is gone.
+  - "use an image background on the header. On the title overlapping . But yeah, without CTA" is now a **Banner** on the Sheet master (`EvSheet.open({banner})`). It shows only when the context's Tweaks set lists `bn` and Banner is set to Image:
+    - `el[data-shbn]`, with `.evShBan` holding `.evShBanImg` and the `.evShBanT` title.
+    - The body sits in `.evShBanS`, bound with `EvOverlap.bind(sc, {hero:'.evShBan', sheet:'.evShBanS'})`, the same overlap as the Page types demo.
+    - `arHab` defaults to `ft:0 bn:image`: no footer CTA, picture on.
+    - The picture is the Plan's own hero: `#dPlan .plAHero img` for Activity, `.plNHero img` for Nutrition.
+- **Exercise cards.** "This object should be a card, interactive, and secondary." Each exercise is `EvCard.item({look:'secondary'})` (`.arHabEx`), holding the Plan session's picture, play, name, sets and chips.
+- **One outlined card for the notes.** "I would like these three things inside one outlined card ... simple H3 for each block ... some divider between them, and maybe an icon for each."
+  - `EvCard.html({look:'outlined', cls:'arHabNote'})` holds three blocks (`.arHabNb`):
+    - Advice from your doctor (stethoscope; the quote, then the doctor's name);
+    - Adjusted for you (sliders);
+    - To consider (octagon alert; **Avoid until your scan is clear.** in the body).
+  - Each block is an `EvTitle` h3 with a Lucide icon. `EvDivider` md sits between blocks, and there are no coloured alerts.
+- **Badges in the body.** "This badge should be in the body, at the top of the body ... just a neutral badge ... the frequency, should also be a badge outline."
+  - `.arHabBdgs` opens the body: `EvCtl.badge` tint, with no app colour, for the risk (Heart risk, Energy), then an outline badge for `x.when`.
+  - The header carries no sub any more.
+- **Goals | Habits tabs.** "Add two tabs inline below the title H2 ... This only appears if Lifestyle Habits is turned on ... Use the inline version variant."
+  - `glDrSec` adds `EvTab.html({items:['Goals','Habits'], cls:'arDrGlTab'})`, the underlined inline variant, under "What we'll work on together".
+  - The `evtab` event swaps the goals list for the habit list.
+  - Off: no tabs, and the goals show as before. Doctor note V2 (short) has no habits.
+- **Tweaks on the Doctor note screen.** "Remove the group recommendation here. Just put a group doctor note and lifestyle a bit to group."
+  - `#tkArDrGrp` "Doctor note" holds the note's rows.
+  - `#tkArHabGrp` "Lifestyle habits" holds Show habits (`#stArDrHab`).
+  - The Recommendations group shows on the Lifestyle recommendation screen only (`data-pages="ar"`).
+- **Comments strip on the preset card.** "If there's any unsolved message, put a red area at the end of this ... the number of messages ... when you click on it, it opens the message section with the list."
+  - `.tkPsCm` is the card's last row: a red ground, the bubble icon, the count, and "Open comment(s) on this page · View".
+  - `window._cm.page()` counts open comments on this page.
+  - `_cm.open('page')` opens the panel on View when they all belong to the view, and on All otherwise.
+- **Still coloured:** the "Checked against your medicines" warning under the breakfast supplements is an `EvAlert`.
+
 ### v3233 · Primary card: the Title group fills the card; mini rows 4 / 4
 
 - **Title group width.** "There's a max width on this title group, or what? ... Why doesn't it fill the width?" There was one Title group with two caps:
