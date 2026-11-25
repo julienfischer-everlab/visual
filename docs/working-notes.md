@@ -5,6 +5,47 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+### v3233 · Primary card: the Title group fills the card; mini rows 4 / 4
+
+- **Title group width.** "There's a max width on this title group, or what? ... Why doesn't it fill the width?" There was one Title group with two caps:
+  - The wrapper `.hpOvTgW` was capped at 320 (at M/L `min(320px, 100% - 48px)`). It now fills the card. At M/L it keeps the 24 px extra inset each side ("Add 24px padding left right extra around the title group").
+  - The content column `.evTgCol` shrank to its words in centred mode, which drew the inspector's second, narrower box. It is now stretched.
+  - A `#dOver` rule (`34ch`) still capped the sub. It is overridden inside the Title group.
+  - At L, the wrapper, the group, its content and the sub are all 366 (card 462).
+- **Mini visual rows.** "reduce the padding top and bottom by 2px, so it's 4px top, 4px bottom": `.hpActR.evLi` padding 6 → 4, row min-height 40 → 36 (its 28 slot kept).
+
+### v3232 · Doctor note: Lifestyle habits
+
+**Tweak.** Tweaks → Doctor note → **Lifestyle habits**, On / Off (Off by default). Plumbed like Additional product: `stArDrHab` → `o.drhab`, in both change and save key lists.
+
+**Rows.** "The same style. Same component" as the Plan's protocol rows. Each is a List item interactive (EvListI) drawn as `#dPlan .plProt .plRow`:
+- an 80 photo, round 20;
+- the name at 16 / 500 and its line at 14;
+- the chevron;
+- 96 a row, the plate 8 past the column and round 28.
+
+There are two examples, "activity: Strength, twice a week, and nutrition: Fibre-first breakfast". The data is `habData()`, built lazily because GLIMG is set later in the report function; reading it at definition broke the report at load.
+
+**Where the rows go:**
+- Email · short, with the tweak On: the habits are a tab under "What we'll work on together". "Add two tabs inline below the title H2: Goals, Habits"; "This only appears if Lifestyle Habits is turned on". The tabs are the Segmented master (Filled, md, hugging); `glDrSec`.
+- Other versions: an H2 "The habits that get you there" with the rows, under the note.
+
+**Sheet.** "use the exact same sheet as the plan with the protocol detail sheet ... fits perfectly with the page type sheet, with all of the properties". A row opens `habOpen`, which uses the Sheet master:
+- `EvSheet.open`, ctx `arHab`.
+- Its own Tweaks set: `.tkShSet[data-sh-ctx="arHab"]`, "Insights flow · Lifestyle habit", the whole Sheet type, footer off by default.
+- An EvCtx entry, and `arHab` in tApply's sheet keys; `evsheet:tweak` redraws it.
+- Its body wears the Plan's session parts: the sheet has class `.plSesSheet`, and the Plan tokens are set on `.evSh.arHabSh`.
+
+**Sheet content:**
+- Header: eyebrow "Your plan › …"; title H1; Badge master tags (Heart risk Warning with a heart, Energy with a bolt); the when line.
+- Top: the doctor's words in a grey card with the avatar, then Alert master boxes:
+  - Info: Adjusted for you / Because you're vegetarian;
+  - Danger: Avoid until your scan is clear.
+- Strength: Session A as the Plan's exercise cards (photo, play disc, number, chips with the video length); Session B in the Disclosure master; a Divider; Getting stronger as the session's blocks.
+- Breakfast: The recipe (the oats bowl on its tile, numbered steps); Supplements as the Plan's supplement item (the render on its 80 tile, the name, the dose pill, the line): Psyllium husk on the powder render, the Plan's Vitamin B12 Oral Spray; then Checked against your medicines (Alert Warning).
+
+**Not covered:** Doctor note V2 (the animated letter) does not show the habits.
+
 ### v3231 · Step switch: the leaving page keeps its container
 
 "When I switch the step, the container is clipping. It takes the full container and goes back to the normal container." On Next, the report moves the leaving page into the push layer (`.arPushOut`) to fade it out. The Body's container rules are keyed on `.arBody > .arPgW > .arStack`, so in that layer they stopped matching: the body went to the full width (960 at M) while its title kept 584. `pushFrom` now reads each container's max-width and side margins (the page, its children and grandchildren) before the step changes. `pushTo` sets them inline on the leaving page, so it fades out at the width it had. Checked at M: the leaving stack is 584 in the new build and 960 in the old one.
