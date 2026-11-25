@@ -5,6 +5,12 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3220 · Timeline: Why note Accordion, title–why gap +2, Badge style
+
+- **Why note → Accordion** ("Add tweak accordion revealing the subtitle (why) using the full width in a new row"): `stT3WhyNt` value `acc`, `html.t3WhyAcc`. A row with a why ends on a chevron (`.t3MiniAc`, a 28 column kept on every row so the badges stay in line); the whole row (or the chevron) opens it (`li.t3Open`, `aria-expanded`): the why under the whole row, full width from the visual's edge, a plain 14/20 line, 12 below, fading in. Rows centred while closed.
+- **Sub below, badge rows**: 2 between the name and its why ("gap +2px"; was 0) on M / L and XS.
+- **Badge style** ("tweak badge / Secondary / Tertiary (outlined)"): `stT3FreqBk`, the Badge master's Tint (Secondary) or Outline (Tertiary); drawn by `freqH`, the badges on screen swapped at once on change.
+
 ## v3219 · Timeline badge rows: three columns on M / L, the badge under the words on XS
 
 - Frequency → Badge right, M and L (container `msl` ≥ 481): three columns, the visual, the title group (name, its why), the badge ("treat that as 3 col on M L"), 32 between the words and the badge (12 column gap + 20: "Badge / title group col --> 32px padding"). With a why, the row aligns on the top ("If sub present align on top the title group") and Why → Sub below sits right under the name, 4 closer ("reduce gap by 4px").
