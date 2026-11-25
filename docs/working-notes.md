@@ -5,6 +5,15 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3215 · Mini modules; the Activation card's visual is its Timeline to-do; Phase 1 rows
+
+- **Mini module collection** (Documentation → Modules → Mini module, `window.EvMiniCol`, `window.EvMini`): Timeline to-do, Biomarker (ApoB 146 mg/dL, Above optimal, range), Note from the doctor (quote, Dr Steven Lu). Each one is always a Card Secondary filled lg ("Mini visual alway Card Secondary filled lg"). The Timeline to-do on the Activation card is its phase's rows (`_hpCard.bjList`); on any other card it is its phase's steps as Done / Now / Next / Later.
+- **Visual → Type: Mini module** in the primary card builder ("call these mini module on the builder as a visual type / IF visual type is Mini module, display the select below"): `PcMedia` mode `mini:<k>`, per card and per step; the select lists the collection.
+- **The Activation card's steps are its visual** ("This is actually a visual / Visual center ON"): its default Visual is `mini:todo`; Visual center On brings it back; Off hides the rows; a Graphic shows the Graphic alone. One-time migration `everlab:mig:bjMini` moves saved Activation visuals to `mini:todo`.
+- Fixed: the card redrew itself forever with a Mini module (`bjFill`'s `_bjK` now `off` for `mini:`, as in `place`).
+- **Phase 1 rows** ("Health profile should be Completed here / icon processing (rotate loop) / Past records / In about 4h"): Health profile Completed; Past records processing (an arc turning on its ring, `.hpActSpin`, slower with reduced motion), In about 4h; First insights Next. At First insights ready: Past records 3 read, First insights 3 insights.
+- Title group on the primary card: no side cap ("32 --> 0").
+
 ## v3214 Phases in the builder, a phase's picture, Main page frame, Service detail template, Review my plan's Goal frames and anatomy, comments warning
 
 - **Phases** ("Need ability to Create phases / And move items inside, reorder by draging / Delete / Add"): `EvPcSteps` now keeps a card's steps in phases, `d.ph = [{ id, steps }]`, once edited. Until then the built-in phases apply: the Activation card's three come from its rows' phase (`p1 p2 p3`, the same ids its step-group names are kept under, `o:#p2`); any other card gets one. API: `phases(o)`, `phaseOf(o, k)` (`{ id, i, n }`), `addPhase`, `delPhase` (its steps move to the phase before it), `move(o, k, id, at)`, `setPh`, `hasPh`. `list()` returns the steps in phase order. A new step goes right after the step it was made from.
