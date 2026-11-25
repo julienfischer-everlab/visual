@@ -5,6 +5,11 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+### v3230 · Primary card builder: no Anatomy, no Used in
+
+- **"Move the anatomy and the module"** (read as: remove them; no place to move them to was named): the Primary card's builder page (Modules → Primary card, `k === 'mhp'`, a `M.sub` page) no longer draws the `.moAnat` (Anatomy) and `.moUse` (Used in) blocks at the end of its right panel. The panel ends with the step's controls (Insights widget, Remove step / Remove card). Other module pages keep theirs (Insights checked: both still there).
+
+
 ### v3229 · Primary card truly centred on the phone; Phases on every card (no State select anywhere)
 
 - **"Is that H2 title? Also, centre the title. It's not centred in the card ... Also, the [CTA] should be centred"**: yes, H2 (the Title group master's phone size, 18/22), and the title group already wears its centre property (`evTgC`). The block was off-centre for two reasons:
