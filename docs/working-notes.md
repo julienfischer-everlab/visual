@@ -5,6 +5,26 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+### v3236 · Primary card builder: a fixed footer, Save and More (Remove step, Remove card)
+
+- "For the primary card builder, the footer should be fixed. We should have one main CTA, which is Save, and then a three-dot for More. More will be a dropdown, and Remove Step or Remove Card. I want to keep the hesitation as well if you do remove something."
+- **The footer.** `.moDmRm.moDmFt` is made in `stepUi`.
+  - **Save** is Button Primary md, full width.
+  - **⋯ More** is Button Secondary md, icon only.
+  - The footer is sticky at the rail's foot. In `.dpRail` it uses `bottom: -16px` and side margins of -8 over the rail's padding, with the rail's ground (`--dpBg`) and the hairline above, so nothing scrolls under it.
+- **More's menu.** It reuses the Collection table's menu (`.moColMenu`, `.moColMenuI`), opening upwards (`.moDmMenu`).
+  - Items: Remove step, Remove card (both destructive, with a bin icon), Restore n removed steps and cards (neutral, with an undo icon, only when there are some).
+  - A click elsewhere or Escape closes it.
+  - The card items go into the menu from `cardUi`.
+  - The labels sit in `.moDmMiT`, so the Restore counts keep their icons.
+- **The hesitation is kept.** A remove still goes through `EvConfirm` (the question, No · Yes, remove). The footer is its host, so the question takes the footer's place.
+- **Save** calls `PcMedia.save()`, the same as the top bar's Save on this page: its pictures, every style the page shows, and the Content's drafts. It also saves this step's Insights widget draft (`IBD` into `everlab:pcInsBy`).
+  - The button shows the Simple loader, then its tick and "Saved" (`EvLoad.simple`).
+  - The Style row's Saves (this step, this phase, all phases) and the Content and Insights widget Saves are unchanged.
+- **The Collection drawer's Edit** takes the same footer (Save + More) in its own fixed footer (`.moColDF`).
+  - `colDst` no longer restyles the menu items.
+  - The collection modules' builders (Focus card, Decade card: `.moDmRmC`) keep their own Remove card button.
+
 ### v3235 · Primary card builder: three Saves, Behaviour (Dropped off); 32 px title group padding; Activation Upload results sheet (EvDrop)
 
 - **Style row's Saves** (Modules → Primary card → Controls → Visual). "Why do we have a style label? We should remove that. The CTA at the bottom should be: Save for this step, Save for this phase, Save for all phases."
