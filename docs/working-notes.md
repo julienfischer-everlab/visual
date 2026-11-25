@@ -5,6 +5,14 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3217 · Mini module stacks, Secondary blur; Insights Summary empty style; Timeline Why note and Frequency tweaks
+
+- **Mini module on a primary card** ("When mini module just stack all content, no need to worry about 50% height"): with Visual → Mini module (`.pcmMini`) the card's content stacks: the module, 24, the title group, 24, the CTA. No top area kept for it, no shared tallest height, no Ring's dots (`canvas.hpDots`) behind it.
+- **Every mini module wears the Card master's Secondary - Blur, lg** ("mini module style Secondary with bg blur!"; was Secondary - Surface), `EvMini`'s `card()`.
+- **Insights → Empty style: Summary** ("Create an insight variation more Simple Showing a Marketing the title on the left and a Circle Dotted on the right"): `html.insSum` (Tweaks select and the Modules → Insights Style segment). Inside the To-do list layout, the card's header stays; under it, "See what your health data is telling you" at the left and a ring of 36 dots at the right, lit orange to the % done; the whole row opens the next task. The three tasks are hidden. The other styles (Orbs etc.) unchanged. Row classes are `.ovSum*` (not `.insSum`, the html class: a shared name hid the whole page).
+- **Timeline → Why note** ("Why note / Card below content / Sub below content"): `stT3WhyNt`, Card below (the Secondary - Surface sm card, as before) or Sub below (`html.t3WhySub`, a plain 14/20 sub line).
+- **Timeline → Frequency** ("Frequency / As sub title / As Badge right side"; "Add Arrow circle for frequency label"): `stT3Freq`, Sub title (as before) or Badge right (`html.t3FreqBdg`, the Badge master, tint sm, at the row's right, the name wrapping beside it). Both drawn by `freqH()` (shared by the two decade renderers) with a circular arrow (Lucide rotate-cw) before the words; none for Once.
+
 ## v3216 · Phases block on the Flow panel's Structure rows
 
 - "This is super ugly, refer to Flow Structure with pages for pages management": the primary card builder's Phases block (Modules → Primary card → Builder, under State) had no styles of its own. It now wears the Flow panel's Structure rows (`.hpFl .tkOrd.hpFlArr`), same sizes and colours: each phase a group with a small PHASE n label and its name written in place (`.moPhIn`), a delete icon on hover; its steps 34px rows (grip, name, the step shown lit blue with its dot, Remove on hover); Add step a quiet row under them; Add phase a dashed row at the end. Enter or Space on a row shows that step. Drag, confirm and phase picture unchanged (`phWire`).
