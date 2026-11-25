@@ -5,6 +5,15 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3208 Review my plan: Prioritised, Discuss for plan items, Extra at the end, product variants; the note's goal cards
+
+- **Prioritised** ("instead of moved up, prioritised"): an included item brought forward reads Prioritised (`rvIncL`; Tweaks → Item that changed: Prioritised / Adjusted, the value still `up`). The Timeline's chips Moved up by Dr Lu now Prioritised by Dr Lu (`T3N.dexa`, the CTCA row).
+- **Discuss for a plan item** ("A new item can also be discussed with the doctor with the discuss item"): Tweaks → Plan items, an item's fields (new ones too) have Discuss with the doctor; on, its key joins the persona's `dsc` list in `#stArRvItems` and its row says `· Discuss`. `rvDscLi` lists those plan items (`RVM.dsc`, by `rvmKey`) after the goals' Explore further options in the Consult with Dr Lu card; a row opens the item's own card on the sheet. The item keeps its place in the plan. Deleting it drops it from `dsc`.
+- **To discuss rows**: the name and the chevron only, no goal at the right ("Remove the label next to the chevron on the right side").
+- **Group items: Extra at the end** (`stArRvGrp` `ext`; with Show tabs Off, as the other groupings): what is included first with no title, then an Extra title and every paid product, ticked or not ("put all of the extra product at the end with the group extra, and then you list all of the paid product"); with goals, the unticked paid ones are no longer left out in this mode.
+- **Documentation → Review my plan → Product variants** ("Document all of the types of product … in one section"): Discussion product (the Consult card, always one, the products to discuss inside it), Included, Prioritised and Extra, each a copy of the review's own row: a review mounted out of sight (`.rmpVarHost`; no tabs, Extra at the end, two options to Discuss), the rows taken from it in its wrappers (`.arRvwPlan`, `.arRvwTlW` with its Added card style), the instance then destroyed.
+- **Doctor note goal cards** (`glMcard(…, 'mail')`): the goal's why back as the Title group's sub, two lines at most ("add a subline as part of the title group (two lines of subline)"), its picture 52 (was 36: "increase the image by 16px"), centred on the title group.
+
 ## v3207 Comments on a flow land directly on their screen, the old ones too
 
 - **The case** ("When I click a comment on a flow, If need to jump DIRECLTY on the screen! It jump between screesn at the mometn and land on the first screen always"): the Insights flow's open comments (#27 to #30) were made at 22:38 to 22:42 on 24 Nov, before v3203 started keeping a comment's screen (`ctx.fl`). Their element path is from `body > div:nth-child(75)`, a structure later builds changed, so the search through the flow's screens (`findFl`) found nothing and went back to the first screen.
