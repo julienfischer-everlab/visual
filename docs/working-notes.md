@@ -5,6 +5,12 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3224 · See why outlined, same words open; why under the name on M / L; chevron on the phone
+
+- See why is the Button master **Tertiary** (outlined) xs ("CTA outlined"), its words the same open or closed ("See why active stay same Copy"; Hide why gone).
+- M / L: the opened why sits under the name, in the words' column, 2 below ("Sub below title not another row as XS"); See why and the badge stay level with the name.
+- XS: See why becomes a chevron down, the same outlined button square (`.t3MiniAcI`), at the top right of the words ("On XS See why --> Chevron down CTA tertiatry Top align on right side of title group"), flipped when open; the badge alone under the words; the why on its own full-width row.
+
 ## v3223 · Builder: the Insights widget, set and saved per step
 
 - "I'd like to have control of the insight module here. and Save each step that take the setup tweak on the insight widget": Modules → Primary card → Collection builder, Activation card: an **Insights widget** block under the Visual (`.moInsWB`, `insUi`): Insights (None yet, 1, 2, 3, 5+), with none the three tasks (Health profile, Health data, Past results, each its states), Feedback (Off or any `EvInsFb` state). Changes show at once in the widget beside the card (`insSide`, drawn by `MODS.mins.draw`); **Save for this step** keeps them (`everlab:pcInsBy`, key `card:step`), **Reset** returns the step to its default (its `BJINS` line). Status: This step's default / Not saved yet / Saved for this step.
