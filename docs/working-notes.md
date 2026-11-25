@@ -5,6 +5,15 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3209 Review rows: a check alone for Included and Prioritised; Display as product; Extras; the Insights card's CTA
+
+- **A check alone** ("For prioristed just a check icon"; "Same or included"): an included or prioritised product's row has no word, just its check (`tlFtC(x, i, 'ck', …)`: the locked tick when Control object is Yes, else `rvIncIc`, the same tick drawn still, `role="checkbox"` checked and disabled, its label the word). A price and the $0 a grouping forces stay. Item that changed now names it for screen readers only. The doc's variants find the rows by the card's own label (`, included` / `, prioritised`).
+- **Display as product** ("Need another checkbox Display as product ON OFF. IF off dont display the product as a item"): Tweaks → Plan items, an item's fields, on by default; off, its key in the persona's `hide` list, the row says `· Hidden`. `rvIn` = `rvIn0` (in the plan) and shown: off, no row of the review and not bought; Plan items (`rvList`) still lists it (`rvIn0`); set to Discuss, it is still in the Consult card: an item only to discuss.
+- **Extras** ("Exrtras"): the paid group's title, and the Tweak's Included / Extras, Extras at the end.
+- **The Discuss sheets' option cards 4 apart** ("4 px gap"; Talk through your plan, Who would you like to talk to?), on the list whatever a saved sheet setup does to it.
+- **Overview → Insights card** ("No CTA"): a Feedback up (insights being generated, records being read, …), no Generate my insights, at the foot nor as the top-right link.
+- **Tweaks → Primary card → Type** (Freemium (later) / Member) retired ("Kill that"): the row `tkGone`, its value Member kept for the code that reads it.
+
 ## v3208 Review my plan: Prioritised, Discuss for plan items, Extra at the end, product variants; the note's goal cards
 
 - **Prioritised** ("instead of moved up, prioritised"): an included item brought forward reads Prioritised (`rvIncL`; Tweaks → Item that changed: Prioritised / Adjusted, the value still `up`). The Timeline's chips Moved up by Dr Lu now Prioritised by Dr Lu (`T3N.dexa`, the CTCA row).
