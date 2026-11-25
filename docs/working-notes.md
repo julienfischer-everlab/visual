@@ -5,6 +5,11 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3212 The doctor's note on the picture too; a more diffuse radial
+
+- **The doctor's note on the picture** ("This as a vsual over the img as well same format as the other one"): Phase 3's quote (`.hpActNote`) floats over the Top radial picture as the steps card does (the same rules, `:is(.hpActCard, .hpActNote)`; `radFit` measures whichever is there).
+- **A more diffuse radial** ("in gen"; "Radial more diffuse"): every Top radial picture's mask eased over its whole run (#000 to 22%, then .86, .66, .44, .25, .11, .03, nothing at 100%; the ellipse 130% wide), the picture 180 into the words (was 120) so the softer fade has room.
+
 ## v3211 Activation card on its picture, its Insights widget on Modules, Content CTA #1 / #2 and step groups; Outlined segmented goal tabs; goal cards
 
 - **The steps card on the picture** ("Card should be above the top area overlapping the img"; "Max width 256px"; "Blur bg 64px"; "Same comment for the card as visual overlap img"): with Background Top radial (`.pcmRad`), the Activation card's steps card (`.hpActB > .hpActCard`) leaves the flow (`.hpActB` `display: contents`) and floats over the picture, centred across, max 256, its card master fill under `backdrop-filter: blur(64px)`. PcMedia's `radFit` measures it: the words' safe line low enough for it (card padding + its height + 32) and `--pcTopY` centring it in the room above the words. Without Top radial it stays under the words as before.
