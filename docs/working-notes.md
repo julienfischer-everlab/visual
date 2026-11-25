@@ -5,6 +5,12 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+### v3242 · Flow panel: a blue home icon on the flow's first page
+
+- "for the first page of the flow: should I have a home icon next to the toggle, a blue home icon? ... When you load this page, it's going to trigger this home icon page."
+- In `window.__flowPanel`, the flow's home is `m.home` when the model gives one. Otherwise it is the first step in the flow (the first row that isn't off). That row shows a blue house (`.hpFlHome`, Lucide house, #5aa2ff) just before its toggle, titled "Home: the flow opens on this page".
+- Steps in Not used never show it. Reordering or switching steps off moves it to the new first step.
+
 ### v3241 · Strength habit sheet as the Plan's activity session; Doctor note version "Email · super short"
 
 - **Strength sheet**. "Refer to this screen for the detail page of the activity, but keep the bullet point on the top above the substep" (Figma Plan · Prescription 28517:68868) and "On the activity at the end, you can have a section: Objectives, and then you list some stuff here."
