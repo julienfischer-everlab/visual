@@ -5,6 +5,10 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+### v3231 · Step switch: the leaving page keeps its container
+
+"When I switch the step, the container is clipping. It takes the full container and goes back to the normal container." On Next, the report moves the leaving page into the push layer (`.arPushOut`) to fade it out. The Body's container rules are keyed on `.arBody > .arPgW > .arStack`, so in that layer they stopped matching: the body went to the full width (960 at M) while its title kept 584. `pushFrom` now reads each container's max-width and side margins (the page, its children and grandchildren) before the step changes. `pushTo` sets them inline on the leaving page, so it fades out at the width it had. Checked at M: the leaving stack is 584 in the new build and 960 in the old one.
+
 ### v3230 · Primary card builder: no Anatomy, no Used in
 
 - **"Move the anatomy and the module"** (read as: remove them; no place to move them to was named): the Primary card's builder page (Modules → Primary card, `k === 'mhp'`, a `M.sub` page) no longer draws the `.moAnat` (Anatomy) and `.moUse` (Used in) blocks at the end of its right panel. The panel ends with the step's controls (Insights widget, Remove step / Remove card). Other module pages keep theirs (Insights checked: both still there).
