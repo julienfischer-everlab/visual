@@ -5,6 +5,18 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+### v3226 · Timeline Tweaks never show the Overview's groups, Right column removed, See why on M·L option, Next check-in reads as a timeline item
+
+- **"Why I see the bento in the timeline ????"** (and Overview, Notification module, Primary card): `EvCtx.run()` skipped redrawing the Tweaks whenever its context signature was unchanged. But `setMode`'s own `tkPages` call could redraw the Tweaks in between, while the page's class (`tlOn`) was off for a moment, and draw them as the Overview (`data-pages="ov"`). Once `tlOn` came back in the same frame, the signature matched and the Overview's groups stayed. `run()` now also redraws when `html[data-tk]` (the context the Tweaks were last drawn for) differs from the top context. To reproduce: remove `tlOn`, call `__tkPages()`, add `tlOn` back. Before the fix the Tweaks showed Bento and Overview; now they show the Timeline's groups.
+- **"Kill that in timeline"**: the Tweaks group Right column (L) (`stT3Side`, Slot 1–3) is gone. Without the control, `tlSideOn` is never set (a missing control now means Off), so the timeline stays alone and centred and its modules stay where they are drawn.
+- **"Option tweak Hide see why and disp;ay direclty why sub on >XS"**: new Tweak See why on M·L (`#stT3WhyBtn`: Button / Why as sub; shown only with Why note Accordion) sets `html.t3WhyNoBtn`. Above the phone (`@container msl (min-width:481px)`): no See why button, the why shown at once as the sub under the name (column 2, row 2, 2px below), and the badge in column 3 aligned with the name. Clicking a row no longer toggles it there. The phone keeps its chevron accordion.
+- **"Make sure the content in the NExt checkin follow the content from a simple item in the timeline. Seems like the title has more gap ?"**: the next check-in in Thumbnail style (`.t3CiB.t3FcTh`) now uses a simple timeline item's text:
+  - The title is `.tlTx b`'s Body/400 medium, or Body/300 inside the timeline's narrow container (`@container tl (max-width:540px) or style(--tlXs: 1)`), with no 8px above it.
+  - The sub sits 3px under the title in Body/200, in the item's sub ink (`--tlSub`).
+
+  At L the result is 18/22 with the sub 3px below, the same as CTCA heart scan. Before, it was 16/20 regular, 8px down, with the sub 9–10px below.
+
+
 ### v3225 · Timeline rows on the Title group H4, phone chevron Secondary, Visual XS right side, mini centred on XS, no background jump
 
 - **"Bg move up and down everyt ime the icon spin"**: `radFit` returns early for `.pcmMini` cards. It drops `--pcRadM`, `--pcTopY` and `--pcRadHn`, sets `--pcRadH` to 75% of the card, and never shares `_pcHi` with mates. The processing spinner no longer re-fits the card's picture: the measured height stays at one value.
