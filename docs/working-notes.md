@@ -5,6 +5,16 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+### v3238 · Habit sheet: smaller badges (first filled), the doctor's notes as the intro's rows
+
+- **Badges**. "Use the smaller badge, and just keep the first badge filled. The rest should be outlined without a background."
+  - The badges are `EvCtl.badge` size xs.
+  - The first risk is Tint. The other risks and the frequency are Outline, with no ground (`.arHabBdgs > .evBdgOut { background: transparent }`).
+- **The doctor's notes**. "remove the card and use this kind of system, the same as you have in the intro ... You don't need any divider. And for the first circle, you can put Steven Lu's image in the first visual."
+  - The outlined card and its dividers are gone. The three blocks are the What to expect rows (`ul.arDbcL.arDrV2L.arHabNl`): a circle (`.arDbcIc`), then the title over the words (`.arDbcTx`).
+  - Advice from your doctor shows Dr Steven Lu's photo in its circle (`window.EvDrAvSrc`, `.arHabNlPic`), with the doctor's name under the quote.
+  - Adjusted for you and To consider keep their Lucide icons (sliders, octagon alert). "Avoid until your scan is clear." is in the ink.
+
 ### v3237 · Comments strip per screen; the builder's desk frame wears the Overview's header; habit rows on Card Secondary; Session H2
 
 - **Comments strip** (Tweaks preset card). "it should appear here and concern the page that you actually view here, not the full flow of the preset, but the actual page. If I'm on the doctor note page, and there is a comment on this page, I need to show this mention ... Otherwise, you don't show anything."
