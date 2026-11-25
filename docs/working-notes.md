@@ -5,6 +5,16 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+### v3240 · Primary card builder: an eye on each Phases step (hide it from the Overview)
+
+- "Here, you can have a way to hide some step. Just add an eye icon, and then if I click on the eye, it just makes the step disappear. It's not part of the overview, but just keep it there as information because it's part of the step of the service."
+- Each step row in Phases (Modules → Primary card → builder) has an eye button (`.moPhEye`), quiet until hover. Every card has it except the Onboarding consult, whose Overview card doesn't read the flag.
+- The eye is the existing per-step Show on Overview flag: `EvPcSteps.ovOn(card, k)` / `setOv(card, k, on)`, stored in `everlab:pcSteps` as `ovOff`.
+  - A hidden step keeps its row and its place in the phase. The row is greyed, its eye crossed and lit, and a second line reads "Not on the Overview" (with "Dropped off" when both apply).
+  - The Overview's card skips it through `ovPick`: it stays on the last earlier step that is on, or the next one if none is.
+- The Activation card's upload flow (`bjNext`) also skips hidden steps, so Submit never lands on a step the Overview won't show.
+- The Collection drawer's Show on Overview toggle now covers the Activation card (`bj`) too.
+
 ### v3239 · Habit sheet: the Plan's Supplement block (rows open a stacked supplement sheet), What this moves, the banner's gradient
 
 - **Supplements**. "This needs to be a clickable element, so it should be at least interactive. Also, reduce the image by 56 px." and "that's exactly the same block to use in the nutrition detail page with the supplement section, and you can also add the biomarker section."
