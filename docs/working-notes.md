@@ -5,6 +5,35 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+### v3235 · Primary card builder: three Saves, Behaviour (Dropped off); 32 px title group padding; Activation Upload results sheet (EvDrop)
+
+- **Style row's Saves** (Modules → Primary card → Controls → Visual). "Why do we have a style label? We should remove that. The CTA at the bottom should be: Save for this step, Save for this phase, Save for all phases."
+  - No Style label. The three buttons are stacked full width (`.moVsSc`). The step's button is blue while there are unsaved changes.
+  - **Save for this step** is the old `vsSave`.
+  - **Save for this phase** is the new `vsPh`. Every step of the step's phase gets this style (`o:<step>` and `o:<step>#bg` in `#stPcVisBy` and `everlab:pcVisSave`). This step's picture becomes the phase's (`phaseSave`).
+  - **Save for all phases** is the old `vsAll`.
+  - A step without a phase shows Save for this step and Save for all steps.
+- **Behaviour** (Controls). "a module called Behaviour, and then here: Dropped off, yes or no? ... just an indicator. It doesn't impact the UI ... Inside the phase, the step item ... just say Dropped off."
+  - The `.moBhv` block sits after the Insights widget, with Dropped off Yes / No for the step shown.
+  - Stored in `window.EvPcBehave` (`everlab:pcBehave`, `{ '<card>:<step>': { drop: 1 } }`), in this browser only.
+  - The step's Phases row gets a secondary line under its name, "Dropped off" (`.moPhDr`, `.moPhTw`, `.moPhBd`). A badge squeezed the name, so it is a line instead.
+  - The card itself is untouched.
+- **Title group safe padding**. "This concerns every primary card ... Add safe padding around the title group ... a div around the title group and put 32px left and right."
+  - Its wrapper `.hpOvTgW` is padded 32 left and right on every centred primary card, at every breakpoint. It was 24 extra at M · L and none on XS · S Mini / Top radial.
+  - The M · L `max-width: calc(100% - 48px)` is gone; the padding does that job now.
+- **Activation · Add other results**. "For this phase, I don't have any. Just go to the next step. If I click Upload the result, just open a fake modal with drag-and-drop file management ... Submit ... a loading state: Uploading your files ... you go to the next step in this phase."
+  - **I don't have any** goes to the next step.
+  - **Upload results** opens the Sheet master over the app (`EvSheet.open({ host: .dash, cls: 'bjUpSh' })`). That is a bottom sheet on the phone and a modal on the desk, titled "Upload your results".
+  - **Submit** turns into the label loader (`EvLoad.label`, "Uploading your files"). Then the sheet closes, the card goes to the next step, and a toast says "n results uploaded".
+  - Both buttons use `bjNext`: the next step in the builder's Phases order (`EvPcSteps`), else the built-in order.
+- **New master `window.EvDrop`**, the file drop zone (`html({ title, hint, accept, cls })`, `bind(el, { onChange })` → `{ files(), add(), stop() }`).
+  - A dashed area holds the upload icon, "Drag and drop your files here", Browse files (Button secondary sm) and the kinds it takes.
+  - Files dropped or picked are listed inside the area. Each shows its name, its size, "Uploading n%" with a bar, then "Uploaded" with a check, and can be removed.
+  - Once files are in, the prompt shrinks to one row.
+  - It is drawn in currentColor, so it takes the sheet's ink.
+  - It is a demo: nothing leaves the browser.
+  - Not yet on a Design system page.
+
 ### v3234 · Lifestyle habits sheet on the masters; Goals | Habits tabs; Tweaks groups; red comments strip
 
 - **Habit rows.** "Image should be for the habit, should be 48 px. And use the list interactive secondary."
