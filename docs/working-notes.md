@@ -5,6 +5,18 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3253: Progress dots, Insights More context, the Guide editor's groups, Content group, Page type chip
+
+- **EvDots** (`window.EvDots`, before `window.PcMedia`): a 128 × 128 canvas of rings round a centre dot, filled centre-out, each ring clockwise from twelve o'clock; the centre dots biggest. `EvDots.frac(obj, step)` = (phase index + steps done in it / its steps) / phases (EvPcSteps), the last step of the last phase 1 (Activation: 0, 17, 33, 39, 44, 50, 56, 61, 100%). `EvDots.mount(canvas, frac, key)` animates from the last fraction that key showed (a pulse per dot, ease-out-back, a wave on the front); first mount from 0. In PcMedia, over a Mini module (`miniPut`): on by default for a card with phases, Off / On in the builder (Visual → Progress dots), `everlab:pcDots`.
+- **Insights More context**: `window.__insCtx(st)` / `__insCtxAdd(card)` put an `.ovInsCtx` footer at the foot of every `.ovInsCard` (Connect your wearable, Add other results; + to do, spinner in progress, ✓ done); gone when both are done; a press runs the card's own flows (`window.__insAct`). The `.tkInsSt` rows always show in Tweaks now (they drive it).
+- **Sections (Guide Tweaks)**: each group (Header, Actionable, Other guidance) has a small Blocks / Syntax switch instead of its count; Syntax shows that part's whole Markdown in place (the part textareas moved into the list, kept across redraws with focus and caret, auto height, a Copy). `.tkHm3Parts` is a hidden stash now. A row click opens its Markdown in place under it (`w._edK`, `edPut`); again closes it.
+- **Tabs**: Content / Library / Syntax on the Tweaks tab (`.tkSegT` in a `.tkRowWide`), `hmTab(w, t)`. Syntax tab: the syntax alone in a code block with Copy (no prose). Library: the tile blue on hover, a + beside the eye adds the piece at the end of the content, switches to Content and shows the new row blue for a moment (`w._hi`, `.tkHm3Hi`); the name and the eye preview.
+- **Content group**: `#tkHabCtGrp` (`data-pages="arHab"`), a Tweaks group of its own after General layout, holds the habit's tweaks, Generate on top.
+- **Page type**: one row, "Page type" and a blue chip (`.tkPtChip`, the Parent row's chip style); the tiles and the hint are hidden. Pressed, a switchable Full modal / Sheet shows as the other on this screen (EvPageType.set), again back.
+- **Guide page**: a divider before Actionable and before Other guidance always (`hm3PartRule`, never two in a row). The guidance notes in one Card static, Primary - Outlined (`habNlCard`, EvCard), a divider between them, the icon 44 (8 smaller); both frameworks.
+- Note titles are the master H3: 16/20 on the phone, 18/22 Auto, 20/24 at L (H2 18/22, 20/24, 22/26), so on the desk an H3 is the phone's H2 size. Left as the master.
+
+
 ## v3252 · The Guide in three parts; Sections as a tree; Layout collapsible on every page
 
 - **Three parts** ("We should consider three markdowns, separate ... 1. Header that has all of the guidance, the title, and the image. 2. Actionable. 3. Other guidance"): one document with part comments (`<!-- part: Header -->`, `Actionable`, `Other guidance`). Source shows three editors (`.tkHm3PartIn`), split and joined by `partSplit` / `partJoin`; the master textarea is hidden in the Guide. `hm3Make` writes the parts. A guide saved before them is sorted on read (`hm3Norm` in `habMdSrc(k, 3)`): guidance before the first session goes to Header, a session with substeps or numbered steps goes to Actionable, the rest to Other guidance, and old groups are dropped.
