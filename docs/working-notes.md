@@ -5,6 +5,19 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3271: the Markdown blocks' polish (Outcome without its card, white links, the DS Checkbox, H3 to H5, Body/300 paragraphs, quotes and callouts, smaller note titles)
+
+- **Outcome without the grey card and shadow** ("remoe grey card ans shadow"): the Design system's Markdown page drew its example inside the sheet master's look (`.mkPv.evSh`: background, 28 radius, drop shadow); `.mkStage > .arSheet > .mkPv.evSh` now has none of them.
+- **Links white** ("use white colour fro hyperlink"): the Guide's Link master calls use the primary theme (`fg/neutral/primary`), no longer success green.
+- **Checklist on the Design system's Checkbox** ("Use same as Checkboxes circle in the dS"): `- [ ]` / `- [x]` draw `EvCheck.box` Medium 24 (`.hm3ChkC`, not focusable, aria-hidden; the words keep "Done:" for screen readers), in place of the green circles.
+- **H2, H3, H4, H5** ("need h2 h3 h4 h5"): `##` stays the H2 with its subline; `###` `####` `#####` draw the Title group's H3 / H4 / H5 (20 / 18 / 16); the parser, the part splitter and Sections read headings to five #s, Sections names the level (H2…H5); the Library and the DS page gain H3, H4, H5.
+- **Paragraphs on Body/300/Regular** ("Use Body 300 regular style"): `.hmDoc.hm3Doc > p` on the text style's tokens (`--t-font-size-body-300`, `--t-font-line-height-body-300`: 16/20, regular).
+- **Bullet to its words 10** ("+2 gap between bullet and content"): `EvList` row gap 8 → 10 (Figma's unit/8 + 2; the DS List page says so); the Plan's session bullets' words at 30.
+- **The quote**: no left bar ("No need left line") and one column, the label above its words ("Avoid 2 col on the blue card"), in the Guide (`.plSesNote.hm3Note`); the Plan's Important note keeps its bar and row.
+- **Tip, Tailored to you, When to stop removed** from the Library and the DS page ("remove"); a `> [!TIP]` (or NOTE, TAILORED) still written in a Guide draws as an outlined Card (`EvCard` outlined md, `.hm3Co`), no left bar ("Just outlined card no left bar").
+- **Note titles smaller** ("Smaller titles"): the guidance rows' Title group H3 → H4 (18/22, medium); the H4 master's subline is 14/18.
+- Checked (dist): the Outcome frame transparent, no shadow; the video link white; the checklist an `evCb-md` 24; paragraph 16/20; H3 20, H4 18, H5 16; list gap 10; the quote block, no bar; Tip / Tailored / When to stop gone from the nav; a TIP an outlined card; note titles H4 18; no page errors.
+
 ## v3270: 16px more under the habit page's top badges
 
 - "Add a margin bottom of 16px below the badges on the top, just above this section": `.evSh.arHabSh .arHabBdgs` margin-bottom -8 → 8 (the body is a flex column, nothing collapses). The Guide: badges to the notes 16 → 32; the UI-based page 24 → 40.
