@@ -5,6 +5,10 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3264: the divider between the Guide's parts, a locked row in Sections
+
+- The page draws a divider before **Actionable** and before **Other guidance** (`hm3PartRule`, when the part before ends on something other than a divider). Sections now shows it where it falls: a low, locked row **Divider · locked** at the end of the part before (`li.tkHm3PtDv`, 24 high, the divider icon, the lock; no grip, no remove, not draggable: `tkHm3Fix`) ("between the sections, header, and actionable of the guidance, there's a divider. This divider should be present as a Markdown item ... make sure this item is locked. You cannot remove it"). It follows the page's rule: when the part already ends on a Divider of its own (removable, as the Strength guide's Header), no locked row; remove that one and the locked row appears (checked: 1 locked row ↔ 1 drawn divider, then 2 ↔ 2). Not shown while the part before is in Syntax.
+
 ## v3263: Your part as a tab, its row as Interactive item's; the habit sheet's picture on desktop; the goal card's words against its circle
 
 - **Tweaks → Goal → Your part** is a row like Interactive item ("This label should be the same as the interactive item"; was an uppercase sub-heading with a switch), and three-way: **Section** (after the products, v3262), **Tab** and **Off** ("when your part, it's part of the tab on the top. Two parameters now: explore further 2 and your part"). **Tab**: a third Segmented tab, **Your part** with its count (To prioritise now · Explore further 2 · Your part 2, or Your plan · Go further · Your part), its pane (`.arGlPane[data-gl="part"].arGlYpP`) the goal's protocols (an H2 over them only with Tabs Separate, as the other panes). Tabs Off, a goal with no protocol, or the Goal detail sheet: the section as before. `o.glpart` 'on' / 'tab' / 'off'; the Goals template page reads the select's options, so it has the three too.
