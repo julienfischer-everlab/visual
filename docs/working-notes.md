@@ -5,6 +5,12 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+### v3279: Sections editor: one More (…) menu per row instead of hover icons; a shared More menu
+
+- **One More per row** ("Use ... more instead of many icon on hover. Add dropdown"). Each Sections row (and each guidance child) in the habit sheet's Tweaks now ends with `.tkHm3More`. The menu holds View, Duplicate, then Remove (red, after a separator). Remove asks first: "Remove “X”? It leaves this guide." with Cancel and Remove. The old eye, duplicate and × buttons stay in the row, hidden (`display:none`). Each menu item calls that button's `.click()`, so the editor's own handlers still run.
+- **A shared menu** for the tool's lists: `window.__tkMenu(button, items, label)`, with items `{ label, icon, pick(), danger, sep, confirm: { t, d, ok } }`. It uses the Flow panel menu's look (`.hpFlMenu`, its confirmation `.hpFlMenuCf`): positioned under the button, arrow keys, Escape and Tab, closes on a click outside or a resize.
+
+
 ### v3278: Flow panel: each goal's protocols as its sub-pages, with Generate another; product sheet: Plan before Supporting your goals
 
 - **Protocols under their goal** ("Add Sub pages here with rhe Protocols part of the goals").
