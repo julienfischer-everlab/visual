@@ -5,6 +5,12 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+### v3277: Stacked sheets: the one underneath is an empty card; the Generate CTA names the goal
+
+- **The sheet under a stacked sheet loses its content and notch** ("When sheet are stacked, The content insidie below sheet should disaeppar. .And also the Home top nav notch"). Every child of `.evSh.evShBack > .evShP` fades to 0 and takes no clicks, so only the tucked-back card shows. This matches the Design system's stacking demo (`.sdStkC`: empty cards). The children fade back in (.24 s) when the sheet on top closes.
+- **The Generate CTA names the goal** ("Generate new protocol for Heart risk. Heart risk is the parent goal page below"). A goal page's Your part rows now carry their goal (`habList(f, gk)` → `data-hab-g`). `hmGenLbl()` builds "Generate new protocol for Heart risk / Energy / Skin" (`HM_GS`) from the goal page the sheet was opened on, or else from the habit's first goal. Opened from neither, it reads "Generate a new protocol". The label lives in `window.__hmGenT`, because several report instances share the Tweaks button: the Design system's pages build their own.
+
+
 ### v3276: Remove asks first; no Parent row; sheet Save as template; orange comments card with Show on screen; footer note divider; white tab badge; note titles Body 300 Medium
 
 - **Remove asks first** ("Remove --> add hesitation inside dropdown"). In the Flow panel's More menu, Remove turns the menu into a confirmation: "Remove “X”?", what it does (a copy is deleted; a page leaves the flow and can be restored at the end of the list), then Cancel and a red Remove. Cancel is focused, and it goes back to the menu. Escape closes.
