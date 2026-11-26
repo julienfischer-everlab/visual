@@ -5,6 +5,20 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+### v3276: Remove asks first; no Parent row; sheet Save as template; orange comments card with Show on screen; footer note divider; white tab badge; note titles Body 300 Medium
+
+- **Remove asks first** ("Remove --> add hesitation inside dropdown"). In the Flow panel's More menu, Remove turns the menu into a confirmation: "Remove “X”?", what it does (a copy is deleted; a page leaves the flow and can be restored at the end of the list), then Cancel and a red Remove. Cancel is focused, and it goes back to the menu. Escape closes.
+- **No Parent row** ("the parent is actually the PAge typr. So keep Page type --> Full modal, Template XXX"). `.tkParRow` is hidden everywhere: General layout, a sheet's own block and the Intro / Outro screens. In `#tkPtGrp`, Template is always the Page type's child (12 in) and Context its grandchild (24 in). `EvParent` still runs, but nothing shows it.
+- **Save as template on a sheet** ("when I open the sheet ... need option to Save as template"). A sheet set with no template now shows a Template row with an outline "Save as template". Clicking it shows a name field (the sheet's name) and Save. Enter or Save creates the template; Escape cancels.
+  - New `EvCt.tpl.create(name, lay, sd, sn)` makes a `tpl:<id>` template. Its fields are the sheet's picks that differ from the Design system's (`s.<prop>`). It maps the screen `sh:<ctx>` to the template and keeps it at once (`tsKeep`).
+  - The set is drawn again bound to it (`rebind`: a fresh clone with `data-sh-tpl`), so its rows edit the template.
+  - On load, `TMAP(ctx)` reads `sh:<ctx>` from the store. A `tpl:change` listener rebinds a set once the store arrives.
+- **The comments card is orange, with Show on screen** ("orange"; "Toggle ON OFF, ON Show the commnent on the screen"). `.tkPsCm` is now a `div`: the strip is a button that opens the comments, with a "Show on screen" switch under it. The comments module has `pinsOnly` (`everlab:cmPins`): `paintPins` and `track` run when it is on, even outside comment mode. The API adds `_cm.pins(v)` and `_cm.pinsOn()`.
+- **Divider above the footer note** ("Add divider above the note on the footer"). The Divider master (`.arRxFDv`) sits above the recommendations' "You’ll choose which to add …" note: 8px below the last row, with the note 16px below the divider.
+- **The active tab's count badge is white** ("Badge active white not orange"). `.evTabs-ul > .evTab.on .evTabN` uses `--t-fg-neutral-primary-100` with the inverse ink.
+- **Guidance note titles are Body 300 Medium** ("Markdown Title body 3000 medium style", "300"). The Title group's `!important` font-size reads `--tgFs`, so the vars are set on `.evTg.arHabNlTg[data-lv]`: 16/20, Medium.
+
+
 ### v3275: Flow panel: a More (…) menu on each step with Duplicate, Hide and Remove; names on one line
 
 - **More menu** ("On flows I need an iptino to duplicatre a page", "and remove. Use a ... more icon with dropdown. Put the goggle inside this dropdown as wlel.", "Hide ON OFF"). In an arranged flow (`cfg.arrange`: the Async report, the Check-in), every step row ends with `.hpFlMore` (Lucide ellipsis), where its switch was. The menu (`.hpFlMenu`, fixed, on the body) holds Duplicate, Hide and Remove. Hide has a switch: On means skipped, in Not used. Hide only shows where the step had a switch (`!nosw`). Remove is offered unless the step is fixed and has no switch (Confirm plan, Checkout). Arrows, Escape and Tab work. The menu closes on scroll, resize or a click outside.
