@@ -5,6 +5,14 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3248 · Habit page: Markdown-based style, Markdown v2
+
+- The habit sheet's Tweaks start with **Page style**: UI-based (the designed sheet, `habBody`), Markdown, Markdown v2. Markdown keeps one document per habit (`everlab:habMd`, defaults `HAB_MD`), v2 its own (`k@2`, defaults `HAB_MD2`). `habMd(x, src, v2)` draws both.
+- Syntax: `# title`, the line under it (Markdown: the summary with icons; v2: the Title group's support line), `## / ###` (EvTitle H2 / H3), paragraphs, `1.` / `-` lists (an indented `-` a sub point, an indented plain line the item's next line), `[label](video:slug)`, `[name](supplement:1)`, `[Ask your care team](care-team)`, `> [!TAILORED] / [!SAFETY] / [!STOP] Title` then `>` lines, a plain `>` quote, `---`.
+- v2 (the user's screenshot): a plain 16/26 document; tailored as a quote on a green line; safety and when to stop as warm callouts (the warning token: line, title, 12% ground); the lists' own numbers; links on EvLink (success, videos underlined); a closing ask.
+- Care team link: a stacked sheet (`careOpen`), the message on the chat field tokens (`--cf*`), Send then EvAlert Success. The app's chat sits under the report, so it is not used here.
+- The dividers need `.hmDoc > .arHabRule.hmRule` to beat `.arHabB > .arHabRule { margin: 0 }`.
+
 ### v3247 · Decade card: General health is the last tab
 
 - "Put the general health at the end." `decAreas()` now appends General health after the decade's own areas (`A.concat([...])`). The decade's first area (Heart, Bones, …) is the tab shown first again.
