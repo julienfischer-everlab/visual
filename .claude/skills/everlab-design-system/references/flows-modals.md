@@ -243,7 +243,7 @@ cnM = window.EvConsent.open(dev, { id: 'Terms and Conditions', appt: 'onboarding
 
 ## Loading states (`window.EvLoad`)
 
-**What.** One module for every wait: **Simple** (spinner replaces the button content; optional slow label after 5 s; success tick + word), **Loader with label** (spinner + action word on a quieter button), **Multi-step** (overlay with spinner, step line, node track).
+**What.** One module for every wait: **Simple** (spinner replaces the button content; optional slow label after 5 s; success tick + word), **Loader with label** (spinner + action word on a quieter button), **Multi-step** (overlay with spinner, step line, node track). With `{ button }` the pressed CTA shows its Loader with label first (`label`, default Processing, for `lead` ms, 900), then the overlay's steps; the button comes back when they are through (Send a gift's Pay, Confirm your updated plan's Pay, the doc's Purchase).
 
 **Where.** `grep -n "window.EvLoad = "` (~20545, header comment above at ~20150); CSS `grep -n "\.evSpin\|\.evBusy\|\.evMs"` (HP style block); doc `grep -n "const ldDoc"` (~47261). Tab `'ld'`, `#loading-states`. Call sites `grep -n "EvLoad\.\(simple\|label\|multi\)\|L\.\(simple\|label\|multi\)("`.
 
@@ -254,7 +254,7 @@ cnM = window.EvConsent.open(dev, { id: 'Terms and Conditions', appt: 'onboarding
 **How to use.**
 ```js
 var gdn = window.EvLoad.simple(cta); setTimeout(function () { gdn(false); I++; keep(); step(1); }, reduced() ? 0 : 1200);   /* Send a gift: Continue to payment, the spinner alone ("need loading icon only") */
-window.EvLoad.multi(view, ['Processing payment', 'Confirming your order', 'Preparing your receipt']).done.then(...);     /* Send a gift: Pay */
+window.EvLoad.multi(view, ['Processing payment', 'Confirming your order', 'Preparing your receipt'], { button: cta }).done.then(...);     /* Send a gift: Pay */
 var pb = L.label(cta, 'Processing'); setTimeout(function () { pb(); /* ... */ }, 2000);                                   /* HP booking */
 addDone = window.EvLoad.simple(b);                                                                                         /* marketplace Add to cart, 900 ms; cart Checkout 1200 ms */
 ```

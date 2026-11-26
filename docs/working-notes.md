@@ -5,6 +5,14 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+### v3275: Flow panel: a More (…) menu on each step with Duplicate, Hide and Remove; names on one line
+
+- **More menu** ("On flows I need an iptino to duplicatre a page", "and remove. Use a ... more icon with dropdown. Put the goggle inside this dropdown as wlel.", "Hide ON OFF"). In an arranged flow (`cfg.arrange`: the Async report, the Check-in), every step row ends with `.hpFlMore` (Lucide ellipsis), where its switch was. The menu (`.hpFlMenu`, fixed, on the body) holds Duplicate, Hide and Remove. Hide has a switch: On means skipped, in Not used. Hide only shows where the step had a switch (`!nosw`). Remove is offered unless the step is fixed and has no switch (Confirm plan, Checkout). Arrows, Escape and Tab work. The menu closes on scroll, resize or a click outside.
+- **Duplicate.** The copy goes in the arrangement as `a.dup [{ id: 'cp-<page>-<n>', of, t: '<name> (copy)' }]`, ordered right after the row duplicated. `flDup` adds the copies to the flow's model before the panel draws: after their page, or where they were dragged, and after a top step's sub-steps. A copy drags, hides and removes like any step. It opens its page's screen and lights its own row (`cpNow`), not its page's. No comment icon and no home icon on copies. **Limit:** the flow's own Next and Back do not step through copies yet. A copy is a row in the panel that opens the same screen.
+- **Remove.** A copy is deleted. An original goes to `a.rm` and `a.off` (a step with its own switch, such as Clinical, is switched off), and it leaves both the list and Not used. `a.rmOn` records which ones were on. A line at the end, "n pages removed · Restore", puts each back as it was. The Check-in skips a removed question and its follow-ups (its `seq`).
+- **One line names** ("no 2 lines. truncate pls"). `.hpFl .tkOrd li .nm` is `nowrap` with an ellipsis. The full name is in its tooltip.
+
+
 ### v3274: Multi-step loading: the button's Loader with label first, then the steps; Multi-step last in the list
 
 - **The button first, then the timeline** ("for this state we need the Simple loader when press cta then move to timeline loeader", then "actually loader with label"). `EvLoad.multi(host, steps, { step, button, label, lead })` now takes the pressed CTA. Its Loader with label (`label`, default "Processing") runs for `lead` ms (default 900). Then the overlay starts its steps. The button comes back once the last step is through, and also on `stop()`.
