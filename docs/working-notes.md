@@ -5,6 +5,11 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3260: Any question? without its card; Sections rows kind over name
+
+- **Any question?** (the Guide's closing ask, `.hm3AskC`): no card round the buttons any more; Chat with Eva and Discuss with your doctor are **stacked LG** buttons (`evCtl-lg`, secondary), full width, **fully rounded** (`--t-radius-full`); the icon 20 (`--cIc`), the doctor's photo 24 ("Just don't use a card here for the button. Just use a stacked button LG, fully rounded"). The Library's line for the block says so.
+- **Sections rows (Guide Tweaks)**: the kind is the title and the name its subtitle ("Substep" over "Easy jog", "H2 · 2 substeps" over "Each session", every row) ("Inverse the subtitle and the title ... For all cards like this"). CSS only (`.tkHm3RowB` column-reverse, the two lines' styles swapped): the markup keeps the name in the span, which the drag ghost and rename read.
+
 ## v3259: the Primary card doc shows the real Overview
 
 - **Modules → Primary card (overview), desk frame**: the grey skeleton is now the real Overview ("Plug the real overview layout", "On primary card doc"): a copy of the app (`#ov-live`: storage in memory with the shared setups, as the Check-in canvas's moments) in an iframe over the frame (`.moSkLiveF` in `.moSkDk.moSkMain`, at the frame's size: 1063 × 791 at a 1415 window, the app's own M with its sidebar), the Tweaks copied in (`lvCopy`, the doc's), put on its Overview (`versionSel` 9), the colour mode pushed (a body-class observer). Its taps go nowhere (a capturing click handler); it scrolls.
