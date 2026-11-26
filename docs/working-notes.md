@@ -5,6 +5,12 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3259: the Primary card doc shows the real Overview
+
+- **Modules → Primary card (overview), desk frame**: the grey skeleton is now the real Overview ("Plug the real overview layout", "On primary card doc"): a copy of the app (`#ov-live`: storage in memory with the shared setups, as the Check-in canvas's moments) in an iframe over the frame (`.moSkLiveF` in `.moSkDk.moSkMain`, at the frame's size: 1063 × 791 at a 1415 window, the app's own M with its sidebar), the Tweaks copied in (`lvCopy`, the doc's), put on its Overview (`versionSel` 9), the colour mode pushed (a body-class observer). Its taps go nowhere (a capturing click handler); it scrolls.
+- **The doc's card in its slot** (`lvSync`, `el._lvSync`): the card drawn here (`.moSkSlotDk .hpOvCard`, every step and unsaved edit) imported into the copy's bento (`.moLvMine`) beside its own primary card, which is hidden (the app keeps painting that one); the card's canvases (sphere, ring) drawn into the copy every frame (`lvMirror`, a rAF loop that stops when the doc is hidden); put back if the copy repaints its bento (a MutationObserver). Every redraw of the demo (step, controls) re-syncs. **Insights widget On**: the doc's widget takes the place of the bento's column (`.moLvIns`).
+- The skeleton (the cloned rail and header, grey blocks) stands in until the copy is up (about 10 s), and stays for XS · S (the phone frame).
+
 ## v3258: icon circles over a picture, blur 32
 
 - The video check-in's camera (`.t3FcVid`) and the snooze bell (`.tlSnz`) blur what's behind them by 32 (was 8 on the camera, none on the bell) ("Icon overlap blur 32"). The bell now wears the camera's glass too (`rgba(17,17,17,.62)`, white icon, both themes) instead of the page-coloured circle, so the blur shows. The older Timeline's progress-ring marks (`.tlThB` without `.tlSnz`) keep their page-coloured circle.
