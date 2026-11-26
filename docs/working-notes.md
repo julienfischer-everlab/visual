@@ -5,6 +5,21 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3250 · Presets own their tweaks; the Guide on the UI-based parts; groups, names, steady reorder
+
+- **Presets** ("When I save a preset, the other preset also takes the change"): the Doctor note screen's module rows (Version, Show habits, Card/Letter… `data-ar-ph` rows bound to `ar:tpl-dr` as `k.<id>`) wrote into the template on every pick, and the template's value won over any preset (pulled every 1.5 s). Now `EvPresets.owns()` (a named preset in use, or the page's home preset): the template neither pulls nor is written, and the rows are the preset's (Save keeps them in it). On Default the template still leads. A Playwright repro (A: super short + habits on; B: email + off) failed before and passes now. Layout picks on templated screens still go through the template store (#337).
+- **Guide cover:** EvSheet takes `bn` ('image'/'none') and `sh` ('full'/'high'/'hug') from the caller. The Guide always has the banner (the Plan's hero) with the H1 on it; the line under the title is now the outline badge.
+- **The Guide = the UI-based parts** ("keep the same as the UI-based. Actually, everything"):
+  - `habNb`, `HAB_NI` and `habBdg` are hoisted out of `habBody`, so both draw from them.
+  - doctor-note, adjustment and warning become the note rows (gathered into one `.arHabNl`). exercise becomes `habEx` (gathered into `.plSesExs`), with new optional `dose` and `points` turning into the session's blocks (`sesProg`).
+  - "Tag: line" lists also become blocks, numbered steps become `.arHabSteps`, bullets become `.plSesB`.
+  - A `##` with its next paragraph becomes the H2 with a subline (`arHabSecT`); a quote becomes the Plan's `.plSesNote`.
+  - The badges (goals + how often) sit on top. The complete recipe (v0) for a habit with sessions is the UI-based content itself.
+- **Library previews:** each piece has an eye button that opens a full sheet (`libView`): what it is, how it looks (drawn by the Guide), its Markdown, and Add to sections.
+- **Sections:** `<!-- group: Name -->` gives a group row (+ Group, click to rename, ×, drag). `<!-- name: Name -->` over a section gives its own name (double-click or F2; empty brings back the derived one). Members never see either. The generator writes groups too.
+- **Steady reorder:** `hm3Morph` keys blocks by their HTML, moves the existing nodes (FLIP slide, 380 ms) and restores the sheet's scroll (the browser's scroll anchoring would follow the moved block). The stack rows slide too.
+- **Generate a new protocol:** a full-width button at the top of the habit sheet's Tweaks, right under Page type. The Guide design panel keeps text size, width and section spacing; the cards' own corners, picture and layout are UI-based now.
+
 ## v3249 · Habit Guide: health-block objects, a section stack, a library, Generate
 
 - **Page style · Guide** (`md3`, the habit sheet's Tweaks; the four styles show as a select): Markdown v2's document plus fenced `health-block` JSON objects. `habMd(x, src, 3, live)` draws them through `hbBlock`; each checked against `HB_SCHEMA` (doctor-note: body, authorId, title?; adjustment and warning: title, body; exercise: title, mediaId?, position?, details? (6 at most)). Errors carry a line and a level (Error / Check) and list in Tweaks; a click selects the line. A broken, unknown or incomplete block becomes a dashed placeholder; the rest of the page draws. Other fences are code shown as text; HTML is escaped; only http(s) links.
