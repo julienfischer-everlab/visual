@@ -5,6 +5,12 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3261: the Library as a grid of cards; Guidance, a Markdown element with its notes inside
+
+- **Library (habit sheet's Guide Tweaks)**: three columns of cards (`.tkHm3Lib .tkHm3LibG`, 6 apart); each card the block's small visual (its icon on a 36 tile) centred, its name centred under it (two lines at most), 12 padding; the eye and the + only on hover (or keyboard focus), at its top right, over a dark chip ("Use a three-column grid ... Put a small visual in the card, centred, and the text centred below. The option to add and view can be just on hover on the top right"). Click, drag and + as before.
+- **Guidance element** ("Put this guidance as a Markdown ... an element guidance Markdown, and inside, you have sub-object adjustment and warning. If the guidance is empty, we just don't show the guidance"): a health-block `{ "type": "guidance", "items": [ { "type": "adjustment", "title", "body" }, { "type": "warning", "title", "body" } ] }` (schema `items`: a list of objects, `hbOk` 'o'). Drawn as the guidance card (`habNlCard`, `.hm3Gd`: its notes as rows, a divider between), its own card (marker `\u0001gd`); a note with another type or a missing title / body is left out with a warning; **no items, nothing drawn**. The habit guides' Header now writes the adjustment and the warning inside one guidance (`hm3Make`: `GD()`); the doctor's note stays its own card. Older saved guides with separate blocks still draw as before.
+- Sections: one **Guidance** row (its notes' titles as its line; "Empty: not shown" when it has none); the virtual Guidance group of v3254 is gone (`GDK` empty). The Library (Elements, New), Insert element and the Design system's Markdown page have it (its demo: Easier than your runs · Before you start).
+
 ## v3260: Any question? without its card; Sections rows kind over name
 
 - **Any question?** (the Guide's closing ask, `.hm3AskC`): no card round the buttons any more; Chat with Eva and Discuss with your doctor are **stacked LG** buttons (`evCtl-lg`, secondary), full width, **fully rounded** (`--t-radius-full`); the icon 20 (`--cIc`), the doctor's photo 24 ("Just don't use a card here for the button. Just use a stacked button LG, fully rounded"). The Library's line for the block says so.
