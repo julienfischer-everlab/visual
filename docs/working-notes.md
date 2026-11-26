@@ -5,6 +5,11 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3269: Chat with Eva without the star
+
+- **"Move the star"** (asked: remove it): the Guide's closing ask, `hm3AskH`, draws Chat with Eva as text only; Discuss with your doctor keeps the doctor's photo. Eva's mark (`hmEva`, `EvEvaMark.disc`) stays in the Eva message sheet (40).
+- Checked (dist, XS): Chat with Eva 0 icons, Discuss with your doctor 1; no page errors.
+
 ## v3268: the List master (Figma Core DS25 List style) in the Design system and the Guide's Markdown lists, the Guide's notes a plain list
 
 - **List master, `window.EvList`** ("integrate the list bullet point in the design system and also integrate it into the Markdown that fits with this style setup"): from Figma Core DS25 › List style 3317:35126, List item / Pre 3317:35129, List item / Base 3317:35136 (3317:35194 is the Demo frame).
