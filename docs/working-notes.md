@@ -5,6 +5,14 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3287: Primary card picker matches the card; Refer and Earn title H3
+
+- "On the module, this image on the right is selected, but I have another image on the card, so try to fix this." Modules → Primary card shows the card inside a live copy of the app (`iframe.moSkLiveF`, `#ov-live`). That copy keeps its storage in memory and only holds the `*Master` setups, so it has no picture picks. Its own PcMedia was repainting our card copy (`.hpOvCard.moLvMine`) with the card's default picture (Dr Steven's photo for the Onboarding consult).
+  - PcMedia's `cards()` and its added-node watcher now skip `.moLvMine`: our copy keeps the builder's picture.
+  - The copy was also stale after a pick, because a pick changes the card in place (PcMedia `place`) without redrawing the demo. `lvSync` now watches our card (MutationObserver, 150 ms debounce) and copies it again only when its HTML changed (`LV.sig`). When idle it does not re-copy.
+  - Checked: after an upload in the rail picker, the picked tile is pressed and the copy's `pcMediaV` / `pcMediaBg` use the same blob URL as the builder's card.
+- Refer and Earn: "Actually, should be H3." The title is now H3 on the Title group master (20/24, weight 570). The anatomy, the page line and the master comment say H3 too.
+
 ### v3286: Refer and Earn: Hands visual, H2 title without the badge; breakpoints on every module page
 
 - **Hands** ("a visual like this that touches the edge, top, and bottom of the card with two hands, hairline hands, and then a membership card in the middle"). A fourth Visual for `EvRefer` (`v: 'hands'`, `EvRefer.hands()`): one hand comes down from the card's top edge and one up from its foot. Their sleeves run off the card, which clips them (`.evRef-hands` has `overflow: hidden`). Their fingers lie over the Everlab membership card between them (everlab, a chip, MEMBER and two rings, in Everlab orange, its face the accent at 16% over the card's ground).
