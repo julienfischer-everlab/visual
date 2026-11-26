@@ -5,6 +5,10 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3258: icon circles over a picture, blur 32
+
+- The video check-in's camera (`.t3FcVid`) and the snooze bell (`.tlSnz`) blur what's behind them by 32 (was 8 on the camera, none on the bell) ("Icon overlap blur 32"). The bell now wears the camera's glass too (`rgba(17,17,17,.62)`, white icon, both themes) instead of the page-coloured circle, so the blur shows. The older Timeline's progress-ring marks (`.tlThB` without `.tlSnz`) keep their page-coloured circle.
+
 ## v3257: one Timeline item group (Collection inside), the snooze line, bigger icon circles on pictures
 
 - **Tweaks → Timeline item** now holds the items list: the old **Timeline items** group is a titled **Collection** block at its end (`.tkSubG.tkT3Col`, the Bento's sub-group card, `.tkBmSec` title): Suggestion format, List (Now / Next / Paused), the item rows, Add item / Reset items / Add suggested ("To merge these two, the group I share with you here is more like a collection as a title inside the timeline item"). Its rows carry `tlDRow`: in `html.tlD3` a group that has design rows shows only those. The list's script finds its group with `closest('.tkGroup')`, so it now delegates from Timeline item.
