@@ -5,6 +5,16 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3254: guidance card on the master, Guidance group, List item auto padding, snoozed Timeline items, the template environment in purple
+
+- **Guidance card** (`habNlCard`): Card static **LG**, Primary - Outlined with no fill (`--kBg: transparent; background: none`: the look sets `background` itself), its Body padding the master's token (`bodyPad` on, `--kP`: 20 at LG) all round; notes split by a divider.
+- **Sections (Guide Tweaks)**: the Header's notes (doctor-note, adjustment, warning) sit under a locked **Guidance** group row (`.tkHm3GdG`, virtual: not in the Markdown), indented one more. **Library** one column, names whole.
+- **List item interactive, auto** (master, `EvListI` SIZES): its top-bottom padding is now its side padding, half the container's (`--liAutoPy: calc(var(--ctPadX) / 2)`: 8 · 8 · 12 · 12; was md's 16) ("Why is the padding top different than the padding left? ... It should be the same"). Rows on it (Timeline, Insights biomarkers) are 16 shorter on the phone.
+- **Snoozed Timeline items**: Tweaks → Timeline items → an item → **Snoozed** No / Yes (+ **Paused until**, default today + 14 days); stored as `snz` / `snzU` in the items' `ed`. The row wears the video check-in's mark (`.tlThB`, 24, the page's ground round it) with a bell struck through on its picture's top right (`.tlSnz`, placed by a small ResizeObserver since 36 rules target `.tlRow > .tlTh`), tooltip "Paused until …" on hover / focus / tap (opens away from the row's edge), a tap never opens the item.
+- **General layout**: Page type a top row (no card, no line), its chip purple; Template (and a sheet's Parent) indented under it with the elbow; the template's environment a light purple block (`rgba(168,85,247,.1)`) down to the line under Template, Layout under it as before. On a sheet, Page type and Parent join in one block (per-context CSS in the sheet sets' `tweaks()`).
+- Modules → Primary card: the demo's footer CTA reads **Save card**.
+
+
 ## v3253: Progress dots, Insights More context, the Guide editor's groups, Content group, Page type chip
 
 - **EvDots** (`window.EvDots`, before `window.PcMedia`): a 128 × 128 canvas of rings round a centre dot, filled centre-out, each ring clockwise from twelve o'clock; the centre dots biggest. `EvDots.frac(obj, step)` = (phase index + steps done in it / its steps) / phases (EvPcSteps), the last step of the last phase 1 (Activation: 0, 17, 33, 39, 44, 50, 56, 61, 100%). `EvDots.mount(canvas, frac, key)` animates from the last fraction that key showed (a pulse per dot, ease-out-back, a wave on the front); first mount from 0. In PcMedia, over a Mini module (`miniPut`): on by default for a card with phases, Off / On in the builder (Visual → Progress dots), `everlab:pcDots`.
