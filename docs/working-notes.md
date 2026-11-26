@@ -5,6 +5,17 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+### v3278: Flow panel: each goal's protocols as its sub-pages, with Generate another; product sheet: Plan before Supporting your goals
+
+- **Protocols under their goal** ("Add Sub pages here with rhe Protocols part of the goals").
+  - The report's `steps()` gives `habs`: each goal's protocols (its Your part: the habits tagged with the goal; all of them when the goals are merged; none when Your part is Off).
+  - The Async report flow model adds a row after each goal that is in use for each of its protocols: `hb<j>-<habit>`, `go: 'rec:g<j>|hab:<habit>'`, `lv: 2`, fixed, no switch, `gen`.
+  - The report flattens its recommendation sub-steps, but these rows keep the sub indent (`hpFlSub hpFlSub2`). `hpFlSub2` marks a row carried by the one above it: dragging a goal brings its protocols along (`unit`/`nbr`).
+  - `go` opens the goal page, then clicks that habit's row (`.arHabR[data-hab]`) once it shows. If Your part is a tab, it picks the tab first, with retries for the transition.
+- **Generate another** ("In the More on the flow item, add Generate another"). A protocol row's More menu holds just "Generate another" (sparkle icon). It calls `cfg.gen(go)`: the protocol opens, then the sheet's own Generate writes a new one in its place (`__hmHab.gen()`).
+- **Plan first in the product sheet** ("Inverse order Section. Plan first"). From the review, a product's sheet now shows the Plan card (Why, When, Price) before "Supporting your goal(s)". `glFor` moved after the properties card.
+
+
 ### v3277: Stacked sheets: the one underneath is an empty card; the Generate CTA names the goal
 
 - **The sheet under a stacked sheet loses its content and notch** ("When sheet are stacked, The content insidie below sheet should disaeppar. .And also the Home top nav notch"). Every child of `.evSh.evShBack > .evShP` fades to 0 and takes no clicks, so only the tucked-back card shows. This matches the Design system's stacking demo (`.sdStkC`: empty cards). The children fade back in (.24 s) when the sheet on top closes.
