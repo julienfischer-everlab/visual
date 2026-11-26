@@ -5,6 +5,20 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+### v3281: Page templates: a left panel with the templates, groups, dividers, reorder, Archive / Reactivate
+
+- **The panel** ("Page tempaltes. Add a left panel. With the lift of page template. Add action to create groups and dividers. And reorder. Also add More option: Archive; If on Archive already: Reactivate. So need a Bucket Archive"). On the Page templates page (`body[data-doc-set="tpl"]` with `docOn`), a panel docks at the left: `aside.hpJny.hpWtl.hpFl.tpxSide` in `.topbar`. `__flowDock` moves the screen aside for it, as for the Flow panel. It is hidden on every other page.
+- **Its rows**: every template page (Introduction, Insight detail, every `tpx_` template, named as in the page menu). The page on screen is lit (blue, its dot), and a click opens a page (`docShow`).
+- **"+ Group"** adds a named group at the top and opens its name for editing (Enter saves, Escape cancels). Templates under a group sit a step in, down to the next divider or group. **"+ Divider"** adds a hairline.
+- **Reorder**: drag any row (template, group, divider) by its grip.
+- **More (…)**, through the shared `__tkMenu`:
+  - template: Archive, which moves it into the Archive bucket at the end.
+  - archived template: Reactivate, which puts it back in its place.
+  - group: Rename, Remove group (its templates stay).
+  - divider: Remove divider.
+- **Storage**: kept in this browser (`everlab:tpxNav`: `L` the list, `arch` the archived). Templates that no longer exist drop out; new ones are added at the end.
+
+
 ### v3280: Intro template (What to expect): CTA 32 lower, rows 16 closer to the title group
 
 - **+32 above the CTA** ("Template adjust +32 margin top CTA"). On desktop the hugging CTA under the rows (`.arDbfWt > .arWtCta`) had `margin-top: 8px`; it is now 40px. With the stack's 24px gap, rows to See results goes from 32 to 64.
