@@ -26096,8 +26096,8 @@ window.BzMedia = (function () {
        from the review with something to pay, on to the checkout; there, or with nothing to pay, the timeline ("once submitted, redirect to timeline"), or the end */
     function revPay(btn) {
       if (payBusy) return; var lb = btn || (rvCd() && cta.parentNode.querySelector('.arRcFtSec')) || cta;   /* the loader on the button that goes to the checkout: Footer #7's Continue, not Discuss ("The Discuss shouldn't have a loading state. The Continue should") */ var t = revTotal(), fin = function () { if (o.onSubmit) o.onSubmit(rcSubmitted(), { confirmed: true }); else { var nxR = nextOf(REC); if (nxR == null) close(); else go(nxR); } };
-      var wait = function (ls, per, then) { if (!window.EvLoad) { then(); return; } payBusy = true; cta.disabled = true; cta.setAttribute('aria-busy', 'true');
-        window.EvLoad.multi(root, ls, { step: per }).done.then(function () { payBusy = false; cta.disabled = false; cta.removeAttribute('aria-busy'); if (alive) then(); }); };
+      var wait = function (ls, per, then) { if (!window.EvLoad) { then(); return; } payBusy = true; var pb = btn || cta; cta.disabled = true; cta.setAttribute('aria-busy', 'true');
+        window.EvLoad.multi(root, ls, { step: per, button: pb }).done.then(function () { payBusy = false; cta.disabled = false; cta.removeAttribute('aria-busy'); if (alive) then(); }); };
       if (coOn || !t || rcOffP('co')) { wait(t ? ['Processing payment', 'Confirming your order', 'Updating your plan'] : ['Confirming your plan', 'Updating your timeline'], 900, fin); return; }   /* the checkout off: paid from the review */
       if (window.EvLoad && window.EvLoad.simple) { payBusy = true; var dn = window.EvLoad.simple(lb); setTimeout(function () { dn(false); payBusy = false; if (alive) { coOn = true; pushDir = 1; render(); } }, 900); return; }   /* the review's Pay: the button's own loader, nothing over the screen ("Just loading state in CTA when click here"), then the checkout */
       wait(['Securing your order', 'Opening checkout'], 700, function () { coOn = true; pushDir = 1; render(); });
@@ -29806,7 +29806,8 @@ window.PcMedia = (function () {
  *   EvLoad.simple(button, { slow, after }) Simple loader, no label: the same button, lighter, its exact width, a spinner in place of its words; past `after` ms (5 s) the label `slow` ("Hang tight…") beside it;
  *                                       returns done(ok): the button as it was, or with ok first a tick and ok on it ("Saved"), done(ok) then returning the way back; done.slow() the label now
  *   EvLoad.label(button, text)          Loader with label: the button turns into a spinner and its action ("Submitting"); returns done(), the button as it was
- *   EvLoad.multi(host, steps, { step }) Multi-step loading: over host (positioned), the page washed (no blur) under each backend step in turn (a spinner and its line, a track with a node each);
+ *   EvLoad.multi(host, steps, { step, button, label, lead }) Multi-step loading: over host (positioned), the page washed (no blur) under each backend step in turn (a spinner and its line, a track with a node each);
+ *                                       with `button` (the pressed CTA), its Loader with label first (`label`, "Processing") for `lead` ms (900), then the steps, the button itself again once through;
  *                                       returns { el, done (a promise, once the last step is through, as the overlay fades), stop() }
  */
 /* EvOverlap: the header overlap ("the common pattern that we use on other pages that overlap the header and have a small parallax"; "this needs to be in the design system"), once for every page.
@@ -30780,23 +30781,25 @@ window.EvLoad = (function () {
     return function () { if (keep.parentNode === btn) { while (keep.firstChild) btn.insertBefore(keep.firstChild, keep); keep.remove(); } s.remove(); btn.classList.remove('evBusy'); btn.disabled = dis; btn.removeAttribute('aria-busy'); btn.style.minWidth = ''; };
   }
   function multi(host, steps, o) {
-    o = o || {}; var per = o.step || 1100, n = steps.length, stopped = false, timers = [];
+    o = o || {}; var per = o.step || 1100, n = steps.length, stopped = false, timers = [], back = o.button ? label(o.button, o.label || 'Processing') : null, lead = back ? (o.lead == null ? 900 : o.lead) : 0;   /* the pressed button's Loader with label first ("Processing"), then the steps over the page ("loader with label" "when press cta then move to timeline loader") */
+    var unbusy = function () { if (back) { back(); back = null; } };
     var later = function (f, ms) { timers.push(setTimeout(function () { if (!stopped) f(); }, ms)); };
     var el = document.createElement('div'), row = document.createElement('div'), tx = document.createElement('span'), tr = document.createElement('div'), fill = document.createElement('i'), nodes = [];
     el.className = 'evMs'; el.setAttribute('role', 'status'); el.setAttribute('aria-live', 'polite'); row.className = 'evMsRow'; tr.className = 'evMsT'; fill.className = 'evMsF';
     row.appendChild(spin()); row.appendChild(tx); tr.appendChild(fill);
     for (var k = 0; k <= n; k++) { var nd = document.createElement('i'); nd.className = 'evMsN'; tr.appendChild(nd); nodes.push(nd); }
-    el.appendChild(row); el.appendChild(tr); host.appendChild(el);
+    el.appendChild(row); el.appendChild(tr);
     var say = function (t) { if (!tx.textContent) { tx.textContent = t + '\u2026'; return; } tx.classList.add('out'); later(function () { tx.textContent = t + '\u2026'; tx.classList.remove('out'); }, 180); };
     var done = new Promise(function (res) {
       var go = function (i) {
-        if (i >= n) { later(function () { res(); el.classList.remove('on'); later(function () { el.remove(); }, 340); }, 380); return; }
+        if (i >= n) { later(function () { unbusy(); res(); el.classList.remove('on'); later(function () { el.remove(); }, 340); }, 380); return; }
         say(steps[i]); fill.style.transition = 'width ' + per + 'ms linear'; fill.style.width = 'calc((100% - 6px) * ' + ((i + 1) / n).toFixed(4) + ')';
         later(function () { nodes[i + 1].classList.add('on'); go(i + 1); }, per);
       };
-      nodes[0].classList.add('on'); void el.offsetWidth; el.classList.add('on'); go(0);
+      var start = function () { host.appendChild(el); nodes[0].classList.add('on'); void el.offsetWidth; el.classList.add('on'); go(0); };
+      if (lead) later(start, lead); else start();
     });
-    return { el: el, done: done, stop: function () { stopped = true; timers.forEach(clearTimeout); el.remove(); } };
+    return { el: el, done: done, stop: function () { stopped = true; timers.forEach(clearTimeout); el.remove(); unbusy(); } };
   }
   function simple(btn, o) {
     o = o || {}; var dis = btn.disabled, keep = document.createElement('span'), sp = document.createElement('span'), t = 0, fin = false;
@@ -33105,7 +33108,7 @@ window.EvConsent = (function () {
       var ok = function () { var e = /^(\d\d) \/ (\d\d)$/.exec(GP.exp || ''), okE = !!e && +e[1] >= 1 && +e[1] <= 12 && (2000 + +e[2]) * 12 + +e[1] >= GF_TODAY.getFullYear() * 12 + GF_TODAY.getMonth() + 1;
         foot2('Pay ' + tot, gfComplete(ans) && !!((ans.pName || '').trim() && EMAIL.test((ans.pEmail || '').trim()) && digits(GP.card, 16).length === 16 && okE && digits(GP.cvc, 4).length >= 3), pay); };
       var pay = function () { if (!window.EvLoad || opts.snap) { GP = {}; fwd(); return; } cta.disabled = true; var t = tick; gfHold(true);   /* paying: Back and Close held till it is through (a payment never dropped half way) */
-        window.EvLoad.multi(view, ['Processing payment', 'Confirming your order', 'Preparing your receipt']).done.then(function () { gfHold(false); if (alive && A === 'gift' && tick === t) { GP = {}; fwd(); } }); };
+        window.EvLoad.multi(view, ['Processing payment', 'Confirming your order', 'Preparing your receipt'], { button: cta }).done.then(function () { gfHold(false); if (alive && A === 'gift' && tick === t) { GP = {}; fwd(); } }); };
       var pn = field({ label: 'Full name', ph: 'Your full name', value: ans.pName, set: function (v) { ans.pName = v; ok(); } });
       var pe = field({ label: 'Email', ph: 'you@example.com', mode: 'email', help: 'Your receipt goes here.', value: ans.pEmail, set: function (v) { ans.pEmail = v; ok(); } }); pe._in.setAttribute('type', 'email');
       pe._in.addEventListener('blur', function () { var v = (ans.pEmail || '').trim(); if (v && !EMAIL.test(v)) setErr(pe, 'Enter an email like name@example.com'); });
@@ -63283,12 +63286,12 @@ hairline({
             acts: ['Next', 'Continue', 'Save & continue', 'Inline validation', 'Save changes'], whyH: 'Consistency', why: 'The loading state keeps the button’s original emphasis and exact width. The spinner replaces the label, including any icons, while the button width remains unchanged. The content stays in place without causing any layout shift.',
             vars: true, where: 'Send a gift’s Continue to payment; the Overview’s first insights card, Build my insights (then the Async report). The profile’s Continue moves on at once. Past 5 seconds, its label (Hang tight…) says it is still working.', api: 'EvLoad.simple(button, { slow, after })',
             cases: [{ k: 'page', t: 'Trigger new page', cta: 'Continue', body: alc, next: 'Next page' }, { k: 'inline', t: 'Inline validation', cta: 'Save changes', body: prof, form: true, inline: true, saved: 'Saved' }, { k: 'slow', t: 'Loader > 5 sec', cta: 'Continue', body: alc, slow: 'Hang tight…', next: 'Next page' }] },   /* ("Simple loader case is missing"): its three cases, as the board: a new page, a save in place, a wait past 5 s showing a label */
-          { k: 'multi', t: 'Multi-step loading', sub: 'Several backend steps', d: 'Overlap the page with a progress experience that communicates each backend step.', use: 'Use only for high-impact actions where multiple backend operations occur, or the flow takes longer than a standard request.',
-            acts: ['Payments', 'Checkout', 'Prescription orders', 'Booking confirmation', 'Report generation', 'Identity verification'], why: 'When an operation spans several backend processes, progressive messaging reduces uncertainty and improves perceived performance by showing that work is actively progressing.',
-            where: 'Shown with a checkout here. (The Health profile’s Book now uses the loader with label.)', api: 'EvLoad.multi(host, steps, { step })', cta: 'Purchase', body: order, form: false, steps: ['Processing payment', 'Confirming your order', 'Preparing your receipt'], next: 'Order confirmed' },
           { k: 'label', t: 'Loader with label', sub: 'One action in progress', d: 'A spinner alongside a loading label describing the action currently in progress.', use: 'These actions carry greater consequence than simple navigation. Keeping the action visible reassures members that the correct request is being processed.',
             when: ['Modifies data', 'Completes an important action', 'May take several seconds', 'Requires additional reassurance'], acts: ['Saving', 'Submitting', 'Confirming', 'Cancelling', 'Updating'], why: 'These actions carry greater consequence than simple navigation. Keeping the action visible reassures members that the correct request is being processed.',
-            where: 'Health profile: Book, the booking (Processing, 2 seconds); the last step of a stage, its answers saved (Saving).', api: 'EvLoad.label(button, text)', cta: 'Submit request', body: dose, form: true, word: 'Submitting', next: 'Request sent' }
+            where: 'Health profile: Book, the booking (Processing, 2 seconds); the last step of a stage, its answers saved (Saving).', api: 'EvLoad.label(button, text)', cta: 'Submit request', body: dose, form: true, word: 'Submitting', next: 'Request sent' },
+          { k: 'multi', t: 'Multi-step loading', sub: 'Several backend steps', d: 'The pressed button first shows its loader with label, then a progress experience overlaps the page and communicates each backend step.', use: 'Use only for high-impact actions where multiple backend operations occur, or the flow takes longer than a standard request.',
+            acts: ['Payments', 'Checkout', 'Prescription orders', 'Booking confirmation', 'Report generation', 'Identity verification'], why: 'When an operation spans several backend processes, progressive messaging reduces uncertainty and improves perceived performance by showing that work is actively progressing.',
+            where: 'Shown with a checkout here: Purchase shows its Loader with label (Processing), then the steps over the page. Send a gift’s Pay and Confirm your updated plan’s Pay do the same. (The Health profile’s Book uses the loader with label alone.)', api: 'EvLoad.multi(host, steps, { step, button, label })', cta: 'Purchase', body: order, form: false, word: 'Processing', steps: ['Processing payment', 'Confirming your order', 'Preparing your receipt'], next: 'Order confirmed' }
         ];
         const DEV = { xs: [393, 852, 'XS'], s: [600, 860, 'S'], m: [992, 680, 'M'], l: [1440, 900, 'L'] };   // the breakpoints' floors (the bar's Viewport): the screen drawn at that width, scaled to fit
         const bpNow = () => { const b = document.body.dataset.bp; if (b && DEV[b]) return b; const w = innerWidth; return w >= 1440 ? 'l' : w >= 992 ? 'm' : w >= 600 ? 's' : 'xs'; };
@@ -63299,7 +63302,7 @@ hairline({
           '<section class="ldMain">' + DH.page('Loading states', '', '<div class="hcView ldCases" role="tablist" aria-label="Case" hidden data-dp="Case" data-dpg="Loader"></div><div class="ldFlow" role="group" aria-label="Flow" data-dp="Step" data-dpk="raw"></div><button type="button" class="ldPlay" data-dpa></button>') + DH.sec('', '', { cls: 'ldPT', sc: 'ldPD', long: false }) + '<div class="ldStage"><div class="ldFit"><div class="ldDev"></div></div></div></section>';
         const $ = q => el.querySelector(q), notes = $('.ldNotes'), dev = $('.ldDev'), fitEl = $('.ldFit'), stage = $('.ldStage'), flow = $('.ldFlow'), play = $('.ldPlay');
         const vis = () => el.isConnected && !el.hidden && document.body.classList.contains('docOn');
-        const FLOW = () => { const c = CS(); return [['rest', 'Rest'], ['trig', c.cta], ['load', 'Loading']].concat(c.slow ? [['slow', 'After 5 sec']] : [], c.saved ? [['saved', 'Submitted']] : [['done', 'Next page']]); };
+        const FLOW = () => { const c = CS(); return [['rest', 'Rest'], ['trig', c.cta], ['load', P[cur].k === 'multi' ? c.word : 'Loading']].concat(P[cur].k === 'multi' ? [['steps', 'Steps']] : [], c.slow ? [['slow', 'After 5 sec']] : [], c.saved ? [['saved', 'Submitted']] : [['done', 'Next page']]); };   /* Multi-step: Purchase, its label (Processing), then the steps */
         const paintFlow = () => { { const F = FLOW(), at = F.findIndex(f => f[0] === st); flow.innerHTML = F.map((f, i) => '<button type="button" data-s="' + f[0] + '"' + (i === at ? ' aria-current="step"' : i < at ? ' class="ldTlPast"' : '') + '><i aria-hidden="true"></i><span>' + f[1] + '</span></button>').join(''); }   /* a timeline ("visual should be a timeline"): a dot a state on one line, the way gone filled, the one now ringed */ play.textContent = paused ? 'Play' : 'Pause'; play.setAttribute('aria-pressed', String(!paused)); };
         const fit = () => { const d = DEV[bp]; if (!d) return; const k = Math.min(1, (stage.clientWidth - 48) / d[0], (stage.clientHeight - 48) / d[1]); dev.style.width = d[0] + 'px'; dev.style.height = d[1] + 'px'; dev.style.transform = 'scale(' + k.toFixed(4) + ')'; fitEl.style.width = Math.round(d[0] * k) + 'px'; fitEl.style.height = Math.round(d[1] * k) + 'px'; };
         const stop = () => { clearTimeout(tm); if (run) { run(); run = null; } };
@@ -63309,9 +63312,10 @@ hairline({
           if (s2 === 'rest') { if (!paused) tm = setTimeout(() => go('trig'), 1800); }
           else if (s2 === 'trig') { cta.classList.add('ldPress'); if (!paused) tm = setTimeout(() => go('load'), 450); }   // the button pressed: the trigger
           else if (s2 === 'load') {   // the pattern; held (run again) while paused
-            if (x.k === 'multi') { const hd = L.multi(dev, x.steps, { step: 1100 }); run = () => hd.stop(); hd.done.then(() => { run = null; if (st === 'load') go(paused ? 'load' : 'done'); }); }
+            if (x.k === 'multi') { const hd = L.multi(dev, x.steps, { step: 1100, button: cta, label: x.word }); run = () => hd.stop(); tm = setTimeout(() => { if (st === 'load') { st = 'steps'; paintFlow(); } }, 900); hd.done.then(() => { run = null; if (st === 'load' || st === 'steps') go(paused ? st : 'done'); }); }   /* the button's label, then the steps (the timeline follows when they start) */
             else if (x.k === 'simple') { const put = L.simple(cta); run = () => put(); if (!paused) tm = setTimeout(() => go(c.slow ? 'slow' : c.saved ? 'saved' : 'done'), c.slow ? 5000 : 1600); }   // the spinner alone; past 5 s, its label (the next step shows it)
             else { const put = L.label(cta, x.word); run = put; tm = setTimeout(() => { put(); run = null; go(paused ? 'load' : 'done'); }, 2400); } }
+          else if (s2 === 'steps') { const hd = L.multi(dev, x.steps, { step: 1100, button: cta, label: x.word, lead: 0 }); run = () => hd.stop(); hd.done.then(() => { run = null; if (st === 'steps') go(paused ? 'steps' : 'done'); }); }   /* Steps picked: the overlay at once, the button's label under it */
           else if (s2 === 'slow') { const put = L.simple(cta, { slow: c.slow }); put.slow(); run = () => put(); if (!paused) tm = setTimeout(() => go('done'), 2200); }   // still going past 5 s: Hang tight…
           else if (s2 === 'saved') { const back = L.simple(cta)(c.saved); run = back; if (!paused) tm = setTimeout(() => go('rest'), 2200); }   // saved in place: a tick and Saved on the button, the page stays
           else { const d = document.createElement('div'); d.className = 'ldDone'; d.innerHTML = '<i>✓</i><b>' + (c.next || x.next) + '</b><span>The next page</span>'; dev.appendChild(d); requestAnimationFrame(() => d.classList.add('on')); if (!paused) tm = setTimeout(() => go('rest'), 2000); }

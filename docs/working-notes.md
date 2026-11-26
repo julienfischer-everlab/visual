@@ -5,6 +5,13 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+### v3274: Multi-step loading: the button's Loader with label first, then the steps; Multi-step last in the list
+
+- **The button first, then the timeline** ("for this state we need the Simple loader when press cta then move to timeline loeader", then "actually loader with label"). `EvLoad.multi(host, steps, { step, button, label, lead })` now takes the pressed CTA. Its Loader with label (`label`, default "Processing") runs for `lead` ms (default 900). Then the overlay starts its steps. The button comes back once the last step is through, and also on `stop()`.
+- **The app follows the master.** Send a gift's Pay passes `{ button: cta }`. Confirm your updated plan's Pay passes `{ button: btn || cta }`.
+- **The Loading states doc.** Multi-step loading is now last ("put multi step at the end ofe the list"): Simple loader, Loader with label, Multi-step loading. Its flow reads Rest, Purchase, Processing, Steps, Next page. The flow moves to Steps when the overlay starts. Picking Steps runs the overlay at once (`lead: 0`), with the button's label under it.
+
+
 ### v3273: Markdown page: headings, divider skeleton, note titles, hoverable Outcome, card-only Substep
 
 - **Every heading's support line is the H2's** ("h3 same as h2 for sub, grey", "all sub the saem pls"). One heading branch now covers `#{2,5}`. Every `.evTg.arHabSecT` gets `--tgSf: var(--tgH2Sf); --tgSl: var(--tgH2Sl)` (15/22, grey) and an 8px gap.
