@@ -5,6 +5,11 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3270: 16px more under the habit page's top badges
+
+- "Add a margin bottom of 16px below the badges on the top, just above this section": `.evSh.arHabSh .arHabBdgs` margin-bottom -8 → 8 (the body is a flex column, nothing collapses). The Guide: badges to the notes 16 → 32; the UI-based page 24 → 40.
+- Checked (dist, XS): the gaps above; no page errors.
+
 ## v3269: Chat with Eva without the star
 
 - **"Move the star"** (asked: remove it): the Guide's closing ask, `hm3AskH`, draws Chat with Eva as text only; Discuss with your doctor keeps the doctor's photo. Eva's mark (`hmEva`, `EvEvaMark.disc`) stays in the Eva message sheet (40).
