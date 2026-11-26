@@ -5,6 +5,10 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3265: Doctor note, Email · super short: the email's own Markdown, no examples
+
+- **Tweaks → Doctor note, Version Email · super short** ("When the email is super short, can you remove the example and just put the markdown of the email that you see in the UI?"): the **Examples** row, the **Doctor's note** box and the **Short note** box are hidden (`data-ar-drnxs`); a box of its own, **Email** (`#stArDrQX`, `data-ar-drxs`, shown in this version only, with the note's format bar), holds the email as it shows: `# Your results and next steps`, the note (Sam, you're in good shape ...), `Warm regards,` and the doctor (drawn as the signature). It drives the email (`o.drqx`; empty: the default, `DRQ_XSHORT`), live as it is typed (checked: a new subject and a **bold** word appear in the email at once). The other versions keep Examples, Doctor's note and Short note.
+
 ## v3264: the divider between the Guide's parts, a locked row in Sections
 
 - The page draws a divider before **Actionable** and before **Other guidance** (`hm3PartRule`, when the part before ends on something other than a divider). Sections now shows it where it falls: a low, locked row **Divider · locked** at the end of the part before (`li.tkHm3PtDv`, 24 high, the divider icon, the lock; no grip, no remove, not draggable: `tkHm3Fix`) ("between the sections, header, and actionable of the guidance, there's a divider. This divider should be present as a Markdown item ... make sure this item is locked. You cannot remove it"). It follows the page's rule: when the part already ends on a Divider of its own (removable, as the Strength guide's Header), no locked row; remove that one and the locked row appears (checked: 1 locked row ↔ 1 drawn divider, then 2 ↔ 2). Not shown while the part before is in Syntax.
