@@ -5,6 +5,20 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+### v3246 · Decade card: General health first tab (Yearly health check); rows centred on the visual when shorter
+
+- **General health**. "Add the first tab, General Health, and put an item inside."
+  - Every decade card's tabs start with General health. Its one row is Yearly health check (stethoscope): "One appointment brings all your results together and sets a clear plan for the year ahead.", Every year (shown as Yearly).
+  - It is added in `decAreas()` (the old body is now `decAreas0`, wrapped). It is skipped when a builder's saved tabs already hold a General health. `GEN_N` / `GEN_R` hold its name and row.
+  - `decTabs`' `rows()` draws it (`a.gen`), and `_t3Dec.def` gives it to the collection builder as its first tab.
+  - General health is the tab shown first.
+- **Row alignment**. "If the content fills the height of the visual, put the content on top, starting with the visual on the top. If the content has less than the height of the visual, put the content vertically aligned with the visual."
+  - Rows with a why (`li:has(> .t3MiniTx)`) get the grid rows `1fr auto auto 1fr`, with the visual spanning them all.
+  - Words taller than the visual leave the spacer rows at 0, so the words start at the visual's top. Shorter words split the rest, so they centre on it.
+  - With Frequency on Badge right, the badge sits on the title's line. At XS (container 480 and below) the badge stays under the words: rows `1fr auto auto auto 1fr`.
+  - With Frequency as Sub title, the title, the frequency and the why are rows 2–4 between the two spacers.
+  - The Accordion why (`t3WhyAcc`) is left as it was.
+
 ### v3245 · Habit sheet: the Avoid row titled in orange; a divider under the notes list
 
 - "Remove to consider. Put Avoid until your scan is clear as a title, and put this title in orange."
