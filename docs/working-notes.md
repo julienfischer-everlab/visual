@@ -5,6 +5,21 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3272: the Link card (Figma Patterns DS25 › Link card) in the Markdown library, on the Card item interactive
+
+- **`window.EvLinkCard`** ("a link card composition. using Card item interactive"; Figma Patterns DS25 › Link card 6243:49321: Resource item 6243:49885 inside the Card item interactive 6243:49893):
+  - The card is `EvCard.item`, Secondary sm: `space/xs` 12 padding, `radius/lg` 12, `bg/neutral/tertiary` 100 → 200 on hover → 300 on press.
+  - Its slot: a 44 tile (`components/card/invert/bg`, radius 8, Card/200), the kind's 20 icon in it; the title, Chat - Body/300/Medium (`--t-font-size-body-300` / `--t-font-line-height-body-500`, 16/24); the support line, Body/200/Regular 14/18, secondary; 16 between tile and words; the chevron's 36 icon button at the end.
+  - Kinds (Figma's Icons 6244:16203): video, document, link, image, contact, questions.
+  - `html({ kind, title, sub, href, label, attrs, state, cls })`. In the dark the tile is white at 8%. Its CSS is injected (`#evLcCss`).
+  - The text styles are written as tokens: written as 16/24 they were mapped by the text style pass to Body/300, 16/20 at L.
+- **Markdown: a `link-card` health-block** (`{ "type": "link-card", "kind", "title", "support", "url" | "mediaId" }`; HB_SCHEMA, HB_TYPES, its renderer):
+  - A video plays from the registry (`mediaId`, the sheet's video); a page opens in a new tab (`url`); contact and questions open the care team and Eva.
+  - An unknown kind or a missing video is a warning.
+  - Its own row in Sections (link icon); several in a row 8 apart.
+  - The Library and the DS Markdown page show it under Elements, with a video, a document and a contact example.
+- Checked (dist): three cards, each `evCardI-secondary evCardIs-sm` (12 padding, 12 radius), the tile 44 / radius 8, 16 to the words, title 16/24 medium, support 14/18, chevron box 36; the video one carries `data-hm-vid`, the document one is a link to its page, the contact one `data-hm-care`; light and dark; no page errors.
+
 ## v3271: the Markdown blocks' polish (Outcome without its card, white links, the DS Checkbox, H3 to H5, Body/300 paragraphs, quotes and callouts, smaller note titles)
 
 - **Outcome without the grey card and shadow** ("remoe grey card ans shadow"): the Design system's Markdown page drew its example inside the sheet master's look (`.mkPv.evSh`: background, 28 radius, drop shadow); `.mkStage > .arSheet > .mkPv.evSh` now has none of them.
