@@ -5,6 +5,10 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+### v3247 · Decade card: General health is the last tab
+
+- "Put the general health at the end." `decAreas()` now appends General health after the decade's own areas (`A.concat([...])`). The decade's first area (Heart, Bones, …) is the tab shown first again.
+
 ### v3246 · Decade card: General health first tab (Yearly health check); rows centred on the visual when shorter
 
 - **General health**. "Add the first tab, General Health, and put an item inside."
