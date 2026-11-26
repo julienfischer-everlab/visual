@@ -5,6 +5,15 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+### v3280: Intro template (What to expect): CTA 32 lower, rows 16 closer to the title group
+
+- **+32 above the CTA** ("Template adjust +32 margin top CTA"). On desktop the hugging CTA under the rows (`.arDbfWt > .arWtCta`) had `margin-top: 8px`; it is now 40px. With the stack's 24px gap, rows to See results goes from 32 to 64.
+- **16 less between the title group and the rows** ("less 16px gap between title group and content").
+  - On the template the title group sits in the Header title section (`.arHt`), whose bottom padding of 40 is set inline by EvHdTitle. So the stack after it is pulled up instead: `.arPgW > .arHt ~ .arStack.arDbfWt { margin-top: -16px !important }` (a later rule zeroed a plain margin). Title to rows goes from 40 to 24.
+  - Where the head sits directly in the stack (M/L), its `margin-bottom` goes from 32 to 16.
+  - Both changes are measured in the Introduction template's preview frame at M.
+
+
 ### v3279: Sections editor: one More (…) menu per row instead of hover icons; a shared More menu
 
 - **One More per row** ("Use ... more instead of many icon on hover. Add dropdown"). Each Sections row (and each guidance child) in the habit sheet's Tweaks now ends with `.tkHm3More`. The menu holds View, Duplicate, then Remove (red, after a separator). Remove asks first: "Remove “X”? It leaves this guide." with Cancel and Remove. The old eye, duplicate and × buttons stay in the row, hidden (`display:none`). Each menu item calls that button's `.click()`, so the editor's own handlers still run.
