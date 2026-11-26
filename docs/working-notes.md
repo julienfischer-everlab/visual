@@ -5,6 +5,16 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+### v3273: Markdown page: headings, divider skeleton, note titles, hoverable Outcome, card-only Substep
+
+- **Every heading's support line is the H2's** ("h3 same as h2 for sub, grey", "all sub the saem pls"). One heading branch now covers `#{2,5}`. Every `.evTg.arHabSecT` gets `--tgSf: var(--tgH2Sf); --tgSl: var(--tgH2Sl)` (15/22, grey) and an 8px gap.
+- **H3 titles are smaller** ("title smalelr"). They now use Headlines/400 (18/22), the same as H4. The Title group's token rule sets `--tgFs`/`--tgLh` directly, so the override is `.evTg.evTg.arHabSecT[data-lv="h3"] { --tgFs: var(--t-font-size-headlines-400); --tgLh: var(--t-font-line-height-headlines-400) }`. Overriding `--tgFsS`/`--tgFsL` does nothing.
+- **The Divider example uses skeletons** ("use sekeleton to presetn the divider"). The library demo puts a `skeleton` comment above and below `---`. The renderer turns each one into `.hm3Skel` (two grey bars, 88% and 56%). The Syntax block and the Library's preview strip the comments, so they read just `---`.
+- **The doctor's note, adjustment and warning titles are white** ("title white for these 3"): `.arHabNl .arHabNlTg .evTgT { color: oklch(var(--ar-ink)) }`.
+- **The Outcome can be hovered and pressed** ("need hover state and press as the card intereactive"). `.mkPv` is no longer `inert`. Instead it carries `data-mk-pv`, and a capture listener on the document cancels click/submit inside it. Link cards show their hover and press, but nothing opens.
+- **The Substep example is just the card** ("just keep the card. no text below"). The sentence after the exercise card was removed from `hm3Demo`.
+
+
 ## v3272: the Link card (Figma Patterns DS25 › Link card) in the Markdown library, on the Card item interactive
 
 - **`window.EvLinkCard`** ("a link card composition. using Card item interactive"; Figma Patterns DS25 › Link card 6243:49321: Resource item 6243:49885 inside the Card item interactive 6243:49893):
