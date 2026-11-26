@@ -5,6 +5,12 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3255: the Insights widget for every primary card (Modules → Primary card)
+
+- The builder's **Insights widget** group (Controls) now shows for every card, not only the Activation card: a **Show** On / Off per card (`everlab:pcInsOn { card: 1 | 0 }`; Activation On by default, the others Off) ("For all primary cards, can you set the insights tweak group on and off? Some primary cards interact with this insights group widget"). On: the Overview's Insights card beside the card in the demo (`insSide`, gated by `insOn()` now), with the per-step controls as before (Insights count, the tasks' states, Feedback, Save for this step / Reset; `everlab:pcInsBy`). Another card's default: one insight, no feedback.
+- The Insights card's **More context** footer takes the card's padding (`--kP`) when the card carries none itself (the Hero format: `.ovInsCtxIn`); it sat flush on the card's edges there.
+
+
 ## v3254: guidance card on the master, Guidance group, List item auto padding, snoozed Timeline items, the template environment in purple
 
 - **Guidance card** (`habNlCard`): Card static **LG**, Primary - Outlined with no fill (`--kBg: transparent; background: none`: the look sets `background` itself), its Body padding the master's token (`bodyPad` on, `--kP`: 20 at LG) all round; notes split by a divider.
