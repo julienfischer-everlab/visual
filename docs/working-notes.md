@@ -5,6 +5,24 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+### v3303: a sheet in a sheet (sub-page on the desk, stacked on a phone), product sheet H2s, review rail still, avatar tweaks
+
+- **Sheet master (EvSheet.open), general rule:** a sheet opened from a sheet (`o.stack`) behaves by breakpoint ("when there's a sheet inside a sheet on desktop, it should be a sub-navigation automatically at the top, and on mobile, it should be just stacked").
+  - **Desk (host 720 and over): a sub-page of the parent.**
+    - It takes the parent's frame (its `--evShW` and height). It slides in from the right while the parent slides out to the left (`evShSub` / `evShSubU`).
+    - The nav is forced on, with Back at the top (`evShBkSub`).
+    - The parent's scrim stays up, and the sub-page has no second one.
+    - Back pops to the parent, which slides back in (`evShSubR`). Close, or a click outside, closes both.
+  - **Phone and tablet: stacked as before** (`evShStk` / `evShStkd`), with the Back hidden.
+  - **Resizing across 720** swaps between the two (`nestOn`).
+  - Every `stack: true` caller (the habit sheet from Your focus, the video, chat and supplement sheets) follows this without changes of its own.
+- **Product sheet (the Product detail template):** Plan and Supporting your goal are H2 Title groups (were H3).
+- **Review my plan rail:** no light runs down the rail any more (`arRvwRailRun` off); the rail stays still.
+- **Refer and Earn:**
+  - Avatars: the top face is fainter (.4) than the bottom-right one (.66).
+  - Bubble grid: the grown face is 8 smaller (1.41, 59 of 42), and the push on its neighbours is eased to match.
+
+
 ### v3302: Refer a friend bubble grid, More context tiles, centring, Focus sheet Full, Body 300 emails, month chips on the dot
 
 - **Refer and Earn (EvRefer):**
