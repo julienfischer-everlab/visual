@@ -5,6 +5,26 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+### v3306: bubble grid takes turns across the ring, badge over the fade; sheet sub-level forward without the overlap
+
+- **Refer and Earn · bubble grid:**
+  - **Who grows ("You need to alternate the avatar, not the same one that increases all the time", "Make sure the active states are always far away from each other"):**
+    - Only the six faces of the ring round the middle take turns (`BAC`), each a different face. The middle, the ring and the outer faces are laid out so no face sits next to itself (`bFaces`, `bPick`).
+    - The next one is always across the ring, at least one face between (`bNext`: more than 1.6 pitch away). It is never the one grown just before, and never the same face twice running.
+    - The two faces cropped from the habits' pictures (Calm, Reading: the same model) count as one face for that rule.
+  - **Badge ("sometimes the badge ($100) should be orange with black text. Just alternate this badge as well"):** white and orange (`--evRefAcc`, black text) in turn.
+  - **Badge over the fade ("The badge $100 shouldn't be impacted by the fade-out. It should overlay the fade-out"):** the faces sit in a layer under the radial fade (`.evRefBbM`). The tags sit in their own layer over it (`.evRefBbTs`), each on a ghost of its face grown (`.evRefBbGh`).
+  - **The fade:** a circle of 118 from the grid's middle, solid to 64%, so the grown face is always at full strength. The outer faces fade by their distance (1 − d/115, at least .1).
+  - **Timing ("make the rotating have more delay ... Maybe 1 more second between them"):** a turn every 3.6 s (was 2.6).
+  - **Gap ("decrease the gap between the avatars by 2 pixels"):** the grid's pitch is 48 (`BP`, 6 between two 42 faces). The grid is now built from hex steps.
+  - **Position ("push the entire visual on the left by 32px"):** 8 left of its spot on M · L (was 24 right). In a narrow card (XS) it keeps its old place, so the faces never run under the line of text.
+- **Sheet in a sheet, desk, going forward ("Going forward is buggy, but going backward is good"):**
+  - **Cause:** a heavy sub-page (a habit's Guide) keeps the page busy for most of a second. The browser played the new content's slide while the parent's fade waited for the page to be free, so the new content showed over the old one.
+  - **Fix:** the parent's content now goes out at once (no fade to wait on; its slide left is kept). The sub-page's content is hidden by its own style until its slide brings it in, and the slide's end holds it at 1 (`evShFadeOnly` now ends at 1 too).
+  - **Result:** the frame stays empty while the sub-page is built, then the new content comes in from the right.
+  - **Back:** unchanged.
+
+
 ### v3305: sub-level content out faster, Page types documents the rule, module Save, bubble grid faces only
 
 - **Sub-level of a sheet on the desk ("The content should disappear quicker"):**
