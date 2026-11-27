@@ -5,6 +5,17 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3299: the hearts spin round their own axis, one way, for ever
+
+- "shoudl rotate in the same Y axis forever. same way": both EvDotHeart masters now turn continuously round the heart's own axis instead of swaying.
+  - Lines: `SPIN_T` 16 s per turn; `pose()` yaw is `yaw0 + phase * TAU` and the pitch stays fixed.
+  - Wireframe: `SPIN` 18 s per turn; `poseAt(p, tilt, lean, sway)` spins unless `sway` is set; no bob.
+  - Their fit is taken over the whole turn: the lines heart's bounds sample `SPIN_T`, and the wire's frame box covers psi from -180° to 180°.
+  - `spin: false` brings the old sway back. Auto rotate Off (`still`) still holds the rest pose.
+  - With the placement's Rotate standing the heart upright, the axis is vertical.
+- Checked: four frames 3 s apart for each heart show one-way rotation; no page errors.
+
+
 ## v3298: +$100 tags on the Avatars + hearts faces
 
 - "Use these tag alternate white / orange tab with +$100 attached to the avatar": EvRefer's `hearts()` puts a square mono tag (`.evRefTag`, the Label - Mono face at 11px, uppercase, 20px tall) on each face's edge.

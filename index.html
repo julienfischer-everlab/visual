@@ -23420,6 +23420,7 @@ window.EvDotHeartPlace = {
   var NB = 12;               /* alpha buckets used to batch the dot fills */
   var REST = 1.5;            /* time (s, at speed 1) of the rest pose */
   var SWAY_T = 9;            /* seconds per sway cycle */
+  var SPIN_T = 16;           /* seconds per turn: the heart turning round its own axis, one way, for ever ("shoudl rotate in the same Y axis forever. same way") */
   var CAM = 6;               /* camera distance in heart units: mild perspective */
   var geomCache = {}, geomKeys = [];
 
@@ -23593,6 +23594,7 @@ window.EvDotHeartPlace = {
     var nodeInk = opts.node || ink;
     var speed = opts.speed == null ? 1 : +opts.speed;
     var density = clamp(opts.density == null ? 0.7 : +opts.density, 0, 1);
+    var spinOn = opts.spin !== false;   /* spin: false, the old sway back and forth */
     var dotsOn = opts.dots !== false;   /* dots: false, no big white dots (the outline's nodes, the floaters): the dotted threads alone ("Tweak remove dot") */
     var turn = (opts.turn == null ? 56 : +opts.turn) * DEG;
     var PLACE = root.EvDotHeartPlace, pl = { x: 0, y: 0, rot: 0, tilt: 0, scale: 1 };   /* the placement ("Add tweak to relocate in the card and rotate/ incline", "Need to bleed") */
@@ -23647,8 +23649,8 @@ window.EvDotHeartPlace = {
     function pose(tau) {
       var sway = Math.sin((tau - REST) * TAU / SWAY_T);
       return {
-        yaw: yaw0 + 24 * DEG * sway,
-        pitch: pitch0 + 5 * DEG * Math.sin((tau - REST) * TAU / 7.3),
+        yaw: yaw0 + (spinOn ? ((((tau - REST) % SPIN_T) + SPIN_T) % SPIN_T) * TAU / SPIN_T : 24 * DEG * sway),
+        pitch: pitch0 + (spinOn ? 0 : 5 * DEG * Math.sin((tau - REST) * TAU / 7.3)),   /* spinning: no nod, the axis steady */
         breath: 1 + 0.012 * Math.sin((tau - REST) * TAU / 4.6)
       };
     }
@@ -23680,7 +23682,7 @@ window.EvDotHeartPlace = {
       /* bounds of the projected heart over the whole sway, unit scale */
       var g = geometry(48, shapeFit, twist), minX = 1e9, maxX = -1e9, minY = 1e9, maxY = -1e9;
       for (var q = 0; q < 12; q++) {
-        var p = pose(REST + q * SWAY_T / 12);
+        var p = pose(REST + q * (spinOn ? SPIN_T : SWAY_T) / 12);   /* over the whole turn when it spins */
         matrix(p.yaw, p.pitch, turn);
         for (var i = 0; i < g.pts.length; i += 12) {
           var x = g.pts[i], y = g.pts[i + 1], z = g.pts[i + 2];
@@ -24133,8 +24135,10 @@ window.EvDotHeartPlace = {
       st * cp + ct * a10, ct * a11, st * sp + ct * a12,
       -cb * sp, sb, cb * cp];
   }
-  function poseAt(p, tilt, lean) {
-    return rotation(PSI0 + SWAY * Math.sin(TAU * p / P1), BETA0 + BOB * Math.sin(TAU * p / P2) + (lean || 0), tilt);
+  var SPIN = 18;   /* seconds per turn ("shoudl rotate in the same Y axis forever. same way"): round the heart's own axis, one way, no nod */
+  function poseAt(p, tilt, lean, sway) {
+    if (sway) return rotation(PSI0 + SWAY * Math.sin(TAU * p / P1), BETA0 + BOB * Math.sin(TAU * p / P2) + (lean || 0), tilt);
+    return rotation(PSI0 + TAU * (((p % SPIN) + SPIN) % SPIN) / SPIN, BETA0 + (lean || 0), tilt);
   }
 
   /* size independent: frame box over the motion, contour nodes and floating nodes */
@@ -24196,7 +24200,7 @@ window.EvDotHeartPlace = {
     var bu0 = 1e9, bu1 = -1e9, bv0 = 1e9, bv1 = -1e9, s, q;
     for (s = -1; s <= 1.001; s += 0.25) {
       for (q = -1; q <= 1; q += 2) {
-        m = rotation(PSI0 + SWAY * s, BETA0 + BOB * q, tilt);
+        m = rotation(PSI0 + Math.PI * s, BETA0 + BOB * q, tilt);   /* the frame over the whole turn */
         for (i = 0; i < count; i += 3) {
           o = i * 6; x = pts[o]; y = pts[o + 1]; z = pts[o + 2];
           qz = m[6] * x + m[7] * y + m[8] * z; k = CAM / (CAM - qz);
@@ -24310,7 +24314,7 @@ window.EvDotHeartPlace = {
       var g = geo;
       if (!g) return;
       var p = t * speed;
-      var m = poseAt(p, turn - pl.rot * DEG, pl.tilt * DEG);
+      var m = poseAt(p, turn - pl.rot * DEG, pl.tilt * DEG, opts.spin === false);
       var m00 = m[0], m01 = m[1], m02 = m[2], m10 = m[3], m11 = m[4], m12 = m[5], m20 = m[6], m21 = m[7], m22 = m[8];
       var sc0 = g.fit * (1 + BREATH * Math.sin(TAU * p / P3)), sc = sc0 * pl.scale;   /* fitted, then as placed */
       PLACE.at(pl, g.w, g.h, g.ox - g.uc * sc0, g.oy + g.vc * sc0, O2);
