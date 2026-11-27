@@ -5,6 +5,23 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3300: phone month chips stack like the desk; hearts 3x slower; tags one by one
+
+- "month should stack on scroll as the desktop": on the Timeline, each month chip (`.t3MoTip`) is sticky inside its month.
+  - At L it pins 6px under the pinned tabs, the next month slides in under it, then pushes it out.
+  - At XS and S the chips pinned behind the tabs, and the script that sets `t3MoUp` (chip top above the bar's foot) kept them dimmed under the header group:
+    - XS: pinned at 59px, the tabs' foot at 115px.
+    - S: pinned at 73px, the tabs' foot at 82px.
+  - XS now adds `var(--tlSb, 47px) + 15px` to both sticky tops (first month and later months); S adds 15px. Measured at XS: pinned at 121 = the tabs' foot + 6, the same as L's 74 = 68 + 6.
+  - Rules: `body[data-bp="xs"|"s"] #dTl #tl3 .t3MoTip`, under `:not(.t3TabFree)`.
+- "heart rotate 3x slower": the lines heart's `SPIN_T` goes from 16 s to 48 s per turn; the wireframe's `SPIN` from 18 s to 54 s.
+- "Try a version when badge appear after another": a new Refer and Earn variation, `heartseq` ("Avatars + tags · one by one").
+  - It is `hearts()` with `.evRefHrtSeq`, and the card carries `evRef-hearts evRef-heartseq`, so it keeps that layout.
+  - Each tag runs `evRefTagIn`: 6 s, pop in, hold, fade. Delays are .2, .9 and 1.6 s: the left face, then the large one, then the right one. They leave in the same order and loop.
+  - Checked by pausing the animations at set times: 0.4 s shows 1 tag, 1.2 s shows 2, 2 s shows 3, 5 s shows 2, 6.2 s shows none.
+- No page errors in re3, seq or the pin measures.
+
+
 ## v3299: the hearts spin round their own axis, one way, for ever
 
 - "shoudl rotate in the same Y axis forever. same way": both EvDotHeart masters now turn continuously round the heart's own axis instead of swaying.
