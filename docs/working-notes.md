@@ -5,6 +5,40 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+### v3315: Journey cards cleaner (icon, centred, one size, ··· menu); Insights as a record + a count
+
+- **Cards ("Remove the border ... increase the grey background a bit ... a three-dot icon on the top right ... an icon, and then centre everything ... all the tiles the same size"):**
+  - No border. Neutral cards are 7.5% white (was 4%); the state colours fill the card (green 15%, amber 13%, blue 14%).
+  - Every card is 89 × 120.
+  - Each card is centred: an icon in a 34 circle (person, card, file, drop, clipboard, watch), then the eyebrow (the step), then the title (its state, two lines at most).
+  - The state also shows as a small badge on the icon: a check, a "!", or a turning ring.
+  - Tags ("Next", "Optional") sit at the top left in a row of their own above the icon, so every icon is at the same height.
+  - A ··· at the top right opens a menu of the card's values (radio items, the current one checked; arrows and Escape work). Clicking the card itself still moves it on to the next value.
+  - The Health profile card is locked: no ···.
+  - The menu (`.jnTMenu`, fixed, over everything) is drawn white on a light doc panel.
+  - The card is a `div` holding a full-size main button and the ··· button: no button inside a button.
+  - The card menu's functions are `tmOpen` / `tmClose`. They clashed with the persona menu's `menuOpen`, which is why the first try did nothing.
+- **Insights ("We don't need that composition ... like a bento. We just need how many ... historical result record ... in progress, received, or no data available ... The rest would be in other insights ... 0 1 2 3 4 3+"):** the six stage cards are gone. The Insights · Preview group now has:
+  - **Historical result record:** a select with In progress, Received, No data available.
+  - **Other insights:** a segmented count 0, 1, 2, 3, 4, 5+. I read the last "3+" as 5+, the Overview's own Amount scale.
+- **The rules now read `ins = { hist: 'proc' | 'rec' | 'none', other: 0–5 }`:**
+  - The Insights card shows 1 for a received record plus the others, up to 5+.
+  - The Feedback is Reading records while the record is in progress.
+  - Once everything required is in, the hero card is Deeper insights ready ("Other insights ready") when there are others, First insights ready when the record is received, else Everything shared.
+  - The checklist gets Historical record (In progress / Received) and Other insights (n ready) rows.
+  - The flags cover a record without captured past records, and other insights while required information is outstanding.
+  - Older saves migrate: Ready becomes Received, the advanced stages that were Ready are counted, and an advanced hero becomes "other".
+- **Checked** (source and dist):
+  - Every card is 89 × 120 with no border.
+  - The Past records ··· lists Captured, Not captured and Unknown (checked); picking Captured sets Yes and focus returns to the card.
+  - A click on Wearable connects it.
+  - Record Received with 3 others: Insights 4, the empty state off.
+  - Everything required in: Other insights ready, so the Deeper insights card.
+  - Record in progress with 0 others: Reading records, the shared card.
+  - An old save migrates.
+  - On Modules → Overview header the panel is lent and the bento follows; light mode is clean.
+  - No page errors.
+
 ### v3314: User journey as a control panel (status cards, three a row)
 
 - **What changed ("a grid: 3 cards in a row ... If everything is completed, the card should be green ... You click on the card, and then you can change ... wearables ... put the card green, like light green, and then click on it and unconnect"):** the User journey's rows are replaced by a grid of status cards (`.jnGrid`, three columns). The Insights stages' six rows are replaced the same way.
