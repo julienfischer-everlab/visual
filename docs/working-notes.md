@@ -5,6 +5,23 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+### v3308: Modules → a Slots group (Mini module); Refer and Earn · bubble grid Scale, grey outer circle, badge 8 off the face
+
+- **Slots group ("Create a group slot and put mini card into"):** the Design system nav (and so the Modules page select) has a **Slots** group after Modules, with the Mini module in it (`DSLOT`). `DMOD` still lists it for the Overview bento's list.
+- **Scale ("tweak scale range this module"):**
+  - **The control:** Modules → Refer and Earn has a **Bubble grid** group with a **Scale** slider (70% to 150%), shown when Visual is Bubbles.
+  - **Live and saved:** it moves the demo live (`--evRefBbS` on `.evRefBubs`, the grid growing round its middle, `transform-origin: 118px 50%`). The top bar's Save keeps it with the module's picks (`everlab:moDemo:mre`, `bsc`), and every Refer card reads it back (`EvRefer.html`).
+  - **The +$100 tag stays at its size.**
+  - **XS:** the grid keeps its place (-12 with the new origin).
+- **Grey outer circle ("the external circle should be just grey and in gen 60% should be avatar the rest teriary 100 bg"):**
+  - 15 of the 25 bubbles are faces (the middle, its ring, the next ring, two more). The other 10, the outer circle, are plain circles on `--t-bg-neutral-tertiary-100` (`BE`, `.evRefBbE`).
+  - They are drawn whole and only the radial fade dims them; the faces still fade by their distance.
+- **The badge 8 off the circle ("badge should be 8px from edge of the crcle"):**
+  - The tag sits on the grown face's diagonal, its corner square 8 off the circle's edge whatever the scale: `--evRefTd` from the face's 21 (local), the bubble's scale and the grid's (`--evRefK`: the Scale, × .9 in a narrow card).
+  - Faces on the top row get it under them (`evRefBbD`), so it never leaves the card; faces right of the middle get it on their left, as before.
+  - Measured 8.0 at every position, at 100% and 130%, desk and XS.
+
+
 ### v3307: bubble grid fills the card, a new face; phone Full sheet 56 from the top; Page types · Add level
 
 - **Refer and Earn · bubble grid:**
