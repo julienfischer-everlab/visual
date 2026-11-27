@@ -5,6 +5,23 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3294: Braze page in the modules' viewport (one breakpoint at a time); the Sheet's header gradient never washes its title; no dots behind a mini card; the bento skeleton over a module
+
+- **Braze page** ("Just use the same veiwport as all module... Per breakpoint"):
+  - The four side-by-side device frames are gone. There is now one viewport at the breakpoint picked in the top bar (`#bpGrp` shows on the Braze page now), or the window's breakpoint on Auto.
+  - It is built from the masters:
+    - The skeleton is `EvOvSk.ph(r, full, below)`: a phone or tablet frame at XS · S with the status bar and the app's dock.
+    - At M · L it is `EvOvSk.dk(...)` with the app's own menu (`EvOvSk.side`).
+    - The Overview's header group comes from `EvOvHead`. The bento comes as skeleton, and the picked banner sits under it at full width.
+  - It redraws on a breakpoint change, a resize, or `body[data-bp]`. The page's own H2 title is hidden, as on module pages.
+  - **Shared now:** the frame sizing (`EvOvSk.fit(sk)`, `EvOvSk.room(w)`) and the desk menu (`EvOvSk.side(root)`) moved out of moDoc into the skeleton master. Module demos and the Braze page use the same code (moDoc's `skFit`, `vpH` and `skSide` are thin wrappers).
+- **Bento skeleton over a module** (`skBelow`: Refer and Earn, Braze): the grid gets the bento's two columns (1.2 : 1), and the right column's two cells stretch to the primary card's height. Before, the column collapsed to nothing.
+- **General rule** ("Gen rule, make sure the gradient header goes below the title groypheader nav"):
+  - The Sheet master's header nav gradient bled 32 down over the Title group at rest. Its layer (z 3) washed the top of "Your focus".
+  - The bleed now grows with the scroll, as the Page types demo's `--sdK` does ("the gradient never over what does not stay put"). EvSheet sets `--evShK` (scrollTop / bleed) and `--evShHtK` (once the title is pinned) on `.evShP`. At rest there is no bleed. Once moved 32, the full 32 shows.
+  - This covers every sheet: Focus, habit, goal and product sheets.
+- **Dots vs mini card** ("dont conbine dott circle an mini card, its one of another"): a Mini module visual never gets the progress-dots circle (`miniPut`'s `dz` is always false). The builder's Progress dots row under Mini module is gone.
+
 ## v3293: Overview header controls as Tweaks groups (switches, the styled Select by phase, the Primary card's Variant); Refer and Earn: 128 tall, Title group top / CTA foot, soft shadow, blurred faces behind, parallax, new front face, Earth, under the bento
 
 - **Tweaks groups on a module page** (Modules → Overview header). The user asked: "Use proper tweak group with same tweak style as the normal, not just seelct".
