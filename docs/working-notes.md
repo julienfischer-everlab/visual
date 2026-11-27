@@ -5,6 +5,22 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3291: Modules → Overview header in the Overview's own page (menu, header group); module demos fill the viewport at M · L
+
+- **Overview header in the Overview's page.** The user asked: "Please add the navigation as well for every breakpoint based on the overview layout. And also, the header group should be the same as the overview."
+  - `MODS.moh` drops `sk: false` for `skFull: true`. A module that is the whole bento takes the skeleton's full slot (`.moSkSlotFull`, `grid-column: 1 / -1`, item width 100%) instead of the primary card's cell.
+  - On the desk it gets the app's menu (`skSide` → `EvSideHtml`) and the Overview's header group (`skHead`: a styled copy of `#dOver .ovTop`).
+  - On the phone and tablet, `EvOvSk.ph(r, full)` draws the full slot. The phone's header group is the Overview's own at that breakpoint (`skHeadPh(b)`, the same styled copy, keyed by theme + breakpoint).
+- **The real dock in every module's phone.** The Page types master's `dock()` (a copy of the app's `nav.mTabs`, inert) is now `window.EvDockHtml`.
+  - `EvOvSk.ph` uses it in place of the grey skeleton pill and disc, which stay only as the fallback.
+  - CSS: `.moSkPh > .mTabs.sdNav` sits at the foot (420 wide, centred, on S), and the skeleton's own home bar is hidden when the dock brings its own.
+- **Module demos fill the viewport at M · L.** The user asked: "Use the full viewport as a normal screen."
+  - Picking M or L used to draw the desk skeleton as a 1120-wide board with 20 px corners, an outline and a 24 px inset, scaled into the stage. On a narrower window it showed clipped.
+  - M and L now do what Auto does: `skFit` sizes the desk to the stage's own width and the viewport's height, unscaled, with no corners, outline or inset.
+  - The desk's page column scrolls under its menu (`.moSkDk.moSkMain` rows `minmax(0,1fr)`, `.moPlMain` `overflow-y: auto`), as a screen does.
+  - **Pitfall:** with the column now a fixed-height flex column, `skHead`'s header copy (fixed height copied from `#dOver .ovTop`) shrank to 40 px on a tall page, and its Ask field touched the bento. It is `flex: none` now: 114 px tall, 16 px to the bento, the same on every module.
+- About the dotted ball over the menu's logo (previous message): the heart canvas fix (v3290) covers the Refer and Earn heart. The ball in the user's screenshot did not reproduce on a fresh load, on any module or any Collection card. It looked like a Health profile sphere canvas pinned at the frame's top-left by the same page-wide canvas rule. If it comes back, find the canvas with no position rule of its own.
+
 ## v3290: Refer and Earn hearts and dotted 3D heart (EvDotHeart); Focus card sheet on its module page; Primary card content autosaves
 
 - **Avatars + hearts** (Refer and Earn, `v: 'hearts'`). The user asked: "Try this, but with only three avatars." Three real faces: the front one larger, wearing a pill with a heart and $100. The two behind each carry a heart badge. Small Everlab-orange hearts float round them.
