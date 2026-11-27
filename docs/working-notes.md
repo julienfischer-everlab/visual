@@ -5,6 +5,27 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+### v3313: Modules → Overview header: the persona controller on the page; Step as a tree
+
+- **Persona controller here ("where's the controller of the persona?", "the controllers should also be on this page"):** the Overview's own User journey and Insights stages · Preview groups are lent to this page's panel (`EvJourney.lend(P)`, called from the module's `tkPut`).
+  - They sit at the top of the panel. They are moved there, not copied, so they keep one state, and they carry `tkLent` with the panel's tokens.
+  - When the page goes, a 500 ms watch moves them back to the Tweaks panel. If the page is shown again without being rebuilt, they are lent again and the demo redraws.
+  - The top bar's Persona also shows on this page (`html.jnyMoh`).
+- **The bento follows the persona** while one is picked:
+  - The primary card is the Activation card with the persona's hero card, checklist and Ring. It is drawn through `bjFill` with `EvJourney.withForce`, because the card isn't in the page yet when it is drawn.
+  - Insights is `MODS.mins.draw({ st: J.tasks, n, fb })`.
+  - The Card and Step rows dim, showing the journey's card (Activation) and step lit. The module's pressed-state sync reads `window.__ohJPress` so the picked values don't relight.
+  - None · Tweaks hands Card and Step back.
+  - Each change redraws through the panel's own `_redraw`, which the module demo sets on its rail.
+- **Step as a tree ("Just show up front the tree of steps here"):** the Step row is now `data-dpk="tree"`: a new kind in `EvDocPanel` (`tree()` in the proxy).
+  - Every option is listed up front, under its group header (`data-g`: Phase 1, Phase 2, Phase 3 for the Activation card; a flat list for the Onboarding consult).
+  - A faint guide line runs down the left of each phase. The lit step is drawn in the segment-on colours.
+  - The page's buttons stay, hidden, and the tree clicks them. The tree is drawn again when the card changes its steps.
+- **Rules tightened:**
+  - Under a persona, the Insights task list no longer turns "Past results" into Processing automatically (`st.noAuto`: Unknown never processing), on the Overview and here.
+  - The insight cards' journey filter (no wearable cards without one connected, no blood panel card without a blood test) now applies wherever a persona draws (`live()`), this page included.
+- **Checked** (source and dist): persona → Book a blood test with "Book a blood test" lit in the tree. Records Yes, recent blood, historical Ready and Advanced 1 processing → Lifestyle questionnaire lit; the wearable cards hidden. None · Tweaks → the Onboarding consult's steps as a flat tree, Step 1 lit. Activation picked by hand → the phase tree, and clicking "Book a blood test" draws it. Leaving for Insights puts the groups back in Tweaks; coming back lends them again. The Overview's six scenarios still pass. No page errors.
+
 ### v3312: Persona + user journey controller for the Overview (EvJourney)
 
 - **What it is ("Build a persona and user journey controller for the Everlab Overview ... the primary card, checklist, insights, progress, messaging, and calls to action should all stay consistent"):** `window.EvJourney`, placed just before `window.EvMedia`. Three parts kept apart:
