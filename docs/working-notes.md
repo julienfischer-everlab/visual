@@ -5,6 +5,28 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+### v3305: sub-level content out faster, Page types documents the rule, module Save, bubble grid faces only
+
+- **Sub-level of a sheet on the desk ("The content should disappear quicker"):**
+  - The parent's content fades out in .1 (its slide still .2).
+  - The sub-page's ground and content come in from .12 (were .2). Back works the same way (`evShSubOut` fades by its middle).
+  - Two edge cases fixed: a sub-page replacing one that is closing still slides out on close (`evShSubQ` only when not `evShSubX`), and the parent's `evShSubR` timer is cleared before it is set again.
+- **Design system → Page types ("Can you add this also in the design system, which is super important on the page type"):**
+  - **The Sheet type's Motion** states the rule: on M · L a sheet opened from a sheet is a sub-page in the same frame (Back at the top, content out to the left, the new content in from the right, Close closes both); on XS · S it is stacked.
+  - **The demo:** Depth is now offered on M · L for Sheet, Floating and Full bottom sheet. At 2+, the modal is drawn as the sub-page: level Sub, Back in its nav through the demo's own nav pass, and its content sliding in when Depth changes (`sdSubIn`). The caption says it too. On XS · S, Depth stacks as before.
+- **Module Save ("Save doesnt save!", "Need to save the module based on the module selected"):**
+  - A module page's picks (its demo rows: Visual, Background, Card size, …) are saved by the top bar's Save, for the module shown (`everlab:moDemo:<module>`, `__moDemoSave`), and read back when the page opens (the buttons pressed to match).
+  - On Refer and Earn the Heart setup is saved as before.
+  - Every Refer card drawn without picks of its own follows the saved setup (`EvRefer.html`).
+- **Refer and Earn · bubble grid ("You should have avatars everywhere", "I don't want to see JM SK initials, and I don't want any orange here", "push right by 24px"):**
+  - **Faces only:** the five headshots plus a face cropped from the Calm habit picture, placed so no face sits next to itself (`bPick`).
+  - **Opacity:** the grown face is at 1; the others fade with their distance from the grid's middle (1 − d/150, at least .12).
+  - **Size:** the edge faces are smaller (down to half).
+  - **Fade:** a radial mask over the whole grid.
+  - **No orange:** the +$100 tag is white, and it flips to the face's left for faces on the right so it never leaves the card.
+  - The grid sits 24 further right.
+
+
 ### v3304: a sub-level moves only its content; Your focus always Full
 
 - **Sheet in a sheet on the desk ("I shouldn't transition to another sheet. The content inside should just move left to right, the same way that we handle the questionnaire flow"):** the frame never moves now.
