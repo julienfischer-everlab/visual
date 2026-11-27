@@ -5,6 +5,20 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+### v3310: Refer and Earn · bubble grid Avatars (faces versus grey)
+
+- **The tweak ("Have a tweak so I can control the percentage of avatar versus the grey shade"):** Modules → Refer and Earn → Tweaks → **Bubble grid → Avatars**, a slider from 30% to 100% in steps of 5, 60% by default. Its value reads as a share and a count, e.g. "60% · 11 of 19".
+- **What it counts:** the 19 bubbles the card shows (the middle, its ring, the next ring). The outer circle stays grey at every value ("the external circle should be just grey").
+- **Which bubbles turn into faces, in order (`BFO`, `beOf(fp)` in `EvRefer`):**
+  - The six of the ring first. They take turns growing with the +$100 tag, so they are always faces: 30% leaves just them, with the middle grey.
+  - Then the middle.
+  - Then the next ring, a quarter turn apart (60% gives the same 11 as before), then the thirds between those, then the last four.
+- **Live and saved:**
+  - The slider redraws the demo's faces at once (`EvRefer.bubFp`), keeping the grown face and its tag where they are.
+  - The top bar's Save keeps it with the module (`everlab:moDemo:mre`, `fp`), and every Refer card on every page follows it (`EvRefer.html` reads it, the grid carries it as `data-fp` so its turns keep the same split).
+- **Checked:** at 30 / 45 / 60 / 80 / 100% the card shows 6 / 9 / 11 / 15 / 19 faces of 19, the ring never grey, the outer circle never a face; after a turn, after Save and a reload, and in a card drawn elsewhere (`EvRefer.html`), the same.
+
+
 ### v3309: Refer card (60% faces, CTA Link, badge inside, orange halo, quieter faces); sheet sub-level keeps its X, content out left / in right; phone Full sheet top read from the layout
 
 - **Refer and Earn · bubble grid ("60% should be avatar, the rest bg teriary 100"):**
