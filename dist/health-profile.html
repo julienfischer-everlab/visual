@@ -4091,6 +4091,22 @@ window.EvJourney = (function () {
     return '<dl class="jnSumL">' + row('Persona', esc(p.name)) + row('Membership', esc(J.memName)) + row('Stage', esc(J.stage)) + row('Next action', esc(J.nextLabel)) + row('Outstanding', J.outstanding.length ? esc(J.outstanding.join(', ')) : 'None') +
       row('Required', J.doneN + ' of ' + J.reqN + ' · ' + Math.round(J.pct * 100) + '%<i class="jnBar" aria-hidden="true"><i style="width:' + Math.round(J.pct * 100) + '%"></i></i>') + row('Insights', esc(J.ins.now)) + row('Hero card', hv) + '</dl>' +
       (J.flags.length ? '<ul class="jnFlags" aria-label="Preview">' + J.flags.map(function (f) { return '<li>' + esc(f) + '</li>'; }).join('') + '</ul>' : ''); };
+  /* the control panel (jnGrid): a card a step or stage, its state its colour (ok green, warn amber, proc blue, todo neutral), the next step marked; a click moves it on to its next value */
+  var CYC = { mem: ['none', 'membership', 'p299', 'diag'], rec: ['unknown', 'yes', 'no'], blood: ['none', 'recent', 'old'] }, ST3 = ['not', 'proc', 'ready'], refocus = '';
+  var CK = '<svg viewBox="0 0 16 16" width="8" height="8" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3.8 8.3 2.6 2.6 5.8-6"/></svg>';
+  var tile = function (k, lab, val, st, o) { o = o || {}; return '<button type="button" class="jnTile jnT-' + st + (o.next ? ' jnNext' : '') + (o.lock ? ' jnLock' : '') + '" data-jt="' + k + '"' + (o.lock ? ' aria-disabled="true"' : '') + ' aria-label="' + esc(lab + ': ' + val + (o.next ? ', next action' : '') + (o.lock ? '' : '. Click to change' + (o.how ? ' (' + o.how + ')' : ''))) + '" title="' + esc(o.lock ? lab + ': ' + val : 'Click to change' + (o.how ? ': ' + o.how : '')) + '"><span class="jnTL">' + esc(lab) + '</span><b class="jnTV">' + esc(val) + '</b>' + (o.tag ? '<i class="jnTB">' + esc(o.tag) + '</i>' : '') + '<i class="jnTI" aria-hidden="true">' + (st === 'ok' ? CK : st === 'warn' ? '!' : '') + '</i></button>'; };
+  var gridJ = function (J) { var j = J.j, S = J.steps, b = j.blood, bd = j.bloodDate ? fmtD(j.bloodDate) : '';
+    return tile('hp', 'Health profile', 'Completed', 'ok', { lock: true }) + tile('mem', 'Membership', J.memName, 'info', { how: 'None, Membership, 299 Protocol, Diagnostic' }) +
+      tile('rec', 'Past records', j.rec === 'yes' ? 'Captured' : j.rec === 'no' ? 'Not captured' : 'Unknown', j.rec === 'yes' ? 'ok' : j.rec === 'no' ? 'todo' : 'warn', { next: J.next === 'rec', how: 'Unknown, Yes, No', tag: J.next === 'rec' ? 'Next' : '' }) +
+      tile('blood', 'Blood test', S.blood.done ? (bd || 'Under 6 months') : (bd ? bd : b === 'old' ? '6+ months old' : 'Not provided'), S.blood.done ? 'ok' : (bd || b === 'old') ? 'warn' : 'todo', { next: J.next === 'blood', how: (bd ? 'clears the date; ' : '') + 'Not provided, Under 6 months, 6+ months', tag: J.next === 'blood' ? 'Next' : bd ? (S.blood.done ? 'Under 6 mo' : '6+ months') : '' }) +
+      tile('lsq', 'Lifestyle questionnaire', j.lsq ? 'Completed' : 'To do', j.lsq ? 'ok' : 'todo', { next: J.next === 'lsq', how: 'done or not', tag: J.next === 'lsq' ? 'Next' : '' }) +
+      tile('wear', 'Wearable', j.wear ? 'Connected' : 'Not connected', j.wear ? 'ok' : 'todo', { next: J.next === 'wear', how: 'connect or disconnect', tag: J.next === 'wear' ? 'Next' : S.wear && !S.wear.req && !j.wear ? 'Optional' : '' }); };
+  var gridI = function (J) { var I = J.j.ins; return STAGES.map(function (sg) { var v = I[sg[0]]; return tile('ins.' + sg[0], sg[0] === 'hist' ? 'Historical records' : sg[1].replace('insights ', ''), v === 'ready' ? 'Ready' : v === 'proc' ? 'Processing' : 'Not started', v === 'ready' ? 'ok' : v === 'proc' ? 'proc' : 'todo', { how: 'Not started, Processing, Ready' }); }).join(''); };
+  var cycle = function (k) { var p = curP(); if (!p || k === 'hp') return; var j = p.j; refocus = k;
+    if (k === 'wear' || k === 'lsq') return set(k, !j[k]);
+    if (k === 'blood' && j.bloodDate) j.bloodDate = '';   /* a date set: the click goes back to the categories */
+    if (CYC[k]){ var C = CYC[k], i = C.indexOf(j[k]); return set(k, C[(i + 1) % C.length]); }
+    if (/^ins\./.test(k)){ var sg = k.slice(4), i2 = ST3.indexOf(j.ins[sg]); return set(k, ST3[(i2 + 1) % 3]); } };
   var syncing = 0;
   var ui = function () { var p = curP(), j = p ? norm(p.j) : DEF(), J = p ? derive(j) : null, sv = function (id, v) { var x = $(id); if (x && x.value !== v) x.value = v; };
     syncing++; try {
@@ -4101,6 +4117,8 @@ window.EvJourney = (function () {
       document.querySelectorAll('#tkJnyGrp select, #tkJnyGrp input, #tkJnyPvGrp select').forEach(function (x) { if (x.id !== 'jnBlood') x.disabled = !p; });
       document.querySelectorAll('#tkJnyGrp .tkRow, #tkJnyPvGrp .tkRow').forEach(function (r) { r.classList.toggle('jnOff', !p); });
       var sm = $('jnSum'); if (sm) sm.innerHTML = sumHtml();
+      [['jnGridJ', gridJ], ['jnGridI', gridI]].forEach(function (x) { var g = $(x[0]); if (!g) return; g.innerHTML = J ? x[1](J) : '<p class="jnSumOff">Pick a persona in the top bar.</p>'; });
+      if (refocus){ var f = document.querySelector('.jnGrid [data-jt="' + refocus + '"]'); refocus = ''; if (f) f.focus(); }
       var hs = $('jnHeroNote'); if (hs){ var h = J ? J.hero : null; hs.innerHTML = !h ? '' : h.bj ? (h.share ? 'Draws ' + esc(h.share) + ': no HK of its own yet.' : 'Draws ' + esc(BJN(h.bj)) + '.') : '<b>Missing HK</b>: nothing exists for this state yet.'; hs.classList.toggle('jnMiss', !!h && !h.bj); }
       menuDraw(); } finally { syncing--; } };
   /* the persona menu: Add, Rename (inline: no prompt()), Duplicate, Delete (confirmed inline) */
@@ -4117,7 +4135,8 @@ window.EvJourney = (function () {
     on('jnMem', 'change', function (e, x) { set('mem', x.value); }); on('jnRec', 'change', function (e, x) { set('rec', x.value); });
     on('jnWear', 'change', function (e, x) { set('wear', x.value === 'yes'); }); on('jnLsq', 'change', function (e, x) { set('lsq', x.value === 'yes'); });
     on('jnBlood', 'change', function (e, x) { set('blood', x.value); }); on('jnBloodDt', 'change', function (e, x) { set('bloodDate', x.value || ''); });
-    on('jnBloodDtX', 'click', function () { set('bloodDate', ''); }); on('jnHero', 'change', function (e, x) { set('hero', x.value); });
+    on('jnBloodDtX', 'click', function () { set('bloodDate', ''); });
+    ['jnGridJ', 'jnGridI'].forEach(function (id) { var g = $(id); if (g) g.addEventListener('click', function (e) { var t = e.target.closest('[data-jt]'); if (t && !t.classList.contains('jnLock')) cycle(t.dataset.jt); }); }); on('jnHero', 'change', function (e, x) { set('hero', x.value); });
     STAGES.forEach(function (s) { on('jnIns-' + s[0], 'change', function (e, x) { set('ins.' + s[0], x.value); }); });
     var b = $('persMore'), m = $('persMenu');
     if (b && m){ b.addEventListener('click', function (e) { e.stopPropagation(); menuOpen(m.hidden); });

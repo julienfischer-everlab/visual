@@ -5,6 +5,32 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+### v3314: User journey as a control panel (status cards, three a row)
+
+- **What changed ("a grid: 3 cards in a row ... If everything is completed, the card should be green ... You click on the card, and then you can change ... wearables ... put the card green, like light green, and then click on it and unconnect"):** the User journey's rows are replaced by a grid of status cards (`.jnGrid`, three columns). The Insights stages' six rows are replaced the same way.
+  - Each card shows its step's name and its state. Its colour is the state:
+    - **ok:** light green, a check top right.
+    - **warn:** amber, a "!" top right (Unknown records, a blood test 6+ months old or one set by date while not recent).
+    - **proc:** blue, a turning ring (a stage Processing).
+    - **todo:** neutral, an empty ring.
+    - **info:** Membership, which isn't a completion.
+  - The journey's next step gets a light outline and a "Next" tag. The wearable carries "Optional" while it is optional and not connected.
+  - **A click moves the card on to its next value:**
+    - Wearable and Lifestyle questionnaire: on and off.
+    - Past records: Unknown → Yes → No.
+    - Blood test: Not provided → Under 6 months → 6+ months. With a date set, the click clears the date first.
+    - Membership: None → Membership → 299 Protocol → Diagnostic.
+    - A stage: Not started → Processing → Ready.
+    - The Health profile card is locked, always Completed.
+  - Each card's title (hover) and aria-label say what it cycles through. Focus stays on the card after a click.
+- **Kept:** the read-only summary above the grid, the Blood test date row under it, and the Hero card preview select. The cards are drawn by `EvJourney` (`gridJ`, `gridI`, `tile`, `cycle`) from `derive()`, one state, so the same grid works in the Overview's Tweaks and lent to Modules → Overview header's panel.
+- **Light mode in a doc panel:** the panel's tokens for neutral cards, darker greens and ambers for text, and the summary's divider on `--dpLine`. Long words break at a syllable (`lang="en"`, `hyphens:auto`), not mid-letter.
+- **Checked** (source and dist):
+  - Clicks on the Overview: Blood test twice → 6+ months (amber, Next); Lifestyle → Completed; Past records → Captured; Wearable → Connected; Historical → Ready; Advanced 1 → Processing. The card and summary follow.
+  - On Modules → Overview header, a click there redraws its bento.
+  - Dark and light screenshots.
+  - The Overview's journey scenarios still pass. No page errors.
+
 ### v3313: Modules → Overview header: the persona controller on the page; Step as a tree
 
 - **Persona controller here ("where's the controller of the persona?", "the controllers should also be on this page"):** the Overview's own User journey and Insights stages · Preview groups are lent to this page's panel (`EvJourney.lend(P)`, called from the module's `tkPut`).
