@@ -5,6 +5,26 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+### v3302: Refer a friend bubble grid, More context tiles, centring, Focus sheet Full, Body 300 emails, month chips on the dot
+
+- **Refer and Earn (EvRefer):**
+  - New variant `bubbles` (Avatars · bubble grid): a hex grid in `BUB` (a flower of seven, five faces and two initials, ghost discs round it off the card's edges).
+  - Every 2.6 s a random face from `BAC` grows to 1.6 with the orange +$100 tag. Its neighbours shrink and are pushed aside (`bLay(a)`), the far ones shrink toward the edges, and the faces without the tag sit at .72. A `setInterval` drives every grid on show; nothing turns with reduced motion. The tag undoes its bubble's scale (`scale: calc(1 / var(--s))`, and the .76 on narrow cards).
+  - Copy: title Refer a friend, line They get $100, you get $100. The CTA wears a user-plus icon (EvCtl `IC.uplus`).
+  - Avatars variant: the top blurred face is 12 smaller (34) and at .9.
+- **More context** (the Insights card's foot, `__insCtx`): a 2 x 2 of filled tiles like the Concierge intro's services. The tiles are Wearables, Past results, Health profile and Family history (it opens the Health profile). Each tile has its line icon in a 36 disc, with the state as a badge on the disc (orange +, green ✓, grey turning). The counter reads x of 4.
+- **Primary cards always centred:** `pcSlotT` and `pcSlotB` now grow equally (`flex: 1 1 0`) and no longer use auto margins, so every card centres what it holds. The scaled disc (`scale(1.6)`) is given its top overflow as margin. Measured top / bottom gaps: consult 107/107, check-in 163/163, MRI 109/109, blood test 99/99.
+- **Wide card:** 32 more left padding, beating the card master's id-weight rule with `:not(#_ow)`. The picture is now 70% wide, keeps the card's radius and has a softer fade.
+- **Avatars + tags one by one:** the orange tag is always on and the two white ones take turns (two tags at a time). A friend without a tag dims, and the group sits 24 from the right.
+- **Header field (module demos, EvOvHead copy):** the placeholder copied from a hidden Overview had no transform; it now sits at the field's middle (24 of 48). The field sits against the bell (10 apart, as on the Overview).
+- **Focus sheet:** it opens Full every time. A saved High (kept in `everlab:tkAll` and put back on load, which beat the one-time move) or an empty Height becomes Full; Hug is still a choice. Its tab Your goals is now Goals.
+- **Doctor's email:** every `.arDrMailB` uses Body/300/Regular (16 on 20, 380, Saans). The photo by the title is 8 lower and 52 (was 48).
+- **Activation mini timeline:** Past records says 3 records (was 3 read).
+- **Timeline months on the rail:** once the orange dot reaches a month's chip, the chip rides 24 above the dot down to its month's end (`moFollow`, `--t3MoDy` on `.t3MoP`, run after the trail's `run`).
+- **Habit sheet picture (#366):** not reproduced. Strength and the generated protocols, nav on and off, during and after generation: the 96 picture stays at 72 (nav on) or 32 (nav off) and is never clipped.
+- **Not done yet:** saving the Overview header module's combinations per card type and per step.
+
+
 ## v3301: Your focus sheet opens Full, even over an old saved High
 
 - "full sheet": `tlFoc` has defaulted to `sh:full` since v3296, but a browser with Height saved as High in Tweaks (`#stShtlFoc_sh`, the old master default) kept opening it High.
