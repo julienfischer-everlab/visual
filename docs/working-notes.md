@@ -5,6 +5,22 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+### v3311: Media system (Image, Logo, Everlab logo, Icon, Health pillar); Overview header Step list from Health profile; Hero marketing with Refer and Earn; Recent insights mini CTA
+
+- **Media system ("create the media system in the design system", Figma DS25 Assets):** a new **Media** group in the Design system (Image, Logo, Everlab logo, Icon), each page a playground (properties, the Figma variant it stands for, the call), every variant in a grid, anatomy, tokens and API. One master, `window.EvMedia`, its CSS from the size tables and the tokens (`--t-*`, Light and Dark).
+  - **Image** (Media - images): 2xs 20 · xs 24 · sm 32 · md 44 · lg 64 · xl 80 · 2xl 96; square corners 6 · 8 · 10 · 14 · 20 · 24 · 24, round full. `EvMedia.img`, `EvMedia.group`.
+    - **Grouped:** faces overlap by 4 · 4 · 8 · 8 · 12 · 16 · 16, and each face after the first is cut by the outline of the one before, plus a clear space of 2 · 3 · 3 · 4 · 6 · 6.7 · 10.5 (worked back from Figma's Split cut shapes). The page draws the cut as a CSS mask: a circle for round faces, a rounded square for square ones. No mask layer to keep ("I'm not sure you need this mask, or you can do it by yourself when it's overlapping the avatar").
+    - **Faces:** square photos, because the care team's are already cut round. Dr Steven Lu (`EvDrAvSrc`, Figma's Avatar/01) and two crops in face units (`EvMedia.faces()`: the Calm habit's, the Energy goal's).
+  - **Logo** (Media - Generic logo), md 44 / lg 64: Minimal (the logo alone), Tertiary (white, a 1.5 line `br/neutral/tertiary/100`), Secondary (white), Primary (the Everlab mark on `bg/neutral/tertiary/100`). The provider logo (Australian Clinical Labs, `assets/media/provider-acl.webp`, 96 px, from Figma) by default.
+  - **Everlab logo:** Secondary (tertiary ground), Tertiary (surface), Primary (inverted surface, inverted mark); 2xs to lg (mark 12 · 16 · 16 · 24 · 32); square or round. The mark is the one master, `EvMarkPaths`: Figma's Logo frame is the same drawing, scaled ¾, framed by `viewBox="-1.5 1.291 24 24"`.
+  - **Icon** (Media icon), md 44 / lg 64: Minimal, Tertiary, Secondary, Primary, Static × Neutral, Accent, Success, Destructive, Warning, from Figma's tokens (secondary grounds `bg/…/secondary/100`, primary grounds `bg/…/primary/100` with the glyph `fg/neutral/primary/Invert/100`). Static is white with a black glyph, neutral and round only.
+  - **Health pillar ("add these icons to the health pillar in the iconography system"):** the 11 icons8 Forma Bold Filled Sharp glyphs, exported as SVG from Figma: bench press, gym, treadmill, avocado, milk carton, pharma, sleep, pill, heart, sun, to-do. They are `EvMedia.pillar(key, px)` (24 grid, currentColor). Shown in Navigation → Iconography (a Health pillar section after the Lucide icons) and on Media → Icon.
+  - Registered in `DOCS`, `DSET`, `DORD`, the Inspector's `DS_KEYS` and the `docLd` pages.
+- **Overview header · Step ("This state, as the overview, doesn't exist. It should start with the health profile."):** the Primary card's Step list has no As the Overview. It lists the card's own steps only and starts on the first (Health profile).
+- **Overview header · Hero marketing ("This block is not about Braze; it's about hero marketing", "add ... the referral module"):** the Braze cell and its Tweaks group are now Hero marketing. Its Variant select groups the Braze banners under Braze and adds **Refer and Earn** under Modules. That variant draws `EvRefer.html({})`, so the card follows its module's saved setup.
+- **Recent insights · small inside card ("size down the CTA, make the CTA hug, and put a 16px pad margin top on the CTA"):** See insights is now the Button's sm size (36 high, 14 in, 14/18 type). It hugs its label, is centred, and sits 16 under the words (`html.insMini #dOver .ovcard.ovExp .ovbtn`).
+
+
 ### v3310: Refer and Earn · bubble grid Avatars (faces versus grey)
 
 - **The tweak ("Have a tweak so I can control the percentage of avatar versus the grey shade"):** Modules → Refer and Earn → Tweaks → **Bubble grid → Avatars**, a slider from 30% to 100% in steps of 5, 60% by default. Its value reads as a share and a count, e.g. "60% · 11 of 19".
