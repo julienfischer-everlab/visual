@@ -5,6 +5,39 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3293: Overview header controls as Tweaks groups (switches, the styled Select by phase, the Primary card's Variant); Refer and Earn: 128 tall, Title group top / CTA foot, soft shadow, blurred faces behind, parallax, new front face, Earth, under the bento
+
+- **Tweaks groups on a module page** (Modules → Overview header). The user asked: "Use proper tweak group with same tweak style as the normal, not just seelct".
+  - New module flag `M.tk`: each demo row is its own panel row built by **EvDocPanel**: the label on the left, the control on the right, one card per group, the group's title in small caps.
+  - A row is `[key, label, options, { g, sw, fd }]`:
+    - `g` is the group.
+    - `sw` puts the row in the group's header as the Toggle master (`data-dpsw`); while it is off, the group's rows dim, as Tweaks' group switch does.
+    - `fd` draws a long list as the Select master (`data-dpk="field"` → `EvSelPx`).
+  - The groups follow the bento's order: Primary card (Card, Step), Insights (switch, Variant, Style), Schedule (switch, Variant), Braze (switch, Variant).
+  - **EvDocPanel** (the doc panel master) gained:
+    - `data-dpsw`, the group switch.
+    - `data-dpk="field"`, the EvField Select at Tweaks' size: 28 tall, its menu at the row's right, no help text.
+    - `mount()` now returns its API to moDoc (`DP`), and a module can add blocks through `M.tkPut(DP)`.
+  - **Styled dropdown by phases** ("Need a styled dropdown by phases"): options carry a group (`data-g`). EvField's Select draws a header `li.evFdGrp` when the group changes. Insights shows its 4 groups, Schedule its States / Row variations, and the Activation card's steps Phase 1–3. A pick fires `evfd:pick`, and `EvSelPx` clicks the matching chip.
+- **The Primary card's Variant** ("Need a way to tweak the Primary card variant"). Under Card and Step sits a Variant section. It is the Collection builder's own style block: Visual center, its Type, Graphic, Background, the Saves, Upload img, the service glow. It shows for the step on screen ("As the Overview" means the step the Overview opens on).
+  - The block is now one function, `pcStyBox(vb, card, step)`, shared by Modules → Primary card's panel and this group.
+  - Its edits are the card's real style. Save for this step keeps them for every page, as on the builder.
+  - The builder's step controls (`mhpCtl`) now run only for the Primary card and the collections, since another module may have a `demoX`.
+- **Fix:** `EvOvHead.phone` shadowed its own `key()` (TDZ error on every phone header copy).
+- **Refer and Earn** (EvRefer; Modules → Refer and Earn):
+  - "Gap auto. Title grlup on top. CTA on button", "FIx height 128": the row is 128 tall (it grows only if its words need it). The words column runs space-between, so the Title group sits at the top and the CTA at the foot. The visual is 148 × 128 (112 × 128 on a narrow card; it was 104).
+  - "make the shadow more realistic": the front face has a soft three-layer shadow (contact, near, far) instead of the hard offset disc. The tokens are `--evRefSh1/2/3`, lighter in Light.
+  - "Blur a bit the avatar behinnd the top one": the two faces behind are at 66% opacity with a 1.5 blur.
+  - "Parallax more prominent":
+    - The drift is wider, and the front face drifts against the two behind.
+    - The pointer over the card sets `--evRefPx/--evRefPy` (-1 to 1, one rAF-throttled listener). Each face moves by its depth: front 12, behind 5 and 7 (the hearts' big face too).
+    - All motion stops under reduced motion.
+  - "use diff photo than steven here": friends' faces through `FR()`. The young woman (team3) is in front, the curly-haired woman (team2) and Dr Maylyn's photo are behind. The hearts variation's Steven is swapped too.
+  - "Create variatino With bg earth token": a Background control (Card default / Earth) on the module page. Earth is the Card master's Earth look (`bg/brand/earth/secondary/100`), and the faces' ring takes the card's ground (`--kBg`).
+  - "Push below overview header (the bento": `M.skBelow`. The demo's skeleton is the Overview's bento (primary card, the right column), then the card at full width under it. On the phone, `EvOvSk.ph(r, full, below)` draws the primary card and Insights skeletons, then the slot.
+  - Its controls are Tweaks groups too: Card: Visual (Select), Background.
+- Still to come: the heart's denser top and its place / rotate / incline / bleed Tweaks; the Focus sheet's goal cards and Habits tab; the Braze page's viewport.
+
 ## v3292: Overview header: a variant for each cell; module demos copy the Overview's whole header group; intro rows +32 on the phone
 
 - **A variant for each cell** (Modules → Overview header). The user asked: "I need the variant for each".
