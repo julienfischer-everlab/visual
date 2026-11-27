@@ -5,6 +5,31 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3289: Modules → Overview header (new); Refer and Earn H2, one sentence, avatars in front / behind
+
+- **Overview header** (`MODS.moh`, `ohDraw`, first in the Modules list). The user asked: "CREATE A Module Overview header … Inisght top right ON OFF, Schedule Bottom right ON OFF, Braze ON OFF" (sketch: a big card top left, two stacked cards on the right, one full-width card under them).
+  - The bento is drawn from the masters, each cell by its own module's code: Primary card `hpDocCard(MODS.mhp.demoX(…))`, Insights `MODS.mins.draw`, Schedule `MODS.mbk.draw` (Today state), Braze `EvBraze.card(CONCIERGE)`.
+  - Each cell is wrapped in `.moOv` (`.moDk` on the desk, `.moXs` on the phone) so the Overview's mirrored rules apply. The Braze cell also gets `.bzFrame`, the Braze module's scope.
+  - Demo rows: Insights, Schedule, Braze (On / Off, shown as toggles in the panel) and Primary card (a select of seven cards). `groups: () => []`, because moDoc's collection code calls `M.groups()`. `sk: false`: no Overview skeleton, the bento itself is the demo.
+  - Widths per breakpoint: XS 361, S 552, M 920, L 1120. The 1.25 zoom of the small module demos is cancelled here (`.moDemoIt:has(.ohB)`).
+  - M · L grid, 1.2 : 1:
+    - Both right cells on: primary card left over two rows, Insights top right, Schedule bottom right.
+    - One of them on: it sits top right.
+    - Braze is the full row under the grid. XS · S: one column, in order.
+  - "Width primary card … (IF Insight OFF and Shcedule OFF) FUll width … 2 col on M L, Contnet left (left align), Visual cright side (mini card or visual)". `.ohWide`:
+    - The card keeps its own column. Its words are left aligned and capped at 46% of the card.
+    - The visual (sphere canvas, mini module, picture) is absolute at 75% / 50%, centred in the right half. The card's own `top` / `left` rules are overridden with `!important`.
+    - The card's padding can't be used for this: an existing rule wins over it.
+- **Refer and Earn**:
+  - "Use H2 title group." The default level is back to H2 (22/26 on the master).
+  - "Good health is worth passing on. And keep just this sentence for every card." The default subline is that one sentence on every variation.
+  - Avatars: "remove the plus and make the one person above others using a sharp shadow … less opacity and … floating a little bit".
+    - The seat is gone.
+    - `.evRefF1` is in front: 72 px, z-index 2, box-shadow `7px 9px 0 3px var(--evRefSh)`, a sharp shadow with no blur (`--evRefSh` is .55 black in Dark, .14 in Light).
+    - `.evRefF2` and `.evRefF3` sit behind at 50% opacity, drifting with `evRefFloat` (5.2 s / 6.6 s, alternate). The animation stops under `prefers-reduced-motion`.
+    - Narrow phone sizes are scaled down to match.
+- Verification: a workflow run (four checkers plus adversarial verifiers) on this build. Whatever it confirms is fixed in the next version.
+
 ## v3288: Refer and Earn: the hands give the card; Isometric variation (halftone style)
 
 - The user said "use cloud dot hand shape and the membership card but mini", "More precision on the hands. Should feel like someone give to someone" (the N26 card) and "try this style" (isometric tiles with dotted shadows, and a stack with an orange $ coin).
