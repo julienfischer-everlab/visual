@@ -5,6 +5,16 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3298: +$100 tags on the Avatars + hearts faces
+
+- "Use these tag alternate white / orange tab with +$100 attached to the avatar": EvRefer's `hearts()` puts a square mono tag (`.evRefTag`, the Label - Mono face at 11px, uppercase, 20px tall) on each face's edge.
+  - The large face's tag is orange (`--evRefAcc`, white text) at its top right; the two others are white (black in Light) at their foot.
+  - Each tag has a small square in its colour at the corner facing its face, as in the references.
+  - These replace the heart badges and the $100 pill. The three floating hearts stay.
+- Careful: `.evRefTg` is the card's Title group class (EvTitle `cls`), so the tags use `evRefTag*`.
+- Checked on Modules → Refer and Earn, Avatars + hearts, with no page errors.
+
+
 ## v3297: Avatars + hearts with fewer floating hearts
 
 - "reduce the heart around by 60%": EvRefer's `hearts()` keeps 3 of its 7 floating hearts: top left (6, 34), right (170, 54) and under the faces (76, 136), with the same sizes and drift. The pill's heart and the faces' heart badges are unchanged. Read as fewer hearts; if it was meant as their size, scale the third value of each `fl` entry instead.
