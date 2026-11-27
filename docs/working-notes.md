@@ -5,6 +5,52 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+### v3312: Persona + user journey controller for the Overview (EvJourney)
+
+- **What it is ("Build a persona and user journey controller for the Everlab Overview ... the primary card, checklist, insights, progress, messaging, and calls to action should all stay consistent"):** `window.EvJourney`, placed just before `window.EvMedia`. Three parts kept apart:
+  - **Store:** personas in this browser under `everlab:personas` = `{ list: [{ id, name, j }], cur }`. Seeded with Persona 1, a new member with only the Health profile. `cur: ''` means no persona: the Overview follows Tweaks as before. API: `list`, `cur`, `persona`, `select`, `add`, `rename`, `dup`, `del`, `set(k, v)` (`'ins.hist'`, `'ins.adv3'` for the stages). Every change fires the `evjourney` event and saves.
+  - **Rules:** `derive(j)` takes one journey and returns everything the bento shows: steps, the next action, outstanding required steps, % complete, checklist rows, stage, eyebrow, insights (count, Feedback), the hero card, and preview flags. `CONFIG` holds the next-action order (`blood`, `lsq`, `rec`, `wear`), the required steps (wearable optional), and `products` (each membership's steps; all `null` for now, because no entitlement rules exist in the app yet: "don't invent differences; keep configurable").
+  - **Drawing:** the top bar's Persona and the two Tweaks groups.
+- **Journey (j):** `{ mem, rec, wear, blood, bloodDate, lsq, ins: { hist, adv1..adv5 }, hero }`.
+  - The Health profile is always completed and is never offered as an action.
+  - **Blood:** recency comes from `bloodDate` when one is set (6 months or older counts as old); otherwise the picked category is used. Records never satisfy the blood test.
+  - **Records:** Unknown means "to confirm", never processing.
+  - **Wearable:** connected means connected, not processed.
+- **Next action and hero (HK):** the first outstanding required step, in the configured order.
+  - Once everything required is in: the latest Ready advanced stage; else the shared card while advanced stages process; else historical insights Ready; else "Required information shared".
+  - The HK map is in `EvJourney.HK`: `[key, name, EvPcBj state, shared HK]`.
+    - Reused as they are: Book a blood test (also for an outdated test, flagged "shares"), Lifestyle questionnaire, Add other results (also for Unknown records, flagged), Everything shared, First insights ready, Deeper insights ready (shared by Advanced insights 1–5, flagged), Booked and Plan (preview only: the journey has no booking state).
+    - **Connect a wearable has no HK:** it draws an explicit Missing HK card (dashed outline, red badge) and never another card.
+    - No new hero copy was written. The only edits hide CTAs the state doesn't support: no View first insights before historical insights are Ready, and no "I don't have any" unless records are Unknown.
+- **Overview wiring:** `tkPages` calls `EvJourney.page(g === 'Overview page' && !c)`: only the Overview itself, with nothing over it.
+  - **Primary card:** `HPC.bj(st, ex, ls, pd0, J)` and `bjFill` (`EvJourney.forCard(c)` inside `#dOver`) draw the persona's HK, its checklist rows, an eyebrow of membership · stage, and a Ring over the required steps only (`steps: J.reqN`, no optional dot).
+  - **Mini to-do:** the Timeline to-do mini module draws the same rows.
+  - **Insights card:** `apply()` writes the Overview's own Tweaks (`stPcObj` bj, `stPcBjSt`, `stInsData`/`stInsAmt`, `stInsHp/Hd/Pr`, `stInsGen`). Those rows dim (`.jnDriven`) while a persona drives them, so nothing is selected by hand per card. The visual Tweaks stay free.
+    - The count: 3 for historical Ready, plus one per Ready advanced stage, capped at 5+.
+    - The Feedback: Building deeper insights while an advanced stage processes, Reading records while historical processes, else none.
+  - **Recent insights cards:** their source is now on each card (`data-ill`). While a persona drives, `setCount` skips the wearable cards without a wearable and the blood panel card without a blood test.
+  - **Card actions:** Start questionnaire completes the questionnaire; "I don't have any" sets records to No; a finished upload sets records to Yes. Book only says that booking isn't part of the journey state yet, so it never pretends a booking.
+  - **Presets:** the journey's controls carry `tkNoSave` (kept out of presets), and the rows it writes are skipped in the preset's unsaved test, so a persona never marks Default · changed.
+- **Panel:**
+  - **Top bar** (Overview only, `html.jnyOv`): Persona select (plus None · Tweaks) and a "…" menu: Add persona, Rename (inline field: `prompt()` is blocked), Duplicate, Delete (confirmed inline; the last persona can't be deleted).
+  - **User journey group** (first in the Overview's Tweaks):
+    - A read-only summary: persona, membership, stage, next action, outstanding steps, required n of N with a bar, insights, and the hero card with an HK / Shares / Missing HK tag. Preview flags appear under it in yellow.
+    - Membership, Past records captured, Wearables connected, Blood test provided, Blood test date (with Clear), and Lifestyle questionnaire controls; Health profile shown as Always.
+  - **Insights stages · Preview group:** Historical-record insights and Advanced insights 1–5, each Not started / Processing / Ready and saved per persona, plus a Hero card select (Auto or any HK). These are set directly: the rules never gate them. A stage beyond what the journey supports (for example historical insights without captured records) is flagged, never hidden.
+- **Checked** (source and dist), at 1600 × 1000 and XS:
+  1. New member: Book a blood test, 1 of 4.
+  2. Records captured with an outdated blood test (by category, and by a January 2025 date): Book, "6+ months old", 2 of 4, Shares Book a blood test.
+  3. Recent blood test without the questionnaire: Lifestyle questionnaire, 3 of 4.
+  4. Unknown records: Add other results with "I don't have any", "To confirm".
+  5. Everything required: Everything shared with no CTA, 4 of 4, next action "Connect a wearable (optional)".
+  6. Historical Ready with Advanced 1 processing: Insights 3, Feedback deep, View first insights.
+  7. Advanced 3 Ready alone, a preview, flagged.
+  8. Hero forced to the wearable: the Missing HK card.
+  - Persona management: Add, Rename, Duplicate, Delete and switching keep each persona's settings, and the personas survive a reload.
+  - None · Tweaks frees the rows. Other pages get no persona group.
+  - Card actions update the journey. No page errors.
+- **Not done:** the Modules → Overview header demo keeps its own manual Card / Step controls (it doesn't follow the persona). The Hero-format Insights card readings (ApoB, Vitamin D, resting heart rate) aren't filtered by the journey.
+
 ### v3311: Media system (Image, Logo, Everlab logo, Icon, Health pillar); Overview header Step list from Health profile; Hero marketing with Refer and Earn; Recent insights mini CTA
 
 - **Media system ("create the media system in the design system", Figma DS25 Assets):** a new **Media** group in the Design system (Image, Logo, Everlab logo, Icon), each page a playground (properties, the Figma variant it stands for, the call), every variant in a grid, anatomy, tokens and API. One master, `window.EvMedia`, its CSS from the size tables and the tokens (`--t-*`, Light and Dark).

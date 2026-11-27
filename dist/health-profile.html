@@ -3973,6 +3973,156 @@ window.EvLink = (function () {
 })();
 /* Media master (Figma DS25 Assets › Media: "create the media system in the design system"): images (Media image, alone or grouped), logos (Media logo, the Everlab logo), icons (Media icon) and the Health pillar icons. EvMedia.img({ src, size, shape, alt }), .group({ items, size, shape }), .logo({ emphasis, size, shape, src }), .everlab({ emphasis, size, shape }), .icon({ emphasis, appearance, size, shape, icon }), .pillar(key, px), .mark(px).
    Sizes 2xs 20 · xs 24 · sm 32 · md 44 · lg 64 · xl 80 · 2xl 96; square corners 6 · 8 · 10 · 14 · 20 · 24 · 24 (radius tokens), round full. A group overlaps its faces (layout/item/negative-gap: 4 · 4 · 8 · 8 · 12 · 16 · 16) and cuts each face where the one before sits, a clear space round its outline (2 · 3 · 3 · 4 · 6 · 6.7 · 10.5): drawn here, no mask layer ("I'm not sure you need this mask, or you can do it by yourself when it's overlapping the avatar"). Colours from the tokens (EvTokVar's --t-*), Light and Dark */
+/* Persona + user journey (EvJourney: "Build a persona and user journey controller for the Everlab Overview ... the primary card, checklist, insights, progress, messaging, and calls to action should all stay consistent").
+   Three parts kept apart: the store (personas in this browser, everlab:personas), the rules (derive(j): one journey in, everything the bento shows out), the drawing (the Tweaks' User journey and Insights stages groups, the top bar's Persona).
+   The Overview reads derive() only: the primary card through HPC.bj / bjFill (forCard), the Insights card through its own Tweaks (apply). The Preview part (insights stages, hero card) is set directly and never gates or is gated by the rules ("Keep this preview capability separate from any production journey prerequisites") */
+window.EvJourney = (function () {
+  var KEY = 'everlab:personas';
+  /* the rules' settings: the next action's order, the required steps, each membership's steps (null: every step; none differ yet: "don't invent differences; keep configurable") */
+  var CONFIG = { order: ['blood', 'lsq', 'rec', 'wear'], required: { hp: true, blood: true, lsq: true, rec: true, wear: false }, oldMonths: 6,
+    products: { none: null, membership: null, p299: null, diag: null } };
+  var MEM = [['none', 'None'], ['membership', 'Membership'], ['p299', '299 Protocol'], ['diag', 'Diagnostic']],
+    STG = [['not', 'Not started'], ['proc', 'Processing'], ['ready', 'Ready']],
+    STAGES = [['hist', 'Historical-record insights'], ['adv1', 'Advanced insights 1'], ['adv2', 'Advanced insights 2'], ['adv3', 'Advanced insights 3'], ['adv4', 'Advanced insights 4'], ['adv5', 'Advanced insights 5']],
+    STEP = { hp: 'Health profile', blood: 'Blood test', lsq: 'Lifestyle questionnaire', rec: 'Past records', wear: 'Wearable' };
+  /* the hero cards (HK) by journey moment: [key, name, the Activation card state it draws (EvPcBj), the HK it borrows when it has none of its own]; bj null: no HK, drawn as Missing, never another card ("Make missing mappings explicit instead of inventing content or silently showing an unrelated card") */
+  var HK = [['book', 'Book a blood test', 'book'], ['book-old', 'Book a recent blood test (last one 6+ months old)', 'book', 'Book a blood test'], ['life', 'Lifestyle questionnaire', 'life'],
+    ['more', 'Add past records', 'more'], ['more-unk', 'Confirm past records', 'more', 'Add other results'], ['wear', 'Connect a wearable', null], ['shared', 'Required information shared', 'shared'],
+    ['ready', 'Historical-record insights ready', 'ready'], ['adv1', 'Advanced insights 1 ready', 'deep', 'Deeper insights ready'], ['adv2', 'Advanced insights 2 ready', 'deep', 'Deeper insights ready'],
+    ['adv3', 'Advanced insights 3 ready', 'deep', 'Deeper insights ready'], ['adv4', 'Advanced insights 4 ready', 'deep', 'Deeper insights ready'], ['adv5', 'Advanced insights 5 ready', 'deep', 'Deeper insights ready'],
+    ['booked', 'Blood test booked', 'booked'], ['plan', 'Your plan', 'plan']];
+  var HKM = {}; HK.forEach(function (h) { HKM[h[0]] = h; });
+  var BJN = function (k) { var r = (window.EvPcBj || []).filter(function (x) { return x[0] === k; })[0]; return r ? r[1].replace(/^\d+\s*·\s*/, '') : k; };
+
+  /* ---- the store ---- */
+  var DEF = function () { return { mem: 'membership', rec: 'unknown', wear: false, blood: 'none', bloodDate: '', lsq: false, ins: { hist: 'not', adv1: 'not', adv2: 'not', adv3: 'not', adv4: 'not', adv5: 'not' }, hero: 'auto' }; };   /* a new member: the Health profile only */
+  var pick = function (v, L, d) { return L.some(function (o) { return o === v; }) ? v : d; };
+  var norm = function (j) { var d = DEF(); j = j && typeof j === 'object' ? j : {}; var o = { mem: pick(j.mem, ['none', 'membership', 'p299', 'diag'], d.mem), rec: pick(j.rec, ['yes', 'no', 'unknown'], d.rec), wear: !!j.wear, blood: pick(j.blood, ['none', 'recent', 'old'], d.blood),
+    bloodDate: typeof j.bloodDate === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(j.bloodDate) ? j.bloodDate : '', lsq: !!j.lsq, ins: {}, hero: typeof j.hero === 'string' && (j.hero === 'auto' || HKM[j.hero]) ? j.hero : 'auto' };
+    STAGES.forEach(function (s) { o.ins[s[0]] = pick(j.ins && j.ins[s[0]], ['not', 'proc', 'ready'], 'not'); }); return o; };
+  var load = function () { try { var s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s && Array.isArray(s.list) && s.list.length){ s.list = s.list.filter(function (p) { return p && p.id; }).map(function (p) { return { id: String(p.id), name: String(p.name || 'Persona'), j: norm(p.j) }; }); if (s.list.length) return { list: s.list, cur: s.cur === '' || s.list.some(function (p) { return p.id === s.cur; }) ? s.cur : s.list[0].id }; } } catch (e){}
+    return { list: [{ id: 'p1', name: 'Persona 1', j: DEF() }], cur: 'p1' }; };
+  var st = load();
+  var save = function () { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e){} };
+  var uid = function () { return 'p' + Date.now().toString(36) + Math.floor(Math.random() * 1296).toString(36); };
+  var freeName = function (b) { var n = 1, nm; do { nm = (b || 'Persona') + ' ' + n++; } while (st.list.some(function (p) { return p.name === nm; })); return nm; };
+  var curP = function () { return st.list.filter(function (p) { return p.id === st.cur; })[0] || null; };
+  var emit = function () { save(); document.dispatchEvent(new CustomEvent('evjourney', { detail: { cur: st.cur } })); };
+  var select = function (id) { if (id !== '' && !st.list.some(function (p) { return p.id === id; })) return; st.cur = id; emit(); };
+  var add = function () { var p = { id: uid(), name: freeName(), j: DEF() }; st.list.push(p); st.cur = p.id; emit(); return p; };
+  var rename = function (id, nm) { var p = st.list.filter(function (x) { return x.id === id; })[0], v = String(nm || '').trim().slice(0, 40); if (!p || !v) return false; p.name = v; emit(); return true; };
+  var dup = function (id) { var p = st.list.filter(function (x) { return x.id === id; })[0]; if (!p) return null; var c = { id: uid(), name: freeName(p.name + ' copy'), j: norm(JSON.parse(JSON.stringify(p.j))) }; st.list.splice(st.list.indexOf(p) + 1, 0, c); st.cur = c.id; emit(); return c; };
+  var del = function (id) { if (st.list.length < 2) return false; var i = st.list.findIndex(function (x) { return x.id === id; }); if (i < 0) return false; st.list.splice(i, 1); if (st.cur === id) st.cur = st.list[Math.max(0, i - 1)].id; emit(); return true; };
+  var set = function (k, v) { var p = curP(); if (!p) return; if (/^ins\./.test(k)) p.j.ins[k.slice(4)] = v; else p.j[k] = v; p.j = norm(p.j); emit(); };
+
+  /* ---- the rules ---- */
+  var monthsAgo = function (d) { var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(d || ''); if (!m) return null; var n = new Date(), y = +m[1], mo = +m[2] - 1, da = +m[3]; return (n.getFullYear() - y) * 12 + (n.getMonth() - mo) - (n.getDate() < da ? 1 : 0); };
+  var fmtD = function (d) { var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(d || ''); return m ? +m[3] + ' ' + ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][+m[2] - 1] + ' ' + m[1] : ''; };
+  var derive = function (j0) { var j = norm(j0), req = CONFIG.required, prod = CONFIG.products[j.mem], has = function (k) { return !prod || prod.indexOf(k) >= 0; };
+    /* the blood test's age: from its date when there is one ("derive recency from the date"), else the category picked ("allow the selected category to simulate it") */
+    var mo = j.bloodDate ? monthsAgo(j.bloodDate) : null, blood = mo == null ? j.blood : mo < CONFIG.oldMonths ? 'recent' : 'old', dt = mo != null ? ' · ' + fmtD(j.bloodDate) : '';
+    var S = { hp: { done: true, word: 'Completed' },   /* always ("Health profile always completed") */
+      blood: { done: blood === 'recent', word: blood === 'recent' ? 'Under 6 months' + dt : blood === 'old' ? '6+ months old' + dt : 'To provide', hk: blood === 'old' ? 'book-old' : 'book', act: blood === 'old' ? 'Book a recent blood test' : 'Book a blood test' },   /* records never stand in for it */
+      lsq: { done: j.lsq, word: j.lsq ? 'Completed' : '5 min', hk: 'life', act: 'Complete the lifestyle questionnaire' },
+      rec: { done: j.rec === 'yes', word: j.rec === 'yes' ? 'Captured' : j.rec === 'no' ? 'To add' : 'To confirm', hk: j.rec === 'unknown' ? 'more-unk' : 'more', act: j.rec === 'unknown' ? 'Confirm whether you have past records' : 'Add your past records' },   /* Unknown: to confirm, never processing */
+      wear: { done: j.wear, word: j.wear ? 'Connected' : 'Not connected', hk: 'wear', act: 'Connect a wearable' } };   /* connected, not processed */
+    var keys = ['hp', 'blood', 'lsq', 'rec', 'wear'].filter(has); keys.forEach(function (k) { S[k].k = k; S[k].name = STEP[k]; S[k].req = !!req[k]; });
+    var reqK = keys.filter(function (k) { return S[k].req; }), doneN = reqK.filter(function (k) { return S[k].done; }).length;
+    var out = CONFIG.order.filter(function (k) { return keys.indexOf(k) >= 0 && !S[k].done; }), outReq = out.filter(function (k) { return S[k].req; }), outOpt = out.filter(function (k) { return !S[k].req; });
+    var next = outReq[0] || null, rec = next || outOpt[0] || null;
+    /* the insights: only what each stage is set to (collecting information never makes one Ready) */
+    var I = j.ins, advR = [1, 2, 3, 4, 5].filter(function (n) { return I['adv' + n] === 'ready'; }), advP = [1, 2, 3, 4, 5].filter(function (n) { return I['adv' + n] === 'proc'; }), last = advR.length ? advR[advR.length - 1] : 0;
+    var nIns = Math.min(5, (I.hist === 'ready' ? 3 : 0) + advR.length), fb = advP.length ? 'deep' : I.hist === 'proc' ? 'rec' : 'off';
+    var insNow = [I.hist === 'ready' ? 'Historical ready' : I.hist === 'proc' ? 'Historical processing' : '', advR.length ? 'Advanced ' + advR.join(', ') + ' ready' : '', advP.length ? 'Advanced ' + advP.join(', ') + ' processing' : ''].filter(Boolean).join(' · ') || 'None yet';
+    /* the hero: the next required step while one is outstanding; then the latest Ready advanced stage, the shared card while advanced ones are processing, the historical insights once Ready, else the shared card */
+    var auto = next ? S[next].hk : last ? 'adv' + last : advP.length ? 'shared' : I.hist === 'ready' ? 'ready' : 'shared', hk = j.hero !== 'auto' && HKM[j.hero] ? j.hero : auto, H = HKM[hk];
+    var stage = next ? 'Sharing information' : /^adv/.test(hk) ? 'Advanced insights ' + hk.slice(3) + ' ready' : hk === 'ready' ? 'Historical-record insights ready' : advP.length ? 'Advanced insights processing' : I.hist === 'proc' ? 'Historical-record insights processing' : 'Required information shared';
+    /* the card's checklist: every step (the next one and the other required ones to do, the optional ones Optional), then the insights stages started */
+    var rows = keys.map(function (k) { var s = S[k]; return [k, s.name, s.done ? ['done', s.word] : s.req ? ['act', s.word] : ['lock', 'Optional']]; });
+    if (I.hist !== 'not') rows.push(['ins', 'Historical-record insights', I.hist === 'ready' ? ['done', 'Ready'] : ['proc', 'Processing']]);
+    if (advR.length || advP.length) rows.push(['adv', 'Advanced insights', [advP.length ? 'proc' : 'done', [advR.length ? advR.length + ' of 5 ready' : '', advP.length ? advP.length + ' processing' : ''].filter(Boolean).join(' · ')]]);
+    /* preview flags: a stage or hero set past what the journey supports, said, never hidden */
+    var flags = []; if (I.hist !== 'not' && j.rec !== 'yes') flags.push('Historical-record insights ' + (I.hist === 'ready' ? 'Ready' : 'Processing') + ' without captured past records');
+    if ((advR.length || advP.length) && outReq.length) flags.push('Advanced insights set while required information is outstanding'); if (hk !== auto) flags.push('Hero card forced to ' + H[1] + ' (Auto: ' + HKM[auto][1] + ')');
+    var memName = (MEM.filter(function (m) { return m[0] === j.mem; })[0] || ['', ''])[1];
+    return { j: j, mem: j.mem, memName: memName, product: j.mem === 'none' ? '' : memName, steps: S, keys: keys, reqN: reqK.length, doneN: doneN, pct: reqK.length ? doneN / reqK.length : 1, next: next, rec: rec,
+      nextLabel: next ? S[next].act : rec ? S[rec].act + ' (optional)' : 'None', outstanding: outReq.map(function (k) { return S[k].name; }), optional: outOpt.map(function (k) { return S[k].name; }), rows: rows, stage: stage,
+      eyebrow: (j.mem === 'none' ? '' : memName + ' · ') + stage, ins: { hist: I.hist, advR: advR, advP: advP, n: nIns, fb: fb, now: insNow },
+      hero: { k: hk, t: H[1], bj: H[2], share: H[3] || '', auto: auto, forced: hk !== auto }, flags: flags,
+      tasks: { hp: 'done', hpP: 1, data: j.wear ? 'conn' : 'todo', past: j.rec === 'yes' ? 'found' : 'todo', fb: fb, n: nIns } };   /* the Insights module's own task states (MODS.mins) */ };
+  /* the HK's own words, the state's facts only: no View first insights before they are Ready, no I don't have any once No is said */
+  var cardM = function (J, M) { var x = M.slice(); if (J.hero.bj === 'shared' && J.ins.hist !== 'ready') x[6] = null; if (J.hero.bj === 'more' && J.j.rec !== 'unknown') x[7] = null; return x; };
+  var missHtml = function (J) { var e = function (s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }; return (window.EvPcTg ? window.EvPcTg(e(J.eyebrow), e(J.hero.t), 'No hero card exists for this state yet. Nothing else is shown in its place.') : '<h3>' + e(J.hero.t) + '</h3>') + '<p class="jnMissB" role="note"><b>Missing HK</b> ' + e(J.hero.k) + '</p>'; };
+
+  /* ---- the Overview ---- */
+  var onOv = false, sig = '', applying = 0;
+  var DRV = ['stPcObj', 'stPcBjSt', 'stPcBjLf', 'stInsData', 'stInsAmt', 'stInsHp', 'stInsHd', 'stInsPr', 'stInsGen'];   /* the Overview's Tweaks the journey sets (the visual ones stay free: "Keep visual controls separate") */
+  var drives = function () { return onOv && !!curP() && !document.documentElement.classList.contains('actRun'); };
+  var put = function (id, v, force) { var x = document.getElementById(id); if (!x) return; if (x.value === v && !force) return; x.value = v; x.dispatchEvent(new Event('change', { bubbles: true })); };
+  var lock = function (on) { DRV.forEach(function (id) { var x = document.getElementById(id), r = x && x.closest('.tkRow'); if (!r) return; r.classList.toggle('jnDriven', on); if (on) r.title = 'Set by the persona’s User journey'; else if (r.title === 'Set by the persona’s User journey') r.removeAttribute('title'); }); };
+  var apply = function (force) { var on = drives(), H = document.documentElement; lock(on); H.classList.toggle('jnyOn', on); if (!on){ if (sig) recount(); sig = ''; return; } var p = curP(), s = p.id + JSON.stringify(p.j), J = derive(p.j), f = force || s !== sig; sig = s; applying++;
+    try { put('stPcObj', 'bj'); put('stPcBjLf', 'add'); put('stInsData', J.ins.n ? 'yes' : 'no'); if (J.ins.n) put('stInsAmt', String(J.ins.n)); put('stInsHp', 'on'); put('stInsHd', J.j.wear ? 'on' : 'off'); put('stInsPr', J.j.rec === 'yes' ? 'on' : 'off'); put('stInsGen', J.ins.fb); put('stPcBjSt', J.hero.bj || 'shared', f); } finally { applying--; } recount(); };
+  var page = function (on) { on = !!on; var ch = on !== onOv; onOv = on; document.documentElement.classList.toggle('jnyOv', on); if (on) apply(ch); else if (ch) apply(); };
+  var cardOk = function (ill) { if (!drives()) return true; var j = curP().j; if (ill === 'watch' || ill === 'sync') return !!j.wear; if (ill === 'tube') return j.blood !== 'none' || !!j.bloodDate; return true; };
+  var recount = function () { document.querySelectorAll('.ovcar').forEach(function (car) { if (car._ovExp) car._ovExp.setCount(window.__insAmtN ? window.__insAmtN() : 4); }); };
+  var forCard = function (c) { return drives() && c && c.closest && c.closest('#dOver') ? derive(curP().j) : null; };
+  var toast = function (t) { var d = document.createElement('div'); d.className = 'evcToast'; d.setAttribute('role', 'status'); d.textContent = t; document.body.appendChild(d); setTimeout(function () { d.remove(); }, 2400); };
+  /* the card's actions while a persona drives it: what the journey holds changes (the questionnaire done, no records said), what it does not hold is said, never pretended (no booking state: "Don't imply booked unless booking state exists") */
+  var act = function (a) { if (!drives()) return false;
+    if (a === 'life'){ set('lsq', true); toast('Lifestyle questionnaire completed'); return true; }
+    if (a === 'none'){ set('rec', 'no'); toast('Noted: no past records captured'); return true; }
+    if (a === 'book' || a === 'dir'){ toast('Booking isn’t part of the journey state yet: set Blood test provided in User journey'); return true; }
+    if (a === 'view2'){ if (window._ar && window._ar.open) window._ar.open(); return true; }
+    return false; };
+
+  /* ---- the drawing: the Tweaks' groups and the top bar's Persona ---- */
+  var $ = function (id) { return document.getElementById(id); }, esc = function (s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); };
+  var sumHtml = function () { var p = curP(); if (!p) return '<p class="jnSumOff">No persona: the Overview follows Tweaks. Pick a persona in the top bar to drive it.</p>';
+    var J = derive(p.j), row = function (k, v, c) { return '<div' + (c ? ' class="' + c + '"' : '') + '><dt>' + k + '</dt><dd>' + v + '</dd></div>'; }, H = J.hero;
+    var hv = esc(H.t) + (H.bj ? (H.share ? '<span class="jnTag jnTagW">Shares ' + esc(H.share) + '</span>' : '<span class="jnTag">HK ' + esc(BJN(H.bj)) + '</span>') : '<span class="jnTag jnTagM">Missing HK</span>');
+    return '<dl class="jnSumL">' + row('Persona', esc(p.name)) + row('Membership', esc(J.memName)) + row('Stage', esc(J.stage)) + row('Next action', esc(J.nextLabel)) + row('Outstanding', J.outstanding.length ? esc(J.outstanding.join(', ')) : 'None') +
+      row('Required', J.doneN + ' of ' + J.reqN + ' · ' + Math.round(J.pct * 100) + '%<i class="jnBar" aria-hidden="true"><i style="width:' + Math.round(J.pct * 100) + '%"></i></i>') + row('Insights', esc(J.ins.now)) + row('Hero card', hv) + '</dl>' +
+      (J.flags.length ? '<ul class="jnFlags" aria-label="Preview">' + J.flags.map(function (f) { return '<li>' + esc(f) + '</li>'; }).join('') + '</ul>' : ''); };
+  var syncing = 0;
+  var ui = function () { var p = curP(), j = p ? norm(p.j) : DEF(), J = p ? derive(j) : null, sv = function (id, v) { var x = $(id); if (x && x.value !== v) x.value = v; };
+    syncing++; try {
+      var ps = $('persSel'); if (ps){ ps.innerHTML = st.list.map(function (x) { return '<option value="' + esc(x.id) + '">' + esc(x.name) + '</option>'; }).join('') + '<option value="">None · Tweaks</option>'; ps.value = st.cur; }
+      sv('jnMem', j.mem); sv('jnRec', j.rec); sv('jnWear', j.wear ? 'yes' : 'no'); sv('jnLsq', j.lsq ? 'yes' : 'no'); sv('jnBlood', J && j.bloodDate ? (J.steps.blood.done ? 'recent' : 'old') : j.blood);
+      var dt = $('jnBloodDt'); if (dt && dt.value !== j.bloodDate) dt.value = j.bloodDate; var dx = $('jnBloodDtX'); if (dx) dx.hidden = !j.bloodDate; var bs = $('jnBlood'); if (bs){ bs.disabled = !p || !!j.bloodDate; bs.title = j.bloodDate ? 'From the blood test date' : ''; }
+      STAGES.forEach(function (s) { sv('jnIns-' + s[0], j.ins[s[0]]); }); sv('jnHero', j.hero);
+      document.querySelectorAll('#tkJnyGrp select, #tkJnyGrp input, #tkJnyPvGrp select').forEach(function (x) { if (x.id !== 'jnBlood') x.disabled = !p; });
+      document.querySelectorAll('#tkJnyGrp .tkRow, #tkJnyPvGrp .tkRow').forEach(function (r) { r.classList.toggle('jnOff', !p); });
+      var sm = $('jnSum'); if (sm) sm.innerHTML = sumHtml();
+      var hs = $('jnHeroNote'); if (hs){ var h = J ? J.hero : null; hs.innerHTML = !h ? '' : h.bj ? (h.share ? 'Draws ' + esc(h.share) + ': no HK of its own yet.' : 'Draws ' + esc(BJN(h.bj)) + '.') : '<b>Missing HK</b>: nothing exists for this state yet.'; hs.classList.toggle('jnMiss', !!h && !h.bj); }
+      menuDraw(); } finally { syncing--; } };
+  /* the persona menu: Add, Rename (inline: no prompt()), Duplicate, Delete (confirmed inline) */
+  var mode = '';
+  var menuDraw = function () { var m = $('persMenu'); if (!m) return; var p = curP(), one = st.list.length < 2;
+    if (mode === 'ren' && p){ m.innerHTML = '<form class="persRen"><label class="persRenL" for="persRenIn">Rename persona</label><input id="persRenIn" type="text" maxlength="40" value="' + esc(p.name) + '" autocomplete="off"><span class="persRow"><button type="button" class="persBtn" data-pa="cancel">Cancel</button><button type="submit" class="persBtn persPri">Save</button></span></form>'; return; }
+    if (mode === 'del' && p){ m.innerHTML = '<div class="persDel"><p>Delete ' + esc(p.name) + '? Its journey goes with it.</p><span class="persRow"><button type="button" class="persBtn" data-pa="cancel">Cancel</button><button type="button" class="persBtn persDanger" data-pa="delok">Delete</button></span></div>'; return; }
+    var it = function (a, t, dis) { return '<button type="button" role="menuitem" class="persIt" data-pa="' + a + '"' + (dis ? ' disabled' : '') + '>' + t + '</button>'; };
+    m.innerHTML = it('add', 'Add persona') + it('ren', 'Rename', !p) + it('dup', 'Duplicate', !p) + '<i class="persSep" role="separator"></i>' + it('del', 'Delete', !p || one); };
+  var menuOpen = function (on) { var m = $('persMenu'), b = $('persMore'); if (!m || !b) return; if (!on) mode = ''; menuDraw(); m.hidden = !on; b.setAttribute('aria-expanded', String(!!on)); if (on){ var f = m.querySelector('input, .persIt:not([disabled])'); if (f) f.focus(); if (mode === 'ren' && f && f.select) f.select(); } };
+  var bind = function () {
+    var on = function (id, ev, f) { var x = $(id); if (x) x.addEventListener(ev, function (e) { if (!syncing) f(e, x); }); };
+    on('persSel', 'change', function (e, x) { select(x.value); });
+    on('jnMem', 'change', function (e, x) { set('mem', x.value); }); on('jnRec', 'change', function (e, x) { set('rec', x.value); });
+    on('jnWear', 'change', function (e, x) { set('wear', x.value === 'yes'); }); on('jnLsq', 'change', function (e, x) { set('lsq', x.value === 'yes'); });
+    on('jnBlood', 'change', function (e, x) { set('blood', x.value); }); on('jnBloodDt', 'change', function (e, x) { set('bloodDate', x.value || ''); });
+    on('jnBloodDtX', 'click', function () { set('bloodDate', ''); }); on('jnHero', 'change', function (e, x) { set('hero', x.value); });
+    STAGES.forEach(function (s) { on('jnIns-' + s[0], 'change', function (e, x) { set('ins.' + s[0], x.value); }); });
+    var b = $('persMore'), m = $('persMenu');
+    if (b && m){ b.addEventListener('click', function (e) { e.stopPropagation(); menuOpen(m.hidden); });
+      m.addEventListener('click', function (e) { e.stopPropagation(); var t = e.target.closest('[data-pa]'); if (!t || t.disabled) return; var a = t.dataset.pa, p = curP();
+        if (a === 'add'){ add(); menuOpen(false); } else if (a === 'dup' && p){ dup(p.id); menuOpen(false); } else if (a === 'ren' || a === 'del'){ mode = a; menuOpen(true); } else if (a === 'delok' && p){ del(p.id); menuOpen(false); } else if (a === 'cancel'){ mode = ''; menuOpen(true); } });
+      m.addEventListener('submit', function (e) { e.preventDefault(); var i = $('persRenIn'), p = curP(); if (i && p) rename(p.id, i.value); menuOpen(false); });
+      m.addEventListener('keydown', function (e) { if (e.key === 'Escape'){ menuOpen(false); b.focus(); } });
+      document.addEventListener('click', function (e) { if (!m.hidden && !e.target.closest('#persGrp')) menuOpen(false); }); }
+    document.addEventListener('evjourney', function () { ui(); if (!applying) apply(); });
+    ui(); };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind); else bind();
+  return { DRV: DRV, CONFIG: CONFIG, MEM: MEM, STAGES: STAGES, STG: STG, HK: HK, list: function () { return st.list.slice(); }, cur: function () { return st.cur; }, persona: curP, select: select, add: add, rename: rename, dup: dup, del: del, set: set,
+    active: function () { var p = curP(); return p ? norm(p.j) : null; }, derive: derive, norm: norm, cardM: cardM, cardOk: cardOk, missHtml: missHtml, forCard: forCard, drives: drives, page: page, apply: apply, act: act }; })();
 window.EvMedia = (function () {
   var SZ = { '2xs': 20, xs: 24, sm: 32, md: 44, lg: 64, xl: 80, '2xl': 96 }, RAD = { '2xs': 6, xs: 8, sm: 10, md: 14, lg: 20, xl: 24, '2xl': 24 }, OV = { '2xs': 4, xs: 4, sm: 8, md: 8, lg: 12, xl: 16, '2xl': 16 }, CUT = { '2xs': 2, xs: 3, sm: 3, md: 4, lg: 6, xl: 6.7, '2xl': 10.5 };
   var ACL = 'data:image/webp;base64,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';   /* the provider logo Figma's Media logo shows (Provider / Australian Clinical Labs) */
@@ -5530,6 +5680,7 @@ window.EvMini = (function () {
   var esc = function (t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
   var card = function (body, cls) { return window.EvCard ? window.EvCard.html({ look: 'secondary-blur', size: 'lg', cls: cls, body: body }) : '<div class="' + cls + '">' + body + '</div>'; };   /* the Card master's Secondary - Blur, lg ("mini module style Secondary with bg blur!"; was Secondary - Surface) */
   var todo = function (o, st) { var H = window._hpCard, S = window.EvPcSteps, b = window.EvPcCards ? window.EvPcCards.base(o || 'bj') : (o || 'bj'); if (!H || !H.actList) return '';
+    if (b === 'bj'){ var JN = window.EvJourney, J = JN && JN.drives && JN.drives() ? JN.derive(JN.active()) : null; if (J) return H.actList(J.rows, 'Your information'); }   /* a persona on the Overview (EvJourney): its checklist, the card's own */
     if (b === 'bj') return H.bjList ? H.bjList((S && S.base ? S.base('bj', st) : st) || 'prof') : '';
     var B = (window.EvPcBuiltSteps || {})[b] || [], P = S && S.phases ? S.phases(b, B) : [], ph = P.filter(function (p) { return p.steps.indexOf(st) >= 0; })[0] || P[0], NM = {}; if (!ph) return '';
     (S && S.list ? S.list(b, B) : B).forEach(function (x) { NM[x[0]] = String(x[1]).replace(/^\d+\s*\u00b7\s*/, ''); }); var i0 = Math.max(0, ph.steps.indexOf(st)), nx = 0;
