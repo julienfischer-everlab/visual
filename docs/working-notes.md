@@ -5,6 +5,31 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3296: the heart's Save, Opacity, Dots and Auto rotate; Refer and Earn faces and Card size; Focus sheet full; Doctor note H2
+
+- **Heart Save** ("Need save"). `EvRefer.heart` now keeps a draft:
+  - `set` changes the draft live on every heart, `save` writes `everlab:refHeart`, `reset` goes back to the default on show.
+  - Other methods: `get`, `saved`, `dirty`, `has`. It fires an `evrefheart` event.
+  - The group's Save row (`.dpHtSv`: `moVsSave`, blue while unsaved, plus Reset and a status line) marks unsaved rows `data-unsv` (orange). The top bar's Save on Refer and Earn saves it too (`docCur === 'mre'`).
+- **Opacity** ("opavity", `op`, 0.1–1): the canvas's opacity.
+- **Dots** ("Tweak remove dot", `dots`): a new `dots: false` option on both EvDotHeart masters skips the big white dots (outline nodes and floaters) and keeps the dotted threads.
+- **Auto rotate** ("auto rotate on off", `auto`): mounts with `still: !auto`.
+- Dots and Auto rotate remount the heart; placement and opacity change in place. Dots and Auto rotate are the panel's Toggle rows.
+- **Refer and Earn faces**:
+  - No ring ("Remove border").
+  - A softer three-layer shadow ("make shadow less porminent"); `--evRefSh1..3` are .2 / .22 / .26 in dark mode.
+  - The pointer parallax is removed ("DOnt interact with mouse position"); the faces still float on their own.
+- **Card size** ("need tweak Card size. Use XL as default", "Card static btw"):
+  - `EvRefer.html({ size })` takes xl, lg, md or sm, and defaults to xl.
+  - The Card group has a Card size row (XL, LG, MD, SM). The demo passes `size`.
+- **Focus sheet full** ("See detail full sheet. pls"): the `tlFoc` sheet's setup defaults to `sh:full` (Sheet master Height: Full). A saved per-sheet Tweak still wins.
+- **Doctor note** ("less gap by 4px bwtween eyebro and tite", "title h2 title group eyebrow part as a slot", "12px top margin on the doctor note content"):
+  - `drMailMake`'s Title group is H2 (18px at XS), the date still in its eyebrow slot.
+  - The slot sits 4px closer than the master's gap (`margin-bottom: -4px`, over the master's slot reset). Measured: 8px, was 12.
+  - In the Focus sheet's Doctor notes tab the note sits 12px lower: 28px under the tabs, was 16.
+- Checks on dist: hsv, avs, drn and re3 pass with no page errors. Card size measured: XL 176, LG 168, MD 160, SM 152 tall.
+
+
 ## v3295: the heart's place, Heart + faces, Step nested, cards centred, Focus sheet tabs
 
 - **Refer and Earn heart** ("where is the position heart ?", "Add tweak to relocate in the card and rotate/ incline", "Need to bleed", "and add more line in the heart").
