@@ -5,6 +5,28 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+### v3307: bubble grid fills the card, a new face; phone Full sheet 56 from the top; Page types · Add level
+
+- **Refer and Earn · bubble grid:**
+  - **No second copy of the same woman:** the seventh face is now the Energy goal's photo (a different person, a crop of `assets/async/goal-energy`). It was a crop of the Reading habit picture, the Calm model again.
+  - **One copy of that photo:** the path now lives once, in `EvSvcImg.goalEnergy`, and the goal cards' `GLIMG.energy` reads it.
+- **Filling the card top and bottom ("I don't want the visual to cut out at the bottom, so make sure you fill the whole card on top and bottom. Probably need to scale up"):**
+  - The faces' layer reaches 80 past the grid's box on every side (`.evRefBbM`, `BX`), so the radial fade is the only edge: no line where the box ended. The card's own edge cuts the rows that run off it.
+  - The fade is a circle of 132 (solid to 58%), and the outer faces fade a little less (1 − d/135, at least .12), so the rows at the card's top and bottom read.
+  - The right corners are filled (6 more faces).
+  - **Narrow card (XS):** the grid is scaled .9 (was .76) and sits at 0 (was 24 right), so its rows reach the card's top and bottom. A grown face still stays inside the card and clear of the line.
+- **Phone Full sheet ("You don't want to do a full sheet, right?", "This one, why don't you do this one?", "The sheet should go on full screen like this"):**
+  - A Full sheet now stops 56 from the phone's top, as the Design system's Sheet does on Page types. The Focus sheet on XS was 103: its layer starts under the status bar, 47 down.
+  - `EvSheet.open` measures that offset on a phone (`--evShTopIn`), and `.evSh[data-ph][data-sh="full"] > .evShP` adds it to the height.
+- **Design system → Page types · Add level ("can you simulate a different level? Maybe a button, 'Add Level,' and then you just stack another level"):**
+  - **The row:** the Sheet group's Depth row is now **Levels · N** with **Remove** and **Add level** (1 to 4).
+  - **Where it shows:** on every Bottom sheet height on XS · S (was the Full only), and on M · L.
+  - **Phone:** a level added slides up from the bottom (`sdLvUp`) while the one it covers tucks back into the stack (`sdLvBack`). The levels under it peek above its top, 12 per level, at any height (the cards are placed from the sheet's own top).
+  - **Desk:** a level is the sub-page (Back at the top, content in from the right).
+  - **Taking a level away:** the top sheet's Close (phone) or the sub-page's Back (desk) removes one.
+  - **Not a draft change:** the level count is a simulation, so it doesn't mark Save. Older saves capped at 2 now go to 4.
+
+
 ### v3306: bubble grid takes turns across the ring, badge over the fade; sheet sub-level forward without the overlap
 
 - **Refer and Earn · bubble grid:**
