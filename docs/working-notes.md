@@ -5,6 +5,27 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+### v3309: Refer card (60% faces, CTA Link, badge inside, orange halo, quieter faces); sheet sub-level keeps its X, content out left / in right; phone Full sheet top read from the layout
+
+- **Refer and Earn · bubble grid ("60% should be avatar, the rest bg teriary 100"):**
+  - 11 of the 19 bubbles in view are faces, the rest the grey tertiary circles (`BE`: every ring past the first is grey except four).
+  - **Inactive faces 20% fainter ("reduce the inactive avatr by 20% opacity"):** `bLay` multiplies the distance fade by .8 (grey circles keep their own).
+  - **Badge inside the face, 8 from its edge ("Badge inside avatar not utside, 8px from edge"):** `--evRefTd` puts the badge's corner square 8px inside the circle at any scale. Measured 8.0 on desktop, 7.9 at XS.
+- **Refer card CTA ("also just tweak the CTA * CTA like this * Link with arrow right on right"):** a Card · **CTA** row, Button (the user-plus button, as before) or Link. Link is the Link master (`EvLink.html`, md) with an arrow-right on its right.
+- **Orange halo ("add a orange halo on the bottom right diffuse smoothly , add few tweak to control that"):**
+  - A radial glow in the accent behind the card's content (`.evRefHalo`), bottom right, fading out in six steps so it has no edge.
+  - Tweaks group **Halo**: On / Off, Strength (0–1, .5), Size (120–600, 280), Position X and Y (0–100%, 100%). The sliders update the card live and are saved with the module's demo.
+- **Sheet sub-level on the desk ("Entering to a sub level in a sheet M L need to keep the dismiss in place. just the left side change. and content"):**
+  - The frame never moves and the X stays where it is (measured 788,222 at every frame, forward and back). Only the nav's left side changes (Back comes in) and the content changes.
+  - **Forward ("the content should go away on the left side with fade out and the next content should fade in from to right side"):** the parent's content slides 40 left as it fades (`evShSubAway`, .22s). The sub-page's content comes in from 40 right only once that has ended (`evShSubGo`, set when the parent's animation finishes, with a 1.5s fallback), so the two are never on screen together.
+  - **Back ("and vice versa when go backward"):** the sub-page's content goes out to the right, and the parent's comes back in from the left.
+  - **Root cause of the old overlap / blank:** the generic stacked-sheet rule `.evShBack > .evShP > * {opacity:0 !important}` hid the parent at once on the desk too. It now skips the desk sub-level (`:not(.evShSubU)`).
+- **Phone Full sheet top ("Still not fit with the sheet framework.... FIX"):**
+  - `EvSheet.open` now reads how far under the screen's top the layer starts from the layout: the host's top border (the phone's status bar, 47) plus the layer's offset. It no longer measures boxes on screen, which a scaled or moving frame could throw off, and the guard is now 0–120 (was 64).
+  - On a fresh load the Timeline's Focus sheet (See details) sits 56 from the phone's top at XS, at frame scales .8, .96 and 1. I could not reproduce the 103 from the screenshot on this build; an artifact view opened before v3307 still shows 103 until it is reloaded.
+  - Modules → Focus card's CTA opens its sheet in `#moShHost` (no phone frame, no status bar): 56 from that host's top.
+
+
 ### v3308: Modules → a Slots group (Mini module); Refer and Earn · bubble grid Scale, grey outer circle, badge 8 off the face
 
 - **Slots group ("Create a group slot and put mini card into"):** the Design system nav (and so the Modules page select) has a **Slots** group after Modules, with the Mini module in it (`DSLOT`). `DMOD` still lists it for the Overview bento's list.
