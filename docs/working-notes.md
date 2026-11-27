@@ -5,6 +5,17 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+### v3304: a sub-level moves only its content; Your focus always Full
+
+- **Sheet in a sheet on the desk ("I shouldn't transition to another sheet. The content inside should just move left to right, the same way that we handle the questionnaire flow"):** the frame never moves now.
+  - **Going in:** the parent's content slides out to the left and fades (.2s). The sub-page's ground stays clear for that time (`evShSubBg`, a step), then its content slides in from the right (.34s, from .2s on).
+  - **Back:** the sub-page's content goes out to the right and its ground clears (`evShSubX` / `evShSubBgOut`, set by `close`). Then the parent's content comes back in from the left (`evShSubR`, 640 ms).
+  - **A sub-page replacing one that is closing** (a habit drawn again) appears at once, with no second slide (`evShSubQ`).
+  - **Reduced motion:** a fade only.
+  - **Phone and tablet:** stacked as before.
+- **Your focus:** opened with `sh: 'full'` (EvSheet.open's own height), so neither a saved Height (Hug, High) nor a template can make it shorter ("This should be a full bottom, a full sheet"). Its Tweak row is set to Full to match.
+
+
 ### v3303: a sheet in a sheet (sub-page on the desk, stacked on a phone), product sheet H2s, review rail still, avatar tweaks
 
 - **Sheet master (EvSheet.open), general rule:** a sheet opened from a sheet (`o.stack`) behaves by breakpoint ("when there's a sheet inside a sheet on desktop, it should be a sub-navigation automatically at the top, and on mobile, it should be just stacked").
