@@ -5,6 +5,29 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3292: Overview header: a variant for each cell; module demos copy the Overview's whole header group; intro rows +32 on the phone
+
+- **A variant for each cell** (Modules → Overview header). The user asked: "I need the variant for each".
+  - `MODS.moh.demo` is now a getter. It reads each module's own variants when the page is built, so edits on those pages show here.
+  - **Insights · Variant:** the 19 states of Modules → Insights' Collection (`MODS.mins.groups()`), matched by title.
+  - **Insights · Style:** the options of `#stInsEmSty`. It sets that Tweak the way Modules → Insights does: one style for every instance, the Overview's own.
+  - **Schedule · Variant:** `MODS.mbk.groups()` (States and Row variations), by `k`.
+  - **Braze · Variant:** "Meet Concierge · the Overview's", or one of the Braze page's banners.
+  - **Primary card · Step:** the picked card's steps, built by `ohPcSteps(card)` exactly as the Collection builder's State select (`EvPcSteps.list`, Content's step names, phase prefixes).
+  - Every list starts on "As the Overview": the cell as the Overview draws it (the consult's Step 2, Schedule Today, Insights as its Tweaks say).
+  - The step chips are rebuilt when the card changes (the panel's select follows them through EvSegWrap).
+  - A cell's variant rows hide while the cell is Off.
+  - The Braze cell stacks at XS only (`bzXs` was on at S too), as the Overview and the Braze page do.
+- **EvBraze owns the Braze page's banners.** `WK`, `DEF()`, `src(c)`, `view(c)`, `cards()` moved from bzDoc's closures into the master. bzDoc uses `B.DEF` and `B.view`; it keeps IMG / IMGK / VID for its tiles. `cards()` reads `everlab:bzWork2`, else `DEF()`.
+- **The Overview's whole header group in module demos.** The user asked: "make sure the chat field is the same as overview". The phone showed the field as a pill with its spark dot.
+  - Cause: the copy took `#dOver .ovTop` alone.
+  - The real header is every `#dOver` child above the bento: the bar, the greeting (`.dvH1`), and in V3 the field under the greeting.
+  - In V3 that field rides in the bar, as a pill, once the page has scrolled past the services.
+  - `ovHead()` now copies that whole group. Hidden children are skipped first, because V5's `section.ov5` leads and is hidden in V1 to V4. If V3's field is in the bar, it goes back under the greeting while it is copied.
+  - The desk (`skHead`) and the phone / tablet (`skHeadPh`) both use `ovHead()`. Their cache key includes the Overview's version (`#stHdr`), and changing the version copies the group again.
+  - V5 has no group to copy (its header is inside `.ov5`), so its phone header stays empty.
+- **Intro rows +32 on the phone.** The user asked: "content +32 margin top". On XS / phone, the V3 What to expect rows (`.arDbfWt > .arDbcL`) get `padding-top: 32px`. It is padding, so the foot's `margin-top: auto` still holds. The desktop gap is unchanged ("less 16px gap between title group and content").
+
 ## v3291: Modules → Overview header in the Overview's own page (menu, header group); module demos fill the viewport at M · L
 
 - **Overview header in the Overview's page.** The user asked: "Please add the navigation as well for every breakpoint based on the overview layout. And also, the header group should be the same as the overview."
