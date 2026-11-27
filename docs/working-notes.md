@@ -5,6 +5,13 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3301: Your focus sheet opens Full, even over an old saved High
+
+- "full sheet": `tlFoc` has defaulted to `sh:full` since v3296, but a browser with Height saved as High in Tweaks (`#stShtlFoc_sh`, the old master default) kept opening it High.
+  - `focSheet` now moves a saved `high` to `full` once (flag `everlab:tlFocFull`) before opening, then fires `change` so the Tweak is stored too. A Height picked after that is kept.
+  - Checked on dist: with `stShtlFoc_sh = high` and no flag, the sheet opens with `data-sh="full"`. No page errors.
+
+
 ## v3300: phone month chips stack like the desk; hearts 3x slower; tags one by one
 
 - "month should stack on scroll as the desktop": on the Timeline, each month chip (`.t3MoTip`) is sticky inside its month.
