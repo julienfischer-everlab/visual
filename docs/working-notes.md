@@ -5,6 +5,34 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3290: Refer and Earn hearts and dotted 3D heart (EvDotHeart); Focus card sheet on its module page; Primary card content autosaves
+
+- **Avatars + hearts** (Refer and Earn, `v: 'hearts'`). The user asked: "Try this, but with only three avatars." Three real faces: the front one larger, wearing a pill with a heart and $100. The two behind each carry a heart badge. Small Everlab-orange hearts float round them.
+  - The code is `hearts(o)` and the `HRT` path, styled by `.evRefHrt` and `.evRefH0/1/2/Hb/Hp/Hf`.
+  - The pill's ground is `--evRefPill` (#2a2a2c in Dark, #fff in Light), its ink `--evRefPillT`.
+- **Heart · lines / Heart · wireframe** (`v: 'heart'`, `'heartw'`). The user asked: "Can you idea this system with the lines and dots, shaping a heart, like a bit of a 3D heart?"
+  - New master `window.EvDotHeart.mount(canvas, { style: 'lines' | 'wire', ink, node, speed, density, tilt, still })`. It dispatches to `EvDotHeartLines` (threads meeting at the tip) or `EvDotHeartWire` (a turning wireframe).
+  - Both drawers are DPR-aware, pause off screen and hold still under reduced motion. Both size themselves from the canvas's own CSS box (`clientWidth` / `clientHeight`, plus a ResizeObserver).
+  - Refer and Earn mounts one per `canvas.evRefHeartC` as cards appear (MutationObserver), and re-inks it when the colour mode changes.
+  - **Pitfall:** the page has a global `canvas{position:fixed;inset:0}` rule (line ~45, for the particle background). Any canvas without its own position goes full-screen.
+    - The heart did exactly that. It drew across the whole page, over the menu's logo ("What is this image here on the top left? This should be a type of visual centre.").
+    - `.evRef .evRefHeartC` is now `position: absolute; inset: 0` inside its 236-wide `.evRefVis` panel, so the heart is centred in the card's right side.
+    - Every new canvas needs its own position rule.
+- **Refer and Earn fixes** (from the verification pass):
+  - Light XS phone frame: `body.light .moSkPh` takes the app's Light ground and status ink.
+  - Light rail anatomy colours.
+  - Floating faces: F2 at 70/10 and F3 at 80/62; on a narrow card, 52/10 and 58/46.
+  - Container queries: `.evRef` has `container-type: inline-size`, and the narrow rules read the card's own width (420 / 440 / 380), not the viewport's.
+  - The iso variation's words keep 186 px of room (148 on a narrow card).
+- **Focus card: the sheet on its module page.** The user asked: "Can you also show the sheet when you click on CTA?"
+  - On Modules → Focus card, the card's CTA opens the Timeline's own Focus sheet (`window._t3Act(a, { host, title })` → `evOpen`).
+  - The sheet is hosted in `#moShHost`, a fixed layer under the top bar. It is phone-width at XS, tablet-width at S, and full width on the desk.
+- **Primary card builder: Content autosaves.** The user asked: "Can you just auto-save the thing here? I don't want to save every time. I want to change the copy, and the copy changes automatically on the screen."
+  - The Save content button is gone. Every keystroke, toggle and Reset commits at once (`autoC` → `commit(o, st)`) to `everlab:pcContent`.
+  - The status reads "Saved · this state on every page" (or "this card").
+  - The commit is synchronous on purpose. A 350 ms timer fired seconds late on this heavy page.
+  - The input listener is registered once, inside `if (!cn._pcc)`, after the handler that writes the draft.
+
 ## v3289: Modules → Overview header (new); Refer and Earn H2, one sentence, avatars in front / behind
 
 - **Overview header** (`MODS.moh`, `ohDraw`, first in the Modules list). The user asked: "CREATE A Module Overview header … Inisght top right ON OFF, Schedule Bottom right ON OFF, Braze ON OFF" (sketch: a big card top left, two stacked cards on the right, one full-width card under them).
