@@ -5,6 +5,33 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3295: the heart's place, Heart + faces, Step nested, cards centred, Focus sheet tabs
+
+- **Refer and Earn heart** ("where is the position heart ?", "Add tweak to relocate in the card and rotate/ incline", "Need to bleed", "and add more line in the heart").
+  - The heart had stopped drawing on v3293/v3294: `.evRefVis{align-self:center}` left its absolute panel 0 px tall. It is now `align-self: stretch` for hands, iso, hearts, heart and heartw.
+  - EvDotHeart takes `x, y, rot, tilt, scale` and has `set(o)` to change them live. The old `tilt` (the pose angle) is now called `turn`. The lines heart has denser top threads, with `density`, `top`, `reach` and `fade` options.
+  - `EvRefer.heart` holds `get`, `set`, `reset` and `DEF`. One setup, `everlab:refHeart`, is read by `hMount` on every page and every remount, including after a colour-mode change. The default bleeds off the right and the foot: `{x:.2, y:.2, scale:1.6}`. The lines heart now mounts with `density: 1, top: .9`.
+  - Modules → Refer and Earn has a **Heart** group: Position X, Position Y, Rotate, Incline, Size and Reset. It shows only for Heart · lines and Heart · wireframe, and changes every heart live.
+- **Heart + faces** (`heartav`; "Add this variation. Obvously visual transparent."). Eight dotted SVG threads drift along a heart with white nodes on it. Four faces sit on its outline: team1 and two friends at 40, the main friend at 62 on the right. There is no ground of its own.
+  - Desk: the visual is 236 wide, padding-right 196.
+  - Narrow card (≤ 440): the visual is 144 wide, padding-right 148, faces 30 and 44, so it never covers the words.
+- **Step under Card** ("Indentation on Step"). EvDocPanel adds `.dpRowIn` (`padding-left: 22`, so the label sits 12 in) when a row's control has `data-dpin`. `tkRow` writes it from `{in: 1}`. The moh Primary card Step uses it.
+- **Primary card centred vertically** ("center vertically as well").
+  - The Top radial rule that forced `justify-content: flex-start !important` now skips `.pcmMini`. A Mini module on Top radial is centred; radFit doesn't place its words, it only sets the picture to 75% of the card's height.
+  - At XS · S the card is a grid, so `align-content: center !important` does the same for non-radial and Mini cards.
+  - Other Top radial cards keep radFit's placement.
+- **Focus card See details**: three tabs, Doctor notes · Your goals · Habits.
+  - Your goals uses the Doctor note step's goal card (`glDrCard`).
+  - Habits uses the report's habit list (`docHabs`). Its sheets stack over the Focus sheet (`arHabExt`), and dark follows the theme only (`extCls`, `habDk`).
+  - Closing the Focus sheet closes any habit sheet on it.
+- Already in the tree from before this note: the Action plan skeleton (`EvOvSk.ap`), the wide card picture on the right fading to the left, mobile spacing (+16 under the Title group and CTA, 8 less between them), non-radial cards centred, and Anatomy / Used in removed from Sub-page modules.
+- Checks on dist:
+  - hrt: Heart group shown for heart, hidden for heartav; sliders save `everlab:refHeart`; Reset restores the default; 4 faces and 8 threads; no overlap at XS.
+  - bjc: an L radial Mini card is centred (`jc` center).
+  - ohtk, re3: unchanged.
+  - No page errors.
+
+
 ## v3294: Braze page in the modules' viewport (one breakpoint at a time); the Sheet's header gradient never washes its title; no dots behind a mini card; the bento skeleton over a module
 
 - **Braze page** ("Just use the same veiwport as all module... Per breakpoint"):
