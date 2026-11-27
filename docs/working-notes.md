@@ -5,6 +5,26 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3288: Refer and Earn: the hands give the card; Isometric variation (halftone style)
+
+- The user said "use cloud dot hand shape and the membership card but mini", "More precision on the hands. Should feel like someone give to someone" (the N26 card) and "try this style" (isometric tiles with dotted shadows, and a stack with an orange $ coin).
+- **Hands** are redrawn from a skeleton: each finger is a chain of tapered joints (scratch generator `hands2/geo.py`, `s4.py`).
+  - The giver reaches down from the top. We see the back of the hand, with four fingers bent over the card's top edge. Their nails sit on the card's face and the thumb is behind it.
+  - The receiver comes up from the foot, palm up under the card, with its thumb on the card's face.
+  - The membership card is mini: 62 × 39 in a 210 × 200 drawing.
+  - Each hand and the card cast a halftone shadow: dots at 30% of the card's ink, offset (−6, 7).
+  - Each palm is an open outline drawn after its fingers, so the finger bases disappear under it with no seams.
+- **Isometric** (`v: 'iso'`, new):
+  - A stack of four membership cards drawn in the ground plane (`matrix(.866 .5 -.866 .5 …)`), the top one being the Everlab card.
+  - An orange $ coin on top.
+  - Two friends' tiles on the ground, linked to the stack. Upright badges on the links: a tick for joined, a + for invite.
+  - Dotted rims between the layers, dotted shadows, and a few small floating tiles.
+- **Master** (`EvRefer`):
+  - Both drawings use classes (`.evRefArt .f .l .m .a .t .d .g .c .cr .ct .k`), so their colours come from the card: `--kBg`, `--evRefAcc`, currentColor.
+  - `art()` gives each drawing its own halftone pattern id (`evRfDt<n>`). `EvRefer.iso()` is exported next to `hands()`.
+  - Both use Secondary - Surface. The visual is 236 wide at the card's full height. Below a 440 px card (container query on the card), it is 176 wide with 124 px kept clear for the words.
+- Module page: the Visual select now lists five options (Isometric added). The page line and the anatomy are updated.
+
 ## v3287: Primary card picker matches the card; Refer and Earn title H3
 
 - "On the module, this image on the right is selected, but I have another image on the card, so try to fix this." Modules → Primary card shows the card inside a live copy of the app (`iframe.moSkLiveF`, `#ov-live`). That copy keeps its storage in memory and only holds the `*Master` setups, so it has no picture picks. Its own PcMedia was repainting our card copy (`.hpOvCard.moLvMine`) with the card's default picture (Dr Steven's photo for the Onboarding consult).
