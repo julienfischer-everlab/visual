@@ -5,6 +5,15 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3318 · The journey cards back; the primary card goes wide while phase 1 is open
+
+"Keep the cards that you have before." Then "In this case, the primary card should take the horizontal format with the two columns."
+
+- **Journey grid**: the v3316 cards are back (the tile function, gridJ, the grid's aria label, its note and the `.jnTile` / `.jnT-*` rules, restored from the previous commit). The orb rules go back to the Overview's Insights card alone. `window.EvOrb` and the orb size tokens (`--ioSz` …) stay: insList still reads the master.
+- **Wide primary card on the Overview** (`html.ovP1Wide`): while phase 1 is open, if the bento has two columns (M, L, Auto wide) and nothing visible beside the primary card, the card spans both columns and takes the Overview header module's wide layout. The words sit in the left half, left aligned and 32 further in, with the visual (mini timeline, picture) centred in the right half. The `ohWide` rules are shared: their prefix is now `:is(.ohB.ohDk.ohWide > .ohPc, html.ovP1Wide #dOver > .dvTop) > .hpOvCard`.
+- `wide()` (EvJourney, next to `gate()`) measures on the next frame after the gate, any change, a resize and a breakpoint switch. With the services 2×2 showing, the card keeps its column.
+- Checked on dist: services on (one column), services off (944 wide), phase 1 filled (back to one column), XS (one column), L (wide); the header module's wide card unchanged; the cards' values and menu; no page errors.
+
 ## v3317 · Phase 1 gates Insights and Schedule; the journey grid wears the activation orbs
 
 "The Insights is totally hidden. The widget and the schedule are totally hidden when the user didn't fill phase 1 of the overview activation card. The overview, by default, uses the activation card." Then "the grid of the four-tile grid that I use in the activation system", with the Insights orbs screenshot.
