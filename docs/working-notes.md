@@ -5,6 +5,18 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3320 · Modules → Primary card: a Primary card types page (Service, Journey)
+
+"I would like to document the different types of primary cards we have ... Service-based ... More like a journey ... That's it for now: only two types. Call that primary card type in the dropdown of the module primary card."
+
+- **Page**: the module's page select gets **Primary card types** (`ty`) after Collection builder (before Collection, Canvas and the cards). `mopSet` accepts `ty` when the module has `types`, and `tyUi(v)` draws it into `.moTy` in the page box: a lead line, then a section per type (`biSec`, `DH.sec`). Each section has a real card drawn by the module's own `M.draw` (at the page's breakpoint width) beside its rules table (`biTbl`), then a "Not typed yet" line. It is drawn again on every redraw (`draw()` ends with `mopSet`).
+- **`MODS.mhp.types()`** holds the two types, the master list:
+  - **Service** ("One service and its steps"): follows one service from booking to its results. One step shown at a time, no phases. The look is Thumbnail: the service's picture in the middle, and the same picture blurred at the top right behind the card. Never a mini card or phases. Cards: DEXA Scan, MRI Scan, Microbiome & Gut Health, Advanced Blood Testing. Drawn: MRI's first step.
+  - **Journey** ("Phases, across services"): follows a journey phase by phase; Activation is the first. Its phases are listed live from `EvPcSteps.phases('bj')` with their step names (numbers stripped) and phase names. The look is a background picture with radial gradients (Top radial) and a mini card inside with the phase's milestones (Mini module · Timeline to-do). Drawn: Book a blood test.
+  - **Not typed yet**: Onboarding consult, Freemium · Explore, Doctor's plan, Check-in (every group in neither list).
+- The cards are drawn as the app draws them (their saved style). The types document; they don't yet force a card's look.
+- Checked on dist: the select (Collection builder, Primary card types, Collection, Canvas, …), both cards drawn, the rules and phases, the card sections hidden while it shows; no page errors.
+
 ## v3319 · Overview header: Card, Step and the cells' properties only; the picks win over a persona
 
 "I want the activation module that can take a lot of different forms. But I don't want to manage the [forms]. I just want to select which step, which card is the primary card, and what property I have for each module, like insights and schedule." Asked: the page is Modules → Overview header, and "My picks win".
