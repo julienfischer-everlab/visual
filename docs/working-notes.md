@@ -5,6 +5,35 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3328 · Refer and Earn: Blood variation (the link only) and the grid's Position X; services at XS · S: a round picture beside the title; Vertical centred; tiles lit on the tile
+
+"Create a variation using this colour. Forget about the big CTA, just keep the link." "Create an x-axis position so I can push on the right a little bit more. Create a tweak for that." "When it's vertical view, the content should be centred. Also, small thing: when you activate a card, it should be on the card, not on the image. The border: blue, and make this content regular-size font." "For service, the image should be smaller on X by 16px, should be fully rounded, and should be placed on the right side of the title group. The gap between the title group and the image should be 24px."
+
+- **Card master, Blood look**:
+  - `['blood', 'Blood', 'Brand', …, 'bg/brand/blood/primary/100']` (#280707, the colour in the screenshot), next to Earth.
+  - Its words are white in both modes (`--kInk: 255,255,255`).
+  - The faces are ringed in its ground (`--evRefRing`, as Earth).
+- **Refer and Earn**:
+  - Background gets a third option, Blood. On Blood the CTA is always the link with its arrow, never the button. The link is white in Light too.
+  - The module's saved `bg: 'blood'` reaches every Refer card (`EvRefer.html`).
+  - **Bubble grid → Position X**: -40 to +120 px, 0 by default. It moves the whole grid, its radial fade with it.
+    - `.evRefBubs` translate is `calc(-8px + var(--evRefBbX, 0px))` (-12 on a narrow card).
+    - Live on the demo; kept by the top bar's Save (`everlab:moDemo:mre`, `bx`); every Refer card follows it.
+- **Services at XS · S** (`.hpOvObj`, or a card with a saved picture, not the Activation card):
+  - The picture is 16 smaller (80 to 64; 118 to 102 at S) and round (`--pcVisR: 50%`, the saved picture too).
+  - It sits beside the Title group, top aligned, across its rows (`grid-row: 1 / span 3`), in the grid's second column, 24 apart (the column gap).
+  - The Title group (or its bare eyebrow, title and line) stays in column 1 with no padding at its right. The CTA goes under both, across the card.
+- **Vertical, centred**: the live copy's saved picture (`.pcMediaV`) came with the place measured on the demo's card. That card is 528 wide, the copy's bento cell narrower, so the picture sat right of centre.
+  - `lvPlace(top)` lays it again on the copy's own visual (its `offsetLeft`, `offsetTop`, size) after every sync, and again on resize (a ResizeObserver on the bento).
+- **Tiles**:
+  - Lit on the tile itself: a 1.5 blue border (`--segOnFg`, inset) on the tile, no ring on its picture.
+  - Names in regular weight (were 500, 600 when lit).
+- Checked on dist:
+  - XS: DEXA and MRI 64 round, top-aligned with the title, 24 apart. S: 102.
+  - Blood: #280707, white words and link in Dark and Light; Position X +60 moves the grid.
+  - A misplaced copy picture re-centred on its card.
+  - No page errors.
+
 ## v3327 · Primary card types: Plan recommendation (the doctor's plan, its products inside)
 
 "You can create a new type of card: Plan recommendation card. You can use the doctor one for this one, and instead of the mini card, you can have a list of products inside."
