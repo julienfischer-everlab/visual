@@ -5,6 +5,22 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3325 · One size for every service visual in the horizontal card, pushed 32 right; card types panel: Cards under the switch, the doc larger
+
+"Make sure you keep the same image as the hero image ... just remove the subtitle in this card and centre the content in this card." "Why does this primary card have a different size of the service image? ... Also, push the image 32px on the right side when the card is horizontal like this." "Put the count selection just below the primary count type, and then documentation below. For the documentation, just use regular font more and increase the size of the text."
+
+- **Why the sizes differed**: in the horizontal card only a card with a thumbnail (`> img.hpObjPic`) got `--pcVis: 150px`. The Onboarding consult's visual is the sphere (`canvas.hpSph`), so it stayed 118, and so did a picture laid on it (`.pcMediaV` takes its target's box).
+  - Now the wide rule covers `:has(> :is(img.hpObjPic, canvas.hpSph, .pcMediaV))`, and `.pcMediaV` is `var(--pcVis)` square there (!important, so a size measured before never sticks).
+  - Checked on Overview header: consult, MRI, DEXA, Microbiome and Blood test all 150.
+- **Pushed 32 right**: in the horizontal card, `.hpObjPic`, `.pcMediaV` and `canvas.hpSph` sit at `left: calc(75% + 32px)`. The selector is `.hpOvCard.hpOvCard` because the shared visual rule's `:is()` counts `.hpActB.evMiniW` and won at equal !important. The mini card and the avatars stay at 75%.
+- **Tiles**:
+  - The picture is the card's hero: `PcMedia.pic(o, st)` (new export) returns the saved picture the card shows at that step (its step, its phase, the card). Else the card is drawn unseen.
+  - `tySync` then copies whatever picture the drawn card actually shows onto the lit tile, at 450 and 1600 ms, for pictures that load late.
+  - No step subtitle any more. Content centred.
+- **Panel order**: Primary card type, then Cards, then Documentation.
+- **Documentation text**: 14/20 (was 12/17) in regular weight; dt regular too (was 500), bolds at 500 (was 600). The label column is 76.
+- Checked on dist: group order, 14px regular, five tiles with no subtitle, all centred, no page errors.
+
 ## v3324 · Wide service thumbnail +32; Primary card types: cards as a picture grid, the panel in three Tweaks cards
 
 "Increase the image by 32px when the card is horizontal like this, for a service type." "Create a grid of three ... a mini image inside as well, and a selected active state as well: a blue active state, the same as we have here, but more like a grid." "Put the doc in documentation in a Tweak card style. Put the cards also in a tweak card style."
