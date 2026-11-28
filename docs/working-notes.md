@@ -5,6 +5,21 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3331 · Hero card sets the User journey grid (no Auto); no Persona in the top bar
+
+"And remove the auto here. The goal on this persona is to actually put all of the grid on and off based on the card of the phase. That's the goal." "You can remove the persona on the top here."
+
+- **Hero card** (`#jnHero`): no Auto option. A pick calls `heroPick(k)`, which sets the grid to that card's moment (`HPRE`): the steps before it done, its own to do, those after it not yet. It also clears the blood test date and sets Other insights.
+  - book: records Captured, blood Not provided, questionnaire To do.
+  - book-old: the same with blood 6+ months.
+  - life: blood Under 6 months, questionnaire To do.
+  - more and more-unk: blood and questionnaire done, records Not captured or Unknown (phase 1 open again).
+  - ready: everything done. other: everything done, 3 other insights. plan: everything done, wearable connected, 3 insights.
+  - The cards with no journey state of their own stay picked over the grid's (the summary says forced): Connect a wearable, Required information shared, Blood test booked, Your plan.
+- **The grid changed by hand** (any `set` but the hero, Membership and Schedule): `hero` goes back to `auto` and the card follows the grid. The select shows the card the grid gives (`J.hero.auto`).
+- **Persona**: the top bar's Persona group (`#persGrp`) is hidden. The journey edits the persona in use, always one: a saved None (`st.cur === ''`) loads as the first persona.
+- Checked on dist: every pick sets the grid and draws its card. Picking Book a blood test, then marking the blood test done, moves the card to Lifestyle questionnaire. No Persona in the top bar, no Auto option, no page errors.
+
 ## v3330 · User journey: a Schedule On / Off tile; Membership a row of its own
 
 "On the overview, can you have an on and off on the schedule widget? ... Put the top card, just that, to fill one row that has the membership."

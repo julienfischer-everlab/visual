@@ -3996,6 +3996,11 @@ window.EvJourney = (function () {
     ['ready', 'Historical result record received', 'ready'], ['other', 'Other insights ready', 'deep', 'Deeper insights ready'],
     ['booked', 'Blood test booked', 'booked'], ['plan', 'Your plan', 'plan']];
   var HKM = {}; HK.forEach(function (h) { HKM[h[0]] = h; });
+  /* each hero card's moment on the grid (the steps done before it, its own to do, those after it not yet): picked, the grid takes it; the cards with no journey state of their own (Connect a wearable, Required information shared, Blood test booked, Your plan) stay picked over the grid's own */
+  var HPRE = { book: { rec: 'yes', blood: 'none', lsq: false, wear: false, ins: 0 }, 'book-old': { rec: 'yes', blood: 'old', lsq: false, wear: false, ins: 0 }, life: { rec: 'yes', blood: 'recent', lsq: false, wear: false, ins: 0 },
+    more: { rec: 'no', blood: 'recent', lsq: true, wear: false, ins: 0 }, 'more-unk': { rec: 'unknown', blood: 'recent', lsq: true, wear: false, ins: 0 }, wear: { rec: 'yes', blood: 'recent', lsq: true, wear: false, ins: 0 },
+    shared: { rec: 'yes', blood: 'recent', lsq: true, wear: false, ins: 0 }, ready: { rec: 'yes', blood: 'recent', lsq: true, wear: false, ins: 0 }, other: { rec: 'yes', blood: 'recent', lsq: true, wear: false, ins: 3 },
+    booked: { rec: 'yes', blood: 'none', lsq: false, wear: false, ins: 0 }, plan: { rec: 'yes', blood: 'recent', lsq: true, wear: true, ins: 3 } };
   var BJN = function (k) { var r = (window.EvPcBj || []).filter(function (x) { return x[0] === k; })[0]; return r ? r[1].replace(/^\d+\s*·\s*/, '') : k; };
 
   /* ---- the store ---- */
@@ -4007,7 +4012,7 @@ window.EvJourney = (function () {
     o.ins = { other: I0.other != null && isFinite(+I0.other) ? Math.max(0, Math.min(5, Math.round(+I0.other))) : ['adv1', 'adv2', 'adv3', 'adv4', 'adv5'].filter(function (k) { return I0[k] === 'ready'; }).length }; return o; };
   var load = function () { try { var s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s && Array.isArray(s.list) && s.list.length){ s.list = s.list.filter(function (p) { return p && p.id; }).map(function (p) { return { id: String(p.id), name: String(p.name || 'Persona'), j: norm(p.j) }; }); if (s.list.length) return { list: s.list, cur: s.cur === '' || s.list.some(function (p) { return p.id === s.cur; }) ? s.cur : s.list[0].id }; } } catch (e){}
     return { list: [{ id: 'p1', name: 'Persona 1', j: DEF() }], cur: 'p1' }; };
-  var st = load();
+  var st = load(); if (st.cur === '' && st.list.length) st.cur = st.list[0].id;   /* no None any more (its picker is gone from the top bar): a persona always in use */
   var save = function () { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e){} };
   var uid = function () { return 'p' + Date.now().toString(36) + Math.floor(Math.random() * 1296).toString(36); };
   var freeName = function (b) { var n = 1, nm; do { nm = (b || 'Persona') + ' ' + n++; } while (st.list.some(function (p) { return p.name === nm; })); return nm; };
@@ -4018,7 +4023,8 @@ window.EvJourney = (function () {
   var rename = function (id, nm) { var p = st.list.filter(function (x) { return x.id === id; })[0], v = String(nm || '').trim().slice(0, 40); if (!p || !v) return false; p.name = v; emit(); return true; };
   var dup = function (id) { var p = st.list.filter(function (x) { return x.id === id; })[0]; if (!p) return null; var c = { id: uid(), name: freeName(p.name + ' copy'), j: norm(JSON.parse(JSON.stringify(p.j))) }; st.list.splice(st.list.indexOf(p) + 1, 0, c); st.cur = c.id; emit(); return c; };
   var del = function (id) { if (st.list.length < 2) return false; var i = st.list.findIndex(function (x) { return x.id === id; }); if (i < 0) return false; st.list.splice(i, 1); if (st.cur === id) st.cur = st.list[Math.max(0, i - 1)].id; emit(); return true; };
-  var set = function (k, v) { var p = curP(); if (!p) return; if (/^ins\./.test(k)) p.j.ins[k.slice(4)] = v; else p.j[k] = v; p.j = norm(p.j); emit(); };
+  var set = function (k, v) { var p = curP(); if (!p) return; if (/^ins\./.test(k)) p.j.ins[k.slice(4)] = v; else p.j[k] = v; if (k !== 'hero' && k !== 'mem' && k !== 'sch') p.j.hero = 'auto'; p.j = norm(p.j); emit(); };   /* the grid changed by hand: the hero card follows it again */
+  var heroPick = function (k) { var p = curP(), o = HPRE[k]; if (!p || !o) return; ['rec', 'blood', 'lsq', 'wear'].forEach(function (f) { p.j[f] = o[f]; }); p.j.bloodDate = ''; p.j.ins = Object.assign({}, p.j.ins, { other: o.ins }); p.j.hero = k; p.j = norm(p.j); emit(); };   /* a hero card picked: the grid set to its moment */
 
   /* ---- the rules ---- */
   var monthsAgo = function (d) { var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(d || ''); if (!m) return null; var n = new Date(), y = +m[1], mo = +m[2] - 1, da = +m[3]; return (n.getFullYear() - y) * 12 + (n.getMonth() - mo) - (n.getDate() < da ? 1 : 0); };
@@ -4161,7 +4167,7 @@ window.EvJourney = (function () {
       var ps = $('persSel'); if (ps){ ps.innerHTML = st.list.map(function (x) { return '<option value="' + esc(x.id) + '">' + esc(x.name) + '</option>'; }).join('') + '<option value="">None · Tweaks</option>'; ps.value = st.cur; }
       sv('jnMem', j.mem); sv('jnRec', j.rec); sv('jnWear', j.wear ? 'yes' : 'no'); sv('jnLsq', j.lsq ? 'yes' : 'no'); sv('jnBlood', J && j.bloodDate ? (J.steps.blood.done ? 'recent' : 'old') : j.blood);
       var dt = $('jnBloodDt'); if (dt && dt.value !== j.bloodDate) dt.value = j.bloodDate; var dx = $('jnBloodDtX'); if (dx) dx.hidden = !j.bloodDate; var bs = $('jnBlood'); if (bs){ bs.disabled = !p || !!j.bloodDate; bs.title = j.bloodDate ? 'From the blood test date' : ''; }
-      sv('jnInsN', String(j.ins.other)); sv('jnHero', j.hero);
+      sv('jnInsN', String(j.ins.other)); sv('jnHero', j.hero === 'auto' && J ? J.hero.auto : j.hero);   /* no Auto: the card the grid gives */
       document.querySelectorAll('#tkJnyGrp select, #tkJnyGrp input, #tkJnyPvGrp select').forEach(function (x) { if (x.id !== 'jnBlood') x.disabled = !p; });
       document.querySelectorAll('#tkJnyGrp .tkRow, #tkJnyPvGrp .tkRow').forEach(function (r) { r.classList.toggle('jnOff', !p); });
       var sm = $('jnSum'); if (sm) sm.innerHTML = sumHtml();
@@ -4184,7 +4190,7 @@ window.EvJourney = (function () {
     on('jnWear', 'change', function (e, x) { set('wear', x.value === 'yes'); }); on('jnLsq', 'change', function (e, x) { set('lsq', x.value === 'yes'); });
     on('jnBlood', 'change', function (e, x) { set('blood', x.value); }); on('jnBloodDt', 'change', function (e, x) { set('bloodDate', x.value || ''); });
     on('jnBloodDtX', 'click', function () { set('bloodDate', ''); });
-    ['jnGridJ'].forEach(function (id) { var g = $(id); if (g) g.addEventListener('click', function (e) { var m = e.target.closest('[data-jm]'); if (m){ e.stopPropagation(); tmOpen(m, m.dataset.jm); return; } var t = e.target.closest('[data-jt]'); if (t && !t.closest('.jnLock')) cycle(t.dataset.jt); }); }); on('jnHero', 'change', function (e, x) { set('hero', x.value); });
+    ['jnGridJ'].forEach(function (id) { var g = $(id); if (g) g.addEventListener('click', function (e) { var m = e.target.closest('[data-jm]'); if (m){ e.stopPropagation(); tmOpen(m, m.dataset.jm); return; } var t = e.target.closest('[data-jt]'); if (t && !t.closest('.jnLock')) cycle(t.dataset.jt); }); }); on('jnHero', 'change', function (e, x) { heroPick(x.value); });
     on('jnInsN', 'change', function (e, x) { set('ins.other', +x.value); });
     var b = $('persMore'), m = $('persMenu');
     if (b && m){ b.addEventListener('click', function (e) { e.stopPropagation(); menuOpen(m.hidden); });
