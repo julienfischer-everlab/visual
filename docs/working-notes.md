@@ -5,6 +5,14 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3322 · Onboarding consult is a Service card
+
+"The onboarding consult is a service."
+
+- `MODS.mhp.types()`: Onboarding consult joins the Service list (`SV`), first. The Primary card types panel now reads Cards: Onboarding consult, DEXA Scan, MRI Scan, Microbiome & Gut Health, Advanced Blood Testing. Not typed yet: Freemium · Explore, Doctor's plan, Check-in.
+- Its look is still its own saved style (sphere, ring): the types document, they don't force a look yet.
+- Checked on dist: the panel's Cards row and the Not typed yet line; no page errors.
+
 ## v3321 · Primary card types: the builder's frame in the viewport, the switch and the doc in the panel
 
 "That needs to be only one element in the centre of the screen ... It should be in the overview skeleton here with the menu. You can use the same page in the overview that you have on the collection builder ... on the right panel, you have a switch, like service or journey ... below on the panel, you can document the thing ... I don't want to see any documentation on the viewport. The viewport is the real case scenario."
