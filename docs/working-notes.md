@@ -5,6 +5,28 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3326 · Primary card types: Format tweak (Horizontal / Vertical)
+
+"Also, create a tweak that formats horizontally or vertically. When it's horizontal, keep it like this. When it's vertical, just simulate a bento, and then put the card on the left side and two other cards on the right side of the bento. Just skeleton."
+
+- **The row**:
+  - Format (Horizontal / Vertical) sits under Type in the Primary card type Tweaks card.
+  - Saved in `everlab:moTyF`; Horizontal by default.
+  - `tyF()` reads it; `tyFmt(sync)` lights the switch and sets the skeleton (and with `sync`, the live copy).
+- **The live Overview** (the demo's copy, `skLive` / `lvSync`): on that page `lvSync` sets `data-ov-fmt` on the copy's `<html>`; off it, the attribute is removed.
+  - **EvJourney's `wide()`**: `data-ov-fmt` wins over the phase-1 reading.
+    - `h`: `ovP1Wide` wherever the bento has two columns. The card spans the bento and the shared wide rules apply.
+    - `v`: never wide.
+    - A MutationObserver on the attribute redraws it.
+  - **Vertical**: every other cell of the bento is hidden (`data-lv-hid`, put back on the next sync) and `.moLvSk` (two `.moPlSk` cells, stacked, stretched to the card's height) goes right after the card.
+  - The Insights widget clone (`moLvIns`) is skipped on that page in both formats.
+- **The skeleton under the copy**: Horizontal (`.moSk.moSkFmtH`) gives the card slot the grid's width and hides the `.moPlCol` skeletons. Vertical is the skeleton's own bento.
+- Checked on dist:
+  - Horizontal: card 944 of 944, wide.
+  - Vertical: card 462 with two skeletons 462 wide, and the same after picking DEXA.
+  - Back to Horizontal, then leaving the page: the attribute is gone and the copy is its own again.
+  - No page errors.
+
 ## v3325 · One size for every service visual in the horizontal card, pushed 32 right; card types panel: Cards under the switch, the doc larger
 
 "Make sure you keep the same image as the hero image ... just remove the subtitle in this card and centre the content in this card." "Why does this primary card have a different size of the service image? ... Also, push the image 32px on the right side when the card is horizontal like this." "Put the count selection just below the primary count type, and then documentation below. For the documentation, just use regular font more and increase the size of the text."
