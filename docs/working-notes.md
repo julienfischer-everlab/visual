@@ -5,6 +5,18 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3330 · User journey: a Schedule On / Off tile; Membership a row of its own
+
+"On the overview, can you have an on and off on the schedule widget? ... Put the top card, just that, to fill one row that has the membership."
+
+- **Schedule tile** (`gridJ`, key `sch`, a calendar icon): On (green) or Off. A click flips it; its ··· menu offers On and Off.
+  - The persona keeps it as `j.sch` (`norm`: on unless switched off), saved with the persona.
+  - EvJourney's `apply` calls `schSync(on)` on the Bento's slots (Tweaks, Bento: `stBm1`, `stBm2`). Off takes Scheduled out of its slot (`none`). On puts it back in the free slot, else the second.
+  - The Bento's own change handler does the rest (`bmSched`, `stBkObj`).
+  - Phase 1 still hides Schedule whatever the switch (`ovP1Open`).
+- **Membership**: the grid's first row, across its three columns (`order: -1`), 64 tall, its icon at the left and its name and value beside it. The six others sit in two rows of three: Health profile, Past records, Blood test / Questionnaire, Wearable, Schedule.
+- Checked on dist with Past records Captured (phase 1 done): Schedule On shows the widget (`bm2 = sched`), Off removes it (`none`), On again shows it. No page errors.
+
 ## v3329 · Horizontal card: the background picture 75% wide, a radial fade
 
 "Okay, do a small radial and then cover more than this at the moment. The image should cover like 75% and then fade out as a radial gradient on the left side."
