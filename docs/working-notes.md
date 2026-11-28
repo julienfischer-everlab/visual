@@ -5,6 +5,20 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3323 · Primary card types: the type's cards as a list in the panel, the one shown lit
+
+"Here, below, you can put the list of different cards that are part of the collection on the module ... For the service, you can list all of the services as a list and have an active state on the service that is activated, and you can see it on the screen."
+
+- `MODS.mhp.types()`: each type now has `cards` (from the collection: `{ n, x }`, `x` being the group item drawn) and a `def`.
+  - **Service**: every service at its first step (Onboarding consult, DEXA Scan, MRI Scan, Microbiome & Gut Health, Advanced Blood Testing), MRI by default.
+  - **Journey**: Activation on Book a blood test.
+  - The Cards and Shown rows are gone from the rules: the list says both.
+- **Panel**: under the rules a "Cards" list (`.moTyLs`, a listbox of `.moTyLi` buttons): the card's name and the step shown. The one in the viewport is lit with the switch's own tokens (`--segOn`, `--segOnFg`).
+  - A click shows that card in the skeleton. The pick is kept per type (`everlab:moTyC:svc` / `:jny`) and read by `tyC(t)` / `tyEx()`.
+  - Focus returns to the item only on a keyboard pick (`e.detail === 0`), so a click leaves no ring.
+- Fix on the way: the lit state compared two copies of the type list (each `M.types()` call builds new objects). `tyDoc` now picks the type and its card from the same list.
+- Checked on dist: each service drawn in turn (consult, DEXA, MRI, Microbiome, Blood testing), the pick kept across a Journey round trip, Journey's one card, a real mouse click (lit, no ring); no page errors.
+
 ## v3322 · Onboarding consult is a Service card
 
 "The onboarding consult is a service."
