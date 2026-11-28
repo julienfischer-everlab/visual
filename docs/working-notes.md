@@ -5,6 +5,17 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3329 · Horizontal card: the background picture 75% wide, a radial fade
+
+"Okay, do a small radial and then cover more than this at the moment. The image should cover like 75% and then fade out as a radial gradient on the left side."
+
+- In the shared wide rules, the card's background picture (`.pcMediaFull`, `.pcMediaCov`) is 75% of the card (was 70%).
+- Its mask is a radial instead of the straight fade:
+  - `radial-gradient(ellipse 100% 135% at 100% 50%, …)`, an ellipse from the right edge's middle.
+  - Full until 46%, then easing out (.74, .42, .14) to nothing at its left edge.
+  - The right side stays whole top to bottom; the left fades in a curve.
+- Checked on dist: the Activation card, Horizontal, with a picture laid in. Picture 708 of 944 (75%), the radial mask applied, no page errors.
+
 ## v3328 · Refer and Earn: Blood variation (the link only) and the grid's Position X; services at XS · S: a round picture beside the title; Vertical centred; tiles lit on the tile
 
 "Create a variation using this colour. Forget about the big CTA, just keep the link." "Create an x-axis position so I can push on the right a little bit more. Create a tweak for that." "When it's vertical view, the content should be centred. Also, small thing: when you activate a card, it should be on the card, not on the image. The border: blue, and make this content regular-size font." "For service, the image should be smaller on X by 16px, should be fully rounded, and should be placed on the right side of the title group. The gap between the title group and the image should be 24px."
