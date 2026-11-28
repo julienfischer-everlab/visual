@@ -5,6 +5,19 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3317 · Phase 1 gates Insights and Schedule; the journey grid wears the activation orbs
+
+"The Insights is totally hidden. The widget and the schedule are totally hidden when the user didn't fill phase 1 of the overview activation card. The overview, by default, uses the activation card." Then "the grid of the four-tile grid that I use in the activation system", with the Insights orbs screenshot.
+
+- **Phase 1** (`EvJourney.derive(j).p1`): the Health profile done and the past records captured (`rec === "yes"`). "To add" and "To confirm" keep it open. The summary gets a Phase 1 row.
+- **Overview gate**: `html.ovP1Open`, set by `gate()` in EvJourney, hides the Insights section, its carousel, the empty and hero Insights cards and the Schedule card (`.ovBk`) on `#dOver`. With a persona it reads `p1`. Without one it reads the Activation card's step (`stPcObj = bj` and the base step `prof`). The services 2×2 in the Default preset stays: it is the bento's own module, there in both states.
+- **Overview header module**: Activation is the first Card option (the default). While phase 1 is open the Insights and Schedule cells are dropped (the card goes wide, `ohWide`), `root.dataset.p1` reads open or filled, and the panel's Insights and Schedule groups dim (`.jnP1Off`) with a note.
+- **Orb master** `window.EvOrb` (before EvJourney): `ic` (the filled icons: hp, data, past, from the Insights orbs, plus blood, lsq, mem) and the badges `ok`, `dash`, `pr`. insList's Orbs style now reads it, no copy of its own.
+- **The orb rules take the grid too**: every `.insOrb*` rule's prefix is `:is(html.insOrbs body #dOver :is(.ovInsEmpty, .ovInsHeroE), .jnGrid)`. Sizes are tokens with the Overview's numbers as fallbacks (`--ioSz` 64, `--ioIc` 26, `--ioMb` 12, `--ioLf/--ioLl` 15/20, `--ioSf/--ioSl` 13/16), the entrance `--ioIn` (hpOrbIn). The phone's XS rule is unchanged.
+- **Journey grid** (`#jnGridJ`, a list): each card is a `button.insOrb.jnTMain` (filled icon in the circle, its name, its state). The next step is lit (`.on`, the Orb glow, orange with `html.insOrbO`, green otherwise), done ones get the tick and the positive token, processing gets the orange dot, amber is to confirm or out of date. The panel sets 48 orbs, 11/12 type, no entrance (it redraws on every change), and the badge ring on the group's own ground. The ··· menu is unchanged.
+- **Words** are the mini timeline's: Past records Captured / To add / To confirm (the flask), Blood test To provide, Wearable Optional (the watch). The Next / Optional tags are gone: the lit orb is the next step.
+- Checked on dist: the gate with a persona (unknown, no: hidden; yes: shown), without one, and on the header module; the grid's values, lit orb, badges, colours and menu; the Overview's own orbs still drawn from EvOrb (icons, tick, orange dot); no page errors.
+
 ### v3316: Historical result record follows the persona's Past records
 
 - **("Remove that here because we control that on the persona"):** the Historical result record select is gone from Insights · Preview, which keeps Other insights (0–4, 5+) and the Hero card preview.
