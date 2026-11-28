@@ -5,6 +5,18 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3324 · Wide service thumbnail +32; Primary card types: cards as a picture grid, the panel in three Tweaks cards
+
+"Increase the image by 32px when the card is horizontal like this, for a service type." "Create a grid of three ... a mini image inside as well, and a selected active state as well: a blue active state, the same as we have here, but more like a grid." "Put the doc in documentation in a Tweak card style. Put the cards also in a tweak card style."
+
+- **Wide service thumbnail**: in the horizontal card (the shared wide rules: `.ohB.ohDk.ohWide > .ohPc` and `html.ovP1Wide #dOver > .dvTop`), a card with a thumbnail (`> img.hpObjPic`) gets `--pcVis: 150px` (the card's 118 + 32). Back to 118 in the two-column bento.
+- **Cards grid**: the type's cards are tiles, three a row (`.moTyLsI` a 3-column grid).
+  - Each tile (`.moTyLi`) shows a square mini picture (`.moTyLiP`), the card's name (two lines at most) and the step shown.
+  - The picture is the card's own: `tyPic(c)` draws the card unseen with `M.draw` and takes its thumbnail, else its background picture, cached per card. A graphic card with no picture (Onboarding consult's sphere) shows its initials.
+  - Lit: `--segOn` behind it, its name in `--segOnFg`, a 1.5 ring round the picture.
+- **Three Tweaks cards** in the panel on that page: Primary card type (the switch), Documentation (the type's line and rules) and Cards (the grid and Not typed yet). Each is made with `DP.group` and marked `.moTyG`. The rail's `.moTyMode` shows only those (`:not(.moTyG)` hidden), and they are hidden on every other page.
+- Checked on dist: the three cards, the five tiles (four pictures, the consult's initials), a click drawing Microbiome, the builder's own groups back, the wide MRI thumbnail 150 and 118 in two columns; no page errors.
+
 ## v3323 · Primary card types: the type's cards as a list in the panel, the one shown lit
 
 "Here, below, you can put the list of different cards that are part of the collection on the module ... For the service, you can list all of the services as a list and have an active state on the service that is activated, and you can see it on the screen."
