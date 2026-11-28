@@ -5,6 +5,16 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3319 · Overview header: Card, Step and the cells' properties only; the picks win over a persona
+
+"I want the activation module that can take a lot of different forms. But I don't want to manage the [forms]. I just want to select which step, which card is the primary card, and what property I have for each module, like insights and schedule." Asked: the page is Modules → Overview header, and "My picks win".
+
+- **Panel**: the Primary card group keeps Card and the Step tree. The Variant box is gone (Visual center, Type, Mini module, Background, the three Saves, the picture and Use for all of phase N). `tkPut` only lends the persona now. The card's forms are set on Modules → Primary card and drawn here from its saved style. Insights, Schedule and Hero marketing keep their On / Off and variants.
+- **Picks win**: `ohDraw` no longer reads the persona (no J). Card, Step and each cell's variant always apply. No `.jnDrv` greying, `__ohJPress` stays null, and the card is no longer forced through the journey (`withForce`). EvJourney's `live()` and `forCard()` dropped their `lentTo` branch, so a lent persona no longer fills the module's card or mini timeline. The default card is Activation.
+- **Phase 1 here** follows the picked step: Activation on Health profile (`prof`) hides Insights and Schedule and the card goes wide. The panel note says so.
+- **Persona on this page**: only its summary and cards are lent (`lend()` moves `#tkJnyGrp`, no longer `#tkJnyPvGrp`: the Insights preview sets the Overview). The summary's Phase 1 row reads "the Overview hides Insights and Schedule". The Overview is unchanged: a persona still drives it.
+- Checked on dist: persona selected with default picks (Activation, Health profile, wide, Insights and Schedule hidden), step Book a blood test (Insights and Schedule back), card MRI; no Variant box, no greyed rows; the Overview gate and wide card unchanged; no page errors.
+
 ## v3318 · The journey cards back; the primary card goes wide while phase 1 is open
 
 "Keep the cards that you have before." Then "In this case, the primary card should take the horizontal format with the two columns."
