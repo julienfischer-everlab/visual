@@ -5,6 +5,28 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3327 · Primary card types: Plan recommendation (the doctor's plan, its products inside)
+
+"You can create a new type of card: Plan recommendation card. You can use the doctor one for this one, and instead of the mini card, you can have a list of products inside."
+
+- **`types()`**: a third type `{ id: 'plan', n: 'Plan recommendation' }`.
+  - Its cards are the Doctor's plan group's (`drp`, `drd`), named Protocol and Diagnostics; Protocol is the default.
+  - Its rows: Follows, Inside (the plan's products as a list, three shown then "+ N more", where a journey has its mini card), Look, Never.
+  - `L.rest` leaves the Doctor's plan out, so Not typed yet reads Freemium · Explore, Check-in.
+- **Switch**: a third segment, Plan (its title Plan recommendation).
+- **Tiles**: a card painted by CSS (the plan's photo is `--drBg` on the card's `::before`) has no `<img>`. `tyPic` lays the drawn card off screen, reads `--drBg` and takes its URL. Both tiles show their photo: the runner and the hands.
+- **Horizontal**:
+  - In the shared wide rules, the plan's `.hpDrList` sits in the right half, centred at 75% and `min(380px, 42%)` wide, where the Journey's mini card goes.
+  - The words are all left: the header's tag and title (`.hpDrTx`, `.hpFrTag`, `h3.hpFrT`) were still centred.
+  - `.hpDrGo` sits 24 under the words.
+  - A button placed straight in the card (`> .hpOvBtn.evBtn`) keeps the Button master's `--cPx` padding; the wide rule strips every child's padding.
+- **Vertical**: the card as drawn, the list under the words.
+- Checked on dist:
+  - Plan selected, both tiles with photos.
+  - Horizontal: card 944, list centred at 75%, 380 wide.
+  - Vertical: 462, list under the words; Diagnostics the same.
+  - No page errors.
+
 ## v3326 · Primary card types: Format tweak (Horizontal / Vertical)
 
 "Also, create a tweak that formats horizontally or vertically. When it's horizontal, keep it like this. When it's vertical, just simulate a bento, and then put the card on the left side and two other cards on the right side of the bento. Just skeleton."
