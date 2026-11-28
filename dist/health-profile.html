@@ -3983,7 +3983,7 @@ window.EvJourney = (function () {
     products: { none: null, membership: null, p299: null, diag: null } };
   var MEM = [['none', 'None'], ['membership', 'Membership'], ['p299', '299 Protocol'], ['diag', 'Diagnostic']],
     STG = [['not', 'Not started'], ['proc', 'Processing'], ['ready', 'Ready']],
-    HIST = [['proc', 'In progress'], ['rec', 'Received'], ['none', 'No data available']], OTHER = [['0', '0'], ['1', '1'], ['2', '2'], ['3', '3'], ['4', '4'], ['5', '5+']],
+    OTHER = [['0', '0'], ['1', '1'], ['2', '2'], ['3', '3'], ['4', '4'], ['5', '5+']],
     STEP = { hp: 'Health profile', blood: 'Blood test', lsq: 'Lifestyle questionnaire', rec: 'Past records', wear: 'Wearable' };
   /* the hero cards (HK) by journey moment: [key, name, the Activation card state it draws (EvPcBj), the HK it borrows when it has none of its own]; bj null: no HK, drawn as Missing, never another card ("Make missing mappings explicit instead of inventing content or silently showing an unrelated card") */
   var HK = [['book', 'Book a blood test', 'book'], ['book-old', 'Book a recent blood test (last one 6+ months old)', 'book', 'Book a blood test'], ['life', 'Lifestyle questionnaire', 'life'],
@@ -3994,12 +3994,12 @@ window.EvJourney = (function () {
   var BJN = function (k) { var r = (window.EvPcBj || []).filter(function (x) { return x[0] === k; })[0]; return r ? r[1].replace(/^\d+\s*·\s*/, '') : k; };
 
   /* ---- the store ---- */
-  var DEF = function () { return { mem: 'membership', rec: 'unknown', wear: false, blood: 'none', bloodDate: '', lsq: false, ins: { hist: 'none', other: 0 }, hero: 'auto' }; };   /* a new member: the Health profile only */
+  var DEF = function () { return { mem: 'membership', rec: 'unknown', wear: false, blood: 'none', bloodDate: '', lsq: false, ins: { other: 0 }, hero: 'auto' }; };   /* a new member: the Health profile only */
   var pick = function (v, L, d) { return L.some(function (o) { return o === v; }) ? v : d; };
   var norm = function (j) { var d = DEF(); j = j && typeof j === 'object' ? j : {}; var o = { mem: pick(j.mem, ['none', 'membership', 'p299', 'diag'], d.mem), rec: pick(j.rec, ['yes', 'no', 'unknown'], d.rec), wear: !!j.wear, blood: pick(j.blood, ['none', 'recent', 'old'], d.blood),
     bloodDate: typeof j.bloodDate === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(j.bloodDate) ? j.bloodDate : '', lsq: !!j.lsq, ins: {}, hero: typeof j.hero === 'string' && /^adv\d$/.test(j.hero) ? 'other' : typeof j.hero === 'string' && (j.hero === 'auto' || HKM[j.hero]) ? j.hero : 'auto' };
-    var I0 = j.ins && typeof j.ins === 'object' ? j.ins : {}, h0 = I0.hist === 'ready' ? 'rec' : I0.hist === 'not' ? 'none' : I0.hist;   /* an older save (a status per stage) read the new way: Ready = Received, the advanced ones Ready counted */
-    o.ins = { hist: pick(h0, ['proc', 'rec', 'none'], 'none'), other: I0.other != null && isFinite(+I0.other) ? Math.max(0, Math.min(5, Math.round(+I0.other))) : ['adv1', 'adv2', 'adv3', 'adv4', 'adv5'].filter(function (k) { return I0[k] === 'ready'; }).length }; return o; };
+    var I0 = j.ins && typeof j.ins === 'object' ? j.ins : {};   /* an older save (a status per stage): the advanced ones Ready counted; the historical record now the persona's Past records */
+    o.ins = { other: I0.other != null && isFinite(+I0.other) ? Math.max(0, Math.min(5, Math.round(+I0.other))) : ['adv1', 'adv2', 'adv3', 'adv4', 'adv5'].filter(function (k) { return I0[k] === 'ready'; }).length }; return o; };
   var load = function () { try { var s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s && Array.isArray(s.list) && s.list.length){ s.list = s.list.filter(function (p) { return p && p.id; }).map(function (p) { return { id: String(p.id), name: String(p.name || 'Persona'), j: norm(p.j) }; }); if (s.list.length) return { list: s.list, cur: s.cur === '' || s.list.some(function (p) { return p.id === s.cur; }) ? s.cur : s.list[0].id }; } } catch (e){}
     return { list: [{ id: 'p1', name: 'Persona 1', j: DEF() }], cur: 'p1' }; };
   var st = load();
@@ -4031,7 +4031,8 @@ window.EvJourney = (function () {
     var out = CONFIG.order.filter(function (k) { return keys.indexOf(k) >= 0 && !S[k].done; }), outReq = out.filter(function (k) { return S[k].req; }), outOpt = out.filter(function (k) { return !S[k].req; });
     var next = outReq[0] || null, rec = next || outOpt[0] || null;
     /* the insights: only what is set (collecting information never makes any Ready): the historical result record (In progress, Received, No data available), how many other insights */
-    var I = j.ins, hR = I.hist === 'rec', hP = I.hist === 'proc', oN = I.other || 0, oT = oN >= 5 ? '5+' : String(oN);
+    var I = j.ins, hR = j.rec === 'yes', hP = false, oN = I.other || 0,   /* the historical record the persona's Past records ("Remove that here because we control that on the persona"): captured = received, else none, never in progress */
+      oT = oN >= 5 ? '5+' : String(oN);
     var nIns = Math.min(5, (hR ? 1 : 0) + oN), fb = hP ? 'rec' : 'off';   /* the Insights card: the record's insight and the others; Reading records while the record is in progress */
     var insNow = [hR ? 'Historical received' : hP ? 'Historical in progress' : 'No historical data', oN ? oT + ' other insight' + (oN === 1 ? '' : 's') : ''].filter(Boolean).join(' \u00b7 ');
     /* the hero: the next required step while one is outstanding; then the other insights once there are some, the historical record once received, else the shared card */
@@ -4039,15 +4040,14 @@ window.EvJourney = (function () {
     var stage = next ? 'Sharing information' : hk === 'other' ? 'Other insights ready' : hk === 'ready' ? 'Historical result record received' : hP ? 'Historical record in progress' : 'Required information shared';
     /* the card's checklist: every step (the required ones to do, the optional ones Optional), then the historical record and the other insights when there are any */
     var rows = keys.map(function (k) { var s = S[k]; return [k, s.name, s.done ? ['done', s.word] : s.req ? ['act', s.word] : ['lock', 'Optional']]; });
-    if (I.hist !== 'none') rows.push(['ins', 'Historical record', hR ? ['done', 'Received'] : ['proc', 'In progress']]);
     if (oN) rows.push(['adv', 'Other insights', ['done', oT + ' ready']]);
     /* preview flags: insights set past what the journey supports, said, never hidden */
-    var flags = []; if (I.hist !== 'none' && j.rec !== 'yes') flags.push('Historical record ' + (hR ? 'received' : 'in progress') + ' without captured past records');
+    var flags = [];
     if (oN && outReq.length) flags.push('Other insights set while required information is outstanding'); if (hk !== auto) flags.push('Hero card forced to ' + H[1] + ' (Auto: ' + HKM[auto][1] + ')');
     var memName = (MEM.filter(function (m) { return m[0] === j.mem; })[0] || ['', ''])[1];
     return { j: j, mem: j.mem, memName: memName, product: j.mem === 'none' ? '' : memName, steps: S, keys: keys, reqN: reqK.length, doneN: doneN, pct: reqK.length ? doneN / reqK.length : 1, next: next, rec: rec,
       nextLabel: next ? S[next].act : rec ? S[rec].act + ' (optional)' : 'None', outstanding: outReq.map(function (k) { return S[k].name; }), optional: outOpt.map(function (k) { return S[k].name; }), rows: rows, stage: stage,
-      eyebrow: (j.mem === 'none' ? '' : memName + ' · ') + stage, ins: { hist: I.hist, other: oN, n: nIns, fb: fb, now: insNow },
+      eyebrow: (j.mem === 'none' ? '' : memName + ' · ') + stage, ins: { hist: hR ? 'rec' : 'none', other: oN, n: nIns, fb: fb, now: insNow },
       hero: { k: hk, t: H[1], bj: H[2], share: H[3] || '', auto: auto, forced: hk !== auto }, flags: flags,
       tasks: { hp: 'done', hpP: 1, data: j.wear ? 'conn' : 'todo', past: j.rec === 'yes' ? 'found' : 'todo', fb: fb, n: nIns, noAuto: true } };   /* the Insights module's own task states (MODS.mins) */ };
   /* the HK's own words, the state's facts only: no View first insights before they are Ready, no I don't have any once No is said */
@@ -4142,7 +4142,7 @@ window.EvJourney = (function () {
       var ps = $('persSel'); if (ps){ ps.innerHTML = st.list.map(function (x) { return '<option value="' + esc(x.id) + '">' + esc(x.name) + '</option>'; }).join('') + '<option value="">None · Tweaks</option>'; ps.value = st.cur; }
       sv('jnMem', j.mem); sv('jnRec', j.rec); sv('jnWear', j.wear ? 'yes' : 'no'); sv('jnLsq', j.lsq ? 'yes' : 'no'); sv('jnBlood', J && j.bloodDate ? (J.steps.blood.done ? 'recent' : 'old') : j.blood);
       var dt = $('jnBloodDt'); if (dt && dt.value !== j.bloodDate) dt.value = j.bloodDate; var dx = $('jnBloodDtX'); if (dx) dx.hidden = !j.bloodDate; var bs = $('jnBlood'); if (bs){ bs.disabled = !p || !!j.bloodDate; bs.title = j.bloodDate ? 'From the blood test date' : ''; }
-      sv('jnInsH', j.ins.hist); sv('jnInsN', String(j.ins.other)); sv('jnHero', j.hero);
+      sv('jnInsN', String(j.ins.other)); sv('jnHero', j.hero);
       document.querySelectorAll('#tkJnyGrp select, #tkJnyGrp input, #tkJnyPvGrp select').forEach(function (x) { if (x.id !== 'jnBlood') x.disabled = !p; });
       document.querySelectorAll('#tkJnyGrp .tkRow, #tkJnyPvGrp .tkRow').forEach(function (r) { r.classList.toggle('jnOff', !p); });
       var sm = $('jnSum'); if (sm) sm.innerHTML = sumHtml();
@@ -4166,7 +4166,7 @@ window.EvJourney = (function () {
     on('jnBlood', 'change', function (e, x) { set('blood', x.value); }); on('jnBloodDt', 'change', function (e, x) { set('bloodDate', x.value || ''); });
     on('jnBloodDtX', 'click', function () { set('bloodDate', ''); });
     ['jnGridJ'].forEach(function (id) { var g = $(id); if (g) g.addEventListener('click', function (e) { var m = e.target.closest('[data-jm]'); if (m){ e.stopPropagation(); tmOpen(m, m.dataset.jm); return; } var t = e.target.closest('[data-jt]'); if (t && !t.closest('.jnLock')) cycle(t.dataset.jt); }); }); on('jnHero', 'change', function (e, x) { set('hero', x.value); });
-    on('jnInsH', 'change', function (e, x) { set('ins.hist', x.value); }); on('jnInsN', 'change', function (e, x) { set('ins.other', +x.value); });
+    on('jnInsN', 'change', function (e, x) { set('ins.other', +x.value); });
     var b = $('persMore'), m = $('persMenu');
     if (b && m){ b.addEventListener('click', function (e) { e.stopPropagation(); menuOpen(m.hidden); });
       m.addEventListener('click', function (e) { e.stopPropagation(); var t = e.target.closest('[data-pa]'); if (!t || t.disabled) return; var a = t.dataset.pa, p = curP();
@@ -4177,7 +4177,7 @@ window.EvJourney = (function () {
     document.addEventListener('evjourney', function () { ui(); if (!applying) apply(); if (lentTo && lentTo.el && lentTo.el._redraw) lentTo.el._redraw(); });
     ui(); };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind); else bind();
-  return { DRV: DRV, CONFIG: CONFIG, MEM: MEM, HIST: HIST, OTHER: OTHER, HK: HK, list: function () { return st.list.slice(); }, cur: function () { return st.cur; }, persona: curP, select: select, add: add, rename: rename, dup: dup, del: del, set: set,
+  return { DRV: DRV, CONFIG: CONFIG, MEM: MEM, OTHER: OTHER, HK: HK, list: function () { return st.list.slice(); }, cur: function () { return st.cur; }, persona: curP, select: select, add: add, rename: rename, dup: dup, del: del, set: set,
     active: function () { var p = curP(); return p ? norm(p.j) : null; }, derive: derive, norm: norm, cardM: cardM, cardOk: cardOk, live: live, withForce: withForce, lend: lend, lent: function () { return !!lentTo; }, missHtml: missHtml, forCard: forCard, drives: drives, page: page, apply: apply, act: act }; })();
 window.EvMedia = (function () {
   var SZ = { '2xs': 20, xs: 24, sm: 32, md: 44, lg: 64, xl: 80, '2xl': 96 }, RAD = { '2xs': 6, xs: 8, sm: 10, md: 14, lg: 20, xl: 24, '2xl': 24 }, OV = { '2xs': 4, xs: 4, sm: 8, md: 8, lg: 12, xl: 16, '2xl': 16 }, CUT = { '2xs': 2, xs: 3, sm: 3, md: 4, lg: 6, xl: 6.7, '2xl': 10.5 };

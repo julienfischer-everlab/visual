@@ -5,6 +5,21 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+### v3316: Historical result record follows the persona's Past records
+
+- **("Remove that here because we control that on the persona"):** the Historical result record select is gone from Insights · Preview, which keeps Other insights (0–4, 5+) and the Hero card preview.
+- **The historical record now comes from the Past records card:**
+  - Captured counts as a received record. It adds 1 insight and, once everything required is in with no other insights, the First insights ready hero card.
+  - Not captured and Unknown mean no historical data. It is never in progress, following the original rule ("Unknown = never processing").
+  - So Reading records no longer appears, and the "record without captured past records" flag is gone.
+- **Data:** `ins` is now `{ other }`. `derive()` still returns `ins.hist` ('rec' / 'none') from Past records for the card's View first insights rule. Older saves keep their counted advanced stages; their historical stage is dropped.
+- **Checked** (source and dist):
+  - Unknown with 0 others: Insights empty, Confirm past records.
+  - The ··· picks Captured: 1 insight, First insights ready.
+  - 3 others: Insights 4, Deeper insights ready.
+  - Not captured with 3 others: 3 insights, Add past records, the "outstanding" flag.
+  - No page errors.
+
 ### v3315: Journey cards cleaner (icon, centred, one size, ··· menu); Insights as a record + a count
 
 - **Cards ("Remove the border ... increase the grey background a bit ... a three-dot icon on the top right ... an icon, and then centre everything ... all the tiles the same size"):**
