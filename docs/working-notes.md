@@ -5,6 +5,17 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3321 · Primary card types: the builder's frame in the viewport, the switch and the doc in the panel
+
+"That needs to be only one element in the centre of the screen ... It should be in the overview skeleton here with the menu. You can use the same page in the overview that you have on the collection builder ... on the right panel, you have a switch, like service or journey ... below on the panel, you can document the thing ... I don't want to see any documentation on the viewport. The viewport is the real case scenario."
+
+- **Viewport**: the `ty` page now shows the Collection builder's own frame (`.moB`: the Overview skeleton with its menu, the phone at XS · S). The type's card sits alone in the primary card's slot. `demo()` draws `tyEx()` (the type's example: MRI's first step, or Activation on Book a blood test) through `M.draw` instead of the builder's picks. On that page it skips the builder's controls (`mhpCtl`) and the hidden step previews. For Activation the builder's live Overview layout (`skLive`) applies, as on the builder. No doc in the viewport (the old `.moTy` sections are gone).
+- **Panel**: a "Primary card type" group, built after the panel mounts (`DP.row` / `DP.put`):
+  - **Type**: a Service / Journey segmented control (the panel's `dpSeg`), kept in `everlab:moTyK`.
+  - **The doc** under it (`.moTyDoc`): the type's name and line, then Follows / Steps or Phases / Look / Never / Cards / Shown, then Not typed yet. It is drawn from `MODS.mhp.types()`, which now gives each type an id (`svc`, `jny`).
+- On that page the rail gets `.moTyMode`: only this group shows, and on every other page it is hidden. Leaving the page draws the builder's card again (`tyWas`), and the switch redraws through `el._tyRe`.
+- Checked on dist: Service (MRI in the skeleton, the doc in the panel), Journey (Activation, its phases), back to the builder (Collection and Controls groups, its own card), Collection, and XS (the phone frame with the dock); no page errors.
+
 ## v3320 · Modules → Primary card: a Primary card types page (Service, Journey)
 
 "I would like to document the different types of primary cards we have ... Service-based ... More like a journey ... That's it for now: only two types. Call that primary card type in the dropdown of the module primary card."
