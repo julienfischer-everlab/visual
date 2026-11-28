@@ -5,6 +5,32 @@ the design landed where it did, and which parts have already bitten. The
 [README](../README.md) describes *what* the thing is and how the engine works —
 this is the part you need before you change it.
 
+## v3332 · Overview header: the Insights widget only once the insights are seen; first insights the past records', second the Advanced blood panel's; Check-in in More context
+
+"If whatever insights is ready, you just display the block insights on the right side, the widget ... Until the moment the user didn't click on the CTA on the last step of the phase, 'See my result,' the widget shouldn't appear yet. It's only when the user sees the insights." "The first insight should always be from the past records, and the second insight is more for the advanced blood panel. This concerns the entire rule about this block." "Put checkin in here instead."
+
+- **Seen** (`j.seen`, 0 to 2, `norm`): how far the persona has looked at its insights.
+  - First insights ready's CTA (`res1`, or `view1x`) sets 1. EvJourney's `act` opens the first insights' report (`_act.go('r1:cover')`). When the report is put away it stops the Activation run that opened it and applies again, so the persona draws the Overview.
+  - Deeper insights ready's CTA (`view2`) sets 2.
+- **derive**:
+  - First insights are ready when the past records are captured (`hR`). Ready but not seen, the hero is First insights ready (`ready`) before anything else.
+  - Seen, the steps as before. With nothing left, the deeper insights (Other insights) give Deeper insights ready (`other`) until seen, then Your plan; else Everything shared.
+  - `p1` (phase 1 over: Insights and Schedule shown) is `seen >= 1`. It is no longer "records captured".
+  - The widget's count is what has been seen: the past records' insight from 1, plus the deeper ones from 2.
+- **The Bento with a persona** (`bmSync`, replacing `schSync`):
+  - Slot 1 is Insights once seen, else empty. Before that the card stands alone (wide).
+  - Slot 2 is Schedule by its switch.
+- **The widget's cards**: a new first card, "New insights from your past records" (Dr Edward Lim, the doctor's read render). The Advanced blood panel's comes second, then the others.
+  - With a persona (`cardOk`): the past records' card from seen 1. The blood panel's and the others (the wearable's only with one connected) from seen 2.
+- **Hero card moments**: each has its `seen`. First insights ready is records captured and nothing seen. The phase 2 moments are seen 1, Your plan seen 2.
+- **Without a persona** (Tweaks; the Overview header module's own picks): the Activation card's First insights ready step is still phase 1, so no widget (`gate`, `p1o`).
+- **More context** (the Insights card's 2 × 2): Check-in (a clipboard with a tick) in Family history's place; it opens the quarterly check-in (`_qci.open`).
+- Checked on dist:
+  - First insights ready: wide card, no widget, slots empty / Schedule.
+  - Get your results: the report opens. Put away: Book a new blood test, the widget in with the past records' insight.
+  - Deeper insights ready: still that one alone. Your plan (seen 2): past records, Advanced blood panel, then the others.
+  - No page errors.
+
 ## v3331 · Hero card sets the User journey grid (no Auto); no Persona in the top bar
 
 "And remove the auto here. The goal on this persona is to actually put all of the grid on and off based on the card of the phase. That's the goal." "You can remove the persona on the top here."
